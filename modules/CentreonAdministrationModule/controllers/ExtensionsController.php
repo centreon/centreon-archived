@@ -86,6 +86,18 @@ class ExtensionsController extends Controller
     protected $tpl;
 
     /**
+     *
+     * @var type
+     */
+    public static $displaySearchBar = false;
+    
+    /**
+     *
+     * @var type
+     */
+    public static $isDisableable = true;
+
+    /**
      * 
      * @method get
      * @route /extensions/module
@@ -102,6 +114,9 @@ class ExtensionsController extends Controller
         /* Display variable */
         $this->tpl->assign('objectName', self::$objectDisplayName);
         $this->tpl->assign('moduleName', self::$moduleName);
+        $this->tpl->assign('isDisableable', static::$isDisableable);
+        $this->tpl->assign('displaySearchBar', static::$displaySearchBar);
+        
         $this->tpl->assign('objectListUrl', '/centreon-administration/extensions/module/list');
         $this->tpl->display('administration/module.tpl');
     }

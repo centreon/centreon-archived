@@ -1,0 +1,52 @@
+.buttonGroup {
+  display: inline-block;
+  .configuration-actions,
+  #selected_option,
+  #addToGroup
+  {
+    float:left;
+  }
+}
+.btnC {
+  position: relative;
+  line-height: 1.5;
+  margin: 0 2px;
+  border-radius: 3px;
+  text-decoration: none;
+  //font-size: 75%;
+  padding : 0 @paddingElem*2;
+  height: 40px;
+  vertical-align: middle;
+  border: 1px solid @white;
+  box-sizing: border-box;
+}
+.btnDefault{
+  color: @darkGray1;
+  background-color: @lightGray1;
+  box-shadow: 2px 2px 1px 0px @lightGray;
+  &:focus {
+    outline: none;
+  }
+  &:hover {
+    color: @lightGray1;
+    background-color: @darkGray2;
+    transition: all 0.3s ease;
+  }
+}
+
+/* -- Success button -- */
+
+.btnSuccess{
+  background-color: @success /*#e2efc6*/;
+  //box-shadow: 1px 2px 2px @success;
+  color: @white;
+  padding : 0 @paddingElem*3;
+}
+
+/* -- Info button -- */
+.btnInfo{
+  background-color: #b2ece8;
+  box-shadow: 1px 2px 2px @info;
+  color: #007f77;
+}
+

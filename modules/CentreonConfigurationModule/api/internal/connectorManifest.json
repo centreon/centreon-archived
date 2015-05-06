@@ -3,6 +3,9 @@
     "repository" : "\\CentreonConfiguration\\Repository\\ConnectorRepository",
     "objectBaseUrl" : "connector",
     "objectClass" : "\\CentreonConfiguration\\Models\\Connector",
+    "relationMap" : {
+        "connector_command": "\\CentreonConfiguration\\Models\\Relation\\Connector\\Command"
+    },
     "attributesMap" : {
         "id" : "id",
         "name" : "name",

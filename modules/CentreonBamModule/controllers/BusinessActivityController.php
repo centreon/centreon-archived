@@ -80,16 +80,17 @@ class BusinessActivityController extends FormController
                     }
                 }
                 if (count($aTags) > 0) {
-                    TagsRepository::saveTagsForResource('ba', $id, $aTags);
+                    TagsRepository::saveTagsForResource('ba', $id, $aTags, '', false, 1);
                 }
             }
 
             BusinessActivityRepository::createVirtualService($id);
-        } catch (Exception $e) {
-            $this->router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+            $aData = array('success' => true);
+        } catch (\Exception $e) {
+            $aData = array('success' => false, 'error' => $e->getMessage());
         }
 
-        $this->router->response()->json(array('success' => true));
+        $this->router->response()->json($aData);
     }
  
     /**
@@ -185,7 +186,7 @@ class BusinessActivityController extends FormController
                 }
             }
             if (count($aTags) > 0) {
-                TagsRepository::saveTagsForResource('ba', $givenParameters['object_id'], $aTags);
+                TagsRepository::saveTagsForResource('ba', $givenParameters['object_id'], $aTags, '', false, 1);
             }
         }        
     }
@@ -203,5 +204,17 @@ class BusinessActivityController extends FormController
 
         BusinessActivityRepository::deleteVirtualService($givenParameters['ids']);
         parent::deleteAction();
+    }
+    
+    /**
+     * Get list of icons for a specific business activity
+     *
+     *
+     * @method get
+     * @route /businessactivity/[i:id]/icon
+     */
+    public function iconForBaAction()
+    {
+        parent::getSimpleRelation('icon_id', '\CentreonBam\Models\Icon');
     }
 }

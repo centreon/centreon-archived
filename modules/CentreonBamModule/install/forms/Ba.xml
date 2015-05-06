@@ -6,7 +6,11 @@
 		<redirect_route>/centreon-bam/businessactivity</redirect_route>
         <section name="Configuration">
             <block name="Information">
-                <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+                <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                    <validators>
+                    	<validator rules="remote" serverside="centreon-main.unique" />
+                    </validators>
+                </field>
                 <field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
                 <field name="ba_type_id" label="Type" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
                     <attributes>
@@ -66,7 +70,7 @@
         </section>
         <section name="Extended Information">
             <block name="Visual settings">
-                <field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
+                <field name="icon_id" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>

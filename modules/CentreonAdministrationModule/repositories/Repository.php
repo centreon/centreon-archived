@@ -35,6 +35,7 @@
 
 namespace CentreonAdministration\Repository;
 
+use CentreonMain\Repository\FormRepository;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use CentreonAdministration\Repository\AuditlogRepository;
@@ -45,7 +46,7 @@ use CentreonAdministration\Repository\AuditlogRepository;
  * @version 3.0.0
  * @author Sylvestre Ho <sho@centreon.com>
  */
-abstract class Repository
+abstract class Repository  extends FormRepository
 {
     const ORGANIZATION_FIELD = 'organization_id';
 

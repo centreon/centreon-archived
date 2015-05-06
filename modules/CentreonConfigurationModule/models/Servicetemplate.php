@@ -49,6 +49,9 @@ class Servicetemplate extends CentreonBaseModel
     protected static $table = "cfg_services";
     protected static $primaryKey = "service_id";
     protected static $uniqueLabelField = "service_description";
+    /*protected static $basicFilters = array(
+        'service_register' => '0',
+    );*/
     
     /**
      * Used for inserting object into database
@@ -205,10 +208,10 @@ class Servicetemplate extends CentreonBaseModel
      * @param array $extraConditions
      * @return array
      */
-    public static function getIdByParameter($paramName, $paramValues = array(), $extraConditions = array())
+    public static function getIdByParameter($paramName, $paramValues = array(), $extraConditions = array(), $conditionType = '=')
     {
         $extraConditions['service_register'] = '0';
-        return parent::getIdByParameter($paramName, $paramValues, $extraConditions);
+        return parent::getIdByParameter($paramName, $paramValues, $extraConditions, $conditionType);
     }
 
     /**

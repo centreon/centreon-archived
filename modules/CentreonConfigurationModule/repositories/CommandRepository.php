@@ -72,6 +72,8 @@ class CommandRepository extends Repository
         ),
     );
     
+    public static $objectClass = '\CentreonConfiguration\Models\Command';
+    
     /**
      * 
      * @param int $id

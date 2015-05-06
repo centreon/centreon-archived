@@ -102,24 +102,6 @@ class BusinessActivityDatatable extends Datatable
             'visible' => false,
         ),
         array (
-            'title' => 'Type',
-            'name' => 'ba_type_id',
-            'data' => 'ba_type_id',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'width' => 70,
-            'searchParam' => array(
-                'type' => 'select',
-                'additionnalParams' => array(
-                    'Business Unit' => '1',
-                    'Application' => '2',
-                    'Middleware' => '3'
-                )
-            ),
-        ),
-        array (
             'title' => 'Business Activity',
             'name' => 'name',
             'data' => 'name',
@@ -146,6 +128,24 @@ class BusinessActivityDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+        ),
+        array (
+            'title' => 'Type',
+            'name' => 'ba_type_id',
+            'data' => 'ba_type_id',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => 70,
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Business Unit' => '1',
+                    'Application' => '2',
+                    'Middleware' => '3'
+                )
+            ),
         ),
         array (
             'title' => 'Status',
@@ -218,7 +218,7 @@ class BusinessActivityDatatable extends Datatable
             $myBaSet['tagname']  = "";
             $aTags = TagsRepository::getList('ba', $myBaSet['ba_id'], 2);
             foreach ($aTags as $oTags) {
-                $myBaSet['tagname'] .= TagsRepository::getTag('ba', $myBaSet['ba_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+                $myBaSet['tagname'] .= TagsRepository::getTag('ba', $myBaSet['ba_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
             }
             $myBaSet['tagname'] .= TagsRepository::getAddTag('ba', $myBaSet['ba_id']);
         }

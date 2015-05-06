@@ -84,7 +84,6 @@ abstract class CentreonModel
         $aAddFilters  = array(),
         $sGroup = array()
     ) {
-
         if (is_string($filterType) && $filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
         } elseif (is_array($filterType)) {
@@ -103,7 +102,7 @@ abstract class CentreonModel
         } else {
             $params = $parameterNames;
         }
-        $sql = "SELECT $params FROM ";
+        $sql = "SELECT DISTINCT $params FROM ";
         if (is_null($tablesString)) {
             $sql .=  static::$table;
         } else {
@@ -124,7 +123,6 @@ abstract class CentreonModel
         } 
         
         if (count($filters)) {
-            $filters = array_unique($filters);
             
             foreach ($filters as $key => $rawvalue) {
                 if (is_array($rawvalue)) {
@@ -165,16 +163,16 @@ abstract class CentreonModel
         if (!is_null($aAddFilters) && isset($aAddFilters['join'])) {
             $sql .= " AND ".implode(" AND ", $aAddFilters['join']);
         }
-
        
         if (!empty($sGroup) && isset($sGroup['nb']) && isset($sGroup['sField'])) {
            $iNb = $sGroup['nb']  - 1;
            $sql .= " GROUP BY ".$sGroup['sField']." having count(*) > ".$iNb;
         }
-        //echo $sql;
+
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
             $sql .= " ORDER BY $order $sort ";
         }
+        
         if (isset($count) && $count != -1) {
             $db = Di::getDefault()->get(static::$databaseName);
             $sql = $db->limit($sql, $count, $offset);

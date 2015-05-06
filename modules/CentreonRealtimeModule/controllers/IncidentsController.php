@@ -62,7 +62,6 @@ class IncidentsController extends Controller
         $tmpl = $di->get('template');
         $tmpl->addJs('hogan-3.0.0.min.js');
         $tmpl->addJs('centreon-table-infinite-scroll.js');
-        $tmpl->addCss('centreon.status.css');
         $tmpl->display('file:[CentreonRealtimeModule]incidents_list.tpl');
     }
 

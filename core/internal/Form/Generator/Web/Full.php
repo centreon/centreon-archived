@@ -260,7 +260,7 @@ class Full extends Generator
             }
             $formRendering .= '" id="'.str_replace(' ', '', $sectionLabel).'">';
             foreach ($sectionComponents as $blockLabel => $blockComponents) {
-                $formRendering .= '<div class="panel panel-default">'.'<h5 class="panel-heading">'.$blockLabel.'</h5>';
+                $formRendering .= '<div class="panel panel-default">'.'<div class="panel-heading"><h5>'.$blockLabel.'</h5></div>';
                 $formRendering .= '<div class="panel-body">';
                 foreach ($blockComponents as $component) {
                     if (isset($formElements[$component['name']]['html'])) {

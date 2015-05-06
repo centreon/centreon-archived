@@ -5,10 +5,10 @@
 {block name="content"}
 
     <div class="col-md-12">
-        <div class="">
-            <a id="advanced_mode_switcher" href="#" class="btnC btnDefault">
-                <i class="fa fa-gears"></i> {t}Advanced Mode{/t}
-            </a>
+        <div class="buttonGroup right">
+            <button id="advanced_mode_switcher" href="#" class="btnC btnDefault">
+                <i class="icon-switch"></i>
+            </button>
         </div>
         {$form}
      </div>
@@ -51,9 +51,9 @@
         $("#advanced_mode_switcher").on("click", function (event) {
             $(".advanced").toggleClass("advanced-display");
             if ($(".advanced").hasClass('advanced-display')) {
-                $(this).html('<i class="fa fa-gear"></i> {t}Switch to Simple mode{/t}');
+                $(this).html('<i class="icon-switch-adv"></i>');
             } else {
-                $(this).html('<i class="fa fa-gears"></i> {t}Switch to Advanced mode{/t}');
+                $(this).html('<i class="icon-switch"></i>');
             }
             hideEmptyBlocks();
         });
@@ -66,7 +66,13 @@
                 if ($(this).val().trim() === "") {
                     validateMandatory = false;
                     $(this).parent().addClass("has-error has-feedback");
-                    errorText += $(this).attr("placeholder") + " is required<br/>";
+                    if (typeof $(this).attr("placeholder") !== 'undefined') {
+                        errorText += $(this).attr("placeholder") + " is required<br/>";
+                    } else if (typeof $(this).closest(".form-group").children("label").html() !== 'undefined') {
+                        errorText += $(this).closest(".form-group").children("label").html() + " is required<br/>";
+                    } else {
+                        errorText += "a field is required<br/>";
+                    }
                 }
             });
             

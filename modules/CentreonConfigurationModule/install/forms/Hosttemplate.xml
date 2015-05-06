@@ -7,12 +7,12 @@
 		<section name="Host Template configuration">
 			<block name="General information">
 				<field name="host_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-					<validators>
-                    	<validator rules="remote" serverside="core.unique" />
-                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
-                        	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
-                        </validator>
-					</validators>
+                                    <validators>
+                                        <validator rules="remote" serverside="centreon-main.unique" />
+                                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                                                <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
+                                        </validator>
+                                    </validators>
 				</field>
 				<field name="host_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 				<field name="host_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
@@ -24,18 +24,18 @@
 						<ordered>true</ordered>
 					</attributes>
                                     <validators>
-                                        <validator rules="remote" serverside="centreon-configuration.circular.dependency">
+                                        <validator rules="remote" serverside="centreon-main.circular.dependency">
                                         </validator>
                                     </validators>
 				</field>
 				<field name="host_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-                        <listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/icon</listValuesRoute>
-						<multiple>false</multiple>
-						<wizardRoute>/media/image/add</wizardRoute>
-					</attributes>
+                                    <attributes>
+                                            <object_type>object</object_type>
+                                            <defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+                                            <listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/icon</listValuesRoute>
+                                            <multiple>false</multiple>
+                                            <wizardRoute>/media/image/add</wizardRoute>
+                                    </attributes>
 				</field>
                 <field name="host_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
                     <attributes>

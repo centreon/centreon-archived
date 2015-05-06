@@ -175,7 +175,7 @@
             </nav>
         </div>
 
-        <div class="row">
+        <div class="row" id="contentWrapper">
             {block name="content"}{/block}
         </div>
         
@@ -196,7 +196,7 @@
             </div>
        </div>
 
-       <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="wizard" aria-hidden="true">
+       <div class="modal fade" id="modal" role="dialog" aria-labelledby="wizard" aria-hidden="true">
            <div class="modal-dialog modal-lg">
                <div class="modal-content"></div>
            </div>

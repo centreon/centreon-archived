@@ -1,10 +1,14 @@
 @import "../../centreon/less/centreon.variables.less";
 
 @customTag-color: #f17933;
-@tag-global-color: #0C5C27;
 
 
 div.tagGlobal {
+  background-color: @firstGreen;
+  border : 2px solid @firstGreen;
+  color : @white;
+}
+div.tagGlobalNotDelete {
   background-color: @firstGreenLighten;
   border : 2px solid @firstGreenLighten;
   color : @white;
@@ -16,7 +20,7 @@ div.tag {
 }
 
 
-div.tag, div.tagGlobal {
+div.tag, div.tagGlobal, div.tagGlobalNotDelete {
 
   display: inline-block;
   border-radius: 2px;

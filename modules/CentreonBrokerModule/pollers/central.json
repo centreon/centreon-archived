@@ -20,7 +20,12 @@
                         "port" : "5668",
                         "host" : "localhost",
                         "failover" : "failover-central-output",
-                        "protocol": "bbdo"
+                        "protocol": "bbdo",
+                        "filters": [
+                          {
+                            "category": "neb"
+                          }
+                        ]
                       },
                       {
                         "type" :"file",
@@ -30,7 +35,7 @@
                       {
                         "type": "dumper",
                         "tagname": "extcommand-%poller_name%",
-                        "path": "%engine_command_file%",
+                        "path": "%engine_var_lib_dir%/rw/centengine.cmd",
                         "name": "extcommand-%poller_name%"
                       },
                       {
@@ -124,19 +129,23 @@
                       {
                         "type": "tcp",
                         "name": "central-transfert-output",
-                        "port": "5669"
+                        "port": "5669",
+                        "filters": [
+                          {
+                            "category": "dumper"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "correlation",
+                        "type": "correlation",
+                        "file": "%global_broker_etc_directory%/correlation.xml"
                       }
                     ],
                     "logger": [
                       {
                         "type": "file",
                         "name": "%global_broker_logs_directory%/central-broker.log"
-                      }
-                    ],
-                    "correlation": [
-                      {
-                        "name": "correlation",
-                        "filepath": "%global_broker_etc_directory%/correlation.xml"
                       }
                     ],
                     "stats": [

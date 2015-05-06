@@ -130,6 +130,13 @@ class UserDatatable extends Datatable
                     '0' => '<span class="label label-danger">No</span>',
                     '1' => '<span class="label label-success">Yes</span>'
                 )
+            ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'No' => '0',
+                    'Yes' => '1'
+                )
             )
         ),
         array (
@@ -145,6 +152,13 @@ class UserDatatable extends Datatable
                 'parameters' =>array(
                     '0' => '<span class="label label-danger">Disabled</span>',
                     '1' => '<span class="label label-success">Enabled</span>',
+                )
+            ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0'
                 )
             )
         ),

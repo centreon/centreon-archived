@@ -77,6 +77,9 @@ class ConfigGenerateRepository
 
         /* Load defaults values */
         $this->defaults = json_decode(file_get_contents(dirname(__DIR__) . '/data/default.json'), true);
+        if (is_null($this->defaults)) {
+            throw new Exception("Bad json format for default values");
+        }
 
         /* Create directories if they don't exist */
         if (!is_dir($this->tmpPath)) {
@@ -286,13 +289,26 @@ class ConfigGenerateRepository
                 } else {
                     $file->startElement($key);
                     foreach ($value as $subkey => $subvalue) {
-                        $subvalue = str_replace(
-                            array_keys($this->baseConfig),
-                            array_values($this->baseConfig),
-                            $subvalue
-                        );
-                        if (is_string($subkey)) {
-                            $file->writeElement($subkey, $subvalue);
+                        if (is_array($subvalue)) {
+                            foreach ($subvalue as $kkey => $vvalue) {
+                                $vvalue = str_replace(
+                                    array_keys($this->baseConfig),
+                                    array_values($this->baseConfig),
+                                    $vvalue
+                                );
+                                if (is_string($kkey)) {
+                                    $file->writeElement($kkey, $vvalue);
+                                }
+                            }
+                        } else {
+                            $subvalue = str_replace(
+                                array_keys($this->baseConfig),
+                                array_values($this->baseConfig),
+                                $subvalue
+                            );
+                            if (is_string($subkey)) {
+                                $file->writeElement($subkey, $subvalue);
+                            }
                         }
                     }
                     $file->endElement();

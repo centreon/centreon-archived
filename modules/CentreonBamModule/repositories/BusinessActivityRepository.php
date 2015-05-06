@@ -47,6 +47,16 @@ use CentreonConfiguration\Models\VirtualService;
  */
 class BusinessActivityRepository extends FormRepository
 {
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array('bam' => 'cfg_bam, ba_id, name'
+        ),
+    );
+    
     /**
      * 
      * @param string $name
@@ -79,9 +89,9 @@ class BusinessActivityRepository extends FormRepository
                 'format' => '.'.$fileFormat
             );
             $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
-            $finalRoute .= '<img src="'.$imgSrc.'" style="width:16px;height:16px;">';
+            $finalRoute .= '<img src="'.$imgSrc.'" style="width:16px;height:16px;">&nbsp;';
         } elseif (is_null($baIconResult['filename'])/* && !is_null($tplResult['host_tpl_id'])*/) {
-            $finalRoute .= "<i class='fa fa-university'></i>";
+            $finalRoute .= "<i class='icon-BAM ico-16'></i>&nbsp;";
         }
         
         return $finalRoute;

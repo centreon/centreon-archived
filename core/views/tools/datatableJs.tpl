@@ -13,6 +13,42 @@
         <!-- Init DataTable -->
 
         oTable = $('#datatable{$object}').dataTable({
+
+        /* Right side details */
+
+           // var tr = $('#datatable{$object} tbody');
+
+           //var $url_details = row.data('right_side_details');
+            "rowCallback": function( row, data ) {
+
+                var memRow = false;
+
+                $(row).on('click', function(){
+                    var elem = this;
+                    $.ajax({
+                          url: data.DT_RowData.right_side_details,
+                          type: "GET",
+                          dataType: 'html',
+                          success : function(e){
+                               if(memRow && elem === memRow){
+                                   $('#tableLeft').css('margin-right','0%');
+                                   $('#sideRight').css('display','none');
+                                   memRow = false;
+                               }else if(!memRow){
+                                   $('#tableLeft').css('margin-right','16%');
+                                   $('#sideRight').css('display','block');
+                                   $('#sideRight').html(e);
+                                   memRow = elem;
+                               }else{
+                                   $('#sideRight').html(e);
+                                   memRow = elem;
+                               }
+                          },
+                          error : function(error){
+                          }
+                      });
+                });
+            },
             "processing": true,
             "ajax": "{url_for url=$objectUrl}",
             "serverSide": true,
@@ -23,8 +59,8 @@
                 "processing": "Loading information. Please wait a moment."
             },
             {$datatableParameters.configuration}
-            responsive: true,
             'dom': "R<'row'r<'clear'><'col-sm-6'l><'col-sm-6 text-right'T C>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            responsive: true,
             "columns": [
                 {$datatableParameters.header.columnHeader}
             ],
@@ -43,12 +79,16 @@
                     $('table[id^="datatable"] tbody tr[id=' + selectedCb[ct] + ']').toggleClass('selected');
                 }
             }
-        })
+        });
         
         $('#datatable{$object} tbody').on('click', 'tr', function (e){
+            var active = false;
             if (!e.ctrlKey && !e.shiftKey) {
+                active = $(this).hasClass('selected');
                 $(this).parent().find('tr').removeClass('selected');
-            	$(this).addClass('selected');
+                if (false === active) {
+            	    $(this).addClass('selected');
+                }
             } else if (e.ctrlKey) {
             	$(this).toggleClass('selected');
             } else if (e.shiftKey) {
@@ -64,7 +104,15 @@
                 }
             }
             lastSelectedRow = this;
+            {if $displayActionBar === true}
             toggleSelectedAction();
+            {/if}
+        });
+
+        $('#datatable{$object} tbody').on('click', 'a', function (e) {
+            if ($(this).attr('href')) {
+                e.stopProgration();
+            }
         });
         
         $.fn.dataTableExt.sErrMode = 'throw';
@@ -546,38 +594,42 @@
         {/if}
 
         var requestSent = true;
-        $('input.centreon-search').on('keyup', function(e) {
-            var listSearch = [];
-            if (this.value.length > 2) {
+        $('input.centreon-search').on('blur keyup', function(e) {
+            if (e.type === 'blur' || e.keyCode == 13) {
                 oTable.api().column($(this).data('column-index'))
                     .search(this.value)
                     .draw();
-                requestSent = false;
             } else {
-                if (!requestSent) {
-                    oTable.api().column($(this).data('column-index'))
-                        .search(' ')
-                        .draw();
-                    requestSent = true;
+                /* Fill the advanced search */
+                var advString = $( "input[name='advsearch']" ).val();
+                var searchTag = $( this ).data( "searchtag" );
+                var tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" );
+                var splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
+
+                /* Remove the existing values */
+                advString = advString.replace( tagRegex, "").trim();
+                while ( match = splitRegex.exec( $( this ).val() ) ) {
+                    advString += " " + searchTag + ":" + match[1];
                 }
+                $( "input[name='advsearch']" ).val( advString.trim() );
             }
-        }).on( "blur", function( e ) {
-          /* Fill the advanced search */
-          var advString = $( "input[name='advsearch']" ).val(),
-              searchTag = $( this ).data( "searchtag" ),
-              tagRegex = new RegExp( "(^| )" + searchTag + ":(\\w+|\"[^\"]+\"|'[^']+')", "g" ),
-              splitRegex = new RegExp( "(\\w+|\"[^\"]+\"|'[^']+')", "g" );
-          /* Remove the existing values */
-          advString = advString.replace( tagRegex, "").trim();
-          while ( match = splitRegex.exec( $( this ).val() ) ) {
-            advString += " " + searchTag + ":" + match[1];
-          }
-          $( "input[name='advsearch']" ).val( advString.trim() );
         });
         
         $('select.centreon-search').on('change', function(e) {
+            /* Fill the advanced search */
+            var advString = $( "input[name='advsearch']" ).val();
+            var searchTag = $( this ).data( "searchtag" );
+            var tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" );
+            var splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
+
+            /* Remove the existing values */
+            advString = advString.replace( tagRegex, "").trim();
+            while ( match = splitRegex.exec( $( this ).find("option:selected").text() ) ) {
+                advString += " " + searchTag + ":" + match[1];
+            }
+            $( "input[name='advsearch']" ).val( advString.trim() );
             oTable.api().column($(this).data('column-index'))
-                .search(this.value)
+                .search($(this).val())
                 .draw();
         });
 
@@ -703,7 +755,9 @@
           });
         });
 
+
         /* Delete search action */
+
         $( "#deleteView" ).on( "click", function( e ) {
           alertClose();
           if ( $( "input[name='filters']" ).val().trim() === "" ) {

@@ -51,7 +51,7 @@ class Unique implements ValidatorInterface
      * @param type $fieldname
      * @return boolean
      */
-    public function validate($value, $module = "", $objectName = "", $id = null, $fieldname = '')
+    public function validate($value, $params = array())
     {
         /*$callableObject = '\\' . $module . '\Models\\'.ucwords($objectName);
         if ($callableObject::isUnique($value, $id)) {

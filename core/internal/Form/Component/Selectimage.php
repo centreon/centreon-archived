@@ -68,10 +68,10 @@ class Selectimage extends Component
                 . '<div class="Elem1">'.$selectForImage['html'].'</div>'
                 . '<div class="Elem2">'
                     . '<button '
-                        . 'class="btnC btnDefault" '
+                        . 'class="btnC btnDefault " '
                         . 'id="modalAdd_'.$element['name'].'" '
                         . 'type="button">'
-                        . '+'
+                        . '<i class="icon-upload"></i>'
                     . '</button>'
                 . '</div>'
             . '</div>';

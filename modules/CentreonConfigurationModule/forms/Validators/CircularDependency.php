@@ -48,7 +48,7 @@ class CircularDependency implements ValidatorInterface
     /**
      * 
      */
-    public function validate($value, $params = array())
+    public function validate($value, $params = array(), $sContext = 'server')
     {
         $result = true;
         $resultError = _("Circular redundancy detected");
@@ -73,15 +73,17 @@ class CircularDependency implements ValidatorInterface
                 $result = false;
             }
             foreach($listServiceId as $serviceTemplateId) {
-                if (isset($params['object_id']) && ($serviceTemplateId['id'] == $params['object_id'])) {
+                if (isset($params['object_id']) && ($serviceTemplateId == $params['object_id'])) {
                     $result = false;
                 }
             }
         }
-
-        return array(
-            'success' => $result,
-            'error' => $resultError
-        );
+        
+        if ($sContext == 'client') {
+            $reponse = $result;
+        } else {
+            $reponse = array('success' => $result, 'error' => $resultError);
+        }
+        return $reponse;
     }
 }

@@ -9,10 +9,12 @@
   label, input[type="text"],input[type="number"], textarea {
     display: block;
     border: 0;
+    outline: 0;
   }
 
   input[type="text"],
   input[type="number"],
+  input[type="mail"],
   textarea,
   .select2-container .select2-choice,
 {
@@ -27,7 +29,7 @@
   }
 
   textarea {
-    height: 16em;
+    height: 6em;
     resize: none;
   }
 
@@ -43,14 +45,16 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    bottom: -3px;
+    left: 2em;
   }
 
   /*-- input inheritance  --*/
   .inheritance {
     font-size: 80%;
-    color: @lightGray3;
+    color: @darkGray;
     position: absolute;
-    bottom: -8px;
+    bottom: 3px;
     right: 1.5em;
     width: 30%;
     text-align: right;
@@ -66,7 +70,6 @@
     color: @lightGray3;
     font-weight: normal;
     opacity: 1;
-    z-index: 1;
     -webkit-transition: .333s ease top, .333s ease opacity;
     transition: .333s ease top, .333s ease opacity;
   }
@@ -81,13 +84,18 @@
 
   /*---- Group of 2 Fields --- */
   .inlineGroup {
+    height: 40px;
     .Elem1 {
       float: left;
-      width: 92%;
+      width: 91%;
     }
     .Elem2 {
       float: right;
-      width: 6%;
+      width: 8%;
+
+      button {
+        float: right;
+      }
     }
   }
   /*---- Select Fields --- */
@@ -109,29 +117,95 @@
             img {
               position: absolute;
               right: 3em;
-              bottom: 7px;
+              bottom: 5px;
               padding: 1px;
             }
          }
       }
   }
+  /*---- Radio Fields --- */
+
+  .choiceGroup {
+    margin-top: 20px;
+    padding: @paddingElem/2 @paddingElem*3;
+    border-radius: 3px;
+    box-shadow: 2px 1px 1px @lightGray;
+    border: 1px solid @lightGray;
+
+    label {
+      font-weight: normal;
+      font-size: 13px;
+    }
+  }
 }
 /* -- Select Drop --*/
+
+.select2-container.select2-container-active .select2-choices {
+  .select2-choices {
+    border: 0px solid transparent;
+    box-shadow: none;
+  }
+}
+.select2-container.select2-container-multi .select2-choices {
+  .select2-search-choice {
+    &:first-child {
+      margin-left: @paddingElem*2;
+    }
+    padding: 1px @paddingElem*3 1px @paddingElem/2;
+    margin-left: @paddingElem;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    font-size: 75%;
+
+    .select2-search-choice-close {
+      right: @paddingElem/2;
+      left: initial;
+    }
+  }
+}
 .select2-drop.select2-drop-active {
+  padding-top: @paddingElem*3;
+  padding-bottom: @paddingElem/3;
   border-radius: 0 0 3px;
   box-shadow: 2px 1px 1px @lightGray;
   border: 1px solid @lightGray;
+}
+.select2-drop.select2-drop-active,
+.select2-container.select2-container-multi,
+.select2-container.select2-container-active {
+
+  .select2-choices {
+    padding-top: @paddingElem*3;
+    padding-bottom: @paddingElem/3;
+    border-radius: 0 0 3px;
+    box-shadow: 2px 1px 1px @lightGray;
+    border: 1px solid @lightGray;
+
+  .select2-search-field input {
+    padding: 0px 7px 0px;
+    margin: 0px;
+    height: 18px !important;
+  }
   .select2-search {
+    padding-left: 12px;
+    padding-right: 12px;
     input {
       border-radius: 3px;
-      height: 36px !important;
-      max-height: 40px;
       box-shadow: none;
       border: 1px solid @lightGray;
+      margin: @paddingElem*2 0;
+    }
+    &:after {
+      width: 20px;
+      height: 20px;
+
     }
   }
+  }
   .select2-results {
-    .select2-result-unselectable .select2-result-label {display: none;}
+    .select2-result-unselectable .select2-result-label {
+      display: none;
+    }
     .select2-result-label {
       padding: @paddingElem;
       margin: 0 @paddingElem*2;
@@ -142,6 +216,10 @@
       height: 20px;
       margin-right: @paddingElem;
     }
+  }
+  .select2-results .select2-highlighted {
+    background: @lightGray1;
+    color: @darkBlue;
   }
 }
 
@@ -155,44 +233,10 @@
   }
    ~ span {
     position: absolute;
-    right: 2em;
-    top: 1em;
+    left: 20px;
+    top: 4px;
     color: fade(@danger,60%);
   }
-}
-
-  /*-- Buttons --*/
-  .btnC {
-    position: relative;
-    line-height: 1.5;
-    margin: 0 2px;
-    border-radius: 2px;
-    border-width: 0px;
-    text-decoration: none;
-    font-size: 75%;
-    padding : @paddingElem*2 @paddingElem;
-  }
-  .btnDefault{
-    color: @darkGray1;
-    background-color: @lightGray1;
-    border: 1px solid @white;
-    box-shadow: 1px 2px 2px @lightGray;
-    box-sizing: border-box;
-  }
-
-  .btnSuccess{
-    position: absolute;
-    background-color: #e2efc6;
-    box-shadow: 1px 2px 2px @success;
-    z-index: 1;
-    color: #27651a;
-  }
-.btnInfo{
-  position: absolute;
-  background-color: #b2ece8;
-  box-shadow: 1px 2px 2px @info;
-  z-index: 1;
-  color: #007f77;
 }
   /*---- Notification --- */
 

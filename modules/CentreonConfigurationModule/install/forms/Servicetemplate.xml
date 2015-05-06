@@ -6,14 +6,11 @@
 		<redirect_route>/centreon-configuration/servicetemplate</redirect_route>
 		<section name="Service configuration">
 			<block name="General information">
-				<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-					<validators>
-                    	<validator rules="remote" serverside="core.unique" />
-                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
-                        	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
-                        </validator>
-					</validators>
-				</field>
+                            <field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                                <validators>
+                                    <validator rules="remote" serverside="centreon-main.unique" />
+                                </validators>
+                            </field>
 				<field name="service_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 				<field name="service_template_model_stm_id" label="Service Template Model" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
@@ -23,7 +20,7 @@
 						<multiple>false</multiple>
 					</attributes>
                                     <validators>
-                                        <validator rules="remote" serverside="centreon-configuration.circular.dependency">
+                                        <validator rules="remote" serverside="centreon-main.circular.dependency">
                                         </validator>
                                     </validators>
 				</field>
@@ -95,9 +92,9 @@
 						<multiple>false</multiple>
 					</attributes>
 				</field>
-				<field name="service_max_check_attempts" label="Max check attempts" default_value="3" advanced="0" type="integer" parent_field="" mandatory="3"></field>
-				<field name="service_normal_check_interval" label="Normal check interval" default_value="5" advanced="0" type="integer" parent_field="" mandatory="0"></field>
-				<field name="service_retry_check_interval" label="Retry check interval" default_value="1" advanced="0" type="integer" parent_field="" mandatory="0"></field>
+				<field name="service_max_check_attempts" label="Max check attempts" default_value="" advanced="0" type="integer" parent_field="" mandatory="0"></field>
+				<field name="service_normal_check_interval" label="Normal check interval" default_value="" advanced="0" type="integer" parent_field="" mandatory="0"></field>
+				<field name="service_retry_check_interval" label="Retry check interval" default_value="" advanced="0" type="integer" parent_field="" mandatory="0"></field>
 				<field name="service_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>

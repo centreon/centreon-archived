@@ -48,7 +48,7 @@ class Textarea extends Component
      */
     public static function renderHtmlInput(array $element)
     {
-        $value = (isset($element['html']) ? ''.$element['html'].' ' : '');
+        $value = (isset($element['html']) ? $element['html'] : '');
         
         if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
             $element['label'] = $element['name'];
@@ -73,10 +73,10 @@ class Textarea extends Component
                     'id="'.$element['id'].'" '.
                     'name="'.$element['name'].'" '.
                     'class="form-control '.$addClass.'" '.
-                    'rows="3" '.
+                    'rows="3" '.' maxlength="150"'.
                     $placeholder.
                     $required .
-                    '>'.$value.'</textarea>';
+                    '>'.$value.'</textarea><cite></cite>';
         
         $myJs = '';
         

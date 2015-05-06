@@ -160,9 +160,9 @@ class Command
                 for ($i=0 ;$i<($nbOfChunk-1); $i++) {
                     $commandName .= strtolower($explodedSectionName[$i]) . ':';
                 }
-                
-                $commandName .= strtolower(str_replace("Command", "", $explodedSectionName[$nbOfChunk - 1]));
-                
+
+                $commandName .= preg_replace('/Command/i', "", $explodedSectionName[$nbOfChunk - 1], 1);
+                                
                 // Get Action List
                 $classReflection = new \ReflectionClass($call);
                 $actionList = $classReflection->getMethods(\ReflectionMethod::IS_PUBLIC);

@@ -159,17 +159,16 @@ class HostTemplateController extends FormController
             
             $macroHidden = $givenParameters['macro_hidden'];
             
-            $nbMacro = count($macroName);
-            for($i=0; $i<$nbMacro; $i++) {
-                if (!empty($macroName[$i])) {
-                    if (isset($macroHidden[$i])) {
+            foreach ($macroName as $key => $name) {
+                if (!empty($name)) {
+                    if (isset($macroHidden[$key])) {
                         $isPassword = '1';
                     } else {
                         $isPassword = '0';
                     }
-                    
-                    $macroList[$macroName[$i]] = array(
-                        'value' => $macroValue[$i],
+
+                    $macroList[$name] = array(
+                        'value' => $macroValue[$key],
                         'ispassword' => $isPassword
                     );
                 }
@@ -188,13 +187,15 @@ class HostTemplateController extends FormController
         if (isset($givenParameters['host_tags'])) {
             $aTagList = explode(",", $givenParameters['host_tags']);
             foreach ($aTagList as $var) {
-                if (strlen($var)>1) {
+                $var = trim($var);
+                
+                if (!empty($var)) {
                     array_push($aTags, $var);
                 }
             }
             
             if (count($aTags) > 0) {
-                TagsRepository::saveTagsForResource('host', $id, $aTags);
+                TagsRepository::saveTagsForResource('host', $id, $aTags, '', false, 1);
             }
         }
         
@@ -240,18 +241,17 @@ class HostTemplateController extends FormController
             $macroName = $givenParameters['macro_name'];
             $macroValue = $givenParameters['macro_value'];
             $macroHidden = $givenParameters['macro_hidden'];
-            
-            $nbMacro = count($macroName);
-            for($i=0; $i<$nbMacro; $i++) {
-                if (!empty($macroName[$i])) {
-                    if (isset($macroHidden[$i])) {
+           
+            foreach ($macroName as $key => $name) {
+                if (!empty($name)) {
+                    if (isset($macroHidden[$key])) {
                         $isPassword = '1';
                     } else {
                         $isPassword = '0';
                     }
-                    
-                    $macroList[$macroName[$i]] = array(
-                        'value' => $macroValue[$i],
+
+                    $macroList[$name] = array(
+                        'value' => $macroValue[$key],
                         'ispassword' => $isPassword
                     );
                 }
@@ -281,13 +281,14 @@ class HostTemplateController extends FormController
         if (isset($givenParameters['host_tags'])) {
             $aTagList = explode(",", $givenParameters['host_tags']);
             foreach ($aTagList as $var) {
-                if (strlen($var)>1 && !in_array($var, $aTagsIdTpl)) {
+                $var = trim($var);
+                if (!empty($var)&& !in_array($var, $aTagsIdTpl)) {
                     array_push($aTags, $var);
                 }
             }
             
             if (count($aTags) > 0) {
-                TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
+                TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false, 1);
             }
         }
         
@@ -567,8 +568,8 @@ class HostTemplateController extends FormController
     public function displayConfAction()
     {
         $params = $this->getParams();
-        $data = HostRepository::getConfigurationData($params['id']);
-        $checkdata = HostRepository::formatDataForTooltip($data);
+        $data = HostTemplateRepository::getConfigurationData($params['id']);
+        $checkdata = HostTemplateRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }

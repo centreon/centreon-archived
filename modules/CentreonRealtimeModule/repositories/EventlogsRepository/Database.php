@@ -98,7 +98,7 @@ class Database extends Storage
                         $dbkey = $key;
                     }
                     $clause = $dbkey . ' LIKE :' . $key;
-                    $values[$key] = $value;
+                    $values[$key] = "%" . $value . "%";
                 } elseif (in_array($key, $timeField)) {
                     list($timeStart, $timeEnd) = explode(' - ', $value);
                     $clause = 'ctime >= :timeStart AND ctime <= :timeEnd';

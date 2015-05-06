@@ -45,13 +45,15 @@ use CentreonAdministration\Repository\TagsRepository;
  * @package Centreon
  * @subpackage Repository
  */
-class ContactRepository extends \CentreonAdministration\Repository\Repository
+class ContactRepository extends Repository
 {
     /**
      *
      * @var string
      */
     public static $tableName = 'cfg_contacts';
+    
+    public static $objectClass = '\CentreonAdministration\Models\Contact';
     
     /**
      *
@@ -60,28 +62,15 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
     public static $objectName = 'Contact';
     
     /**
-     * 
-     * @param array $givenParameters
+     *
+     * @var type 
      */
-    public static function addContactInfo($givenParameters)
-    {
-        $infoToInsert = array(
-            'contact_id' => $givenParameters['object_id'],
-            'info_key'   => $givenParameters['contact_info_key'],
-            'info_value' => $givenParameters['contact_info_value'],
-        );
-        return ContactInfo::insert($infoToInsert);
-    }
+    public static $unicityFields = array(
+        'fields' => array(
+            'contact' => 'cfg_contacts, contact_id, description'
+        ),
+    );
     
-    /**
-     * 
-     * @param integer $id
-     */
-    public static function removeContactInfo($id)
-    {
-        ContactInfo::delete($id);
-    }
-
     /**
      * 
      * @param type $contactId
@@ -114,8 +103,12 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
      * Update contact
      * @param array $givenParameters
      */
-    public static function updateContact($givenParameters)
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
+        if ($validate) {
+            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+        
         $aTagList = array();
         $aTags = array();
         
@@ -129,14 +122,52 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
         }
         
         if (count($aTags) > 0) {
-            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
+            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false, 1);
         }
 
-        $infoToUpdate = array(
-            'contact_id'   => $givenParameters['object_id'],
-            'timezone_id'  => $givenParameters['timezone_id']
-        );
+        $wayList = array();
+        if (isset($givenParameters['way_name']) && isset($givenParameters['way_value'])) {
+            $wayName = $givenParameters['way_name'];
+            $wayValue = $givenParameters['way_value'];
+
+            $nbWay = count($wayName);
+            for($i=0; $i<$nbWay; $i++) {
+                if (!empty($wayName[$i])) {
+                    $wayList[] = array(
+                        'name' => $wayName[$i],
+                        'value' => $wayValue[$i]
+                    );
+                }
+            }
+        }
+
+        $contactInfos = ContactInfo::getIdByParameter('contact_id', $givenParameters['object_id']);
+        foreach ($contactInfos as $contactInfo) {
+            ContactInfo::delete($contactInfo);
+        }
+
+        if (count($wayList) > 0) {
+            foreach ($wayList as $notificationWay) {
+                ContactInfo::insert(array(
+                    'contact_id' => $givenParameters['object_id'],
+                    'info_key' => $notificationWay['name'],
+                    'info_value' => $notificationWay['value']
+                ));
+            }
+        }
+
+        $infoToUpdate['contact_id'] = $givenParameters['object_id'];
+
+        if (isset($givenParameters['timezone_id']) && is_numeric($givenParameters['timezone_id'])) {
+            $infoToUpdate['timezone_id'] = $givenParameters['timezone_id'];
+        } else {
+            $infoToUpdate['timezone_id'] = "";
+        }
+
+        if (isset($givenParameters['description'])) {
+            $infoToUpdate['description'] = $givenParameters['description'];
+        }
+        
         return Contact::update($givenParameters['object_id'], $infoToUpdate);
-    }
-            
+    }            
 }

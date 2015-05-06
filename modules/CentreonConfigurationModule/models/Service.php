@@ -49,6 +49,9 @@ class Service extends CentreonBaseModel
     protected static $table = "cfg_services";
     protected static $primaryKey = "service_id";
     protected static $uniqueLabelField = "service_description";
+    /*protected static $basicFilters = array(
+        'service_register' => '1',
+    );*/
     
     /**
      * Used for inserting object into database
@@ -179,7 +182,7 @@ class Service extends CentreonBaseModel
         if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
             $aGroup = array('sField' => 'cfg_tags_services.resource_id', 'nb' => count($filters['tagname']));
         }
-         
+        
         return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
     }
 

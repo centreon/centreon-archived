@@ -54,6 +54,8 @@ use CentreonConfiguration\Models\Relation\Service\Hosttemplate as ServiceHostTem
  */
 class HostRepository extends Repository
 {
+    
+    public static $objectClass = '\CentreonConfiguration\Models\Host';
     /**
      * List of column for inheritance
      * @var array
@@ -86,7 +88,7 @@ class HostRepository extends Repository
      *
      * @var type 
      */
-    protected static $unicityFields = array(
+    public static $unicityFields = array(
         'fields' => array(
             'host' => 'cfg_hosts,host_id,host_name'
         ),
@@ -109,7 +111,7 @@ class HostRepository extends Repository
         $alreadyProcessed = false;
         $hostIdTab = Host::getIdByParameter('host_name', array($host_name));
         if (count($hostIdTab) == 0) {
-            $finalRoute = "<i class='fa fa-hdd-o'></i>";
+            $finalRoute = "<i class='icon-host ico-16'></i>";
         } else {
             $hostId = $hostIdTab[0];
         }
@@ -140,7 +142,7 @@ class HostRepository extends Repository
                     $templates = static::getTemplateChain($hostId, array(), -1);
                     $alreadyProcessed = true;
                 } else if (count($templates) == 0 && $alreadyProcessed) {
-                    $finalRoute = "<i class='fa fa-hdd-o'></i>";
+                    $finalRoute = "<i class='icon-host ico-16'></i>";
                 }
                 $currentHost = array_shift($templates);
                 $hostId = $currentHost['id'];

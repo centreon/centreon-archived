@@ -103,8 +103,8 @@ class DowntimesDatatable extends Datatable
             'cast' => array(
                 'type' => 'select',
                 'parameters' =>array(
-                    '1' => "<i class='fa fa-rss'></i>",
-                    '2' => "<i class='fa fa-desktop'></i>",
+                    '1' => "<i class='icon-service ico-16'></i>",
+                    '2' => "<i class='icon-host ico-16'></i>",
                 )
             ),
             'searchParam' => array(
@@ -169,17 +169,6 @@ class DowntimesDatatable extends Datatable
             'type' => 'string',
             'visible' => true,
             'width' => '10%',
-            'className' => 'cell_center'
-        ),
-        array (
-            'title' => 'Comments',
-            'name' => 'comment_data',
-            'data' => 'comment_data',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'width' => '40%',
             'className' => 'cell_center'
         ),
         array (
@@ -257,6 +246,18 @@ class DowntimesDatatable extends Datatable
             'width' => '5%',
             'className' => 'cell_center'
         ),
+        array (
+            'title' => 'Comments',
+            'name' => 'comment_data',
+            'data' => 'comment_data',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40%',
+            'className' => 'cell_center'
+        ),
+
     );
 
     /**
@@ -278,15 +279,14 @@ class DowntimesDatatable extends Datatable
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
-        $sqlServiceDowntime = 'SELECT d.downtime_id, h.host_name, s.service_id, s.service_description'
-            . ' FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations hs, rt_downtimes d'
-            . ' WHERE s.service_id=d.service_id and h.host_id=d.host_id'
-            . ' AND hs.host_host_id=h.host_id and hs.service_service_id=s.service_id';
+        $sqlServiceDowntime = 'SELECT d.downtime_id, h.name, s.service_id, s.description'
+            . ' FROM rt_hosts h, rt_services s, rt_downtimes d'
+            . ' WHERE s.service_id=d.service_id AND h.host_id=d.host_id';
         $stmtServiceDowntime = $dbconn->query($sqlServiceDowntime);
         $resultServiceDowntime = $stmtServiceDowntime->fetchAll(\PDO::FETCH_ASSOC);
 
-        $sqlHostDowntime = 'SELECT d.downtime_id, h.host_id, h.host_name'
-            . ' FROM cfg_hosts h, rt_downtimes d'
+        $sqlHostDowntime = 'SELECT d.downtime_id, h.host_id, h.name'
+            . ' FROM rt_hosts h, rt_downtimes d'
             . ' WHERE h.host_id=d.host_id';
         $stmtHostDowntime = $dbconn->query($sqlHostDowntime);
         $resultHostDowntime = $stmtHostDowntime->fetchAll(\PDO::FETCH_ASSOC);
@@ -296,13 +296,13 @@ class DowntimesDatatable extends Datatable
             if ($downtime['type'] == 1) {
                 foreach ($resultServiceDowntime as $downtimeObject) {
                     if ($downtimeObject['downtime_id'] === $downtime['downtime_id']) {
-                        $downtime['object_name'] = '<a href="/centreon-realtime/service/' . $downtimeObject['service_id'] . '">' . $downtimeObject['host_name'].' '.$downtimeObject['service_description'] . '</a>';
+                        $downtime['object_name'] = '<a href="/centreon-realtime/service/' . $downtimeObject['service_id'] . '">' . $downtimeObject['name'].' / '.$downtimeObject['description'] . '</a>';
                     }
                 }
             } else if ($downtime['type'] == 2) {
                 foreach ($resultHostDowntime as $downtimeObject) {
                     if ($downtimeObject['downtime_id'] === $downtime['downtime_id']) {
-                        $downtime['object_name'] = '<a href="/centreon-realtime/host/' . $downtimeObject['host_id'] . '">' . $downtimeObject['host_name'] . '</a>';
+                        $downtime['object_name'] = '<a href="/centreon-realtime/host/' . $downtimeObject['host_id'] . '">' . $downtimeObject['name'] . '</a>';
                     }
                 }
             }

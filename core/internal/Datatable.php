@@ -187,6 +187,8 @@ class Datatable
        
         
         static::addAdditionnalDatas($datasFromDb['datas']);
+        static::processHooks($datasFromDb['datas']);
+
 
         // Add RowId
         if (count(static::$rowIdColumn) > 0) {
@@ -198,9 +200,8 @@ class Datatable
                 $datas['DT_RowId'] = $datas[static::$rowIdColumn['id']];
             }
         }
-
-        static::processHooks($datasFromDb['datas']);
         $this->formatDatas($datasFromDb['datas']);
+
         $sendableDatas = $this->prepareDatasForSending($datasFromDb);
         
         return $sendableDatas;
@@ -534,13 +535,17 @@ class Datatable
             $subCaster = 'add'.ucwords($cast['selecttype']);
             $myElement = static::$subCaster($field, $values, $cast['parameters'][$values[$field]]['parameters']);
         } elseif (isset($values[$field])) {
-            $myElement = $cast[$values[$field]];
-            if (isset($extra['groupable']) && $extra['groupable']) {
-                if ($myElement === $previousValue) {
-                    $myElement = "";
-                } else {
-                    $previousValue = $myElement;
+            if (isset($cast[$values[$field]])) {
+                $myElement = $cast[$values[$field]];
+                if (isset($extra['groupable']) && $extra['groupable']) {
+                    if ($myElement === $previousValue) {
+                        $myElement = "";
+                    } else {
+                        $previousValue = $myElement;
+                    }
                 }
+            } else {
+                $myElement = $values[$field];
             }
         }
         

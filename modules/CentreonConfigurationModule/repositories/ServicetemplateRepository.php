@@ -60,6 +60,8 @@ class ServicetemplateRepository extends Repository
      * @var string
      */
     public static $objectName = 'Servicetemplate';
+    
+    public static $objectClass = '\CentreonConfiguration\Models\Servicetemplate';
 
     /**
      * List of information for inheritance
@@ -92,9 +94,8 @@ class ServicetemplateRepository extends Repository
      *
      * @var type 
      */
-    protected static $unicityFields = array(
-        'fields' => array(
-            'servicetemplate' => 'cfg_services,service_id,service_description'
+    public static $unicityFields = array(
+        'fields' => array('servicetemplate' => 'cfg_services, service_id, service_description, service_register'
         ),
     );
 
@@ -107,7 +108,7 @@ class ServicetemplateRepository extends Repository
      */
     public static function getFormList($searchStr = "", $objectId = null)
     {
-        $listServiceTemplate = parent::getFormList();
+        $listServiceTemplate = parent::getFormList($searchStr, $objectId);
 
         foreach ($listServiceTemplate as $key => $serviceTemplate) {
             if ($serviceTemplate['id'] == $objectId) {
@@ -267,4 +268,5 @@ class ServicetemplateRepository extends Repository
         }
         return array_unique($services);
     }
+    
 }

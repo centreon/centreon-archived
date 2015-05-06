@@ -35,6 +35,8 @@
 
 namespace Centreon\Internal;
 
+use Centreon\Internal\Di;
+
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
@@ -288,20 +290,19 @@ class Form
      */
     public function renderHtmlButton($inputElement)
     {
-        (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
+        if (!isset($inputElement['value'])) {
+            $inputElement['value'] = '';
+        }
 
         if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
             $inputElement['id'] = $inputElement['name'];
         }
-        
-        $inputHtml = '<input '.
-                            'id="'.$inputElement['id'].'" '.
-                            'type="'.$inputElement['type'].'" '.
-                            'name="'.$inputElement['name'].'" '.
-                            $value.
-                            'class="btn btn-default" '.
-                            '/>';
-        return $inputHtml;
+
+        $tpl = Di::getDefault()->get('template');
+
+        $tpl->assign('inputElement', $inputElement);
+
+        return $tpl->fetch('file:[Core]/form/component/button.tpl');
     }
     
     /**
@@ -333,7 +334,7 @@ class Form
         return '<div class="form-group ' . $classAdvanced . '">'.
                 $inputElement['label'].
                 $inputElement['input']. $extraHtml .
-                '<span class="inheritance" id="' . $inputElement['name'] . '_inheritance"></span>'.
+                '<i class="inheritance" id="' . $inputElement['name'] . '_inheritance"></i>'.
                 '</div>';
     }
     
@@ -353,17 +354,11 @@ class Form
             $inputElement['id'] = $inputElement['name'];
         }
         
-        $mandatorySign = "";
-        $mandatorySpan = "";
-        if (isset($inputElement['label_mandatory']) && $inputElement['label_mandatory'] == "1") {
-            $mandatorySign .= ' required';
-            $mandatorySpan = '<span>*</span>';
-        }
-        
-        $inputHtml = '<label class="label-controller floatLabel' . $mandatorySign . '" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>'.$mandatorySpan;
+        $tpl = Di::getDefault()->get('template');
 
-        
-        return $inputHtml;
+        $tpl->assign('inputElement', $inputElement);
+
+        return $tpl->fetch('file:[Core]/form/component/label.tpl');
     }
 
      /**
@@ -374,34 +369,6 @@ class Form
         private function renderHelp($inputElement)
         {
             $helpButton = '';
-
-            /*if (isset($inputElement['label_help'])) {
-                $helpButton = '<button id="'
-                    . $inputElement['name'] . '_help" type="button" class="btn btn-sm btn-info">?</button>';
-                $helpBubble = '$("#' . $inputElement['name'] . '_help").qtip({
-                                    content: {
-                                        text: "'.str_replace('"', '\"', $inputElement['label_help']).'",
-                                        title: "'.$inputElement['label_label'].' Help",
-                                        button: true
-                                    },
-                                    position: {
-                                        my: "top right",
-                                        at: "bottom left",
-                                        target: $("#' . $inputElement['name'] . '_help") // my target
-                                    },
-                                    show: {
-                                        event: "click",
-                                        solo: "true"
-                                    },
-                                    style: {
-                                        classes: "qtip-bootstrap"
-                                    },
-                                    hide: {
-                                        event: "unfocus"
-                                    }
-                                });';
-                $this->tpl->addCustomJs($helpBubble);
-            }*/
 
             return $helpButton;
         }

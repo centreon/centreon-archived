@@ -6,7 +6,7 @@
     this.$elem = $elem;
 
     /* Count number of already in page */
-    this.pos = this.$elem.find('cloned_element').length;
+    this.pos = this.$elem.find('.cloned_element').length;
     if (this.pos == 0) {
       this.pos = 1;
     }
@@ -47,7 +47,7 @@
         });
       }
 
-      $newEl.find('input,textarea').each(function(idx, el) {
+      $newEl.find('input,textarea,select').each(function(idx, el) {
         $(el).attr('name', $(el).attr('name').replace('#index#', self.pos));
       });
       self.pos += 1;

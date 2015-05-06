@@ -108,58 +108,70 @@ abstract class FormRepository extends ListRepository
      */
     public static function create($givenParameters, $origin = "", $route = "")
     {
-        self::validateForm($givenParameters, $origin, $route);
-        
-        $class = static::$objectClass;
-        $pk = $class::getPrimaryKey();
+        $id = null;
         $db = Di::getDefault()->get('db_centreon');
-        $columns = $class::getColumns();
-        $insertParams = array();
-        $givenParameters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
-        foreach ($givenParameters as $key => $value) {
-            if (in_array($key, $columns)) {
-                if (!is_array($value)) {
-                    $value = trim($value);
-                    if (!empty($value)) {
-                        $insertParams[$key] = trim($value);
-                    }
-                }
-            }
-        }
-        $id = $class::insert($insertParams);
-        if (is_null($id)) {
-            throw new Exception('Could not create object');
-        }
-        foreach (static::$relationMap as $k => $rel) {
-            if (!isset($givenParameters[$k])) {
-                continue;
-            }
-            $arr = explode(',', ltrim($givenParameters[$k], ','));
-            $db->beginTransaction();
 
-            foreach ($arr as $relId) {
-                $relId = trim($relId);
-                if (is_numeric($relId)) {
-                    if ($rel::$firstObject == static::$objectClass) {
-                        $rel::insert($id, $relId);
-                    } else {
-                        $rel::insert($relId, $id);
-                    }
-                } elseif (!empty($relId)) {
-                    $complexeRelId = explode('_', $relId);
-                    if ($rel::$firstObject == static::$objectClass) {
-                        $rel::insert($id, $complexeRelId[1], $complexeRelId[0]);
+        try {
+            self::validateForm($givenParameters, $origin, $route);
+        
+            $class = static::$objectClass;
+            $pk = $class::getPrimaryKey();
+            $columns = $class::getColumns();
+            $insertParams = array();
+            $givenParameters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
+
+            foreach ($givenParameters as $key => $value) {
+                if (in_array($key, $columns)) {
+                    if (!is_array($value)) {
+                        $value = trim($value);
+                        if (!empty($value)) {
+                            $insertParams[$key] = trim($value);
+                        }
                     }
                 }
+            }
+
+            $db->beginTransaction();
+            $id = $class::insert($insertParams);
+            if (is_null($id)) {
+                $db->rollback();
+                throw new Exception('Could not create object');
+            }
+            foreach (static::$relationMap as $k => $rel) {
+                if (!isset($givenParameters[$k])) {
+                    continue;
+                }
+                $arr = explode(',', ltrim($givenParameters[$k], ','));
+
+                foreach ($arr as $relId) {
+                    $relId = trim($relId);
+                    if (is_numeric($relId)) {
+                        if ($rel::$firstObject == static::$objectClass) {
+                            $rel::insert($id, $relId);
+                        } else {
+                            $rel::insert($relId, $id);
+                        }
+                    } elseif (!empty($relId)) {
+                        $complexeRelId = explode('_', $relId);
+                        if ($rel::$firstObject == static::$objectClass) {
+                            $rel::insert($id, $complexeRelId[1], $complexeRelId[0]);
+                        }
+                    }
+                }
+                unset($givenParameters[$k]);
             }
             $db->commit();
-            unset($givenParameters[$k]);
-        }
         
-        if (method_exists(get_called_class(), 'postSave')) {
-            static::postSave($id, 'add', $givenParameters);
+            if (method_exists(get_called_class(), 'postSave')) {
+                static::postSave($id, 'add', $givenParameters);
+            }
+        } catch (\PDOException $e) {
+            $db->rollback();
+            throw new Exception($e->getMessage());
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage());
         }
-        
+
         return $id;
     }
     

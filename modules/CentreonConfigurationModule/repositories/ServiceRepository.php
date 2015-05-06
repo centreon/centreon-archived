@@ -37,9 +37,11 @@ namespace CentreonConfiguration\Repository;
 
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Service;
+use CentreonConfiguration\Models\Host;
 use Centreon\Internal\Utils\YesNoDefault;
+use Centreon\Internal\Utils\HumanReadable;
 use CentreonConfiguration\Repository\Repository;
-
+use Centreon\Internal\Exception\Validator\MissingParameterException;
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
@@ -63,7 +65,8 @@ class ServiceRepository extends Repository
      *
      * @var type 
      */
-    protected static $unicityFields = array(
+
+    public static $unicityFields = array(
         'fields' => array(
             'host' => 'cfg_hosts,host_id,host_name',
             'service' => 'cfg_services,service_id,service_description',
@@ -71,7 +74,7 @@ class ServiceRepository extends Repository
         'joint' => 'cfg_hosts_services_relations',
         'jointCondition' => 'cfg_hosts_services_relations.host_host_id = cfg_hosts.host_id AND cfg_hosts_services_relations.service_service_id = cfg_services.service_id'
     );
-    
+
     /**
      * 
      * @param int $interval
@@ -79,20 +82,7 @@ class ServiceRepository extends Repository
      */
     public static function formatNotificationOptions($interval)
     {
-        // Initializing connection
-        $intervalLength = Di::getDefault()->get('config')->get('default', 'interval_length');
-        $interval *= $intervalLength;
-        
-        if ($interval % 60 == 0) {
-            $units = "min";
-            $interval /= 60;
-        } else {
-            $units = "sec";
-        }
-        
-        $scheduling = $interval.' '.$units;
-        
-        return $scheduling;
+        return HumanReadable::convert($interval, 's', $units, null, true);
     }
     
     /**
@@ -244,7 +234,7 @@ class ServiceRepository extends Repository
                 $finalRoute .= '<img src="'.$imgSrc.'" style="width:16px;height:16px;">';
                 break;
             } elseif (is_null($esiResult['filename']) && is_null($esiResult['service_template_model_stm_id'])) {
-                $finalRoute .= "<i class='fa fa-gear'></i>";
+                $finalRoute .= "<i class='icon-service ico-16'></i>";
                 break;
             }
             

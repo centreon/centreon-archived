@@ -105,7 +105,7 @@ class TagsRepository
                 )
             );
         }
-        
+   
         /* Insert relation tag */
         if (!self::isLink($resourceName, $resourceId, $tagId)) {
             self::associateTagWithResource($resourceName, $tagId, $resourceId, $iIdTemplate);
@@ -150,10 +150,11 @@ class TagsRepository
      * @param type $resourceName
      * @param int $resourceId
      * @param int $bGlobaux
+     * @param int $bWithHerited 
      * @return array
      * @throws Exception
      */
-    public static function getList($resourceName, $resourceId, $bGlobaux = 0)
+    public static function getList($resourceName, $resourceId, $bGlobaux = 0, $bWithHerited = 1)
     {
         $resourceName = self::convertResource($resourceName);
         if (!in_array($resourceName, static::$resourceType)) {
@@ -164,7 +165,7 @@ class TagsRepository
         }
         $dbconn = Di::getDefault()->get('db_centreon');        
 
-         $query = "SELECT t.tag_id, t.tagname, user_id
+         $query = "SELECT t.tag_id, t.tagname, user_id, template_id
                 FROM cfg_tags t LEFT JOIN cfg_tags_" . $resourceName . "s r ON t.tag_id = r.tag_id
                 WHERE ";
          
@@ -179,9 +180,12 @@ class TagsRepository
         if ($resourceId > 0) {
             $query .= " AND r.resource_id = :resource_id";
         }
-
-        $query .= " ORDER BY tagname ASC";
+        if ($bWithHerited == 0) {
+            $query .= " AND (template_id IS NULL OR template_id = 0) ";
+        }
         
+        $query .= " ORDER BY tagname ASC";
+      
         $stmt = $dbconn->prepare($query);
         
         if ($resourceId > 0) {
@@ -194,15 +198,13 @@ class TagsRepository
         $stmt->execute();
         $tags = array();
         
-        //echo $query;
-        
         while ($row = $stmt->fetch()) {
             if ($bGlobaux == 0) {
                 $sField = $row['tag_id'];
             } else {
                 $sField = $row['tagname'];
             }
-            $tags[] = array('id' => $sField, 'text' => $row['tagname'], 'user_id' => $row['user_id']);
+            $tags[] = array('id' => $sField, 'text' => $row['tagname'], 'user_id' => $row['user_id'], 'template_id' => $row['template_id']);
         }
         return $tags;
     }
@@ -281,9 +283,10 @@ class TagsRepository
      * @param type $objectId
      * @param type $submittedValues
      * @param type $iIdTemplate
+     * @param int  $sGlobal
      * @throws Exception
      */
-    public static function saveTagsForResource($resourceName, $objectId, $submittedValues, $iIdTemplate = '')
+    public static function saveTagsForResource($resourceName, $objectId, $submittedValues, $iIdTemplate = '', $bNotDelete = false, $sGlobal)
     {
         $resourceName = self::convertResource($resourceName);
         if (!in_array($resourceName, static::$resourceType)) {
@@ -291,46 +294,34 @@ class TagsRepository
         }
 
         $dbconn = Di::getDefault()->get('db_centreon');
-        $aTagNotDelete = array();
-        foreach ($submittedValues as $s => $tagName) {
-            if (is_numeric($tagName)) {
-                array_push($aTagNotDelete, $tagName);
-            }
-        }
-        if (count($aTagNotDelete) > 0) {
-            $sLisTagNotDelete = implode(",", $aTagNotDelete);
-        }
-        $sQuery = "DELETE FROM cfg_tags_" . $resourceName . "s WHERE resource_id = ".$objectId." "
+
+        if (!$bNotDelete) {
+            $sQuery = "DELETE FROM cfg_tags_" . $resourceName . "s WHERE resource_id = ".$objectId." "
                 . "AND tag_id in (select tag_id from cfg_tags where user_id is null)";
-
-        $dbconn->query($sQuery);  
-
+            
+            $dbconn->query($sQuery);
+        }
+        
         foreach ($submittedValues as $s => $tagName) {
             if (!is_numeric($tagName)) {
-                self::add($tagName, $resourceName, $objectId, 1, $iIdTemplate);
+                self::add($tagName, $resourceName, $objectId, $sGlobal, $iIdTemplate);
             } else {
                 self::associateTagWithResource($resourceName, $tagName, $objectId, $iIdTemplate);
-                /*
-                $query = "INSERT INTO cfg_tags_" . $resourceName . "s (tag_id, resource_id)
-                    VALUES (:tag_id, :resource_id)";
-
-                $stmt = $dbconn->prepare($query);
-                $stmt->bindParam(':tag_id', $tagName, \PDO::PARAM_INT);
-                $stmt->bindParam(':resource_id', $objectId, \PDO::PARAM_INT);
-                $stmt->execute();
-                 * 
-                 */
             }
         }
       
     }
-    public static function getTag($resourceType, $resourceId, $tagId, $tagName, $iUserId)
+    public static function getTag($resourceType, $resourceId, $tagId, $tagName, $iUserId, $iTempalteId = '')
     {
         if ($iUserId != '') {
             $sClass = 'tag';
             $sDivRemove = '<div class="remove"><a href="#">&times;</a></div>';
         } else {
-            $sClass = 'tagGlobal';
+            if (!empty($iTempalteId)) {
+                $sClass = 'tagGlobalNotDelete';
+            } else {
+                $sClass = 'tagGlobal';
+            }
             $sDivRemove = '';
         }
         $html = '<div class="'.$sClass.'" data-resourceid="' . $resourceId . '" data-resourcetype="'

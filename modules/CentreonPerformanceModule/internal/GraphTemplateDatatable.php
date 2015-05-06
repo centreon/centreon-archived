@@ -95,9 +95,8 @@ class GraphTemplateDatatable extends \Centreon\Internal\Datatable
             'title' => 'Service Template',
             'name' => 'svc_tmpl_id',
             'data' => 'svc_tmpl_id',
-            'orderable' => true,
+            'orderable' => false,
             'searchable' => true,
-            'searchLabel' => 'servicetemplate',
             'type' => 'string',
             'visible' => true,
             'cast' => array(
@@ -109,9 +108,6 @@ class GraphTemplateDatatable extends \Centreon\Internal\Datatable
                     ),
                     'linkName' => '::svc_tmpl_id::'
                 )
-            ),
-            'searchParam' => array(
-                'main' => 'true'
             )
         ),
         array(

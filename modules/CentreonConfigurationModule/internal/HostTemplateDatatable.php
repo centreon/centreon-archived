@@ -37,6 +37,7 @@
 namespace CentreonConfiguration\Internal;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Utils\HumanReadable;
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use CentreonConfiguration\Repository\HostRepository; 
 use CentreonConfiguration\Repository\HostTemplateRepository;
@@ -168,7 +169,7 @@ class HostTemplateDatatable extends Datatable
             'className' => "cell_center"
         ),
         array (
-            'title' => 'Atp',
+            'title' => 'Attempts',
             'name' => 'host_max_check_attempts',
             'data' => 'host_max_check_attempts',
             'orderable' => false,
@@ -262,12 +263,16 @@ class HostTemplateDatatable extends Datatable
                 . $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id']))
                 . '"><i class="fa fa-shield"></i></a></span>';
             }
+
+            /* Display human readable the check/retry interval */
+            $myHostSet['host_check_interval'] = HumanReadable::convert($myHostSet['host_check_interval'], 's', $units, null, true);
+            $myHostSet['host_retry_check_interval'] = HumanReadable::convert($myHostSet['host_retry_check_interval'], 's', $units, null, true);
             
             /* Tags */
             $myHostSet['tagname']  = "";
             $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 2);
             foreach ($aTags as $oTags) {
-                $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+                $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
             }
             $myHostSet['tagname'] .= TagsRepository::getAddTag('host', $myHostSet['host_id']);
         }

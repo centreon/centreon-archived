@@ -1,12 +1,108 @@
 @font-face {
-	font-family: 'ico-centreon';
-	src:url('../fonts/ico-centreon.eot');
-	src:url('../fonts/ico-centreon.eot') format('embedded-opentype'),
-		url('../fonts/ico-centreon.woff') format('woff'),
-		url('../fonts/ico-centreon.ttf') format('truetype'),
-		url('../fonts/ico-centreon.svg') format('svg');
-	font-weight: normal;
-	font-style: normal;
+  font-family: 'ico-centreon';
+  src:url('../fonts/ico-centreon.eot');
+  src:url('../fonts/ico-centreon.eot') format('embedded-opentype'),
+  url('../fonts/ico-centreon.woff') format('woff'),
+  url('../fonts/ico-centreon.ttf') format('truetype'),
+  url('../fonts/ico-centreon.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  font-family: 'ico-centreon';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  font-size: 22px;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ico-16 {
+  margin-right: @paddingElem;
+  font-size: 16px;  
+}
+
+.icon-switch:before {
+  content: "\e604";
+}
+
+.icon-switch-adv:before {
+  content: "\e605";
+}
+
+.icon-critical-incident:before {
+  content: "\e602";
+}
+
+.icon-incident:before {
+  content: "\e603";
+}
+
+.icon-host:before {
+  content: "\e600";
+}
+
+.icon-service:before {
+  content: "\e601";
+}
+
+.icon-BAM:before {
+  content: "\e60a";
+}
+
+.icon-administration:before {
+  content: "\e60d";
+}
+
+.icon-config:before {
+  content: "\e60e";
+}
+
+.icon-download:before {
+  content: "\e60f";
+}
+
+.icon-home-dashboard:before {
+  content: "\e610";
+}
+
+.icon-mail:before {
+  content: "\e611";
+}
+
+.icon-organisation:before {
+  content: "\e612";
+}
+
+.icon-perf:before {
+  content: "\e613";
+}
+
+.icon-pollers:before {
+  content: "\e614";
+}
+
+.icon-profil:before {
+  content: "\e615";
+}
+
+.icon-real-time:before {
+  content: "\e616";
+}
+
+.icon-search:before {
+  content: "\e617";
+}
+
+.icon-upload:before {
+  content: "\e619";
 }
 
 /* -- Icons Shape --*/
@@ -15,65 +111,6 @@
   border: 2px solid @lightGray;
   border-radius: 2px;
 
-}
-
-
-[class^="icon-"], [class*=" icon-"] {
-	font-family: 'ico-centreon';
-	speak: none;
-	font-style: normal;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1;
-
-	/* Better Font Rendering =========== */
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
-
-.icon-BAM:before {
-	content: "\e600";
-}
-
-.icon-config:before {
-	content: "\e601";
-}
-
-.icon-critical-incident:before {
-	content: "\e602";
-}
-
-.icon-home-dashboard:before {
-	content: "\e603";
-}
-
-.icon-incident:before {
-	content: "\e604";
-}
-
-.icon-mail:before {
-	content: "\e605";
-}
-
-.icon-organisation:before {
-	content: "\e606";
-}
-
-.icon-perf:before {
-	content: "\e607";
-}
-
-.icon-pollers:before {
-	content: "\e608";
-}
-
-.icon-profil:before {
-	content: "\e609";
-}
-
-.icon-real-time:before {
-	content: "\e60a";
 }
 
  /*----- Fill icons -----*/

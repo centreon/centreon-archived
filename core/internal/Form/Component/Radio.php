@@ -34,6 +34,7 @@
  */
 namespace Centreon\Internal\Form\Component;
 
+
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
@@ -48,6 +49,7 @@ class Radio extends Component
      */
     public static function renderHtmlInput(array $element)
     {
+
         (isset($element['html']) ? $value = $element['html'] :  $value = '');
         
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
@@ -57,29 +59,33 @@ class Radio extends Component
         $addClass = '';
         $required = '';
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
-            $addClass .= 'mandatory-field ';
+            $addClass .= 'mandatory-field';
             $required .= ' required';
         }
         
         $inputHtml = '';
         $myJs = '';
         $i = 1;
-        
+
+
         if (isset($element['label_choices'])) {
+
+            $inputHtml .='<div class="choiceGroup">';
             foreach ($element['label_choices'] as $key => $choice) {
                 $htmlSelected = '';
                 if ($value == $choice) {
                     $htmlSelected = 'checked=checked';
                 }
-                $inputHtml .= '<label class="label-controller" for="'.$element['id'] . $i . '">&nbsp;'.
+                $inputHtml .= '<label class="label-controller" for="'.$element['id'] . $i . '">'.
                             '<input '.'id="'.$element['id']. $i . '" '.
                             'type="'.$element['label_type'].'" '.'name="'.$element['name'].'" '.
                             'value=' . $choice . ' '.$htmlSelected.' '.
                             $required . 
                             '/>'.' '.$key.
-                            '</label>'.'&nbsp;&nbsp;';
+                            '</label>';
                 $i++;
             }
+            $inputHtml .='</div>';
         }
         
         return array(

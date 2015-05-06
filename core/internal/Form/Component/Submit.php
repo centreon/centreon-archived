@@ -59,10 +59,10 @@ class Submit extends Component
         
         $inputHtml = '<input '.
                     'id="'.$element['id'].'" '.
-                    'type="sbumit" '.
+                    'type="submit" '.
                     'name="'.$element['name'].'" '.
                     $value.
-                    'class="btn btn-default btn-sm" '.
+                    'class="btnC btnSuccess" '.
                     '/>';
         return $inputHtml;
     }

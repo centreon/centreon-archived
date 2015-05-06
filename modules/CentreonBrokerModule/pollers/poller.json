@@ -34,7 +34,12 @@
                                                 "type" :"tcp",
                                                 "name" : "central-output",
                                                 "host": "%broker_central_ip%",
-                                                "port" : "5668"
+                                                "port" : "5668",
+                                                "filters": [
+                                                  {
+                                                    "category": "neb"
+                                                  }
+                                                ]
                                             },
                                             {
                                                 "type" :"file",
@@ -45,7 +50,7 @@
                                             {
                                               "type": "dumper",
                                               "tagname": "extcommand-%poller_name%",
-                                              "path": "%engine_command_file%",
+                                              "path": "%engine_var_lib_dir%/rw/centengine.cmd",
                                               "name": "extcommand-%poller_name%"
                                             },
                                             {
@@ -94,7 +99,12 @@
                                                 "type":"tcp",
                                                 "name": "central-output",
                                                 "port" : "5668",
-                                                "one_peer_retention_mode": "yes"
+                                                "one_peer_retention_mode": "yes",
+                                                "filters": [
+                                                  {
+                                                    "category": "neb"
+                                                  }
+                                                ]
                                             },
                                             {
                                                 "type" :"file",
@@ -105,7 +115,7 @@
                                             {
                                               "type": "dump",
                                               "tagname": "extcmd-%poller_name%",
-                                              "path": "%engine_command_file%",
+                                              "path": "%engine_var_lib_dir%/rw/centengine.cmd",
                                               "name": "extcmd-%poller_name%"
                                             }
                                         ],
