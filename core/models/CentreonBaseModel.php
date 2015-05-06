@@ -348,7 +348,17 @@ abstract class CentreonBaseModel extends CentreonModel
             $params = $parameterNames;
         }
         $sql = "SELECT $params FROM " . static::$table . " WHERE ". static::$primaryKey . " = ?";
-        $result = static::getResult($sql, array($objectId), "fetch");
+
+        $values = array($objectId);
+
+        if (isset(static::$basicFilters)) {
+            foreach (static::$basicFilters as $key => $value) {
+                $sql .= " AND " . $key . " LIKE ? ";
+                array_push($values, $value);
+            }
+        }
+
+        $result = static::getResult($sql, $values, "fetch");
 
         /* Raise exception if object doesn't exist */
         if (false === $result) {
@@ -373,9 +383,20 @@ abstract class CentreonBaseModel extends CentreonModel
         } else {
             $params = $parameterNames;
         }
+
         $sql = "SELECT $params FROM " . static::$table;
         $sql .= " WHERE " . static::$primaryKey . " LIKE ? ";
-        $result = static::getResult($sql, array($id), "fetchAll");
+
+        $values = array($id);
+
+        if (isset(static::$basicFilters)) {
+            foreach (static::$basicFilters as $key => $value) {
+                $sql .= " AND " . $key . " LIKE ? ";
+                array_push($values, $value);
+            }
+        }
+
+        $result = static::getResult($sql, $values, "fetchAll");
         if (1 !== count($result)) {
             throw new Exception(static::OBJ_NOT_EXIST);
         }
@@ -391,30 +412,40 @@ abstract class CentreonBaseModel extends CentreonModel
      * @param array $extraConditions used for precising query with AND clauses
      * @return array
      */
-    public static function getIdByParameter($paramName, $paramValues = array(), $extraConditions = array())
+    public static function getIdByParameter($paramName, $paramValues = array(), $extraConditions = array(), $conditionType = '=')
     {
         $sql = "SELECT " . static::$primaryKey . " FROM " . static::$table . " WHERE ";
         $condition = "";
         if (!is_array($paramValues)) {
             $paramValues = array($paramValues);
         }
+
         foreach ($paramValues as $val) {
             if ($condition != "") {
                 $condition .= " OR ";
             } else {
                 $condition .= "(";
             }
-            $condition .= $paramName . " = ? ";
+            $condition .= $paramName . " " . $conditionType . " ? ";
         }
         if ($condition) {
             $condition .= ")";
             $sql .= $condition;
+
             if (is_array($extraConditions)) {
                 foreach ($extraConditions as $k => $v) {
                     $sql .= " AND $k = ? ";
                     $paramValues[] = $v;
                 }
             }
+
+            if (isset(static::$basicFilters)) {
+                foreach (static::$basicFilters as $key => $value) {
+                    $sql .= " AND " . $key . " LIKE ? ";
+                    array_push($paramValues, $value);
+                }
+            }
+
             $rows = static::getResult($sql, $paramValues, "fetchAll");
             $tab = array();
             foreach ($rows as $val) {

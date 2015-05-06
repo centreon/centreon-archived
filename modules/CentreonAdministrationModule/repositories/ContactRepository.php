@@ -103,8 +103,12 @@ class ContactRepository extends Repository
      * Update contact
      * @param array $givenParameters
      */
-    public static function update($givenParameters)
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
+        if ($validate) {
+            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+        
         $aTagList = array();
         $aTags = array();
         
@@ -118,7 +122,7 @@ class ContactRepository extends Repository
         }
         
         if (count($aTags) > 0) {
-            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false);
+            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false, 1);
         }
 
         $wayList = array();

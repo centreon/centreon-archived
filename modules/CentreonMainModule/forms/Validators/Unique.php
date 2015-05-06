@@ -33,7 +33,7 @@
  *
  */
 
-namespace CentreonConfiguration\Forms\Validators;
+namespace CentreonMain\Forms\Validators;
 
 use Centreon\Internal\Di;
 use Centreon\Internal\Form\Validators\ValidatorInterface;
@@ -79,18 +79,10 @@ class Unique implements ValidatorInterface
         $sLabel = '';
         $iId = '';
         $return = '';
+               
         
-        /*
-        if (isset($params['object'])) {
-            if (isset($params['extraParams']['module']) && !empty($params['extraParams']['module'])) {
-                $oModule = $params['extraParams']['module'];
-            } else {
-                $oModule = "CentreonConfiguration";
-            }
-            
-            $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
-        }
-        */
+        //echo "obj".$params['object'];
+        //var_dump($params);die;
 
         if (isset($params['object']) && $params['object'] == 'service') {
             $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
@@ -234,6 +226,7 @@ class Unique implements ValidatorInterface
                 $sLabel = $params['extraParams']['login'];
             }
 
+            //echo "rrr => ".$objClass;die;
             $aParams['user'] = $sLabel;
             
             try {
@@ -289,8 +282,8 @@ class Unique implements ValidatorInterface
             } catch (MissingParameterException $e) {
                 $return[] = 0;
             }
-        }
-
+        } 
+//        var_dump($return); die;
         if (is_array($return)) {
             foreach($return as $valeur) {
                 if ($valeur > 0) {

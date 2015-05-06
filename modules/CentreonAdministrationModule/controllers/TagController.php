@@ -64,7 +64,7 @@ class TagController extends Controller
     
     public static $disableButton = true;
     
-    public static $displayActionBar = true; 
+    public static $displayActionBar = false; 
     
     /**
      *
@@ -148,7 +148,7 @@ class TagController extends Controller
         if (count($listTag) > 0) {
             try {    
                 foreach ($listResources as $resourceId) {
-                    TagsRepository::saveTagsForResource($post['resourceName'], $resourceId, $listTag, '', $bNotDelete);
+                    TagsRepository::saveTagsForResource($post['resourceName'], $resourceId, $listTag, '', $bNotDelete, $sGlobal);
                 }
                 $bStatus = true;
 

@@ -268,17 +268,15 @@ class EventlogsController extends Controller
                 $firstDate = $log['datetime'];
             }
             $lastDateCount++;
-            if (false === is_null($log['host_id'])) {
+
+            if (isset($log['host_id']) && $log['host_id'] !== "") {
                 $log['host_logo'] = HostRepository::getIconImage($log['host']);
-            } else {
-                $log['host_logo'] = '';
             }
-            if (false === is_null($log['service_id'])) {
+
+            if (isset($log['service_id']) && $log['service_id'] !== "") {
                 $log['service_logo'] = ServiceRepository::getIconImage(
                     $log['service']
                 );
-            } else {
-                $log['service_logo'] = '';
             }
             
             if ($log['type'] != '') {
@@ -337,19 +335,26 @@ class EventlogsController extends Controller
             /* For test */
             $log['object_name'] = "";
             $object_name = array();
-            if (isset($log['host']) && false === is_null($log['host'])) {
+            if (isset($log['host']) && $log['host'] !== "") {
                 $object_name[] = $log['host'];
             }
-            if (isset($log['service']) && false === is_null($log['service'])) {
+            if (isset($log['service']) && $log['service'] !== "") {
                 $object_name[] = $log['service'];
             }
-            $log['object_name'] = join(' - ', $object_name);
-            $log['logo'] = '';
+
+            if (count($object_name) > 0) {
+                $log['object_name'] = join(' - ', $object_name);
+            } else {
+                $log['object_name'] = 'Other';
+            }
+
+            $log['logo'] = "<i class='fa fa-gear'></i>";
             if (isset($log['service_logo'])) {
                 $log['logo'] = $log['service_logo'];
             } else if (isset($log['host_logo'])) {
                 $log['logo'] = $log['host_logo'];
             }
+
             if (isset($log['output'])) {
                 $log['description'] = $log['output'];
             }

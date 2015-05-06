@@ -44,6 +44,7 @@ use CentreonConfiguration\Internal\PollerTemplateManager;
 use Centreon\Internal\Form;
 use Centreon\Internal\Exception;
 use Centreon\Controllers\FormController;
+use Centreon\Internal\Module\Informations;
 
 class PollerController extends FormController
 {
@@ -115,7 +116,7 @@ class PollerController extends FormController
         $router = Di::getDefault()->get('router');
 
         try {
-            PollerRepository::create($params);
+            PollerRepository::create($params, 'form');
         } catch (Exception $e) {
             return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
         }
@@ -131,6 +132,11 @@ class PollerController extends FormController
      */
     public function editAction()
     {
+        $moduleBroker = "centreon-broker";
+        $sUrlBroker = '';
+        $moduleEngine = "centreon-engine";
+        $sUrlEngine = '';
+                
         $params = $this->getParams();
         $poller = PollerModel::get($params['id']);
         $node = NodeModel::get($poller['node_id']);
@@ -140,9 +146,14 @@ class PollerController extends FormController
             'poller_name' => $poller['name'],
             'ip_address' => $node['ip_address']
         ));
-        
-        $this->tpl->assign('brokerFormUrl', $this->router->getPathFor('/centreon-broker/[i:id]', array('id' => $params['id'])));
-        $this->tpl->assign('engineFormUrl', $this->router->getPathFor('/centreon-engine/[i:id]', array('id' => $params['id'])));
+        if (Informations::isModuleInstalled($moduleBroker)) {
+            $sUrlBroker = $this->router->getPathFor('/centreon-broker/[i:id]', array('id' => $params['id']));
+        }
+        if (Informations::isModuleInstalled($moduleEngine)) {
+            $sUrlEngine = $this->router->getPathFor('/centreon-engine/[i:id]', array('id' => $params['id']));
+        }
+        $this->tpl->assign('brokerFormUrl', $sUrlBroker);
+        $this->tpl->assign('engineFormUrl', $sUrlEngine);
         $form->addHidden('poller_id', $params['id']);
         $this->tpl->assign('object_id', $params['id']);
         $this->tpl->assign('form', $form->toSmarty());

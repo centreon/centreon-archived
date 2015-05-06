@@ -8,7 +8,7 @@
 			<block name="General information">
                             <field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
                                 <validators>
-                                    <validator rules="remote" serverside="centreon-configuration.unique" />
+                                    <validator rules="remote" serverside="centreon-main.unique" />
                                 </validators>
                             </field>
 				<field name="service_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
@@ -20,7 +20,7 @@
 						<multiple>false</multiple>
 					</attributes>
                                     <validators>
-                                        <validator rules="remote" serverside="centreon-configuration.circular.dependency">
+                                        <validator rules="remote" serverside="centreon-main.circular.dependency">
                                         </validator>
                                     </validators>
 				</field>

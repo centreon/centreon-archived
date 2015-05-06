@@ -56,6 +56,12 @@ class ExtensionsController extends Controller
     public static $isDisableable = true;
 
     /**
+     *
+     * @var type
+     */
+    public static $displaySearchBar = false;
+
+    /**
      * 
      * @method get
      * @route /extensions/widgets
@@ -73,6 +79,7 @@ class ExtensionsController extends Controller
         $this->tpl->assign('objectName', self::$objectDisplayName);
         $this->tpl->assign('moduleName', self::$moduleName);
         $this->tpl->assign('isDisableable', static::$isDisableable);
+        $this->tpl->assign('displaySearchBar', static::$displaySearchBar);
         
         
         $this->tpl->assign('objectListUrl', '/centreon-customview/extensions/widgets/list');

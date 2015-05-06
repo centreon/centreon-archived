@@ -102,7 +102,7 @@ abstract class CentreonModel
         } else {
             $params = $parameterNames;
         }
-        $sql = "SELECT $params FROM ";
+        $sql = "SELECT DISTINCT $params FROM ";
         if (is_null($tablesString)) {
             $sql .=  static::$table;
         } else {
@@ -172,6 +172,7 @@ abstract class CentreonModel
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
             $sql .= " ORDER BY $order $sort ";
         }
+        
         if (isset($count) && $count != -1) {
             $db = Di::getDefault()->get(static::$databaseName);
             $sql = $db->limit($sql, $count, $offset);
