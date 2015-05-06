@@ -13,6 +13,32 @@
         <!-- Init DataTable -->
 
         oTable = $('#datatable{$object}').dataTable({
+
+        /* Right side details */
+
+            "rowCallback": function( row, data ) {
+
+                $(row).on('click', function(){
+                    //console.log(data);
+
+                   // var tr = $('#datatable{$object} tbody');
+
+                   //var $url_details = row.data('right_side_details');
+
+                        $.ajax({
+                              url: data.DT_RowData.right_side_details,
+                              type: "GET",
+                              dataType: 'html',
+                              success : function(e){
+                                 console.log(e);
+                                 $('#sideRight').append(e);
+
+                              },
+                              error : function(error){
+                              }
+                          });
+                });
+            },
             "processing": true,
             "ajax": "{url_for url=$objectUrl}",
             "serverSide": true,
@@ -707,40 +733,9 @@
           });
         });
 
-        /* Right side details */
-
-
-            var tr = $('#datatable{$object} tbody');
-
-            var $url_details = tr.data('right_side_details');
-
-            tr.on( "click", 'tr.selected', function( e ) {
-                $.ajax({
-                      url: $url_details,
-                      type: "GET",
-                      dataType: 'JSON',
-                      success : function(){
-                         console.log('hello');
-                      },
-                      error : function(error){
-                      }
-                  });
-            });
-
-            tr.sidr({
-                  name: 'sidr-right',
-                  side: 'right',
-                  body: '#hostListing',
-                  speed: '100',
-                  source: function(){
-
-                  }
-              });
-
-
-
 
         /* Delete search action */
+
         $( "#deleteView" ).on( "click", function( e ) {
           alertClose();
           if ( $( "input[name='filters']" ).val().trim() === "" ) {
