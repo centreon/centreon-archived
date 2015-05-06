@@ -97,13 +97,13 @@
 		  </attributes>
           <help>Specify the command that monitoring engine will run in order to check the status of the service.</help>
 		</field>
-		<field name="service_max_check_attempts" label="Max check attempts" default_value="5" advanced="1" type="integer" parent_field="" mandatory="1">
+		<field name="service_max_check_attempts" label="Max check attempts" default_value="" advanced="1" type="integer" parent_field="" mandatory="0">
           <help>Define the number of times that monitoring engine will retry the service check command if it returns any state other than an OK state. Setting this value to 1 will cause monitoring engine to generate an alert without retrying the service check again.</help>
         </field>
-		<field name="service_normal_check_interval" label="Normal check interval" default_value="5" advanced="1" type="integer" parent_field="" mandatory="0">
+		<field name="service_normal_check_interval" label="Normal check interval" default_value="" advanced="1" type="integer" parent_field="" mandatory="0">
           <help>Define the number of "time units" between regularly scheduled checks of the service. With the default time unit of 60s, this number will mean multiples of 1 minute. "Regular" checks are those that occur when the service is in an OK state or when the service is in a non-OK state, but has already been rechecked max_check_attempts number of times.</help>
         </field>
-		<field name="service_retry_check_interval" label="Retry check interval" default_value="1" advanced="1" type="integer" parent_field="" mandatory="0">
+		<field name="service_retry_check_interval" label="Retry check interval" default_value="" advanced="1" type="integer" parent_field="" mandatory="0">
           <help>Define the number of "time units" to wait before scheduling a re-check for this service after a non-OK state was detected. With the default time unit of 60s, this number will mean multiples of 1 minute. Once the service has been retried max_check_attempts times without a change in its status, it will revert to being scheduled at its "normal" check interval rate.</help>
         </field>
 		<field name="service_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
@@ -210,7 +210,6 @@
     	<step name="General">
     	<field name="service_description" mandatory="1"></field>
     	<field name="service_template_model_stm_id" mandatory="0"></field>
-    	<field name="service_max_check_attempts" mandatory="1"></field>
     	<field name="service_custommacros" mandatory="0"></field>
         <field name="service_tags" mandatory="0"></field>
     	<field name="environment_id" mandatory="0"></field>

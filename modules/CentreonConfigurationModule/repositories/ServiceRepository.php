@@ -234,7 +234,7 @@ class ServiceRepository extends Repository
                 $finalRoute .= '<img src="'.$imgSrc.'" style="width:16px;height:16px;">';
                 break;
             } elseif (is_null($esiResult['filename']) && is_null($esiResult['service_template_model_stm_id'])) {
-                $finalRoute .= "<i class='fa fa-gear'></i>";
+                $finalRoute .= "<i class='icon-service ico-16'></i>";
                 break;
             }
             

@@ -111,7 +111,7 @@ class HostRepository extends Repository
         $alreadyProcessed = false;
         $hostIdTab = Host::getIdByParameter('host_name', array($host_name));
         if (count($hostIdTab) == 0) {
-            $finalRoute = "<i class='fa fa-hdd-o'></i>";
+            $finalRoute = "<i class='icon-host ico-16'></i>";
         } else {
             $hostId = $hostIdTab[0];
         }
@@ -142,7 +142,7 @@ class HostRepository extends Repository
                     $templates = static::getTemplateChain($hostId, array(), -1);
                     $alreadyProcessed = true;
                 } else if (count($templates) == 0 && $alreadyProcessed) {
-                    $finalRoute = "<i class='fa fa-hdd-o'></i>";
+                    $finalRoute = "<i class='icon-host ico-16'></i>";
                 }
                 $currentHost = array_shift($templates);
                 $hostId = $currentHost['id'];
