@@ -5,7 +5,10 @@
 ########################################################################
 
 # Install base packages
-yum install -y gcc rrdtool rrdtool-devel curl wget
+yum install -y gcc rrdtool rrdtool-devel curl wget ntpdate
+
+# To prevent restored VM having a bad date
+ntpdate pool.ntp.org
 
 # Install LA*P stack
 yum install -y centos-release-SCL
