@@ -14,9 +14,6 @@
                 <field name="listing_limit_per_page" label="Limit per page for listing" default_value="25" advanced="0" type="text" parent_field="" mandatory="0">
                   <help>The limit of number line per page for all listing of Centreon.</help>
                 </field>
-                <field name="listing_refresh_interval" label="Listing refresh interval" default_value="60" advanced="0" type="duration" parent_field="" mandatory="0">
-                  <help>The refresh interval for all listing of Centreon.</help>
-                </field>
             </block>
 			<block name="Timezone">
                 <field name="enable_timezone" label="Enable Timezone" default_value="0" advanced="0" type="text" parent_field="" mandatory="0">

@@ -270,9 +270,8 @@ class ServiceTemplateDatatable extends Datatable
             $myServiceSet['service_template_model_stm_id'] = $tplStr;
 
             /* Display human readable the check/retry interval */
-            $interval = Di::getDefault()->get('config')->get('default', 'interval_length');
-            $myServiceSet['service_normal_check_interval'] = HumanReadable::convert($myServiceSet['service_normal_check_interval'] * $interval, 's', $units, null, true);
-            $myServiceSet['service_retry_check_interval'] = HumanReadable::convert($myServiceSet['service_retry_check_interval'] * $interval, 's', $units, null, true);
+            $myServiceSet['service_normal_check_interval'] = HumanReadable::convert($myServiceSet['service_normal_check_interval'], 's', $units, null, true);
+            $myServiceSet['service_retry_check_interval'] = HumanReadable::convert($myServiceSet['service_retry_check_interval'], 's', $units, null, true);
             
             /* Tags */
             $myServiceSet['tagname']  = "";

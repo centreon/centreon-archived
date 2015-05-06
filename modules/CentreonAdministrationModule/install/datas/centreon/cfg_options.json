@@ -224,10 +224,6 @@
         "value": 1
     },
     {
-        "key": "interval_length",
-        "value": 60
-    },
-    {
       "key": "broker_etc_directory",
       "value": "/etc/centreon-broker"
     },
