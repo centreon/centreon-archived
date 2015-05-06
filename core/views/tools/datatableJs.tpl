@@ -46,9 +46,13 @@
         });
         
         $('#datatable{$object} tbody').on('click', 'tr', function (e){
+            var active = false;
             if (!e.ctrlKey && !e.shiftKey) {
+                active = $(this).hasClass('selected');
                 $(this).parent().find('tr').removeClass('selected');
-            	$(this).addClass('selected');
+                if (false === active) {
+            	    $(this).addClass('selected');
+                }
             } else if (e.ctrlKey) {
             	$(this).toggleClass('selected');
             } else if (e.shiftKey) {
@@ -65,6 +69,12 @@
             }
             lastSelectedRow = this;
             toggleSelectedAction();
+        });
+
+        $('#datatable{$object} tbody').on('click', 'a', function (e) {
+            if ($(this).attr('href')) {
+                e.stopProgration();
+            }
         });
         
         $.fn.dataTableExt.sErrMode = 'throw';
