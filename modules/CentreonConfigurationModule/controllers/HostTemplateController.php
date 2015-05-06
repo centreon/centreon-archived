@@ -565,8 +565,8 @@ class HostTemplateController extends FormController
     public function displayConfAction()
     {
         $params = $this->getParams();
-        $data = HostRepository::getConfigurationData($params['id']);
-        $checkdata = HostRepository::formatDataForTooltip($data);
+        $data = HostTemplateRepository::getConfigurationData($params['id']);
+        $checkdata = HostTemplateRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }
