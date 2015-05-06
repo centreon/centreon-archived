@@ -265,9 +265,8 @@ class HostTemplateDatatable extends Datatable
             }
 
             /* Display human readable the check/retry interval */
-            $interval = Di::getDefault()->get('config')->get('default', 'interval_length');
-            $myHostSet['host_check_interval'] = HumanReadable::convert($myHostSet['host_check_interval'] * $interval, 's', $units, null, true);
-            $myHostSet['host_retry_check_interval'] = HumanReadable::convert($myHostSet['host_retry_check_interval'] * $interval, 's', $units, null, true);
+            $myHostSet['host_check_interval'] = HumanReadable::convert($myHostSet['host_check_interval'], 's', $units, null, true);
+            $myHostSet['host_retry_check_interval'] = HumanReadable::convert($myHostSet['host_retry_check_interval'], 's', $units, null, true);
             
             /* Tags */
             $myHostSet['tagname']  = "";

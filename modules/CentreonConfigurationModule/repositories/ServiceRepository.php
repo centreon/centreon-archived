@@ -82,13 +82,7 @@ class ServiceRepository extends Repository
      */
     public static function formatNotificationOptions($interval)
     {
-        // Initializing connection
-        $intervalLength = Di::getDefault()->get('config')->get('default', 'interval_length');
-        $interval *= $intervalLength;
-        
-        $scheduling = HumanReadable::convert($interval, 's', $units, null, true);
-        
-        return $scheduling;
+        return HumanReadable::convert($interval, 's', $units, null, true);
     }
     
     /**
