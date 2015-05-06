@@ -104,18 +104,6 @@ class HostDatatable extends Datatable
      * @var array 
      */
     public static $columns = array(
-
-        array (
-            'title' => "",
-            'name' => 'host_id',
-            'data' => 'host_id',
-            'orderable' => false,
-            'searchable' => false,
-            'type' => 'string',
-            'visible' => false,
-            'width' => '20px',
-            'className' => "cell_center"
-        ),
         array (
             'title' => "Id",
             'name' => 'host_id',
@@ -157,7 +145,7 @@ class HostDatatable extends Datatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => true,
+            'visible' => false,
         ),
         array (
             'title' => 'IP Address / DNS',
@@ -167,6 +155,7 @@ class HostDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Interval',
@@ -243,7 +232,7 @@ class HostDatatable extends Datatable
             'orderable' => false,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
             'tablename' => 'cfg_tags'
         ),
     );
