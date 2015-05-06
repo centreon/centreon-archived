@@ -4,8 +4,8 @@
 ############################################
 # Set of centreonConsole commands to init test data
 # WARNING: we still need to create manualy
-# 1) a first timeperiod (id=1) 24x7 / 00:00-24:00
-# 2) a central poller (id=1, ip=127.0.0.1)
+# 1) a central poller (id=1, ip=127.0.0.1)
+# No need for a timeperiod (default = all the time ~24x7)
 ############################################
 
 
@@ -24,7 +24,7 @@
 #4
 ./external/bin/centreonConsole centreon-configuration:Command:create params="command_name[check_eth0];command_type[2];command_line[/usr/lib/nagios/plugins/check_centreon_snmp_traffic -H localhost -i eth0 -n]"
 #5
-./external/bin/centreonConsole centreon-configuration:Command:create params="command_name[check_cpu_snmp];command_type[2];command_line[/usr/lib/nagios/plugins/check_centreon_snmp_cpu -H $HOSTADDRESS$ -v 2c -C public -d / -n]"
+./external/bin/centreonConsole centreon-configuration:Command:create params="command_name[check_cpu_snmp];command_type[2];command_line[/usr/lib/nagios/plugins/check_centreon_snmp_cpu -H \$HOSTADDRESS\$ -v 2c -C public -d / -n]"
 #6
 ./external/bin/centreonConsole centreon-configuration:Command:create params="command_name[check_swap_snmp];command_type[2];command_line[/usr/lib/nagios/plugins/check_centreon_snmp_remote_storage -H \$HOSTADDRESS\$ -v 2c -C public -d "Swap space" -n]"
 #7
@@ -34,17 +34,17 @@
 # Service templates
 ############################################
 # 1
-./external/bin/centreonConsole centreon-configuration:ServiceTemplate:create params="service_description[generic-service];timeperiod_tp_id[1];service_max_check_attempts[3]"
+./external/bin/centreonConsole centreon-configuration:ServiceTemplate:create params="service_description[generic-service];service_max_check_attempts[3]"
 # 2
-./external/bin/centreonConsole centreon-configuration:ServiceTemplate:create params="service_description[ping_lan];timeperiod_tp_id[1];command_command_id[1];service_template_model_stm_id[1]"
+./external/bin/centreonConsole centreon-configuration:ServiceTemplate:create params="service_description[ping_lan];command_command_id[1];service_template_model_stm_id[1]"
 # 3
-./external/bin/centreonConsole centreon-configuration:ServiceTemplate:create params="service_description[memory];timeperiod_tp_id[1];command_command_id[7]"
+./external/bin/centreonConsole centreon-configuration:ServiceTemplate:create params="service_description[memory];command_command_id[7]"
 
 ############################################
 # Host templates
 ############################################
 # 1
-./external/bin/centreonConsole centreon-configuration:HostTemplate:create params="host_name[generic-host];host_activate[1];timeperiod_tp_id[1];host_max_check_attempts[3];command_command_id[3]"
+./external/bin/centreonConsole centreon-configuration:HostTemplate:create params="host_name[generic-host];host_activate[1];host_max_check_attempts[3];command_command_id[3]"
 # 2
 
 # 3
