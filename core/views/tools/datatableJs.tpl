@@ -23,23 +23,26 @@
             "rowCallback": function( row, data ) {
 
                 $(row).on('click', function(){
+                    //console.log(data);
 
-                $(this).each(function(){
+                   // var tr = $('#datatable{$object} tbody');
 
-                    $.ajax({
-                          url: data.DT_RowData.right_side_details,
-                          type: "GET",
-                          dataType: 'html',
-                          success : function(e){
-                                //$('#sideRight').append(e);
+                   //var $url_details = row.data('right_side_details');
 
-                          },
-                          error : function(error){
-                          }
-                      });
-
-                })
-            });
+                        $.ajax({
+                              url: data.DT_RowData.right_side_details,
+                              type: "GET",
+                              dataType: 'html',
+                              success : function(e){
+                                 //console.log(e);
+                                 $('#hostListing').addClass('col-lg-10').removeClass('col-lg-12');
+                                 $('#sideRight').addClass('col-lg-2');
+                                 $('#hostListing').bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){ $('#sideRight').html(e); });
+                              },
+                              error : function(error){
+                              }
+                          });
+                });
             },
             "processing": true,
             "ajax": "{url_for url=$objectUrl}",
