@@ -79,12 +79,10 @@ class ServiceController extends Controller
         $router = Di::getDefault()->get('router');
 
         /* Load css */
-        $tpl->addCss('jquery.dataTables.min.css')
-            ->addCss('dataTables.tableTools.min.css')
+        $tpl->addCss('dataTables.tableTools.min.css')
+            ->addCss('jquery.fileupload.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('daterangepicker-bs3.css')
             ->addCss('centreon.tag.css', 'centreon-administration')
             ->addCss('select2.css')
             ->addCss('select2-bootstrap.css')
