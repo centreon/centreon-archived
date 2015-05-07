@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,52 +33,25 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace Centreon\Internal\Exception;
 
-namespace Centreon\Internal\Utils\Dependency;
-
-use Centreon\Internal\Exception\Module\MissingDependenciesException;
+use Centreon\Internal\Exception;
 
 /**
- * Check for PHP Dependencies
+ * Description of FilesystemException
  *
- * @author Lionel Assepo
- * @version 3.0.0
- * @package Centreon
- * @subpackage Core
+ * @author lionel
  */
-class PhpDependencies
+class FilesystemException extends Exception
 {
     /**
      * 
-     * @param array $dependencies
-     * @param boolean $strict
-     * @param boolean $fullScan
-     * @return array
-     * @throws Exception
+     * @param type $message
+     * @param type $code
+     * @param type $previous
      */
-    public static function checkDependencies($dependencies = array(), $strict = true, $fullScan = true)
+    public function __construct($message, $code, $previous = null)
     {
-        $status = true;
-        $errors = array();
-        
-        $nbDependencies = count($dependencies);
-        foreach ($dependencies as $dependency) {
-            if (!extension_loaded($dependency)) {
-                
-                $message = 'Mandatory PHP module ' . $dependency . ' is not available';
-                
-                if ($strict) {
-                    if (($nbDependencies == 0) || (!$fullScan)) {
-                        throw new MissingDependenciesException($message, 1004);
-                    }
-                    $nbDependencies--;
-                } else {
-                    $status = false;
-                    $errors[] = $message;
-                }
-            }
-        }
-        
-        return array('success' => $status, 'errors' => $errors);
+        parent::__construct($message, $code, $previous);
     }
 }

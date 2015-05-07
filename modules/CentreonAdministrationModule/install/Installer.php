@@ -36,29 +36,55 @@
 
 namespace CentreonAdministration\Install;
 
-use Centreon\Internal\Module\Installer as ModuleInstaller;
+use Centreon\Internal\Installer\Module\AbstractModuleInstaller;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
+
+
 
 /**
  * 
  */
-class Installer extends ModuleInstaller
+class Installer extends AbstractModuleInstaller
 {
+    /**
+     *
+     * @var string 
+     */
     protected $objectName = 'user';
+    
+    /**
+     *
+     * @var string 
+     */
     protected $objectClass = '\CentreonAdministration\Models\User';
+    
+    /**
+     *
+     * @var string 
+     */
     protected $repository = '\CentreonAdministration\Repository\UserRepository';
+    
+    /**
+     *
+     * @var array 
+     */
     public static $relationMap = array();
     
     /**
      * 
+     * @param type $moduleDirectory
      * @param type $moduleInfo
+     * @param type $launcher
      */
-    public function __construct($moduleDirectory, $moduleInfo)
+    public function __construct($moduleDirectory, $moduleInfo, $launcher)
     {
-        parent::__construct($moduleDirectory, $moduleInfo);
+        parent::__construct($moduleDirectory, $moduleInfo, $launcher);
     }
     
+    /**
+     * 
+     */
     public function customPreInstall()
     {
         

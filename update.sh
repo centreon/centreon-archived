@@ -15,15 +15,9 @@ then
     for module in $moduleList
     do
 	echo "Reinstall module : $module " 
-        ./external/bin/centreonConsole core:module:manage:reinstall moduleName=$module
+        ./external/bin/centreonConsole core:module:manage:upgrade module=$module
     done
     
-    # Copying static
-    # Could be improved with a find... no time...
-    \cp -a modules/CentreonAdministrationModule/static/centreon-administration/ www/static/
-    \cp -a modules/CentreonConfigurationModule/static/centreon-configuration/ www/static/
-    \cp -a modules/CentreonBamModule/static/centreon-bam/ www/static/
-    \cp -a modules/CentreonPerformanceModule/static/centreon-performance/ www/static/
 else
     echo "Cannot find Centreon install path '$centreonPath'"
     exit 1

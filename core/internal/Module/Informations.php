@@ -377,7 +377,7 @@ class Informations
      * @return \Centreon\Commands\classCall
      * @throws \Exception
      */
-    public static function getModuleInstaller($moduleName, $moduleId = null)
+    public static function getModuleInstaller($launcher, $moduleName, $moduleId = null)
     {
         $config =  Di::getDefault()->get('config');
         $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
@@ -406,7 +406,7 @@ class Informations
             }
         }
         
-        $moduleInstaller = new $classCall($moduleDirectory, $moduleInfo);
+        $moduleInstaller = new $classCall($moduleDirectory, $moduleInfo, $launcher);
         
         return $moduleInstaller;
     }

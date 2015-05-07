@@ -36,49 +36,22 @@
 
 namespace CentreonMain\Install;
 
-use Centreon\Internal\Module\Installer as ModuleInstaller;
-use Centreon\Internal\Di;
+use Centreon\Internal\Installer\Module\AbstractModuleInstaller;
 
 /**
  * 
  */
-class Installer extends ModuleInstaller
+class Installer extends AbstractModuleInstaller
 {
     /**
      * 
+     * @param type $moduleDirectory
      * @param type $moduleInfo
+     * @param type $launcher
      */
-    public function __construct($moduleDirectory, $moduleInfo)
+    public function __construct($moduleDirectory, $moduleInfo, $launcher)
     {
-        parent::__construct($moduleDirectory, $moduleInfo);
-    }
-    
-    
-    /**
-     * 
-     */
-    protected static function setUpFormValidators()
-    {
-        $validators = array(
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.email', '/validator/email')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.resolveDns', '/validator/resolvedns')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.ipAddress', '/validator/ipaddress')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.unique', '/validator/unique')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.forbiddenChar', '/validator/forbiddenchar')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.String', '/validator/string')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.Numeric', '/validator/numeric')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.Misc', '/validator/misc')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.Datetime', '/validator/datetime')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.EqualTo', '/validator/equalto')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-main.circular.dependency', '/validator/circular')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-main.unique', '/validator/unique')",
-        );
-        
-        $db = Di::getDefault()->get('db_centreon');
-        
-        foreach ($validators as $validator) {
-            $db->exec($validator);
-        }
+        parent::__construct($moduleDirectory, $moduleInfo, $launcher);
     }
     
     /**
@@ -86,7 +59,7 @@ class Installer extends ModuleInstaller
      */
     public function customPreInstall()
     {
-        self::setUpFormValidators();
+        
     }
     
     /**

@@ -36,22 +36,27 @@
 
 namespace CentreonBam\Install;
 
-use Centreon\Internal\Module\Installer as ModuleInstaller;
+use Centreon\Internal\Installer\Module\AbstractModuleInstaller;
 
 /**
  * 
  */
-class Installer extends ModuleInstaller
+class Installer extends AbstractModuleInstaller
 {
     /**
      * 
+     * @param type $moduleDirectory
      * @param type $moduleInfo
+     * @param type $launcher
      */
-    public function __construct($moduleDirectory, $moduleInfo)
+    public function __construct($moduleDirectory, $moduleInfo, $launcher)
     {
-        parent::__construct($moduleDirectory, $moduleInfo);
+        parent::__construct($moduleDirectory, $moduleInfo, $launcher);
     }
     
+    /**
+     * 
+     */
     public function customPreInstall()
     {
         
