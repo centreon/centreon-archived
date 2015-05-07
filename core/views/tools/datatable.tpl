@@ -36,7 +36,7 @@
                 </div>
 
                  <div class="hidden" id="addToGroup">
-                      <button type="button" class="btn btnDefault dropdown-toggle" data-toggle="dropdown">
+                      <button type="button" class="btnC btnDefault dropdown-toggle" data-toggle="dropdown">
                         {t}Add to{/t}
                         <span class="caret"></span>
                       </button>
@@ -53,11 +53,11 @@
                 <table class="table table-striped table-bordered table-hover centreon_table" id="datatable{$object}" ></table>
             </div>
         </div>
-            <div id="sideRight" style="position:absolute;display:none;top:0;right:0;width:15%;"   ></div>
+
    </div>
-   
+
 </div>
-    <!--<div class="col-md-4 sideRight" id="sideRight"></div>-->
+<aside id="sideRight" class="sideRightWrapper"></aside>
 
 
 
