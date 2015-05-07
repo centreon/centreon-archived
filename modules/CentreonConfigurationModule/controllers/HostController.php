@@ -507,8 +507,29 @@ class HostController extends FormController
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
         $checkdata = HostRepository::formatDataForTooltip($data);
+        $chackdataTemplate = HostTemplateRepository::formatDataForTooltip($data['templates']);
+        
+        $final = "";
         $this->tpl->assign('checkdata', $checkdata);
-        $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+        $final .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+        
+        
+        foreach($chackdataTemplate as $templateData){
+            $this->tpl->assign('checkdata', $templateData);
+            $final .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+        }
+        
+        
+       /* $myFInalTemplate = '';
+        
+        $this->tpl->assign('checkdata', $azeaze);
+        $myFInalTemplate .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+        */
+        
+        
+        
+        $this->router->response()->body($final);
+        
     }
 
     /**

@@ -41,7 +41,7 @@ use CentreonConfiguration\Repository\Repository;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Models\Timeperiod;
-
+use Centreon\Internal\Utils\YesNoDefault;
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
@@ -215,5 +215,50 @@ class HostTemplateRepository extends Repository
             default:
                 return $value;
         }
+    }
+    
+    
+    public static function formatDataForTooltip($templates)
+    {
+        
+        $checkdataTemplate = array();
+        
+        
+        foreach($templates as $template){
+           $oneTemplateDataArray = array();
+           $oneTemplateDataArray[] = array(
+            'label' => _('Command'),
+            'value' => static::getObjectName('\CentreonConfiguration\Models\Command', $template['command_command_id'])
+            );
+            $oneTemplateDataArray[] = array(
+                'label' => _('Time period'),
+                'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $template['timeperiod_tp_id'])
+            );
+            $oneTemplateDataArray[] = array(
+                'label' => _('Max check attempts'),
+                'value' => $template['host_max_check_attempts']
+            );
+            $oneTemplateDataArray[] = array(
+                'label' => _('Check interval'),
+                'value' => $template['host_check_interval']
+            );
+            $oneTemplateDataArray[] = array(
+                'label' => _('Retry check interval'),
+                'value' => $template['host_retry_check_interval']
+            );
+            $oneTemplateDataArray[] = array(
+                'label' => _('Active checks enabled'),
+                'value' => YesNoDefault::toString($template['host_active_checks_enabled'])
+            );
+            $oneTemplateDataArray[] = array(
+                'label' => _('Passive checks enabled'),
+                'value' => $template['host_passive_checks_enabled']
+            );
+
+           $checkdataTemplate[] = $oneTemplateDataArray;
+        }
+
+        return $checkdataTemplate;
+        
     }
 }
