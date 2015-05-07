@@ -68,7 +68,8 @@ class StaticFiles
      */
     public static function remove($moduleName)
     {
-        $sourceModuleStaticFilesPath = Informations::getModulePath($moduleName) . '/static/' . $moduleName;
+        $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
+        $sourceModuleStaticFilesPath = $path . '/www/static/' . $moduleName;
         Directory::delete($sourceModuleStaticFilesPath, true);
     }
 }
