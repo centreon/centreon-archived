@@ -20,34 +20,34 @@
 
            //var $url_details = row.data('right_side_details');
             "rowCallback": function( row, data ) {
-
                 var memRow = false;
-
-                $(row).on('click', function(){
-                    var elem = this;
-                    $.ajax({
-                          url: data.DT_RowData.right_side_details,
-                          type: "GET",
-                          dataType: 'html',
-                          success : function(e){
-                               if(memRow && elem === memRow){
-                                   $('#tableLeft').css('margin-right','0%');
-                                   $('#sideRight').css('display','none');
-                                   memRow = false;
-                               }else if(!memRow){
-                                   $('#tableLeft').css('margin-right','260px');
-                                   $('#sideRight').css('display','block');
-                                   $('#sideRight').html(e);
-                                   memRow = elem;
-                               }else{
-                                   $('#sideRight').html(e);
-                                   memRow = elem;
-                               }
-                          },
-                          error : function(error){
-                          }
-                      });
-                });
+                if (typeof data.DT_RowData.right_side_details !== 'undefined') {      
+                    $(row).on('click', function(){
+                        var elem = this;
+                        $.ajax({
+                              url: data.DT_RowData.right_side_details,
+                              type: "GET",
+                              dataType: 'html',
+                              success : function(e){
+                                   if(memRow && elem === memRow){
+                                       $('#tableLeft').css('margin-right','0%');
+                                       $('#sideRight').css('display','none');
+                                       memRow = false;
+                                   }else if(!memRow){
+                                       $('#tableLeft').css('margin-right','260px');
+                                       $('#sideRight').css('display','block');
+                                       $('#sideRight').html(e);
+                                       memRow = elem;
+                                   }else{
+                                       $('#sideRight').html(e);
+                                       memRow = elem;
+                                   }
+                              },
+                              error : function(error){
+                              }
+                          });
+                    });
+                }
             },
             "processing": true,
             "ajax": "{url_for url=$objectUrl}",
