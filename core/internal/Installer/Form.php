@@ -349,8 +349,8 @@ class Form
                 module_id = :module_id,
                 parent_field = :parent_field,
                 parent_value = :parent_value,
-                child_actions = :child_actions
-                mandatory = :mandatory
+                child_actions = :child_actions,
+                mandatory = :mandatory,
                 child_mandatory = :child_mandatory
                 WHERE name = :name
                 AND field_id = :field_id';
