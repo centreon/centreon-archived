@@ -149,7 +149,18 @@ class BusinessActivityRealtimeController extends Controller
     }
 
     /**
-     * Service detail page
+     * Business activity tooltip
+     *
+     * @method get
+     * @route /businessactivity/realtime/[i:id]/tooltip
+     */
+    public function displayTooltipAction()
+    {
+        $this->tpl->display('file:[CentreonBamModule]ba_tooltip.tpl');
+    }
+
+    /**
+     * Business activity detail page
      *
      * @method get
      * @route /businessactivity/realtime/[i:id]

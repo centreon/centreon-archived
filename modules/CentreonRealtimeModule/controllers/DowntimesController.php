@@ -144,4 +144,15 @@ class DowntimesController extends Controller
         
         $router->response()->json($myDataForDatatable);
     }
+
+    /**
+     * Downtime tooltip
+     *
+     * @method get
+     * @route /downtimes/[i:id]/tooltip
+     */
+    public function displayTooltipAction()
+    {
+        $this->tpl->display('file:[CentreonRealtimeModule]downtime_tooltip.tpl');
+    }
 }

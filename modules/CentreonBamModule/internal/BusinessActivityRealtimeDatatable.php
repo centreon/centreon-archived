@@ -41,6 +41,7 @@ use Centreon\Internal\Datatable;
 use Centreon\Internal\Utils\Datetime;
 use CentreonBam\Repository\BusinessActivityRepository;
 use CentreonAdministration\Repository\TagsRepository;
+use Centreon\Internal\Di;
 
 /**
  * Description of BaDatatable
@@ -226,8 +227,13 @@ class BusinessActivityRealtimeDatatable extends Datatable
      */
     protected function formatDatas(&$resultSet)
     {
+        $router = Di::getDefault()->get('router');
         $previousType = '';
         foreach ($resultSet as $key => &$myBaSet) {
+            $myBaSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-bam/businessactivity/realtime/')
+                . $myBaSet['ba_id']
+                . '/tooltip';
+
             if (is_null($myBaSet['current_level'])) {
                 unset($resultSet[$key]);
                 continue;

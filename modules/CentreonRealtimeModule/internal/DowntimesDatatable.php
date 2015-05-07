@@ -293,6 +293,9 @@ class DowntimesDatatable extends Datatable
 
         // Add object column
         foreach ($resultSet as &$downtime) {
+            $downtime['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-realtime/downtimes/')
+                . $downtime['downtime_id']
+                . '/tooltip';
             if ($downtime['type'] == 1) {
                 foreach ($resultServiceDowntime as $downtimeObject) {
                     if ($downtimeObject['downtime_id'] === $downtime['downtime_id']) {
@@ -315,6 +318,7 @@ class DowntimesDatatable extends Datatable
      */
     protected function formatDatas(&$resultSet)
     {
+        $router = Di::getDefault()->get('router');
         foreach ($resultSet as &$downtime) {
             $downtime['duration'] = Datetime::humanReadable(
                 $downtime['duration'],
