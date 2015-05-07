@@ -20,32 +20,31 @@
 
            //var $url_details = row.data('right_side_details');
             "rowCallback": function( row, data ) {
-                var memRow = false;
+                dataTable = this;
+                dataTable.memRow = false;
                 if (typeof data.DT_RowData.right_side_details !== 'undefined') {      
                     $(row).on('click', function(){
-                        var elem = this;
-                        $.ajax({
-                              url: data.DT_RowData.right_side_details,
-                              type: "GET",
-                              dataType: 'html',
-                              success : function(e){
-                                   if(memRow && elem === memRow){
-                                       $('#tableLeft').css('margin-right','0%');
-                                       $('#sideRight').css('display','none');
-                                       memRow = false;
-                                   }else if(!memRow){
-                                       $('#tableLeft').css('margin-right','260px');
-                                       $('#sideRight').css('display','block');
-                                       $('#sideRight').html(e);
-                                       memRow = elem;
-                                   }else{
-                                       $('#sideRight').html(e);
-                                       memRow = elem;
-                                   }
-                              },
-                              error : function(error){
-                              }
-                          });
+                        
+                        if(dataTable.memRow && dataTable.memRow.is($(this))){
+                            dataTable.memRow = false;
+                            $('#tableLeft').css('margin-right','0%');
+                            $('#sideRight').css('display','none');
+                        }else {
+                            dataTable.memRow = $(this);
+                            $.ajax({
+                                url: data.DT_RowData.right_side_details,
+                                type: "GET",
+                                dataType: 'html',
+                                success : function(e){
+                                    $('#sideRight').html(e);
+                                    $('#tableLeft').css('margin-right','260px');
+                                    $('#sideRight').css('display','block');
+                                },
+                                error : function(error){
+                                }
+                            });
+                        }
+                        
                     });
                 }
             },
