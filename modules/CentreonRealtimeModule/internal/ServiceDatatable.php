@@ -113,7 +113,7 @@ class ServiceDatatable extends Datatable
          array (
             'title' => 'Host',
             'name' => 'host_id',
-            'data' => 'name',
+            'data' => 'host_id',
             'orderable' => true,
             'searchable' => true,
             'searchLabel' => 'host',
@@ -301,11 +301,9 @@ class ServiceDatatable extends Datatable
             } else {
                 $previousHost = $myServiceSet['name'];
                 $icon = HostConfigurationRepository::getIconImage($myServiceSet['name']);
-                $myServiceSet['name'] = '<span data-overlay-url="/centreon-realtime/host/'
-                    . $myServiceSet['host_id']
-                    . '/tooltip"><span class="overlay">'
+                $myServiceSet['name'] = '<span>'
                     . $icon
-                    . '&nbsp;'.$myServiceSet['name'].'</span></span>';
+                    . '&nbsp;'.$myServiceSet['name'].'</span>';
             }
             
             $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
@@ -315,12 +313,10 @@ class ServiceDatatable extends Datatable
                 . '/tooltip';
             
             
-            $myServiceSet['description'] = '<span data-overlay-url="/centreon-realtime/service/'
-                . $myServiceSet['host_id']
-                . '/'.$myServiceSet['service_id']
-                . '/tooltip"><span class="overlay">'
+            $myServiceSet['description'] = '<span>'
                 . $icon
-                . '&nbsp;'.$myServiceSet['description'].'</span></span>';
+                . ''.$myServiceSet['description'].'</span>';
+
             if ($myServiceSet['perfdata'] != '') {
                 $myServiceSet['ico'] = '<span data-overlay-url="/centreon-realtime/service/'
                     . $myServiceSet['host_id']
@@ -329,11 +325,13 @@ class ServiceDatatable extends Datatable
             } else {
                 $myServiceSet['ico'] = ''; 
             }
+
             $myServiceSet['duration'] = Datetime::humanReadable(
                 $myServiceSet['duration'],
                 Datetime::PRECISION_FORMAT,
                 2
             );
+
             $myServiceSet['last_check'] = Datetime::humanReadable(
                 $myServiceSet['last_check'],
                 Datetime::PRECISION_FORMAT,

@@ -146,7 +146,6 @@ abstract class ListController extends Controller
 
         /* Load CssFile */
         $this->tpl->addCss('dataTables.tableTools.min.css')
-            ->addCss('jquery.fileupload.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
             ->addCss('select2.css')
