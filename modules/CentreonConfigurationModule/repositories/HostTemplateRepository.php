@@ -38,11 +38,11 @@ namespace CentreonConfiguration\Repository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Hosttemplate;
 use CentreonConfiguration\Repository\Repository;
-use Centreon\Internal\Utils\YesNoDefault;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Models\Timeperiod;
 use Centreon\Internal\Utils\YesNoDefault;
+
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
