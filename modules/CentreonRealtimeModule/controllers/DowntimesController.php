@@ -80,8 +80,7 @@ class DowntimesController extends Controller
     {
         $router = Di::getDefault()->get('router');
         /* Load css */
-        $this->tpl->addCss('jquery.dataTables.min.css')
-            ->addCss('dataTables.tableTools.min.css')
+        $this->tpl->addCss('dataTables.tableTools.min.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
             ->addCss('dataTables.bootstrap.css')
