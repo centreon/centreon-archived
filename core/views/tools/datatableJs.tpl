@@ -23,13 +23,14 @@
 
                 var memRow = false;
 
-                $(row).on('click', function(){
-                    var elem = this;
-                    $.ajax({
-                          url: data.DT_RowData.right_side_details,
-                          type: "GET",
-                          dataType: 'html',
-                          success : function(e){
+                if (typeof data.DT_RowData.right_side_details !== 'undefined') {
+                    $(row).on('click', function(){
+                        var elem = this;
+                        $.ajax({
+                            url: data.DT_RowData.right_side_details,
+                            type: "GET",
+                            dataType: 'html',
+                            success : function(e){
                                if(memRow && elem === memRow){
                                    $('#tableLeft').css('margin-right','0%');
                                    $('#sideRight').css('display','none');
@@ -43,11 +44,12 @@
                                    $('#sideRight').html(e);
                                    memRow = elem;
                                }
-                          },
-                          error : function(error){
-                          }
-                      });
-                });
+                            },
+                            error : function(error){
+                            }
+                        });
+                    });
+                }
             },
             "processing": true,
             "ajax": "{url_for url=$objectUrl}",
