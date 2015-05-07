@@ -8,6 +8,26 @@ body {
     overfolow-x : hidden;
     background-color: transparent;
 }
+
+/* -- Positions -- */
+.left {
+  float: left;
+}
+.textCenter {
+  text-align: center;
+}
+.center {
+  margin : 0 auto;
+}
+
+.right {
+  float: right;
+}
+
+.absolute {
+  position: absolute;
+}
+
 #mainCntr {
   width: 100%;
   overflow-x: hidden;
@@ -47,7 +67,7 @@ body {
 .ibox {
   clear: both;
   margin-top: 0;
-  padding: 0;
+  padding: @paddingElem 0;
   border-top: 3px solid @lightGray2;
 }
 .ibox.collapsed .ibox-content {
@@ -128,20 +148,6 @@ body {
   margin-bottom: @paddingElem*2;
 }
 
-/* -- Positions -- */
-.left {
-  float: left;
-}
-.textCenter {
-  text-align: center;
-}
-.center {
-  margin : 0 auto;
-}
-
-.right {
-  float: right;
-}
 
 /* Variables for login panel */
 @login-panel-radius: 0;

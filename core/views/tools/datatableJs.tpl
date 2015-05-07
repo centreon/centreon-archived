@@ -36,7 +36,7 @@
                                    $('#sideRight').css('display','none');
                                    memRow = false;
                                }else if(!memRow){
-                                   $('#tableLeft').css('margin-right','260px');
+                                   $('#tableLeft').css('margin-right','250px');
                                    $('#sideRight').css('display','block');
                                    $('#sideRight').html(e);
                                    memRow = elem;

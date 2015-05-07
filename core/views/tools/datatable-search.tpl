@@ -1,5 +1,5 @@
 <div class="form-group formWrapper">
-<form class="centreon-search-block CentreonForm" id="accordion">
+<div class="centreon-search-block CentreonForm" id="accordion">
         <div class="panel-heading">
             {$clsOffset=""}
             {$searchAdv=true}
@@ -87,5 +87,5 @@
                 </div>
             </div>
         </div>
-    </form>
+    </div>
 </div>
