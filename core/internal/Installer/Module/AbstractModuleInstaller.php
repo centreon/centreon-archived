@@ -214,7 +214,7 @@ abstract class AbstractModuleInstaller
         $this->deployForms();
         
         // Install Hooks
-        $this->installHooks();
+        //$this->installHooks();
         
         // Remove old static files and deploy new ones
         $this->removeStaticFiles();
