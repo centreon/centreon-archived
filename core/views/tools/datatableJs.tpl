@@ -36,7 +36,7 @@
                                    $('#sideRight').css('display','none');
                                    memRow = false;
                                }else if(!memRow){
-                                   $('#tableLeft').css('margin-right','16%');
+                                   $('#tableLeft').css('margin-right','260px');
                                    $('#sideRight').css('display','block');
                                    $('#sideRight').html(e);
                                    memRow = elem;
@@ -61,7 +61,7 @@
                 "processing": "Loading information. Please wait a moment."
             },
             {$datatableParameters.configuration}
-            'dom': "R<'row'r<'clear'><'col-sm-6'l><'col-sm-6 text-right'T C>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            'dom': "R<'row'r<'col-md-11 text-right'T C ><'col-md-1'l>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
             responsive: true,
             "columns": [
                 {$datatableParameters.header.columnHeader}
