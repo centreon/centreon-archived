@@ -1,0 +1,38 @@
+[
+    {
+        "name": "core.Email",
+        "route": "/validator/email"
+    },
+    {
+        "name": "core.ResolveDns",
+        "route": "/validator/resolvedns"
+    },
+    {
+        "name": "core.IpAddress",
+        "route": "/validator/ipaddress"
+    },
+    {
+        "name": "core.ForbiddenChar",
+        "route": "/validator/forbiddenchar"
+    },
+    {
+        "name": "core.String",
+        "route": "/validator/string"
+    },
+    {
+        "name": "core.Numeric",
+        "route": "/validator/numeric"
+    },
+    {
+        "name": "core.Misc",
+        "route": "/validator/misc"
+    },
+    {
+        "name": "core.Datetime",
+        "route": "/validator/datetime"
+    },
+    {
+        "name": "core.EqualTo",
+        "route": "/validator/equalto"
+    }
+]

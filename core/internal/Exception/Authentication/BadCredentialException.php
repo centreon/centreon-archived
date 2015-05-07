@@ -45,6 +45,12 @@ use Centreon\Internal\Exception;
  */
 class BadCredentialException extends Exception
 {
+    /**
+     * 
+     * @param string $message
+     * @param integer $code
+     * @param type $previous
+     */
     public function __construct($message, $code, $previous = null)
     {
         parent::__construct($message, $code, $previous);

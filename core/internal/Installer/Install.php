@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,52 +33,16 @@
  * For more information : contact@centreon.com
  * 
  */
-
-namespace Centreon\Internal\Utils\Dependency;
-
-use Centreon\Internal\Exception\Module\MissingDependenciesException;
+namespace Centreon\Internal\Installer;
 
 /**
- * Check for PHP Dependencies
- *
- * @author Lionel Assepo
- * @version 3.0.0
- * @package Centreon
- * @subpackage Core
+ * 
+ * Centreon Installation Class
  */
-class PhpDependencies
+class Install
 {
-    /**
-     * 
-     * @param array $dependencies
-     * @param boolean $strict
-     * @param boolean $fullScan
-     * @return array
-     * @throws Exception
-     */
-    public static function checkDependencies($dependencies = array(), $strict = true, $fullScan = true)
+    public static function installCentreon()
     {
-        $status = true;
-        $errors = array();
         
-        $nbDependencies = count($dependencies);
-        foreach ($dependencies as $dependency) {
-            if (!extension_loaded($dependency)) {
-                
-                $message = 'Mandatory PHP module ' . $dependency . ' is not available';
-                
-                if ($strict) {
-                    if (($nbDependencies == 0) || (!$fullScan)) {
-                        throw new MissingDependenciesException($message, 1004);
-                    }
-                    $nbDependencies--;
-                } else {
-                    $status = false;
-                    $errors[] = $message;
-                }
-            }
-        }
-        
-        return array('success' => $status, 'errors' => $errors);
     }
 }

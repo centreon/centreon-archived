@@ -36,6 +36,7 @@
 namespace Centreon\Internal\Utils\Filesystem;
 
 use Centreon\Internal\Exception;
+use Centreon\Internal\Exception\Filesystem\DirectoryNotExistsException;
 
 /**
  * Utils for filesystem directories
@@ -118,5 +119,48 @@ class Directory
             }
         }
         return $dirname;
+    }
+    
+    /**
+     * 
+     * @param string $sourceDirectory
+     * @param string $destinationDirectory
+     */
+    public static function copy($sourceDirectory, $destinationDirectory)
+    {
+        $dir = opendir($sourceDirectory); 
+        mkdir($destinationDirectory, 0777, true); 
+        while(false !== ( $file = readdir($dir)) ) { 
+            if (( $file != '.' ) && ( $file != '..' )) { 
+                if ( is_dir($sourceDirectory . '/' . $file) ) { 
+                    self::copy($sourceDirectory . '/' . $file,$destinationDirectory . '/' . $file); 
+                } 
+                else { 
+                    copy($sourceDirectory . '/' . $file,$destinationDirectory . '/' . $file); 
+                }
+            } 
+        }
+        closedir($dir); 
+    }
+    
+    /**
+     * 
+     * @param string $directory Directory to check
+     * @param string $pattern 
+     * @return boolean
+     * @throws DirectoryNotExistsException
+     */
+    public static function isEmpty($directory, $pattern = "*")
+    {
+        if (!file_exists($directory)) {
+            throw new DirectoryNotExistsException;
+        }
+        
+        $directoryEmpty = false;
+        if (count(glob($directory . '/' . $pattern)) == 0) {
+             $directoryEmpty = true;
+        }
+        
+        return $directoryEmpty;
     }
 }

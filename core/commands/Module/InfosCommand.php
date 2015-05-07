@@ -37,76 +37,54 @@ namespace Centreon\Commands\Module;
 
 use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Command\AbstractCommand;
-use Centreon\Internal\Installer\StaticFiles;
-use Centreon\Internal\Installer\Form;
 
 /**
- * COmmand Line to manage
- *
- * @author Lionel Assepo
- * @version 3.0.0
- * @package Centreon
- * @subpackage Core
+ * 
  */
-class ManageCommand extends AbstractCommand
+class InfosCommand extends AbstractCommand
 {
     /**
-     * 
-     * @param type $module
-     * @param type $verbose
+     * List module names
+     * @param string $type
+     * @param string $status
      */
-    public function installAction($module, $verbose = 1)
+    public function simpleListAction($onlyActivated = 1)
     {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->install($verbose);
-    }
-    
-    /**
-     * 
-     * @param type $module
-     * @param type $verbose
-     */
-    public function upgradeAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->upgrade($verbose);
-    }
-    
-    /**
-     * 
-     * @param type $module
-     * @param type $verbose
-     */
-    public function uninstallAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->uninstall($verbose);
-    }
-    
-    /**
-     * 
-     * @param type $module
-     * @param type $removeOld
-     */
-    public function deployStaticAction($module, $removeOld = 1)
-    {
-        if ($removeOld == true) {
-            StaticFiles::remove($module);
+        $moduleList = Informations::getModuleList($onlyActivated);
+        foreach ($moduleList as $module) {
+            echo $module."\n";
         }
-        StaticFiles::deploy($module);
     }
-    
+
+    /**
+     * List all information about modules
+     * @param string $type
+     * @param int $onlyActivated
+     * @param int $header
+     */
+    public function extendedListAction($onlyActivated = 1, $header = 1)
+    {
+        $moduleList = Informations::getModuleExtendedList($onlyActivated);
+        if ($header) {
+            echo 'name;alias;description;version;author;isactivated;isinstalled' . "\n";
+        }
+        foreach ($moduleList as $module) {
+            echo $module['name'].';'.
+                $module['alias'].';'.
+                $module['description'].';'.
+                $module['version'].';'.
+                $module['author'].';'.
+                $module['isactivated'].';'.
+                $module['isinstalled']."\n";
+        }
+    }
+
     /**
      * 
-     * @param string $module
+     * @param string $moduleName
      */
-    public function deployFormsAction($module)
+    public function showAction($moduleName)
     {
-        $modulePath = Informations::getModulePath($module);
-        $moduleId = Informations::getModuleIdByName($module);
-        $formsFiles = $modulePath . '/install/forms/*.xml';
-        foreach (glob($formsFiles) as $xmlFile) {
-            Form::installFromXml($moduleId, $xmlFile);
-        }
+        
     }
 }
