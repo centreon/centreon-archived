@@ -316,6 +316,10 @@ class DowntimesDatatable extends Datatable
     protected function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$downtime) {
+            $downtime['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-realtime/downtimes/')
+                . $downtime['downtime_id']
+                . '/tooltip';
+
             $downtime['duration'] = Datetime::humanReadable(
                 $downtime['duration'],
                 Datetime::PRECISION_FORMAT,
