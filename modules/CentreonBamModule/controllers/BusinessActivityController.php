@@ -118,6 +118,17 @@ class BusinessActivityController extends FormController
     }
 
     /**
+     * Business activity tooltip
+     *
+     * @method get
+     * @route /businessactivity/[i:id]/tooltip
+     */
+    public function displayTooltipAction()
+    {
+        $this->tpl->display('file:[CentreonBamModule]ba_tooltip.tpl');
+    }
+
+    /**
      * Get list of Types for a specific business activity
      *
      *

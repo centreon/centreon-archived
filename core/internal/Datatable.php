@@ -188,7 +188,6 @@ class Datatable
         
         static::addAdditionnalDatas($datasFromDb['datas']);
         static::processHooks($datasFromDb['datas']);
-        $this->formatDatas($datasFromDb['datas']);
 
         // Add RowId
         if (count(static::$rowIdColumn) > 0) {
@@ -200,6 +199,8 @@ class Datatable
                 $datas['DT_RowId'] = $datas[static::$rowIdColumn['id']];
             }
         }
+
+        $this->formatDatas($datasFromDb['datas']);
 
         $sendableDatas = $this->prepareDatasForSending($datasFromDb);
         
