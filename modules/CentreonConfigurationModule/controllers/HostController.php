@@ -496,7 +496,7 @@ class HostController extends FormController
     }
     
     /**
-     * Display the configuration snapshot of a host and his templates
+     * Display the configuration snapshot of a host 
      * with template inheritance
      *
      * @method get
