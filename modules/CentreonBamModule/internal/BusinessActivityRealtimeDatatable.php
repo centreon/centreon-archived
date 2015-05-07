@@ -227,7 +227,12 @@ class BusinessActivityRealtimeDatatable extends Datatable
     protected function formatDatas(&$resultSet)
     {
         $previousType = '';
-        foreach ($resultSet as &$myBaSet) {
+        foreach ($resultSet as $key => &$myBaSet) {
+            if (is_null($myBaSet['current_level'])) {
+                unset($resultSet[$key]);
+                continue;
+            }
+
             // Set business activity type
             $baType = \CentreonBam\Models\BusinessActivityType::getParameters($myBaSet['ba_type_id'], array('name'));
             $myBaSet['ba_type_id'] = $baType['name'];
@@ -258,5 +263,6 @@ class BusinessActivityRealtimeDatatable extends Datatable
             }
             $myBaSet['tagname'] .= TagsRepository::getAddTag('ba', $myBaSet['ba_id']);
         }
+        $resultSet = array_values($resultSet);
     }
 }
