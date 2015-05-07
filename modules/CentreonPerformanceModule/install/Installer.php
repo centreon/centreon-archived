@@ -36,7 +36,7 @@
 
 namespace CentreonPerformance\Install;
 
-use Centreon\Internal\Module\Installer as ModuleInstaller;
+use Centreon\Internal\Installer\Module\AbstractModuleInstaller;
 
 /**
  * Class for installation of module performance
@@ -45,19 +45,22 @@ use Centreon\Internal\Module\Installer as ModuleInstaller;
  * @version 3.0.0
  * @package Centreon
  */
-class Installer extends ModuleInstaller
+class Installer extends AbstractModuleInstaller
 {
     /**
-     * Constructor
      * 
-     * @param string $moduleDirectory The directory where is the module
-     * @param array $moduleInfo The module information
+     * @param type $moduleDirectory
+     * @param type $moduleInfo
+     * @param type $launcher
      */
-    public function __construct($moduleDirectory, $moduleInfo)
+    public function __construct($moduleDirectory, $moduleInfo, $launcher)
     {
-        parent::__construct($moduleDirectory, $moduleInfo);
+        parent::__construct($moduleDirectory, $moduleInfo, $launcher);
     }
     
+    /**
+     * 
+     */
     public function customPreInstall()
     {
         
@@ -80,5 +83,6 @@ class Installer extends ModuleInstaller
      */
     public function customRemove()
     {
+        
     }
 }

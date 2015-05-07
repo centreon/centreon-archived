@@ -20,7 +20,7 @@
         
     ],
     "php module dependencies" : [
-        "php-rrd"
+        "rrd"
     ],
     "program dependencies" : [
         "rrdtools"

@@ -73,7 +73,6 @@ function changeTimezone(sTimezone)
 function getDateByTz(unixtime, sFormat)
 {
     var sDateNew = ''; 
-    console.log("78"+sessionStorage.getItem("sTimezone"));
     sFormat = typeof sFormat !== 'undefined' ? sFormat : sDefaultFormatDate;
     
     var sDate = moment.unix(unixtime);

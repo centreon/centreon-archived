@@ -75,8 +75,7 @@ class BusinessActivityRealtimeController extends Controller
     {
         $router = Di::getDefault()->get('router');
         /* Load css */
-        $this->tpl->addCss('jquery.dataTables.min.css')
-            ->addCss('dataTables.tableTools.min.css')
+        $this->tpl->addCss('dataTables.tableTools.min.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
             ->addCss('dataTables.bootstrap.css')
@@ -150,7 +149,18 @@ class BusinessActivityRealtimeController extends Controller
     }
 
     /**
-     * Service detail page
+     * Business activity tooltip
+     *
+     * @method get
+     * @route /businessactivity/realtime/[i:id]/tooltip
+     */
+    public function displayTooltipAction()
+    {
+        $this->tpl->display('file:[CentreonBamModule]ba_tooltip.tpl');
+    }
+
+    /**
+     * Business activity detail page
      *
      * @method get
      * @route /businessactivity/realtime/[i:id]

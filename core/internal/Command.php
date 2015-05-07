@@ -75,6 +75,8 @@ class Command
     
     /**
      * 
+     * @param string $username
+     * @param string $password
      */
     public function authenticate($username, $password = "")
     {
@@ -134,6 +136,7 @@ class Command
     /**
      * 
      * @param array $ListOfCommands
+     * @param string $module
      */
     private function displayCommandList($ListOfCommands, $module = null)
     {
@@ -218,6 +221,8 @@ class Command
     
     /**
      * 
+     * @return array
+     * @throws Exception
      */
     private function parseRequestLine()
     {
@@ -250,8 +255,9 @@ class Command
     
     /**
      * 
+     * @param array $argsList
      * @param type $aliveObject
-     * @param type $action
+     * @param string $action
      */
     private function getArgs(array &$argsList, $aliveObject, $action)
     {
@@ -267,8 +273,8 @@ class Command
     
     /**
      * 
-     * @param type $object
-     * @param type $method
+     * @param string $object
+     * @param string $method
      */
     public function parseAction($object, $method)
     {

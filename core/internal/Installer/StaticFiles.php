@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,81 +33,43 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace Centreon\Internal\Installer;
 
-namespace Centreon\Commands\Module;
-
+use Centreon\Internal\Di;
 use Centreon\Internal\Module\Informations;
-use Centreon\Internal\Command\AbstractCommand;
-use Centreon\Internal\Installer\StaticFiles;
-use Centreon\Internal\Installer\Form;
+use Centreon\Internal\Utils\Filesystem\Directory;
 
 /**
- * COmmand Line to manage
- *
- * @author Lionel Assepo
- * @version 3.0.0
- * @package Centreon
- * @subpackage Core
+ * 
+ * Centreon Static Files deployment
  */
-class ManageCommand extends AbstractCommand
+class StaticFiles
 {
     /**
      * 
-     * @param type $module
-     * @param type $verbose
+     * @param string $moduleName Module slug from which the static files will be deploy
      */
-    public function installAction($module, $verbose = 1)
+    public static function deploy($moduleName)
     {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->install($verbose);
-    }
-    
-    /**
-     * 
-     * @param type $module
-     * @param type $verbose
-     */
-    public function upgradeAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->upgrade($verbose);
-    }
-    
-    /**
-     * 
-     * @param type $module
-     * @param type $verbose
-     */
-    public function uninstallAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->uninstall($verbose);
-    }
-    
-    /**
-     * 
-     * @param type $module
-     * @param type $removeOld
-     */
-    public function deployStaticAction($module, $removeOld = 1)
-    {
-        if ($removeOld == true) {
-            StaticFiles::remove($module);
+        // Building static path
+        $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
+        $sourceModuleStaticFilesPath = Informations::getModulePath($moduleName) . '/static/' . $moduleName;
+        $targetModuleStaticFilesPath = $path . '/www/static/' . $moduleName;
+        
+        // 
+        if (file_exists($sourceModuleStaticFilesPath)) {
+            Directory::copy($sourceModuleStaticFilesPath, $targetModuleStaticFilesPath);
         }
-        StaticFiles::deploy($module);
     }
     
     /**
      * 
-     * @param string $module
+     * @param type $moduleName
      */
-    public function deployFormsAction($module)
+    public static function remove($moduleName)
     {
-        $modulePath = Informations::getModulePath($module);
-        $moduleId = Informations::getModuleIdByName($module);
-        $formsFiles = $modulePath . '/install/forms/*.xml';
-        foreach (glob($formsFiles) as $xmlFile) {
-            Form::installFromXml($moduleId, $xmlFile);
-        }
+        $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
+        $sourceModuleStaticFilesPath = $path . '/www/static/' . $moduleName;
+        Directory::delete($sourceModuleStaticFilesPath, true);
     }
 }

@@ -176,6 +176,11 @@ class Validator
         }
     }
 
+    /**
+     * 
+     * @param type $validatorName
+     * @return type
+     */
     protected function parseValidatorName($validatorName)
     {
         $call = "";

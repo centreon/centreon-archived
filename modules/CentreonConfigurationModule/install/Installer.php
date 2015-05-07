@@ -36,46 +36,30 @@
 
 namespace CentreonConfiguration\Install;
 
-use Centreon\Internal\Di;
-use Centreon\Internal\Module\Installer as ModuleInstaller;
+use Centreon\Internal\Installer\Module\AbstractModuleInstaller;
 
 /**
  * 
  */
-class Installer extends ModuleInstaller
+class Installer extends AbstractModuleInstaller
 {
     /**
      * 
      * @param type $moduleDirectory
      * @param type $moduleInfo
+     * @param type $launcher
      */
-    public function __construct($moduleDirectory, $moduleInfo)
+    public function __construct($moduleDirectory, $moduleInfo, $launcher)
     {
-        parent::__construct($moduleDirectory, $moduleInfo);
-    }
-
-    /**
-     *
-     */
-    protected function setUpFormValidators()
-    {
-        /*
-        $validators = array(
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-main.circular.dependency', '/validator/circular')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-main.unique', '/validator/unique')",
-        );
-
-        $db = Di::getDefault()->get('db_centreon');
-
-        foreach ($validators as $validator) {
-            $db->exec($validator);
-        }
-        */
+        parent::__construct($moduleDirectory, $moduleInfo, $launcher);
     }
     
+    /**
+     * 
+     */
     public function customPreInstall()
     {
-        $this->setUpFormValidators();
+        
     }
     
     /**
