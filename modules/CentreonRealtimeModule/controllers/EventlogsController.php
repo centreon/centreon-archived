@@ -269,11 +269,11 @@ class EventlogsController extends Controller
             }
             $lastDateCount++;
 
-            if (isset($log['host_id']) && $log['host_id'] !== "") {
+            if (isset($log['host']) && $log['host'] !== "") {
                 $log['host_logo'] = HostRepository::getIconImage($log['host']);
             }
 
-            if (isset($log['service_id']) && $log['service_id'] !== "") {
+            if (isset($log['service']) && $log['service'] !== "") {
                 $log['service_logo'] = ServiceRepository::getIconImage(
                     $log['service']
                 );

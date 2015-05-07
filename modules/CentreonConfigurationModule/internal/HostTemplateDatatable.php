@@ -37,6 +37,7 @@
 namespace CentreonConfiguration\Internal;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Utils\HumanReadable;
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use CentreonConfiguration\Repository\HostRepository; 
 use CentreonConfiguration\Repository\HostTemplateRepository;
@@ -262,6 +263,10 @@ class HostTemplateDatatable extends Datatable
                 . $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id']))
                 . '"><i class="fa fa-shield"></i></a></span>';
             }
+
+            /* Display human readable the check/retry interval */
+            $myHostSet['host_check_interval'] = HumanReadable::convert($myHostSet['host_check_interval'], 's', $units, null, true);
+            $myHostSet['host_retry_check_interval'] = HumanReadable::convert($myHostSet['host_retry_check_interval'], 's', $units, null, true);
             
             /* Tags */
             $myHostSet['tagname']  = "";

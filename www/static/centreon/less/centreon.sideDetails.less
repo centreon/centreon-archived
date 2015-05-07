@@ -1,18 +1,45 @@
 #hostListing {
-  transition: all 0.2s linear;
-
-  &.open {
-    margin-right: 260px;
-  }
+ // transition: all 0.2s linear;
 }
-  .sideRight {
-    position: absolute;
-    right: 0;
-    width: 260px;
-    height: 100%;
-    background-color: @gray ;
-    top: 0;
+#sideRight.sideRightWrapper {
+   position: absolute;
+   right: 0;
+   width:260px;
+   margin-left : @paddingElem*2;
+   height: 100%;
+   background-color: @lightGray1;
+   top: 172px;
+   border-left: 3px solid @lightGray2;
+   padding: @paddingElem*2;
+   display:none;
+
+  h4 {
+    font-size: 100%;
+    font-weight: 600;
+    border-bottom: 1px solid @white;
+    color: @firstGreen;
+    padding-bottom: @paddingElem;
+    margin-bottom: 0;
   }
+  dl {
+    padding-left: @paddingElem;
+    dt,dd {
+        font-size: 85%;
+        float: left;
+        height: 30px;
+        padding: @paddingElem*2 0;
+    }
+    dt {
+      width: 68%;
+      margin-right: @paddingElem*2;
+    }
+    dd {
+      width: 25%;
+    }
+  }
+ }
+
+
 
 .sidr {
   top : 170px;

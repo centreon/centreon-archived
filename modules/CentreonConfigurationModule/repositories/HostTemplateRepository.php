@@ -38,6 +38,7 @@ namespace CentreonConfiguration\Repository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Hosttemplate;
 use CentreonConfiguration\Repository\Repository;
+use Centreon\Internal\Utils\YesNoDefault;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Models\Timeperiod;
@@ -217,7 +218,23 @@ class HostTemplateRepository extends Repository
         }
     }
     
+    /**
+     * Get configuration data of a host
+     * 
+     * @param int $hostId
+     * @return array
+     */
+    public static function getConfigurationData($hostId)
+    {
+        return HostTemplate::getParameters($hostId, "*");
+    }
     
+    /**
+     * Format data so that it can be displayed in tooltip
+     *
+     * @param array $templates
+     * @return array $checkdataTemplate
+     */
     public static function formatDataForTooltip($templates)
     {
         

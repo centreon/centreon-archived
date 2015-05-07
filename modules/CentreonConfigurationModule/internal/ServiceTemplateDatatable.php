@@ -37,6 +37,7 @@
 namespace CentreonConfiguration\Internal;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Utils\HumanReadable;
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\ServicetemplateRepository;
@@ -267,6 +268,10 @@ class ServiceTemplateDatatable extends Datatable
                 }
             }
             $myServiceSet['service_template_model_stm_id'] = $tplStr;
+
+            /* Display human readable the check/retry interval */
+            $myServiceSet['service_normal_check_interval'] = HumanReadable::convert($myServiceSet['service_normal_check_interval'], 's', $units, null, true);
+            $myServiceSet['service_retry_check_interval'] = HumanReadable::convert($myServiceSet['service_retry_check_interval'], 's', $units, null, true);
             
             /* Tags */
             $myServiceSet['tagname']  = "";

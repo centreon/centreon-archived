@@ -251,7 +251,7 @@ class ServiceDatatable extends Datatable
             'orderable' => false,
             'searchable' => true,
             'type' => 'string',
-            'visible' => true,
+            'visible' => false,
             'width' => '40px',
             'tablename' => 'cfg_tags'
         ),

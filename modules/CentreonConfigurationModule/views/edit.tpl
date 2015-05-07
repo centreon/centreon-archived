@@ -66,7 +66,13 @@
                 if ($(this).val().trim() === "") {
                     validateMandatory = false;
                     $(this).parent().addClass("has-error has-feedback");
-                    errorText += $(this).attr("placeholder") + " is required<br/>";
+                    if (typeof $(this).attr("placeholder") !== 'undefined') {
+                        errorText += $(this).attr("placeholder") + " is required<br/>";
+                    } else if (typeof $(this).closest(".form-group").children("label").html() !== 'undefined') {
+                        errorText += $(this).closest(".form-group").children("label").html() + " is required<br/>";
+                    } else {
+                        errorText += "a field is required<br/>";
+                    }
                 }
             });
             
