@@ -100,7 +100,7 @@ class ManageCommand extends AbstractCommand
      * 
      * @param string $module
      */
-    public function buildForms($module)
+    public function deployFormsAction($module)
     {
         $modulePath = Informations::getModulePath($module);
         $moduleId = Informations::getModuleIdByName($module);

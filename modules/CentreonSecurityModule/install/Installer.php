@@ -45,9 +45,9 @@ class Installer extends AbstractModuleInstaller
 {
     /**
      * 
-     * @param type $moduleDirectory
-     * @param type $moduleInfo
-     * @param type $launcher
+     * @param string $moduleDirectory
+     * @param array $moduleInfo
+     * @param string $launcher
      */
     public function __construct($moduleDirectory, $moduleInfo, $launcher)
     {
