@@ -160,7 +160,15 @@ class HostRepository extends Repository
      */
     public static function getConfigurationData($hostId)
     {
-        return Host::getParameters($hostId, "*");
+        $myHostParameters = Host::getParameters($hostId, "*");
+        $myHostParameters['templatesIds'] = HostRepository::getTemplateChain($hostId);
+        
+        
+        $myHostParameters['templates'] = array();
+        foreach($myHostParameters['templatesIds'] as $myHostTemplate) {
+            $myHostParameters['templates'][] = HostTemplateRepository::get($myHostTemplate['id']);
+        }
+        return $myHostParameters;
     }
 
     /**
@@ -169,6 +177,9 @@ class HostRepository extends Repository
      * @param array $data
      * @return array $checkdata
      */
+    
+    
+    
     public static function formatDataForTooltip($data)
     {
         /* Check data */
