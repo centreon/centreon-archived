@@ -38,18 +38,47 @@ namespace Centreon\Commands\Database;
 use Centreon\Internal\Command\AbstractCommand;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
-use Centreon\Internal\Installer\Database\Installer as DbInstaller;
+use Centreon\Internal\Utils\CommandLine\InputOutput;
+use Centreon\Internal\Database\GenerateDiff;
 
-class ToolsCommand extends AbstractCommand
+/**
+ * Description of MigrateCommand
+ *
+ * @author Lionel Assepo <lassepo@centreon.com>
+ */
+class MigrateCommand extends AbstractCommand
 {
-    
-
     /**
      * 
      */
-    public function generateMigrationClassAction()
+    public function generateDiffAction()
     {
-        $myMigrationManager = new DbInstaller();
-        $myMigrationManager->generateDiffClasses('/tmp');
+        InputOutput::display(_("Generates SQL diff between the XML schemas and the current database structure"));
+        $diffGenerator = new GenerateDiff();
+        $diffGenerator->getDiff();
+    }
+    
+    /**
+     * 
+     */
+    public function downAction()
+    {
+        InputOutput::display(_("Executes the next migrations down"));
+    }
+    
+    /**
+     * 
+     */
+    public function statusAction()
+    {
+        InputOutput::display(_("Lists the migrations yet to be executed"));
+    }
+    
+    /**
+     * 
+     */
+    public function upAction()
+    {
+        InputOutput::display(_("Executes the next migrations up"));
     }
 }

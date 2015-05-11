@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,23 +34,28 @@
  * 
  */
 
-namespace Centreon\Commands\Database;
+namespace Centreon\Internal\Database;
 
-use Centreon\Internal\Command\AbstractCommand;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
-use Centreon\Internal\Installer\Database\Installer as DbInstaller;
 
-class ToolsCommand extends AbstractCommand
+/**
+ * Description of GenerateDiff
+ *
+ * @author lionel
+ */
+class GenerateDiff extends PropelMigration
 {
-    
-
     /**
      * 
      */
-    public function generateMigrationClassAction()
+    public function __construct()
     {
-        $myMigrationManager = new DbInstaller();
-        $myMigrationManager->generateDiffClasses('/tmp');
+        parent::__construct();
+    }
+    
+    public function getDiff()
+    {
+        $this->runPhing('diff');
     }
 }
