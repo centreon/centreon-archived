@@ -26,6 +26,12 @@
                     $(row).on('click', function(e){
                         var target = $( e.target );
                         if(target.is("a")){
+                            // trick to avoid dataTable default row selection style
+                            if($(this).hasClass('selected')){
+                                $(this).removeClass('selected');
+                            }else{
+                                $(this).addClass('selected');
+                            }
                             return;
                         }else{
                             if($(this).hasClass('selected')){
