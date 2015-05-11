@@ -119,7 +119,6 @@ class HostController extends Controller
         $this->tpl->assign('moduleName', 'CentreonRealtime');
         $this->tpl->assign('datatableObject', $this->datatableObject);
         $this->tpl->assign('objectName', 'Host');
-        $this->tpl->assign('consoleType', 0); // host console
         $this->tpl->assign('objectListUrl', '/centreon-realtime/host/list');
         
         $actions = array();
@@ -140,7 +139,7 @@ class HostController extends Controller
         );
         $this->tpl->append('jsUrl', $urls, true);
 
-        $this->tpl->display('file:[CentreonRealtimeModule]console.tpl');
+        $this->tpl->display('file:[CentreonMainModule]list.tpl');
     }
 
     /**

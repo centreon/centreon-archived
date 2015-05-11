@@ -137,10 +137,26 @@
         function toggleSelectedAction() {
             var countElem = $('table[id^="datatable"] tbody tr').length;
             var countChecked = $('table[id^="datatable"] tbody tr[class*="selected"]').length;
-            if (countChecked > 0) {
-                $('#selected_option').show();
-            } else {
-                $('#selected_option').hide();
+            if (countChecked == 1 && $('table[id^="datatable"] tbody tr[class*="selected"]').first().find("td:first").hasClass("dataTables_empty")) {
+                countChecked = 0;
+            }
+
+            /* Display or hide listing add button */
+            if ($('#selected_option').find('ul > li').length > 0) {
+                if (countChecked > 0) {
+                    $('#selected_option').show();
+                } else {
+                    $('#selected_option').hide();
+                }
+            }
+
+            /* Display or hide listing addto button */
+            if ( $( "#addToGroup" ).find( "ul > li" ).length > 0 ) {
+                if (countChecked > 0) {
+                    $( "#addToGroup" ).show();
+                } else {
+                    $( "#addToGroup" ).hide();
+                }
             }
             
             selectedCb = [];
@@ -824,11 +840,6 @@
             });
             oTable.api().draw();
         });
-
-        /* Display or hide listing addto */
-        if ( $( "#addToGroup" ).find( "ul > li" ).length > 0 ) {
-          $( "#addToGroup" ).removeClass( "hidden" );
-        }
     });
     
     

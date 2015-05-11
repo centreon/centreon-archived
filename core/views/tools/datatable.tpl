@@ -11,12 +11,13 @@
         <div class="ibox-content" id="tableLeft">
             <!-- Add / Actions -->
             <div class="buttonGroup">
-                {if $displayActionBar === true}
+                {if isset($objectAddUrl)}
                   <div class="configuration-actions">
                     <button class="btnC btnSuccess" id="modalAdd">{t}Add {$objectName}{/t}</button>
                   </div>
                 {/if}
 
+                {if $displayActionBar === true}
                 <div id="selected_option" style="display: none;">
                   <button type="button" class="btnC btnDefault dropdown-toggle" data-toggle="dropdown">
                     {t}Actions{/t}
@@ -27,15 +28,18 @@
                         <li><a href="#" id="modalEnable">{t}Enable{/t}</a></li>
                         <li><a href="#" id="modalDisable">{t}Disable{/t}</a></li>
                     {/if}
-                    <li><a href="#" id="modalDelete">{t}Delete{/t}</a></li>
-                    {if !(isset($disableButton)) || (isset($disableButton) && !$disableButton)}
+                    {if isset($objectAddUrl)}
+                        <li><a href="#" id="modalDelete">{t}Delete{/t}</a></li>
+                    {/if}
+                    {if (isset($configuration) && ($configuration === true))}
                         <li><a href="#" id="modalDuplicate">{t}Duplicate{/t}</a></li>
                         <li><a href="#" id="modalMassiveChange">{t}Massive change{/t}</a></li>
                     {/if}
                   </ul>
                 </div>
+                {/if}
 
-                 <div class="hidden" id="addToGroup">
+                 <div id="addToGroup" style="display: none;">
                       <button type="button" class="btnC btnDefault dropdown-toggle" data-toggle="dropdown">
                         {t}Add to{/t}
                         <span class="caret"></span>

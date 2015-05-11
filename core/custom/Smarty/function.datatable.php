@@ -59,7 +59,7 @@ function smarty_function_datatable($params, $smarty)
     
     $smarty->assign('datatableParameters', $datatableParameters);
     
-    if ($params['configuration']) {
+    if ($params['displayActionBar']) {
         $smarty->assign('displayActionBar', true);
     } else {
         $smarty->assign('displayActionBar', false);
