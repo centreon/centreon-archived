@@ -11,7 +11,7 @@
         <div class="ibox-content" id="tableLeft">
             <!-- Add / Actions -->
             <div class="buttonGroup">
-                {if isset($objectAddUrl)}
+                {if (isset($objectAddUrl) && !empty($objectAddUrl))}
                   <div class="configuration-actions">
                     <button class="btnC btnSuccess" id="modalAdd">{t}Add {$objectName}{/t}</button>
                   </div>

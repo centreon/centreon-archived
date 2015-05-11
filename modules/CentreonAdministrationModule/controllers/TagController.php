@@ -64,7 +64,7 @@ class TagController extends Controller
     
     public static $disableButton = true;
     
-    public static $displayActionBar = false; 
+    public static $displayActionBar = true; 
     
     /**
      *
@@ -303,14 +303,14 @@ class TagController extends Controller
         $this->tpl->assign('objectName', $this->objectDisplayName);
         $this->tpl->assign('datatableObject', $this->datatableObject);
         $this->tpl->assign('moduleName', static::$moduleName);
-        $this->tpl->assign('objectAddUrl', $this->objectBaseUrl . '/add');
+        $this->tpl->assign('objectAddUrl', '');
         $this->tpl->assign('objectListUrl', $this->objectBaseUrl . '/list');
         $this->tpl->assign('isDisableable', static::$isDisableable);
         $this->tpl->assign('disableButton', static::$disableButton);
         $this->tpl->assign('displayActionBar', static::$displayActionBar);
         
         $this->tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/del');
-        $this->tpl->display('file:[CentreonAdministrationModule]list.tpl');
+        $this->tpl->display('file:[CentreonMainModule]list.tpl');
     }
     
     /**
