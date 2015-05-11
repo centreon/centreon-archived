@@ -20,31 +20,34 @@
 
            //var $url_details = row.data('right_side_details');
             "rowCallback": function( row, data ) {
-                dataTable = this;
-                dataTable.memRow = false;
+                /*dataTable = this;
+                dataTable.memRow = false;*/
                 if (typeof data.DT_RowData.right_side_details !== 'undefined') {      
-                    $(row).on('click', function(){
-                        
-                        if(dataTable.memRow && dataTable.memRow.is($(this))){
-                            dataTable.memRow = false;
-                            $('#tableLeft').css('margin-right','0%');
-                            $('#sideRight').css('display','none');
-                        }else {
-                            dataTable.memRow = $(this);
-                            $.ajax({
-                                url: data.DT_RowData.right_side_details,
-                                type: "GET",
-                                dataType: 'html',
-                                success : function(e){
-                                    $('#sideRight').html(e);
-                                    $('#tableLeft').css('margin-right','260px');
-                                    $('#sideRight').css('display','block');
-                                },
-                                error : function(error){
-                                }
-                            });
+                    $(row).on('click', function(e){
+                        var target = $( e.target );
+                        if(target.is("a")){
+                            return;
+                        }else{
+                            if($(this).hasClass('selected')){
+                                //dataTable.memRow = false;
+                                $('#tableLeft').css('margin-right','0%');
+                                $('#sideRight').css('display','none');
+                            }else {
+                                //dataTable.memRow = $(this);
+                                $.ajax({
+                                    url: data.DT_RowData.right_side_details,
+                                    type: "GET",
+                                    dataType: 'html',
+                                    success : function(e){
+                                        $('#sideRight').html(e);
+                                        $('#tableLeft').css('margin-right','260px');
+                                        $('#sideRight').css('display','block');
+                                    },
+                                    error : function(error){
+                                    }
+                                });
+                            }
                         }
-                        
                     });
                 }
             },
@@ -108,9 +111,9 @@
             {/if}
         });
 
-        $('#datatable{$object} tbody').on('click', 'a', function (e) {
-            if ($(this).attr('href')) {
-                e.stopProgration();
+        $('#datatable{$object} tbody ').on('click', 'a', function (e) {
+            if ($(this).attr('href') && $(this).attr('href') !== '#') {
+                e.stopPropagation();
             }
         });
         

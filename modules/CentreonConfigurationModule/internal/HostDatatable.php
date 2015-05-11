@@ -36,6 +36,7 @@
 namespace CentreonConfiguration\Internal;
 
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use CentreonMain\Events\SlideMenu;
 use Centreon\Internal\Di;
 use Centreon\Internal\Utils\HumanReadable;
 use CentreonRealtime\Repository\HostRepository as RealTimeHostRepository;
@@ -278,12 +279,16 @@ class HostDatatable extends Datatable
             $myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'.
                 $myHostSet['host_name'];
 
-           
+            $sideMenuCustom = new SlideMenu($myHostSet['host_id']);
+            
+            $events = Di::getDefault()->get('events');
+            $events->emit('centreon-main.slide.menu', array($sideMenuCustom));
+            
             $myHostSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-configuration/host/snapshot/').$myHostSet['host_id'];
-
+            $myHostSet['DT_RowData']['right_side_menu_list'] = $sideMenuCustom->getMenu();
             /*$myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'
                 $myHostSet['host_name'];*/
-
+               
                 /* Host State */
                 $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
                     RealTimeHostRepository::getStatus($myHostSet['host_id'])
