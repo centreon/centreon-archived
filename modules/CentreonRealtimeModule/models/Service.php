@@ -115,7 +115,7 @@ class Service extends CentreonBaseModel
             $aGroup = array('sField' => 'cfg_tags_services.resource_id', 'nb' => count($filters['tagname']));
         }
 
-        if (isset($filters['name']) && !empty($filters['name'])) {
+        if (isset($filters['host_id']) && !empty($filters['host_id'])) {
             $aAddFilters['tables'][] = 'rt_hosts';
             $aAddFilters['join'][] = 'rt_hosts.host_id = s.host_id';
         }
@@ -123,6 +123,11 @@ class Service extends CentreonBaseModel
         if (isset($filters['state'])) {
             $filters['s.state'] = $filters['state'];
             unset($filters['state']);
+        }
+
+        if (isset($filters['host_id'])) {
+            $filters['name'] = $filters['host_id'];
+            unset($filters['host_id']);
         }
 
         return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
