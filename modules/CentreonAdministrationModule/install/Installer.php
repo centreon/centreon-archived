@@ -113,7 +113,7 @@ class Installer extends AbstractModuleInstaller
                 'is_activated' => 1,
                 'is_password_old' => 1
             );
-            $repository::create($adminUser);
+            $repository::create($adminUser, "", "", false, false);
         }
     }
     

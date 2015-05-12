@@ -46,7 +46,7 @@ use CentreonAdministration\Repository\AuditlogRepository;
  * @version 3.0.0
  * @author Sylvestre Ho <sho@centreon.com>
  */
-abstract class Repository  extends FormRepository
+abstract class Repository extends FormRepository
 {
     const ORGANIZATION_FIELD = 'organization_id';
 

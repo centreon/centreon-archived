@@ -35,54 +35,38 @@
 
 namespace CentreonAdministration\Repository;
 
+use CentreonAdministration\Models\Aclgroup;
 use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 
 /**
- * @author Sylvestre Ho <sho@centreon.com>
+ * @author Kevin Duret <kduret@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */
-class AclmenuRepository
+class AclgroupRepository extends Repository
 {
     /**
-     * Get ACL level by Acl Menu ID
      *
-     * @param int $acl_menu_id
-     * @return array
+     * @var string
      */
-    public static function getAclLevelByAclMenuId($acl_menu_id)
-    {
-        $db = Di::getDefault()->get('db_centreon');
-        $sql = "SELECT menu_id, acl_level
-            FROM cfg_acl_menu_menu_relations
-            WHERE acl_menu_id = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute(array($acl_menu_id));
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $data = array();
-        foreach ($rows as $row) {
-            $data[$row['menu_id']] = $row['acl_level'];
-        }
-        return $data;
-    }
-
+    public static $tableName = 'cfg_acl_groups';
+    
     /**
-     * Update Acl data
      *
-     * @param int $acl_menu_id
-     * @param array $menus
+     * @var string
      */
-    public static function updateAclLevel($acl_menu_id, $menus)
-    {
-        $db = Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("DELETE FROM cfg_acl_menu_menu_relations WHERE acl_menu_id = ?");
-        $stmt->execute(array($acl_menu_id));
-        $sql = "INSERT INTO cfg_acl_menu_menu_relations (acl_menu_id, menu_id, acl_level) VALUES (?, ?, ?)";
-        $db->beginTransaction();
-        $stmt = $db->prepare($sql);
-        foreach ($menus as $menuId => $aclLevel) {
-            $stmt->execute(array($acl_menu_id, $menuId, $aclLevel));
-        }
-        $db->commit();
-    }
+    public static $objectName = 'Aclgroup';
+    
+    public static $objectClass = '\CentreonAdministration\Models\Aclgroup';
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'name' => 'cfg_acl_groups, acl_group_id, name'
+        ),
+    );
 }

@@ -45,67 +45,22 @@ class AclgroupController extends FormController
     protected $objectBaseUrl = '/centreon-administration/aclgroup';
     protected $objectClass = '\CentreonAdministration\Models\Aclgroup';
     public static $relationMap = array(
-        'aclgroup_contacts' => '\CentreonConfiguration\Models\Relation\Aclgroup\Contact',
-        'aclgroup_contactgroups' => '\CentreonConfiguration\Models\Relation\Aclgroup\Contactgroup',
-        'aclgroup_aclresources' => '\CentreonConfiguration\Models\Relation\Aclgroup\Aclresource',
-        'aclgroup_aclmenus' => '\CentreonConfiguration\Models\Relation\Aclgroup\Aclmenu',
-        'aclgroup_aclactions' => '\CentreonConfiguration\Models\Relation\Aclgroup\Aclaction'
+        'aclgroup_users' => '\CentreonAdministration\Models\Relation\Aclgroup\User',
     );
     protected $datatableObject = '\CentreonAdministration\Internal\AclgroupDatatable';
+    protected $repository = '\CentreonAdministration\Repository\AclgroupRepository';
+
     public static $isDisableable = true;
+    public static $enableDisableFieldName = 'status';
     
     /**
      * Contacts for a specific acl group
      *
      * @method get
-     * @route /aclgroup/[i:id]/contact
+     * @route /aclgroup/[i:id]/user
      */
-    public function contactForAclgroupAction()
+    public function userForAclgroupAction()
     {
-        parent::getRelations(static::$relationMap['aclgroup_contacts']);
-    }
-
-    /**
-     * Contact groups for a specific acl group
-     *
-     * @method get
-     * @route /aclgroup/[i:id]/contactgroup
-     */
-    public function contactgroupForAclgroupAction()
-    {
-        parent::getRelations(static::$relationMap['aclgroup_contactgroups']);
-    }
-
-    /**
-     * Acl resource for a specific acl group
-     *
-     * @method get
-     * @route /aclgroup/[i:id]/aclresource
-     */
-    public function aclresourceForAclgroupAction()
-    {
-        parent::getRelations(static::$relationMap['aclgroup_aclresources']);
-    }
-
-    /**
-     * Acl menu for a specific acl group
-     *
-     * @method get
-     * @route /aclgroup/[i:id]/aclmenu
-     */
-    public function aclmenuForAclgroupAction()
-    {
-        parent::getRelations(static::$relationMap['aclgroup_aclmenus']);
-    }
-
-    /**
-     * Acl action for a specific acl group
-     *
-     * @method get
-     * @route /aclgroup/[i:id]/aclaction
-     */
-    public function aclactionForAclgroupAction()
-    {
-        parent::getRelations(static::$relationMap['aclgroup_aclactions']);
+        parent::getRelations(static::$relationMap['aclgroup_users']);
     }
 }

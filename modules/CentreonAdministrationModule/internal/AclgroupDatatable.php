@@ -52,6 +52,12 @@ class AclgroupDatatable extends Datatable
      * @var type 
      */
     protected static $datasource = '\CentreonAdministration\Models\Aclgroup';
+
+    /**
+     *
+     * @var type
+     */
+    protected static $rowIdColumn = array('id' => 'acl_group_id', 'name' => 'name');
     
     /**
      *
@@ -60,7 +66,7 @@ class AclgroupDatatable extends Datatable
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('acl_group_name', 'asc'),
+            array('name', 'asc'),
             array('acl_group_id', 'asc')
         ),
         'stateSave' => false,
@@ -79,19 +85,13 @@ class AclgroupDatatable extends Datatable
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
+            'visible' => false,
             'width' => '5%',
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::acl_group_name::'
-                )
-            )
         ),
         array (
             'title' => 'Name',
-            'name' => 'acl_group_name',
-            'data' => 'acl_group_name',
+            'name' => 'name',
+            'data' => 'name',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -103,14 +103,14 @@ class AclgroupDatatable extends Datatable
                     'routeParams' => array(
                         'id' => '::acl_group_id::'
                     ),
-                    'linkName' => '::acl_group_name::'
+                    'linkName' => '::name::'
                 )
             )
         ),
         array (
             'title' => 'Description',
-            'name' => 'acl_group_alias',
-            'data' => 'acl_group_alias',
+            'name' => 'description',
+            'data' => 'description',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -118,8 +118,8 @@ class AclgroupDatatable extends Datatable
         ),
         array (
             'title' => 'Status',
-            'name' => 'acl_group_activate',
-            'data' => 'acl_group_activate',
+            'name' => 'status',
+            'data' => 'status',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
