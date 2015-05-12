@@ -120,6 +120,7 @@ $help["Monitoring Engine_debug_level"] = dgettext("help", "This option determine
 $help["Monitoring Engine_name"] = dgettext("help", "Description or name used to identify this configuration set.");
 $help["Monitoring Engine_activate"] = dgettext("help", "Specify whether this configuration is currently active or not. This way you can test different configuration sets for one monitoring node.");
 $help["Monitoring Engine_server_id"] = dgettext("help", "Choose the Monitoring Engine server instance this configuration is defined for.");
+$help["log_pid"] = dgettext("help", "Enable the possibility to log pid information in engine log file (option only for Centreon Engine)");
 
 /*
  * unsupported in centreon
