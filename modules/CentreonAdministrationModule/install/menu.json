@@ -24,7 +24,12 @@
                     }
                 ]
             },
-
+            {
+                "name": "Acl groups",
+                "short_name": "acl_groups",
+                "icon_class": "fa fa-users",
+                "route": "/centreon-administration/aclgroup"
+            },
             {
                 "name": "Extensions",
                 "short_name": "extensions",

@@ -106,13 +106,15 @@ abstract class FormRepository extends ListRepository
      * @param array $givenParameters
      * @return int id of created object
      */
-    public static function create($givenParameters, $origin = "", $route = "")
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
         $id = null;
         $db = Di::getDefault()->get('db_centreon');
 
         try {
-            self::validateForm($givenParameters, $origin, $route);
+            if ($validate) {
+                self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+            }
         
             $class = static::$objectClass;
             $pk = $class::getPrimaryKey();

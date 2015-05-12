@@ -2,10 +2,9 @@
 <database name="centreon" package="centreon_administration" defaultIdMethod="native">
     <table name="cfg_acl_groups" phpName="AclGroups" idMethod="native">
         <column name="acl_group_id" phpName="AclGroupId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-        <column name="acl_group_name" phpName="AclGroupName" type="VARCHAR" size="255" required="false"/>
-        <column name="acl_group_alias" phpName="AclGroupAlias" type="VARCHAR" size="255" required="false"/>
-        <column name="acl_group_changed" phpName="AclGroupChanged" type="INTEGER" required="true"/>
-        <column name="acl_group_activate" phpName="AclGroupActivate" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="1"/>
+        <column name="name" phpName="AclGroupName" type="VARCHAR" size="255" required="true"/>
+        <column name="description" phpName="AclGroupDescription" type="VARCHAR" size="255" required="false"/>
+        <column name="status" phpName="AclGroupStatus" type="TINYINT" required="true" defaultValue="1"/>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
