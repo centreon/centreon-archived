@@ -56,6 +56,9 @@ class PollerController extends FormController
     protected $repository = '\CentreonConfiguration\Repository\PollerRepository';
     public static $relationMap = array();
 
+    public static $isDisableable = true;
+    public static $enableDisableFieldName = 'enable';
+
     /**
      * List users
      *

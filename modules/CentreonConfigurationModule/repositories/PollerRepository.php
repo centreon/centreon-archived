@@ -158,19 +158,29 @@ class PollerRepository extends Repository
     public static function update($params)
     {
         $di = Di::getDefault();
+
         NodeRepository::update($params);
-        Poller::update(
-            $params['poller_id'],
-            array(
-                'name' => $params['poller_name'],
-                'tmpl_name' => $params['poller_tmpl']
-            )
-        );
-        $engineEvent = new EngineFormSave($params['poller_id'], $params);
-        $di->get('events')->emit('centreon-configuration.engine.form.save', array($engineEvent));
+
+        $pollerParams = array();
+        if (isset($params['poller_name'])) {
+            $pollerParams['name'] = $params['poller_name'];
+        }
+        if (isset($params['poller_tmpl'])) {
+            $pollerParams['tmpl_name'] = $params['poller_tmpl'];
+        }
+        if (isset($params['enable'])) {
+            $pollerParams['enable'] = $params['enable'];
+        }
+
+        Poller::update($params['object_id'], $pollerParams);
+
+        if (isset($params['poller_tmpl'])) {
+            $engineEvent = new EngineFormSave($params['object_id'], $params);
+            $di->get('events')->emit('centreon-configuration.engine.form.save', array($engineEvent));
         
-        $brokerEvent = new BrokerFormSave($params['poller_id'], $params);
-        $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));
+            $brokerEvent = new BrokerFormSave($params['object_id'], $params);
+            $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));
+        }
     }
 
 
