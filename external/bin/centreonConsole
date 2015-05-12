@@ -77,8 +77,9 @@
             }
             $commandeLineManager->executeRequest();
         }
+        exit(0);
     } catch(\Exception $e) {
         echo '[Error ' . $e->getCode() . '] => ' . $e->getMessage() . "\n";
-        exit(1);
+        exit(127);
     }
 ?>

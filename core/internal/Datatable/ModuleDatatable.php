@@ -265,6 +265,10 @@ class ModuleDatatable extends Datatable
         self::getFilesystemModule($resultSet);
     }
 
+    /**
+     * 
+     * @param type $resultSet
+     */
     protected function formatDatas(&$resultSet) 
     {
         foreach ($resultSet as &$result) {

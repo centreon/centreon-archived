@@ -82,6 +82,12 @@ class PropelMigration
      * @var type 
      */
     protected $propelPath;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $appPath;
 
 
     /**
@@ -100,21 +106,23 @@ class PropelMigration
             )
         ));
         
+        $this->appPath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
+        
         $this->tmpDir = rtrim($this->appConfig->get('global', 'centreon_generate_tmp_dir'), '/') . '/centreon/propel';
         if (file_exists($this->tmpDir)) {
             Directory::delete($this->tmpDir, true);
         }
         mkdir($this->tmpDir, 0700, true);
-        
-        $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
-        $this->propelPath = $path . '/vendor/propel/propel1/';
+        $this->propelPath = $this->appPath . '/vendor/propel/propel1/';
     }
+    
     /**
      * 
      */
     public function runPhing($taskName)
     {
         // Create build.properties file
+        $this->createBuildPropertiesFile($this->tmpDir.'/build.properties');
         
         // Create buildtime-conf file
         $this->createBuildTimeConfFile($this->tmpDir.'/buildtime-conf.xml');
@@ -150,7 +158,10 @@ class PropelMigration
      */
     protected function createBuildPropertiesFile($output)
     {
-        
+        $source = $this->appPath . '/core/custom/Propel/build.properties';
+        if (file_exists($source)) {
+            copy($source, $output);
+        }
     }
     
     /**
@@ -204,12 +215,15 @@ EOT;
     private function getPhingArguments($properties = array())
     {
         $args = array();
+        
         // Default properties
         $properties = array_merge(array(
             'propel.database'           => 'mysql',
-            'project.dir'               => $this->tmpDir,
-            'propel.output.dir'         => $this->tmpDir . '/output',
-            'propel.php.dir'            => $this->tmpDir . '/generate',
+            'propel.project'            => 'centreon',
+            'propel.targetPackage'      => 'centreon',
+            'project.dir'               => $this->tmpDir . '/',
+            'propel.output.dir'         => $this->tmpDir . '/output/',
+            'propel.php.dir'            => $this->tmpDir . '/generate/',
             'propel.packageObjectModel' => true,
             'propel.useDateTimeClass'   => true,
             'propel.dateTimeClass'      => 'DateTime',
@@ -219,6 +233,11 @@ EOT;
             'propel.defaultTimeStampFormat'     => '',
             'propel.builder.pluralizer.class'   => 'builder.util.StandardEnglishPluralizer',
         ), $properties);
+        
+        // 
+        foreach ($properties as $key => $value) {
+            $args[] = "-D$key=$value";
+        }
         
         // Build file
         $args[] = '-f';
