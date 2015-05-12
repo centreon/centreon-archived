@@ -46,25 +46,28 @@ class SlideMenu
         
         $router = Di::getDefault()->get('router');
         try{
-            /*$event->addMenu(
-                array(
-                    'name' => 'template',
-                    'url' => 'toto/'.$event->getHostId(),
-                    'icon' => 'tata',
-                    'order' => 1
-                )
-            );*/
+            
             $event->addMenu(
                 array(
-                    'name' => 'template2',
+                    'name' => 'template',
                     'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconf/') . $event->getHostId(),
+                    'icon' => 'tata3',
+                    'order' => 1
+                )
+            );
+            
+            $event->addMenu(
+                array(
+                    'name' => 'tags',
+                    'url' => $router->getPathFor('/centreon-configuration/host/tags/') . $event->getHostId(),
                     'icon' => 'tata3',
                     'order' => 2
                 )
             );
+            
+            
         }  catch (Exception $e) {
-            //print_r($e->getMessage());
-            //die;
+
         }
         
        

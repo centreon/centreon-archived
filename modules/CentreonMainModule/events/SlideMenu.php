@@ -80,6 +80,16 @@ class SlideMenu
         return true;
     }
     
+    private function orderMenu(){
+           
+        $temporaryArray = array();
+        foreach($this->menuList as $menu){
+            $temporaryArray[] = $menu['order'];
+        }
+        array_multisort($temporaryArray, SORT_ASC, SORT_NUMERIC, $this->menuList);
+        
+    }
+    
     
     /**
      * Add a menu to the slideMenu
@@ -90,6 +100,7 @@ class SlideMenu
     {
         if($this->testMenuArray($menuList)){
             $this->menuList[] = $menuList;
+            $this->orderMenu();
         }else{
             throw new Exception("Invalid menu nomenclature, array(".implode(",",array_keys($menuList))." ) sended, should be : array(name,url,icon,order)",0);
         }

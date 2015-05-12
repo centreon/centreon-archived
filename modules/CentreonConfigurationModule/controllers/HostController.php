@@ -201,6 +201,24 @@ class HostController extends FormController
         $this->router->response()->json(array('success' => true));
     }
 
+    
+    
+    /**
+     * Show all tags of a Host
+     *
+     *
+     * @method get
+     * @route /host/tags/[i:id]
+     */
+    public function getHostTagsAction()
+    {
+        $requestParam = $this->getParams('named');
+        $tags = TagsRepository::getList('host', $requestParam['id']);
+        $this->tpl->assign('tags', $tags);
+        $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');
+    }
+    
+    
     /**
      * Update a host
      *
