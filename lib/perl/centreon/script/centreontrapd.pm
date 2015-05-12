@@ -1144,15 +1144,19 @@ sub run {
                                                                      entvarname => \@{$self->{trap_data}->{entvarname}});
                 
                 if ($readtrap_result == 1) {
-                    if (centreon::trapd::lib::check_known_trap(logger => $self->{logger},
-                                                               logger_unknown => $self->{logger_unknown},
-                                                               config => $self->{centreontrapd_config},
-                                                               trap_data => $self->{trap_data},
-                                                               oid2verif => ${$self->{trap_data}->{var}}[3],      
-                                                               cdb => $self->{cdb},
-                                                               last_cache_time => \$self->{last_cache_time},
-                                                               oids_cache => \$self->{oids_cache}) == 1) {
+                    my ($status) = centreon::trapd::lib::check_known_trap(logger => $self->{logger},
+                                                                          logger_unknown => $self->{logger_unknown},
+                                                                          config => $self->{centreontrapd_config},
+                                                                          trap_data => $self->{trap_data},
+                                                                          oid2verif => ${$self->{trap_data}->{var}}[3],      
+                                                                          cdb => $self->{cdb},
+                                                                          last_cache_time => \$self->{last_cache_time},
+                                                                          oids_cache => \$self->{oids_cache});
+                    if ($status == 1) {
                         $unlink_trap = $self->getTrapsInfos();
+                    } elsif ($status == -1) {
+                        # DB deconnection. Need to keep the file. Not deleted it.
+                        $unlink_trap = 0;
                     }
                 } elsif ($readtrap_result == 0) {
                     $self->{logger}->writeLogDebug("Error processing trap file $file.  Skipping...");
