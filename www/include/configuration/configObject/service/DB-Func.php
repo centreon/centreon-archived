@@ -992,9 +992,14 @@ function insertService($ret = array(), $macro_on_demand = null)
     if (isset($ret["service_notifOpts"])) {
         $fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));
     }
-    if (isset($ret["service_notifications_enabled"]) &&
-        isset($ret["service_notifications_enabled"]["service_notifications_enabled"])) {
+    if (isset($ret["service_notifications_enabled"]) && isset($ret["service_notifications_enabled"]["service_notifications_enabled"])) {
         $fields["service_notifications_enabled"] = $ret["service_notifications_enabled"]["service_notifications_enabled"];
+    }
+    if (isset($ret["contact_additive_inheritance"])) {
+        $fields["contact_additive_inheritance"] = $ret["contact_additive_inheritance"];        
+    }
+    if (isset($ret["cg_additive_inheritance"])) {
+        $fields["cg_additive_inheritance"] = $ret["cg_additive_inheritance"];        
     }
     $fields["service_stalOpts"] = "";
     if (isset($ret["service_stalOpts"])) {
@@ -1244,13 +1249,12 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     $fields["service_process_perf_data"] = $ret["service_process_perf_data"]["service_process_perf_data"];
     $fields["service_retain_status_information"] = $ret["service_retain_status_information"]["service_retain_status_information"];
     $fields["service_retain_nonstatus_information"] = $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"];
-	//	$fields["service_notification_interval"] = $ret["service_notification_interval"];
-	//	$fields["service_first_notification_delay"] = $ret["service_first_notification_delay"];
-    /*$fields["service_notifOpts"] = "";
-      if (isset($ret["service_notifOpts"]))
-      $fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));*/
     if (isset($fields["service_notifications_enabled"]))
         $fields["service_notifications_enabled"] = $fields["service_notifications_enabled"]["service_notifications_enabled"];
+    if (isset($fields["contact_additive_inheritance"]))
+        $fields["contact_additive_inheritance"] = $ret["contact_additive_inheritance"];
+    if (isset($fields["cg_additive_inheritance"]))
+        $fields["cg_additive_inheritance"] = $ret["cg_additive_inheritance"];
     $fields["service_stalOpts"] = "";
     if (isset($ret["service_stalOpts"]))
         $fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
@@ -1409,21 +1413,17 @@ function updateService_MC($service_id = null, $params = array())
         $rq .= "service_retain_nonstatus_information = '".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', ";
         $fields["service_retain_nonstatus_information"]["service_retain_nonstatus_information"];
     }
-    /*if (isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL) {
-      $rq .= "service_notification_interval = '".$ret["service_notification_interval"]."', ";
-      $fields["service_notification_interval"] = $ret["service_notification_interval"];
-      }*/
-    /*if (isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL) {
-      $rq .= "service_first_notification_delay = '".$ret["service_first_notification_delay"]."', ";
-      $fields["service_first_notification_delay"] = $ret["service_first_notification_delay"];
-      }*/
-    /*if (isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL) {
-      $rq .= "service_notification_options = '".implode(",", array_keys($ret["service_notifOpts"]))."', ";
-      $fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));
-      }*/
     if (isset($ret["service_notifications_enabled"]["service_notifications_enabled"])) {
         $rq .= "service_notifications_enabled = '".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', ";
         $fields["service_notifications_enabled"] = $ret["service_notifications_enabled"]["service_notifications_enabled"];
+    }
+    if (isset($ret["contact_additive_inheritance"])) {
+        $rq .= "contact_additive_inheritance = '".$ret["contact_additive_inheritance"]."', ";
+        $fields["contact_additive_inheritance"] = $ret["contact_additive_inheritance"];
+    }
+    if (isset($ret["cg_additive_inheritance"])) {
+        $rq .= "cg_additive_inheritance = '".$ret["cg_additive_inheritance"]."', ";
+        $fields["cg_additive_inheritance"] = $ret["cg_additive_inheritance"];
     }
     if (isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"])) {
         $rq .= "service_inherit_contacts_from_host = '".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', ";
@@ -1523,7 +1523,7 @@ function updateServiceContact($service_id = null, $ret = array())
         $ret = $ret["service_cs"];
     else
         $ret = $form->getSubmitValue("service_cs");
-    for($i = 0; $i < count($ret); $i++)	{
+    for ($i = 0; $i < count($ret); $i++)	{
         $rq = "INSERT INTO contact_service_relation ";
         $rq .= "(contact_id, service_service_id) ";
         $rq .= "VALUES ";

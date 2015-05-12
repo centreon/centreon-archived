@@ -25,6 +25,25 @@ Exécuter la commande suivante à partir d'un utilisateur possédant les droits 
 
 Le dépôt est maintenant installé.
 
+Pour tous les OS
+----------------
+
+SELinux doit être désactivé. Pour cela vous devez modifier le fichier "/etc/sysconfig/selinux" et remplacer "enforcing" par "disabled" comme dans l'exemple suivant :
+
+ ::
+ 
+ SELINUX=disabled
+
+La timezone par défaut de PHP doit être configurée. Pour cela, aller dans le répertoire /etc/php.d et créer un fichier nommé php-timezone.ini contenant la ligne suivante : 
+
+ ::
+ 
+ date.timezone = Europe/Paris
+
+Après avoir sauvegardé le fichier, n'oubliez pas de redémarrer le service apache de votre serveur.
+
+La base de données MySQL doit être disponible pour pouvoir continuer l'installation (localement ou non). Pour information nous recommandons MariaDB.
+
 Installer un serveur central
 ----------------------------
 

@@ -877,6 +877,10 @@ function insertHost($ret, $macro_on_demand = NULL)	{
         $fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
     if (isset($ret["host_first_notification_delay"]))
         $fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
+    if (isset($ret["contact_additive_inheritance"]))
+        $fields["contact_additive_inheritance"] = $ret["contact_additive_inheritance"];
+    if (isset($ret["cg_additive_inheritance"]))
+        $fields["cg_additive_inheritance"] = $ret["cg_additive_inheritance"];
     $fields["host_stalOpts"] = "";
     if (isset($ret["host_stalOpts"]))
         $fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
@@ -1267,8 +1271,7 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
     if (isset($ret["host_check_interval"])) $fields["host_check_interval"] = $ret["host_check_interval"];
     if (isset($ret["host_active_checks_enabled"])) $fields["host_active_checks_enabled"] = $ret["host_active_checks_enabled"]["host_active_checks_enabled"];
     if (isset($ret["host_passive_checks_enabled"])) $fields["host_passive_checks_enabled"] = $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"];
-    if (isset($ret["host_checks_enabled"]))
-        $fields["host_checks_enabled"] = $ret["host_checks_enabled"]["host_checks_enabled"];
+    if (isset($ret["host_checks_enabled"])) $fields["host_checks_enabled"] = $ret["host_checks_enabled"]["host_checks_enabled"];
     if (isset($ret["host_obsess_over_host"])) $fields["host_obsess_over_host"] = $ret["host_obsess_over_host"]["host_obsess_over_host"];
     if (isset($ret["host_check_freshness"])) $fields["host_check_freshness"] = $ret["host_check_freshness"]["host_check_freshness"];
     if (isset($ret["host_freshness_threshold"])) $fields["host_freshness_threshold"] = $ret["host_freshness_threshold"];
@@ -1281,12 +1284,10 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
     if (isset($ret["host_retain_nonstatus_information"])) $fields["host_retain_nonstatus_information"] = $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"];
     if (isset($ret["host_notifications_enabled"])) $fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
     $fields["host_stalOpts"] = "";
-    if (isset($ret["host_stalOpts"]))
-        $fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
+    if (isset($ret["host_stalOpts"])) $fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
     if (isset($ret["host_snmp_community"])) $fields["host_snmp_community"] = CentreonDB::escape($ret["host_snmp_community"]);
     if (isset($ret["host_snmp_version"])) $fields["host_snmp_version"] = CentreonDB::escape($ret["host_snmp_version"]);
-    if (isset($ret["host_location"]))
-        $fields["host_location"] = CentreonDB::escape($ret["host_location"]);
+    if (isset($ret["host_location"]))$fields["host_location"] = CentreonDB::escape($ret["host_location"]);
     if (isset($ret["host_comment"])) $fields["host_comment"] = CentreonDB::escape($ret["host_comment"]);
     if (isset($ret["host_register"])) $fields["host_register"] = $ret["host_register"];
     if (isset($ret["host_activate"])) $fields["host_activate"] = $ret["host_activate"]["host_activate"];
@@ -1448,6 +1449,14 @@ function updateHost_MC($host_id = null)	{
     if (isset($ret["host_notifications_enabled"]["host_notifications_enabled"])) {
         $rq .= "host_notifications_enabled = '".$ret["host_notifications_enabled"]["host_notifications_enabled"]."', ";
         $fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
+    }
+    if (isset($ret["contact_additive_inheritance"])) {
+        $rq .= "contact_additive_inheritance = '".$ret["contact_additive_inheritance"]."', ";
+        $fields["contact_additive_inheritance"] = $ret["contact_additive_inheritance"];
+    }
+    if (isset($ret["cg_additive_inheritance"])) {
+        $rq .= "cg_additive_inheritance = '".$ret["cg_additive_inheritance"]."', ";
+        $fields["cg_additive_inheritance"] = $ret["cg_additive_inheritance"];
     }
     if (isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != NULL) {
         $rq .= "host_stalking_options = '".implode(",", array_keys($ret["host_stalOpts"]))."', ";

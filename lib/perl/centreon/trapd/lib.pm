@@ -437,7 +437,7 @@ sub check_known_trap {
         if (!defined(${$args{last_cache_time}}) || ((time() - ${$args{last_cache_time}}) > $args{config}->{cache_unknown_traps_retention})) {
             if (get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time}) == -1) {
                 $args{logger}->writeLogError("Cant load cache trap oids.");
-                return 0;
+                return -1;
             }
         }
         if (defined(${$args{oids_cache}}->{$oid2verif})) {
