@@ -71,6 +71,35 @@ class IndicatorController extends FormController
         $updateSuccessful = true;
         $updateErrorMessage = '';
 
+        switch ($givenParameters['kpi_type']):
+            case '0':
+                $iServiceId = trim($givenParameters['service_id']);
+                if (empty($iServiceId)) {
+                    $updateSuccessful = false;
+                    $updateErrorMessage = _("The service is mandatory field");
+                }
+                break;
+            case '2':
+                $iIndicatorBa = trim($givenParameters['id_indicator_ba']);
+                if (empty($iIndicatorBa)) {
+                    $updateSuccessful = false;
+                    $updateErrorMessage = _("The BA is mandatory field");
+                }
+                break;
+            case '3':
+                $sBooelanName = trim($givenParameters['boolean_name']);
+                if (empty($sBooelanName)) {
+                    $updateSuccessful = false;
+                    $updateErrorMessage = _("The name of boolean is mandatory field");
+                }
+                break;
+        endswitch;
+ 
+        if (!$updateSuccessful) {
+            $this->router->response()->json(array('success' => $updateSuccessful,'error' => $updateErrorMessage));
+            return;
+        }
+
         try {
             IndicatorRepository::createIndicator($givenParameters);
             unset($_SESSION['form_token']);
