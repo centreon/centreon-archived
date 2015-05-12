@@ -36,6 +36,7 @@
 namespace CentreonAdministration\Models;
 
 use Centreon\Models\CentreonBaseModel;
+use Centreon\Internal\Di;
 
 /**
  * Models for tags
@@ -51,4 +52,37 @@ class Tag extends CentreonBaseModel
     protected static $primaryKey = 'tag_id';
     protected static $uniqueLabelField = 'tagname';
     protected static $relations = array();
+    
+    /**
+     * 
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getList(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR",
+        $tablesString = null,
+        $staticFilter = null,
+        $aAddFilters  = array(),
+        $aGroup = array()
+    ) {
+        $db = Di::getDefault()->get('db_centreon');
+        
+        $stmt = $db->query("SELECT * FROM ".self::$table." WHERE user_id IS NULL");
+        
+        $savedOptions = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        return $savedOptions;
+    }
 }
