@@ -2,7 +2,7 @@
     "name": "centreon/centreon",
     "description": "Monitoring Web User Interface",
     "require": {
-        "smarty/smarty": "3.1.*",
+        "smarty/smarty": "3.1.21",
         "smarty-gettext/smarty-gettext": "1.1.*",
         "openpsa/quickform": "3.3.0-rc.1",
         "evenement/evenement": "1.0.*",
