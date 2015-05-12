@@ -35,12 +35,13 @@
 
 namespace CentreonConfiguration\Repository;
 
+
 /**
  * @author Sylvestre Ho <sho@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */
-class TrapRepository extends \CentreonConfiguration\Repository\Repository
+class TrapRepository extends Repository
 {
     /**
      *
@@ -53,4 +54,17 @@ class TrapRepository extends \CentreonConfiguration\Repository\Repository
      * @var string
      */
     public static $objectName = 'Trap';
+    
+    public static $objectClass = '\CentreonConfiguration\Models\Trap';
+    
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'traps' => 'cfg_traps, traps_id, traps_name'
+        ),
+    );
 }

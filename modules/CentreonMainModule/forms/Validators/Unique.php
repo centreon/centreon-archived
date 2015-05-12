@@ -43,11 +43,14 @@ use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\CommandRepository;
+use CentreonConfiguration\Repository\TrapRepository;
 
 use CentreonAdministration\Repository\ContactRepository;
 use CentreonAdministration\Repository\UserRepository;
 
 use CentreonBam\Repository\BusinessActivityRepository;
+
+use CentreonPerformance\Repository\GraphTemplate;
 
 use Centreon\Internal\Exception\Validator\MissingParameterException;
 use CentreonConfiguration\Models\Host;
@@ -80,9 +83,10 @@ class Unique implements ValidatorInterface
         $iId = '';
         $return = '';
                
-        
-        //echo "obj".$params['object'];
-        //var_dump($params);die;
+       /* 
+        echo "obj".$params['object'];
+        var_dump($params);die;
+       */
 
         if (isset($params['object']) && $params['object'] == 'service') {
             $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
@@ -282,8 +286,71 @@ class Unique implements ValidatorInterface
             } catch (MissingParameterException $e) {
                 $return[] = 0;
             }
-        } 
-//        var_dump($return); die;
+        }  elseif (isset($params['object']) && $params['object'] == 'graphtemplate') {
+            $objClass = "CentreonPerformance\Repository\GraphTemplate";
+            
+            if (isset($params['extraParams']['name'])) {
+                $sLabel = $params['extraParams']['name'];
+            }
+
+            $aParams['graphTemplate'] = $sLabel;
+            try {
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned);
+                
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
+        } elseif (isset($params['object']) && $params['object'] == 'trap') {
+            $objClass = "CentreonConfiguration\Repository\TrapRepository";
+            
+            if (isset($params['extraParams']['traps_name'])) {
+                $sLabel = $params['extraParams']['traps_name'];
+            }      
+
+            $aParams['traps'] = $sLabel;
+            try {
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned);
+                
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
+        } elseif (isset($params['object']) && $params['object'] == 'manufacturer') {
+            $objClass = "CentreonConfiguration\Repository\ManufacturerRepository";
+            
+            if (isset($params['extraParams']['name'])) {
+                $sLabel = $params['extraParams']['name'];
+            }      
+
+            $aParams['manufacturer'] = $sLabel;
+            try {
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned);
+                
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
+        }
+       /*
+        var_dump($return);
+        var_dump($params); die;
+        */
         if (is_array($return)) {
             foreach($return as $valeur) {
                 if ($valeur > 0) {

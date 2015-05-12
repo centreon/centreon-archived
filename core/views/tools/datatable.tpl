@@ -17,7 +17,7 @@
                   </div>
                 {/if}
 
-                {if $displayActionBar === true}
+                {if (isset($displayActionBar) &&  $displayActionBar)}
                 <div id="selected_option" style="display: none;">
                   <button type="button" class="btnC btnDefault dropdown-toggle" data-toggle="dropdown">
                     {t}Actions{/t}

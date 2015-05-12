@@ -8,21 +8,21 @@
 			<block name="General information">
 				<field name="traps_name" label="Trap name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 				    <validators>
-                    	<validator rules="remote" serverside="core.unique" />
-                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
-                        	<argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
-                        </validator>
+                                        <validator rules="remote" serverside="centreon-main.unique" />
+                                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                                                <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
+                                        </validator>
 				    </validators>
 				</field>
 				<field name="traps_oid" label="OID" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
 				<field name="manufacturer_id" label="Manufacturer" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/manufacturer/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/trap/[i:id]/manufacturer</listValuesRoute>
-						<multiple>false</multiple>
-						<ordered>true</ordered>
-					</attributes>
+                                    <attributes>
+                                        <object_type>object</object_type>
+                                        <defaultValuesRoute>/centreon-configuration/manufacturer/formlist</defaultValuesRoute>
+                                        <listValuesRoute>/centreon-configuration/trap/[i:id]/manufacturer</listValuesRoute>
+                                        <multiple>false</multiple>
+                                        <ordered>true</ordered>
+                                    </attributes>
 				</field>
 			</block>
 			<block name="Trap translation">

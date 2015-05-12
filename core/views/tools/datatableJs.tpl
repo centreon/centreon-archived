@@ -106,7 +106,7 @@
                 }
             }
             lastSelectedRow = this;
-            {if $displayActionBar === true}
+            {if (isset($displayActionBar) && $displayActionBar === true)}
             toggleSelectedAction();
             {/if}
         });
