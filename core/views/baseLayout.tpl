@@ -11,7 +11,7 @@
 </head>
 
 <body class="bodyCntr">
-    <span id="flash-message"></span>
+    <div id="flash-message"></div>
 <!-- Commentaire de test-->
 <div class="mainCntr" id="mainCntr"> <!-- Global Wrapper -->
 
