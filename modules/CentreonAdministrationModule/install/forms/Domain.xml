@@ -5,15 +5,15 @@
 		<redirect>1</redirect>
 		<redirect_route>/centreon-administration/domain</redirect_route>
 		<section name="General">
-			<block name="General information">
-				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-					<validators>
-						<validator rules="remote" serverside="unique" />
-						<validator rules="forbiddenChar" serverside="forbiddenChar">
-							<argument name="characters"><![CDATA[~!$%^&|<>?,;()="]]></argument>
-						</validator>
-					</validators>
-				</field>
+                    <block name="General information">
+                        <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                            <validators>
+                                <validator rules="remote" serverside="centreon-main.unique" />
+                                <validator rules="forbiddenChar" serverside="forbiddenChar">
+                                        <argument name="characters"><![CDATA[~!$%^&|<>?,;()="]]></argument>
+                                </validator>
+                            </validators>
+                        </field>
 				<field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
                 <field name="icon_id" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
 					<help>Define the image that should be associated with this domain here. This image will be displayed in the various places.</help>
