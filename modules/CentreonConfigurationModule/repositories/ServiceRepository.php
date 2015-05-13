@@ -72,10 +72,7 @@ class ServiceRepository extends Repository
             'service' => 'cfg_services,service_id,service_description',
         ),
         'joint' => 'cfg_hosts_services_relations',
-        'jointCondition' => 'cfg_hosts_services_relations.host_host_id = '
-        . 'cfg_hosts.host_id AND '
-        . 'cfg_hosts_services_relations.service_service_id = '
-        . 'cfg_services.service_id'
+        'jointCondition' => 'cfg_hosts_services_relations.host_host_id = cfg_hosts.host_id AND cfg_hosts_services_relations.service_service_id = cfg_services.service_id'
     );
 
     /**
