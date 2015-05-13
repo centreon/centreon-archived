@@ -92,6 +92,7 @@ class HostTemplateController extends FormController
     protected $inheritanceUrl = '/centreon-configuration/hosttemplate/[i:id]/inheritance';
     protected $inheritanceTmplUrl = '/centreon-configuration/hosttemplate/inheritance';
     protected $tmplField = '#host_hosttemplates';
+    protected $inheritanceTagsUrl = '/centreon-administration/tag/[i:id]/hosttemplate/herited';
 
     /**
      *

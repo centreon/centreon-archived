@@ -620,4 +620,42 @@ class TagsRepository
         }
         return $tags;
     }
+    
+    /**
+     * Get the list of inhereted tags
+     * @param string $resourceName
+     * @param int $resourceId
+     * @return array
+     */
+    
+    public static function getHeritedTags($resourceName, $resourceId)
+    {
+        $resourceName = self::convertResource($resourceName);
+        if (!in_array($resourceName, static::$resourceType)) {
+            throw new Exception("This resource type does not support tags.");
+        }
+        if (empty($resourceId)) {
+            return array();
+        }
+        
+        $dbconn = Di::getDefault()->get('db_centreon');
+        
+        $query = "SELECT DISTINCT tagname
+                FROM cfg_tags t LEFT JOIN cfg_tags_" . $resourceName . "s r ON t.tag_id = r.tag_id
+                WHERE t.user_id is null AND resource_id = :resource_id AND template_id > 0";
+                
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':resource_id', $resourceId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $aTags = array();
+               
+        while ($row = $stmt->fetch()) {
+            $aTags[] = $row['tagname'];
+        }
+        
+        return array('success' => true, 'values' => $aTags);
+    }
+ 
+ 
+
 }

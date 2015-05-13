@@ -62,6 +62,7 @@ class HostController extends FormController
     protected $inheritanceUrl = '/centreon-configuration/host/[i:id]/inheritance';
     protected $inheritanceTmplUrl = '/centreon-configuration/hosttemplate/inheritance';
     protected $tmplField = '#host_hosttemplates';
+    protected $inheritanceTagsUrl = '/centreon-administration/tag/[i:id]/host/herited';
     
     public static $relationMap = array(
         'host_parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparents',
