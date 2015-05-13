@@ -231,6 +231,18 @@ class CentreonLDAP {
     public function getDs() {
         return $this->_ds;
     }
+    
+     /**
+     * Transform user, group name for filter
+     *
+     * @param string $name the atrribute
+     * @return string The string changed
+     */
+    public function replaceFilter($name) {
+       $name = str_replace('(', "\\(", $name);
+       $name = str_replace(')', "\\)", $name);
+       return $name;
+    }
 
     /**
      * Get the dn for a user
@@ -243,7 +255,7 @@ class CentreonLDAP {
             return false;
         }
         $this->_setErrorHandler();
-        $filter = preg_replace('/%s/', $username, $this->_userSearchInfo['filter']);
+        $filter = preg_replace('/%s/', $this->replaceFilter($username), $this->_userSearchInfo['filter']);
         $result = ldap_search($this->_ds, $this->_userSearchInfo['base_search'], $filter);
         $entries = ldap_get_entries($this->_ds, $result);
         restore_error_handler();
@@ -264,7 +276,7 @@ class CentreonLDAP {
             return false;
         }
         $this->_setErrorHandler();
-        $filter = preg_replace('/%s/', $group, $this->_groupSearchInfo['filter']);
+        $filter = preg_replace('/%s/', $this->replaceFilter($group), $this->_groupSearchInfo['filter']);
         $result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
         $entries = ldap_get_entries($this->_ds, $result);
         restore_error_handler();
@@ -375,7 +387,7 @@ class CentreonLDAP {
             return array();
         }
         $userdn = str_replace('\\', '\\\\', $userdn);
-        $filter = '(&' . preg_replace('/%s/', '*', $this->_groupSearchInfo['filter']) . '(' . $this->_groupSearchInfo['member'] . '=' . $userdn . '))';
+        $filter = '(&' . preg_replace('/%s/', '*', $this->_groupSearchInfo['filter']) . '(' . $this->_groupSearchInfo['member'] . '=' . $this->replaceFilter($userdn) . '))';
         $result = @ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
         if (false === $result) {
             //print ldap_error($this->_ds);
