@@ -31,36 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonAdministration\Controllers;
 
-use Centreon\Internal\Form;
-use Centreon\Controllers\FormController;
+namespace CentreonAdministration\Models\Relation\Aclresource;
 
-class AclresourceController extends FormController
+use Centreon\Models\CentreonRelationModel;
+
+class Usergroup extends CentreonRelationModel
 {
-    protected $objectDisplayName = 'AclResource';
-    public static $objectName = 'aclresource';
-    protected $objectBaseUrl = '/centreon-administration/aclresource';
-    protected $objectClass = '\CentreonAdministration\Models\Aclresource';
-    public static $relationMap = array(
-        'aclresource_usergroups' => '\CentreonAdministration\Models\Relation\Aclresource\Usergroup',
-    );
-    protected $datatableObject = '\CentreonAdministration\Internal\AclresourceDatatable';
-    protected $repository = '\CentreonAdministration\Repository\AclresourceRepository';
-
-    public static $isDisableable = true;
-    public static $enableDisableFieldName = 'status';
-
-    /**
-     * Usergroups for a specific acl resource
-     *
-     * @method get
-     * @route /aclresource/[i:id]/usergroup
-     */
-    public function usergroupForAclresourceAction()
-    {
-        parent::getRelations(static::$relationMap['aclresource_usergroups']);
-    }
+    protected static $relationTable = "cfg_acl_resources_usergroups_relations";
+    protected static $firstKey = "usergroup_id";
+    protected static $secondKey = "acl_resource_id";
+    public static $firstObject =  "\CentreonAdministration\Models\Usergroup";
+    public static $secondObject = "\CentreonAdministration\Models\Aclresource";
 }
