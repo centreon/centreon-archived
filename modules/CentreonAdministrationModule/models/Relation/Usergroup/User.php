@@ -31,42 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonAdministration\Repository;
 
-use CentreonAdministration\Models\Aclgroup;
-use Centreon\Internal\Di;
-use Centreon\Internal\Exception;
+namespace CentreonAdministration\Models\Relation\Usergroup;
 
-/**
- * @author Kevin Duret <kduret@centreon.com>
- * @package Centreon
- * @subpackage Repository
- */
-class AclgroupRepository extends Repository
+use Centreon\Models\CentreonRelationModel;
+
+class User extends CentreonRelationModel
 {
-    /**
-     *
-     * @var string
-     */
-    public static $tableName = 'cfg_acl_groups';
-    
-    /**
-     *
-     * @var string
-     */
-    public static $objectName = 'Aclgroup';
-    
-    public static $objectClass = '\CentreonAdministration\Models\Aclgroup';
-    
-    /**
-     *
-     * @var type 
-     */
-    public static $unicityFields = array(
-        'fields' => array(
-            'name' => 'cfg_acl_groups, acl_group_id, name'
-        ),
-    );
+    protected static $relationTable = "cfg_users_usergroups_relations";
+    protected static $firstKey = "usergroup_id";
+    protected static $secondKey = "user_id";
+    public static $firstObject =  "\CentreonAdministration\Models\Usergroup";
+    public static $secondObject = "\CentreonAdministration\Models\User";
 }

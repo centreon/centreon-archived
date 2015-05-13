@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
-    <form name="aclgroup_form">
-        <route>/centreon-administration/aclgroup/update</route>
+    <form name="usergroup_form">
+        <route>/centreon-administration/usergroup/update</route>
         <redirect>1</redirect>
-        <redirect_route>/centreon-administration/aclgroup</redirect_route>
+        <redirect_route>/centreon-administration/usergroup</redirect_route>
         <section name="General">
             <block name="General information">
                 <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
                 <field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
             </block>
             <block name="Relations">
-                <field name="aclgroup_users" label="Linked users" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field name="usergroup_users" label="Linked users" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-administration/user/formlist</defaultValuesRoute>
-                        <listValuesRoute>/centreon-administration/aclgroup/[i:id]/user</listValuesRoute>
+                        <listValuesRoute>/centreon-administration/usergroup/[i:id]/user</listValuesRoute>
                         <multiple>true</multiple>
                         <ordered>false</ordered>
                     </attributes>
@@ -32,12 +32,12 @@
             </block>
         </section>
     </form>
-    <wizard name="add_aclgroup">
-        <route>/centreon-administration/aclgroup/add</route>
+    <wizard name="add_usergroup">
+        <route>/centreon-administration/usergroup/add</route>
         <step name="General">
             <field name="name" mandatory="1"></field>
             <field name="description" mandatory="0"></field>
-            <field name="aclgroup_users" mandatory="0"></field>
+            <field name="usergroup_users" mandatory="0"></field>
         </step>
     </wizard>
 </forms>
