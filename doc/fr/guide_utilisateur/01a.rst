@@ -1,36 +1,8 @@
 .. _firststepsces3:
 
 ========================
-Premier pas avec CES 3.1
+Premier pas avec CES 3.2
 ========================
-
-*************************
-Comparaison avec CES 2.2
-*************************
-
-Le tableau suivant compare la version de CES 2.2 à la version de CES 3.1 :
-
-+------------------------+-----------------------------+
-|       CES 2.2          |         CES 3.1             | 
-+========================+=============================+
-|       CentOS 5         |         CentOS 6.6          |
-+------------------------+-----------------------------+
-| Centreon 2.4           |  Centreon 2.5.4             |
-+------------------------+-----------------------------+
-| MySQL 5.1              |  MariaDB 5.5                |
-+------------------------+-----------------------------+
-| Centreon Engine 1.2    |  Centreon Engine 1.4.8      |
-+------------------------+-----------------------------+
-| Centreon Broker 2.1    |  Centreon Broker 2.7.0      |
-+------------------------+-----------------------------+
-| N/A                    |  Centreon Connecteur 1.1.1  |
-+------------------------+-----------------------------+
-
-La liste des nouvelles fonctionnalités est disponible aux adresses suivantes :
-
-*	`Forge Centreon <https://forge.centreon.com/projects/centreon/roadmap>`_
-*	`Forge Centreon Engine <https://forge.centreon.com/projects/centreon-engine/roadmap>`_
-*	`Forge Centreon Broker <https://forge.centreon.com/projects/centreon-broker/roadmap>`_
 
 Pourquoi choisir Centreon Engine et Broker ?
 ============================================
@@ -63,7 +35,7 @@ Plusieurs nouvelles fonctionnalités font leurs apparitions avec Centreon Broker
 Prérequis
 **********
 
-Le tableau ci-dessous donne les prérequis pour l'installation de CES 3.1 :
+Le tableau ci-dessous donne les prérequis pour l'installation de CES 3.2 :
 
 +------------------------+--------------------------+-------------------------------+---------------------------------+
 |  Nombre de services    |  Architecture conseillée |  Serveur central              |  Serveur(s) de collecte         |
@@ -188,19 +160,6 @@ Il est possible de choisir différentes options à la question **Which server ty
 *	Central server without database : Installe Centreon (interface web uniquement) ainsi que l'ordonnanceur et le broker
 *	Poller server : Installe le serveur satellite (ordonnanceur et broker uniquement)
 *	Database server : Installe le serveur de base de données (utilisé en complément avec l'option **Central server without database**)
-
-Dans notre cas, nous allons choisir l'option **Centreon Server with database**.
-
-Choix de l'ordonnanceur et du broker
-------------------------------------
-
-Lors du choix de l'ordonnanceur et du broker, il est possible de choisir entre le couple Centreon Engine/Centreon Broker ou le couple Nagios/NDOUtils
-
-Dans notre cas, nous allons choisir l'option **Centreon Engine and Centreon Broker**.
-
-.. image :: /images/guide_utilisateur/abrokertoinstall.png
-   :align: center
-   :scale: 65%
 
 Une fois toutes ces options choisies, l'installation démarre. 
 
@@ -371,7 +330,7 @@ L'interface web de Centreon est composée de plusieurs menus, chaque menu à une
 Avant d'aller plus loin
 =======================
 
-Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur CES 3.1. Pour cela :
+Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur CES 3.2. Pour cela :
 
  #.	Connectez-vous en tant que 'root' sur le serveur central
  #.	Tapez la commande 
