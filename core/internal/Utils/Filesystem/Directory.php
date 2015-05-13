@@ -153,7 +153,7 @@ class Directory
     public static function isEmpty($directory, $pattern = "*")
     {
         if (!file_exists($directory)) {
-            throw new DirectoryNotExistsException;
+            throw new DirectoryNotExistsException('Error when create temporary directory', 1104);
         }
         
         $directoryEmpty = false;

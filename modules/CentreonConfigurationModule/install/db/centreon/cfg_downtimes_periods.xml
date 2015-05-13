@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="cfg_downtimes_periods" phpName="DowntimePeriod" idMethod="native">
-        <column name="dt_id" phpName="DtId" type="INTEGER" required="true"/>
+        <column name="dt_id" phpName="DtId" primaryKey="true" type="INTEGER" required="true"/>
         <column name="dtp_start_time" phpName="DtpStartTime" type="TIME" required="true"/>
         <column name="dtp_end_time" phpName="DtpEndTime" type="TIME" required="true"/>
         <column name="dtp_day_of_week" phpName="DtpDayOfWeek" type="VARCHAR" size="15" required="false"/>

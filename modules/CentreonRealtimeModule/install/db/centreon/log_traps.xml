@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="centreon" defaultIdMethod="native">
     <table name="log_traps" phpName="LogTraps" idMethod="native">
-        <column name="trap_id" phpName="TrapId" type="INTEGER" autoIncrement="true" required="true"/>
+        <column name="trap_id" phpName="TrapId" type="INTEGER" autoIncrement="true" primaryKey="true" required="true"/>
         <column name="trap_time" phpName="TrapTime" type="INTEGER" required="false"/>
         <column name="timeout" phpName="Timeout" type="CHAR" sqlType="enum('0','1')" required="false"/>
         <column name="host_name" phpName="HostName" type="VARCHAR" size="255" required="false"/>

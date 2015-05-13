@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="centreon" defaultIdMethod="native">
     <table name="rt_services_servicegroups" phpName="ServicesServicegroups" idMethod="native">
-        <column name="host_id" phpName="HostId" type="INTEGER" required="true"/>
-        <column name="service_id" phpName="ServiceId" type="INTEGER" required="true"/>
-        <column name="servicegroup_id" phpName="ServicegroupId" type="INTEGER" required="true"/>
+        <column name="host_id" phpName="HostId" primaryKey="true" type="INTEGER" required="true"/>
+        <column name="service_id" primaryKey="true" phpName="ServiceId" type="INTEGER" required="true"/>
+        <column name="servicegroup_id" primaryKey="true" phpName="ServicegroupId" type="INTEGER" required="true"/>
         <foreign-key foreignTable="rt_hosts" name="services_servicegroups_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="host_id" foreign="host_id"/>
         </foreign-key>

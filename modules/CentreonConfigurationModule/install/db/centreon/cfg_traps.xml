@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="cfg_traps" phpName="Traps" idMethod="native">
-        <column name="traps_id" phpName="TrapsId" type="INTEGER" autoIncrement="true" required="true"/>
+        <column name="traps_id" phpName="TrapsId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="traps_name" phpName="TrapsName" type="VARCHAR" size="255" required="false"/>
         <column name="traps_oid" phpName="TrapsOid" type="VARCHAR" size="255" required="false"/>
         <column name="traps_args" phpName="TrapsArgs" type="LONGVARCHAR" required="false"/>

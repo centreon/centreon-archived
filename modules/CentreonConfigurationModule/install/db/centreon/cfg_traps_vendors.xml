@@ -9,7 +9,7 @@
         <foreign-key foreignTable="cfg_organizations" name="traps_vendors_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="organization_id" foreign="organization_id"/>
         </foreign-key>
-        <unique name="unique-name">
+        <unique name="vendor_name">
             <unique-column name="name" />
         </unique>
         <vendor type="mysql">

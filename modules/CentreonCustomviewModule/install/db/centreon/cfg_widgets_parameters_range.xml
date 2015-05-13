@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_customview" defaultIdMethod="native">
     <table name="cfg_widgets_parameters_range" phpName="WidgetParametersRange" idMethod="native">
-        <column name="parameter_id" phpName="ParameterId" type="INTEGER" required="true"/>
+        <column name="parameter_id" phpName="ParameterId" primaryKey="true" type="INTEGER" required="true"/>
         <column name="min_range" phpName="MinRange" type="INTEGER" required="true"/>
         <column name="max_range" phpName="MaxRange" type="INTEGER" required="true"/>
         <column name="step" phpName="Step" type="INTEGER" required="true"/>

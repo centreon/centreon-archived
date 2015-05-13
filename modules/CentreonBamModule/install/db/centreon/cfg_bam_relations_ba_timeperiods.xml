@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_bam" defaultIdMethod="native">
   <table name="cfg_bam_relations_ba_timeperiods" idMethod="native" phpName="CfgBamRelationsBaTimeperiods">
-    <column name="ba_id" phpName="BaId" type="INTEGER" required="true"/>
-    <column name="tp_id" phpName="TpId" type="INTEGER" required="true"/>
+    <column name="ba_id" phpName="BaId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="tp_id" phpName="TpId" type="INTEGER" primaryKey="true" required="true"/>
     <foreign-key foreignTable="cfg_bam" name="cfg_bam_relations_ba_timeperiods_ibfk_1" onDelete="CASCADE">
       <reference local="ba_id" foreign="ba_id"/>
     </foreign-key>

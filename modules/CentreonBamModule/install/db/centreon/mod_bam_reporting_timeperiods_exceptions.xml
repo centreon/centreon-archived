@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="centreon" package="centreon_bam" defaultIdMethod="native">
   <table name="mod_bam_reporting_timeperiods_exceptions" idMethod="native" phpName="ModBamReportingTimeperiodsExceptions">
-    <column name="timeperiod_id" phpName="TimeperiodId" type="INTEGER" required="true"/>
+    <column name="timeperiod_id" phpName="TimeperiodId" primaryKey="true" type="INTEGER" required="true"/>
     <column name="daterange" phpName="Daterange" type="VARCHAR" size="255" required="true"/>
     <column name="timerange" phpName="Timerange" type="VARCHAR" size="255" required="true"/>
     <foreign-key foreignTable="mod_bam_reporting_timeperiods" name="mod_bam_reporting_timeperiods_exceptions_ibfk_1" onDelete="CASCADE">

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_main" defaultIdMethod="native">
     <table name="cfg_informations" phpName="Informations" idMethod="native">
+        <column name="informationId" phpName="InformationId" primaryKey="true" type="INTEGER" autoIncrement="true" required="true"/>
         <column name="key" phpName="Key" type="VARCHAR" size="25" required="false"/>
         <column name="value" phpName="Value" type="VARCHAR" size="25" required="false"/>
         <vendor type="mysql">

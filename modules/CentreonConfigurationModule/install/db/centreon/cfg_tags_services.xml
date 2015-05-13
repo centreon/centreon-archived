@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
-  <table name="cfg_tags_services" phpName="Tag" idMethod="native">
+  <table name="cfg_tags_services" phpName="TagService" idMethod="native">
     <column name="tag_id" phpName="TagId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="resource_id" phpName="ResourceId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="template_id" phpName="TemplateId" type="INTEGER" required="false"/>

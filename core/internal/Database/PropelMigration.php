@@ -88,6 +88,12 @@ class PropelMigration
      * @var type 
      */
     protected $appPath;
+    
+    /**
+     *
+     * @var \Centreon\Internal\Database\SchemaBuilder 
+     */
+    protected $mySchemaBuilder;
 
 
     /**
@@ -97,7 +103,7 @@ class PropelMigration
     {
         $this->di = Di::getDefault();
         $this->appConfig = $this->di->get('config');
-        $this->propelConfiguration['datasources'] = array('db_centreon' => array(
+        $this->propelConfiguration['datasources'] = array('centreon' => array(
             'adapter' => 'mysql',
             'connection' => array(
                 'dsn' => $this->appConfig->get($this->targetDb, 'dsn'),
@@ -113,7 +119,10 @@ class PropelMigration
             Directory::delete($this->tmpDir, true);
         }
         mkdir($this->tmpDir, 0700, true);
+        mkdir($this->tmpDir . '/schema/', 0700, true);
         $this->propelPath = $this->appPath . '/vendor/propel/propel1/';
+        
+        $this->mySchemaBuilder = new SchemaBuilder('centreon', $this->tmpDir . '/schema/');
     }
     
     /**
@@ -121,6 +130,9 @@ class PropelMigration
      */
     public function runPhing($taskName)
     {
+        // Copy Files
+        $this->mySchemaBuilder->loadXmlFiles();
+        
         // Create build.properties file
         $this->createBuildPropertiesFile($this->tmpDir.'/build.properties');
         
@@ -217,22 +229,26 @@ EOT;
         $args = array();
         
         // Default properties
-        $properties = array_merge(array(
-            'propel.database'           => 'mysql',
-            'propel.project'            => 'centreon',
-            'propel.targetPackage'      => 'centreon',
-            'project.dir'               => $this->tmpDir . '/',
-            'propel.output.dir'         => $this->tmpDir . '/output/',
-            'propel.php.dir'            => $this->tmpDir . '/generate/',
-            'propel.packageObjectModel' => true,
-            'propel.useDateTimeClass'   => true,
-            'propel.dateTimeClass'      => 'DateTime',
-            'propel.defaultTimeFormat'  => '',
-            'propel.defaultDateFormat'  => '',
-            'propel.addClassLevelComment'       => false,
-            'propel.defaultTimeStampFormat'     => '',
-            'propel.builder.pluralizer.class'   => 'builder.util.StandardEnglishPluralizer',
-        ), $properties);
+        $properties = array_merge(
+            array(
+                'propel.database'           => 'mysql',
+                'propel.project'            => 'centreon',
+                'propel.targetPackage'      => 'centreon',
+                'project.dir'               => $this->tmpDir . '/',
+                'propel.output.dir'         => $this->tmpDir . '/output/',
+                'propel.schema.dir'         => $this->tmpDir . '/schema/',
+                'propel.php.dir'            => $this->tmpDir . '/generate/',
+                'propel.packageObjectModel' => true,
+                'propel.useDateTimeClass'   => true,
+                'propel.dateTimeClass'      => 'DateTime',
+                'propel.defaultTimeFormat'  => '',
+                'propel.defaultDateFormat'  => '',
+                'propel.addClassLevelComment'       => false,
+                'propel.defaultTimeStampFormat'     => '',
+                'propel.builder.pluralizer.class'   => 'builder.util.StandardEnglishPluralizer',
+            ),
+            $properties
+        );
         
         // 
         foreach ($properties as $key => $value) {

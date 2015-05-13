@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="centreon" package="centreon_bam" defaultIdMethod="native">
   <table name="mod_bam_reporting_relations_ba_kpi_events" idMethod="native" phpName="ModBamReportingRelationsBaKpiEvents">
-    <column name="ba_event_id" phpName="BaEventId" type="INTEGER" required="true"/>
-    <column name="kpi_event_id" phpName="KpiEventId" type="INTEGER" required="true"/>
+    <column name="ba_event_id" phpName="BaEventId" primaryKey="true" type="INTEGER" required="true"/>
+    <column name="kpi_event_id" phpName="KpiEventId" primaryKey="true" type="INTEGER" required="true"/>
     <foreign-key foreignTable="mod_bam_reporting_ba_events" name="mod_bam_reporting_relations_ba_kpi_events_ibfk_1" onDelete="CASCADE">
       <reference local="ba_event_id" foreign="ba_event_id"/>
     </foreign-key>

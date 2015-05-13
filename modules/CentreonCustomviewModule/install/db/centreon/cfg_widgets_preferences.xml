@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_customview" defaultIdMethod="native">
     <table name="cfg_widgets_preferences" phpName="WidgetPreferences" idMethod="native">
-        <column name="widget_id" phpName="WidgetId" type="INTEGER" required="false"/>
-        <column name="parameter_id" phpName="ParameterId" type="INTEGER" required="true"/>
+        <column name="widget_id" phpName="WidgetId" primaryKey="true" type="INTEGER" required="false"/>
+        <column name="parameter_id" phpName="ParameterId" primaryKey="true" type="INTEGER" required="true"/>
         <column name="preference_value" phpName="PreferenceValue" type="VARCHAR" size="255" required="true"/>
         <column name="comparator" phpName="Comparator" type="TINYINT" required="false"/>
         <foreign-key foreignTable="cfg_widgets" name="fk_widget_id" onDelete="CASCADE" onUpdate="RESTRICT">

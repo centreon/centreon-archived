@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="centreon" defaultIdMethod="native">
     <table name="rt_acl" phpName="CentreonAcl" idMethod="native">
+        <column name="acl_id" phpName="AclId" type="INTEGER" autoIncrement="true" primaryKey="true" required="false"/>
         <column name="host_id" phpName="HostId" type="INTEGER" required="false"/>
         <column name="host_name" phpName="HostName" type="VARCHAR" size="255" required="false"/>
         <column name="service_id" phpName="ServiceId" type="INTEGER" required="false"/>
