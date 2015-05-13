@@ -151,7 +151,7 @@ class HumanReadable
             try {
                 return array_map(
                     function ($value) use ($func, $decimal, $toString) {
-                        return self::$func($value, $decimal, $toString);
+                        return HumanReadable::$func($value, $decimal, $toString);
                     },
                     $values
                 );
@@ -184,7 +184,7 @@ class HumanReadable
      * @param bool $toString If return string (can be complex)
      * @return int|string
      */
-    protected static function seconds($value, $decimal = null, $toString = false)
+    public static function seconds($value, $decimal = null, $toString = false)
     {
         $units = array(
             "w" => 7 * 24 * 3600,
