@@ -87,10 +87,10 @@ class Unique implements ValidatorInterface
         $iId = '';
         $return = '';
                
-       
-        //echo "obj".$params['object'];
-        //var_dump($params);die;
-       
+      /* 
+        echo "obj".$params['object'];
+        var_dump($params);die;
+       */
 
         if (isset($params['object']) && $params['object'] == 'service') {
             $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
@@ -424,6 +424,26 @@ class Unique implements ValidatorInterface
             } catch (MissingParameterException $e) {
                 $return[] = 0;
             }
+        } elseif (isset($params['object']) && $params['object'] == 'tag') {
+            $objClass = "CentreonAdministration\Repository\TagRepository";
+            
+            if (isset($params['extraParams']['name'])) {
+                $sLabel = $params['extraParams']['name'];
+            }      
+
+            $aParams['tag'] = $sLabel;
+            try {
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned);
+                
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
         } 
         /*elseif (isset($params['object']) && $params['object'] == 'poller') {
             $objClass = "CentreonAdministration\Repository\PollerRepository";
@@ -450,7 +470,7 @@ class Unique implements ValidatorInterface
             }
         }
         */
-       /*
+      /* 
         var_dump($return);
         var_dump($params); die;
         */

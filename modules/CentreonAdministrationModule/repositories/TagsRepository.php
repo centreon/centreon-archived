@@ -68,6 +68,18 @@ class TagsRepository
         'businessactivity' => 'ba'
     );
     
+    public static $objectClass = '\CentreonAdministration\Models\Tag';
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'tag' => 'cfg_tags, tag_id, tagname'
+        ),
+    );
+    
     protected static function convertResource($sResource)
     {
         if (array_key_exists($sResource, self::$aConvertResource)) {
@@ -436,25 +448,33 @@ class TagsRepository
             return;
         }
         
-        $aFilter = array(
-            'tagname' => $tagName
-        );
 
-        $tag = Tag::getList(
-            'tag_id',
-            1,
-            0,
-            null,
-            'ASC',
-            $aFilter,
-            'AND'
-        );
-        if (isset($tag[0]['tag_id'])) {
-            $iReturn = $tag[0]['tag_id'];
+        
+        $dbconn = Di::getDefault()->get('db_centreon');
+        
+        if (empty($tagName)) {
+            return;
+        }
+        
+        $query = "SELECT tag_id FROM cfg_tags WHERE tagname = :tagname";
+
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':tagname', $tagName, \PDO::PARAM_STR);
+        $tag = $stmt->execute();
+        
+        $tags = array();
+        
+        while ($row = $stmt->fetch()) {
+            $tags[] = array('id' => $row['tag_id']);
+        }
+        
+        if (isset($tags[0]['id'])) {
+            $iReturn = $tags[0]['id'];
         } else {
             $iReturn = -1;
         }
         return $iReturn;
+        
     }
     /**
      * 
