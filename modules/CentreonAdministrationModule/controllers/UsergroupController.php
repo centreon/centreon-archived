@@ -54,7 +54,7 @@ class UsergroupController extends FormController
     public static $enableDisableFieldName = 'status';
     
     /**
-     * Contacts for a specific usergroup
+     * Users for a specific usergroup
      *
      * @method get
      * @route /usergroup/[i:id]/user
