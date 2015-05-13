@@ -81,8 +81,12 @@ class UserRepository extends Repository
      * @param array $givenParameters
      * @return integer
      */
-    public static function create($givenParameters)
-    {
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {       
+        if ($validate) {
+            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+        
         $contactId = Contact::insert(array('description' => $givenParameters['login'] . " contact"));
         
         if (isset($givenParameters['password']) && $givenParameters['password']) {
@@ -105,8 +109,12 @@ class UserRepository extends Repository
      * @param string $givenParameters
      * @param string $login
      */
-    public static function update($givenParameters, $login = null)
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
+        if ($validate) {
+            self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
+        }
+
         /* Do not perform update if password is empty */
         if (isset($givenParameters['password']) && $givenParameters['password'] == '') {
             unset($givenParameters['password']);
@@ -114,8 +122,8 @@ class UserRepository extends Repository
             $givenParameters['password'] = self::generateHashedPassword($givenParameters);
         }
         
-        if (!is_null($login) && !isset($givenParameters['object_id'])) {
-            $user = User::getIdByParameter('login', array($login));
+        if (!is_null($givenParameters['login']) && !isset($givenParameters['object_id'])) {
+            $user = User::getIdByParameter('login', array($givenParameters['login']));
             if (is_array($user) && count($user) > 0) {
                 $givenParameters['object_id'] = $user[0];
             }

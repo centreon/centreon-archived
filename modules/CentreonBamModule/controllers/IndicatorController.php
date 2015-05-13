@@ -71,6 +71,13 @@ class IndicatorController extends FormController
         $updateSuccessful = true;
         $updateErrorMessage = '';
 
+        $aReturn = self::checkDatas($givenParameters);
+        
+        if (!$aReturn['success']) {
+            $this->router->response()->json(array('success' => $aReturn['success'],'error' => $aReturn['error']));
+            return;
+        }
+
         try {
             IndicatorRepository::createIndicator($givenParameters);
             unset($_SESSION['form_token']);
@@ -166,6 +173,13 @@ class IndicatorController extends FormController
         $givenParameters = $this->getParams('post');
         $updateSuccessful = true;
         $updateErrorMessage = '';
+        
+        $aReturn = self::checkDatas($givenParameters);
+        
+        if (!$aReturn['success']) {
+            $this->router->response()->json(array('success' => $aReturn['success'],'error' => $aReturn['error']));
+            return;
+        }
 
         try {
             IndicatorRepository::updateIndicator($givenParameters, 'form', $this->getUri());
@@ -219,7 +233,7 @@ class IndicatorController extends FormController
         $router = $di->get('router');
 
         $requestParam = $this->getParams('named');
-
+        
         $relObj = static::$relationMap['indicator_service'];
         $listOfServices = $relObj::getHostIdServiceIdFromKpiId($requestParam['id']);
 
@@ -275,5 +289,36 @@ class IndicatorController extends FormController
         $finalList = IndicatorRepository::getIndicatorsName();
 
         $router->response()->json($finalList);
+    }
+    
+    private function checkDatas($aParams)
+    {
+        $updateSuccessful = true;
+        $updateErrorMessage = "";
+        switch ($aParams['kpi_type']):
+            case '0':
+                $iServiceId = trim($aParams['service_id']);
+                if (empty($iServiceId)) {
+                    $updateSuccessful = false;
+                    $updateErrorMessage = _("The service is mandatory field");
+                }
+                break;
+            case '2':
+                $iIndicatorBa = trim($aParams['id_indicator_ba']);
+                if (empty($iIndicatorBa)) {
+                    $updateSuccessful = false;
+                    $updateErrorMessage = _("The BA is mandatory field");
+                }
+                break;
+            case '3':
+                $sBooelanName = trim($aParams['boolean_name']);
+                if (empty($sBooelanName)) {
+                    $updateSuccessful = false;
+                    $updateErrorMessage = _("The name of boolean is mandatory field");
+                }
+                break;
+        endswitch;
+ 
+        return array('success' => $updateSuccessful, 'error' => $updateErrorMessage);
     }
 }

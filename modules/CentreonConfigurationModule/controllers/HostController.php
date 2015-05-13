@@ -101,6 +101,7 @@ class HostController extends FormController
             )
         );
         $this->tpl->append('jsUrl', $urls, true);
+        $this->tpl->assign('configuration', true);
         parent::listAction();
     }
     
