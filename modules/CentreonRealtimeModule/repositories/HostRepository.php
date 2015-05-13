@@ -154,4 +154,76 @@ class HostRepository extends Repository
         return "<span class='patchState $status'>"
             . "</span>";
     }
+    
+    public static function recursiveTree($node){
+
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        $query = "SELECT iis.parent_id, i.*, sse.* FROM rt_issues_issues_parents iis "
+                . "INNER JOIN rt_issues i ON i.issue_id = iis.parent_id "
+                . "INNER JOIN rt_servicestateevents sse ON sse.host_id = i.host_id AND sse.service_id = i.service_id and sse.start_time >= i.start_time AND (sse.end_time is null OR sse.end_time <= i.end_time) "
+                . "WHERE iis.child_id = ? and i.end_time is null";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute(array($node['parent_id']));
+        $parent = array($node);
+        $flag = false;
+        while ($row = $stmt->fetch()) {
+            if(!$flag){
+                $parent = array();
+                $flag = true;
+            }
+            $tmp = self::recursiveTree($row);
+            foreach($tmp as $tmp2){
+                // is the parent already in the array ?
+                if(!in_array($tmp2,$parent)){
+                    $parent[] = $tmp2;
+                }
+            }
+
+        }
+        return $parent;
+    }
+    
+    
+    /**
+     * Get the list of parent incidents for a host
+     *
+     * @param int $hostId The host ID
+     * @return array
+     */
+    public static function getParentIncidentsFromHost($hostId){
+
+        
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        $queryServices = "SELECT iis.parent_id, i.*, sse.* FROM rt_issues i "
+                . "LEFT JOIN rt_issues_issues_parents iis ON i.issue_id = iis.child_id "
+                . "INNER JOIN rt_servicestateevents sse ON sse.host_id = i.host_id AND sse.service_id = i.service_id and sse.start_time >= i.start_time AND (sse.end_time is null OR sse.end_time <= i.end_time) "
+                . "WHERE i.host_id = ? and i.end_time is null";
+
+        $stmt = $dbconn->prepare($queryServices);
+        $stmt->execute(array($hostId));
+        while ($row = $stmt->fetch()) {
+            $issues[] = self::recursiveTree($row);
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+    /*    echo '<pre>';
+        print_r($issues);
+        echo '</pre>';*/
+           echo '<pre>';
+        print_r($issues);
+        echo '</pre>';
+           die;
+        return $Issues;
+    }
+    
+    
 }

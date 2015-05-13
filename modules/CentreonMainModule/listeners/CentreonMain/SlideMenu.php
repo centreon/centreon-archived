@@ -49,7 +49,7 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'template',
+                    'name' => 'Template',
                     'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconf/') . $event->getHostId(),
                     'icon' => 'tata3',
                     'order' => 1
@@ -58,12 +58,23 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'tags',
-                    'url' => $router->getPathFor('/centreon-configuration/host/tags/') . $event->getHostId(),
+                    'name' => 'Tags',
+                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/tags') ,
                     'icon' => 'tata3',
                     'order' => 2
                 )
             );
+            
+            $event->addMenu(
+                array(
+                    'name' => 'Services',
+                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/service'),
+                    'icon' => 'tata3',
+                    'order' => 3
+                )
+            );
+            
+            
             
             
         }  catch (Exception $e) {

@@ -99,6 +99,35 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         }
         return -1;
     }
+    
+    
+    /**
+     * Count service status for a host grouped by status id
+     *
+     * @param int $host_id
+     * @return array
+     */
+    public static function countAllStatusForHost($host_id){
+        
+        
+        $arrayStatus = array('success','warning','danger','default','info');
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        $stmt = $dbconn->prepare('SELECT last_hard_state as state, count(service_id) as nbr
+            FROM rt_services 
+            WHERE rt_services.host_id = ? 
+            AND rt_services.enabled = 1 
+            GROUP BY rt_services.last_hard_state');
+        $stmt->execute(array($host_id));
+        $arrayReturn = array();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $arrayReturn[$arrayStatus[$row['state']]] = $row['nbr'];
+        }
+        
+        return $arrayReturn;
+    }
+    
 
     /**
      * Format small badge status

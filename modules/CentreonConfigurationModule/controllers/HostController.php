@@ -48,6 +48,8 @@ use CentreonConfiguration\Repository\HostTemplateRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
 use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Controllers\FormController;
+use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
 
 class HostController extends FormController
 {
@@ -67,7 +69,8 @@ class HostController extends FormController
         'host_parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparents',
         'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchildren',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
-        'host_icon' => '\CentreonConfiguration\Models\Relation\Host\Icon'
+        'host_icon' => '\CentreonConfiguration\Models\Relation\Host\Icon',
+        'host_services' => '\CentreonConfiguration\Models\Relation\Host\Service'
     );
     
     public static $isDisableable = true;
@@ -208,7 +211,7 @@ class HostController extends FormController
      *
      *
      * @method get
-     * @route /host/tags/[i:id]
+     * @route /host/[i:id]/tags/
      */
     public function getHostTagsAction()
     {
@@ -525,17 +528,17 @@ class HostController extends FormController
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
         $checkdata = HostRepository::formatDataForTooltip($data);
-        $chackdataTemplate = HostTemplateRepository::formatDataForTooltip($data['templates']);
-        
+        //$chackdataTemplate = HostTemplateRepository::formatDataForTooltip($data['templates']);
+        $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
         $final = "";
         $this->tpl->assign('checkdata', $checkdata);
         $final .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
         
-        
+        /*
         foreach($chackdataTemplate as $templateData){
             $this->tpl->assign('checkdata', $templateData);
             $final .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
-        }
+        }*/
         
         
        /* $myFInalTemplate = '';
@@ -550,6 +553,41 @@ class HostController extends FormController
         
     }
 
+    /**
+     * Get list of services for a specific host
+     * 
+     * @method get
+     * @route /host/[i:id]/service
+     */
+    public function hostForServiceAction()
+    {
+        /*
+        $requestParam = $this->getParams('named');
+        $repository = $this->repository;
+        $repository::getRelations();
+        $list = $repository::getRelations($relClass, $requestParam['id']);
+        $this->router->response()->json($list);
+        */
+        
+        $requestParam = $this->getParams('named');
+        $services = HostRepository::getServicesForHost(static::$relationMap['host_services'],$requestParam['id']);
+        //$formatedData = array();
+        $final = "";
+        foreach($services as $service){
+            //$formatedData[] = ServiceRepository::formatDataForTooltip($service);
+            $this->tpl->assign('checkdata', ServiceRepository::formatDataForTooltip($service));
+            $final .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+        }
+        
+        
+        //$this->router->response()->json($formatedData);
+        //parent::getRelations(static::$relationMap['host_services']);
+        $this->router->response()->body($final);
+    }
+    
+    
+    
+    
     /**
      * Get inheritance value
      *
