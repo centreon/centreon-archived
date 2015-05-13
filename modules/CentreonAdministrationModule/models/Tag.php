@@ -77,12 +77,19 @@ class Tag extends CentreonBaseModel
         $aAddFilters  = array(),
         $aGroup = array()
     ) {
-        $db = Di::getDefault()->get('db_centreon');
-        
-        $stmt = $db->query("SELECT * FROM ".self::$table." WHERE user_id IS NULL");
-        
-        $savedOptions = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        
-        return $savedOptions;
+        $staticFilter = "user_id IS NULL";
+        return parent::getList(
+            $parameterNames,
+            $count,
+            $offset,
+            $order,
+            $sort,
+            $filters,
+            $filterType,
+            $tablesString,
+            $staticFilter,
+            $aAddFilters,
+            ""
+        );
     }
 }

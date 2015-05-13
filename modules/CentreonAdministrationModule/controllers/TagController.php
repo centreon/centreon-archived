@@ -387,6 +387,7 @@ class TagController extends Controller
     {
        
         $givenParameters = clone $this->getParams('post');
+      
  
         try {
             $tagId = TagsRepository::isExist($givenParameters['tagname']);
