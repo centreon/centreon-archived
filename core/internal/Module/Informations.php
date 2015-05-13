@@ -331,12 +331,12 @@ class Informations
         $mandatoryKeys = array('name', 'short_name');
         foreach ($mandatoryKeys as $k) {
             if (!isset($data[$k])) {
-                throw new Exception(sprintf('Missing mandatory key %s', $k));
+                throw new \Exception(sprintf('Missing mandatory key %s', $k));
             }
         }
         
         if (isset($data['parent']) && !isset($menus[$data['parent']])) {
-            throw new Exception(sprintf('Parent %s does not exist', $data['parent']));
+            throw new \Exception(sprintf('Parent %s does not exist', $data['parent']));
         }
         
         if (!isset($menus[$data['short_name']])) {

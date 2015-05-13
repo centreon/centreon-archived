@@ -25,10 +25,23 @@
                 ]
             },
             {
-                "name": "Acl groups",
-                "short_name": "acl_groups",
-                "icon_class": "fa fa-users",
-                "route": "/centreon-administration/aclgroup"
+                "name": "Acl",
+                "short_name": "conf_acl",
+                "icon_class": "fa fa-cubes",
+                "menus": [
+                    {
+                        "name": "Access groups",
+                        "short_name": "acl_groups",
+                        "icon_class": "fa fa-users",
+                        "route": "/centreon-administration/aclgroup"
+                    },
+                    {
+                        "name": "Resources",
+                        "short_name": "acl_resources",
+                        "icon_class": "fa fa-users",
+                        "route": "/centreon-administration/aclresource"
+                    }
+                ]
             },
             {
                 "name": "Extensions",
