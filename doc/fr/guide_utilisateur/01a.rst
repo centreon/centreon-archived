@@ -35,7 +35,7 @@ Plusieurs nouvelles fonctionnalités font leurs apparitions avec Centreon Broker
 Prérequis
 **********
 
-Le tableau ci-dessous donne les prérequis pour l'installation de CES 3.1 :
+Le tableau ci-dessous donne les prérequis pour l'installation de CES 3.2 :
 
 +------------------------+--------------------------+-------------------------------+---------------------------------+
 |  Nombre de services    |  Architecture conseillée |  Serveur central              |  Serveur(s) de collecte         |
@@ -330,7 +330,7 @@ L'interface web de Centreon est composée de plusieurs menus, chaque menu à une
 Avant d'aller plus loin
 =======================
 
-Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur CES 3.1. Pour cela :
+Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur CES 3.2. Pour cela :
 
  #.	Connectez-vous en tant que 'root' sur le serveur central
  #.	Tapez la commande 
