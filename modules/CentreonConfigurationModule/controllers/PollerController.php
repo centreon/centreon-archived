@@ -80,12 +80,12 @@ class PollerController extends FormController
      */
     public function updateAction()
     {
-        $params = $this->getParams('post');
+        $params = $this->getParams('post')->all();
         $router = Di::getDefault()->get('router');
 
         /* Save information */
         try {
-            PollerRepository::update($params);
+            PollerRepository::update($params, 'form', $this->getUri());
         } catch (Exception $e) {
             return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
         }

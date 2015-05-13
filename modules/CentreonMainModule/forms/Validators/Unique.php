@@ -445,16 +445,14 @@ class Unique implements ValidatorInterface
                 $return[] = 0;
             }
         } 
-        /*elseif (isset($params['object']) && $params['object'] == 'poller') {
-            $objClass = "CentreonAdministration\Repository\PollerRepository";
+        elseif (isset($params['object']) && $params['object'] == 'poller') {
+            $objClass = "CentreonConfiguration\Repository\PollerRepository";
             
             if (isset($params['extraParams']['name'])) {
                 $sLabel = $params['extraParams']['name'];
             }      
 
-            $aParams['poller'] = $sLabel;
-            $aParams['node'] = 'central';
-                               
+            $aParams['poller'] = $sLabel;                              
                     
             try {
                 $idReturned = $objClass::getIdFromUnicity($aParams);
@@ -469,8 +467,8 @@ class Unique implements ValidatorInterface
                 $return[] = 0;
             }
         }
-        */
-      /* 
+        
+      /*
         var_dump($return);
         var_dump($params); die;
         */
