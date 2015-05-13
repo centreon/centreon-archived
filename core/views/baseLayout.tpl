@@ -11,8 +11,8 @@
 </head>
 
 <body class="bodyCntr">
-    <div id="flash-message"></div>
-<!-- Commentaire de test-->
+    <div id="notif-dangere"></div>
+
 <div class="mainCntr" id="mainCntr"> <!-- Global Wrapper -->
 
     <!-- Menu aside -->

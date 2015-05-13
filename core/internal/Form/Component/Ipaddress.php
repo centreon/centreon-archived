@@ -59,7 +59,7 @@ class Ipaddress extends Component
         $addClass = '';
         $required = '';
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
-            $addClass .= 'mandatory-field ';
+            $addClass .= ' mandatory-field ';
             $required .= ' required';
         }
         

@@ -1,19 +1,14 @@
-<div class="form-group SearchWrapper">
+<div class="SearchWrapper">
     <div class="form-group">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="input-group">
-                <label name="filters" class="floatLabel">Default View</label>
-                <input type="text" name="filters" class="form-control" placeholder="View's name">
-                <cite>Rename your view or select an existant one </cite>
-                <span class="input-group-btn">
-                    <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="loadView" data-original-title="Load"><i class="fa fa-upload"></i></button>
-                    <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="saveView" data-original-title="Save"><i class="fa fa-floppy-o"></i></button>
-                    <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="deleteView" data-original-title="Delete"><i class="fa fa-trash-o"></i></button>
-                    <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="bookmarkView" data-original-title="Bookmark"><i id="bookmarkStatus" class="fa fa-star-o"></i></button>
-                </span>
-            </div>
-          </div>
+        <div class="input-group">
+            <input type="text" name="filters" class="form-control" placeholder="View's name">
+            <cite>Rename your view or select an existant one </cite>
+            <span class="input-group-btn">
+                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="loadView" data-original-title="Load"><i class="fa fa-upload"></i></button>
+                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="saveView" data-original-title="Save"><i class="fa fa-floppy-o"></i></button>
+                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="deleteView" data-original-title="Delete"><i class="fa fa-trash-o"></i></button>
+                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="bookmarkView" data-original-title="Bookmark"><i id="bookmarkStatus" class="fa fa-star-o"></i></button>
+            </span>
         </div>
     </div>
     <div class="centreon-search-block CentreonForm" id="accordion">
