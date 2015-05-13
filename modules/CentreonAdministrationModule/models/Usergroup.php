@@ -34,16 +34,18 @@
  *
  */
 
+namespace CentreonAdministration\Models;
 
-namespace CentreonAdministration\Models\Relation\Aclgroup;
+use Centreon\Models\CentreonBaseModel;
 
-use Centreon\Models\CentreonRelationModel;
-
-class User extends CentreonRelationModel
+/**
+ * Used for interacting with ACL groups
+ *
+ * @author sylvestre
+ */
+class Usergroup extends CentreonBaseModel
 {
-    protected static $relationTable = "cfg_acl_group_users_relations";
-    protected static $firstKey = "acl_group_id";
-    protected static $secondKey = "user_id";
-    public static $firstObject =  "\CentreonAdministration\Models\Aclgroup";
-    public static $secondObject = "\CentreonAdministration\Models\User";
+    protected static $table = "cfg_usergroups";
+    protected static $primaryKey = "usergroup_id";
+    protected static $uniqueLabelField = "name";
 }

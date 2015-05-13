@@ -41,9 +41,9 @@ use Centreon\Internal\Datatable;
 /**
  * Repository for Acl group listing
  *
- * @author Sylvestre Ho
+ * @author Kevin Duret <kduret@centreon.com>
  */
-class AclgroupDatatable extends Datatable
+class UsergroupDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -51,13 +51,13 @@ class AclgroupDatatable extends Datatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonAdministration\Models\Aclgroup';
+    protected static $datasource = '\CentreonAdministration\Models\Usergroup';
 
     /**
      *
      * @var type
      */
-    protected static $rowIdColumn = array('id' => 'acl_group_id', 'name' => 'name');
+    protected static $rowIdColumn = array('id' => 'usergroup_id', 'name' => 'name');
     
     /**
      *
@@ -67,7 +67,7 @@ class AclgroupDatatable extends Datatable
         'autowidth' => true,
         'order' => array(
             array('name', 'asc'),
-            array('acl_group_id', 'asc')
+            array('usergroup_id', 'asc')
         ),
         'stateSave' => false,
         'paging' => true,
@@ -80,8 +80,8 @@ class AclgroupDatatable extends Datatable
     public static $columns = array(
         array (
             'title' => 'Id',
-            'name' => 'acl_group_id',
-            'data' => 'acl_group_id',
+            'name' => 'usergroup_id',
+            'data' => 'usergroup_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
@@ -99,9 +99,9 @@ class AclgroupDatatable extends Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/centreon-administration/aclgroup/[i:id]',
+                    'route' => '/centreon-administration/usergroup/[i:id]',
                     'routeParams' => array(
-                        'id' => '::acl_group_id::'
+                        'id' => '::usergroup_id::'
                     ),
                     'linkName' => '::name::'
                 )

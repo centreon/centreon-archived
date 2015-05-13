@@ -31,19 +31,36 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
+    
+namespace CentreonAdministration\Controllers;
 
+use Centreon\Internal\Form;
+use Centreon\Controllers\FormController;
 
-namespace CentreonAdministration\Models\Aclgroup;
-
-use Centreon\Models\CentreonRelationModel;
-
-class Aclaction extends CentreonRelationModel
+class UsergroupController extends FormController
 {
-    protected static $relationTable = "cfg_acl_group_actions_relations";
-    protected static $firstKey = "acl_group_id";
-    protected static $secondKey = "acl_action_id";
-    public static $firstObject =  "\\Models\\Configuration\\Acl\\Group";
-    public static $secondObject = "\\Models\\Configuration\\Acl\\Action";
+    protected $objectDisplayName = 'Usergroup';
+    public static $objectName = 'usergroup';
+    protected $objectBaseUrl = '/centreon-administration/usergroup';
+    protected $objectClass = '\CentreonAdministration\Models\Usergroup';
+    public static $relationMap = array(
+        'usergroup_users' => '\CentreonAdministration\Models\Relation\Usergroup\User',
+    );
+    protected $datatableObject = '\CentreonAdministration\Internal\UsergroupDatatable';
+    protected $repository = '\CentreonAdministration\Repository\UsergroupRepository';
+
+    public static $isDisableable = true;
+    public static $enableDisableFieldName = 'status';
+    
+    /**
+     * Contacts for a specific usergroup
+     *
+     * @method get
+     * @route /usergroup/[i:id]/user
+     */
+    public function userForAclgroupAction()
+    {
+        parent::getRelations(static::$relationMap['usergroup_users']);
+    }
 }
