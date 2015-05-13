@@ -125,6 +125,7 @@
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_initial_states">&nbsp;{$form.log_initial_states.label}</td><td class="FormRowValue">{$form.log_initial_states.html}<font color='red' style='padding-left:120px;'>{$initial_state_warning}</font></td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_external_commands">&nbsp;{$form.log_external_commands.label}</td><td class="FormRowValue">{$form.log_external_commands.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_passive_checks">&nbsp;{$form.log_passive_checks.label}</td><td class="FormRowValue">{$form.log_passive_checks.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_pid">&nbsp;{$form.log_pid.label}</td><td class="FormRowValue">{$form.log_pid.html}</td></tr>
 	
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;{$Timouts}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_check_timeout">&nbsp;{$form.service_check_timeout.label}</td><td class="FormRowValue">{$form.service_check_timeout.html}&nbsp;{$Seconds}</td></tr>

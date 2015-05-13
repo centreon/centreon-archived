@@ -640,6 +640,7 @@ CREATE TABLE `cfg_nagios` (
   `max_debug_file_size` int(11) DEFAULT NULL,
   `daemon_dumps_core` enum('0','1') DEFAULT NULL,
   `cfg_file` varchar(255) NOT NULL DEFAULT 'centengine.cfg',
+  `log_pid` enum('0','1') DEFAULT '1',
   PRIMARY KEY (`nagios_id`),
   KEY `cmd1_index` (`global_host_event_handler`),
   KEY `cmd2_index` (`global_service_event_handler`),

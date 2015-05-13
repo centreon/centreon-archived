@@ -39,12 +39,12 @@
  	ini_set("display_errors", "Off");
 
  	// Set logging options                                                                                                                                                                                                                                                    
-    if (version_compare(phpversion(), '5.3', '>')) {
-        ini_set("error_reporting", E_ALL ^ E_NOTICE ^ E_STRICT ^ E_DEPRECATED);
-    } else {
-        ini_set("error_reporting", E_ALL ^ E_DEPRECATED);
-    }
-
+	if (defined("E_DEPRECATED")) {
+		ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
+	} else {
+		ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT);
+	}
+	
 	/*
 	 * Define Local Functions
 	 *   - remove SQL Injection : Thanks to Julien CAYSSOL

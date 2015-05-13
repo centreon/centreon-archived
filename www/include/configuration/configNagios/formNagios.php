@@ -319,6 +319,11 @@
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'log_passive_checks', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'log_passive_checks', _("Passive Check Logging Option"), '&nbsp;');
 
+	$nagTab = array();
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'log_pid', null, _("Yes"), '1');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'log_pid', null, _("No"), '0');
+	$form->addGroup($nagTab, 'log_pid', _("Enable logging pid information"), '&nbsp;');
+
 	/* *****************************************************
 	 * Event handler
 	 */
