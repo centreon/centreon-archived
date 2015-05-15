@@ -74,7 +74,14 @@ class SlideMenu
                 )
             );
             
-            
+            $event->addMenu(
+                array(
+                    'name' => 'Incidents',
+                    'url' => $router->getPathFor('/centreon-realtime/host/'.$event->getHostId().'/issues'),
+                    'icon' => 'tata3',
+                    'order' => 4
+                )
+            );
             
             
         }  catch (Exception $e) {

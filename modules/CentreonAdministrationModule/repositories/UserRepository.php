@@ -135,20 +135,42 @@ class UserRepository extends Repository
         parent::update($givenParameters);
     }
 
+    
+    /** Check if last admin
+     *
+     * @param array $ids The ids of users to delete 
+     */
+    public static function isLastAdmin($ids){
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        $query = "SELECT count(u.user_id) as admin_nbr from cfg_users u where u.is_admin = 1 and u.user_id not in (".implode(',',$ids).") ";
+        $stmt = $dbconn->query($query);
+        $stmt->execute();
+        $res = $stmt->fetch();
+        if($res['admin_nbr'] >= 0){
+            return false;
+        }
+        return true;
+    }
+    
+    
     /**
      *
-     * @param string $givenParameters
-     * @param string $login
+     * @param array $ids
+     * @param object $currentUser
      */
-    public static function delete($ids)
+    public static function delete($ids,$currentUser)
     {
-        foreach ($ids as $id) {
-            $contact = User::getParameters($id, array('contact_id'));
-            if (isset($contact['contact_id'])) {
-                Contact::delete($contact['contact_id']);
+        if(!in_array($currentUser->getId(),$ids) && !self::isLastAdmin($ids)){
+            foreach ($ids as $id) {
+                $contact = User::getParameters($id, array('contact_id'));
+                if (isset($contact['contact_id'])) {
+                    Contact::delete($contact['contact_id']);
+                }
             }
+            parent::delete($ids);
         }
-        parent::delete($ids);
     }
     
     /**
