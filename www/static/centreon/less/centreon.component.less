@@ -25,7 +25,6 @@
     border-radius: 3px;
     box-shadow: 2px 1px 1px @lightGray;
     border: 1px solid @lightGray;
-    margin-bottom: 2px;
   }
 
   textarea {
@@ -86,13 +85,15 @@
   /*---- Group of 2 Fields --- */
   .inlineGroup {
     height: 40px;
+    display: table;
     .Elem1 {
-      float: left;
-      width: 91%;
+      display: table-cell;
+      width: 100%;
+      vertical-align: top;
     }
     .Elem2 {
-      float: right;
-      width: 8%;
+      display: table-cell;
+      margin-left: @paddingElem;
 
       button {
         float: right;

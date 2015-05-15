@@ -1,14 +1,15 @@
 <div class="col-lg-12">
 
-  {if (!isset($displaySearchBar) || $displaySearchBar === true)}
-    {include file='tools/datatable-search.tpl'}
-  {/if}
+
+      {if (!isset($displaySearchBar) || $displaySearchBar === true)}
+        {include file='tools/datatable-search.tpl'}
+      {/if}
 
    <!-- Datatable-->
 
 
-   <div class="ibox float-e-margins col-lg-12" id="hostListing">
-        <div class="ibox-content" id="tableLeft">
+   <div class="col-lg-12" id="hostListing">
+        <div id="tableLeft">
             <!-- Add / Actions -->
             <div class="buttonGroup">
                 {if (isset($objectAddUrl) && !empty($objectAddUrl))}
