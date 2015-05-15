@@ -386,9 +386,9 @@ class HostRepository extends Repository
      *
      * @param string $action
      * @param int $objectId
-     * @param array $givenParameters
+     * @param array $hostIds
      */
-    public static function updateAcl($action, $objectId, $hostIds)
+    public static function updateHostAcl($action, $objectId, $hostIds)
     {
         if ($action === 'update') {
             AclresourceHostRelation::delete($objectId);
@@ -396,5 +396,34 @@ class HostRepository extends Repository
                 AclresourceHostRelation::insert($objectId, $hostId);
             }
         }
+    }
+
+    /**
+     * get Hosts by acl id
+     *
+     * @param int $aclId
+     */
+    public static function getHostByAclResourceId($aclId)
+    {
+        $hostList = AclresourceHostRelation::getMergedParameters(
+            array(),
+            array('host_id', 'host_name'),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('cfg_acl_resources_hosts_relations.acl_resource_id' => $aclId),
+            "AND"
+        );
+
+        $finalHostList = array();
+        foreach ($hostList as $host) {
+            $finalHostList[] = array(
+                "id" => $host['host_id'],
+                "text" => $host['host_name']
+            );
+        }
+
+        return $finalHostList;
     }
 }

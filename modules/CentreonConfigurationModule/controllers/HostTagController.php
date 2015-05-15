@@ -33,32 +33,42 @@
  *
  */
 
-namespace CentreonConfiguration\Listeners\CentreonMain;
+namespace CentreonConfiguration\Controllers;
 
-use CentreonMain\Events\PostSave as PostSaveEvent;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Models\Host;
+use CentreonConfiguration\Models\Hosttag;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTagRepository;
+use CentreonAdministration\Repository\TagsRepository;
+use Centreon\Controllers\FormController;
 
-class PostSave
+class HostTagController extends FormController
 {
+    protected $objectDisplayName = 'HostTag';
+    public static $objectName = 'hostTag';
+    protected $objectBaseUrl = '/centreon-configuration/hosttag';
+    protected $objectClass = '\CentreonConfiguration\Models\Hosttag';
+    protected $repository = '\CentreonConfiguration\Repository\HostTagRepository';
+
+    public static $relationMap = array(
+        'aclresource_hosttags' => '\CentreonConfiguration\Models\Relation\Aclresource\Hosttag'
+    );
+    
     /**
-     * @param CentreonMain\Events\PostSave $event
+     * Get hosts for a specific acl resource
+     *
+     * @method get
+     * @route /aclresource/[i:id]/host/tag
      */
-    public static function execute(PostSaveEvent $event)
+    public function hostsForAclResourceAction()
     {
-        $parameters = $event->getParameters();
-        $extraParameters = $event->getExtraParameters();
-        if (isset($extraParameters['centreon-configuration'])) {
-            if ($event->getObjectName() === 'aclresource') {
-                if (isset($extraParameters['centreon-configuration']['aclresource_hosts'])) {
-                    $hostIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-configuration']['aclresource_hosts'])));
-                    HostRepository::updateHostAcl($event->getAction(), $event->getObjectId(), $hostIds);
-                }
-                if (isset($extraParameters['centreon-configuration']['aclresource_host_tags'])) {
-                    $hostTagIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-configuration']['aclresource_host_tags'])));
-                    HostTagRepository::updateHostTagAcl($event->getAction(), $event->getObjectId(), $hostTagIds);
-                }
-            }
-        }
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+        $finalHostTagList = HostTagRepository::getHostTagByAclResourceId($requestParam['id']);
+
+        $router->response()->json($finalHostTagList);
     }
 }

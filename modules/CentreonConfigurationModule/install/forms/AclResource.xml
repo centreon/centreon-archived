@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
-    <form name="hostacl_form">
+    <form name="cfg_aclresource_form">
         <route>/centreon-administration/aclresource/update</route>
         <redirect>1</redirect>
         <redirect_route>/centreon-adminstration/aclresource</redirect_route>
@@ -13,6 +13,14 @@
                         <listValuesRoute>/centreon-configuration/aclresource/[i:id]/host</listValuesRoute>
                         <multiple>true</multiple>
                         <ordered>false</ordered>
+                    </attributes>
+                </field>
+                <field name="aclresource_host_tags" label="Linked host tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-administration/tag/host/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-configuration/aclresource/[i:id]/host/tag</listValuesRoute>
+                        <multiple>true</multiple>
                     </attributes>
                 </field>
             </block>

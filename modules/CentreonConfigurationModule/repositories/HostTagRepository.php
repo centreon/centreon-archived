@@ -33,32 +33,71 @@
  *
  */
 
-namespace CentreonConfiguration\Listeners\CentreonMain;
+namespace CentreonConfiguration\Repository;
 
-use CentreonMain\Events\PostSave as PostSaveEvent;
-use CentreonConfiguration\Repository\HostRepository;
-use CentreonConfiguration\Repository\HostTagRepository;
+use CentreonConfiguration\Repository\Repository;
+use CentreonConfiguration\Models\Relation\Aclresource\Hosttag as AclresourceHosttagRelation;
+use CentreonAdministration\Models\Tag;
 
-class PostSave
+/**
+ * @author Kevin Duret <kduret@centreon.com>
+ * @package Centreon
+ * @subpackage Repository
+ */
+class HostTagRepository extends Repository
 {
+    public static $objectClass = '\CentreonConfiguration\Models\Hosttag';
+    
     /**
-     * @param CentreonMain\Events\PostSave $event
+     *
+     * @var type 
      */
-    public static function execute(PostSaveEvent $event)
+    public static $unicityFields = array(
+        'fields' => array(
+            'host' => 'cfg_tags_hosts,tag_id'
+        ),
+    );
+
+    /**
+     * update Host tag acl
+     *
+     * @param string $action
+     * @param int $objectId
+     * @param array $hostTagId
+     */
+    public static function updateHostTagAcl($action, $objectId, $hostTagIds)
     {
-        $parameters = $event->getParameters();
-        $extraParameters = $event->getExtraParameters();
-        if (isset($extraParameters['centreon-configuration'])) {
-            if ($event->getObjectName() === 'aclresource') {
-                if (isset($extraParameters['centreon-configuration']['aclresource_hosts'])) {
-                    $hostIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-configuration']['aclresource_hosts'])));
-                    HostRepository::updateHostAcl($event->getAction(), $event->getObjectId(), $hostIds);
-                }
-                if (isset($extraParameters['centreon-configuration']['aclresource_host_tags'])) {
-                    $hostTagIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-configuration']['aclresource_host_tags'])));
-                    HostTagRepository::updateHostTagAcl($event->getAction(), $event->getObjectId(), $hostTagIds);
-                }
+        if ($action === 'update') {
+            AclresourceHosttagRelation::delete($objectId);
+            foreach ($hostTagIds as $hostTagId => $hostTagName) {
+                AclresourceHostTagRelation::insert($objectId, $hostTagId);
             }
         }
+    }
+
+    /**
+     * get Host tags by acl id
+     *
+     * @param int $aclId
+     */
+    public static function getHostTagByAclResourceId($aclId)
+    {
+        $hostTagIdList = AclresourceHosttagRelation::getTargetIdFromSourceId(
+            'tag_id',
+            'acl_resource_id',
+            $aclId
+        );
+
+        $tagList = Tag::getParameters($hostTagIdList, 'tagname');
+
+        $finalTagList = array();
+        foreach ($tagList as $tag) {
+            $finalTagList[] = array(
+                "id" => $tag['tag_id'],
+                "text" => $tag['tagname']
+            );
+        }
+
+        return $finalTagList;
     }
 }

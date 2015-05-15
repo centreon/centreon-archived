@@ -180,6 +180,23 @@ class TagController extends Controller
         );
         return $router->response()->json(array('success' => true));
     }
+
+    /**
+     * get tag list by object
+     *
+     * @method get
+     * @route /tag/[a:objectName]/formlist
+     */
+    public function listTagByObjectAction()
+    {
+        $data = '';
+        $params = $this->getParams('named');
+
+        if (isset($params['objectName'])) {
+            $data = TagsRepository::getList($params['objectName'], "", 1, 0);
+        }
+        $this->router->response()->json($data);
+    }
     
     /**
      * get list tag
@@ -231,7 +248,6 @@ class TagController extends Controller
         if (isset($get['search'])) {
             $sSearch = trim($get['search']);
         }
-        
         
         $data = TagsRepository::getAllList($sSearch, 1);
         $this->router->response()->json($data);

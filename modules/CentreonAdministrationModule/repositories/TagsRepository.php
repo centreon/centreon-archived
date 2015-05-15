@@ -172,9 +172,7 @@ class TagsRepository
         if (!in_array($resourceName, static::$resourceType)) {
             throw new Exception("This resource type does not support tags.");
         }
-        if (empty($resourceId)) {
-            return array();
-        }
+
         $dbconn = Di::getDefault()->get('db_centreon');        
 
          $query = "SELECT t.tag_id, t.tagname, user_id, template_id

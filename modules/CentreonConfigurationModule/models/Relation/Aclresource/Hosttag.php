@@ -31,34 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonConfiguration\Listeners\CentreonMain;
+namespace CentreonConfiguration\Models\Relation\Aclresource;
 
-use CentreonMain\Events\PostSave as PostSaveEvent;
-use CentreonConfiguration\Repository\HostRepository;
-use CentreonConfiguration\Repository\HostTagRepository;
+use Centreon\Internal\Di;
+use Centreon\Models\CentreonRelationModel;
 
-class PostSave
+class Hosttag extends CentreonRelationModel
 {
-    /**
-     * @param CentreonMain\Events\PostSave $event
-     */
-    public static function execute(PostSaveEvent $event)
-    {
-        $parameters = $event->getParameters();
-        $extraParameters = $event->getExtraParameters();
-        if (isset($extraParameters['centreon-configuration'])) {
-            if ($event->getObjectName() === 'aclresource') {
-                if (isset($extraParameters['centreon-configuration']['aclresource_hosts'])) {
-                    $hostIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-configuration']['aclresource_hosts'])));
-                    HostRepository::updateHostAcl($event->getAction(), $event->getObjectId(), $hostIds);
-                }
-                if (isset($extraParameters['centreon-configuration']['aclresource_host_tags'])) {
-                    $hostTagIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-configuration']['aclresource_host_tags'])));
-                    HostTagRepository::updateHostTagAcl($event->getAction(), $event->getObjectId(), $hostTagIds);
-                }
-            }
-        }
-    }
+    protected static $relationTable = "cfg_acl_resources_tags_hosts_relations";
+    protected static $firstKey = "acl_resource_id";
+    protected static $secondKey = "tag_id";
+    public static $firstObject = "\CentreonAdministration\Models\Aclresource";
+    public static $secondObject = "\CentreonConfiguration\Models\Hosttag";
 }
