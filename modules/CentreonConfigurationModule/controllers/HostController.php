@@ -68,7 +68,8 @@ class HostController extends FormController
         'host_parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparents',
         'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchildren',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
-        'host_icon' => '\CentreonConfiguration\Models\Relation\Host\Icon'
+        'host_icon' => '\CentreonConfiguration\Models\Relation\Host\Icon',
+        'aclresource_hosts' => '\CentreonConfiguration\Models\Relation\Aclresource\Host'
     );
     
     public static $isDisableable = true;
@@ -350,6 +351,17 @@ class HostController extends FormController
     public function hostTemplateForHostAction()
     {
         parent::getRelations(static::$relationMap['host_hosttemplates']);
+    }
+
+    /**
+     * Get hosts for a specific acl resource
+     *
+     * @method get
+     * @route /aclresource/[i:id]/host
+     */
+    public function hostForAclResourceAction()
+    {
+        parent::getRelations(static::$relationMap['aclresource_hosts']);
     }
 
     /**

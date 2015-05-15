@@ -4,11 +4,7 @@
         <column name="acl_resource_id" phpName="AclResourceId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="name" phpName="AclResourceName" type="VARCHAR" size="255" required="true"/>
         <column name="description" phpName="AclResourceDescription" type="VARCHAR" size="255" required="false"/>
-        <column name="resource_id" phpName="ResourceId" type="INTEGER" required="false"/>
         <column name="status" phpName="AclResourcesStatus" type="TINYINT" required="true" defaultValue="1"/>
-        <index name="acl_resource_id">
-            <index-column name="acl_resource_id"/>
-        </index>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

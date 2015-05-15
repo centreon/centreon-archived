@@ -82,7 +82,7 @@ class UserRepository extends Repository
      * @return integer
      */
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {       
+    {
         if ($validate) {
             self::validateForm($givenParameters, $origin, $route, $validateMandatory);
         }
