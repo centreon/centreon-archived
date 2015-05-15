@@ -11,8 +11,8 @@
 </head>
 
 <body class="bodyCntr">
-    <span id="flash-message"></span>
-<!-- Commentaire de test-->
+    <div id="notif-dangere"></div>
+
 <div class="mainCntr" id="mainCntr"> <!-- Global Wrapper -->
 
     <!-- Menu aside -->
@@ -30,7 +30,7 @@
                     {foreach $appMenu as $menuLevel1}
                            <li>
                                 {if $menuLevel1.url != ""}
-                                    <a href="{$menuLevel1.url}">
+                                    <a href="{url_for url=$menuLevel1.url}">
                                 {else}
                                     <a href="#">
                                 {/if}
@@ -45,7 +45,7 @@
                                     {foreach $menuLevel1.children as $menuLevel2}
                                     <li>
                                         {if $menuLevel2.url != ""}
-                                            <a href="{$menuLevel2.url}">
+                                            <a href="{url_for url=$menuLevel2.url}">
                                         {else}
                                             <a href="#">
                                         {/if}
@@ -59,7 +59,7 @@
                                             {foreach $menuLevel2.children as $menuLevel3}
                                                 <li>
                                                     {if $menuLevel3.url != ""}
-                                                        <a href="{$menuLevel3.url}">
+                                                        <a href="{url_for url=$menuLevel3.url}">
                                                     {else}
                                                         <a href="#">
                                                     {/if}

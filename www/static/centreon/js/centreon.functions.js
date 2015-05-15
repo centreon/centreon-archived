@@ -84,7 +84,7 @@ function topClock() {
 function alertMessage(msg, cls, timeClose) {
     var $alertBox = $('#flash-message'); 
     $alertBox.addClass(cls);
-    $alertBox.append(msg);
+    $alertBox.html('<span>'+msg+'</span>');
     $alertBox.show();
     if ( timeClose !== undefined ) {
       setTimeout(function() {

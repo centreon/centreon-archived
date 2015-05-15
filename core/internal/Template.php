@@ -176,6 +176,7 @@ class Template extends \Smarty
         /* Load javascript */
         $this->addJs('jquery.min.js');
         $this->addJs('jquery-ui.min.js');
+        $this->addJs('jquery.cookie.js');
 
         $this->addJs('jquery.qtip.min.js');
         $this->addJs('centreon.help.tooltip.js');

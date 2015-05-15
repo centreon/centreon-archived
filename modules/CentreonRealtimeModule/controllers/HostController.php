@@ -163,6 +163,25 @@ class HostController extends Controller
         $router->response()->json($myDataForDatatable);
     }
 
+    
+    /**
+     * Show parents issues of an host 
+     *
+     * @method get
+     * @route /host/[i:id]/issues
+     */
+    public function issuesForHostAction(){
+        $params = $this->getParams();
+        $parent_issues = HostRepository::getParentIncidentsFromHost($params['id']);
+        $this->tpl->assign('issues', $parent_issues);
+        $this->tpl->display('file:[CentreonRealtimeModule]incident_right_slide.tpl');
+        
+    }
+    
+    
+    
+    
+    
     /**
      * Host detail page
      *

@@ -1,7 +1,9 @@
 .buttonGroup {
   display: inline-block;
-  position: absolute;
   z-index: 1;
+  position : absolute;
+  top: @paddingElem;
+
   .configuration-actions,
   #selected_option,
   #addToGroup
@@ -42,7 +44,17 @@
   background-color: @success /*#e2efc6*/;
   //box-shadow: 1px 2px 2px @success;
   color: @white;
-  padding : 0 @paddingElem*3;
+}
+
+.btnDanger{
+  background-color: @danger /*#e2efc6*/;
+  //box-shadow: 1px 2px 2px @success;
+  color: @white;
+}
+.btn{
+ // background-color: @danger /*#e2efc6*/;
+  //box-shadow: 1px 2px 2px @success;
+  color: @white;
 }
 
 /* -- Info button -- */

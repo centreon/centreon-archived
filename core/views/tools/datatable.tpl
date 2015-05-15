@@ -1,14 +1,15 @@
 <div class="col-lg-12">
 
-  {if (!isset($displaySearchBar) || $displaySearchBar === true)}
-    {include file='tools/datatable-search.tpl'}
-  {/if}
+
+      {if (!isset($displaySearchBar) || $displaySearchBar === true)}
+        {include file='tools/datatable-search.tpl'}
+      {/if}
 
    <!-- Datatable-->
 
 
-   <div class="ibox float-e-margins col-lg-12" id="hostListing">
-        <div class="ibox-content" id="tableLeft">
+   <div class="col-lg-12" id="hostListing">
+        <div id="tableLeft">
             <!-- Add / Actions -->
             <div class="buttonGroup">
                 {if (isset($objectAddUrl) && !empty($objectAddUrl))}
@@ -45,14 +46,13 @@
                         <span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu">
-                        {if isset($datatableParameters.groupname) }<li><a href="#">{$datatableParameters.groupname}</a></li>{/if}
-                        {if isset($datatableParameters.hasCategory) }<li><a href="#">{t}Category{/t}</a></li>{/if}
-                        {if !isset($datatableParameters.addToHook) }{$datatableParameters.addToHook = array()}{/if}
-                        {hook name='displayAppendAddTo' container='[hook]' params=$datatableParameters.addToHook}
-                      </ul>
+                          {if isset($datatableParameters.groupname) }<li><a href="#">{$datatableParameters.groupname}</a></li>{/if}
+                          {if isset($datatableParameters.hasCategory) }<li><a href="#">{t}Category{/t}</a></li>{/if}
+                          {if !isset($datatableParameters.addToHook) }{$datatableParameters.addToHook = array()}{/if}
+                          {hook name='displayAppendAddTo' container='[hook]' params=$datatableParameters.addToHook}
+                        </ul>
                  </div>
             </div>
-
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-hover centreon_table" id="datatable{$object}" ></table>
             </div>

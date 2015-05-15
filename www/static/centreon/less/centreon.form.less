@@ -4,15 +4,25 @@ label, input[type="text"], input[type="number"], textarea {
   display: block;
   border: 0;
 }
+.SearchWrapper {
+  padding-top: @paddingElem*2;
+  border-bottom: 1px solid @white;
+  background-color: @lightGray1;
+  position: relative;
 
+  .CentreonForm {
+    //display: flex;
+  }
+}
 .formWrapper {
+
+  background-color: @lightGray1;
+  //display: inline-block;
 
   .CentreonForm {
 
     .form-group {
       margin-bottom: @paddingElem*3;
     }
-
-
   }
 }

@@ -20,34 +20,40 @@
 
            //var $url_details = row.data('right_side_details');
             "rowCallback": function( row, data ) {
-
-                var memRow = false;
-
-                if (typeof data.DT_RowData.right_side_details !== 'undefined') {
-                    $(row).on('click', function(){
-                        var elem = this;
-                        $.ajax({
-                            url: data.DT_RowData.right_side_details,
-                            type: "GET",
-                            dataType: 'html',
-                            success : function(e){
-                               if(memRow && elem === memRow){
-                                   $('#tableLeft').css('margin-right','0%');
-                                   $('#sideRight').css('display','none');
-                                   memRow = false;
-                               }else if(!memRow){
-                                   $('#tableLeft').css('margin-right','260px');
-                                   $('#sideRight').css('display','block');
-                                   $('#sideRight').html(e);
-                                   memRow = elem;
-                               }else{
-                                   $('#sideRight').html(e);
-                                   memRow = elem;
-                               }
-                            },
-                            error : function(error){
+                /*dataTable = this;
+                dataTable.memRow = false;*/
+                if (typeof data.DT_RowData.right_side_details !== 'undefined') {      
+                    $(row).on('click', function(e){
+                        var target = $( e.target );
+                        if(target.is("a")){
+                            // trick to avoid dataTable default row selection style
+                            if($(this).hasClass('selected')){
+                                $(this).removeClass('selected');
+                            }else{
+                                $(this).addClass('selected');
                             }
-                        });
+                            return;
+                        }else{
+                            if($(this).hasClass('selected')){
+                                //dataTable.memRow = false;
+                                $('#tableLeft').css('margin-right','0%');
+                                $('#sideRight').css('display','none');
+                            }else {
+                                //dataTable.memRow = $(this);
+                                $.ajax({
+                                    url: data.DT_RowData.right_side_details,
+                                    type: "GET",
+                                    dataType: 'html',
+                                    success : function(e){
+                                        $('#sideRight').html(e);
+                                        $('#tableLeft').css('margin-right','260px');
+                                        $('#sideRight').css('display','block');
+                                    },
+                                    error : function(error){
+                                    }
+                                });
+                            }
+                        }
                     });
                 }
             },
@@ -111,9 +117,9 @@
             {/if}
         });
 
-        $('#datatable{$object} tbody').on('click', 'a', function (e) {
-            if ($(this).attr('href')) {
-                e.stopProgration();
+        $('#datatable{$object} tbody ').on('click', 'a', function (e) {
+            if ($(this).attr('href') && $(this).attr('href') !== '#') {
+                e.stopPropagation();
             }
         });
         

@@ -161,9 +161,61 @@ class HostRepository extends Repository
      */
     public static function getConfigurationData($hostId)
     {
-        return Host::getParameters($hostId, "*");
+        $myHostParameters = Host::getParameters($hostId, "*");
+        $myHostParameters['templatesIds'] = HostRepository::getTemplateChain($hostId);
+        
+        
+        $myHostParameters['templates'] = array();
+        foreach($myHostParameters['templatesIds'] as $myHostTemplate) {
+            $myHostParameters['templates'][] = HostTemplateRepository::get($myHostTemplate['id']);
+        }
+        return $myHostParameters;
     }
 
+    
+    
+    /**
+     * Get configurated services of a host
+     * 
+     * @param string $relClass
+     * @param int $id
+     * @return array 
+     */
+    public static function getServicesForHost($relClass, $id){
+        $curObj = static::$objectClass;
+        if ($relClass::$firstObject == $curObj) {
+            $tmp = $relClass::$secondObject;
+            $fArr = array();
+            $sArr = array('*');
+        } else {
+            $tmp = $relClass::$firstObject;
+            $fArr = array($tmp::getPrimaryKey(), $tmp::getUniqueLabelField());
+            $sArr = array();
+        }
+        $cmp = $curObj::getTableName() . '.' . $curObj::getPrimaryKey();
+        $list = $relClass::getMergedParameters(
+            $fArr,
+            $sArr,
+            -1,
+            0,
+            null,
+            "ASC",
+            array($cmp => $id),
+            "AND"
+        );
+        /*
+        $finalList = array();
+        foreach ($list as $obj) {
+            $finalList[] = array(
+                "id" => $obj[$tmp::getPrimaryKey()],
+                "text" => $obj[$tmp::getUniqueLabelField()]
+            );
+        }*/
+        return $list;
+       
+    }
+    
+    
     /**
      * Format data so that it can be displayed in tooltip
      *

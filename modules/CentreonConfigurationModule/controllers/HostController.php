@@ -48,6 +48,8 @@ use CentreonConfiguration\Repository\HostTemplateRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
 use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Controllers\FormController;
+use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
 
 class HostController extends FormController
 {
@@ -68,6 +70,7 @@ class HostController extends FormController
         'host_parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparents',
         'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchildren',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
+        'host_services' => '\CentreonConfiguration\Models\Relation\Host\Service',
         'host_icon' => '\CentreonConfiguration\Models\Relation\Host\Icon',
         'aclresource_hosts' => '\CentreonConfiguration\Models\Relation\Aclresource\Host',
         'aclresource_hosttags' => '\CentreonConfiguration\Models\Relation\Aclresource\Hosttag'
@@ -205,6 +208,22 @@ class HostController extends FormController
         $this->router->response()->json(array('success' => true));
     }
 
+    /**
+     * Show all tags of a Host
+     *
+     *
+     * @method get
+     * @route /host/[i:id]/tags/
+     */
+    public function getHostTagsAction()
+    {
+        $requestParam = $this->getParams('named');
+        $tags = TagsRepository::getList('host', $requestParam['id']);
+        $this->tpl->assign('tags', $tags);
+        $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');
+    }
+    
+    
     /**
      * Update a host
      *
@@ -528,10 +547,49 @@ class HostController extends FormController
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
         $checkdata = HostRepository::formatDataForTooltip($data);
+        $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
+        $final = "";
         $this->tpl->assign('checkdata', $checkdata);
-        $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+        $final .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+        $this->router->response()->body($final);
+        
     }
 
+    /**
+     * Get list of services for a specific host
+     * 
+     * @method get
+     * @route /host/[i:id]/service
+     */
+    public function hostForServiceAction()
+    {
+        /*
+        $requestParam = $this->getParams('named');
+        $repository = $this->repository;
+        $repository::getRelations();
+        $list = $repository::getRelations($relClass, $requestParam['id']);
+        $this->router->response()->json($list);
+        */
+        
+        $requestParam = $this->getParams('named');
+        $services = HostRepository::getServicesForHost(static::$relationMap['host_services'],$requestParam['id']);
+        //$formatedData = array();
+        $final = "";
+        foreach($services as $service){
+            //$formatedData[] = ServiceRepository::formatDataForTooltip($service);
+            $this->tpl->assign('checkdata', ServiceRepository::formatDataForTooltip($service));
+            $final .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+        }
+        
+        
+        //$this->router->response()->json($formatedData);
+        //parent::getRelations(static::$relationMap['host_services']);
+        $this->router->response()->body($final);
+    }
+    
+    
+    
+    
     /**
      * Get inheritance value
      *
