@@ -31,36 +31,21 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonAdministration\Controllers;
+namespace CentreonAdministration\Models;
 
-use Centreon\Internal\Form;
-use Centreon\Controllers\FormController;
+use Centreon\Models\CentreonBaseModel;
 
-class AclresourceController extends FormController
+/**
+ * Used for interacting with ACL groups
+ *
+ * @author sylvestre
+ */
+class Usergroup extends CentreonBaseModel
 {
-    protected $objectDisplayName = 'AclResource';
-    public static $objectName = 'aclresource';
-    protected $objectBaseUrl = '/centreon-administration/aclresource';
-    protected $objectClass = '\CentreonAdministration\Models\Aclresource';
-    public static $relationMap = array(
-        'aclresource_usergroups' => '\CentreonAdministration\Models\Relation\Aclresource\Usergroup',
-    );
-    protected $datatableObject = '\CentreonAdministration\Internal\AclresourceDatatable';
-    protected $repository = '\CentreonAdministration\Repository\AclresourceRepository';
-
-    public static $isDisableable = true;
-    public static $enableDisableFieldName = 'status';
-
-    /**
-     * Usergroups for a specific acl resource
-     *
-     * @method get
-     * @route /aclresource/[i:id]/usergroup
-     */
-    public function usergroupForAclresourceAction()
-    {
-        parent::getRelations(static::$relationMap['aclresource_usergroups']);
-    }
+    protected static $table = "cfg_usergroups";
+    protected static $primaryKey = "usergroup_id";
+    protected static $uniqueLabelField = "name";
 }

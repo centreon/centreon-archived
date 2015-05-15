@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+    <form name="hostacl_form">
+        <route>/centreon-administration/aclresource/update</route>
+        <redirect>1</redirect>
+        <redirect_route>/centreon-adminstration/aclresource</redirect_route>
+        <section name="Hosts">
+            <block name="Relations">
+                <field name="aclresource_hosts" label="Linked hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-configuration/host/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-configuration/aclresource/[i:id]/host</listValuesRoute>
+                        <multiple>true</multiple>
+                        <ordered>false</ordered>
+                    </attributes>
+                </field>
+            </block>
+        </section>
+    </form>
+</forms>

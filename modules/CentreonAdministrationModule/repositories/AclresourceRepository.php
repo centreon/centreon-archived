@@ -31,19 +31,42 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
+namespace CentreonAdministration\Repository;
 
-namespace Models\Configuration\Relation\Aclgroup;
+use CentreonAdministration\Models\Aclresource;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 
-use Centreon\Models\CentreonRelationModel;
-
-class Aclresource extends CentreonRelationModel
+/**
+ * @author Kevin Duret <kduret@centreon.com>
+ * @package Centreon
+ * @subpackage Repository
+ */
+class AclresourceRepository extends Repository
 {
-    protected static $relationTable = "cfg_acl_res_group_relations";
-    protected static $firstKey = "acl_group_id";
-    protected static $secondKey = "acl_res_id";
-    public static $firstObject =  "\\Models\\Configuration\\Acl\\Group";
-    public static $secondObject = "\\Models\\Configuration\\Acl\\Resource";
+    /**
+     *
+     * @var string
+     */
+    public static $tableName = 'cfg_acl_resources';
+    
+    /**
+     *
+     * @var string
+     */
+    public static $objectName = 'Aclresource';
+    
+    public static $objectClass = '\CentreonAdministration\Models\Aclresource';
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'name' => 'cfg_acl_resources, acl_resource_id, name'
+        ),
+    );
 }

@@ -31,19 +31,27 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
+namespace CentreonConfiguration\Listeners\CentreonMain;
 
-namespace Models\Configuration\Relation\Aclgroup;
+use CentreonMain\Events\PostSave as PostSaveEvent;
+use CentreonConfiguration\Repository\HostRepository;
 
-use Centreon\Models\CentreonRelationModel;
-
-class Aclmenu extends CentreonRelationModel
+class PostSave
 {
-    protected static $relationTable = "cfg_acl_groups_menus_relations";
-    protected static $firstKey = "acl_group_id";
-    protected static $secondKey = "acl_menu_id";
-    public static $firstObject =  "\\Models\\Configuration\\Acl\\Group";
-    public static $secondObject = "\\Models\\Configuration\\Acl\\Menu";
+    /**
+     * @param CentreonMain\Events\PostSave $event
+     */
+    public static function execute(PostSaveEvent $event)
+    {
+        $parameters = $event->getParameters();
+        $extraParameters = $event->getExtraParameters();
+        if (isset($extraParameters['centreon-configuration'])) {
+            if (($event->getObjectName() === 'aclresource') && isset($extraParameters['centreon-configuration']['aclresource_hosts'])) {
+                $hostIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-configuration']['aclresource_hosts'])));
+                HostRepository::updateAcl($event->getAction(), $event->getObjectId(), $hostIds);
+            }
+        }
+    }
 }

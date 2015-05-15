@@ -35,7 +35,9 @@
  */
 namespace Centreon\Internal\Installer;
 
+use Centreon\Internal\Di;
 use Centreon\Models\Validators;
+use Centreon\Models\Module;
 
 /**
  * Description of Form
@@ -239,16 +241,29 @@ class Form
     public static function insertForm($data, $moduleId)
     {
         $key = $data['name'];
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         if (!isset(self::$forms[$key])) {
-            $sql = 'INSERT INTO cfg_forms (name, route, redirect, redirect_route, module_id) 
-              VALUES (:name, :route, :redirect, :redirect_route, :module)';
+            $stmt = $db->prepare(
+                'SELECT count(route)as count,form_id '
+                . 'FROM cfg_forms '
+                . 'WHERE route = :route'
+            );
+            $stmt->bindParam(':route', $data['route'], \PDO::PARAM_STR);
+            $stmt->execute();
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if (isset($row['count']) && $row['count'] > 0) {
+                self::$forms[$key] = $row['form_id'];
+                return false;
+            } else {
+                $sql = 'INSERT INTO cfg_forms (name, route, redirect, redirect_route, module_id) '
+                    . 'VALUES (:name, :route, :redirect, :redirect_route, :module)';
+            }
         } else {
-            $sql = 'UPDATE cfg_forms SET route = :route,
-                redirect = :redirect,
-                redirect_route = :redirect_route
-                WHERE name = :name
-                AND module_id = :module';
+            $sql = 'UPDATE cfg_forms SET route = :route, '
+                . 'redirect = :redirect, '
+                . 'redirect_route = :redirect_route '
+                . 'WHERE name = :name '
+                . 'AND module_id = :module';
         }
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':name', $data['name']);
@@ -260,6 +275,7 @@ class Form
         if (!isset(self::$forms[$key])) {
             self::$forms[$key] = $db->lastInsertId('cfg_forms', 'form_id');
         }
+        return true;
     }
 
     /**
@@ -403,7 +419,7 @@ class Form
         $fname = $data['field_name'];
         $key = implode(';', array($data['form_name'], $data['section_name'], $data['block_name']));
         if (isset(self::$blocks[$key]) && isset(self::$fields[$fname])) {
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $db = Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare(
                 'DELETE FROM cfg_forms_blocks_fields_relations WHERE block_id = :block_id AND field_id = :field_id'
             );
@@ -433,7 +449,7 @@ class Form
      */
     public static function addValidatorsToField($data)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $fname = (string)$data['field_name'];
         $validators = $data['validators'];
         if (isset(self::$fields[$fname]) && !is_null($validators->validator)) {
@@ -537,7 +553,7 @@ class Form
     protected static function insertStep($data)
     {
         $key = implode(';', array($data['wizard_name'], $data['name']));
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         if (!isset(self::$steps[$key])) {
             $sql = 'INSERT INTO cfg_forms_steps (name, rank, wizard_id) 
                 VALUES (:name, :rank, :wizard_id)';
@@ -570,7 +586,7 @@ class Form
         $fname = $data['field_name'];
         $key = implode(';', array($data['wizard_name'], $data['step_name']));
         if (isset(self::$steps[$key]) && isset(self::$fields[$fname])) {
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $db = Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare(
                 'REPLACE INTO cfg_forms_steps_fields_relations (step_id, field_id, rank) '
                 . 'VALUES (:step_id, :field_id, :rank)'
@@ -650,7 +666,7 @@ class Form
             'redirect' => $form->redirect,
             'redirect_route' => $form->redirect_route
         );
-        self::insertForm(array_map('strval', $formData), $moduleId);
+        $formAdded = self::insertForm(array_map('strval', $formData), $moduleId);
         $sectionRank = 1;
         foreach ($form->section as $section) {
             $sectionData = array(
@@ -681,6 +697,12 @@ class Form
                         $versions = self::parseVersions($field->versions);
                     }
                     $attributes = json_encode($attributes);
+                    if (!$formAdded) {
+                        $moduleName = Module::getParameters($moduleId, 'name');
+                        if (isset($moduleName['name'])) {
+                            $field['name'] = $moduleName['name'] . '__' . $field['name'];
+                        }
+                    }
                     $fieldData = array(
                         'name' => $field['name'],
                         'label' => $field['label'],
@@ -789,7 +811,7 @@ class Form
      */
     protected static function purgeFields($insertedFields)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $db->beginTransaction();
         $stmt = $db->prepare("DELETE FROM cfg_forms_blocks_fields_relations WHERE CONCAT_WS(';', block_id, field_id) = ?");
         foreach (self::$blockFields as $key => $value) {
@@ -813,7 +835,7 @@ class Form
      */
     protected static function purgeBlocks($insertedBlocks)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $db->beginTransaction();
         $stmt = $db->prepare("DELETE FROM cfg_forms_blocks WHERE block_id = ?");
         foreach (self::$blocks as $key => $value) {
@@ -831,7 +853,7 @@ class Form
      */
     protected static function purgeSections($insertedSections)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $db->beginTransaction();
         $stmt = $db->prepare("DELETE FROM cfg_forms_sections WHERE section_id = ?");
         foreach (self::$sections as $key => $value) {
@@ -849,7 +871,7 @@ class Form
      */
     protected static function purgeSteps($insertedSteps)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $db->beginTransaction();
         $stmt = $db->prepare("DELETE FROM cfg_forms_steps WHERE step_id = ?");
         foreach (self::$steps as $key => $value) {
@@ -867,7 +889,7 @@ class Form
      */
     protected static function purgeStepFields($insertedFields)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $db->beginTransaction();
         $stmt = $db->prepare("DELETE FROM cfg_forms_steps_fields_relations WHERE CONCAT_WS(';', step_id, field_id) = ?");
         foreach (self::$stepFields as $key => $value) {

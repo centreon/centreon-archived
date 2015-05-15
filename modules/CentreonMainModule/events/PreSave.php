@@ -33,56 +33,48 @@
  *
  */
 
-namespace CentreonAdministration\Repository;
-
-use Centreon\Internal\Di;
+namespace CentreonMain\Events;
 
 /**
- * @author Sylvestre Ho <sho@centreon.com>
- * @package Centreon
- * @subpackage Repository
+ * This event allows modules to catch form actions
  */
-class AclmenuRepository
+class PreSave
 {
-    /**
-     * Get ACL level by Acl Menu ID
-     *
-     * @param int $acl_menu_id
-     * @return array
-     */
-    public static function getAclLevelByAclMenuId($acl_menu_id)
+    private $action;
+    private $parameters;
+    private $extraParameters;
+
+    public function __construct($action, $parameters, $extraParameters)
     {
-        $db = Di::getDefault()->get('db_centreon');
-        $sql = "SELECT menu_id, acl_level
-            FROM cfg_acl_menu_menu_relations
-            WHERE acl_menu_id = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute(array($acl_menu_id));
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $data = array();
-        foreach ($rows as $row) {
-            $data[$row['menu_id']] = $row['acl_level'];
-        }
-        return $data;
+        $this->action = $action;
+        $this->parameters = $parameters;
+        $this->extraParameters= $extraParameters;
     }
 
-    /**
-     * Update Acl data
-     *
-     * @param int $acl_menu_id
-     * @param array $menus
-     */
-    public static function updateAclLevel($acl_menu_id, $menus)
+    public function getAction()
     {
-        $db = Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("DELETE FROM cfg_acl_menu_menu_relations WHERE acl_menu_id = ?");
-        $stmt->execute(array($acl_menu_id));
-        $sql = "INSERT INTO cfg_acl_menu_menu_relations (acl_menu_id, menu_id, acl_level) VALUES (?, ?, ?)";
-        $db->beginTransaction();
-        $stmt = $db->prepare($sql);
-        foreach ($menus as $menuId => $aclLevel) {
-            $stmt->execute(array($acl_menu_id, $menuId, $aclLevel));
-        }
-        $db->commit();
+        return $this->action;
+    }
+
+    public function getParameters()
+    {
+        return $this->parameters;
+    }
+
+    public function getExtraParameters()
+    {
+        return $this->extraParameters;
+    }
+
+    public function getObjectId()
+    {
+        $parameters = $this->parameters;
+        return $parameters['object_id'];
+    }
+
+    public function getObjectName()
+    {
+        $parameters = $this->parameters;
+        return $parameters['object'];
     }
 }

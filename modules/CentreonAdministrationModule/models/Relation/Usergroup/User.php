@@ -35,15 +35,15 @@
  */
 
 
-namespace CentreonAdministration\Models\Aclgroup;
+namespace CentreonAdministration\Models\Relation\Usergroup;
 
 use Centreon\Models\CentreonRelationModel;
 
-class Aclaction extends CentreonRelationModel
+class User extends CentreonRelationModel
 {
-    protected static $relationTable = "cfg_acl_group_actions_relations";
-    protected static $firstKey = "acl_group_id";
-    protected static $secondKey = "acl_action_id";
-    public static $firstObject =  "\\Models\\Configuration\\Acl\\Group";
-    public static $secondObject = "\\Models\\Configuration\\Acl\\Action";
+    protected static $relationTable = "cfg_users_usergroups_relations";
+    protected static $firstKey = "usergroup_id";
+    protected static $secondKey = "user_id";
+    public static $firstObject =  "\CentreonAdministration\Models\Usergroup";
+    public static $secondObject = "\CentreonAdministration\Models\User";
 }

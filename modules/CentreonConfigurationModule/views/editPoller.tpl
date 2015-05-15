@@ -34,7 +34,7 @@
     </div>
     <div class="tab-content" id="formContent">
       <div class="tab-pane active" id="pollerGeneral">
-        {$form.poller_name.html}
+        {$form.name.html}
         {$form.ip_address.html}
         {$form.poller_tmpl.html}
       </div>

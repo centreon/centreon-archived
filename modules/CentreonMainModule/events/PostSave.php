@@ -33,34 +33,48 @@
  *
  */
 
-namespace CentreonAdministration\Controllers;
+namespace CentreonMain\Events;
 
-use Centreon\Internal\Form;
-use Centreon\Controllers\FormController;
-
-class AclresourceController extends FormController
+/**
+ * This event allows modules to catch form actions
+ */
+class PostSave
 {
-    protected $objectDisplayName = 'AclResource';
-    public static $objectName = 'aclresource';
-    protected $objectBaseUrl = '/centreon-administration/aclresource';
-    protected $objectClass = '\CentreonAdministration\Models\Aclresource';
-    public static $relationMap = array(
-        'aclresource_usergroups' => '\CentreonAdministration\Models\Relation\Aclresource\Usergroup',
-    );
-    protected $datatableObject = '\CentreonAdministration\Internal\AclresourceDatatable';
-    protected $repository = '\CentreonAdministration\Repository\AclresourceRepository';
+    private $action;
+    private $parameters;
+    private $extraParameters;
 
-    public static $isDisableable = true;
-    public static $enableDisableFieldName = 'status';
-
-    /**
-     * Usergroups for a specific acl resource
-     *
-     * @method get
-     * @route /aclresource/[i:id]/usergroup
-     */
-    public function usergroupForAclresourceAction()
+    public function __construct($action, $parameters, $extraParameters)
     {
-        parent::getRelations(static::$relationMap['aclresource_usergroups']);
+        $this->action = $action;
+        $this->parameters = $parameters;
+        $this->extraParameters= $extraParameters;
+    }
+
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    public function getParameters()
+    {
+        return $this->parameters;
+    }
+
+    public function getExtraParameters()
+    {
+        return $this->extraParameters;
+    }
+
+    public function getObjectId()
+    {
+        $parameters = $this->parameters;
+        return $parameters['object_id'];
+    }
+
+    public function getObjectName()
+    {
+        $parameters = $this->parameters;
+        return $parameters['object'];
     }
 }

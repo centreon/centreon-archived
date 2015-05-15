@@ -34,18 +34,16 @@
  *
  */
 
-namespace CentreonAdministration\Models;
+namespace CentreonConfiguration\Models\Relation\Aclresource;
 
-use Centreon\Models\CentreonBaseModel;
+use Centreon\Internal\Di;
+use Centreon\Models\CentreonRelationModel;
 
-/**
- * Used for interacting with ACL groups
- *
- * @author sylvestre
- */
-class Aclgroup extends CentreonBaseModel
+class Host extends CentreonRelationModel
 {
-    protected static $table = "cfg_acl_groups";
-    protected static $primaryKey = "acl_group_id";
-    protected static $uniqueLabelField = "acl_group_name";
+    protected static $relationTable = "cfg_acl_resources_hosts_relations";
+    protected static $firstKey = "acl_resource_id";
+    protected static $secondKey = "host_id";
+    public static $firstObject = "\CentreonAdministration\Models\Aclresource";
+    public static $secondObject = "\CentreonConfiguration\Models\Host";
 }

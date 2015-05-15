@@ -32,55 +32,35 @@
  * For more information : contact@centreon.com
  *
  */
+    
+namespace CentreonAdministration\Controllers;
 
-namespace CentreonAdministration\Repository;
+use Centreon\Internal\Form;
+use Centreon\Controllers\FormController;
 
-use Centreon\Internal\Di;
-
-/**
- * @author Sylvestre Ho <sho@centreon.com>
- * @package Centreon
- * @subpackage Repository
- */
-class AclactionRepository
+class UsergroupController extends FormController
 {
-    /**
-     * Update acl action rules
-     *
-     * @param int $aclActionId
-     * @param array $ruleParams
-     */
-    public static function updateRules($aclActionId, $ruleParams)
-    {
-        $db = Di::getDefault()->get('db_centreon');
-        $sql = "DELETE FROM cfg_acl_actions_rules WHERE acl_action_rule_id = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute(array($aclActionId));
-        $sql = "INSERT INTO cfg_acl_actions_rules (acl_action_rule_id, acl_action_name) VALUES (?, ?)";
-        $db->beginTransaction();
-        $stmt = $db->prepare($sql);
-        foreach ($ruleParams as $key => $value) {
-            if ((preg_match('/^service_/', $key) || preg_match('/^host_/', $key)) && $value == 1) {
-                $stmt->execute(array($aclActionId, $key));
-            }
-        }
-        $db->commit();
-    }
+    protected $objectDisplayName = 'Usergroup';
+    public static $objectName = 'usergroup';
+    protected $objectBaseUrl = '/centreon-administration/usergroup';
+    protected $objectClass = '\CentreonAdministration\Models\Usergroup';
+    public static $relationMap = array(
+        'usergroup_users' => '\CentreonAdministration\Models\Relation\Usergroup\User',
+    );
+    protected $datatableObject = '\CentreonAdministration\Internal\UsergroupDatatable';
+    protected $repository = '\CentreonAdministration\Repository\UsergroupRepository';
 
-    /** 
-     * Get rules from action id
+    public static $isDisableable = true;
+    public static $enableDisableFieldName = 'status';
+    
+    /**
+     * Users for a specific usergroup
      *
-     * @param int $actionId
+     * @method get
+     * @route /usergroup/[i:id]/user
      */
-    public static function getRulesFromActionId($actionId)
+    public function userForAclgroupAction()
     {
-        $db = Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("SELECT acl_action_name FROM cfg_acl_actions_rules WHERE acl_action_rule_id = ?");
-        $stmt->execute(array($actionId));
-        $arr = array();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $arr[$row['acl_action_name']] = 1;
-        }
-        return $arr;
+        parent::getRelations(static::$relationMap['usergroup_users']);
     }
 }

@@ -33,34 +33,40 @@
  *
  */
 
-namespace CentreonAdministration\Controllers;
+namespace CentreonAdministration\Repository;
 
-use Centreon\Internal\Form;
-use Centreon\Controllers\FormController;
+use CentreonAdministration\Models\Usergroup;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 
-class AclresourceController extends FormController
+/**
+ * @author Kevin Duret <kduret@centreon.com>
+ * @package Centreon
+ * @subpackage Repository
+ */
+class UsergroupRepository extends Repository
 {
-    protected $objectDisplayName = 'AclResource';
-    public static $objectName = 'aclresource';
-    protected $objectBaseUrl = '/centreon-administration/aclresource';
-    protected $objectClass = '\CentreonAdministration\Models\Aclresource';
-    public static $relationMap = array(
-        'aclresource_usergroups' => '\CentreonAdministration\Models\Relation\Aclresource\Usergroup',
-    );
-    protected $datatableObject = '\CentreonAdministration\Internal\AclresourceDatatable';
-    protected $repository = '\CentreonAdministration\Repository\AclresourceRepository';
-
-    public static $isDisableable = true;
-    public static $enableDisableFieldName = 'status';
-
     /**
-     * Usergroups for a specific acl resource
      *
-     * @method get
-     * @route /aclresource/[i:id]/usergroup
+     * @var string
      */
-    public function usergroupForAclresourceAction()
-    {
-        parent::getRelations(static::$relationMap['aclresource_usergroups']);
-    }
+    public static $tableName = 'cfg_usergroups';
+    
+    /**
+     *
+     * @var string
+     */
+    public static $objectName = 'Usergroup';
+    
+    public static $objectClass = '\CentreonAdministration\Models\Usergroup';
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'name' => 'cfg_usergroups, usergroup_id, name'
+        ),
+    );
 }

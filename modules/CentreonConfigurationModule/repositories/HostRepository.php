@@ -46,6 +46,7 @@ use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Models\Relation\Host\Service as HostServiceRelation;
 use CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate as HostTemplateServiceTemplateRelation;
 use CentreonConfiguration\Models\Relation\Service\Hosttemplate as ServiceHostTemplateRelation;
+use CentreonConfiguration\Models\Relation\Aclresource\Host as AclresourceHostRelation;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -430,6 +431,22 @@ class HostRepository extends Repository
         }
 
         $db->commit();
+    }
 
+    /**
+     * update Host acl
+     *
+     * @param string $action
+     * @param int $objectId
+     * @param array $givenParameters
+     */
+    public static function updateAcl($action, $objectId, $hostIds)
+    {
+        if ($action === 'update') {
+            AclresourceHostRelation::delete($objectId);
+            foreach ($hostIds as $hostId) {
+                AclresourceHostRelation::insert($objectId, $hostId);
+            }
+        }
     }
 }

@@ -385,9 +385,7 @@ class TagController extends Controller
      */
     public function updateAction()
     {
-       
         $givenParameters = clone $this->getParams('post');
- 
         try {
             $tagId = TagsRepository::isExist($givenParameters['tagname']);
             if ($tagId > 0 && $tagId != $givenParameters['object_id']) {
@@ -403,5 +401,21 @@ class TagController extends Controller
             $updateErrorMessage = $e->getMessage();
             $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
+    }
+    
+    /**
+     * get list herited tag
+     * 
+     * @method get
+     * @route /tag/[i:id]/[a:objectName]/herited
+     */
+    public function heritedTagAction()
+    {
+        $data = '';
+        $get = $this->getParams('named');
+        if (isset($get['objectName']) && isset($get['id'])) {
+            $data = TagsRepository::getHeritedTags($get['objectName'], $get['id']);
+        }
+        $this->router->response()->json($data);
     }
 }

@@ -67,6 +67,7 @@ class ServiceController extends FormController
     protected $inheritanceUrl = '/centreon-configuration/servicetemplate/[i:id]/inheritance';
     protected $inheritanceTmplUrl = '/centreon-configuration/servicetemplate/inheritance';
     protected $tmplField = '#service_template_model_stm_id';
+    protected $inheritanceTagsUrl = '/centreon-administration/tag/[i:id]/service/herited';
 
     /**
      * List services

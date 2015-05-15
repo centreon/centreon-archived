@@ -145,6 +145,24 @@
               });
             });
             {/if}
+            {if isset($inheritanceTagsUrl)}
+                var sText = '';
+                $.ajax({
+                      url: "{$inheritanceTagsUrl}",
+                      dataType: 'json',
+                      type: 'get',
+                      success: function(data, textStatus, jqXHR) {
+                        if (data.success) {
+                          $.each(data.values, function(key, value) {
+                             if (value != null) {
+                                sText =  sText+' '+ value;
+                             }
+                          });
+                          $('i[id$="tags_inheritance"]').text(sText);
+                        }
+                      }
+                });
+            {/if}
         });
         
   /**
