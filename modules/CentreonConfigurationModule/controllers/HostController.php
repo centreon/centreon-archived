@@ -64,13 +64,16 @@ class HostController extends FormController
     protected $inheritanceUrl = '/centreon-configuration/host/[i:id]/inheritance';
     protected $inheritanceTmplUrl = '/centreon-configuration/hosttemplate/inheritance';
     protected $tmplField = '#host_hosttemplates';
+    protected $inheritanceTagsUrl = '/centreon-administration/tag/[i:id]/host/herited';
     
     public static $relationMap = array(
         'host_parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparents',
         'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchildren',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
+        'host_services' => '\CentreonConfiguration\Models\Relation\Host\Service',
         'host_icon' => '\CentreonConfiguration\Models\Relation\Host\Icon',
-        'host_services' => '\CentreonConfiguration\Models\Relation\Host\Service'
+        'aclresource_hosts' => '\CentreonConfiguration\Models\Relation\Aclresource\Host',
+        'aclresource_hosttags' => '\CentreonConfiguration\Models\Relation\Aclresource\Hosttag'
     );
     
     public static $isDisableable = true;
@@ -205,8 +208,6 @@ class HostController extends FormController
         $this->router->response()->json(array('success' => true));
     }
 
-    
-    
     /**
      * Show all tags of a Host
      *
@@ -373,6 +374,23 @@ class HostController extends FormController
     }
 
     /**
+     * Get hosts for a specific acl resource
+     *
+     * @method get
+     * @route /aclresource/[i:id]/host
+     */
+    public function hostsForAclResourceAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+        $finalHostList = HostRepository::getHostByAclResourceId($requestParam['id']);
+
+        $router->response()->json($finalHostList);
+    }
+
+    /**
      * 
      * @method get
      * @route /host/[i:id]/parent
@@ -518,7 +536,7 @@ class HostController extends FormController
     }
     
     /**
-     * Display the configuration snapshot of a host 
+     * Display the configuration snapshot of a host
      * with template inheritance
      *
      * @method get
@@ -529,27 +547,10 @@ class HostController extends FormController
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
         $checkdata = HostRepository::formatDataForTooltip($data);
-        //$chackdataTemplate = HostTemplateRepository::formatDataForTooltip($data['templates']);
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
         $final = "";
         $this->tpl->assign('checkdata', $checkdata);
         $final .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
-        
-        /*
-        foreach($chackdataTemplate as $templateData){
-            $this->tpl->assign('checkdata', $templateData);
-            $final .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
-        }*/
-        
-        
-       /* $myFInalTemplate = '';
-        
-        $this->tpl->assign('checkdata', $azeaze);
-        $myFInalTemplate .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
-        */
-        
-        
-        
         $this->router->response()->body($final);
         
     }

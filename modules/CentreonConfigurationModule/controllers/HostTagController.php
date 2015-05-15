@@ -31,19 +31,44 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
+namespace CentreonConfiguration\Controllers;
 
-namespace Models\Configuration\Relation\Aclgroup;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Models\Host;
+use CentreonConfiguration\Models\Hosttag;
+use CentreonConfiguration\Repository\HostRepository;
+use CentreonConfiguration\Repository\HostTagRepository;
+use CentreonAdministration\Repository\TagsRepository;
+use Centreon\Controllers\FormController;
 
-use Centreon\Models\CentreonRelationModel;
-
-class Aclmenu extends CentreonRelationModel
+class HostTagController extends FormController
 {
-    protected static $relationTable = "cfg_acl_groups_menus_relations";
-    protected static $firstKey = "acl_group_id";
-    protected static $secondKey = "acl_menu_id";
-    public static $firstObject =  "\\Models\\Configuration\\Acl\\Group";
-    public static $secondObject = "\\Models\\Configuration\\Acl\\Menu";
+    protected $objectDisplayName = 'HostTag';
+    public static $objectName = 'hostTag';
+    protected $objectBaseUrl = '/centreon-configuration/hosttag';
+    protected $objectClass = '\CentreonConfiguration\Models\Hosttag';
+    protected $repository = '\CentreonConfiguration\Repository\HostTagRepository';
+
+    public static $relationMap = array(
+        'aclresource_hosttags' => '\CentreonConfiguration\Models\Relation\Aclresource\Hosttag'
+    );
+    
+    /**
+     * Get hosts for a specific acl resource
+     *
+     * @method get
+     * @route /aclresource/[i:id]/host/tag
+     */
+    public function hostsForAclResourceAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+        $finalHostTagList = HostTagRepository::getHostTagByAclResourceId($requestParam['id']);
+
+        $router->response()->json($finalHostTagList);
+    }
 }

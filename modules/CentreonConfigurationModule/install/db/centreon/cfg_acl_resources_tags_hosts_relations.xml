@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_acl_resources_tags_hosts_relations" phpName="AclResourcesTagsHostsRelations" idMethod="native">
+        <column name="arthr_id" phpName="AclResourceTagHostId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="acl_resource_id" phpName="AclResourceId" type="INTEGER" required="false"/>
+        <column name="tag_id" phpName="TagId" type="INTEGER" required="false"/>
+        <column name="reverse" phpName="Reverse" type="TINYINT" required="true" defaultValue="0"/>
+        <foreign-key foreignTable="cfg_acl_resources" name="acl_resources_tags_hosts_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="acl_resource_id" foreign="acl_resource_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_tags_hosts" name="acl_resources_tags_hosts_relations_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="tag_id" foreign="tag_id"/>
+        </foreign-key>
+        <index name="acl_resource_id">
+            <index-column name="acl_resource_id"/>
+        </index>
+        <index name="tag_id">
+            <index-column name="tag_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

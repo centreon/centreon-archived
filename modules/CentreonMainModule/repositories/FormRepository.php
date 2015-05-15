@@ -38,6 +38,8 @@ namespace CentreonMain\Repository;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Form\Validators\Validator;
+use CentreonMain\Events\PreSave as PreSaveEvent;
+use CentreonMain\Events\PostSave as PostSaveEvent;
 
 /**
  * Abstact class for configuration repository
@@ -106,13 +108,30 @@ abstract class FormRepository extends ListRepository
      * @param array $givenParameters
      * @return int id of created object
      */
-    public static function create($givenParameters, $origin = "", $route = "")
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
         $id = null;
         $db = Di::getDefault()->get('db_centreon');
 
+        $extraParameters = array();
+        foreach ($givenParameters as $name => $value) {
+            $explodedName = explode("__", $name);
+            if (count($explodedName) == 2) {
+                $extraParameters[$explodedName[0]][$explodedName[1]] = $value;
+                unset($givenParameters[$name]);
+            }
+        }
+
+        if (!empty($extraParameters)) {
+            $events = Di::getDefault()->get('events');
+            $preSaveEvent = new PreSaveEvent('create', $givenParameters, $extraParameters);
+            $events->emit('centreon-main.pre.save', array($preSaveEvent));
+        }
+
         try {
-            self::validateForm($givenParameters, $origin, $route);
+            if ($validate) {
+                self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+            }
         
             $class = static::$objectClass;
             $pk = $class::getPrimaryKey();
@@ -172,6 +191,12 @@ abstract class FormRepository extends ListRepository
             throw new Exception($e->getMessage());
         }
 
+        if (!empty($extraParameters)) {
+            $events = Di::getDefault()->get('events');
+            $postSaveEvent = new PostSaveEvent('create', $givenParameters, $extraParameters);
+            $events->emit('centreon-main.post.save', array($postSaveEvent));
+        }
+
         return $id;
     }
     
@@ -190,6 +215,21 @@ abstract class FormRepository extends ListRepository
     {
         if ($validate) {
             self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+
+        $extraParameters = array();
+        foreach ($givenParameters as $name => $value) {
+            $explodedName = explode("__", $name);
+            if (count($explodedName) == 2) {
+                $extraParameters[$explodedName[0]][$explodedName[1]] = $value;
+                unset($givenParameters[$name]);
+            }
+        }
+
+        if (!empty($extraParameters)) {
+            $events = Di::getDefault()->get('events');
+            $preSaveEvent = new PreSaveEvent('update', $givenParameters, $extraParameters);
+            $events->emit('centreon-main.pre.save', array($preSaveEvent));
         }
         
         $class = static::$objectClass;
@@ -252,7 +292,13 @@ abstract class FormRepository extends ListRepository
         }
         
         $class::update($id, $updateValues);
-        
+       
+        if (!empty($extraParameters)) {
+            $events = Di::getDefault()->get('events');
+            $postSaveEvent = new PostSaveEvent('update', $givenParameters, $extraParameters);
+            $events->emit('centreon-main.post.save', array($postSaveEvent));
+        }
+ 
         if (method_exists(get_called_class(), 'postSave')) {
             static::postSave($id, 'update', $givenParameters);
         }
@@ -268,12 +314,12 @@ abstract class FormRepository extends ListRepository
         $objClass = static::$objectClass;
         foreach ($ids as $id) {
             if (method_exists(get_called_class(), 'preSave')) {
-                static::postSave($id, 'delete', array());
+                static::preSave($id, 'delete', array());
             }
             
             $objClass::delete($id);
             
-            if (method_exists(get_called_class(), 'preSave')) {
+            if (method_exists(get_called_class(), 'postSave')) {
                 static::postSave($id, 'delete', array());
             }
         }

@@ -67,14 +67,31 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     const DOMAIN_NETWORK = 'Network';
     const DOMAIN_APPLICATION = 'Application';
     
+    
+    public static $objectClass = '\CentreonAdministration\Models\Domain';
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'domain' => 'cfg_domains, domain_id, name'
+        ),
+    );
+    
     /**
      * Generic create action
      *
      * @param array $givenParameters
      * @return int id of created object
      */
-    public static function create($givenParameters)
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
+        if ($validate) {
+            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+        
         $givenParameters['parent_id'] = Domain::getIdByParameter('name', array('Application'));
         $givenParameters['isroot'] = 0;
         parent::create($givenParameters);
@@ -402,5 +419,22 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         );
 
         return $normalizeMetricSet;
+    }
+    
+    /**
+     * 
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     * @param type $validate
+     * @param type $validateMandatory
+     */
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {
+        if ($validate) {
+            self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
+        }
+  
+        parent::update($givenParameters);
     }
 }

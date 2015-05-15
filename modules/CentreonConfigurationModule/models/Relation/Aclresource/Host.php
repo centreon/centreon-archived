@@ -34,16 +34,16 @@
  *
  */
 
+namespace CentreonConfiguration\Models\Relation\Aclresource;
 
-namespace CentreonAdministration\Models\Aclgroup;
-
+use Centreon\Internal\Di;
 use Centreon\Models\CentreonRelationModel;
 
-class Aclaction extends CentreonRelationModel
+class Host extends CentreonRelationModel
 {
-    protected static $relationTable = "cfg_acl_group_actions_relations";
-    protected static $firstKey = "acl_group_id";
-    protected static $secondKey = "acl_action_id";
-    public static $firstObject =  "\\Models\\Configuration\\Acl\\Group";
-    public static $secondObject = "\\Models\\Configuration\\Acl\\Action";
+    protected static $relationTable = "cfg_acl_resources_hosts_relations";
+    protected static $firstKey = "acl_resource_id";
+    protected static $secondKey = "host_id";
+    public static $firstObject = "\CentreonAdministration\Models\Aclresource";
+    public static $secondObject = "\CentreonConfiguration\Models\Host";
 }

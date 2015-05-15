@@ -41,9 +41,9 @@ use Centreon\Internal\Datatable;
 /**
  * Repository for Acl group listing
  *
- * @author Sylvestre Ho
+ * @author Kevin Duret <kduret@centreon.com>
  */
-class AclgroupDatatable extends Datatable
+class UsergroupDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -51,7 +51,13 @@ class AclgroupDatatable extends Datatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonAdministration\Models\Aclgroup';
+    protected static $datasource = '\CentreonAdministration\Models\Usergroup';
+
+    /**
+     *
+     * @var type
+     */
+    protected static $rowIdColumn = array('id' => 'usergroup_id', 'name' => 'name');
     
     /**
      *
@@ -60,8 +66,8 @@ class AclgroupDatatable extends Datatable
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('acl_group_name', 'asc'),
-            array('acl_group_id', 'asc')
+            array('name', 'asc'),
+            array('usergroup_id', 'asc')
         ),
         'stateSave' => false,
         'paging' => true,
@@ -74,24 +80,18 @@ class AclgroupDatatable extends Datatable
     public static $columns = array(
         array (
             'title' => 'Id',
-            'name' => 'acl_group_id',
-            'data' => 'acl_group_id',
+            'name' => 'usergroup_id',
+            'data' => 'usergroup_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
+            'visible' => false,
             'width' => '5%',
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::acl_group_name::'
-                )
-            )
         ),
         array (
             'title' => 'Name',
-            'name' => 'acl_group_name',
-            'data' => 'acl_group_name',
+            'name' => 'name',
+            'data' => 'name',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -99,18 +99,18 @@ class AclgroupDatatable extends Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/centreon-administration/aclgroup/[i:id]',
+                    'route' => '/centreon-administration/usergroup/[i:id]',
                     'routeParams' => array(
-                        'id' => '::acl_group_id::'
+                        'id' => '::usergroup_id::'
                     ),
-                    'linkName' => '::acl_group_name::'
+                    'linkName' => '::name::'
                 )
             )
         ),
         array (
             'title' => 'Description',
-            'name' => 'acl_group_alias',
-            'data' => 'acl_group_alias',
+            'name' => 'description',
+            'data' => 'description',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -118,8 +118,8 @@ class AclgroupDatatable extends Datatable
         ),
         array (
             'title' => 'Status',
-            'name' => 'acl_group_activate',
-            'data' => 'acl_group_activate',
+            'name' => 'status',
+            'data' => 'status',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -130,7 +130,15 @@ class AclgroupDatatable extends Datatable
                     '0' => '<span class="label label-danger">Disabled</span>',
                     '1' => '<span class="label label-success">Enabled</span>',
                 )
-            )
+            ),
+            'searchParam' => array(
+                'main' => 'true',
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Disabled' => '0',
+                    'Enabled' => '1'
+                )
+            ),
         ),
     );
     

@@ -33,56 +33,71 @@
  *
  */
 
-namespace CentreonAdministration\Repository;
+namespace CentreonConfiguration\Repository;
 
-use Centreon\Internal\Di;
+use CentreonConfiguration\Repository\Repository;
+use CentreonConfiguration\Models\Relation\Aclresource\Hosttag as AclresourceHosttagRelation;
+use CentreonAdministration\Models\Tag;
 
 /**
- * @author Sylvestre Ho <sho@centreon.com>
+ * @author Kevin Duret <kduret@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */
-class AclmenuRepository
+class HostTagRepository extends Repository
 {
+    public static $objectClass = '\CentreonConfiguration\Models\Hosttag';
+    
     /**
-     * Get ACL level by Acl Menu ID
      *
-     * @param int $acl_menu_id
-     * @return array
+     * @var type 
      */
-    public static function getAclLevelByAclMenuId($acl_menu_id)
+    public static $unicityFields = array(
+        'fields' => array(
+            'host' => 'cfg_tags_hosts,tag_id'
+        ),
+    );
+
+    /**
+     * update Host tag acl
+     *
+     * @param string $action
+     * @param int $objectId
+     * @param array $hostTagId
+     */
+    public static function updateHostTagAcl($action, $objectId, $hostTagIds)
     {
-        $db = Di::getDefault()->get('db_centreon');
-        $sql = "SELECT menu_id, acl_level
-            FROM cfg_acl_menu_menu_relations
-            WHERE acl_menu_id = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute(array($acl_menu_id));
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $data = array();
-        foreach ($rows as $row) {
-            $data[$row['menu_id']] = $row['acl_level'];
+        if ($action === 'update') {
+            AclresourceHosttagRelation::delete($objectId);
+            foreach ($hostTagIds as $hostTagId => $hostTagName) {
+                AclresourceHostTagRelation::insert($objectId, $hostTagId);
+            }
         }
-        return $data;
     }
 
     /**
-     * Update Acl data
+     * get Host tags by acl id
      *
-     * @param int $acl_menu_id
-     * @param array $menus
+     * @param int $aclId
      */
-    public static function updateAclLevel($acl_menu_id, $menus)
+    public static function getHostTagByAclResourceId($aclId)
     {
-        $db = Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("DELETE FROM cfg_acl_menu_menu_relations WHERE acl_menu_id = ?");
-        $stmt->execute(array($acl_menu_id));
-        $sql = "INSERT INTO cfg_acl_menu_menu_relations (acl_menu_id, menu_id, acl_level) VALUES (?, ?, ?)";
-        $db->beginTransaction();
-        $stmt = $db->prepare($sql);
-        foreach ($menus as $menuId => $aclLevel) {
-            $stmt->execute(array($acl_menu_id, $menuId, $aclLevel));
+        $hostTagIdList = AclresourceHosttagRelation::getTargetIdFromSourceId(
+            'tag_id',
+            'acl_resource_id',
+            $aclId
+        );
+
+        $tagList = Tag::getParameters($hostTagIdList, 'tagname');
+
+        $finalTagList = array();
+        foreach ($tagList as $tag) {
+            $finalTagList[] = array(
+                "id" => $tag['tag_id'],
+                "text" => $tag['tagname']
+            );
         }
-        $db->commit();
+
+        return $finalTagList;
     }
 }

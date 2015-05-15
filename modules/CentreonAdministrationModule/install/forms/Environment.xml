@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
-	<form name="environment_form">
-		<route>/centreon-administration/environment/update</route>
-		<redirect>1</redirect>
-		<redirect_route>/centreon-administration/environment</redirect_route>
-		<section name="General">
-			<block name="General information">
-				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-					<validators>
-                    	<validator rules="remote" serverside="unique" />
+    <form name="environment_form">
+        <route>/centreon-administration/environment/update</route>
+        <redirect>1</redirect>
+        <redirect_route>/centreon-administration/environment</redirect_route>
+        <section name="General">
+            <block name="General information">
+                <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                    <validators>
+                        <validator rules="remote" serverside="centreon-main.unique" />
                         <validator rules="forbiddenChar" serverside="forbiddenChar">
-                        	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
+                            <argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
                         </validator>
-					</validators>
-				</field>
-				<field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
-				<field name="level" label="Level" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+                    </validators>
+                </field>
+                <field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+                <field name="level" label="Level" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
                 <field name="icon_id" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
-					<help>Define the image that should be associated with this environment here. This image will be displayed in the various places.</help>
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-						<listValuesRoute>/centreon-administration/environment/[i:id]/icon</listValuesRoute>
-						<multiple>false</multiple>
-						<wizardRoute>/media/image/add</wizardRoute>
-					</attributes>
-				</field>
-			</block>
-		</section>
-	</form>
-	<wizard name="add_environment">
-		<route>/centreon-administration/environment/add</route>
-		<step name="General">
-			<field name="name" mandatory="1"></field>
-			<field name="description" mandatory="0"></field>
-			<field name="level" mandatory="1"></field>
-			<field name="icon_id" mandatory="0"></field>
-		</step>
+                    <help>Define the image that should be associated with this environment here. This image will be displayed in the various places.</help>
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+                        <listValuesRoute>/centreon-administration/environment/[i:id]/icon</listValuesRoute>
+                        <multiple>false</multiple>
+                        <wizardRoute>/media/image/add</wizardRoute>
+                    </attributes>
+                </field>
+            </block>
+        </section>
+    </form>
+    <wizard name="add_environment">
+        <route>/centreon-administration/environment/add</route>
+        <step name="General">
+            <field name="name" mandatory="1"></field>
+            <field name="description" mandatory="0"></field>
+            <field name="level" mandatory="1"></field>
+            <field name="icon_id" mandatory="0"></field>
+        </step>
     </wizard>
 </forms>

@@ -18,13 +18,29 @@
                         "route": "/centreon-administration/user"
                     },
                     {
+                        "name": "Usergroups",
+                        "short_name": "conf_usergroups_list",
+                        "route": "/centreon-administration/usergroup"
+                    },
+                    {
                         "name": "Contacts",
                         "short_name": "conf_contacts_list",
                         "route": "/centreon-administration/contact"
                     }
                 ]
             },
-
+            {
+                "name": "ACL",
+                "short_name": "conf_acl",
+                "icon_class": "fa fa-cubes",
+                "menus": [
+                    {
+                        "name": "Resources",
+                        "short_name": "acl_resources",
+                        "route": "/centreon-administration/aclresource"
+                    }
+                ]
+            },
             {
                 "name": "Extensions",
                 "short_name": "extensions",

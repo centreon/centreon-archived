@@ -34,18 +34,18 @@
  *
  */
 
-namespace CentreonAdministration\Models;
+namespace CentreonConfiguration\Models;
 
 use Centreon\Models\CentreonBaseModel;
 
 /**
- * Used for interacting with ACL groups
+ * Used for interacting with host tags
  *
- * @author sylvestre
+ * @author Kevin Duret <kduret@centreon.com>
  */
-class Aclgroup extends CentreonBaseModel
+class Hosttag extends CentreonBaseModel
 {
-    protected static $table = "cfg_acl_groups";
-    protected static $primaryKey = "acl_group_id";
-    protected static $uniqueLabelField = "acl_group_name";
+    protected static $table = "cfg_tags_hosts";
+    protected static $primaryKey = "tag_id";
+    protected static $uniqueLabelField = "tag_id";
 }
