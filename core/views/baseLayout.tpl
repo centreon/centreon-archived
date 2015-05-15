@@ -142,7 +142,9 @@
                     <ul class="indicators nav navbar-right">
                         <li class="top-counter top-counter-service">
                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                               <i class="icon-critical-incident"></i>
+                               <i class="icon-fill-critical-incident">
+                                <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                               </i>
                              </a>
                              <span class="label label-danger hide">42</span>
                              <ul class="dropdown-menu">
@@ -150,7 +152,9 @@
                          </li>
                          <li class="top-counter top-counter-service">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="icon-incident"></i>
+                                <i class="icon-fill-incident">
+                                  <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                                </i>
                               </a>
                               <span class="label label-warning hide"></span>
                               <ul class="dropdown-menu">

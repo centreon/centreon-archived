@@ -156,7 +156,42 @@ class UserController extends FormController
             )
         );
     }
-   
+    
+    
+    /**
+     * Delete a object
+     *
+     * Response JSON
+     *
+     * @method post
+     * @route /user/delete
+     */
+    public function deleteAction()
+    {
+        
+        $deleteSuccess = true;
+        $errorMessage = '';
+        
+        try {
+            $params = $this->router->request()->paramsPost();
+            $repository = $this->repository;
+            $repository::delete($params['ids'],$_SESSION['user']);
+        } catch (Exception $e) {
+            $deleteSuccess = false;
+            $errorMessage = $e->getMessage();
+        }
+        
+        $this->router->response()->json(
+            array(
+                'success' => $deleteSuccess,
+                'errorMessage' => $errorMessage
+            )
+        );
+    }
+    
+    
+    
+    
     /**
      * @method post
      * @route /user/deletetimezone
