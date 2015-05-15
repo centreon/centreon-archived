@@ -11,7 +11,7 @@
 </head>
 
 <body class="bodyCntr">
-    <div id="notif-dangere"></div>
+    <div id="notif-danger"></div>
 
 <div class="mainCntr" id="mainCntr"> <!-- Global Wrapper -->
 
