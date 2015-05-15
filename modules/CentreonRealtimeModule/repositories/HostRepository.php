@@ -155,17 +155,26 @@ class HostRepository extends Repository
             . "</span>";
     }
     
+    
+    
+    /**
+     * Get recursivly the first parent of a given issue
+     *
+     * @param array $node The issue
+     * @return array
+     */
     public static function recursiveTree($node){
-
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
-        
-        $query = "SELECT iis.parent_id, i.*, sse.* FROM rt_issues_issues_parents iis "
+        $query = "SELECT iis.parent_id, i.*, sse.*,rs.description FROM rt_issues_issues_parents iis "
                 . "INNER JOIN rt_issues i ON i.issue_id = iis.parent_id "
-                . "INNER JOIN rt_servicestateevents sse ON sse.host_id = i.host_id AND sse.service_id = i.service_id and sse.start_time >= i.start_time AND (sse.end_time is null OR sse.end_time <= i.end_time) "
-                . "WHERE iis.child_id = ? and i.end_time is null";
+                . "INNER JOIN rt_services rs ON i.service_id = rs.service_id and i.host_id = rs.host_id "
+                . "LEFT JOIN rt_servicestateevents sse ON sse.host_id = i.host_id "
+                . "AND sse.service_id = i.service_id and sse.start_time >= i.start_time "
+                . "AND (sse.end_time is null OR sse.end_time <= i.end_time) "
+                . "WHERE iis.child_id = ? and i.end_time is null"; 
         $stmt = $dbconn->prepare($query);
-        $stmt->execute(array($node['parent_id']));
+        $stmt->execute(array($node['issue_id']));
         $parent = array($node);
         $flag = false;
         while ($row = $stmt->fetch()) {
@@ -180,7 +189,6 @@ class HostRepository extends Repository
                     $parent[] = $tmp2;
                 }
             }
-
         }
         return $parent;
     }
@@ -193,36 +201,23 @@ class HostRepository extends Repository
      * @return array
      */
     public static function getParentIncidentsFromHost($hostId){
-
-        
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
-        $queryServices = "SELECT iis.parent_id, i.*, sse.* FROM rt_issues i "
+        $queryServices = "SELECT iis.parent_id, i.*, sse.*,rs.description FROM rt_issues i "
                 . "LEFT JOIN rt_issues_issues_parents iis ON i.issue_id = iis.child_id "
-                . "INNER JOIN rt_servicestateevents sse ON sse.host_id = i.host_id AND sse.service_id = i.service_id and sse.start_time >= i.start_time AND (sse.end_time is null OR sse.end_time <= i.end_time) "
-                . "WHERE i.host_id = ? and i.end_time is null";
+                . "INNER JOIN rt_services rs ON i.service_id = rs.service_id and i.host_id = rs.host_id "
+                . "LEFT JOIN rt_servicestateevents sse ON sse.host_id = i.host_id "
+                . "AND sse.service_id = i.service_id and sse.start_time >= i.start_time "
+                . "AND (sse.end_time is null OR sse.end_time <= i.end_time) "
+                . "WHERE i.host_id = ? and i.end_time is null"; 
 
         $stmt = $dbconn->prepare($queryServices);
         $stmt->execute(array($hostId));
+        $issues = array();
         while ($row = $stmt->fetch()) {
-            $issues[] = self::recursiveTree($row);
+            $issues = array_merge($issues,self::recursiveTree($row));
         }
-        
-        
-        
-        
-        
-        
-        
-        
-    /*    echo '<pre>';
-        print_r($issues);
-        echo '</pre>';*/
-           echo '<pre>';
-        print_r($issues);
-        echo '</pre>';
-           die;
-        return $Issues;
+        return $issues;
     }
     
     
