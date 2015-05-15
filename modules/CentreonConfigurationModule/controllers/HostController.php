@@ -70,7 +70,7 @@ class HostController extends FormController
         'host_parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparents',
         'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchildren',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
-        'host_services' => '\CentreonConfiguration\Models\Relation\Host\Service'
+        'host_services' => '\CentreonConfiguration\Models\Relation\Host\Service',
         'host_icon' => '\CentreonConfiguration\Models\Relation\Host\Icon',
         'aclresource_hosts' => '\CentreonConfiguration\Models\Relation\Aclresource\Host'
     );
