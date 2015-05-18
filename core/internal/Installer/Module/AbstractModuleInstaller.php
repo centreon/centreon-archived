@@ -432,7 +432,7 @@ abstract class AbstractModuleInstaller
         if ($dependenciesSatisfied === false) {
             $exceptionMessage = _("The following dependencies are not satisfied") . " :\n";
             $exceptionMessage .= implode("\n    - ", $missingDependencies);
-            throw new MissingDependenciesException($this->colorizeMessage($exceptionMessage, 'red'), 1104);
+            throw new MissingDependenciesException($this->colorizeMessage($exceptionMessage, 'danger'), 1104);
         }
     }
     
@@ -446,7 +446,7 @@ abstract class AbstractModuleInstaller
         if ($status['success'] === false) {
             $exceptionMessage = _("\nThe following dependencies are not satisfied") . " :\n";
             $exceptionMessage .= implode("\n    - ", $status['errors']);
-            throw new MissingDependenciesException($this->colorizeMessage($exceptionMessage, 'red'), 1004);
+            throw new MissingDependenciesException($this->colorizeMessage($exceptionMessage, 'danger'), 1004);
         }
     }
     
