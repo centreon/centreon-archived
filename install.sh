@@ -12,7 +12,7 @@ ntpdate pool.ntp.org
 
 # Install LA*P stack
 yum install -y centos-release-SCL
-yum install -y php54 php54-php-cli php54-php-mysql php54-php-xml php54-php-pdo php54-php-mbstring php54-php-devel php54-php php54-php-process php54-php-pear
+yum install -y php54 php54-php-cli php54-php-mysql php54-php-xml php54-php-pdo php54-php-mbstring php54-php-devel php54-php php54-php-process php54-php-pear php54-php-gd
 # FIXME for compat' with shebang of centreonConsole
 ln -sf /opt/rh/php54/root/usr/bin/php /usr/bin/php
 
