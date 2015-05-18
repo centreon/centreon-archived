@@ -1,7 +1,7 @@
 .buttonGroup {
   display: inline-block;
   z-index: 1;
-  position : absolute;
+  //position : absolute;
   top: @paddingElem;
 
   .configuration-actions,
@@ -18,7 +18,7 @@
   border-radius: 3px;
   text-decoration: none;
   //font-size: 75%;
-  padding : 0 @paddingElem*2;
+  padding : 0 @paddingElem*2 !important;
   height: 40px;
   vertical-align: middle;
   border: 1px solid @white;
@@ -40,10 +40,10 @@
 
 /* -- Success button -- */
 
-.btnSuccess{
+.btnSuccess,{
   background-color: @success /*#e2efc6*/;
   //box-shadow: 1px 2px 2px @success;
-  color: @white;
+  color: @white !important;
 }
 
 .btnDanger{
