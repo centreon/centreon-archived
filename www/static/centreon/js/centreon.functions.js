@@ -82,7 +82,7 @@ function topClock() {
 }
 
 function alertMessage(msg, cls, timeClose) {
-    var $alertBox = $('#flash-message'); 
+    var $alertBox = $('#notif-danger'); 
     $alertBox.addClass(cls);
     $alertBox.html('<span>'+msg+'</span>');
     $alertBox.show();
@@ -106,7 +106,7 @@ function alertModalMessage(msg, cls, timeClose) {
 }
 
 function alertClose() {
-    var $alertBox = $('#flash-message'); 
+    var $alertBox = $('#notif-danger'); 
     var $button = $alertBox.find('button.close');
     var listClass = ['flash', 'alert', 'in', 'fade'];
     $alertBox.hide();
