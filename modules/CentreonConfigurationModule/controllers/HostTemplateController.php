@@ -595,11 +595,11 @@ class HostTemplateController extends FormController
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
         //$checkdata = HostTemplateRepository::formatDataForTooltip($data['templates']);
-        
+        /*
         echo '<pre>';
         print_r($data);
         echo '</pre>';
-        die;
+        die;*/
         $this->router->response()->json($data);
    }
     

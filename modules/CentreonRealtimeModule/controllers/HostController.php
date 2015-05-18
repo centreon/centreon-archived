@@ -174,12 +174,12 @@ class HostController extends Controller
     {
         $params = $this->getParams();
         $parent_issues = HostRepository::getParentIncidentsFromHost($params['id']);
-        
+        /*
         echo '<pre>';
         print_r($parent_issues);
         echo '</pre>';
         die;
-        
+        */
         $this->router->response()->json($parent_issues);
     }
     

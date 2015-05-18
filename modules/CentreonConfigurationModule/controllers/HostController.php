@@ -219,11 +219,11 @@ class HostController extends FormController
     {
         $requestParam = $this->getParams('named');
         $tags = TagsRepository::getList('host', $requestParam['id']);
-        
+        /*
         echo '<pre>';
         print_r($tags);
         echo '</pre>';
-        die;
+        die;*/
         $this->router->response()->json($tags);
         /*$this->tpl->assign('tags', $tags);
         $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');*/
@@ -575,11 +575,11 @@ class HostController extends FormController
         foreach($services as &$service){
             $service = ServiceRepository::formatDataForTooltip($service);
         }
-        
+        /*
         echo '<pre>';
         print_r($services);
         echo '</pre>';
-        die;
+        die;*/
         
         $this->router->response()->json($services);
     }
@@ -598,12 +598,12 @@ class HostController extends FormController
         $data = HostRepository::getConfigurationData($params['id']);
         $hostConfiguration = HostRepository::formatDataForTooltip($data);
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
-        
+        /*
         echo '<pre>';
         print_r(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus));
         echo '</pre>';
         die;
-        
+        */
         $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus));
     }
 
