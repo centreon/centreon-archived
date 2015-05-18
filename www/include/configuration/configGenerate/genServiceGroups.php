@@ -76,8 +76,8 @@ while ($serviceGroup = $DBRESULT->fetchRow()) {
          */
         $service = array();
         $DBRESULT2 = $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
-									"FROM servicegroup_relation, service, host, host_service_relation " .
-									"WHERE servicegroup_relation.servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
+				    "FROM servicegroup_relation, service, host, host_service_relation " .
+				    "WHERE servicegroup_relation.servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
                                     "AND service.service_id = servicegroup_relation.service_service_id " .
                                     "AND host.host_id = servicegroup_relation.host_host_id " .
                                     "AND service.service_activate = '1' " .
@@ -105,7 +105,7 @@ while ($serviceGroup = $DBRESULT->fetchRow()) {
         // This is the same logic as the previous one except
         //   "FROM servicegroup_relation, service, host, host_service_relation, hostgroup_relation "
         //   "AND host.host_id = hostgroup_relation.host_host_id and host_service_relation.hostgroup_hg_id = hostgroup_relat    ion.hostgroup_hg_id  " .
-        $DBRESULT2 =& $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
+        $DBRESULT2 = $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
                                      "FROM servicegroup_relation, service, host, host_service_relation, hostgroup_relation " .
                                      "WHERE servicegroup_relation.servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
                                      "AND service.service_id = servicegroup_relation.service_service_id " .
@@ -117,7 +117,7 @@ while ($serviceGroup = $DBRESULT->fetchRow()) {
                                      "AND servicegroup_relation.host_host_id IS NOT NULL");
 
         /* Standard addition of complete host groups to the service groups */
-        while ($service =& $DBRESULT2->fetchRow()){
+        while ($service = $DBRESULT2->fetchRow()){
             if (isset($gbArr[4][$service["service_id"]]))   {
                 if ($service["host_id"])        {
                     if (isset($gbArr[2][$service["host_id"]]) && isset($host_instance[$service["host_id"]])){
@@ -136,13 +136,13 @@ while ($serviceGroup = $DBRESULT->fetchRow()) {
         /*****************************************************************************************************************************************************/
 
         $DBRESULT2 = $pearDB->query("SELECT service_description, service_id, hg_id " .
-									"FROM servicegroup_relation, service, hostgroup " .
-									"WHERE servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
-									"AND service.service_id = servicegroup_relation.service_service_id " .
-									"AND hostgroup.hg_id = servicegroup_relation.hostgroup_hg_id " .
-									"AND service.service_activate = '1' " .
-									"AND hostgroup.hg_activate = '1' " .
-									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL ");
+				    "FROM servicegroup_relation, service, hostgroup " .
+				    "WHERE servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
+				    "AND service.service_id = servicegroup_relation.service_service_id " .
+				    "AND hostgroup.hg_id = servicegroup_relation.hostgroup_hg_id " .
+				    "AND service.service_activate = '1' " .
+				    "AND hostgroup.hg_activate = '1' " .
+				    "AND servicegroup_relation.hostgroup_hg_id IS NOT NULL ");
         while($service = $DBRESULT2->fetchRow()){
             if (isset($gbArr[4][$service["service_id"]]))	{
                 if ($service["hg_id"])	{
@@ -163,8 +163,9 @@ while ($serviceGroup = $DBRESULT->fetchRow()) {
         }
         $DBRESULT2->free();
         unset($service);
-        if ($strTemp)
+        if ($strTemp) {
             $strDef .= print_line("members", $strTemp);
+	}
         $strDef .= "}\n\n";
         $i++;
     }
@@ -184,4 +185,3 @@ $DBRESULT->free();
 unset($str);
 unset($i);
 
-?>
