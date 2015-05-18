@@ -327,6 +327,10 @@ abstract class AbstractModuleInstaller
         $isinstalled = 1;
         $isactivated = 1;
         
+        var_dump($this->moduleInfo['isuninstallable']);
+        var_dump($this->moduleInfo['isdisableable']);
+        
+        
         if (isset($this->moduleInfo['isuninstallable']) && ($this->moduleInfo['isuninstallable'] === false)) {
             $isinstalled = 2;
         }
@@ -481,6 +485,8 @@ abstract class AbstractModuleInstaller
     {
         $validatorFile = $this->moduleDirectory . '/install/validators.json';
         if (file_exists($validatorFile)) {
+            $this->removeValidators();
+                        
             $message = $this->colorizeText(_("Installation of validators..."));
             $this->displayOperationMessage($message, false);
             Form::insertValidators(json_decode(file_get_contents($validatorFile), true));
@@ -497,6 +503,7 @@ abstract class AbstractModuleInstaller
         try {
             $message = $this->colorizeText(_("Deployment of Forms..."));
             $this->displayOperationMessage($message, false);
+                        
             $this->installValidators();
             
             $currentModuleId = Informations::getModuleIdByName($this->moduleSlug);
@@ -509,6 +516,14 @@ abstract class AbstractModuleInstaller
         } catch (FilesystemException $ex) {
             
         }
+        
+    }
+     /**
+     * 
+     */
+    protected function removeValidators()
+    {       
+        Form::removeValidators();
         
     }
     

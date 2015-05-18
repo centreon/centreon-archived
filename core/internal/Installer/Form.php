@@ -193,6 +193,13 @@ class Form
             }
         }
     }
+    /**
+     * 
+     */
+    public static function removeValidators()
+    {
+        Validators::delete();
+    }
 
     /**
      * 
