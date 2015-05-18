@@ -163,25 +163,13 @@ class ExtensionsController extends Controller
         $moduleInstaller = new $classCall($moduleDirectory, $moduleInfo);
 
         // Check if all dependencies are satisfied
-        try {
-            $dependenciesCheckResult = $moduleInstaller->isDependenciesSatisfied();
-            if ($dependenciesCheckResult['success']) {
-                $moduleInstaller->install();
-            } else {
-                throw new Exception("Missing dependencies");
-            }
-        } catch (\Exception $e) {
-            $moduleInstaller->remove();
-            if ("dev" === Di::getDefault()->get('config')->get('global', 'env')) {
-                echo '<pre>';
-                echo $e->getMessage();
-                var_dump(debug_backtrace());
-                echo '</pre>';
-            } else {
-                $router->response()->body($this->tpl->fetch('500.tpl'));
-            }
+        $dependenciesCheckResult = $moduleInstaller->isDependenciesSatisfied();
+        if ($dependenciesCheckResult['success']) {
+            $moduleInstaller->install();
+        } else {
+            throw new \Exception("Cannot install module due to one or more missing dependencies");
         }
-        
+
         $backUrl = $router->getPathFor('/centreon-administration/extensions/module');
         $router->response()->redirect($backUrl, 200);
     }
