@@ -1,0 +1,92 @@
+/* input */
+
+label, input[type="text"],input[type="number"], textarea {
+    display: block;
+    border: 0;
+    outline: 0;
+}
+
+.CentreonForm input[type="text"],
+.CentreonForm input[type="number"],
+.CentreonForm input[type="mail"],
+.CentreonForm textarea,
+.CentreonForm .select2-container .select2-choice
+{
+    width: 100%;
+    height: 40px;
+    padding: 18px 12px 6px;
+    outline: 0;
+    border-radius: 3px;
+    box-shadow: 2px 1px 1px #d1d2d4;
+    border: 1px solid #d1d2d4;
+}
+
+.CentreonForm textarea {
+    height: 6em;
+    resize: none;
+}
+/*-- help  --*/
+
+.CentreonForm cite {
+//display: none;
+    font-size: 70%;
+    position: absolute;
+    color: #0079ac;
+    width: 60%;
+    height: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    bottom: -3px;
+    left: 2em;
+}
+
+/*-- Inheritance  --*/
+
+.CentreonForm .inheritance {
+    font-size: 80%;
+    color: #58585a;
+    position: absolute;
+    bottom: 3px;
+    right: 1.5em;
+    width: 30%;
+    text-align: right;
+}
+
+/*-- Label  --*/
+
+label.floatLabel {
+    font-size: 11px;
+    position: absolute;
+    top: 3px;
+    left: 30px;
+    color: #bcbdc0;
+    font-weight: normal;
+    opacity: 1;
+    -webkit-transition: .333s ease top, .333s ease opacity;
+    transition: .333s ease top, .333s ease opacity;
+    z-index: 1;
+}
+
+.js-unhighlight-label label {
+    color: #00ccbf;
+}
+.js-unhighlight-label input {
+    color: #000;
+}
+
+.js-hide-label > label.floatLabel {
+    opacity: 0;
+    top: 1.5em;
+}
+
+.required:after {
+     display: none;
+ }
+.required ~ span {
+      position: absolute;
+      left: 20px;
+      top: 4px;
+      color: #e00b3d;
+      opacity : 0.6;
+  }
