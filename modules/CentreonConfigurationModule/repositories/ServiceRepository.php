@@ -266,6 +266,10 @@ class ServiceRepository extends Repository
         /* Check data */
         $checkdata = array();
         $checkdata[] = array(
+            'label' => _('Name'),
+            'value' => $data['service_description']
+        );
+        $checkdata[] = array(
             'label' => _('Command'),
             'value' => static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id'])
         );

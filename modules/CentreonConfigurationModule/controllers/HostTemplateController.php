@@ -582,6 +582,28 @@ class HostTemplateController extends FormController
         /*$this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');*/
     }
+    
+    
+        /**
+     * Display host template configuration in a popin window
+     *
+     * @method get
+     * @route /hosttemplate/viewconfslide/[i:id]
+     */
+    public function displayConfSlideAction()
+    {
+        $params = $this->getParams();
+        $data = HostRepository::getConfigurationData($params['id']);
+        //$checkdata = HostTemplateRepository::formatDataForTooltip($data['templates']);
+        
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
+        die;
+        $this->router->response()->json($data);
+   }
+    
+    
 
     /**
      * Display the configuration snapshot of a host template

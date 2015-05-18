@@ -235,45 +235,42 @@ class HostTemplateRepository extends Repository
      * @param array $templates
      * @return array $checkdataTemplate
      */
-    public static function formatDataForTooltip($templates)
+    public static function formatDataForTooltip($template)
     {
         
         $checkdataTemplate = array();
-        
-        
-        foreach($templates as $template){
-           $oneTemplateDataArray = array();
-           $oneTemplateDataArray[] = array(
-            'label' => _('Command'),
-            'value' => static::getObjectName('\CentreonConfiguration\Models\Command', $template['command_command_id'])
-            );
-            $oneTemplateDataArray[] = array(
-                'label' => _('Time period'),
-                'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $template['timeperiod_tp_id'])
-            );
-            $oneTemplateDataArray[] = array(
-                'label' => _('Max check attempts'),
-                'value' => $template['host_max_check_attempts']
-            );
-            $oneTemplateDataArray[] = array(
-                'label' => _('Check interval'),
-                'value' => $template['host_check_interval']
-            );
-            $oneTemplateDataArray[] = array(
-                'label' => _('Retry check interval'),
-                'value' => $template['host_retry_check_interval']
-            );
-            $oneTemplateDataArray[] = array(
-                'label' => _('Active checks enabled'),
-                'value' => YesNoDefault::toString($template['host_active_checks_enabled'])
-            );
-            $oneTemplateDataArray[] = array(
-                'label' => _('Passive checks enabled'),
-                'value' => $template['host_passive_checks_enabled']
-            );
-
-           $checkdataTemplate[] = $oneTemplateDataArray;
-        }
+        $checkdataTemplate[] = array(
+         'label' => _('Name'),
+         'value' => $template['host_name']
+         );
+        $checkdataTemplate[] = array(
+         'label' => _('Command'),
+         'value' => static::getObjectName('\CentreonConfiguration\Models\Command', $template['command_command_id'])
+         );
+         $checkdataTemplate[] = array(
+             'label' => _('Time period'),
+             'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $template['timeperiod_tp_id'])
+         );
+         $checkdataTemplate[] = array(
+             'label' => _('Max check attempts'),
+             'value' => $template['host_max_check_attempts']
+         );
+         $checkdataTemplate[] = array(
+             'label' => _('Check interval'),
+             'value' => $template['host_check_interval']
+         );
+         $checkdataTemplate[] = array(
+             'label' => _('Retry check interval'),
+             'value' => $template['host_retry_check_interval']
+         );
+         $checkdataTemplate[] = array(
+             'label' => _('Active checks enabled'),
+             'value' => YesNoDefault::toString($template['host_active_checks_enabled'])
+         );
+         $checkdataTemplate[] = array(
+             'label' => _('Passive checks enabled'),
+             'value' => $template['host_passive_checks_enabled']
+         );
 
         return $checkdataTemplate;
         

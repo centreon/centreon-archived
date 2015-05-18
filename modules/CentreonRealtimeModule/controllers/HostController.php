@@ -170,17 +170,18 @@ class HostController extends Controller
      * @method get
      * @route /host/[i:id]/issues
      */
-    public function issuesForHostAction(){
+    public function issuesForHostAction()
+    {
         $params = $this->getParams();
         $parent_issues = HostRepository::getParentIncidentsFromHost($params['id']);
-        $this->tpl->assign('issues', $parent_issues);
-        $this->tpl->display('file:[CentreonRealtimeModule]incident_right_slide.tpl');
         
+        echo '<pre>';
+        print_r($parent_issues);
+        echo '</pre>';
+        die;
+        
+        $this->router->response()->json($parent_issues);
     }
-    
-    
-    
-    
     
     /**
      * Host detail page
