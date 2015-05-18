@@ -2,7 +2,25 @@
 
   .form-group {
     margin-bottom: @paddingElem*3;
+
+    &.has-error{
+      input {
+        border-bottom : 1px solid @danger;
+      }
+      label {
+        color: @danger;
+        left: 14px;
+      }
+    cite {
+      bottom: -22px;
+      left: 4px;
+    }
+      span {
+       left: 4px;
+      }
+    }
   }
+
 
   /*-- Reset --*/
 
@@ -240,6 +258,13 @@
     color: fade(@danger,60%);
   }
 }
+
+  /*---- Maccro Fields --- */
+
+  #host_alias_controls ~ label.label-controller{
+    display: none;
+  }
+
   /*---- Notification --- */
 
   .bs-callout {
