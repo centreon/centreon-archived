@@ -213,7 +213,7 @@ class HostController extends FormController
      *
      *
      * @method get
-     * @route /host/[i:id]/tags/
+     * @route /host/[i:id]/tags
      */
     public function getHostTagsAction()
     {
