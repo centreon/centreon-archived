@@ -105,7 +105,9 @@ class Db
         //$tablesToBeDropped = self::getTablesToBeRemoved($sqlToBeExecuted);
         
         // Perform Update
-        \PropelSQLParser::executeString($strDiff, $db);
+        if ($diff !== false) {
+            \PropelSQLParser::executeString($strDiff, $db);
+        }
         
         // Loading Modules Post Update Operations
         self::postUpdate();
