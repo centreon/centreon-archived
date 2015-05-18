@@ -19,6 +19,11 @@
        left: 4px;
       }
     }
+    .form-control:focus {
+      box-shadow: 2px 1px 1px @lightGray;
+      border: 1px solid @lightGray;
+      border-bottom : 1px solid @danger;
+    }
   }
 
 
@@ -34,7 +39,7 @@
   input[type="number"],
   input[type="mail"],
   textarea,
-  .select2-container .select2-choice,
+  .select2-container .select2-choice
 {
     width: 100%;
     height: 40px;
