@@ -151,8 +151,8 @@ class Informations
                 'name',
                 -1,
                 0,
-                null,
-                "ASC",
+                'name',
+                'ASC',
                 array('isactivated' => $activated)
                 );
 
@@ -183,8 +183,8 @@ class Informations
                 '*',
                 -1,
                 0,
-                null,
-                "ASC",
+                'name',
+                'ASC',
                 array('isactivated' => $activated)
             );
 
