@@ -200,7 +200,7 @@ class PollerRepository extends Repository
             $pollerParams['enable'] = $params['enable'];
         }
         
-        Poller::update($params['poller_id'], $pollerParams);
+        Poller::update($params['object_id'], $pollerParams);
 
         if (isset($params['poller_tmpl'])) {
             $engineEvent = new EngineFormSave($params['poller_id'], $params);
