@@ -232,6 +232,7 @@ class ServiceTemplateDatatable extends Datatable
         $router = Di::getDefault()->get('router');
 
         foreach ($resultSet as &$myServiceSet) {
+            $aTagUsed = array();
             $myServiceSet['service_description'] = '<span data-overlay-url="'.$router->getPathFor(
                 '/centreon-configuration/service/snapshot/'
             ).
@@ -275,10 +276,26 @@ class ServiceTemplateDatatable extends Datatable
             
             /* Tags */
             $myServiceSet['tagname']  = "";
-            $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 2);
+            $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 2, 0);
             foreach ($aTags as $oTags) {
-                $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
+                if (!in_array($oTags['id'], $aTagUsed)) {
+                    $aTagUsed[] = $oTags['id'];
+                    $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
+                }
             }
+            
+            
+            $templates = ServiceRepository::getListTemplates($myServiceSet['service_id'], array(), -1);
+            foreach ($templates as $template) {
+                $aTags = TagsRepository::getList('service', $template, 2, 0);
+                foreach ($aTags as $oTags) {
+                    if (!in_array($oTags['id'], $aTagUsed)) {
+                        $aTagUsed[] = $oTags['id'];
+                        $myServiceSet['tagname'] .= TagsRepository::getTag('service', $template, $oTags['id'], $oTags['text'], $oTags['user_id'], 1);
+                    }
+                }
+            }
+            
             $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
         }
     }

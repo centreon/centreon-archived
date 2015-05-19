@@ -270,9 +270,27 @@ class HostTemplateDatatable extends Datatable
             
             /* Tags */
             $myHostSet['tagname']  = "";
-            $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 2);
+            
+            //Get tags affected to the HOST template
+            $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 2, 0);
+            
+            $aTagUsed = array();
             foreach ($aTags as $oTags) {
-                $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
+                if (!in_array($oTags['id'], $aTagUsed)) {
+                    $aTagUsed[] = $oTags['id'];
+                    $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
+                }
+            }
+            //Get tags affected by the template
+            $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), -1);
+            foreach ($templates as $template) {
+                $aTags = TagsRepository::getList('host', $template['id'], 2, 0);
+                foreach ($aTags as $oTags) {
+                    if (!in_array($oTags['id'], $aTagUsed)) {
+                        $aTagUsed[] = $oTags['id'];
+                        $myHostSet['tagname'] .= TagsRepository::getTag('host',$template['id'], $oTags['id'], $oTags['text'], $oTags['user_id'], 1);
+                    }
+                }
             }
             $myHostSet['tagname'] .= TagsRepository::getAddTag('host', $myHostSet['host_id']);
         }
