@@ -4,7 +4,7 @@
 {/if}
 " for="{$inputElement['id']}">
     
-{if ((isset($inputElement['label_show_label'])) and ($inputElement['label_show_label'] == 1))}    
+{if ((isset($inputElement['label'])) and (!isset($inputElement['label_show_label']) or $inputElement['label_show_label'] == 1))}    
     {$inputElement['label']}
 {/if} 
 

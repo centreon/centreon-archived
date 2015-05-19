@@ -74,6 +74,7 @@ class NodeRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function update($params)
     {
+        print_r($params);
         $result = PollerRepository::getNode($params['poller_id']);
         if (!isset($result['node_id'])) {
             throw new Exception(sprintf('Could not find node id from poller id %s', $params['poller_id']));
