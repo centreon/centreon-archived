@@ -7,9 +7,9 @@
 </div>
 
 <ul id="{$element['name']}" class="clonable no-deco-list">
-    <li id="{$element['name']}_noforms_template">
+    <!--<li id="{$element['name']}_noforms_template">
         <p class="muted">Nothing here, use the "Add" button</p>
-    </li>
+    </li>-->
     <li id="{$element['name']}_clone_template" class="clone_template" style="display:none;">
         <div class="row clone-cell">
             <div class="col-sm-1">

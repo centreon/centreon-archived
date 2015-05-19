@@ -132,7 +132,7 @@ class UserRepository extends Repository
         $currentDate = date('Y-m-d H:i:s');
         $givenParameters['updatedat'] = $currentDate;
         
-        parent::update($givenParameters);
+        parent::update($givenParameters, $origin, $route);
     }
 
     
