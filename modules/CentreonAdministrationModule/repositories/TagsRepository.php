@@ -38,6 +38,8 @@ namespace CentreonAdministration\Repository;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
 use CentreonAdministration\Models\Tag;
+use CentreonConfiguration\Repository\HostRepository; 
+use CentreonConfiguration\Repository\ServiceRepository; 
 
 /**
  * Repository tags
@@ -175,7 +177,7 @@ class TagsRepository
 
         $dbconn = Di::getDefault()->get('db_centreon');        
 
-         $query = "SELECT t.tag_id, t.tagname, user_id, template_id
+        $query = "SELECT t.tag_id, t.tagname, user_id, template_id
                 FROM cfg_tags t LEFT JOIN cfg_tags_" . $resourceName . "s r ON t.tag_id = r.tag_id
                 WHERE ";
          
@@ -228,17 +230,34 @@ class TagsRepository
      */
     public static function getTagId($tagName, $bGlobal = 0)
     {
-        if ($bGlobal == 0) {
-           $userId = $_SESSION['user']->getId();
-           $aFilter = array(
-                'user_id' => $userId,
-                'tagname' => $tagName
-            );
-        } else {
-            $aFilter = array(
-                'tagname' => $tagName
-            );
+        $tagName = trim($tagName);
+        if (empty($tagName)) {
+            return;
         }
+        
+        $dbconn = Di::getDefault()->get('db_centreon'); 
+        $query = "SELECT tag_id FROM cfg_tags WHERE tagname = '".$tagName."'";
+        if ($bGlobal == 0) {
+           $query .= " AND user_id = ".$_SESSION['user']->getId();
+           
+        }
+        
+        $query .= " LIMIT 1";
+        $stmt = $dbconn->prepare($query);
+        
+        //die($query);
+
+        $stmt->execute();
+        $tag = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+  
+        if (count($tag) === 0) {
+            throw new Exception("The tag is not found for user");
+        }
+        return $tag[0]['tag_id'];
+            
+
+        
+        /*
         $tag = Tag::getList(
             'tag_id',
             1,
@@ -246,13 +265,17 @@ class TagsRepository
             null,
             'ASC',
             $aFilter,
-            'AND'
+            'AND',
+            '',
+            ''
         );
         
         if (count($tag) === 0) {
             throw new Exception("The tag is not found for user");
         }
         return $tag[0]['tag_id'];
+         * 
+         */
     }
 
     /**
@@ -636,21 +659,34 @@ class TagsRepository
             return array();
         }
         
-        $dbconn = Di::getDefault()->get('db_centreon');
-        
-        $query = "SELECT DISTINCT tagname
-                FROM cfg_tags t LEFT JOIN cfg_tags_" . $resourceName . "s r ON t.tag_id = r.tag_id
-                WHERE t.user_id is null AND resource_id = :resource_id AND template_id > 0";
-                
-        $stmt = $dbconn->prepare($query);
-        $stmt->bindParam(':resource_id', $resourceId, \PDO::PARAM_INT);
-        $stmt->execute();
+        $aTagUsed = array();
         $aTags = array();
-               
-        while ($row = $stmt->fetch()) {
-            $aTags[] = $row['tagname'];
-        }
         
+        if ($resourceName == 'host') {
+            $templates = HostRepository::getTemplateChain($resourceId, array(), -1);
+            foreach ($templates as $template) {
+                $aTagsInHost = TagsRepository::getList('host', $template['id'], 2, 0);
+                foreach ($aTagsInHost as $oTags) {
+                    if (!in_array($oTags['id'], $aTagUsed)) {
+                        $aTagUsed[] = $oTags['id'];
+                        $aTags[] = $oTags['text'];
+                    }
+                }
+            }
+        } elseif ($resourceName == 'service') {
+            
+            $templates = ServiceRepository::getListTemplates($resourceId, array(), -1);
+            foreach ($templates as $template) {
+                $aTagsInSvc = TagsRepository::getList('service', $template, 2, 0);
+                foreach ($aTagsInSvc as $oTags) {
+                    if (!in_array($oTags['id'], $aTagUsed)) {
+                        $aTagUsed[] = $oTags['id'];
+                        $aTags[] = $oTags['text'];
+                    }
+                }
+            }
+        }
+
         return array('success' => true, 'values' => $aTags);
     }
  

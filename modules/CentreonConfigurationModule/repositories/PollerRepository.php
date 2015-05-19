@@ -188,6 +188,12 @@ class PollerRepository extends Repository
         $di = Di::getDefault();
 
         NodeRepository::update($params);
+        
+        if (isset($params['object_id'])) {
+            $poller_id = $params['object_id'];
+        } else {
+            $poller_id = $params['poller_id'];
+        }
        
         $pollerParams = array();
         if (isset($params['name'])) {
@@ -200,13 +206,13 @@ class PollerRepository extends Repository
             $pollerParams['enable'] = $params['enable'];
         }
         
-        Poller::update($params['object_id'], $pollerParams);
+        Poller::update($poller_id, $pollerParams);
 
         if (isset($params['poller_tmpl'])) {
-            $engineEvent = new EngineFormSave($params['poller_id'], $params);
+            $engineEvent = new EngineFormSave($poller_id, $params);
             $di->get('events')->emit('centreon-configuration.engine.form.save', array($engineEvent));
         
-            $brokerEvent = new BrokerFormSave($params['poller_id'], $params);
+            $brokerEvent = new BrokerFormSave($poller_id, $params);
             $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));
         }
     }

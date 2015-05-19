@@ -209,7 +209,7 @@ class TagController extends Controller
         $data = '';
         $get = $this->getParams('named');
         
-        if (isset($get['objectName']) && isset($get['id'])) {
+        if (isset($get['objectName']) && isset($get['id']) && $get['id'] > 0) {
             $data = TagsRepository::getList($get['objectName'], $get['id'], 1, 0);
         }
         $this->router->response()->json($data);
