@@ -147,6 +147,7 @@
             {/if}
             {if isset($inheritanceTagsUrl)}
                 var sText = '';
+                //console.log("disabledItem");
                 $.ajax({
                       url: "{$inheritanceTagsUrl}",
                       dataType: 'json',
@@ -155,10 +156,16 @@
                         if (data.success) {
                           $.each(data.values, function(key, value) {
                              if (value != null) {
-                                sText =  sText+' '+ value;
+                                var disabledItem = $(
+                                "<li class='select2-search-choice'>" +
+                                "<div>"+value+"</div>" +
+                                "</li>"); 
+                                
+                                $('#s2id_host_tags').children('ul').prepend(disabledItem);
+                                //sText =  sText+' '+ value;
                              }
                           });
-                          $('i[id$="tags_inheritance"]').text(sText);
+                          //$('i[id$="tags_inheritance"]').text(sText);
                         }
                       }
                 });

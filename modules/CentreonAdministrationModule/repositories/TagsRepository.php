@@ -669,6 +669,8 @@ class TagsRepository
                 foreach ($aTagsInHost as $oTags) {
                     if (!in_array($oTags['id'], $aTagUsed)) {
                         $aTagUsed[] = $oTags['id'];
+                        //$oTags['locked'] = true;
+                        //$aTags[] = $oTags;
                         $aTags[] = $oTags['text'];
                     }
                 }
@@ -681,6 +683,8 @@ class TagsRepository
                 foreach ($aTagsInSvc as $oTags) {
                     if (!in_array($oTags['id'], $aTagUsed)) {
                         $aTagUsed[] = $oTags['id'];
+                        //$oTags['locked'] = true;
+                        //$aTags[] = $oTags;
                         $aTags[] = $oTags['text'];
                     }
                 }
