@@ -3,7 +3,11 @@
  required
 {/if}
 " for="{$inputElement['id']}">
-{$inputElement['label']}
+    
+{if ((isset($inputElement['label_show_label'])) and ($inputElement['label_show_label'] == 1))}    
+    {$inputElement['label']}
+{/if} 
+
 </label>
 {if ((isset($inputElement['label_mandatory'])) and ($inputElement['label_mandatory'] == 1))}
 <span>*</span>
