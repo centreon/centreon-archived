@@ -168,17 +168,16 @@ class HostController extends FormController
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
         $id = parent::createAction(false);
-        
-        
-        
+
         if (count($macroList) > 0) {
             CustomMacroRepository::saveHostCustomMacro($id, $macroList);
         }
         
         if (isset($givenParameters['host_tags'])) {
             $aTagList = explode(",", $givenParameters['host_tags']);
-            foreach ($aTagList as $var) {
-                if (strlen($var)>1) {
+            foreach ($aTagList as $var) {                
+                $var = trim($var);
+                if (!empty($var)) {
                     array_push($aTags, $var);
                 }
             }
@@ -187,7 +186,8 @@ class HostController extends FormController
             }
         }
         
-        //get Tag for hostTemplate       
+        //get Tag for hostTemplate    
+        /*
         if (isset($givenParameters['host_hosttemplates'])) {
             $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
             $aTemplate = array_diff( $aTemplate, array( '' ) );
@@ -202,7 +202,7 @@ class HostController extends FormController
                 }
             }
         }
-        
+        */
         HostRepository::deployServices($id);
         
         $this->router->response()->json(array('success' => true));
@@ -274,12 +274,14 @@ class HostController extends FormController
         }
         
         //Get All tags 
+        /*
         $aTagsInTpl =  TagsRepository::getListId(self::$objectName, $givenParameters['object_id']);
         foreach ($aTagsInTpl as $c => $i) {
             if (isset($i['tpl']) && $i['tpl'] > 0) {
                 array_push($aTagsIdTpl, $i['text']);
             }
         }
+        */
         
         //Delete all tags
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
@@ -287,8 +289,9 @@ class HostController extends FormController
         //Insert tags affected to the HOST
         if (isset($givenParameters['host_tags'])) {
             $aTagList = explode(",", $givenParameters['host_tags']);
-            foreach ($aTagList as $var) {
-                if (strlen($var)>1 && !in_array($var, $aTagsIdTpl)) {
+            foreach ($aTagList as $var) {     
+                $var = trim($var);
+                if (!empty($var)) {
                     array_push($aTags, $var);
                 }
             }
@@ -299,6 +302,7 @@ class HostController extends FormController
         }
         
         //Clean tags for host template
+        /*
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 1);
 
         //get Tag for hostTemplate
@@ -317,7 +321,7 @@ class HostController extends FormController
                 }
             }
         }
-
+        */
         parent::updateAction();
         if ($givenParameters['host_create_services_from_template']) {
             Host::deployServices($givenParameters['object_id']);

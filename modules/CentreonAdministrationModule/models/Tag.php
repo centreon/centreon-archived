@@ -77,7 +77,9 @@ class Tag extends CentreonBaseModel
         $aAddFilters  = array(),
         $aGroup = array()
     ) {
-        $staticFilter = "user_id IS NULL";
+        if (is_null($staticFilter)) {
+            $staticFilter = "user_id IS NULL";
+        }
         return parent::getList(
             $parameterNames,
             $count,
