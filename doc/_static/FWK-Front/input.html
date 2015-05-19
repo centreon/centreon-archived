@@ -8,17 +8,39 @@
     <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
-<div class="CentreonForm">
+    <div class="CentreonForm">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h5>Input</h5>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="label-controller floatLabel" for="input_label">Name</label>
+                        <input class="form-control" type="text" id="input_label" placeholder="Name">
+                        <cite>Help sentence</cite>
+                        <i class="inheritance">value</i>
+                    </div>
+                </div>
 
-    <div class="col-md-6">
-        <div class="form-group">
-            <label class="label-controller floatLabel" for="input_label">Name</label>
-            <input class="form-control" type="text" id="input_label" placeholder="Name">
-            <cite>Help sentence</cite>
-            <i class="inheritance">value</i>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="label-controller floatLabel" for="input_label1">Last Name</label>
+                        <div class="inlineGroup">
+                            <div class="Elem1">
+                                <input class="form-control" type="text" id="input_label1" placeholder="Last Name">
+                            </div>
+                            <cite>Help sentence</cite>
+                            <div class="Elem2">
+                                <button class="btnC btnDefault" type="button"><h6>BTN</h6></button>
+                            </div>
+                            <i class="inheritance">value</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 <script src="js/jquery-2.1.4.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/fwk-js.js"></script>

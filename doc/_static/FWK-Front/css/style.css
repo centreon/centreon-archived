@@ -89,4 +89,89 @@ label.floatLabel {
       top: 4px;
       color: #e00b3d;
       opacity : 0.6;
-  }
+}
+
+/* Buttons */
+
+.buttonGroup {
+    display: inline-block;
+    z-index: 1;
+    //position : absolute;
+    top: 6px;
+}
+.buttonGroup .configuration-actions,
+.buttonGroup #selected_option,
+.buttonGroup #addToGroup
+{
+    float:left;
+    position: relative;
+}
+
+.btnC {
+    position: relative;
+    line-height: 1.5;
+    margin: 0 2px;
+    border-radius: 3px;
+    text-decoration: none;
+//font-size: 75%;
+    padding : 0 12px !important;
+    height: 40px;
+    vertical-align: middle;
+    border: 1px solid white;
+    box-sizing: border-box;
+    box-shadow: 2px 1px 1px #d1d2d4;
+}
+.btnDefault {
+    color: #e7e7e8;
+    background-color: #e7e7e8;
+}
+.btnDefault:focus {
+     outline: none;
+ }
+.btnDefault:hover {
+     color: #e7e7e8;
+     background-color: #a7a9ac;
+     transition: all 0.3s ease;
+ }
+
+/* -- Success button -- */
+
+.btnSuccess,{
+    background-color: #88b917;
+//box-shadow: 1px 2px 2px #88b917;
+    color: white !important;
+}
+
+.btnDanger{
+    background-color: #e00b3d;
+    color: white;
+}
+.btn{
+    color: white;
+}
+
+/* -- Info button -- */
+.btnInfo{
+    background-color: #b2ece8;
+    box-shadow: 1px 2px 2px #00bfb3;
+    color: #007f77;
+}
+
+/*---- Group of 2 Fields --- */
+.inlineGroup {
+    height: 40px;
+    display: table;
+}
+.inlineGroup .Elem1 {
+    display: table-cell;
+    width: 100%;
+    vertical-align: top;
+}
+.inlineGroup .Elem2 {
+    display: table-cell;
+    margin-left: 6px;
+}
+.inlineGroup button {
+    float: right;
+}
+

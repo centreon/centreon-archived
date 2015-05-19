@@ -23,6 +23,7 @@ $(document).ready(function() {
             });
         }
 
+
         // Code for adding/removing classes here
 
         $('.CentreonForm .form-group').find('input, textarea').on('keyup blur focus', function(e){
@@ -31,6 +32,7 @@ $(document).ready(function() {
             var $this = $(this),
                 $label = $this.prev('label'),
                 $parent = $this.parent();
+               // $this.next().css({'display': 'none'});
 
                     if (e.type == 'keyup') {
                         if( $this.val() == '' ) {
