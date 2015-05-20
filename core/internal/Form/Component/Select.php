@@ -101,7 +101,7 @@ class Select extends Component
             . $addClass
             . '" id="'.$element['name']
             . '" name="' . $element['name']. '"';
-        if ($element['label_parent_field'] != '' && $element['label_parent_value']) {
+        if (!empty($element['label_parent_field']) && isset($element['label_parent_value'])) {
             $myHtml .= ' data-parentfield="' . $element['label_parent_field'] . '"';
             $myHtml .= ' data-parentvalue="' . $element['label_parent_value'] . '"';
         }
