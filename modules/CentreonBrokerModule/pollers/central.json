@@ -19,18 +19,12 @@
                         "name" : "central-output",
                         "port" : "5668",
                         "host" : "localhost",
-                        "failover" : "failover-central-output",
                         "protocol": "bbdo",
                         "filters": [
                           {
                             "category": "neb"
                           }
                         ]
-                      },
-                      {
-                        "type" :"file",
-                        "name" : "failover-central-output",
-                        "path" : "%global_broker_data_directory%/central-output.failover"
                       },
                       {
                         "type": "dumper",
@@ -92,23 +86,11 @@
                     "output": [
                       {
                         "type": "sql",
-                        "name": "central-sql",
-                        "failover": "failover-central-sql"
-                      },
-                      {
-                        "type": "file",
-                        "name": "failover-central-sql",
-                        "path" : "%global_broker_data_directory%/central-sql.failover"
+                        "name": "central-sql"
                       },
                       {
                         "type": "storage",
-                        "name": "central-storage",
-                        "failover": "failover-central-storage"
-                      },
-                      {
-                        "type": "file",
-                        "name": "failover-central-storage",
-                        "path" : "%global_broker_data_directory%/central-sql.failover"
+                        "name": "central-storage"
                       },
                       {
                         "type": "ipv4",
@@ -118,13 +100,7 @@
                         "protocol": "bbdo",
                         "tls": "no",
                         "negociation": "yes",
-                        "compression": "no",
-                        "failover": "failover-central-rrd"
-                      },
-                      {
-                        "type": "file",
-                        "name": "failover-central-rrd",
-                        "path" : "%global_broker_data_directory%/central-rrd.failover"
+                        "compression": "no"
                       },
                       {
                         "type": "tcp",
@@ -174,13 +150,7 @@
                     "output": [
                       {
                         "type": "rrd",
-                        "name": "storage-rrd",
-                        "failover": "failover-storage-rrd"
-                      },
-                      {
-                        "type": "file",
-                        "name": "failover-storage-rrd",
-                        "path": "%global_broker_data_directory%/storage-rrd.failover"
+                        "name": "storage-rrd"
                       }
                     ],
                     "logger": [
