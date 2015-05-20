@@ -23,6 +23,14 @@
                     </attributes>
                     <help>Define the timezone</help>
                 </field>
+                <field name="contact_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-administration/tag/all</defaultValuesRoute>
+                        <listValuesRoute>/centreon-administration/tag/[i:id]/contact/formlist</listValuesRoute>
+                        <multiple>true</multiple>
+                    </attributes>
+		</field>
                 <field name="contact_notification_way" label="Notification way" default_value="" advanced="0" type="notificationWay" parent_field="" mandatory="0"></field>
             </block>
         </section>
@@ -31,6 +39,7 @@
         <route>/centreon-administration/contact/add</route>
         <step name="General">
             <field name="description" mandatory="1"></field>
+            <field name="contact_tags" mandatory="0"></field>
             <field name="timezone_id" mandatory="0"></field>
         </step>
     </wizard>

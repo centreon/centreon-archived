@@ -89,6 +89,7 @@ $(function() {
   });
   {/if}
   {get_custom_js}
+  loadParentField();
 });
 </script>
 {include file="[Core]/form/validators.tpl"}
