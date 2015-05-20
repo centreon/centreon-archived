@@ -12,7 +12,6 @@
         <column name="command_check_interval" phpName="CommandCheckInterval" type="VARCHAR" size="255" required="false"/>
         <column name="command_file" phpName="CommandFile" type="VARCHAR" size="255" required="false"/>
         <column name="use_syslog" phpName="UseSyslog" type="TINYINT" size="1" required="false"/>
-        <column name="log_notifications" phpName="LogNotifications" type="TINYINT" size="1" required="false"/>
         <column name="log_service_retries" phpName="LogServiceRetries" type="TINYINT" size="1" required="false"/>
         <column name="log_host_retries" phpName="LogHostRetries" type="TINYINT" size="1" required="false"/>
         <column name="log_event_handlers" phpName="LogEventHandlers" type="TINYINT" size="1" required="false"/>
