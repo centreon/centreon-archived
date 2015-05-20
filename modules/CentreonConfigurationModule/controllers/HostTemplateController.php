@@ -201,6 +201,7 @@ class HostTemplateController extends FormController
         }
         
         //get Tag for hostTemplate
+        /*
         if (isset($givenParameters['host_hosttemplates'])) {
             $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
             $aTemplate = array_diff( $aTemplate, array( '' ) );
@@ -216,7 +217,7 @@ class HostTemplateController extends FormController
                 }
             }
         }
-        
+        */
         $this->router->response()->json(array('success' => true));
     }
 
@@ -267,6 +268,78 @@ class HostTemplateController extends FormController
             CustomMacroRepository::saveHostCustomMacro($givenParameters['object_id'], $macroList);
         }
         
+        //Delete tags directilly rattached to the object
+        TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
+        
+        //Insert tags affected to the HOST
+        if (isset($givenParameters['host_tags'])) {
+            $aTagList = explode(",", $givenParameters['host_tags']);
+            foreach ($aTagList as $var) {
+                $var = trim($var);
+                if (!empty($var)) {
+                    array_push($aTags, $var);
+                }
+            }
+            
+            if (count($aTags) > 0) {
+                TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false, 1);
+            }
+        }
+        
+        //Delete tags rattached by template to this object
+        //TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 1);
+        
+        //Update this object with parent tags
+        /*
+        if (isset($givenParameters['host_hosttemplates'])) {
+            $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
+            $aTemplate = array_diff( $aTemplate, array( '' ) );
+            foreach ($aTemplate as $eTemplate) {
+                $eTemplate = trim($eTemplate);
+                
+                if (!empty($eTemplate)) {
+                    $aTagsTemplates = TagsRepository::getListId(self::$objectName, $eTemplate);
+                    foreach ($aTagsTemplates as $key => $oTpl) {
+                        TagsRepository::add($oTpl['text'], self::$objectName, $givenParameters['object_id'], 1, $oTpl['id']);
+                    }
+
+                    $aParent = HostRepository::getTemplateChain($eTemplate);
+                    foreach ($aParent as $key => $oTpl) {
+                        $aTagsTemplates = TagsRepository::getListId(self::$objectName, $oTpl['id']);
+                        foreach ($aTagsTemplates as $key => $oTpl) {
+                            TagsRepository::add($oTpl['text'], self::$objectName, $givenParameters['object_id'], 1, $oTpl['id']);
+                        }
+                    }
+                }
+            }
+        }
+         
+         */
+        /*
+        $aTagsObject = TagsRepository::getListId('host', $givenParameters['object_id']);
+        
+        //Update child with tags for this object
+        $aHostHeritant = HostRepository::getTemplateChainInverse($givenParameters['object_id']);
+
+        foreach ($aHostHeritant as $key => $oTpl) {
+            if (strlen($oTpl['id']) > 0) {
+                $aTag = TagsRepository::getListId(self::$objectName, $givenParameters['object_id']);
+                var_dump($aTag);
+                foreach ($aTag as $cle => $valeur) {
+                    if (!empty($valeur['id']) && $valeur['tpl'] == 0) {
+                        if (!TagsRepository::isLink('host', $givenParameters['object_id'], $valeur['id'])) {
+                            TagsRepository::associateTagWithResource(self::$objectName, $valeur['id'], $givenParameters['object_id'], $oTpl['id']);
+                        }
+                    }
+                }
+            }
+        }
+         
+      */
+        
+        //associateTagWithResource($resourceName, $iTagId, $iResourceId, $iIdTemplate = '')
+        
+        /*
         //Get All tags 
         $aTagsInTpl =  TagsRepository::getListId(self::$objectName, $givenParameters['object_id']);
         foreach ($aTagsInTpl as $c => $i) {
@@ -314,9 +387,9 @@ class HostTemplateController extends FormController
         }
         
         
-        /*
-         * Reaffecte to the host
-         */
+        
+         Reaffecte to the host
+         
         //Get the new version of list of tags 
         $aTagsInTpl =  TagsRepository::getListByTplId(self::$objectName, $givenParameters['object_id']);
 
@@ -332,7 +405,7 @@ class HostTemplateController extends FormController
                 }
             }
         }
-        
+        */
         parent::updateAction();
     }
     

@@ -466,7 +466,28 @@ class Unique implements ValidatorInterface
             } catch (MissingParameterException $e) {
                 $return[] = 0;
             }
+        } elseif (isset($params['object']) && $params['object'] == 'timeperiod') {
+            $objClass = "CentreonConfiguration\Repository\TimePeriodRepository";
+            
+            if (isset($params['extraParams']['name'])) {
+                $sLabel = $params['extraParams']['name'];
+            }      
+
+            $aParams['timeperiod'] = $sLabel;
+            try {
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned);
+                
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
         }
+              
         
       /*
         var_dump($return);

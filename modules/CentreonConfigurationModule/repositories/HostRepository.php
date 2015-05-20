@@ -326,7 +326,48 @@ class HostRepository extends Repository
         }
         return $templates;
     }
-    
+    /**
+     * Get template chain (id, text)
+     *
+     * @param int $hostId The host or host template Id
+     * @param array $alreadyProcessed The host templates already processed
+     * @param int $depth The depth to search
+     * @return array
+     */
+    public static function getTemplateChainInverse($hostId, $alreadyProcessed = array())
+    {
+        $templates = array();
+        
+        if (in_array($hostId, $alreadyProcessed)) {
+            return $templates;
+        } else {
+            $alreadyProcessed[] = $hostId;
+            // @todo improve performance
+            $db = Di::getDefault()->get('db_centreon');
+
+            $sql = "SELECT htr.host_host_id, h.host_name  FROM cfg_hosts h, cfg_hosts_templates_relations htr
+                 WHERE h.host_id = htr.host_tpl_id
+                 AND htr.host_tpl_id = :tpl_id
+                 AND host_activate = '1'
+                 ORDER BY `order` ASC";
+            //echo $sql."<>".$hostId;
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':tpl_id', $hostId, \PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetchAll();
+
+            foreach ($row as $template) {
+                $templates[] = array(
+                    "id" => $template['host_host_id'],
+                    "text" => $template['host_name']
+                );
+                $templates = array_merge($templates, self::getTemplateChainInverse($template['host_host_id'], $alreadyProcessed));
+            }
+            return $templates;
+        }
+
+        return $templates;
+    }
     /**
      * Returns array of services that are linked to a poller
      *

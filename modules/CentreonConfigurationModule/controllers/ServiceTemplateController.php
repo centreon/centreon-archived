@@ -148,7 +148,7 @@ class ServiceTemplateController extends FormController
         if (count($macroList) > 0) {
             CustomMacroRepository::saveServiceCustomMacro($givenParameters['object_id'], $macroList);
         }
-        
+        /*
         //Get All tags 
         $aTagsInTpl =  TagsRepository::getListId(self::$objectName, $givenParameters['object_id']);
         foreach ($aTagsInTpl as $c => $i) {
@@ -156,7 +156,7 @@ class ServiceTemplateController extends FormController
                 array_push($aTagsIdTpl, $i['text']);
             }
         }
-        
+        */
         //Delete all tags
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
         
@@ -164,7 +164,8 @@ class ServiceTemplateController extends FormController
         if (isset($givenParameters['service_tags'])) {
             $aTagList = explode(",", $givenParameters['service_tags']);
             foreach ($aTagList as $var) {
-                if (strlen($var)>1 && !in_array($var, $aTagsIdTpl)) {
+                $var = trim($var);
+                if (!empty($var)) {
                     array_push($aTags, $var);
                 }
             }
@@ -173,7 +174,7 @@ class ServiceTemplateController extends FormController
                 TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false, 1);
             }
         }
-        
+        /*
         //Clean tags for service template
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 1);
 
@@ -190,9 +191,7 @@ class ServiceTemplateController extends FormController
             }
         }
         
-        /*
-         * Reaffecte to the host
-         */
+
         //Get the new version of list of tags 
         $aTagsInTpl =  TagsRepository::getListByTplId(self::$objectName, $givenParameters['object_id']);
 
@@ -208,7 +207,7 @@ class ServiceTemplateController extends FormController
                 }
             }
         }
-        
+        */
         parent::updateAction();
     }
     
@@ -259,7 +258,8 @@ class ServiceTemplateController extends FormController
         if (isset($givenParameters['service_tags'])) {
             $aTagList = explode(",", $givenParameters['service_tags']);
             foreach ($aTagList as $var) {
-                if (strlen($var) > 1) {
+                $var = trim($var);
+                if (!empty($var)) {
                     array_push($aTags, $var);
                 }
             }
@@ -269,6 +269,7 @@ class ServiceTemplateController extends FormController
         }
         
         //get Tag for serviceTemplate
+        /*
         if (isset($givenParameters['service_template_model_stm_id'])) {
             $iTemplate = trim($givenParameters['service_template_model_stm_id']);
             if (!empty($iTemplate)) {
@@ -279,7 +280,7 @@ class ServiceTemplateController extends FormController
                 } 
             }
         }
-
+*/
         $this->router->response()->json(array('success' => true));
     }
     
