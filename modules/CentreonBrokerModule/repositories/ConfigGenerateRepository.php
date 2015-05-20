@@ -176,7 +176,6 @@ class ConfigGenerateRepository
             }
         }
 
-
         $xml->endElement();
         $xml->endDocument();
     }
