@@ -168,7 +168,7 @@ class TagsRepository
      * @return array
      * @throws Exception
      */
-    public static function getList($resourceName, $resourceId, $bGlobaux = 0, $bWithHerited = 1)
+    public static function getList($resourceName, $resourceId, $bGlobaux = 0, $bWithHerited = 1, $bForceId = 0)
     {
         $resourceName = self::convertResource($resourceName);
         if (!in_array($resourceName, static::$resourceType)) {
@@ -211,7 +211,7 @@ class TagsRepository
         $tags = array();
         
         while ($row = $stmt->fetch()) {
-            if ($bGlobaux == 0) {
+            if (($bGlobaux == 0) || ($bForceId == 1)) {
                 $sField = $row['tag_id'];
             } else {
                 $sField = $row['tagname'];

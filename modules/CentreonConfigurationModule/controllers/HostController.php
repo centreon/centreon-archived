@@ -378,23 +378,6 @@ class HostController extends FormController
     }
 
     /**
-     * Get hosts for a specific acl resource
-     *
-     * @method get
-     * @route /aclresource/[i:id]/host
-     */
-    public function hostsForAclResourceAction()
-    {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-
-        $requestParam = $this->getParams('named');
-        $finalHostList = HostRepository::getHostByAclResourceId($requestParam['id']);
-
-        $router->response()->json($finalHostList);
-    }
-
-    /**
      * 
      * @method get
      * @route /host/[i:id]/parent
@@ -589,10 +572,7 @@ class HostController extends FormController
         //$this->router->response()->json($formatedData);
         //parent::getRelations(static::$relationMap['host_services']);
         $this->router->response()->body($final);
-    }
-    
-    
-    
+    }    
     
     /**
      * Get inheritance value
@@ -614,5 +594,38 @@ class HostController extends FormController
         $router->response()->json(array(
             'success' => true,
             'values' => $inheritanceValues));
+    }
+
+    /**
+     * Get hosts for a specific acl resource
+     *
+     * @method get
+     * @route /aclresource/[i:id]/host
+     */
+    public function hostsForAclResourceAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+        $finalHostList = HostRepository::getHostByAclResourceId($requestParam['id']);
+
+        $router->response()->json($finalHostList);
+    }
+
+     /**
+     * Get host tag list for acl resource
+     *
+     * @method get
+     * @route /aclresource/host/tag/formlist
+     */
+     public function hostTagsForAclResourceAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $list = TagsRepository::getList('host', "", 1, 0, 1);
+
+        $router->response()->json($list);
     }
 }
