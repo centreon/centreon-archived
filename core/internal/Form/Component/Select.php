@@ -100,8 +100,12 @@ class Select extends Component
             . 'class="form-control '
             . $addClass
             . '" id="'.$element['name']
-            . '" name="' . $element['name']
-            . '" style="width: 100%;" type="hidden" value=" "' . $required . ' />';
+            . '" name="' . $element['name']. '"';
+        if ($element['label_parent_field'] != '' && $element['label_parent_value']) {
+            $myHtml .= ' data-parentfield="' . $element['label_parent_field'] . '"';
+            $myHtml .= ' data-parentvalue="' . $element['label_parent_value'] . '"';
+        }
+        $myHtml .= ' style="width: 100%;" type="hidden" value=" "' . $required . ' />';
         $myJs = ''
             . '$("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '
@@ -171,6 +175,7 @@ class Select extends Component
                                 if (id.match(/^,/)) {
                                     $(element).val(id.substring(1, id.length));
                                 } ' . $initCallback . '
+                                $(element).trigger("change");
                             }
                         });
                      }
