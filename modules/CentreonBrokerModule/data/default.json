@@ -6,7 +6,8 @@
     "event_queue_max_size": 50000,
     "flush_logs": "no",
     "log_thread_id": "no",
-    "log_timestamp": "yes"
+    "log_timestamp": "yes",
+    "cache_directory": "%global_broker_data_directory%"
   },
   "logger": {
     "config": "no",
