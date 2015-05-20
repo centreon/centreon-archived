@@ -70,6 +70,7 @@
                   {
                     "general": {
                       "name": "central-broker",
+                      "command_file": "%global_broker_data_directory%/central-broker.cmd",
                       "%callback%": [
                         "pollerCommandLine",
                         "pollerConfigCentreonEngine",
