@@ -10,9 +10,9 @@
     self.elements = {};
     /* Get children element */
     $(searchString).each(function (index) {
-      var values = $(this).data("parentvalue");
       var $childEl = $(this);
-      if (values.indexOf(",")) {
+      var values = $childEl.data("parentvalue");
+      if (typeof values === "string" && values.indexOf(",")) {
         $.each(values.split(","), function (idx, value) {
           if (self.elements[value] === undefined) {
             self.elements[value] = [];
@@ -33,7 +33,13 @@
     });
 
     /* Initialize */
-    self.display($elem.val());
+    if ($elem.attr("type") == "radio") {
+      if ($elem.is(":checked")) {
+        self.display($elem.val());
+      }
+    } else {
+      self.display($elem.val());
+    }
   }
 
   CentreonParentField.prototype = {
@@ -84,7 +90,7 @@
 function loadParentField() {
   $("[data-parentfield]").each(function (element) {
     var parentName = $(this).data('parentfield');
-    $("[name='" + parentName + "'").centreonParentField();
+    $("[name='" + parentName + "']:not(.centreon-search)").centreonParentField();
   });
 }
 
