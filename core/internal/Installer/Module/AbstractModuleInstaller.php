@@ -327,10 +327,6 @@ abstract class AbstractModuleInstaller
         $isinstalled = 1;
         $isactivated = 1;
         
-        var_dump($this->moduleInfo['isuninstallable']);
-        var_dump($this->moduleInfo['isdisableable']);
-        
-        
         if (isset($this->moduleInfo['isuninstallable']) && ($this->moduleInfo['isuninstallable'] === false)) {
             $isinstalled = 2;
         }
