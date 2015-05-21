@@ -178,6 +178,14 @@ In order to duplicate a host, use **duplicate** action::
   ./centreonConsole centreon-configuration:host:duplicate object="host[host1]"
   Object successfully duplicated
 
+List tag
+--------
+
+In order to list tags of a host, use **listTag** action::
+
+  ./centreonConsole centreon-configuration:host:listTag object="host[host1]"
+  tag1
+
 Add tag
 -------
 

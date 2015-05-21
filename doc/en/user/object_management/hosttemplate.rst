@@ -176,6 +176,14 @@ In order to duplicate a host template, use **duplicate** action::
   ./centreonConsole centreon-configuration:hostTemplate:duplicate object="hosttemplate[HT1]"
   Object successfully duplicated
 
+List tag
+--------
+
+In order to list tags of a host template, use **listTag** action::
+
+  ./centreonConsole centreon-configuration:hostTemplate:listTag object="hosttemplate[HT1]"
+  tag1
+
 Add tag
 -------
 
