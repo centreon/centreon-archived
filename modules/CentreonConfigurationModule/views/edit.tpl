@@ -156,16 +156,16 @@
                         if (data.success) {
                           $.each(data.values, function(key, value) {
                              if (value != null) {
-                                var disabledItem = $(
-                                "<li class='select2-search-choice'>" +
+                                var disabledItem = /*$(*/
+                                "<div class='select2-search-choice'>" +
                                 "<div>"+value+"</div>" +
-                                "</li>"); 
+                                "</div>"/*)*/; 
                                 
-                                $('#s2id_host_tags').children('ul').prepend(disabledItem);
-                                //sText =  sText+' '+ value;
+                                //$('#s2id_host_tags').children('ul').prepend(disabledItem);
+                                sText =  sText+' '+ disabledItem;
                              }
                           });
-                          //$('i[id$="tags_inheritance"]').text(sText);
+                          $('div[id$="tags_inheritance"]').html(sText);
                         }
                       }
                 });
