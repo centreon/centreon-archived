@@ -1,0 +1,19 @@
+[
+    {
+        "name": "Test",
+        "short_name": "test",
+        "icon_class": "icon-config",
+        "bgcolor": "#CCC",
+        "block": "root",
+        "order": 99,
+        "menus": [
+            {
+                "name": "Test",
+                "short_name": "test_test",
+                "icon_class": "fa fa-desktop",
+                "order": 2,
+                "route": "/centreon-test/test"
+            }
+        ]
+    }
+]
