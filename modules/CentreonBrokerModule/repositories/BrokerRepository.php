@@ -260,6 +260,10 @@ class BrokerRepository
                     $property['stats'] = isset($property['stats']) ? $property['stats'] : array();
                     $property['stats'] = array_merge($property['stats'], $tmpProperty['stats']);
                 }
+                if (isset ($tmpProperty['general'])) {
+                    $property['general'] = isset($property['general']) ? $property['general'] : array();
+                    $property['general'] = array_merge($property['general'], $tmpProperty['general']);
+                }
             }
         }
         if (!$merged) {

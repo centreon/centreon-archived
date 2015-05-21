@@ -37,7 +37,6 @@ namespace Centreon\Internal\Installer\Module;
 
 use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Installer\StaticFiles;
-use Centreon\Internal\Module\Dependency;
 use Centreon\Internal\Utils\CommandLine\Colorize;
 use Centreon\Internal\Utils\CommandLine\InputOutput;
 use Centreon\Internal\Utils\Dependency\PhpDependencies;
@@ -327,10 +326,6 @@ abstract class AbstractModuleInstaller
         $isinstalled = 1;
         $isactivated = 1;
         
-        var_dump($this->moduleInfo['isuninstallable']);
-        var_dump($this->moduleInfo['isdisableable']);
-        
-        
         if (isset($this->moduleInfo['isuninstallable']) && ($this->moduleInfo['isuninstallable'] === false)) {
             $isinstalled = 2;
         }
@@ -562,7 +557,11 @@ abstract class AbstractModuleInstaller
         $filejson = $this->moduleDirectory . 'install/menu.json';
         if (file_exists($filejson)) {
             $menus = json_decode(file_get_contents($filejson), true);
-            self::parseMenuArray($this->moduleId, $menus);
+            if ($menus != NULL) {
+                self::parseMenuArray($this->moduleId, $menus);
+            } else {
+                throw new \Exception('Error while parsing the menu JSON file of the module');
+            }
         }
     }
     
@@ -638,7 +637,6 @@ abstract class AbstractModuleInstaller
      */
     public static function parseMenuArray($moduleId, $menus, $parent = null)
     {
-        $i = 1;
         foreach ($menus as $menu) {
             if (!is_null($parent)) {
                 $menu['parent'] = $parent;

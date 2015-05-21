@@ -6,12 +6,6 @@
 	<redirect_route></redirect_route>
 	<section name="Engine">
 	  <block name="General information">
-		<field name="accept_passive_host_checks" label="Accept passive host checks" default_value="1" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
-		  <help></help>
-		</field>
-		<field name="accept_passive_service_checks" label="Accept passive service checks" default_value="1" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
-		  <help></help>
-		</field>
 		<field name="check_host_freshness" label="Check host freshness" default_value="0" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
 		  <help></help>
 		</field>

@@ -160,7 +160,8 @@ $(function () {
    
     $("#tagsGlobal").select2({
        multiple:true,
-       tags: true, 
+       tags: true,
+       maximumInputLength: 30,
        allowClear: true, 
        formatResult: select2_formatResult, 
        formatSelection: select2_formatSelection, 
@@ -189,6 +190,7 @@ $(function () {
     $("#tagPerso").select2({
        multiple:true, 
        tags: true, 
+       maximumInputLength: 30,
        allowClear: true, 
        formatResult: select2_formatResult, 
        formatSelection: select2_formatSelection, 

@@ -194,6 +194,7 @@ class Template extends \Smarty
         $this->addJs('jquery.slimscroll.min.js');
         $this->addJs('moment-with-locales.js');
         $this->addJs('moment-timezone-with-data.min.js');
+        $this->addJs('centreon.parentfield.js');
 
     }
     
