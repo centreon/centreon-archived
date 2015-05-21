@@ -160,7 +160,7 @@ class HostRepository extends Repository
     /**
      * Get recursivly the first parent of a given issue
      *
-     * @param array $node The issue
+     * @param array $node The issue node
      * @return array
      */
     public static function recursiveTree($node,$firstIssueId){
@@ -170,7 +170,7 @@ class HostRepository extends Repository
                 . "FROM rt_issues_issues_parents iis "
                 . "INNER JOIN rt_issues i ON i.issue_id = iis.parent_id "
                 . "INNER JOIN rt_services rs ON i.service_id = rs.service_id and i.host_id = rs.host_id "
-                . "LEFT JOIN rt_servicestateevents sse ON sse.host_id = i.host_id and sse.service_id = i.service_id "
+                . "INNER JOIN rt_servicestateevents sse ON sse.host_id = i.host_id and sse.service_id = i.service_id "
                 . "AND sse.service_id = i.service_id and sse.start_time >= i.start_time "
                 . "AND (sse.end_time is null OR sse.end_time <= i.end_time) "
                 . "WHERE iis.child_id = ? and i.end_time is null"; 
@@ -196,24 +196,35 @@ class HostRepository extends Repository
     
     
     /**
-     * Get the list of parent incidents for a host
+     * Get the list of direct and parent incidents for a host or a host/service
      *
      * @param int $hostId The host ID
+     * @param int $serviceId The Service ID
      * @return array
      */
-    public static function getParentIncidentsFromHost($hostId){
+    public static function getParentIncidentsFromHost($hostId,$serviceId=null){
+        
+        $serviceQuery = "";
+        if(!empty($serviceId)){
+            $serviceQuery = "and i.service_id = ?";
+        }
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $queryServices = "SELECT i.*, sse.*,rs.description,FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, 0 as is_parent "
                 . "FROM rt_issues i "
                 . "INNER JOIN rt_services rs ON i.service_id = rs.service_id and i.host_id = rs.host_id "
-                . "LEFT JOIN rt_servicestateevents sse ON sse.host_id = i.host_id "
+                . "INNER JOIN rt_servicestateevents sse ON sse.host_id = i.host_id "
                 . "AND sse.service_id = i.service_id and sse.start_time >= i.start_time "
                 . "AND (sse.end_time is null OR sse.end_time <= i.end_time) "
-                . "WHERE i.host_id = ? and i.end_time is null"; 
+                . "WHERE i.host_id = ? ".$serviceQuery." and i.end_time is null"; 
 
         $stmt = $dbconn->prepare($queryServices);
-        $stmt->execute(array($hostId));
+        if(!empty($serviceId)){
+            $stmt->execute(array($hostId,$service_id));
+        }else{
+            $stmt->execute(array($hostId));
+        }
+        
         $issues = array();
         $issues['indirect_issues'] = array();
         $issues['direct_issues'] = array();

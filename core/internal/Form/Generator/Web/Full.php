@@ -112,7 +112,7 @@ class Full extends Generator
             foreach ($blockList as $block) {
                 
                 $fieldQuery = 'SELECT '
-                    . 'f.field_id, f.name, f.label, f.default_value, f.attributes, '
+                    . 'f.field_id, f.name, f.label, f.default_value, f.attributes, f.show_label, '
                     . 'f.type, f.help, f.help_url, f.advanced, f.mandatory, f.parent_field, '
                     . 'f.parent_value, f.child_actions, f.child_mandatory '
                     . 'FROM cfg_forms_fields f, cfg_forms_blocks_fields_relations bfr '

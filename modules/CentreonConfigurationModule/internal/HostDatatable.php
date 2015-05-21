@@ -284,7 +284,7 @@ class HostDatatable extends Datatable
             $events = Di::getDefault()->get('events');
             $events->emit('centreon-main.slide.menu', array($sideMenuCustom));
             
-            $myHostSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-configuration/host/snapshot/').$myHostSet['host_id'];
+            //$myHostSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-configuration/host/snapshot/').$myHostSet['host_id'];
             $myHostSet['DT_RowData']['right_side_menu_list'] = $sideMenuCustom->getMenu();
             /*$myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'
                 $myHostSet['host_name'];*/

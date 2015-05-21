@@ -49,10 +49,19 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'Template',
-                    'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconf/') . $event->getHostId(),
+                    'name' => 'HOST',
+                    'url' => $router->getPathFor('/centreon-configuration/host/snapshotslide/') . $event->getHostId(),
                     'icon' => 'tata3',
                     'order' => 1
+                )
+            );
+            
+            $event->addMenu(
+                array(
+                    'name' => 'Template',
+                    'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconfslide/') . $event->getHostId(),
+                    'icon' => 'tata3',
+                    'order' => 2
                 )
             );
             
@@ -61,7 +70,7 @@ class SlideMenu
                     'name' => 'Tags',
                     'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/tags') ,
                     'icon' => 'tata3',
-                    'order' => 2
+                    'order' => 3
                 )
             );
             
@@ -70,7 +79,7 @@ class SlideMenu
                     'name' => 'Services',
                     'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/service'),
                     'icon' => 'tata3',
-                    'order' => 3
+                    'order' => 4
                 )
             );
             
@@ -79,9 +88,12 @@ class SlideMenu
                     'name' => 'Incidents',
                     'url' => $router->getPathFor('/centreon-realtime/host/'.$event->getHostId().'/issues'),
                     'icon' => 'tata3',
-                    'order' => 4
+                    'order' => 5
                 )
             );
+            
+            
+            
             
             
         }  catch (Exception $e) {
