@@ -1,3 +1,7 @@
+.CentreonForm .form-group {
+    margin-bottom: 18px;
+}
+
 /* input */
 
 label, input[type="text"],input[type="number"], textarea {
@@ -33,11 +37,11 @@ label, input[type="text"],input[type="number"], textarea {
     position: absolute;
     color: #0079ac;
     width: 60%;
-    height: 20px;
+    //height: 20px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    bottom: -3px;
+    bottom: 2px;
     left: 2em;
 }
 
@@ -47,7 +51,7 @@ label, input[type="text"],input[type="number"], textarea {
     font-size: 80%;
     color: #58585a;
     position: absolute;
-    bottom: 3px;
+    bottom: 2px;
     right: 1.5em;
     width: 30%;
     text-align: right;
@@ -122,7 +126,7 @@ label.floatLabel {
     box-shadow: 2px 1px 1px #d1d2d4;
 }
 .btnDefault {
-    color: #e7e7e8;
+    color: #818285;
     background-color: #e7e7e8;
 }
 .btnDefault:focus {

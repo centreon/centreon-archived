@@ -43,6 +43,7 @@ sub new {
       (
        logger => undef,
        db => undef,
+       dsn => undef,
        host => "localhost",
        user => undef,
        password => undef,
@@ -52,6 +53,12 @@ sub new {
       );
     my $self = {%defaults, %options};
     $self->{type} = 'mysql' if (!defined($self->{type}));
+    
+    # strip double-quotes
+    if (defined($self->{dsn})) {
+        $self->{dsn} =~ s/^\s*"//;
+        $self->{dsn} =~ s/"\s*$//;
+    }
 
     $self->{instance} = undef;
     $self->{args} = [];
@@ -180,7 +187,12 @@ sub connect() {
 
     while (1) {
         $self->{port} = 3306 if (!defined($self->{port}) && $self->{type} eq 'mysql');
-        if ($self->{type} =~ /SQLite/i) {
+        if (defined($self->{dsn})) {
+            $self->{instance} = DBI->connect(
+                "DBI:".$self->{dsn}, $self->{user}, $self->{password},
+                { RaiseError => 0, PrintError => 0, AutoCommit => 1 }
+            );
+        } elsif ($self->{type} =~ /SQLite/i) {
             $self->{instance} = DBI->connect(
                 "DBI:".$self->{type} 
                     .":".$self->{db},
@@ -280,6 +292,7 @@ sub query {
             $self->error($self->{instance}->errstr, $query);
             $status = -1;
             last if ($self->{force} == 0 || ($self->{force} == 2 && $count == 1));
+            sleep(1);
             next;
         }
 
@@ -288,6 +301,7 @@ sub query {
             $self->error($statement_handle->errstr, $query);
             $status = -1;
             last if ($self->{force} == 0 || ($self->{force} == 2 && $count == 1));
+            sleep(1);
             next;
         }
         last;
