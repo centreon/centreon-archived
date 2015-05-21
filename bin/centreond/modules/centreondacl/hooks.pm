@@ -6,8 +6,8 @@ use strict;
 use centreon::script::centreondcore;
 use modules::centreondacl::class;
 
-my $config_core;
-my $config;
+my ($config_core, $config);
+my $config_db_centreon;
 my $module_id = 'centreondacl';
 my $events = [
     'ACLREADY', 
@@ -32,6 +32,7 @@ sub register {
     
     $config = $options{config};
     $config_core = $options{config_core};
+    $config_db_centreon = $options{config_db_centreon};
     $config_check_organizations_time = defined($config->{check_organizations_time}) ? $config->{check_organizations_time} : 3600;
     $on_demand = defined($config->{on_demand}) && $config->{on_demand} == 1 ? 1 : 0;
     return ($events, $module_id);
@@ -161,7 +162,7 @@ sub check {
 sub get_organizations {
     my (%options) = @_;
 
-    my $orgas = { 10 => 1, 25 => 1, 50 => 1, 100 => 1, 13 => 1 };    
+    my $orgas = { 1 => 1, 25 => 1, 50 => 1, 100 => 1, 13 => 1 };    
     return $orgas;
 }
 
@@ -187,6 +188,7 @@ sub create_child {
         my $module = modules::centreondacl::class->new(logger => $options{logger},
                                                        config_core => $config_core,
                                                        config => $config,
+                                                       config_db_centreon => $config_db_centreon,
                                                        organization_id => $options{organization_id}
                                                        );
         $module->run(on_demand => $options{on_demand});
