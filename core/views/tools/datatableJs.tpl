@@ -22,6 +22,7 @@
 
             "rowCallback": function( row, data ) {
                 var t = data.DT_RowData.right_side_menu_list;
+
                 if(!flagMenuCreated){
                     // Menu generation
 
@@ -69,12 +70,13 @@
                                         success : function(e){
 
                                             // remplir le menu correspondant
+
                                             var c = '#' + item.name + '_Slider' ;
 
                                             console.log(c);
-                                            //console.log(e);
+                                            console.log(e);
 
-                                            $(c).html(e);
+                                            $(c).html('<div>'+e+'hello </div>');
 
                                             $('#tableLeft').css('margin-right','260px');
                                             $('#sideRight').css('display','block');
