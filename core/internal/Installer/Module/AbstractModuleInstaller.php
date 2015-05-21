@@ -557,7 +557,7 @@ abstract class AbstractModuleInstaller
         $filejson = $this->moduleDirectory . 'install/menu.json';
         if (file_exists($filejson)) {
             $menus = json_decode(file_get_contents($filejson), true);
-            if ($menus != NULL) {
+            if (!is_null($menus)) {
                 self::parseMenuArray($this->moduleId, $menus);
             } else {
                 throw new \Exception('Error while parsing the menu JSON file of the module');

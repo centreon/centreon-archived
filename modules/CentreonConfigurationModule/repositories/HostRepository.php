@@ -503,7 +503,7 @@ class HostRepository extends Repository
      *
      * @param int $aclId
      */
-    public static function getHostByAclResourceId($aclId)
+    public static function getHostsByAclResourceId($aclId)
     {
         $hostList = AclresourceHostRelation::getMergedParameters(
             array(),

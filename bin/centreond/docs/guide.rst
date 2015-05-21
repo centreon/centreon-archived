@@ -212,8 +212,151 @@ module requests
 centreond-acl
 -------------
 
-xxxxx
-^^^^^
+Common code responses:
+
+* 100: problem. It stopped (read the message)
+* 101: action proceed
+* 105: problem (read the message)
+* 106: action had been finished
+
+ACLADDHOST
+^^^^^^^^^^
+
+Example:
+::
+
+  [ACLADDHOST] [] [] { organization_id => XX, host_id => XX }
+
+ACLDELHOST
+^^^^^^^^^^
+
+Example:
+::
+
+  [ACLDELHOST] [] [] { organization_id => XX, host_id => XX }
+
+ACLADDSERVICE
+^^^^^^^^^^^^^
+
+Example:
+::
+
+  [ACLADDSERVICE] [] [] { organization_id => XX, service_id => XX }
+
+ACLDELSERVICE
+^^^^^^^^^^^^^
+
+Example:
+::
+
+  [ACLDELSERVICE] [] [] { organization_id => XX, service_id => XX }
+
+ACLUPDATETAG
+^^^^^^^^^^^^
+
+Example:
+::
+
+  [ACLUPDATETAG] [] [] { organization_id => XX, tag_id => XX, tag_type => X, resource_id => X, action => X }
+
+The following action should be used when you assign/unassign a tag:
+
+* tag_type: '1' (host tag), '2' (service tag), '3' (ba tag)
+* resource_id: host_id, service_id or ba_id (depends of the tag_type)
+* action: '1' (assign), '2' (unassign)
+
+ACLDELTAG
+^^^^^^^^^
+
+Example:
+::
+
+  [ACLDELTAG] [] [] { organization_id => XX, tag_id => XX, tag_type => X }
+
+The following action should be used when you delete a tag:
+
+* tag_type: '1' (host tag), '2' (service tag), '3' (ba tag)
+
+ACLUPDATEDOMAIN
+^^^^^^^^^^^^^^^
+
+Example:
+::
+
+  [ACLUPDATEDOMAIN] [] [] { organization_id => XX, domain_id => XX, service_id => XX, action => X  }
+
+The following action should be used when you assign/unassign a domain to a service.
+
+ACLDELDOMAIN
+^^^^^^^^^^^^
+
+Example:
+::
+
+  [ACLDELDOMAIN] [] [] { organization_id => XX, domain_id => XX }
+
+ACLUPDATEENVIRONMENT
+^^^^^^^^^^^^^^^^^^^^
+
+Example:
+::
+
+  [ACLUPDATEENVIRONMENT] [] [] { organization_id => XX,, environment_id => XX, environment_type => X, resource_id => X, action => X }
+
+The following action should be used when you assign/unassign a environment:
+
+* environment_type: '1' (host), '2' (service), '3' (ba)
+* resource_id: host_id, service_id (depends of the environment_type)
+* action: '1' (assign), '2' (unassign)
+
+ACLDELENVIRONMENT
+^^^^^^^^^^^^^^^^^
+
+Example:
+::
+
+  [ACLDELENVIRONMENT] [] [] { organization_id => XX, environment_id => XX }
+
+ACLUPDATEPOLLER
+^^^^^^^^^^^^^^^
+
+Example:
+::
+
+  [ACLUPDATEPOLLER] [] [] { organization_id => XX, poller_id => XX, host_id => XX, action => X }
+
+The following action should be used when you assign/unassign a poller to a host:
+
+* action: '1' (assign), '2' (unassign)
+
+ACLDELPOLLER
+^^^^^^^^^^^^
+
+Example:
+::
+
+  [ACLDELPOLLER] [] [] { organization_id => XX, poller_id => XX }
+
+ACLPURGEORGANIZATION
+^^^^^^^^^^^^^^^^^^^^
+
+Example:
+::
+
+  [ACLPURGEORGANIZATION] [] [] { organization_id => XX }
+
+The following action should be used when you delete a organization.
+
+ACLRESYNC
+^^^^^^^^^
+
+Example:
+::
+
+  [ACLRESYNC] [] [] { organization_id => XX, acl_resource_id => XX }
+
+The following action should be used when you want to rebuild an entire organization.
+You can rebuild a specific 'acl_resource' group if you set it.
 
 ----------------
 centreond-action
@@ -248,7 +391,7 @@ With the following request, you can submit external commands to the scheduler li
 A client example:
 ::
 
-  [COMMAND] [] [target_id] { command => '[1417705150] ENABLE_HOST_CHECK;host1', engine_pipe => '/var/lib/centreon-engine/rw/centengine.cmd'
+  [ENGINECOMMAND] [] [target_id] { command => '[1417705150] ENABLE_HOST_CHECK;host1', engine_pipe => '/var/lib/centreon-engine/rw/centengine.cmd'
 
 The code responses:
 

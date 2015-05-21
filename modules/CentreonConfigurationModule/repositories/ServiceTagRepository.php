@@ -36,7 +36,7 @@
 namespace CentreonConfiguration\Repository;
 
 use CentreonConfiguration\Repository\Repository;
-use CentreonConfiguration\Models\Relation\Aclresource\Hosttag as AclresourceHosttagRelation;
+use CentreonConfiguration\Models\Relation\Aclresource\Servicetag as AclresourceServicetagRelation;
 use CentreonAdministration\Models\Tag;
 
 /**
@@ -44,9 +44,9 @@ use CentreonAdministration\Models\Tag;
  * @package Centreon
  * @subpackage Repository
  */
-class HostTagRepository extends Repository
+class ServiceTagRepository extends Repository
 {
-    public static $objectClass = '\CentreonConfiguration\Models\Hosttag';
+    public static $objectClass = '\CentreonConfiguration\Models\Servicetag';
     
     /**
      *
@@ -54,43 +54,43 @@ class HostTagRepository extends Repository
      */
     public static $unicityFields = array(
         'fields' => array(
-            'host' => 'cfg_tags_hosts,tag_id'
+            'service' => 'cfg_tags_services,tag_id'
         ),
     );
 
     /**
-     * update Host tag acl
+     * update Service tag acl
      *
      * @param string $action
      * @param int $objectId
-     * @param array $hostTagId
+     * @param array $serviceTagId
      */
-    public static function updateHostTagAcl($action, $objectId, $hostTagIds)
+    public static function updateServiceTagAcl($action, $objectId, $serviceTagIds)
     {
         if ($action === 'update') {
-            AclresourceHosttagRelation::delete($objectId);
-            foreach ($hostTagIds as $hostTagId) {
-                AclresourceHosttagRelation::insert($objectId, $hostTagId);
+            AclresourceServicetagRelation::delete($objectId);
+            foreach ($serviceTagIds as $serviceTagId) {
+                AclresourceServicetagRelation::insert($objectId, $serviceTagId);
             }
         }
     }
 
     /**
-     * get Host tags by acl id
+     * get Service tags by acl id
      *
      * @param int $aclId
      */
-    public static function getHostTagsByAclResourceId($aclId)
+    public static function getServiceTagsByAclResourceId($aclId)
     {
-        $hostTagIdList = AclresourceHosttagRelation::getTargetIdFromSourceId(
+        $serviceTagIdList = AclresourceServicetagRelation::getTargetIdFromSourceId(
             'tag_id',
             'acl_resource_id',
             $aclId
         );
 
         $tagList = array();
-        if (count($hostTagIdList) > 0) {
-            $tagList = Tag::getParameters($hostTagIdList, 'tagname');
+        if (count($serviceTagIdList) > 0) {
+            $tagList = Tag::getParameters($serviceTagIdList, 'tagname');
         }
 
         $finalTagList = array();

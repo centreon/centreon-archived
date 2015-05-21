@@ -37,34 +37,34 @@ namespace CentreonConfiguration\Controllers;
 
 use Centreon\Internal\Di;
 use Centreon\Controllers\FormController;
-use CentreonConfiguration\Repository\HostTagRepository;
+use CentreonConfiguration\Repository\ServiceTagRepository;
 
-class HostTagController extends FormController
+class ServiceTagController extends FormController
 {
-    protected $objectDisplayName = 'HostTag';
-    public static $objectName = 'hostTag';
-    protected $objectBaseUrl = '/centreon-configuration/hosttag';
-    protected $objectClass = '\CentreonConfiguration\Models\Hosttag';
-    protected $repository = '\CentreonConfiguration\Repository\HostTagRepository';
+    protected $objectDisplayName = 'ServiceTag';
+    public static $objectName = 'serviceTag';
+    protected $objectBaseUrl = '/centreon-configuration/servicetag';
+    protected $objectClass = '\CentreonConfiguration\Models\Servicetag';
+    protected $repository = '\CentreonConfiguration\Repository\ServiceTagRepository';
 
     public static $relationMap = array(
-        'aclresource_hosttags' => '\CentreonConfiguration\Models\Relation\Aclresource\Hosttag'
+        'aclresource_servicetags' => '\CentreonConfiguration\Models\Relation\Aclresource\Servicetag'
     );
     
     /**
-     * Get hosts for a specific acl resource
+     * Get service tags for a specific acl resource
      *
      * @method get
-     * @route /aclresource/[i:id]/host/tag
+     * @route /aclresource/[i:id]/service/tag
      */
-    public function hostsForAclResourceAction()
+    public function serviceTagsForAclResourceAction()
     {
         $di = Di::getDefault();
         $router = $di->get('router');
 
         $requestParam = $this->getParams('named');
-        $finalHostTagList = HostTagRepository::getHostTagsByAclResourceId($requestParam['id']);
+        $finalServiceTagList = ServiceTagRepository::getServiceTagsByAclResourceId($requestParam['id']);
 
-        $router->response()->json($finalHostTagList);
+        $router->response()->json($finalServiceTagList);
     }
 }
