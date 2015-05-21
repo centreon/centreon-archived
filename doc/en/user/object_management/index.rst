@@ -18,4 +18,6 @@ The list of object commands is available with the following commandline :
    connector
    host
    hosttemplate
-
+   service
+   servicetemplate
+   businessactivity
