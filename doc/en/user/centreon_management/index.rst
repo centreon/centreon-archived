@@ -11,7 +11,3 @@ Centreon Management
    moduleinformations
    modulemanagement
 
-
-
-First, you must navigate to the folder /srv/centreon. 
-
