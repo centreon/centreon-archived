@@ -1,7 +1,9 @@
-Modules
-*******
+Module
+******
 
 .. toctree::
    :maxdepth: 2
 
-   Getting started/index
+   getting_started/index
+   installation/index
+   basic/index

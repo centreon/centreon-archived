@@ -7,3 +7,4 @@ In the developer guide, there are the documentation for write a module, widget a
    :maxdepth: 2
 
    rest_api/index
+   module/index

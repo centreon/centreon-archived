@@ -22,26 +22,24 @@
 
             "rowCallback": function( row, data ) {
                 var t = data.DT_RowData.right_side_menu_list;
-
-                if(!flagMenuCreated){
-                    // Menu generation
-
-                   var sideItem = '';
-                   var sideContent = '';
-
-                   for (var i=1;i<t.length;i++) {
-                       sideItem += '<li><a href="#'+t[i].name+'_Slider"><i class="icon-'+t[i].name+'"></i>'+t[i].name+'</a></li>';
-                       sideContent+='<section id="'+t[i].name+'_Slider"></section>';
-                   }
-                   $('#sideRight').html('<nav><ul class="sideMenu">' + sideItem + '</ul></nav>' + sideContent);
-
-                   $('#sideRight').tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
-                   $('#sideRight li').removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
-
-                   flagMenuCreated = true;
-                 }
-
                 if (typeof t !== 'undefined') {
+                    if(!flagMenuCreated){
+                        // Menu generation
+
+                       var sideItem = '';
+                       var sideContent = '';
+
+                       for (var i=1;i<t.length;i++) {
+                           sideItem += '<li><a href="#'+t[i].name+'_Slider"><i class="icon-'+t[i].name+'"></i>'+t[i].name+'</a></li>';
+                           sideContent+='<section id="'+t[i].name+'_Slider"></section>';
+                       }
+                       $('#sideRight').html('<nav><ul class="sideMenu">' + sideItem + '</ul></nav>' + sideContent);
+
+                       $('#sideRight').tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+                       $('#sideRight li').removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+
+                       flagMenuCreated = true;
+                     }
 
                     $(row).on('click', function(e){
                         var target = $( e.target );
