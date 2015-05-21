@@ -80,7 +80,7 @@ class EnvironmentRepository extends \CentreonAdministration\Repository\Repositor
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {       
         if ($validate) {
-            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+            self::validateForm($givenParameters, "wizard", $route, $validateMandatory);
         }
 
         parent::create($givenParameters);
@@ -95,6 +95,7 @@ class EnvironmentRepository extends \CentreonAdministration\Repository\Repositor
      */
     public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
+        
         if ($validate) {
             self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
         }
