@@ -162,7 +162,8 @@ class GraphController extends Controller
     {
         $router = Di::getDefault()->get('router');
         $requestParams = $this->getParams('get');
-
+        $finalList = array();
+        
         $list = GraphView::getServiceWithMetrics($requestParams['q']);
         foreach ($list as $infos) {
             $finalList[] = array(

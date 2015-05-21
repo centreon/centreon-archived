@@ -4,7 +4,7 @@
         <column name="arthr_id" phpName="AclResourceTagHostId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="acl_resource_id" phpName="AclResourceId" type="INTEGER" required="false"/>
         <column name="tag_id" phpName="TagId" type="INTEGER" required="false"/>
-        <column name="reverse" phpName="Reverse" type="TINYINT" required="true" defaultValue="0"/>
+        <column name="type" phpName="Type" type="TINYINT" required="true" defaultValue="0"/>
         <foreign-key foreignTable="cfg_acl_resources" name="acl_resources_tags_hosts_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="acl_resource_id" foreign="acl_resource_id"/>
         </foreign-key>

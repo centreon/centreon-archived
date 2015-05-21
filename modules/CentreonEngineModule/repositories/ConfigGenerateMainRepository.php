@@ -269,7 +269,6 @@ class ConfigGenerateMainRepository
         }
 
         /* Add fixed path files */
-        $resList[] = "%conf_dir%/resources.cfg";
         $pathList[] = "%conf_dir%/misc-command.cfg";
         $pathList[] = "%conf_dir%/check-command.cfg";
         $pathList[] = "%conf_dir%/timeperiods.cfg";

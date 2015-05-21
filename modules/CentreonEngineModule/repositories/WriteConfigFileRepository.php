@@ -83,9 +83,7 @@ class WriteConfigFileRepository
      */
     public static function getFileType($filename)
     {
-        if ("resources.cfg" == substr($filename, -13)) {
-            return "resource_file";
-        } elseif ("command.cfg" == substr($filename, -11)
+        if ("command.cfg" == substr($filename, -11)
                    || "periods.cfg" == substr($filename, -11)
                    || "connectors.cfg" == substr($filename, -14)) {
             return "cfg_file";

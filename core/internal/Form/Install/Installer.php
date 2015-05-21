@@ -609,6 +609,7 @@ class Installer
                         'advanced' => $field['advanced'],
                         'type' => $field['type'],
                         'parent_field' => $field['parent_field'],
+                        'parent_value' => $field['parent_value'],
                         'module_id' => $moduleId,
                         'child_actions' => $field->child_actions,
                         'attributes' => $attributes,
