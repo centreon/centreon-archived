@@ -72,17 +72,17 @@ class ToolsCommand extends AbstractCommand
      /**
      * Extract json file and prints a sql string 
      *
-     * @param string $sFile
+     * @param string $file
      * @param string $tablename
-     * @sDestination
+     * @param string destination
      */
-    public function jsonToSqlAction($sFile, $tablename, $sDestination = '')
+    public function jsonToSqlAction($file, $tablename, $destination = '')
     {
         $sInsert = "INSERT INTO ".$tablename."(";
-        if (file_exists($sFile)) {
+        if (file_exists($file)) {
             try {
                 $sColumns = '';
-                $aData = json_decode(file_get_contents($sFile), true);
+                $aData = json_decode(file_get_contents($file), true);
  
                 $sSql = '';
 
@@ -92,13 +92,13 @@ class ToolsCommand extends AbstractCommand
                 }
                 $sChars = $sInsert.$sColumns.") VALUES ".$sSql;
                 $sContent = substr($sChars, 0, strlen($sChars) - 2 ).";";
-               // echo $sDestination;
+               // echo $destination;
                 
-                if (empty($sDestination)) {
+                if (empty($destination)) {
                     echo $sContent;
                 } else  {
-                    if (file_exists($sDestination)) {
-                        file_put_contents($sContent, $sDestination);
+                    if (file_exists($destination)) {
+                        file_put_contents($sContent, $destination);
                     } else throw new Exception("invalide desination");
                 }
              

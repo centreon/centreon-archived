@@ -50,7 +50,7 @@ This command will remove the core modules and the database. The command is not y
 
 ::
 
-   core:Internal:uninstall
+   external/bin/centreonConsole core:Internal:uninstall
 
 
 Database management
@@ -59,10 +59,11 @@ Database management
 
 Generate database
 -----------------
+This procedure to update the schematic of the database , it will compare the current version with the new schematic -generated XML files.
 
 ::
 
-   core:database:Configuration:generate
+   external/bin/centreonConsole core:database:Configuration:generate
 
 
 Tools for database
@@ -72,14 +73,13 @@ Convert sql datas to JSON
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 ::
 
-   core:database:Tools:sqlToJson
-
+   external/bin/centreonConsole core:database:Tools:sqlToJson dbname=db_centreon:tablename=nam of table to generate
 
 Convert JSON datas to sql
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 ::
 
-   core:database:Tools:jsonToSql
+   external/bin/centreonConsole core:database:Tools:jsonToSql
 
 
 Migrate class
