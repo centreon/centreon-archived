@@ -169,7 +169,8 @@ sub load_modules {
         }
 
         my ($events, $id) = $self->{modules_register}->{$name}->{register}->(config => $centreond_config->{$section},
-                                                                             config_core => $centreond_config->{centreondcore});
+                                                                             config_core => $centreond_config->{centreondcore},
+                                                                             config_db_centreon => $centreond_config->{db_centreon});
         $self->{modules_id}->{$id} = $name;
         foreach my $event (@{$events}) {
             $self->{modules_events}->{$event} = [] if (!defined($self->{modules_events}->{$event}));
