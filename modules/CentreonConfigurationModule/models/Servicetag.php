@@ -31,40 +31,21 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonConfiguration\Controllers;
+namespace CentreonConfiguration\Models;
 
-use Centreon\Internal\Di;
-use Centreon\Controllers\FormController;
-use CentreonConfiguration\Repository\HostTagRepository;
+use Centreon\Models\CentreonBaseModel;
 
-class HostTagController extends FormController
+/**
+ * Used for interacting with service tags
+ *
+ * @author Kevin Duret <kduret@centreon.com>
+ */
+class Servicetag extends CentreonBaseModel
 {
-    protected $objectDisplayName = 'HostTag';
-    public static $objectName = 'hostTag';
-    protected $objectBaseUrl = '/centreon-configuration/hosttag';
-    protected $objectClass = '\CentreonConfiguration\Models\Hosttag';
-    protected $repository = '\CentreonConfiguration\Repository\HostTagRepository';
-
-    public static $relationMap = array(
-        'aclresource_hosttags' => '\CentreonConfiguration\Models\Relation\Aclresource\Hosttag'
-    );
-    
-    /**
-     * Get hosts for a specific acl resource
-     *
-     * @method get
-     * @route /aclresource/[i:id]/host/tag
-     */
-    public function hostsForAclResourceAction()
-    {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-
-        $requestParam = $this->getParams('named');
-        $finalHostTagList = HostTagRepository::getHostTagsByAclResourceId($requestParam['id']);
-
-        $router->response()->json($finalHostTagList);
-    }
+    protected static $table = "cfg_tags_services";
+    protected static $primaryKey = "tag_id";
+    protected static $uniqueLabelField = "tag_id";
 }

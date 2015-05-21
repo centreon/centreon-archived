@@ -31,40 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonConfiguration\Controllers;
+namespace CentreonConfiguration\Models\Relation\Aclresource;
 
 use Centreon\Internal\Di;
-use Centreon\Controllers\FormController;
-use CentreonConfiguration\Repository\HostTagRepository;
+use Centreon\Models\CentreonRelationModel;
 
-class HostTagController extends FormController
+class Service extends CentreonRelationModel
 {
-    protected $objectDisplayName = 'HostTag';
-    public static $objectName = 'hostTag';
-    protected $objectBaseUrl = '/centreon-configuration/hosttag';
-    protected $objectClass = '\CentreonConfiguration\Models\Hosttag';
-    protected $repository = '\CentreonConfiguration\Repository\HostTagRepository';
-
-    public static $relationMap = array(
-        'aclresource_hosttags' => '\CentreonConfiguration\Models\Relation\Aclresource\Hosttag'
-    );
-    
-    /**
-     * Get hosts for a specific acl resource
-     *
-     * @method get
-     * @route /aclresource/[i:id]/host/tag
-     */
-    public function hostsForAclResourceAction()
-    {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-
-        $requestParam = $this->getParams('named');
-        $finalHostTagList = HostTagRepository::getHostTagsByAclResourceId($requestParam['id']);
-
-        $router->response()->json($finalHostTagList);
-    }
+    protected static $relationTable = "cfg_acl_resources_services_relations";
+    protected static $firstKey = "acl_resource_id";
+    protected static $secondKey = "service_id";
+    public static $firstObject = "\CentreonAdministration\Models\Aclresource";
+    public static $secondObject = "\CentreonConfiguration\Models\Service";
 }

@@ -608,7 +608,7 @@ class HostController extends FormController
         $router = $di->get('router');
 
         $requestParam = $this->getParams('named');
-        $finalHostList = HostRepository::getHostByAclResourceId($requestParam['id']);
+        $finalHostList = HostRepository::getHostsByAclResourceId($requestParam['id']);
 
         $router->response()->json($finalHostList);
     }

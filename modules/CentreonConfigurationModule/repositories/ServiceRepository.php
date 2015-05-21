@@ -38,10 +38,14 @@ namespace CentreonConfiguration\Repository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Service;
 use CentreonConfiguration\Models\Host;
+use CentreonConfiguration\Models\Relation\Host\Service as HostServiceRelation;
+use CentreonConfiguration\Models\Relation\Aclresource\Service as AclresourceServiceRelation;
 use Centreon\Internal\Utils\YesNoDefault;
 use Centreon\Internal\Utils\HumanReadable;
 use CentreonConfiguration\Repository\Repository;
 use Centreon\Internal\Exception\Validator\MissingParameterException;
+
+
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
@@ -413,7 +417,6 @@ class ServiceRepository extends Repository
      * @param int $svcId The service ID
      * @return array
      */
-    
     public static function getListServiceByIdTemplate($svcId)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
@@ -428,5 +431,95 @@ class ServiceRepository extends Repository
             $svcTmpl[] = $row['service_id'];
         }
         return $svcTmpl;
+    }
+
+     /**
+     * Return Service name
+     *
+     * @param int or array $svcId The service ID
+     * @return array
+     */
+    public static function getName($svcId)
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $serviceId = Service::getPrimaryKey();
+        $serviceDescription = Service::getUniqueLabelField();
+        $hostId = Host::getPrimaryKey();
+        $hostName = Host::getUniqueLabelField();
+        $filters = array(
+            $serviceId => $svcId,
+        );
+
+        $list = HostServiceRelation::getMergedParameters(
+            array($hostId, $hostName),
+            array($serviceId, $serviceDescription),
+            -1,
+            0,
+            null,
+            "ASC",
+            $filters,
+            "OR"
+        );
+        $finalList = array();
+        foreach ($list as $obj) {
+            $finalList[] = array(
+                "id" => $obj[$serviceId],
+                "text" => $obj[$hostName] . ' ' . $obj[$serviceDescription]
+            );
+        }
+
+        return $finalList;
+    }
+
+    /**
+     * update Service acl
+     *
+     * @param string $action
+     * @param int $objectId
+     * @param array $hostIds
+     */
+    public static function updateServiceAcl($action, $objectId, $serviceIds)
+    {
+        if ($action === 'update') {
+            AclresourceServiceRelation::delete($objectId);
+            foreach ($serviceIds as $serviceId) {
+                AclresourceServiceRelation::insert($objectId, $serviceId);
+            }
+        }
+    }
+
+    /**
+     * get Services by acl id
+     *
+     * @param int $aclId
+     */
+    public static function getServicesByAclResourceId($aclId)
+    {
+        $serviceList = AclresourceServiceRelation::getMergedParameters(
+            array(),
+            array('service_id', 'service_description'),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('cfg_acl_resources_services_relations.acl_resource_id' => $aclId),
+            "AND"
+        );
+
+        $serviceIdList = array();
+        //$finalServiceList = array();
+        foreach ($serviceList as $service) {
+            $serviceIdList[] = $service['service_id'];
+            /*$finalServiceList[] = array(
+                "id" => $service['service_id'],
+                "text" => $service['service_description']
+            );*/
+        }
+
+        $finalServiceList = self::getName($serviceIdList);
+
+        return $finalServiceList;
     }
 }

@@ -481,5 +481,38 @@ class ServiceController extends FormController
         $checkdata = ServiceRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
-    }     
+    }
+
+    /**
+     * Get services for a specific acl resource
+     *
+     * @method get
+     * @route /aclresource/[i:id]/service
+     */
+    public function servicesForAclResourceAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+        $finalServiceList = ServiceRepository::getServicesByAclResourceId($requestParam['id']);
+
+        $router->response()->json($finalServiceList);
+    }
+
+     /**
+     * Get service tag list for acl resource
+     *
+     * @method get
+     * @route /aclresource/service/tag/formlist
+     */
+     public function serviceTagsForAclResourceAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $list = TagsRepository::getList('service', "", 1, 0, 1);
+
+        $router->response()->json($list);
+    } 
 }
