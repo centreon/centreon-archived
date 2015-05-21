@@ -521,6 +521,22 @@ class HostController extends FormController
     {
         parent::getSimpleRelation('poller_id', '\CentreonConfiguration\Models\Poller');
     }
+
+    /**
+     * Display the configuration snapshot of a host
+     * with template inheritance
+     *
+     * @method get
+     * @route /host/snapshotslide/[i:id]
+     */
+    public function snapshotslideAction()
+    {
+        $params = $this->getParams();
+        $data = HostRepository::getConfigurationData($params['id']);
+        $hostConfiguration = HostRepository::formatDataForTooltip($data);
+        $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
+        $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus));
+    }
     
     /**
      * Display the configuration snapshot of a host
@@ -608,7 +624,7 @@ class HostController extends FormController
         $router = $di->get('router');
 
         $requestParam = $this->getParams('named');
-        $finalHostList = HostRepository::getHostByAclResourceId($requestParam['id']);
+        $finalHostList = HostRepository::getHostsByAclResourceId($requestParam['id']);
 
         $router->response()->json($finalHostList);
     }

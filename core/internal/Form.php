@@ -334,7 +334,7 @@ class Form
         return '<div class="form-group ' . $classAdvanced . '">'.
                 $inputElement['label'].
                 $inputElement['input']. $extraHtml .
-                '<i class="inheritance" id="' . $inputElement['name'] . '_inheritance"></i>'.
+                '<div class="inheritance" id="' . $inputElement['name'] . '_inheritance"></div>'.
                 '</div>';
     }
     
@@ -583,7 +583,9 @@ class Form
         $params['parent_field'] = isset($field['parent_field']) ? $field['parent_field'] : '';
         $params['parent_value'] = isset($field['parent_value']) ? $field['parent_value'] : '';
         $params['child_actions'] = isset($field['child_actions']) ? $field['child_actions'] : '';
-        
+        if(!empty($params['show_label'])){
+            $params['show_label'] = $field['show_label'];
+        }
         if (isset($field['advanced']) && $field['advanced'] != null) {
             $params['advanced'] = $field['advanced'];
         }

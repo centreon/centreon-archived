@@ -101,12 +101,23 @@ class Service extends CentreonRelationModel
                 } else {
                     $sql .= $filterType;
                 }
-                $sql .= " $key LIKE ? ";
-                $value = trim($rawvalue);
-                $value = str_replace("\\", "\\\\", $value);
-                $value = str_replace("_", "\_", $value);
-                $value = str_replace(" ", "\ ", $value);
-                $filterTab[] = $value;
+                if (is_array($rawvalue)) {
+                    $sql .= "(";
+                    $sql .= join(" OR ",
+                        array_pad(array(), count($rawvalue), $key . " LIKE ? ")
+                    );
+                    $sql .= ")";
+                    $filterTab = array_merge(
+                        $filterTab,
+                        array_map(
+                            array('static', 'parseValueForSearch'),
+                            $rawvalue
+                        )
+                    );
+                } else {
+                    $sql .= ' ' . $key . " LIKE ? ";
+                    $filterTab[] = CentreonRelationModel::parseValueForSearch($rawvalue);
+                }
             }
             $sql .= " ) ";
         }
@@ -117,7 +128,7 @@ class Service extends CentreonRelationModel
             $db = Di::getDefault()->get('db_centreon');
             $sql = $db->limit($sql, $count, $offset);
         }
-        //echo $sql;
+
         $result = static::getResult($sql, $filterTab);
         return $result;
     }

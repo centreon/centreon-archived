@@ -10,7 +10,13 @@ my $config_core;
 my $config;
 my $module_id = 'centreondacl';
 my $events = [
-    'ACLREADY', 'ACLADDHOST', 'ACLADDSERVICE', 'PURGEORGANIZATION',
+    'ACLREADY', 
+    'ACLPURGEORGANIZATION', 'ACLRESYNC',
+    'ACLADDHOST', 'ACLDELHOST', 'ACLADDSERVICE', 'ACLDELSERVICE',
+    'ACLUPDATETAG', 'ACLDELTAG',
+    'ACLUPDATEDOMAIN', 'ACLDELDOMAIN',
+    'ACLUPDATEENVIRONMENT', 'ACLDELENVIRONMENT',
+    'ACLUPDATEPOLLER', 'ACLDELPOLLER',
 ];
 
 my $last_organizations = {}; # Last values from centreon database

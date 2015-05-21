@@ -11,7 +11,7 @@
         var selectedCb = [];
 
         <!-- Init DataTable -->
-
+        var flagMenuCreated = false;
         oTable = $('#datatable{$object}').dataTable({
 
         /* Right side details */
@@ -19,14 +19,31 @@
            // var tr = $('#datatable{$object} tbody');
 
            //var $url_details = row.data('right_side_details');
+
             "rowCallback": function( row, data ) {
-                /*dataTable = this;
-                dataTable.memRow = false;*/
-                if (typeof data.DT_RowData.right_side_details !== 'undefined') {      
+                var t = data.DT_RowData.right_side_menu_list;
+                if (typeof t !== 'undefined') {
+                    if(!flagMenuCreated){
+                        // Menu generation
+
+                       var sideItem = '';
+                       var sideContent = '';
+
+                       for (var i=1;i<t.length;i++) {
+                           sideItem += '<li><a href="#'+t[i].name+'_Slider"><i class="icon-'+t[i].name+'"></i>'+t[i].name+'</a></li>';
+                           sideContent+='<section id="'+t[i].name+'_Slider"></section>';
+                       }
+                       $('#sideRight').html('<nav><ul class="sideMenu">' + sideItem + '</ul></nav>' + sideContent);
+
+                       $('#sideRight').tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+                       $('#sideRight li').removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+
+                       flagMenuCreated = true;
+                     }
+
                     $(row).on('click', function(e){
                         var target = $( e.target );
                         if(target.is("a")){
-                            // trick to avoid dataTable default row selection style
                             if($(this).hasClass('selected')){
                                 $(this).removeClass('selected');
                             }else{
@@ -35,23 +52,39 @@
                             return;
                         }else{
                             if($(this).hasClass('selected')){
-                                //dataTable.memRow = false;
                                 $('#tableLeft').css('margin-right','0%');
                                 $('#sideRight').css('display','none');
                             }else {
-                                //dataTable.memRow = $(this);
-                                $.ajax({
-                                    url: data.DT_RowData.right_side_details,
-                                    type: "GET",
-                                    dataType: 'html',
-                                    success : function(e){
-                                        $('#sideRight').html(e);
-                                        $('#tableLeft').css('margin-right','260px');
-                                        $('#sideRight').css('display','block');
-                                    },
-                                    error : function(error){
-                                    }
+
+                                $.each(t, function(index,item) {
+
+                                    $('#tableLeft').css('margin-right','260px');
+                                    $('#sideRight').css('display','block');
+
+                                    $.ajax({
+                                        url: item.url,
+                                        type: "GET",
+                                        dataType: 'JSON',
+                                        success : function(e){
+
+                                            // remplir le menu correspondant
+
+                                            var c = '#' + item.name + '_Slider' ;
+
+                                            console.log(c);
+                                            console.log(e);
+
+                                            $(c).html('<div>'+e+'hello </div>');
+
+                                            $('#tableLeft').css('margin-right','260px');
+                                            $('#sideRight').css('display','block');
+                                        },
+                                        error : function(error){
+                                        console.log('error');
+                                        }
+                                    });
                                 });
+
                             }
                         }
                     });

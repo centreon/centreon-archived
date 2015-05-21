@@ -49,8 +49,8 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'Template',
-                    'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconf/') . $event->getHostId(),
+                    'name' => 'HOST',
+                    'url' => $router->getPathFor('/centreon-configuration/host/snapshotslide/') . $event->getHostId(),
                     'icon' => 'tata3',
                     'order' => 1
                 )
@@ -58,8 +58,8 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'Tags',
-                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/tags') ,
+                    'name' => 'template',
+                    'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconfslide/') . $event->getHostId(),
                     'icon' => 'tata3',
                     'order' => 2
                 )
@@ -67,8 +67,8 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'Services',
-                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/service'),
+                    'name' => 'tag',
+                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/tags') ,
                     'icon' => 'tata3',
                     'order' => 3
                 )
@@ -76,12 +76,24 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'Incidents',
-                    'url' => $router->getPathFor('/centreon-realtime/host/'.$event->getHostId().'/issues'),
+                    'name' => 'service',
+                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/service'),
                     'icon' => 'tata3',
                     'order' => 4
                 )
             );
+            
+            $event->addMenu(
+                array(
+                    'name' => 'incident',
+                    'url' => $router->getPathFor('/centreon-realtime/host/'.$event->getHostId().'/issues'),
+                    'icon' => 'tata3',
+                    'order' => 5
+                )
+            );
+            
+            
+            
             
             
         }  catch (Exception $e) {

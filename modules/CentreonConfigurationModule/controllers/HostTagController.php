@@ -36,12 +36,8 @@
 namespace CentreonConfiguration\Controllers;
 
 use Centreon\Internal\Di;
-use CentreonConfiguration\Models\Host;
-use CentreonConfiguration\Models\Hosttag;
-use CentreonConfiguration\Repository\HostRepository;
-use CentreonConfiguration\Repository\HostTagRepository;
-use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Controllers\FormController;
+use CentreonConfiguration\Repository\HostTagRepository;
 
 class HostTagController extends FormController
 {
@@ -67,7 +63,7 @@ class HostTagController extends FormController
         $router = $di->get('router');
 
         $requestParam = $this->getParams('named');
-        $finalHostTagList = HostTagRepository::getHostTagByAclResourceId($requestParam['id']);
+        $finalHostTagList = HostTagRepository::getHostTagsByAclResourceId($requestParam['id']);
 
         $router->response()->json($finalHostTagList);
     }

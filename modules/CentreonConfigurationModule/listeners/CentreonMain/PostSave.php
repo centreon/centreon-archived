@@ -38,6 +38,8 @@ namespace CentreonConfiguration\Listeners\CentreonMain;
 use CentreonMain\Events\PostSave as PostSaveEvent;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTagRepository;
+use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Repository\ServiceTagRepository;
 
 class PostSave
 {
@@ -57,6 +59,14 @@ class PostSave
                 if (isset($extraParameters['centreon-configuration']['aclresource_host_tags'])) {
                     $hostTagIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-configuration']['aclresource_host_tags'])));
                     HostTagRepository::updateHostTagAcl($event->getAction(), $event->getObjectId(), $hostTagIds);
+                }
+                if (isset($extraParameters['centreon-configuration']['aclresource_services'])) {
+                    $serviceIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-configuration']['aclresource_services'])));
+                    ServiceRepository::updateServiceAcl($event->getAction(), $event->getObjectId(), $serviceIds);
+                }
+                if (isset($extraParameters['centreon-configuration']['aclresource_service_tags'])) {
+                    $serviceTagIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-configuration']['aclresource_service_tags'])));
+                    ServiceTagRepository::updateServiceTagAcl($event->getAction(), $event->getObjectId(), $serviceTagIds);
                 }
             }
         }
