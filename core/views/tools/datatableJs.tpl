@@ -20,13 +20,15 @@
 
            //var $url_details = row.data('right_side_details');
             "rowCallback": function( row, data ) {
-                /*dataTable = this;
+                /*var dataTable = this;
                 dataTable.memRow = false;*/
-                if (typeof data.DT_RowData.right_side_details !== 'undefined') {      
+
+                var t = data.DT_RowData.right_side_menu_list;
+
+                if (typeof t !== 'undefined') {
                     $(row).on('click', function(e){
                         var target = $( e.target );
                         if(target.is("a")){
-                            // trick to avoid dataTable default row selection style
                             if($(this).hasClass('selected')){
                                 $(this).removeClass('selected');
                             }else{
@@ -35,23 +37,49 @@
                             return;
                         }else{
                             if($(this).hasClass('selected')){
-                                //dataTable.memRow = false;
                                 $('#tableLeft').css('margin-right','0%');
                                 $('#sideRight').css('display','none');
                             }else {
-                                //dataTable.memRow = $(this);
-                                $.ajax({
-                                    url: data.DT_RowData.right_side_details,
-                                    type: "GET",
-                                    dataType: 'html',
-                                    success : function(e){
-                                        $('#sideRight').html(e);
-                                        $('#tableLeft').css('margin-right','260px');
-                                        $('#sideRight').css('display','block');
-                                    },
-                                    error : function(error){
-                                    }
+
+                                // Menu generation
+
+                               var sideItem = '';
+                               for (var i=1;i<t.length;i++) {
+                                   sideItem += '<li><a href="#"><i class="icon-'+t[i].name+'"></i>'+t[i].name+'</a></li>';
+                                   
+                               }
+                               $('#sideRight').append('<nav><ul class="sideMenu">' + sideItem + '</ul></nav>');
+                               $('#sideRight').append('<section>hello</section>');
+
+                                $.each(t, function(index,item) {
+
+                                    //ajouter menu dans le slider
+
+                                    //console.log(index);
+                                   // console.log(name);
+                                   var name = item.name;
+
+                                   console.log(t[0].name);
+
+                                    $('#tableLeft').css('margin-right','260px');
+                                    $('#sideRight').css('display','block');
+
+                                    /*$.ajax({
+                                        url: item.url,
+                                        type: "GET",
+                                        dataType: 'JSON',
+                                        success : function(e){
+                                            // remplir le menu correspondant
+                                            $('#sideRight').html(e);
+                                            $('#tableLeft').css('margin-right','260px');
+                                            $('#sideRight').css('display','block');
+                                        },
+                                        error : function(error){
+                                        console.log('error');
+                                        }
+                                    });*/
                                 });
+
                             }
                         }
                     });

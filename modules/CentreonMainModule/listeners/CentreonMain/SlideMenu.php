@@ -58,7 +58,7 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'Template',
+                    'name' => 'template',
                     'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconfslide/') . $event->getHostId(),
                     'icon' => 'tata3',
                     'order' => 2
@@ -67,7 +67,7 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'Tags',
+                    'name' => 'tag',
                     'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/tags') ,
                     'icon' => 'tata3',
                     'order' => 3
@@ -76,7 +76,7 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'Services',
+                    'name' => 'service',
                     'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/service'),
                     'icon' => 'tata3',
                     'order' => 4
@@ -85,7 +85,7 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'Incidents',
+                    'name' => 'incident',
                     'url' => $router->getPathFor('/centreon-realtime/host/'.$event->getHostId().'/issues'),
                     'icon' => 'tata3',
                     'order' => 5
