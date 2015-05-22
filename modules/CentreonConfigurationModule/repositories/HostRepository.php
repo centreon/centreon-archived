@@ -96,6 +96,19 @@ class HostRepository extends Repository
     );
 
     /**
+     * Host create action
+     *
+     * @param array $givenParameters
+     * @return int id of created object
+     */
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {
+        $id = parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
+        self::deployServices($id);
+        return $id;
+    }
+
+    /**
      * 
      * @param string $host_name
      * @return string

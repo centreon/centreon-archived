@@ -203,7 +203,6 @@ class HostController extends FormController
             }
         }
         */
-        HostRepository::deployServices($id);
         
         $this->router->response()->json(array('success' => true));
     }
