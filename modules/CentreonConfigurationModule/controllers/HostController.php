@@ -203,7 +203,6 @@ class HostController extends FormController
             }
         }
         */
-        HostRepository::deployServices($id);
         
         $this->router->response()->json(array('success' => true));
     }
@@ -323,9 +322,6 @@ class HostController extends FormController
         }
         */
         parent::updateAction();
-        if ($givenParameters['host_create_services_from_template']) {
-            Host::deployServices($givenParameters['object_id']);
-        }
     }
     
     /**

@@ -14,4 +14,4 @@ The return give a authentication token. This token must be sent in headers for e
 .. toctree::
    :maxdepth: 2
 
-   
+   centreon-configuration/index  
