@@ -129,9 +129,9 @@ abstract class CentreonRelationModel extends CentreonModel
         $db = Di::getDefault()->get(static::$databaseName);
         $stmt = $db->prepare($sql);
         $stmt->execute($args);
-        if (0 === $stmt->rowCount()) {
+        /*if (0 === $stmt->rowCount()) {
             throw new Exception(self::$errMsg);
-        }
+        }*/
     }
 
     /**

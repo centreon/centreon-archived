@@ -80,8 +80,12 @@ class Radio extends Component
                             '<input '.'id="'.$element['id']. $i . '" '.
                             'type="'.$element['label_type'].'" '.'name="'.$element['name'].'" '.
                             'value=' . $choice . ' '.$htmlSelected.' '.
-                            $required . 
-                            '/>'.' '.$key.
+                            $required;
+                if ($element['label_parent_field'] != '' && $element['label_parent_value'] != '') {
+                    $inputHtml .= ' data-parentfield="' . $element['label_parent_field'] . '"';
+                    $inputHtml .= ' data-parentvalue="' . $element['label_parent_value'] . '"';
+                }
+                $inputHtml .= ' />'.' '.$key.
                             '</label>';
                 $i++;
             }

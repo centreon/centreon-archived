@@ -36,6 +36,7 @@
 namespace Centreon\Internal\Form\Component;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Utils\String\CamelCaseTransformation;
 
 /**
  * Description of FormComponent
@@ -53,6 +54,30 @@ class Component
     public static function renderHtmlInput(array $element)
     {
         
+    }
+
+    /**
+     *
+     * @param type $componentName
+     * @return type
+     */
+    public function parseComponentName($componentName)
+    {
+        $call = "";
+        $parsedComponent = explode('.', $componentName);
+
+        if ((count($parsedComponent) == 1) || $parsedComponent[0] === 'core') {
+            $call .= '\\Centreon\\Internal\\Form\\Component\\';
+        } else {
+            $call .= CamelCaseTransformation::customToCamelCase($parsedComponent[0], '-')
+                . '\\forms\\Components\\';
+        }
+
+        for ($i = 1; $i < count($parsedComponent); $i++) {
+            $call .= ucfirst($parsedComponent[$i]);
+        }
+
+        return $call;
     }
     
     /**

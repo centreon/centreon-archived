@@ -38,10 +38,10 @@ namespace CentreonConfiguration\Repository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Hosttemplate;
 use CentreonConfiguration\Repository\Repository;
-use Centreon\Internal\Utils\YesNoDefault;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Models\Timeperiod;
+use Centreon\Internal\Utils\YesNoDefault;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -66,7 +66,6 @@ class HostTemplateRepository extends Repository
         'host_check_interval',
         'host_retry_check_interval',
         'host_active_checks_enabled',
-        'host_passive_checks_enabled',
         'host_checks_enabled',
         'initial_state',
         'host_obsess_over_host',
@@ -201,7 +200,6 @@ class HostTemplateRepository extends Repository
                 $timeperiod = Timeperiod::get($value);
                 return $timeperiod['tp_name'];
             case 'host_active_checks_enabled':
-            case 'host_passive_checks_enabled':
             case 'host_obsess_over_host':
             case 'host_check_freshness':
             case 'flap_detection_options':
@@ -217,7 +215,7 @@ class HostTemplateRepository extends Repository
                 return $value;
         }
     }
-
+    
     /**
      * Get configuration data of a host
      * 
@@ -228,46 +226,47 @@ class HostTemplateRepository extends Repository
     {
         return HostTemplate::getParameters($hostId, "*");
     }
-
+    
     /**
      * Format data so that it can be displayed in tooltip
      *
-     * @param array $data
-     * @return array $checkdata
+     * @param array $templates
+     * @return array $checkdataTemplate
      */
-    public static function formatDataForTooltip($data)
+    public static function formatDataForTooltip($template)
     {
-        /* Check data */
-        $checkdata = array();
-        $checkdata[] = array(
-            'label' => _('Command'),
-            'value' => static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id'])
-        );
-        $checkdata[] = array(
-            'label' => _('Time period'),
-            'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id'])
-        );
-        $checkdata[] = array(
-            'label' => _('Max check attempts'),
-            'value' => $data['host_max_check_attempts']
-        );
-        $checkdata[] = array(
-            'label' => _('Check interval'),
-            'value' => $data['host_check_interval']
-        );
-        $checkdata[] = array(
-            'label' => _('Retry check interval'),
-            'value' => $data['host_retry_check_interval']
-        );
-        $checkdata[] = array(
-            'label' => _('Active checks enabled'),
-            'value' => YesNoDefault::toString($data['host_active_checks_enabled'])
-        );
-        $checkdata[] = array(
-            'label' => _('Passive checks enabled'),
-            'value' => $data['host_passive_checks_enabled']
-        );
+        
+        $checkdataTemplate = array();
+        $checkdataTemplate[] = array(
+         'label' => _('Name'),
+         'value' => $template['host_name']
+         );
+        $checkdataTemplate[] = array(
+         'label' => _('Command'),
+         'value' => static::getObjectName('\CentreonConfiguration\Models\Command', $template['command_command_id'])
+         );
+         $checkdataTemplate[] = array(
+             'label' => _('Time period'),
+             'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $template['timeperiod_tp_id'])
+         );
+         $checkdataTemplate[] = array(
+             'label' => _('Max check attempts'),
+             'value' => $template['host_max_check_attempts']
+         );
+         $checkdataTemplate[] = array(
+             'label' => _('Check interval'),
+             'value' => $template['host_check_interval']
+         );
+         $checkdataTemplate[] = array(
+             'label' => _('Retry check interval'),
+             'value' => $template['host_retry_check_interval']
+         );
+         $checkdataTemplate[] = array(
+             'label' => _('Active checks enabled'),
+             'value' => YesNoDefault::toString($template['host_active_checks_enabled'])
+         );
 
-        return $checkdata;
+        return $checkdataTemplate;
+        
     }
 }

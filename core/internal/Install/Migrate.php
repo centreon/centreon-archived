@@ -93,7 +93,7 @@ class Migrate extends AbstractInstall
 
             foreach($installOrder as $moduleName) {
                 $currentModule = $modulesToInstall['modules'][$moduleName];
-                $moduleInstaller = new $currentModule['classCall']($currentModule['directory'], $currentModule['infos']);
+                $moduleInstaller = new $currentModule['classCall']($currentModule['directory'], $currentModule['infos'], 'console');
                 echo "Installing ". Colorize::colorizeText($moduleName, 'purple', 'black', true) . " module... ";
                 $moduleInstaller->install(false);
                 echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";

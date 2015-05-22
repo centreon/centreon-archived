@@ -53,4 +53,52 @@ class LanguageRepository extends \CentreonAdministration\Repository\Repository
      * @var string
      */
     public static $objectName = 'Language';
+    
+    public static $objectClass = '\CentreonAdministration\Models\Language';
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'language' => 'cfg_languages, language_id, name'
+        ),
+    );
+    
+    
+    /**
+     * 
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     * @param type $validate
+     * @param type $validateMandatory
+     * @return type
+     */
+     
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {       
+        if ($validate) {
+            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+
+        parent::create($givenParameters);
+    }
+    /**
+     * 
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     * @param type $validate
+     * @param type $validateMandatory
+     */
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {
+        if ($validate) {
+            self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
+        }
+  
+        parent::update($givenParameters);
+    }
 }

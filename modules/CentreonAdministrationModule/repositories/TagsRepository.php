@@ -38,6 +38,8 @@ namespace CentreonAdministration\Repository;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
 use CentreonAdministration\Models\Tag;
+use CentreonConfiguration\Repository\HostRepository; 
+use CentreonConfiguration\Repository\ServiceRepository; 
 
 /**
  * Repository tags
@@ -66,6 +68,18 @@ class TagsRepository
         'hosttemplate' => 'host', 
         'servicetemplate' => 'service',
         'businessactivity' => 'ba'
+    );
+    
+    public static $objectClass = '\CentreonAdministration\Models\Tag';
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'tag' => 'cfg_tags, tag_id, tagname'
+        ),
     );
     
     protected static function convertResource($sResource)
@@ -154,20 +168,18 @@ class TagsRepository
      * @return array
      * @throws Exception
      */
-    public static function getList($resourceName, $resourceId, $bGlobaux = 0, $bWithHerited = 1)
+    public static function getList($resourceName, $resourceId, $bGlobaux = 0, $bWithHerited = 1, $bForceId = 0)
     {
         $resourceName = self::convertResource($resourceName);
         if (!in_array($resourceName, static::$resourceType)) {
             throw new Exception("This resource type does not support tags.");
         }
-        if (empty($resourceId)) {
-            return array();
-        }
+
         $dbconn = Di::getDefault()->get('db_centreon');        
 
-         $query = "SELECT t.tag_id, t.tagname, user_id, template_id
-                FROM cfg_tags t LEFT JOIN cfg_tags_" . $resourceName . "s r ON t.tag_id = r.tag_id
-                WHERE ";
+        $query = 'SELECT t.tag_id, t.tagname, user_id, template_id'
+            . ' FROM cfg_tags t, cfg_tags_' . $resourceName . 's r'
+            . ' WHERE t.tag_id = r.tag_id AND ';
          
         if ($bGlobaux == 0) {//only tag for user
             $query .= " t.user_id = :user_id";
@@ -199,7 +211,7 @@ class TagsRepository
         $tags = array();
         
         while ($row = $stmt->fetch()) {
-            if ($bGlobaux == 0) {
+            if (($bGlobaux == 0) || ($bForceId == 1)) {
                 $sField = $row['tag_id'];
             } else {
                 $sField = $row['tagname'];
@@ -218,17 +230,34 @@ class TagsRepository
      */
     public static function getTagId($tagName, $bGlobal = 0)
     {
-        if ($bGlobal == 0) {
-           $userId = $_SESSION['user']->getId();
-           $aFilter = array(
-                'user_id' => $userId,
-                'tagname' => $tagName
-            );
-        } else {
-            $aFilter = array(
-                'tagname' => $tagName
-            );
+        $tagName = trim($tagName);
+        if (empty($tagName)) {
+            return;
         }
+        
+        $dbconn = Di::getDefault()->get('db_centreon'); 
+        $query = "SELECT tag_id FROM cfg_tags WHERE tagname = '".$tagName."'";
+        if ($bGlobal == 0) {
+           $query .= " AND user_id = ".$_SESSION['user']->getId();
+           
+        }
+        
+        $query .= " LIMIT 1";
+        $stmt = $dbconn->prepare($query);
+        
+        //die($query);
+
+        $stmt->execute();
+        $tag = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+  
+        if (count($tag) === 0) {
+            throw new Exception("The tag is not found for user");
+        }
+        return $tag[0]['tag_id'];
+            
+
+        
+        /*
         $tag = Tag::getList(
             'tag_id',
             1,
@@ -236,13 +265,17 @@ class TagsRepository
             null,
             'ASC',
             $aFilter,
-            'AND'
+            'AND',
+            '',
+            ''
         );
         
         if (count($tag) === 0) {
             throw new Exception("The tag is not found for user");
         }
         return $tag[0]['tag_id'];
+         * 
+         */
     }
 
     /**
@@ -436,25 +469,33 @@ class TagsRepository
             return;
         }
         
-        $aFilter = array(
-            'tagname' => $tagName
-        );
 
-        $tag = Tag::getList(
-            'tag_id',
-            1,
-            0,
-            null,
-            'ASC',
-            $aFilter,
-            'AND'
-        );
-        if (isset($tag[0]['tag_id'])) {
-            $iReturn = $tag[0]['tag_id'];
+        
+        $dbconn = Di::getDefault()->get('db_centreon');
+        
+        if (empty($tagName)) {
+            return;
+        }
+        
+        $query = "SELECT tag_id FROM cfg_tags WHERE tagname = :tagname";
+
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':tagname', $tagName, \PDO::PARAM_STR);
+        $tag = $stmt->execute();
+        
+        $tags = array();
+        
+        while ($row = $stmt->fetch()) {
+            $tags[] = array('id' => $row['tag_id']);
+        }
+        
+        if (isset($tags[0]['id'])) {
+            $iReturn = $tags[0]['id'];
         } else {
             $iReturn = -1;
         }
         return $iReturn;
+        
     }
     /**
      * 
@@ -600,4 +641,59 @@ class TagsRepository
         }
         return $tags;
     }
+    
+    /**
+     * Get the list of inhereted tags
+     * @param string $resourceName
+     * @param int $resourceId
+     * @return array
+     */
+    
+    public static function getHeritedTags($resourceName, $resourceId)
+    {
+        $resourceName = self::convertResource($resourceName);
+        if (!in_array($resourceName, static::$resourceType)) {
+            throw new Exception("This resource type does not support tags.");
+        }
+        if (empty($resourceId)) {
+            return array();
+        }
+        
+        $aTagUsed = array();
+        $aTags = array();
+        
+        if ($resourceName == 'host') {
+            $templates = HostRepository::getTemplateChain($resourceId, array(), -1);
+            foreach ($templates as $template) {
+                $aTagsInHost = TagsRepository::getList('host', $template['id'], 2, 0);
+                foreach ($aTagsInHost as $oTags) {
+                    if (!in_array($oTags['id'], $aTagUsed)) {
+                        $aTagUsed[] = $oTags['id'];
+                        //$oTags['locked'] = true;
+                        //$aTags[] = $oTags;
+                        $aTags[] = $oTags['text'];
+                    }
+                }
+            }
+        } elseif ($resourceName == 'service') {
+            
+            $templates = ServiceRepository::getListTemplates($resourceId, array(), -1);
+            foreach ($templates as $template) {
+                $aTagsInSvc = TagsRepository::getList('service', $template, 2, 0);
+                foreach ($aTagsInSvc as $oTags) {
+                    if (!in_array($oTags['id'], $aTagUsed)) {
+                        $aTagUsed[] = $oTags['id'];
+                        //$oTags['locked'] = true;
+                        //$aTags[] = $oTags;
+                        $aTags[] = $oTags['text'];
+                    }
+                }
+            }
+        }
+
+        return array('success' => true, 'values' => $aTags);
+    }
+ 
+ 
+
 }

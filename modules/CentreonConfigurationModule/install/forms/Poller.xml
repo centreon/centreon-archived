@@ -5,39 +5,39 @@
 	<redirect>1</redirect>
 	<redirect_route>/centreon-configuration/poller</redirect_route>
 	<section name="General">
-	  <block name="General settings">
+            <block name="General settings">
 		<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-			<validators>
-                <validator rules="remote" serverside="core.unique" />
-                <validator rules="forbiddenChar" serverside="core.forbiddenChar">
-                	<argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
-                </validator>
-			</validators>
-          <help>Name which will be used for identifying the poller.</help>
+                    <validators>
+                        <validator rules="remote" serverside="centreon-main.unique" />
+                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                            <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
+                        </validator>
+                    </validators>
+                <help>Name which will be used for identifying the poller.</help>
 		</field>
 		<field name="ip_address" label="IP address" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">
-		  <help>IP address of the poller which must be relative to the local poller.</help>
+                    <help>IP address of the poller which must be relative to the local poller.</help>
 		</field>
-	  </block>
-        <block name="Additinonal information">
-            <field name="poller_type" label="Poller Type" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
-              <attributes>
-                <choices>
-                  <Central>0</Central>
-                  <Poller>1</Poller>
-                  <LocalPoller>2</LocalPoller>
-                </choices>
-              </attributes>
-            </field>
-            <field name="activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
-              <attributes>
-                <choices>
-                  <Enabled>1</Enabled>
-                  <Disabled>0</Disabled>
-                </choices>
-              </attributes>
-            </field>
-        </block>
+            </block>
+            <block name="Additinonal information">
+                <field name="poller_type" label="Poller Type" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
+                  <attributes>
+                    <choices>
+                      <Central>0</Central>
+                      <Poller>1</Poller>
+                      <LocalPoller>2</LocalPoller>
+                    </choices>
+                  </attributes>
+                </field>
+                <field name="activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
+                  <attributes>
+                    <choices>
+                      <Enabled>1</Enabled>
+                      <Disabled>0</Disabled>
+                    </choices>
+                  </attributes>
+                </field>
+            </block>
 	</section>
 	<section name="Engine configuration">
         <block name="Monitoring settings">

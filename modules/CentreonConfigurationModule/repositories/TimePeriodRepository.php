@@ -56,6 +56,16 @@ class TimePeriodRepository extends Repository
      * @var string
      */
     public static $objectName = 'Timeperiod';
+    
+     /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'timeperiod' => 'cfg_timeperiods,tp_id,tp_name'
+        ),
+    );
 
     /**
      * 

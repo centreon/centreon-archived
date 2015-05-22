@@ -196,7 +196,7 @@ abstract class ListController extends Controller
         }
         $this->tpl->assign('objectDuplicateUrl', $this->objectBaseUrl . '/duplicate');
         $this->tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/delete');
-        $this->tpl->display('file:[CentreonConfigurationModule]list.tpl');
+        $this->tpl->display('file:[CentreonMainModule]list.tpl');
     }
     
     /**
@@ -234,7 +234,6 @@ abstract class ListController extends Controller
     public function createAction($sendResponse = true)
     {
         $givenParameters = clone $this->getParams('post');
-        $repository = $this->repository;
         try {
             $repository = $this->repository;
             $id = $repository::create($givenParameters, 'wizard', $this->getUri());

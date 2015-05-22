@@ -41,6 +41,7 @@ use Centreon\Internal\Di;
 use CentreonAdministration\Events\ContactinfoListKey;
 use Centreon\Controllers\FormController;
 use Centreon\Internal\Form\Generator\Web\Full as WebFormGenerator;
+use CentreonAdministration\Repository\TagsRepository;
 
 class ContactController extends FormController
 {
@@ -140,6 +141,24 @@ class ContactController extends FormController
      */
     public function updateContactAction()
     {
+        $aTags = array();
+        $givenParameters = $this->getParams('post');
+        
+        //Delete all tags
+        TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
+        
+        if (isset($givenParameters['contact_tags'])) {
+            $aTagList = explode(",", $givenParameters['contact_tags']);
+            foreach ($aTagList as $var) {                
+                $var = trim($var);
+                if (!empty($var)) {
+                    array_push($aTags, $var);
+                }
+            }
+            if (count($aTags) > 0) {
+                TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false, 1);
+            }
+        }
         parent::updateAction();
     }
     
@@ -179,5 +198,36 @@ class ContactController extends FormController
     public function timezoneForContactAction()
     {
         parent::getSimpleRelation('timezone_id', '\CentreonAdministration\Models\Timezone');
+    }
+    
+    
+    /**
+     * Create a new host
+     *
+     * @method post
+     * @route /contact/add
+     */
+    public function createAction()
+    {
+        $aTags = array();
+        
+        $givenParameters = $this->getParams('post');
+ 
+        $id = parent::createAction(false);
+        
+        if (isset($givenParameters['contact_tags'])) {
+            $aTagList = explode(",", $givenParameters['contact_tags']);
+            foreach ($aTagList as $var) {                
+                $var = trim($var);
+                if (!empty($var)) {
+                    array_push($aTags, $var);
+                }
+            }
+            if (count($aTags) > 0) {
+                TagsRepository::saveTagsForResource(self::$objectName, $id, $aTags, '', false, 1);
+            }
+        }
+          
+        $this->router->response()->json(array('success' => true));
     }
 }

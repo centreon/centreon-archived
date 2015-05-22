@@ -72,7 +72,7 @@ if (file_exists("install.php") && (isset($requestUri[2]) && ($requestUri[2] != '
         $router->response()->code(500);
         if ("dev" === \Centreon\Internal\Di::getDefault()->get('config')->get('global', 'env')) {
             $tmpl->assign("exceptionMessage", $e->getMessage());
-            $tmpl->assign("strace", var_export(debug_backtrace(), true));
+            $tmpl->assign("strace", $e->getTraceAsString());
             $router->response()->body($tmpl->fetch('500-devel.tpl'));
         } else {
             $router->response()->body($tmpl->fetch('500.tpl'));

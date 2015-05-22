@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_administration" defaultIdMethod="native">
+    <table name="cfg_usergroups" phpName="UserGroups" idMethod="native">
+        <column name="usergroup_id" phpName="UserGroupId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="UserGroupName" type="VARCHAR" size="255" required="true"/>
+        <column name="description" phpName="UserGroupDescription" type="VARCHAR" size="255" required="false"/>
+        <column name="status" phpName="UserGroupStatus" type="TINYINT" required="true" defaultValue="1"/>
+        <column name="locked" phpName="UserGroupLocked" type="TINYINT" required="true" defaultValue="0"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

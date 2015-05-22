@@ -45,7 +45,46 @@ class AclresourceController extends FormController
     protected $objectBaseUrl = '/centreon-administration/aclresource';
     protected $objectClass = '\CentreonAdministration\Models\Aclresource';
     public static $relationMap = array(
+        'aclresource_usergroups' => '\CentreonAdministration\Models\Relation\Aclresource\Usergroup',
+        'aclresource_environments' => '\CentreonAdministration\Models\Relation\Aclresource\Environment',
+        'aclresource_domains' => '\CentreonAdministration\Models\Relation\Aclresource\Domain',
     );
     protected $datatableObject = '\CentreonAdministration\Internal\AclresourceDatatable';
+    protected $repository = '\CentreonAdministration\Repository\AclresourceRepository';
+
     public static $isDisableable = true;
+    public static $enableDisableFieldName = 'status';
+
+    /**
+     * Usergroups for a specific acl resource
+     *
+     * @method get
+     * @route /aclresource/[i:id]/usergroup
+     */
+    public function usergroupForAclresourceAction()
+    {
+        parent::getRelations(static::$relationMap['aclresource_usergroups']);
+    }
+
+    /**
+     * Environments for a specific acl resource
+     *
+     * @method get
+     * @route /aclresource/[i:id]/environment
+     */
+    public function environmentForAclresourceAction()
+    {
+        parent::getRelations(static::$relationMap['aclresource_environments']);
+    }
+
+    /**
+     * Domains for a specific acl resource
+     *
+     * @method get
+     * @route /aclresource/[i:id]/domain
+     */
+    public function domainForAclresourceAction()
+    {
+        parent::getRelations(static::$relationMap['aclresource_domains']);
+    }
 }

@@ -53,4 +53,17 @@ class ManufacturerRepository extends \CentreonConfiguration\Repository\Repositor
      * @var string
      */
     public static $objectName = 'Manufacturer';
+    
+    
+    public static $objectClass = '\CentreonConfiguration\Models\Manufacturer';
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'manufacturer' => 'cfg_traps_vendors, id, name'
+        ),
+    );
 }

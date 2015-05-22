@@ -40,7 +40,6 @@ use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use Centreon\Internal\Datatable;
 use CentreonBam\Repository\BusinessActivityRepository;
 use CentreonAdministration\Repository\TagsRepository;
-use Centreon\Internal\Di;
 
 /**
  * Description of BaDatatable
@@ -201,13 +200,8 @@ class BusinessActivityDatatable extends Datatable
      */
     protected function formatDatas(&$resultSet)
     {
-        $router = Di::getDefault()->get('router');
         $previousType = '';
         foreach ($resultSet as &$myBaSet) {
-            $myBaSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-bam/businessactivity/')
-                . $myBaSet['ba_id']
-                . '/tooltip';
-
             // Set business activity type
             $baType = \CentreonBam\Models\BusinessActivityType::getParameters($myBaSet['ba_type_id'], array('name'));
             $myBaSet['ba_type_id'] = $baType['name'];

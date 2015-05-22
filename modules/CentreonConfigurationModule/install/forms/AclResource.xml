@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+    <form name="cfg_aclresource_form">
+        <route>/centreon-administration/aclresource/update</route>
+        <redirect>1</redirect>
+        <redirect_route>/centreon-administration/aclresource</redirect_route>
+        <section name="Hosts and services">
+            <block name="Relations">
+                <field name="aclresource_hosts" label="Linked hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-configuration/host/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-configuration/aclresource/[i:id]/host</listValuesRoute>
+                        <multiple>true</multiple>
+                    </attributes>
+                </field>
+                <field name="aclresource_host_tags" label="Linked host tags" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-configuration/aclresource/host/tag/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-configuration/aclresource/[i:id]/host/tag</listValuesRoute>
+                        <multiple>true</multiple>
+                    </attributes>
+                </field>
+                <field name="aclresource_services" label="Linked services" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-configuration/service/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-configuration/aclresource/[i:id]/service</listValuesRoute>
+                        <multiple>true</multiple>
+                    </attributes>
+                </field>
+                <field name="aclresource_service_tags" label="Linked service tags" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-configuration/aclresource/service/tag/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-configuration/aclresource/[i:id]/service/tag</listValuesRoute>
+                        <multiple>true</multiple>
+                    </attributes>
+                </field>
+            </block>
+        </section>
+    </form>
+</forms>

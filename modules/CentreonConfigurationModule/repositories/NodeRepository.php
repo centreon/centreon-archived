@@ -62,7 +62,7 @@ class NodeRepository extends \CentreonConfiguration\Repository\Repository
     {
         $di = Di::getDefault();
         return Node::insert(array(
-            'name' => $params['poller_name'],
+            'name' => $params['name'],
             'ip_address' => $params['ip_address']
         ));
     }
@@ -74,16 +74,26 @@ class NodeRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function update($params)
     {
-        $result = PollerRepository::getNode($params['poller_id']);
+        if (isset($params['object_id'])) {
+            $poller_id = $params['object_id'];
+        } else {
+            $poller_id = $params['poller_id'];
+        }
+        $result = PollerRepository::getNode($poller_id);
         if (!isset($result['node_id'])) {
-            throw new Exception(sprintf('Could not find node id from poller id %s', $params['poller_id']));
+            throw new Exception(sprintf('Could not find node id from poller id %s', $poller_id));
         }
         $nodeId = $result['node_id'];
-        Node::update($nodeId,
-            array(
-                'name' => $params['poller_name'],
-                'ip_address' => $params['ip_address']
-            )
-        );
+        $nodeParams = array();
+        if (isset($params['name'])) {
+            $nodeParams['name'] = $params['name'];
+        }
+        if (isset($params['ip_address'])) {
+            $nodeParams['ip_address'] = $params['ip_address'];
+        }
+        if (isset($params['enable'])) {
+            $nodeParams['enable'] = $params['enable'];
+        }
+        Node::update($nodeId, $nodeParams);
     }
 }

@@ -48,4 +48,36 @@ class User extends \Centreon\Models\CentreonBaseModel
     protected static $table = "cfg_users";
     protected static $primaryKey = "user_id";
     protected static $uniqueLabelField = "login";
+
+    /**
+     *
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getListBySearch(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $aAddFilters = array();
+        $tablesString =  null;
+        $aGroup = array();
+
+        if (isset($filters['fullname']) && !empty($filters['fullname'])) {
+            $filters['CONCAT(firstname," ",lastname)'] = $filters['fullname'];
+            unset($filters['fullname']);
+        }
+
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
+    }
 }

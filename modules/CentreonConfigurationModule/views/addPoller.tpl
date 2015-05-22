@@ -24,7 +24,7 @@
 <form role="form" class="form-horizontal" id="wizard_form">
 <div class="step-content">
   <div class="step-pane active" id="add_poller1">
-    {$form.poller_name.html}
+    {$form.name.html}
     {$form.ip_address.html}
     {$form.poller_tmpl.html}
   </div>

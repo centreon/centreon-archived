@@ -2,7 +2,31 @@
 
   .form-group {
     margin-bottom: @paddingElem*3;
+
+    &.has-error{
+      input {
+        border-bottom : 1px solid @danger;
+      }
+      label {
+        color: @danger;
+        left: 14px;
+      }
+    cite {
+      bottom: -22px;
+      left: 4px;
+    }
+      span {
+       left: 4px;
+      }
+      .form-control:focus {
+        box-shadow: 2px 1px 1px @lightGray;
+        border: 1px solid @lightGray;
+        border-bottom : 1px solid @danger;
+      }
+    }
+
   }
+
 
   /*-- Reset --*/
 
@@ -16,7 +40,7 @@
   input[type="number"],
   input[type="mail"],
   textarea,
-  .select2-container .select2-choice,
+  .select2-container .select2-choice
 {
     width: 100%;
     height: 40px;
@@ -25,7 +49,6 @@
     border-radius: 3px;
     box-shadow: 2px 1px 1px @lightGray;
     border: 1px solid @lightGray;
-    margin-bottom: 2px;
   }
 
   textarea {
@@ -41,11 +64,11 @@
     position: absolute;
     color: darken(@thirdBlue,10%)/*@thirdBlueDarken*/;
     width: 60%;
-    height: 20px;
+    //height: 20px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    bottom: -3px;
+    bottom: 2px;
     left: 2em;
   }
 
@@ -86,13 +109,15 @@
   /*---- Group of 2 Fields --- */
   .inlineGroup {
     height: 40px;
+    display: table;
     .Elem1 {
-      float: left;
-      width: 91%;
+      display: table-cell;
+      width: 100%;
+      vertical-align: top;
     }
     .Elem2 {
-      float: right;
-      width: 8%;
+      display: table-cell;
+      margin-left: @paddingElem;
 
       button {
         float: right;
@@ -239,6 +264,13 @@
     color: fade(@danger,60%);
   }
 }
+
+  /*---- Maccro Fields --- */
+
+  #host_alias_controls ~ label.label-controller{
+    display: none;
+  }
+
   /*---- Notification --- */
 
   .bs-callout {

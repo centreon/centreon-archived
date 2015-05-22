@@ -115,7 +115,6 @@ class ServiceController extends Controller
         $tpl->assign('moduleName', 'CentreonRealtime');
         $tpl->assign('datatableObject', $this->datatableObject);
         $tpl->assign('objectName', 'Service');
-        $tpl->assign('consoleType', 1); // service console
         $tpl->assign('objectListUrl', '/centreon-realtime/service/list');
 
         $actions = array();
@@ -142,7 +141,7 @@ class ServiceController extends Controller
         /* Add javascript and css file for hooks */
         Hook::addStaticFile('displaySvcTooltipGraph');
 
-        $tpl->display('file:[CentreonRealtimeModule]console.tpl');
+        $tpl->display('file:[CentreonMainModule]list.tpl');
     }
 
     /**

@@ -206,30 +206,30 @@ class IndicatorDatatable extends Datatable
             WHERE b.boolean_id=k.boolean_id';
         $stmtKpiBoolean = $dbconn->query($sqlKpiBoolean);
         $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
-
+        
         foreach ($resultSet as &$kpi) {
-            if ($kpi['kpi_type'] == 0) {
+            if ($kpi['kpi_type'] == "0") {
                 foreach ($resultKpiService as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
                         $kpi['object_name'] = $kpiObject['host_name'].' '.$kpiObject['service_description'];
                         $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['host_name'].' '.$kpiObject['service_description'] . '</a>';
                     }
                 }
-            } else if ($kpi['kpi_type'] == 1) {
+            } else if ($kpi['kpi_type'] == "1") {
                 foreach ($resultKpiMetaservice as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
                         $kpi['object_name'] = 'metaservice';
                         $kpi['object'] = 'metaservice';
                     }
                 }
-            } else if ($kpi['kpi_type'] == 2) {
+            } else if ($kpi['kpi_type'] == "2") {
                 foreach ($resultKpiBa as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
                         $kpi['object_name'] = $kpiObject['name'];
                         $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
                     }
                 }
-            } else if ($kpi['kpi_type'] == 3) {
+            } else if ($kpi['kpi_type'] == "3") {
                 foreach ($resultKpiBoolean as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
                         $kpi['object_name'] = $kpiObject['name'];
@@ -247,7 +247,7 @@ class IndicatorDatatable extends Datatable
 
         foreach ($resultSet as &$kpi) {
             foreach ($resultKpiImpact as $kpiImpact) {
-                if ($kpi['kpi_type'] == 3) {
+                if ($kpi['kpi_type'] == "3") {
                     if ($kpiImpact['kpi_id'] === $kpi['kpi_id']) {
                         $kpi['impact'] = $kpiImpact['drop_critical'] . '%';
                     }
@@ -274,5 +274,6 @@ class IndicatorDatatable extends Datatable
                 }
             }
         }
+        //var_dump($resultSet);die;
     }
 }

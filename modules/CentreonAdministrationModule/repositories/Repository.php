@@ -46,7 +46,7 @@ use CentreonAdministration\Repository\AuditlogRepository;
  * @version 3.0.0
  * @author Sylvestre Ho <sho@centreon.com>
  */
-abstract class Repository  extends FormRepository
+abstract class Repository extends FormRepository
 {
     const ORGANIZATION_FIELD = 'organization_id';
 
@@ -239,7 +239,7 @@ abstract class Repository  extends FormRepository
      * @param array $givenParameters
      * @throws \Centreon\Internal\Exception
      */
-    public static function update($givenParameters)
+    /*public static function update($givenParameters)
     {
         $class = static::$objectClass;
         $pk = $class::getPrimaryKey();
@@ -302,7 +302,7 @@ abstract class Repository  extends FormRepository
         if (static::$saveEvents) {
             static::postSave($id, 'update', $givenParameters);
         }
-    }
+    }*/
 
     /**
      * Delete a object

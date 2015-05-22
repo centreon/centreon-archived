@@ -140,6 +140,14 @@ abstract class FormController extends ListController
         
         $this->tpl->assign('inheritanceUrl', $inheritanceUrl);
         
+        if (isset($this->inheritanceTagsUrl) && false === is_null($this->inheritanceTagsUrl)) {
+            $inheritanceTagsUrl = $this->router->getPathFor(
+                $this->inheritanceTagsUrl,
+                array('id' => $requestParam['id'])
+            );
+            $this->tpl->assign('inheritanceTagsUrl', $inheritanceTagsUrl);
+        }
+        
         if (isset($this->inheritanceTmplUrl)) {
             $this->tpl->assign(
                 'inheritanceTmplUrl',

@@ -347,9 +347,14 @@ abstract class CentreonBaseModel extends CentreonModel
         } else {
             $params = $parameterNames;
         }
-        $sql = "SELECT $params FROM " . static::$table . " WHERE ". static::$primaryKey . " = ?";
 
-        $values = array($objectId);
+        if (is_array($objectId)) {
+            $sql = "SELECT " . static::$primaryKey . "," . $params . " FROM " . static::$table . " WHERE ". static::$primaryKey . " = ?";
+            $values = $objectId;
+        } else {
+            $sql = "SELECT " . $params . " FROM " . static::$table . " WHERE ". static::$primaryKey . " = ?";
+            $values = array($objectId);
+        }
 
         if (isset(static::$basicFilters)) {
             foreach (static::$basicFilters as $key => $value) {
@@ -367,7 +372,12 @@ abstract class CentreonBaseModel extends CentreonModel
         if (count($result) !== 1) {
             throw new Exception(static::OBJ_NOT_EXIST);
         }
-        return $result[0];
+
+        if (is_array($objectId)) {
+            return $result;
+        } else {
+            return $result[0];
+        }
     }
 
     /**

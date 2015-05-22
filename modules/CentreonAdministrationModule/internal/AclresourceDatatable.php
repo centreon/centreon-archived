@@ -49,10 +49,16 @@ class AclresourceDatatable extends Datatable
     
     /**
      *
-     * @var type 
+     * @var type
      */
     protected static $datasource = '\CentreonAdministration\Models\Aclresource';
-    
+
+    /**
+     *
+     * @var type
+     */
+    protected static $rowIdColumn = array('id' => 'acl_resource_id', 'name' => 'name');
+
     /**
      *
      * @var array 
@@ -60,8 +66,7 @@ class AclresourceDatatable extends Datatable
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('acl_res_name', 'asc'),
-            array('acl_res_id', 'asc')
+            array('name', 'asc')
         ),
         'stateSave' => false,
         'paging' => true,
@@ -74,24 +79,18 @@ class AclresourceDatatable extends Datatable
     public static $columns = array(
         array (
             'title' => 'Id',
-            'name' => 'acl_res_id',
-            'data' => 'acl_res_id',
+            'name' => 'acl_resource_id',
+            'data' => 'acl_resource_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
+            'visible' => false,
             'width' => '5%',
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::acl_res_name::'
-                )
-            )
         ),
         array (
             'title' => 'Name',
-            'name' => 'acl_res_name',
-            'data' => 'acl_res_name',
+            'name' => 'name',
+            'data' => 'name',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -101,16 +100,16 @@ class AclresourceDatatable extends Datatable
                 'parameters' => array(
                     'route' => '/centreon-administration/aclresource/[i:id]',
                     'routeParams' => array(
-                        'id' => '::acl_res_id::'
+                        'id' => '::acl_resource_id::'
                     ),
-                    'linkName' => '::acl_res_name::'
+                    'linkName' => '::name::'
                 )
             )
         ),
         array (
             'title' => 'Description',
-            'name' => 'acl_res_alias',
-            'data' => 'acl_res_alias',
+            'name' => 'description',
+            'data' => 'description',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -118,8 +117,8 @@ class AclresourceDatatable extends Datatable
         ),
         array (
             'title' => 'Status',
-            'name' => 'acl_res_status',
-            'data' => 'acl_res_status',
+            'name' => 'status',
+            'data' => 'status',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',

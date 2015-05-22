@@ -75,8 +75,12 @@ class Textarea extends Component
                     'class="form-control '.$addClass.'" '.
                     'rows="3" '.' maxlength="150"'.
                     $placeholder.
-                    $required .
-                    '>'.$value.'</textarea><cite></cite>';
+                    $required;
+        if ($element['label_parent_field'] != '' && $element['label_parent_value'] != '') {
+            $inputHtml .= ' data-parentfield="' . $element['label_parent_field'] . '"';
+            $inputHtml .= ' data-parentvalue="' . $element['label_parent_value'] . '"';
+        }
+        $inputHtml .= ' >'.$value.'</textarea><cite></cite>';
         
         $myJs = '';
         

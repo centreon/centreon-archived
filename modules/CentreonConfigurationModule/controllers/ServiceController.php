@@ -67,6 +67,7 @@ class ServiceController extends FormController
     protected $inheritanceUrl = '/centreon-configuration/servicetemplate/[i:id]/inheritance';
     protected $inheritanceTmplUrl = '/centreon-configuration/servicetemplate/inheritance';
     protected $tmplField = '#service_template_model_stm_id';
+    protected $inheritanceTagsUrl = '/centreon-administration/tag/[i:id]/service/herited';
 
     /**
      * List services
@@ -96,6 +97,7 @@ class ServiceController extends FormController
         );
                 
         $this->tpl->append('jsUrl', $urls, true);
+        $this->tpl->assign('configuration', true);
         parent::listAction();
     }
 
@@ -222,13 +224,14 @@ class ServiceController extends FormController
         }
         
         //Get All tags 
+        /*
         $aTagsInTpl =  TagsRepository::getListId(self::$objectName, $givenParameters['object_id']);
         foreach ($aTagsInTpl as $c => $i) {
             if (isset($i['tpl']) && $i['tpl'] > 0) {
                 array_push($aTagsIdTpl, $i['text']);
             }
         }
-        
+        */
         //Delete all tags
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
         
@@ -236,7 +239,8 @@ class ServiceController extends FormController
         if (isset($givenParameters['service_tags'])) {
             $aTagList = explode(",", $givenParameters['service_tags']);
             foreach ($aTagList as $var) {
-                if (strlen($var)>1 && !in_array($var, $aTagsIdTpl)) {
+                $var = trim($var);
+                if (!empty($var)) {
                     array_push($aTags, $var);
                 }
             }
@@ -245,7 +249,7 @@ class ServiceController extends FormController
                 TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false, 1);
             }
         }
-        
+        /*
         //Clean tags for service template
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 1);
 
@@ -261,7 +265,7 @@ class ServiceController extends FormController
                 }
             }
         }
-                
+        */   
         parent::updateAction();
     }
     
@@ -311,7 +315,8 @@ class ServiceController extends FormController
         if (isset($givenParameters['service_tags'])) {
             $aTagList = explode(",", $givenParameters['service_tags']);
             foreach ($aTagList as $var) {
-                if (strlen($var)>1) {
+                $var = trim($var);
+                if (!empty($var)) {
                     array_push($aTags, $var);
                 }
             }
@@ -321,6 +326,7 @@ class ServiceController extends FormController
         }
         
         //get Tag for serviceTemplate
+        /*
         if (isset($givenParameters['service_template_model_stm_id'])) {
             $iTemplate = trim($givenParameters['service_template_model_stm_id']);
             if (!empty($iTemplate)) {
@@ -331,7 +337,7 @@ class ServiceController extends FormController
                 } 
             }
         }
- 
+ */
         $this->router->response()->json(array('success' => true));
     }
 
@@ -475,5 +481,38 @@ class ServiceController extends FormController
         $checkdata = ServiceRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
-    }     
+    }
+
+    /**
+     * Get services for a specific acl resource
+     *
+     * @method get
+     * @route /aclresource/[i:id]/service
+     */
+    public function servicesForAclResourceAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+        $finalServiceList = ServiceRepository::getServicesByAclResourceId($requestParam['id']);
+
+        $router->response()->json($finalServiceList);
+    }
+
+     /**
+     * Get service tag list for acl resource
+     *
+     * @method get
+     * @route /aclresource/service/tag/formlist
+     */
+     public function serviceTagsForAclResourceAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $list = TagsRepository::getList('service', "", 1, 0, 1);
+
+        $router->response()->json($list);
+    } 
 }

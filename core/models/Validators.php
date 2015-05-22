@@ -35,6 +35,7 @@
  */
 
 namespace Centreon\Models;
+use Centreon\Internal\Di;
 
 /**
  * Used for interacting with commands
@@ -46,4 +47,19 @@ class Validators extends CentreonBaseModel
     protected static $table = "cfg_forms_validators";
     protected static $primaryKey = "validator_id";
     protected static $uniqueLabelField = "name";
+    
+    
+    /**
+     * Used for deleteing object from database
+     *
+     * @param int $objectId
+     */
+    public static function delete()
+    {
+        $db = Di::getDefault()->get('db_centreon');
+        $sql = "DELETE FROM  " . static::$table ;
+        
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+    }
 }

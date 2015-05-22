@@ -7,13 +7,16 @@
         <section name="Graph configuration">
             <block name="General information">
 		            <field name="svc_tmpl_id" label="Service Template" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
-		              <attributes>
-		            	<object_type>object</object_type>
-                  <defaultValuesRoute>/centreon-performance/configuration/servicetemplate/withoutgraphtemplate</defaultValuesRoute>
-                  <listValuesRoute>/centreon-performance/configuration/graphtemplate/[i:id]/servicetemplate</listValuesRoute>
-		            	<multiple>false</multiple>
-		              </attributes>
-                      <help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
+                                <attributes>
+                                    <object_type>object</object_type>
+                                    <defaultValuesRoute>/centreon-performance/configuration/servicetemplate/withoutgraphtemplate</defaultValuesRoute>
+                                    <listValuesRoute>/centreon-performance/configuration/graphtemplate/[i:id]/servicetemplate</listValuesRoute>
+                                    <multiple>false</multiple>
+                                </attributes>
+                                <help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
+                                <validators>
+                                    <validator rules="remote" serverside="centreon-main.unique" />
+                                </validators>
 		            </field>
                 <field name="stackable" label="Stackable" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
                     <attributes>

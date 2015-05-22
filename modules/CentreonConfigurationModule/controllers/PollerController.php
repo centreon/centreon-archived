@@ -56,6 +56,9 @@ class PollerController extends FormController
     protected $repository = '\CentreonConfiguration\Repository\PollerRepository';
     public static $relationMap = array();
 
+    public static $isDisableable = true;
+    public static $enableDisableFieldName = 'enable';
+
     /**
      * List users
      *
@@ -77,12 +80,12 @@ class PollerController extends FormController
      */
     public function updateAction()
     {
-        $params = $this->getParams('post');
+        $params = $this->getParams('post')->all();
         $router = Di::getDefault()->get('router');
 
         /* Save information */
         try {
-            PollerRepository::update($params);
+            PollerRepository::update($params, 'form', $this->getUri());
         } catch (Exception $e) {
             return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
         }
@@ -114,9 +117,11 @@ class PollerController extends FormController
     {
         $params = $this->getParams('post');
         $router = Di::getDefault()->get('router');
+        
+        $params['object'] = static::$objectName;
 
         try {
-            PollerRepository::create($params, 'form');
+            PollerRepository::create($params, 'wizard', $this->getUri());
         } catch (Exception $e) {
             return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
         }
@@ -143,7 +148,7 @@ class PollerController extends FormController
         /* Prepare form for edition */
         $form = $this->getForm('edit_poller', $params['id']);
         $form->setDefaults(array(
-            'poller_name' => $poller['name'],
+            'name' => $poller['name'],
             'ip_address' => $node['ip_address']
         ));
         if (Informations::isModuleInstalled($moduleBroker)) {
@@ -263,7 +268,7 @@ class PollerController extends FormController
         $form->add(array(
             'type' => 'text',
             'label' => 'Poller name',
-            'name' => 'poller_name',
+            'name' => 'name',
             'mandatory' => true,
             'parent_field' => '',
             'parent_value' => '',

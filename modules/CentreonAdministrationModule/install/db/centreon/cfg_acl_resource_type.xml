@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_administration" defaultIdMethod="native">
+    <table name="cfg_acl_resource_type" phpName="AclResourceType" idMethod="native">
+        <column name="acl_resource_type_id" phpName="AclResourceTypeId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="AclResourceTypeName" type="VARCHAR" size="255" required="true"/>
+        <index name="resource_type_id">
+            <index-column name="acl_resource_type_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

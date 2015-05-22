@@ -98,3 +98,20 @@ tr.centreon-border-status-5 {
   display: block;
   position: absolute;
 }
+
+.notif-danger {
+  position: absolute;
+  border: 1px solid @danger;
+  background-color: fade(@danger,20%);
+  width: auto;
+  padding: @paddingElem @paddingElem*2;
+  z-index: 3;
+  top: 100px;
+  right: 16px;
+  font-size: 85%;
+  border-radius: 3px;
+
+  span {
+      color : @danger;
+  }
+}

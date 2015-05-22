@@ -48,6 +48,16 @@ use Centreon\Internal\Di;
  */
 class GraphTemplate extends FormRepository
 {
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'graphTemplate' => 'cfg_curve_config, graph_template_id, metric_name'
+        ),
+    );
     /**
      * Save the curves for graph template
      *

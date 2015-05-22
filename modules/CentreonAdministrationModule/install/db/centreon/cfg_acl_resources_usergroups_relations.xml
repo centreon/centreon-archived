@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_administration" defaultIdMethod="native">
+    <table name="cfg_acl_resources_usergroups_relations" phpName="AclResourcesUserGroupsRelations" idMethod="native">
+        <column name="arugr_id" phpName="AclResourceUserGroupId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="acl_resource_id" phpName="AclResourceId" type="INTEGER" required="false"/>
+        <column name="usergroup_id" phpName="UserGroupId" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="cfg_acl_resources" name="acl_resources_usergroups_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="acl_resource_id" foreign="acl_resource_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_usergroups" name="acl_resources_usergroups_relations_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="usergroup_id" foreign="usergroup_id"/>
+        </foreign-key>
+        <index name="acl_resource_id">
+            <index-column name="acl_resource_id"/>
+        </index>
+        <index name="usergroup_id">
+            <index-column name="usergroup_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

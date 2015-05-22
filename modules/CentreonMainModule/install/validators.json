@@ -34,5 +34,9 @@
     {
         "name": "core.EqualTo",
         "route": "/validator/equalto"
+    },
+    {
+        "name": "centreon-main.unique",
+        "route": "/validator/unique"
     }
 ]

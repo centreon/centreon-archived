@@ -43,6 +43,45 @@ use Centreon\Internal\Installer\Database\Installer as DbInstaller;
 class ToolsCommand extends AbstractCommand
 {
     
+     /**
+     * Extract json file and prints a sql string 
+     *
+     * @param string $file
+     * @param string $tablename
+     * @param string destination
+     */
+    public function jsonToSqlAction($file, $tablename, $destination = '')
+    {
+        $sInsert = "INSERT INTO ".$tablename."(";
+        if (file_exists($file)) {
+            try {
+                $sColumns = '';
+                $aData = json_decode(file_get_contents($file), true);
+ 
+                $sSql = '';
+
+                foreach($aData as $value) {
+                    $sColumns = implode(',', array_keys($value));
+                    $sSql .= "(".'"'.implode('","',array_values($value)).'"'."), "; 
+                }
+                $sChars = $sInsert.$sColumns.") VALUES ".$sSql;
+                $sContent = substr($sChars, 0, strlen($sChars) - 2 ).";";
+               // echo $destination;
+                
+                if (empty($destination)) {
+                    echo $sContent;
+                } else  {
+                    if (file_exists($destination)) {
+                        file_put_contents($sContent, $destination);
+                    } else throw new Exception("invalide desination");
+                }
+             
+            } catch (Exception $ex) {
+                throw new Exception("invalid content");
+                //return "invalid content";
+            } 
+        }
+    }
 
     /**
      * 

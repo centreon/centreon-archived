@@ -59,7 +59,7 @@ class UserDatatable extends Datatable
      *
      * @var type 
      */
-    protected static $rowIdColumn = array('id' => 'user_id', 'name' => 'firstname');
+    protected static $rowIdColumn = array('id' => 'user_id', 'name' => 'login');
     
     /**
      *
@@ -109,8 +109,8 @@ class UserDatatable extends Datatable
         ),
         array (
             'title' => 'Full Name',
-            'name' => 'firstname',
-            'data' => 'firstname',
+            'name' => 'CONCAT(firstname," ",lastname) as fullname',
+            'data' => 'fullname',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -171,6 +171,14 @@ class UserDatatable extends Datatable
     public function __construct($params, $objectModelClass = '')
     {
         parent::__construct($params, $objectModelClass);
+    }
+
+    /**
+     *
+     * @param array $resultSet
+     */
+    public static function addAdditionnalDatas(&$resultSet)
+    {
     }
 
     /**

@@ -123,7 +123,7 @@ class DowntimesController extends Controller
 
         $this->tpl->append('jsUrl', $urls, true);
 
-        $this->tpl->display('file:[CentreonRealtimeModule]console.tpl');
+        $this->tpl->display('file:[CentreonMainModule]list.tpl');
     }
 
     /**

@@ -2,12 +2,13 @@
  * Created by rridene on 31/03/2015.
  */
 
-
 // Custom scripts
 $(document).ready(function () {
 
     // MetisMenu
-    $('#side-menu').metisMenu();
+    $('#side-menu').metisMenu({
+    });
+
 
     // Collapse ibox function
     $('.collapse-link').click( function() {
@@ -23,11 +24,11 @@ $(document).ready(function () {
         }, 50);
     });
 
-    // Close ibox function
+    /* Close ibox function
     $('.close-link').click( function() {
         var content = $(this).closest('div.ibox');
         content.remove();
-    });
+    });*/
 
     // Small todo handler
     $('.check-link').click( function(){

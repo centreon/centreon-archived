@@ -104,7 +104,7 @@ class IndicatorRepository extends FormRepository
         foreach ($givenParameters as $k => $v) {
             $parameters[$k] = $v;
         }
-
+        
         $lastIndicatorId = self::createBasicIndicator($parameters);
 
         if ($parameters['kpi_type'] === '0') {

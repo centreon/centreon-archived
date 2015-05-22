@@ -29,7 +29,7 @@
       background-color: @darkBlue;
       display: block;
       &:hover {
-        background: linear-gradient(to bottom, lighten(@darkBlue,5%) 0%, @darkBlue 80%);
+        background: liear-gradient(to bottom, lighten(@darkBlue,5%) 0%, @darkBlue 80%);
       }
     }
     .profilSubmenu {
@@ -257,6 +257,13 @@ body.fixed-sidebar .navbarSide {
     background-color: lighten(@lightGray,7%);
   }
 }
+
+.navbarSide #side-menu li.active .nav-third-level a{
+  //background-color: red;
+  &:active {
+    //background-color: green;
+  }
+}
 .navbarSide #side-menu .nav-third-level {
   li {
     background-color: lighten(@lightGray, 7%);
@@ -265,6 +272,10 @@ body.fixed-sidebar .navbarSide {
 
       &:hover, &:focus {
         background-color: lighten(@lightGray, 9%);
+      }
+
+      &:active {
+        background-color: lighten(@lightGray, 11%);
       }
     }
   }
@@ -528,4 +539,3 @@ body.fixed-sidebar.mini-navbar .navbar-default .nav li a span {
 .body-small .sidebar-content .wrapper, .body-small .wrapper.sidebar-content {
   padding-right: 20px !important;
 }
-

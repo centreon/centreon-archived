@@ -36,6 +36,7 @@
 namespace CentreonConfiguration\Internal;
 
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use CentreonMain\Events\SlideMenu;
 use Centreon\Internal\Di;
 use Centreon\Internal\Utils\HumanReadable;
 use CentreonRealtime\Repository\HostRepository as RealTimeHostRepository;
@@ -43,7 +44,7 @@ use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use Centreon\Internal\Datatable;
 use CentreonAdministration\Repository\TagsRepository;
-
+use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
 /**
  * Description of HostDatatable
  *
@@ -278,17 +279,30 @@ class HostDatatable extends Datatable
             $myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'.
                 $myHostSet['host_name'];
 
-           
-            $myHostSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-configuration/host/snapshot/').$myHostSet['host_id'];
-
+            $sideMenuCustom = new SlideMenu($myHostSet['host_id']);
+            
+            $events = Di::getDefault()->get('events');
+            $events->emit('centreon-main.slide.menu', array($sideMenuCustom));
+            
+            //$myHostSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-configuration/host/snapshot/').$myHostSet['host_id'];
+            $myHostSet['DT_RowData']['right_side_menu_list'] = $sideMenuCustom->getMenu();
             /*$myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'
                 $myHostSet['host_name'];*/
-
+               
                 /* Host State */
                 $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
                     RealTimeHostRepository::getStatus($myHostSet['host_id'])
                 );
-
+            //$servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($myHostSet['host_id']);
+            //$myHostSet['DT_RowData']['servicesStatus'] = $servicesStatus;
+            
+            
+                
+            /*$services = HostRepository::getServicesForHost('\CentreonConfiguration\Models\Relation\Host\Service',$myHostSet['host_id']);
+            foreach ($services as $key=>&$service){
+                $service[$key]['service_status'] = ServiceRealTimeRepository::getStatus($myHostSet['host_id'], $service["service_id"]);
+            }*/
+                
             /* Templates */
             $myHostSet['host_template']  = "";
             //$myHostSet['DT_RowData']['host_template']  = array();
@@ -308,10 +322,28 @@ class HostDatatable extends Datatable
             
             /* Tags */
             $myHostSet['tagname']  = "";
+            $aTagUsed = array();
+            
+            //Get tags affected to the HOST template
             $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 2);
 
             foreach ($aTags as $oTags) {
-                $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
+                if (!in_array($oTags['id'], $aTagUsed)) {
+                    $aTagUsed[] = $oTags['id'];
+                    $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
+                }
+            }
+            
+            //Get tags affected by the template
+            $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), -1);
+            foreach ($templates as $template) {
+                $aTags = TagsRepository::getList('host', $template['id'], 2, 0);
+                foreach ($aTags as $oTags) {
+                    if (!in_array($oTags['id'], $aTagUsed)) {
+                        $aTagUsed[] = $oTags['id'];
+                        $myHostSet['tagname'] .= TagsRepository::getTag('host',$template['id'], $oTags['id'], $oTags['text'], $oTags['user_id'], 1);
+                    }
+                }
             }
             $myHostSet['tagname'] .= TagsRepository::getAddTag('host', $myHostSet['host_id']);
         }

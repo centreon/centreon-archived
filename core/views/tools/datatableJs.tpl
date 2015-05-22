@@ -11,7 +11,7 @@
         var selectedCb = [];
 
         <!-- Init DataTable -->
-
+        var flagMenuCreated = false;
         oTable = $('#datatable{$object}').dataTable({
 
         /* Right side details */
@@ -19,35 +19,74 @@
            // var tr = $('#datatable{$object} tbody');
 
            //var $url_details = row.data('right_side_details');
+
             "rowCallback": function( row, data ) {
+                var t = data.DT_RowData.right_side_menu_list;
+                if (typeof t !== 'undefined') {
+                    if(!flagMenuCreated){
+                        // Menu generation
 
-                var memRow = false;
+                       var sideItem = '';
+                       var sideContent = '';
 
-                if (typeof data.DT_RowData.right_side_details !== 'undefined') {
-                    $(row).on('click', function(){
-                        var elem = this;
-                        $.ajax({
-                            url: data.DT_RowData.right_side_details,
-                            type: "GET",
-                            dataType: 'html',
-                            success : function(e){
-                               if(memRow && elem === memRow){
-                                   $('#tableLeft').css('margin-right','0%');
-                                   $('#sideRight').css('display','none');
-                                   memRow = false;
-                               }else if(!memRow){
-                                   $('#tableLeft').css('margin-right','260px');
-                                   $('#sideRight').css('display','block');
-                                   $('#sideRight').html(e);
-                                   memRow = elem;
-                               }else{
-                                   $('#sideRight').html(e);
-                                   memRow = elem;
-                               }
-                            },
-                            error : function(error){
+                       for (var i=1;i<t.length;i++) {
+                           sideItem += '<li><a href="#'+t[i].name+'_Slider"><i class="icon-'+t[i].name+'"></i>'+t[i].name+'</a></li>';
+                           sideContent+='<section id="'+t[i].name+'_Slider"></section>';
+                       }
+                       $('#sideRight').html('<nav><ul class="sideMenu">' + sideItem + '</ul></nav>' + sideContent);
+
+                       $('#sideRight').tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+                       $('#sideRight li').removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+
+                       flagMenuCreated = true;
+                     }
+
+                    $(row).on('click', function(e){
+                        var target = $( e.target );
+                        if(target.is("a")){
+                            if($(this).hasClass('selected')){
+                                $(this).removeClass('selected');
+                            }else{
+                                $(this).addClass('selected');
                             }
-                        });
+                            return;
+                        }else{
+                            if($(this).hasClass('selected')){
+                                $('#tableLeft').css('margin-right','0%');
+                                $('#sideRight').css('display','none');
+                            }else {
+
+                                $.each(t, function(index,item) {
+
+                                    $('#tableLeft').css('margin-right','260px');
+                                    $('#sideRight').css('display','block');
+
+                                    $.ajax({
+                                        url: item.url,
+                                        type: "GET",
+                                        dataType: 'JSON',
+                                        success : function(e){
+
+                                            // remplir le menu correspondant
+
+                                            var c = '#' + item.name + '_Slider' ;
+
+                                            console.log(c);
+                                            console.log(e);
+
+                                            $(c).html('<div>'+e+'hello </div>');
+
+                                            $('#tableLeft').css('margin-right','260px');
+                                            $('#sideRight').css('display','block');
+                                        },
+                                        error : function(error){
+                                        console.log('error');
+                                        }
+                                    });
+                                });
+
+                            }
+                        }
                     });
                 }
             },
@@ -106,14 +145,14 @@
                 }
             }
             lastSelectedRow = this;
-            {if $displayActionBar === true}
+            {if (isset($displayActionBar) && $displayActionBar === true)}
             toggleSelectedAction();
             {/if}
         });
 
-        $('#datatable{$object} tbody').on('click', 'a', function (e) {
-            if ($(this).attr('href')) {
-                e.stopProgration();
+        $('#datatable{$object} tbody ').on('click', 'a', function (e) {
+            if ($(this).attr('href') && $(this).attr('href') !== '#') {
+                e.stopPropagation();
             }
         });
         
@@ -137,10 +176,26 @@
         function toggleSelectedAction() {
             var countElem = $('table[id^="datatable"] tbody tr').length;
             var countChecked = $('table[id^="datatable"] tbody tr[class*="selected"]').length;
-            if (countChecked > 0) {
-                $('#selected_option').show();
-            } else {
-                $('#selected_option').hide();
+            if (countChecked == 1 && $('table[id^="datatable"] tbody tr[class*="selected"]').first().find("td:first").hasClass("dataTables_empty")) {
+                countChecked = 0;
+            }
+
+            /* Display or hide listing add button */
+            if ($('#selected_option').find('ul > li').length > 0) {
+                if (countChecked > 0) {
+                    $('#selected_option').show();
+                } else {
+                    $('#selected_option').hide();
+                }
+            }
+
+            /* Display or hide listing addto button */
+            if ( $( "#addToGroup" ).find( "ul > li" ).length > 0 ) {
+                if (countChecked > 0) {
+                    $( "#addToGroup" ).show();
+                } else {
+                    $( "#addToGroup" ).hide();
+                }
             }
             
             selectedCb = [];
@@ -824,11 +879,6 @@
             });
             oTable.api().draw();
         });
-
-        /* Display or hide listing addto */
-        if ( $( "#addToGroup" ).find( "ul > li" ).length > 0 ) {
-          $( "#addToGroup" ).removeClass( "hidden" );
-        }
     });
     
     

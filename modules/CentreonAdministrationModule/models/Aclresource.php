@@ -41,11 +41,11 @@ use Centreon\Models\CentreonBaseModel;
 /**
  * Used for interacting with Acl Resource
  *
- * @author sylvestre
+ * @author Kevin Duret <kduret@centreon.com>
  */
 class Aclresource extends CentreonBaseModel
 {
     protected static $table = "cfg_acl_resources";
-    protected static $primaryKey = "acl_res_id";
-    protected static $uniqueLabelField = "acl_res_name";
+    protected static $primaryKey = "acl_resource_id";
+    protected static $uniqueLabelField = "name";
 }

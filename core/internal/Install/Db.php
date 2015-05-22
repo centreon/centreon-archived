@@ -53,7 +53,7 @@ class Db
         ini_set('memory_limit', '-1');
         $di = Di::getDefault();
         $config = $di->get('config');
-        
+               
         $targetDb = 'db_centreon';
         $db = $di->get($targetDb);
         
@@ -90,8 +90,11 @@ class Db
             $updatedAppData->getDatabase('centreon'),
             false
         );
-        $strDiff = $platform->getModifyDatabaseDDL($diff);
-        file_put_contents("/tmp/installSqlLog.sql", $strDiff);
+        
+        if ($diff !== false) {
+            $strDiff = $platform->getModifyDatabaseDDL($diff);
+            file_put_contents("/tmp/installSqlLog.sql", $strDiff);
+        }
         //$sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
         //unlink("/tmp/installSqlLog.sql");
         
@@ -102,7 +105,9 @@ class Db
         //$tablesToBeDropped = self::getTablesToBeRemoved($sqlToBeExecuted);
         
         // Perform Update
-        \PropelSQLParser::executeString($strDiff, $db);
+        if ($diff !== false) {
+            \PropelSQLParser::executeString($strDiff, $db);
+        }
         
         // Loading Modules Post Update Operations
         self::postUpdate();

@@ -11,8 +11,8 @@
 </head>
 
 <body class="bodyCntr">
-    <span id="flash-message"></span>
-<!-- Commentaire de test-->
+    <div id="notif-danger"></div>
+
 <div class="mainCntr" id="mainCntr"> <!-- Global Wrapper -->
 
     <!-- Menu aside -->
@@ -30,7 +30,7 @@
                     {foreach $appMenu as $menuLevel1}
                            <li>
                                 {if $menuLevel1.url != ""}
-                                    <a href="{$menuLevel1.url}">
+                                    <a href="{url_for url=$menuLevel1.url}">
                                 {else}
                                     <a href="#">
                                 {/if}
@@ -45,7 +45,7 @@
                                     {foreach $menuLevel1.children as $menuLevel2}
                                     <li>
                                         {if $menuLevel2.url != ""}
-                                            <a href="{$menuLevel2.url}">
+                                            <a href="{url_for url=$menuLevel2.url}">
                                         {else}
                                             <a href="#">
                                         {/if}
@@ -59,7 +59,7 @@
                                             {foreach $menuLevel2.children as $menuLevel3}
                                                 <li>
                                                     {if $menuLevel3.url != ""}
-                                                        <a href="{$menuLevel3.url}">
+                                                        <a href="{url_for url=$menuLevel3.url}">
                                                     {else}
                                                         <a href="#">
                                                     {/if}
@@ -142,7 +142,9 @@
                     <ul class="indicators nav navbar-right">
                         <li class="top-counter top-counter-service">
                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                               <i class="icon-critical-incident"></i>
+                               <i class="icon-fill-critical-incident">
+                                <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                               </i>
                              </a>
                              <span class="label label-danger hide">42</span>
                              <ul class="dropdown-menu">
@@ -150,7 +152,9 @@
                          </li>
                          <li class="top-counter top-counter-service">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="icon-incident"></i>
+                                <i class="icon-fill-incident">
+                                  <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                                </i>
                               </a>
                               <span class="label label-warning hide"></span>
                               <ul class="dropdown-menu">

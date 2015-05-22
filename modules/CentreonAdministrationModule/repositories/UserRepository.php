@@ -81,8 +81,12 @@ class UserRepository extends Repository
      * @param array $givenParameters
      * @return integer
      */
-    public static function create($givenParameters)
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
+        if ($validate) {
+            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+        
         $contactId = Contact::insert(array('description' => $givenParameters['login'] . " contact"));
         
         if (isset($givenParameters['password']) && $givenParameters['password']) {
@@ -105,8 +109,12 @@ class UserRepository extends Repository
      * @param string $givenParameters
      * @param string $login
      */
-    public static function update($givenParameters, $login = null)
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
+        if ($validate) {
+            self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
+        }
+
         /* Do not perform update if password is empty */
         if (isset($givenParameters['password']) && $givenParameters['password'] == '') {
             unset($givenParameters['password']);
@@ -114,8 +122,8 @@ class UserRepository extends Repository
             $givenParameters['password'] = self::generateHashedPassword($givenParameters);
         }
         
-        if (!is_null($login) && !isset($givenParameters['object_id'])) {
-            $user = User::getIdByParameter('login', array($login));
+        if (!is_null($givenParameters['login']) && !isset($givenParameters['object_id'])) {
+            $user = User::getIdByParameter('login', array($givenParameters['login']));
             if (is_array($user) && count($user) > 0) {
                 $givenParameters['object_id'] = $user[0];
             }
@@ -124,23 +132,52 @@ class UserRepository extends Repository
         $currentDate = date('Y-m-d H:i:s');
         $givenParameters['updatedat'] = $currentDate;
         
-        parent::update($givenParameters);
+        parent::update($givenParameters, $origin, $route);
     }
 
+    
+    /** Check if last admin
+     *
+     * @param array $ids The ids of users to delete 
+     */
+    public static function isLastAdmin($ids){
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        $query = "SELECT count(u.user_id) as admin_nbr from cfg_users u where u.is_admin = 1 and u.user_id not in (".implode(',',$ids).") ";
+        $stmt = $dbconn->query($query);
+        $stmt->execute();
+        $res = $stmt->fetch();
+        if($res['admin_nbr'] > 0){
+            return false;
+        }
+        return true;
+    }
+    
+    
     /**
      *
-     * @param string $givenParameters
-     * @param string $login
+     * @param array $ids
+     * @param object $currentUser
      */
-    public static function delete($ids)
+    public static function delete($ids,$currentUser)
     {
-        foreach ($ids as $id) {
-            $contact = User::getParameters($id, array('contact_id'));
-            if (isset($contact['contact_id'])) {
-                Contact::delete($contact['contact_id']);
+        
+        if(!self::isLastAdmin($ids)){
+            if(!in_array($currentUser->getId(),$ids)){
+                foreach ($ids as $id) {
+                    $contact = User::getParameters($id, array('contact_id'));
+                    if (isset($contact['contact_id'])) {
+                        Contact::delete($contact['contact_id']);
+                    }
+                }
+                parent::delete($ids);
+            }else{
+                throw new Exception('You can\'t delete yourself', 4404);
             }
+        }else{
+            throw new Exception('You can\'t delete the last admin', 4404);
         }
-        parent::delete($ids);
     }
     
     /**

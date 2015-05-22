@@ -46,6 +46,7 @@ use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Models\Relation\Host\Service as HostServiceRelation;
 use CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate as HostTemplateServiceTemplateRelation;
 use CentreonConfiguration\Models\Relation\Service\Hosttemplate as ServiceHostTemplateRelation;
+use CentreonConfiguration\Models\Relation\Aclresource\Host as AclresourceHostRelation;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -70,7 +71,6 @@ class HostRepository extends Repository
         'host_check_interval',
         'host_retry_check_interval',
         'host_active_checks_enabled',
-        'host_passive_checks_enabled',
         'host_checks_enabled',
         'initial_state',
         'host_obsess_over_host',
@@ -93,6 +93,19 @@ class HostRepository extends Repository
             'host' => 'cfg_hosts,host_id,host_name'
         ),
     );
+
+    /**
+     * Host create action
+     *
+     * @param array $givenParameters
+     * @return int id of created object
+     */
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {
+        $id = parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
+        self::deployServices($id);
+        return $id;
+    }
 
     /**
      * 
@@ -160,9 +173,64 @@ class HostRepository extends Repository
      */
     public static function getConfigurationData($hostId)
     {
-        return Host::getParameters($hostId, "*");
+        $myHostParameters = Host::getParameters($hostId, "*");
+        $myHostParameters['templatesIds'] = HostRepository::getTemplateChain($hostId);
+        
+        
+        $myHostParameters['templates'] = array();
+        foreach($myHostParameters['templatesIds'] as $myHostTemplate) {
+            $hostTemplate['hostTemplate'] = HostTemplateRepository::formatDataForTooltip(HostTemplateRepository::get($myHostTemplate['id']));
+            $hostTemplate['servicesTemplate'] = HostTemplateRepository::getRelations("\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate", $myHostTemplate['id']);
+            $myHostParameters['templates'][] = $hostTemplate;
+        }
+        
+        return $myHostParameters;
     }
 
+    
+    
+    /**
+     * Get configurated services of a host
+     * 
+     * @param string $relClass
+     * @param int $id
+     * @return array 
+     */
+    public static function getServicesForHost($relClass, $id){
+        $curObj = static::$objectClass;
+        if ($relClass::$firstObject == $curObj) {
+            $tmp = $relClass::$secondObject;
+            $fArr = array();
+            $sArr = array('*');
+        } else {
+            $tmp = $relClass::$firstObject;
+            $fArr = array($tmp::getPrimaryKey(), $tmp::getUniqueLabelField());
+            $sArr = array();
+        }
+        $cmp = $curObj::getTableName() . '.' . $curObj::getPrimaryKey();
+        $list = $relClass::getMergedParameters(
+            $fArr,
+            $sArr,
+            -1,
+            0,
+            null,
+            "ASC",
+            array($cmp => $id),
+            "AND"
+        );
+        /*
+        $finalList = array();
+        foreach ($list as $obj) {
+            $finalList[] = array(
+                "id" => $obj[$tmp::getPrimaryKey()],
+                "text" => $obj[$tmp::getUniqueLabelField()]
+            );
+        }*/
+        return $list;
+       
+    }
+    
+    
     /**
      * Format data so that it can be displayed in tooltip
      *
@@ -173,6 +241,10 @@ class HostRepository extends Repository
     {
         /* Check data */
         $checkdata = array();
+        $checkdata[] = array(
+            'label' => _('Name'),
+            'value' => $data['host_name']
+        );
         $checkdata[] = array(
             'label' => _('Command'),
             'value' => static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id'])
@@ -196,10 +268,6 @@ class HostRepository extends Repository
         $checkdata[] = array(
             'label' => _('Active checks enabled'),
             'value' => YesNoDefault::toString($data['host_active_checks_enabled'])
-        );
-        $checkdata[] = array(
-            'label' => _('Passive checks enabled'),
-            'value' => $data['host_passive_checks_enabled']
         );
 
         return $checkdata;
@@ -273,7 +341,48 @@ class HostRepository extends Repository
         }
         return $templates;
     }
-    
+    /**
+     * Get template chain (id, text)
+     *
+     * @param int $hostId The host or host template Id
+     * @param array $alreadyProcessed The host templates already processed
+     * @param int $depth The depth to search
+     * @return array
+     */
+    public static function getTemplateChainInverse($hostId, $alreadyProcessed = array())
+    {
+        $templates = array();
+        
+        if (in_array($hostId, $alreadyProcessed)) {
+            return $templates;
+        } else {
+            $alreadyProcessed[] = $hostId;
+            // @todo improve performance
+            $db = Di::getDefault()->get('db_centreon');
+
+            $sql = "SELECT htr.host_host_id, h.host_name  FROM cfg_hosts h, cfg_hosts_templates_relations htr
+                 WHERE h.host_id = htr.host_tpl_id
+                 AND htr.host_tpl_id = :tpl_id
+                 AND host_activate = '1'
+                 ORDER BY `order` ASC";
+            //echo $sql."<>".$hostId;
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':tpl_id', $hostId, \PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetchAll();
+
+            foreach ($row as $template) {
+                $templates[] = array(
+                    "id" => $template['host_host_id'],
+                    "text" => $template['host_name']
+                );
+                $templates = array_merge($templates, self::getTemplateChainInverse($template['host_host_id'], $alreadyProcessed));
+            }
+            return $templates;
+        }
+
+        return $templates;
+    }
     /**
      * Returns array of services that are linked to a poller
      *
@@ -378,6 +487,51 @@ class HostRepository extends Repository
         }
 
         $db->commit();
+    }
 
+    /**
+     * update Host acl
+     *
+     * @param string $action
+     * @param int $objectId
+     * @param array $hostIds
+     */
+    public static function updateHostAcl($action, $objectId, $hostIds)
+    {
+        if ($action === 'update') {
+            AclresourceHostRelation::delete($objectId);
+            foreach ($hostIds as $hostId) {
+                AclresourceHostRelation::insert($objectId, $hostId);
+            }
+        }
+    }
+
+    /**
+     * get Hosts by acl id
+     *
+     * @param int $aclId
+     */
+    public static function getHostsByAclResourceId($aclId)
+    {
+        $hostList = AclresourceHostRelation::getMergedParameters(
+            array(),
+            array('host_id', 'host_name'),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('cfg_acl_resources_hosts_relations.acl_resource_id' => $aclId),
+            "AND"
+        );
+
+        $finalHostList = array();
+        foreach ($hostList as $host) {
+            $finalHostList[] = array(
+                "id" => $host['host_id'],
+                "text" => $host['host_name']
+            );
+        }
+
+        return $finalHostList;
     }
 }

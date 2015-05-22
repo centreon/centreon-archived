@@ -50,7 +50,7 @@ class TimezoneController extends FormController
     public static $relationMap = array();
     
     protected $datatableObject = '\CentreonAdministration\Internal\TimezoneDatatable';
-    public static $isDisableable = true;
+    public static $isDisableable = false;
     
     /**
      * addtouser a timezone

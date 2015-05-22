@@ -8,6 +8,26 @@ body {
     overfolow-x : hidden;
     background-color: transparent;
 }
+
+/* -- Positions -- */
+.left {
+  float: left;
+}
+.textCenter {
+  text-align: center;
+}
+.center {
+  margin : 0 auto;
+}
+
+.right {
+  float: right;
+}
+
+.absolute {
+  position: absolute;
+}
+
 #mainCntr {
   width: 100%;
   overflow-x: hidden;
@@ -20,6 +40,16 @@ body {
 .logo {
     min-height: 50px;
 }
+
+/*Side tabs */
+
+.ui-tabs-vertical { width: 55em; }
+.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; }
+.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 40em;}
+
 
 .pace {
   -webkit-pointer-events: none;
@@ -47,7 +77,7 @@ body {
 .ibox {
   clear: both;
   margin-top: 0;
-  padding: 0;
+  padding: @paddingElem 0;
   border-top: 3px solid @lightGray2;
 }
 .ibox.collapsed .ibox-content {
@@ -128,20 +158,6 @@ body {
   margin-bottom: @paddingElem*2;
 }
 
-/* -- Positions -- */
-.left {
-  float: left;
-}
-.textCenter {
-  text-align: center;
-}
-.center {
-  margin : 0 auto;
-}
-
-.right {
-  float: right;
-}
 
 /* Variables for login panel */
 @login-panel-radius: 0;
@@ -301,9 +317,9 @@ hr {
   .label {
     position: absolute;
     font-size: 60%;
-    top: 10px;
-    left: 28px;
-    background-color: @lightGray;
+    top: @paddingElem*5;
+    left: @paddingElem*5;
+    background-color: @white;
 
     &.label-danger {
       color: @danger;
@@ -626,10 +642,16 @@ td.incident-extended-info {
 }
 
 .centreon-search-block {
-  margin: 10px;
-
+  position: relative;
   .search-expand {
     line-height: 36px;
+    position: absolute;
+    top: 2px;
+    right: 54px;
+    font-size: 18px;
+    padding: 0 12px;
+    text-decoration: none;
+
   }
 }
 
