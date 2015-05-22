@@ -462,6 +462,7 @@ class ServiceRepository extends Repository
             $filters,
             "OR"
         );
+
         $finalList = array();
         foreach ($list as $obj) {
             $finalList[] = array(
@@ -518,7 +519,10 @@ class ServiceRepository extends Repository
             );*/
         }
 
-        $finalServiceList = self::getName($serviceIdList);
+        $finalServiceList = array();
+        if (count($serviceIdList)) {
+            $finalServiceList = self::getName($serviceIdList);
+        }
 
         return $finalServiceList;
     }
