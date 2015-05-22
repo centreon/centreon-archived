@@ -104,7 +104,7 @@ class ListRepository extends BasicRepository
         } else {
             $class = static::$objectClass;
         }
-        
+        //var_dump(get_called_class());
         return $class::getList($fields, $count, $offset, $order, $sort, $filters, $filterType);
     }
     

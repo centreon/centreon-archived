@@ -1,0 +1,6 @@
+[
+    {
+        "name": "centreon-bam.checkKey",
+        "route": "/validator/checkkey"
+    }
+]
