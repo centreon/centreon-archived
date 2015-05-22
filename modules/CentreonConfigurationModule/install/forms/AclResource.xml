@@ -3,7 +3,7 @@
     <form name="cfg_aclresource_form">
         <route>/centreon-administration/aclresource/update</route>
         <redirect>1</redirect>
-        <redirect_route>/centreon-adminstration/aclresource</redirect_route>
+        <redirect_route>/centreon-administration/aclresource</redirect_route>
         <section name="Hosts and services">
             <block name="Relations">
                 <field name="aclresource_hosts" label="Linked hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
