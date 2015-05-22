@@ -44,7 +44,7 @@ class BusinessActivityTypeController extends FormController
     protected $objectDisplayName = 'BusinessActivityType';
     public static $objectName = 'businessactivitytype';
     protected $objectBaseUrl = '/centreon-bam/businessactivitytype';
-	public static $relationMap = array();
+    public static $relationMap = array();
 #    protected $datatableObject = '\CentreonConfiguration\Internal\TimeperiodDatatable';
     protected $objectClass = '\CentreonBam\Models\BusinessActivityType';
     protected $repository = '\CentreonBam\Repository\BusinessActivityTypeRepository';
