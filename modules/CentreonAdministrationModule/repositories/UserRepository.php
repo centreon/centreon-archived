@@ -162,14 +162,20 @@ class UserRepository extends Repository
      */
     public static function delete($ids,$currentUser)
     {
-        if(!in_array($currentUser->getId(),$ids) && !self::isLastAdmin($ids)){
-            foreach ($ids as $id) {
-                $contact = User::getParameters($id, array('contact_id'));
-                if (isset($contact['contact_id'])) {
-                    Contact::delete($contact['contact_id']);
+        if(!in_array($currentUser->getId(),$ids)){
+            if(!self::isLastAdmin($ids)){
+                foreach ($ids as $id) {
+                    $contact = User::getParameters($id, array('contact_id'));
+                    if (isset($contact['contact_id'])) {
+                        Contact::delete($contact['contact_id']);
+                    }
                 }
+                parent::delete($ids);
+            }else{
+                throw new Exception('You can\'t delete the last admin', 4404);
             }
-            parent::delete($ids);
+        }else{
+            throw new Exception('You can\'t delete yourself', 4404);
         }
     }
     
