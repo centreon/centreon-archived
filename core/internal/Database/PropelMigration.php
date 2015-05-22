@@ -81,6 +81,12 @@ class PropelMigration
      *
      * @var type 
      */
+    protected $outputDir;
+    
+    /**
+     *
+     * @var type 
+     */
     protected $propelPath;
     
     /**
@@ -121,6 +127,8 @@ class PropelMigration
         mkdir($this->tmpDir, 0700, true);
         mkdir($this->tmpDir . '/schema/', 0700, true);
         $this->propelPath = $this->appPath . '/vendor/propel/propel1/';
+        
+        $this->outputDir = $this->tmpDir . '/output/';
         
         $this->mySchemaBuilder = new SchemaBuilder('centreon', $this->tmpDir . '/schema/');
     }
@@ -220,6 +228,11 @@ EOT;
         file_put_contents($output, $xml);
     }
     
+    public function setOutputDir($outputDir)
+    {
+        
+    }
+    
     /**
      * Compiles arguments/properties for the Phing process.
      * @return array
@@ -235,7 +248,7 @@ EOT;
                 'propel.project'            => 'centreon',
                 'propel.targetPackage'      => 'centreon',
                 'project.dir'               => $this->tmpDir . '/',
-                'propel.output.dir'         => $this->tmpDir . '/output/',
+                'propel.output.dir'         => $this->outputDir,
                 'propel.schema.dir'         => $this->tmpDir . '/schema/',
                 'propel.php.dir'            => $this->tmpDir . '/generate/',
                 'propel.packageObjectModel' => true,

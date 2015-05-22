@@ -40,25 +40,38 @@ use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
 
 /**
- * Description of GenerateDiff
+ * Description of Migrate
  *
  * @author lionel
  */
-class GenerateDiff extends PropelMigration
+class Migrate extends PropelMigration
 {
     /**
      * 
+     * @param string $migrationClassPath
      */
-    public function __construct()
+    public function __construct($migrationClassPath = null)
     {
         parent::__construct();
+        
+        if (!is_null) {
+            $this->outputDir = $migrationClassPath;
+        }
     }
     
     /**
      * 
      */
-    public function getDiff()
+    public function down()
     {
-        $this->runPhing('diff');
+        $this->runPhing('migration-down');
+    }
+    
+    /**
+     * 
+     */
+    public function up()
+    {
+        $this->runPhing('migration-up');
     }
 }

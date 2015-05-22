@@ -40,6 +40,7 @@ use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
 use Centreon\Internal\Utils\CommandLine\InputOutput;
 use Centreon\Internal\Database\GenerateDiff;
+use Centreon\Internal\Database\Migrate;
 
 /**
  * Description of MigrateCommand
@@ -64,6 +65,8 @@ class MigrateCommand extends AbstractCommand
     public function downAction()
     {
         InputOutput::display(_("Executes the next migrations down"));
+        $migrationManager = new Migrate();
+        $migrationManager->down();
     }
     
     /**
@@ -80,5 +83,7 @@ class MigrateCommand extends AbstractCommand
     public function upAction()
     {
         InputOutput::display(_("Executes the next migrations up"));
+        $migrationManager = new Migrate('');
+        $migrationManager->up();
     }
 }

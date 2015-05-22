@@ -49,6 +49,7 @@ use Centreon\Internal\Hook;
 use Centreon\Models\Module;
 use Centreon\Internal\Di;
 use Centreon\Internal\Install\Db;
+use Centreon\Internal\Database\Migrate;
 
 /**
  * 
@@ -205,7 +206,8 @@ abstract class AbstractModuleInstaller
         $this->moduleId = Informations::getModuleIdByName($this->moduleSlug);
         
         // Install DB
-        $this->installDb(false);
+        $migrationManager = new Migrate($this->moduleDirectory . '/install/db/propel/');
+        $migrationManager->up();
         
         // Install menu
         $this->installMenu();
