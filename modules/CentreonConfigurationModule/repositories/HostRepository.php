@@ -71,7 +71,6 @@ class HostRepository extends Repository
         'host_check_interval',
         'host_retry_check_interval',
         'host_active_checks_enabled',
-        'host_passive_checks_enabled',
         'host_checks_enabled',
         'initial_state',
         'host_obsess_over_host',
@@ -269,10 +268,6 @@ class HostRepository extends Repository
         $checkdata[] = array(
             'label' => _('Active checks enabled'),
             'value' => YesNoDefault::toString($data['host_active_checks_enabled'])
-        );
-        $checkdata[] = array(
-            'label' => _('Passive checks enabled'),
-            'value' => $data['host_passive_checks_enabled']
         );
 
         return $checkdata;

@@ -66,7 +66,6 @@ class HostTemplateRepository extends Repository
         'host_check_interval',
         'host_retry_check_interval',
         'host_active_checks_enabled',
-        'host_passive_checks_enabled',
         'host_checks_enabled',
         'initial_state',
         'host_obsess_over_host',
@@ -201,7 +200,6 @@ class HostTemplateRepository extends Repository
                 $timeperiod = Timeperiod::get($value);
                 return $timeperiod['tp_name'];
             case 'host_active_checks_enabled':
-            case 'host_passive_checks_enabled':
             case 'host_obsess_over_host':
             case 'host_check_freshness':
             case 'flap_detection_options':
@@ -266,10 +264,6 @@ class HostTemplateRepository extends Repository
          $checkdataTemplate[] = array(
              'label' => _('Active checks enabled'),
              'value' => YesNoDefault::toString($template['host_active_checks_enabled'])
-         );
-         $checkdataTemplate[] = array(
-             'label' => _('Passive checks enabled'),
-             'value' => $template['host_passive_checks_enabled']
          );
 
         return $checkdataTemplate;
