@@ -160,15 +160,8 @@ class ExtensionsController extends Controller
         $moduleInfo = json_decode(file_get_contents($moduleDirectory . 'install/config.json'), true);
         // Launched Install
         $classCall = '\\'.$commonName.'\\Install\\Installer';
-        $moduleInstaller = new $classCall($moduleDirectory, $moduleInfo);
-
-        // Check if all dependencies are satisfied
-        $dependenciesCheckResult = $moduleInstaller->isDependenciesSatisfied();
-        if ($dependenciesCheckResult['success']) {
-            $moduleInstaller->install();
-        } else {
-            throw new \Exception("Cannot install module due to one or more missing dependencies");
-        }
+        $moduleInstaller = new $classCall($moduleDirectory, $moduleInfo, 'web');
+        $moduleInstaller->install();
 
         $backUrl = $router->getPathFor('/centreon-administration/extensions/module');
         $router->response()->redirect($backUrl, 200);

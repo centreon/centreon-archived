@@ -138,6 +138,21 @@ label.floatLabel {
      transition: all 0.3s ease;
  }
 
+/* -- Radiobox -- */
+
+.CentreonForm .choiceGroup {
+    margin-top: 20px;
+    padding: 3px 18px;
+    border-radius: 3px;
+    box-shadow: 2px 1px 1px #d1d2d4;
+    border: 1px solid #d1d2d4;
+}
+
+.CentreonForm .choiceGroup label {
+    font-weight: normal;
+    font-size: 13px;
+}
+
 /* -- Success button -- */
 
 .btnSuccess,{
