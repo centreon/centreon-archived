@@ -2,6 +2,9 @@ Installation command
 ####################
 
 
+Install
+^^^^^^^
+
 To instal your centreon, you would like to execute this commande.
 ::
 
@@ -61,7 +64,7 @@ If this is a first installation, the console will display the message :
 
 
 
-The procedure will initialize the database used by centreon which is CENTREON and install the basic modules:
+The procedure will initialize the database used by centreon which is CENTREON and install the core modules:
 
 ======================= ====================
 Module                  Description         
@@ -78,7 +81,7 @@ centreon-customview     Centreon Customview
 Upgrade
 ^^^^^^^
 
-This procedure update the database and all the basic modules:
+This procedure update the database and all the core modules:
 
 ======================= ====================
 Module                  Description         
@@ -97,7 +100,7 @@ centreon-customview     Centreon Customview
 
 Migrate
 ^^^^^^^
-This command upgrade database and the basic modules :
+This command upgrade database and the core modules :
 
 ======================= ====================
 Module                  Description         
