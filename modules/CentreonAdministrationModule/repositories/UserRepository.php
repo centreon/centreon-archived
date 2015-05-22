@@ -148,7 +148,7 @@ class UserRepository extends Repository
         $stmt = $dbconn->query($query);
         $stmt->execute();
         $res = $stmt->fetch();
-        if($res['admin_nbr'] >= 0){
+        if($res['admin_nbr'] > 0){
             return false;
         }
         return true;
@@ -162,8 +162,9 @@ class UserRepository extends Repository
      */
     public static function delete($ids,$currentUser)
     {
-        if(!in_array($currentUser->getId(),$ids)){
-            if(!self::isLastAdmin($ids)){
+        
+        if(!self::isLastAdmin($ids)){
+            if(!in_array($currentUser->getId(),$ids)){
                 foreach ($ids as $id) {
                     $contact = User::getParameters($id, array('contact_id'));
                     if (isset($contact['contact_id'])) {
@@ -172,10 +173,10 @@ class UserRepository extends Repository
                 }
                 parent::delete($ids);
             }else{
-                throw new Exception('You can\'t delete the last admin', 4404);
+                throw new Exception('You can\'t delete yourself', 4404);
             }
         }else{
-            throw new Exception('You can\'t delete yourself', 4404);
+            throw new Exception('You can\'t delete the last admin', 4404);
         }
     }
     

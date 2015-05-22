@@ -297,10 +297,6 @@ class ServiceRepository extends Repository
             'label' => _('Active checks enabled'),
             'value' => YesNoDefault::toString($data['service_active_checks_enabled'])
         );
-        $checkdata[] = array(
-            'label' => _('Passive checks enabled'),
-            'value' => $data['service_passive_checks_enabled']
-        );
 
         return $checkdata;
     }

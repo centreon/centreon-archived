@@ -76,9 +76,7 @@ class ServicetemplateRepository extends Repository
         'service_normal_check_interval',
         'service_retry_check_interval',
         'service_active_checks_enabled',
-        'service_passive_checks_enabled',
         'initial_state',
-        'service_parallelize_check',
         'service_obsess_over_service',
         'service_check_freshness',
         'service_freshness_threshold',
@@ -225,8 +223,6 @@ class ServicetemplateRepository extends Repository
                 return $timeperiod['tp_name'];
             case 'service_is_volatile':
             case 'service_active_checks_enabled':
-            case 'service_passive_checks_enabled':
-            case 'service_parallelize_check':
             case 'service_obsess_over_service':
             case 'service_check_freshness':
             case 'service_event_handler_enabled':
