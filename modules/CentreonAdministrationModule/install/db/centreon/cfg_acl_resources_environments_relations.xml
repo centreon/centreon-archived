@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_administration" defaultIdMethod="native">
+    <table name="cfg_acl_resources_environments_relations" phpName="AclResourcesEnvironmentsRelations" idMethod="native">
+        <column name="arer_id" phpName="AclResourceEnvironmentId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="acl_resource_id" phpName="AclResourceId" type="INTEGER" required="false"/>
+        <column name="environment_id" phpName="EnvironmentId" type="INTEGER" required="false"/>
+        <column name="type" phpName="Type" type="TINYINT" required="true" defaultValue="0"/>
+        <foreign-key foreignTable="cfg_acl_resources" name="acl_resources_environments_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="acl_resource_id" foreign="acl_resource_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_environments" name="acl_resources_environments_relations_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="environment_id" foreign="environment_id"/>
+        </foreign-key>
+        <index name="acl_resource_id">
+            <index-column name="acl_resource_id"/>
+        </index>
+        <index name="environment_id">
+            <index-column name="environment_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>
