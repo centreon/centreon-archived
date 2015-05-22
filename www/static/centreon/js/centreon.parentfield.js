@@ -29,13 +29,27 @@
 
     /* Add event */
     $elem.on("blur change", function () {
-      self.display($(this).val());
+      if ($elem.attr("type") == "checkbox") {
+        if ($elem.is(":checked")) {
+          self.display(1);
+        } else {
+          self.display(0);
+        }
+      } else {
+        self.display($(this).val());
+      }
     });
 
     /* Initialize */
     if ($elem.attr("type") == "radio") {
       if ($elem.is(":checked")) {
         self.display($elem.val());
+      }
+    } else if ($elem.attr("type") == "checkbox") {
+      if ($elem.is(":checked")) {
+        self.display(1);
+      } else {
+        self.display(0);
       }
     } else {
       self.display($elem.val());

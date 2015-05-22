@@ -5,8 +5,12 @@
         <redirect>1</redirect>
         <redirect_route>/centreon-administration/aclresource</redirect_route>
         <section name="Hosts and services">
-            <block name="Relations">
-                <field name="aclresource_hosts" label="Linked hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+            <block name="General">
+            <field name="all_hosts" label="All hosts" default_value="0" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
+            </field>
+            </block>
+            <block name="Hosts">
+                <field name="aclresource_hosts" label="Linked hosts" default_value="" advanced="0" type="select" parent_field="centreon-configuration__all_hosts" parent_value="0" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-configuration/host/formlist</defaultValuesRoute>
@@ -14,7 +18,7 @@
                         <multiple>true</multiple>
                     </attributes>
                 </field>
-                <field name="aclresource_host_tags" label="Linked host tags" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field name="aclresource_host_tags" label="Linked host tags" default_value="" advanced="0" type="select" parent_field="centreon-configuration__all_hosts" parent_value="0" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-configuration/aclresource/host/tag/formlist</defaultValuesRoute>
@@ -22,7 +26,9 @@
                         <multiple>true</multiple>
                     </attributes>
                 </field>
-                <field name="aclresource_services" label="Linked services" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+            </block>
+            <block name="Services">
+                <field name="aclresource_services" label="Linked services" default_value="" advanced="0" type="select" parent_field="centreon-configuration__all_hosts" parent_value="0" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-configuration/service/formlist</defaultValuesRoute>
@@ -30,7 +36,7 @@
                         <multiple>true</multiple>
                     </attributes>
                 </field>
-                <field name="aclresource_service_tags" label="Linked service tags" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field name="aclresource_service_tags" label="Linked service tags" default_value="" advanced="0" type="select" parent_field="centreon-configuration__all_hosts" parent_value="0" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-configuration/aclresource/service/tag/formlist</defaultValuesRoute>
