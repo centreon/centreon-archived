@@ -31,39 +31,21 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
-namespace Centreon\Internal\Form\Component;
 
-use Centreon\Internal\Di;
+namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
- * Html Checkbox element
- * Checkbox with no label
- * 
- * @author Sylvestre Ho <sho@centreon.com>
- * @package Centreon
- * @subpackage Core
+ * Used for interacting with Acl Resource hosts params
+ *
+ * @author Kevin Duret <kduret@centreon.com>
  */
-class Singlecheckbox extends Component
+class AclresourceHostsParams extends CentreonBaseModel
 {
-    /**
-     * Return the HTML ouput of the checkbox field
-     * 
-     * @param array $element
-     * @return array
-     */
-    public static function renderHtmlInput(array $element)
-    {
-        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
-            $element['id'] = $element['name'];
-        }
-
-        $tpl = Di::getDefault()->get('template');
-
-        $tpl->assign('element', $element);
-
-        return array(
-            'html' => $tpl->fetch('file:[Core]/form/component/singlecheckbox.tpl'),
-        );
-    }
+    protected static $table = "cfg_acl_resources_hosts_params";
+    protected static $primaryKey = "acl_resource_id";
+    protected static $uniqueLabelField = "acl_resource_id";
 }
