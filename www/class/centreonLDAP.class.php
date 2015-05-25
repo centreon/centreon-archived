@@ -481,7 +481,7 @@ class CentreonLDAP {
             $searchLimit = 0;
         }
         if (is_null($searchTimeout)) {
-            $searchLimit = 0;
+            $searchTimeout = 0;
         }
         /* Display debug */
         $this->_debug('LDAP Search : Base DN : ' . $basedn);
