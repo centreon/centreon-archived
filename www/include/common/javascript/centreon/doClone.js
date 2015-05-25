@@ -8,6 +8,7 @@ jQuery(function() {
            allowRemoveCurrent: true,
            allowRemoveAll: true,
            minFormsCount: 0,
+	   maxFormsCount: 200,
            iniFormsCount: jQuery("#clone-count-" + suffixid).data("clone-count-" + suffixid),
            data: jQuery("#clone-values-" + suffixid).data("clone-values-" + suffixid)
        });
