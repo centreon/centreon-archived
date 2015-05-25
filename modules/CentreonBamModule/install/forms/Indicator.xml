@@ -31,7 +31,11 @@
                         <multiple>false</multiple>
                     </attributes>
                 </field>
-                <field name="boolean_name" label="Name" default_value="" advanced="0" type="text" parent_field="kpi_type" parent_value="3" mandatory="0"></field>
+                <field name="boolean_name" label="Name" default_value="" advanced="0" type="text" parent_field="kpi_type" parent_value="3" mandatory="0">
+                    <validators>
+                    	<validator rules="remote" serverside="centreon-main.unique" />
+                    </validators>
+                </field>
                 <field name="boolean_expression" label="Expression" advanced="0" type="textarea" parent_field="kpi_type" parent_value="3" mandatory="0">
                     <attributes>
                         <object>Expression</object>

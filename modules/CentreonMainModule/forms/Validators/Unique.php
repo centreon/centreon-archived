@@ -53,6 +53,7 @@ use CentreonAdministration\Repository\DomainRepository;
 use CentreonAdministration\Repository\EnvironmentRepository;
 
 use CentreonBam\Repository\BusinessActivityRepository;
+use CentreonBam\Repository\IndicatorRepository;
 
 use CentreonPerformance\Repository\GraphTemplate;
 
@@ -87,7 +88,7 @@ class Unique implements ValidatorInterface
         $iId = '';
         $return = '';
                
-      /* 
+      /*
         echo "obj".$params['object'];
         var_dump($params);die;
        */
@@ -304,20 +305,20 @@ class Unique implements ValidatorInterface
             
             if (isset($params['extraParams']['name'])) {
                 $sLabel = $params['extraParams']['name'];
-            }
+            
+                $aParams['graphTemplate'] = $sLabel;
+                try {
+                    $idReturned = $objClass::getIdFromUnicity($aParams);
+                    $iObjectId = '';
 
-            $aParams['graphTemplate'] = $sLabel;
-            try {
-                $idReturned = $objClass::getIdFromUnicity($aParams);
-                $iObjectId = '';
-                
-                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
-                    $iObjectId = $params['extraParams']['object_id'];
+                    if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                        $iObjectId = $params['extraParams']['object_id'];
+                    }
+                    $return[] = self::compareResponse($iObjectId, $idReturned);
+
+                } catch (MissingParameterException $e) {
+                    $return[] = 0;
                 }
-                $return[] = self::compareResponse($iObjectId, $idReturned);
-                
-            } catch (MissingParameterException $e) {
-                $return[] = 0;
             }
         } 
         elseif (isset($params['object']) && $params['object'] == 'trap') {
@@ -469,8 +470,8 @@ class Unique implements ValidatorInterface
         } elseif (isset($params['object']) && $params['object'] == 'timeperiod') {
             $objClass = "CentreonConfiguration\Repository\TimePeriodRepository";
             
-            if (isset($params['extraParams']['name'])) {
-                $sLabel = $params['extraParams']['name'];
+            if (isset($params['extraParams']['tp_name'])) {
+                $sLabel = $params['extraParams']['tp_name'];
             }      
 
             $aParams['timeperiod'] = $sLabel;
@@ -486,13 +487,39 @@ class Unique implements ValidatorInterface
             } catch (MissingParameterException $e) {
                 $return[] = 0;
             }
-        }
-              
+        } elseif (isset($params['object']) && $params['object'] == 'indicator') {
+  
+           
+            if (isset($params['extraParams']['kpi_type']) && $params['extraParams']['kpi_type'] == '3') {
+                $objClass = "CentreonBam\Repository\IndicatorRepository";
+
+                if (isset($params['extraParams']['boolean_name'])) {
+                    $sLabel = $params['extraParams']['boolean_name'];
+                }
+
+                $aParams['boolean'] = $sLabel;
+      
+                try {
+                    $idReturned = IndicatorRepository::getIdFromUnicity($aParams);
+                    $iObjectId = '';
+
+                    if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                        $iObjectId = $params['extraParams']['object_id'];
+                    }
+                    $return[] = self::compareResponse($iObjectId, $idReturned);
+                } catch (MissingParameterException $e) {
+                    $return[] = 0;
+                }
+            }
+
+        } 
+      
         
-      /*
-        var_dump($return);
-        var_dump($params); die;
-        */
+      
+  //      var_dump($return);
+       // var_dump($params); 
+//        die;
+        
         if (is_array($return)) {
             foreach($return as $valeur) {
                 if ($valeur > 0) {
@@ -512,6 +539,7 @@ class Unique implements ValidatorInterface
         } else {
             $reponse = array('success' => $bSuccess, 'error' => $sMessage);
         }
+        //var_dump($reponse);die;
         return $reponse;
     }
     /**

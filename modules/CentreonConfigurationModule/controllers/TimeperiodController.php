@@ -40,6 +40,7 @@ use CentreonConfiguration\Models\Timeperiod;
 use CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded;
 use CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodexcluded;
 use Centreon\Controllers\FormController;
+use CentreonConfiguration\Repository\TimePeriodRepository;
 
 class TimeperiodController extends FormController
 {
@@ -73,7 +74,7 @@ class TimeperiodController extends FormController
             0,
             null,
             "ASC",
-            array('timeperiod_include_relations.timeperiod_id' => $requestParam['id']),
+            array('cfg_timeperiods_include_relations.timeperiod_id' => $requestParam['id']),
             "AND"
         );
 
@@ -107,7 +108,7 @@ class TimeperiodController extends FormController
             0,
             null,
             "ASC",
-            array('timeperiod_exclude_relations.timeperiod_id' => $requestParam['id']),
+            array('cfg_timeperiods_exclude_relations.timeperiod_id' => $requestParam['id']),
             "AND"
         );
 
@@ -121,4 +122,51 @@ class TimeperiodController extends FormController
         
         $router->response()->json($finalTimeperiodList);
     }
+    
+    
+    /**
+     * Update a timeperiod
+     *
+     * @method post
+     * @route /timeperiod/update
+     */
+    public function updateAction()
+    {
+        $params = $this->getParams('post')->all();
+        $router = Di::getDefault()->get('router');
+
+        /* Save information */
+        try {
+            TimePeriodRepository::update($params, 'form', $this->getUri());
+        } catch (\Exception $e) {
+            return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+        }
+
+        return $router->response()->json(array('success' => true));
+    }
+    
+
+    /**
+     * Create a new timeperiod
+     *
+     * @method post
+     * @route /timeperiod/add
+     */
+    public function createAction()
+    {
+        $params = $this->getParams('post');
+        $router = Di::getDefault()->get('router');
+         
+        $params['object'] = static::$objectName;
+        try {
+            TimePeriodRepository::create($params, 'wizard', $this->getUri());
+        } catch (\Exception $e) {
+            return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+        }
+        return $router->response()->json(array('success' => true));
+
+    }
+    
+    
+    
 }
