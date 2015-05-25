@@ -71,10 +71,19 @@
 
                                             var c = '#' + item.name + '_Slider' ;
 
-                                            console.log(c);
-                                            console.log(e);
+                                            $.get('static/template.tpl', function(tpl){
+                                                var extTemplate = $(tpl).filter('#test').html();
+                                                var template = Hogan.compile(extTemplate);
+                                                var rendered = template.render(datum);
+                                                $(c).append(rendered);
+                                            });
 
-                                            $(c).html('<div>'+e+'hello </div>');
+                                              /*var template = Hogan.compile("Follow");
+                                              var output = template.render(e);
+                                              $('#sideRight').append(output);*/
+
+                                            //console.log(c);
+                                            //console.log(e);
 
                                             $('#tableLeft').css('margin-right','260px');
                                             $('#sideRight').css('display','block');
