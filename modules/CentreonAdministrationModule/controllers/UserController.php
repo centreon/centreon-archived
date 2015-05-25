@@ -40,6 +40,7 @@ use CentreonAdministration\Models\User as UserModel;
 use CentreonAdministration\Internal\User;
 use Centreon\Controllers\FormController;
 use CentreonAdministration\Models\Relation\User\Timezone;
+use Centreon\Internal\Exception;
 
 class UserController extends FormController
 {

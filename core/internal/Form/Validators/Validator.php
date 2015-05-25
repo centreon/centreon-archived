@@ -187,10 +187,10 @@ class Validator
         $parsedValidator = explode('.', $validatorName);
 
         if ($parsedValidator[0] === 'core') {
-            $call .= '\Centreon\Internal\Form\Validators\\';
+            $call .= '\\Centreon\\Internal\\Form\\Validators\\';
         } else {
-            $call .= CamelCaseTransformation::customToCamelCase($parsedValidator[0], '-')
-                . '\forms\Validators\\';
+            $call .= '\\' . CamelCaseTransformation::customToCamelCase($parsedValidator[0], '-')
+                . '\\Forms\\Validators\\';
         }
         
         for ($i = 1; $i < count($parsedValidator); $i++) {

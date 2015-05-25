@@ -136,16 +136,6 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="host_passive_checks_enabled" label="Passive checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-					<help>Enable or disable passive checks (either regularly scheduled or on-demand) of this host here. By default passive host checks are enabled.</help>
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                            <Default>2</Default>
-                        </choices>
-					</attributes>
-				</field>
 			</block>
 			<block name="Additional information">
 				<field name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">

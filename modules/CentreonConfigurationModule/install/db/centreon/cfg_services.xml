@@ -8,15 +8,12 @@
         <column name="command_command_id2" phpName="CommandCommandId2" type="INTEGER" required="false"/>
         <column name="service_description" phpName="ServiceDescription" type="VARCHAR" size="200" required="false"/>
         <column name="service_alias" phpName="ServiceAlias" type="VARCHAR" size="255" required="false"/>
-        <column name="display_name" phpName="DisplayName" type="VARCHAR" size="255" required="false"/>
         <column name="service_is_volatile" phpName="ServiceIsVolatile" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
         <column name="service_max_check_attempts" phpName="ServiceMaxCheckAttempts" type="INTEGER" required="false"/>
         <column name="service_normal_check_interval" phpName="ServiceNormalCheckInterval" type="INTEGER" required="false"/>
         <column name="service_retry_check_interval" phpName="ServiceRetryCheckInterval" type="INTEGER" required="false"/>
         <column name="service_active_checks_enabled" phpName="ServiceActiveChecksEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
-        <column name="service_passive_checks_enabled" phpName="ServicePassiveChecksEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
         <column name="initial_state" phpName="InitialState" type="CHAR" sqlType="enum('o','w','u','c')" required="false"/>
-        <column name="service_parallelize_check" phpName="ServiceParallelizeCheck" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
         <column name="service_obsess_over_service" phpName="ServiceObsessOverService" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
         <column name="service_check_freshness" phpName="ServiceCheckFreshness" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
         <column name="service_freshness_threshold" phpName="ServiceFreshnessThreshold" type="INTEGER" required="false"/>

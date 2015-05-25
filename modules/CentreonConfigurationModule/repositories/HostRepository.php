@@ -43,6 +43,7 @@ use CentreonConfiguration\Models\Service;
 use Centreon\Internal\Utils\YesNoDefault;
 use CentreonConfiguration\Repository\Repository;
 use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Models\AclresourceHostsParams;
 use CentreonConfiguration\Models\Relation\Host\Service as HostServiceRelation;
 use CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate as HostTemplateServiceTemplateRelation;
 use CentreonConfiguration\Models\Relation\Service\Hosttemplate as ServiceHostTemplateRelation;
@@ -71,7 +72,6 @@ class HostRepository extends Repository
         'host_check_interval',
         'host_retry_check_interval',
         'host_active_checks_enabled',
-        'host_passive_checks_enabled',
         'host_checks_enabled',
         'initial_state',
         'host_obsess_over_host',
@@ -269,10 +269,6 @@ class HostRepository extends Repository
         $checkdata[] = array(
             'label' => _('Active checks enabled'),
             'value' => YesNoDefault::toString($data['host_active_checks_enabled'])
-        );
-        $checkdata[] = array(
-            'label' => _('Passive checks enabled'),
-            'value' => $data['host_passive_checks_enabled']
         );
 
         return $checkdata;
@@ -508,6 +504,28 @@ class HostRepository extends Repository
             foreach ($hostIds as $hostId) {
                 AclresourceHostRelation::insert($objectId, $hostId);
             }
+        }
+    }
+
+    /**
+     * get Hosts by acl id
+     *
+     * @param int $aclId
+     */
+    public static function updateAllHostsAcl($action, $objectId, $allHosts)
+    {
+        if ($action === 'update') {
+            try {
+                AclresourceHostsParams::delete($objectId);
+            } catch (\Exception $e) {
+
+            }
+            AclresourceHostsParams::insert(array(
+                "acl_resource_id" => $objectId,
+                "all_hosts" => $allHosts
+                ),
+                true
+            );
         }
     }
 

@@ -20,6 +20,26 @@
                     </attributes>
                 </field>
             </block>
+            <block name="Filters">
+                <field name="aclresource_environments" label="Linked environments" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-administration/environment/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-administration/aclresource/[i:id]/environment</listValuesRoute>
+                        <multiple>true</multiple>
+                        <ordered>false</ordered>
+                    </attributes>
+                </field>
+                <field name="aclresource_domains" label="Linked domains" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-administration/domain/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-administration/aclresource/[i:id]/domain</listValuesRoute>
+                        <multiple>true</multiple>
+                        <ordered>false</ordered>
+                    </attributes>
+                </field>
+            </block>
             <block name="Additional information">
                 <field name="status" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
                     <attributes>

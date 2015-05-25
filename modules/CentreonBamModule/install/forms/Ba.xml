@@ -19,6 +19,11 @@
                         <listValuesRoute>/centreon-bam/businessactivity/[i:id]/type</listValuesRoute>
                         <multiple>false</multiple>
                     </attributes>
+                    <validators>
+                    	<validator serverside="centreon-bam.checkKey" >
+                            <argument name="model">\CentreonBam\Models\BusinessActivityType</argument>
+                        </validator>
+                    </validators>
                     <help></help>
                 </field>
                 <field name="level_w" label="Warning Threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>

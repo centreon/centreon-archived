@@ -112,7 +112,7 @@ abstract class CentreonBaseModel extends CentreonModel
      * @param array $params
      * @return int
      */
-    public static function insert($params = array())
+    public static function insert($params = array(), $keepPrimaryKey = false)
     {
         $db = Di::getDefault()->get(static::$databaseName);
         $sql = "INSERT INTO " . static::$table;
@@ -124,7 +124,7 @@ abstract class CentreonBaseModel extends CentreonModel
         static::setAttributeProps($params, $not_null_attributes, $is_int_attribute);
 
         foreach ($params as $key => $value) {
-            if ($key == static::$primaryKey || is_null($value)) {
+            if (($key == static::$primaryKey && !$keepPrimaryKey) || is_null($value)) {
                 continue;
             }
             if ($sqlFields != "") {
@@ -164,7 +164,7 @@ abstract class CentreonBaseModel extends CentreonModel
     }
 
     /**
-     * Used for deleteing object from database
+     * Used for deleting object from database
      *
      * @param int $objectId
      */
@@ -174,6 +174,22 @@ abstract class CentreonBaseModel extends CentreonModel
         $sql = "DELETE FROM  " . static::$table . " WHERE ". static::$primaryKey . " = ?";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($objectId));
+        if (1 !== $stmt->rowCount()) {
+            throw new Exception(static::OBJ_NOT_EXIST);
+        }
+    }
+
+    /**
+     * Used for deleting object from database
+     *
+     * @param int $uniqueLabelFieldId
+     */
+    public static function deleteByUniqueLabelField($uniqueLabelFieldId)
+    {
+        $db = Di::getDefault()->get(static::$databaseName);
+        $sql = "DELETE FROM  " . static::$table . " WHERE ". static::$uniqueLabelField . " = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($uniqueLabelFieldId));
         if (1 !== $stmt->rowCount()) {
             throw new Exception(static::OBJ_NOT_EXIST);
         }

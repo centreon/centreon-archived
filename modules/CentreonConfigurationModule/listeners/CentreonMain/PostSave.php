@@ -68,6 +68,12 @@ class PostSave
                     $serviceTagIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-configuration']['aclresource_service_tags'])));
                     ServiceTagRepository::updateServiceTagAcl($event->getAction(), $event->getObjectId(), $serviceTagIds);
                 }
+                if (isset($extraParameters['centreon-configuration']['aclresource_all_hosts'])) {
+                    $allHosts = $extraParameters['centreon-configuration']['aclresource_all_hosts'];
+                    HostRepository::updateAllHostsAcl($event->getAction(), $event->getObjectId(), $allHosts);
+                } else {
+                    HostRepository::updateAllHostsAcl($event->getAction(), $event->getObjectId(), '0');
+                }
             }
         }
     }
