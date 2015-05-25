@@ -49,7 +49,7 @@ class SchemaBuilder
 {
     /**
      *
-     * @var type 
+     * @var string 
      */
     private $dbName;
     
@@ -67,22 +67,29 @@ class SchemaBuilder
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     private $appPath;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     private $appTmpPath;
     
     /**
-     * 
-     * @param type $dbName
-     * @param type $destPath
+     *
+     * @var string 
      */
-    public function __construct($dbName, $destPath = "")
+    private $targetModule;
+    
+    /**
+     * 
+     * @param string $dbName
+     * @param string $destPath
+     * @param string $module
+     */
+    public function __construct($dbName, $destPath = "", $module = 'all')
     {
         $this->dbName = $dbName;
         
@@ -97,6 +104,8 @@ class SchemaBuilder
         } else {
             $this->appTmpPath = $destPath;
         }
+        
+        $this->targetModule = $module;
     }
     
     /**
@@ -104,19 +113,7 @@ class SchemaBuilder
      */
     public function loadXmlFiles()
     {
-        $xmlDbFiles = $this->buildTargetDbSchema();
-        
-        // Initialize XmlToAppData object
-        /*$appDataObject = new \XmlToAppData(new CentreonMysqlPlatform($this->dbConnector), null, 'utf-8');
-        
-        // Get DB File
-        foreach ($xmlDbFiles as $dbFile) {
-            $this->appDataObject->joinAppDatas(array($appDataObject->parseFile($dbFile)));
-            unset($appDataObject);
-            $appDataObject = new \XmlToAppData(new CentreonMysqlPlatform($this->dbConnector), null, 'utf-8');
-        }
-        
-        unset($appDataObject);*/
+        $this->buildTargetDbSchema();
     }
     
     /**
@@ -160,7 +157,6 @@ class SchemaBuilder
     
     /**
      * 
-     * @return type
      */
     private function buildTargetDbSchema()
     {
@@ -170,23 +166,21 @@ class SchemaBuilder
         
         // 
         if (Directory::isEmpty($currentFolder, '*.xml')) {
-            $this->copyModulesTablesFiles($currentFolder);
+            $this->copyModulesTablesFiles($currentFolder, $this->targetModule);
         }
         
         // Copy Modules Files
-        $this->copyModulesTablesFiles($targetFolder);
-        
-        // send back the computed db
-        return glob($targetFolder . '/*.xml');
+        $this->copyModulesTablesFiles($targetFolder, $this->targetModule);
     }
     
     /**
      * 
-     * @param type $destinationPath
+     * @param string $destinationPath
+     * @param string $module
      */
-    private function copyModulesTablesFiles($destinationPath)
+    private function copyModulesTablesFiles($destinationPath, $module = 'all')
     {
-        $fileList = $this->getModulesTablesFiles();
+        $fileList = $this->getModulesTablesFiles($module);
         
         // Copy to destination
         if (!file_exists($destinationPath)) {
@@ -203,9 +197,10 @@ class SchemaBuilder
     
     /**
      * 
+     * @param string $module
      * @return array
      */
-    private function getModulesTablesFiles()
+    private function getModulesTablesFiles($module = 'all')
     {
         // Get Mandatory tables files
         $fileList = File::getFiles($this->appPath . '/install/db/' . $this->dbName, 'xml');

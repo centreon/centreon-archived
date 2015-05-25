@@ -51,11 +51,12 @@ class MigrateCommand extends AbstractCommand
 {
     /**
      * 
+     * @param string $module
      */
-    public function generateDiffAction()
+    public function generateDiffAction($module = 'all')
     {
         InputOutput::display(_("Generates SQL diff between the XML schemas and the current database structure"));
-        $diffGenerator = new GenerateDiff();
+        $diffGenerator = new GenerateDiff($module);
         $diffGenerator->getDiff();
     }
     

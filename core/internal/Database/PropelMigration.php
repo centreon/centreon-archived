@@ -61,37 +61,37 @@ class PropelMigration
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $targetDb = 'db_centreon';
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     protected $propelConfiguration = array();
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $tmpDir;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $outputDir;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $propelPath;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $appPath;
     
@@ -104,8 +104,9 @@ class PropelMigration
 
     /**
      * 
+     * @param string $module
      */
-    public function __construct()
+    public function __construct($module = 'all')
     {
         $this->di = Di::getDefault();
         $this->appConfig = $this->di->get('config');
@@ -130,11 +131,12 @@ class PropelMigration
         
         $this->outputDir = $this->tmpDir . '/output/';
         
-        $this->mySchemaBuilder = new SchemaBuilder('centreon', $this->tmpDir . '/schema/');
+        $this->mySchemaBuilder = new SchemaBuilder('centreon', $this->tmpDir . '/schema/', $module);
     }
     
     /**
      * 
+     * @param string $taskName
      */
     public function runPhing($taskName)
     {
@@ -174,7 +176,7 @@ class PropelMigration
     
     /**
      * 
-     * @param type $output
+     * @param string $output
      */
     protected function createBuildPropertiesFile($output)
     {
@@ -186,14 +188,10 @@ class PropelMigration
     
     /**
      * 
-     * @param type $output
+     * @param string $output
      */
     protected function createBuildTimeConfFile($output)
     {
-        /*$container = $this->getContainer();
-        if (!$container->has('propel.configuration')) {
-            throw new \InvalidArgumentException('Could not find Propel configuration.');
-        }*/
         $xml = strtr(<<<EOT
 <?xml version="1.0"?>
 <config>
@@ -228,13 +226,19 @@ EOT;
         file_put_contents($output, $xml);
     }
     
+    /**
+     * 
+     * @param string $outputDir
+     */
     public function setOutputDir($outputDir)
     {
-        
+        $this->outputDir = $outputDir;
     }
     
     /**
      * Compiles arguments/properties for the Phing process.
+     * 
+     * @param array $properties
      * @return array
      */
     private function getPhingArguments($properties = array())
