@@ -39,6 +39,7 @@ use CentreonMain\Repository\FormRepository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\VirtualHost;
 use CentreonConfiguration\Models\VirtualService;
+use CentreonBam\Models\AclresourceBusinessActivitiesParams;
 use CentreonBam\Models\Relation\Aclresource\BusinessActivity as AclresourceBusinessactivityRelation;
 
 /**
@@ -272,6 +273,28 @@ class BusinessActivityRepository extends FormRepository
             foreach ($baIds as $baId) {
                 AclresourceBusinessactivityRelation::insert($objectId, $baId);
             }
+        }
+    }
+
+    /**
+     * get Hosts by acl id
+     *
+     * @param int $aclId
+     */
+    public static function updateAllBusinessActivitiesAcl($action, $objectId, $allBas)
+    {
+        if ($action === 'update') {
+            try {
+                AclresourceBusinessActivitiesParams::delete($objectId);
+            } catch (\Exception $e) {
+
+            }
+            AclresourceBusinessActivitiesParams::insert(array(
+                "acl_resource_id" => $objectId,
+                "all_business_activities" => $allBas
+                ),
+                true
+            );
         }
     }
 

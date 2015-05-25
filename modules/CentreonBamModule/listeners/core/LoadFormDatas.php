@@ -33,38 +33,26 @@
  *
  */
 
-namespace CentreonBam\Listeners\CentreonMain;
+namespace CentreonBam\Listeners\Core;
 
-use CentreonMain\Events\PostSave as PostSaveEvent;
-use CentreonBam\Repository\BusinessActivityRepository;
-use CentreonBam\Repository\BusinessActivityTagRepository;
+use Centreon\Events\LoadFormDatas as LoadFormDatasEvent;
+use CentreonBam\Models\AclresourceBusinessActivitiesParams;
 
-class PostSave
+class LoadFormDatas
 {
     /**
-     * @param CentreonMain\Events\PostSave $event
+     * @param Core\Events\LoadFormDatas $event
      */
-    public static function execute(PostSaveEvent $event)
+    public static function execute(LoadFormDatasEvent $event)
     {
+        $route = $event->getRoute();
+        $objectId = $event->getObjectId();
         $parameters = $event->getParameters();
-        $extraParameters = $event->getExtraParameters();
-        if (isset($extraParameters['centreon-bam'])) {
-            if ($event->getObjectName() === 'aclresource') {
-                if (isset($extraParameters['centreon-bam']['aclresource_business_activities'])) {
-                    $baIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-bam']['aclresource_business_activities'])));
-                    BusinessActivityRepository::updateBusinessActivityAcl($event->getAction(), $event->getObjectId(), $baIds);
-                }
-                if (isset($extraParameters['centreon-bam']['aclresource_business_activity_tags'])) {
-                    $baTagIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-bam']['aclresource_business_activity_tags'])));
-                    BusinessActivityTagRepository::updateBusinessActivityTagAcl($event->getAction(), $event->getObjectId(), $baTagIds);
-                }
-                if (isset($extraParameters['centreon-bam']['aclresource_all_bas'])) {
-                    $allBas = $extraParameters['centreon-bam']['aclresource_all_bas'];
-                    BusinessActivityRepository::updateAllBusinessActivitiesAcl($event->getAction(), $event->getObjectId(), $allBas);
-                } else {
-                    BusinessActivityRepository::updateAllBusinessActivitiesAcl($event->getAction(), $event->getObjectId(), '0');
-                }
-            }
+        if ($route === '/centreon-administration/aclresource/update') {
+            $allBasParameter = AclresourceBusinessActivitiesParams::getParameters($objectId, 'all_business_activities');
+            $event->addParameters(array(
+                'centreon-bam__aclresource_all_bas' => $allBasParameter['all_business_activities']
+            ));
         }
     }
 }
