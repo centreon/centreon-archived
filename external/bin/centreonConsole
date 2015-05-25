@@ -76,9 +76,14 @@
                 $commandeLineManager->authenticate($options['u'], $password);
             }
             $commandeLineManager->executeRequest();
+            exit(0);
         }
     } catch(\Exception $e) {
-        echo '[Error ' . $e->getCode() . '] => ' . $e->getMessage() . "\n";
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+            '[Error ' . $e->getCode() . '] => ' . $e->getMessage(),
+            true,
+            'red'
+        );
         exit(1);
     }
 ?>

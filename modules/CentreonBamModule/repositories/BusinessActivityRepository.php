@@ -39,6 +39,7 @@ use CentreonMain\Repository\FormRepository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\VirtualHost;
 use CentreonConfiguration\Models\VirtualService;
+use CentreonBam\Models\Relation\Aclresource\BusinessActivity as AclresourceBusinessactivityRelation;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -255,5 +256,51 @@ class BusinessActivityRepository extends FormRepository
         }
 
         $dbconn->commit();
+    }
+
+    /**
+     * update Business activity acl
+     *
+     * @param string $action
+     * @param int $objectId
+     * @param array $baIds
+     */
+    public static function updateBusinessActivityAcl($action, $objectId, $baIds)
+    {
+        if ($action === 'update') {
+            AclresourceBusinessactivityRelation::delete($objectId);
+            foreach ($baIds as $baId) {
+                AclresourceBusinessactivityRelation::insert($objectId, $baId);
+            }
+        }
+    }
+
+    /**
+     * get Business activities by acl id
+     *
+     * @param int $aclId
+     */
+    public static function getBusinessActivitiesByAclResourceId($aclId)
+    {
+        $baList = AclresourceBusinessactivityRelation::getMergedParameters(
+            array(),
+            array('ba_id', 'name'),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('cfg_acl_resources_bas_relations.acl_resource_id' => $aclId),
+            "AND"
+        );
+
+        $finalBaList = array();
+        foreach ($baList as $ba) {
+            $finalBaList[] = array(
+                "id" => $ba['ba_id'],
+                "text" => $ba['name']
+            );
+        }
+
+        return $finalBaList;
     }
 }

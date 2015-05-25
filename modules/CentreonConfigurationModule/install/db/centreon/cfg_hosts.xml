@@ -14,7 +14,6 @@
         <column name="host_check_interval" phpName="HostCheckInterval" type="INTEGER" required="false"/>
         <column name="host_retry_check_interval" phpName="HostRetryCheckInterval" type="INTEGER" required="false"/>
         <column name="host_active_checks_enabled" phpName="HostActiveChecksEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="host_passive_checks_enabled" phpName="HostPassiveChecksEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
         <column name="host_checks_enabled" phpName="HostChecksEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
         <column name="initial_state" phpName="InitialState" type="CHAR" sqlType="enum('o','d','u')" required="false"/>
         <column name="host_obsess_over_host" phpName="HostObsessOverHost" type="CHAR" sqlType="enum('0','1','2')" required="false"/>

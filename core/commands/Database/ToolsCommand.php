@@ -103,7 +103,8 @@ class ToolsCommand extends AbstractCommand
                 }
              
             } catch (Exception $ex) {
-                 return "invalid content";
+                throw new Exception("invalid content");
+                //return "invalid content";
             } 
         }
     }

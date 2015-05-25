@@ -211,27 +211,22 @@ class BasicCrud extends AbstractCommand
      */
     public function listAction($fields = null, $count = -1, $offset = 0)
     {
-        try {
-            // Getting the repository name
-            $repository = $this->repository;
+        // Getting the repository name
+        $repository = $this->repository;
 
-            // Parsing attributes List
-            $givenFields = (!is_null($fields)) ? $fields : $this->liteAttributesSet;
-            $fieldsToQuery = array_diff(
-                explode(',', $givenFields),
-                array_column($this->externalAttributeSet, 'type')
-            );
-            
-            // Getting the list from
-            $objectList = $repository::getList($fieldsToQuery, $count, $offset);
-            $this->getExternalObject($objectList);
-            
-            $this->normalizeParams($objectList, false);
-            
-        } catch (\Exception $ex) {
-            
-        }
-        
+        // Parsing attributes List
+        $givenFields = (!is_null($fields)) ? $fields : $this->liteAttributesSet;
+        $fieldsToQuery = array_diff(
+            explode(',', $givenFields),
+            array_column($this->externalAttributeSet, 'type')
+        );
+
+        // Getting the list from
+        $objectList = $repository::getList($fieldsToQuery, $count, $offset);
+        $this->getExternalObject($objectList);
+
+        $this->normalizeParams($objectList, false);
+ 
         return $objectList;
     }
     
@@ -331,20 +326,16 @@ class BasicCrud extends AbstractCommand
      */
     public function createAction($params)
     {
-        try {
-            $repository = $this->repository;
-            $paramList = $this->parseObjectParams($params);
-            $paramList['object'] = $this->objectName;
-                       
-            $idOfCreatedElement = $repository::create(
-                        $paramList,
-                        'api',
-                        $this->objectBaseUrl . '/update'
-                    );
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
-        } catch (Exception $ex) {
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
-        }
+        $repository = $this->repository;
+        $paramList = $this->parseObjectParams($params);
+        $paramList['object'] = $this->objectName;
+
+        $idOfCreatedElement = $repository::create(
+                    $paramList,
+                    'api',
+                    $this->objectBaseUrl . '/update'
+                );
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
     }
     
     /**
@@ -354,40 +345,33 @@ class BasicCrud extends AbstractCommand
      */
     public function updateAction($object, $params)
     {
-        try {
-            $repository = $this->repository;
-            
-            $paramList = $this->parseObjectParams($params);
-            $paramList['object'] = $this->objectName;
-            $paramList['object_id'] = $repository::getIdFromUnicity($this->parseObjectParams($object));
-            
-            $repository::update(
-                        $paramList,
-                        'api',
-                        $this->objectBaseUrl . '/update',
-                        true,
-                        false
-                    );
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully updated", true, 'green');
-        } catch (Exception $ex) {
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
-        }
+        $repository = $this->repository;
+
+        $paramList = $this->parseObjectParams($params);
+        $paramList['object'] = $this->objectName;
+        $paramList['object_id'] = $repository::getIdFromUnicity($this->parseObjectParams($object));
+
+        $repository::update(
+                    $paramList,
+                    'api',
+                    $this->objectBaseUrl . '/update',
+                    true,
+                    false
+                );
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully updated", true, 'green');
+        
     }
     
     /**
      * 
-     * @param integer $id
+     * @param type $object
      */
     public function deleteAction($object)
     {
-        try {
-            $repository = $this->repository;
-            $id = $repository::getIdFromUnicity($this->parseObjectParams($object));
-            $repository::delete(array($id));
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully deleted", true, 'green');
-        } catch (Exception $ex) {
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
-        }
+        $repository = $this->repository;
+        $id = $repository::getIdFromUnicity($this->parseObjectParams($object));
+        $repository::delete(array($id));
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully deleted", true, 'green');
     }
     
     /**
