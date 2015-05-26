@@ -46,6 +46,17 @@ use CentreonBam\Models\BooleanIndicator;
  */
 class IndicatorRepository extends FormRepository
 {
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'boolean' => 'cfg_bam_boolean, boolean_id, name'
+        ),
+    );
+    
     /**
      *
      * @param int $id
@@ -98,15 +109,18 @@ class IndicatorRepository extends FormRepository
      * @param string $givenParameters
      * @return string
      */
-    public static function createIndicator($givenParameters)
+    public static function createIndicator($givenParameters, $origin, $route)
     {
         $parameters = array();
         foreach ($givenParameters as $k => $v) {
             $parameters[$k] = $v;
         }
         
-        $lastIndicatorId = self::createBasicIndicator($parameters);
-
+        
+        if ($parameters['kpi_type'] === '0' || $parameters['kpi_type'] ===  '1' || $parameters['kpi_type'] ===  '2') {
+            $lastIndicatorId = self::createBasicIndicator($parameters);
+        }
+        
         if ($parameters['kpi_type'] === '0') {
             self::createServiceIndicator($lastIndicatorId, $parameters);
         } else if ($parameters['kpi_type'] === '1') {
@@ -114,6 +128,9 @@ class IndicatorRepository extends FormRepository
         } else if ($parameters['kpi_type'] === '2') {
             self::createBaIndicator($lastIndicatorId, $parameters);
         } else if ($parameters['kpi_type'] === '3') {
+            self::validateForm($givenParameters, $origin, $route);
+            
+            $lastIndicatorId = self::createBasicIndicator($parameters);
             self::createBooleanIndicator($lastIndicatorId, $parameters);
         }
     }
@@ -220,9 +237,10 @@ class IndicatorRepository extends FormRepository
         $lastBooleanId = $dbconn->lastInsertId('cfg_bam_boolean','boolean_id');
 
         $insertIndicatorRequest = "UPDATE cfg_bam_kpi"
-            . " SET boolean_id=:boolean_id";
+            . " SET boolean_id=:boolean_id WHERE kpi_id = :kpi_id";
         $stmtIndicatorInsert = $dbconn->prepare($insertIndicatorRequest);
         $stmtIndicatorInsert->bindParam(':boolean_id', $lastBooleanId, \PDO::PARAM_INT);
+        $stmtIndicatorInsert->bindParam(':kpi_id', $lastIndicatorId, \PDO::PARAM_INT);
         $stmtIndicatorInsert->execute();
     }
 
@@ -284,10 +302,15 @@ class IndicatorRepository extends FormRepository
             $updateValuesBoolean['expression'] = $givenParameters['boolean_expression'];
             $updateValuesBoolean['name'] = $givenParameters['boolean_name'];
             $updateValuesBoolean['bool_state'] = $givenParameters['bool_state'];
-            if (!isset($givenParameters['boolean_id'])) {
+            
+            $resultBoolean = BooleanIndicator::getIdByParameter('name', $updateValuesBoolean['name']);
+            if (count($resultBoolean) > 0) {
+                $iIdBoolean = $resultBoolean[0];
+            }
+            if (!isset($iIdBoolean) || (isset($iIdBoolean) && empty($iIdBoolean))) {
                 $updateValues['boolean_id'] = $relBooleanIndicator::insert($updateValuesBoolean);
             } else {
-                $updateValues['boolean_id'] = $givenParameters['boolean_id'];
+                $updateValues['boolean_id'] = $iIdBoolean;
                 $relBooleanIndicator::update($updateValues['boolean_id'], $updateValuesBoolean);
             }
         }
@@ -523,4 +546,37 @@ class IndicatorRepository extends FormRepository
             }
         }
     }
+    
+    public static function getIdFromUnicity($unicityParams)
+    {
+        $tables = array();
+        $conditions = array();
+        $objectId = 0;
+        
+        $db = Di::getDefault()->get('db_centreon');
+        $query = 'SELECT boolean_id ';
+        
+        // Checking por unicity's params
+        foreach ($unicityParams as $key => $unicityParam) {
+            if (isset(static::$unicityFields['fields'][$key])) {
+                $fieldComponents = explode (',', static::$unicityFields['fields'][$key]);
+                $tables[] = $fieldComponents[0];
+                $conditions[] = $fieldComponents[2] . "='$unicityParam'";
+            }
+        }
+        
+        // FInalizing query
+        $query .= 'FROM ' . implode(', ', $tables) . ' WHERE ' . implode(' AND ', $conditions);
+
+        // Execute request
+        $stmt = $db->query($query);
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        if (count($result) > 0) {
+            $objectId = $result[0]['boolean_id'];
+        }
+        
+        return $objectId;
+    }
+     
 }
