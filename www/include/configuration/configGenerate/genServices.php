@@ -209,6 +209,7 @@ if ($oreon->CentreonGMT->used() == 1) {
             if (isset($critSCache[$service['service_id']])) {
                 $critDataTmp = $criticality->getData($critSCache[$service['service_id']], true);
                 if (!is_null($critDataTmp)) {
+                    $strTMP .= print_line(";_CRITICALITY_NAME", $critDataTmp['name']);
                     $strTMP .= print_line("_CRITICALITY_LEVEL", $critDataTmp['level']);
                     $strTMP .= print_line("_CRITICALITY_ID", $critDataTmp['sc_id']);
                 }
@@ -216,16 +217,17 @@ if ($oreon->CentreonGMT->used() == 1) {
             } else {
                 // Check if criticities is configured on service templates
                 $buff = $criticality->criticitiesConfigOnSTpl($service['service_template_model_stm_id']);
-
                 if ($buff == 0) {
                     // Get Criticities From hosts
                     global $critCacheName;
                     if (isset($critCacheName[$host_name])) {
                         $name = $critCacheName[$host_name]['name'];
+                        $strTMP .= print_line(";_CRITICALITY_NAME", $critSData[$name]['name']);
                         $strTMP .= print_line("_CRITICALITY_LEVEL", $critSData[$name]['level']);
                         $strTMP .= print_line("_CRITICALITY_ID", $critSData[$name]['id']);
                     } else {
                         $tmp1 = $criticality->getHostTplCriticities($host_id, $critHTpl);
+                        $strTMP .= print_line(";_CRITICALITY_NAME", $critSData[$tmp1['name']]['name']);
                         $strTMP .= print_line("_CRITICALITY_LEVEL", $critSData[$tmp1['name']]['level']);
                         $strTMP .= print_line("_CRITICALITY_ID", $critSData[$tmp1['name']]['id']);
                     }
@@ -502,6 +504,7 @@ if ($oreon->CentreonGMT->used() == 1) {
     $i = 1;
     $str = NULL;
     while ($service = $DBRESULT->fetchRow())	{
+        $host_id = null;
         $LinkedToHost = 0;
         $strDef = "";
 
@@ -546,15 +549,19 @@ if ($oreon->CentreonGMT->used() == 1) {
                      */
                     $strTMPTemp = NULL;
                     $tmpHostName = "";
-                    if (isset($serviceRelation[$service["service_id"]]["h"]))
+                    if (isset($serviceRelation[$service["service_id"]]["h"])) {
                         foreach ($serviceRelation[$service["service_id"]]["h"] as $key => $value) {
                             $parent = true;
+                            if (!isset($host_id)) {
+                                $host_id = $key;
+                            }
                             $strTMPTemp != NULL ? $strTMPTemp .= ", ".$value : $strTMPTemp = $value;
-                            if ($tmpHostName == ''){
+                            if ($tmpHostName == '') {
                                 $tmpHostName = $strTMPTemp;
                             }
                             $LinkedToHost++;
                         }
+                    }
                     if ($strTMPTemp) {
                         $strTMP .= print_line("host_name", $strTMPTemp);
                         $hostNameTmp = $strTMPTemp;
@@ -578,6 +585,7 @@ if ($oreon->CentreonGMT->used() == 1) {
             if (isset($critSCache[$service['service_id']])) {
                 $critDataTmp = $criticality->getData($critSCache[$service['service_id']], true);
                 if (!is_null($critDataTmp)) {
+                    $strTMP .= print_line(";_CRITICALITY_NAME", $critDataTmp['name']);
                     $strTMP .= print_line("_CRITICALITY_LEVEL", $critDataTmp['level']);
                     $strTMP .= print_line("_CRITICALITY_ID", $critDataTmp['sc_id']);
                 }
@@ -590,10 +598,12 @@ if ($oreon->CentreonGMT->used() == 1) {
                     global $critCacheName;
                     if (isset($critCacheName[$tmpHostName])) {
                         $name = $critCacheName[$tmpHostName]['name'];
+                        $strTMP .= print_line(";_CRITICALITY_NAME", $critSData[$name]['name']);
                         $strTMP .= print_line("_CRITICALITY_LEVEL", $critSData[$name]['level']);
                         $strTMP .= print_line("_CRITICALITY_ID", $critSData[$name]['id']);
                     } else {
                         $tmp1 = $criticality->getHostTplCriticities($host_id, $critHTpl);
+                        $strTMP .= print_line(";_CRITICALITY_NAME", $critSData[$tmp1['name']]['name']);
                         $strTMP .= print_line("_CRITICALITY_LEVEL", $critSData[$tmp1['name']]['level']);
                         $strTMP .= print_line("_CRITICALITY_ID", $critSData[$tmp1['name']]['id']);
                     }
