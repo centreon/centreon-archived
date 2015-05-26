@@ -52,11 +52,11 @@
       $.each(this.elements, function (key, val) {
         if (key == value) {
           $.each(val, function (idx, $elem) {
-            $elem.parents(".form-group").show();
+            $elem.parent(".form-group").show();
           });
         } else {
           $.each(val, function (idx, $elem) {
-            $elem.parents(".form-group").hide();
+            $elem.parent(".form-group").hide();
           });
         }
       });

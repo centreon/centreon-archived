@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="recurring_downtime_form">
+		<route>/centreon-configuration/scheduled-downtime/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/centreon-configuration/scheduled-downtime</redirect_route>
+		<section name="Scheduled downtime configuration">
+      <block name="General Information">
+        <field name="dt_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+          <validators>
+            <validator rule="size" serverside="core.String">
+              <argument name="minlength">3</argument>
+              <argument name="maxlength">255</argument>
+            </validator>
+          </validators>
+          <help>The scheduled downtime name</help>
+        </field>
+        <field name="dt_description" label="Description" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0">
+          <help>The scheduled downtime description</help>
+        </field>
+        <field name="periods" label="Periods" default_value="" advanced="0" type="centreon-configuration.scheduleddowntimecalendar" parent_field="" mandatory="0">
+          <help>The list of periods for the scheduled downtime.</help>
+        </field>
+      </block>
+    </section>
+  </form>
+</forms>
