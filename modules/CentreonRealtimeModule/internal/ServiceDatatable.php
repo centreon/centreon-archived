@@ -153,7 +153,7 @@ class ServiceDatatable extends Datatable
             ),
         ),
         array (
-            'title' => "",
+            'title' => "Graph",
             'name' => 's.host_id',
             'data' => 'ico',
             'orderable' => false,
