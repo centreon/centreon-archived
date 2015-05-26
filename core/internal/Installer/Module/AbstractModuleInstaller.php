@@ -263,6 +263,8 @@ abstract class AbstractModuleInstaller
         // Remove old static files
         $this->removeStaticFiles();
         
+        $this->removeValidators();
+        
         // Custom removal of the module
         $this->customRemove();
         $this->postRemove();
@@ -479,9 +481,7 @@ abstract class AbstractModuleInstaller
     protected function installValidators()
     {
         $validatorFile = $this->moduleDirectory . '/install/validators.json';
-        if (file_exists($validatorFile)) {
-            $this->removeValidators();
-                        
+        if (file_exists($validatorFile)) {                       
             $message = $this->colorizeText(_("Installation of validators..."));
             $this->displayOperationMessage($message, false);
             Form::insertValidators(json_decode(file_get_contents($validatorFile), true));
@@ -517,9 +517,16 @@ abstract class AbstractModuleInstaller
      * 
      */
     protected function removeValidators()
-    {       
-        Form::removeValidators();
-        
+    {        
+        $validatorFile = $this->moduleDirectory . '/install/validators.json';
+        if (file_exists($validatorFile)) {
+            $message = $this->colorizeText(_("Remove validators..."));
+            $this->displayOperationMessage($message, false);
+            $moduleValidators = json_decode(file_get_contents($validatorFile), true);
+            Form::removeValidators($moduleValidators);
+            $message = $this->colorizeMessage(_("     Done"), 'green');
+            $this->displayOperationMessage($message);
+        }
     }
     
     /**

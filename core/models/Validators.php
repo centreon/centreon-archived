@@ -52,13 +52,15 @@ class Validators extends CentreonBaseModel
     /**
      * Used for deleteing object from database
      *
-     * @param int $objectId
+     * @param string $sName
      */
-    public static function delete()
+    public static function delete($sName = "")
     {
         $db = Di::getDefault()->get('db_centreon');
         $sql = "DELETE FROM  " . static::$table ;
-        
+        if (!empty($sName)) {
+            $sql .= " WHERE name ='".$sName."'";
+        }
         $stmt = $db->prepare($sql);
         $stmt->execute();
     }
