@@ -36,7 +36,7 @@
 
 
 
-namespace CentreonConfiguration\Controllers;
+namespace CentreonAdministration\Controllers;
 
 use Centreon\Controllers\FormController;
 
@@ -50,10 +50,10 @@ class AuthController extends FormController{
     protected $objectDisplayName = 'Auth';
     public static $objectName = 'auth';
     public static $enableDisableFieldName = 'ar_enable';
-    protected $datatableObject = '\CentreonConfiguration\Internal\AuthDatatable';
-    protected $objectBaseUrl = '/centreon-configuration/auth';
-    protected $objectClass = '\CentreonConfiguration\Models\AuthRessource';
-    protected $repository = '\CentreonConfiguration\Repository\AuthRessourceRepository';
+    protected $datatableObject = '\CentreonAdministration\Internal\AuthDatatable';
+    protected $objectBaseUrl = '/centreon-administration/auth';
+    protected $objectClass = '\CentreonAdministration\Models\AuthResources';
+    protected $repository = '\CentreonAdministration\Repository\AuthResourcesRepository';
 
     
     public static $relationMap = array(

@@ -49,46 +49,51 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'HOST',
+                    'name' => 'host',
                     'url' => $router->getPathFor('/centreon-configuration/host/snapshotslide/') . $event->getHostId(),
-                    'icon' => 'tata3',
-                    'order' => 1
+                    'icon' => '',
+                    'order' => 1,
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/host_slide"
                 )
             );
             
             $event->addMenu(
                 array(
-                    'name' => 'template',
+                    'name' => 'templates',
                     'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconfslide/') . $event->getHostId(),
-                    'icon' => 'tata3',
-                    'order' => 2
+                    'icon' => '',
+                    'order' => 2,
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/templates_slide"
                 )
             );
             
             $event->addMenu(
                 array(
-                    'name' => 'tag',
+                    'name' => 'tags',
                     'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/tags') ,
-                    'icon' => 'tata3',
-                    'order' => 3
+                    'icon' => '',
+                    'order' => 3,
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/tags_slide"
                 )
             );
             
             $event->addMenu(
                 array(
-                    'name' => 'service',
+                    'name' => 'services',
                     'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/service'),
-                    'icon' => 'tata3',
-                    'order' => 4
+                    'icon' => '',
+                    'order' => 4,
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/services_slide"
                 )
             );
             
             $event->addMenu(
                 array(
-                    'name' => 'incident',
+                    'name' => 'incidents',
                     'url' => $router->getPathFor('/centreon-realtime/host/'.$event->getHostId().'/issues'),
-                    'icon' => 'tata3',
-                    'order' => 5
+                    'icon' => '',
+                    'order' => 5,
+                    'tpl' => "/viewtpl/CentreonRealtimeModule/incidents_slide"
                 )
             );
             

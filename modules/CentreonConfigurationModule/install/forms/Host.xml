@@ -83,7 +83,7 @@
 				</field>
             </block>
             <block name="Macros">
-                <field name="host_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
+                <field name="host_custommacros" label="Custom macros" show_label="0" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
                     <attributes>
 						<object>host</object>
                     </attributes>
@@ -250,7 +250,7 @@
 			<field name="host_address" mandatory="1"></field>
             <field name="timezone_id" mandatory="0"></field>
 			<field name="host_hosttemplates" mandatory="0"></field>
-			<field name="host_custommacros" mandatory="0"></field>
+			<field name="host_custommacros" mandatory="0" show_label="0"></field>
             <field name="host_tags" mandatory="0"></field>
 			<field name="environment_id" mandatory="0"></field>
 			<field name="poller_id" mandatory="0"></field>

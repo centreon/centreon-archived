@@ -45,6 +45,9 @@ use Centreon\Internal\Utils\String\CamelCaseTransformation;
  */
 class Component
 {
+    
+    protected static $jsFile = array();
+
     /**
      * Render Html for input field
      *
@@ -61,7 +64,7 @@ class Component
      * @param type $componentName
      * @return type
      */
-    public function parseComponentName($componentName)
+    public static function parseComponentName($componentName)
     {
         $call = "";
         $parsedComponent = explode('.', $componentName);
