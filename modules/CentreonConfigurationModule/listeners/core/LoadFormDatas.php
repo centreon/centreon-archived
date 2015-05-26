@@ -49,10 +49,14 @@ class LoadFormDatas
         $objectId = $event->getObjectId();
         $parameters = $event->getParameters();
         if ($route === '/centreon-administration/aclresource/update') {
-            $allHostsParameter = AclresourceHostsParams::getParameters($objectId, 'all_hosts');
-            $event->addParameters(array(
-                'centreon-configuration__aclresource_all_hosts' => $allHostsParameter['all_hosts']
-            ));
+            try {
+                $allHostsParameter = AclresourceHostsParams::getParameters($objectId, 'all_hosts');
+                $event->addParameters(array(
+                    'centreon-configuration__aclresource_all_hosts' => $allHostsParameter['all_hosts']
+                ));
+            } catch (\Exception $e) {
+
+            }
         }
     }
 }

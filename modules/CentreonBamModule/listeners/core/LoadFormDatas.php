@@ -49,10 +49,14 @@ class LoadFormDatas
         $objectId = $event->getObjectId();
         $parameters = $event->getParameters();
         if ($route === '/centreon-administration/aclresource/update') {
-            $allBasParameter = AclresourceBusinessActivitiesParams::getParameters($objectId, 'all_business_activities');
-            $event->addParameters(array(
-                'centreon-bam__aclresource_all_bas' => $allBasParameter['all_business_activities']
-            ));
+            try {
+                $allBasParameter = AclresourceBusinessActivitiesParams::getParameters($objectId, 'all_business_activities');
+                $event->addParameters(array(
+                    'centreon-bam__aclresource_all_bas' => $allBasParameter['all_business_activities']
+                ));
+            } catch (\Exception $e) {
+
+            }
         }
     }
 }
