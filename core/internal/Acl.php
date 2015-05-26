@@ -130,7 +130,7 @@ class Acl
             return true;
         }
         if ($data['route'] && $data['acl']) {
-            return self::isFlagSet($this->getUserAcl($data['route']), $data['acl']);
+            //return self::isFlagSet($this->getUserAcl($data['route']), $data['acl']);
         }
         return true;
     }
