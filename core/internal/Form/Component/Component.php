@@ -67,14 +67,13 @@ class Component
         $parsedComponent = explode('.', $componentName);
 
         if ((count($parsedComponent) == 1) || $parsedComponent[0] === 'core') {
-            $call .= '\\Centreon\\Internal\\Form\\Component\\';
+            $call .= '\\Centreon\\Internal\\Form\\Component\\' . ucfirst($componentName);
         } else {
-            $call .= CamelCaseTransformation::customToCamelCase($parsedComponent[0], '-')
-                . '\\forms\\Components\\';
-        }
-
-        for ($i = 1; $i < count($parsedComponent); $i++) {
-            $call .= ucfirst($parsedComponent[$i]);
+            $call .= '\\' . CamelCaseTransformation::customToCamelCase($parsedComponent[0], '-')
+                . '\\Forms\\Components\\';
+            for ($i = 1; $i < count($parsedComponent); $i++) {
+                $call .= ucfirst($parsedComponent[$i]);
+            }
         }
 
         return $call;

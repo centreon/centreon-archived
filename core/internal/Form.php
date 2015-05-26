@@ -245,7 +245,7 @@ class Form
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
             case 'static':
-                $className = Component::parseComponentName($element['label_type']) . ucfirst($element['label_type']);
+                $className = Component::parseComponentName($element['label_type']);
                 if (class_exists($className) && method_exists($className, 'renderHtmlInput')) {
                     $element['label'] = $element['label_label'];
                     $in = $className::renderHtmlInput($element);

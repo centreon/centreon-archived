@@ -31,21 +31,28 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonAdministration\Models;
+namespace CentreonBam\Listeners\Core;
 
-use Centreon\Models\CentreonBaseModel;
+use Centreon\Events\LoadFormDatas as LoadFormDatasEvent;
+use CentreonBam\Models\AclresourceBusinessActivitiesParams;
 
-/**
- * Used for interacting with Acl Menus
- *
- * @author sylvestre
- */
-class Aclmenu extends CentreonBaseModel
+class LoadFormDatas
 {
-    protected static $table = "cfg_acl_menus";
-    protected static $primaryKey = "acl_menu_id";
-    protected static $uniqueLabelField = "name";
+    /**
+     * @param Core\Events\LoadFormDatas $event
+     */
+    public static function execute(LoadFormDatasEvent $event)
+    {
+        $route = $event->getRoute();
+        $objectId = $event->getObjectId();
+        $parameters = $event->getParameters();
+        if ($route === '/centreon-administration/aclresource/update') {
+            $allBasParameter = AclresourceBusinessActivitiesParams::getParameters($objectId, 'all_business_activities');
+            $event->addParameters(array(
+                'centreon-bam__aclresource_all_bas' => $allBasParameter['all_business_activities']
+            ));
+        }
+    }
 }

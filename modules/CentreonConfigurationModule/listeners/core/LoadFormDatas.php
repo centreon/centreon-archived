@@ -32,38 +32,27 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Centreon\Internal\Form\Component;
 
-use Centreon\Internal\Di;
+namespace CentreonConfiguration\Listeners\Core;
 
-/**
- * Html Checkbox element
- * Checkbox with no label
- * 
- * @author Sylvestre Ho <sho@centreon.com>
- * @package Centreon
- * @subpackage Core
- */
-class Singlecheckbox extends Component
+use Centreon\Events\LoadFormDatas as LoadFormDatasEvent;
+use CentreonConfiguration\Models\AclresourceHostsParams;
+
+class LoadFormDatas
 {
     /**
-     * Return the HTML ouput of the checkbox field
-     * 
-     * @param array $element
-     * @return array
+     * @param Core\Events\LoadFormDatas $event
      */
-    public static function renderHtmlInput(array $element)
+    public static function execute(LoadFormDatasEvent $event)
     {
-        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
-            $element['id'] = $element['name'];
+        $route = $event->getRoute();
+        $objectId = $event->getObjectId();
+        $parameters = $event->getParameters();
+        if ($route === '/centreon-administration/aclresource/update') {
+            $allHostsParameter = AclresourceHostsParams::getParameters($objectId, 'all_hosts');
+            $event->addParameters(array(
+                'centreon-configuration__aclresource_all_hosts' => $allHostsParameter['all_hosts']
+            ));
         }
-
-        $tpl = Di::getDefault()->get('template');
-
-        $tpl->assign('element', $element);
-
-        return array(
-            'html' => $tpl->fetch('file:[Core]/form/component/singlecheckbox.tpl'),
-        );
     }
 }

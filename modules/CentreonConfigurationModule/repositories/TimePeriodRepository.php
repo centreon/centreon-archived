@@ -63,7 +63,7 @@ class TimePeriodRepository extends Repository
      */
     public static $unicityFields = array(
         'fields' => array(
-            'timeperiod' => 'cfg_timeperiods,tp_id,tp_name'
+            'timeperiod' => 'cfg_timeperiods, tp_id, tp_name'
         ),
     );
 
@@ -88,5 +88,33 @@ class TimePeriodRepository extends Repository
             return $row["tp_name"];
         }
         return "";
+    }
+    
+    
+    /**
+     * 
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     * @param type $validate
+     * @param type $validateMandatory
+     * @return type
+     */
+     
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {       
+        parent::create($givenParameters, $origin, $route, $validateMandatory);
+    }
+    /**
+     * 
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     * @param type $validate
+     * @param type $validateMandatory
+     */
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {    
+        parent::update($givenParameters, $origin, $route, $validate, $validateMandatory);
     }
 }

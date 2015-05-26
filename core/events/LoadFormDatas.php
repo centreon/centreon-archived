@@ -32,38 +32,44 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Centreon\Internal\Form\Component;
 
-use Centreon\Internal\Di;
+namespace Centreon\Events;
 
 /**
- * Html Checkbox element
- * Checkbox with no label
- * 
- * @author Sylvestre Ho <sho@centreon.com>
- * @package Centreon
- * @subpackage Core
+ * This event allows modules to load form datas
  */
-class Singlecheckbox extends Component
+class LoadFormDatas
 {
-    /**
-     * Return the HTML ouput of the checkbox field
-     * 
-     * @param array $element
-     * @return array
-     */
-    public static function renderHtmlInput(array $element)
+    private $route;
+    private $objectId;
+    private $parameters;
+
+    public function __construct($route, $objectId, $parameters = array())
     {
-        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
-            $element['id'] = $element['name'];
+        $this->route = $route;
+        $this->objectId = $objectId;
+        $this->parameters = $parameters;
+    }
+
+    public function getRoute()
+    {
+        return $this->route;
+    }
+
+    public function getObjectId()
+    {
+        return $this->objectId;
+    }
+
+    public function getParameters()
+    {
+        return $this->parameters;
+    }
+
+    public function addParameters($params = array())
+    {
+        foreach ($params as $key => $value) {
+            $this->parameters[$key] = $value;
         }
-
-        $tpl = Di::getDefault()->get('template');
-
-        $tpl->assign('element', $element);
-
-        return array(
-            'html' => $tpl->fetch('file:[Core]/form/component/singlecheckbox.tpl'),
-        );
     }
 }

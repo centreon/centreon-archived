@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -31,22 +32,37 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
 
-namespace CentreonAdministration\Models;
 
-use Centreon\Models\CentreonBaseModel;
+namespace CentreonConfiguration\Controllers;
+
+use Centreon\Controllers\FormController;
 
 /**
- * Used for interacting with Acl Actions
+ * Description of LdapController
  *
- * @author sylvestre
+ * @author bsauveton
  */
-class Aclaction extends CentreonBaseModel
-{
-    protected static $table = "cfg_acl_actions";
-    protected static $primaryKey = "acl_action_id";
-    protected static $uniqueLabelField = "acl_action_name";
+class AuthController extends FormController{
+    
+    protected $objectDisplayName = 'Auth';
+    public static $objectName = 'auth';
+    public static $enableDisableFieldName = 'ar_enable';
+    protected $datatableObject = '\CentreonConfiguration\Internal\AuthDatatable';
+    protected $objectBaseUrl = '/centreon-configuration/auth';
+    protected $objectClass = '\CentreonConfiguration\Models\AuthRessource';
+    protected $repository = '\CentreonConfiguration\Repository\AuthRessourceRepository';
+
+    
+    public static $relationMap = array(
+
+    );
+    
+    public static $isDisableable = true;
+    
+    
+    
+    //put your code here
 }
