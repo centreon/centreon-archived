@@ -89,7 +89,7 @@ class SchemaBuilder
      * @param string $destPath
      * @param string $module
      */
-    public function __construct($dbName, $destPath = "", $module = 'all')
+    public function __construct($dbName, $destPath = "", $module = 'centreon')
     {
         $this->dbName = $dbName;
         
@@ -178,7 +178,7 @@ class SchemaBuilder
      * @param string $destinationPath
      * @param string $module
      */
-    private function copyModulesTablesFiles($destinationPath, $module = 'all')
+    private function copyModulesTablesFiles($destinationPath, $module = 'centreon')
     {
         $fileList = $this->getModulesTablesFiles($module);
         
@@ -200,7 +200,7 @@ class SchemaBuilder
      * @param string $module
      * @return array
      */
-    private function getModulesTablesFiles($module = 'all')
+    private function getModulesTablesFiles($module = 'centreon')
     {
         // Get Mandatory tables files
         $fileList = File::getFiles($this->appPath . '/install/db/' . $this->dbName, 'xml');

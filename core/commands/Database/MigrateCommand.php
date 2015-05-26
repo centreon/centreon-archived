@@ -53,7 +53,7 @@ class MigrateCommand extends AbstractCommand
      * 
      * @param string $module
      */
-    public function generateDiffAction($module = 'all')
+    public function generateDiffAction($module = 'centreon')
     {
         InputOutput::display(_("Generates SQL diff between the XML schemas and the current database structure"));
         $diffGenerator = new GenerateDiff($module);
@@ -62,29 +62,32 @@ class MigrateCommand extends AbstractCommand
     
     /**
      * 
+     * @param string $module
      */
-    public function downAction()
+    public function downAction($module = 'centreon')
     {
         InputOutput::display(_("Executes the next migrations down"));
-        $migrationManager = new Migrate();
+        $migrationManager = new Migrate($module);
         $migrationManager->down();
     }
     
     /**
      * 
+     * @param string $module
      */
-    public function statusAction()
+    public function statusAction($module = 'centreon')
     {
         InputOutput::display(_("Lists the migrations yet to be executed"));
     }
     
     /**
      * 
+     * @param string $module
      */
-    public function upAction()
+    public function upAction($module = 'centreon')
     {
         InputOutput::display(_("Executes the next migrations up"));
-        $migrationManager = new Migrate('');
+        $migrationManager = new Migrate($module);
         $migrationManager->up();
     }
 }

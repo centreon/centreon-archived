@@ -48,10 +48,11 @@ class GenerateDiff extends PropelMigration
 {
     /**
      * 
+     * @param string $module
      */
-    public function __construct()
+    public function __construct($module = 'centreon')
     {
-        parent::__construct();
+        parent::__construct($module);
     }
     
     /**

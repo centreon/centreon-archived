@@ -48,11 +48,12 @@ class Migrate extends PropelMigration
 {
     /**
      * 
+     * @param string $module
      * @param string $migrationClassPath
      */
-    public function __construct($migrationClassPath = null)
+    public function __construct($module = 'centreon', $migrationClassPath = null)
     {
-        parent::__construct();
+        parent::__construct($module);
         
         if (!is_null) {
             $this->outputDir = $migrationClassPath;

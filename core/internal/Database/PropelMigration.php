@@ -100,14 +100,21 @@ class PropelMigration
      * @var \Centreon\Internal\Database\SchemaBuilder 
      */
     protected $mySchemaBuilder;
+    
+    /**
+     *
+     * @var string 
+     */
+    protected $module;
 
 
     /**
      * 
      * @param string $module
      */
-    public function __construct($module = 'all')
+    public function __construct($module = 'centreon')
     {
+        $this->module = $module;
         $this->di = Di::getDefault();
         $this->appConfig = $this->di->get('config');
         $this->propelConfiguration['datasources'] = array('centreon' => array(
@@ -121,7 +128,8 @@ class PropelMigration
         
         $this->appPath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
         
-        $this->tmpDir = rtrim($this->appConfig->get('global', 'centreon_generate_tmp_dir'), '/') . '/centreon/propel';
+        $this->tmpDir = rtrim($this->appConfig->get('global', 'centreon_generate_tmp_dir'), '/')
+            . '/'. $this->module . '/propel';
         if (file_exists($this->tmpDir)) {
             Directory::delete($this->tmpDir, true);
         }
@@ -249,8 +257,8 @@ EOT;
         $properties = array_merge(
             array(
                 'propel.database'           => 'mysql',
-                'propel.project'            => 'centreon',
-                'propel.targetPackage'      => 'centreon',
+                'propel.project'            => $this->module,
+                'propel.targetPackage'      => $this->module,
                 'project.dir'               => $this->tmpDir . '/',
                 'propel.output.dir'         => $this->outputDir,
                 'propel.schema.dir'         => $this->tmpDir . '/schema/',
