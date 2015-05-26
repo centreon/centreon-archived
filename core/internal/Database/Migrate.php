@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,80 +34,45 @@
  * 
  */
 
-namespace Centreon\Commands\Module;
+namespace Centreon\Internal\Database;
 
-use Centreon\Internal\Module\Informations;
-use Centreon\Internal\Command\AbstractCommand;
-use Centreon\Internal\Installer\StaticFiles;
-use Centreon\Internal\Installer\Form;
+use Centreon\Internal\Exception;
+use Centreon\Internal\Di;
 
 /**
- * Command line for module management
+ * Description of Migrate
  *
- * @author Lionel Assepo
- * @version 3.0.0
- * @package Centreon
- * @subpackage Core
+ * @author lionel
  */
-class ManageCommand extends AbstractCommand
+class Migrate extends PropelMigration
 {
     /**
      * 
      * @param string $module
-     * @param integer $verbose
+     * @param string $migrationClassPath
      */
-    public function installAction($module, $verbose = 1)
+    public function __construct($module = 'centreon', $migrationClassPath = null)
     {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->install($verbose);
-    }
-    
-    /**
-     * 
-     * @param string $module
-     * @param integer $verbose
-     */
-    public function upgradeAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->upgrade($verbose);
-    }
-    
-    /**
-     * 
-     * @param string $module
-     * @param integer $verbose
-     */
-    public function uninstallAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->uninstall($verbose);
-    }
-    
-    /**
-     * 
-     * @param string $module
-     * @param integer $removeOld
-     */
-    public function deployStaticAction($module, $removeOld = 1)
-    {
-        if ($removeOld == true) {
-            StaticFiles::remove($module);
+        parent::__construct($module);
+        
+        if (!is_null) {
+            $this->outputDir = $migrationClassPath;
         }
-        StaticFiles::deploy($module);
     }
     
     /**
      * 
-     * @param string $module
      */
-    public function deployFormsAction($module)
+    public function down()
     {
-        $modulePath = Informations::getModulePath($module);
-        $moduleId = Informations::getModuleIdByName($module);
-        $formsFiles = $modulePath . '/install/forms/*.xml';
-        foreach (glob($formsFiles) as $xmlFile) {
-            Form::installFromXml($moduleId, $xmlFile);
-        }
+        $this->runPhing('migration-down');
+    }
+    
+    /**
+     * 
+     */
+    public function up()
+    {
+        $this->runPhing('migration-up');
     }
 }

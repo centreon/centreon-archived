@@ -33,80 +33,61 @@
  * 
  */
 
-namespace Centreon\Commands\Module;
+namespace Centreon\Commands\Database;
 
-use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Command\AbstractCommand;
-use Centreon\Internal\Installer\StaticFiles;
-use Centreon\Internal\Installer\Form;
+use Centreon\Internal\Exception;
+use Centreon\Internal\Di;
+use Centreon\Internal\Utils\CommandLine\InputOutput;
+use Centreon\Internal\Database\GenerateDiff;
+use Centreon\Internal\Database\Migrate;
 
 /**
- * Command line for module management
+ * Description of MigrateCommand
  *
- * @author Lionel Assepo
- * @version 3.0.0
- * @package Centreon
- * @subpackage Core
+ * @author Lionel Assepo <lassepo@centreon.com>
  */
-class ManageCommand extends AbstractCommand
+class MigrateCommand extends AbstractCommand
 {
     /**
      * 
      * @param string $module
-     * @param integer $verbose
      */
-    public function installAction($module, $verbose = 1)
+    public function generateDiffAction($module = 'centreon')
     {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->install($verbose);
-    }
-    
-    /**
-     * 
-     * @param string $module
-     * @param integer $verbose
-     */
-    public function upgradeAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->upgrade($verbose);
-    }
-    
-    /**
-     * 
-     * @param string $module
-     * @param integer $verbose
-     */
-    public function uninstallAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->uninstall($verbose);
-    }
-    
-    /**
-     * 
-     * @param string $module
-     * @param integer $removeOld
-     */
-    public function deployStaticAction($module, $removeOld = 1)
-    {
-        if ($removeOld == true) {
-            StaticFiles::remove($module);
-        }
-        StaticFiles::deploy($module);
+        InputOutput::display(_("Generates SQL diff between the XML schemas and the current database structure"));
+        $diffGenerator = new GenerateDiff($module);
+        $diffGenerator->getDiff();
     }
     
     /**
      * 
      * @param string $module
      */
-    public function deployFormsAction($module)
+    public function downAction($module = 'centreon')
     {
-        $modulePath = Informations::getModulePath($module);
-        $moduleId = Informations::getModuleIdByName($module);
-        $formsFiles = $modulePath . '/install/forms/*.xml';
-        foreach (glob($formsFiles) as $xmlFile) {
-            Form::installFromXml($moduleId, $xmlFile);
-        }
+        InputOutput::display(_("Executes the next migrations down"));
+        $migrationManager = new Migrate($module);
+        $migrationManager->down();
+    }
+    
+    /**
+     * 
+     * @param string $module
+     */
+    public function statusAction($module = 'centreon')
+    {
+        InputOutput::display(_("Lists the migrations yet to be executed"));
+    }
+    
+    /**
+     * 
+     * @param string $module
+     */
+    public function upAction($module = 'centreon')
+    {
+        InputOutput::display(_("Executes the next migrations up"));
+        $migrationManager = new Migrate($module);
+        $migrationManager->up();
     }
 }

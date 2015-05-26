@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="centreon" defaultIdMethod="native">
     <table name="rt_hosts" phpName="Hosts" idMethod="native">
-        <column name="host_id" phpName="HostId" type="INTEGER" required="true"/>
+        <column name="host_id" phpName="HostId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
         <column name="instance_id" phpName="InstanceId" type="INTEGER" required="true"/>
         <column name="acknowledged" phpName="Acknowledged" type="BOOLEAN" size="1" required="false"/>

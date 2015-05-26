@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_customview" defaultIdMethod="native">
     <table name="cfg_widgets_parameters_multiple_options" phpName="WidgetParametersMultipleOptions" idMethod="native">
-        <column name="parameter_id" phpName="ParameterId" type="INTEGER" required="true"/>
+        <column name="parameter_id" phpName="ParameterId" primaryKey="true" type="INTEGER" required="true"/>
         <column name="option_name" phpName="OptionName" type="VARCHAR" size="255" required="true"/>
         <column name="option_value" phpName="OptionValue" type="VARCHAR" size="255" required="true"/>
         <foreign-key foreignTable="cfg_widgets_parameters" name="fk_option_parameter_id" onDelete="CASCADE" onUpdate="RESTRICT">

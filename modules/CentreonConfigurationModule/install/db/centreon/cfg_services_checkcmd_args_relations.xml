@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="cfg_services_checkcmd_args_relations" phpName="ServiceCheckcmdArgsRelations" idMethod="native">
-        <column name="service_id" phpName="ServiceId" type="INTEGER" required="true"/>
+        <column name="service_id" phpName="ServiceId" primaryKey="true" type="INTEGER" required="true"/>
         <column name="arg_number" phpName="ArgNumber" type="TINYINT" size="3" required="true"/>
         <column name="arg_value" phpName="ArgValue" type="VARCHAR" size="255" required="false"/>
         <foreign-key foreignTable="cfg_services" name="fk_service_checkcmd_args_relations" onDelete="CASCADE" onUpdate="RESTRICT">

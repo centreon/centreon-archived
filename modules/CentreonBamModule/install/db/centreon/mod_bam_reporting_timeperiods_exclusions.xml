@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="centreon" package="centreon_bam" defaultIdMethod="native">
   <table name="mod_bam_reporting_timeperiods_exclusions" idMethod="native" phpName="ModBamReportingTimeperiodsExclusions">
-    <column name="timeperiod_id" phpName="TimeperiodId" type="INTEGER" required="true"/>
-    <column name="excluded_timeperiod_id" phpName="ExcludedTimeperiodId" type="INTEGER" required="true"/>
+    <column name="timeperiod_id" phpName="TimeperiodId" primaryKey="true" type="INTEGER" required="true"/>
+    <column name="excluded_timeperiod_id" phpName="ExcludedTimeperiodId" primaryKey="true" type="INTEGER" required="true"/>
     <foreign-key foreignTable="mod_bam_reporting_timeperiods" name="mod_bam_reporting_timeperiods_exclusions_ibfk_1" onDelete="CASCADE">
       <reference local="timeperiod_id" foreign="timeperiod_id"/>
     </foreign-key>

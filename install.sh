@@ -73,6 +73,7 @@ service cbd start
 yum install -y centreon-engine
 chown centreon-engine.centreon-engine /etc/centreon-engine
 chmod 775 /etc/centreon-engine
+usermod -G centreon-engine,centreon-broker centreon-engine
 # FIXME, default conf/layout not good
 rm -rf /etc/centreon-engine/objects/*
 service centengine start

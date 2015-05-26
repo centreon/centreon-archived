@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_main" defaultIdMethod="native">
     <table name="cfg_options" phpName="Options" idMethod="native">
+        <column name="option_id" phpName="Optionid" primaryKey="true" type="INTEGER" autoIncrement="true" required="true"/>
         <column name="group" phpName="Group" type="VARCHAR" size="255" required="true" defaultValue="default"/>
         <column name="key" phpName="Key" type="VARCHAR" size="255" required="false"/>
         <column name="value" phpName="Value" type="VARCHAR" size="255" required="false"/>
