@@ -47,6 +47,8 @@ class BusinessActivity extends CentreonBaseModel
     protected static $table = "cfg_bam";
     protected static $primaryKey = "ba_id";
     protected static $uniqueLabelField = "name";
+
+    protected static $aclResourceType = 6;
     
     /**
      * 
