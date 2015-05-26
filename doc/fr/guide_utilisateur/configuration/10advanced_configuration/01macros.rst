@@ -99,7 +99,7 @@ Elles sont utilisées afin de pouvoir récupérer à un instant "t" la valeur d'
 Elles sont complémentaires aux macros standards. Exemple :
 
 * La macro standard $CONTACTEMAIL$ fait référence à l'adresse email du contact qui utilisera la commande de notification
-* La macro d'environnement $CONTACTEMAIL:merethis$ retournera l'adresse email de l'utilisateur "merethis"
+* La macro d'environnement $CONTACTEMAIL:centreon$ retournera l'adresse email de l'utilisateur "centreon"
 
 La documentation complète des macros à la demande est disponible à cette adresse `Liste des macros <http://nagios.sourceforge.net/docs/3_0/macrolist.html>`_.
 

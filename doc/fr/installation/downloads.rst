@@ -36,34 +36,38 @@ versions logicielles considérées comme en cours de développement.
 Centreon Web
 ************
 
-Archives: `<http://www.centreon.com/Content-Download/download-centreon>`_
+Archives: `<https://download.centreon.com/>`_
 
-git: `<http://git.centreon.com/centreon.git>`_
+github: `<https://github.com/centreon/centreon>`_
 
 ***************
 Centreon Engine
 ***************
 
-Archives: `<http://www.centreon.com/Content-Download/download-centreon-engine-centreon>`_
+Archives: `<https://download.centreon.com/>`_
 
-git: `<http://git.centreon.com/centreon-engine>`_
+github: `<https://github.com/centreon/centreon-engine>`_
 
 ***************
 Centreon Broker
 ***************
 
-Archives: `<http://www.centreon.com/Content-Download/download-centreon-broker-centreon>`_
+Archives: `<https://download.centreon.com/>`_
 
-git: `<http://git.centreon.com/centreon-broker.git>`_
+github: `<https://github.com/centreon/centreon-broker>`_
 
 ***********************
 Centreon Connector Perl
 ***********************
 
-git: `<http://git.centreon.com/centreon-connector>`_
+Archives: `<https://download.centreon.com/>`_
+
+github: `<https://github.com/centreon/centreon-connectors>`_
 
 **********************
 Centreon Connector SSH
 **********************
 
-git : `<http://git.centreon.com/centreon-connector>`_
+Archives: `<https://download.centreon.com/>`_
+
+github: `<https://github.com/centreon/centreon-connectors>`_

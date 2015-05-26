@@ -127,23 +127,21 @@ Save the file and restart Apache:
 Monitoring engine
 ******************
 
-Centreon is compatible with the following software:
+Centreon is compatible with:
 
 * :ref:`Centreon Engine <centreon-engine:user_installation_using_sources>`
-* `Nagios <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_
 
-Install one of these engines before continuing with the installation. Don’t forget to install the `Nagios plugins <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
+You can install it following the procedure in documentation. Don’t forget to install the `Nagios plugins <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
 
 ******************
 Stream Multiplexer
 ******************
 
-Centreon is compatible with the following software:
+Centreon is compatible with:
 
 * :ref:`Centreon Broker <centreon-broker:user_installation_using_sources>`
-* `NDOUtils <http://nagios.sourceforge.net/docs/ndoutils/NDOUtils.pdf>`_
 
-Install one of these Stream Multiplexers before continuing with the installation.
+Install this Stream Multiplexers before continuing with the installation.
 
 ********
 Centreon
@@ -183,7 +181,7 @@ If the Prerequisites installation step has been run successfully you should have
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.5.0                                   #
+  #                                    v2.6.1                                   #
   #                                                                             #
   #                              infos@centreon.com                             #
   #                                                                             #

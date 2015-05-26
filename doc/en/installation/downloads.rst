@@ -30,34 +30,39 @@ The last format available is oriented for developers or beta-testers. No officia
 Centreon Web
 ************
 
-Tarballs: `<http://www.centreon.com/Content-Download/download-centreon-stable-archive>`_
+Tarballs: `<https://download.centreon.com/>`_
 
-git: `<http://git.centreon.com/centreon.git>`_
+github: `<https://github.com/centreon/centreon>`_
 
 ***************
 Centreon Engine
 ***************
 
-Tarballs: `<http://www.centreon.com/Content-Download/download-centreon-engine>`_
+Tarballs: `<https://download.centreon.com/>`_
 
-git: `<http://git.centreon.com/centreon-engine>`_
+github: `<https://github.com/centreon/centreon-engine>`_
 
 ***************
 Centreon Broker
 ***************
 
-Tarballs: `<http://www.centreon.com/Content-Download/download-centreon-broker>`_
+Tarballs: `<https://download.centreon.com/>`_
 
-git: `<http://git.centreon.com/centreon-broker.git>`_
+github: `<https://github.com/centreon/centreon-broker>`_
 
 ***********************
 Centreon Connector Perl
 ***********************
 
-git: `<http://git.centreon.com/centreon-connector>`_
+Tarballs: `<https://download.centreon.com/>`_
+
+github: `<https://github.com/centreon/centreon-connectors>`_
 
 **********************
 Centreon Connector SSH
 **********************
 
-git : `<http://git.centreon.com/centreon-connector>`_
+Tarballs: `<https://download.centreon.com/>`_
+
+github: `<https://github.com/centreon/centreon-connectors>`_
+
