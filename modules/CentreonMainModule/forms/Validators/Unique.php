@@ -535,7 +535,9 @@ class Unique implements ValidatorInterface
             }
         }
         if ($sContext == 'client') {
-            $reponse = $bSuccess;
+            if (empty($sMessage)) 
+                $sMessage = true;
+            $reponse = $sMessage;
         } else {
             $reponse = array('success' => $bSuccess, 'error' => $sMessage);
         }
