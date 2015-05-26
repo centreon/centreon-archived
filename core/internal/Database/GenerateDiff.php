@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,80 +34,32 @@
  * 
  */
 
-namespace Centreon\Commands\Module;
+namespace Centreon\Internal\Database;
 
-use Centreon\Internal\Module\Informations;
-use Centreon\Internal\Command\AbstractCommand;
-use Centreon\Internal\Installer\StaticFiles;
-use Centreon\Internal\Installer\Form;
+use Centreon\Internal\Exception;
+use Centreon\Internal\Di;
 
 /**
- * Command line for module management
+ * Description of GenerateDiff
  *
- * @author Lionel Assepo
- * @version 3.0.0
- * @package Centreon
- * @subpackage Core
+ * @author lionel
  */
-class ManageCommand extends AbstractCommand
+class GenerateDiff extends PropelMigration
 {
     /**
      * 
      * @param string $module
-     * @param integer $verbose
      */
-    public function installAction($module, $verbose = 1)
+    public function __construct($module = 'centreon')
     {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->install($verbose);
+        parent::__construct($module);
     }
     
     /**
      * 
-     * @param string $module
-     * @param integer $verbose
      */
-    public function upgradeAction($module, $verbose = 1)
+    public function getDiff()
     {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->upgrade($verbose);
-    }
-    
-    /**
-     * 
-     * @param string $module
-     * @param integer $verbose
-     */
-    public function uninstallAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->uninstall($verbose);
-    }
-    
-    /**
-     * 
-     * @param string $module
-     * @param integer $removeOld
-     */
-    public function deployStaticAction($module, $removeOld = 1)
-    {
-        if ($removeOld == true) {
-            StaticFiles::remove($module);
-        }
-        StaticFiles::deploy($module);
-    }
-    
-    /**
-     * 
-     * @param string $module
-     */
-    public function deployFormsAction($module)
-    {
-        $modulePath = Informations::getModulePath($module);
-        $moduleId = Informations::getModuleIdByName($module);
-        $formsFiles = $modulePath . '/install/forms/*.xml';
-        foreach (glob($formsFiles) as $xmlFile) {
-            Form::installFromXml($moduleId, $xmlFile);
-        }
+        $this->runPhing('diff');
     }
 }

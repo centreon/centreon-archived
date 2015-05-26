@@ -38,25 +38,55 @@ namespace Centreon\Commands\Database;
 use Centreon\Internal\Command\AbstractCommand;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
-use Centreon\Internal\Installer\Database\Installer as DbInstaller;
 
-class ToolsCommand extends AbstractCommand
+/**
+ * Description of DumpCommand
+ *
+ * @author Lionel Assepo <lassepo@centreon.com>
+ */
+class DumpCommand extends AbstractCommand
 {
+    /**
+     * Extract data from a db table and prints a json string
+     *
+     * @param string $dbname | 'db_centreon' or 'db_storage'
+     * @param string $tablename
+     * @param string $extra
+     */
+    public function sqlToJsonAction($dbname, $tablename, $extra = '')
+    {
+        $db = Di::getDefault()->get($dbname);
+        $sql = "SELECT * FROM $tablename $extra";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $tab = array();
+        $i = 0;
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            foreach ($row as $k => $v) {
+                if (!is_null($v)) {
+                    $tab[$i][$k] = $v;
+                }
+            }
+            $i++;
+        }
+        echo json_encode($tab);
+    }
+    
     
      /**
      * Extract json file and prints a sql string 
      *
-     * @param string $file
+     * @param string $sFile
      * @param string $tablename
-     * @param string destination
+     * @sDestination
      */
-    public function jsonToSqlAction($file, $tablename, $destination = '')
+    public function jsonToSqlAction($sFile, $tablename, $sDestination = '')
     {
         $sInsert = "INSERT INTO ".$tablename."(";
-        if (file_exists($file)) {
+        if (file_exists($sFile)) {
             try {
                 $sColumns = '';
-                $aData = json_decode(file_get_contents($file), true);
+                $aData = json_decode(file_get_contents($sFile), true);
  
                 $sSql = '';
 
@@ -66,29 +96,19 @@ class ToolsCommand extends AbstractCommand
                 }
                 $sChars = $sInsert.$sColumns.") VALUES ".$sSql;
                 $sContent = substr($sChars, 0, strlen($sChars) - 2 ).";";
-               // echo $destination;
+               // echo $sDestination;
                 
-                if (empty($destination)) {
+                if (empty($sDestination)) {
                     echo $sContent;
                 } else  {
-                    if (file_exists($destination)) {
-                        file_put_contents($sContent, $destination);
+                    if (file_exists($sDestination)) {
+                        file_put_contents($sContent, $sDestination);
                     } else throw new Exception("invalide desination");
                 }
              
             } catch (Exception $ex) {
-                throw new Exception("invalid content");
-                //return "invalid content";
+                 return "invalid content";
             } 
         }
-    }
-
-    /**
-     * 
-     */
-    public function generateMigrationClassAction()
-    {
-        $myMigrationManager = new DbInstaller();
-        $myMigrationManager->generateDiffClasses('/tmp');
     }
 }
