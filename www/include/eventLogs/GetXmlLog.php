@@ -44,7 +44,7 @@ header('Content-Disposition: attachment; filename="eventLogs-' . time() . '.xml"
 /** ****************************
  * Include configurations files
  */
-include_once "/etc/centreon/@CENTREON_ETC@";
+include_once "@CENTREON_ETC@/centreon.conf.php";
 
 /*
  * Require Classes
