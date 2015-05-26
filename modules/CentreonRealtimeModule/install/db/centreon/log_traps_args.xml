@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="centreon" defaultIdMethod="native">
     <table name="log_traps_args" phpName="LogTrapsArgs" idMethod="native">
-        <column name="fk_log_traps" phpName="FkLogTraps" type="INTEGER" required="true"/>
+        <column name="fk_log_traps" phpName="FkLogTraps" type="INTEGER" primaryKey="true" required="true"/>
         <column name="arg_number" phpName="ArgNumber" type="INTEGER" required="false"/>
         <column name="arg_oid" phpName="ArgOid" type="VARCHAR" size="255" required="false"/>
         <column name="arg_value" phpName="ArgValue" type="VARCHAR" size="255" required="false"/>

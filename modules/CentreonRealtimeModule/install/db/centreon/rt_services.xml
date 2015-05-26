@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="centreon" defaultIdMethod="native">
     <table name="rt_services" phpName="Services" idMethod="native">
-        <column name="host_id" phpName="HostId" type="INTEGER" required="true"/>
+        <column name="host_id" phpName="HostId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="description" phpName="Description" type="VARCHAR" size="255" required="true"/>
-        <column name="service_id" phpName="ServiceId" type="INTEGER" required="true"/>
+        <column name="service_id" phpName="ServiceId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="acknowledged" phpName="Acknowledged" type="BOOLEAN" size="1" required="false"/>
         <column name="acknowledgement_type" phpName="AcknowledgementType" type="SMALLINT" required="false"/>
         <column name="action_url" phpName="ActionUrl" type="VARCHAR" size="255" required="false"/>

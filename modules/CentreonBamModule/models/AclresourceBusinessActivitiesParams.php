@@ -34,18 +34,18 @@
  *
  */
 
-namespace CentreonAdministration\Models;
+namespace CentreonBam\Models;
 
 use Centreon\Models\CentreonBaseModel;
 
 /**
- * Used for interacting with Acl Menus
+ * Used for interacting with Acl Resource business activities params
  *
- * @author sylvestre
+ * @author Kevin Duret <kduret@centreon.com>
  */
-class Aclmenu extends CentreonBaseModel
+class AclresourceBusinessActivitiesParams extends CentreonBaseModel
 {
-    protected static $table = "cfg_acl_menus";
-    protected static $primaryKey = "acl_menu_id";
-    protected static $uniqueLabelField = "name";
+    protected static $table = "cfg_acl_resources_business_activities_params";
+    protected static $primaryKey = "acl_resource_id";
+    protected static $uniqueLabelField = "acl_resource_id";
 }

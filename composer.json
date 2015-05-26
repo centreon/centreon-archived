@@ -9,7 +9,7 @@
         "monolog/monolog": "dev-master",
         "desarrolla2/cache": "1.8.0",
         "klein/klein": "2.0.2",
-        "propel/propel1": "~1.7",
+        "propel/propel1": "1.7.*@dev",
         "oyejorge/less.php": "1.7.*",
         "rych/hash_pbkdf2-compat": "1.0.*",
         "elasticsearch/elasticsearch": "~1.0",

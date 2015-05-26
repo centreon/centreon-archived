@@ -78,6 +78,7 @@
             $commandeLineManager->executeRequest();
             exit(0);
         }
+        exit(0);
     } catch(\Exception $e) {
         \Centreon\Internal\Utils\CommandLine\InputOutput::display(
             '[Error ' . $e->getCode() . '] => ' . $e->getMessage(),

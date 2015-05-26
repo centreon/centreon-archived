@@ -31,22 +31,52 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
+namespace CentreonConfiguration\Forms\Components;
 
-namespace CentreonAdministration\Models;
-
-use Centreon\Models\CentreonBaseModel;
+use Centreon\Internal\Di;
+use Centreon\Internal\Form\Component\Component;
 
 /**
- * Used for interacting with Acl Actions
+ * Component for select the period
  *
- * @author sylvestre
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
+ * @package CentreonConfiguration
+ * @subpackage Form
+ * @version 3.0.0
  */
-class Aclaction extends CentreonBaseModel
+class Scheduleddowntimecalendar extends Component
 {
-    protected static $table = "cfg_acl_actions";
-    protected static $primaryKey = "acl_action_id";
-    protected static $uniqueLabelField = "acl_action_name";
+    /**
+     * Generate and return the html for the element
+     *
+     * @param array $element The element to parse
+     * @return array
+     */
+    public static function renderHtmlInput(array $element)
+    {
+        $tpl = Di::getDefault()->get('template');
+        $weeklyDays = array(
+            0 => "sunday",
+            1 => "monday",
+            2 => "tuesday",
+            3 => "wednesday",
+            4 => "thursday",
+            5 => "friday",
+            6 => "saturday"
+        );
+
+        $tpl->assign('element', $element);
+        $tpl->assign('weeklyDays', $weeklyDays);
+        $tpl->addCss('centreon.scheduled-downtime.css', 'centreon-configuration');
+        $tpl->addCss('bootstrap-datetimepicker.min.css');
+        $tpl->addJs('centreon.scheduled-downtime.js', 'bottom', 'centreon-configuration');
+        $tpl->addJs('hogan-3.0.0.min.js');
+        $tpl->addJs('bootstrap-datetimepicker.min.js');
+         
+        return array(
+            'html' => $tpl->fetch('file:[CentreonConfigurationModule]/forms/components/scheduled_downtime_calendar.tpl'),
+        );
+    }
 }

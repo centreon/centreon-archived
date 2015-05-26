@@ -78,21 +78,23 @@ class GraphTemplate extends FormRepository
             VALUES (:tmpl_id, :name, :color, :neg, :fill)";
         $stmt = $dbconn->prepare($query);
         /* Insert metrics */
-        for ($i = 1; $i < count($params['metric_id']); $i++) {
-            $negative = 0;
-            if (isset($params['negative'][$i])) {
-                $negative = $params['negative'][$i];
+        if (isset($params['metric_id'])) {
+            for ($i = 1; $i < count($params['metric_id']); $i++) {
+                $negative = 0;
+                if (isset($params['negative'][$i])) {
+                    $negative = $params['negative'][$i];
+                }
+                $fill = 0;
+                if (isset($params['fill'][$i])) {
+                    $fill = $params['fill'][$i];
+                }
+                $stmt->bindValue(':tmpl_id', $id, \PDO::PARAM_INT);
+                $stmt->bindValue(':name', $params['metric_id'][$i], \PDO::PARAM_STR);
+                $stmt->bindValue(':color', $params['color'][$i], \PDO::PARAM_STR);
+                $stmt->bindValue(':neg', $negative, \PDO::PARAM_INT);
+                $stmt->bindValue(':fill', $fill, \PDO::PARAM_INT);
+                $stmt->execute();
             }
-            $fill = 0;
-            if (isset($params['fill'][$i])) {
-                $fill = $params['fill'][$i];
-            }
-            $stmt->bindValue(':tmpl_id', $id, \PDO::PARAM_INT);
-            $stmt->bindValue(':name', $params['metric_id'][$i], \PDO::PARAM_STR);
-            $stmt->bindValue(':color', $params['color'][$i], \PDO::PARAM_STR);
-            $stmt->bindValue(':neg', $negative, \PDO::PARAM_INT);
-            $stmt->bindValue(':fill', $fill, \PDO::PARAM_INT);
-            $stmt->execute();
         }
     } 
 

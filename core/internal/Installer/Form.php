@@ -195,10 +195,14 @@ class Form
     }
     /**
      * 
+     * @param type $aValidators
      */
-    public static function removeValidators()
+
+    public static function removeValidators($aValidators)
     {
-        Validators::delete();
+        foreach ($aValidators as $validator) {
+            Validators::delete($validator['name']);
+        }
     }
 
     /**

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="cfg_pollers_commands_relations" phpName="PollerCommandRelations" idMethod="native">
-        <column name="poller_id" phpName="PollerId" type="INTEGER" required="true"/>
-        <column name="command_id" phpName="CommandId" type="INTEGER" required="true"/>
+        <column name="poller_id" phpName="PollerId" primaryKey="true" type="INTEGER" required="true"/>
+        <column name="command_id" phpName="CommandId" primaryKey="true" type="INTEGER" required="true"/>
         <column name="command_order" phpName="CommandOrder" type="TINYINT" size="3" required="false"/>
         <foreign-key foreignTable="cfg_pollers" name="cfg_pollers_commands_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="poller_id" foreign="poller_id"/>

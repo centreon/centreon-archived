@@ -57,6 +57,9 @@ class Hosttemplate extends CentreonBaseModel
         "\CentreonConfiguration\Models\Relation\Host\Hostparents",
         "\CentreonConfiguration\Models\Relation\Host\Hostchildren"
     );
+
+    protected static $aclResourceType = 1;
+
     /*protected static $basicFilters = array(
         'host_register' => '0',
     );*/

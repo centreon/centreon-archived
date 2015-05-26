@@ -49,6 +49,8 @@ class Service extends CentreonBaseModel
     protected static $primaryKey = "service_id";
     protected static $uniqueLabelField = "description";
     protected static $simpleRelation = array('host_id' => '\CentreonRealtime\Models\Host');
+
+    protected static $aclResourceType = 2;
     
     /** 
      * 

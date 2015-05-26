@@ -77,9 +77,11 @@ class IndicatorController extends FormController
             $this->router->response()->json(array('success' => $aReturn['success'],'error' => $aReturn['error']));
             return;
         }
+        
+        $route = $this->getUri();
 
         try {
-            IndicatorRepository::createIndicator($givenParameters);
+            IndicatorRepository::createIndicator($givenParameters, 'wizard', $route);
             unset($_SESSION['form_token']);
             unset($_SESSION['form_token_time']);
             $this->router->response()->json(array('success' => true));

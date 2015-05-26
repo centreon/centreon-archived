@@ -39,6 +39,7 @@ use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
 use Centreon\Internal\Form;
 use Centreon\Internal\Form\Generator\Generator;
+use Centreon\Events\LoadFormDatas as LoadFormDatasEvent;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -344,8 +345,16 @@ class Full extends Generator
                 }
             }
             
-            // Merging with non-mapped form field and returend the values combined
-            $this->formHandler->setDefaults(array_merge($myValues, array_diff_key($this->formDefaults, $myValues)));
+            // Merging with non-mapped form field and returns the values combined
+            $eventDefaultValues = array_merge($myValues, array_diff_key($this->formDefaults, $myValues));
+
+            $events = Di::getDefault()->get('events');
+            $loadFormDatasEvent = new LoadFormDatasEvent($this->formRoute, $objectId, $eventDefaultValues);
+            $events->emit('core.load.form.datas', array($loadFormDatasEvent));
+
+            $finalDefaultValues = $loadFormDatasEvent->getParameters();
+
+            $this->formHandler->setDefaults($finalDefaultValues);
         } elseif (is_array($defaultValues)) {
             foreach ($defaultValues as $k => $v) {
                 $this->formDefaults[$k] = $v;

@@ -5,9 +5,9 @@
         <redirect>1</redirect>
         <redirect_route>/centreon-administration/aclresource</redirect_route>
         <section name="Hosts and services">
-            <block name="General">
-            <field name="aclresource_all_hosts" label="All hosts" default_value="0" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
-            </field>
+            <block name="General information">
+                <field name="aclresource_all_hosts" label="All hosts" default_value="0" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
+                </field>
             </block>
             <block name="Hosts">
                 <field name="aclresource_hosts" label="Linked hosts" default_value="" advanced="0" type="select" parent_field="centreon-configuration__aclresource_all_hosts" parent_value="0" mandatory="0">
