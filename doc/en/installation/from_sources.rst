@@ -147,7 +147,7 @@ Install this Stream Multiplexers before continuing with the installation.
 Centreon
 ********
 
-Download the latest version of Centreon :ref:`here <download_web_src>`.
+Download the latest version of Centreon :ref:`here <https://download.centreon.com>`.
 
 
 Shell Installation
