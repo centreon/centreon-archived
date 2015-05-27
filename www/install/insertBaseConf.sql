@@ -815,8 +815,6 @@ INSERT INTO `cb_module_relation` (`cb_module_id`, `module_depend_id`, `inherit_c
 (2, 12, 1),
 (3, 11, 1),
 (3, 12, 1),
-(4, 11, 1),
-(4, 12, 1),
 (5, 6, 0),
 (7, 8, 0),
 (7, 12, 1),
