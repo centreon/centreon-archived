@@ -43,6 +43,8 @@ use Centreon\Internal\Utils\Dependency\PhpDependencies;
 use Centreon\Internal\Exception\Module\MissingDependenciesException;
 use Centreon\Internal\Exception\Module\DependenciesConstraintException;
 use Centreon\Internal\Exception\Module\CoreModuleRemovalConstraintException;
+use Centreon\Internal\Exception\Module\NotInstalledException;
+use Centreon\Internal\Exception\Module\AlreadyInstalledException;
 use Centreon\Internal\Installer\Versioning;
 use Centreon\Internal\Installer\Form;
 use Centreon\Internal\Exception\FilesystemException;
@@ -130,6 +132,11 @@ abstract class AbstractModuleInstaller
      */
     public function install()
     {
+        if (Informations::isModuleInstalled($this->moduleSlug)) {
+            $exceptionMessage = _("The given module is already installed");
+            throw new AlreadyInstalledException($this->colorizeMessage($exceptionMessage, 'danger'), 1110);
+        }
+        
         // Starting Message
         $message = _("Starting installation of %s module");
         $this->displayOperationMessage(
@@ -190,6 +197,11 @@ abstract class AbstractModuleInstaller
      */
     public function upgrade()
     {
+        if (!Informations::isModuleInstalled($this->moduleSlug)) {
+            $exceptionMessage = _("The given module is not installed");
+            throw new NotInstalledException($this->colorizeMessage($exceptionMessage, 'danger'), 1109);
+        }
+        
         // Starting Message
         $message = _("Starting upgrade of %s module");
         $this->displayOperationMessage(
@@ -244,6 +256,11 @@ abstract class AbstractModuleInstaller
      */
     public function uninstall()
     {
+        if (!Informations::isModuleInstalled($this->moduleSlug)) {
+            $exceptionMessage = _("The given module is not installed");
+            throw new NotInstalledException($this->colorizeMessage($exceptionMessage, 'danger'), 1109);
+        }
+        
         $coreModule = Informations::getCoreModuleList();
         if (in_array($this->moduleSlug, $coreModule)) {
             $exceptionMessage = _("This module is a core module and therefore can't be uninstalled");
