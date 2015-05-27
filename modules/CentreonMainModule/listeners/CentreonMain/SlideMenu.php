@@ -47,29 +47,31 @@ class SlideMenu
         $router = Di::getDefault()->get('router');
         try{
             
-            $event->addMenu(
+            $event->setDefaultMenu(
                 array(
                     'name' => 'host',
                     'url' => $router->getPathFor('/centreon-configuration/host/snapshotslide/') . $event->getHostId(),
                     'icon' => '',
                     'order' => 1,
                     'tpl' => "/viewtpl/CentreonConfigurationModule/host_slide"
+
                 )
             );
             
             $event->addMenu(
                 array(
-                    'name' => 'templates',
+                    'name' => 'template',
                     'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconfslide/') . $event->getHostId(),
                     'icon' => '',
                     'order' => 2,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/templates_slide"
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/templates_slide",
+                    'default' => 1
                 )
             );
             
             $event->addMenu(
                 array(
-                    'name' => 'tags',
+                    'name' => 'tag',
                     'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/tags') ,
                     'icon' => '',
                     'order' => 3,
@@ -79,7 +81,7 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'services',
+                    'name' => 'service',
                     'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/service'),
                     'icon' => '',
                     'order' => 4,
@@ -89,7 +91,7 @@ class SlideMenu
             
             $event->addMenu(
                 array(
-                    'name' => 'incidents',
+                    'name' => 'incident',
                     'url' => $router->getPathFor('/centreon-realtime/host/'.$event->getHostId().'/issues'),
                     'icon' => '',
                     'order' => 5,
