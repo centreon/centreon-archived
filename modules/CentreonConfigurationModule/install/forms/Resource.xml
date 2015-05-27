@@ -24,7 +24,7 @@
 		  </attributes>
           <help>This is the list of all pollers using this resource.</help>
 		</field>
-        <field name="resource_comment" label="Comment" default_value="" advanced="0" type="textarea" parent_field="" mandatory="1">
+        <field name="resource_comment" label="Comment" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0">
           <help>This will be executed by Centreon Engine, note that this line contains macros that will be replaced before execution. e.g: centreon_resource_perl.</help>
         </field>
 		<field name="resource_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
