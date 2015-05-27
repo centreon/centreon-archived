@@ -343,3 +343,5 @@ Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur
 
 
 Laissez la mise à jour se faire puis redémarrer le serveur dans le cas d'une mise à jour du noyau.
+
+Vous pouvez commencer la configuration en cliquant :ref:`ici<configuration_start>`.

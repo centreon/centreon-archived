@@ -842,3 +842,5 @@ L'installation est maintenant terminée, cliquez sur le bouton **Next**, vous al
    :align: center
 
 Entrez votre pseudo et mot de passe pour vous connecter.
+
+Vous pouvez commencer la configuration en cliquant :ref:`ici<configuration_start>`.
