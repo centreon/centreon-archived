@@ -197,14 +197,20 @@ class HostController extends FormController
      * @route /host/[i:id]/tags
      */
     public function getHostTagsAction()
-    {
-        $requestParam = $this->getParams('named');
-        $tags = TagsRepository::getList('host', $requestParam['id']);
-        $this->tpl->assign('tags', $tags);
-        $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');
-    }
-    
-    
+        {
+            $requestParam = $this->getParams('named');
+            $tags = TagsRepository::getList('host', $requestParam['id']);
+            /*
+            echo '<pre>';
+            print_r($tags);
+            echo '</pre>';
+            die;*/
+            $this->router->response()->json($tags);
+            /*$this->tpl->assign('tags', $tags);
+            $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');*/
+        }
+
+
     /**
      * Update a host
      *
@@ -512,30 +518,21 @@ class HostController extends FormController
      * @route /host/[i:id]/service
      */
     public function hostForServiceAction()
-    {
-        /*
-        $requestParam = $this->getParams('named');
-        $repository = $this->repository;
-        $repository::getRelations();
-        $list = $repository::getRelations($relClass, $requestParam['id']);
-        $this->router->response()->json($list);
-        */
-        
-        $requestParam = $this->getParams('named');
-        $services = HostRepository::getServicesForHost(static::$relationMap['host_services'],$requestParam['id']);
-        //$formatedData = array();
-        $final = "";
-        foreach($services as $service){
-            //$formatedData[] = ServiceRepository::formatDataForTooltip($service);
-            $this->tpl->assign('checkdata', ServiceRepository::formatDataForTooltip($service));
-            $final .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+        {
+            $requestParam = $this->getParams('named');
+            $services = HostRepository::getServicesForHost(static::$relationMap['host_services'],$requestParam['id']);
+
+            foreach($services as &$service){
+                $service = ServiceRepository::formatDataForTooltip($service);
+            }
+            /*
+            echo '<pre>';
+            print_r($services);
+            echo '</pre>';
+            die;*/
+
+            $this->router->response()->json($services);
         }
-        
-        
-        //$this->router->response()->json($formatedData);
-        //parent::getRelations(static::$relationMap['host_services']);
-        $this->router->response()->body($final);
-    }    
     
     /**
      * Get inheritance value

@@ -16,12 +16,10 @@
 
         /* Right side details */
 
-           // var tr = $('#datatable{$object} tbody');
-
-           //var $url_details = row.data('right_side_details');
-
             "rowCallback": function( row, data ) {
                 var t = data.DT_RowData.right_side_menu_list;
+
+                var d = data.DT_RowData.right_side_default_menu;
 
                 if (typeof t !== 'undefined') {
 
@@ -31,11 +29,17 @@
                        var sideItem = '';
                        var sideContent = '';
 
-                       for (var i=1;i<t.length;i++) {
+                        //Create default container
+
+                       var defaultWrapper = '<section id="'+d.name+'_Slider"></section>';
+
+                        // Create Side tab items
+
+                       for (var i=0;i<t.length;i++) {
                            sideItem += '<li><a href="#'+t[i].name+'_Slider"><i class="icon-'+t[i].name+'"></i>'+t[i].name+'</a></li>';
                            sideContent+='<section id="'+t[i].name+'_Slider"></section>';
                        }
-                       $('#sideRight').html('<nav><ul class="sideMenu">' + sideItem + '</ul></nav>' + sideContent);
+                       $('#sideRight').html(defaultWrapper+'<nav><ul class="sideMenu">' + sideItem + '</ul></nav>' + sideContent);
 
                        $('#sideRight').tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
                        $('#sideRight li').removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
@@ -58,6 +62,33 @@
                                 $('#sideRight').css('display','none');
                             }else {
 
+                                // default menu here
+
+                                $.ajax({
+                                    url: d.url,
+                                    type: "GET",
+                                    dataType: 'JSON',
+                                    success : function(e){
+
+                                        // remplir le menu correspondant
+
+                                        var a = '#' + d.name + '_Slider' ;
+                                        $.get(d.tpl, function(tpl){
+
+                                            var template = Hogan.compile(tpl);
+                                            var rendered = template.render(e);
+                                            $(a).html(rendered);
+                                        });
+
+                                        $('#tableLeft').css('margin-right','260px');
+                                        $('#sideRight').css('display','block');
+                                    },
+                                    error : function(error){
+                                    console.log('error');
+                                    }
+                                });
+
+
                                 $.each(t, function(index,item) {
 
                                     $('#tableLeft').css('margin-right','260px');
@@ -72,21 +103,16 @@
                                             // remplir le menu correspondant
 
                                             var c = '#' + item.name + '_Slider' ;
+                                            console.log(item.tpl);
+                                            $.get(item.tpl, function(tpl){
 
-                                            /*$.get('static/template.tpl', function(tpl){
-                                                var extTemplate = $(tpl).filter('#test').html();
-                                                var template = Hogan.compile(extTemplate);
-                                                var rendered = template.render(datum);
-                                                $(c).append(rendered);
+                                                var template = Hogan.compile(tpl);
+                                                var rendered = template.render(e);
+                                                $(c).html(rendered);
                                             });
 
-                                              var template = Hogan.compile("Follow");
-                                              var output = template.render(e);
-                                              $('#sideRight').append(output);*/
+                                            //console.log(c,e);
 
-                                            console.log(c,e);
-
-                                            $(c).append(e);
 
                                             $('#tableLeft').css('margin-right','260px');
                                             $('#sideRight').css('display','block');

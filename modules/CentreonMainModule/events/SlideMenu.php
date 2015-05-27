@@ -42,6 +42,7 @@ class SlideMenu
 {
     
     private $menuList = array();
+    private $defaultMenu = array();
     private $MendatorykeyList = array('name','url','icon','order','tpl');
     private $hostId;
     
@@ -105,5 +106,22 @@ class SlideMenu
             throw new Exception("Invalid menu nomenclature, array(".implode(",",array_keys($menuList))." ) sended, should be : array(name,url,icon,order,tpl)",0);
         }
     }
+
+    public function setDefaultMenu($defaultMenu){
+
+        if($this->testMenuArray($defaultMenu)){
+            $this->defaultMenu = $defaultMenu;
+        }else{
+            throw new Exception("Invalid menu nomenclature, array(".implode(",",array_keys($menuList))." ) sended, should be : array(name,url,icon,order,tpl)",0);
+        }
+
+    }
+
+    public function getDefaultMenu(){
+        return $this->defaultMenu;
+
+    }
+
+
     
 }
