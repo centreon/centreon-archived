@@ -14,11 +14,11 @@ Contents:
    :maxdepth: 2
 
    release_notes/index
+   architecture/index
    installation/index
    upgrade/index
    user/index
    guide_exploitation/index
-   architecture/index
    faq/index
    extendcentreon/index
 

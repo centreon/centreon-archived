@@ -141,30 +141,27 @@ Sauvegardez le fichier et redémarrez apache :
 Moteur de supervision
 *********************
 
-Centreon est compatible avec les logiciels suivants :
+Centreon est compatible avec :
 
 * :ref:`Centreon Engine <centreon-engine:user_installation_using_sources>`
-* `Nagios <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_
-* `Icinga <http://docs.icinga.org/latest/en/>`_
 
-Installez un de ces moteurs avant de poursuivre l'installation. N'oubliez pas d'installer les `Plugins Nagios <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
+Installez ce moteur avant de poursuivre l'installation. N'oubliez pas d'installer les `Plugins Nagios <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
 
 ********************
 Multiplexeur de flux
 ********************
 
-Centreon est compatible avec les logiciels suivants :
+Centreon est compatible avec :
 
 * :ref:`Centreon Broker <centreon-broker:user_installation_using_sources>`
-* `NDOUtils <http://nagios.sourceforge.net/docs/ndoutils/NDOUtils.pdf>`_
 
-Installez un de ces multiplexeurs de flux avant de poursuivre l'installation.
+Installez ce multiplexeurs de flux avant de poursuivre l'installation.
 
 ********
 Centreon
 ********
 
-Téléchargez la dernière version de Centreon :ref:`ici <download_web_src>`.
+Téléchargez la dernière version de Centreon `<https://download.centreon.com/>`_ .
 
 Installation shell
 ==================
@@ -203,7 +200,7 @@ d'installation des prérequis :
     #                         Centreon (www.centreon.com)                         #
     #                          Thanks for using Centreon                          #
     #                                                                             #
-    #                                    v2.5.0                                   #
+    #                                    v2.6.1                                   #
     #                                                                             #
     #                              infos@centreon.com                             #
     #                                                                             #
@@ -763,85 +760,4 @@ Après avoir sauvegardé le fichier, n'oubliez pas de redémarrer le service apa
 
 La base de données MySQL doit être disponible pour pouvoir continuer l'installation (localement ou non). Pour information nous recommandons MariaDB.
 
-  
-.. _installation_web:
-
-Installation web
-================
-
-.. note::
-
-   Vérifiez que les serveurs Apache et MySQL sont en cours d'exécution avant de poursuivre.
-
-Ouvrez votre navigateur web favori et rendez-vous à l'adresse :
-
-  ::
-
-    http://SERVER_ADDRESS/centreon
-
-Vous devriez voir la page suivante :
-
-.. image:: /images/installation/setup_1.png
-   :align: center
-
-Cliquez sur le bouton **Next** : 
-
-.. image:: /images/installation/setup_2.png
-   :align: center
-
-S'il manque un paquet installez-le et cliquer sur le bouton **Refresh**. Cliquez sur le bouton **Next** dès que tout est **OK** :
-
-
-.. image:: /images/installation/setup_3_1.png
-   :align: center
-
-Sélectionnez votre moteur de supervision. Suivant la sélection, le paramétrage est différent.
-
-Pour Centreon Engine :
-
-.. image:: /images/installation/setup_3_2.png
-   :align: center
-   
-Cliquez sur le bouton **Next** dès que tous les champs sont remplis.
-
-.. image:: /images/installation/setup_4.png
-   :align: center
-
-Sélectionnez votre multiplexeur de flux. Suivant la sélection, le paramétrage est différent.
-
-Pour Centreon Broker :
-
-.. image:: /images/installation/setup_4_2.png
-   :align: center
-
-Cliquez sur le bouton **Next** dès que tous les champs sont remplis.
-
-.. image:: /images/installation/setup_5.png
-   :align: center
-
-Remplissez le formulaire avec vos informations. Soyez sûre de vous souvenir de votre mot de passe. Cliquez sur le bouton **Next**.
-
-.. image:: /images/installation/setup_6.png
-   :align: center
-
-Remplissez le formulaire avec les informations concernant la base de données. Cliquez sur le bouton **Next**.
-
-.. image:: /images/installation/setup_7.png
-   :align: center
-
-La structure des bases de données va être créée durant cette étape. Tous doit être validé par **OK**.
-
-.. note::
-  Le processus d'installation peut vous demander de modifier le paramétrage du serveur MySQL pour ajouter **innodb_file_per_table=1** dans le fichier de configuration.
-
-Cliquez sur le bouton **Next**.
-
-.. image:: /images/installation/setup_8.png
-   :align: center
-
-L'installation est maintenant terminée, cliquez sur le bouton **Next**, vous allez être redirigé vers la page de connexion :
-
-.. image:: /images/guide_utilisateur/aconnection.png
-   :align: center
-
-Entrez votre pseudo et mot de passe pour vous connecter.
+Suivez la procédure d'installation web :ref:`ici <installation_web_ces>`. 

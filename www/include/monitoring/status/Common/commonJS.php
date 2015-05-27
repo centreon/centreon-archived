@@ -107,6 +107,12 @@ if (navigator.appName.substring(0, 3) == "Net") {
 }
 document.onmousemove = position;
 
+/* Reset trim function in order to be compatible with IE */
+if (typeof String.prototype.trim !== 'function') {
+	String.prototype.trim = function() {
+    	return this.replace(/^\s+|\s+$/g, ''); 
+  	}
+}
 
 /* Global event */
 /*  Graph */

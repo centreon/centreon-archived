@@ -40,7 +40,7 @@ go back to [Step 01] and install the prerequisites::
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.5.0                                   #
+  #                                    v2.6.0                                   #
   #                                                                             #
   #                               infos@centreon.com                            #
   #                                                                             #

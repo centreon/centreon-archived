@@ -105,7 +105,7 @@ while ($serviceGroup = $DBRESULT->fetchRow()) {
         // This is the same logic as the previous one except
         //   "FROM servicegroup_relation, service, host, host_service_relation, hostgroup_relation "
         //   "AND host.host_id = hostgroup_relation.host_host_id and host_service_relation.hostgroup_hg_id = hostgroup_relat    ion.hostgroup_hg_id  " .
-        $DBRESULT2 =& $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
+        $DBRESULT2 = $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
                                      "FROM servicegroup_relation, service, host, host_service_relation, hostgroup_relation " .
                                      "WHERE servicegroup_relation.servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
                                      "AND service.service_id = servicegroup_relation.service_service_id " .
@@ -163,12 +163,29 @@ while ($serviceGroup = $DBRESULT->fetchRow()) {
         }
         $DBRESULT2->free();
         unset($service);
-        if ($strTemp)
+
+        /* ******************************************
+         * Generate service linked to servictemplates
+         */
+        $linkedToTpl = 0;
+        $DBRESULT2 = $pearDB->query("SELECT service_description, service_id " .
+									"FROM servicegroup_relation, service " .
+									"WHERE servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
+									"AND service.service_id = servicegroup_relation.service_service_id " .
+									"AND service.service_activate = '1' AND service.service_register = '0'");
+        while ($service = $DBRESULT2->fetchRow()) {
+            $linkedToTpl++;
+        }
+        $DBRESULT2->free();
+        unset($service);
+
+        if ($strTemp) {
             $strDef .= print_line("members", $strTemp);
+        }
         $strDef .= "}\n\n";
         $i++;
     }
-    if ($generated && $strTemp){
+    if (($generated && $strTemp) || $linkedToTpl) {
         $str .= $strDef;
         $generatedSG[$serviceGroup["sg_id"]] = $serviceGroup["sg_name"];
     }
@@ -183,5 +200,3 @@ setFileMod($nagiosCFGPath.$tab['id']."/servicegroups.cfg");
 $DBRESULT->free();
 unset($str);
 unset($i);
-
-?>

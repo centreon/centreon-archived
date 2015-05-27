@@ -875,41 +875,29 @@ class CentreonGraph {
             return;
         }
 
-        $l_px = array( "8" => array("1000" => "Y", "1024" =>"Yi"), "7" => array("1000" => "Z", "1024" =>"Zi"), "6" => array("1000" => "E", "1024" =>"Ei"), "5" => array("1000" => "P", "1024" =>"Pi"), "4" => array("1000" => "T", "1024" =>"Ti"), "3" => array("1000" => "G", "1024" =>"Gi"), "2" => array("1000" => "M", "1024" =>"Mi"), "1" => array("1000" => "k", "1024" =>"Ki"), "0" => "", "-1" => "m", "-2" => "µ", "-3" => "n");
-        $l_cpx = 0;
-        $l_sign ="";
-        // base : default [1000]
-        if (isset($this->_RRDoptions["base"])) {
-            $l_base = $this->_RRDoptions["base"];
-        } else {
-            $l_base = 1000;
-        }
-        // unit
-        $l_unit = preg_replace("/^[YZEPTGMkKmµn]/", "", $l_unit);
-
-        if ($l_value<0) {
-            $l_sign = "-";
-            $l_value *= -1;
-        }
-
-        if ($l_value<1) {
-            do {
-                $l_value *= $l_base;
-                $l_cpx--;
-            } while ($l_value < 1);
-        } else {
+        if ($l_unit == 'B' || $l_unit == 'o' || $l_unit == 'b/s') {
+            if (isset($this->_RRDoptions["base"])) {
+                $l_base = $this->_RRDoptions["base"];
+            } else {
+                $l_base = 1000;
+            }
+            
+            $l_px = array( "8" => array("1000" => "Y", "1024" =>"Yi"), "7" => array("1000" => "Z", "1024" =>"Zi"), "6" => array("1000" => "E", "1024" =>"Ei"), "5" => array("1000" => "P", "1024" =>"Pi"), "4" => array("1000" => "T", "1024" =>"Ti"), "3" => array("1000" => "G", "1024" =>"Gi"), "2" => array("1000" => "M", "1024" =>"Mi"), "1" => array("1000" => "K", "1024" =>"Ki"));
+            $l_sign ="";
+            if ($l_value < 0) {
+                $l_sign = "-";
+                $l_value *= -1;
+            }
+            $l_cpx = 0;
             while ($l_value > $l_base) {
                 $l_value /= $l_base;
                 $l_cpx++;
             }
-        }
-        if ($l_cpx > 0) {
             $l_upx = $l_px[$l_cpx][$l_base];
-        } else {
-            $l_upx = $l_px[$l_cpx];
+            return $l_sign.sprintf("%.2f",$l_value).$l_upx.$l_unit;
         }
 
-        return $l_sign.sprintf("%.2f",$l_value).$l_upx.$l_unit;
+        return sprintf("%.2f", $l_value) . $l_unit;
     }
 
     /**

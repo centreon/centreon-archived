@@ -14,16 +14,19 @@ Installation shell
 ******************
 
 Extraire le paquet :
+  
   ::
 
   $ tar xvfz centreon-2.x.x.tar.gz
 
 Se déplacer de répertoire :
+  
   ::
 
   $ cd centreon-2.x.x
 
 Exécuter le script :
+  
   ::
 
   $ ./install -u /etc/centreon
@@ -43,7 +46,7 @@ revenir à l'étape [Step 01] et installer les prérequis :
     #                         Centreon (www.centreon.com)                         #
     #                          Thanks for using Centreon                          #
     #                                                                             #
-    #                                    v2.5.0                                   #
+    #                                    v2.6.0                                   #
     #                                                                             #
     #                               infos@centreon.com                            #
     #                                                                             #
@@ -76,6 +79,7 @@ Choix des composants principaux
 -------------------------------
 
 Chargement des paramètres d'installation précédents :
+  
   ::
 
     Do you want to use the last Centreon install parameters ?
@@ -88,6 +92,7 @@ Chargement des paramètres d'installation précédents :
     /etc/centreon/instCentWeb.conf
 
 Sélectionner les composants à mettre à jour :
+  
   ::
 
     Do you want to install : Centreon Web Front
@@ -113,6 +118,7 @@ Mise à jour de l'interface web
 De nouvelle informaitons sont nécessaires.
 
 Le chemin vers les binaires de centreon :
+  
   ::
 
     ------------------------------------------------------------------------
@@ -125,6 +131,7 @@ Le chemin vers les binaires de centreon :
     Path /usr/local/centreon/bin                               OK
 
 Le chemin de données supplémentaires pour Centreon Web :
+  
   ::
 
     Where is your Centreon data information directory
@@ -141,6 +148,7 @@ Le chemin de données supplémentaires pour Centreon Web :
 
 Le groupe applicatif Centreon. Ce groupe est utilisé pour les droits 
 d'accès entre les applications Centreon :
+  
   ::
     
     What is the Centreon group ? [centreon]
@@ -152,6 +160,7 @@ d'accès entre les applications Centreon :
     > y
 
 L'utilisateur applicatif Centreon :
+  
   ::
     
     What is the Centreon user ? [centreon]
@@ -181,6 +190,7 @@ Le chemin vers les journaux. Par exmeple :
 * Centeron Engine : */var/log/centreon-engine*
 
 Le chemin vers les sondes de supervision :
+
   ::
 
     Where is your monitoring plugins (libexec) directory ?

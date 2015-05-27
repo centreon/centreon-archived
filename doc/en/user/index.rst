@@ -1,3 +1,5 @@
+.. _configuration_start:
+
 ##########
 User guide
 ##########
@@ -6,7 +8,6 @@ User guide
    :maxdepth: 2
    :glob:
 
-   01a
    configuration/index
    monitoring/index
    graphic_management/index

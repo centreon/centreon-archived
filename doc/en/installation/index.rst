@@ -8,5 +8,6 @@ Installation
     :maxdepth: 2
 
     downloads
+    01a
     from_packages
     from_sources

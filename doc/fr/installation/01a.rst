@@ -1,36 +1,8 @@
 .. _firststepsces3:
 
-========================
-Premier pas avec CES 3.1
-========================
-
-*************************
-Comparaison avec CES 2.2
-*************************
-
-Le tableau suivant compare la version de CES 2.2 à la version de CES 3.1 :
-
-+------------------------+-----------------------------+
-|       CES 2.2          |         CES 3.1             | 
-+========================+=============================+
-|       CentOS 5         |         CentOS 6.6          |
-+------------------------+-----------------------------+
-| Centreon 2.4           |  Centreon 2.5.4             |
-+------------------------+-----------------------------+
-| MySQL 5.1              |  MariaDB 5.5                |
-+------------------------+-----------------------------+
-| Centreon Engine 1.2    |  Centreon Engine 1.4.8      |
-+------------------------+-----------------------------+
-| Centreon Broker 2.1    |  Centreon Broker 2.7.0      |
-+------------------------+-----------------------------+
-| N/A                    |  Centreon Connecteur 1.1.1  |
-+------------------------+-----------------------------+
-
-La liste des nouvelles fonctionnalités est disponible aux adresses suivantes :
-
-*	`Forge Centreon <https://forge.centreon.com/projects/centreon/roadmap>`_
-*	`Forge Centreon Engine <https://forge.centreon.com/projects/centreon-engine/roadmap>`_
-*	`Forge Centreon Broker <https://forge.centreon.com/projects/centreon-broker/roadmap>`_
+===============
+A partir de CES
+===============
 
 Pourquoi choisir Centreon Engine et Broker ?
 ============================================
@@ -38,7 +10,8 @@ Pourquoi choisir Centreon Engine et Broker ?
 Performances
 ------------
 Les différents tests effectués par les équipes de Centreon et quelques utilisateurs indépendants démontrent sans équivoque
-que le couple Centreon Engine et Centreon Broker est 8 à 9 fois plus performants que le couple Nagios/NDOUtils.
+que le couple Centreon Engine et Centreon Broker est 8 à 9 fois plus performants que le couple Nagios/NDOUtils. 
+Ainsi cette version de CES ne propose plus l'installation du couple Nagios/NDOUtils pair.
 
 Meilleure intégration à Centreon
 --------------------------------
@@ -47,7 +20,6 @@ L'interface de Centreon est de plus en plus orientée vers l'utilisation du brok
 *	Il existe un assistant de configuration pour Centreon Broker
 *   Les performances d'affichage sont grandement améliorées
 *   Certains filtres de sélection ne sont disponibles qu'avec le broker, Centreon Broker
-*	La prochaine version majeure de Centreon ne supportera plus le couple Nagios/NDOUtils
 
 Nouvelles fonctionnalités
 -------------------------
@@ -63,7 +35,7 @@ Plusieurs nouvelles fonctionnalités font leurs apparitions avec Centreon Broker
 Prérequis
 **********
 
-Le tableau ci-dessous donne les prérequis pour l'installation de CES 3.1 :
+Le tableau ci-dessous donne les prérequis pour l'installation de CES 3.2 :
 
 +------------------------+--------------------------+-------------------------------+---------------------------------+
 |  Nombre de services    |  Architecture conseillée |  Serveur central              |  Serveur(s) de collecte         |
@@ -100,7 +72,7 @@ Installation
 Etape 1 : Démarrage
 ====================
 
-Afin d'installer Centreon, démarrez votre serveur sur le support (créé à partir du fichier ISO) de Centreon Enterprise Server.
+Afin d'installer, démarrez votre serveur sur le support (créé à partir du fichier ISO) de Centreon Enterprise Server.
 
 Démarrez avec l'option **Install or upgrade an existing system** 
 
@@ -189,19 +161,6 @@ Il est possible de choisir différentes options à la question **Which server ty
 *	Poller server : Installe le serveur satellite (ordonnanceur et broker uniquement)
 *	Database server : Installe le serveur de base de données (utilisé en complément avec l'option **Central server without database**)
 
-Dans notre cas, nous allons choisir l'option **Centreon Server with database**.
-
-Choix de l'ordonnanceur et du broker
-------------------------------------
-
-Lors du choix de l'ordonnanceur et du broker, il est possible de choisir entre le couple Centreon Engine/Centreon Broker ou le couple Nagios/NDOUtils
-
-Dans notre cas, nous allons choisir l'option **Centreon Engine and Centreon Broker**.
-
-.. image :: /images/guide_utilisateur/abrokertoinstall.png
-   :align: center
-   :scale: 65%
-
 Une fois toutes ces options choisies, l'installation démarre. 
 
 .. image :: /images/guide_utilisateur/arpminstall.png
@@ -217,6 +176,8 @@ Lorsque l'installation est terminée, cliquez sur **Redémarrer**.
 *************
 Configuration
 *************
+
+.. _installation_web_ces:
 
 Via l'interface web
 ===================
@@ -371,7 +332,7 @@ L'interface web de Centreon est composée de plusieurs menus, chaque menu à une
 Avant d'aller plus loin
 =======================
 
-Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur CES 3.1. Pour cela :
+Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur CES 3.2. Pour cela :
 
  #.	Connectez-vous en tant que 'root' sur le serveur central
  #.	Tapez la commande 
@@ -382,3 +343,5 @@ Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur
 
 
 Laissez la mise à jour se faire puis redémarrer le serveur dans le cas d'une mise à jour du noyau.
+
+Vous pouvez commencer la configuration en cliquant :ref:`ici<configuration_start>`.

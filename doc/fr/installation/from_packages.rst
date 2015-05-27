@@ -1,8 +1,8 @@
 .. _install_from_packages:
 
-====================
-A partir des paquets
-====================
+===================
+A partir des dépôts
+===================
 
 Centreon fournit RPM pour ses produits au travers de la solution Centreon 
 Entreprise Server (CES) en version Open Sources et disponible gratuitement 
@@ -57,6 +57,9 @@ Exécutez la commande :
   ::
 
   $ yum install centreon-base-config-centreon-engine centreon
+
+
+Suivez la procédure d'installation web :ref:`ici <installation_web_ces>`.
 
 Installer un collecteur
 -----------------------

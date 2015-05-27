@@ -127,29 +127,27 @@ Save the file and restart Apache:
 Monitoring engine
 ******************
 
-Centreon is compatible with the following software:
+Centreon is compatible with:
 
 * :ref:`Centreon Engine <centreon-engine:user_installation_using_sources>`
-* `Nagios <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_
 
-Install one of these engines before continuing with the installation. Don’t forget to install the `Nagios plugins <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
+You can install it following the procedure in documentation. Don’t forget to install the `Nagios plugins <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
 
 ******************
 Stream Multiplexer
 ******************
 
-Centreon is compatible with the following software:
+Centreon is compatible with:
 
 * :ref:`Centreon Broker <centreon-broker:user_installation_using_sources>`
-* `NDOUtils <http://nagios.sourceforge.net/docs/ndoutils/NDOUtils.pdf>`_
 
-Install one of these Stream Multiplexers before continuing with the installation.
+Install this Stream Multiplexers before continuing with the installation.
 
 ********
 Centreon
 ********
 
-Download the latest version of Centreon :ref:`here <download_web_src>`.
+Download the latest version of Centreon :ref:`here <https://download.centreon.com>`.
 
 
 Shell Installation
@@ -183,7 +181,7 @@ If the Prerequisites installation step has been run successfully you should have
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.5.0                                   #
+  #                                    v2.6.1                                   #
   #                                                                             #
   #                              infos@centreon.com                             #
   #                                                                             #
@@ -759,86 +757,6 @@ After saving the file, please don't forget to restart apache server.
 
 The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
 
+After this step you should connect to Centreon to finalise the installation process.
+This step is described :ref:`here <installation_web_ces>`.
 
-.. _installation_web:
-
-Web Installation
-================
-
-.. note::
-
-   Make sure that your Apache and MySQL servers are up and running before continuing.
-
-Open your favorite web browser and go to the address:
-
- ::
-
-  http://SERVER_ADDRESS/centreon
-
-You should see the following page:
-
-.. image:: /_static/images/installation/setup_1.png
-   :align: center
-
-Click on the **Next** button:
-
-.. image:: /_static/images/installation/setup_2.png
-   :align: center
-
-If a package is missing install it and click on the **Refresh** button. Click on the **Next** button as soon as everything is **OK**:
-
-.. image:: /_static/images/installation/setup_3_1.png
-   :align: center
-
-Select your monitoring engine. Depending on the selection, the settings are different.
-
-For Centreon Engine:
-
-.. image:: /_static/images/installation/setup_3_2.png
-   :align: center
-
-Click on the **Next** button as soon as all the fields are filled.
-
-.. image:: /_static/images/installation/setup_4.png
-   :align: center
-
-Select your Stream Multiplexer. Depending on the selection, the settings are different.
-
-For Centreon Broker:
-
-.. image:: /_static/images/installation/setup_4_2.png
-   :align: center
-
-Click on the **Next** button when all parameters are filled.
-
-.. image:: /_static/images/installation/setup_5.png
-   :align: center
-
-Fill the form with your data. Be sure to remember your password. Click on the **next** button.
-
-
-.. image:: /_static/images/installation/setup_6.png
-   :align: center
-
-Fill the form with information about your database. Click on the **Next** button.
-
-.. image:: /_static/images/installation/setup_7.png
-   :align: center
-
-The database structure will be installed during this process. All must be validated by **OK**.
-
-.. note::
-
- The installation process may ask you to change the settings of the MySQL server to **add innodb_file_per_table=1** in the configuration file.
-
-Click on the **Next** button.
-
-.. image:: /_static/images/installation/setup_8.png
-   :align: center
-
-The installation is now finished, click on the ``Finish`` button, you will be redirected to the login screen:
-
-.. image:: /images/user/aconnection.png
-   :align: center
-
-Enter your credentials to log in.

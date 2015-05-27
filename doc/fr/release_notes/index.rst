@@ -1,5 +1,5 @@
 ################
-Note de versions
+Notes de version
 ################
 
 Ce chapitre est une reprise sans traduction de la documentation anglaise.
