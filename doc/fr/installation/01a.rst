@@ -11,7 +11,7 @@ Performances
 ------------
 Les différents tests effectués par les équipes de Centreon et quelques utilisateurs indépendants démontrent sans équivoque
 que le couple Centreon Engine et Centreon Broker est 8 à 9 fois plus performants que le couple Nagios/NDOUtils. 
-Ainsi cette version de CES ne propose plus l'installation du couple Nagios / NDOUtils pair.
+Ainsi cette version de CES ne propose plus l'installation du couple Nagios/NDOUtils pair.
 
 Meilleure intégration à Centreon
 --------------------------------

@@ -1,8 +1,8 @@
 .. _upgrade:
 
-#######
-Upgrade
-#######
+###########
+Mise à jour
+###########
 
 .. toctree::
 
