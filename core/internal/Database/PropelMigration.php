@@ -281,6 +281,7 @@ EOT;
         }
         
         // Build file
+        $args[] = '-q';
         $args[] = '-f';
         $args[] = realpath($this->propelPath.'/generator/build.xml');
         return $args;

@@ -229,8 +229,9 @@ class TagController extends Controller
         $get = $this->getParams();
         if (isset($get['search'])) {
             $sSearch = trim($get['search']);
+            $sSearch = str_replace('"','', $sSearch);
         }
-        
+
         $data = TagsRepository::getAllList($sSearch, 2);
         $this->router->response()->json($data);
     }
@@ -247,6 +248,7 @@ class TagController extends Controller
         $get = $this->getParams();
         if (isset($get['search'])) {
             $sSearch = trim($get['search']);
+            $sSearch = str_replace('"','', $sSearch);
         }
         
         $data = TagsRepository::getAllList($sSearch, 1);

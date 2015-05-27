@@ -190,7 +190,6 @@ class SchemaBuilder
         $nbOfFiles = count($fileList);
         for ($i=0; $i<$nbOfFiles; $i++) {
             $targetFile = $destinationPath . $this->dbName . '.' . basename($fileList[$i], '.xml') . '.schema.xml';
-            echo $targetFile . "\n";
             copy($fileList[$i], $targetFile);
         }
     }

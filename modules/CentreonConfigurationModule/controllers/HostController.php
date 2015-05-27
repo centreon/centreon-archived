@@ -589,7 +589,7 @@ class HostController extends FormController
         $di = Di::getDefault();
         $router = $di->get('router');
 
-        $list = TagsRepository::getList('host', "", 1, 0, 1);
+        $list = TagsRepository::getGlobalList('host');
 
         $router->response()->json($list);
     }
