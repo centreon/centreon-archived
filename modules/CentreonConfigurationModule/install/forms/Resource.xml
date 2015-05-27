@@ -7,13 +7,14 @@
 	<section name="General">
 	  <block name="General information">
 		<field name="resource_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-			<validators>
-			</validators>
-          <help>Name which will be used for identifying the resource.</help>
-        </field>
+		<validators>
+                    <validator rules="remote" serverside="centreon-main.unique" />
+                </validators>
+                <help>Name which will be used for identifying the resource.</help>
+                </field>
 		<field name="resource_line" label="MACRO Expression" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
-          <help>A short description of the resource.</help>
-        </field>
+                    <help>A short description of the resource.</help>
+                </field>
 		<field name="resource_pollers" label="Linked instances" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
