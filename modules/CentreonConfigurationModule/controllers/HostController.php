@@ -539,10 +539,6 @@ class HostController extends FormController
         $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus,'edit_url' => $edit_url));
     }
 
-    
-    
-    
-    
     /**
      * Get inheritance value
      *
