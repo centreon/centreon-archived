@@ -44,36 +44,14 @@ Le processus qui écrit dans ce répertoire est soit **cdb** soit **centstorage*
 Plugins
 -------
 
-Est-ce que vos plugin génère correctement les données de performance ?
+Est-ce que vos plugins génèrent correctement les données de performance ?
 Se référer à la :ref:`documentation officielle <centreon-engine:centengine_plugin_api>` 
 pour plus d'informations. 
 
-Si vous utilisez NDOUtils
--------------------------
+Centreon Broker
+---------------
 
-Vérifier que le processus **centstorage** est en cours d'exécution :
-
-::
-
-  $ /etc/init.d/centstorage status
-  centstorage (pid  30276) is running...
-
-
-Le chemin d'accès vers **service-perfdata** de votre collecteur doit être 
-correctement configuré dans le menu **Configuration ==> Centreon**
-
-De plus ce chemin d'accès doit correspondre avec celui utilisé par les sondes :
-
-::
-
-  $ head -43 plugin_path/process-service-perfdata | tail -1
-  PERFFILE="/var/log/centreon-engine/service-perfdata"
-
-
-Si vous utilisez Centreon Broker
---------------------------------
-
-Centreon Broker doit être configuré correctement. Se référer à la 
+Centreon Broker doit être correctement configuré correctement. Se référer à la 
 :ref:`documentation de configuration <centreon_broker_wizards>` pour plus d'informations.
 
 Le démon cbd rrd doit être en cours d'exécution :
