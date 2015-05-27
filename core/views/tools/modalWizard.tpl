@@ -20,7 +20,7 @@
   </ul>
 </div>
 <div class="row-divider"></div>
-<form role="form" class="form-horizontal" id="wizard_form">
+<form role="form" class="CentreonForm" id="wizard_form">
   <div class="step-content">
    {foreach $steps as $step}
    <div class="step-pane{if $step@index == 0} active{/if}" id="{$name}_{$step@index + 1}">
@@ -32,8 +32,8 @@
   </div>
   <div class="modal-footer">
     {$formElements.hidden}
-    <button class="btn btn-default btn-prev" disabled>{t}Prev{/t}</button>
-    <button class="btn btn-default btn-next" data-last="{t}Finish{/t}" id="wizard_submit">{t}Next{/t}</button>
+    <button class="btnC btnDefault btn-prev" disabled>{t}Prev{/t}</button>
+    <button class="btnC btnDefault btn-next" data-last="{t}Finish{/t}" id="wizard_submit">{t}Next{/t}</button>
   </div>
 </form>
 <script>
