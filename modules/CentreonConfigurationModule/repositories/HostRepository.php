@@ -248,8 +248,9 @@ class HostRepository extends Repository
         $checkdata[_('Check interval')] = $data['host_check_interval'];
         $checkdata[_('Retry check interval')] = $data['host_retry_check_interval'];
         $checkdata[_('Active checks enabled')] = YesNoDefault::toString($data['host_active_checks_enabled']);
-        $checkdata[_('Passive checks enabled')] = $data['host_passive_checks_enabled'];
-        
+        if(isset($data['host_passive_checks_enabled'])){
+            $checkdata[_('Passive checks enabled')] = $data['host_passive_checks_enabled'];
+        }
         return $checkdata;
     }
     
