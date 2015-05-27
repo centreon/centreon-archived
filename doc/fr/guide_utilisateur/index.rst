@@ -6,7 +6,6 @@ Guide utilisateur
    :maxdepth: 2
    :glob:
 
-   01a
    configuration/index
    supervision/index
    graphic_management/index
