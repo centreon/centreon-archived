@@ -1,3 +1,5 @@
+<?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,17 +34,29 @@
  * 
  */
 
+namespace CentreonAdministration\Models;
 
+use Centreon\Models\CentreonBaseModel;
 
-$(function() {
-    $(".clonable").centreonClone();
-    $( ".clonable" ).sortable({
-        handle: ".fa-arrows",
-        containment: "parent",
-        tolerance: "pointer"
-    });
+/**
+ * Description of AuthResourcesServer
+ *
+ * @author bsauveton
+ */
+class AuthResourcesServer extends CentreonBaseModel
+{
+    //put your code here
+    
+    protected static $table = "cfg_auth_resources_servers";
+    protected static $primaryKey = "ldap_server_id";
+    protected static $uniqueLabelField = "server_address";
+    protected static $relations = array(
+     
+    );
+    
+    
+    //put your code here
     
     
     
-});
-
+}

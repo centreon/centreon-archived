@@ -69,7 +69,7 @@ class DisplayTplController extends Controller
         if(!$this::validate_alpha($requestParam['module']) || !$this::validate_alpha($requestParam['file'])){
             return false;
         }
-        $tplName = 'modules/'.$requestParam['module'].'/views/'.$requestParam['file'].'.tpl';
+        $tplName = 'modules/'.$requestParam['module'].'/views/slideMenu/'.$requestParam['file'].'.tpl';
         $config = Di::getDefault()->get('config');
         $centreon_path = rtrim($config->get('global', 'centreon_path'), '/');
         if(file_exists( $centreon_path.'/'.$tplName)){
