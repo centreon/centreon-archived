@@ -1,3 +1,5 @@
+.. _configuration_start:
+
 ##########
 User guide
 ##########
