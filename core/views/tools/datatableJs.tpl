@@ -36,7 +36,7 @@
                         // Create Side tab items
 
                        for (var i=0;i<t.length;i++) {
-                           sideItem += '<li><a href="#'+t[i].name+'_Slider"><i class="icon-'+t[i].name+'"></i>'+t[i].name+'</a></li>';
+                           sideItem += '<li id="'+t[i].name+'_id"><a href="#'+t[i].name+'_Slider"><i class="icon-'+t[i].name+'"></i>'+t[i].name+'</a></li>';
                            sideContent+='<section id="'+t[i].name+'_Slider"></section>';
                        }
                        $('#sideRight').html(defaultWrapper+'<nav><ul class="sideMenu">' + sideItem + '</ul></nav>' + sideContent);
@@ -89,38 +89,60 @@
                                 });
 
 
+                                $('#tableLeft').css('margin-right','260px');
+                                $('#sideRight').css('display','block');
+
                                 $.each(t, function(index,item) {
+                                    var menuId = '#'+item.name+'_id';
+                                    console.log(item.default);
+                                    if(typeof(item.default) == 'undefined' || item.default == 0){
+                                        $(menuId).on('click',function(){
+                                            $.ajax({
+                                                url: item.url,
+                                                type: "GET",
+                                                dataType: 'JSON',
+                                                success : function(e){
 
-                                    $('#tableLeft').css('margin-right','260px');
-                                    $('#sideRight').css('display','block');
+                                                    // remplir le menu correspondant
 
-                                    $.ajax({
-                                        url: item.url,
-                                        type: "GET",
-                                        dataType: 'JSON',
-                                        success : function(e){
+                                                    var c = '#' + item.name + '_Slider' ;
+                                                    $.get(item.tpl, function(tpl){
 
-                                            // remplir le menu correspondant
-
-                                            var c = '#' + item.name + '_Slider' ;
-                                            console.log(item.tpl);
-                                            $.get(item.tpl, function(tpl){
-
-                                                var template = Hogan.compile(tpl);
-                                                var rendered = template.render(e);
-                                                $(c).html(rendered);
+                                                        var template = Hogan.compile(tpl);
+                                                        var rendered = template.render(e);
+                                                        $(c).html(rendered);
+                                                    });
+                                                },
+                                                error : function(error){
+                                                console.log('error');
+                                                }
                                             });
+                                        });
 
-                                            //console.log(c,e);
+                                    }else if(typeof(item.default) !== 'undefined' && item.default == 1){
+                                        $.ajax({
+                                            url: item.url,
+                                            type: "GET",
+                                            dataType: 'JSON',
+                                            success : function(e){
 
+                                                // remplir le menu correspondant
 
-                                            $('#tableLeft').css('margin-right','260px');
-                                            $('#sideRight').css('display','block');
-                                        },
-                                        error : function(error){
-                                        console.log('error');
-                                        }
-                                    });
+                                                var c = '#' + item.name + '_Slider' ;
+                                                console.log(item.tpl);
+                                                $.get(item.tpl, function(tpl){
+
+                                                    var template = Hogan.compile(tpl);
+                                                    var rendered = template.render(e);
+                                                    $(c).html(rendered);
+                                                });
+                                            },
+                                            error : function(error){
+                                            console.log('error');
+                                            }
+                                        });
+
+                                    }
                                 });
 
                             }

@@ -54,6 +54,7 @@ class SlideMenu
                     'icon' => '',
                     'order' => 1,
                     'tpl' => "/viewtpl/CentreonConfigurationModule/host_slide"
+
                 )
             );
             
@@ -63,7 +64,8 @@ class SlideMenu
                     'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconfslide/') . $event->getHostId(),
                     'icon' => '',
                     'order' => 2,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/templates_slide"
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/templates_slide",
+                    'default' => 1
                 )
             );
             
