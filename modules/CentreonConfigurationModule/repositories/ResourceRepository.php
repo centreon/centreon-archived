@@ -53,4 +53,53 @@ class ResourceRepository extends \CentreonConfiguration\Repository\Repository
      * @var string
      */
     public static $objectName = 'Resource';
+    
+    public static $objectClass = '\CentreonConfiguration\Models\Resource';
+    
+    
+    /**
+     *
+     * @var type 
+     */
+    
+    public static $unicityFields = array(
+        'fields' => array(
+            'resources' => 'cfg_resources, resource_id, resource_name',
+            'poller' => 'cfg_pollers, poller_id, cfg_pollers.name',
+            ),
+        'joint' => 'cfg_resources_instances_relations',
+        'jointCondition' => 'cfg_resources.resource_id = cfg_resources_instances_relations.resource_id AND cfg_pollers.poller_id = cfg_resources_instances_relations.instance_id'
+    );
+    
+    /**
+     * 
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     * @param type $validate
+     * @param type $validateMandatory
+     */
+    
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {
+        /*
+        if ($validate) {
+            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+         */      
+        parent::create($givenParameters, "wizard", $route);
+    }
+    
+    /**
+     * 
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     * @param type $validate
+     * @param type $validateMandatory
+     */
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {       
+        parent::update($givenParameters, "form", $route);
+    }
 }

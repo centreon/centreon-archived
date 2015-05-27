@@ -159,9 +159,9 @@ class BasicRepository
         $tables = array();
         $conditions = array();
         $objectId = 0;
-        
+
         // Building Query
-        $query = 'SELECT ' . $objClass::getPrimaryKey() . ' ';
+        $query = 'SELECT ' . $objClass::getTableName().".".$objClass::getPrimaryKey() . ' ';
         
         // Check if all mandatory unicty fields are present
         $requiredFields = array_keys(static::$unicityFields['fields']);
@@ -191,7 +191,7 @@ class BasicRepository
         
         // FInalizing query
         $query .= 'FROM ' . implode(', ', $tables) . ' WHERE ' . implode(' AND ', $conditions);
-
+        //echo $query;die;
         // Execute request
         $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->query($query);
