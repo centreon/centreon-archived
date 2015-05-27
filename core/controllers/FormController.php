@@ -99,7 +99,7 @@ abstract class FormController extends ListController
      * @method get
      * @route /{object}/[i:id]
      */
-    public function editAction($additionnalParamsForSmarty = array())
+    public function editAction($additionnalParamsForSmarty = array(), $defaultValues = array())
     {
         $requestParam = $this->getParams('named');
         $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
@@ -116,7 +116,10 @@ abstract class FormController extends ListController
         $myForm->addHiddenComponent('object_id', $requestParam['id']);
         $myForm->addHiddenComponent('object', static::$objectName);
         
-        // get object Current Values
+        // set specific object current values
+        $myForm->setDefaultValues($defaultValues, $requestParam['id']);
+
+        // set object current values
         $myForm->setDefaultValues($this->objectClass, $requestParam['id']);
         
         $formModeUrl = $this->router->getPathFor(
