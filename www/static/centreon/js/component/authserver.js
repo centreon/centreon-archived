@@ -36,7 +36,11 @@
 
 $(function() {
     $(".clonable").centreonClone();
-    $( ".clonable" ).sortable();
+    $( ".clonable" ).sortable({
+        handle: ".fa-arrows",
+        containment: "parent",
+        tolerance: "pointer"
+    });
     
     
     

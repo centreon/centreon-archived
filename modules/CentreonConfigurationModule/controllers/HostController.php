@@ -200,8 +200,14 @@ class HostController extends FormController
     {
         $requestParam = $this->getParams('named');
         $tags = TagsRepository::getList('host', $requestParam['id']);
-        $this->tpl->assign('tags', $tags);
-        $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');
+        /*
+        echo '<pre>';
+        print_r($tags);
+        echo '</pre>';
+        die;*/
+        $this->router->response()->json($tags);
+        /*$this->tpl->assign('tags', $tags);
+        $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');*/
     }
     
     
@@ -469,21 +475,6 @@ class HostController extends FormController
         parent::getSimpleRelation('poller_id', '\CentreonConfiguration\Models\Poller');
     }
 
-    /**
-     * Display the configuration snapshot of a host
-     * with template inheritance
-     *
-     * @method get
-     * @route /host/snapshotslide/[i:id]
-     */
-    public function snapshotslideAction()
-    {
-        $params = $this->getParams();
-        $data = HostRepository::getConfigurationData($params['id']);
-        $hostConfiguration = HostRepository::formatDataForTooltip($data);
-        $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
-        $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus));
-    }
     
     /**
      * Display the configuration snapshot of a host
@@ -512,27 +503,22 @@ class HostController extends FormController
      * @route /host/[i:id]/service
      */
     public function hostForServiceAction()
-    {
-        /*
-        $requestParam = $this->getParams('named');
-        $repository = $this->repository;
-        $repository::getRelations();
-        $list = $repository::getRelations($relClass, $requestParam['id']);
-        $this->router->response()->json($list);
-        */
-        
-        $requestParam = $this->getParams('named');
-        $services = HostRepository::getServicesForHost(static::$relationMap['host_services'],$requestParam['id']);
-        //$formatedData = array();
-        $final = "";
-        foreach($services as $service){
-            //$formatedData[] = ServiceRepository::formatDataForTooltip($service);
-            $this->tpl->assign('checkdata', ServiceRepository::formatDataForTooltip($service));
-            $final .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+        {
+            $requestParam = $this->getParams('named');
+            $services = HostRepository::getServicesForHost(static::$relationMap['host_services'],$requestParam['id']);
+
+            foreach($services as &$service){
+                $service = ServiceRepository::formatDataForTooltip($service);
+            }
+            /*
+            echo '<pre>';
+            print_r($services);
+            echo '</pre>';
+            die;*/
+
+            $this->router->response()->json($services);
         }
-        
-        $this->router->response()->json($services);
-    }
+
     
     
     /**
@@ -544,11 +530,12 @@ class HostController extends FormController
      */
     public function snapshotslideAction()
     {
+
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
         $hostConfiguration = HostRepository::formatDataForSlider($data);
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
-        $edit_url = $router->getPathFor("/centreon-configuration/host/".$params['id']);
+        $edit_url = $this->router->getPathFor("/centreon-configuration/host/".$params['id']);
         $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus,'edit_url' => $edit_url));
     }
 
