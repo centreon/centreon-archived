@@ -60,7 +60,7 @@ Perform the command:
 
 
 After this step you should connect to Centreon to finalise the installation process.
-This step is described :ref:`here <installation_web>`.
+This step is described :ref:`here <installation_web_ces>`.
 
 Installing a poller
 -------------------

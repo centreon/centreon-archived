@@ -5,20 +5,20 @@ Using CES
 =========
 
 Why choose Centreon Engine and Broker ?
-==================================================
+=======================================
 
 Performances
 ------------
-The tests carried out by the Centreon teams and some independent users show clearly that the Centreon Engine and Centreon Broker pair performs 8 to 9 times better than the Nagios/NDOUtils pair.
+The tests carried out by the Centreon teams and some independent users show clearly that the Centreon Engine and Centreon Broker pair performs 8 to 9 times better than the Nagios/NDOUtils pair. Therefore this version of CES no longer support the installation longer of the Nagios / NDOUtils pair.
 
-Better  integration into Centreon
+
+Better integration into Centreon
 ---------------------------------
 The Centreon web interface is more and more oriented towards the use of Centreon Broker. Here are a few examples:
 
 * There is a configuration assistant for Centreon Broker
 * Display performance is greatly improved
 * Some selection filters are only available with the Centreon Broker
-* The next major version of Centreon will no longer support the Nagios / NDOUtils pair
 
 New features
 ------------
@@ -67,7 +67,7 @@ Installation
 Step 1 : Start
 ==============
 
-To install Centreon, start your server on the support (created from the ISO file) of the Centreon Enterprise Server.
+To install, start your server on the support (created from the ISO file) of the Centreon Enterprise Server.
 Start with the **Install or upgrade an existing system** option
 
 .. image :: /images/user/abootmenu.png
@@ -134,11 +134,11 @@ Select the partitioning options that suit you best. Then validate.
    :align: center
    :scale: 65%
 
-Step 4 : Components selection
-=============================
+Step 4 : Component selection
+============================
 
-Choose of the type of server
-----------------------------
+Choose the server type
+----------------------
 
 It is possible to choose different options in answer to the question: **Which server type would you like to install?**:
 
@@ -171,6 +171,8 @@ When the installation is finished, click on **Restart**.
 *************
 Configuration
 *************
+
+.. _installation_web_ces:
 
 Via the web interface
 =====================
