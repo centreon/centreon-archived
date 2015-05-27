@@ -1,8 +1,8 @@
 .. _firststepsces3:
 
-========================
-Get started with CES 3.2
-========================
+=========
+Using CES
+=========
 
 Why choose Centreon Engine and Broker ?
 ==================================================
