@@ -10,7 +10,8 @@ Pourquoi choisir Centreon Engine et Broker ?
 Performances
 ------------
 Les différents tests effectués par les équipes de Centreon et quelques utilisateurs indépendants démontrent sans équivoque
-que le couple Centreon Engine et Centreon Broker est 8 à 9 fois plus performants que le couple Nagios/NDOUtils.
+que le couple Centreon Engine et Centreon Broker est 8 à 9 fois plus performants que le couple Nagios/NDOUtils. 
+Ainsi cette version de CES ne propose plus l'installation du couple Nagios / NDOUtils pair.
 
 Meilleure intégration à Centreon
 --------------------------------
@@ -19,7 +20,6 @@ L'interface de Centreon est de plus en plus orientée vers l'utilisation du brok
 *	Il existe un assistant de configuration pour Centreon Broker
 *   Les performances d'affichage sont grandement améliorées
 *   Certains filtres de sélection ne sont disponibles qu'avec le broker, Centreon Broker
-*	La prochaine version majeure de Centreon ne supportera plus le couple Nagios/NDOUtils
 
 Nouvelles fonctionnalités
 -------------------------
@@ -176,6 +176,8 @@ Lorsque l'installation est terminée, cliquez sur **Redémarrer**.
 *************
 Configuration
 *************
+
+.. _installation_web_ces:
 
 Via l'interface web
 ===================
