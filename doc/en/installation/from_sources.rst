@@ -840,3 +840,4 @@ The installation is now finished, click on the ``Finish`` button, you will be re
    :align: center
 
 Enter your credentials to log in.
+
