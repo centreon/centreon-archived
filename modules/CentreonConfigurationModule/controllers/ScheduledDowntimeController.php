@@ -107,6 +107,16 @@ class ScheduledDowntimeController extends FormController
         $params = $this->getParams('named');
         $hostList = ScheduledDowntimeRepository::getHostRelation($params['id']);
 
+        $hostList = array_map(
+            function ($element) {
+                return array(
+                    'id' => $element['host_id'],
+                    'text' => $element['host_name']
+                );
+            },
+            $hostList
+        );
+
         $router->response()->json($hostList);
     }
 
@@ -122,6 +132,16 @@ class ScheduledDowntimeController extends FormController
 
         $params = $this->getParams('named');
         $tagList = ScheduledDowntimeRepository::getHostTagRelation($params['id']);
+
+        $tagList = array_map(
+            function ($element) {
+                return array(
+                    'id' => $element['tag_id'],
+                    'text' => $element['tagname']
+                );
+            },
+            $tagList
+        );
 
         $router->response()->json($tagList);
     }
@@ -139,6 +159,16 @@ class ScheduledDowntimeController extends FormController
         $params = $this->getParams('named');
         $serviceList = ScheduledDowntimeRepository::getServiceRelation($params['id']);
 
+        $serviceList = array_map(
+            function ($element) {
+                return array(
+                    'id' => $element['service_id'],
+                    'text' => $element['service_description']
+                );
+            },
+            $serviceList
+        );
+
         $router->response()->json($serviceList);
     }
 
@@ -155,6 +185,33 @@ class ScheduledDowntimeController extends FormController
         $params = $this->getParams('named');
         $tagList = ScheduledDowntimeRepository::getServiceTagRelation($params['id']);
 
+        $tagList = array_map(
+            function ($element) {
+                return array(
+                    'id' => $element['tag_id'],
+                    'text' => $element['tagname']
+                );
+            },
+            $tagList
+        );
+
         $router->response()->json($tagList);
+    }
+
+    /**
+     * Get the list of periods for a downtime
+     *
+     * @method get
+     * @route /scheduled-downtime/[i:id]/period
+     */
+    public function getPeriodsAction()
+    {
+        $router = Di::getDefault()->get('router');
+
+        $params = $this->getParams('named');
+
+        $periodList = ScheduledDowntimeRepository::getPeriods($params['id']);
+
+        $router->response()->json($periodList);
     }
 }

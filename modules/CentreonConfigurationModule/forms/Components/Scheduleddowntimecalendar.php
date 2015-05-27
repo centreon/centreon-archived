@@ -71,6 +71,14 @@ class Scheduleddowntimecalendar extends Component
             $element['id'] = $element['name'];
         }
 
+        if (isset($element['label_urlLoadPeriods'])) {
+            $element['loadUrl'] = Di::getDefault()
+                ->get('router')
+                ->getPathFor($element['label_urlLoadPeriods'], $element['label_extra']);
+        } else {
+            $element['loadUrl'] = '';
+        }
+
         $tpl->assign('element', $element);
         $tpl->assign('weeklyDays', $weeklyDays);
         $tpl->addCss('centreon.scheduled-downtime.css', 'centreon-configuration');

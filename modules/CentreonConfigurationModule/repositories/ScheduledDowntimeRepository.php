@@ -191,4 +191,48 @@ class ScheduledDowntimeRepository extends \CentreonConfiguration\Repository\Repo
         );
         return $tagList;
     }
+
+    /**
+     * Get periods for a scheduled downtime
+     *
+     * @param int $id The downtime id
+     */
+    public static function getPeriods($id)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $periods = array();
+
+        $query = "SELECT dtp_start_time, dtp_end_time, dtp_fixed, dtp_duration, dtp_month_cycle, dtp_day_of_month, dtp_day_of_week
+            FROM cfg_downtimes_periods
+            WHERE dt_id = :id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
+            $period = array(
+                'timeStart' => $row['dtp_start_time'],
+                'timeEnd' => $row['dtp_end_time'],
+                'fixed' => ($row['dtp_fixed'] == 1 ? 'fixed' : 'flexibled'),
+                'duration' => (is_null($row['dtp_duration']) ? '' : $row['dtp_duration'])
+            );
+
+            switch ($row['dtp_month_cycle']) {
+                case 'all':
+                    $period['periodType'] = 'weekly';
+                    $period['days'] = explode(',', $row['dtp_day_of_week']);
+                    break;
+                case 'none':
+                    $period['periodType'] = 'monthly';
+                    $period['days'] = explode(',', $row['dtp_day_of_month']);
+                    break;
+                case null:
+                    $period['periodType'] = 'custom';
+                    break;
+            }
+            $periods[] = $period;
+        }
+
+        return $periods;
+    }
 }

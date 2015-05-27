@@ -59,6 +59,9 @@
       </block>
       <block name="Period">
         <field name="periods" label="Periods" default_value="" advanced="0" type="centreon-configuration.scheduleddowntimecalendar" parent_field="" mandatory="0">
+          <attributes>
+            <urlLoadPeriods>/centreon-configuration/scheduled-downtime/[i:id]/period</urlLoadPeriods>
+          </attributes>
           <help>The list of periods for the scheduled downtime.</help>
         </field>
       </block>

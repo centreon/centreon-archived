@@ -189,6 +189,24 @@
         }
       }
     });
+
+    /* Load periods */
+    var url = this.$elem.data("load-url");
+    if (url !== undefined && url !== "") {
+      $.ajax({
+        url: url,
+        type: "get",
+        dataType: "json",
+        success: function (data, textStatus, jqXHR) {
+          $.each(data, function (idx, period) {
+            self.periods[self.periodPos] = period;
+            self.loadDays(self.periodPos, period);
+            self.addPeriod(false);
+            self.periodPos++;
+          });
+        }
+      });
+    }
   }
 
   CentreonScheduledDowntime.prototype = {
@@ -324,7 +342,8 @@
      *
      * A new period element to list and open the edit panel
      */
-    addPeriod: function () {
+    addPeriod: function (load) {
+      var load = load === undefined ? true : load;
       if (this.currentPeriod.pos != 0) {
         alertMessage("You must valid or cancel the current period before add a new.", "alert-warning", 10);
         return;
@@ -332,20 +351,23 @@
 
       var $periodEl = $(this.periodString.render({ pos: this.periodPos }));
       this.$elem.find(".periods .list").append($periodEl);
-      this.periods[this.periodPos] = {};
 
-      this.currentPeriod = {
-        pos: this.periodPos,
-        days: []
-      };
+      if (load) {
+        this.periods[this.periodPos] = {};
 
-      this.periodPos++;
+        this.currentPeriod = {
+          pos: this.periodPos,
+          days: []
+        };
 
-      this.weeklyMode();
+        this.periodPos++;
 
-      this.resetForm();
+        this.weeklyMode();
 
-      this.$elem.find(".period-info").show();
+        this.resetForm();
+
+        this.$elem.find(".period-info").show();
+      }
     },
     /**
      * Edit a period
@@ -471,7 +493,7 @@
         case 'weekly':
           for (i; i < days.length; i++) {
             /* Set all month day for a week day */
-            day = days[i];
+            day = parseInt(days[i]);
             do {
               result.push(day);
               day += 7;
@@ -498,6 +520,12 @@
       });
 
       return result;
+    },
+    loadDays: function (pos, period) {
+      var displayDays = this.convertDaysForDisplay(period.periodType, period.days);
+      this.currentPeriod.pos = pos;
+      this.addSpot(displayDays);
+      this.currentPeriod.pos = 0;
     }
   };
   
