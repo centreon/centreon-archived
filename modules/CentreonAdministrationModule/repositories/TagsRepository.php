@@ -394,7 +394,7 @@ class TagsRepository
     {
         $html = '<div class="tag addtag" data-resourceid="' . $resourceId . '" data-resourcetype="'
             . $resourceType .'">
-            <div class="title"><input type="text" style="width: 0;"></div>
+            <div class="title"><input type="text" style="width: 0;" maxlength="30"></div>
             <div class="remove noborder"><a href="#">+</a></div>
         </div>';
         return $html;

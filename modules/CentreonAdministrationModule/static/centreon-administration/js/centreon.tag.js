@@ -1,6 +1,6 @@
 $(function () {
   var tagExpand = false;
-  var chaine = "^([a-zA-Z0-9]|\_|\-)+$";
+  var chaine = "^([a-zA-Z0-9]|\_|\-|\.)+$";
   var regexTags = new RegExp(chaine, "g");
   var sMessageUnsuportedCharacter = 'Unauthorized character. Allowed characters are alphanumeric characters, "_" and "-"';
 
@@ -17,7 +17,7 @@ $(function () {
     if ( tagName === "" ) {
       return;
     } else if(!regexTags.test(tagName)) {
-        alert(sMessageUnsuportedCharacter);
+        alertMessage(sMessageUnsuportedCharacter);
         return false;
     }  
     tmplTagCmpl = Hogan.compile( tmplTag, { delimiters: "<% %>" } );

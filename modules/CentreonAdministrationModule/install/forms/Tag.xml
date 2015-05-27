@@ -9,7 +9,9 @@
                 <field name="tagname" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
                     <validators>
                         <validator rules="remote" serverside="centreon-main.unique" />
-                        <validator events="blur">forbiddenChar</validator>
+                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                            <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
+                        </validator>
                     </validators>
                 </field>
             </block>
