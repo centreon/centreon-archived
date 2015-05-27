@@ -55,7 +55,7 @@ class Migrate extends PropelMigration
     {
         parent::__construct($module);
         
-        if (!is_null) {
+        if (!is_null($migrationClassPath)) {
             $this->outputDir = $migrationClassPath;
         }
     }

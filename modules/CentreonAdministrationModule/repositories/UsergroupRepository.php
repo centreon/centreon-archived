@@ -82,7 +82,7 @@ class UsergroupRepository extends Repository
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
         if ($validate) {
-            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+            self::validateForm($givenParameters, "wizard", $route, $validateMandatory);
         }
                 
         parent::create($givenParameters);
@@ -97,13 +97,8 @@ class UsergroupRepository extends Repository
      * @param type $validateMandatory
      */
     public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {
-        if ($validate) {
-            self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
-        }
-
-        
-        parent::update($givenParameters, $origin, $route);
+    {      
+        parent::update($givenParameters, "form", $route);
     }
 
 }
