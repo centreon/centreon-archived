@@ -600,15 +600,10 @@ class HostController extends FormController
     {
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
-        $hostConfiguration = HostRepository::formatDataForTooltip($data);
+        $hostConfiguration = HostRepository::formatDataForSlider($data);
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
-        /*
-        echo '<pre>';
-        print_r(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus));
-        echo '</pre>';
-        die;
-        */
-        $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus));
+        $edit_url = $router->getPathFor("/centreon-configuration/host/".$params['id']);
+        $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus,'edit_url' => $edit_url));
     }
 
     

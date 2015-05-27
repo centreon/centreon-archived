@@ -255,6 +255,31 @@ class ServiceRepository extends Repository
         return Service::getParameters($serviceId, "*");
     }
 
+        /**
+     * Format data so that it can be displayed in slider
+     *
+     * @param array $data
+     * @return array $checkdata
+     */
+    public static function formatDataForSlider($data)
+    {
+        /* Check data */
+        $checkdata = array();
+        $checkdata[_('Name')] = $data['service_description'];
+        $checkdata[_('Command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
+        $checkdata[_('Time period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
+        $checkdata[_('Max check attempts')] = $data['service_max_check_attempts'];
+        $checkdata[_('Check interval')] = $data['service_normal_check_interval'];
+        $checkdata[_('Retry check interval')] = $data['service_retry_check_interval'];
+        $checkdata[_('Active checks enabled')] = YesNoDefault::toString($data['service_active_checks_enabled']);
+        $checkdata[_('Passive checks enabled')] = $data['service_passive_checks_enabled'];
+
+        return $checkdata;
+    }
+    
+    
+    
+    
     /**
      * Format data so that it can be displayed in tooltip
      *
