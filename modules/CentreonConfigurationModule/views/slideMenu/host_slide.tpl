@@ -4,7 +4,7 @@
             <i class="icon-host"></i>
         </div>
         <h4 class="col-md-7">{{hostConfig.Name}}</h4>
-        <div class="buttonGroup col-md-2">
+        <div class="iconWrapper col-md-2">
             <a href="{{edit_url}}" alt=""><i class="icon-edit"></i></a>
         </div>
     </div>
@@ -26,7 +26,7 @@
 
             </ul>
         </div>
-        <div class="col-md-9">
+        <div class="detailsWrapper col-md-9">
             <dl class="list-group">
                   <dt class="">Command</dt>
                   <dd>{{hostConfig.Command}}</dd>

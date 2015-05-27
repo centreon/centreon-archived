@@ -80,7 +80,7 @@
                                             $(a).html(rendered);
                                         });
 
-                                        $('#tableLeft').css('margin-right','260px');
+                                        $('#tableLeft').css('margin-right','310px');
                                         $('#sideRight').css('display','block');
                                     },
                                     error : function(error){
@@ -89,7 +89,7 @@
                                 });
 
 
-                                $('#tableLeft').css('margin-right','260px');
+                                $('#tableLeft').css('margin-right','310px');
                                 $('#sideRight').css('display','block');
 
                                 $.each(t, function(index,item) {
