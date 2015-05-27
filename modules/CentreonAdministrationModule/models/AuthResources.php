@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace CentreonConfiguration\Models;
+namespace CentreonAdministration\Models;
 
 use Centreon\Models\CentreonBaseModel;
 
@@ -16,7 +16,7 @@ use Centreon\Models\CentreonBaseModel;
  *
  * @author bsauveton
  */
-class AuthRessource extends CentreonBaseModel
+class AuthResources extends CentreonBaseModel
 {
     protected static $table = "cfg_auth_resources";
     protected static $primaryKey = "ar_id";

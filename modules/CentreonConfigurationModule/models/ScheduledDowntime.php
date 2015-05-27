@@ -31,32 +31,24 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonConfiguration\Listeners\Core;
+namespace CentreonConfiguration\Models;
 
-use Centreon\Events\LoadFormDatas as LoadFormDatasEvent;
-use CentreonConfiguration\Models\AclresourceHostsParams;
+use Centreon\Models\CentreonBaseModel;
 
-class LoadFormDatas
+/**
+ * Used for interacting with Scheduled Downtime objects
+ *
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
+ * @package CentreonConfiguration
+ * @subpackage Models
+ * @version 3.0.0
+ */
+class ScheduledDowntime extends CentreonBaseModel
 {
-    /**
-     * @param Core\Events\LoadFormDatas $event
-     */
-    public static function execute(LoadFormDatasEvent $event)
-    {
-        $route = $event->getRoute();
-        $objectId = $event->getObjectId();
-        $parameters = $event->getParameters();
-        if ($route === '/centreon-administration/aclresource/update') {
-            try {
-                $allHostsParameter = AclresourceHostsParams::getParameters($objectId, 'all_hosts');
-                $event->addParameters(array(
-                    'centreon-configuration__aclresource_all_hosts' => $allHostsParameter['all_hosts']
-                ));
-            } catch (\Exception $e) {
-
-            }
-        }
-    }
+    protected static $table = "cfg_downtimes";
+    protected static $primaryKey = "dt_id";
+    protected static $uniqueLabelField = "dt_name";
 }

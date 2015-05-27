@@ -33,77 +33,29 @@
  *
  */
 
-namespace CentreonAdministration\Repository;
+namespace CentreonConfiguration\Controllers;
 
-use CentreonAdministration\Models\Usergroup;
 use Centreon\Internal\Di;
-use Centreon\Internal\Exception;
+use Centreon\Controllers\FormController;
 
 /**
- * @author Kevin Duret <kduret@centreon.com>
- * @package Centreon
- * @subpackage Repository
+ * Configure scheduled downtime
+ *
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
+ * @package CentreonConfiguration
+ * @subpackage Controller
+ * @version 3.0.0
  */
-class UsergroupRepository extends Repository
+class ScheduledDowntimeController extends FormController
 {
-    /**
-     *
-     * @var string
-     */
-    public static $tableName = 'cfg_usergroups';
-    
-    /**
-     *
-     * @var string
-     */
-    public static $objectName = 'Usergroup';
-    
-    public static $objectClass = '\CentreonAdministration\Models\Usergroup';
-    
-    /**
-     *
-     * @var type 
-     */
-    public static $unicityFields = array(
-        'fields' => array(
-            'usergroup' => 'cfg_usergroups, usergroup_id, name'
-        ),
-    );
-    
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
-    
-    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {
-        if ($validate) {
-            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
-        }
-                
-        parent::create($givenParameters);
-    }
-    
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
-    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {
-        if ($validate) {
-            self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
-        }
+    protected $objectDisplayName = 'ScheduledDowntime';
+    public static $objectName = 'scheduled-downtime';
+    public static $enableDisableFieldName = 'dt_activate';
+    protected $objectBaseUrl = '/centreon-configuration/scheduled-downtime';
+    protected $datatableObject = '\CentreonConfiguration\Internal\ScheduledDowntimeDatatable';
+    protected $objectClass = '\CentreonConfiguration\Models\ScheduledDowntime';
+    protected $repository = '\CentreonConfiguration\Repository\ScheduledDowntimeRepository';
+    public static $isDisableable = true;
 
-        
-        parent::update($givenParameters, $origin, $route);
-    }
-
+    public static $relationMap = array();
 }

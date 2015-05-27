@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -31,79 +32,49 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonAdministration\Repository;
+namespace CentreonMain\Controllers;
 
-use CentreonAdministration\Models\Usergroup;
 use Centreon\Internal\Di;
-use Centreon\Internal\Exception;
+use Centreon\Internal\Controller;
 
 /**
- * @author Kevin Duret <kduret@centreon.com>
- * @package Centreon
- * @subpackage Repository
+ * Description of DisplayTplControler
+ *
+ * @author bsauveton
  */
-class UsergroupRepository extends Repository
+class DisplayTplController extends Controller
 {
-    /**
-     *
-     * @var string
-     */
-    public static $tableName = 'cfg_usergroups';
     
-    /**
-     *
-     * @var string
-     */
-    public static $objectName = 'Usergroup';
     
-    public static $objectClass = '\CentreonAdministration\Models\Usergroup';
-    
-    /**
-     *
-     * @var type 
-     */
-    public static $unicityFields = array(
-        'fields' => array(
-            'usergroup' => 'cfg_usergroups, usergroup_id, name'
-        ),
-    );
-    
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
-    
-    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    private function validate_alpha($str) 
     {
-        if ($validate) {
-            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
-        }
-                
-        parent::create($givenParameters);
+        return preg_match('/^[a-zA-Z0-9_]+$/',$str);
     }
     
+    
     /**
      * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
+     * @method get
+     * @route /viewtpl/[:module]/[:file]
      */
-    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    public function displayTplAction()
     {
-        if ($validate) {
-            self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
-        }
-
         
-        parent::update($givenParameters, $origin, $route);
-    }
-
+        $requestParam = $this->getParams('named');
+        
+        
+        if(!$this::validate_alpha($requestParam['module']) || !$this::validate_alpha($requestParam['file'])){
+            return false;
+        }
+        $tplName = 'modules/'.$requestParam['module'].'/views/'.$requestParam['file'].'.tpl';
+        $config = Di::getDefault()->get('config');
+        $centreon_path = rtrim($config->get('global', 'centreon_path'), '/');
+        if(file_exists( $centreon_path.'/'.$tplName)){
+            echo file_get_contents($centreon_path.'/'.$tplName);
+        }
+        die;
+    }    
 }

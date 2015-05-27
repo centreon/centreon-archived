@@ -584,7 +584,8 @@ class Form
         $params['parent_field'] = isset($field['parent_field']) ? $field['parent_field'] : '';
         $params['parent_value'] = isset($field['parent_value']) ? $field['parent_value'] : '';
         $params['child_actions'] = isset($field['child_actions']) ? $field['child_actions'] : '';
-        if(!empty($params['show_label'])){
+
+        if(isset($field['show_label'])){
             $params['show_label'] = $field['show_label'];
         }
         if (isset($field['advanced']) && $field['advanced'] != null) {
@@ -603,6 +604,7 @@ class Form
             $params['validators'] = $field['validators'];
         }
         $params['extra'] = $extraParams;
+        
         $elem = $this->formProcessor->addElement('static', $field['name'], $params);
     }
     

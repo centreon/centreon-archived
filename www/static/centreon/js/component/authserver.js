@@ -31,3 +31,14 @@
  * For more information : contact@centreon.com
  * 
  */
+
+
+
+$(function() {
+    $(".clonable").centreonClone();
+    $( ".clonable" ).sortable();
+    
+    
+    
+});
+

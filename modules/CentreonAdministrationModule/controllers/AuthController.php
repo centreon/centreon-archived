@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,77 +34,35 @@
  *
  */
 
-namespace CentreonAdministration\Repository;
 
-use CentreonAdministration\Models\Usergroup;
-use Centreon\Internal\Di;
-use Centreon\Internal\Exception;
+
+namespace CentreonAdministration\Controllers;
+
+use Centreon\Controllers\FormController;
 
 /**
- * @author Kevin Duret <kduret@centreon.com>
- * @package Centreon
- * @subpackage Repository
+ * Description of LdapController
+ *
+ * @author bsauveton
  */
-class UsergroupRepository extends Repository
-{
-    /**
-     *
-     * @var string
-     */
-    public static $tableName = 'cfg_usergroups';
+class AuthController extends FormController{
     
-    /**
-     *
-     * @var string
-     */
-    public static $objectName = 'Usergroup';
+    protected $objectDisplayName = 'Auth';
+    public static $objectName = 'auth';
+    public static $enableDisableFieldName = 'ar_enable';
+    protected $datatableObject = '\CentreonAdministration\Internal\AuthDatatable';
+    protected $objectBaseUrl = '/centreon-administration/auth';
+    protected $objectClass = '\CentreonAdministration\Models\AuthResources';
+    protected $repository = '\CentreonAdministration\Repository\AuthResourcesRepository';
+
     
-    public static $objectClass = '\CentreonAdministration\Models\Usergroup';
-    
-    /**
-     *
-     * @var type 
-     */
-    public static $unicityFields = array(
-        'fields' => array(
-            'usergroup' => 'cfg_usergroups, usergroup_id, name'
-        ),
+    public static $relationMap = array(
+
     );
     
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
+    public static $isDisableable = true;
     
-    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {
-        if ($validate) {
-            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
-        }
-                
-        parent::create($givenParameters);
-    }
     
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
-    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {
-        if ($validate) {
-            self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
-        }
-
-        
-        parent::update($givenParameters, $origin, $route);
-    }
-
+    
+    //put your code here
 }

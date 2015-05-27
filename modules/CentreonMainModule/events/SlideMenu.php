@@ -42,7 +42,7 @@ class SlideMenu
 {
     
     private $menuList = array();
-    private $MendatorykeyList = array('name','url','icon','order');
+    private $MendatorykeyList = array('name','url','icon','order','tpl');
     private $hostId;
     
     public function __construct($hostId)
@@ -102,7 +102,7 @@ class SlideMenu
             $this->menuList[] = $menuList;
             $this->orderMenu();
         }else{
-            throw new Exception("Invalid menu nomenclature, array(".implode(",",array_keys($menuList))." ) sended, should be : array(name,url,icon,order)",0);
+            throw new Exception("Invalid menu nomenclature, array(".implode(",",array_keys($menuList))." ) sended, should be : array(name,url,icon,order,tpl)",0);
         }
     }
     

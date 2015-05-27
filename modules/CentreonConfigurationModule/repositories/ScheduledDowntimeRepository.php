@@ -33,77 +33,25 @@
  *
  */
 
-namespace CentreonAdministration\Repository;
-
-use CentreonAdministration\Models\Usergroup;
-use Centreon\Internal\Di;
-use Centreon\Internal\Exception;
+namespace CentreonConfiguration\Repository;
 
 /**
- * @author Kevin Duret <kduret@centreon.com>
- * @package Centreon
+ * Repository for scheduled downtimes
+ *
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
+ * @package CentreonConfiguration
  * @subpackage Repository
+ * @version 3.0.0
  */
-class UsergroupRepository extends Repository
+class ScheduledDowntimeRepository extends \CentreonConfiguration\Repository\Repository
 {
-    /**
-     *
-     * @var string
-     */
-    public static $tableName = 'cfg_usergroups';
-    
-    /**
-     *
-     * @var string
-     */
-    public static $objectName = 'Usergroup';
-    
-    public static $objectClass = '\CentreonAdministration\Models\Usergroup';
-    
     /**
      *
      * @var type 
      */
     public static $unicityFields = array(
         'fields' => array(
-            'usergroup' => 'cfg_usergroups, usergroup_id, name'
+            'downtime' => 'cfg_downtimes,dt_id,dt_name'
         ),
     );
-    
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
-    
-    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {
-        if ($validate) {
-            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
-        }
-                
-        parent::create($givenParameters);
-    }
-    
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
-    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {
-        if ($validate) {
-            self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
-        }
-
-        
-        parent::update($givenParameters, $origin, $route);
-    }
-
 }
