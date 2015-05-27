@@ -39,6 +39,7 @@ namespace Centreon\Internal\Module;
 use Centreon\Internal\Di;
 use Centreon\Internal\Utils\String\CamelCaseTransformation;
 use Centreon\Models\Module;
+use CentreonMain\Models\ModuleDependency;
 
 /**
  * Gives informations about modules
@@ -72,6 +73,28 @@ class Informations
         return $dependencySatisfied;
     }
     
+    /**
+     * 
+     * @param type $module
+     * @return type
+     */
+    public static function getChildren($module)
+    {
+        $finalChildrenList = array();
+        $currentModuleId = static::getModuleIdByName($module);
+        $childrenList = ModuleDependency::getList('child_id', -1, 0, null, "ASC", array('parent_id' => $currentModuleId));
+        
+        foreach ($childrenList as $child) {
+            $childInfo = Module::get($child['child_id'], 'name');
+            if (count($childInfo) > 0) {
+                $finalChildrenList[] = $childInfo['name'];
+            }
+        }
+        
+        return $finalChildrenList;
+    }
+
+
     /**
      * 
      * @param string $moduleName

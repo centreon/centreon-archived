@@ -58,6 +58,12 @@ class PostSave
                     $baTagIds = array_filter(array_map('trim',explode(',',$extraParameters['centreon-bam']['aclresource_business_activity_tags'])));
                     BusinessActivityTagRepository::updateBusinessActivityTagAcl($event->getAction(), $event->getObjectId(), $baTagIds);
                 }
+                if (isset($extraParameters['centreon-bam']['aclresource_all_bas'])) {
+                    $allBas = $extraParameters['centreon-bam']['aclresource_all_bas'];
+                    BusinessActivityRepository::updateAllBusinessActivitiesAcl($event->getAction(), $event->getObjectId(), $allBas);
+                } else {
+                    BusinessActivityRepository::updateAllBusinessActivitiesAcl($event->getAction(), $event->getObjectId(), '0');
+                }
             }
         }
     }

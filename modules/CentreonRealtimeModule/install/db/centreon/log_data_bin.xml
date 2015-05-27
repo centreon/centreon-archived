@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="centreon" defaultIdMethod="native">
     <table name="log_data_bin" phpName="DataBin" idMethod="native">
-        <column name="id_metric" phpName="IdMetric" type="INTEGER" required="false"/>
+        <column name="id_metric" phpName="IdMetric" primaryKey="true" type="INTEGER" required="false"/>
         <column name="ctime" phpName="Ctime" type="INTEGER" required="false"/>
         <column name="value" phpName="Value" type="FLOAT" required="false"/>
         <column name="status" phpName="Status" type="CHAR" sqlType="enum('0','1','2','3','4')" required="false"/>

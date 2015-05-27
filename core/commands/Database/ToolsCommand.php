@@ -42,32 +42,6 @@ use Centreon\Internal\Installer\Database\Installer as DbInstaller;
 
 class ToolsCommand extends AbstractCommand
 {
-    /**
-     * Extract data from a db table and prints a json string
-     *
-     * @param string $dbname | 'db_centreon' or 'db_storage'
-     * @param string $tablename
-     * @param string $extra
-     */
-    public function sqlToJsonAction($dbname, $tablename, $extra = '')
-    {
-        $db = Di::getDefault()->get($dbname);
-        $sql = "SELECT * FROM $tablename $extra";
-        $stmt = $db->prepare($sql);
-        $stmt->execute();
-        $tab = array();
-        $i = 0;
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            foreach ($row as $k => $v) {
-                if (!is_null($v)) {
-                    $tab[$i][$k] = $v;
-                }
-            }
-            $i++;
-        }
-        echo json_encode($tab);
-    }
-    
     
      /**
      * Extract json file and prints a sql string 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_administration" defaultIdMethod="native">
     <table name="cfg_contacts_infos" phpName="ContactInfos" idMethod="native">
-        <column name="contact_info_id" phpName="ContactId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="contact_info_id" phpName="ContactInfoId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="info_key" phpName="infoKey" type="VARCHAR" size="200" required="true"/>
         <column name="info_value" phpName="infoValue" type="VARCHAR" size="200" required="true"/>
         <column name="contact_id" phpName="ContactId" type="INTEGER" required="true"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="centreon" package="centreon_bam" defaultIdMethod="native">
   <table name="mod_bam_reporting_ba_availabilities" idMethod="native" phpName="ModBamReportingBaAvailabilities">
-    <column name="ba_id" phpName="BaId" type="INTEGER" required="true"/>
+    <column name="ba_id" phpName="BaId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="time_id" phpName="TimeId" type="INTEGER" required="true"/>
     <column name="timeperiod_id" phpName="TimeperiodId" type="INTEGER" required="true"/>
     <column name="available" phpName="Available" type="INTEGER"/>

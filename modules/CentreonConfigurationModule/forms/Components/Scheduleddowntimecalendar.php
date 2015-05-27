@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -34,35 +33,50 @@
  *
  */
 
+namespace CentreonConfiguration\Forms\Components;
 
-
-namespace CentreonConfiguration\Controllers;
-
-use Centreon\Controllers\FormController;
+use Centreon\Internal\Di;
+use Centreon\Internal\Form\Component\Component;
 
 /**
- * Description of LdapController
+ * Component for select the period
  *
- * @author bsauveton
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
+ * @package CentreonConfiguration
+ * @subpackage Form
+ * @version 3.0.0
  */
-class AuthController extends FormController{
-    
-    protected $objectDisplayName = 'Auth';
-    public static $objectName = 'auth';
-    public static $enableDisableFieldName = 'ar_enable';
-    protected $datatableObject = '\CentreonConfiguration\Internal\AuthDatatable';
-    protected $objectBaseUrl = '/centreon-configuration/auth';
-    protected $objectClass = '\CentreonConfiguration\Models\AuthRessource';
-    protected $repository = '\CentreonConfiguration\Repository\AuthRessourceRepository';
+class Scheduleddowntimecalendar extends Component
+{
+    /**
+     * Generate and return the html for the element
+     *
+     * @param array $element The element to parse
+     * @return array
+     */
+    public static function renderHtmlInput(array $element)
+    {
+        $tpl = Di::getDefault()->get('template');
+        $weeklyDays = array(
+            0 => "sunday",
+            1 => "monday",
+            2 => "tuesday",
+            3 => "wednesday",
+            4 => "thursday",
+            5 => "friday",
+            6 => "saturday"
+        );
 
-    
-    public static $relationMap = array(
-
-    );
-    
-    public static $isDisableable = true;
-    
-    
-    
-    //put your code here
+        $tpl->assign('element', $element);
+        $tpl->assign('weeklyDays', $weeklyDays);
+        $tpl->addCss('centreon.scheduled-downtime.css', 'centreon-configuration');
+        $tpl->addCss('bootstrap-datetimepicker.min.css');
+        $tpl->addJs('centreon.scheduled-downtime.js', 'bottom', 'centreon-configuration');
+        $tpl->addJs('hogan-3.0.0.min.js');
+        $tpl->addJs('bootstrap-datetimepicker.min.js');
+         
+        return array(
+            'html' => $tpl->fetch('file:[CentreonConfigurationModule]/forms/components/scheduled_downtime_calendar.tpl'),
+        );
+    }
 }

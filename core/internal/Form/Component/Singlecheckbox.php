@@ -57,7 +57,7 @@ class Singlecheckbox extends Component
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
         }
-        
+
         $tpl = Di::getDefault()->get('template');
 
         $tpl->assign('element', $element);

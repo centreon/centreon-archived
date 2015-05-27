@@ -79,6 +79,9 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
             case 'custom':
                 $filename .= '/core/custom/'.  implode('/', $fullClassPath);
                 break;
+            case 'events':
+                $filename .= '/core/events/'.  implode('/', $fullClassPath);
+                break;
         }
     }
     

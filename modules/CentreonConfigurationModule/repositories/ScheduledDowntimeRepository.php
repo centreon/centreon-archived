@@ -31,21 +31,27 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonAdministration\Models;
-
-use Centreon\Models\CentreonBaseModel;
+namespace CentreonConfiguration\Repository;
 
 /**
- * Used for interacting with Acl Menus
+ * Repository for scheduled downtimes
  *
- * @author sylvestre
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
+ * @package CentreonConfiguration
+ * @subpackage Repository
+ * @version 3.0.0
  */
-class Aclmenu extends CentreonBaseModel
+class ScheduledDowntimeRepository extends \CentreonConfiguration\Repository\Repository
 {
-    protected static $table = "cfg_acl_menus";
-    protected static $primaryKey = "acl_menu_id";
-    protected static $uniqueLabelField = "name";
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'downtime' => 'cfg_downtimes,dt_id,dt_name'
+        ),
+    );
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="centreon" defaultIdMethod="native">
     <table name="rt_hosts_hosts_parents" phpName="HostsHostsParents" idMethod="native">
-        <column name="child_id" phpName="ChildId" type="INTEGER" required="true"/>
-        <column name="parent_id" phpName="ParentId" type="INTEGER" required="true"/>
+        <column name="child_id" phpName="ChildId" primaryKey="true" type="INTEGER" required="true"/>
+        <column name="parent_id" phpName="ParentId" primaryKey="true" type="INTEGER" required="true"/>
         <foreign-key foreignTable="rt_hosts" name="hosts_hosts_parents_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="child_id" foreign="host_id"/>
         </foreign-key>
