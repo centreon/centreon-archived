@@ -128,8 +128,11 @@ class Directory
      */
     public static function copy($sourceDirectory, $destinationDirectory)
     {
-        $dir = opendir($sourceDirectory); 
-        mkdir($destinationDirectory, 0777, true); 
+        $dir = opendir($sourceDirectory);
+        
+        if (!file_exists($destinationDirectory)) {
+            mkdir($destinationDirectory, 0777, true);
+        }
         while(false !== ( $file = readdir($dir)) ) { 
             if (( $file != '.' ) && ( $file != '..' )) { 
                 if ( is_dir($sourceDirectory . '/' . $file) ) { 
@@ -153,7 +156,7 @@ class Directory
     public static function isEmpty($directory, $pattern = "*")
     {
         if (!file_exists($directory)) {
-            throw new DirectoryNotExistsException;
+            throw new DirectoryNotExistsException('Error when create temporary directory', 1104);
         }
         
         $directoryEmpty = false;

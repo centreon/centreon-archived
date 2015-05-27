@@ -115,7 +115,8 @@ class ContactRepository extends Repository
         if (isset($givenParameters['contact_tags'])) {
             $aTagList = explode(",", $givenParameters['contact_tags']);
             foreach ($aTagList as $var) {
-                if (strlen($var)>1) {
+                $var = trim($var);
+                if (!empty($var)) {
                     array_push($aTags, $var);
                 }
             }

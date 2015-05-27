@@ -49,6 +49,8 @@ class Host extends CentreonBaseModel
     protected static $primaryKey = "host_id";
     protected static $uniqueLabelField = "name";
 
+    protected static $aclResourceType = 1;
+
     /**
      * 
      * @param type $parameterNames

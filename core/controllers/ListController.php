@@ -156,6 +156,7 @@ abstract class ListController extends Controller
         $this->tpl->addJs('jquery.dataTables.min.js')
             ->addJs('dataTables.tableTools.min.js')
             ->addJs('dataTables.colVis.min.js')
+            ->addJs('hogan-3.0.0.min.js')
 
             ->addJs('dataTables.colReorder.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
@@ -234,7 +235,6 @@ abstract class ListController extends Controller
     public function createAction($sendResponse = true)
     {
         $givenParameters = clone $this->getParams('post');
-        $repository = $this->repository;
         try {
             $repository = $this->repository;
             $id = $repository::create($givenParameters, 'wizard', $this->getUri());

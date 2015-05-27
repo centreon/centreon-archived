@@ -228,4 +228,37 @@ class BusinessActivityController extends FormController
     {
         parent::getSimpleRelation('icon_id', '\CentreonBam\Models\Icon');
     }
+
+    /**
+     * Get business activities for a specific acl resource
+     *
+     * @method get
+     * @route /aclresource/[i:id]/businessactivity
+     */
+    public function businessActivitiesForAclResourceAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+        $finalBaList = BusinessActivityRepository::getBusinessActivitiesByAclResourceId($requestParam['id']);
+
+        $router->response()->json($finalBaList);
+    }
+
+     /**
+     * Get business activity tag list for acl resource
+     *
+     * @method get
+     * @route /aclresource/businessactivity/tag/formlist
+     */
+     public function businessActivityTagsForAclResourceAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $list = TagsRepository::getList('ba', "", 1, 0, 1);
+
+        $router->response()->json($list);
+    }
 }

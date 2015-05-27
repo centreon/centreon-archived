@@ -77,9 +77,11 @@ class IndicatorController extends FormController
             $this->router->response()->json(array('success' => $aReturn['success'],'error' => $aReturn['error']));
             return;
         }
+        
+        $route = $this->getUri();
 
         try {
-            IndicatorRepository::createIndicator($givenParameters);
+            IndicatorRepository::createIndicator($givenParameters, 'wizard', $route);
             unset($_SESSION['form_token']);
             unset($_SESSION['form_token_time']);
             $this->router->response()->json(array('success' => true));
@@ -236,14 +238,18 @@ class IndicatorController extends FormController
         
         $relObj = static::$relationMap['indicator_service'];
         $listOfServices = $relObj::getHostIdServiceIdFromKpiId($requestParam['id']);
+        
 
         $finalList = array();
-        if (isset($listOfServices[0])) {
+        if (isset($listOfServices[0]) && !empty($listOfServices[0]['service_id']) && !empty($listOfServices[0]['host_id'])) {
             $serviceDescription = Service::getParameters(
                 $listOfServices[0]['service_id'],
                 'service_description'
             );
+
+
             $hostName = Host::getParameters($listOfServices[0]['host_id'], 'host_name');
+            
             $finalList = array(
                 "id" => $listOfServices[0]['service_id'] . '_' . $listOfServices[0]['host_id'],
                 "text" => $hostName['host_name'] . ' ' . $serviceDescription['service_description']

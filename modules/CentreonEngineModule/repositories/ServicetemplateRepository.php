@@ -57,13 +57,11 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
     {
         $content = array();
         $content["service_active_checks_enabled"] = 1;
-        $content["service_passive_checks_enabled"] = 1;
         $content["service_obsess_over_host"] = 1;
         $content["service_check_freshness"] = 1;
         $content["service_event_handler_enabled"] = 1;
         $content["service_flap_detection_enabled"] = 1;
         $content["service_is_volatile"] = 1;
-        $content["service_parallelize_check"] = 1;
         $content["service_obsess_over_service"] = 1;
         return $content;
     }
@@ -90,7 +88,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
             . "command_command_id_arg2, command_command_id2 AS event_handler, service_is_volatile, "
             . "service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, "
             . "service_active_checks_enabled, initial_state, "
-            . "service_parallelize_check, service_obsess_over_service, service_check_freshness, "
+            . "service_obsess_over_service, service_check_freshness, "
             . "service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, "
             . "service_high_flap_threshold, service_flap_detection_enabled ";
         

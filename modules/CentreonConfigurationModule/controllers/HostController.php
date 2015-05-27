@@ -185,26 +185,7 @@ class HostController extends FormController
                 TagsRepository::saveTagsForResource(self::$objectName, $id, $aTags, '', false, 1);
             }
         }
-        
-        //get Tag for hostTemplate    
-        /*
-        if (isset($givenParameters['host_hosttemplates'])) {
-            $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
-            $aTemplate = array_diff( $aTemplate, array( '' ) );
-            foreach ($aTemplate as $eTemplate) {
-                $eTemplate = trim($eTemplate);
                 
-                if (!empty($eTemplate)) {
-                    $aTagsTemplates = TagsRepository::getListId('host', $eTemplate);
-                    foreach ($aTagsTemplates as $key => $oTpl) {
-                        TagsRepository::add($oTpl['text'], self::$objectName, $id, 1, $eTemplate, false);
-                    }
-                }
-            }
-        }
-        */
-        HostRepository::deployServices($id);
-        
         $this->router->response()->json(array('success' => true));
     }
 
@@ -219,14 +200,8 @@ class HostController extends FormController
     {
         $requestParam = $this->getParams('named');
         $tags = TagsRepository::getList('host', $requestParam['id']);
-        /*
-        echo '<pre>';
-        print_r($tags);
-        echo '</pre>';
-        die;*/
-        $this->router->response()->json($tags);
-        /*$this->tpl->assign('tags', $tags);
-        $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');*/
+        $this->tpl->assign('tags', $tags);
+        $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');
     }
     
     
@@ -279,16 +254,6 @@ class HostController extends FormController
             CustomMacroRepository::saveHostCustomMacro($givenParameters['object_id'], $macroList);
         }
         
-        //Get All tags 
-        /*
-        $aTagsInTpl =  TagsRepository::getListId(self::$objectName, $givenParameters['object_id']);
-        foreach ($aTagsInTpl as $c => $i) {
-            if (isset($i['tpl']) && $i['tpl'] > 0) {
-                array_push($aTagsIdTpl, $i['text']);
-            }
-        }
-        */
-        
         //Delete all tags
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
         
@@ -307,31 +272,7 @@ class HostController extends FormController
             }
         }
         
-        //Clean tags for host template
-        /*
-        TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 1);
-
-        //get Tag for hostTemplate
-        if (isset($givenParameters['host_hosttemplates'])) {
-            $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
-            $aTemplate = array_diff( $aTemplate, array( '' ) );
-            foreach ($aTemplate as $eTemplate) {
-                $eTemplate = trim($eTemplate);
-                
-                if (!empty($eTemplate)) {
-                    $aTagsTemplates = TagsRepository::getListId('host', $eTemplate);
-
-                    foreach ($aTagsTemplates as $key => $oTpl) {
-                        TagsRepository::add($oTpl['text'], self::$objectName, $givenParameters['object_id'], 1, $eTemplate);
-                    }
-                }
-            }
-        }
-        */
         parent::updateAction();
-        if ($givenParameters['host_create_services_from_template']) {
-            Host::deployServices($givenParameters['object_id']);
-        }
     }
     
     /**
@@ -381,23 +322,6 @@ class HostController extends FormController
     public function hostTemplateForHostAction()
     {
         parent::getRelations(static::$relationMap['host_hosttemplates']);
-    }
-
-    /**
-     * Get hosts for a specific acl resource
-     *
-     * @method get
-     * @route /aclresource/[i:id]/host
-     */
-    public function hostsForAclResourceAction()
-    {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-
-        $requestParam = $this->getParams('named');
-        $finalHostList = HostRepository::getHostByAclResourceId($requestParam['id']);
-
-        $router->response()->json($finalHostList);
     }
 
     /**
@@ -544,6 +468,22 @@ class HostController extends FormController
     {
         parent::getSimpleRelation('poller_id', '\CentreonConfiguration\Models\Poller');
     }
+
+    /**
+     * Display the configuration snapshot of a host
+     * with template inheritance
+     *
+     * @method get
+     * @route /host/snapshotslide/[i:id]
+     */
+    public function snapshotslideAction()
+    {
+        $params = $this->getParams();
+        $data = HostRepository::getConfigurationData($params['id']);
+        $hostConfiguration = HostRepository::formatDataForTooltip($data);
+        $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
+        $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus));
+    }
     
     /**
      * Display the configuration snapshot of a host
@@ -573,17 +513,23 @@ class HostController extends FormController
      */
     public function hostForServiceAction()
     {
+        /*
+        $requestParam = $this->getParams('named');
+        $repository = $this->repository;
+        $repository::getRelations();
+        $list = $repository::getRelations($relClass, $requestParam['id']);
+        $this->router->response()->json($list);
+        */
+        
         $requestParam = $this->getParams('named');
         $services = HostRepository::getServicesForHost(static::$relationMap['host_services'],$requestParam['id']);
-        
-        foreach($services as &$service){
-            $service = ServiceRepository::formatDataForTooltip($service);
+        //$formatedData = array();
+        $final = "";
+        foreach($services as $service){
+            //$formatedData[] = ServiceRepository::formatDataForTooltip($service);
+            $this->tpl->assign('checkdata', ServiceRepository::formatDataForTooltip($service));
+            $final .= $this->tpl->fetch('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
         }
-        /*
-        echo '<pre>';
-        print_r($services);
-        echo '</pre>';
-        die;*/
         
         $this->router->response()->json($services);
     }
@@ -630,5 +576,38 @@ class HostController extends FormController
         $router->response()->json(array(
             'success' => true,
             'values' => $inheritanceValues));
+    }
+
+    /**
+     * Get hosts for a specific acl resource
+     *
+     * @method get
+     * @route /aclresource/[i:id]/host
+     */
+    public function hostsForAclResourceAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+        $finalHostList = HostRepository::getHostsByAclResourceId($requestParam['id']);
+
+        $router->response()->json($finalHostList);
+    }
+
+     /**
+     * Get host tag list for acl resource
+     *
+     * @method get
+     * @route /aclresource/host/tag/formlist
+     */
+     public function hostTagsForAclResourceAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $list = TagsRepository::getList('host', "", 1, 0, 1);
+
+        $router->response()->json($list);
     }
 }

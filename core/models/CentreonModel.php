@@ -97,38 +97,64 @@ abstract class CentreonModel
                 $filterType['*'] = 'OR';
             }
         }
-        if (is_array($parameterNames)) {
-            $params = implode(",", $parameterNames);
-        } else {
-            $params = $parameterNames;
+
+        $tablesColumns = self::getColumns();
+
+        if (!is_array($parameterNames)) {
+            $parameterNames = explode (",", $parameterNames);
         }
+
+        foreach ($parameterNames as &$parameterName) {
+            if (!preg_match('/\.|count\(|concat\(|"/i', $parameterName)) {
+                foreach ($tablesColumns as $tempTableName => $tempColumnNames) {
+                    if (in_array($parameterName, $tempColumnNames)) {
+                        $parameterName = $tempTableName . '.' . $parameterName;
+                    }
+                }
+            }
+        }
+
+        $params = implode(",", $parameterNames);
+
         $sql = "SELECT DISTINCT $params FROM ";
         if (is_null($tablesString)) {
             $sql .=  static::$table;
         } else {
             $sql .= $tablesString;
-        } 
+        }
+
+        if (isset(static::$aclResourceType) && isset($_SESSION['user']) && !$_SESSION['user']->isAdmin()) {
+            $sql .= ', cfg_acl_resources_cache, cfg_usergroups, cfg_users_usergroups_relations, cfg_acl_resources, cfg_acl_resources_usergroups_relations';
+        }
 
         if (!is_null($aAddFilters) && isset($aAddFilters['tables'])) {
             $sql .= ", ".implode(", ", $aAddFilters['tables']);
         }
-       
+
         $filterTab = array();
         $nextFilterType = null;
         $first = true;
-        if (false === is_null($staticFilter)) {
+        if (!is_null($staticFilter)) {
             $sql .= " WHERE " . $staticFilter;
             $first = false;
             $nextFilterType = "AND";
-        } 
+        }
         
         if (count($filters)) {
-            
             foreach ($filters as $key => $rawvalue) {
+                $completeKey = $key;
+                if (!preg_match('/\.|count\(|concat\(|"/i', $key)) {
+                    foreach ($tablesColumns as $tempTableName => $tempColumnNames) {
+                        if (in_array($key, $tempColumnNames)) {
+                            $completeKey =  $tempTableName . '.' . $key;
+                        }
+                    }
+                }
+
                 if (is_array($rawvalue)) {
                     $filterStr = "(";
                     $filterStr .= join(" OR ",
-                        array_pad(array(), count($rawvalue), $key . " LIKE ?")
+                        array_pad(array(), count($rawvalue), $completeKey . " LIKE ?")
                     );
                     $filterStr .= ")";
                     $filterTab = array_merge(
@@ -139,9 +165,10 @@ abstract class CentreonModel
                         )
                     );
                 } else {
-                    $filterStr = $key . " LIKE ?";
-                    $filterTab[] = CentreonBaseModel::parseValueForSearch($rawvalue);
+                    $filterStr = $completeKey . " LIKE ?";
+                    $filterTab[] = self::parseValueForSearch($rawvalue);
                 }
+
                 if ($first) {
                     $sql .= " WHERE " . $filterStr;
                     $first = false;
@@ -160,6 +187,21 @@ abstract class CentreonModel
                 }
             }
         }
+
+        if (isset(static::$aclResourceType) && isset($_SESSION['user']) && !$_SESSION['user']->isAdmin()) {
+            if ($first) {
+                $sql .= " WHERE ";
+                $first = false;
+            } else {
+                $sql .= " AND ";
+            }
+            $sql .= " cfg_users_usergroups_relations.user_id = " . $_SESSION['user']->getId()
+                . " AND cfg_users_usergroups_relations.usergroup_id = cfg_acl_resources_usergroups_relations.usergroup_id"
+                . " AND cfg_acl_resources_usergroups_relations.acl_resource_id = cfg_acl_resources.acl_resource_id"
+                . " AND cfg_acl_resources_cache.resource_type = " . static::$aclResourceType
+                . " AND cfg_acl_resources_cache.resource_id = " . static::$table . '.' . static::$primaryKey;
+        }
+
         if (!is_null($aAddFilters) && isset($aAddFilters['join'])) {
             $sql .= " AND ".implode(" AND ", $aAddFilters['join']);
         }
@@ -266,5 +308,34 @@ abstract class CentreonModel
         $value = str_replace("_", "\_", $value);
         $value = str_replace(" ", "\ ", $value);
         return $value;
+    }
+
+     /**
+     * Get columns
+     *
+     * @return array
+     */
+    public static function getColumns()
+    {
+        $result = array();
+        if (isset(static::$databaseName) && isset(static::$table)) {
+            $aliasTable = explode(" ", static::$table);
+            if (isset($aliasTable[1])) {
+                $showTableName = $aliasTable[0];
+                $aliasTable = $aliasTable[1];
+            } else {
+                $showTableName = static::$table;
+                $aliasTable = static::$table;
+            }
+
+            $db = Di::getDefault()->get(static::$databaseName);
+            $stmt = $db->prepare("SHOW COLUMNS FROM " . $showTableName);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            foreach ($rows as $row) {
+                $result[$aliasTable][] = $row['Field'];
+            }
+        }
+        return $result;
     }
 }

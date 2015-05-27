@@ -107,7 +107,7 @@ class GenerateEngine
     }
 
     /**
-     * Generate all object files (host, service, contacts etc...)
+     * Generate all object files (host, service, etc...)
      *
      */
     public static function generateObjectsFiles()
@@ -145,13 +145,6 @@ class GenerateEngine
 
         ConnectorRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "connectors.cfg");
         $event->setOutput('connectors.cfg');
-
-        UserRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "objects/contacts.cfg");
-        $event->setOutput('contacts.cfg');
-
-        // To be remove
-        UserRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "objects/contactgroups.cfg");
-        $event->setOutput('contactgroups.cfg');
 
         /* Retrieve all extra macros by emitting event */
         $events = Di::getDefault()->get('events');

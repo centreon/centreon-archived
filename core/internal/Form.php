@@ -36,6 +36,7 @@
 namespace Centreon\Internal;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Form\Component\Component;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -244,7 +245,7 @@ class Form
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
             case 'static':
-                $className = "\\Centreon\\Internal\\Form\\Component\\".ucfirst($element['label_type']);
+                $className = Component::parseComponentName($element['label_type']);
                 if (class_exists($className) && method_exists($className, 'renderHtmlInput')) {
                     $element['label'] = $element['label_label'];
                     $in = $className::renderHtmlInput($element);
@@ -583,7 +584,8 @@ class Form
         $params['parent_field'] = isset($field['parent_field']) ? $field['parent_field'] : '';
         $params['parent_value'] = isset($field['parent_value']) ? $field['parent_value'] : '';
         $params['child_actions'] = isset($field['child_actions']) ? $field['child_actions'] : '';
-        if(!empty($params['show_label'])){
+
+        if(isset($field['show_label'])){
             $params['show_label'] = $field['show_label'];
         }
         if (isset($field['advanced']) && $field['advanced'] != null) {
@@ -602,6 +604,7 @@ class Form
             $params['validators'] = $field['validators'];
         }
         $params['extra'] = $extraParams;
+        
         $elem = $this->formProcessor->addElement('static', $field['name'], $params);
     }
     

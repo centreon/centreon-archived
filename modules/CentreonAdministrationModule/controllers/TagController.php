@@ -148,7 +148,7 @@ class TagController extends Controller
         if (count($listTag) > 0) {
             try {    
                 foreach ($listResources as $resourceId) {
-                    TagsRepository::saveTagsForResource($post['resourceName'], $resourceId, $listTag, '', $bNotDelete, $sGlobal);
+                    TagsRepository::saveTagsForResource($post['resourceName'], $resourceId, $listTag, 0, $bNotDelete, $sGlobal);
                 }
                 $bStatus = true;
 

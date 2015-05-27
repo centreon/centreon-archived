@@ -104,15 +104,6 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_passive_checks_enabled" label="Passive checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                            <Default>2</Default>
-                        </choices>
-					</attributes>
-				</field>
 			</block>
 		</section>
 		<section name="SNMP Traps">

@@ -153,7 +153,7 @@ class ServiceDatatable extends Datatable
             ),
         ),
         array (
-            'title' => "",
+            'title' => "Graph",
             'name' => 's.host_id',
             'data' => 'ico',
             'orderable' => false,
@@ -348,8 +348,8 @@ class ServiceDatatable extends Datatable
                     $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
                 }
             }
-            
-            $templates = ServiceRepository::getListTemplates($myServiceSet['service_id'], array(), -1);
+            /*
+            $templates = ServiceConfigurationRepository::getListTemplates($myServiceSet['service_id'], array(), -1);
             foreach ($templates as $template) {
                 $aTags = TagsRepository::getList('service', $template, 2, 0);
                 foreach ($aTags as $oTags) {
@@ -359,6 +359,7 @@ class ServiceDatatable extends Datatable
                     }
                 }
             }
+            */
             
             $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
         }

@@ -41,7 +41,7 @@ use Centreon\Internal\Installer\StaticFiles;
 use Centreon\Internal\Installer\Form;
 
 /**
- * COmmand Line to manage
+ * Command line for module management
  *
  * @author Lionel Assepo
  * @version 3.0.0
@@ -52,8 +52,8 @@ class ManageCommand extends AbstractCommand
 {
     /**
      * 
-     * @param type $module
-     * @param type $verbose
+     * @param string $module
+     * @param integer $verbose
      */
     public function installAction($module, $verbose = 1)
     {
@@ -63,8 +63,8 @@ class ManageCommand extends AbstractCommand
     
     /**
      * 
-     * @param type $module
-     * @param type $verbose
+     * @param string $module
+     * @param integer $verbose
      */
     public function upgradeAction($module, $verbose = 1)
     {
@@ -74,8 +74,8 @@ class ManageCommand extends AbstractCommand
     
     /**
      * 
-     * @param type $module
-     * @param type $verbose
+     * @param string $module
+     * @param integer $verbose
      */
     public function uninstallAction($module, $verbose = 1)
     {
@@ -85,8 +85,8 @@ class ManageCommand extends AbstractCommand
     
     /**
      * 
-     * @param type $module
-     * @param type $removeOld
+     * @param string $module
+     * @param integer $removeOld
      */
     public function deployStaticAction($module, $removeOld = 1)
     {

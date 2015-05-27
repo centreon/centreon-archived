@@ -168,7 +168,7 @@ class TagsRepository
      * @return array
      * @throws Exception
      */
-    public static function getList($resourceName, $resourceId, $bGlobaux = 0, $bWithHerited = 1)
+    public static function getList($resourceName, $resourceId, $bGlobaux = 0, $bWithHerited = 1, $bForceId = 0)
     {
         $resourceName = self::convertResource($resourceName);
         if (!in_array($resourceName, static::$resourceType)) {
@@ -177,9 +177,9 @@ class TagsRepository
 
         $dbconn = Di::getDefault()->get('db_centreon');        
 
-        $query = "SELECT t.tag_id, t.tagname, user_id, template_id
-                FROM cfg_tags t LEFT JOIN cfg_tags_" . $resourceName . "s r ON t.tag_id = r.tag_id
-                WHERE ";
+        $query = 'SELECT t.tag_id, t.tagname, user_id, template_id'
+            . ' FROM cfg_tags t, cfg_tags_' . $resourceName . 's r'
+            . ' WHERE t.tag_id = r.tag_id AND ';
          
         if ($bGlobaux == 0) {//only tag for user
             $query .= " t.user_id = :user_id";
@@ -211,7 +211,7 @@ class TagsRepository
         $tags = array();
         
         while ($row = $stmt->fetch()) {
-            if ($bGlobaux == 0) {
+            if (($bGlobaux == 0) || ($bForceId == 1)) {
                 $sField = $row['tag_id'];
             } else {
                 $sField = $row['tagname'];

@@ -166,6 +166,7 @@ sub proxy {
         return if (!defined($entry));
         
         $connector->connect(id => $target, entry => $entry);
+        $connector->{clients}->{$target} = $entry;
     } else {
         $entry = $connector->{clients}->{$target};
     }
@@ -173,12 +174,10 @@ sub proxy {
     if ($entry->{type} == 1) {
         my ($status, $msg) = $entry->{class}->send_message(action => $action, token => $token,
                                                            target => '', data => $data);
-        if ($status == 0) {
-            $connector->{clients}->{$target} = $entry;
-        } else {
+        if ($status != 0) {
             # error we put log and we close (TODO the log)
             $connector->{logger}->writeLogError("centreondproxy: class: send message problem for '$target': $msg");
-            $connector->{clients}->{$target}->{delete} = 1 if (defined($connector->{clients}->{$target}));
+            $connector->{clients}->{$target}->{delete} = 1;
         }
     }
     

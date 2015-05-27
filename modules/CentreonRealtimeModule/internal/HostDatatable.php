@@ -299,7 +299,7 @@ class HostDatatable extends Datatable
             }
             
             //Get tags affected by the template
-            $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), -1);
+            $templates = HostConfigurationRepository::getTemplateChain($myHostSet['host_id'], array(), -1);
             foreach ($templates as $template) {
                 $aTags = TagsRepository::getList('host', $template['id'], 2, 0);
                 foreach ($aTags as $oTags) {

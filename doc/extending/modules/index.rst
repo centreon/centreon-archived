@@ -1,8 +1,0 @@
-#######
-Modules
-#######
-
-.. toctree::
-
-   install
-   howtowrite

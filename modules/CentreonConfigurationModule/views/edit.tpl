@@ -154,19 +154,19 @@
                       type: 'get',
                       success: function(data, textStatus, jqXHR) {
                         if (data.success) {
-                          $.each(data.values, function(key, value) {
-                             if (value != null) {
-                                var disabledItem = /*$(*/
-                                "<div class='select2-search-choice'>" +
-                                "<div>"+value+"</div>" +
-                                "</div>"/*)*/; 
-                                
-                                //$('#s2id_host_tags').children('ul').prepend(disabledItem);
-                                sText =  sText+' '+ disabledItem;
-                             }
-                          });
-                          $('div[id$="tags_inheritance"]').html(sText);
-                        }
+
+                            $.each(data.values, function(key, value) {
+
+                                 if (value != null) {
+                                    var disabledItem = /*$(*/
+                                    "<span>"+value+"</span>" /*)*/;
+
+                                    //$('#s2id_host_tags').children('ul').prepend(disabledItem);
+                                    sText =  sText+' '+ disabledItem;
+                                 }
+                              });
+                            $('div[id$="tags_inheritance"]').addClass('tagInheritance').html(sText);
+                          }
                       }
                 });
             {/if}

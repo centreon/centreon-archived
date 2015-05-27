@@ -36,6 +36,7 @@
 namespace Centreon\Internal\Installer;
 
 use Centreon\Models\Module as ModuleModel;
+use CentreonMain\Models\ModuleDependency;
 
 /**
  * 
@@ -141,7 +142,7 @@ class Versioning
      * 
      * @param string $version
      */
-    public function updateVersionInDb($version)
+    public function updateVersionInDb($version, $addDependencies = false)
     {
         $dataToInsert = array('version' => $version);
         
@@ -153,7 +154,37 @@ class Versioning
             if (!is_null($this->moduleInfo)) {
                 $dataToInsert['alias'] = $this->moduleInfo['name'];
                 $dataToInsert['name'] = $this->moduleInfo['shortname'];
-                ModuleModel::insert($dataToInsert);
+                $moduleId = ModuleModel::insert($dataToInsert);
+            }
+        }
+        
+        if ($addDependencies) {
+            $this->setDependencies($moduleId);
+        }
+    }
+    
+    /**
+     * 
+     * @param type $moduleId
+     */
+    public function setDependencies($moduleId = null)
+    {
+        
+        if (is_array($moduleId)) {
+            $currentModule = $moduleId[0];
+        } else {
+            $currentModule = $moduleId;
+        }
+        
+        foreach ($this->moduleInfo['dependencies'] as $dependency) {
+            $parentId = ModuleModel::getIdByParameter('name', $dependency['name']);
+            if (count($parentId) > 0) {
+                ModuleDependency::insert(
+                    array(
+                        'parent_id' => $parentId[0],
+                        'child_id' => $currentModule
+                    )
+                );
             }
         }
     }

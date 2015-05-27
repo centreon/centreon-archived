@@ -37,11 +37,12 @@ namespace Centreon\Internal\Installer\Module;
 
 use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Installer\StaticFiles;
-use Centreon\Internal\Module\Dependency;
 use Centreon\Internal\Utils\CommandLine\Colorize;
 use Centreon\Internal\Utils\CommandLine\InputOutput;
 use Centreon\Internal\Utils\Dependency\PhpDependencies;
 use Centreon\Internal\Exception\Module\MissingDependenciesException;
+use Centreon\Internal\Exception\Module\DependenciesConstraintException;
+use Centreon\Internal\Exception\Module\CoreModuleRemovalConstraintException;
 use Centreon\Internal\Installer\Versioning;
 use Centreon\Internal\Installer\Form;
 use Centreon\Internal\Exception\FilesystemException;
@@ -49,6 +50,7 @@ use Centreon\Internal\Hook;
 use Centreon\Models\Module;
 use Centreon\Internal\Di;
 use Centreon\Internal\Install\Db;
+use Centreon\Internal\Database\Migrate;
 
 /**
  * 
@@ -163,7 +165,7 @@ abstract class AbstractModuleInstaller
         
         // Set Final Version
         $this->versionManager->setVersion($this->moduleInfo['version']);
-        $this->versionManager->updateVersionInDb($this->moduleInfo['version']);
+        $this->versionManager->updateVersionInDb($this->moduleInfo['version'], true);
         
         // Performing custom install task
         $this->customInstall();
@@ -205,7 +207,8 @@ abstract class AbstractModuleInstaller
         $this->moduleId = Informations::getModuleIdByName($this->moduleSlug);
         
         // Install DB
-        $this->installDb(false);
+        $migrationManager = new Migrate($this->moduleDirectory . '/install/db/propel/');
+        $migrationManager->up();
         
         // Install menu
         $this->installMenu();
@@ -241,6 +244,13 @@ abstract class AbstractModuleInstaller
      */
     public function uninstall()
     {
+        $coreModule = Informations::getCoreModuleList();
+        if (in_array($this->moduleSlug, $coreModule)) {
+            $exceptionMessage = _("This module is a core module and therefore can't be uninstalled");
+            throw new CoreModuleRemovalConstraintException($this->colorizeMessage($exceptionMessage, 'danger'), 1103);
+        }
+        
+        
         // Starting Message
         $message = _("Starting removal of %s module");
         $this->displayOperationMessage(
@@ -263,6 +273,9 @@ abstract class AbstractModuleInstaller
         
         // Remove old static files
         $this->removeStaticFiles();
+        
+        //
+        $this->removeValidators();
         
         // Custom removal of the module
         $this->customRemove();
@@ -326,10 +339,6 @@ abstract class AbstractModuleInstaller
     {
         $isinstalled = 1;
         $isactivated = 1;
-        
-        var_dump($this->moduleInfo['isuninstallable']);
-        var_dump($this->moduleInfo['isdisableable']);
-        
         
         if (isset($this->moduleInfo['isuninstallable']) && ($this->moduleInfo['isuninstallable'] === false)) {
             $isinstalled = 2;
@@ -420,23 +429,40 @@ abstract class AbstractModuleInstaller
 
     /**
      * 
+     * @param type $operation
      * @throws MissingDependenciesException
      */
     protected function checkModulesDependencies()
     {
         $dependenciesSatisfied = true;
         $missingDependencies = array();
+        $exceptionMessage = '';
+        
         foreach ($this->moduleInfo['dependencies'] as $module) {
             if (!Informations::checkDependency($module)) {
                 $dependenciesSatisfied = false;
                 $missingDependencies[] = $module['name'];
             }
+
+            if ($dependenciesSatisfied === false) {
+                $exceptionMessage .= _("The following dependencies are not satisfied") . " :\n   - ";
+                $exceptionMessage .= implode("\n    - ", $missingDependencies);
+                throw new MissingDependenciesException($this->colorizeMessage($exceptionMessage, 'danger'), 1104);
+            }
         }
-        
-        if ($dependenciesSatisfied === false) {
-            $exceptionMessage = _("The following dependencies are not satisfied") . " :\n";
+    }
+    
+    /**
+     * 
+     * @throws DependenciesConstraintException
+     */
+    protected function checkReverseModulesDependencies()
+    {
+        $missingDependencies = Informations::getChildren($this->moduleSlug);
+        if (count($missingDependencies) > 0) {
+            $exceptionMessage = _("This module can't be uninstalled because the following modules depends on it : ") . "\n    - ";
             $exceptionMessage .= implode("\n    - ", $missingDependencies);
-            throw new MissingDependenciesException($this->colorizeMessage($exceptionMessage, 'danger'), 1104);
+            throw new DependenciesConstraintException("\n" . $this->colorizeMessage($exceptionMessage, 'danger'), 1109);
         }
     }
     
@@ -464,7 +490,7 @@ abstract class AbstractModuleInstaller
         $this->displayOperationMessage($message, false);
         
         if ($operation === 'uninstall') {
-            
+            $this->checkReverseModulesDependencies();
         } else {
             // Check modules dependencies
             $this->checkModulesDependencies();
@@ -484,9 +510,7 @@ abstract class AbstractModuleInstaller
     protected function installValidators()
     {
         $validatorFile = $this->moduleDirectory . '/install/validators.json';
-        if (file_exists($validatorFile)) {
-            $this->removeValidators();
-                        
+        if (file_exists($validatorFile)) {                       
             $message = $this->colorizeText(_("Installation of validators..."));
             $this->displayOperationMessage($message, false);
             Form::insertValidators(json_decode(file_get_contents($validatorFile), true));
@@ -522,9 +546,16 @@ abstract class AbstractModuleInstaller
      * 
      */
     protected function removeValidators()
-    {       
-        Form::removeValidators();
-        
+    {        
+        $validatorFile = $this->moduleDirectory . '/install/validators.json';
+        if (file_exists($validatorFile)) {
+            $message = $this->colorizeText(_("Remove validators..."));
+            $this->displayOperationMessage($message, false);
+            $moduleValidators = json_decode(file_get_contents($validatorFile), true);
+            Form::removeValidators($moduleValidators);
+            $message = $this->colorizeMessage(_("     Done"), 'green');
+            $this->displayOperationMessage($message);
+        }
     }
     
     /**
@@ -562,7 +593,11 @@ abstract class AbstractModuleInstaller
         $filejson = $this->moduleDirectory . 'install/menu.json';
         if (file_exists($filejson)) {
             $menus = json_decode(file_get_contents($filejson), true);
-            self::parseMenuArray($this->moduleId, $menus);
+            if (!is_null($menus)) {
+                self::parseMenuArray($this->moduleId, $menus);
+            } else {
+                throw new \Exception('Error while parsing the menu JSON file of the module');
+            }
         }
     }
     
@@ -638,7 +673,6 @@ abstract class AbstractModuleInstaller
      */
     public static function parseMenuArray($moduleId, $menus, $parent = null)
     {
-        $i = 1;
         foreach ($menus as $menu) {
             if (!is_null($parent)) {
                 $menu['parent'] = $parent;

@@ -42,47 +42,21 @@ use Centreon\Internal\Installer\Database\Installer as DbInstaller;
 
 class ToolsCommand extends AbstractCommand
 {
-    /**
-     * Extract data from a db table and prints a json string
-     *
-     * @param string $dbname | 'db_centreon' or 'db_storage'
-     * @param string $tablename
-     * @param string $extra
-     */
-    public function sqlToJsonAction($dbname, $tablename, $extra = '')
-    {
-        $db = Di::getDefault()->get($dbname);
-        $sql = "SELECT * FROM $tablename $extra";
-        $stmt = $db->prepare($sql);
-        $stmt->execute();
-        $tab = array();
-        $i = 0;
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            foreach ($row as $k => $v) {
-                if (!is_null($v)) {
-                    $tab[$i][$k] = $v;
-                }
-            }
-            $i++;
-        }
-        echo json_encode($tab);
-    }
-    
     
      /**
      * Extract json file and prints a sql string 
      *
-     * @param string $sFile
+     * @param string $file
      * @param string $tablename
-     * @sDestination
+     * @param string destination
      */
-    public function jsonToSqlAction($sFile, $tablename, $sDestination = '')
+    public function jsonToSqlAction($file, $tablename, $destination = '')
     {
         $sInsert = "INSERT INTO ".$tablename."(";
-        if (file_exists($sFile)) {
+        if (file_exists($file)) {
             try {
                 $sColumns = '';
-                $aData = json_decode(file_get_contents($sFile), true);
+                $aData = json_decode(file_get_contents($file), true);
  
                 $sSql = '';
 
@@ -92,18 +66,19 @@ class ToolsCommand extends AbstractCommand
                 }
                 $sChars = $sInsert.$sColumns.") VALUES ".$sSql;
                 $sContent = substr($sChars, 0, strlen($sChars) - 2 ).";";
-               // echo $sDestination;
+               // echo $destination;
                 
-                if (empty($sDestination)) {
+                if (empty($destination)) {
                     echo $sContent;
                 } else  {
-                    if (file_exists($sDestination)) {
-                        file_put_contents($sContent, $sDestination);
+                    if (file_exists($destination)) {
+                        file_put_contents($sContent, $destination);
                     } else throw new Exception("invalide desination");
                 }
              
             } catch (Exception $ex) {
-                 return "invalid content";
+                throw new Exception("invalid content");
+                //return "invalid content";
             } 
         }
     }

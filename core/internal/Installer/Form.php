@@ -195,10 +195,14 @@ class Form
     }
     /**
      * 
+     * @param type $aValidators
      */
-    public static function removeValidators()
+
+    public static function removeValidators($aValidators)
     {
-        Validators::delete();
+        foreach ($aValidators as $validator) {
+            Validators::delete($validator['name']);
+        }
     }
 
     /**
@@ -359,9 +363,9 @@ class Form
         if (!isset(self::$fields[$key])) {
             $sql = 'INSERT INTO cfg_forms_fields 
                 (name, label, default_value, attributes, advanced, type, 
-                help, module_id, parent_field, parent_value, child_actions, mandatory, child_mandatory) VALUES 
+                help, module_id, parent_field, parent_value, child_actions, mandatory, child_mandatory, show_label) VALUES 
                 (:name, :label, :default_value, :attributes, :advanced, 
-                :type, :help, :module_id, :parent_field, :parent_value, :child_actions, :mandatory, :child_mandatory)';
+                :type, :help, :module_id, :parent_field, :parent_value, :child_actions, :mandatory, :child_mandatory, :show_label)';
         } else {
             $sql = 'UPDATE cfg_forms_fields SET label = :label,
                 default_value = :default_value,
@@ -374,7 +378,8 @@ class Form
                 parent_value = :parent_value,
                 child_actions = :child_actions,
                 mandatory = :mandatory,
-                child_mandatory = :child_mandatory
+                child_mandatory = :child_mandatory,
+                show_label = :show_label
                 WHERE name = :name
                 AND field_id = :field_id';
         }
@@ -382,6 +387,8 @@ class Form
         if (isset(self::$fields[$key])) {
             $stmt->bindParam(':field_id', self::$fields[$key]);
         }
+        
+
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':label', $data['label']);
         $stmt->bindParam(':default_value', $data['default_value']);
@@ -392,6 +399,13 @@ class Form
         $stmt->bindParam(':module_id', $data['module_id']);
         $stmt->bindParam(':parent_field', $data['parent_field']);
         $stmt->bindParam(':child_actions', $data['child_actions']);
+        if(isset($data['show_label'])){
+            $stmt->bindParam(':show_label', $data['show_label']);
+        }else{
+            $data['show_label'] = 1;
+            $stmt->bindParam(':show_label', $data['show_label']);
+        }
+        
         
         if (!isset($data['mandatory'])) {
             $data['mandatory'] = '0';
@@ -710,6 +724,12 @@ class Form
                             $field['name'] = $moduleName['name'] . '__' . $field['name'];
                         }
                     }
+                    
+                    if(!isset($field['show_label'])){
+                        $field['show_label'] = 1;
+                    }
+                    
+                    
                     $fieldData = array(
                         'name' => $field['name'],
                         'label' => $field['label'],
@@ -717,11 +737,13 @@ class Form
                         'advanced' => $field['advanced'],
                         'type' => $field['type'],
                         'parent_field' => $field['parent_field'],
+                        'parent_value' => $field['parent_value'],
                         'module_id' => $moduleId,
                         'child_actions' => $field->child_actions,
                         'attributes' => $attributes,
                         'mandatory' => $field['mandatory'],
                         'help' => $field->help,
+                        'show_label' => $field['show_label'],
                     );
                     self::insertField(array_map('strval', $fieldData));
                     $blockFieldData = array(

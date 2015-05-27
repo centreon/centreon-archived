@@ -69,8 +69,8 @@ class HostTagRepository extends Repository
     {
         if ($action === 'update') {
             AclresourceHosttagRelation::delete($objectId);
-            foreach ($hostTagIds as $hostTagId => $hostTagName) {
-                AclresourceHostTagRelation::insert($objectId, $hostTagId);
+            foreach ($hostTagIds as $hostTagId) {
+                AclresourceHosttagRelation::insert($objectId, $hostTagId);
             }
         }
     }
@@ -80,7 +80,7 @@ class HostTagRepository extends Repository
      *
      * @param int $aclId
      */
-    public static function getHostTagByAclResourceId($aclId)
+    public static function getHostTagsByAclResourceId($aclId)
     {
         $hostTagIdList = AclresourceHosttagRelation::getTargetIdFromSourceId(
             'tag_id',
@@ -88,7 +88,10 @@ class HostTagRepository extends Repository
             $aclId
         );
 
-        $tagList = Tag::getParameters($hostTagIdList, 'tagname');
+        $tagList = array();
+        if (count($hostTagIdList) > 0) {
+            $tagList = Tag::getParameters($hostTagIdList, 'tagname');
+        }
 
         $finalTagList = array();
         foreach ($tagList as $tag) {
