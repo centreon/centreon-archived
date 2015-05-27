@@ -200,8 +200,14 @@ class HostController extends FormController
     {
         $requestParam = $this->getParams('named');
         $tags = TagsRepository::getList('host', $requestParam['id']);
-        $this->tpl->assign('tags', $tags);
-        $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');
+        /*
+        echo '<pre>';
+        print_r($tags);
+        echo '</pre>';
+        die;*/
+        $this->router->response()->json($tags);
+        /*$this->tpl->assign('tags', $tags);
+        $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');*/
     }
     
     
@@ -469,21 +475,6 @@ class HostController extends FormController
         parent::getSimpleRelation('poller_id', '\CentreonConfiguration\Models\Poller');
     }
 
-    /**
-     * Display the configuration snapshot of a host
-     * with template inheritance
-     *
-     * @method get
-     * @route /host/snapshotslide/[i:id]
-     */
-    public function snapshotslideAction()
-    {
-        $params = $this->getParams();
-        $data = HostRepository::getConfigurationData($params['id']);
-        $hostConfiguration = HostRepository::formatDataForTooltip($data);
-        $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
-        $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus));
-    }
     
     /**
      * Display the configuration snapshot of a host
@@ -527,9 +518,7 @@ class HostController extends FormController
 
             $this->router->response()->json($services);
         }
-        
-        $this->router->response()->json($services);
-    }
+
     
     
     /**
@@ -541,11 +530,12 @@ class HostController extends FormController
      */
     public function snapshotslideAction()
     {
+
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
         $hostConfiguration = HostRepository::formatDataForSlider($data);
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
-        $edit_url = $router->getPathFor("/centreon-configuration/host/".$params['id']);
+        $edit_url = $this->router->getPathFor("/centreon-configuration/host/".$params['id']);
         $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus,'edit_url' => $edit_url));
     }
 
