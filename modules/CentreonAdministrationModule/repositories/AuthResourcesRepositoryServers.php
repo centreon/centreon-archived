@@ -1,3 +1,5 @@
+<?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -29,5 +31,21 @@
  * do not wish to do so, delete this exception statement from your version.
  * 
  * For more information : contact@centreon.com
- * 
+ * AuthResourcesRepository
  */
+
+
+
+namespace CentreonAdministration\Repository;
+use Centreon\Internal\Di;
+use CentreonMain\Repository\FormRepository;
+
+/**
+ * Description of AuthResourcesRepositoryServers
+ *
+ * @author bsauveton
+ */
+class AuthResourcesRepositoryServers extends FormRepository
+{
+    //put your code here
+}

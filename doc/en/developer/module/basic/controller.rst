@@ -73,3 +73,22 @@ $type    return
 Display a page
 """"""""""""""
 
+.. code-block:: php
+
+   <?php
+   class TestController extends FormController
+   {
+        
+       /**
+         * Get host template for a specific host
+         *
+         * @method get
+         * @route /host/[i:id]/hosttemplate
+         */
+        public function hostTemplateForHostAction()
+        {
+           //code here
+        }
+        
+    }
+

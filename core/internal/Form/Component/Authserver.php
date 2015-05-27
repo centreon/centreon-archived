@@ -1,3 +1,5 @@
+<?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -31,3 +33,53 @@
  * For more information : contact@centreon.com
  * 
  */
+
+namespace Centreon\Internal\Form\Component;
+
+use Centreon\Internal\Di;
+
+
+/**
+ * Description of Authserver
+ *
+ * @author bsauveton
+ */
+class Authserver extends Component
+{
+    
+    
+    
+    
+    
+    public static function renderHtmlInput(array $element)
+    {
+        if (!isset($element['html'])) {
+            $element['html'] = '';
+        }
+
+        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
+            $element['placeholder'] = $element['label_label'];
+        }        
+        
+        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
+            $element['id'] = $element['name'];
+        }
+
+        $tpl = Di::getDefault()->get('template');
+
+        $tpl->addJs('centreon-clone.js')
+            ->addJs('component/authserver.js');
+        
+        $tpl->assign('test', '');
+        
+        
+        return array(
+            'html' => $tpl->fetch('file:[Core]/form/component/authserver.tpl')
+        );
+    }
+    
+    
+    
+    
+    //put your code here
+}

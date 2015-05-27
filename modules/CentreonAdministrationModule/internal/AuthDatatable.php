@@ -7,7 +7,7 @@
  */
 
 
-namespace CentreonConfiguration\Internal;
+namespace CentreonAdministration\Internal;
 
 
 use Centreon\Internal\Datatable;
@@ -45,7 +45,7 @@ class AuthDatatable extends Datatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonConfiguration\Models\AuthRessource';
+    protected static $datasource = '\CentreonAdministration\Models\AuthRessource';
     
     /**
      *
@@ -82,6 +82,16 @@ class AuthDatatable extends Datatable
             'type' => 'string',
             'visible' => true,
             'width' => '20px',
+            'cast' => array(
+                'type' => 'url',
+                'parameters' => array(
+                    'route' => '/centreon-administration/auth/[i:id]',
+                    'routeParams' => array(
+                        'id' => '::ar_id::'
+                    ),
+                    'linkName' => '::ar_name::'
+                )
+            ),
             'className' => "cell_center"
         )
     );

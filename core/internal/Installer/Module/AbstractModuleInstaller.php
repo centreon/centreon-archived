@@ -41,6 +41,8 @@ use Centreon\Internal\Utils\CommandLine\Colorize;
 use Centreon\Internal\Utils\CommandLine\InputOutput;
 use Centreon\Internal\Utils\Dependency\PhpDependencies;
 use Centreon\Internal\Exception\Module\MissingDependenciesException;
+use Centreon\Internal\Exception\Module\DependenciesConstraintException;
+use Centreon\Internal\Exception\Module\CoreModuleRemovalConstraintException;
 use Centreon\Internal\Installer\Versioning;
 use Centreon\Internal\Installer\Form;
 use Centreon\Internal\Exception\FilesystemException;
@@ -163,7 +165,7 @@ abstract class AbstractModuleInstaller
         
         // Set Final Version
         $this->versionManager->setVersion($this->moduleInfo['version']);
-        $this->versionManager->updateVersionInDb($this->moduleInfo['version']);
+        $this->versionManager->updateVersionInDb($this->moduleInfo['version'], true);
         
         // Performing custom install task
         $this->customInstall();
@@ -242,6 +244,13 @@ abstract class AbstractModuleInstaller
      */
     public function uninstall()
     {
+        $coreModule = Informations::getCoreModuleList();
+        if (in_array($this->moduleSlug, $coreModule)) {
+            $exceptionMessage = _("This module is a core module and therefore can't be uninstalled");
+            throw new CoreModuleRemovalConstraintException($this->colorizeMessage($exceptionMessage, 'danger'), 1103);
+        }
+        
+        
         // Starting Message
         $message = _("Starting removal of %s module");
         $this->displayOperationMessage(
@@ -265,6 +274,7 @@ abstract class AbstractModuleInstaller
         // Remove old static files
         $this->removeStaticFiles();
         
+        //
         $this->removeValidators();
         
         // Custom removal of the module
@@ -419,23 +429,40 @@ abstract class AbstractModuleInstaller
 
     /**
      * 
+     * @param type $operation
      * @throws MissingDependenciesException
      */
     protected function checkModulesDependencies()
     {
         $dependenciesSatisfied = true;
         $missingDependencies = array();
+        $exceptionMessage = '';
+        
         foreach ($this->moduleInfo['dependencies'] as $module) {
             if (!Informations::checkDependency($module)) {
                 $dependenciesSatisfied = false;
                 $missingDependencies[] = $module['name'];
             }
+
+            if ($dependenciesSatisfied === false) {
+                $exceptionMessage .= _("The following dependencies are not satisfied") . " :\n   - ";
+                $exceptionMessage .= implode("\n    - ", $missingDependencies);
+                throw new MissingDependenciesException($this->colorizeMessage($exceptionMessage, 'danger'), 1104);
+            }
         }
-        
-        if ($dependenciesSatisfied === false) {
-            $exceptionMessage = _("The following dependencies are not satisfied") . " :\n";
+    }
+    
+    /**
+     * 
+     * @throws DependenciesConstraintException
+     */
+    protected function checkReverseModulesDependencies()
+    {
+        $missingDependencies = Informations::getChildren($this->moduleSlug);
+        if (count($missingDependencies) > 0) {
+            $exceptionMessage = _("This module can't be uninstalled because the following modules depends on it : ") . "\n    - ";
             $exceptionMessage .= implode("\n    - ", $missingDependencies);
-            throw new MissingDependenciesException($this->colorizeMessage($exceptionMessage, 'danger'), 1104);
+            throw new DependenciesConstraintException("\n" . $this->colorizeMessage($exceptionMessage, 'danger'), 1109);
         }
     }
     
@@ -463,7 +490,7 @@ abstract class AbstractModuleInstaller
         $this->displayOperationMessage($message, false);
         
         if ($operation === 'uninstall') {
-            
+            $this->checkReverseModulesDependencies();
         } else {
             // Check modules dependencies
             $this->checkModulesDependencies();

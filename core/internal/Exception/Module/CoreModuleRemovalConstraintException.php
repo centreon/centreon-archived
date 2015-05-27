@@ -1,3 +1,5 @@
+<?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -31,3 +33,24 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace Centreon\Internal\Exception\Module;
+
+use Centreon\Internal\Exception;
+
+/**
+ * 
+ * 
+ */
+class CoreModuleRemovalConstraintException extends Exception
+{
+    /**
+     * 
+     * @param string $message
+     * @param integer $code
+     * @param type $previous
+     */
+    public function __construct($message, $code, $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+}
