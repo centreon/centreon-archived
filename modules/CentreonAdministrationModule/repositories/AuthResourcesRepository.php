@@ -54,17 +54,28 @@ class AuthResourcesRepository extends FormRepository
             } catch (\Exception $e) {
                 parent::delete(array($id));
                 throw $e;
-                break;
             }
         }
         
         $auth_servers = $givenParameters['auth_server'];
-        
-        
+        $cnt = 0;
         if(!empty($auth_servers['host_adresse'])){
             foreach($auth_servers['host_adresse'] as $key=>$host_adresse){
-               if($key != "#index#"){
-                   
+               if($key != 0){
+                    try{
+                        AuthResourcesServersRepository::create(array('auth_resource_id'=>$id,
+                                                                'server_address'=>$host_adresse,
+                                                                'server_port'=>$auth_servers['server_port'][$key],
+                                                                'use_ssl'=>$auth_servers['use_ssl'][$key],
+                                                                'use_ssl'=>$auth_servers['use_tls'][$key],
+                                                                'server_order'=>$cnt
+                                                            )
+                                                        );
+                    } catch (\Exception $e) {
+                        parent::delete(array($id));
+                        throw $e;
+                    }
+                   $cnt = $cnt + 1;
                }
             }
         }

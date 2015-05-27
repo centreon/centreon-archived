@@ -64,5 +64,19 @@ class AuthController extends FormController{
     
     
     
+    /**
+     * 
+     * @method get
+     * @route /{object}/[i:id]
+     */
+    public function editAction($additionnalParamsForSmarty = array())
+    {
+        
+        $additionnalParamsForSmarty['auth_info[user_filter]'] = 'toto';
+        
+        parent::editAction($additionnalParamsForSmarty);
+    }
+    
+    
     //put your code here
 }
