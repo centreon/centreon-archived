@@ -473,7 +473,7 @@ class ServiceController extends FormController
         $di = Di::getDefault();
         $router = $di->get('router');
 
-        $list = TagsRepository::getList('service', "", 1, 0, 1);
+        $list = TagsRepository::getGlobalList('service');
 
         $router->response()->json($list);
     } 
