@@ -161,7 +161,7 @@ Installez ce multiplexeurs de flux avant de poursuivre l'installation.
 Centreon
 ********
 
-Téléchargez la dernière version de Centreon :ref:`ici <download_web_src>`.
+Téléchargez la dernière version de Centreon `<https://download.centreon.com/>`_ .
 
 Installation shell
 ==================

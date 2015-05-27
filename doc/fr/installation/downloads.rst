@@ -23,51 +23,14 @@ utiliser les archives contenant les sources des versions stables de nos
 logiciels et installer ces derniers manuellement.
 La compilation manuelle de certains paquets peut être complexe.
 
+.. note::
+    Centreon recommande l'utilisation de la version packagée Centreon Enterprise Server. L'installation est détaillée au chapitre :ref:`Premier pas avec CES 3.2<firststepsces3>`
+
 Le dernier format disponible est orienté pour les développeurs ou les
 bêta-testeurs. Aucun support officiel ne pourra être délivré sur ces
 versions logicielles considérées comme en cours de développement.
 
-.. note::
-    Centreon recommande l'utilisation de la version packagée Centreon Enterprise Server. L'installation est détaillée au chapitre :ref:`Premier pas avec CES 3.0<firststepsces3>`
-
 .. _download_web_src:
 
-************
-Centreon Web
-************
+Vous pouvez télécharger les sources de nos produits `ici <https://download.centreon.com/>`_
 
-Archives: `<https://download.centreon.com/>`_
-
-github: `<https://github.com/centreon/centreon>`_
-
-***************
-Centreon Engine
-***************
-
-Archives: `<https://download.centreon.com/>`_
-
-github: `<https://github.com/centreon/centreon-engine>`_
-
-***************
-Centreon Broker
-***************
-
-Archives: `<https://download.centreon.com/>`_
-
-github: `<https://github.com/centreon/centreon-broker>`_
-
-***********************
-Centreon Connector Perl
-***********************
-
-Archives: `<https://download.centreon.com/>`_
-
-github: `<https://github.com/centreon/centreon-connectors>`_
-
-**********************
-Centreon Connector SSH
-**********************
-
-Archives: `<https://download.centreon.com/>`_
-
-github: `<https://github.com/centreon/centreon-connectors>`_
