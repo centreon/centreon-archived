@@ -37,6 +37,7 @@ namespace CentreonConfiguration\Controllers;
 
 use Centreon\Internal\Di;
 use Centreon\Controllers\FormController;
+use CentreonConfiguration\Repository\ScheduledDowntimeRepository;
 
 /**
  * Configure scheduled downtime
@@ -57,5 +58,160 @@ class ScheduledDowntimeController extends FormController
     protected $repository = '\CentreonConfiguration\Repository\ScheduledDowntimeRepository';
     public static $isDisableable = true;
 
-    public static $relationMap = array();
+    public static $relationMap = array(
+        'dt_hosts' => '\CentreonConfiguration\Models\Relation\ScheduledDowntime\Hosts',
+        'dt_hosts_tags' => '\CentreonConfiguration\Models\Relation\ScheduledDowntime\HostsTags',
+        'dt_services' => '\CentreonConfiguration\Models\Relation\ScheduledDowntime\Services',
+        'dt_services_tags' => '\CentreonConfiguration\Models\Relation\ScheduledDowntime\ServicesTags'
+    );
+
+    /**
+     * Create a new period
+     *
+     * @method post
+     * @route /scheduled-downtime/add
+     */
+    public function createAction()
+    {
+        $givenParameters = $this->getParams('post');
+    }
+
+    /**
+     * Update a period
+     *
+     * @method post
+     * @route /scheduled-downtime/update
+     */
+    public function updateAction()
+    {
+        $givenParameters = $this->getParams('post');
+        $periods = json_decode($givenParameters['periods'], true);
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        /* Update the periods */
+        ScheduledDowntimeRepository::updatePeriods($givenParameters['object_id'], $periods);
+
+        parent::updateAction();
+    }
+
+    /**
+     * Get host relation for a scheduled downtime
+     *
+     * @method get
+     * @route /scheduled-downtime/[i:id]/host
+     */
+    public function getHostRelationAction()
+    {
+        $router = Di::getDefault()->get('router');
+
+        $params = $this->getParams('named');
+        $hostList = ScheduledDowntimeRepository::getHostRelation($params['id']);
+
+        $hostList = array_map(
+            function ($element) {
+                return array(
+                    'id' => $element['host_id'],
+                    'text' => $element['host_name']
+                );
+            },
+            $hostList
+        );
+
+        $router->response()->json($hostList);
+    }
+
+    /**
+     * Get host tag relation for a scheduled downtime
+     *
+     * @method get
+     * @route /scheduled-downtime/[i:id]/host/tag
+     */
+    public function getHostTagRelationAction()
+    {
+        $router = Di::getDefault()->get('router');
+
+        $params = $this->getParams('named');
+        $tagList = ScheduledDowntimeRepository::getHostTagRelation($params['id']);
+
+        $tagList = array_map(
+            function ($element) {
+                return array(
+                    'id' => $element['tag_id'],
+                    'text' => $element['tagname']
+                );
+            },
+            $tagList
+        );
+
+        $router->response()->json($tagList);
+    }
+
+    /**
+     * Get service relation for a scheduled downtime
+     *
+     * @method get
+     * @route /scheduled-downtime/[i:id]/service
+     */
+    public function getServiceRelationAction()
+    {
+        $router = Di::getDefault()->get('router');
+
+        $params = $this->getParams('named');
+        $serviceList = ScheduledDowntimeRepository::getServiceRelation($params['id']);
+
+        $serviceList = array_map(
+            function ($element) {
+                return array(
+                    'id' => $element['service_id'],
+                    'text' => $element['service_description']
+                );
+            },
+            $serviceList
+        );
+
+        $router->response()->json($serviceList);
+    }
+
+    /**
+     * Get service tag relation for a scheduled downtime
+     *
+     * @method get
+     * @route /scheduled-downtime/[i:id]/service/tag
+     */
+    public function getServiceTagRelationAction()
+    {
+        $router = Di::getDefault()->get('router');
+
+        $params = $this->getParams('named');
+        $tagList = ScheduledDowntimeRepository::getServiceTagRelation($params['id']);
+
+        $tagList = array_map(
+            function ($element) {
+                return array(
+                    'id' => $element['tag_id'],
+                    'text' => $element['tagname']
+                );
+            },
+            $tagList
+        );
+
+        $router->response()->json($tagList);
+    }
+
+    /**
+     * Get the list of periods for a downtime
+     *
+     * @method get
+     * @route /scheduled-downtime/[i:id]/period
+     */
+    public function getPeriodsAction()
+    {
+        $router = Di::getDefault()->get('router');
+
+        $params = $this->getParams('named');
+
+        $periodList = ScheduledDowntimeRepository::getPeriods($params['id']);
+
+        $router->response()->json($periodList);
+    }
 }
