@@ -45,7 +45,21 @@ use CentreonMain\Repository\FormRepository;
  *
  * @author bsauveton
  */
-class AuthResourcesRepositoryServers extends FormRepository
+class AuthResourcesServersRepository extends FormRepository
 {
+    
+    public static $objectClass = '\CentreonAdministration\Models\AuthResourcesServer';
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'auth_resources_servers' => 'cfg_auth_resources_servers,ldap_server_id'
+        ),
+    );
+    
+    
     //put your code here
 }
