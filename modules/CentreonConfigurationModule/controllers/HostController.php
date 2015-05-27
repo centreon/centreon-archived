@@ -197,20 +197,14 @@ class HostController extends FormController
      * @route /host/[i:id]/tags
      */
     public function getHostTagsAction()
-        {
-            $requestParam = $this->getParams('named');
-            $tags = TagsRepository::getList('host', $requestParam['id']);
-            /*
-            echo '<pre>';
-            print_r($tags);
-            echo '</pre>';
-            die;*/
-            $this->router->response()->json($tags);
-            /*$this->tpl->assign('tags', $tags);
-            $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');*/
-        }
-
-
+    {
+        $requestParam = $this->getParams('named');
+        $tags = TagsRepository::getList('host', $requestParam['id']);
+        $this->tpl->assign('tags', $tags);
+        $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');
+    }
+    
+    
     /**
      * Update a host
      *
@@ -533,6 +527,31 @@ class HostController extends FormController
 
             $this->router->response()->json($services);
         }
+        
+        $this->router->response()->json($services);
+    }
+    
+    
+    /**
+     * Display the configuration snapshot of a host
+     * with template inheritance
+     *
+     * @method get
+     * @route /host/snapshotslide/[i:id]
+     */
+    public function snapshotslideAction()
+    {
+        $params = $this->getParams();
+        $data = HostRepository::getConfigurationData($params['id']);
+        $hostConfiguration = HostRepository::formatDataForSlider($data);
+        $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
+        $edit_url = $router->getPathFor("/centreon-configuration/host/".$params['id']);
+        $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus,'edit_url' => $edit_url));
+    }
+
+    
+    
+    
     
     /**
      * Get inheritance value
