@@ -126,6 +126,9 @@
         };
 
         self.$elem.find(".period-info").hide();
+
+        /* Save into an input the value for send on post */
+        $("#" + self.$elem.data("input-id")).val(JSON.stringify(self.periods));
       } else {
         alertMessage(errorMsg, "alert-danger");
       }

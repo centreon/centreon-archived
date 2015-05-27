@@ -1,4 +1,5 @@
-<div class="row scheduled-downtime">
+<input type="hidden" name="{$element['name']}" id="{$element['id']}">
+<div class="row scheduled-downtime" data-input-id="{$element['id']}">
   <!-- List of periods and add periods -->
   <div class="col-xs-12 col-sm-3 periods">
     <div>

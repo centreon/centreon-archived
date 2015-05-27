@@ -67,6 +67,10 @@ class Scheduleddowntimecalendar extends Component
             6 => "saturday"
         );
 
+        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
+            $element['id'] = $element['name'];
+        }
+
         $tpl->assign('element', $element);
         $tpl->assign('weeklyDays', $weeklyDays);
         $tpl->addCss('centreon.scheduled-downtime.css', 'centreon-configuration');
