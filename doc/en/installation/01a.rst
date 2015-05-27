@@ -323,4 +323,4 @@ it is necessary update the CES 3.2 server. To do this:
 
 Allow the update to run fully and then restart the server in case of a kernel update.
 
-Start your configuration by clicking `here <../user/index>`.
+Start your configuration by clicking `here<configuration_start>>`.
