@@ -22,7 +22,9 @@
 
             "rowCallback": function( row, data ) {
                 var t = data.DT_RowData.right_side_menu_list;
+
                 if (typeof t !== 'undefined') {
+
                     if(!flagMenuCreated){
                         // Menu generation
 
@@ -71,19 +73,20 @@
 
                                             var c = '#' + item.name + '_Slider' ;
 
-                                            $.get('static/template.tpl', function(tpl){
+                                            /*$.get('static/template.tpl', function(tpl){
                                                 var extTemplate = $(tpl).filter('#test').html();
                                                 var template = Hogan.compile(extTemplate);
                                                 var rendered = template.render(datum);
                                                 $(c).append(rendered);
                                             });
 
-                                              /*var template = Hogan.compile("Follow");
+                                              var template = Hogan.compile("Follow");
                                               var output = template.render(e);
                                               $('#sideRight').append(output);*/
 
-                                            //console.log(c);
-                                            //console.log(e);
+                                            console.log(c,e);
+
+                                            $(c).append(e);
 
                                             $('#tableLeft').css('margin-right','260px');
                                             $('#sideRight').css('display','block');
