@@ -33,46 +33,24 @@
  * For more information : contact@centreon.com
  * 
  */
-
-namespace Centreon\Internal\Database;
+namespace Centreon\Internal\Exception\Module;
 
 use Centreon\Internal\Exception;
-use Centreon\Internal\Di;
 
 /**
- * Description of Migrate
- *
- * @author lionel
+ * 
+ * 
  */
-class Migrate extends PropelMigration
+class NotInstalledException extends Exception
 {
     /**
      * 
-     * @param string $module
-     * @param string $migrationClassPath
+     * @param string $message
+     * @param integer $code
+     * @param type $previous
      */
-    public function __construct($module = 'centreon', $migrationClassPath = null)
+    public function __construct($message, $code, $previous = null)
     {
-        parent::__construct($module);
-        
-        if (!is_null($migrationClassPath)) {
-            $this->outputDir = $migrationClassPath;
-        }
-    }
-    
-    /**
-     * 
-     */
-    public function down()
-    {
-        $this->runPhing('migration-down');
-    }
-    
-    /**
-     * 
-     */
-    public function up()
-    {
-        $this->runPhing('migration-up');
+        parent::__construct($message, $code, $previous);
     }
 }

@@ -68,29 +68,31 @@ class EnvironmentController extends FormController
         $requestParam = $this->getParams('named');
         
         $finalIconList = array();
-        $iconId = Environment::get($requestParam['id'], "icon_id");
-        
-        if (is_array($iconId) && (count($iconId) > 0)) {
-        
-            $icon = Image::getIcon($iconId['icon_id']);
+        if ($requestParam['id'] > 0) {
+            $iconId = Environment::get($requestParam['id'], "icon_id");
 
-            if (count($icon) > 0) {
-                $filenameExploded = explode('.', $icon['filename']);
-                $nbOfOccurence = count($filenameExploded);
-                $fileFormat = $filenameExploded[$nbOfOccurence-1];
-                $filenameLength = strlen($icon['filename']);
-                $routeAttr = array(
-                    'image' => substr($icon['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
-                    'format' => '.'.$fileFormat
-                );
-                $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
-                $finalIconList = array(
-                    "id" => $icon['binary_id'],
-                    "text" => $icon['filename'],
-                    "theming" => '<img src="'.$imgSrc.'" style="width:20px;height:20px;"> '.$icon['filename']
-                );
+            if (is_array($iconId) && (count($iconId) > 0)) {
+
+                $icon = Image::getIcon($iconId['icon_id']);
+
+                if (count($icon) > 0) {
+                    $filenameExploded = explode('.', $icon['filename']);
+                    $nbOfOccurence = count($filenameExploded);
+                    $fileFormat = $filenameExploded[$nbOfOccurence-1];
+                    $filenameLength = strlen($icon['filename']);
+                    $routeAttr = array(
+                        'image' => substr($icon['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
+                        'format' => '.'.$fileFormat
+                    );
+                    $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
+                    $finalIconList = array(
+                        "id" => $icon['binary_id'],
+                        "text" => $icon['filename'],
+                        "theming" => '<img src="'.$imgSrc.'" style="width:20px;height:20px;"> '.$icon['filename']
+                    );
+                }
+
             }
-        
         }
         
         $router->response()->json($finalIconList);

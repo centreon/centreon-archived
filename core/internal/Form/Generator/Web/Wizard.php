@@ -115,6 +115,11 @@ class Wizard extends Full
      */
     protected function buildValidatorsQuery()
     {
+        $di = Di::getDefault();
+        $this->dbconn = $di->get('db_centreon');
+        $baseUrl = $di->get('config')->get('global', 'base_url');
+        $finalRoute = substr($this->formRoute, strlen($baseUrl));
+        
         $validatorsQuery = "SELECT
                         fv.`name` as validator_name, `route` as `validator`, ffv.`params` as `params`,
                         ff.`name` as `field_name`, ff.`label` as `field_label`
@@ -139,7 +144,7 @@ class Wizard extends Full
                             AND
                                 fs.wizard_id = fw.wizard_id
                             AND
-                                fw.route = '$this->formRoute'
+                                fw.route = '$finalRoute'
                     );";
         
         return $validatorsQuery;
