@@ -77,7 +77,7 @@
             });
             
             if (!validateMandatory) {
-                alertMessage(errorText, "alert-danger", 5);
+                alertMessage(errorText, "notif-danger", 5);
                 return false;
             }
             
