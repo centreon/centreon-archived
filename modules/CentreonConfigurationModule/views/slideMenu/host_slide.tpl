@@ -1,9 +1,9 @@
 <div class="headerWrapper">
     <div class="row">
-        <div class="iconWrapper col-md-3">
+        <div class="iconWrapper col-md-2">
             <i class="icon-host"></i>
         </div>
-        <h4 class="col-md-7">{{hostConfig.Name}}</h4>
+        <h4 class="col-md-8">{{hostConfig.Name}}</h4>
         <div class="iconWrapper col-md-2">
             <a href="{{edit_url}}" alt=""><i class="icon-edit"></i></a>
         </div>

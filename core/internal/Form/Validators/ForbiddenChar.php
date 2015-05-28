@@ -51,11 +51,11 @@ class ForbiddenChar implements ValidatorInterface
      */
     public function validate($value, $params = array())
     {
-        /*$forbiddenCharDetected = false;
+        $forbiddenCharDetected = false;
         $illegalCharsStr = str_split($params['characters']);
 
         $forbiddenCharsList = '';
-        foreach ($illegalCharsArr as $char) {
+        foreach ($illegalCharsStr as $char) {
             if (strpos($value, $char) !== false) {
                 $forbiddenCharDetected = true;
                 $forbiddenCharsList .= $char.' ';
@@ -70,8 +70,6 @@ class ForbiddenChar implements ValidatorInterface
                 'error' => _('One of these illegal chars ('.$forbiddenCharsList.') have been found')
             );
         }
-        return $result;*/
-        
-        return array('success' => true, 'error' => '');
+        return $result;
     }
 }

@@ -394,7 +394,7 @@ class TagController extends Controller
         
         $this->tpl->display('file:[CentreonConfigurationModule]editTag.tpl');
     }
-    
+        
     /**
      * update function
      *
@@ -409,7 +409,7 @@ class TagController extends Controller
             if ($tagId > 0 && $tagId != $givenParameters['object_id']) {
                 $this->router->response()->json(array('success' => false,'error' => "This tag name already exists"));           
             } else {
-                TagsRepository::update($givenParameters['object_id'], $givenParameters['tagname']);
+                TagsRepository::update($givenParameters, "form", $this->getUri());
                 unset($_SESSION['form_token']);
                 unset($_SESSION['form_token_time']);
                 $this->router->response()->json(array('success' => true));
