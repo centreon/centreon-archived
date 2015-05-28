@@ -93,11 +93,11 @@ class Unique implements ValidatorInterface
         $iId = '';
         $return = '';
                
-      
-        //echo "obj".$params['object'];
-        //var_dump($params['extraParams']);
-        //die;
-       
+        /*
+        echo "obj==>".$params['object']."==>";
+        var_dump($params['extraParams']);
+        die;
+       */
 
         if (isset($params['object']) && $params['object'] == 'service') {
             $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
@@ -498,17 +498,36 @@ class Unique implements ValidatorInterface
         } 
         elseif (isset($params['object']) && $params['object'] == 'indicator') {
 
-            if (isset($params['extraParams']['kpi_type']) && $params['extraParams']['kpi_type'] == '3') {
+            if (isset($params['extraParams']['kpi_type'])) { 
                 $objClass = "CentreonBam\Repository\IndicatorRepository";
+                
+               // var_dump($params['extraParams']);die;
+                if ($params['extraParams']['kpi_type'] == '0') {
+                    $serviceId = "";
+                    if (isset($params['extraParams']['service_id'])) {
+                        list($serviceId, $hostId) = explode('_', $params['extraParams']['service_id']);
+  
+                    }
 
-                if (isset($params['extraParams']['boolean_name'])) {
-                    $sLabel = $params['extraParams']['boolean_name'];
+                    $aParams['serviceIndicator'] = $serviceId;
+                    
+                } elseif ($params['extraParams']['kpi_type'] == '2') {
+                    if (isset($params['extraParams']['id_indicator_ba'])) {
+                        $sLabel = $params['extraParams']['id_indicator_ba'];
+                    }
+
+                    $aParams['baIndicator'] = $sLabel;
+                    
+                } elseif ($params['extraParams']['kpi_type'] == '3') {
+                    if (isset($params['extraParams']['boolean_name'])) {
+                        $sLabel = $params['extraParams']['boolean_name'];
+                    }
+
+                    $aParams['boolean'] = $sLabel;
                 }
-
-                $aParams['boolean'] = $sLabel;
       
                 try {
-                    $idReturned = IndicatorRepository::getIdFromUnicity($aParams);
+                    $idReturned = IndicatorRepository::getIdFromUnicity($aParams, $params['extraParams']['kpi_type']);
                     $iObjectId = '';
 
                     if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {

@@ -48,15 +48,12 @@ class IndicatorRepository extends FormRepository
 {
     
     /**
-     *
-     * @var type 
+     * kpi_type = 0 ==> Service
+     * kpi_type = 1 ==> MetaService
+     * kpi_type = 2 ==> BA
+     * kpi_type = 3 ==> boolean
      */
-    public static $unicityFields = array(
-        'fields' => array(
-            'boolean' => 'cfg_bam_boolean, boolean_id, name'
-        ),
-    );
-    
+
     /**
      *
      * @param int $id
@@ -115,11 +112,13 @@ class IndicatorRepository extends FormRepository
         foreach ($givenParameters as $k => $v) {
             $parameters[$k] = $v;
         }
-        
-        
-        if ($parameters['kpi_type'] === '0' || $parameters['kpi_type'] ===  '1' || $parameters['kpi_type'] ===  '2') {
-            $lastIndicatorId = self::createBasicIndicator($parameters);
+               
+
+        if ($parameters['kpi_type'] === '0' || $parameters['kpi_type'] ===  '2' || $parameters['kpi_type'] ===  '3') {
+            self::validateForm($givenParameters, $origin, $route);
         }
+        
+        $lastIndicatorId = self::createBasicIndicator($parameters);
         
         if ($parameters['kpi_type'] === '0') {
             self::createServiceIndicator($lastIndicatorId, $parameters);
@@ -128,9 +127,6 @@ class IndicatorRepository extends FormRepository
         } else if ($parameters['kpi_type'] === '2') {
             self::createBaIndicator($lastIndicatorId, $parameters);
         } else if ($parameters['kpi_type'] === '3') {
-            self::validateForm($givenParameters, $origin, $route);
-            
-            $lastIndicatorId = self::createBasicIndicator($parameters);
             self::createBooleanIndicator($lastIndicatorId, $parameters);
         }
     }
@@ -546,34 +542,66 @@ class IndicatorRepository extends FormRepository
             }
         }
     }
-    
-    public static function getIdFromUnicity($unicityParams)
+    /**
+     * 
+     * @param type $unicityParams
+     * @param type $kpiType
+     * @return type
+     */
+    public static function getIdFromUnicity($unicityParams, $kpiType)
     {
         $tables = array();
         $conditions = array();
         $objectId = 0;
         
         $db = Di::getDefault()->get('db_centreon');
-        $query = 'SELECT boolean_id ';
+        
+        if ($kpiType == '0') {
+            $unicityFields = array(        
+                'fields' => array(
+                        'serviceIndicator' => 'cfg_bam_kpi, kpi_id, service_id'
+                ),
+            );
+        } else if ($kpiType == '2') {
+            $unicityFields = array(        
+                'fields' => array(
+                        'baIndicator' => 'cfg_bam_kpi, kpi_id, id_indicator_ba'
+                ),
+            );
+        } else if ($kpiType == '3') {
+            $unicityFields = array(        
+                'fields' => array(
+                        'boolean' => 'cfg_bam_boolean, boolean_id, name'
+                ),
+            );
+        }
+        
+        if ($kpiType == '3' ) {
+            $sElement = "boolean_id";
+        } else {
+            $sElement = "kpi_id";
+        }
+        
+        $query = 'SELECT '.$sElement;
         
         // Checking por unicity's params
         foreach ($unicityParams as $key => $unicityParam) {
-            if (isset(static::$unicityFields['fields'][$key])) {
-                $fieldComponents = explode (',', static::$unicityFields['fields'][$key]);
+            if (isset($unicityFields['fields'][$key])) {
+                $fieldComponents = explode (',', $unicityFields['fields'][$key]);
                 $tables[] = $fieldComponents[0];
                 $conditions[] = $fieldComponents[2] . "='$unicityParam'";
             }
         }
         
         // FInalizing query
-        $query .= 'FROM ' . implode(', ', $tables) . ' WHERE ' . implode(' AND ', $conditions);
-
+        $query .= ' FROM ' . implode(', ', $tables) . ' WHERE ' . implode(' AND ', $conditions);
+        //echo $query;die;
         // Execute request
         $stmt = $db->query($query);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
         if (count($result) > 0) {
-            $objectId = $result[0]['boolean_id'];
+            $objectId = $result[0][$sElement];
         }
         
         return $objectId;

@@ -38,6 +38,7 @@ namespace CentreonConfiguration\Listeners\CentreonEngine;
 use Centreon\Internal\Di;
 use CentreonEngine\Events\GetMacroService as MacroServiceEvent;
 use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Repository\ServicetemplateRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
 
 class GetMacroService
@@ -49,12 +50,20 @@ class GetMacroService
      */
     public static function execute(MacroServiceEvent $event)
     {
-        /* Macros for Domain */
+        /* Macros domain for service*/
         $services = array_keys(ServiceRepository::getServicesByPollerId($event->getPollerId()));
         foreach ($services as $serviceId) {
             $arr = ServiceRepository::getDomain($serviceId);
             foreach ($arr as $domainName) {
                 $event->setMacro($serviceId, self::MACRO_DOMAIN, $domainName);
+            }
+        }
+        /* Macros domain for service template */
+        $servicesTmpl = ServicetemplateRepository::getList('service_id');
+        foreach ($servicesTmpl as $serviceTmpl) {
+            $arr = ServicetemplateRepository::getDomain($serviceTmpl['service_id']);
+            foreach ($arr as $domainName) {
+                $event->setMacro($serviceTmpl['service_id'], self::MACRO_DOMAIN, $domainName);
             }
         }
     }
