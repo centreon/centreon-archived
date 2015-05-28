@@ -26,12 +26,84 @@
                         </validator>
                     </validators>
                 </field>
+                
+                
+                
+                <field name="auth_info[ldap_auth_enable]" label="Enable LDAP authentification" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+		  <attributes>
+                    <choices>
+                      <Yes>1</Yes>
+                      <No>0</No>
+                    </choices>
+		  </attributes>
+                <help></help>
+		</field>
+                
+                <field name="auth_info[ldap_store_password]" label="Store LDAP password" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+		  <attributes>
+                    <choices>
+                      <Yes>1</Yes>
+                      <No>0</No>
+                    </choices>
+		  </attributes>
+                <help></help>
+		</field>
+                
+                <field name="auth_info[ldap_auto_import]" label="Auto import users" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+		  <attributes>
+                    <choices>
+                      <Yes>1</Yes>
+                      <No>0</No>
+                    </choices>
+		  </attributes>
+                <help></help>
+		</field>
+                
+                
+                
+                
+                <field type="text" label="LDAP search size limit" default_value="" advanced="0" name="auth_info[ldap_search_limit]" mandatory="0">
+                    <validator rules="forbiddenChar" serverside="core.Numeric" />
+                </field>
+                <field type="text" label="LDAP search timeout" default_value="" advanced="0" name="auth_info[ldap_search_timeout]" mandatory="0">
+                    <validator rules="forbiddenChar" serverside="core.Numeric" />
+                </field>
+                
+                
+                
+                <field name="auth_info[ldap_srv_dns]" label="Use service DNS" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+		  <attributes>
+                    <choices>
+                      <Yes>1</Yes>
+                      <No>0</No>
+                    </choices>
+		  </attributes>
+                <help></help>
+		</field>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
             </block>
             <block name="Auth server">
                 <field name="auth_server" label="Auth servers" default_value="" advanced="0" type="authserver" parent_field="" mandatory="0" show_label="0">
                 </field>
             </block>
             <block name="LDAP Information">
+                
+                <field type="text" label="Bind user" default_value="" advanced="0" name="auth_info[bind_dn]" mandatory="0"></field>
+                <field type="text" label="Bind password" default_value="" advanced="0" name="auth_info[bind_pass]" mandatory="0"></field>
+                
+                
+                
+                
                 <field type="text" label="Search user base DN" default_value="" advanced="0" name="auth_info[user_base_search]" mandatory="0"></field>
                 <field type="text" label="Search group base DN" default_value="" advanced="0" name="auth_info[group_base_search]" mandatory="0"></field>
                 <field type="text" label="User filter" default_value="" advanced="0" name="auth_info[user_filter]" mandatory="0"></field>

@@ -302,38 +302,38 @@ class HostRepository extends Repository
     {
         /* Check data */
         $checkdata = array();
-        $checkdata[_('Id')] = $data['host_id'];
-        $checkdata[_('Name')] = $data['host_name'];
-        $checkdata[_('Command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
-        $checkdata[_('Time_period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
+        $checkdata[_('id')] = $data['host_id'];
+        $checkdata[_('name')] = $data['host_name'];
+        $checkdata[_('command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
+        $checkdata[_('time_period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
         
         
-        $checkdata[_('Max_check attempts')] = "";
+        $checkdata[_('max_check attempts')] = "";
         if(isset($data['host_max_check_attempts'])){
-            $checkdata[_('Max_check attempts')] = $data['host_max_check_attempts'];
+            $checkdata[_('max_check attempts')] = $data['host_max_check_attempts'];
         }
         
-        $data['host_check_interval'] = "";
+        $checkdata[_('check_interval')] = "";
         if(isset($data['host_check_interval'])){
-            $checkdata[_('Check_interval')] = $data['host_check_interval'];
+            $checkdata[_('check_interval')] = $data['host_check_interval'];
         }
         
-        $data['host_retry_check_interval'] = "";
+        $checkdata[_('retry_check_interval')] = "";
         if(isset($data['host_retry_check_interval'])){
-            $checkdata[_('Retry_check_interval')] = $data['host_retry_check_interval'];
+            $checkdata[_('retry_check_interval')] = $data['host_retry_check_interval'];
         }
 
-        $data['host_active_checks_enabled'] = "";
+        $checkdata[_('active_checks_enabled')] = "";
         if(isset($data['host_active_checks_enabled'])){
-            $checkdata[_('Active_checks_enabled')] = YesNoDefault::toString($data['host_active_checks_enabled']);
+            $checkdata[_('active_checks_enabled')] = YesNoDefault::toString($data['host_active_checks_enabled']);
         }
         
-        $data['host_passive_checks_enabled'] = "";
+        $checkdata[_('passive_checks_enabled')] = "";
         if(isset($data['host_passive_checks_enabled'])){
-            $checkdata[_('Passive_checks_enabled')] = $data['host_passive_checks_enabled'];
+            $checkdata[_('passive_checks_enabled')] = $data['host_passive_checks_enabled'];
         }
         if(!empty($data['icon'])){
-            $checkdata[_('Icon')] = $data['icon'];
+            $checkdata[_('icon')] = $data['icon'];
         }
         return $checkdata;
     }
