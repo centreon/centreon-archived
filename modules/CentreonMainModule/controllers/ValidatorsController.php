@@ -110,26 +110,7 @@ class ValidatorsController extends Controller
 
         return $jsonResponse['success'];
     }
-    
-    /*
-     * 
-     * @method post
-     * @route /validator/unique
-     
-    public function uniqueAction()
-    {
-        $params = $this->getParams('post');
-        $jsonResponse = Unique::validate(
-            $params['value'],
-            $params['module'],
-            $params['object'],
-            $params['object_id']
-        );
-
-        return $jsonResponse['success'];
-    }
-    */
-    
+        
     /**
      * 
      * @method post

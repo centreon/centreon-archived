@@ -101,6 +101,48 @@ class HostTemplateRepository extends Repository
      */
     public static $objectName = 'Hosttemplate';
 
+     /**
+     * Get relations 
+     *
+     * @param string $relClass
+     * @param int $id
+     * @return array 
+     */
+    public static function getRelationsCustom($relClass, $id)
+    {
+        $router = Di::getDefault()->get('router');
+        $curObj = static::$objectClass;
+        if ($relClass::$firstObject == $curObj) {
+            $tmp = $relClass::$secondObject;
+            $fArr = array("*");
+            $sArr = array($tmp::getPrimaryKey(), $tmp::getUniqueLabelField());
+        } else {
+            $tmp = $relClass::$firstObject;
+            $fArr = array("*");
+            $sArr = array();
+        }
+        $cmp = $curObj::getTableName() . '.' . $curObj::getPrimaryKey();
+        $list = $relClass::getMergedParameters(
+            $fArr,
+            $sArr,
+            -1,
+            0,
+            null,
+            "ASC",
+            array($cmp => $id),
+            "AND"
+        );
+        $finalList = array();
+        foreach ($list as $obj) {
+            $tmpList = ServiceRepository::formatDataForSlider($obj);
+            $tmpList['url_edit'] = $router->getPathFor('/centreon-configuration/servicetemplate/'.$obj['service_id']);
+            $finalList[] = $tmpList;
+        }
+        return $finalList;
+    }
+    
+    
+    
     /**
      * Get list of host templates
      *

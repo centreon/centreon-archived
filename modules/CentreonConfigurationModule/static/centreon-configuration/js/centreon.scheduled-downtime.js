@@ -37,6 +37,8 @@
       </a> \
       </li>');
 
+    /* Recalculate height of days */
+    this.resizeCal();
 
     /* Initialize time select components */
     this.$elem.find("input[name='time_start']").datetimepicker(
@@ -147,9 +149,14 @@
       e.preventDefault();
       e.stopPropagation();
       var pos = $(this).data("period-pos");
-      self.$elem.find(".calendar .days .spot-" + pos).remove();
-      $(this).parent("li.legend").remove();
-      self.periods[pos] = undefined;
+      /* Check if the period to delete is not in edit mode */
+      if (pos === self.currentPeriod.pos) {
+        alertMessage("You cannot delete a period when it's in edit mode", "alert-warning", 10);
+      } else {
+        self.$elem.find(".calendar .days .spot-" + pos).remove();
+        $(this).parent("li.legend").remove();
+        self.periods[pos] = undefined;
+      }
     });
 
     /* Add event for focus */
@@ -170,11 +177,6 @@
       }
     });
 
-    /* Recalculate height of days */
-    this.$elem.find(".calendar > .days > div").each(function (idx, elem) {
-      var elWidth = $(elem).width();
-      $(elem).height(elWidth);
-    });
 
     /* Make month days selectable */
     this.$elem.find(".calendar > .days").selectable({
@@ -471,7 +473,10 @@
           for (i; i < days.length; i++) {
             day = $(days[i]).data("day");
             wday = day % 7;
-            nthDay = ((day - 1) / 7) + 1;
+            if (wday === 0) {
+              wday = 7;
+            }
+            nthDay = parseInt(((day - 1) / 7) + 1);
             result.push({
               wday: wday,
               nthDay: nthDay
@@ -526,6 +531,13 @@
       this.currentPeriod.pos = pos;
       this.addSpot(displayDays);
       this.currentPeriod.pos = 0;
+    },
+    resizeCal: function() {
+      /* Recalculate height of days */
+      this.$elem.find(".calendar > .days > div").each(function (idx, elem) {
+        var elWidth = $(elem).width();
+        $(elem).height(elWidth);
+      });
     }
   };
   

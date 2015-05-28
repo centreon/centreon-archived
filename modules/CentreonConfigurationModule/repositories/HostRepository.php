@@ -96,6 +96,12 @@ class HostRepository extends Repository
     );
 
     /**
+     *
+     * @var type 
+     */
+    public static $defaultIcon = "icon-host";
+    
+    /**
      * Host create action
      *
      * @param array $givenParameters
@@ -108,6 +114,59 @@ class HostRepository extends Repository
         return $id;
     }
 
+    public static function getIconImagePath($hostId){
+   // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        $router = $di->get('router');
+        
+        $finalRoute['value'] = "";
+        $finalRoute['type'] = "";
+        $templates = array();
+        $alreadyProcessed = false;
+
+
+        while (empty($finalRoute['value'])) {
+            $stmt = $dbconn->query(
+                "SELECT b.filename "
+                . "FROM cfg_hosts h, cfg_hosts_images_relations hir, cfg_binaries b "
+                . "WHERE h.host_id = '$hostId' "
+                . "AND h.host_id = hir.host_id "
+                . "AND hir.binary_id = b.binary_id"
+            );
+            $ehiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!is_null($ehiResult['filename'])) {
+                $filenameExploded = explode('.', $ehiResult['filename']);
+                $nbOfOccurence = count($filenameExploded);
+                $fileFormat = $filenameExploded[$nbOfOccurence-1];
+                $filenameLength = strlen($ehiResult['filename']);
+                $routeAttr = array(
+                    'image' => substr($ehiResult['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
+                    'format' => '.'.$fileFormat
+                );
+                $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
+                $finalRoute['value'] = $imgSrc;
+                $finalRoute['type'] = 'image';
+            } else {
+                if (count($templates) == 0 && !$alreadyProcessed) {
+                    $templates = static::getTemplateChain($hostId, array(), -1);
+                    $alreadyProcessed = true;
+                } else if (count($templates) == 0 && $alreadyProcessed) {
+                    $finalRoute['value'] = static::$defaultIcon;
+                    $finalRoute['type'] = 'class';
+                }
+                $currentHost = array_shift($templates);
+                $hostId = $currentHost['id'];
+            }
+        }
+
+        return $finalRoute;
+        
+        
+    }
+    
+    
     /**
      * 
      * @param string $host_name
@@ -175,20 +234,22 @@ class HostRepository extends Repository
     public static function getConfigurationData($hostId)
     {
         $myHostParameters = Host::getParameters($hostId, "*");
-        $myHostParameters['templatesIds'] = HostRepository::getTemplateChain($hostId);
-        
-        
-        $myHostParameters['templates'] = array();
-        foreach($myHostParameters['templatesIds'] as $myHostTemplate) {
-            $hostTemplate['hostTemplate'] = HostTemplateRepository::get($myHostTemplate['id']);
-            $hostTemplate['servicesTemplate'] = HostTemplateRepository::getRelations("\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate", $myHostTemplate['id']);
-            $myHostParameters['templates'][] = $hostTemplate;
-        }
-        
+        $myHostParameters['icon'] = self::getIconImagePath($hostId);
+
+        //$myHostParameters['templates'] = HostRepository::getTemplateChainTree($hostId);
+
         return $myHostParameters;
     }
 
-    
+    /**
+     * Get configuration data of a host templates
+     * 
+     * @param int $hostId
+     * @return array
+     */
+    public static function getTemplatesChainConfigurationData($hostId){
+        return HostRepository::getTemplateChainTree($hostId);
+    }
     
     /**
      * Get configurated services of a host
@@ -241,17 +302,39 @@ class HostRepository extends Repository
     {
         /* Check data */
         $checkdata = array();
+        $checkdata[_('Id')] = $data['host_id'];
         $checkdata[_('Name')] = $data['host_name'];
         $checkdata[_('Command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
-        $checkdata[_('Time period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
-        $checkdata[_('Max check attempts')] = $data['host_max_check_attempts'];
-        $checkdata[_('Check interval')] = $data['host_check_interval'];
-        $checkdata[_('Retry check interval')] = $data['host_retry_check_interval'];
-        $checkdata[_('Active checks enabled')] = YesNoDefault::toString($data['host_active_checks_enabled']);
-        if(isset($data['host_passive_checks_enabled'])){
-            $checkdata[_('Passive checks enabled')] = $data['host_passive_checks_enabled'];
+        $checkdata[_('Time_period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
+        
+        
+        $checkdata[_('Max_check attempts')] = "";
+        if(isset($data['host_max_check_attempts'])){
+            $checkdata[_('Max_check attempts')] = $data['host_max_check_attempts'];
         }
-        $checkdata[_('Icon')] = $data['icon'];
+        
+        $data['host_check_interval'] = "";
+        if(isset($data['host_check_interval'])){
+            $checkdata[_('Check_interval')] = $data['host_check_interval'];
+        }
+        
+        $data['host_retry_check_interval'] = "";
+        if(isset($data['host_retry_check_interval'])){
+            $checkdata[_('Retry_check_interval')] = $data['host_retry_check_interval'];
+        }
+
+        $data['host_active_checks_enabled'] = "";
+        if(isset($data['host_active_checks_enabled'])){
+            $checkdata[_('Active_checks_enabled')] = YesNoDefault::toString($data['host_active_checks_enabled']);
+        }
+        
+        $data['host_passive_checks_enabled'] = "";
+        if(isset($data['host_passive_checks_enabled'])){
+            $checkdata[_('Passive_checks_enabled')] = $data['host_passive_checks_enabled'];
+        }
+        if(!empty($data['icon'])){
+            $checkdata[_('Icon')] = $data['icon'];
+        }
         return $checkdata;
     }
     
@@ -321,6 +404,52 @@ class HostRepository extends Repository
         }
         return $values;
     }
+    
+    /**
+     * Get template chain ordinated in tree (id, text) 
+     *
+     * @param int $hostId The host or host template Id
+     * @param array $alreadyProcessed The host templates already processed
+     * @param int $depth The depth to search
+     * @return array
+     */
+    public static function getTemplateChainTree($hostId, $depth = -1)
+    {
+        $templates = array();
+
+        $db = Di::getDefault()->get('db_centreon');
+        $router = Di::getDefault()->get('router');
+        $sql = "SELECT h.* "
+            . " FROM cfg_hosts h, cfg_hosts_templates_relations htr"
+            . " WHERE h.host_id=htr.host_tpl_id"
+            . " AND htr.host_host_id=:host_id"
+            . " AND host_activate = '1'"
+            . " AND host_register = '0'"
+            . " ORDER BY `order` ASC";
+
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetchAll();
+        foreach ($row as $template) {
+            $templatesTmp = self::formatDataForSlider($template);
+            $templatesTmp['url_edit'] = $router->getPathFor('/centreon-configuration/hosttemplate/'.$template['host_id']);
+            $templatesTmp['icon'] = self::getIconImagePath($template['host_id']);
+            $templatesTmp['servicesTemplate'] = HostTemplateRepository::getRelationsCustom("\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate", $template['host_id']);
+            $templatesTmp['templates'] = self::getTemplateChainTree($template['host_id'], $depth);
+            
+            
+            
+            $templates[] = $templatesTmp;
+        }
+        return $templates;
+
+    }
+    
+    
+    
+    
+    
 
     /**
      * Get template chain (id, text)

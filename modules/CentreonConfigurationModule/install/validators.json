@@ -12,7 +12,7 @@
         "route": "/validator/ipaddress"
     },
     {
-        "name": "core.ForbiddenChar",
+        "name": "core.forbiddenChar",
         "route": "/validator/forbiddenchar"
     },
     {

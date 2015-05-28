@@ -93,6 +93,12 @@
                 "route": "/centreon-configuration/timeperiod"
             },
             {
+                "name": "Scheduled downtime",
+                "short_name": "cont_scheduled_downtime",
+                "icon_class": "",
+                "route": "/centreon-configuration/scheduled-downtime"
+            },
+            {
                 "name": "Pollers",
                 "short_name": "conf_poller",
                 "icon_class": "fa fa-code-fork",

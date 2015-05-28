@@ -5,19 +5,21 @@
    position: absolute;
    right: 0;
    width: 310px;
-   margin-left : @paddingElem*2;
+   //margin-left : @paddingElem*2;
    height: 100%;
    background-color: @lightGray1;
    top: 182px;
    border-left: 3px solid @lightGray2;
-   padding: 0px @paddingElem*2 @paddingElem*2  @paddingElem*2;
+   padding: 0px 0 @paddingElem*2  0;
    display:none;
    z-index: 10 /*-2*/;
 
   /* Header  */
 
   .headerWrapper {
-
+      padding: 0 @paddingElem*2 @paddingElem*2 @paddingElem*2;
+      background-color: lighten(@lightGray1,3%);
+      border-bottom: 1px solid @white;
       .iconWrapper {
         text-align: center;
         border-right: 1px solid @white;
@@ -87,6 +89,20 @@
       section {
         width: auto;
         float: none;
+        padding : 0;
+
+        .panel-heading {
+          padding: 0;
+          border-bottom: 1px solid @lightGray;
+
+        .panel-title>a {
+          color: inherit;
+          padding: @paddingElem @paddingElem*2;
+          position: relative;
+          display: block;
+          text-decoration: none;
+        }
+      }
       }
     }
   }
