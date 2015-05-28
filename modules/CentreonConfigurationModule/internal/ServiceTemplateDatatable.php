@@ -233,11 +233,7 @@ class ServiceTemplateDatatable extends Datatable
 
         foreach ($resultSet as &$myServiceSet) {
             $aTagUsed = array();
-            $myServiceSet['service_description'] = '<span data-overlay-url="'.$router->getPathFor(
-                '/centreon-configuration/service/snapshot/'
-            ).
-            $myServiceSet['service_id'].
-            '"><span class="overlay">'.
+            $myServiceSet['service_description'] = '<span><span>'.
             ServiceRepository::getIconImage($myServiceSet['service_id']).
             '&nbsp;'.
             $myServiceSet['service_description'].
@@ -259,11 +255,9 @@ class ServiceTemplateDatatable extends Datatable
                                                      )
                                         );
                 if (isset($tplArr['description'])) {
-                    $tplStr .= '<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/servicetemplate/viewconf/').
-                        $myServiceSet['service_template_model_stm_id'].
-                        '"><a href="'.
+                    $tplStr .= '<span><a href="'.
                         $tplRoute.
-                        '" class="overlay">'.
+                        '">'.
                         $tplArr['description'].
                         '</a></span>';
                 }

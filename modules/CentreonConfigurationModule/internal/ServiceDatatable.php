@@ -287,11 +287,7 @@ class ServiceDatatable extends Datatable
                 $myServiceSet['host_name'] = '';
             } else {
                 $previousHost = $myServiceSet['host_name'];
-                $myServiceSet['host_name'] = '<span data-overlay-url="'.$router->getPathFor(
-                    '/centreon-configuration/host/snapshot/'
-                ).
-                $myServiceSet['host_id'].
-                '"><span class="overlay">'.
+                $myServiceSet['host_name'] = '<span><span>'.
                 HostRepository::getIconImage(
                     $myServiceSet['host_name']
                 ).'&nbsp;'.$myServiceSet['host_name'].
@@ -332,29 +328,21 @@ class ServiceDatatable extends Datatable
                     )
                 );
 
-                $tplStr .= '<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/servicetemplate/viewconf/').
-                    $myServiceSet['service_template_model_stm_id'].
-                    '"><a href="'.
+                $tplStr .= '<span><a href="'.
                     $tplRoute.
-                    '" class="overlay">'.
+                    '">'.
                     $tplArr['description'].
                     '</a></span>';
 
                 $myServiceSet['service_template_model_stm_id'] = $tplStr;
             }
             
-            $myServiceSet['service_description'] = '<span data-overlay-url="'.$router->getPathFor(
-                '/centreon-configuration/service/snapshot/'
-            ).
-            $myServiceSet['service_id'].
-            '"><span class="overlay">'.
+            $myServiceSet['service_description'] = '<span><span>'.
             ServiceRepository::getIconImage($myServiceSet['service_id']).
             '&nbsp;'.
             $myServiceSet['service_description'].
             '</span></span>';
-            $myServiceSet['service_description'] .= '</a><a href="#" data-overlay-url="'.$router->getPathFor(
-                '/centreon-realtime/service/'.$myServiceSet['host_id'].'/'.$myServiceSet['service_id'].'/tooltip'
-            ).'">';
+            $myServiceSet['service_description'] .= '</a><a href="#">';
             $myServiceSet['service_description'] .= ServiceRealTimeRepository::getStatusBadge(
                 ServiceRealTimeRepository::getStatus($myServiceSet["host_id"], $myServiceSet["service_id"])
             );

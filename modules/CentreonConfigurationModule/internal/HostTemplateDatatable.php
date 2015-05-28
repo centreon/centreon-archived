@@ -248,9 +248,7 @@ class HostTemplateDatatable extends Datatable
 
         foreach ($resultSet as &$myHostSet) {
             $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name'])
-                . '&nbsp;<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/snapshot/')
-                . $myHostSet['host_id']
-                . '"><span class="overlay">'
+                . '&nbsp;<span><span>'
                 . $myHostSet['host_name']
                 . '</span></span>';
             
@@ -258,8 +256,7 @@ class HostTemplateDatatable extends Datatable
             $myHostSet['host_template']  = "";
             $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), 1);
             foreach ($templates as $template) {
-                $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/viewconf/')
-                . $template['id'].'"><a class="overlay" href="'
+                $myHostSet['host_template'] .= '<span class="badge alert-success"><a href="'
                 . $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id']))
                 . '"><i class="fa fa-shield"></i></a></span>';
             }
