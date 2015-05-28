@@ -471,7 +471,10 @@
           for (i; i < days.length; i++) {
             day = $(days[i]).data("day");
             wday = day % 7;
-            nthDay = ((day - 1) / 7) + 1;
+            if (wday === 0) {
+              wday = 7;
+            }
+            nthDay = parseInt(((day - 1) / 7) + 1);
             result.push({
               wday: wday,
               nthDay: nthDay
