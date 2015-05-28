@@ -36,8 +36,6 @@
     }
 
     .stateWrapper {
-      border-right: 1px solid @white;
-      box-shadow: -3px 0px 10px -9px black inset;
       text-align: center;
 
       ul {
@@ -54,31 +52,44 @@
     }
 
     .detailsWrapper {
-      display: table;
+      border-left: 1px solid @white;
+      box-shadow: -4px 0px 11px -9px black;
 
-      dl {
-        padding-left: @paddingElem;
+      table {
+        font-size: 85%;
+        width: 100%;
+        vertical-align: middle;
 
-        dt,dd {
-          font-size: 85%;
-          float: left;
-          padding: @paddingElem 0;
-          display: table-cell;
+        td {
           border-bottom: 1px solid @lightGray;
-          vertical-align: middle;
-          height: 40px;
-        }
-        dt {
-          margin-right: @paddingElem*2;
-          width: 60%;
-        }
-        dd {
-          width: 30%;
+          padding: @paddingElem/2 0;
         }
       }
     }
-  }
 
+  }
+  .bodyWrapper {
+    .sideNav {
+      ul {
+        width: auto;
+        li {
+          width: auto;
+          h6 {
+            display: none;
+          }
+          a {
+            padding: @paddingElem 0;
+          }
+        }
+      }
+    }
+    .bodyContent {
+      section {
+        width: auto;
+        float: none;
+      }
+    }
+  }
  }
 
 .sidr {

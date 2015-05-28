@@ -36,10 +36,10 @@
                         // Create Side tab items
 
                        for (var i=0;i<t.length;i++) {
-                           sideItem += '<li id="'+t[i].name+'_id"><a href="#'+t[i].name+'_Slider"><i class="icon-'+t[i].name+'"></i>'+t[i].name+'</a></li>';
+                           sideItem += '<li id="'+t[i].name+'_id"><a href="#'+t[i].name+'_Slider"><i class="icon-'+t[i].name+'"></i>'+ '<h6>' + t[i].name+'</h6></a></li>';
                            sideContent+='<section id="'+t[i].name+'_Slider"></section>';
                        }
-                       $('#sideRight').html(defaultWrapper+'<nav><ul class="sideMenu">' + sideItem + '</ul></nav>' + sideContent);
+                       $('#sideRight').html(defaultWrapper+'<section class="bodyWrapper"><div class="row"><nav class="sideNav col-md-2"><ul class="sideMenu">' + sideItem + '</h6></nav><div class="bodyContent col-md-10">' +sideContent + '</div></div></div></div>');
 
                        $('#sideRight').tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
                        $('#sideRight li').removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
