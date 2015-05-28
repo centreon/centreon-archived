@@ -104,7 +104,7 @@ tr.centreon-border-status-5 {
   position: absolute;
 }
 
-.notif-danger {
+.alert-danger {
   position: absolute;
   border: 1px solid @danger;
   background-color: fade(@danger,20%);
@@ -118,5 +118,56 @@ tr.centreon-border-status-5 {
 
   span {
       color : @danger;
+  }
+}
+
+.alert-warning {
+  position: absolute;
+  border: 1px solid @warning;
+  background-color: fade(@warning,20%);
+  width: auto;
+  padding: @paddingElem @paddingElem*2;
+  z-index: 3;
+  top: 100px;
+  right: 16px;
+  font-size: 85%;
+  border-radius: 3px;
+
+  span {
+    color : @warning;
+  }
+}
+
+.alert-success {
+  position: absolute;
+  border: 1px solid @success;
+  background-color: fade(@success,20%);
+  width: auto;
+  padding: @paddingElem @paddingElem*2;
+  z-index: 3;
+  top: 100px;
+  right: 16px;
+  font-size: 85%;
+  border-radius: 3px;
+
+  span {
+    color : @success;
+  }
+}
+
+.alert-info {
+  position: absolute;
+  border: 1px solid @info;
+  background-color: fade(@info,20%);
+  width: auto;
+  padding: @paddingElem @paddingElem*2;
+  z-index: 3;
+  top: 100px;
+  right: 16px;
+  font-size: 85%;
+  border-radius: 3px;
+
+  span {
+    color : @info;
   }
 }
