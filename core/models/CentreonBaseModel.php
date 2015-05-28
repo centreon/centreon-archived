@@ -365,7 +365,12 @@ abstract class CentreonBaseModel extends CentreonModel
         }
 
         if (is_array($objectId)) {
-            $sql = "SELECT " . static::$primaryKey . "," . $params . " FROM " . static::$table . " WHERE ". static::$primaryKey . " = ?";
+            $sql = "SELECT " . static::$primaryKey . "," . $params . " FROM " . static::$table . " WHERE ";
+            $whereCaluse = array();
+            foreach ($objectId as $id) {
+                $whereClause[] = static::$primaryKey . ' = ? ';
+            }
+            $sql .= implode(' OR ', $whereClause);
             $values = $objectId;
         } else {
             $sql = "SELECT " . $params . " FROM " . static::$table . " WHERE ". static::$primaryKey . " = ?";
@@ -379,13 +384,13 @@ abstract class CentreonBaseModel extends CentreonModel
             }
         }
 
-        $result = static::getResult($sql, $values, "fetch");
+        $result = static::getResult($sql, $values, "fetchAll");
 
         /* Raise exception if object doesn't exist */
         if (false === $result) {
             throw new Exception(static::OBJ_NOT_EXIST);
         }
-        if (count($result) !== 1) {
+        if (count($result) < 1) {
             throw new Exception(static::OBJ_NOT_EXIST);
         }
 
