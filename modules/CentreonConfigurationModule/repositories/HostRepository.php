@@ -313,27 +313,27 @@ class HostRepository extends Repository
             $checkdata[_('max_check attempts')] = $data['host_max_check_attempts'];
         }
         
-        $data['host_check_interval'] = "";
+        $checkdata[_('check_interval')] = "";
         if(isset($data['host_check_interval'])){
-            $checkdata[_('Check_interval')] = $data['host_check_interval'];
+            $checkdata[_('check_interval')] = $data['host_check_interval'];
         }
         
-        $data['host_retry_check_interval'] = "";
+        $checkdata[_('retry_check_interval')] = "";
         if(isset($data['host_retry_check_interval'])){
-            $checkdata[_('Retry_check_interval')] = $data['host_retry_check_interval'];
+            $checkdata[_('retry_check_interval')] = $data['host_retry_check_interval'];
         }
 
-        $data['host_active_checks_enabled'] = "";
+        $checkdata[_('active_checks_enabled')] = "";
         if(isset($data['host_active_checks_enabled'])){
-            $checkdata[_('Active_checks_enabled')] = YesNoDefault::toString($data['host_active_checks_enabled']);
+            $checkdata[_('active_checks_enabled')] = YesNoDefault::toString($data['host_active_checks_enabled']);
         }
         
-        $data['host_passive_checks_enabled'] = "";
+        $checkdata[_('passive_checks_enabled')] = "";
         if(isset($data['host_passive_checks_enabled'])){
-            $checkdata[_('Passive_checks_enabled')] = $data['host_passive_checks_enabled'];
+            $checkdata[_('passive_checks_enabled')] = $data['host_passive_checks_enabled'];
         }
         if(!empty($data['icon'])){
-            $checkdata[_('Icon')] = $data['icon'];
+            $checkdata[_('icon')] = $data['icon'];
         }
         return $checkdata;
     }
