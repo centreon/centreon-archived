@@ -147,9 +147,14 @@
       e.preventDefault();
       e.stopPropagation();
       var pos = $(this).data("period-pos");
-      self.$elem.find(".calendar .days .spot-" + pos).remove();
-      $(this).parent("li.legend").remove();
-      self.periods[pos] = undefined;
+      /* Check if the period to delete is not in edit mode */
+      if (pos === self.currentPeriod.pos) {
+        alertMessage("You cannot delete a period when it's in edit mode", "alert-warning", 10);
+      } else {
+        self.$elem.find(".calendar .days .spot-" + pos).remove();
+        $(this).parent("li.legend").remove();
+        self.periods[pos] = undefined;
+      }
     });
 
     /* Add event for focus */
