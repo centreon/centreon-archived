@@ -35,7 +35,7 @@
  */
 
 namespace CentreonAdministration\Repository;
-use Centreon\Internal\Di;
+
 use CentreonMain\Repository\FormRepository;
 /**
  * Description of AuthResourceInforepository
@@ -58,19 +58,14 @@ class AuthResourcesInfoRepository extends FormRepository
     );
     
     public static function create($givenParameters){
-        //throw new \Exception('nononono');
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        $sql = "INSERT INTO cfg_auth_resources_info (ar_id,ari_name,ari_value) VALUES ( ? , ? , ? )";
-        $stmt = $dbconn->prepare($sql);
-        $stmt->bindValue(1, $givenParameters['ar_id'], \PDO::PARAM_INT);
-        $stmt->bindValue(2, $givenParameters['ari_name'], \PDO::PARAM_STR);
-        $stmt->bindValue(3, $givenParameters['ari_value'], \PDO::PARAM_STR);
-        $stmt->execute();
-        
+        $curObj = static::$objectClass;
+        $curObj::create($givenParameters);
     }
     
-
+    public static function deleteAllForArId($id){
+        $curObj = static::$objectClass;
+        $curObj::deleteAllForArId($id);
+    }
     
     //put your code here
 }

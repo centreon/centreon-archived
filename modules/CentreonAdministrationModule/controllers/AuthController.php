@@ -39,7 +39,7 @@
 namespace CentreonAdministration\Controllers;
 
 use Centreon\Controllers\FormController;
-
+use CentreonAdministration\Repository\AuthResourcesInfoRepository;
 /**
  * Description of LdapController
  *
@@ -62,19 +62,29 @@ class AuthController extends FormController{
     
     public static $isDisableable = true;
     
-    
-    
     /**
      * 
      * @method get
      * @route /{object}/[i:id]
      */
-    public function editAction($additionnalParamsForSmarty = array())
+    public function editAction($additionnalParamsForSmarty = array(), $defaultValues = array())
     {
         
-        $additionnalParamsForSmarty['auth_info[user_filter]'] = 'toto';
-        
-        parent::editAction($additionnalParamsForSmarty);
+        $requestParam = $this->getParams('named');
+        $auth_id = $requestParam['id'];
+        $infos = AuthResourcesInfoRepository::getList(
+            $fields = '*',
+            $count = -1,
+            $offset = 0,
+            $order = null,
+            $sort = 'asc',
+            $filters = array('ar_id' => $auth_id)
+        );
+
+        foreach($infos as $info){
+            $defaultValues['auth_info['.$info["ari_name"].']'] = $info["ari_value"];
+        }
+        parent::editAction($additionnalParamsForSmarty,$defaultValues);
     }
     
     

@@ -37,7 +37,7 @@
 namespace CentreonAdministration\Models;
 
 use Centreon\Models\CentreonBaseModel;
-
+use Centreon\Internal\Di;
 /**
  * Description of AuthResourcesServer
  *
@@ -55,6 +55,16 @@ class AuthResourcesServer extends CentreonBaseModel
     );
     
     
+    
+    public static function deleteAllForArId($ar_id){
+        
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        $sql = "DELETE FROM cfg_auth_resources_servers WHERE auth_resource_id = ?";
+        $stmt = $dbconn->prepare($sql);
+        $stmt->bindValue(1, $ar_id, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
     //put your code here
     
     

@@ -35,13 +35,13 @@
 
 
 $(function() {
+
     $(".clonable").centreonClone();
     $( ".clonable" ).sortable({
-        handle: ".fa-arrows",
+        handle: ".clonehandle",
         containment: "parent",
         tolerance: "pointer"
     });
-    
     
     
 });
