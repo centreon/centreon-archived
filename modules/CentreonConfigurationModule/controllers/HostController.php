@@ -199,7 +199,20 @@ class HostController extends FormController
     public function getHostTagsAction()
     {
         $requestParam = $this->getParams('named');
-        $tags = TagsRepository::getList('host', $requestParam['id']);
+        
+        
+        
+        
+        $globalTags = TagsRepository::getList('host', $requestParam['id'],1,1);
+        $globalTagsValues = array();
+        foreach($globalTags as $globalTag){
+            $globalTagsValues[] = $globalTag['text'];
+        }
+        $heritedTags = TagsRepository::getHeritedTags('host', $requestParam['id']);
+        $heritedTagsValues = $heritedTags['values'];
+        
+        
+        $tags = array('globals' => $globalTagsValues,'herited' => $heritedTagsValues);
         /*
         echo '<pre>';
         print_r($tags);

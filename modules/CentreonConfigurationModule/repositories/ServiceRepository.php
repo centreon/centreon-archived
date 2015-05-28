@@ -272,29 +272,31 @@ class ServiceRepository extends Repository
         $checkdata[_('id')] = $data['service_id'];
         $checkdata[_('Name')] = $data['service_description'];
         $checkdata[_('Command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
-        $checkdata[_('Time period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
+        $checkdata[_('Time_period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
+        
+        $checkdata[_('Max_check_attempts')] = "";
         if(isset($data['service_max_check_attempts'])){
-            $checkdata[_('Max check attempts')] = $data['service_max_check_attempts'];
+            $checkdata[_('Max_check_attempts')] = $data['service_max_check_attempts'];
         }
         
-        $checkdata[_('Check interval')] = "";
+        $checkdata[_('Check_interval')] = "";
         if(isset($data['service_normal_check_interval'])){
-            $checkdata[_('Check interval')] = $data['service_normal_check_interval'];
+            $checkdata[_('Check_interval')] = $data['service_normal_check_interval'];
         }
 
-        $checkdata[_('Retry check interval')] = "";
+        $checkdata[_('Retry_check_interval')] = "";
         if(isset($data['service_retry_check_interval'])){
-            $checkdata[_('Retry check interval')] = $data['service_retry_check_interval'];
+            $checkdata[_('Retry_check_interval')] = $data['service_retry_check_interval'];
         }
         
-        $checkdata[_('Active checks enabled')] = "";
+        $checkdata[_('Active_checks_enabled')] = "";
         if(isset($data['service_active_checks_enabled'])){
-            $checkdata[_('Active checks enabled')] = YesNoDefault::toString($data['service_active_checks_enabled']);
+            $checkdata[_('Active_checks_enabled')] = YesNoDefault::toString($data['service_active_checks_enabled']);
         }
         
-        $checkdata[_('Passive checks enabled')] = "";
+        $checkdata[_('Passive_checks_enabled')] = "";
         if(isset($data['service_passive_checks_enabled'])){
-            $checkdata[_('Passive checks enabled')] = $data['service_passive_checks_enabled'];
+            $checkdata[_('Passive_checks_enabled')] = $data['service_passive_checks_enabled'];
         }
         return $checkdata;
     }
