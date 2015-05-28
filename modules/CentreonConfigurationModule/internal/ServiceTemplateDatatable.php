@@ -42,7 +42,6 @@ use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\ServicetemplateRepository;
 use Centreon\Internal\Datatable;
-use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of ServiceTemplateDatatable
@@ -92,7 +91,6 @@ class ServiceTemplateDatatable extends Datatable
         )
     );
 
-    //protected static $hook= 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'service'
     );
@@ -200,18 +198,7 @@ class ServiceTemplateDatatable extends Datatable
             ),
             "className" => 'cell_center',
             "width" => '40px'
-        ),
-        array (
-            'title' => 'Tags',
-            'name' => 'tagname',
-            'data' => 'tagname',
-            'orderable' => false,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'width' => '40px',
-            'source' => 'relation'
-        ),
+        )
     );
     
     /**
@@ -232,12 +219,7 @@ class ServiceTemplateDatatable extends Datatable
         $router = Di::getDefault()->get('router');
 
         foreach ($resultSet as &$myServiceSet) {
-            $aTagUsed = array();
-            $myServiceSet['service_description'] = '<span data-overlay-url="'.$router->getPathFor(
-                '/centreon-configuration/service/snapshot/'
-            ).
-            $myServiceSet['service_id'].
-            '"><span class="overlay">'.
+            $myServiceSet['service_description'] = '<span><span>'.
             ServiceRepository::getIconImage($myServiceSet['service_id']).
             '&nbsp;'.
             $myServiceSet['service_description'].
@@ -259,11 +241,9 @@ class ServiceTemplateDatatable extends Datatable
                                                      )
                                         );
                 if (isset($tplArr['description'])) {
-                    $tplStr .= '<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/servicetemplate/viewconf/').
-                        $myServiceSet['service_template_model_stm_id'].
-                        '"><a href="'.
+                    $tplStr .= '<span><a href="'.
                         $tplRoute.
-                        '" class="overlay">'.
+                        '">'.
                         $tplArr['description'].
                         '</a></span>';
                 }
@@ -273,30 +253,6 @@ class ServiceTemplateDatatable extends Datatable
             /* Display human readable the check/retry interval */
             $myServiceSet['service_normal_check_interval'] = HumanReadable::convert($myServiceSet['service_normal_check_interval'], 's', $units, null, true);
             $myServiceSet['service_retry_check_interval'] = HumanReadable::convert($myServiceSet['service_retry_check_interval'], 's', $units, null, true);
-            
-            /* Tags */
-            $myServiceSet['tagname']  = "";
-            $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 2, 0);
-            foreach ($aTags as $oTags) {
-                if (!in_array($oTags['id'], $aTagUsed)) {
-                    $aTagUsed[] = $oTags['id'];
-                    $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
-                }
-            }
-            
-            
-            $templates = ServiceRepository::getListTemplates($myServiceSet['service_id'], array(), -1);
-            foreach ($templates as $template) {
-                $aTags = TagsRepository::getList('service', $template, 2, 0);
-                foreach ($aTags as $oTags) {
-                    if (!in_array($oTags['id'], $aTagUsed)) {
-                        $aTagUsed[] = $oTags['id'];
-                        $myServiceSet['tagname'] .= TagsRepository::getTag('service', $template, $oTags['id'], $oTags['text'], $oTags['user_id'], 1);
-                    }
-                }
-            }
-            
-            $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
         }
     }
 }

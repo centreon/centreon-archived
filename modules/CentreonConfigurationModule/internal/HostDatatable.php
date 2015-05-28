@@ -43,7 +43,6 @@ use CentreonRealtime\Repository\HostRepository as RealTimeHostRepository;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use Centreon\Internal\Datatable;
-use CentreonAdministration\Repository\TagsRepository;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
 /**
  * Description of HostDatatable
@@ -74,7 +73,6 @@ class HostDatatable extends Datatable
      *
      * @var array 
      */
-   // protected static $additionnalDatasource = array('\CentreonConfiguration\Models\Relation\Host\Tag');
     
     /**
      *
@@ -226,17 +224,7 @@ class HostDatatable extends Datatable
             ),
             'className' => "cell_center",
             'width' => '50px'
-        ),
-        array (
-            'title' => 'Tags',
-            'name' => 'tagname',
-            'data' => 'tagname',
-            'orderable' => false,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'tablename' => 'cfg_tags'
-        ),
+        )
     );
     
     protected static $extraParams = array(
@@ -245,7 +233,6 @@ class HostDatatable extends Datatable
         )
     );
 
-    //protected static $hook= 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'host'
     );
@@ -310,8 +297,7 @@ class HostDatatable extends Datatable
             //$myHostSet['DT_RowData']['host_template']  = array();
             $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), 1);
             foreach ($templates as $template) {
-                $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/viewconf/')
-                . $template['id'].'"><a class="overlay" href="'
+                $myHostSet['host_template'] .= '<span class="badge alert-success"><a href="'
                 . $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id']))
                 . '"><i class="fa fa-shield"></i></a></span>';
 
@@ -321,33 +307,6 @@ class HostDatatable extends Datatable
             /* Display human readable the check/retry interval */
             $myHostSet['host_check_interval'] = HumanReadable::convert($myHostSet['host_check_interval'], 's', $units, null, true);
             $myHostSet['host_retry_check_interval'] = HumanReadable::convert($myHostSet['host_retry_check_interval'], 's', $units, null, true);
-            
-            /* Tags */
-            $myHostSet['tagname']  = "";
-            $aTagUsed = array();
-            
-            //Get tags affected to the HOST template
-            $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 2);
-
-            foreach ($aTags as $oTags) {
-                if (!in_array($oTags['id'], $aTagUsed)) {
-                    $aTagUsed[] = $oTags['id'];
-                    $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
-                }
-            }
-            
-            //Get tags affected by the template
-            $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), -1);
-            foreach ($templates as $template) {
-                $aTags = TagsRepository::getList('host', $template['id'], 2, 0);
-                foreach ($aTags as $oTags) {
-                    if (!in_array($oTags['id'], $aTagUsed)) {
-                        $aTagUsed[] = $oTags['id'];
-                        $myHostSet['tagname'] .= TagsRepository::getTag('host',$template['id'], $oTags['id'], $oTags['text'], $oTags['user_id'], 1);
-                    }
-                }
-            }
-            $myHostSet['tagname'] .= TagsRepository::getAddTag('host', $myHostSet['host_id']);
         }
     }
     

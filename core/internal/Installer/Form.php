@@ -511,7 +511,8 @@ class Form
                         $validatorValue = (string)$argument;
                         $validatorParams[$validatorName] = $validatorValue;
                     }
-                    $stmt->bindParam(':params', json_encode($validatorParams));
+                    $encodedParams = json_encode($validatorParams);
+                    $stmt->bindParam(':params', $encodedParams);
                     $stmt->execute();
                 }
             }
@@ -546,16 +547,19 @@ class Form
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (!isset(self::$wizards[$key])) {
             $stmt = $db->prepare(
-                'SELECT count(route) as count,wizard_id '
+                'SELECT count(route) as count,wizard_id, module_id '
                 . 'FROM cfg_forms_wizards '
                 . 'WHERE route = :route'
             );
             $stmt->bindParam(':route', $data['route'], \PDO::PARAM_STR);
             $stmt->execute();
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            if (isset($row['count']) && $row['count'] > 0) {
+            if ($row['module_id'] !== $moduleId) {
                 self::$wizards[$key] = $row['wizard_id'];
-                return false;
+                return array('success' => false, 'moduleId' => $row['module_id']);
+            } else if (isset($row['count']) && $row['count'] > 0) {
+                self::$wizards[$key] = $row['wizard_id'];
+                return array('success' => false, 'moduleId' => $row['module_id']);
             } else {
                 $sql = 'INSERT INTO cfg_forms_wizards (name, route, module_id)'
                     . ' VALUES (:name, :route, :module)';
@@ -577,7 +581,7 @@ class Form
         if (!isset(self::$wizards[$key])) {
             self::$wizards[$key] = $db->lastInsertId('cfg_forms_wizards', 'wizard_id');
         }
-        return true;
+        return array('success' => true, 'moduleId' => $moduleId);
     }
 
     /**
@@ -662,7 +666,7 @@ class Form
             $stepRank++;
             $fieldRank = 1;
             foreach ($step->field as $field) {
-                if (!$wizardAdded) {
+                if ($wizardAdded['success'] === false && $wizardAdded['moduleId'] != $moduleId) {
                     $moduleName = Module::getParameters($moduleId, 'name');
                     if (isset($moduleName['name'])) {
                         $field['name'] = $moduleName['name'] . '__' . $field['name'];
