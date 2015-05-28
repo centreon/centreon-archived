@@ -37,7 +37,7 @@
 namespace Centreon\Internal\Form\Component;
 
 use Centreon\Internal\Di;
-
+use CentreonAdministration\Repository\AuthResourcesServersRepository;
 
 /**
  * Description of Authserver
@@ -65,12 +65,23 @@ class Authserver extends Component
             $element['id'] = $element['name'];
         }
 
+        
+
+        $authServers = AuthResourcesServersRepository::getList(
+            $fields = '*',
+            $count = -1,
+            $offset = 0,
+            $order = null,
+            $sort = 'asc',
+            $filters = array('auth_resource_id' => $element['label_extra']['id'])
+        );
+        
         $tpl = Di::getDefault()->get('template');
 
         $tpl->addJs('centreon-clone.js')
             ->addJs('component/authserver.js');
         
-        $tpl->assign('test', '');
+        $tpl->assign('authServers', $authServers);
         
         
         return array(

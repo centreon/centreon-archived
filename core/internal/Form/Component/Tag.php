@@ -102,7 +102,7 @@ class Tag extends Component
             . '" style="width: 100%;" type="hidden" value=" " />';
         
         $myJs = ''
-            .' var chaine = "^([a-zA-Z0-9]|\_|\-)+$";'
+            .' var chaine = "^([a-zA-Z0-9]|\_|\-|\.)+$";'
             .' var sMessageUnsuportedCharacter = "'._('Unauthorized character. Allowed characters are alphanumeric characters, \"_\" and \"-\"').'";'
             .' $("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '

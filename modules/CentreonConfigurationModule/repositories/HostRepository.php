@@ -251,6 +251,7 @@ class HostRepository extends Repository
         if(isset($data['host_passive_checks_enabled'])){
             $checkdata[_('Passive checks enabled')] = $data['host_passive_checks_enabled'];
         }
+        $checkdata[_('Icon')] = $data['icon'];
         return $checkdata;
     }
     

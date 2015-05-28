@@ -9,7 +9,7 @@
 namespace CentreonAdministration\Models;
 
 use Centreon\Models\CentreonBaseModel;
-
+use Centreon\Internal\Di;
 
 /**
  * Description of Ldap
@@ -24,6 +24,30 @@ class AuthResourcesInfo extends CentreonBaseModel
     protected static $relations = array(
      
     );
+    
+    
+    public static function deleteAllForArId($ar_id){
+        
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        $sql = "DELETE FROM cfg_auth_resources_info WHERE ar_id = ?";
+        $stmt = $dbconn->prepare($sql);
+        $stmt->bindValue(1, $ar_id, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+    
+    public static function create($givenParameters){
+        //throw new \Exception('nononono');
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        $sql = "INSERT INTO cfg_auth_resources_info (ar_id,ari_name,ari_value) VALUES ( ? , ? , ? )";
+        $stmt = $dbconn->prepare($sql);
+        $stmt->bindValue(1, $givenParameters['ar_id'], \PDO::PARAM_INT);
+        $stmt->bindValue(2, $givenParameters['ari_name'], \PDO::PARAM_STR);
+        $stmt->bindValue(3, $givenParameters['ari_value'], \PDO::PARAM_STR);
+        $stmt->execute();
+        
+    }
     
     
     //put your code here

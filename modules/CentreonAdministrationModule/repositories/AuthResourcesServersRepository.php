@@ -61,5 +61,10 @@ class AuthResourcesServersRepository extends FormRepository
     );
     
     
+    public static function deleteAllForArId($id){
+        $curObj = static::$objectClass;
+        $curObj::deleteAllForArId($id);
+    }
+    
     //put your code here
 }

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,61 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
- */
-
-
-
-namespace CentreonAdministration\Controllers;
-
-use Centreon\Controllers\FormController;
-use CentreonAdministration\Repository\AuthResourcesInfoRepository;
-/**
- * Description of LdapController
  *
- * @author bsauveton
  */
-class AuthController extends FormController{
-    
-    protected $objectDisplayName = 'Auth';
-    public static $objectName = 'auth';
-    public static $enableDisableFieldName = 'ar_enable';
-    protected $datatableObject = '\CentreonAdministration\Internal\AuthDatatable';
-    protected $objectBaseUrl = '/centreon-administration/auth';
-    protected $objectClass = '\CentreonAdministration\Models\AuthResources';
-    protected $repository = '\CentreonAdministration\Repository\AuthResourcesRepository';
 
-    
-    public static $relationMap = array(
+namespace CentreonConfiguration\Models\Relation\ScheduledDowntime;
 
-    );
-    
-    public static $isDisableable = true;
-    
-    /**
-     * 
-     * @method get
-     * @route /{object}/[i:id]
-     */
-    public function editAction($additionnalParamsForSmarty = array(), $defaultValues = array())
-    {
-        
-        $requestParam = $this->getParams('named');
-        $auth_id = $requestParam['id'];
-        $infos = AuthResourcesInfoRepository::getList(
-            $fields = '*',
-            $count = -1,
-            $offset = 0,
-            $order = null,
-            $sort = 'asc',
-            $filters = array('ar_id' => $auth_id)
-        );
+use Centreon\Internal\Di;
+use Centreon\Models\CentreonRelationModel;
 
-        foreach($infos as $info){
-            $defaultValues['auth_info['.$info["ari_name"].']'] = $info["ari_value"];
-        }
-        parent::editAction($additionnalParamsForSmarty,$defaultValues);
-    }
-    
-    
-    //put your code here
+class HostsTags extends CentreonRelationModel
+{
+    protected static $relationTable = "cfg_downtimes_hosttags_relations";
+    protected static $firstKey = "dt_id";
+    protected static $secondKey = "host_tag_id";
+    public static $firstObject = "\CentreonConfiguration\Models\ScheduledDowntime";
+    public static $secondObject = "\CentreonAdministration\Models\Tag";
 }

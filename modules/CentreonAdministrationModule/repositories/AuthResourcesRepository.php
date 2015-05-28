@@ -10,7 +10,7 @@ namespace CentreonAdministration\Repository;
 
 use CentreonMain\Repository\FormRepository;
 use CentreonAdministration\Repository\AuthResourcesInfoRepository;
-
+use CentreonAdministration\Repository\AuthResourcesServersRepository;
 
 
 
@@ -44,33 +44,58 @@ class AuthResourcesRepository extends FormRepository
      */
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
-        print_r($givenParameters);
-        die;
-        
         $id = parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
-        foreach($givenParameters['auth_info'] as $name=>$auth_info){
+        self::insertInfos($id,$givenParameters);
+        self::insertServer($id,$givenParameters);
+        return $id;
+    }
+    
+    public static function insertInfos($id,$givenParameters){
+        AuthResourcesInfoRepository::deleteAllForArId($id);
+        $auth_info = $givenParameters['auth_info'];
+        foreach($auth_info as $name=>$auth_info){
             try{
-                AuthResourcesInfoRepository::create(array('ar_id' => $id,'ari_name' => $name, 'ari_value' => $auth_info));
+                AuthResourcesInfoRepository::create(array('ar_id' => $id,'ari_name' => $name, 'ari_value' => $auth_info),"","",false);
             } catch (\Exception $e) {
                 parent::delete(array($id));
                 throw $e;
             }
         }
+    }
+    
+    public static function insertServer($id,$givenParameters){
         
         $auth_servers = $givenParameters['auth_server'];
+        AuthResourcesServersRepository::deleteAllForArId($id);
         $cnt = 0;
-        if(!empty($auth_servers['host_adresse'])){
-            foreach($auth_servers['host_adresse'] as $key=>$host_adresse){
+        if(!empty($auth_servers['server_address'])){
+            foreach($auth_servers['server_address'] as $key=>$server_address){
                if($key != 0){
+                    $use_ssl = 0;
+                    if(isset($auth_servers['use_ssl'][$key])){
+                        $use_ssl = 1;
+                    }
+                    
+                    $use_tls = 0;
+                    if(isset($auth_servers['use_tls'][$key])){
+                        $use_tls = 1;
+                    }
+                    
+                    $server_port = null;
+                    if(isset($auth_servers['server_port'][$key])){
+                        $server_port = $auth_servers['server_port'][$key];
+                    }
+                   
                     try{
-                        AuthResourcesServersRepository::create(array('auth_resource_id'=>$id,
-                                                                'server_address'=>$host_adresse,
-                                                                'server_port'=>$auth_servers['server_port'][$key],
-                                                                'use_ssl'=>$auth_servers['use_ssl'][$key],
-                                                                'use_ssl'=>$auth_servers['use_tls'][$key],
-                                                                'server_order'=>$cnt
-                                                            )
-                                                        );
+                        AuthResourcesServersRepository::create(
+                                array('auth_resource_id'=>$id,
+                                      'server_address'=>$server_address,
+                                      'server_port'=>$server_port,
+                                      'use_ssl'=>$use_ssl,
+                                      'use_tls'=>$use_tls,
+                                      'server_order'=>$cnt
+                                ),"","",false
+                            );
                     } catch (\Exception $e) {
                         parent::delete(array($id));
                         throw $e;
@@ -79,10 +104,19 @@ class AuthResourcesRepository extends FormRepository
                }
             }
         }
-        
-        
-        return $id;
     }
+    
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {
+        parent::update($givenParameters, $origin , $route , false );
+        self::insertInfos($givenParameters['object_id'],$givenParameters);
+        self::insertServer($givenParameters['object_id'],$givenParameters);
+       
+    }
+    
+    
+    
+    
     
     //put your dick here
 }
