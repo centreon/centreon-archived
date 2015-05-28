@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
-	<form name="recurring_downtime_form">
+	<form name="scheduled_downtime_form">
 		<route>/centreon-configuration/scheduled-downtime/update</route>
 		<redirect>1</redirect>
 		<redirect_route>/centreon-configuration/scheduled-downtime</redirect_route>
@@ -67,4 +67,20 @@
       </block>
     </section>
   </form>
+  <wizard name="add_scheduled_downtime">
+    <route>/centreon-configuration/scheduled-downtime/add</route>
+    <step name="General">
+      <field name="dt_name" mandatory="1"></field>
+      <field name="dt_description" mandatory="0"></field>
+    </step>
+    <step name="Period">
+      <field name="periods" mandatory="0"></field>
+    </step>
+    <step name="Relations">
+      <field name="dt_hosts" mandatory="0"></field>
+      <field name="dt_hosts_tags" mandatory="0"></field>
+      <field name="dt_services" mandatory="0"></field>
+      <field name="dt_services_tags" mandatory="0"></field>
+    </step>
+  </wizard>
 </forms>
