@@ -222,6 +222,31 @@ class TagsRepository
     }
 
     /**
+     * Get global tag list
+     *
+     * @param string $resourceName
+     * @return array
+     */
+    public static function getGlobalList($resourceName = null)
+    {
+        $addFilter = array();
+        $tablesString = 'cfg_tags';
+        if (isset($resourceName)) {
+            $addFilter['join'] = array(
+                'cfg_tags_' . $resourceName . 's.tag_id = cfg_tags.tag_id'
+            );
+            $tablesString = 'cfg_tags, cfg_tags_' . $resourceName . 's';
+        }
+      
+        $tagList = Tag::getList('tag_id, tagname', -1, 0, null, 'ASC', array(), 'OR', $tablesString, null, $addFilter);
+        $tags = array();
+        foreach ($tagList as $tag) {
+            $tags[] = array('id' => $tag['tag_id'], 'text' => $tag['tagname']);
+        }
+        return $tags;
+    }
+
+    /**
      * Get the tag id
      *
      * @param string $tagName The tag
@@ -369,7 +394,7 @@ class TagsRepository
     {
         $html = '<div class="tag addtag" data-resourceid="' . $resourceId . '" data-resourcetype="'
             . $resourceType .'">
-            <div class="title"><input type="text" style="width: 0;"></div>
+            <div class="title"><input type="text" style="width: 0;" maxlength="30"></div>
             <div class="remove noborder"><a href="#">+</a></div>
         </div>';
         return $html;

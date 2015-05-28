@@ -4,63 +4,82 @@
 #sideRight.sideRightWrapper {
    position: absolute;
    right: 0;
-   width:260px;
+   width: 310px;
    margin-left : @paddingElem*2;
    height: 100%;
    background-color: @lightGray1;
-   top: 170px;
+   top: 182px;
    border-left: 3px solid @lightGray2;
    padding: 0px @paddingElem*2 @paddingElem*2  @paddingElem*2;
    display:none;
-  z-index: 10 /*-2*/;
+   z-index: 10 /*-2*/;
 
-  h4 {
-    font-size: 100%;
-    font-weight: 600;
-    border-bottom: 1px solid @white;
-    color: @firstGreen;
-    padding-bottom: @paddingElem;
-    margin-bottom: 0;
-  }
-  dl {
-    padding-left: @paddingElem;
-    dt,dd {
-        font-size: 85%;
-        float: left;
-        height: 30px;
+  /* Header  */
+
+  .headerWrapper {
+
+      .iconWrapper {
+        text-align: center;
+        border-right: 1px solid @white;
+        box-shadow: -3px 0px 10px -9px black inset;
         padding: @paddingElem*2 0;
-    }
-    dt {
-      width: 68%;
-      margin-right: @paddingElem*2;
-    }
-    dd {
-      width: 25%;
-    }
-  }
- }
-
-/* Header  */
-
-.headerWrapper {
-
-  .stateWrapper {
-    border-right: 1px solid @lightGray;
-    text-align: center;
-    ul {
-      .icon-service {
-        font-size: 18px;
       }
-      li{
-        strong {
-          display: block;
+
+    h4 {
+      font-size: 100%;
+      font-weight: 600;
+      color: @success;
+      margin: 0;
+      border-left: 3px solid @success;
+      padding: @paddingElem*2;
+      line-height: 26px;
+    }
+
+    .stateWrapper {
+      border-right: 1px solid @white;
+      box-shadow: -3px 0px 10px -9px black inset;
+      text-align: center;
+
+      ul {
+        .icon-service {
+          font-size: 18px;
+        }
+        li{
+          strong {
+            display: block;
+          }
+        }
+
+      }
+    }
+
+    .detailsWrapper {
+      display: table;
+
+      dl {
+        padding-left: @paddingElem;
+
+        dt,dd {
+          font-size: 85%;
+          float: left;
+          padding: @paddingElem 0;
+          display: table-cell;
+          border-bottom: 1px solid @lightGray;
+          vertical-align: middle;
+          height: 40px;
+        }
+        dt {
+          margin-right: @paddingElem*2;
+          width: 60%;
+        }
+        dd {
+          width: 30%;
         }
       }
-
     }
   }
-}
 
+ }
 
 .sidr {
   top : 170px;

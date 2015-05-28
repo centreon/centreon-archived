@@ -1,6 +1,8 @@
 $(function () {
   var tagExpand = false;
-
+  var chaine = "^([a-zA-Z0-9]|\_|\-|\.)+$";
+  var regexTags = new RegExp(chaine, "g");
+  var sMessageUnsuportedCharacter = 'Unauthorized character. Allowed characters are alphanumeric characters, "_" and "-"';
 
   function saveTag( $newTag ) {
     var tmplTagCmpl,
@@ -8,11 +10,16 @@ $(function () {
           + "<div class='tagname'><%tagname%></div>"
           + "<div class='remove'><a href='#'>&times;</a></div>"
           + "</div>";
-        tagName = $newTag.find( "input" ).val().trim();
+
+    tagName = $newTag.find( "input" ).val().trim();
+    
     /* Does not accept empty tag */
     if ( tagName === "" ) {
       return;
-    }
+    } else if(!regexTags.test(tagName)) {
+        alertMessage(sMessageUnsuportedCharacter);
+        return false;
+    }  
     tmplTagCmpl = Hogan.compile( tmplTag, { delimiters: "<% %>" } );
     $.ajax({
       url: jsUrl.tag.add,
@@ -180,10 +187,19 @@ $(function () {
            $(element).val(id.substring(1, id.length));
        },
        createSearchChoice: function (term) {
-            return {
-                id: $.trim(term),
-                text: $.trim(term)
-            };
+           if (term.match(chaine)) {
+                return {
+                    id: $.trim(term),
+                    text: $.trim(term)
+                };
+            }
+        },
+        formatNoMatches: function (term) {                
+            if (term != "") {
+                return sMessageUnsuportedCharacter;
+            } else {
+                return "";
+            }
         }
    });
 
@@ -209,11 +225,20 @@ $(function () {
            $(element).val(id.substring(1, id.length));
        },
        createSearchChoice: function (term) {
-            return {
-                id: $.trim(term),
-                text: $.trim(term)
-            };
-        }
+           if (term.match(chaine)) {
+                return {
+                    id: $.trim(term),
+                    text: $.trim(term)
+                };
+            }
+        },
+        formatNoMatches: function (term) {                
+            if (term != "") {
+                return sMessageUnsuportedCharacter;
+            } else {
+                return "";
+            }
+        }       
    });
 
       

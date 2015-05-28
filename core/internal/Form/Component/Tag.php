@@ -102,18 +102,29 @@ class Tag extends Component
             . '" style="width: 100%;" type="hidden" value=" " />';
         
         $myJs = ''
-            . '$("#'.$element['name'].'").select2({'
+            .' var chaine = "^([a-zA-Z0-9]|\_|\-|\.)+$";'
+            .' var sMessageUnsuportedCharacter = "'._('Unauthorized character. Allowed characters are alphanumeric characters, \"_\" and \"-\"').'";'
+            .' $("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '
                 . 'multiple:'.(int)$element['label_multiple'].', '
                 . 'tags: true, '
                 .  'maximumInputLength: 30, '
                 . 'tokenSeparators: [","],'
                 . 'createSearchChoice: function (term) {
-                        return {
-                            id: $.trim(term),
-                            text: $.trim(term)
-                        };
-                    } ,';
+                        if (term.match(chaine)) {
+                            return {
+                                id: $.trim(term),
+                                text: $.trim(term)
+                            };
+                        }
+                    },
+                    formatNoMatches: function (term) {  
+                        if (term != "") {
+                            return sMessageUnsuportedCharacter;
+                        } else {
+                            return "";
+                        }
+                    }, ';
         
         if (isset($element['label_selectData'])) {
             if (is_array($element['label_selectData'])) {
