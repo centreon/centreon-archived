@@ -51,7 +51,7 @@
                 </field>
             </block>
             <block name="Impacts">
-                <field name="id_ba" label="Impacted BA" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field name="id_ba" label="Impacted BA" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-bam/businessactivity/formlist</defaultValuesRoute>
@@ -86,7 +86,7 @@
             <field name="bool_state" mandatory="0"></field>
         </step>
         <step name="Impacts">
-            <field name="id_ba" mandatory="0"></field>
+            <field name="id_ba" mandatory="1"></field>
             <field name="drop_warning" mandatory="0"></field>
             <field name="drop_critical" mandatory="0"></field>
             <field name="drop_unknown" mandatory="0"></field>

@@ -508,21 +508,20 @@ class Unique implements ValidatorInterface
                         list($serviceId, $hostId) = explode('_', $params['extraParams']['service_id']);
   
                     }
-
+                    $aParams['id_ba'] = $params['extraParams']['id_ba'];
                     $aParams['serviceIndicator'] = $serviceId;
                     
                 } elseif ($params['extraParams']['kpi_type'] == '2') {
                     if (isset($params['extraParams']['id_indicator_ba'])) {
                         $sLabel = $params['extraParams']['id_indicator_ba'];
                     }
-
+                    $aParams['id_ba'] = $params['extraParams']['id_ba'];
                     $aParams['baIndicator'] = $sLabel;
                     
                 } elseif ($params['extraParams']['kpi_type'] == '3') {
                     if (isset($params['extraParams']['boolean_name'])) {
                         $sLabel = $params['extraParams']['boolean_name'];
                     }
-
                     $aParams['boolean'] = $sLabel;
                 }
       

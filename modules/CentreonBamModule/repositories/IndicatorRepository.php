@@ -559,19 +559,19 @@ class IndicatorRepository extends FormRepository
         if ($kpiType == '0') {
             $unicityFields = array(        
                 'fields' => array(
-                        'serviceIndicator' => 'cfg_bam_kpi, kpi_id, service_id'
+                    'serviceIndicator' => 'cfg_bam_kpi, kpi_id, service_id'
                 ),
             );
         } else if ($kpiType == '2') {
             $unicityFields = array(        
                 'fields' => array(
-                        'baIndicator' => 'cfg_bam_kpi, kpi_id, id_indicator_ba'
+                    'baIndicator' => 'cfg_bam_kpi, kpi_id, id_indicator_ba'
                 ),
             );
         } else if ($kpiType == '3') {
             $unicityFields = array(        
                 'fields' => array(
-                        'boolean' => 'cfg_bam_boolean, boolean_id, name'
+                    'boolean' => 'cfg_bam_boolean, boolean_id, name'
                 ),
             );
         }
@@ -595,6 +595,9 @@ class IndicatorRepository extends FormRepository
         
         // FInalizing query
         $query .= ' FROM ' . implode(', ', $tables) . ' WHERE ' . implode(' AND ', $conditions);
+        if (isset($unicityParams['id_ba']) && !empty($unicityParams['id_ba'])) {
+            $query .= " AND id_ba = '".$unicityParams['id_ba']."'";
+        }
         //echo $query;die;
         // Execute request
         $stmt = $db->query($query);
