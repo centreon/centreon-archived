@@ -257,7 +257,7 @@ class BusinessActivityController extends FormController
         $di = Di::getDefault();
         $router = $di->get('router');
 
-        $list = TagsRepository::getList('ba', "", 1, 0, 1);
+        $list = TagsRepository::getGlobalList('ba');
 
         $router->response()->json($list);
     }

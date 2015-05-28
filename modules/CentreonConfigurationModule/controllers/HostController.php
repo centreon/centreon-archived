@@ -508,7 +508,7 @@ class HostController extends FormController
             $services = HostRepository::getServicesForHost(static::$relationMap['host_services'],$requestParam['id']);
 
             foreach($services as &$service){
-                $service = ServiceRepository::formatDataForTooltip($service);
+                $service = ServiceRepository::formatDataForSlider($service);
             }
             /*
             echo '<pre>';
@@ -531,16 +531,9 @@ class HostController extends FormController
     public function snapshotslideAction()
     {
 
-        
-        
-        
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
-        
-        
-        $objCall = static::$relationMap['host_icon'];
-        $data['icon'] = $objCall::getIconForHost($params['id']);
-        
+
         $hostConfiguration = HostRepository::formatDataForSlider($data);
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
         $edit_url = $this->router->getPathFor("/centreon-configuration/host/".$params['id']);
