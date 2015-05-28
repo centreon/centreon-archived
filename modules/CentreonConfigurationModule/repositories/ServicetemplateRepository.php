@@ -40,6 +40,7 @@ use CentreonConfiguration\Models\Service;
 use CentreonConfiguration\Models\Servicetemplate;
 use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Models\Timeperiod;
+use CentreonAdministration\Models\Domain;
 use CentreonConfiguration\Repository\Repository;
 
 /**
@@ -68,6 +69,7 @@ class ServicetemplateRepository extends Repository
      * @var array
      */
     protected static $inheritanceColumns = array(
+        'domain_id',
         'command_command_id',
         'timeperiod_tp_id',
         'command_command_id2',
@@ -214,6 +216,9 @@ class ServicetemplateRepository extends Repository
     public static function getTextValue($name, $value)
     {
         switch ($name) {
+            case 'domain_id':
+                $domain = Domain::get($value);
+                return $domain['name'];
             case 'command_command_id':
             case 'command_command_id2':
                 $command = Command::get($value);
