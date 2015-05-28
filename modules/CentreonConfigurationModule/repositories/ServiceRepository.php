@@ -269,6 +269,7 @@ class ServiceRepository extends Repository
     {
         /* Check data */
         $checkdata = array();
+        $checkdata[_('id')] = $data['service_id'];
         $checkdata[_('Name')] = $data['service_description'];
         $checkdata[_('Command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
         $checkdata[_('Time period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);

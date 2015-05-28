@@ -114,6 +114,59 @@ class HostRepository extends Repository
         return $id;
     }
 
+    public static function getIconImagePath($hostId){
+   // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        $router = $di->get('router');
+        
+        $finalRoute['value'] = "";
+        $finalRoute['type'] = "";
+        $templates = array();
+        $alreadyProcessed = false;
+
+
+        while (empty($finalRoute['value'])) {
+            $stmt = $dbconn->query(
+                "SELECT b.filename "
+                . "FROM cfg_hosts h, cfg_hosts_images_relations hir, cfg_binaries b "
+                . "WHERE h.host_id = '$hostId' "
+                . "AND h.host_id = hir.host_id "
+                . "AND hir.binary_id = b.binary_id"
+            );
+            $ehiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!is_null($ehiResult['filename'])) {
+                $filenameExploded = explode('.', $ehiResult['filename']);
+                $nbOfOccurence = count($filenameExploded);
+                $fileFormat = $filenameExploded[$nbOfOccurence-1];
+                $filenameLength = strlen($ehiResult['filename']);
+                $routeAttr = array(
+                    'image' => substr($ehiResult['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
+                    'format' => '.'.$fileFormat
+                );
+                $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
+                $finalRoute['value'] = $imgSrc;
+                $finalRoute['type'] = 'image';
+            } else {
+                if (count($templates) == 0 && !$alreadyProcessed) {
+                    $templates = static::getTemplateChain($hostId, array(), -1);
+                    $alreadyProcessed = true;
+                } else if (count($templates) == 0 && $alreadyProcessed) {
+                    $finalRoute['value'] = static::$defaultIcon;
+                    $finalRoute['type'] = 'class';
+                }
+                $currentHost = array_shift($templates);
+                $hostId = $currentHost['id'];
+            }
+        }
+
+        return $finalRoute;
+        
+        
+    }
+    
+    
     /**
      * 
      * @param string $host_name
@@ -181,9 +234,9 @@ class HostRepository extends Repository
     public static function getConfigurationData($hostId)
     {
         $myHostParameters = Host::getParameters($hostId, "*");
-        
+        $myHostParameters['icon'] = self::getIconImagePath($hostId);
 
-        $myHostParameters['templates'] = HostRepository::getTemplateChainTree($hostId);
+        //$myHostParameters['templates'] = HostRepository::getTemplateChainTree($hostId);
 
         return $myHostParameters;
     }
@@ -249,6 +302,7 @@ class HostRepository extends Repository
     {
         /* Check data */
         $checkdata = array();
+        $checkdata[_('Id')] = $data['host_id'];
         $checkdata[_('Name')] = $data['host_name'];
         $checkdata[_('Command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
         $checkdata[_('Time period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
@@ -361,8 +415,12 @@ class HostRepository extends Repository
         foreach ($row as $template) {
             $templatesTmp = self::formatDataForSlider($template);
             $templatesTmp['url_edit'] = $router->getPathFor('/centreon-configuration/hosttemplate/'.$template['host_id']);
+            $templatesTmp['icon'] = self::getIconImagePath($template['host_id']);
             $templatesTmp['servicesTemplate'] = HostTemplateRepository::getRelationsCustom("\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate", $template['host_id']);
             $templatesTmp['templates'] = self::getTemplateChainTree($template['host_id'], $depth);
+            
+            
+            
             $templates[] = $templatesTmp;
         }
         return $templates;
