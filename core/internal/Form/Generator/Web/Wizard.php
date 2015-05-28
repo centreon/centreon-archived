@@ -118,7 +118,7 @@ class Wizard extends Full
         $di = Di::getDefault();
         $this->dbconn = $di->get('db_centreon');
         $baseUrl = $di->get('config')->get('global', 'base_url');
-        $finalRoute = substr($this->formRoute, strlen($baseUrl));
+        $finalRoute = "/".ltrim(substr($this->formRoute, strlen($baseUrl)), "/");
         
         $validatorsQuery = "SELECT
                         fv.`name` as validator_name, `route` as `validator`, ffv.`params` as `params`,
@@ -147,6 +147,7 @@ class Wizard extends Full
                                 fw.route = '$finalRoute'
                     );";
         
+
         return $validatorsQuery;
     }
 
