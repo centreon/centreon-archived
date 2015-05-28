@@ -35,7 +35,7 @@
                             <argument name="equalfield">password</argument>
                         </validator>
                         <validator rules="size" serverside="core.String">
-                            <argument name="minlength">8</argument>
+                            <argument name="minlength">4</argument>
                             <argument name="maxlength">255</argument> 
                         </validator>
                     </validators>
