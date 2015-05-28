@@ -92,7 +92,6 @@ class BusinessActivityTagRepository extends FormRepository
         if (count($baTagIdList) > 0) {
             $tagList = Tag::getParameters($baTagIdList, 'tagname');
         }
-
         $finalTagList = array();
         foreach ($tagList as $tag) {
             $finalTagList[] = array(
