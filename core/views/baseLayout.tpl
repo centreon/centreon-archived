@@ -306,9 +306,9 @@
                             alertClose();
                             if (data.success) {
                                 oTable.fnDraw();
-                                alertMessage('{t}The objects have been successfully deleted{/t}', 'alert-success', 3);
+                                alertMessage('{t}The objects have been successfully deleted{/t}', 'notif-success', 3);
                             } else {
-                                alertMessage(data.errorMessage, 'alert-danger');
+                                alertMessage(data.errorMessage, 'notif-danger');
                             }
                         }
                     });

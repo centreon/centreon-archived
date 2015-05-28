@@ -6,9 +6,10 @@
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading{{id}}">
       <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{id}}" aria-expanded="true" aria-controls="collapse{{id}}">
+        <a data-toggle="collapse" class="col-md-10" data-parent="#accordion" href="#collapse{{id}}" aria-expanded="true" aria-controls="collapse{{id}}">
           {{name}}
         </a>
+        <a href="{{url_edit}}" alt="" class="col-md-2"><i class="icon-edit"></i></a>
       </h4>
     </div>
 
@@ -68,7 +69,7 @@
           </h4>
         </div>
 
-        <div id="collapse{{id}}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+        <div id="collapse{{id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
           <div class="panel-body">
 
             <table>
