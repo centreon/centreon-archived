@@ -104,7 +104,9 @@ class ScheduledDowntimeRepository extends \CentreonConfiguration\Repository\Repo
                     $stmt->bindValue(':day_of_month', join(',', $period['days']), \PDO::PARAM_STR);
                     break;
                 case 'custom':
-                    // @todo
+                    $stmt->bindValue(':day_of_week', null, \PDO::PARAM_NULL);
+                    $stmt->bindValue(':month_cycle', null, \PDO::PARAM_NULL);
+                    $stmt->bindValue(':day_of_month', json_encode($period['days']));
                     break;
             }
 
@@ -228,6 +230,7 @@ class ScheduledDowntimeRepository extends \CentreonConfiguration\Repository\Repo
                     break;
                 case null:
                     $period['periodType'] = 'custom';
+                    $period['days'] = json_decode($row['dtp_day_of_month'], true);
                     break;
             }
             $periods[] = $period;
