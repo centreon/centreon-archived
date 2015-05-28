@@ -265,4 +265,31 @@ class ServicetemplateRepository extends Repository
         return array_unique($services);
     }
     
+    /**
+     * Get domain
+     *
+     * @return array | array(domain_id => name)
+     */
+    public static function getDomain($serviceId)
+    {
+        static $domains = null;
+
+        if (is_null($domains)) {
+            $domains = array();
+            $db = Di::getDefault()->get('db_centreon');
+            $sql = "SELECT d.domain_id, d.name, s.service_id
+                FROM cfg_domains d, cfg_services s
+                WHERE s.domain_id = d.domain_id";
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            foreach ($rows as $row) {
+                $domains[$row['service_id']] = array($row['domain_id'] => $row['name']);
+            }
+        }
+        if (isset($domains[$serviceId])) {
+            return $domains[$serviceId];
+        }
+        return array();
+    }
 }
