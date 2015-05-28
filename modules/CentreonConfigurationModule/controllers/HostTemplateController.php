@@ -528,13 +528,8 @@ class HostTemplateController extends FormController
     public function displayConfSlideAction()
     {
         $params = $this->getParams();
-        $data = HostRepository::getConfigurationData($params['id']);
-        //$checkdata = HostTemplateRepository::formatDataForTooltip($data['templates']);
-        /*
-        echo '<pre>';
-        print_r($data);
-        echo '</pre>';
-        die;*/
+        $data = HostRepository::getTemplatesChainConfigurationData($params['id']);
+
         $this->router->response()->json($data);
    }
     

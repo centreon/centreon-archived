@@ -96,6 +96,12 @@ class HostRepository extends Repository
     );
 
     /**
+     *
+     * @var type 
+     */
+    public static $defaultIcon = "icon-host";
+    
+    /**
      * Host create action
      *
      * @param array $givenParameters
@@ -175,20 +181,22 @@ class HostRepository extends Repository
     public static function getConfigurationData($hostId)
     {
         $myHostParameters = Host::getParameters($hostId, "*");
-        $myHostParameters['templatesIds'] = HostRepository::getTemplateChain($hostId);
         
-        
-        $myHostParameters['templates'] = array();
-        foreach($myHostParameters['templatesIds'] as $myHostTemplate) {
-            $hostTemplate['hostTemplate'] = HostTemplateRepository::get($myHostTemplate['id']);
-            $hostTemplate['servicesTemplate'] = HostTemplateRepository::getRelations("\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate", $myHostTemplate['id']);
-            $myHostParameters['templates'][] = $hostTemplate;
-        }
-        
+
+        $myHostParameters['templates'] = HostRepository::getTemplateChainTree($hostId);
+
         return $myHostParameters;
     }
 
-    
+    /**
+     * Get configuration data of a host templates
+     * 
+     * @param int $hostId
+     * @return array
+     */
+    public static function getTemplatesChainConfigurationData($hostId){
+        return HostRepository::getTemplateChainTree($hostId);
+    }
     
     /**
      * Get configurated services of a host
@@ -251,7 +259,9 @@ class HostRepository extends Repository
         if(isset($data['host_passive_checks_enabled'])){
             $checkdata[_('Passive checks enabled')] = $data['host_passive_checks_enabled'];
         }
-        $checkdata[_('Icon')] = $data['icon'];
+        if(!empty($data['icon'])){
+            $checkdata[_('Icon')] = $data['icon'];
+        }
         return $checkdata;
     }
     
@@ -321,6 +331,48 @@ class HostRepository extends Repository
         }
         return $values;
     }
+    
+    /**
+     * Get template chain ordinated in tree (id, text) 
+     *
+     * @param int $hostId The host or host template Id
+     * @param array $alreadyProcessed The host templates already processed
+     * @param int $depth The depth to search
+     * @return array
+     */
+    public static function getTemplateChainTree($hostId, $depth = -1)
+    {
+        $templates = array();
+
+        $db = Di::getDefault()->get('db_centreon');
+        $router = Di::getDefault()->get('router');
+        $sql = "SELECT h.* "
+            . " FROM cfg_hosts h, cfg_hosts_templates_relations htr"
+            . " WHERE h.host_id=htr.host_tpl_id"
+            . " AND htr.host_host_id=:host_id"
+            . " AND host_activate = '1'"
+            . " AND host_register = '0'"
+            . " ORDER BY `order` ASC";
+
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetchAll();
+        foreach ($row as $template) {
+            $templatesTmp = self::formatDataForSlider($template);
+            $templatesTmp['url_edit'] = $router->getPathFor('/centreon-configuration/hosttemplate/'.$template['host_id']);
+            $templatesTmp['servicesTemplate'] = HostTemplateRepository::getRelationsCustom("\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate", $template['host_id']);
+            $templatesTmp['templates'] = self::getTemplateChainTree($template['host_id'], $depth);
+            $templates[] = $templatesTmp;
+        }
+        return $templates;
+
+    }
+    
+    
+    
+    
+    
 
     /**
      * Get template chain (id, text)
