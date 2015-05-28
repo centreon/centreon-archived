@@ -24,9 +24,13 @@
   <div class="step-content">
    {foreach $steps as $step}
    <div class="step-pane{if $step@index == 0} active{/if}" id="{$name}_{$step@index + 1}">
+     <div class="row">
      {foreach $step['default'] as $component}
+       <div class="col-xs-12">
        {$formElements[$component['name']]['html']}
+       </div>
      {/foreach}
+     </div>
    </div>
    {/foreach}
   </div>
