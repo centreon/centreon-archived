@@ -180,6 +180,7 @@ class IndicatorDatatable extends Datatable
         // Get datatabases connections
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
+        $router = $di->get('router');
 
         // Add object column
         // Can be service, metaservice or BA
@@ -212,7 +213,8 @@ class IndicatorDatatable extends Datatable
                 foreach ($resultKpiService as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
                         $kpi['object_name'] = $kpiObject['host_name'].' '.$kpiObject['service_description'];
-                        $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['host_name'].' '.$kpiObject['service_description'] . '</a>';
+                        $kpiUrl = $router->getPathFor('/centreon-bam/indicator/[i:id]', array('id' => $kpiObject['kpi_id']));
+                        $kpi['object'] = '<a href="' . $kpiUrl . '">' . $kpiObject['host_name'].' '.$kpiObject['service_description'] . '</a>';
                     }
                 }
             } else if ($kpi['kpi_type'] == "1") {
@@ -226,14 +228,16 @@ class IndicatorDatatable extends Datatable
                 foreach ($resultKpiBa as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
                         $kpi['object_name'] = $kpiObject['name'];
-                        $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
+                        $kpiUrl = $router->getPathFor('/centreon-bam/indicator/[i:id]', array('id' => $kpiObject['kpi_id']));
+                        $kpi['object'] = '<a href="' . $kpiUrl . '">' . $kpiObject['name'] . '</a>';
                     }
                 }
             } else if ($kpi['kpi_type'] == "3") {
                 foreach ($resultKpiBoolean as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
                         $kpi['object_name'] = $kpiObject['name'];
-                        $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
+                        $kpiUrl = $router->getPathFor('/centreon-bam/indicator/[i:id]', array('id' => $kpiObject['kpi_id']));
+                        $kpi['object'] = '<a href="' . $kpiUrl . '">' . $kpiObject['name'] . '</a>';
                     }
                 }
             }
@@ -270,7 +274,8 @@ class IndicatorDatatable extends Datatable
             $kpi['impacted_ba'] = "";
             foreach ($resultKpiImpactedBa as $kpiImpactedBa) {
                 if ($kpiImpactedBa['kpi_id'] === $kpi['kpi_id']) {
-                    $kpi['impacted_ba'] = '<a href="/centreon-bam/businessactivity/' . $kpiImpactedBa['id_ba'] . '">' . $kpiImpactedBa['name'] . '</a>';
+                    $baUrl = $router->getPathFor('/centreon-bam/businessactivity/[i:id]', array('id' => $kpiImpactedBa['id_ba']));
+                    $kpi['impacted_ba'] = '<a href="' . $baUrl . '">' . $kpiImpactedBa['name'] . '</a>';
                 }
             }
         }
