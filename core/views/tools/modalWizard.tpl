@@ -20,7 +20,7 @@
   </ul>
 </div>
 <div class="row-divider"></div>
-<form role="form" class="CentreonForm" id="wizard_form">
+<form role="form" class="CentreonForm" id="wizard_form" data-route="{$currentRoute}">
   <div class="step-content">
    {foreach $steps as $step}
    <div class="step-pane{if $step@index == 0} active{/if}" id="{$name}_{$step@index + 1}">
@@ -94,6 +94,7 @@ $(function() {
   {/if}
   {get_custom_js}
   loadParentField();
+  initializeFloatLabel("#modal");
 });
 </script>
 {include file="[Core]/form/validators.tpl"}
