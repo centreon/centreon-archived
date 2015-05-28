@@ -61,43 +61,43 @@ abstract class AbstractModuleInstaller
 {
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $moduleSlug;
     
     /**
      *
-     * @var type 
+     * @var integer 
      */
     protected $moduleId;
 
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $moduleFullName;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $moduleDescription;
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     protected $moduleInfo;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $moduleDirectory;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $launcher;
     
@@ -110,9 +110,9 @@ abstract class AbstractModuleInstaller
 
     /**
      * 
-     * @param type $moduleDirectory
-     * @param type $moduleInfo
-     * @param type $launcher
+     * @param string $moduleDirectory
+     * @param array $moduleInfo
+     * @param string $launcher
      */
     public function __construct($moduleDirectory, $moduleInfo, $launcher)
     {
@@ -129,6 +129,7 @@ abstract class AbstractModuleInstaller
     /**
      * Perform Install operation for module
      * 
+     * @throws AlreadyInstalledException
      */
     public function install()
     {
@@ -193,7 +194,7 @@ abstract class AbstractModuleInstaller
     /**
      * Perform upgrade operation for module
      * 
-     * @param type $verbose
+     * @throws NotInstalledException
      */
     public function upgrade()
     {
@@ -252,7 +253,8 @@ abstract class AbstractModuleInstaller
     /**
      * Perform uninstall operation for module
      * 
-     * @param type $verbose
+     * @throws NotInstalledException
+     * @throws CoreModuleRemovalConstraintException
      */
     public function uninstall()
     {
@@ -391,7 +393,8 @@ abstract class AbstractModuleInstaller
     
     /**
      * 
-     * @param type $message
+     * @param string $message
+     * @param boolean $withEndOfLine
      */
     protected function displayOperationMessage($message, $withEndOfLine = true)
     {
@@ -404,11 +407,11 @@ abstract class AbstractModuleInstaller
     
     /**
      * 
-     * @param type $text
-     * @param type $color
-     * @param type $background
-     * @param type $bold
-     * @return type
+     * @param string $text
+     * @param string $color
+     * @param string $background
+     * @param boolean $bold
+     * @return string
      */
     protected function colorizeText($text, $color = 'white', $background = 'black', $bold = false)
     {
@@ -425,10 +428,10 @@ abstract class AbstractModuleInstaller
     
     /**
      * 
-     * @param type $message
-     * @param type $status
-     * @param type $background
-     * @return type
+     * @param string $message
+     * @param string $status
+     * @param string $background
+     * @return string
      */
     protected function colorizeMessage($message, $status = 'success', $background = 'black')
     {
@@ -446,7 +449,6 @@ abstract class AbstractModuleInstaller
 
     /**
      * 
-     * @param type $operation
      * @throws MissingDependenciesException
      */
     protected function checkModulesDependencies()
@@ -499,7 +501,7 @@ abstract class AbstractModuleInstaller
     
     /**
      * 
-     * @param type $operation
+     * @param string $operation
      */
     protected function checkOperationValidity($operation)
     {
@@ -529,7 +531,7 @@ abstract class AbstractModuleInstaller
         $validatorFile = $this->moduleDirectory . '/install/validators.json';
         if (file_exists($validatorFile)) {                       
             $message = $this->colorizeText(_("Installation of validators..."));
-            $this->displayOperationMessage($message, false);
+            $this->displayOperationMessage("\n" . $message, false);
             Form::insertValidators(json_decode(file_get_contents($validatorFile), true));
             $message = $this->colorizeMessage(_("     Done"), 'green');
             $this->displayOperationMessage($message);
@@ -563,7 +565,7 @@ abstract class AbstractModuleInstaller
      * 
      */
     protected function removeValidators()
-    {        
+    {
         $validatorFile = $this->moduleDirectory . '/install/validators.json';
         if (file_exists($validatorFile)) {
             $message = $this->colorizeText(_("Remove validators..."));

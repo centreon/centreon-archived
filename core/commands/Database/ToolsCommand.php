@@ -82,13 +82,4 @@ class ToolsCommand extends AbstractCommand
             } 
         }
     }
-
-    /**
-     * 
-     */
-    public function generateMigrationClassAction()
-    {
-        $myMigrationManager = new DbInstaller();
-        $myMigrationManager->generateDiffClasses('/tmp');
-    }
 }

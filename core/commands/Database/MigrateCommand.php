@@ -75,7 +75,7 @@ class MigrateCommand extends AbstractCommand
      * 
      * @param string $module
      */
-    public function statusAction($module = 'centreon')
+    public function status($module = 'centreon')
     {
         InputOutput::display(_("Lists the migrations yet to be executed"));
     }

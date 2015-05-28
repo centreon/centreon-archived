@@ -75,8 +75,8 @@ class Informations
     
     /**
      * 
-     * @param type $module
-     * @return type
+     * @param string $module
+     * @return array
      */
     public static function getChildren($module)
     {
@@ -141,8 +141,8 @@ class Informations
     
     /**
      * 
-     * @param type $moduleName
-     * @return type
+     * @param string $moduleName
+     * @return boolean
      */
     public static function getModuleIdByName($moduleName)
     {
@@ -158,7 +158,7 @@ class Informations
     
     /**
      *
-     * @param bool $onlyActivated If list only module activated
+     * @param boolean $onlyActivated If list only module activated
      * @return array Array of module names (string)
      */
     public static function getModuleList($onlyActivated = 1)
@@ -191,7 +191,7 @@ class Informations
 
     /**
      *
-     * @param bool $onlyActivated If list only module activated
+     * @param boolean $onlyActivated If list only module activated
      * @return array Array of arrays describing modules
      */
     public static function getModuleExtendedList($onlyActivated = 1)
@@ -239,8 +239,8 @@ class Informations
     
     /**
      * 
-     * @param type $moduleName
-     * @return type
+     * @param string $moduleName
+     * @return string
      */
     public static function getModulePath($moduleName)
     {
@@ -396,8 +396,10 @@ class Informations
     
     /**
      * 
-     * @param type $moduleName
-     * @return \Centreon\Commands\classCall
+     * @param string $launcher
+     * @param string $moduleName
+     * @param integer $moduleId
+     * @return \Centreon\Internal\Module\classCall
      * @throws \Exception
      */
     public static function getModuleInstaller($launcher, $moduleName, $moduleId = null)
