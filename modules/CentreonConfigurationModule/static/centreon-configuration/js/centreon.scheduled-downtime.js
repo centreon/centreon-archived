@@ -37,6 +37,8 @@
       </a> \
       </li>');
 
+    /* Recalculate height of days */
+    this.resizeCal();
 
     /* Initialize time select components */
     this.$elem.find("input[name='time_start']").datetimepicker(
@@ -175,11 +177,6 @@
       }
     });
 
-    /* Recalculate height of days */
-    this.$elem.find(".calendar > .days > div").each(function (idx, elem) {
-      var elWidth = $(elem).width();
-      $(elem).height(elWidth);
-    });
 
     /* Make month days selectable */
     this.$elem.find(".calendar > .days").selectable({
@@ -534,6 +531,13 @@
       this.currentPeriod.pos = pos;
       this.addSpot(displayDays);
       this.currentPeriod.pos = 0;
+    },
+    resizeCal: function() {
+      /* Recalculate height of days */
+      this.$elem.find(".calendar > .days > div").each(function (idx, elem) {
+        var elWidth = $(elem).width();
+        $(elem).height(elWidth);
+      });
     }
   };
   

@@ -65,6 +65,33 @@ class ScheduledDowntimeController extends FormController
         'dt_services_tags' => '\CentreonConfiguration\Models\Relation\ScheduledDowntime\ServicesTags'
     );
 
+
+    /**
+     * List of scheduled donwtime
+     *
+     * @method get
+     * @route /scheduled-downtime
+     */
+    public function listAction()
+    {
+        $this->tpl->addCss('centreon.scheduled-downtime.css', 'centreon-configuration')
+             ->addCss('bootstrap-datetimepicker.min.css')
+             ->addJs('hogan-3.0.0.min.js')
+             ->addJs('bootstrap-datetimepicker.min.js')
+             ->addJs('centreon.scheduled-downtime.js', 'bottom', 'centreon-configuration');
+
+        $this->tpl->addCustomJs('$(function () {
+                $("#modal").on("loaded.bs.modal", function() {
+                    $(".scheduled-downtime").centreonScheduledDowntime();
+                });
+                $("#modal").on("changed", function () {
+                    $(".scheduled-downtime").centreonScheduledDowntime("resizeCal");
+                });
+            });');
+
+        parent::listAction();
+    }
+
     /**
      * Create a new period
      *
@@ -74,6 +101,15 @@ class ScheduledDowntimeController extends FormController
     public function createAction()
     {
         $givenParameters = $this->getParams('post');
+        $periods = json_decode($givenParameters['periods'], true);
+
+        $id = parent::createAction(false);
+        /* Update the periods */
+        if (is_array($periods)) {
+            ScheduledDowntimeRepository::updatePeriods($id, $periods);
+        }
+
+        $this->router->response()->json(array('success' => true));
     }
 
     /**
@@ -86,10 +122,11 @@ class ScheduledDowntimeController extends FormController
     {
         $givenParameters = $this->getParams('post');
         $periods = json_decode($givenParameters['periods'], true);
-        $dbconn = Di::getDefault()->get('db_centreon');
 
         /* Update the periods */
-        ScheduledDowntimeRepository::updatePeriods($givenParameters['object_id'], $periods);
+        if (is_array($periods)) {
+            ScheduledDowntimeRepository::updatePeriods($givenParameters['object_id'], $periods);
+        }
 
         parent::updateAction();
     }
