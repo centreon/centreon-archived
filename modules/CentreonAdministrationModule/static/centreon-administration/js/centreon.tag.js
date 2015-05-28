@@ -1,8 +1,9 @@
 $(function () {
   var tagExpand = false;
-  var chaine = "^([a-zA-Z0-9]|\_|\-|\.)+$";
+ // var chaine = '^([\w.-])+$';
+  var chaine = '^([a-zA-Z0-9_.-])+$';
   var regexTags = new RegExp(chaine, "g");
-  var sMessageUnsuportedCharacter = 'Unauthorized character. Allowed characters are alphanumeric characters, "_" and "-"';
+  var sMessageUnsuportedCharacter = 'Unauthorized character. Allowed characters are alphanumeric characters, "_", "." and "-"';
 
   function saveTag( $newTag ) {
     var tmplTagCmpl,
@@ -17,7 +18,7 @@ $(function () {
     if ( tagName === "" ) {
       return;
     } else if(!regexTags.test(tagName)) {
-        alertMessage(sMessageUnsuportedCharacter);
+        alertMessage(sMessageUnsuportedCharacter, "alert-danger", 3);
         return false;
     }  
     tmplTagCmpl = Hogan.compile( tmplTag, { delimiters: "<% %>" } );
