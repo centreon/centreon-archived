@@ -36,6 +36,7 @@
 namespace CentreonBroker\Repository;
 
 use Centreon\Internal\Di;
+use CentreonBroker\Models\Broker;
 use CentreonAdministration\Repository\OptionRepository;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
 
@@ -91,17 +92,17 @@ class BrokerRepository
         }
         $stmt = $db->prepare($query);
         $stmt->bindParam(':poller_id', $pollerId);
-        $stmt->bindParam(':broker_etc_directory', $arr['broker_etc_directory'], \PDO::PARAM_STR);
-        $stmt->bindParam(':broker_module_directory', $arr['broker_module_directory'], \PDO::PARAM_STR);
-        $stmt->bindParam(':broker_logs_directory', $arr['broker_logs_directory'], \PDO::PARAM_STR);
-        $stmt->bindParam(':broker_data_directory', $arr['broker_data_directory'], \PDO::PARAM_STR);
-        $stmt->bindParam(':init_script', $arr['broker_init_script'], \PDO::PARAM_STR);
-        $stmt->bindParam(':broker_cbmod_directory', $arr['broker_cbmod_directory'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_etc_directory', $arr['directory_config'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_module_directory', $arr['directory_modules'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_logs_directory', $arr['directory_logs'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_data_directory', $arr['directory_data'], \PDO::PARAM_STR);
+        $stmt->bindParam(':init_script', $arr['init_script'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_cbmod_directory', $arr['directory_cbmod'], \PDO::PARAM_STR);
         $stmt->execute();
         
         /* Save extract params */
         $listTpl = PollerTemplateManager::buildTemplatesList();
-        $tmpl = $params['poller_tmpl'];
+        $tmpl = $params['tmpl_name'];
         if (!isset($listTpl[$tmpl])) {
             return;
         }

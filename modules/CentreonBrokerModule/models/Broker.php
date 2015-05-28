@@ -31,25 +31,24 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonEngine\Listeners\CentreonConfiguration;
+namespace CentreonBroker\Models;
 
-use CentreonEngine\Repository\EngineRepository;
-use CentreonConfiguration\Events\EngineFormSave as EngineFormSaveEvent;
+use Centreon\Models\CentreonBaseModel;
 
-class EngineFormSave
+/**
+ * Used for interacting with engine configuration objects
+ *
+ * @author Kevin Duret <kduret@centreon.com>
+ * @package Centreon
+ * @subpackage Broker
+ * @version 3.0.0
+ */
+class Broker extends CentreonBaseModel
 {
-    /**
-     *
-     * @param \CentreonConfiguration\Events\EngineFormSave $event
-     */
-    public static function execute(EngineFormSaveEvent $event)
-    {
-        /*EngineRepository::save(
-            $event->getPollerId(),
-            $event->getParams(),
-            "form"
-        );*/
-    }
+    protected static $table = "cfg_centreonbroker_paths";
+    protected static $primaryKey = "poller_id";
+    protected static $uniqueLabelField = "poller_id";
 }

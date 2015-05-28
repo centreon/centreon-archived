@@ -33,23 +33,26 @@
  *
  */
 
-namespace CentreonEngine\Listeners\CentreonConfiguration;
+namespace CentreonEngine\Listeners\CentreonMain;
 
+use CentreonMain\Events\PostSave as PostSaveEvent;
 use CentreonEngine\Repository\EngineRepository;
-use CentreonConfiguration\Events\EngineFormSave as EngineFormSaveEvent;
 
-class EngineFormSave
+class PostSave
 {
     /**
-     *
-     * @param \CentreonConfiguration\Events\EngineFormSave $event
+     * @param CentreonMain\Events\PostSave $event
      */
-    public static function execute(EngineFormSaveEvent $event)
+    public static function execute(PostSaveEvent $event)
     {
-        /*EngineRepository::save(
-            $event->getPollerId(),
-            $event->getParams(),
-            "form"
-        );*/
+        $parameters = $event->getParameters();
+        $extraParameters = $event->getExtraParameters();
+        if (isset($extraParameters['centreon-engine'])) {
+            if ($event->getObjectName() === 'poller') {
+                if (isset($extraParameters['centreon-engine'])) {
+                    EngineRepository::save($event->getObjectId(), $extraParameters['centreon-engine'], "form");
+                }
+            }
+        }
     }
 }

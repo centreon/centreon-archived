@@ -69,6 +69,7 @@ class PollerController extends FormController
     {
         $tpl = Di::getDefault()->get('template');
         $tpl->addJs('poller-generate.js', 'bottom', 'centreon-configuration');
+        $tpl->addJs('poller-template.js', 'bottom', 'centreon-configuration');
         parent::listAction();
     }
     
@@ -101,10 +102,7 @@ class PollerController extends FormController
      */
     public function addAction()
     {
-        /* Prepare form for wizard */
-        $form = $this->getForm('add_poller');
-        $this->tpl->assign('form', $form->toSmarty());
-        $this->tpl->display('addPoller.tpl');
+        parent::addAction();
     }
 
     /**
@@ -137,33 +135,13 @@ class PollerController extends FormController
      */
     public function editAction()
     {
-        $moduleBroker = "centreon-broker";
-        $sUrlBroker = '';
-        $moduleEngine = "centreon-engine";
-        $sUrlEngine = '';
-                
         $params = $this->getParams();
         $poller = PollerModel::get($params['id']);
         $node = NodeModel::get($poller['node_id']);
-        /* Prepare form for edition */
-        $form = $this->getForm('edit_poller', $params['id']);
-        $form->setDefaults(array(
-            'name' => $poller['name'],
-            'ip_address' => $node['ip_address']
-        ));
-        if (Informations::isModuleInstalled($moduleBroker)) {
-            $sUrlBroker = $this->router->getPathFor('/centreon-broker/[i:id]', array('id' => $params['id']));
-        }
-        if (Informations::isModuleInstalled($moduleEngine)) {
-            $sUrlEngine = $this->router->getPathFor('/centreon-engine/[i:id]', array('id' => $params['id']));
-        }
-        $this->tpl->assign('brokerFormUrl', $sUrlBroker);
-        $this->tpl->assign('engineFormUrl', $sUrlEngine);
-        $form->addHidden('poller_id', $params['id']);
-        $this->tpl->assign('object_id', $params['id']);
-        $this->tpl->assign('form', $form->toSmarty());
-        $this->tpl->assign('hookParams', array('pollerId' => $params['id']));
-        $this->tpl->display('editPoller.tpl');
+
+        $this->tpl->addJs('poller-template.js', 'bottom', 'centreon-configuration');
+
+        parent::editAction(array(), array('ip_address' => $node['ip_address']));
     }
 
     /**
