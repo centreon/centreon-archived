@@ -212,7 +212,7 @@ class HostController extends FormController
         $heritedTagsValues = $heritedTags['values'];
         
         
-        $tags = array('globals' => $globalTagsValues,'herited' => $heritedTagsValues);
+        $tags['tags'] = array('globals' => $globalTagsValues,'herited' => $heritedTagsValues);
         /*
         echo '<pre>';
         print_r($tags);

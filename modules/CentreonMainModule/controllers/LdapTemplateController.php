@@ -34,63 +34,30 @@
  * 
  */
 
-namespace Centreon\Internal\Form\Component;
+
+namespace CentreonMain\Controllers;
 
 use Centreon\Internal\Di;
-use CentreonAdministration\Repository\AuthResourcesServersRepository;
+use Centreon\Internal\Controller;
 
 /**
- * Description of Authserver
+ * Description of LdapTemplateController
  *
  * @author bsauveton
  */
-class Authserver extends Component
+class LdapTemplateController extends Controller
 {
     
-    
-    
-    
-    
-    public static function renderHtmlInput(array $element)
+    /**
+     * Add a image
+     *
+     * @method get
+     * @route /ldap_templates_list
+     */
+    public function ldapTemplatesList()
     {
-        if (!isset($element['html'])) {
-            $element['html'] = '';
-        }
-
-        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
-            $element['placeholder'] = $element['label_label'];
-        }        
-        
-        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
-            $element['id'] = $element['name'];
-        }
-
-        
-
-        $authServers = AuthResourcesServersRepository::getList(
-            $fields = '*',
-            $count = -1,
-            $offset = 0,
-            $order = "server_order",
-            $sort = 'asc',
-            $filters = array('auth_resource_id' => $element['label_extra']['id'])
-        );
-        
-        $tpl = Di::getDefault()->get('template');
-
-        $tpl->addJs('centreon-clone.js')
-            ->addJs('component/authserver.js');
-        
-        $tpl->assign('authServers', $authServers);
-        
-        
-        return array(
-            'html' => $tpl->fetch('file:[Core]/form/component/authserver.tpl')
-        );
+        $di = Di::getDefault();
+       
     }
-    
-    
-    
-    
     //put your code here
 }

@@ -26,9 +26,7 @@
                         </validator>
                     </validators>
                 </field>
-                
-                
-                
+
                 <field name="auth_info[ldap_auth_enable]" label="Enable LDAP authentification" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
 		  <attributes>
                     <choices>
@@ -58,20 +56,15 @@
 		  </attributes>
                 <help></help>
 		</field>
-                
-                
-                
-                
+
                 <field type="text" label="LDAP search size limit" default_value="" advanced="0" name="auth_info[ldap_search_limit]" mandatory="0">
                     <validator rules="forbiddenChar" serverside="core.Numeric" />
                 </field>
                 <field type="text" label="LDAP search timeout" default_value="" advanced="0" name="auth_info[ldap_search_timeout]" mandatory="0">
                     <validator rules="forbiddenChar" serverside="core.Numeric" />
                 </field>
-                
-                
-                
-                <field name="auth_info[ldap_srv_dns]" label="Use service DNS" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+
+                <field name="auth_info[ldap_srv_dns]" id="ldap_srv_dnsa" label="Use service DNS" default_value="1" advanced="0" type="radio" parent_field="" mandatory="0">
 		  <attributes>
                     <choices>
                       <Yes>1</Yes>
@@ -82,15 +75,16 @@
 		</field>
                 
                 
-                
-                
-                
-                
-                
-                
-                
-                
-                
+                <field name="auth_info[ldap_dns_use_ssl]" label="Use SSL connection" default_value="1" advanced="0" type="radio" parent_field="ldap_srv_dnsa" parent_value="1" mandatory="0">
+		  <attributes>
+                    <choices>
+                      <Yes>1</Yes>
+                      <No>0</No>
+                    </choices>
+		  </attributes>
+                <help></help>
+		</field>
+
             </block>
             <block name="Auth server">
                 <field name="auth_server" label="Auth servers" default_value="" advanced="0" type="authserver" parent_field="" mandatory="0" show_label="0">
@@ -103,7 +97,27 @@
                 
                 
                 
+                 <field type="text" label="eazazeaezeazaze" default_value="" advanced="0" name="auth_info[user_base_search]">
+
+                </field>
+                <field name="auth_info[protocol_version]" label="Protocol version" default_value="3" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                    <choices>
+                      <Yes>1</Yes>
+                      <No>0</No>
+                    </choices>
+		  </attributes>
+                </field>
                 
+                <field name="auth_info[ldap_template]" label="Template" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                        <attributes>
+                                <object_type>object</object_type>
+                                <defaultValuesRoute>/centreon-main/ldapTemplatesList</defaultValuesRoute>
+                                <listValuesRoute>/centreon-main/ldapTemplatesList</listValuesRoute>
+                                <multiple>false</multiple>
+                        </attributes>
+                </field>
+
                 <field type="text" label="Search user base DN" default_value="" advanced="0" name="auth_info[user_base_search]" mandatory="0"></field>
                 <field type="text" label="Search group base DN" default_value="" advanced="0" name="auth_info[group_base_search]" mandatory="0"></field>
                 <field type="text" label="User filter" default_value="" advanced="0" name="auth_info[user_filter]" mandatory="0"></field>
@@ -123,17 +137,55 @@
     <wizard name="add_auth">
 		<route>/centreon-administration/auth/add</route>
 		<step name="General">
-			<field type="text" name="ar_name" mandatory="1"></field>
-                        <field type="text" name="ar_description" mandatory="1"></field>
-                        
+		<field type="text" name="ar_name" mandatory="1"></field>
+                <field type="text" name="ar_description" mandatory="1"></field>
+                       
+                <field name="auth_info[ldap_auth_enable]" label="Enable LDAP authentification" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+		</field>
+                
+                <field name="auth_info[ldap_store_password]" label="Store LDAP password" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+		</field>
+                
+                <field name="auth_info[ldap_auto_import]" label="Auto import users" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+		</field>
+                
+                
+                
+                
+                <field type="text" label="LDAP search size limit" default_value="" advanced="0" name="auth_info[ldap_search_limit]" mandatory="0">
+                </field>
+                <field type="text" label="LDAP search timeout" default_value="" advanced="0" name="auth_info[ldap_search_timeout]" mandatory="0">
+                </field>
+                
+                
+                
+                <field name="auth_info[ldap_srv_dns]" id="ldap_srv_dnsa" label="Use service DNS" default_value="1" advanced="0" type="radio" parent_field="" mandatory="0">
+		</field>
+                
+                
+                <field name="auth_info[ldap_dns_use_ssl]" label="Use SSL connection" default_value="1" advanced="0" type="radio" parent_field="ldap_srv_dnsa" parent_value="1" mandatory="0">
+		</field>
+                 
 		</step>
                 
                 
-                <step name="General">
+                <step name="Auth server">
                 <field name="auth_server" label="Auth servers" default_value="" advanced="0" type="authserver" parent_field="" mandatory="0" show_label="0">
                 </field>
                 </step>
                 <step name="LDAP informations">
+                    <field type="text" label="Bind user" default_value="" advanced="0" name="auth_info[bind_dn]" mandatory="0"></field>
+                    <field type="text" label="Bind password" default_value="" advanced="0" name="auth_info[bind_pass]" mandatory="0"></field>
+                     <field type="text" label="eazazeaezeazaze" default_value="" advanced="0" name="auth_info[user_base_search]">
+                    </field>
+                    <field name="auth_info[protocol_version]" label="Protocol version" default_value="3" parent_field="" mandatory="0">
+                    </field>
+
+                    <field name="auth_info[ldap_template]" label="Template" default_value="" parent_field="" mandatory="0">
+                    </field>
+
+                    <field type="text" label="Search user base DN" default_value="" advanced="0" name="auth_info[user_base_search]" mandatory="0"></field>
+                    <field type="text" label="Search group base DN" default_value="" advanced="0" name="auth_info[group_base_search]" mandatory="0"></field>
                     <field type="text" name="auth_info[user_base_search]" mandatory="0"></field>
                     <field type="text" name="auth_info[group_base_search]" mandatory="0"></field>
                     <field type="text" name="auth_info[user_filter]" mandatory="0"></field>

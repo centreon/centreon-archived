@@ -52,12 +52,12 @@ class AuthResourcesRepository extends FormRepository
     
     public static function insertInfos($id,$givenParameters){
         AuthResourcesInfoRepository::deleteAllForArId($id);
-        $auth_info = $givenParameters['auth_info'];
-        foreach($auth_info as $name=>$auth_info){
+        $auth_infos = $givenParameters['auth_info'];
+        foreach($auth_infos as $name=>$auth_info){
             try{
                 AuthResourcesInfoRepository::create(array('ar_id' => $id,'ari_name' => $name, 'ari_value' => $auth_info),"","",false);
             } catch (\Exception $e) {
-                parent::delete(array($id));
+                //parent::delete(array($id));
                 throw $e;
             }
         }
@@ -68,25 +68,32 @@ class AuthResourcesRepository extends FormRepository
         $auth_servers = $givenParameters['auth_server'];
         AuthResourcesServersRepository::deleteAllForArId($id);
         $cnt = 0;
-        if(!empty($auth_servers['server_address'])){
-            foreach($auth_servers['server_address'] as $key=>$server_address){
-               if($key != 0){
+        //print_r($auth_servers);
+        //die;
+            foreach($auth_servers as $key=>$auth_server){
+                if(!empty($auth_server['server_address']) ){
                     $use_ssl = 0;
-                    if(isset($auth_servers['use_ssl'][$key])){
+                    if(!empty($auth_server['use_ssl'])){
                         $use_ssl = 1;
                     }
                     
                     $use_tls = 0;
-                    if(isset($auth_servers['use_tls'][$key])){
+                    if(!empty($auth_server['use_tls'])){
                         $use_tls = 1;
                     }
                     
                     $server_port = null;
-                    if(isset($auth_servers['server_port'][$key])){
-                        $server_port = $auth_servers['server_port'][$key];
+                    if(isset($auth_server['server_port'])){
+                        $server_port = $auth_server['server_port'];
                     }
-                   
+
+                    $server_address = null;
+                    if(isset($auth_server['server_address'])){
+                        $server_address = $auth_server['server_address'];
+                    }
+                    
                     try{
+                        
                         AuthResourcesServersRepository::create(
                                 array('auth_resource_id'=>$id,
                                       'server_address'=>$server_address,
@@ -97,13 +104,12 @@ class AuthResourcesRepository extends FormRepository
                                 ),"","",false
                             );
                     } catch (\Exception $e) {
-                        parent::delete(array($id));
+                        //parent::delete(array($id));
                         throw $e;
                     }
                    $cnt = $cnt + 1;
-               }
+                }
             }
-        }
     }
     
     public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
