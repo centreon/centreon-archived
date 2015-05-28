@@ -302,15 +302,15 @@ class HostRepository extends Repository
     {
         /* Check data */
         $checkdata = array();
-        $checkdata[_('Id')] = $data['host_id'];
-        $checkdata[_('Name')] = $data['host_name'];
-        $checkdata[_('Command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
-        $checkdata[_('Time_period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
+        $checkdata[_('id')] = $data['host_id'];
+        $checkdata[_('name')] = $data['host_name'];
+        $checkdata[_('command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
+        $checkdata[_('time_period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
         
         
-        $checkdata[_('Max_check attempts')] = "";
+        $checkdata[_('max_check attempts')] = "";
         if(isset($data['host_max_check_attempts'])){
-            $checkdata[_('Max_check attempts')] = $data['host_max_check_attempts'];
+            $checkdata[_('max_check attempts')] = $data['host_max_check_attempts'];
         }
         
         $data['host_check_interval'] = "";
