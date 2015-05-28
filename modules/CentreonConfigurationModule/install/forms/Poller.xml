@@ -18,18 +18,20 @@
 		<field name="ip_address" label="IP address" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">
                     <help>IP address of the poller which must be relative to the local poller.</help>
 		</field>
-            </block>
-            <block name="Additinonal information">
-                <field name="poller_type" label="Poller Type" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
-                  <attributes>
-                    <choices>
-                      <Central>0</Central>
-                      <Poller>1</Poller>
-                      <LocalPoller>2</LocalPoller>
-                    </choices>
-                  </attributes>
+                <field name="tmpl_name" label="Poller template" default_value="" advanced="0" type="selectwithchange" parent_field="" mandatory="0">
+                    <attributes>
+                        <initCallback>loadTemplateSteps</initCallback>
+                        <additionalRoute>/centreon-configuration/poller/templates/form</additionalRoute>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-configuration/poller/templates</defaultValuesRoute>
+                        <listValuesRoute>/centreon-configuration/poller/[i:id]/template</listValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+                    <help>Define the poller template</help>
                 </field>
-                <field name="activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
+            </block>
+            <block name="Additional information">
+                <field name="enable" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
                   <attributes>
                     <choices>
                       <Enabled>1</Enabled>
@@ -39,44 +41,13 @@
                 </field>
             </block>
 	</section>
-	<section name="Engine configuration">
-        <block name="Monitoring settings">
-		<field name="init_script" label="Engine init script" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-		  <help>Init script of the monitoring engine.</help>
-		</field>
-		<field name="engine_bin" label="Engine binary" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-		  <help>Engine binary path.</help>
-		</field>
-		<field name="centreonconnector_path" label="Connector path" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
-		  <help>Directory for the engine's connectors.</help>
-		</field>
-	  </block>
-	</section>
-	<section name="Broker configuration">
-        <block name="Broker settings">
-		<field name="centreonbroker_cfg_path" label="Broker configuration path" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-		  <help>Path for broker configuration files.</help>
-		</field>
-		<field name="centreonbroker_module_path" label="Broker module path" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-		  <help>Path for broker modules.</help>
-		</field>
-	  </block>
-	</section>
-  </form>
-  <wizard name="add_poller">
-	<route>/centreon-configuration/poller/add</route>
-	<step name="General">
-	  <field name="name" mandatory="1"></field>
-	  <field name="ip_address" mandatory="1"></field>
-	  <field name="poller_type" mandatory="1"></field>
-	</step>
-    <step name="Engine">
-        <field name="init_script" mandatory="1"></field>
-        <field name="engine_bin" mandatory="1"></field>
-    </step>
-    <step name="Broker">
-        <field name="centreonbroker_cfg_path" mandatory="1"></field>
-        <field name="centreonbroker_module_path" mandatory="1"></field>
-    </step>
-  </wizard>
+    </form>
+    <wizard name="add_poller">
+        <route>/centreon-configuration/poller/add</route>
+        <step name="General">
+	    <field name="name" mandatory="1"></field>
+	    <field name="ip_address" mandatory="1"></field>
+	    <field name="tmpl_name" mandatory="0"></field>
+        </step>
+    </wizard>
 </forms>

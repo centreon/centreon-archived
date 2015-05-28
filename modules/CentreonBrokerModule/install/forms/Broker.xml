@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+    <form name="broker_form">
+        <route>/centreon-configuration/poller/update</route>
+        <redirect>0</redirect>
+        <redirect_route></redirect_route>
+        <section name="Broker">
+            <block name="General information">
+                <field name="directory_config" label="Broker config directory" default_value="/etc/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">	
+                    <help>Broker configuration directory.</help>
+                </field>
+                <field name="directory_modules" label="Broker modules directory" default_value="/usr/share/centreon/lib/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">
+                    <help>Broker modules directory.</help>
+                </field>
+                <field name="directory_data" label="Broker data directory" default_value="/var/lib/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">
+                    <help>Broker data directory.</help>
+                </field>
+                <field name="directory_logs" label="Broker logs directory" default_value="/var/log/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">
+                    <help>Broker logs directory.</help>
+                </field>
+                <field name="directory_cbmod" label="Broker module directory" default_value="/usr/lib64/nagios/" advanced="0" type="text" parent_field="" mandatory="1">
+                    <help>Broker module directory.</help>
+                </field>
+                <field name="init_script" label="Broker init script" default_value="/etc/init.d/cbd" advanced="0" type="text" parent_field="" mandatory="1">
+                    <help>Broker init script.</help>
+                </field>
+      </block>
+    </section>
+  </form>
+    <wizard name="add_broker">
+        <route>/centreon-configuration/poller/add</route>
+        <step name="Broker">
+            <field name="directory_config" mandatory="1"></field>
+            <field name="directory_modules" mandatory="1"></field>
+            <field name="directory_data" mandatory="1"></field>
+            <field name="directory_logs" mandatory="1"></field>
+            <field name="directory_cbmod" mandatory="1"></field>
+            <field name="init_script" mandatory="1"></field>
+        </step>
+    </wizard>
+</forms>

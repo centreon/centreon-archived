@@ -33,23 +33,29 @@
  *
  */
 
-namespace CentreonEngine\Listeners\CentreonConfiguration;
+namespace CentreonBroker\Listeners\CentreonMain;
 
-use CentreonEngine\Repository\EngineRepository;
-use CentreonConfiguration\Events\EngineFormSave as EngineFormSaveEvent;
+use CentreonMain\Events\PostSave as PostSaveEvent;
+use CentreonBroker\Repository\BrokerRepository;
 
-class EngineFormSave
+class PostSave
 {
     /**
-     *
-     * @param \CentreonConfiguration\Events\EngineFormSave $event
+     * @param CentreonMain\Events\PostSave $event
      */
-    public static function execute(EngineFormSaveEvent $event)
+    public static function execute(PostSaveEvent $event)
     {
-        /*EngineRepository::save(
-            $event->getPollerId(),
-            $event->getParams(),
-            "form"
-        );*/
+        $parameters = $event->getParameters();
+        $extraParameters = $event->getExtraParameters();
+        if (isset($extraParameters['centreon-broker'])) {
+            foreach ($parameters as $key => $value) {
+                $extraParameters['centreon-broker'][$key] = $value;
+            }
+            if ($event->getObjectName() === 'poller') {
+                if (isset($extraParameters['centreon-broker'])) {
+                    BrokerRepository::save($event->getObjectId(), $extraParameters['centreon-broker']);
+                }
+            }
+        }
     }
 }

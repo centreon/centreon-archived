@@ -122,11 +122,9 @@ abstract class FormRepository extends ListRepository
             }
         }
 
-        if (!empty($extraParameters)) {
-            $events = Di::getDefault()->get('events');
-            $preSaveEvent = new PreSaveEvent('create', $givenParameters, $extraParameters);
-            $events->emit('centreon-main.pre.save', array($preSaveEvent));
-        }
+        $events = Di::getDefault()->get('events');
+        $preSaveEvent = new PreSaveEvent('create', $givenParameters, $extraParameters);
+        $events->emit('centreon-main.pre.save', array($preSaveEvent));
 
         try {
             if ($validate) {
@@ -191,11 +189,9 @@ abstract class FormRepository extends ListRepository
             throw new Exception($e->getMessage());
         }
 
-        if (!empty($extraParameters)) {
-            $events = Di::getDefault()->get('events');
-            $postSaveEvent = new PostSaveEvent('create', $givenParameters, $extraParameters);
-            $events->emit('centreon-main.post.save', array($postSaveEvent));
-        }
+        $givenParameters['object_id'] = $id;
+        $postSaveEvent = new PostSaveEvent('create', $givenParameters, $extraParameters);
+        $events->emit('centreon-main.post.save', array($postSaveEvent));
 
         return $id;
     }
@@ -226,11 +222,9 @@ abstract class FormRepository extends ListRepository
             }
         }
 
-        if (!empty($extraParameters)) {
-            $events = Di::getDefault()->get('events');
-            $preSaveEvent = new PreSaveEvent('update', $givenParameters, $extraParameters);
-            $events->emit('centreon-main.pre.save', array($preSaveEvent));
-        }
+        $events = Di::getDefault()->get('events');
+        $preSaveEvent = new PreSaveEvent('update', $givenParameters, $extraParameters);
+        $events->emit('centreon-main.pre.save', array($preSaveEvent));
         
         $class = static::$objectClass;
         $pk = $class::getPrimaryKey();
@@ -293,11 +287,8 @@ abstract class FormRepository extends ListRepository
         
         $class::update($id, $updateValues);
        
-        if (!empty($extraParameters)) {
-            $events = Di::getDefault()->get('events');
-            $postSaveEvent = new PostSaveEvent('update', $givenParameters, $extraParameters);
-            $events->emit('centreon-main.post.save', array($postSaveEvent));
-        }
+        $postSaveEvent = new PostSaveEvent('update', $givenParameters, $extraParameters);
+        $events->emit('centreon-main.post.save', array($postSaveEvent));
  
         if (method_exists(get_called_class(), 'postSave')) {
             static::postSave($id, 'update', $givenParameters);

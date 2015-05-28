@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="stateWrapper col-md-3">
+        <div class="stateWrapper col-md-2">
             <ul>
                 <li>
                      <i class="icon-service success"></i>
@@ -26,29 +26,44 @@
 
             </ul>
         </div>
-        <div class="detailsWrapper col-md-9">
-            <dl class="list-group">
-                  <dt class="">Command</dt>
-                  <dd>{{hostConfig.Command}}</dd>
+        <div class="detailsWrapper col-md-10">
+            <table>
+                <tr>
+                    <td>Command</td>
+                    <td>{{hostConfig.Command}}</td>
+                </tr>
 
-                  <dt class="">Time Period</dt>
-                  <dd>{{hostConfig.Time period}}</dd>
+                <tr>
+                    <td>Time period</td>
+                    <td>{{hostConfig.Time period}}</td>
+                </tr>
 
-                  <dt class="">Max check attempts</dt>
-                  <dd>{{hostConfig.Max check attempts}}</dd>
+                <tr>
+                    <td>Max check attempts</td>
+                    <td>{{hostConfig.Max check attempts}}</td>
+                </tr>
 
-                  <dt class="">Check interval</dt>
-                  <dd>{{hostConfig.Check interval}}</dd>
+                <tr>
+                    <td>Check interval</td>
+                    <td>{{hostConfig.Check interval}}</td>
+                </tr>
 
-                  <dt class="">Retry check interval</dt>
-                  <dd>{{hostConfig.Retry check interval}}</dd>
+                <tr>
+                    <td>Retry check interval</td>
+                    <td>{{hostConfig.Retry check interval}}</td>
+                </tr>
 
-                  <dt class="">Active checks enabled</dt>
-                  <dd>{{hostConfig.Active checks enabled}}</dd>
+                <tr>
+                    <td>Active checks enabled</td>
+                    <td>{{hostConfig.Active checks enabled}}</td>
+                </tr>
 
-                  <dt class="">Passive checks enabled</dt>
-                  <dd>{{hostConfig.Passive checks enabled}}</dd>
-            </dl>
+                 <tr>
+                    <td>Passive checks enabled</td>
+                    <td>{{hostConfig.Passive checks enabled}}</td>
+                </tr>
+
+            </table>
         </div>
     </div>
 </div>

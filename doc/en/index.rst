@@ -14,6 +14,7 @@ Contents:
    :maxdepth: 2
 
    developer/index
+   user/index
 
 Additional online resource:
 

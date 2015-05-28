@@ -33,23 +33,32 @@
  *
  */
 
-namespace CentreonEngine\Listeners\CentreonConfiguration;
+namespace CentreonBroker\Listeners\Core;
 
-use CentreonEngine\Repository\EngineRepository;
-use CentreonConfiguration\Events\EngineFormSave as EngineFormSaveEvent;
+use Centreon\Events\LoadFormDatas as LoadFormDatasEvent;
+use CentreonBroker\Models\Broker;
 
-class EngineFormSave
+class LoadFormDatas
 {
     /**
-     *
-     * @param \CentreonConfiguration\Events\EngineFormSave $event
+     * @param Core\Events\LoadFormDatas $event
      */
-    public static function execute(EngineFormSaveEvent $event)
+    public static function execute(LoadFormDatasEvent $event)
     {
-        /*EngineRepository::save(
-            $event->getPollerId(),
-            $event->getParams(),
-            "form"
-        );*/
+        $route = $event->getRoute();
+        $objectId = $event->getObjectId();
+        $parameters = $event->getParameters();
+        if ($route === '/centreon-configuration/poller/update') {
+            try {
+                $brokerParameters = Broker::getParameters($objectId,"*");
+                $brokerCompleteParameters = array();
+                foreach ($brokerParameters as $key => $value) {
+                    $brokerCompleteParameters['centreon-broker__' . $key] = $value;
+                }
+                $event->addParameters($brokerCompleteParameters);
+            } catch (\Exception $e) {
+
+            }
+        }
     }
 }
