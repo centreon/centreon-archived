@@ -55,6 +55,7 @@ use CentreonAdministration\Repository\DomainRepository;
 use CentreonAdministration\Repository\EnvironmentRepository;
 use CentreonAdministration\Repository\UsergroupRepository;
 use CentreonAdministration\Repository\AclresourceRepository;
+use CentreonAdministration\Repository\TagsRepository;
 
 use CentreonBam\Repository\BusinessActivityRepository;
 use CentreonBam\Repository\IndicatorRepository;
@@ -432,7 +433,7 @@ class Unique implements ValidatorInterface
             }
         } 
         elseif (isset($params['object']) && $params['object'] == 'tag') {
-            $objClass = "CentreonAdministration\Repository\TagRepository";
+            $objClass = "CentreonAdministration\Repository\TagsRepository";
             
             if (isset($params['extraParams']['name'])) {
                 $sLabel = $params['extraParams']['name'];

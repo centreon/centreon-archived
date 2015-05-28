@@ -49,7 +49,7 @@ use CentreonConfiguration\Repository\ServiceRepository;
  * @package Centreon
  * @package CentreonAdministration
  */
-class TagsRepository
+class TagsRepository extends Repository
 {
     /**
      * The list of resource who can have a tag
@@ -462,13 +462,19 @@ class TagsRepository
     }
     /**
      * 
-     * @param type $tagId
-     * @param type $tagName
+     * @param array $givenParameters
      * @return type
      */
-    public static function update($tagId, $tagName)
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
+        
+        if ($validate) {
+            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+        
+        $tagId = $givenParameters['object_id'];
+        $tagName = $givenParameters['tagname'];
         
         if (empty($tagId)|| empty($tagName)) {
             return;
@@ -719,6 +725,4 @@ class TagsRepository
         return array('success' => true, 'values' => $aTags);
     }
  
- 
-
 }
