@@ -220,7 +220,7 @@ abstract class AbstractModuleInstaller
         $this->moduleId = Informations::getModuleIdByName($this->moduleSlug);
         
         // Install DB
-        $migrationManager = new Migrate($this->moduleDirectory . '/install/db/propel/');
+        $migrationManager = new Migrate($this->moduleSlug, $this->moduleDirectory . '/install/db/');
         $migrationManager->up();
         
         // Install menu

@@ -53,10 +53,9 @@ class Migrate extends PropelMigration
      */
     public function __construct($module = 'centreon', $migrationClassPath = null)
     {
-        parent::__construct($module);
-        
+        parent::__construct('centreon');
         if (!is_null($migrationClassPath)) {
-            $this->outputDir = $migrationClassPath;
+            $this->setOutputDir($migrationClassPath);
         }
     }
     
