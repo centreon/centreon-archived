@@ -32,24 +32,44 @@
  * For more information : contact@centreon.com
  *
  */
+namespace Centreon\Internal\Form\Component;
 
-namespace CentreonEngine\Listeners\CentreonConfiguration;
+use Centreon\Internal\Di;
 
-use CentreonEngine\Repository\EngineRepository;
-use CentreonConfiguration\Events\EngineFormSave as EngineFormSaveEvent;
-
-class EngineFormSave
+/**
+ * @author Lionel Assepo <lassepo@centreon.com>
+ * @package Centreon
+ * @subpackage Core
+ */
+class Selectwithchange extends Select
 {
     /**
-     *
-     * @param \CentreonConfiguration\Events\EngineFormSave $event
+     * 
+     * @param array $element
+     * @return array
      */
-    public static function execute(EngineFormSaveEvent $event)
+    public static function renderHtmlInput(array $element)
     {
-        /*EngineRepository::save(
-            $event->getPollerId(),
-            $event->getParams(),
-            "form"
-        );*/
+        $extraData = 'data-callback="' . $element['label_initCallback'] . '"';
+        if (isset($element['label_additionalRoute']) && trim($element['label_additionalRoute'])) {
+            $extraData .= ' data-extra-url="' . $element['label_additionalRoute'] . '"';
+        }
+        $render = parent::renderHtmlInput($element);
+        $render['html'] = preg_replace('/<input(.*)/', '<input ' . $extraData . '$1', $render['html']);
+        $render['js'] .= '$("#' . $element['name'] . '").on("change", function () {
+              var callback = $(this).data("callback");
+              var url = $(this).data("extra-url");
+              url = (url === undefined ? "" : url);
+
+              var callbackFunction = window[callback];
+              if ( typeof callbackFunction === "function" ) {
+                  callbackFunction($(this).select2("data"), $(this), url);
+              }
+            });';
+
+        return array(
+            'html' => $render['html'],
+            'js' => $render['js']
+        );
     }
 }

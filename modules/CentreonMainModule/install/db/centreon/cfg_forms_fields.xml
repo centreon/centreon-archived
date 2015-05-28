@@ -5,7 +5,7 @@
         <column name="name" phpName="Name" type="VARCHAR" size="100" required="true"/>
         <column name="label" phpName="Label" type="VARCHAR" size="45" required="true"/>
         <column name="default_value" phpName="DefaultValue" type="VARCHAR" size="45" required="true"/>
-        <column name="attributes" phpName="Attributes" type="VARCHAR" size="255" required="false"/>
+        <column name="attributes" phpName="Attributes" type="LONGVARCHAR" required="false"/>
         <column name="advanced" phpName="Advanced" type="CHAR" required="true" defaultValue="0"/>
         <column name="mandatory" phpName="Mandatory" type="CHAR" required="true" defaultValue="0"/>
         <column name="type" phpName="Type" type="VARCHAR" size="255" required="true"/>

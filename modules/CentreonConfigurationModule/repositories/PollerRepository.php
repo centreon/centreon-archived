@@ -152,19 +152,27 @@ class PollerRepository extends Repository
 
             $di = Di::getDefault();
             $orgId = $di->get('organization');
+
             $nodeId = NodeRepository::create($params);
-            $pollerId = Poller::insert(array(
+
+            /*$pollerParams = array(
                 'node_id' => $nodeId,
                 'name' => $params['name'],
                 'organization_id' => $orgId,
                 'port' => 0,
-                'tmpl_name' => $params['poller_tmpl']
-            ));
-            $engineEvent = new EngineFormSave($pollerId, $params);
+                'tmpl_name' => $params['tmpl_name']
+            );*/
+            $params['node_id'] = $nodeId;
+            $params['organization_id'] = $orgId;
+            $params['port'] = 0;
+
+            $pollerId = parent::create($params, $origin, $route, true, false);
+
+            /*$engineEvent = new EngineFormSave($pollerId, $params);
             $di->get('events')->emit('centreon-configuration.engine.form.save', array($engineEvent));
 
             $brokerEvent = new BrokerFormSave($pollerId, $params);
-            $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));
+            $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));*/
 
             return $pollerId;
         } catch (Exception $e) {
@@ -180,41 +188,24 @@ class PollerRepository extends Repository
      */
     public static function update($params, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
-        /*
+        
         if ($validate) {
             self::validateForm($params, "form", $route, $validate, $validateMandatory);
         }
-        */
+        
         $di = Di::getDefault();
 
         NodeRepository::update($params);
         
-        if (isset($params['object_id'])) {
-            $poller_id = $params['object_id'];
-        } else {
-            $poller_id = $params['poller_id'];
-        }
-       
-        $pollerParams = array();
-        if (isset($params['name'])) {
-            $pollerParams['name'] = $params['name'];
-        }
-        if (isset($params['poller_tmpl'])) {
-            $pollerParams['tmpl_name'] = $params['poller_tmpl'];
-        }
-        if (isset($params['enable'])) {
-            $pollerParams['enable'] = $params['enable'];
-        }
-        
-        Poller::update($poller_id, $pollerParams);
+        parent::update($params, $origin, $route, true, false);
 
-        if (isset($params['poller_tmpl'])) {
+        /*if (isset($params['poller_tmpl'])) {
             $engineEvent = new EngineFormSave($poller_id, $params);
             $di->get('events')->emit('centreon-configuration.engine.form.save', array($engineEvent));
         
             $brokerEvent = new BrokerFormSave($poller_id, $params);
             $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));
-        }
+        }*/
     }
 
 

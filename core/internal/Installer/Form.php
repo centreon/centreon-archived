@@ -545,8 +545,21 @@ class Form
         $key = $data['name'];
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (!isset(self::$wizards[$key])) {
-            $sql = 'INSERT INTO cfg_forms_wizards (name, route, module_id) 
-              VALUES (:name, :route, :module)';
+            $stmt = $db->prepare(
+                'SELECT count(route) as count,wizard_id '
+                . 'FROM cfg_forms_wizards '
+                . 'WHERE route = :route'
+            );
+            $stmt->bindParam(':route', $data['route'], \PDO::PARAM_STR);
+            $stmt->execute();
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if (isset($row['count']) && $row['count'] > 0) {
+                self::$wizards[$key] = $row['wizard_id'];
+                return false;
+            } else {
+                $sql = 'INSERT INTO cfg_forms_wizards (name, route, module_id)'
+                    . ' VALUES (:name, :route, :module)';
+            }
         } else {
             $sql = 'UPDATE cfg_forms_wizards SET route = :route
                 WHERE name = :name 
@@ -564,6 +577,7 @@ class Form
         if (!isset(self::$wizards[$key])) {
             self::$wizards[$key] = $db->lastInsertId('cfg_forms_wizards', 'wizard_id');
         }
+        return true;
     }
 
     /**
@@ -636,7 +650,7 @@ class Form
             'name' => $wizard['name'],
             'route' => $wizard->route
         );
-        self::insertWizard(array_map('strval', $wizardData), $moduleId);
+        $wizardAdded = self::insertWizard(array_map('strval', $wizardData), $moduleId);
         $stepRank = 1;
         foreach ($wizard->step as $step) {
             $stepData = array(
@@ -648,6 +662,12 @@ class Form
             $stepRank++;
             $fieldRank = 1;
             foreach ($step->field as $field) {
+                if (!$wizardAdded) {
+                    $moduleName = Module::getParameters($moduleId, 'name');
+                    if (isset($moduleName['name'])) {
+                        $field['name'] = $moduleName['name'] . '__' . $field['name'];
+                    }
+                }
                 $stepFieldData = array(
                     'wizard_name' => $wizard['name'],
                     'step_name' => $step['name'],
