@@ -54,6 +54,11 @@ class Datetime extends RespectValidationAbstract
         'minimumAge',
     );
     
+    /**
+     *
+     * @var type 
+     */
+    protected static$sMessageError = "The value is incorrect.";
 
     /**
      * 
