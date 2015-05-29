@@ -216,7 +216,7 @@ $(function() {
       success: function(data, textStatus, jqXHR) {
         if (data.success) {
           hostData = data.values;
-          $(document).trigger(hostData);
+          $(document).trigger(eData);
         }
       }
     });
