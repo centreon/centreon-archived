@@ -92,30 +92,32 @@ class AuthController extends FormController{
     /**
      * 
      * @method get
-     * @route /auth/contactTemplate/[i:id]
+     * @route /auth/[i:id]/contactTemplate
      */
     public function getContactTemplateValuesAction(){
         $requestParam = $this->getParams('named');
         $auth_id = $requestParam['id'];
-        $contact_template = AuthResourcesInfoRepository::getList(
-            $fields = '*',
-            $count = -1,
-            $offset = 0,
-            $order = null,
-            $sort = 'asc',
-            $filters = array('ar_id' => $auth_id, 'ar_name' => 'ldap_contact_tmpl'),
-            $filterType = 'AND'
-        );
-        
+        $contact_template = AuthResourcesInfoRepository::getInfosFromName('ldap_contact_tmpl',$auth_id);
         $data = array();
-        
-        foreach($contact_templates as $contact_template){
-            $data[] = array('id' => $contact_template['ar_name'], 'text' => $contact_template['ar_value']);
+        if(!empty($contact_template)){
+            $data = array('id' => $contact_template['ar_id'], 'text' => $contact_template['ari_value']);
         }
-
         return $this->router->response()->json($data);
         
     }
+    
+    /**
+     * 
+     * @method get
+     * @route /auth/[i:id]/contactTemplate/listValues
+     */
+    public function getContactTemplateListValuesAction(){
+        $data = array('id' => '', 'text' => '');
+        return $this->router->response()->json($data);
+        
+    }
+    
+    
     
     
     //put your code here

@@ -188,6 +188,8 @@ class Select extends Component
             .'});'."\n";
         
         $myJs .= $addJs;
+        
+        
         return array(
             'html' => $myHtml,
             'js' => $myJs

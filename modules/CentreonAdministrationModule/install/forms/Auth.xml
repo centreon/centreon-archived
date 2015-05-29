@@ -61,12 +61,10 @@
                 
                 <field name="auth_info[ldap_contact_tmpl]" label="Contact template" advanced="0" type="select" parent_field="" mandatory="0">
                   <attributes>
+                    <object_type>object</object_type>
                     <multiple>false</multiple>
-                    <selectData>
-                      <contact-tpl>contact-tpl</contact-tpl>
-                    </selectData>
-                    <defaultValuesRoute>/centreon-administration/auth/contactTemplate/[i:id]</defaultValuesRoute>
-                    <listValuesRoute>/centreon-administration/auth/contactTemplate/[i:id]</listValuesRoute>
+                    <defaultValuesRoute>/centreon-administration/auth/[i:id]/contactTemplate/listValues</defaultValuesRoute>
+                    <listValuesRoute>/centreon-administration/auth/[i:id]/contactTemplate</listValuesRoute>
                   </attributes>
                 </field>
 
