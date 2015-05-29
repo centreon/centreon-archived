@@ -1,12 +1,12 @@
 
 <h4>Services List</h4>
-
+{{#service}}
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading{{id}}">
           <h4 class="panel-title">
             <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{id}}" aria-expanded="true" aria-controls="collapse{{id}}">
-              {{Name}}
+              {{name}}
             </a>
           </h4>
         </div>
@@ -53,3 +53,4 @@
         </div>
       </div>
     </div>
+{{/service}}
