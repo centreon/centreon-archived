@@ -63,8 +63,12 @@ class Numeric extends RespectValidationAbstract
         'roman',
         'xdigit',
     );
-    
 
+    /**
+     *
+     * @var type 
+     */
+    protected static$sMessageError = "The value is incorrect.";
     /**
      * 
      * @param type $params

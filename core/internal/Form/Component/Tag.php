@@ -108,6 +108,7 @@ class Tag extends Component
                 . 'placeholder:"'.$element['label_label'].'", '
                 . 'multiple:'.(int)$element['label_multiple'].', '
                 . 'tags: true, '
+                .  'minimumInputLength: 3, '
                 .  'maximumInputLength: 30, '
                 . 'tokenSeparators: [","],'
                 . 'createSearchChoice: function (term) {
