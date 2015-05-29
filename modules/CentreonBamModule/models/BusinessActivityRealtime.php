@@ -48,6 +48,8 @@ class BusinessActivityRealtime extends CentreonBaseModel
     protected static $primaryKey = "ba_id";
     protected static $uniqueLabelField = "name";
 
+    protected static $aclResourceType = 6;
+
     /**
      *
      * @param type $parameterNames
