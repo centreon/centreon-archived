@@ -696,7 +696,7 @@ class TagsRepository extends Repository
         if ($resourceName == 'host') {
             $templates = HostRepository::getTemplateChain($resourceId, array(), -1);
             foreach ($templates as $template) {
-                $aTagsInHost = TagsRepository::getList('host', $template['id'], 2, 0);
+                $aTagsInHost = TagsRepository::getList('host', $template['id'], 1, 0);
                 foreach ($aTagsInHost as $oTags) {
                     if (!in_array($oTags['id'], $aTagUsed)) {
                         $aTagUsed[] = $oTags['id'];
@@ -710,7 +710,7 @@ class TagsRepository extends Repository
             
             $templates = ServiceRepository::getListTemplates($resourceId, array(), -1);
             foreach ($templates as $template) {
-                $aTagsInSvc = TagsRepository::getList('service', $template, 2, 0);
+                $aTagsInSvc = TagsRepository::getList('service', $template, 1, 0);
                 foreach ($aTagsInSvc as $oTags) {
                     if (!in_array($oTags['id'], $aTagUsed)) {
                         $aTagUsed[] = $oTags['id'];
