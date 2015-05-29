@@ -72,6 +72,7 @@ class ServiceDatatable extends Datatable
     protected static $configuration = array(
         'autowidth' => false,
         'order' => array(
+            array('host_id', 'asc'),
             array('s.description', 'asc')
         ),
         'searchCols' => array(),

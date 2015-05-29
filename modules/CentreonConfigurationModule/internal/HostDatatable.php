@@ -42,6 +42,7 @@ use Centreon\Internal\Utils\HumanReadable;
 use CentreonRealtime\Repository\HostRepository as RealTimeHostRepository;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
+use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Internal\Datatable;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
 /**
@@ -145,7 +146,7 @@ class HostDatatable extends Datatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
         ),
         array (
             'title' => 'IP Address / DNS',
@@ -224,6 +225,16 @@ class HostDatatable extends Datatable
             ),
             'className' => "cell_center",
             'width' => '50px'
+        ), 
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'tablename' => 'cfg_tags'
         )
     );
     
@@ -295,9 +306,9 @@ class HostDatatable extends Datatable
             //$myHostSet['DT_RowData']['host_template']  = array();
             $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), 1);
             foreach ($templates as $template) {
-                $myHostSet['host_template'] .= '<span class="badge alert-success"><a href="'
+                $myHostSet['host_template'] .= '<span class="dtIcoTemplate"><a href="'
                 . $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id']))
-                . '"><i class="fa fa-shield"></i></a></span>';
+                . '"><i class="icon-template"></i></a>';
 
                 //$myHostSet['DT_RowData']['host_template'][] = $router->getPathFor('/centreon-configuration/hosttemplate/viewconf/'). $template['id'];
             }
@@ -305,6 +316,21 @@ class HostDatatable extends Datatable
             /* Display human readable the check/retry interval */
             $myHostSet['host_check_interval'] = HumanReadable::convert($myHostSet['host_check_interval'], 's', $units, null, true);
             $myHostSet['host_retry_check_interval'] = HumanReadable::convert($myHostSet['host_retry_check_interval'], 's', $units, null, true);
+
+            /* Get personal tags */
+            $myHostSet['tagname'] = '';
+            $aTagUsed = array();
+
+            $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 0, 0);
+
+            foreach ($aTags as $oTags) {
+                if (!in_array($oTags['id'], $aTagUsed)) {
+                    $aTagUsed[] = $oTags['id'];
+                    $myHostSet['tagname'] = TagsRepository::getTag('host',$myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], 1);
+                }
+            }
+
+            $myHostSet['tagname'] .= TagsRepository::getAddTag('host', $myHostSet['host_id']);
         }
     }
     

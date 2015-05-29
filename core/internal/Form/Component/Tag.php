@@ -99,7 +99,7 @@ class Tag extends Component
             . $addClass
             . '" id="'.$element['name']
             . '" name="' . $element['name']
-            . '" style="width: 100%;" type="hidden" value="" />';
+            . '" style="width: 100%;" type="hidden" value=" " />';
         
         $myJs = ''
             .' var chaine = "^([a-zA-Z0-9_.-])+$";'

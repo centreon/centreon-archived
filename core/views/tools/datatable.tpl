@@ -11,7 +11,7 @@
    <div class="col-lg-12" id="hostListing">
         <div id="tableLeft">
             <!-- Add / Actions -->
-            <div class="buttonGroup">
+            <div class="buttonGroup btDatatable">
                 {if (isset($objectAddUrl) && !empty($objectAddUrl))}
                   <div class="configuration-actions">
                     <button class="btnC btnSuccess" id="modalAdd">{t}Add {$objectName}{/t}</button>

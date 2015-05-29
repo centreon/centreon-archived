@@ -554,7 +554,8 @@ class Form
             $stmt->bindParam(':route', $data['route'], \PDO::PARAM_STR);
             $stmt->execute();
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            if ($row['module_id'] !== $moduleId) {
+       
+            if (isset($row['count']) && $row['count'] > 0 && $row['module_id'] !== $moduleId) {
                 self::$wizards[$key] = $row['wizard_id'];
                 return array('success' => false, 'moduleId' => $row['module_id']);
             } else if (isset($row['count']) && $row['count'] > 0) {

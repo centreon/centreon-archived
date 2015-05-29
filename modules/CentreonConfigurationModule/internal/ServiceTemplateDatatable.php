@@ -41,6 +41,7 @@ use Centreon\Internal\Utils\HumanReadable;
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\ServicetemplateRepository;
+use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Internal\Datatable;
 
 /**
@@ -198,6 +199,17 @@ class ServiceTemplateDatatable extends Datatable
             ),
             "className" => 'cell_center',
             "width" => '40px'
+        ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'source' => 'relation'
         )
     );
     
@@ -253,6 +265,21 @@ class ServiceTemplateDatatable extends Datatable
             /* Display human readable the check/retry interval */
             $myServiceSet['service_normal_check_interval'] = HumanReadable::convert($myServiceSet['service_normal_check_interval'], 's', $units, null, true);
             $myServiceSet['service_retry_check_interval'] = HumanReadable::convert($myServiceSet['service_retry_check_interval'], 's', $units, null, true);
+
+            /* Get personal tags */
+            $myServiceSet['tagname'] = '';
+            $aTagUsed = array();
+
+            $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 0, 0);
+
+            foreach ($aTags as $oTags) {
+                if (!in_array($oTags['id'], $aTagUsed)) {
+                    $aTagUsed[] = $oTags['id'];
+                    $myServiceSet['tagname'] = TagsRepository::getTag('service',$myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], 1);
+                }
+            }
+
+            $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
         }
     }
 }

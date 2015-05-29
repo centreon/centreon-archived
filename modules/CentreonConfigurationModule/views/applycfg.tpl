@@ -20,9 +20,9 @@
         {t}Configuration files will be generated and put in a temporary directory.{/t}
         {t}Validity checks can be run on the generated files.{/t}
       </p>
-      <button id="btn-generate-check" class="btn btn-generate btn-success btn-lg">{t}Generate and check{/t}</button>
-      <button id="btn-generate-only" class="btn btn-generate btn-primary btn-lg">{t}Generate only{/t}</button>
-      <button id="btn-check-only" class="btn btn-generate btn-danger btn-lg">{t}Check only{/t}</button>
+      <button id="btn-generate-check" class="btnC btn-generate btnSuccess btn-lg">{t}Generate and check{/t}</button>
+      <button id="btn-generate-only" class="btnC btn-generate btnPrimary btn-lg">{t}Generate only{/t}</button>
+      <button id="btn-check-only" class="btnC btn-generate btnDanger btn-lg">{t}Check only{/t}</button>
       <pre id="console-generate" class="hide margin-top-10">
       </pre>
     </div>
@@ -30,7 +30,7 @@
       <p>
         {t}Generated files will be moved to the final configuration directory.{/t}
       </p>
-      <button id="btn-move" class="btn btn-success btn-lg">{t}Move{/t}</button>
+      <button id="btn-move" class="btnC btnSuccess btn-lg">{t}Move{/t}</button>
       <pre id="console-move" class="hide margin-top-10">
       </pre>
     </div>
@@ -39,16 +39,16 @@
         {t}The monitoring engine will be restarted.{/t} 
         {t}Changes made in the configuration files will be taken into account.{/t}
       </p>
-      <button data-action="reloadcfg" class="btn btn-applycfg btn-success btn-lg">{t}Reload{/t}</button>
-      <button data-action="forcereloadcfg" class="btn btn-applycfg btn-primary btn-lg">{t}Force Reload{/t}</button>
-      <button data-action="restartcfg" class="btn btn-applycfg btn-danger btn-lg">{t}Restart{/t}</button>
+      <button data-action="reloadcfg" class="btnC btn-applycfg btnSuccess btn-lg">{t}Reload{/t}</button>
+      <button data-action="forcereloadcfg" class="btnC btn-applycfg btnPrimary btn-lg">{t}Force Reload{/t}</button>
+      <button data-action="restartcfg" class="btnC btn-applycfg btnDanger btn-lg">{t}Restart{/t}</button>
       <pre id="console-applycfg" class="hide margin-top-10">
       </pre>
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-default btn-prev" disabled>{t}Prev{/t}</button>
-    <button class="btn btn-default btn-next" data-last="{t}Finish{/t}" id="wizard_submit">{t}Next{/t}</button>
+    <button class="btnC btnDefault btn-prev" disabled>{t}Prev{/t}</button>
+    <button class="btnC btnDefault btn-next" data-last="{t}Finish{/t}" id="wizard_submit">{t}Next{/t}</button>
   </div>
 </form>
 <script>
