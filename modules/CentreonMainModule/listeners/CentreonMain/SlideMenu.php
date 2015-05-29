@@ -52,7 +52,7 @@ class SlideMenu
                     'name' => 'host',
                     'url' => $router->getPathFor('/centreon-configuration/host/snapshotslide/') . $event->getHostId(),
                     'icon' => '',
-                    'order' => 1,
+                    'order' => 0,
                     'tpl' => "/viewtpl/CentreonConfigurationModule/host_slide"
 
                 )
@@ -64,8 +64,7 @@ class SlideMenu
                     'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconfslide/') . $event->getHostId(),
                     'icon' => '',
                     'order' => 2,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/templates_slide",
-                    'default' => 1
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/templates_slide"
                 )
             );
             
@@ -74,8 +73,9 @@ class SlideMenu
                     'name' => 'tag',
                     'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/tags') ,
                     'icon' => '',
-                    'order' => 3,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/tags_slide"
+                    'order' => 1,
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/tags_slide",
+                    'default' => 1
                 )
             );
             
