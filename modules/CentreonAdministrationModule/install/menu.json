@@ -91,6 +91,12 @@
                         "route" : "/centreon-administration/tag"
                     }
                 ]
+            },
+            {
+                "name": "Auth",
+                "short_name": "auth",
+                "icon_class": "fa fa-sliders",
+                "route" : "/centreon-administration/auth"
             }
         ]
     }

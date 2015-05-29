@@ -212,7 +212,7 @@ class HostController extends FormController
         $heritedTagsValues = $heritedTags['values'];
         
         
-        $tags = array('globals' => $globalTagsValues,'herited' => $heritedTagsValues);
+        $tags['tags'] = array('globals' => $globalTagsValues,'herited' => $heritedTagsValues);
         /*
         echo '<pre>';
         print_r($tags);
@@ -523,6 +523,7 @@ class HostController extends FormController
             foreach($services as &$service){
                 $service = ServiceRepository::formatDataForSlider($service);
             }
+            $service['service'] = $services;
             /*
             echo '<pre>';
             print_r($services);
