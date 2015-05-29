@@ -146,8 +146,8 @@ $(function () {
     );
     
     $footer.html(
-      "<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>"
-      + "<button type='button' class='btn btn-primary' id='saveAddToTag'>Save</button>"
+      "<button type='button' class='btnC btnDefault' data-dismiss='modal'>Close</button>"
+      + "<button type='button' class='btnC btnPrimary' id='saveAddToTag'>Save</button>"
     );
     $( "#modal" ).find( ".modal-content" )
       .append( $header )

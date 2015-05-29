@@ -62,8 +62,8 @@
   </div>
   <div class="modal-footer">
     {$formElements.hidden}
-    <button class="btn btn-default btn-prev" disabled>{t}Prev{/t}</button>
-    <button class="btn btn-default btn-next" data-last="{t}Finish{/t}" id="wizard_submit">{t}Next{/t}</button>
+    <button class="btnC btnDefault btn-prev" disabled>{t}Prev{/t}</button>
+    <button class="btnC btnDefault btn-next" data-last="{t}Finish{/t}" id="wizard_submit">{t}Next{/t}</button>
   </div>
 </form>
 <script>

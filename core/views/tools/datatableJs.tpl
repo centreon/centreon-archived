@@ -311,13 +311,13 @@
             $('<a></a>')
                 .attr('aria-hidden', 'true')
                 .attr('data-dismiss', 'modal')
-                .addClass('btn').addClass('btn-default')
+                .addClass('btnC').addClass('btnDefault')
                 .text('{t}Cancel{/t}')
                 .appendTo($deleteFooter);
             var $deleteBtn = $('<button></button>')
                 .attr('type', 'button')
-                .addClass('btn')
-                .addClass('btn-danger')
+                .addClass('btnC')
+                .addClass('btnDanger')
                 .text('{t}Delete{/t}')
                 .appendTo($deleteFooter);
             $deleteFooter.appendTo('#modal .modal-content');
@@ -401,13 +401,13 @@
             $('<a></a>')
                 .attr('aria-hidden', 'true')
                 .attr('data-dismiss', 'modal')
-                .addClass('btn').addClass('btn-default')
+                .addClass('btnC').addClass('btnDefault')
                 .text('{t}Cancel{/t}')
                 .appendTo($duplicateFooter);
             $applyBtn = $('<button></button>')
                 .attr('type', 'button')
-                .addClass('btn')
-                .addClass('btn-primary')
+                .addClass('btnC')
+                .addClass('btnPrimary')
                 .text('{t}Apply{/t}')
                 .appendTo($duplicateFooter);
             $applyBtn.on('click', function(e) {
@@ -489,13 +489,13 @@
             $('<a></a>')
                 .attr('aria-hidden', 'true')
                 .attr('data-dismiss', 'modal')
-                .addClass('btn').addClass('btn-default')
+                .addClass('btnC').addClass('btnDefault')
                 .text('{t}Cancel{/t}')
                 .appendTo($mcFooter);
             var $applyBtn = $('<button></button>')
                 .attr('type', 'button')
-                .addClass('btn')
-                .addClass('btn-primary')
+                .addClass('btnC')
+                .addClass('btnPrimary')
                 .text('{t}Apply{/t}')
                 .appendTo($mcFooter);
             $mcFooter.appendTo('#modal .modal-content');
@@ -596,13 +596,13 @@
             $('<a></a>')
                 .attr('aria-hidden', 'true')
                 .attr('data-dismiss', 'modal')
-                .addClass('btn').addClass('btn-default')
+                .addClass('btnC').addClass('btnDefault')
                 .text('{t}Cancel{/t}')
                 .appendTo($EnableFooter);
             var $EnableBtn = $('<button></button>')
                 .attr('type', 'button')
-                .addClass('btn')
-                .addClass('btn-danger')
+                .addClass('btnC')
+                .addClass('btnPrimary')
                 .text('{t}Enable{/t}')
                 .appendTo($EnableFooter);
             $EnableFooter.appendTo('#modal .modal-content');
@@ -669,13 +669,13 @@
             $('<a></a>')
                 .attr('aria-hidden', 'true')
                 .attr('data-dismiss', 'modal')
-                .addClass('btn').addClass('btn-default')
+                .addClass('btnC').addClass('btnDefault')
                 .text('{t}Cancel{/t}')
                 .appendTo($DisableFooter);
             var $DisableBtn = $('<button></button>')
                 .attr('type', 'button')
-                .addClass('btn')
-                .addClass('btn-danger')
+                .addClass('btnC')
+                .addClass('btnDanger')
                 .text('{t}Disable{/t}')
                 .appendTo($DisableFooter);
             $DisableFooter.appendTo('#modal .modal-content');

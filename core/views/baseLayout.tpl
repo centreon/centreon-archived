@@ -280,13 +280,13 @@
                 $('<a></a>')
                     .attr('aria-hidden', 'true')
                     .attr('data-dismiss', 'modal')
-                    .addClass('btn').addClass('btn-default')
+                    .addClass('btnC').addClass('btnDefault')
                     .text('{t}Cancel{/t}')
                     .appendTo($deleteFooter);
                 var $deleteBtn = $('<button></button>')
                     .attr('type', 'button')
-                    .addClass('btn')
-                    .addClass('btn-danger')
+                    .addClass('btnC')
+                    .addClass('btnDanger')
                     .text('{t}Delete{/t}')
                     .appendTo($deleteFooter);
                 $deleteFooter.appendTo('#modal .modal-content');
