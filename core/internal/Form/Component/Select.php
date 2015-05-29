@@ -107,8 +107,11 @@ class Select extends Component
             $myHtml .= ' data-parentvalue="' . $element['label_parent_value'] . '"';
         }
         $myHtml .= ' style="width: 100%;" type="hidden" value=""' . $required . ' />';
+        
+        
+        $escapedName = str_replace(']','\\\]',str_replace('[','\\\[',$element['name']));
         $myJs = ''
-            . '$("#'.$element['name'].'").select2({'
+            . '$("#'.$escapedName.'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '
                 . 'multiple:'.(int)$element['label_multiple'].', '
                 . 'allowClear: true, '

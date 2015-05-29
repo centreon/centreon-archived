@@ -84,7 +84,37 @@ class AuthController extends FormController{
         foreach($infos as $info){
             $defaultValues['auth_info['.$info["ari_name"].']'] = $info["ari_value"];
         }
+        
         parent::editAction($additionnalParamsForSmarty,$defaultValues);
+    }
+    
+    
+    /**
+     * 
+     * @method get
+     * @route /auth/contactTemplate/[i:id]
+     */
+    public function getContactTemplateValuesAction(){
+        $requestParam = $this->getParams('named');
+        $auth_id = $requestParam['id'];
+        $contact_template = AuthResourcesInfoRepository::getList(
+            $fields = '*',
+            $count = -1,
+            $offset = 0,
+            $order = null,
+            $sort = 'asc',
+            $filters = array('ar_id' => $auth_id, 'ar_name' => 'ldap_contact_tmpl'),
+            $filterType = 'AND'
+        );
+        
+        $data = array();
+        
+        foreach($contact_templates as $contact_template){
+            $data[] = array('id' => $contact_template['ar_name'], 'text' => $contact_template['ar_value']);
+        }
+
+        return $this->router->response()->json($data);
+        
     }
     
     
