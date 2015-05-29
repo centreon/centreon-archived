@@ -146,7 +146,7 @@ class HostDatatable extends Datatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
         ),
         array (
             'title' => 'IP Address / DNS',
