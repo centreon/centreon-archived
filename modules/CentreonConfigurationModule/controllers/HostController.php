@@ -523,14 +523,7 @@ class HostController extends FormController
             foreach($services as &$service){
                 $service = ServiceRepository::formatDataForSlider($service);
             }
-            $service['service'] = $services;
-            /*
-            echo '<pre>';
-            print_r($services);
-            echo '</pre>';
-            die;*/
-
-            $this->router->response()->json($services);
+            $this->router->response()->json(array('service' => $services));
         }
 
     

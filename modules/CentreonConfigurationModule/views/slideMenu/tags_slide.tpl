@@ -6,7 +6,7 @@
  {{/globals}}
  </ul>
 <hr>
-<h5>inherited Tags</h5>
+<h5>Inherited Tags</h5>
 <ul>
 {{#herited}}
 <li>{{.}}</li>
