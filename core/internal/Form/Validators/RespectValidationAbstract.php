@@ -60,6 +60,9 @@ abstract class RespectValidationAbstract implements ValidatorInterface
      *
      */
     protected $contextCall = '';
+    
+    
+    protected static $sMessageError = "";
 
 
     /**
@@ -85,7 +88,18 @@ abstract class RespectValidationAbstract implements ValidatorInterface
         foreach ($validators as $func => $param) {
             $obj = call_user_func_array(array($obj, $func), $param);
         }
-        return $obj->validate($value);
+        
+        $response = $obj->validate($value);
+          
+        if ($response) {
+            $result = array('success' => true);
+        } else {
+            $result = array(
+                'success' => false,
+                'error' => _($this->sMessageError)
+            );
+        }
+        return $result;
     }
 
     /**

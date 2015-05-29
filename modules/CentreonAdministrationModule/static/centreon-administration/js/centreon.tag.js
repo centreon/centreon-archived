@@ -4,6 +4,7 @@ $(function () {
   var chaine = '^([a-zA-Z0-9_.-])+$';
   var regexTags = new RegExp(chaine, "g");
   var sMessageUnsuportedCharacter = 'Unauthorized character. Allowed characters are alphanumeric characters, "_", "." and "-"';
+  var sMessageLengthTag = 'you must enter a text of 3 characters minimum';
 
   function saveTag( $newTag ) {
     var tmplTagCmpl,
@@ -17,7 +18,10 @@ $(function () {
     /* Does not accept empty tag */
     if ( tagName === "" ) {
       return;
-    } else if(!regexTags.test(tagName)) {
+    } else if(tagName.length < 3) {
+        alertMessage(sMessageLengthTag, "alert-danger", 3);
+        return false;
+    }else if(!regexTags.test(tagName)) {
         alertMessage(sMessageUnsuportedCharacter, "alert-danger", 3);
         return false;
     }  
@@ -169,6 +173,7 @@ $(function () {
     $("#tagsGlobal").select2({
        multiple:true,
        tags: true,
+       minimumInputLength: 3,
        maximumInputLength: 30,
        allowClear: true, 
        formatResult: select2_formatResult, 
@@ -206,7 +211,8 @@ $(function () {
 
     $("#tagPerso").select2({
        multiple:true, 
-       tags: true, 
+       tags: true,
+       minimumInputLength: 3,
        maximumInputLength: 30,
        allowClear: true, 
        formatResult: select2_formatResult, 
