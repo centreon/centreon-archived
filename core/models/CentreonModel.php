@@ -199,6 +199,7 @@ abstract class CentreonModel
             $sql .= " cfg_users_usergroups_relations.user_id = " . $_SESSION['user']->getId()
                 . " AND cfg_users_usergroups_relations.usergroup_id = cfg_acl_resources_usergroups_relations.usergroup_id"
                 . " AND cfg_acl_resources_usergroups_relations.acl_resource_id = cfg_acl_resources.acl_resource_id"
+                . " AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_cache.acl_resource_id"
                 . " AND cfg_acl_resources_cache.resource_type = " . static::$aclResourceType
                 . " AND cfg_acl_resources_cache.resource_id = ";
 

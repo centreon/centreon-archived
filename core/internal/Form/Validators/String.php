@@ -73,6 +73,12 @@ class String extends RespectValidationAbstract
         'vowel',
         'xdigit',
     );
+    
+    /**
+     *
+     * @var type 
+     */
+    protected static$sMessageError = "The value is incorrect.";
 
     /**
      * 
@@ -82,6 +88,7 @@ class String extends RespectValidationAbstract
     {
         parent::__construct($params);
         $this->contextCall = 'string';
+        $this->sMessageError = self::$sMessageError;
     }
 
     /**

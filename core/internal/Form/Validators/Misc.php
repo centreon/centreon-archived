@@ -61,6 +61,11 @@ class Misc extends RespectValidationAbstract
         'url',
     );
     
+    /**
+     *
+     * @var type 
+     */
+    protected static$sMessageError = "The value is incorrect.";
 
     /**
      * 
