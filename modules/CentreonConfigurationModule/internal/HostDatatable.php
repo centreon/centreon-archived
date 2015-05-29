@@ -295,9 +295,7 @@ class HostDatatable extends Datatable
                 );
             //$servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($myHostSet['host_id']);
             //$myHostSet['DT_RowData']['servicesStatus'] = $servicesStatus;
-            
-            
-                
+
             /*$services = HostRepository::getServicesForHost('\CentreonConfiguration\Models\Relation\Host\Service',$myHostSet['host_id']);
             foreach ($services as $key=>&$service){
                 $service[$key]['service_status'] = ServiceRealTimeRepository::getStatus($myHostSet['host_id'], $service["service_id"]);
