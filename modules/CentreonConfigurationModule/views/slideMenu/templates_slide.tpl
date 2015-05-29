@@ -1,5 +1,5 @@
 
-<h4>Templates List</h4>
+<h5>Templates List</h5>
 
 {{#host_templates}}
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
