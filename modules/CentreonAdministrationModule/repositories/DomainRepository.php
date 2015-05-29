@@ -92,7 +92,8 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
             self::validateForm($givenParameters, $origin, $route, $validateMandatory);
         }
         
-        $givenParameters['parent_id'] = Domain::getIdByParameter('name', array('Application'));
+        $parentId = Domain::getIdByParameter('name', array('Application'));
+        $givenParameters['parent_id'] = $parentId[0];
         $givenParameters['isroot'] = 0;
         parent::create($givenParameters);
     }

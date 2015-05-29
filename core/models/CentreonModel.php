@@ -118,12 +118,24 @@ abstract class CentreonModel
 
         $sql = "SELECT DISTINCT $params FROM ";
         if (is_null($tablesString)) {
+            $tableToParse = static::$table;
+            $primaryKey = static::$primaryKey;
+            if (isset(static::$aclResourceType)) {
+                $aclResourceType = static::$aclResourceType;
+            }
             $sql .=  static::$table;
         } else {
+            $explodedTables = explode(',',$tablesString);
+            $tableToParse = $explodedTables[0];
+            $firstObject = static::$firstObject;
+            $primaryKey = $firstObject::$primaryKey;
+            if (isset($firstObject::$aclResourceType)) {
+                $aclResourceType = $firstObject::$aclResourceType;
+            }
             $sql .= $tablesString;
         }
 
-        if (isset(static::$aclResourceType) && isset($_SESSION['user']) && !$_SESSION['user']->isAdmin()) {
+        if (isset($aclResourceType) && isset($_SESSION['user']) && !$_SESSION['user']->isAdmin()) {
             $sql .= ', cfg_acl_resources_cache, cfg_usergroups, cfg_users_usergroups_relations, cfg_acl_resources, cfg_acl_resources_usergroups_relations';
         }
 
@@ -188,7 +200,7 @@ abstract class CentreonModel
             }
         }
 
-        if (isset(static::$aclResourceType) && isset($_SESSION['user']) && !$_SESSION['user']->isAdmin()) {
+        if (isset($aclResourceType) && isset($_SESSION['user']) && !$_SESSION['user']->isAdmin()) {
             if ($first) {
                 $sql .= " WHERE ";
                 $first = false;
@@ -200,16 +212,16 @@ abstract class CentreonModel
                 . " AND cfg_users_usergroups_relations.usergroup_id = cfg_acl_resources_usergroups_relations.usergroup_id"
                 . " AND cfg_acl_resources_usergroups_relations.acl_resource_id = cfg_acl_resources.acl_resource_id"
                 . " AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_cache.acl_resource_id"
-                . " AND cfg_acl_resources_cache.resource_type = " . static::$aclResourceType
+                . " AND cfg_acl_resources_cache.resource_type = " . $aclResourceType
                 . " AND cfg_acl_resources_cache.resource_id = ";
 
-            $tempTable = preg_split('/\s+/', static::$table);
+            $tempTable = preg_split('/\s+/', $tableToParse);
             if (isset($tempTable[1]) && is_string($tempTable[1])) {
-                $sql .= $tempTable[1] . "." . static::$primaryKey;
+                $sql .= $tempTable[1] . "." . $primaryKey;
             } else if (isset($tempTable[0]) && is_string($tempTable[0])) {
-                $sql .= $tempTable[0] . "." . static::$primaryKey;
+                $sql .= $tempTable[0] . "." . $primaryKey;
             } else {
-                $sql .= static::$primaryKey;
+                $sql .= $primaryKey;
             }
         }
 
@@ -225,7 +237,7 @@ abstract class CentreonModel
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
             $sql .= " ORDER BY $order $sort ";
         }
-        
+
         if (isset($count) && $count != -1) {
             $db = Di::getDefault()->get(static::$databaseName);
             $sql = $db->limit($sql, $count, $offset);

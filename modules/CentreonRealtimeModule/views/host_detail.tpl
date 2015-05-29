@@ -225,7 +225,6 @@ $(function() {
 
   $(document).on('centreon.host_detail', function(e) {
    
-    console.log(hostData);
     /* Update block name */
     $('#name').removeClass(function(index, css) {
       return (css.match(/(^|\s)status-\S+/g) || []).join(' ');
