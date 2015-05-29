@@ -90,9 +90,23 @@ table.dataTable thead .sorting:after {
       font-size: 12px;
       white-space: nowrap;
 
+      .dtIcoTemplate {
+        i {
+          font-size: 18px;
+        }
+      }
+
       a {
         position: relative;
         padding: @paddingElem 0;
+
+        .icoListing {
+          margin: 0px 6px 0px 0px;
+          //border: 1px solid @lightGray;
+          padding: 4px;
+          border-radius: 3px;
+          background-color: @lightGray;
+        }
       }
     }
 

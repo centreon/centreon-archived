@@ -306,9 +306,9 @@ class HostDatatable extends Datatable
             //$myHostSet['DT_RowData']['host_template']  = array();
             $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), 1);
             foreach ($templates as $template) {
-                $myHostSet['host_template'] .= '<span class="badge alert-success"><a href="'
+                $myHostSet['host_template'] .= '<span class="dtIcoTemplate"><a href="'
                 . $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id']))
-                . '"><i class="fa fa-shield"></i></a></span>';
+                . '"><i class="icon-template"></i></a>';
 
                 //$myHostSet['DT_RowData']['host_template'][] = $router->getPathFor('/centreon-configuration/hosttemplate/viewconf/'). $template['id'];
             }
