@@ -481,11 +481,12 @@ $(function() {
             .appendTo('#eventlogs tbody')
         });
         displayDate();
+        loadData();
       }
     });
   });
 
-  loadData();
+  
  
 });
 </script>
