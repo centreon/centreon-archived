@@ -202,8 +202,14 @@ abstract class CentreonModel
                 . " AND cfg_acl_resources_cache.resource_type = " . static::$aclResourceType
                 . " AND cfg_acl_resources_cache.resource_id = ";
 
-            preg_match('/\s+/', static::$table, $tempTable);
-            $sql .= $tempTable[0] . "." . static::$primaryKey;
+            $tempTable = preg_split('/\s+/', static::$table);
+            if (isset($tempTable[1]) && is_string($tempTable[1])) {
+                $sql .= $tempTable[1] . "." . static::$primaryKey;
+            } else if (isset($tempTable[0]) && is_string($tempTable[0])) {
+                $sql .= $tempTable[0] . "." . static::$primaryKey;
+            } else {
+                $sql .= static::$primaryKey;
+            }
         }
 
         if (!is_null($aAddFilters) && isset($aAddFilters['join'])) {
