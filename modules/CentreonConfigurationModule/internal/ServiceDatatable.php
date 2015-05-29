@@ -40,6 +40,7 @@ use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
+use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Internal\Di;
 use Centreon\Internal\Datatable;
 
@@ -232,6 +233,17 @@ class ServiceDatatable extends Datatable
             ),
             "className" => 'cell_center',
             "width" => '40px'
+        ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'tablename' => 'cfg_tags'
         )
     );
  
@@ -334,6 +346,21 @@ class ServiceDatatable extends Datatable
             );
             
             $myServiceSet['service_activate'] = $save;
+
+            /* Get personal tags */
+            $myServiceSet['tagname'] = '';
+            $aTagUsed = array();
+
+            $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 0, 0);
+
+            foreach ($aTags as $oTags) {
+                if (!in_array($oTags['id'], $aTagUsed)) {
+                    $aTagUsed[] = $oTags['id'];
+                    $myServiceSet['tagname'] = TagsRepository::getTag('service',$myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], 1);
+                }
+            }
+
+            $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
         }
     }
 }

@@ -81,14 +81,13 @@ class SlideMenu
         return true;
     }
     
-    private function orderMenu(){
-           
+    private function orderMenu()
+    {
         $temporaryArray = array();
         foreach($this->menuList as $menu){
             $temporaryArray[] = $menu['order'];
         }
         array_multisort($temporaryArray, SORT_ASC, SORT_NUMERIC, $this->menuList);
-        
     }
     
     
