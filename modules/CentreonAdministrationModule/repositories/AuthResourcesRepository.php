@@ -119,10 +119,5 @@ class AuthResourcesRepository extends FormRepository
         self::insertServer($givenParameters['object_id'],$givenParameters);
        
     }
-    
-    
-    
-    
-    
-    //put your dick here
+
 }

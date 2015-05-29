@@ -195,11 +195,21 @@ abstract class CentreonModel
             } else {
                 $sql .= " AND ";
             }
+
             $sql .= " cfg_users_usergroups_relations.user_id = " . $_SESSION['user']->getId()
                 . " AND cfg_users_usergroups_relations.usergroup_id = cfg_acl_resources_usergroups_relations.usergroup_id"
                 . " AND cfg_acl_resources_usergroups_relations.acl_resource_id = cfg_acl_resources.acl_resource_id"
                 . " AND cfg_acl_resources_cache.resource_type = " . static::$aclResourceType
-                . " AND cfg_acl_resources_cache.resource_id = " . static::$table . '.' . static::$primaryKey;
+                . " AND cfg_acl_resources_cache.resource_id = ";
+
+            $tempTable = preg_split('/\s+/', static::$table);
+            if (isset($tempTable[1]) && is_string($tempTable[1])) {
+                $sql .= $tempTable[1] . "." . static::$primaryKey;
+            } else if (isset($tempTable[0]) && is_string($tempTable[0])) {
+                $sql .= $tempTable[0] . "." . static::$primaryKey;
+            } else {
+                $sql .= static::$primaryKey;
+            }
         }
 
         if (!is_null($aAddFilters) && isset($aAddFilters['join'])) {
