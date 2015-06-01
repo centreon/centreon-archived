@@ -38,9 +38,11 @@ use warnings;
 use centreon::centreond::common;
 use ZMQ::LibZMQ3;
 use ZMQ::Constants qw(:all);
+use JSON;
 use centreon::common::objects::organization;
 use centreon::common::objects::host;
 use centreon::common::objects::object;
+use Data::Dumper;
 
 my %handlers = (TERM => {}, HUP => {});
 my ($connector, $socket);
@@ -92,71 +94,222 @@ sub class_handle_HUP {
     }
 }
 
-sub get_list_hosts_services {
+sub acl_resource_add_filters {
     my ($self, %options) = @_;
     
-    # Params:
-    #   host_ids = [], host_alls = 1|0, host_tags = []
-    #   service_ids = [], service_tags = []
-    #   filter_domains = [], filter_pollers = []
-    #   filter_environnement = []
-    #   filter_host_tags = [], filter_service_tags = []
-    
-    my ($requests, $filter_hosts, $filter_services, $extra_tables) = ([], [], [], []);
-    if (defined($options{filter_environnement}) and scalar(@{$options{filter_environnement}}) > 0) {
-        push @{$filter_hosts}, "cfg_hosts.environment_id IN (" . join(', ',  @{$options{filter_environnement}}) . ")";
-        push @{$filter_services}, "cfg_services.environment_id IN (" . join(', ',  @{$options{filter_environnement}}) . ")";
+    my %filters = ( hosts => [], services => [], extra_labels => [] );
+    if (defined($options{resource_config}->{filter_host_tags}) and scalar(@{$options{resource_config}->{filter_host_tags}}) > 0) {
+        push @{$filters{hosts}}, 'cfg_hosts.host_id = cfg_thf.resource_id AND cfg_thf.tag_id IN (' . join(', ',  @{$options{resource_config}->{filter_host_tags}}) . ')';
+        push @{$filters{extra_tables}}, 'cfg_tags_hosts as cfg_thf';
     }
-    if (defined($options{filter_pollers}) and scalar(@{$options{filter_pollers}}) > 0) {
-        push @{$filter_hosts}, "cfg_hosts.poller_id IN (" . join(', ',  @{$options{filter_pollers}}) . ")";
+    if (defined($options{resource_config}->{filter_environnement}) and scalar(@{$options{resource_config}->{filter_environnement}}) > 0) {
+        push @{$filters{hosts}}, "cfg_hosts.environment_id IN (" . join(', ',  @{$options{resource_config}->{filter_environnement}}) . ")";
+        push @{$filters{services}}, "cfg_services.environment_id IN (" . join(', ',  @{$options{resource_config}->{filter_environnement}}) . ")";
     }
-    if (defined($options{filter_domains}) and scalar(@{$options{filter_domains}}) > 0) {
-        push @{$filter_services}, "cfg_services.domain_id IN (" . join(', ',  @{$options{filter_domains}}) . ")";
+    if (defined($options{resource_config}->{filter_pollers}) and scalar(@{$options{resource_config}->{filter_pollers}}) > 0) {
+        push @{$filters{hosts}}, "cfg_hosts.poller_id IN (" . join(', ',  @{$options{resource_config}->{filter_pollers}}) . ")";
     }
-    if (defined($options{filter_host_tags}) and scalar(@{$options{filter_host_tags}}) > 0) {
-        push @{$filter_hosts}, 'cfg_hosts.host_id = cfg_thf.resource_id AND cfg_thf.tag_id IN (' . join(', ',  @{$options{filter_host_tags}}) . ')';
-        push @{$extra_tables}, 'cfg_tags_hosts as cfg_thf';
+    if (defined($options{resource_config}->{filter_domains}) and scalar(@{$options{resource_config}->{filter_domains}}) > 0) {
+        push @{$filters{services}}, "cfg_services.domain_id IN (" . join(', ',  @{$options{resource_config}->{filter_domains}}) . ")";
     }
-    if (defined($options{filter_service_tags}) and scalar(@{$options{filter_service_tags}}) > 0) {
-        push @{$filter_services}, 'cfg_services.service_id = cfg_tsfilter.resource_id AND cfg_tsfilter.tag_id IN (' . join(', ',  @{$options{filter_service_tags}}) . ')';
-        push @{$extra_tables}, 'cfg_tags_services as cfg_tsfilter';
+    if (defined($options{resource_config}->{filter_service_tags}) and scalar(@{$options{resource_config}->{filter_service_tags}}) > 0) {
+        push @{$filters{services}}, 'cfg_services.service_id = cfg_tsfilter.resource_id AND cfg_tsfilter.tag_id IN (' . join(', ',  @{$options{resource_config}->{filter_service_tags}}) . ')';
+        push @{$filters{extra_tables}}, 'cfg_tags_services as cfg_tsfilter';
     }
     
+    foreach (keys %filters) {
+        $options{filters}->{$_} = join(' AND ', @{$filters{$_}}) if (scalar(@{$filters{$_}}) > 0);
+    }
+}
+
+sub acl_resource_list_hs {
+    my ($self, %options) = @_;
+    
+    my $filters = { hosts => '', services => '', extra_tables => '' };
+    my $requests = [];
+    $self->acl_resource_add_filters(filters => $filters, %options);
     # Manage hosts
-    if (defined($options{host_alls}) && $options{host_alls} == 1) {
-        push @{$requests}, "(SELECT host_id, service_id FROM cfg_hosts, cfg_hosts_services_relations, cfg_services" . join(', ', @{$extra_tables}) . ' WHERE ' .
-                            'cfg_hosts.organization_id = ' . $connector->{organization_id} . (scalar(@{$filter_hosts}) > 0 ? join(' AND ', @{$filter_hosts}) : '') . 
+    if (defined($options{resource_config}->{host_alls}) && $options{resource_config}->{host_alls} == 1) {
+        push @{$requests}, "(SELECT host_id, service_id FROM cfg_hosts, cfg_hosts_services_relations, cfg_services" . $filters->{extra_tables} . ' WHERE ' .
+                            'cfg_hosts.organization_id = ' . $self->{organization_id} . $filters->{hosts} . 
                             ' AND cfg_hosts.host_id = cfg_hosts_services_relations.host_host_id AND cfg_hosts_services_relations.service_service_id = cfg_services.service_id' . 
-                            (scalar(@{$filter_services}) > 0 ? ' AND ' . join(' AND ', @{$filter_services}) : '') . ')';
+                            $filters->{services} . ')';
     } else {
-        if (defined($options{host_ids}) and scalar(@{$options{host_ids}}) > 0) {
-            push @{$requests}, "(SELECT host_id, service_id FROM cfg_hosts, cfg_hosts_services_relations, cfg_services" . join(', ', @{$extra_tables}) . ' WHERE ' .
-                            'cfg_hosts.organization_id = ' . $connector->{organization_id} . ' AND cfg_hosts.host_id IN (' . join(', ', @{$options{host_ids}}) . ') ' . (scalar(@{$filter_hosts}) > 0 ? join(' AND ', @{$filter_hosts}) : '') . 
+        if (defined($options{resource_config}->{host_ids}) and scalar(@{$options{resource_config}->{host_ids}}) > 0) {
+            push @{$requests}, "(SELECT host_id, service_id FROM cfg_hosts, cfg_hosts_services_relations, cfg_services" . $filters->{extra_tables} . ' WHERE ' .
+                            'cfg_hosts.organization_id = ' . $self->{organization_id} . ' AND cfg_hosts.host_id IN (' . join(', ', @{$options{resource_config}->{host_ids}}) . ') ' . $filters->{hosts} . 
                             ' AND cfg_hosts.host_id = cfg_hosts_services_relations.host_host_id AND cfg_hosts_services_relations.service_service_id = cfg_services.service_id' . 
-                            (scalar(@{$filter_services}) > 0 ? ' AND ' . join(' AND ', @{$filter_services}) : '') . ')';
-        } elsif (defined($options{host_tags}) and scalar(@{$options{host_tags}}) > 0) {
-            push @{$requests}, "(SELECT host_id, service_id FROM cfg_hosts, cfg_hosts_services_relations, cfg_services, cfg_tags_hosts" . join(', ', @{$extra_tables}) . ' WHERE ' .
-                            'cfg_hosts.organization_id = ' . $connector->{organization_id} . ' AND cfg_hosts.host_id = cfg_tags_hosts.resource_id AND cfg_tags_hosts.tag_id IN (' . join(', ',  @{$options{host_tags}}) . ')' . (scalar(@{$filter_hosts}) > 0 ? join(' AND ', @{$filter_hosts}) : '') . 
+                            $filters->{services} . ')';
+        }
+        if (defined($options{resource_config}->{host_tags}) and scalar(@{$options{resource_config}->{host_tags}}) > 0) {
+            push @{$requests}, "(SELECT host_id, service_id FROM cfg_hosts, cfg_hosts_services_relations, cfg_services, cfg_tags_hosts" . $filters->{extra_tables} . ' WHERE ' .
+                            'cfg_hosts.organization_id = ' . $self->{organization_id} . ' AND cfg_hosts.host_id = cfg_tags_hosts.resource_id AND cfg_tags_hosts.tag_id IN (' . join(', ',  @{$options{resource_config}->{host_tags}}) . ')' . $filters->{hosts} . 
                             ' AND cfg_hosts.host_id = cfg_hosts_services_relations.host_host_id AND cfg_hosts_services_relations.service_service_id = cfg_services.service_id' . 
-                            (scalar(@{$filter_services}) > 0 ? ' AND ' . join(' AND ', @{$filter_services}) : '') . ')';
+                            $filters->{services} . ')';
         }
     }
 
     # Manage services
-    if (defined($options{service_ids}) and scalar(@{$options{service_ids}}) > 0) {
-        push @{$requests}, "(SELECT host_id, service_id FROM cfg_hosts, cfg_hosts_services_relations, cfg_services" . join(', ', @{$extra_tables}) . ' WHERE ' .
-                        'cfg_services.organization_id = ' . $connector->{organization_id} . ' AND cfg_services.service_id IN (' . join(', ', @{$options{service_ids}}) . ') ' . (scalar(@{$filter_services}) > 0 ? join(' AND ', @{$filter_services}) : '') . 
+    if (defined($options{resource_config}->{service_ids}) and scalar(@{$options{resource_config}->{service_ids}}) > 0) {
+        push @{$requests}, "(SELECT host_id, service_id FROM cfg_hosts, cfg_hosts_services_relations, cfg_services" . $filters->{extra_tables} . ' WHERE ' .
+                        'cfg_services.organization_id = ' . $self->{organization_id} . ' AND cfg_services.service_id IN (' . join(', ', @{$options{resource_config}->{service_ids}}) . ') ' . $filters->{services} . 
                         ' AND cfg_services.service_id = cfg_hosts_services_relations.service_service_id AND cfg_hosts_services_relations.host_id = cfg_hosts.host_id' . 
-                        (scalar(@{$filter_hosts}) > 0 ? ' AND ' . join(' AND ', @{$filter_hosts}) : '') . ')';
-    } elsif (defined($options{service_tags}) and scalar(@{$options{service_tags}}) > 0) {
-        push @{$requests}, "(SELECT host_id, service_id FROM cfg_hosts, cfg_hosts_services_relations, cfg_services, cfg_tags_services" . join(', ', @{$extra_tables}) . ' WHERE ' .
-                        'cfg_services.organization_id = ' . $connector->{organization_id} . ' AND cfg_services.service_id = cfg_tags_services.resource_id AND cfg_tags_services.tag_id IN (' . join(', ',  @{$options{service_tags}}) . ')' . (scalar(@{$filter_services}) > 0 ? join(' AND ', @{$filter_services}) : '') . 
+                        $filters->{hosts} . ')';
+    }
+    if (defined($options{resource_config}->{service_tags}) and scalar(@{$options{resource_config}->{service_tags}}) > 0) {
+        push @{$requests}, "(SELECT host_id, service_id FROM cfg_hosts, cfg_hosts_services_relations, cfg_services, cfg_tags_services" . $filters->{extra_tables} . ' WHERE ' .
+                        'cfg_services.organization_id = ' . $self->{organization_id} . ' AND cfg_services.service_id = cfg_tags_services.resource_id AND cfg_tags_services.tag_id IN (' . join(', ',  @{$options{resource_config}->{service_tags}}) . ')' . $filters->{services} . 
                         ' AND cfg_services.service_id = cfg_hosts_services_relations.service_service_id AND cfg_hosts_services_relations.host_id = cfg_hosts.host_id' . 
-                        (scalar(@{$filter_hosts}) > 0 ? ' AND ' . join(' AND ', @{$filter_hosts}) : '') . ')';
+                        $filters->{hosts} . ')';
     }
     
-    print join(' UNION ', @{$requests}) . "==\n";
-    print Data::Dumper::Dumper($connector->{class_object}->custom_execute(request => join(' UNION ', @{$requests}), mode => 2));
+    $self->{logger}->writeLogDebug("centreondacl: request: " . join(' UNION ', @{$requests}));
+    return 2 if (scalar(@{$requests}) == 0);
+    return $self->{class_object}->custom_execute(request => join(' UNION ', @{$requests}), mode => 0);
+}
+
+sub set_default_resource_config {
+    my ($self, %options) = @_;
+
+    $options{config}->{$options{acl_resource_id}} = {
+        host_ids => [], host_alls => 0, host_tags => [],
+        service_ids => [], service_tags => [],
+        filter_domains => [], filter_pollers => [],
+        filter_environnement => [],
+        filter_host_tags => [], filter_service_tags => []
+    };
+}
+
+sub acl_get_resources_config {
+    my ($self, %options) = @_;
+    
+    # filter
+    my $filter = 'cfg_acl_resources.organization_id = ' . $self->{organization_id};
+    if (defined($options{acl_resource_id})) {
+        $filter .= ' AND cfg_acl_resources.acl_resource_id = ' . $options{acl_resource_id};
+    }
+    
+    my $resource_configs = {};
+
+    # Get all_hosts
+    my $request = 'SELECT cfg_acl_resources.acl_resource_id, all_hosts FROM cfg_acl_resources, cfg_acl_resources_hosts_params WHERE ' . $filter . ' AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_hosts_params.acl_resource_id';
+    my ($status, $datas) = $self->{class_object}->custom_execute(request => $request, mode => 2);
+    return 1 if ($status == -1);
+    foreach (@{$datas}) {
+        $self->set_default_resource_config(config => $resource_configs, acl_resource_id => $$_[0]) if (!defined($resource_configs->{$$_[0]}));
+        $resource_configs->{$$_[0]}->{host_alls} = $$_[1];
+    }
+    
+    # Get hosts
+    my $request = 'SELECT cfg_acl_resources.acl_resource_id, host_id, type FROM cfg_acl_resources, cfg_acl_resources_hosts_relations WHERE ' . $filter . ' AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_hosts_relations.acl_resource_id';
+    my ($status, $datas) = $self->{class_object}->custom_execute(request => $request, mode => 2);
+    return 1 if ($status == -1);
+    foreach (@{$datas}) {
+        $self->set_default_resource_config(config => $resource_configs, acl_resource_id => $$_[0]) if (!defined($resource_configs->{$$_[0]}));
+        # 0 = inclus, 2 => exclude (pas de filtre pour les hôtes)
+        push @{$resource_configs->{$$_[0]}->{host_ids}}, $$_[1] if ($$_[2] == 0);
+    }
+    
+    # Get host tags
+    my $request = 'SELECT cfg_acl_resources.acl_resource_id, tag_id, type FROM cfg_acl_resources, cfg_acl_resources_tags_hosts_relations WHERE ' . $filter . ' AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_tags_hosts_relations.acl_resource_id';
+    my ($status, $datas) = $self->{class_object}->custom_execute(request => $request, mode => 2);
+    return 1 if ($status == -1);
+    foreach (@{$datas}) {
+        $self->set_default_resource_config(config => $resource_configs, acl_resource_id => $$_[0]) if (!defined($resource_configs->{$$_[0]}));
+        # 0 = inclus, 1 => filter, 2 => exclude
+        push @{$resource_configs->{$$_[0]}->{host_tags}}, $$_[1] if ($$_[2] == 0);
+        push @{$resource_configs->{$$_[0]}->{filter_host_tags}}, $$_[1] if ($$_[2] == 1);
+    }
+    
+    # Get services
+    my $request = 'SELECT cfg_acl_resources.acl_resource_id, service_id, type FROM cfg_acl_resources, cfg_acl_resources_services_relations WHERE ' . $filter . ' AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_services_relations.acl_resource_id';
+    my ($status, $datas) = $self->{class_object}->custom_execute(request => $request, mode => 2);
+    return 1 if ($status == -1);
+    foreach (@{$datas}) {
+        $self->set_default_resource_config(config => $resource_configs, acl_resource_id => $$_[0]) if (!defined($resource_configs->{$$_[0]}));
+        # 0 = inclus, 2 => exclude (pas de filtre pour les services)
+        push @{$resource_configs->{$$_[0]}->{service_ids}}, $$_[1] if ($$_[2] == 0);
+    }
+    
+    return (0, $resource_configs);
+}
+
+sub insert_execute {
+    my ($self, %options) = @_;
+    
+    if (!(my $rv = $options{sth}->execute(@{$options{bind}}))) {
+        $self->{logger}->writeLogError('SQL error: ' . $options{sth}->errstr);
+        $self->{db_centreon}->rollback();
+        return 1;
+    }
+    
+    return 0;
+}
+
+sub insert_result {
+    my ($self, %options) = @_;
+    my ($status, $sth);
+    
+    $self->{db_centreon}->transaction_mode(1);
+    if (defined($options{first_request})) {
+       ($status) = $self->{db_centreon}->query($options{first_request});
+       if ($status == -1) {
+            $self->{db_centreon}->rollback();
+            return 1;
+       }
+    }
+    
+    # In Oracle 11: IGNORE_ROW_ON_DUPKEY_INDEX 
+    # MS SQL: IGNORE_DUP_KEY
+    # Postgres: ???
+    ($status, $sth) = $self->{db_centreon}->query('INSERT IGNORE INTO cfg_acl_resources_cache VALUES (' . $self->{organization_id} . ', ' . $options{acl_resource_id} . ', ?, ?)', prepare_only => 1);
+    my $rows = [];
+    my %host_insert = ();
+    my $i = 0;
+    while (my $row = ( shift(@$rows) || # get row from cache, or reload cache:
+                       shift(@{$rows = $options{hs_sth}->fetchall_arrayref(undef, $self->{config}{sql_fetch})||[]})) ) {
+        $i++;
+        if (!defined($host_insert{$$row[0]})) {
+            $host_insert{$$row[0]} = 1;
+            return 1 if ($self->insert_execute(sth => $sth, bind => [1, $$row[0]]));
+        }
+        return 1 if ($self->insert_execute(sth => $sth, bind => [2, $$row[1]]));
+    }
+    
+    $self->{db_centreon}->commit();
+    return 0;
+}
+
+sub action_aclresync {
+    my ($self, %options) = @_;
+    my ($status, $sth, $resource_configs);
+    
+    $self->{logger}->writeLogDebug("centreondacl: organization $self->{organization_id} : begin resync");
+    ($status, $resource_configs) = $self->acl_get_resources_config();
+    if ($status) {
+        return 1;
+    }
+    
+    foreach my $acl_resource_id (sort keys %{$resource_configs}) {
+        $self->{logger}->writeLogDebug("centreondacl: organization $self->{organization_id} acl resource $acl_resource_id : begin resync");
+        ($status, $sth) = $self->acl_resource_list_hs(resource_config => $resource_configs->{$acl_resource_id});
+        if ($status == -1) {
+            return 1;
+        }
+
+        if ($status == 2) {
+            $self->{logger}->writeLogDebug("centreondacl: organization $self->{organization_id} acl resource $acl_resource_id : finished resync (emtpy resource)");
+            next;
+        }
+
+        $status = $self->insert_result(acl_resource_id => $acl_resource_id, hs_sth => $sth, first_request => "DELETE FROM cfg_acl_resources_cache WHERE organization_id = '" . $self->{organization_id} . "' AND acl_resource_id = " . $acl_resource_id);
+        $self->{logger}->writeLogDebug("centreondacl: organization $self->{organization_id} acl resource $acl_resource_id : finished resync (status: $status)");
+        if ($status == 1) {
+            return 1;
+        }
+    }
+    
+    return 0;
 }
 
 sub event {
@@ -164,8 +317,18 @@ sub event {
         my $message = centreon::centreond::common::zmq_dealer_read_message(socket => $socket);
         
         $connector->{logger}->writeLogDebug("centreondacl: class: $message");
-   
-        use Data::Dumper;
+        if ($message =~ /^\[(.*?)\]/) {
+            if ((my $method = $connector->can('action_' . lc($1)))) {
+                $message =~ /^\[(.*?)\]\s+\[(.*?)\]\s+\[.*?\]\s+(.*)$/m;
+                my ($action, $token) = ($1, $2);
+                my $data = JSON->new->utf8->decode($3);
+                while ($method->($connector, token => $token, data => $data)) {
+                    # We block until it's fixed!!
+                    sleep(5);
+                }
+            }
+        }
+
         # Function examples
         #print Data::Dumper::Dumper($connector->{class_organization}->get_organizations(mode => 1, keys => 'organization_id'));
         # Get all hosts
@@ -177,7 +340,6 @@ sub event {
         # we try an open one:
         # print Data::Dumper::Dumper($connector->{class_host}->get_hosts_by_organization(organization_id => $connector->{organization_id}, with_services => 1,
         #                                                                                mode => 1, keys => ['host_id', 'service_id'], fields => ['host_id', 'host_name', 'service_id']));
-        $connector->get_list_hosts_services(host_alls => 1);
         
         last unless (centreon::centreond::common::zmq_still_read(socket => $socket));
     }
@@ -192,11 +354,11 @@ sub run {
     $self->{db_centreon} = centreon::common::db->new(dsn => $self->{config_db_centreon}{dsn},
                                                      user => $self->{config_db_centreon}{username},
                                                      password => $self->{config_db_centreon}{password},
-                                                     force => 1,
+                                                     force => 2,
                                                      logger => $self->{logger});
     ##### Load objects #####
-    $self->{class_organization} = centreon::common::objects::organization->new(logger => $self->{logger}, db_centreon => $self->{db_centreon});
-    $self->{class_host} = centreon::common::objects::host->new(logger => $self->{logger}, db_centreon => $self->{db_centreon});
+    #$self->{class_organization} = centreon::common::objects::organization->new(logger => $self->{logger}, db_centreon => $self->{db_centreon});
+    #$self->{class_host} = centreon::common::objects::host->new(logger => $self->{logger}, db_centreon => $self->{db_centreon});
     $self->{class_object} = centreon::common::objects::object->new(logger => $self->{logger}, db_centreon => $self->{db_centreon});
     
     # Connect internal
