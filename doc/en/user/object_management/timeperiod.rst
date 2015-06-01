@@ -33,7 +33,7 @@ tp_saturday        Saturday period
 List
 ----
 
-In order to list commands, use **list** action::
+In order to list timeperiods, use **list** action::
 
   ./centreonConsole centreon-configuration:timeperiod:list
   id;name;sunday;monday;tuesday;wednesday;thursday;friday;saturday

@@ -1,0 +1,18 @@
+{
+    "liteAttributesSet" : "user_id,firstname,lastname,login,is_admin,is_activated,language_id,timezone_id,auth_type",
+    "repository" : "\\CentreonAdministration\\Repository\\UserRepository",
+    "objectBaseUrl" : "user",
+    "objectClass" : "\\CentreonAdministration\\Models\\User",
+    "attributesMap" : {
+        "id" : "user_id",
+        "firstname" : "firstname",
+        "lastname" : "lastname",
+        "login" : "login",
+        "password" : "password",
+        "admin" : "is_admin",
+        "enabled" : "is_activated",
+        "language" : "language_id",
+        "timezone" : "timezone_id",
+        "authentication type" : "auth_type"
+    }
+}
