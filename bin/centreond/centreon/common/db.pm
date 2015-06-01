@@ -257,7 +257,7 @@ sub error {
 
     chomp($query);
     $self->{logger}->writeLogError(<<"EOE");
-MySQL error: $error (caller: $package:$filename:$line)
+SQL error: $error (caller: $package:$filename:$line)
 Query: $query
 EOE
     $self->disconnect();
@@ -267,6 +267,7 @@ EOE
 sub query {
     my $self = shift;
     my $query = shift;
+    my (%options) = @_;
     my ($status, $count) = (0, -1);
     my $statement_handle;
 
@@ -288,12 +289,16 @@ sub query {
 
         $count++;
         $statement_handle = $self->{instance}->prepare($query);
-        if (!defined $statement_handle) {
+        if (!defined($statement_handle)) {
             $self->error($self->{instance}->errstr, $query);
             $status = -1;
             last if ($self->{force} == 0 || ($self->{force} == 2 && $count == 1));
             sleep(1);
             next;
+        }
+        
+        if (defined($options{prepare_only})) {
+            return ($status, $statement_handle);
         }
 
         my $rv = $statement_handle->execute;
