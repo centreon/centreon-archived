@@ -13,7 +13,9 @@ The list of object commands is available with the following commandline :
 .. toctree::
    :maxdepth: 2
 
+   timeperiod
    command
+   user
    config
    connector
    host

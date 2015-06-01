@@ -26,6 +26,7 @@ my $stop = 0;
 my $timer_check = time();
 my $config_check_organizations_time;
 my $on_demand = 0;
+my ($resync_auto_disable, $resync_time, $resync_random_windows) = (0, 28800, 7200);
 
 sub register {
     my (%options) = @_;
@@ -35,6 +36,9 @@ sub register {
     $config_db_centreon = $options{config_db_centreon};
     $config_check_organizations_time = defined($config->{check_organizations_time}) ? $config->{check_organizations_time} : 3600;
     $on_demand = defined($config->{on_demand}) && $config->{on_demand} == 1 ? 1 : 0;
+    $resync_auto_disable = defined($config->{resync_auto_disable}) && $config->{resync_auto_disable} == 1 ? 1 : 0;
+    $resync_time = defined($config->{resync_time}) && $config->{resync_time} > 0 ? $config->{resync_time} : 28800;
+    $resync_random_windows = defined($config->{resync_random_windows}) && $config->{resync_random_windows} > 0 ? $config->{resync_random_windows} : 7200;
     return ($events, $module_id);
 }
 
@@ -152,7 +156,16 @@ sub check {
     }
     
     foreach (keys %{$organizations}) {
-        $count++  if ($organizations->{$_}->{running} == 1);
+        if ($organizations->{$_}->{running} == 1) {
+            $count++;
+            # Test resync
+            if ($resync_auto_disable == 0 && defined($last_organizations->{$_}) && time() > $last_organizations->{$_}) {
+                routing(dbh => $options{dbh}, socket => $options{internal_socket}, logger => $options{logger}, 
+                        action => 'ACLRESYNC', data => '{ "organization_id": ' . $_ . ' } ',
+                        token => 'internal_action_aclresync_' . $_ . '');
+                $last_organizations->{$_} = time() + $resync_time + int(rand($resync_random_windows));
+            }
+        }
     }
     
     return $count;
@@ -162,14 +175,23 @@ sub check {
 sub get_organizations {
     my (%options) = @_;
 
-    my $orgas = { 1 => 1, 25 => 1, 50 => 1, 100 => 1, 13 => 1 };    
-    return $orgas;
+    my $db = centreon::common::db->new(dsn => $config_db_centreon->{dsn},
+                                       user => $config_db_centreon->{username},
+                                       password => $config_db_centreon->{password},
+                                       force => 1,
+                                       logger => $options{logger});
+    my ($status, $sth) = $db->query("SELECT organization_id FROM cfg_organizations WHERE active = '1'");
+    my $org = {};
+    while ((my $row = $sth->fetchrow_arrayref())) {
+        $org->{$$row[0]} = time() + $resync_time + int(rand($resync_random_windows));
+    }
+    return $org;
 }
 
 sub sync_organization_childs {
     my (%options) = @_;
     
-    $last_organizations = get_organizations();
+    $last_organizations = get_organizations(logger => $options{logger});
     foreach my $organization_id (keys %{$last_organizations}) {
         if (!defined($organizations->{$organization_id}) && $on_demand == 0) {
             create_child(organization_id => $organization_id, logger => $options{logger});

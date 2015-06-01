@@ -138,6 +138,11 @@ class Component
                             break;
                         }
                         $rule['equalfield'] = $validator['params']['equalfield'];
+                    case 'authorizedvalues':
+                        if (false === isset($validator['params']['values'])) {
+                            break;
+                        }
+                        $rule['values'] = $validator['params']['values'];    
                     default:
                         // @todo log warning rules not found
                         break;

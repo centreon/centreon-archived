@@ -104,7 +104,9 @@ $client2 = centreon::centreond::clientzmq->new(identity => 'tata',
                                                  );
 $client2->init(callback => \&read_response_result);
 
-$client->send_message(action => 'ACLADDHOST', data => { organization_id => 1 }, 
+#$client->send_message(action => 'ACLADDHOST', data => { organization_id => 1 }, 
+#                      json_encode => 1);
+$client->send_message(action => 'ACLRESYNC', data => { organization_id => 1 }, 
                       json_encode => 1);
 #$client->send_message(action => 'PUTLOG', data => { code => 120, etime => time(), token => 'plopplop', data => { 'nawak' => 'nawak2' } },
 #                      json_encode => 1);
