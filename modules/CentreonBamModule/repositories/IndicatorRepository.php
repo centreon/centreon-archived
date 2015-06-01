@@ -460,57 +460,61 @@ class IndicatorRepository extends FormRepository
 
         // Add object column
         // Can be service, metaservice or BA
-        $sqlKpiService = "SELECT k.kpi_id, h.host_name, s.service_id, s.service_description
-            FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations hs, cfg_bam_kpi k
-            WHERE s.service_id=k.service_id and hs.host_host_id=h.host_id and hs.service_service_id=s.service_id and k.kpi_id='$id'";
-        $stmtKpiService = $dbconn->query($sqlKpiService);
+        $sqlKpiService = 'SELECT k.kpi_id, h.host_name, s.service_id, s.service_description'
+            . ' FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations hs, cfg_bam_kpi k'
+            . ' WHERE s.service_id=k.service_id and hs.host_host_id=h.host_id and hs.service_service_id=s.service_id and k.kpi_id=:id';
+        $stmtKpiService = $dbconn->prepare($sqlKpiService);
+        $stmtKpiService->bindParam(':id', $id, \PDO::PARAM_INT);
         $resultKpiService = $stmtKpiService->fetchAll(\PDO::FETCH_ASSOC);
 
-        $sqlKpiMetaservice = "SELECT k.kpi_id,ms.meta_id
-            FROM cfg_meta_services ms,cfg_bam_kpi k
-            WHERE ms.meta_id=k.meta_id and k.kpi_id='$id'";
-        $stmtKpiMetaservice = $dbconn->query($sqlKpiMetaservice);
+        $sqlKpiMetaservice = 'SELECT k.kpi_id,ms.meta_id'
+            . ' FROM cfg_meta_services ms,cfg_bam_kpi k'
+            . ' WHERE ms.meta_id=k.meta_id and k.kpi_id=:id';
+        $stmtKpiMetaservice = $dbconn->prepare($sqlKpiMetaservice);
+        $stmtKpiMetaservice->bindParam(':id', $id, \PDO::PARAM_INT);
         $resultKpiMetaservice = $stmtKpiMetaservice->fetchAll(\PDO::FETCH_ASSOC);
 
-        $sqlKpiBa = "SELECT k.kpi_id,b.ba_id,b.name
-            FROM cfg_bam b,cfg_bam_kpi k
-            WHERE b.ba_id=k.id_indicator_ba and k.kpi_id='$id'";
-        $stmtKpiBa = $dbconn->query($sqlKpiBa);
+        $sqlKpiBa = 'SELECT k.kpi_id,b.ba_id,b.name'
+            . ' FROM cfg_bam b,cfg_bam_kpi k'
+            . ' WHERE b.ba_id=k.id_indicator_ba and k.kpi_id=:id';
+        $stmtKpiBa = $dbconn->prepare($sqlKpiBa);
+        $stmtKpiBa->bindParam(':id', $id, \PDO::PARAM_INT);
         $resultKpiBa = $stmtKpiBa->fetchAll(\PDO::FETCH_ASSOC);
 
-        $sqlKpiBoolean = "SELECT k.kpi_id,b.boolean_id,b.name
-            FROM cfg_bam_boolean b,cfg_bam_kpi k
-            WHERE b.boolean_id=k.boolean_id and k.kpi_id='$id'";
-        $stmtKpiBoolean = $dbconn->query($sqlKpiBoolean);
+        $sqlKpiBoolean = 'SELECT k.kpi_id,b.boolean_id,b.name'
+            . ' FROM cfg_bam_boolean b,cfg_bam_kpi k'
+            . 'WHERE b.boolean_id=k.boolean_id and k.kpi_id=:id';
+        $stmtKpiBoolean = $dbconn->prepare($sqlKpiBoolean);
+        $stmtKpiBoolean->bindParam(':id', $id, \PDO::PARAM_INT);
         $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
 
-        $resultPki = array();
+        $resultKpi = array();
         foreach ($resultKpiService as $kpiObject) {
-            $resultPki = array(
+            $resultKpi = array(
                 "id" => $kpiObject['kpi_id'],
                 "text" => $kpiObject['host_name'].' '.$kpiObject['service_description']
             );
         }
         foreach ($resultKpiMetaservice as $kpiObject) {
-            $resultPki = array(
+            $resultKpi = array(
                 "id" => $kpiObject['kpi_id'],
                 "text" => $kpiObject['meta_id']
             );
         }
         foreach ($resultKpiBa as $kpiObject) {
-            $resultPki = array(
+            $resultKpi = array(
                 "id" => $kpiObject['kpi_id'],
                 "text" => $kpiObject['name']
             );
         }
         foreach ($resultKpiBoolean as $kpiObject) {
-            $resultPki = array(
+            $resultKpi = array(
                 "id" => $kpiObject['kpi_id'],
                 "text" => $kpiObject['name']
             );
         }
 
-        return $resultPki;
+        return $resultKpi;
     }
 
     /**
@@ -524,8 +528,6 @@ class IndicatorRepository extends FormRepository
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
-        $booleanClass = 'CentreonBam\Models\BooleanIndicator';
-
         $sqlKpiBoolean = "SELECT k.kpi_id, k.boolean_id "
             . "FROM cfg_bam_kpi k "
             . "WHERE k.kpi_type='3'";
@@ -537,7 +539,7 @@ class IndicatorRepository extends FormRepository
         foreach ($ids as $id) {
             foreach ($resultKpiBoolean as $kpiObject) {
                 if ($kpiObject['kpi_id'] == $id) {
-                    $booleanClass::delete($kpiObject['boolean_id']);
+                    BooleanIndicator::delete($kpiObject['boolean_id']);
                 }
             }
         }
@@ -582,9 +584,9 @@ class IndicatorRepository extends FormRepository
             $sElement = "kpi_id";
         }
         
-        $query = 'SELECT '.$sElement;
+        $query = 'SELECT ' . $sElement;
         
-        // Checking por unicity's params
+        // Checking unicity's params
         foreach ($unicityParams as $key => $unicityParam) {
             if (isset($unicityFields['fields'][$key])) {
                 $fieldComponents = explode (',', $unicityFields['fields'][$key]);
@@ -593,14 +595,16 @@ class IndicatorRepository extends FormRepository
             }
         }
         
-        // FInalizing query
-        $query .= ' FROM ' . implode(', ', $tables) . ' WHERE ' . implode(' AND ', $conditions);
+        // Finalizing query
+        $query .= ' FROM ' . implode(', ', $tables);
+        $query .= ' WHERE ' . implode(' AND ', $conditions);
+
         if (isset($unicityParams['id_ba']) && !empty($unicityParams['id_ba'])) {
             $query .= " AND id_ba = '".$unicityParams['id_ba']."'";
         }
-        //echo $query;die;
+
         // Execute request
-        $stmt = $db->query($query);
+        $stmt = $db->prepare($sql);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
         if (count($result) > 0) {
