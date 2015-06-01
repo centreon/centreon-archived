@@ -40,6 +40,7 @@ namespace CentreonAdministration\Controllers;
 
 use Centreon\Controllers\FormController;
 use CentreonAdministration\Repository\AuthResourcesInfoRepository;
+use Centreon\Internal\Utils\String\CamelCaseTransformation;
 /**
  * Description of LdapController
  *
@@ -54,6 +55,7 @@ class AuthController extends FormController{
     protected $objectBaseUrl = '/centreon-administration/auth';
     protected $objectClass = '\CentreonAdministration\Models\AuthResources';
     protected $repository = '\CentreonAdministration\Repository\AuthResourcesRepository';
+    public static $authInfosFields = array('ldap_contact_tmpl','protocol_version','ldap_template');
 
     
     public static $relationMap = array(
@@ -92,15 +94,18 @@ class AuthController extends FormController{
     /**
      * 
      * @method get
-     * @route /auth/[i:id]/contactTemplate
+     * @route /auth/[i:id]/[a:name]
      */
-    public function getContactTemplateValuesAction(){
+    public function getDefaultAuthValuesAction(){
         $requestParam = $this->getParams('named');
         $auth_id = $requestParam['id'];
-        $contact_template = AuthResourcesInfoRepository::getInfosFromName('ldap_contact_tmpl',$auth_id);
+        $param_name = strtolower(CamelCaseTransformation::camelCaseToCustom($requestParam['name'],'_'));
         $data = array();
-        if(!empty($contact_template)){
-            $data = array('id' => $contact_template['ar_id'], 'text' => $contact_template['ari_value']);
+        if(in_array($param_name, self::$authInfosFields)){
+            $contact_template = AuthResourcesInfoRepository::getInfosFromName($param_name,$auth_id);
+            if(!empty($contact_template)){
+                $data = array('id' => $contact_template['ar_id'], 'text' => $contact_template['ari_value']);
+            }
         }
         return $this->router->response()->json($data);
         
@@ -116,6 +121,9 @@ class AuthController extends FormController{
         return $this->router->response()->json($data);
         
     }
+    
+    
+    
     
     
     

@@ -53,7 +53,7 @@ class AuthResourcesInfo extends CentreonBaseModel
         $stmt = $dbconn->prepare($sql);
         $stmt->bindValue(1, $givenParameters['ar_id'], \PDO::PARAM_INT);
         $stmt->bindValue(2, $givenParameters['ari_name'], \PDO::PARAM_STR);
-        $stmt->bindValue(3, $givenParameters['ari_value'], \PDO::PARAM_STR);
+        $stmt->bindValue(3, self::transformation($givenParameters['ari_name'],$givenParameters['ari_value']), \PDO::PARAM_STR);
         $stmt->execute();
     }
     
@@ -74,6 +74,22 @@ class AuthResourcesInfo extends CentreonBaseModel
         $row = $stmt->fetch();
         return $row;
     }
+    
+    
+    private static function transformation($name,$value){
+        
+        
+        switch($name){
+            
+            case 'protocol_version' :
+                return substr($value,1);
+            default :
+                return $value;
+        }
+        
+        return $value;
+    }
+    
     
     //put your code here
 }

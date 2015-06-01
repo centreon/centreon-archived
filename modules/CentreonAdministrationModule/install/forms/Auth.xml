@@ -110,7 +110,7 @@
                       <p2>2</p2>
                       <p3>3</p3>
                     </selectData>
-                    <listValuesRoute>/centreon-administration/eventlogs/storage</listValuesRoute>
+                    <listValuesRoute>/centreon-administration/auth/[i:id]/protocolVersion</listValuesRoute>
                   </attributes>
                 </field>
                 
@@ -121,7 +121,7 @@
                       <posix>Posix</posix>
                       <activeDirectory>ActiveDirectory</activeDirectory>
                     </selectData>
-                    <listValuesRoute>/centreon-administration/eventlogs/storage</listValuesRoute>
+                    <listValuesRoute>/centreon-administration/auth/[i:id]/ldapTemplate</listValuesRoute>
                   </attributes>
                 </field>
   
