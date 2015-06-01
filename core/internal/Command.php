@@ -263,7 +263,7 @@ class Command
     {
         //$this->parseAction($aliveObject, $action);
         
-        $rawRistOfArgs = explode(':', $this->parametersLine);
+        $rawRistOfArgs = preg_split('/(.+\])\:(.+)/', $this->parametersLine, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
         
         foreach ($rawRistOfArgs as $rawArgs) {
             $currentArgsValue = explode('=', $rawArgs);
