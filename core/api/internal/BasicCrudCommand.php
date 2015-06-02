@@ -194,6 +194,13 @@ class BasicCrudCommand extends BasicCrud
         
     }
     
+    
+    /**
+     * Display result of a command as table in command line
+     * 
+     * @param array $headers
+     * @param array $inputTable
+     */
     public function tableDisplay($headers, $inputTable){
 
         $cnt = 0;

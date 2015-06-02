@@ -47,24 +47,28 @@ use CentreonConfiguration\Repository\CustomMacroRepository;
  */
 class BasicMacroSupport extends BasicCrudCommand
 {
-    
-    
+
     /**
      * 
      * @param string $object
-     * @param string $macro
+     * @param array $macro
     */
-    public function addMacroAction($object, $macro)
+    public function addMacroAction($object, $params)
     {
         
-        $paramList = $this->parseObjectParams($macro);
+        $paramList = $this->parseObjectParams($params);
         
-        if(isset($paramList['name']) && isset($paramList['value']) && isset($paramList['ispassword'])){
+        if(!isset($paramList['hidden'])){
+            $paramList['hidden'] = 0;
+        }
+        
+        
+        if(isset($paramList['name']) && isset($paramList['value'])){
             $formatedParams = array(
                             $paramList['name'] => 
                                 array(
                                     'value' => $paramList['value'],
-                                    'ispassword' => $paramList['ispassword']
+                                    'is_password' => $paramList['hidden']
                                 )
                             );
         }
@@ -85,7 +89,7 @@ class BasicMacroSupport extends BasicCrudCommand
                     break;
             }
             \Centreon\Internal\Utils\CommandLine\InputOutput::display(
-                "The tag has been successfully added to the object",
+                "The macro '".$paramList['name']."' has been successfully added to the object",
                 true,
                 'green'
             );
@@ -94,39 +98,41 @@ class BasicMacroSupport extends BasicCrudCommand
         }
     }
     
-    
-    public function updateMacroAction($object, $macro){
-        /*$paramList = $this->parseObjectParams($macro);
-        
+    /**
+     * 
+     * @param string $object
+     * @param string $macro
+     * @param array $params
+     */
+    public function updateMacroAction($object, $macro, $params)
+    {
+        $paramList = $this->parseObjectParams($params);
         try {
             $repository = $this->repository;
             $objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
-            //$macros = array();
             switch($this->objectName){
                 case 'host' :
-                    CustomMacroRepository::updateHostCustomMacro($objectId,$paramList);
-                    //$macros = CustomMacroRepository::loadHostCustomMacro($objectId);
+                    CustomMacroRepository::updateHostCustomMacro($objectId,$macro,$paramList);
                     break;
                 case 'service' : 
-                    CustomMacroRepository::updateServiceCustomMacro($objectId,$paramList);
-                    //$macros = CustomMacroRepository::loadServiceCustomMacro($objectId);
+                    CustomMacroRepository::updateServiceCustomMacro($objectId,$macro,$paramList);
                     break;
                 default :
                     break;
             }
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+                "The macro '".$macro."' has been successfully updated",
+                true,
+                'green'
+            );
 
         } catch (\Exception $ex) {
             \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
         }
         
-        */
-        
-        
-        
     }
     
-    
-    
+
     /**
      * 
      * @param string $object
@@ -164,27 +170,25 @@ class BasicMacroSupport extends BasicCrudCommand
     /**
      * 
      * @param string $object
-     * @param string $tag
+     * @param string $macro
      */
     public function removeMacroAction($object, $macro)
     {
-        $paramList = $this->parseObjectParams($macro);
-
         try {
             $repository = $this->repository;
             $objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
             switch($this->objectName){
                 case 'host' :
-                    CustomMacroRepository::deleteHostCustomMacro($objectId,$paramList['name']);
+                    CustomMacroRepository::deleteHostCustomMacro($objectId,$macro);
                     break;
                 case 'service' : 
-                    CustomMacroRepository::deleteServiceCustomMacro($objectId,$paramList['name']);
+                    CustomMacroRepository::deleteServiceCustomMacro($objectId,$macro);
                     break;
                 default :
                     break;
             }
             \Centreon\Internal\Utils\CommandLine\InputOutput::display(
-                "The tag has been successfully removed from the object",
+                "The macro '".$macro."' has been successfully removed from the object",
                 true,
                 'green'
             );
