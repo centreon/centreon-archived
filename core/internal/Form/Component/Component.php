@@ -138,7 +138,7 @@ class Component
                             break;
                         }
                         $rule['equalfield'] = $validator['params']['equalfield'];
-                    case 'authorizedvalues':
+                    case 'authorizedValues':
                         if (false === isset($validator['params']['values'])) {
                             break;
                         }

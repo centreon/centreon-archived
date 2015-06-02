@@ -1,0 +1,14 @@
+{
+    "liteAttributesSet" : "traps_id,traps_name,traps_oid,manufacturer_id,traps_args,traps_status",
+    "repository" : "\\CentreonConfiguration\\Repository\\TrapRepository",
+    "objectBaseUrl" : "trap",
+    "objectClass" : "\\CentreonConfiguration\\Models\\Trap",
+    "attributesMap" : {
+        "id" : "traps_id",
+        "name" : "traps_name",
+        "traps oid" : "traps_oid",
+        "manufacturer" : "manufacturer_id",
+        "traps args" : "traps_args",
+        "traps status" : "traps_status"
+    }
+}

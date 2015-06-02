@@ -28,14 +28,19 @@
 			<block name="Trap translation">
 				<field name="traps_args" label="Output message" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
 				<field name="traps_status" label="Default status" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
-					<attributes>
-						<choices>
-							<Ok>0</Ok>
-							<Warning>1</Warning>
-							<Critical>2</Critical>
-							<Unknown>3</Unknown>
-						</choices>
-					</attributes>
+                                    <attributes>
+                                        <choices>
+                                            <Ok>0</Ok>
+                                            <Warning>1</Warning>
+                                            <Critical>2</Critical>
+                                            <Unknown>3</Unknown>
+                                        </choices>
+                                    </attributes>
+                                    <validators>
+                                        <validator rules="authorizedvalues" serverside="core.AuthorizedValues">
+                                            <argument name="values">-1,0,1,2,3</argument>
+                                        </validator>  
+                                    </validators>
 				</field>
 				<field name="traps_advanced_treatment" label="Advanced matching mode" default_value="0" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
@@ -75,7 +80,7 @@
 				</field>
 			</block>
 			<block name="Command execution">
-				<field name="traps_execution_command_enable" label="Special command execution" default_value="" advanced="1" type="radio" parent_field="" mandatory="1">
+				<field name="traps_execution_command_enable" label="Special command execution" default_value="" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>
@@ -132,7 +137,7 @@
 				</field>
 				<field name="traps_timeout" label="Timeout" default_value="" advanced="1" type="integer" parent_field="" mandatory="0"></field>
 				<field name="traps_exec_interval" label="Execution interval" default_value="" advanced="1" type="integer" parent_field="" mandatory="0"></field>
-				<field name="traps_exec_interval_type" label="Execution type" default_value="" advanced="1" type="radio" parent_field="" mandatory="1">
+				<field name="traps_exec_interval_type" label="Execution type" default_value="" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <None>0</None>
@@ -141,7 +146,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="traps_exec_method" label="Execution method" default_value="" advanced="1" type="radio" parent_field="" mandatory="1">
+				<field name="traps_exec_method" label="Execution method" default_value="" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Parallel>0</Parallel>
