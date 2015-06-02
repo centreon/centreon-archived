@@ -81,17 +81,7 @@ class PollerController extends FormController
      */
     public function updateAction()
     {
-        $params = $this->getParams('post')->all();
-        $router = Di::getDefault()->get('router');
-
-        /* Save information */
-        try {
-            PollerRepository::update($params, 'form', $this->getUri());
-        } catch (Exception $e) {
-            return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
-        }
-
-        return $router->response()->json(array('success' => true));
+        parent::updateAction();
     }
     
     /**
@@ -113,18 +103,7 @@ class PollerController extends FormController
      */
     public function createAction()
     {
-        $params = $this->getParams('post');
-        $router = Di::getDefault()->get('router');
-        
-        $params['object'] = static::$objectName;
-
-        try {
-            PollerRepository::create($params, 'wizard', $this->getUri());
-        } catch (Exception $e) {
-            return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
-        }
-
-        return $router->response()->json(array('success' => true));
+        parent::createAction();
     }
 
     /**
@@ -231,55 +210,5 @@ class PollerController extends FormController
         }
         
         $router->response()->json($myTemplate->genForm($pollerId));
-    }
-
-    /**
-     * Return the form for add or edit a poller
-     *
-     * @param string $formName The form ID
-     * @param int $pollerId The poller id
-     * @return \Centreon\Internal\Form
-     */
-    private function getForm($formName, $pollerId = 0)
-    {
-        $form = new Form($formName);
-        $form->add(array(
-            'type' => 'text',
-            'label' => 'Poller name',
-            'name' => 'name',
-            'mandatory' => true,
-            'parent_field' => '',
-            'parent_value' => '',
-            'child_actions' => ''
-        ));
-        $form->add(array(
-            'type' => 'text',
-            'label' => 'IP Address',
-            'name' => 'ip_address',
-            'mandatory' => true,
-            'parent_field' => '',
-            'parent_value' => '',
-            'child_actions' => ''
-        ));
-        $selectParams = array(
-            'object_type' => 'object',
-            'defaultValuesRoute' => '/centreon-configuration/poller/templates',
-            'listValuesRoute' => '/centreon-configuration/poller/[i:id]/template',
-            'multiple' => false,
-            'initCallback' => 'loadTemplateSteps'
-        );
-        $form->add(array(
-            'type' => 'templatepoller',
-            'label' => 'Poller Template',
-            'name' => 'poller_tmpl',
-            'mandatory' => true,
-            'parent_field' => '',
-            'parent_value' => '',
-            'child_actions' => '',
-            'attributes' => json_encode($selectParams)
-        ), array(
-            'id' => $pollerId
-        ));
-        return $form;
     }
 }
