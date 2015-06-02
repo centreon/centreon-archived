@@ -24,14 +24,14 @@
                       </choices>
                     </attributes>
                     <validators>
-                        <validator rules="authorizedvalues" serverside="core.AuthorizedValues">
+                        <validator rules="remote" serverside="core.AuthorizedValues">
                             <argument name="values">1,2,3</argument>
                         </validator>
                     </validators>
                     <help>Define the type of the command. The type will be used to show the command only in the relevant sections.</help>
 		</field>
 		<field name="command_line" label="Command line" default_value="" advanced="0" type="textarea" parent_field="" mandatory="1">
-          <help>The command line specifies the real command line, that is actually executed by Monitoring engine. Before execution, all valid macros are replaced with their respective values. To use the dollar sign (\$) on the command line, you have to escape it with another dollar sign (\$\$). A semicolon (;) is used as seperator for config file comments and must be worked around by setting a \$USER\$ macro to a semicolon and then referencing it here in place of the semicolon. If you want to pass arguments to commands during runtime, you can use \$ARGn\$ macros in the command line.</help>
+                <help>The command line specifies the real command line, that is actually executed by Monitoring engine. Before execution, all valid macros are replaced with their respective values. To use the dollar sign (\$) on the command line, you have to escape it with another dollar sign (\$\$). A semicolon (;) is used as seperator for config file comments and must be worked around by setting a \$USER\$ macro to a semicolon and then referencing it here in place of the semicolon. If you want to pass arguments to commands during runtime, you can use \$ARGn\$ macros in the command line.</help>
         </field>
 		<field name="enable_shell" label="Enable shell" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
 		  <attributes>
