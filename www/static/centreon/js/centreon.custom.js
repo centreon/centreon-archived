@@ -5,9 +5,60 @@
 // Custom scripts
 $(document).ready(function () {
 
-    // MetisMenu
-    $('#side-menu').metisMenu({
+    // Full height of sidebar
+    function fix_height() {
+        var heightWithoutNavbar = $("body > #mainCntr").height() - 52;
+        //$(".sidebard-panel").css("min-height", heightWithoutNavbar + "px");
+
+        var navbarHeigh = $('nav.navbar-default').height();
+        var wrapperHeigh = $('#pageWrapper').height();
+
+        if(navbarHeigh > wrapperHeigh){
+            $('#pageWrapper').css("height", navbarHeigh + "px");
+        }
+
+        if(navbarHeigh < wrapperHeigh){
+            $('#pageWrapper').css("height", $(window).height()  + "px");
+        }
+
+    }
+    fix_height();
+
+    // Fixed Sidebar
+    $(window).bind("load", function () {
+        if ($("body").hasClass('fixed-sidebar')) {
+            $('.sidebar-collapse').slimScroll({
+                height: '100%',
+                railOpacity: 0.9
+            });
+        }
+    })
+
+    // Move right sidebar top after scroll
+    $(window).scroll(function(){
+        if ($(window).scrollTop() > 0 && !$('body').hasClass('fixed-nav') ) {
+            $('#right-sidebar').addClass('sidebar-top');
+        } else {
+            $('#right-sidebar').removeClass('sidebar-top');
+        }
     });
+
+    $(document).bind("load resize scroll", function() {
+        if(!$("body").hasClass('body-small')) {
+            fix_height();
+        }
+    });
+
+    $("[data-toggle=popover]")
+        .popover();
+
+    // Add slimscroll to element
+    $('.full-height-scroll').slimscroll({
+        height: '100%'
+    })
+
+    // MetisMenu
+    $('#side-menu').metisMenu({});
 
 
     // Collapse ibox function
@@ -60,12 +111,6 @@ $(document).ready(function () {
     // Fix Bootstrap backdrop issu with animation.css
     $('.modal').appendTo("body")
 
-    // Full height of sidebar
-    function fix_height() {
-        var heightWithoutNavbar = $("body > #mainCntr").height() - 61;
-        $(".sidebard-panel").css("min-height", heightWithoutNavbar + "px");
-    }
-    fix_height();
 
     // Fixed Sidebar
     // unComment this only whe you have a fixed-sidebar

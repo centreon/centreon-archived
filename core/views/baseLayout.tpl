@@ -10,10 +10,10 @@
     {block name="style-head"}{/block}
 </head>
 
-<body class="bodyCntr">
+<body class="full-height-layout bodyCntr">
     <div id="notif-danger"></div>
 
-<div class="mainCntr" id="mainCntr"> <!-- Global Wrapper -->
+<div class="mainCntr" id="mainCntr"> <!-- Wrapper -->
 
     <!-- Menu aside -->
     <nav class="navbar-default navbarSide navbar-static-side" role="navigation">
@@ -179,11 +179,10 @@
             </nav>
         </div>
 
-        <div class="row" id="contentWrapper">
-            {block name="content"}{/block}
+        <div id="contentWrapper" class="contentWrapper full-height">
+            <div class="full-height-scroll">{block name="content"}{/block}</div>
         </div>
-        
-        <div class="row">
+
             <div class="bottombar">
                 <div  class="footer_links col-sm-8 col-md-4">
                     <a href="http://documentation.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Documentation{/t}"><i class="fa fa-book"></i></a>
@@ -198,7 +197,6 @@
 
                 <p class="signature col-sm-4 col-md-4 col-md-offset-4"> <a href="http://www.centreon.com/">Centreon </a><small>Beta</small> &copy; 2005-2015</p>
             </div>
-       </div>
 
        <div class="modal fade" id="modal" role="dialog" aria-labelledby="wizard" aria-hidden="true">
            <div class="modal-dialog modal-lg">
