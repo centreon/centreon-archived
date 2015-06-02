@@ -3,7 +3,6 @@
 {block name="title"}{$pageTitle}{/block}
 
 {block name="content"}
-
     <div class="col-md-12">
         <div class="buttonGroup right">
             <button id="advanced_mode_switcher" href="#" class="btnC btnDefault">
@@ -59,47 +58,27 @@
         });
         
         $("#{$formName}").on("submit", function (event) {
-            
-            var validateMandatory = true;
-            var errorText = "";
-            $("input.mandatory-field").each(function(index) {
-                if ($(this).val().trim() === "") {
-                    validateMandatory = false;
-                    $(this).parent().addClass("has-error has-feedback");
-                    if (typeof $(this).attr("placeholder") !== 'undefined') {
-                        errorText += $(this).attr("placeholder") + " is required<br/>";
-                    } else if (typeof $(this).closest(".form-group").children("label").html() !== 'undefined') {
-                        errorText += $(this).closest(".form-group").children("label").html() + " is required<br/>";
-                    } else {
-                        errorText += "a field is required<br/>";
-                    }
-                }
-            });
-            
-            if (!validateMandatory) {
-                alertMessage(errorText, "notif-danger", 5);
-                return false;
+           if ($(this).valid()) {
+              $.ajax({
+                  url: "{url_for url=$validateUrl}",
+                  type: "POST",
+                  dataType: 'json',
+                  data: $(this).serializeArray(),
+                  context: document.body
+              })
+              .success(function(data, status, jqxhr) {
+                  alertClose();
+                  if (data.success) {
+                      {if isset($formRedirect) && $formRedirect}
+                          window.location="{url_for url=$formRedirectRoute}";
+                      {else}
+                          alertMessage("{t}The object has been successfully saved{/t}", "alert-success", 3);
+                      {/if}
+                  } else {
+                      alertMessage(data.error, "alert-danger");
+                  }
+              });
             }
-            
-            $.ajax({
-                url: "{url_for url=$validateUrl}",
-                type: "POST",
-                dataType: 'json',
-                data: $(this).serializeArray(),
-                context: document.body
-            })
-            .success(function(data, status, jqxhr) {
-                alertClose();
-                if (data.success) {
-                    {if isset($formRedirect) && $formRedirect}
-                        window.location="{url_for url=$formRedirectRoute}";
-                    {else}
-                        alertMessage("{t}The object has been successfully saved{/t}", "alert-success", 3);
-                    {/if}
-                } else {
-                    alertMessage(data.error, "alert-danger");
-                }
-            });
             return false;
         });
         
@@ -231,4 +210,5 @@
  
   }
     </script>
+{include file="[Core]/form/validators.tpl"}
 {/block}

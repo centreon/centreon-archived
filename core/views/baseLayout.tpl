@@ -212,6 +212,7 @@
     {$jsFile|js}
     {/foreach}
     <script>
+        var formValidRule = {};
         $(document).ready(function() {
             var statusInterval, statusData,
                 eStatus = new $.Event('centreon.refresh_status');

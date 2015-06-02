@@ -186,7 +186,6 @@ class Template extends \Smarty
         $this->addJs('centreon-timezone.js');
         $this->addJs('centreon-wizard.js');
         $this->addJs('centreon.csrf.js');
-
         $this->addJs('jquery.metisMenu.js');
         $this->addJs('centreon.custom.js');
         $this->addJs('jquery.sidr.min.js');
@@ -195,7 +194,9 @@ class Template extends \Smarty
         $this->addJs('moment-with-locales.js');
         $this->addJs('moment-timezone-with-data.min.js');
         $this->addJs('centreon.parentfield.js');
-
+        $this->addJs('centreon.form.js');
+        $this->addJs('centreon.validate.js');
+        $this->addJs('jquery.validation/jquery.validate.min.js');
     }
     
     /**
