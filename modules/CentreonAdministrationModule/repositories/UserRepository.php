@@ -109,10 +109,10 @@ class UserRepository extends Repository
      * @param string $givenParameters
      * @param string $login
      */
-    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    public static function update($givenParameters, $origin = "form", $route = "", $validate = true, $validateMandatory = true)
     {
         if ($validate) {
-            self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
+            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
         }
 
         /* Do not perform update if password is empty */
@@ -122,7 +122,7 @@ class UserRepository extends Repository
             $givenParameters['password'] = self::generateHashedPassword($givenParameters);
         }
         
-        if (!is_null($givenParameters['login']) && !isset($givenParameters['object_id'])) {
+        if (isset($givenParameters['login']) && !is_null($givenParameters['login']) && !isset($givenParameters['object_id'])) {
             $user = User::getIdByParameter('login', array($givenParameters['login']));
             if (is_array($user) && count($user) > 0) {
                 $givenParameters['object_id'] = $user[0];
@@ -132,7 +132,7 @@ class UserRepository extends Repository
         $currentDate = date('Y-m-d H:i:s');
         $givenParameters['updatedat'] = $currentDate;
         
-        parent::update($givenParameters, $origin, $route);
+        parent::update($givenParameters, $origin, $route, $validate, $validateMandatory);
     }
 
     
