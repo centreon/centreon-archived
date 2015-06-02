@@ -72,10 +72,10 @@
                       {if isset($formRedirect) && $formRedirect}
                           window.location="{url_for url=$formRedirectRoute}";
                       {else}
-                          alertMessage("{t}The object has been successfully saved{/t}", "alert-success", 3);
+                          alertMessage("{t}The object has been successfully saved{/t}", "notif-success", 3);
                       {/if}
                   } else {
-                      alertMessage(data.error, "alert-danger");
+                      alertMessage(data.error, "notif-danger");
                   }
               });
             }
