@@ -40,6 +40,7 @@ namespace CentreonAdministration\Controllers;
 
 use Centreon\Controllers\FormController;
 use CentreonAdministration\Repository\AuthResourcesInfoRepository;
+use Centreon\Internal\Utils\String\CamelCaseTransformation;
 /**
  * Description of LdapController
  *
@@ -54,6 +55,7 @@ class AuthController extends FormController{
     protected $objectBaseUrl = '/centreon-administration/auth';
     protected $objectClass = '\CentreonAdministration\Models\AuthResources';
     protected $repository = '\CentreonAdministration\Repository\AuthResourcesRepository';
+    public static $authInfosFields = array('ldap_contact_tmpl','protocol_version','ldap_template');
 
     
     public static $relationMap = array(
@@ -84,8 +86,46 @@ class AuthController extends FormController{
         foreach($infos as $info){
             $defaultValues['auth_info['.$info["ari_name"].']'] = $info["ari_value"];
         }
+        
         parent::editAction($additionnalParamsForSmarty,$defaultValues);
     }
+    
+    
+    /**
+     * 
+     * @method get
+     * @route /auth/[i:id]/[a:name]
+     */
+    public function getDefaultAuthValuesAction(){
+        $requestParam = $this->getParams('named');
+        $auth_id = $requestParam['id'];
+        $param_name = strtolower(CamelCaseTransformation::camelCaseToCustom($requestParam['name'],'_'));
+        $data = array();
+        if(in_array($param_name, self::$authInfosFields)){
+            $contact_template = AuthResourcesInfoRepository::getInfosFromName($param_name,$auth_id);
+            if(!empty($contact_template)){
+                $data = array('id' => $contact_template['ar_id'], 'text' => $contact_template['ari_value']);
+            }
+        }
+        return $this->router->response()->json($data);
+        
+    }
+    
+    /**
+     * 
+     * @method get
+     * @route /auth/[i:id]/contactTemplate/listValues
+     */
+    public function getContactTemplateListValuesAction(){
+        $data = array('id' => '', 'text' => '');
+        return $this->router->response()->json($data);
+        
+    }
+    
+    
+    
+    
+    
     
     
     //put your code here

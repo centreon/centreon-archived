@@ -57,15 +57,36 @@ class AuthResourcesInfoRepository extends FormRepository
         ),
     );
     
+    
+    /**
+     * 
+     * @param array $givenParameters
+     */
     public static function create($givenParameters){
         $curObj = static::$objectClass;
         $curObj::create($givenParameters);
     }
     
+    /**
+     * 
+     * @param int $id
+     */
     public static function deleteAllForArId($id){
         $curObj = static::$objectClass;
         $curObj::deleteAllForArId($id);
     }
+    
+    
+    /**
+     * 
+     * @param string $name
+     * @param int $id
+     */
+    public static function getInfosFromName($name,$id){
+        $curObj = static::$objectClass;
+        return $curObj::getInfosFromName($name,$id);
+    }
+    
     
     //put your code here
 }

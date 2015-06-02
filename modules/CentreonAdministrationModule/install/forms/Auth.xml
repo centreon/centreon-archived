@@ -58,6 +58,16 @@
                 <field type="text" label="LDAP search timeout" default_value="" advanced="0" name="auth_info[ldap_search_timeout]" mandatory="0">
                     <validator rules="forbiddenChar" serverside="core.Numeric" />
                 </field>
+                
+                <field name="auth_info[ldap_contact_tmpl]" label="Contact template" advanced="0" type="select" parent_field="" mandatory="0">
+                  <attributes>
+                    <object_type>object</object_type>
+                    <multiple>false</multiple>
+                    <defaultValuesRoute>/centreon-administration/auth/[i:id]/contactTemplate/listValues</defaultValuesRoute>
+                    <listValuesRoute>/centreon-administration/auth/[i:id]/contactTemplate</listValuesRoute>
+                  </attributes>
+                </field>
+
                 <field name="auth_info[ldap_srv_dns]" label="Use service DNS" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
 		  <attributes>
                     <choices>
@@ -92,6 +102,29 @@
             <block name="LDAP Information">
                 <field type="text" label="Bind user" default_value="" advanced="0" name="auth_info[bind_dn]" mandatory="0"></field>
                 <field type="text" label="Bind password" default_value="" advanced="0" name="auth_info[bind_pass]" mandatory="0"></field>
+
+                <field name="auth_info[protocol_version]" label="Protocol version" default_value="3" advanced="0" type="select" parent_field="" mandatory="0">
+                  <attributes>
+                    <multiple>false</multiple>
+                    <selectData>
+                      <p2>2</p2>
+                      <p3>3</p3>
+                    </selectData>
+                    <listValuesRoute>/centreon-administration/auth/[i:id]/protocolVersion</listValuesRoute>
+                  </attributes>
+                </field>
+                
+                <field name="auth_info[ldap_template]" label="Template" advanced="0" type="select" parent_field="" mandatory="0">
+                  <attributes>
+                    <multiple>false</multiple>
+                    <selectData>
+                      <posix>Posix</posix>
+                      <activeDirectory>ActiveDirectory</activeDirectory>
+                    </selectData>
+                    <listValuesRoute>/centreon-administration/auth/[i:id]/ldapTemplate</listValuesRoute>
+                  </attributes>
+                </field>
+  
                 <field type="text" label="eazazeaezeazaze" default_value="" advanced="0" name="auth_info[user_base_search]"></field>
                 <field type="text" label="Search user base DN" default_value="" advanced="0" name="auth_info[user_base_search]" mandatory="0"></field>
                 <field type="text" label="Search group base DN" default_value="" advanced="0" name="auth_info[group_base_search]" mandatory="0"></field>

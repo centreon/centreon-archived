@@ -132,4 +132,103 @@ class BasicCrudCommand extends BasicCrud
     {
         parent::duplicateAction();
     }
+    
+    
+    
+    private function echoTable($inputTable,$tableInfos){
+        $cnt = 0;
+        foreach($tableInfos as $infos){
+            echo '-+-';
+            for($i = 0; $i < $infos['size']; $i++){
+                echo '-';
+            }
+            $cnt = $cnt + 1;    
+        }
+        echo '-+';
+        echo "\n";
+        $cnt = 0;
+        foreach($tableInfos as $infos){
+            echo ' | ';
+            echo $infos['header'];
+            for($i = (strlen($infos['header']) + 1); $i <= $infos['size']; $i++){
+                echo ' ';
+            }
+            $cnt = $cnt + 1;    
+        }
+        echo ' |';
+        echo "\n";
+        foreach($inputTable as $inputLines){
+            $cnt = 0;
+            foreach($tableInfos as $infos){
+                echo '-+-';
+                for($i = 0; $i < $infos['size']; $i++){
+                    echo '-';
+                }
+                $cnt = $cnt + 1;    
+            }
+            echo '-+';
+            echo "\n";
+            $cnt = 0;
+            foreach($inputLines as $inputField){
+                echo ' | ';
+                echo  $inputField;
+                for($i = (strlen($inputField) + 1); $i <= $tableInfos[$cnt]['size']; $i++){
+                    echo ' ';
+                }
+                $cnt = $cnt + 1;
+            }
+            echo ' |';
+            echo "\n";
+        }
+        $cnt = 0;
+        foreach($tableInfos as $infos){
+            echo '-+-';
+            for($i = 0; $i < $infos['size']; $i++){
+                echo '-';
+            }
+            $cnt = $cnt + 1;    
+        }
+        echo '-+';
+        echo "\n";
+        
+        
+    }
+    
+    
+    /**
+     * Display result of a command as table in command line
+     * 
+     * @param array $headers
+     * @param array $inputTable
+     */
+    public function tableDisplay($headers, $inputTable){
+
+        $cnt = 0;
+        foreach($headers as $header){
+            $tableInfos[$cnt]['size'] = strlen($header);
+            $tableInfos[$cnt]['header'] = $header;
+            $cnt = $cnt + 1;
+        }
+        
+        foreach($inputTable as $inputLines){
+            $cnt = 0;
+            foreach($inputLines as $keys=>$inputField){
+                if(array_key_exists($keys,$headers)){
+                    $lenght = strlen($inputField);
+                    if($tableInfos[$cnt]['size'] < $lenght){
+                        $tableInfos[$cnt]['size'] = $lenght;
+                    }
+                    $cnt = $cnt + 1;    
+                }
+            }
+        }
+
+        $this->echoTable($inputTable,$tableInfos);
+        
+    }
+    
+    
+    
+    
+    
 }

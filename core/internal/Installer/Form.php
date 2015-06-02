@@ -190,6 +190,12 @@ class Form
             $validatorId = Validators::getIdByParameter('name', array($validator['name']));
             if (count($validatorId) == 0) {
                 Validators::insert($validator);
+            } else {
+                $aDatas = array('name' => $validator['name'], 'route' => $validator['route']);
+                $id = current($validatorId);
+                if (is_int($id)) {
+                    Validators::update($id, $aDatas);
+                }
             }
         }
     }
@@ -219,7 +225,7 @@ class Form
             AND s.step_id = r.step_id
             AND r.field_id = d.field_id
             AND w.name = ?";
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute(array($wizardName));
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -255,26 +261,30 @@ class Form
         $db = Di::getDefault()->get('db_centreon');
         if (!isset(self::$forms[$key])) {
             $stmt = $db->prepare(
-                'SELECT count(route)as count,form_id '
+                'SELECT count(route)as count,form_id,module_id '
                 . 'FROM cfg_forms '
                 . 'WHERE route = :route'
             );
             $stmt->bindParam(':route', $data['route'], \PDO::PARAM_STR);
             $stmt->execute();
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            if (isset($row['count']) && $row['count'] > 0) {
+
+            if (isset($row['count']) && $row['count'] > 0 && $row['module_id'] !== $moduleId) {
                 self::$forms[$key] = $row['form_id'];
-                return false;
+                return array('success' => false, 'moduleId' => $row['module_id']);
+            } else if (isset($row['count']) && $row['count'] > 0) {
+                self::$forms[$key] = $row['form_id'];
+                return array('success' => false, 'moduleId' => $row['module_id']);
             } else {
-                $sql = 'INSERT INTO cfg_forms (name, route, redirect, redirect_route, module_id) '
-                    . 'VALUES (:name, :route, :redirect, :redirect_route, :module)';
+                $sql = 'INSERT INTO cfg_forms (name, route, redirect, redirect_route, module_id)'
+                    . ' VALUES (:name, :route, :redirect, :redirect_route, :module)';
             }
         } else {
-            $sql = 'UPDATE cfg_forms SET route = :route, '
-                . 'redirect = :redirect, '
-                . 'redirect_route = :redirect_route '
-                . 'WHERE name = :name '
-                . 'AND module_id = :module';
+            $sql = 'UPDATE cfg_forms SET route = :route,'
+                . ' redirect = :redirect,'
+                . ' redirect_route = :redirect_route'
+                . ' WHERE name = :name'
+                . ' AND module_id = :module';
         }
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':name', $data['name']);
@@ -286,7 +296,7 @@ class Form
         if (!isset(self::$forms[$key])) {
             self::$forms[$key] = $db->lastInsertId('cfg_forms', 'form_id');
         }
-        return true;
+        return array('success' => true, 'moduleId' => $moduleId);
     }
 
     /**
@@ -359,7 +369,7 @@ class Form
     public static function insertField($data)
     {
         $key = $data['name'];
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         if (!isset(self::$fields[$key])) {
             $sql = 'INSERT INTO cfg_forms_fields 
                 (name, label, default_value, attributes, advanced, type, 
@@ -544,7 +554,7 @@ class Form
     protected static function insertWizard($data, $moduleId)
     {
         $key = $data['name'];
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         if (!isset(self::$wizards[$key])) {
             $stmt = $db->prepare(
                 'SELECT count(route) as count,wizard_id, module_id '
@@ -743,7 +753,7 @@ class Form
                         $versions = self::parseVersions($field->versions);
                     }
                     $attributes = json_encode($attributes);
-                    if (!$formAdded) {
+                    if ($formAdded['success'] === false && $formAdded['moduleId'] != $moduleId) {
                         $moduleName = Module::getParameters($moduleId, 'name');
                         if (isset($moduleName['name'])) {
                             $field['name'] = $moduleName['name'] . '__' . $field['name'];
