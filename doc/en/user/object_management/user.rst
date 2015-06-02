@@ -114,8 +114,8 @@ In order to delete a user, use **delete** action::
 Duplicate (Not yet implemented)
 -------------------------------
 
-In order to duplicate a timeperiod, use **duplicate** action::
+In order to duplicate a user, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:timeperiod:duplicate object="timeperiod[24x7]"
+  ./centreonConsole centreon-administration:user:duplicate object="user[jdoe]"
   Object successfully duplicated
 

@@ -1,0 +1,11 @@
+{
+    "liteAttributesSet" : "contact_id,description,timezone_id",
+    "repository" : "\\CentreonAdministration\\Repository\\ContactRepository",
+    "objectBaseUrl" : "contact",
+    "objectClass" : "\\CentreonAdministration\\Models\\Contact",
+    "attributesMap" : {
+        "id" : "contact_id",
+        "description" : "description",
+        "timezone" : "timezone_id"
+    }
+}
