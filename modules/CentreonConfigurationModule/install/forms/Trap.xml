@@ -37,7 +37,7 @@
                                         </choices>
                                     </attributes>
                                     <validators>
-                                        <validator rules="authorizedvalues" serverside="core.AuthorizedValues">
+                                        <validator rules="remote" serverside="core.AuthorizedValues">
                                             <argument name="values">-1,0,1,2,3</argument>
                                         </validator>  
                                     </validators>
