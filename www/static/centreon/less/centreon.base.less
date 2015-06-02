@@ -5,7 +5,7 @@ html {
 body {
     font-family: 'Open Sans', sans-serif;
     font-size: @defaultFontSize;
-    overfolow-x : hidden;
+    height:100%;
     background-color: transparent;
 }
 
@@ -38,9 +38,20 @@ ul {
   overflow-x: hidden;
 }
 
+body.full-height-layout #mainCntr, body.full-height-layout #pagWrapper {
+  height: 100%;
+}
+
 #pageWrapper {
-  position: relative;
+  //position: relative;
   padding-bottom: 50px;
+  height: 100%;
+}
+.contentWrapper {
+  height: ~"calc(100% - 54px)";
+  margin: 0 -15px;
+  position: relative;
+  overflow: hidden;
 }
 .logo {
     min-height: 50px;
