@@ -151,7 +151,11 @@ class CustomMacroRepository
         $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
         $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
         $stmtDelete->execute();
-
+        if($stmtDelete->rowCount() == 0){
+            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
+        }
+        
+        return $stmtDelete->rowCount();
     }
 
     /**
@@ -168,7 +172,11 @@ class CustomMacroRepository
         $stmtDelete->bindParam(':service', $objectId, \PDO::PARAM_INT);
         $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
         $stmtDelete->execute();
-
+        if($stmtDelete->rowCount() == 0){
+            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
+        }
+        
+        return $stmtDelete->rowCount();
     }
     
     /**
@@ -185,14 +193,18 @@ class CustomMacroRepository
 
         $setPart = "";
         $paramArray = array();
-        foreach($params as $index=>$param){
+        foreach($params as $index=>$param1){
             if(array_key_exists($index,$arrayUpdatable)){
                 if(!empty($paramArray)){
                     $setPart = ' , '.$setPart;
                 }
+                if(isset($arrayUpdatable[$index]['field']) && $arrayUpdatable[$index]['field'] == 'host_macro_name'){
+                    $macroName = '$_HOST'.$param1.'$';
+                    $param1 = $macroName;
+                }
                 $setPart .= $arrayUpdatable[$index]['field'].' = :'.$arrayUpdatable[$index]['field'].' ';
                 $paramArray = array(':'.$arrayUpdatable[$index]['field'] => 
-                                    array('param' => $param , 'type' => $arrayUpdatable[$index]['type'])
+                                    array('param' => $param1 , 'type' => $arrayUpdatable[$index]['type'])
                                 );
             }
         }
@@ -211,8 +223,8 @@ class CustomMacroRepository
 
         $stmtDelete = $dbconn->prepare($updateRequest);
         
-        foreach($paramArray as $index=>$param){
-            $stmtDelete->bindParam($index, $param['param'], $param['type']);
+        foreach($paramArray as $index=>$param2){
+            $stmtDelete->bindParam($index, $param2['param'], $param2['type']);
         }
         
         $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
@@ -235,14 +247,20 @@ class CustomMacroRepository
 
         $setPart = "";
         $paramArray = array();
-        foreach($params as $index=>$param){
+        foreach($params as $index=>$param1){
             if(array_key_exists($index,$arrayUpdatable)){
                 if(!empty($paramArray)){
                     $setPart = ' , '.$setPart;
                 }
+                if(isset($arrayUpdatable[$index]['field']) && $arrayUpdatable[$index]['field'] == 'svc_macro_name'){
+                    $macroName = '$_SERVICE'.$param1.'$';
+                    $param1 = $macroName;
+                }
+                
+                
                 $setPart .= $arrayUpdatable[$index]['field'].' = :'.$arrayUpdatable[$index]['field'].' ';
                 $paramArray = array(':'.$arrayUpdatable[$index]['field'] => 
-                                    array('param' => $param , 'type' => $arrayUpdatable[$index]['type'])
+                                    array('param' => $param1 , 'type' => $arrayUpdatable[$index]['type'])
                                 );
             }
         }
@@ -261,8 +279,8 @@ class CustomMacroRepository
 
         $stmtDelete = $dbconn->prepare($updateRequest);
         
-        foreach($paramArray as $index=>$param){
-            $stmtDelete->bindParam($index, $param['param'], $param['type']);
+        foreach($paramArray as $index=>$param2){
+            $stmtDelete->bindParam($index, $param2['param'], $param2['type']);
         }
         
         $stmtDelete->bindParam(':service', $objectId, \PDO::PARAM_INT);

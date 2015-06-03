@@ -90,7 +90,10 @@ abstract class FormController extends ListController
         if (isset($namedParams['id'])) {
             $objectId = $namedParams['id'];
         }
-        $list = $repository::getFormList($requestParams['q'], $objectId);
+        
+        $q = $requestParams['q'];
+        unset($requestParams['q']);
+        $list = $repository::getFormList($q, $objectId, $requestParams);
         $this->router->response()->json($list);
     }
     

@@ -52,6 +52,12 @@ class CommandRepository extends Repository
 
     /**
      *
+     * @var array
+     */
+    public static $exposedParams = array('type' => 'command_type');
+    
+    /**
+     *
      * @var string
      */
     public static $tableName = 'cfg_commands';

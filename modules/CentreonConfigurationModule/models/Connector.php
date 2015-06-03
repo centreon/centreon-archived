@@ -48,4 +48,5 @@ class Connector extends CentreonBaseModel
     protected static $table = "cfg_connectors";
     protected static $primaryKey = "id";
     protected static $uniqueLabelField = "name";
+    protected static $slugField        = "slug";
 }

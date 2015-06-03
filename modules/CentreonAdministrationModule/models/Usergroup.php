@@ -48,4 +48,5 @@ class Usergroup extends CentreonBaseModel
     protected static $table = "cfg_usergroups";
     protected static $primaryKey = "usergroup_id";
     protected static $uniqueLabelField = "name";
+    protected static $slugField        = "slug";
 }

@@ -62,7 +62,10 @@ var elRules = {};
     {/if}
   {/foreach}
   {if count($fieldValidators) > 0}
-    rules[$({$fieldName}).attr('id')] = elRules;
+      
+    if (typeof {$fieldName} !== "undefined") {
+      rules[$({$fieldName}).attr('id')] = elRules;
+    }
     elRules = {};
   {/if}
 {/foreach}

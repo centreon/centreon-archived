@@ -21,6 +21,7 @@ class AuthResources extends CentreonBaseModel
     protected static $table = "cfg_auth_resources";
     protected static $primaryKey = "ar_id";
     protected static $uniqueLabelField = "ar_name";
+    protected static $slugField        = "ar_slug";
     protected static $relations = array(
      
     );
