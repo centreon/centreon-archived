@@ -77,12 +77,16 @@ table.dataTable thead .sorting:after {
 
   .DTTT {
     margin-right: 5px;
+    top: @paddingElem/2;
     a {
       display: table-cell;
+      padding-top: @paddingElem/2 !important;
       span {
         &:before{
-          content: "\e619";
+          content: "\e61f";
           font-family: 'ico-centreon';
+          font-size: 22px;
+          color: @darkGray1;
         }
       }
     }
