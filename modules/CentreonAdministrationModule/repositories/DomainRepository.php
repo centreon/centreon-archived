@@ -432,10 +432,6 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      */
     public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
-        if ($validate) {
-            self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
-        }
-  
-        parent::update($givenParameters);
+        parent::update($givenParameters, "form", $route, $validate, $validateMandatory);
     }
 }

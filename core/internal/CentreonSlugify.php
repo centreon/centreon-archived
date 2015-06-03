@@ -117,7 +117,7 @@ class CentreonSlugify
         } else {
             if (is_int($iLast)) {
                 $iPos = strrpos($sValue, static::$sGlue);
-                $sSlugNew = substr($sValue, 0, $iPos).static::$sGlue.($iNb + 1);  
+                $sSlugNew = substr($sValue, 0, $iPos).static::$sGlue.($iNb + 1);
             } else {
                 static::$index++;
                 $sSlugNew = $sValue.static::$sGlue.static::$index;

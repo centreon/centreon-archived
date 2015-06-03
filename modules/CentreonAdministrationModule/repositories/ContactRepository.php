@@ -39,6 +39,7 @@ use CentreonAdministration\Models\Contact;
 use CentreonAdministration\Models\ContactInfo;
 use Centreon\Internal\Di;
 use CentreonAdministration\Repository\TagsRepository;
+use Centreon\Internal\CentreonSlugify;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -168,6 +169,10 @@ class ContactRepository extends Repository
         if (isset($givenParameters['description'])) {
             $infoToUpdate['description'] = $givenParameters['description'];
         }
+        
+        $oSlugify = new CentreonSlugify($class, get_called_class());
+        $sSlug = $oSlugify->slug($givenParameters[$class::getUniqueLabelField()]);
+        $infoToUpdate[$class::getSlugField()] = $sSlug;
         
         return Contact::update($givenParameters['object_id'], $infoToUpdate);
     }            
