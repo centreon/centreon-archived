@@ -158,6 +158,7 @@ abstract class FormRepository extends ListRepository
             $insertParams = array();
             $givenParameters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
             
+            $db->beginTransaction();
             $oSlugify = new CentreonSlugify($class, get_called_class());             
             $givenParameters[$class::getSlugField()]  = $oSlugify->slug($givenParameters[$class::getUniqueLabelField()]);
             
@@ -174,7 +175,7 @@ abstract class FormRepository extends ListRepository
             }
 
             
-            $db->beginTransaction();
+            
             $id = $class::insert($insertParams);
             if (is_null($id)) {
                 $db->rollback();
@@ -256,9 +257,10 @@ abstract class FormRepository extends ListRepository
         $pk = $class::getPrimaryKey();
         $givenParameters[$pk] = $givenParameters['object_id'];
         
-        $oSlugify = new CentreonSlugify($class, get_called_class());             
-        $givenParameters[$class::getSlugField()]  = $oSlugify->slug($givenParameters[$class::getUniqueLabelField()]);
-            
+        $oSlugify = new CentreonSlugify($class, get_called_class());
+        $sSlug = $oSlugify->slug($givenParameters[$class::getUniqueLabelField()]);
+        $givenParameters[$class::getSlugField()] = $sSlug;
+               
         if (!isset($givenParameters[$pk])) {
             throw new \Exception('Primary key of object is not defined');
         }

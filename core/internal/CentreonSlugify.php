@@ -97,30 +97,32 @@ class CentreonSlugify
         $oRepo= $this->oRepository;
 
         $aObject = $oRepo::getList("*", -1, 0, null, 'asc', array($this->sSlugField => $sSlug));
-        if (count($aObject) > 0) {
-            $sSlugNew = self::concat($sSlug);
-            self::slug($sSlugNew);
-        } else {
-            return $sSlug;
-        }
+        
+        $sSlugNew = self::concat($sSlug, count($aObject));
+
+        return $sSlugNew;
     }
     /**
      * 
      * @param type $sValue
      * @return string
      */
-    public static function concat($sValue)
+    public static function concat($sValue, $iNb)
     {
+        $sSlugNew = "";
         $aValues = explode(static::$sGlue, $sValue);
         $iLast = end($aValues);
-        if (is_int($iLast)) {
-            static::$index++;
-            $iPos = strrpos($sValue, $sGlue);
-            $sVal = substr($sValue, 0, $iPos).static::$sGlue.static::$index;
+        if ($iNb == 0) {
+            $sSlugNew = $sValue;
         } else {
-            static::$index++;
-            $sVal = $sValue."-".static::$index;
+            if (is_int($iLast)) {
+                $iPos = strrpos($sValue, static::$sGlue);
+                $sSlugNew = substr($sValue, 0, $iPos).static::$sGlue.($iNb + 1);  
+            } else {
+                static::$index++;
+                $sSlugNew = $sValue.static::$sGlue.static::$index;
+            }
         }
-        return $sVal;
+        return $sSlugNew;
     }
 }
