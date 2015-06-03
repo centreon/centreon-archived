@@ -160,11 +160,12 @@ class PollerDatatable extends Datatable
             'title' => 'Has changed',
             'name' => 'hasChanged',
             'data' => 'hasChanged',
-            'orderable' => false,
+            'orderable' => true,
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'source' => 'other',
+            'customFunc' => 'hasChanged',
             'cast' => array(
                 'type' => 'select',
                 'parameters' => array(
@@ -184,7 +185,7 @@ class PollerDatatable extends Datatable
             'title' => 'Version',
             'name' => 'version',
             'data' => 'version',
-            'orderable' => false,
+            'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
@@ -214,6 +215,20 @@ class PollerDatatable extends Datatable
                 )
             )
         ),
+        array (
+            'title' => 'Last restart',
+            'name' => 'start_time',
+            'data' => 'start_time',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+//            'source' => 'other',
+            'dataSource' => '\CentreonRealtime\Models\Instances'
+        )
+        
+        
+        
     );
 
     /**
@@ -230,6 +245,16 @@ class PollerDatatable extends Datatable
         parent::__construct($params, $objectModelClass);
     }
     
+    public static function hasChanged(&$resultSet){
+        foreach ($resultSet as &$engineServer) {
+            $engineServer['hasChanged'] = PollerRepository::checkChangeState(
+                $engineServer['poller_id'],
+                $engineServer['start_time']
+            );
+        }
+    }
+    
+    
     /**
      * 
      * @param type $resultSet
@@ -237,11 +262,11 @@ class PollerDatatable extends Datatable
     public static function addAdditionnalDatas(&$resultSet)
     {
         // Get datatabases connections
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
+        //$di = Di::getDefault();
+        //$dbconn = $di->get('db_centreon');
 
         /* Get data from cfg_nodes */
-        $sqlNode = "SELECT poller_id, ip_address 
+        /*$sqlNode = "SELECT poller_id, ip_address 
             FROM cfg_nodes n, cfg_pollers p
             WHERE p.node_id = n.node_id";
         $stmtNode = $dbconn->prepare($sqlNode);
@@ -250,19 +275,19 @@ class PollerDatatable extends Datatable
         $nodeData = array();
         foreach ($resNode as $row) {
             $nodeData[$row['poller_id']] = $row;
-        }
+        }*/
 
         /* Get data from rt_instances */
-        $sqlBroker = "SELECT start_time, running, 
+        /*$sqlBroker = "SELECT start_time, running, 
             instance_id, name AS instance_name , last_alive, version,
             engine AS program_name
             FROM rt_instances";
         $stmtBroker = $dbconn->query($sqlBroker);
         $resultBroker = $stmtBroker->fetchAll(\PDO::FETCH_ASSOC);
-        
+        */
         // Build up the table row
-        foreach ($resultSet as &$engineServer) {
-            $engineServer['start_time'] = '';
+        //foreach ($resultSet as &$engineServer) {
+            /*$engineServer['start_time'] = '';
             $engineServer['running'] = 0;
             $engineServer['last_alive'] = '';
             $engineServer['version'] = '';
@@ -274,12 +299,13 @@ class PollerDatatable extends Datatable
             }
             if (isset($nodeData[$engineServer['poller_id']])) {
                 $engineServer['ip_address'] = $nodeData[$engineServer['poller_id']]['ip_address'];
-            }
-            $engineServer['hasChanged'] = PollerRepository::checkChangeState(
+            }*/
+            /*$engineServer['hasChanged'] = PollerRepository::checkChangeState(
                 $engineServer['poller_id'],
                 $engineServer['start_time']
-            );
-        }
+            );*/
+            
+        //}
     }
     
     /**
@@ -316,6 +342,7 @@ class PollerDatatable extends Datatable
         $fields = "";
         $arrayInnerJoin = array();
         $arrayLeftJoin = array();
+        $postFunctionsStore = array();
         foreach (static::$columns as $column) {
             if(!isset($column['source'])){
                 if(!isset($column['dataSource'])){
@@ -338,11 +365,11 @@ class PollerDatatable extends Datatable
                         }
                     }
                 }
+            }else if(isset($column['customFunc'])){
+                $postFunctionsStore[] = $column['customFunc'];
             }
         }
         $fields = rtrim($fields, ',');
-        
-        
         
         // get fields for search
         $conditions = array();
@@ -397,16 +424,21 @@ class PollerDatatable extends Datatable
         }
         
         $fieldsOrderBy = "";
+        $orderExternal = false;
         $columnToOrderBy = static::$columns[$this->params['order'][0]['column']];
-        if(!isset($columnToOrderBy['dataSource'])){
+        if(!isset($columnToOrderBy['dataSource']) && !isset($columnToOrderBy['source'])){
             $fieldsOrderBy = $modelTable . '.' . static::$columns[$this->params['order'][0]['column']]['name'];
-        }else{
+            $sql .= ' ORDER BY '.$fieldsOrderBy.' '.$this->params['order'][0]['dir'];
+        }else if(!isset($columnToOrderBy['source'])){
             $modelClassSource = $columnToOrderBy['dataSource'];
             $modelTableSource = $modelClassSource::getTableName();
             $fieldsOrderBy = $modelTableSource . '.' . static::$columns[$this->params['order'][0]['column']]['name'];
+            $sql .= ' ORDER BY '.$fieldsOrderBy.' '.$this->params['order'][0]['dir'];
+        }else{
+            $orderExternal = $columnToOrderBy;
         }
 
-        $sql .= ' ORDER BY '.$fieldsOrderBy.' '.$this->params['order'][0]['dir'];
+        
         
         // Get datatabases connections
         $di = Di::getDefault();
@@ -416,6 +448,20 @@ class PollerDatatable extends Datatable
         $stmt = $dbconn->prepare($sql);
         $stmt->execute();
         $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        foreach($postFunctionsStore as $functionStored){
+            self::$functionStored($res);
+        }
+        
+        if($orderExternal){
+            $arrayFieldOrderBy = array();
+            foreach($res as $r){
+                $arrayFieldOrderBy[] = $r[$orderExternal['data']];
+            }
+            array_multisort($arrayFieldOrderBy, $res);
+        }
+        
+        
         $datasFromDb['datas'] = $res;
         
         
