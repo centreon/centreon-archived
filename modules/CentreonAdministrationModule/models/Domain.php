@@ -49,4 +49,5 @@ class Domain extends CentreonBaseModel
     protected static $table = "cfg_domains";
     protected static $primaryKey = "domain_id";
     protected static $uniqueLabelField = "name";
+    protected static $slugField        = "slug";
 }

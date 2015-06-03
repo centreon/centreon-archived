@@ -49,7 +49,7 @@ class Service extends CentreonBaseModel
     protected static $table = "cfg_services";
     protected static $primaryKey = "service_id";
     protected static $uniqueLabelField = "service_description";
-
+    protected static $slugField        = "service_slug";
     protected static $aclResourceType = 2;
 
     /*protected static $basicFilters = array(

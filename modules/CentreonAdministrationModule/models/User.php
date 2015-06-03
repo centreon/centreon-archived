@@ -48,6 +48,7 @@ class User extends \Centreon\Models\CentreonBaseModel
     protected static $table = "cfg_users";
     protected static $primaryKey = "user_id";
     protected static $uniqueLabelField = "login";
+    protected static $slugField        = "slug";
 
     /**
      *

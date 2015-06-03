@@ -48,4 +48,5 @@ class Command extends CentreonBaseModel
     protected static $table = "cfg_commands";
     protected static $primaryKey = "command_id";
     protected static $uniqueLabelField = "command_name";
+    protected static $slugField        = "command_slug";
 }

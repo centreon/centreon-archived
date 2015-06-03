@@ -170,8 +170,9 @@
                 "aButtons": [
                     {
                         "sExtends": "collection",
-                        "sButtonText": "Export",
-                        "aButtons": [ "copy", "csv", "xls", "pdf", "print" ]
+                        "sButtonText": "",
+                        "aButtons": [ "copy", "csv", "xls", "pdf", "print" ],
+                        "sButtonClass": "btnC btnDefault"
                     }
                 ]
             },
