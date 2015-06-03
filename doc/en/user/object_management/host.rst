@@ -200,3 +200,34 @@ In order to remove a tag from a host, use **removeTag** action::
 
   ./centreonConsole centreon-configuration:host:removeTag object="host[host1]":tag="tag1"
 
+
+
+List Macro
+----------
+
+In order to list macros of a host, use **listMacro** action::
+
+  ./centreonConsole centreon-configuration:host:listMacro object="host[host1]"
+  tag1
+
+Add Macro
+---------
+
+In order to add a macro to a host, use **addMacro** action::
+
+  ./centreonConsole centreon-configuration:host:addMacro object="host[host1]":params="name[macro1name];value[macro1value];ispassword[0]"
+
+Remove Macro
+------------
+
+In order to remove a macro from a host, use **removeMacro** action::
+
+  ./centreonConsole centreon-configuration:host:removeMacro object="host[host1]":macro="macro1name"
+
+Update Macro
+------------
+
+In order to update a macro from a host, use **updateMacro** action::
+
+  ./centreonConsole centreon-configuration:host:updateMacro object="host[host1]":macro="macro1name":params="value[macro1newvalue];name[macro1newname];ispassword[1];"
+

@@ -610,6 +610,7 @@ abstract class AbstractModuleInstaller
     protected function installMenu()
     {
         $filejson = $this->moduleDirectory . 'install/menu.json';
+        Informations::deleteMenus($this->moduleId);
         if (file_exists($filejson)) {
             $menus = json_decode(file_get_contents($filejson), true);
             if (!is_null($menus)) {
@@ -692,6 +693,7 @@ abstract class AbstractModuleInstaller
      */
     public static function parseMenuArray($moduleId, $menus, $parent = null)
     {
+        
         foreach ($menus as $menu) {
             if (!is_null($parent)) {
                 $menu['parent'] = $parent;

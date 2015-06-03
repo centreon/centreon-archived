@@ -51,13 +51,20 @@ use Centreon\Internal\CentreonSlugify;
  */
 abstract class FormRepository extends ListRepository
 {
+    
+    /**
+     *
+     * @var array
+     */
+    public static $exposedParams = array();
+    
     /**
      * Get list of objects
      *
      * @param string $searchStr
      * @return array
      */
-    public static function getFormList($searchStr = "", $objectId = null)
+    public static function getFormList($searchStr = "", $objectId = null, $additionalGetParams = null)
     {
         if (!empty(static::$secondaryObjectClass)) {
             $class = static::$secondaryObjectClass;
@@ -75,6 +82,17 @@ abstract class FormRepository extends ListRepository
         if (in_array(static::ORGANIZATION_FIELD, $columns)) {
            $filters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
         }
+
+        if(!empty($additionalGetParams)){
+            foreach($additionalGetParams as $key=>$additionalGetParam){
+                if(isset(static::$exposedParams[$key])){
+                    if(in_array(static::$exposedParams[$key], $columns)){
+                        $filters[static::$exposedParams[$key]] = $additionalGetParam;
+                    }
+                }
+            }
+        }
+        
 
         $list = $class::getList(array($idField, $uniqueField), -1, 0, null, "ASC", $filters, "AND");
         $finalList = array();
