@@ -51,7 +51,7 @@ class BasicMacroSupport extends BasicCrudCommand
     /**
      * 
      * @param string $object
-     * @param array $macro
+     * @param array $params
     */
     public function addMacroAction($object, $params)
     {
@@ -156,7 +156,12 @@ class BasicMacroSupport extends BasicCrudCommand
 
             //$this->tableDisplay(array('macro_name'=>'name','macro_value'=>'value','macro_hidden'=>'hidden'),$macros);
             
-            echo "macro_name;macro_value;macro_hidden";
+            if(!empty($macros)){
+                echo "macro_name;macro_value;macro_hidden";
+            }else{
+                \Centreon\Internal\Utils\CommandLine\InputOutput::display('No results', true, 'red');
+            }
+            
             foreach ($macros as $macro) {
                 echo "\n".$macro['macro_name'] . ";" . $macro['macro_value'] . ";" . $macro['macro_hidden'];
             }

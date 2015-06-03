@@ -394,6 +394,17 @@ class Informations
         $stmt->execute();
     }
     
+    
+    public static function deleteMenus($moduleId){
+        
+        $db = Di::getDefault()->get('db_centreon');
+        
+        $sql = "DELETE FROM cfg_menus WHERE module_id = :module_id";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':module_id', $moduleId, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+    
     /**
      * 
      * @param string $launcher
