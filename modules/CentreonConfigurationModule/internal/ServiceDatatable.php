@@ -285,11 +285,7 @@ class ServiceDatatable extends Datatable
                 $myServiceSet['host_name'] = '';
             } else {
                 $previousHost = $myServiceSet['host_name'];
-                $myServiceSet['host_name'] = '<span><span>'.
-                HostRepository::getIconImage(
-                    $myServiceSet['host_name']
-                ).'&nbsp;'.$myServiceSet['host_name'].
-                '</span></span>';
+                $myServiceSet['host_name'] = '<span class="icoListing">'.HostRepository::getIconImage($myServiceSet['host_name']).'</span>'.$myServiceSet['host_name'];
             }
                         
             // Set Scheduling
@@ -335,11 +331,9 @@ class ServiceDatatable extends Datatable
                 $myServiceSet['service_template_model_stm_id'] = $tplStr;
             }
             
-            $myServiceSet['service_description'] = '<span><span>'.
-            ServiceRepository::getIconImage($myServiceSet['service_id']).
-            '&nbsp;'.
-            $myServiceSet['service_description'].
-            '</span></span>';
+            $myServiceSet['service_description'] = '<span class="icoListing">'.
+            ServiceRepository::getIconImage($myServiceSet['service_id']).'</span>'.
+            $myServiceSet['service_description'];
             $myServiceSet['service_description'] .= '</a><a href="#">';
             $myServiceSet['service_description'] .= ServiceRealTimeRepository::getStatusBadge(
                 ServiceRealTimeRepository::getStatus($myServiceSet["host_id"], $myServiceSet["service_id"])

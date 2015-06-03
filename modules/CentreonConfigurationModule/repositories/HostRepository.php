@@ -184,7 +184,7 @@ class HostRepository extends Repository
         $alreadyProcessed = false;
         $hostIdTab = Host::getIdByParameter('host_name', array($host_name));
         if (count($hostIdTab) == 0) {
-            $finalRoute = "<i class='icon-host ico-16'></i>";
+            $finalRoute = "<i class='icon-host ico-20'></i>";
         } else {
             $hostId = $hostIdTab[0];
         }
@@ -209,13 +209,13 @@ class HostRepository extends Repository
                     'format' => '.'.$fileFormat
                 );
                 $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
-                $finalRoute = '<img src="'.$imgSrc.'" style="width:16px;height:16px;">';
+                $finalRoute = '<img src="'.$imgSrc.'">';
             } else {
                 if (count($templates) == 0 && !$alreadyProcessed) {
                     $templates = static::getTemplateChain($hostId, array(), -1);
                     $alreadyProcessed = true;
                 } else if (count($templates) == 0 && $alreadyProcessed) {
-                    $finalRoute = "<i class='icon-host ico-16'></i>";
+                    $finalRoute = "<i class='icon-host ico-20'></i>";
                 }
                 $currentHost = array_shift($templates);
                 $hostId = $currentHost['id'];
