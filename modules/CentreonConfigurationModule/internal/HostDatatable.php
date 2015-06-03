@@ -223,8 +223,7 @@ class HostDatatable extends Datatable
                     'Disabled' => '0'
                 )
             ),
-            'className' => "cell_center",
-            'width' => '50px'
+            'className' => "cell_center"
         ), 
         array (
             'title' => 'Tags',

@@ -88,8 +88,7 @@ class DowntimesDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => false,
-            'className' => 'cell_center',
-            'width' => "20px"
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Type',
@@ -103,8 +102,8 @@ class DowntimesDatatable extends Datatable
             'cast' => array(
                 'type' => 'select',
                 'parameters' =>array(
-                    '1' => "<i class='icon-service ico-16'></i>",
-                    '2' => "<i class='icon-host ico-16'></i>",
+                    '1' => "<i class='icon-service ico-20'></i>",
+                    '2' => "<i class='icon-host ico-20'></i>",
                 )
             ),
             'searchParam' => array(
@@ -114,8 +113,7 @@ class DowntimesDatatable extends Datatable
                     'Service' => '1',
                 )
             ),
-            'className' => 'cell_center',
-            'width' => "10px"
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Object',
@@ -135,7 +133,6 @@ class DowntimesDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
-            'width' => '10%',
             'className' => 'cell_center'
         ),
         array (
@@ -146,7 +143,6 @@ class DowntimesDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
-            'width' => '10%',
             'className' => 'cell_center'
         ),
         array (
@@ -157,7 +153,6 @@ class DowntimesDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
-            'width' => '10%',
             'className' => 'cell_center'
         ),
         array (
@@ -168,7 +163,6 @@ class DowntimesDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'width' => '10%',
             'className' => 'cell_center'
         ),
         array (
@@ -193,7 +187,6 @@ class DowntimesDatatable extends Datatable
                     'Yes' => '1',
                 )
             ),
-            'width' => '5%',
             'className' => 'cell_center'
         ),
         array (
@@ -218,7 +211,6 @@ class DowntimesDatatable extends Datatable
                     'Yes' => '1',
                 )
             ),
-            'width' => '5%',
             'className' => 'cell_center'
         ),
         array (
@@ -243,7 +235,6 @@ class DowntimesDatatable extends Datatable
                     'Yes' => '1',
                 )
             ),
-            'width' => '5%',
             'className' => 'cell_center'
         ),
         array (
@@ -254,7 +245,6 @@ class DowntimesDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'width' => '40%',
             'className' => 'cell_center'
         ),
 

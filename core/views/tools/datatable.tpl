@@ -61,8 +61,6 @@
    </div>
 
 </div>
-<aside id="sideRight" class="sideRightWrapper">
 
-</aside>
-
+<aside id="sideRight" class="sideRightWrapper"></aside>
 

@@ -44,17 +44,20 @@ table.dataTable thead .sorting_desc_disabled {
   //background: transparent;
 }
 table.dataTable thead .sorting_asc:after {
-  //float: right;
+  content: "\f0de";
+  float: right;
   font-family: fontawesome;
+  color: @firstGreen;
 }
 table.dataTable thead .sorting_desc:after {
   content: "\f0dd";
-  //float: right;
+  float: right;
   font-family: fontawesome;
+  color: @firstGreen;
 }
 table.dataTable thead .sorting:after {
   content: "\f0dc";
-  //float: right;
+  float: right;
   font-family: fontawesome;
   color: rgba(50, 50, 50, 0.5);
 }
@@ -74,6 +77,15 @@ table.dataTable thead .sorting:after {
 
   .DTTT {
     margin-right: 5px;
+    a {
+      display: table-cell;
+      span {
+        &:before{
+          content: "\e619";
+          font-family: 'ico-centreon';
+        }
+      }
+    }
   }
 
   .dataTables_length {
