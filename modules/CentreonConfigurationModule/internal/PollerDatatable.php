@@ -426,14 +426,15 @@ class PollerDatatable extends Datatable
         $fieldsOrderBy = "";
         $orderExternal = false;
         $columnToOrderBy = static::$columns[$this->params['order'][0]['column']];
+        $dir = $this->params['order'][0]['dir'];
         if(!isset($columnToOrderBy['dataSource']) && !isset($columnToOrderBy['source'])){
-            $fieldsOrderBy = $modelTable . '.' . static::$columns[$this->params['order'][0]['column']]['name'];
-            $sql .= ' ORDER BY '.$fieldsOrderBy.' '.$this->params['order'][0]['dir'];
+            $fieldsOrderBy = $modelTable . '.' . $columnToOrderBy['name'];
+            $sql .= ' ORDER BY '.$fieldsOrderBy.' '.$dir;
         }else if(!isset($columnToOrderBy['source'])){
             $modelClassSource = $columnToOrderBy['dataSource'];
             $modelTableSource = $modelClassSource::getTableName();
-            $fieldsOrderBy = $modelTableSource . '.' . static::$columns[$this->params['order'][0]['column']]['name'];
-            $sql .= ' ORDER BY '.$fieldsOrderBy.' '.$this->params['order'][0]['dir'];
+            $fieldsOrderBy = $modelTableSource . '.' . $columnToOrderBy['name'];
+            $sql .= ' ORDER BY '.$fieldsOrderBy.' '.$dir;
         }else{
             $orderExternal = $columnToOrderBy;
         }
@@ -458,12 +459,15 @@ class PollerDatatable extends Datatable
             foreach($res as $r){
                 $arrayFieldOrderBy[] = $r[$orderExternal['data']];
             }
-            array_multisort($arrayFieldOrderBy, $res);
+            if(strtolower($dir) == 'asc'){
+                array_multisort($arrayFieldOrderBy, $res, SORT_ASC);
+            }else if(strtolower($dir) == 'desc'){
+                array_multisort($arrayFieldOrderBy, $res, SORT_DESC);
+            }
+            
         }
-        
-        
+
         $datasFromDb['datas'] = $res;
-        
         
         $stmt = $dbconn->prepare($sqlCount);
         $stmt->execute();
