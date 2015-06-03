@@ -5,9 +5,60 @@
 // Custom scripts
 $(document).ready(function () {
 
-    // MetisMenu
-    $('#side-menu').metisMenu({
+    // Full height of sidebar
+    function fix_height() {
+        var heightWithoutNavbar = $("body > #mainCntr").height() - 52;
+        //$(".sidebard-panel").css("min-height", heightWithoutNavbar + "px");
+
+        var navbarHeigh = $('nav.navbar-default').height();
+        var wrapperHeigh = $('#pageWrapper').height();
+
+        if(navbarHeigh > wrapperHeigh){
+            $('#pageWrapper').css("height", navbarHeigh + "px");
+        }
+
+        if(navbarHeigh < wrapperHeigh){
+            $('#pageWrapper').css("height", $(window).height()  + "px");
+        }
+
+    }
+    fix_height();
+
+    // Fixed Sidebar
+    $(window).bind("load", function () {
+        if ($("body").hasClass('fixed-sidebar')) {
+            $('.sidebar-collapse').slimScroll({
+                height: '100%',
+                railOpacity: 0.9
+            });
+        }
+    })
+
+    // Move right sidebar top after scroll
+    $(window).scroll(function(){
+        if ($(window).scrollTop() > 0 && !$('body').hasClass('fixed-nav') ) {
+            $('#right-sidebar').addClass('sidebar-top');
+        } else {
+            $('#right-sidebar').removeClass('sidebar-top');
+        }
     });
+
+    $(document).bind("load resize scroll", function() {
+        if(!$("body").hasClass('body-small')) {
+            fix_height();
+        }
+    });
+
+    $("[data-toggle=popover]")
+        .popover();
+
+    // Add slimscroll to element
+    $('.full-height-scroll').slimscroll({
+        height: '100%'
+    })
+
+    // MetisMenu
+    $('#side-menu').metisMenu({});
 
 
     // Collapse ibox function
@@ -60,12 +111,6 @@ $(document).ready(function () {
     // Fix Bootstrap backdrop issu with animation.css
     $('.modal').appendTo("body")
 
-    // Full height of sidebar
-    function fix_height() {
-        var heightWithoutNavbar = $("body > #mainCntr").height() - 61;
-        $(".sidebard-panel").css("min-height", heightWithoutNavbar + "px");
-    }
-    fix_height();
 
     // Fixed Sidebar
     // unComment this only whe you have a fixed-sidebar
@@ -155,77 +200,6 @@ function WinMove() {
 
 /*-- Float label --*/
 
-function initializeFloatLabel(elSelector) {
-  var elSelector = (elSelector === undefined ? "" : elSelector + " ");
-
-  if($('input').val() == 0) {
-      $(elSelector + '.CentreonForm .form-group').each(function(){
-         $(this).addClass('js-hide-label');
-          $('input').css({'padding':'10px 12px 12px'});
-      });
-  }
-
-  // Code for adding/removing classes here
-
-  $(elSelector + '.CentreonForm .form-group').find('input, textarea').on('keyup blur focus', function(e){
-
-      // Cache our selectors
-      var $this = $(this),
-          $label = $this.prev('label'),
-          $parent = $this.parent();
-
-      // ajax request for
-      var $form_url = $(elSelector + '.CentreonForm').attr("data-route");
-
-      $.ajax({
-          url: '/form/help',
-          type: "GET",
-          dataType: 'JSON',
-          data : {
-              form: $form_url,
-              field: $this.attr("name")
-          },
-          success : function(data){
-
-              if (e.type == 'keyup') {
-               if( $this.val() == '' ) {
-                   $parent.addClass('js-hide-label');
-                   } else {
-                       $parent.removeClass('js-hide-label');
-                       }
-               }
-
-               else if (e.type == 'blur') {
-                  $this.next().css({'display':'none'});
-
-                  if( $this.val() == '' ) {
-                      $parent.addClass('js-hide-label');
-                      $this.css({'padding':'10px 12px 12px'});
-                  }
-                  else {
-                      $parent.removeClass('js-hide-label').addClass('js-unhighlight-label');
-                  }
-              }
-              else if (e.type == 'focus') {
-
-                  $this.next().css({'display': 'block'}).html(data.text);
-                  $this.css({'padding':'16px 12px 6px'});
-                  $parent.removeClass('js-hide-label').addClass('js-unhighlight-label');
-
-                  if ($this.val() == '') {
-                      $parent.addClass('js-hide-label').addClass('js-unhighlight-label');
-                      $this.css({'padding':'10px 12px 6px'});
-                  }
-              }
-          },
-          error : function(error){
-              //console.log(error,' -Help- datas not transfered');
-          }
-      })
-
-  });
-}
-
 $(document).ready(function() {
 
     // Test for placeholder support
@@ -236,9 +210,8 @@ $(document).ready(function() {
 
     // Hide labels by default if placeholders are supported
 
-
     if($.support.placeholder) {
-      initializeFloatLabel();
+      $("form.CentreonForm").centreonForm();
     }
 });
 

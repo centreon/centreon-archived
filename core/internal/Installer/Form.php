@@ -190,6 +190,12 @@ class Form
             $validatorId = Validators::getIdByParameter('name', array($validator['name']));
             if (count($validatorId) == 0) {
                 Validators::insert($validator);
+            } else {
+                $aDatas = array('name' => $validator['name'], 'route' => $validator['route']);
+                $id = current($validatorId);
+                if (is_int($id)) {
+                    Validators::update($id, $aDatas);
+                }
             }
         }
     }

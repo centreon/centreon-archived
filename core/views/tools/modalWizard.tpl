@@ -46,20 +46,6 @@ $(function() {
   $(document).unbind('finished');
   {if isset($validateUrl)}
   $(document).on('finished', function (event) {
-    /*var validateMandatory = true;
-    var errorText = "";
-    $("input.mandatory-field").each(function(index) {
-      if ($(this).val().trim() === "") {
-        validateMandatory = false;
-        $(this).parent().addClass("has-error has-feedback");
-        errorText += $(this).attr("placeholder") + " is required<br/>";
-      }
-    });
-
-    if (!validateMandatory) {
-      alertMessage(errorText, "alert-danger");
-      return false;
-    } */
     if ($('#wizard_form').valid()) {
       $.ajax({
         url: "{url_for url=$validateUrl}",
@@ -94,7 +80,9 @@ $(function() {
   {/if}
   {get_custom_js}
   loadParentField();
-  initializeFloatLabel("#modal");
+  $("#wizard_form").centreonForm({
+    rules: (formValidRule["{$formName}"] === undefined ? {} : formValidRule["{$formName}"])
+  });
 });
 </script>
 {include file="[Core]/form/validators.tpl"}
