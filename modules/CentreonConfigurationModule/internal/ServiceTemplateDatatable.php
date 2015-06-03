@@ -197,8 +197,7 @@ class ServiceTemplateDatatable extends Datatable
                     'Disabled' => '0'
                 )
             ),
-            "className" => 'cell_center',
-            "width" => '40px'
+            "className" => 'cell_center'
         ),
         array (
             'title' => 'Tags',
@@ -231,11 +230,9 @@ class ServiceTemplateDatatable extends Datatable
         $router = Di::getDefault()->get('router');
 
         foreach ($resultSet as &$myServiceSet) {
-            $myServiceSet['service_description'] = '<span><span>'.
-            ServiceRepository::getIconImage($myServiceSet['service_id']).
-            '&nbsp;'.
-            $myServiceSet['service_description'].
-            '</span></span>';
+            $myServiceSet['service_description'] = '<span class="icoListing">'.
+            ServiceRepository::getIconImage($myServiceSet['service_id']).'</span>'.
+            $myServiceSet['service_description'];
 
 
             // Set Tpl Chain

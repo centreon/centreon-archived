@@ -173,8 +173,7 @@ class ServiceDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
-            "className" => 'cell_center',
-            "width" => '40px'
+            "className" => 'cell_center'
         ),
         array (
             'title' => 'Retry',

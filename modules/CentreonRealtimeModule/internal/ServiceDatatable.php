@@ -192,7 +192,6 @@ class ServiceDatatable extends Datatable
                     'Pending' => '4'
                 )
             ),
-            'width' => '50px',
             'className' => 'cell_center'
         ),
         array (
@@ -202,8 +201,7 @@ class ServiceDatatable extends Datatable
             'orderable' => false,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'width' => '10%'
+            'visible' => true
         ),
         array (
             'title' => 'Duration',
@@ -302,13 +300,11 @@ class ServiceDatatable extends Datatable
                 $myServiceSet['name'] = '';
             } else {
                 $previousHost = $myServiceSet['name'];
-                $icon = HostConfigurationRepository::getIconImage($myServiceSet['name']);
-                $myServiceSet['name'] = '<span>'
-                    . $icon
-                    . '&nbsp;'.$myServiceSet['name'].'</span>';
+                $icon = '<span class="icoListing">'.HostConfigurationRepository::getIconImage($myServiceSet['name']).'</span>';
+                $myServiceSet['name'] = $icon.$myServiceSet['name'];
             }
             
-            $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
+            $icon = '<span class="icoListing">'.ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']).'</span>';
             $myServiceSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-realtime/service/')
                 . $myServiceSet['host_id']
                 . '/'.$myServiceSet['service_id']

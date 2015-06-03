@@ -92,7 +92,6 @@ class IndicatorDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'width' => 10,
             'class' => 'cell_center',
             'cast' => array(
                 'type' => 'select',
