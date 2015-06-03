@@ -35,11 +35,13 @@
 
 namespace CentreonMain\Repository;
 
+
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Form\Validators\Validator;
 use CentreonMain\Events\PreSave as PreSaveEvent;
 use CentreonMain\Events\PostSave as PostSaveEvent;
+use Centreon\Internal\CentreonSlugify;
 
 /**
  * Abstact class for configuration repository
@@ -130,13 +132,18 @@ abstract class FormRepository extends ListRepository
             if ($validate) {
                 self::validateForm($givenParameters, $origin, $route, $validateMandatory);
             }
+            
         
             $class = static::$objectClass;
             $pk = $class::getPrimaryKey();
             $columns = $class::getColumns();
             $insertParams = array();
             $givenParameters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
-
+            
+            $oSlugify = new CentreonSlugify($class, get_called_class());             
+            $givenParameters[$class::getSlugField()]  = $oSlugify->slug($givenParameters[$class::getUniqueLabelField()]);
+            
+            //var_dump($givenParameters);die;
             foreach ($givenParameters as $key => $value) {
                 if (in_array($key, $columns)) {
                     if (!is_array($value)) {
@@ -148,6 +155,7 @@ abstract class FormRepository extends ListRepository
                 }
             }
 
+            
             $db->beginTransaction();
             $id = $class::insert($insertParams);
             if (is_null($id)) {
@@ -229,6 +237,10 @@ abstract class FormRepository extends ListRepository
         $class = static::$objectClass;
         $pk = $class::getPrimaryKey();
         $givenParameters[$pk] = $givenParameters['object_id'];
+        
+        $oSlugify = new CentreonSlugify($class, get_called_class());             
+        $givenParameters[$class::getSlugField()]  = $oSlugify->slug($givenParameters[$class::getUniqueLabelField()]);
+            
         if (!isset($givenParameters[$pk])) {
             throw new \Exception('Primary key of object is not defined');
         }

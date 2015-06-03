@@ -45,7 +45,9 @@ use Centreon\Models\CentreonBaseModel;
  */
 class Manufacturer extends CentreonBaseModel
 {
-    protected static $table = "cfg_traps_vendors";
-    protected static $primaryKey = "id";
+    protected static $table            = "cfg_traps_vendors";
+    protected static $primaryKey       = "id";
     protected static $uniqueLabelField = "name";
+    protected static $slugField        = "slug";
+   
 }

@@ -47,4 +47,5 @@ class BooleanIndicator extends CentreonBaseModel
     protected static $table = "cfg_bam_boolean";
     protected static $primaryKey = "boolean_id";
     protected static $uniqueLabelField = "name";
+    protected static $slugField        = "slug";
 }

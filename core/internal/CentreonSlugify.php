@@ -31,62 +31,96 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonAdministration\Models;
-
-use Centreon\Models\CentreonBaseModel;
 
 /**
- * Used for interacting with Contact objects
+ * Description of Slugify
  *
- * @author sylvestre
+ * @author tmechouet
  */
-class Contact extends CentreonBaseModel
+
+namespace Centreon\Internal;
+use Cocur\Slugify\Slugify;
+
+class CentreonSlugify
 {
-    protected static $table = "cfg_contacts";
-    protected static $primaryKey = "contact_id";
-    protected static $uniqueLabelField = "description";
-    protected static $slugField        = "slug";
-    
-    
+    static $index = 1;
+
+
+    protected $oObject;
+    /**
+     *
+     * @var string 
+     */
+    protected $sRegex =  '/([^a-z0-9]|-)+/';
+    /**
+     *
+     * @var object 
+     */
+    protected $oModel;
+
+    /**
+     *
+     * @var object 
+     */
+    protected $oRepository;
+
     /**
      * 
-     * @param type $parameterNames
-     * @param type $count
-     * @param type $offset
-     * @param type $order
-     * @param type $sort
-     * @param array $filters
-     * @param type $filterType
-     * @return type
+     * @param string
      */
-    public static function getList(
-        $parameterNames = "*",
-        $count = -1,
-        $offset = 0,
-        $order = null,
-        $sort = "ASC",
-        $filters = array(),
-        $filterType = "OR"
-    ) {
-        $aAddFilters = array();
-        $aGroup = array();
+    protected $sSlugField;
+    
+    /**
+     *
+     * @var string 
+     */
+    public static $sGlue = "-";
 
-        if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
-            $aAddFilters = array(
-                'tables' => array('cfg_tags', 'cfg_tags_contacts'),
-                'join'   => array('cfg_tags.tag_id = cfg_tags_contacts.tag_id', 
-                    'cfg_tags_contacts.resource_id = cfg_contacts.contact_id ')
-            ); 
-        }
-        
-        if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
-            $aGroup = array('sField' => 'cfg_tags_contacts.resource_id', 'nb' => count($filters['tagname']));
-        }
+    public function __construct($oModel, $oRepository)
+    {
+        $this->oObject = new Slugify($this->sRegex);
 
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters, $aGroup);
+        $this->oRepository = $oRepository;
+        $this->oModel = $oModel;
+        $this->sSlugField = $oModel::getSlugField();
     }
     
+    /**
+     * @param string $sValue Description
+     * @return string
+     */
+    public function slug($sValue)
+    {
+        $sSlug = $this->oObject->slugify($sValue);
+        $oRepo= $this->oRepository;
+
+        $aObject = $oRepo::getList("*", -1, 0, null, 'asc', array($this->sSlugField => $sSlug));
+        if (count($aObject) > 0) {
+            $sSlugNew = self::concat($sSlug);
+            self::slug($sSlugNew);
+        } else {
+            return $sSlug;
+        }
+    }
+    /**
+     * 
+     * @param type $sValue
+     * @return string
+     */
+    public static function concat($sValue)
+    {
+        $aValues = explode(static::$sGlue, $sValue);
+        $iLast = end($aValues);
+        if (is_int($iLast)) {
+            static::$index++;
+            $iPos = strrpos($sValue, $sGlue);
+            $sVal = substr($sValue, 0, $iPos).static::$sGlue.static::$index;
+        } else {
+            static::$index++;
+            $sVal = $sValue."-".static::$index;
+        }
+        return $sVal;
+    }
 }

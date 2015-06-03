@@ -48,4 +48,5 @@ class Aclresource extends CentreonBaseModel
     protected static $table = "cfg_acl_resources";
     protected static $primaryKey = "acl_resource_id";
     protected static $uniqueLabelField = "name";
+    protected static $slugField        = "slug";
 }

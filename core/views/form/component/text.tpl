@@ -11,4 +11,7 @@
   data-parentfield="{$element['label_parent_field']}"
   data-parentvalue="{$element['label_parent_value']}"
 {/if}
+{if isset($element['label_readonly']) and  $element['label_readonly'] == '1'}
+  readonly
+{/if}
 /><cite></cite>

@@ -48,4 +48,5 @@ class Trap extends CentreonBaseModel
     protected static $table = "cfg_traps";
     protected static $primaryKey = "traps_id";
     protected static $uniqueLabelField = "traps_name";
+    protected static $slugField        = "traps_slug";
 }

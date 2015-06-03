@@ -63,6 +63,12 @@ abstract class CentreonBaseModel extends CentreonModel
      * @var string 
      */
     protected static $uniqueLabelField = null;
+    
+     /**
+     * Slug field
+     * @var string 
+     */
+    protected static $slugField = null;
 
     /**
      * Database logical name
@@ -523,6 +529,16 @@ abstract class CentreonBaseModel extends CentreonModel
     public static function getUniqueLabelField()
     {
         return static::$uniqueLabelField;
+    }
+    
+    /**
+     * Slug field Getter
+     *
+     * @return string
+     */
+    public static function getSlugField()
+    {
+        return static::$slugField;
     }
 
     /**
