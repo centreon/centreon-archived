@@ -48,4 +48,5 @@ class Language extends CentreonBaseModel
     protected static $table = "cfg_languages";
     protected static $primaryKey = "language_id";
     protected static $uniqueLabelField = "name";
+    protected static $slugField        = "slug";
 }

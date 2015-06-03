@@ -51,6 +51,7 @@ class Poller extends CentreonBaseModel
     protected static $table = "cfg_pollers";
     protected static $primaryKey = "poller_id";
     protected static $uniqueLabelField = "name";
+    protected static $slugField        = "slug";
 
     /**
      *

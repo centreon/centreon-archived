@@ -51,6 +51,7 @@ class Tag extends CentreonBaseModel
     protected static $table = 'cfg_tags';
     protected static $primaryKey = 'tag_id';
     protected static $uniqueLabelField = 'tagname';
+    protected static $slugField        = "slug";
     protected static $relations = array();
     
     /**

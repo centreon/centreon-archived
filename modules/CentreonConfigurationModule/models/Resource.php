@@ -48,4 +48,5 @@ class Resource extends CentreonBaseModel
     protected static $table = "cfg_resources";
     protected static $primaryKey = "resource_id";
     protected static $uniqueLabelField = "resource_name";
+    protected static $slugField        = "resource_slug";
 }

@@ -7,6 +7,7 @@
         <column name="timeperiod_tp_id" phpName="TimeperiodTpId" type="INTEGER" required="false"/>
         <column name="command_command_id2" phpName="CommandCommandId2" type="INTEGER" required="false"/>
         <column name="service_description" phpName="ServiceDescription" type="VARCHAR" size="200" required="false"/>
+        <column name="service_slug" phpName="Slug" type="VARCHAR" size="254" required="true"/>
         <column name="service_alias" phpName="ServiceAlias" type="VARCHAR" size="255" required="false"/>
         <column name="service_is_volatile" phpName="ServiceIsVolatile" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
         <column name="service_max_check_attempts" phpName="ServiceMaxCheckAttempts" type="INTEGER" required="false"/>

@@ -4,6 +4,7 @@
     <column name="tag_id" phpName="TagId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="user_id" phpName="UserId" type="INTEGER" size="10" sqlType="int(10) unsigned" required="false"/>
     <column name="tagname" phpName="TagName" type="VARCHAR" size="100" required="true"/>
+    <column name="slug" phpName="Slug" type="VARCHAR" size="254" required="true"/>
     <unique name="cfg_tags_idx_01">
       <unique-column name="user_id"/>
       <unique-column name="tagname"/>

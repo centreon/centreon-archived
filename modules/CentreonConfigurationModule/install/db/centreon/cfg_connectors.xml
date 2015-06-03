@@ -3,6 +3,7 @@
     <table name="cfg_connectors" phpName="Connector" idMethod="native">
         <column name="id" phpName="Id" type="INTEGER" sqlType="int(11) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+        <column name="slug" phpName="Slug" type="VARCHAR" size="254" required="true"/>
         <column name="description" phpName="Description" type="VARCHAR" size="255" required="false"/>
         <column name="command_line" phpName="CommandLine" type="VARCHAR" size="512" required="true"/>
         <column name="enabled" phpName="Enabled" type="INTEGER" size="1" sqlType="int(1) unsigned" required="true" defaultValue="1"/>

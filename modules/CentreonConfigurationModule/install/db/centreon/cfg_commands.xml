@@ -4,6 +4,7 @@
         <column name="command_id" phpName="CommandId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="connector_id" phpName="ConnectorId" type="INTEGER" size="10" sqlType="int(10) unsigned" required="false"/>
         <column name="command_name" phpName="CommandName" type="VARCHAR" size="200" required="false"/>
+        <column name="command_slug" phpName="CommandSlug" type="VARCHAR" size="200" required="false"/>
         <column name="command_line" phpName="CommandLine" type="LONGVARCHAR" required="false"/>
         <column name="command_example" phpName="CommandExample" type="VARCHAR" size="254" required="false"/>
         <column name="command_type" phpName="CommandType" type="TINYINT" required="false" defaultValue="2"/>

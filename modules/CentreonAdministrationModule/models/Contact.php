@@ -48,6 +48,7 @@ class Contact extends CentreonBaseModel
     protected static $table = "cfg_contacts";
     protected static $primaryKey = "contact_id";
     protected static $uniqueLabelField = "description";
+    protected static $slugField        = "slug";
     
     
     /**

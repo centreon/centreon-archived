@@ -54,6 +54,7 @@ class Host extends CentreonBaseModel
     protected static $table = "cfg_hosts";
     protected static $primaryKey = "host_id";
     protected static $uniqueLabelField = "host_name";
+    protected static $slugField        = "host_slug";
     protected static $relations = array(
         "\CentreonConfiguration\Models\Relation\Host\Service",
         "\CentreonConfiguration\Models\Relation\Host\Hostparents",
