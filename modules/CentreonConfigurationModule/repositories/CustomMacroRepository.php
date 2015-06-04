@@ -67,14 +67,17 @@ class CustomMacroRepository
      * @param type $objectId
      * @param type $submittedValues
      */
-    public static function saveHostCustomMacro($objectId, $submittedValues)
+    public static function saveHostCustomMacro($objectId, $submittedValues, $deleteFirst = true)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
         
-        $deleteRequest = "DELETE FROM cfg_customvariables_hosts WHERE host_host_id = :host";
-        $stmtDelete = $dbconn->prepare($deleteRequest);
-        $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
-        $stmtDelete->execute();
+        if($deleteFirst){
+            $deleteRequest = "DELETE FROM cfg_customvariables_hosts WHERE host_host_id = :host";
+            $stmtDelete = $dbconn->prepare($deleteRequest);
+            $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
+            $stmtDelete->execute();
+        }
+        
         
         $insertRequest = "INSERT INTO cfg_customvariables_hosts(host_macro_name, host_macro_value, is_password, host_host_id)"
             . " VALUES(:macro_name, :macro_value, :is_password, :host)";
@@ -110,15 +113,16 @@ class CustomMacroRepository
      * @param type $objectId
      * @param type $submittedValues
      */
-    public static function saveServiceCustomMacro($objectId, $submittedValues)
+    public static function saveServiceCustomMacro($objectId, $submittedValues, $deleteFirst = true)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
         
-        $deleteRequest = "DELETE FROM cfg_customvariables_services WHERE svc_svc_id = :svc";
-        $stmtDelete = $dbconn->prepare($deleteRequest);
-        $stmtDelete->bindParam(':svc', $objectId, \PDO::PARAM_INT);
-        $stmtDelete->execute();
-        
+        if($deleteFirst){
+            $deleteRequest = "DELETE FROM cfg_customvariables_services WHERE svc_svc_id = :svc";
+            $stmtDelete = $dbconn->prepare($deleteRequest);
+            $stmtDelete->bindParam(':svc', $objectId, \PDO::PARAM_INT);
+            $stmtDelete->execute();
+        }
         $insertRequest = "INSERT INTO cfg_customvariables_services(svc_macro_name, svc_macro_value, is_password, svc_svc_id)"
             . " VALUES(:macro_name, :macro_value, :is_password, :svc)";
         $stmtInsert = $dbconn->prepare($insertRequest);
@@ -126,9 +130,166 @@ class CustomMacroRepository
         foreach ($submittedValues as $customMacroName => $customMacro) {
             $stmtInsert->bindValue(':macro_name', '$_SERVICE' . $customMacroName . '$', \PDO::PARAM_STR);
             $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-            $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
+            $stmtInsert->bindParam(':is_password', $customMacro['is_password'], \PDO::PARAM_INT);
             $stmtInsert->bindParam(':svc', $objectId, \PDO::PARAM_INT);
             $stmtInsert->execute();
         }
     }
+    
+    /**
+     * 
+     * @param int $objectId
+     * @param string $macro
+     */
+    public static function deleteHostCustomMacro($objectId, $macro)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $deleteRequest = "DELETE FROM cfg_customvariables_hosts WHERE host_host_id = :host AND host_macro_name = :macro_name ";
+        $macroName = '$_HOST'.$macro.'$';
+        $stmtDelete = $dbconn->prepare($deleteRequest);
+        $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
+        $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
+        $stmtDelete->execute();
+        if($stmtDelete->rowCount() == 0){
+            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
+        }
+        
+        return $stmtDelete->rowCount();
+    }
+
+    /**
+     * 
+     * @param int $objectId
+     * @param string $macro
+     */
+    public static function deleteServiceCustomMacro($objectId, $macro)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        $macroName = '$_SERVICE'.$macro.'$';
+        $deleteRequest = "DELETE FROM cfg_customvariables_services WHERE svc_svc_id = :service AND svc_macro_name = :macro_name ";
+        $stmtDelete = $dbconn->prepare($deleteRequest);
+        $stmtDelete->bindParam(':service', $objectId, \PDO::PARAM_INT);
+        $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
+        $stmtDelete->execute();
+        if($stmtDelete->rowCount() == 0){
+            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
+        }
+        
+        return $stmtDelete->rowCount();
+    }
+    
+    /**
+     * 
+     * @param int $objectId
+     * @param string $macro
+     * @param array $params
+     */
+    public static function updateHostCustomMacro($objectId, $macro, $params){
+
+        $arrayUpdatable = array('value' => array('field' => 'host_macro_value' , 'type' => \PDO::PARAM_STR)
+                                ,'hidden' => array('field' => 'is_password' , 'type' => \PDO::PARAM_INT)
+                                ,'name' => array('field' => 'host_macro_name' , 'type' => \PDO::PARAM_STR));
+
+        $setPart = "";
+        $paramArray = array();
+        foreach($params as $index=>$param1){
+            if(array_key_exists($index,$arrayUpdatable)){
+                if(!empty($paramArray)){
+                    $setPart = ' , '.$setPart;
+                }
+                if(isset($arrayUpdatable[$index]['field']) && $arrayUpdatable[$index]['field'] == 'host_macro_name'){
+                    $macroName = '$_HOST'.$param1.'$';
+                    $param1 = $macroName;
+                }
+                $setPart .= $arrayUpdatable[$index]['field'].' = :'.$arrayUpdatable[$index]['field'].' ';
+                $paramArray = array(':'.$arrayUpdatable[$index]['field'] => 
+                                    array('param' => $param1 , 'type' => $arrayUpdatable[$index]['type'])
+                                );
+            }
+        }
+        
+        if(!empty($paramArray)){
+            $setPart = ' SET '.$setPart;
+        }
+        
+        $dbconn = Di::getDefault()->get('db_centreon');
+        
+        $macroName = '$_HOST'.$macro.'$';
+        $updateRequest = "UPDATE cfg_customvariables_hosts "
+                . $setPart
+                . "WHERE host_host_id = :host "
+                . "AND host_macro_name = :macro_name ";
+
+        $stmtDelete = $dbconn->prepare($updateRequest);
+        
+        foreach($paramArray as $index=>$param2){
+            $stmtDelete->bindParam($index, $param2['param'], $param2['type']);
+        }
+        
+        $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
+        $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
+        $stmtDelete->execute();
+
+    }
+    
+    /**
+     * 
+     * @param int $objectId
+     * @param string $macro
+     * @param array $params
+     */
+    public static function updateServiceCustomMacro($objectId, $macro, $params)
+    {
+       $arrayUpdatable = array('value' => array('field' => 'svc_macro_value' , 'type' => \PDO::PARAM_STR)
+                                ,'hidden' => array('field' => 'is_password' , 'type' => \PDO::PARAM_INT)
+                                ,'name' => array('field' => 'svc_macro_name' , 'type' => \PDO::PARAM_STR));
+
+        $setPart = "";
+        $paramArray = array();
+        foreach($params as $index=>$param1){
+            if(array_key_exists($index,$arrayUpdatable)){
+                if(!empty($paramArray)){
+                    $setPart = ' , '.$setPart;
+                }
+                if(isset($arrayUpdatable[$index]['field']) && $arrayUpdatable[$index]['field'] == 'svc_macro_name'){
+                    $macroName = '$_SERVICE'.$param1.'$';
+                    $param1 = $macroName;
+                }
+                
+                
+                $setPart .= $arrayUpdatable[$index]['field'].' = :'.$arrayUpdatable[$index]['field'].' ';
+                $paramArray = array(':'.$arrayUpdatable[$index]['field'] => 
+                                    array('param' => $param1 , 'type' => $arrayUpdatable[$index]['type'])
+                                );
+            }
+        }
+        
+        if(!empty($paramArray)){
+            $setPart = ' SET '.$setPart;
+        }
+        
+        $dbconn = Di::getDefault()->get('db_centreon');
+        
+        $macroName = '$_SERVICE'.$macro.'$';
+        $updateRequest = "UPDATE cfg_customvariables_services "
+                . $setPart
+                . "WHERE svc_svc_id = :service "
+                . "AND svc_macro_name = :macro_name ";
+
+        $stmtDelete = $dbconn->prepare($updateRequest);
+        
+        foreach($paramArray as $index=>$param2){
+            $stmtDelete->bindParam($index, $param2['param'], $param2['type']);
+        }
+        
+        $stmtDelete->bindParam(':service', $objectId, \PDO::PARAM_INT);
+        $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
+        $stmtDelete->execute();
+
+    }
+    
+    
+    
+    
 }

@@ -211,8 +211,7 @@ class HostTemplateDatatable extends Datatable
                     'Disabled' => '0'
                 )
             ),
-            'className' => "cell_center",
-            'width' => '50px'
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Tags',
@@ -245,18 +244,16 @@ class HostTemplateDatatable extends Datatable
         $router = Di::getDefault()->get('router');
 
         foreach ($resultSet as &$myHostSet) {
-            $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name'])
-                . '&nbsp;<span><span>'
-                . $myHostSet['host_name']
-                . '</span></span>';
+            $myHostSet['host_name'] = '<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'
+                . $myHostSet['host_name'];
             
             /* Templates */
             $myHostSet['host_template']  = "";
             $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), 1);
             foreach ($templates as $template) {
-                $myHostSet['host_template'] .= '<span class="badge alert-success"><a href="'
+                $myHostSet['host_template'] .= '<a href="'
                 . $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id']))
-                . '"><i class="fa fa-shield"></i></a></span>';
+                . '"><i class="icon-template ico-20"></i></a>';
             }
 
             /* Display human readable the check/retry interval */

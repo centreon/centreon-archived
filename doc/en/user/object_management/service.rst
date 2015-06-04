@@ -180,3 +180,32 @@ In order to remove a tag from a service, use **removeTag** action::
   ./centreonConsole centreon-configuration:service:removeTag object="service[service1];host[host1]":tag="tag1"
   The tag has been successfully removed from the object
 
+
+List Macro
+----------
+
+In order to list macros of a service, use **listMacro** action::
+
+  ./centreonConsole centreon-configuration:service:listMacro object="service[service1]"
+  tag1
+
+Add Macro
+---------
+
+In order to add a macro to a service, use **addMacro** action::
+
+  ./centreonConsole centreon-configuration:service:addMacro object="host[host1];service[service1]":params="name[macro1name];value[macro1value];ispassword[0]"
+
+Remove Macro
+------------
+
+In order to remove a macro from a service, use **removeMacro** action::
+
+  ./centreonConsole centreon-configuration:service:removeMacro object="host[host1];service[service1]":macro="macro1name"
+
+Update Macro
+------------
+
+In order to update a macro from a service, use **updateMacro** action::
+
+  ./centreonConsole centreon-configuration:service:updateMacro object="host[host1];service[service1]":macro="macro1name":params="value[macro1newvalue];name[macro1newname];ispassword[1];"

@@ -5,6 +5,7 @@
         <column name="node_id" phpName="NodeId" type="INTEGER" required="true"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
         <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+        <column name="slug" phpName="Slug" type="VARCHAR" size="254" required="true"/>
         <column name="port" phpName="Port" type="INTEGER" required="true" />
         <column name="one_per_retention" phpName="OnePerRetention" type="INTEGER" size="1" default="1" required="true"/>
         <column name="tmpl_name" phpName="TmplName" type="VARCHAR" size="50" required="true"/>

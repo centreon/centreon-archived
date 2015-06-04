@@ -34,14 +34,13 @@
  * 
  */
 namespace CentreonConfiguration\Api\Internal;
-
-use Centreon\Api\Internal\BasicCrudCommand;
+use CentreonConfiguration\Api\Internal\BasicMacroSupport;
 use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * 
  */
-class BasicTagSupport extends BasicCrudCommand
+class BasicTagSupport extends BasicMacroSupport
 {
     /**
      * 

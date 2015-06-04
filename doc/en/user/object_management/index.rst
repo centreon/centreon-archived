@@ -23,3 +23,5 @@ The list of object commands is available with the following commandline :
    service
    servicetemplate
    businessactivity
+   trap
+   manufacturer

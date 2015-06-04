@@ -48,4 +48,5 @@ class Environment extends CentreonBaseModel
     protected static $table = "cfg_environments";
     protected static $primaryKey = "environment_id";
     protected static $uniqueLabelField = "name";
+    protected static $slugField        = "slug";
 }

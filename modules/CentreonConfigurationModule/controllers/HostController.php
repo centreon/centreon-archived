@@ -91,6 +91,8 @@ class HostController extends FormController
             ->addJs('jquery.qtip.min.js')
             ->addJs('hogan-3.0.0.min.js')
             ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addJs('centreon-clone.js')
+            ->addJs('component/custommacro.js')
             ->addCss('centreon.qtip.css')
             ->addCss('centreon.tag.css', 'centreon-administration');
         
@@ -103,6 +105,13 @@ class HostController extends FormController
                 'addMassive' => $router->getPathFor('/centreon-administration/tag/addMassive')
             )
         );
+
+        $this->tpl->addCustomJs('$(function () {
+                $("#modal").on("loaded.bs.modal", function() {
+                    initCustomMacro();
+                });
+            });');
+
         $this->tpl->append('jsUrl', $urls, true);
         $this->tpl->assign('configuration', true);
         parent::listAction();

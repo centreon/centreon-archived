@@ -265,9 +265,8 @@ class HostDatatable extends Datatable
                 $myHostSet['name'] = '';
             } else {
                 $previousHost = $myHostSet['name'];
-                $myHostSet['name'] = HostConfigurationRepository::getIconImage(
-                    $myHostSet['name']
-                ).'&nbsp;&nbsp;'.$myHostSet['name'];
+                $myHostSet['name'] = '<span class="icoListing">'.HostConfigurationRepository::getIconImage(
+                    $myHostSet['name']).'</span>'.$myHostSet['name'];
             }
             $myHostSet['duration'] = Datetime::humanReadable(
                 $myHostSet['duration'],

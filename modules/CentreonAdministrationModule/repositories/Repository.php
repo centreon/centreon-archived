@@ -39,6 +39,7 @@ use CentreonMain\Repository\FormRepository;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use CentreonAdministration\Repository\AuditlogRepository;
+use Centreon\Internal\CentreonSlugify;
 
 /**
  * Abstact class for administration repository
@@ -187,6 +188,11 @@ abstract class Repository extends FormRepository
         $columns = $class::getColumns();
         $insertParams = array();
         $givenParameters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
+        
+        $oSlugify = new CentreonSlugify($class, get_called_class());
+        $sSlug = $oSlugify->slug($givenParameters[$class::getUniqueLabelField()]);
+        $givenParameters[$class::getSlugField()] = $sSlug;
+
         foreach ($givenParameters as $key => $value) {
             if (in_array($key, $columns)) {
                 if (!is_array($value)) {

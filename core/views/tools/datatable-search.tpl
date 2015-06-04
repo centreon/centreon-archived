@@ -12,6 +12,8 @@
             </span>
         </div>
     </div>
+
+
     <div class="centreon-search-block form-group" id="accordion">
 
             {$clsOffset=""}
@@ -58,7 +60,7 @@
 
         <div id="collapseOne" class="panel-collapse collapse">
 
-          <div class="CentreonFrom">
+          <div class="CentreonForm">
             <div class="panel-body search-body">
                     {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
                     {if (!$searchAdv && $colSearch.main != "true") || $searchAdv }
@@ -85,4 +87,5 @@
           </div>
         </div>
     </div>
+
 </div>

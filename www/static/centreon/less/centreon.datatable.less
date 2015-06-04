@@ -44,17 +44,20 @@ table.dataTable thead .sorting_desc_disabled {
   //background: transparent;
 }
 table.dataTable thead .sorting_asc:after {
-  //float: right;
+  content: "\f0de";
+  float: right;
   font-family: fontawesome;
+  color: @firstGreen;
 }
 table.dataTable thead .sorting_desc:after {
   content: "\f0dd";
-  //float: right;
+  float: right;
   font-family: fontawesome;
+  color: @firstGreen;
 }
 table.dataTable thead .sorting:after {
   content: "\f0dc";
-  //float: right;
+  float: right;
   font-family: fontawesome;
   color: rgba(50, 50, 50, 0.5);
 }
@@ -74,6 +77,19 @@ table.dataTable thead .sorting:after {
 
   .DTTT {
     margin-right: 5px;
+    top: @paddingElem/2;
+    a {
+      display: table-cell;
+      padding-top: @paddingElem/2 !important;
+      span {
+        &:before{
+          content: "\e61f";
+          font-family: 'ico-centreon';
+          font-size: 22px;
+          color: @darkGray1;
+        }
+      }
+    }
   }
 
   .dataTables_length {
@@ -89,23 +105,18 @@ table.dataTable thead .sorting:after {
       padding: @paddingElem @paddingElem*2;
       font-size: 12px;
       white-space: nowrap;
-
-      .dtIcoTemplate {
-        i {
-          font-size: 18px;
-        }
-      }
-
+      
       a {
-        position: relative;
-        padding: @paddingElem 0;
 
         .icoListing {
           margin: 0px 6px 0px 0px;
-          //border: 1px solid @lightGray;
-          padding: 4px;
-          border-radius: 3px;
-          background-color: @lightGray;
+          /*padding: 4px;
+          border-radius: 30px;
+          background-color: @white;*/
+          img {
+            width: 18px;
+            height: 18px;
+          }
         }
       }
     }

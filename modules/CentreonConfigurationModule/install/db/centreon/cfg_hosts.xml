@@ -8,6 +8,7 @@
         <column name="command_command_id2" phpName="CommandCommandId2" type="INTEGER" required="false"/>
         <column name="command_command_id_arg2" phpName="CommandCommandIdArg2" type="LONGVARCHAR" required="false"/>
         <column name="host_name" phpName="HostName" type="VARCHAR" size="200" required="false"/>
+        <column name="host_slug" phpName="Slug" type="VARCHAR" size="254" required="true"/>
         <column name="host_alias" phpName="HostAlias" type="VARCHAR" size="200" required="false"/>
         <column name="host_address" phpName="HostAddress" type="VARCHAR" size="255" required="false"/>
         <column name="host_max_check_attempts" phpName="HostMaxCheckAttempts" type="INTEGER" required="false"/>

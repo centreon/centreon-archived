@@ -113,11 +113,13 @@ class PollerDatatable extends Datatable
             'title' => 'IP Address',
             'name' => 'ip_address',
             'data' => 'ip_address',
-            'orderable' => false,
+            'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'source' => 'other'
+//            'source' => 'other',
+            'dataSource' => '\CentreonConfiguration\Models\Node',
+            'innerJoin' => 'cfg_pollers.node_id = cfg_nodes.node_id'
         ),
         /*array (
             'title' => 'Localhost',
@@ -143,7 +145,9 @@ class PollerDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
-            'source' => 'other',
+//            'source' => 'other',
+            'dataSource' => '\CentreonRealtime\Models\Instances',
+            'leftJoin' => 'cfg_pollers.name = rt_instances.name',
             'cast' => array(
                 'type' => 'select',
                 'parameters' => array(
@@ -156,11 +160,12 @@ class PollerDatatable extends Datatable
             'title' => 'Has changed',
             'name' => 'hasChanged',
             'data' => 'hasChanged',
-            'orderable' => false,
+            'orderable' => true,
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'source' => 'other',
+            'customFunc' => 'hasChanged',
             'cast' => array(
                 'type' => 'select',
                 'parameters' => array(
@@ -180,11 +185,12 @@ class PollerDatatable extends Datatable
             'title' => 'Version',
             'name' => 'version',
             'data' => 'version',
-            'orderable' => false,
+            'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'source' => 'other'
+//            'source' => 'other',
+            'dataSource' => '\CentreonRealtime\Models\Instances'
         ),
         array (
             'title' => 'Status',
@@ -209,6 +215,20 @@ class PollerDatatable extends Datatable
                 )
             )
         ),
+        array (
+            'title' => 'Last restart',
+            'name' => 'start_time',
+            'data' => 'start_time',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+//            'source' => 'other',
+            'dataSource' => '\CentreonRealtime\Models\Instances'
+        )
+        
+        
+        
     );
 
     /**
@@ -225,6 +245,16 @@ class PollerDatatable extends Datatable
         parent::__construct($params, $objectModelClass);
     }
     
+    public static function hasChanged(&$resultSet){
+        foreach ($resultSet as &$engineServer) {
+            $engineServer['hasChanged'] = PollerRepository::checkChangeState(
+                $engineServer['poller_id'],
+                $engineServer['start_time']
+            );
+        }
+    }
+    
+    
     /**
      * 
      * @param type $resultSet
@@ -232,11 +262,11 @@ class PollerDatatable extends Datatable
     public static function addAdditionnalDatas(&$resultSet)
     {
         // Get datatabases connections
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
+        //$di = Di::getDefault();
+        //$dbconn = $di->get('db_centreon');
 
         /* Get data from cfg_nodes */
-        $sqlNode = "SELECT poller_id, ip_address 
+        /*$sqlNode = "SELECT poller_id, ip_address 
             FROM cfg_nodes n, cfg_pollers p
             WHERE p.node_id = n.node_id";
         $stmtNode = $dbconn->prepare($sqlNode);
@@ -245,19 +275,19 @@ class PollerDatatable extends Datatable
         $nodeData = array();
         foreach ($resNode as $row) {
             $nodeData[$row['poller_id']] = $row;
-        }
+        }*/
 
         /* Get data from rt_instances */
-        $sqlBroker = "SELECT start_time, running, 
+        /*$sqlBroker = "SELECT start_time, running, 
             instance_id, name AS instance_name , last_alive, version,
             engine AS program_name
             FROM rt_instances";
         $stmtBroker = $dbconn->query($sqlBroker);
         $resultBroker = $stmtBroker->fetchAll(\PDO::FETCH_ASSOC);
-        
+        */
         // Build up the table row
-        foreach ($resultSet as &$engineServer) {
-            $engineServer['start_time'] = '';
+        //foreach ($resultSet as &$engineServer) {
+            /*$engineServer['start_time'] = '';
             $engineServer['running'] = 0;
             $engineServer['last_alive'] = '';
             $engineServer['version'] = '';
@@ -269,12 +299,13 @@ class PollerDatatable extends Datatable
             }
             if (isset($nodeData[$engineServer['poller_id']])) {
                 $engineServer['ip_address'] = $nodeData[$engineServer['poller_id']]['ip_address'];
-            }
-            $engineServer['hasChanged'] = PollerRepository::checkChangeState(
+            }*/
+            /*$engineServer['hasChanged'] = PollerRepository::checkChangeState(
                 $engineServer['poller_id'],
                 $engineServer['start_time']
-            );
-        }
+            );*/
+            
+        //}
     }
     
     /**
@@ -296,5 +327,173 @@ class PollerDatatable extends Datatable
                 $myPollerSet['start_time'] = Datetime::format($myPollerSet['start_time']);
             }
         }
+    }
+    
+    
+    /**
+     * override of getDatas of Datatable
+     * @return array
+     */
+    public function getDatas()
+    {
+
+        $modelClass = $this->objectModelClass;
+        $modelTable = $modelClass::getTableName();
+        $fields = "";
+        $arrayInnerJoin = array();
+        $arrayLeftJoin = array();
+        $postFunctionsStore = array();
+        foreach (static::$columns as $column) {
+            if(!isset($column['source'])){
+                if(!isset($column['dataSource'])){
+                    $fields .= $modelTable . '.' . $column['name'] . ',';
+                }else{
+                    $modelClassSource = $column['dataSource'];
+                    $modelTableSource = $modelClassSource::getTableName();
+                    $fields .= $modelTableSource . '.' . $column['name'] . ',';
+                    if(isset($column['innerJoin'])){
+                        if(!isset($arrayInnerJoin[$modelTableSource])){
+                            $arrayInnerJoin[$modelTableSource] =  'INNER JOIN ' . $modelTableSource . ' ON ' . $column['innerJoin'];
+                        }else{
+                            $arrayInnerJoin[$modelTableSource] .=  ' AND ' . $column['innerJoin'];
+                        }
+                    }else if(isset($column['leftJoin'])){
+                        if(!isset($arrayLeftJoin[$modelTableSource])){
+                            $arrayLeftJoin[$modelTableSource] =  'LEFT JOIN ' . $modelTableSource . ' ON ' . $column['leftJoin'];
+                        }else{
+                            $arrayLeftJoin[$modelTableSource] .=  ' AND ' . $column['leftJoin'];
+                        }
+                    }
+                }
+            }else if(isset($column['customFunc'])){
+                $postFunctionsStore[] = $column['customFunc'];
+            }
+        }
+        $fields = rtrim($fields, ',');
+        
+        // get fields for search
+        $conditions = array();
+        foreach ($this->params['columns'] as $columnSearch) {
+            if ($columnSearch['searchable'] === "true" && (!empty($columnSearch['search']['value']) || $columnSearch['search']['value'] == "0")) {
+                if ($columnSearch['data'] == 'tagname') {
+                    $aSearch = explode(" ", $columnSearch['search']['value']);
+                    foreach ($aSearch as $sSearch) {
+                        $conditions[$columnSearch['data']][] = $sSearch;
+                    }
+                } else {
+                    foreach (static::$columns as $column) {
+                        if ($column['data'] === $columnSearch['data']) {
+                            if(!isset($column['dataSource'])){
+                                $indexCondition = $modelTable . '.' . $columnSearch['data'];
+                            }else{
+                                $modelClassSource = $column['dataSource'];
+                                $modelTableSource = $modelClassSource::getTableName();
+                                $indexCondition = $modelTableSource . '.' . $columnSearch['data'];
+                            }
+                            if (isset($column['type']) && (strtolower($column['type']) === 'string')) {
+                                $conditions[$indexCondition] = '%' . $columnSearch['search']['value'] . '%';
+                            } else {
+                                $conditions[$indexCondition] = $columnSearch['search']['value'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        
+        $sql = 'SELECT ' . $fields . ' FROM ' .$modelTable.' ';
+        $sqlCount = 'SELECT count(*) as nbr_of_result_datatable FROM ' .$modelTable.' ';
+        
+        
+        foreach($arrayInnerJoin as $innerJoin){
+            $sql .= $innerJoin.' ';
+            $sqlCount .= $innerJoin.' ';
+        }
+        
+        foreach($arrayLeftJoin as $leftJoin){
+            $sql .= $leftJoin.' ';
+            $sqlCount .= $leftJoin.' ';
+        }
+                    
+        $sql .= ' WHERE 1 = 1 ';
+        $sqlCount .= ' WHERE 1 = 1 ';
+        foreach($conditions as $fields=>$condition){
+            $sql .= ' AND ' . $fields . ' LIKE \'' . $condition.'\' ';
+            $sqlCount .= ' AND ' . $fields . ' LIKE \'' . $condition.'\' ';
+        }
+        
+        $fieldsOrderBy = "";
+        $orderExternal = false;
+        $columnToOrderBy = static::$columns[$this->params['order'][0]['column']];
+        $dir = $this->params['order'][0]['dir'];
+        if(!isset($columnToOrderBy['dataSource']) && !isset($columnToOrderBy['source'])){
+            $fieldsOrderBy = $modelTable . '.' . $columnToOrderBy['name'];
+            $sql .= ' ORDER BY '.$fieldsOrderBy.' '.$dir;
+        }else if(!isset($columnToOrderBy['source'])){
+            $modelClassSource = $columnToOrderBy['dataSource'];
+            $modelTableSource = $modelClassSource::getTableName();
+            $fieldsOrderBy = $modelTableSource . '.' . $columnToOrderBy['name'];
+            $sql .= ' ORDER BY '.$fieldsOrderBy.' '.$dir;
+        }else{
+            $orderExternal = $columnToOrderBy;
+        }
+
+        
+        
+        // Get datatabases connections
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        
+        $stmt = $dbconn->prepare($sql);
+        $stmt->execute();
+        $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        foreach($postFunctionsStore as $functionStored){
+            self::$functionStored($res);
+        }
+        
+        if($orderExternal){
+            $arrayFieldOrderBy = array();
+            foreach($res as $r){
+                $arrayFieldOrderBy[] = $r[$orderExternal['data']];
+            }
+            if(strtolower($dir) == 'asc'){
+                array_multisort($arrayFieldOrderBy, $res, SORT_ASC);
+            }else if(strtolower($dir) == 'desc'){
+                array_multisort($arrayFieldOrderBy, $res, SORT_DESC);
+            }
+            
+        }
+
+        $datasFromDb['datas'] = $res;
+        
+        $stmt = $dbconn->prepare($sqlCount);
+        $stmt->execute();
+        $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $datasFromDb['nbOfTotalDatas'] = $res[0]['nbr_of_result_datatable'];
+        
+        
+        static::addAdditionnalDatas($datasFromDb['datas']);
+        static::processHooks($datasFromDb['datas']);
+
+        // Add RowId
+        if (count(static::$rowIdColumn) > 0) {
+            foreach ($datasFromDb['datas'] as &$datas) {
+                $datas['DT_RowData'] = array(
+                    'id' => $datas[static::$rowIdColumn['id']],
+                    'name' => $datas[static::$rowIdColumn['name']]
+                );
+                $datas['DT_RowId'] = $datas[static::$rowIdColumn['id']];
+            }
+        }
+
+        $this->formatDatas($datasFromDb['datas']);
+
+        $sendableDatas = $this->prepareDatasForSending($datasFromDb);
+        
+        return $sendableDatas;
     }
 }

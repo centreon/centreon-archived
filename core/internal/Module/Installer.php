@@ -120,6 +120,7 @@ abstract class Installer
     public function installMenu()
     {
         $filejson = $this->moduleDirectory . 'install/menu.json';
+        Informations::deleteMenus($this->moduleId);
         if (file_exists($filejson)) {
             $menus = json_decode(file_get_contents($filejson), true);
             self::parseMenuArray($this->moduleId, $menus);

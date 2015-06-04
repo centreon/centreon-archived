@@ -109,6 +109,7 @@ class Select extends Component
         
         $escapedName = str_replace(']','\\\]',str_replace('[','\\\[',$element['name']));
         $myHtml .= ' style="width: 100%;" type="hidden" value=" "' . $required . ' />';
+        $myHtml .= '<cite></cite>';
         $myJs = ''
             . '$("#'.$escapedName.'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '

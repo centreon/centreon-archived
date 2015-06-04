@@ -120,6 +120,8 @@ class HostTemplateController extends FormController
                 ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
                 ->addJs('moment-with-locales.js')
                 ->addJs('moment-timezone-with-data.min.js')
+                ->addJs('centreon-clone.js')
+                ->addJs('component/custommacro.js')
                 ->addCss('centreon.tag.css', 'centreon-administration');
         
         $urls = array(
@@ -131,6 +133,12 @@ class HostTemplateController extends FormController
                 'addMassive' => $router->getPathFor('/centreon-administration/tag/addMassive')
             )
         );
+
+        $this->tpl->addCustomJs('$(function () {
+                $("#modal").on("loaded.bs.modal", function() {
+                    initCustomMacro();
+                });
+            });');
                 
         $this->tpl->append('jsUrl', $urls, true);
         $this->tpl->assign('configuration', true);
