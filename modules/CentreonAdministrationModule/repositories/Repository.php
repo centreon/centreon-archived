@@ -189,9 +189,12 @@ abstract class Repository extends FormRepository
         $insertParams = array();
         $givenParameters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
         
-        $oSlugify = new CentreonSlugify($class, get_called_class());
-        $sSlug = $oSlugify->slug($givenParameters[$class::getUniqueLabelField()]);
-        $givenParameters[$class::getSlugField()] = $sSlug;
+        $sField = $class::getUniqueLabelField();
+        if (isset($givenParameters[$sField])) {
+            $oSlugify = new CentreonSlugify($class, get_called_class());
+            $sSlug = $oSlugify->slug($givenParameters[$sField]);
+            $givenParameters[$class::getSlugField()] = $sSlug;
+        }
 
         foreach ($givenParameters as $key => $value) {
             if (in_array($key, $columns)) {
