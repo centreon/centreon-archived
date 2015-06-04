@@ -215,7 +215,7 @@ Add Macro
 
 In order to add a macro to a host, use **addMacro** action::
 
-  ./centreonConsole centreon-configuration:host:addMacro object="host[host1]":params="name[macro1name];value[macro1value];ispassword[0]"
+  ./centreonConsole centreon-configuration:host:addMacro object="host[host1]":params="name[macro1name];value[macro1value];hidden[0]"
 
 Remove Macro
 ------------
@@ -229,5 +229,5 @@ Update Macro
 
 In order to update a macro from a host, use **updateMacro** action::
 
-  ./centreonConsole centreon-configuration:host:updateMacro object="host[host1]":macro="macro1name":params="value[macro1newvalue];name[macro1newname];ispassword[1];"
+  ./centreonConsole centreon-configuration:host:updateMacro object="host[host1]":macro="macro1name":params="value[macro1newvalue];name[macro1newname];hidden[1];"
 

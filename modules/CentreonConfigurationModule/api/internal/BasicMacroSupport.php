@@ -77,7 +77,6 @@ class BasicMacroSupport extends BasicCrudCommand
         try {
             $repository = $this->repository;
             $objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
-            
             switch($this->objectName){
                 case 'host' :
                     CustomMacroRepository::saveHostCustomMacro($objectId, $formatedParams, false);
