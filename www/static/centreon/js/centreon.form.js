@@ -49,7 +49,9 @@
     }
     this.$elem.validate({
       rules: rules,
-      invalidHandler: this.invalidHandler
+      invalidHandler: function (event, validator) {
+        self.invalidHandler(event, validator);
+      }
     });
   }
 
@@ -162,7 +164,7 @@
     $list.closest(".flash").addClass("alert-danger").show();
     /* Focus the first element in error */
     $firstInput.focus();
-    $("body").scrollTo($firstInput);
+    $("body").scrollTop($firstInput);
   };
 
   $.fn.centreonForm = function (options) {
