@@ -15,7 +15,7 @@
                                         "label" : "Central IP Address",
                                         "name": "broker_central_ip",
                                         "type" : "text",
-                                        "require": false
+                                        "require": true
                                     }
                                 ]
                             }
