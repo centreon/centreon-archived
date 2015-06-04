@@ -16,6 +16,7 @@ The list of object commands is available with the following commandline :
    timeperiod
    command
    user
+   contact
    config
    connector
    host

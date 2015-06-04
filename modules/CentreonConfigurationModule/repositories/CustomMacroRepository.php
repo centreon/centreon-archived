@@ -130,7 +130,7 @@ class CustomMacroRepository
         foreach ($submittedValues as $customMacroName => $customMacro) {
             $stmtInsert->bindValue(':macro_name', '$_SERVICE' . $customMacroName . '$', \PDO::PARAM_STR);
             $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-            $stmtInsert->bindParam(':is_password', $customMacro['is_password'], \PDO::PARAM_INT);
+            $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
             $stmtInsert->bindParam(':svc', $objectId, \PDO::PARAM_INT);
             $stmtInsert->execute();
         }
