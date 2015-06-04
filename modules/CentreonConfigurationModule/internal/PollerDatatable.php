@@ -225,6 +225,17 @@ class PollerDatatable extends Datatable
             'visible' => true,
 //            'source' => 'other',
             'dataSource' => '\CentreonRealtime\Models\Instances'
+        ),
+        array (
+            'title' => 'Last update',
+            'name' => 'last_alive',
+            'data' => 'last_alive',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+//            'source' => 'other',
+            'dataSource' => '\CentreonRealtime\Models\Instances'
         )
         
         
