@@ -58,7 +58,7 @@ class BasicMacroSupport extends BasicCrudCommand
         
         $paramList = $this->parseObjectParams($params);
         
-        if(!isset($paramList['hidden'])){
+        if(!isset($paramList['hidden']) || !is_numeric($paramList['hidden']) || $paramList['hidden'] < 0 || $paramList['hidden'] > 1){
             $paramList['hidden'] = 0;
         }
         
@@ -106,6 +106,11 @@ class BasicMacroSupport extends BasicCrudCommand
     public function updateMacroAction($object, $macro, $params)
     {
         $paramList = $this->parseObjectParams($params);
+        
+        if(!isset($paramList['hidden']) || !is_numeric($paramList['hidden']) || $paramList['hidden'] < 0 || $paramList['hidden'] > 1){
+            $paramList['hidden'] = 0;
+        }
+        
         try {
             $repository = $this->repository;
             $objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
