@@ -196,23 +196,23 @@ class CustomMacroRepository
         foreach($params as $index=>$param1){
             if(array_key_exists($index,$arrayUpdatable)){
                 if(!empty($paramArray)){
-                    $setPart = ' , '.$setPart;
+                    $setPart = $setPart.' , ';
                 }
                 if(isset($arrayUpdatable[$index]['field']) && $arrayUpdatable[$index]['field'] == 'host_macro_name'){
                     $macroName = '$_HOST'.$param1.'$';
                     $param1 = $macroName;
                 }
                 $setPart .= $arrayUpdatable[$index]['field'].' = :'.$arrayUpdatable[$index]['field'].' ';
-                $paramArray = array(':'.$arrayUpdatable[$index]['field'] => 
+                $paramArray = array_merge($paramArray,array(':'.$arrayUpdatable[$index]['field'] => 
                                     array('param' => $param1 , 'type' => $arrayUpdatable[$index]['type'])
-                                );
+                                ));
             }
         }
         
         if(!empty($paramArray)){
             $setPart = ' SET '.$setPart;
         }
-        
+
         $dbconn = Di::getDefault()->get('db_centreon');
         
         $macroName = '$_HOST'.$macro.'$';
@@ -259,9 +259,9 @@ class CustomMacroRepository
                 
                 
                 $setPart .= $arrayUpdatable[$index]['field'].' = :'.$arrayUpdatable[$index]['field'].' ';
-                $paramArray = array(':'.$arrayUpdatable[$index]['field'] => 
+                $paramArray = array_merge($paramArray,array(':'.$arrayUpdatable[$index]['field'] => 
                                     array('param' => $param1 , 'type' => $arrayUpdatable[$index]['type'])
-                                );
+                                ));
             }
         }
         

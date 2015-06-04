@@ -87,7 +87,7 @@
 				<field name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/command/formlist?type=2</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/checkcommand</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
