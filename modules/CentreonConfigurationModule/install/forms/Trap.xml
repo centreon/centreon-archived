@@ -9,7 +9,7 @@
 				<field name="traps_name" label="Trap name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 				    <validators>
                                         <validator rules="remote" serverside="centreon-main.unique" />
-                                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                                        <validator rules="forbiddenChar" serverside="core.ForbiddenChar">
                                                 <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
                                         </validator>
 				    </validators>

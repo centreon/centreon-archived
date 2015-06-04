@@ -12,7 +12,7 @@
         "route": "/validator/ipaddress"
     },
     {
-        "name": "core.forbiddenChar",
+        "name": "core.ForbiddenChar",
         "route": "/validator/forbiddenchar"
     },
     {
@@ -43,5 +43,4 @@
         "name": "core.AuthorizedValues",
         "route": "/validator/AuthorizedValues"
     }
-    
 ]
