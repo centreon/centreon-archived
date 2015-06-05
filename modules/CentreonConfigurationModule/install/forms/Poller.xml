@@ -18,7 +18,7 @@
 		<field name="ip_address" label="IP address" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">
                     <help>IP address of the poller which must be relative to the local poller.</help>
 		</field>
-                <field name="tmpl_name" label="Poller template" default_value="" advanced="0" type="selectwithchange" parent_field="" mandatory="0">
+                <field name="tmpl_name" label="Poller template" default_value="" advanced="0" type="selectwithchange" parent_field="" mandatory="1">
                     <attributes>
                         <initCallback>loadTemplateSteps</initCallback>
                         <additionalRoute>/centreon-configuration/poller/templates/form</additionalRoute>
