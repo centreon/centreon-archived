@@ -154,6 +154,12 @@ class PollerRepository extends Repository
         self::getPollerTemplates();
         $di = Di::getDefault();
         $pollerTemplateList = $di->get('pollerTemplate');
+
+        /* Check if poller template exists */
+        if (!isset($pollerTemplateList[$givenParameters['tmpl_name']])) {
+            throw new Exception(_("Poller template '" . $givenParameters['tmpl_name'] . "' does not exist"), 255);
+        }
+
         $myLiteTemplate = unserialize($pollerTemplateList[$givenParameters['tmpl_name']]);
         $myTemplate = $myLiteTemplate->toFullTemplate();
         $setups = $myTemplate->getBrokerPart()->getSetup();
@@ -204,7 +210,7 @@ class PollerRepository extends Repository
 
             return $pollerId;
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+            throw new Exception($e->getMessage(), 255);
         }
     }
 
@@ -273,7 +279,7 @@ class PollerRepository extends Repository
         /* Load template information for poller */
         $listTpl = TemplateManager::buildTemplatesList();
         if (!isset($listTpl[$tmplName])) {
-            throw new Exception('The template is not found on list of templates');
+            throw new Exception('The template is not found on list of templates', 255);
         }
         
         return $listTpl[$tmplName];
