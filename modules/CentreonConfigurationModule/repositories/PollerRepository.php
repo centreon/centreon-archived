@@ -156,8 +156,12 @@ class PollerRepository extends Repository
         $pollerTemplateList = $di->get('pollerTemplate');
 
         /* Check if poller template exists */
-        if (!isset($pollerTemplateList[$givenParameters['tmpl_name']])) {
-            throw new Exception(_("Poller template '" . $givenParameters['tmpl_name'] . "' does not exist"), 255);
+        if (!isset($givenParameters['tmpl_name']) || !isset($pollerTemplateList[$givenParameters['tmpl_name']])) {
+            $sTpl = "";
+            if (isset($givenParameters['tmpl_name'])) {
+                $sTpl = $givenParameters['tmpl_name'];
+            }
+            throw new Exception(_("Poller template '" . $sTpl . "' does not exist"), 255);
         }
 
         $myLiteTemplate = unserialize($pollerTemplateList[$givenParameters['tmpl_name']]);
