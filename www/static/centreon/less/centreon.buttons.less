@@ -11,6 +11,7 @@
     position: relative;
   }
 }
+button.ColVis_Button,
 .btnC {
   position: relative;
   line-height: 1.5;
@@ -25,6 +26,7 @@
   box-sizing: border-box;
   box-shadow: 2px 1px 1px @lightGray;
 }
+button.ColVis_Button,
 .btnDefault{
   color: @darkGray1;
   background-color: @lightGray1;
@@ -68,3 +70,26 @@
   position: absolute;
 }
 
+button.ColVis_Button {
+  height: 40px !important;
+  box-shadow: 2px 1px 1px @lightGray !important;
+  border: 1px solid @white !important;
+  background: none !important;
+  margin-top: 3px;
+
+  &:hover {
+    background-color: @darkGray2 !important;
+    span:before {
+      color: @lightGray1 !important;
+    }
+  }
+
+  span {
+    &:before {
+      content:"\e604";
+      font-family: ico-centreon;
+      font-size: 22px;
+      color: @darkGray1 !important;
+    }
+  }
+}

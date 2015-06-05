@@ -156,7 +156,7 @@ class Template
         }
         return $this->loadSteps($values);
     }
-    
+
     /**
      * Load steps for a template
      * 
@@ -175,12 +175,12 @@ class Template
         
         if (!is_null($this->enginePart)) {
             $rStep['engine'] = true;
-            $this->enginePart->getSteps($steps);
+            $this->enginePart->genSteps($steps);
         }
         
         if (!is_null($this->brokerPart)) {
             $rStep['broker'] = true;
-            $this->brokerPart->getSteps($steps);
+            $this->brokerPart->genSteps($steps);
         }
         
         foreach ($steps as $stepName => $step) {

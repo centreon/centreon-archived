@@ -84,12 +84,12 @@ class Broker
             }
         }
     }
-    
+
     /**
      * 
      * @param array $steps
      */
-    public function getSteps(&$steps)
+    public function genSteps(&$steps)
     {
         foreach ($this->setUp as $singleSetUp) {
             $singleSetUp->genForm($steps);
