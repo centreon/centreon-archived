@@ -69,36 +69,4 @@ class UsergroupRepository extends Repository
             'usergroup' => 'cfg_usergroups, usergroup_id, name'
         ),
     );
-    
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
-    
-    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {
-        if ($validate) {
-            self::validateForm($givenParameters, "wizard", $route, $validateMandatory);
-        }
-                
-        parent::create($givenParameters);
-    }
-    
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
-    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {      
-        parent::update($givenParameters, "form", $route);
-    }
-
 }

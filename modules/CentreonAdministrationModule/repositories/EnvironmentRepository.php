@@ -65,41 +65,4 @@ class EnvironmentRepository extends \CentreonAdministration\Repository\Repositor
             'environment' => 'cfg_environments, environment_id, name'
         ),
     );
-    
-    
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     * @return type
-     */
-     
-    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {       
-        if ($validate) {
-            self::validateForm($givenParameters, "wizard", $route, $validateMandatory);
-        }
-
-        parent::create($givenParameters);
-    }
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
-    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {
-        
-        if ($validate) {
-            self::validateForm($givenParameters, "form", $route, $validate, $validateMandatory);
-        }
-  
-        parent::update($givenParameters);
-    }
 }
