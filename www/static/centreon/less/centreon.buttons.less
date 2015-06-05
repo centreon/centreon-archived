@@ -77,6 +77,13 @@ button.ColVis_Button {
   background: none !important;
   margin-top: 3px;
 
+  &:hover {
+    background-color: @darkGray2 !important;
+    span:before {
+      color: @lightGray1 !important;
+    }
+  }
+
   span {
     &:before {
       content:"\e604";

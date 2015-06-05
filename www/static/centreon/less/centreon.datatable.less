@@ -75,12 +75,19 @@ table.dataTable thead .sorting:after {
     background-color: @white;
   }
 
+  div.ColVis {
+    margin-bottom: 0;
+  }
   .DTTT {
     margin-right: 5px;
     top: @paddingElem/2;
     a {
       display: table-cell;
       padding-top: @paddingElem/2 !important;
+      &:hover {
+        border: 1px solid @white;
+        span:before {color: @lightGray1;}
+      }
       span {
         &:before{
           content: "\e61f";
