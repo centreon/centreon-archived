@@ -130,8 +130,12 @@ class Validator
 
         if ($validateMandatory) {
             // If not all mandatory parameters are in the dataset, throw an exception
-            $datasKeys = array_keys($submittedDatas);
-            $missingKeys = array_diff($validationScheme['mandatory'], $datasKeys);
+            $missingKeys = array();
+            foreach ($validationScheme['mandatory'] as $mandatoryField) {
+                if (!isset($submittedDatas[$mandatoryField]) || trim($submittedDatas[$mandatoryField]) == "") {
+                    $missingKeys[] = $mandatoryField;
+                }
+            }
             if (count($missingKeys) > 0) {
                 $errorMessage = _("The following mandatory parameters are missing") . " :\n    - ";
                 $errorMessage .= implode("\n    - ", $missingKeys);
