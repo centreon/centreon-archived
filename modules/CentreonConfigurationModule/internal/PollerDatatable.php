@@ -236,7 +236,19 @@ class PollerDatatable extends Datatable
             'visible' => true,
 //            'source' => 'other',
             'dataSource' => '\CentreonRealtime\Models\Instances'
+        ),
+        array (
+            'title' => 'engine',
+            'name' => 'engine',
+            'data' => 'engine',
+            'orderable' => false,
+            'searchable' => false,
+            'type' => 'string',
+            'visible' => false,
+//            'source' => 'other',
+            'dataSource' => '\CentreonRealtime\Models\Instances'
         )
+
         
         
         
@@ -326,8 +338,12 @@ class PollerDatatable extends Datatable
     protected function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myPollerSet) {
+            if(!isset($myPollerSet['engine'])){
+                $myPollerSet['engine'] = "";
+            }
+            
             if (isset($myPollerSet['version'])) {
-                $myPollerSet['version'] = $myPollerSet['program_name'] . ' ' . $myPollerSet['version'];
+                $myPollerSet['version'] = $myPollerSet['engine'] . ' ' . $myPollerSet['version'];
             }
 
             if (isset($myPollerSet['last_alive']) && !empty($myPollerSet['last_alive'])) {
