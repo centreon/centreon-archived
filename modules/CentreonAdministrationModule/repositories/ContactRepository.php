@@ -177,5 +177,23 @@ class ContactRepository extends Repository
             $infoToUpdate[$class::getSlugField()] = $sSlug;
         }
         return Contact::update($givenParameters['object_id'], $infoToUpdate);
-    }            
+    }
+    
+    /**
+     * 
+     * @param array $givenParameters
+     * @param string $origin
+     * @param string $route
+     * @param bool $validate
+     * @param bool $validateMandatory
+     */
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {
+        if ($validate) {
+            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+        
+        
+        $newId = parent::create($givenParameters);
+    }
 }
