@@ -151,11 +151,14 @@ class CustomMacroRepository
         $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
         $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
         $stmtDelete->execute();
-        if($stmtDelete->rowCount() == 0){
+        
+        $deletedRow = $stmtDelete->rowCount();
+        
+        if($deletedRow == 0){
             throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
         }
         
-        return $stmtDelete->rowCount();
+        return $deletedRow;
     }
 
     /**
@@ -172,11 +175,13 @@ class CustomMacroRepository
         $stmtDelete->bindParam(':service', $objectId, \PDO::PARAM_INT);
         $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
         $stmtDelete->execute();
-        if($stmtDelete->rowCount() == 0){
+        $deletedRow = $stmtDelete->rowCount();
+        
+        if($deletedRow == 0){
             throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
         }
         
-        return $stmtDelete->rowCount();
+        return $deletedRow;
     }
     
     /**
@@ -221,15 +226,23 @@ class CustomMacroRepository
                 . "WHERE host_host_id = :host "
                 . "AND host_macro_name = :macro_name ";
 
-        $stmtDelete = $dbconn->prepare($updateRequest);
+        $stmtUpdate = $dbconn->prepare($updateRequest);
         
         foreach($paramArray as $index=>$param2){
-            $stmtDelete->bindParam($index, $param2['param'], $param2['type']);
+            $stmtUpdate->bindParam($index, $param2['param'], $param2['type']);
         }
         
-        $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
-        $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
-        $stmtDelete->execute();
+        $stmtUpdate->bindParam(':host', $objectId, \PDO::PARAM_INT);
+        $stmtUpdate->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
+        $stmtUpdate->execute();
+        
+        $updatedRow = $stmtUpdate->rowCount();
+        
+        if($updatedRow == 0){
+            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
+        }
+        
+        return $updatedRow;
 
     }
     
@@ -250,7 +263,7 @@ class CustomMacroRepository
         foreach($params as $index=>$param1){
             if(array_key_exists($index,$arrayUpdatable)){
                 if(!empty($paramArray)){
-                    $setPart = ' , '.$setPart;
+                    $setPart = $setPart.' , ';
                 }
                 if(isset($arrayUpdatable[$index]['field']) && $arrayUpdatable[$index]['field'] == 'svc_macro_name'){
                     $macroName = '$_SERVICE'.$param1.'$';
@@ -276,17 +289,24 @@ class CustomMacroRepository
                 . $setPart
                 . "WHERE svc_svc_id = :service "
                 . "AND svc_macro_name = :macro_name ";
-
-        $stmtDelete = $dbconn->prepare($updateRequest);
+        
+        $stmtUpdate = $dbconn->prepare($updateRequest);
         
         foreach($paramArray as $index=>$param2){
-            $stmtDelete->bindParam($index, $param2['param'], $param2['type']);
+            $stmtUpdate->bindParam($index, $param2['param'], $param2['type']);
         }
         
-        $stmtDelete->bindParam(':service', $objectId, \PDO::PARAM_INT);
-        $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
-        $stmtDelete->execute();
+        $stmtUpdate->bindParam(':service', $objectId, \PDO::PARAM_INT);
+        $stmtUpdate->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
+        $stmtUpdate->execute();
 
+        $updatedRow = $stmtUpdate->rowCount();
+        
+        if($updatedRow == 0){
+            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
+        }
+        
+        return $updatedRow;
     }
     
     

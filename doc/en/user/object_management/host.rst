@@ -67,8 +67,6 @@ host_snmp_version              Host snmp version
 
 host_location                  TODO
 
-host_comment                   Host comments
-
 host_event_handler_enabled     Event handler enable (0 or 1)
 
 command_command_id2            Event handler command

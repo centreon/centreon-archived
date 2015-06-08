@@ -14,5 +14,193 @@
         "thursday" : "tp_thursday",
         "friday" : "tp_friday",
         "saturday" : "tp_saturday"
+    },
+    "options" : {
+        "showAction" : {
+            "timeperiod" : {
+              "functionParams" : "object",
+              "help": "The time period",
+              "type": "string",
+              "toTransform" : "timeperiod",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "createAction" : {
+            "name" : {
+              "functionParams" : "params",
+              "help": "Timeperiod name",
+              "type": "string",
+              "toTransform" : "tp_name",
+              "multiple" : false,
+              "required" : true
+            },
+            "alias" : {
+              "functionParams" : "params",
+              "help": "Timeperiod alias",
+              "type": "string",
+              "toTransform" : "tp_alias",
+              "multiple" : false,
+              "required" : false
+            },
+            "sunday" : {
+              "functionParams" : "params",
+              "help": "Sunday period",
+              "type": "string",
+              "toTransform" : "tp_sunday",
+              "multiple" : false,
+              "required" : false
+            },
+            "monday" : {
+              "functionParams" : "params",
+              "help": "Monday period",
+              "type": "string",
+              "toTransform" : "tp_monday",
+              "multiple" : false,
+              "required" : false
+            },
+            "tuesday" : {
+              "functionParams" : "params",
+              "help": "Tuesday period",
+              "type": "string",
+              "toTransform" : "tp_tuesday",
+              "multiple" : false,
+              "required" : false
+            },
+            "wednesday" : {
+              "functionParams" : "params",
+              "help": "Wednesday period",
+              "type": "string",
+              "toTransform" : "tp_wednesday",
+              "multiple" : false,
+              "required" : false
+            },
+            "thursday" : {
+              "functionParams" : "params",
+              "help": "Thursday period",
+              "type": "string",
+              "toTransform" : "tp_thursday",
+              "multiple" : false,
+              "required" : false
+            },
+            "friday" : {
+              "functionParams" : "params",
+              "help": "Friday period",
+              "type": "string",
+              "toTransform" : "tp_friday",
+              "multiple" : false,
+              "required" : false
+            },
+            "saturday" : {
+              "functionParams" : "params",
+              "help": "Saturday period",
+              "type": "string",
+              "toTransform" : "tp_saturday",
+              "multiple" : false,
+              "required" : false
+            }
+        },
+        "updateAction" : {
+            "timeperiod" : {
+              "functionParams" : "object",
+              "help": "The time period",
+              "type": "string",
+              "toTransform" : "timeperiod",
+              "multiple" : false,
+              "required" : true
+            },
+            "name" : {
+              "functionParams" : "params",
+              "help": "Timeperiod name",
+              "type": "string",
+              "toTransform" : "tp_name",
+              "multiple" : false,
+              "required" : false
+            },
+            "alias" : {
+              "functionParams" : "params",
+              "help": "Timeperiod alias",
+              "type": "string",
+              "toTransform" : "tp_alias",
+              "multiple" : false,
+              "required" : false
+            },
+            "sunday" : {
+              "functionParams" : "params",
+              "help": "Sunday period",
+              "type": "string",
+              "toTransform" : "tp_sunday",
+              "multiple" : false,
+              "required" : false
+            },
+            "monday" : {
+              "functionParams" : "params",
+              "help": "Monday period",
+              "type": "string",
+              "toTransform" : "tp_monday",
+              "multiple" : false,
+              "required" : false
+            },
+            "tuesday" : {
+              "functionParams" : "params",
+              "help": "Tuesday period",
+              "type": "string",
+              "toTransform" : "tp_tuesday",
+              "multiple" : false,
+              "required" : false
+            },
+            "wednesday" : {
+              "functionParams" : "params",
+              "help": "Wednesday period",
+              "type": "string",
+              "toTransform" : "tp_wednesday",
+              "multiple" : false,
+              "required" : false
+            },
+            "thursday" : {
+              "functionParams" : "params",
+              "help": "Thursday period",
+              "type": "string",
+              "toTransform" : "tp_thursday",
+              "multiple" : false,
+              "required" : false
+            },
+            "friday" : {
+              "functionParams" : "params",
+              "help": "Friday period",
+              "type": "string",
+              "toTransform" : "tp_friday",
+              "multiple" : false,
+              "required" : false
+            },
+            "saturday" : {
+              "functionParams" : "params",
+              "help": "Saturday period",
+              "type": "string",
+              "toTransform" : "tp_saturday",
+              "multiple" : false,
+              "required" : false
+            }
+        },
+        "deleteAction" : {
+            "timeperiod" : {
+              "functionParams" : "object",
+              "help": "The time period",
+              "type": "string",
+              "toTransform" : "timeperiod",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "duplicateAction" : {
+            "timeperiod" : {
+              "functionParams" : "object",
+              "help": "The time period",
+              "type": "string",
+              "toTransform" : "timeperiod",
+              "multiple" : false,
+              "required" : true
+            }
+        }
     }
 }

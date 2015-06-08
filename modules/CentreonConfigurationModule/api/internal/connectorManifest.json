@@ -12,5 +12,129 @@
         "description" : "description",
         "command line" : "connector_line",
         "activate" : "enabled"
+    },
+    "options" : {
+        "showAction" : {
+            "connector" : {
+              "functionParams" : "object",
+              "help": "The connector",
+              "type": "string",
+              "toTransform" : "connector",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "createAction" : {
+            "name" : {
+              "functionParams" : "params",
+              "help": "Connector name",
+              "type": "string",
+              "toTransform" : "name",
+              "multiple" : false,
+              "required" : true
+            },
+            "command-line" : {
+              "functionParams" : "params",
+              "help": "Command line",
+              "type": "string",
+              "toTransform" : "command_line",
+              "multiple" : false,
+              "required" : true
+            },
+            "enabled" : {
+              "functionParams" : "params",
+              "help": "Enable (0 or 1)",
+              "type": "number",
+              "toTransform" : "enabled",
+              "multiple" : false,
+              "required" : true
+            },
+            "description" : {
+              "functionParams" : "params",
+              "help": "Connector description",
+              "type": "string",
+              "toTransform" : "description",
+              "multiple" : false,
+              "required" : false
+            },
+            "command" : {
+              "functionParams" : "params",
+              "help": "Linked commands",
+              "type": "string",
+              "toTransform" : "connector_command",
+              "multiple" : false,
+              "required" : false
+            }
+        },
+        "updateAction" : {
+            "connector" : {
+              "functionParams" : "object",
+              "help": "The connector",
+              "type": "string",
+              "toTransform" : "connector",
+              "multiple" : false,
+              "required" : true
+            },
+            "name" : {
+              "functionParams" : "params",
+              "help": "Connector name",
+              "type": "string",
+              "toTransform" : "name",
+              "multiple" : false,
+              "required" : false
+            },
+            "command-line" : {
+              "functionParams" : "params",
+              "help": "Command line",
+              "type": "string",
+              "toTransform" : "command_line",
+              "multiple" : false,
+              "required" : false
+            },
+            "enabled" : {
+              "functionParams" : "params",
+              "help": "Enable (0 or 1)",
+              "type": "number",
+              "toTransform" : "enabled",
+              "multiple" : false,
+              "required" : false
+            },
+            "description" : {
+              "functionParams" : "params",
+              "help": "Connector description",
+              "type": "string",
+              "toTransform" : "description",
+              "multiple" : false,
+              "required" : false
+            },
+            "command" : {
+              "functionParams" : "params",
+              "help": "Linked commands",
+              "type": "string",
+              "toTransform" : "connector_command",
+              "multiple" : false,
+              "required" : false
+            }
+        },
+        "deleteAction" : {
+            "connector" : {
+              "functionParams" : "object",
+              "help": "The connector",
+              "type": "string",
+              "toTransform" : "connector",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "duplicateAction" : {
+            "connector" : {
+              "functionParams" : "object",
+              "help": "The connector",
+              "type": "string",
+              "toTransform" : "connector",
+              "multiple" : false,
+              "required" : true
+            }
+        }
     }
 }

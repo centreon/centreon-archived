@@ -39,26 +39,29 @@ namespace Centreon\Internal;
 use Centreon\Internal\Di;
 use Centreon\Internal\Utils\CommandLine\Colorize;
 use Centreon\Internal\Module\Informations;
+use GetOptionKit\OptionCollection;
+use GetOptionKit\OptionParser;
+use GetOptionKit\OptionPrinter\ConsoleOptionPrinter;
 
 class Command
 {
     private $requestLine;
-    private $parametersLine;
+    private $arguments;
     private $commandList;
     
     /**
      * 
      * @param string $requestLine
-     * @param string $parametersLine
+     * @param array $arguments
      */
-    public function __construct($requestLine, $parametersLine)
+    public function __construct($requestLine, $arguments)
     {
         try {
             $bootstrap = new Bootstrap();
             $sectionToInit = array('configuration', 'database', 'cache', 'logger', 'organization', 'events');
             $bootstrap->init($sectionToInit);
             $this->requestLine = $requestLine;
-            $this->parametersLine = $parametersLine;
+            $this->arguments = $arguments;
             $modulesToParse = array();
             
             $coreCheck = preg_match("/^core:/", $requestLine);
@@ -209,9 +212,7 @@ class Command
         }
         
         $actionArgs = array();
-        if (!is_null($this->parametersLine)) {
-            $this->getArgs($actionArgs, $aliveObject, $action);
-        }
+        $this->getArgs($actionArgs, $aliveObject, $action);
         
         // Call the action
         $aliveObject->named($action, $actionArgs);
@@ -261,15 +262,59 @@ class Command
      */
     private function getArgs(array &$argsList, $aliveObject, $action)
     {
-        //$this->parseAction($aliveObject, $action);
+        $listOptions = array();
+        if(isset($aliveObject->options[$action])){
+            $listOptions = $aliveObject->options[$action];
+        }
+        $listOptions = array_merge($listOptions,
+            array(
+            'h|help' => array(
+                'help' => 'The contact description',
+                'type' => 'boolean',
+                'functionParams' => '',
+                "toTransform" => '',
+                'required' => false)
+            )
+        );
         
-        $rawRistOfArgs = explode(':', $this->parametersLine);
-        //$rawRistOfArgs = preg_split('/(.+\])\:(.+)/', $this->parametersLine, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $specs = new OptionCollection();
+        /** 
+         * {
+         *   "description" => {
+         *     "help": "The contact description",
+         *     "type": "string"
+         *   }
+         * ]
+         */
+        foreach ($listOptions as $option => $spec) {
+            if ($spec['type'] != 'boolean') {
+                if ($spec['multiple']) {
+                    $option .= '+';
+                } else if ($spec['required']) {
+                    $option .= ':';
+                } else {
+                    $option .= '?';
+                }
+            }
+            $specs->add($option, $spec['help'])->isa($spec['type']);
+        }
         
-        //var_dump($rawRistOfArgs);
-        foreach ($rawRistOfArgs as $rawArgs) {
-            $currentArgsValue = explode('=', $rawArgs);
-            $argsList[$currentArgsValue[0]] = $currentArgsValue[1];
+        
+        try {
+            $parser = new OptionParser($specs);
+            $options = $parser->parse($this->arguments);
+        } catch (RequireValueException $ex) {
+            echo $ex->getMessage();
+        }
+
+        if ($options->help) {
+            //echo "centreonConsole centreon-configuration:Service:listMacro\n\n";
+            $printer = new ConsoleOptionPrinter();
+            echo $printer->render($specs);
+            die;
+        }
+        foreach( $options as $key => $spec ) {
+            $argsList[$key] = $spec->value;
         }
     }
     

@@ -7,5 +7,81 @@
         "id" : "contact_id",
         "description" : "description",
         "timezone" : "timezone_id"
+    },
+    "options" : {
+        "showAction" : {
+            "contact" : {
+              "functionParams" : "object",
+              "help": "The contact",
+              "type": "string",
+              "toTransform" : "contact",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "createAction" : {
+            "description" : {
+              "functionParams" : "params",
+              "help": "The contact description",
+              "type": "string",
+              "toTransform" : "description",
+              "multiple" : false,
+              "required" : true
+            },
+            "timezone" : {
+              "functionParams" : "params",
+              "help": "Timezone id",
+              "type": "string",
+              "toTransform" : "timezone_id",
+              "multiple" : false,
+              "required" : false
+            }
+        },
+        "updateAction" : {
+            "contact" : {
+              "functionParams" : "object",
+              "help": "The contact",
+              "type": "string",
+              "toTransform" : "contact",
+              "multiple" : false,
+              "required" : true
+            },
+            "description" : {
+              "functionParams" : "params",
+              "help": "The contact description",
+              "type": "string",
+              "toTransform" : "description",
+              "multiple" : false,
+              "required" : false
+            },
+            "timezone" : {
+              "functionParams" : "params",
+              "help": "Timezone id",
+              "type": "string",
+              "toTransform" : "timezone_id",
+              "multiple" : false,
+              "required" : false
+            }
+        },
+        "deleteAction" : {
+            "contact" : {
+              "functionParams" : "object",
+              "help": "The contact",
+              "type": "string",
+              "toTransform" : "contact",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "duplicateAction" : {
+            "contact" : {
+              "functionParams" : "object",
+              "help": "The contact",
+              "type": "string",
+              "toTransform" : "contact",
+              "multiple" : false,
+              "required" : true
+            }
+        }
     }
 }

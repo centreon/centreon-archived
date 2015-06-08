@@ -46,6 +46,9 @@ use Centreon\Internal\Exception;
  */
 class BasicCrud extends AbstractCommand
 {
+    
+    public $options = array();
+    
     /**
      *
      * @var type 
@@ -211,6 +214,7 @@ class BasicCrud extends AbstractCommand
      */
     public function listAction($fields = null, $count = -1, $offset = 0)
     {
+        
         // Getting the repository name
         $repository = $this->repository;
 
@@ -244,8 +248,8 @@ class BasicCrud extends AbstractCommand
                 if ($externalAttribute['link'] == 'relation') {
                     $relClass = $this->relationMap[$externalAttribute['objectClass']];
                     $exP = $relClass::getMergedParameters(
-                        explode(',', $externalAttribute['fields']),
                         array(),
+                        explode(',', $externalAttribute['fields']),
                         -1,
                         0,
                         null,
@@ -298,8 +302,12 @@ class BasicCrud extends AbstractCommand
      */
     protected function parseObjectParams($params)
     {
+        
+        
+        
+        
         // 
-        $finalParamList = array();
+        /*$finalParamList = array();
 
         // First we seperate the params
         $rawParamList = explode(';', $params);
@@ -313,10 +321,10 @@ class BasicCrud extends AbstractCommand
                 $paramValue = substr($param, $openingDelimiterPos + 1, ($closingDelimiterPos - $openingDelimiterPos) - 1);
                 $finalParamList[$paramName] = $paramValue;
             }
-        }
+        }*/
 
         // 
-        return $finalParamList;
+        return $params;
     }
     
     

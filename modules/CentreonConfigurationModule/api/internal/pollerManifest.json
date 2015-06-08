@@ -12,5 +12,151 @@
         "template name" : "tmpl_name",
         "organization" : "organization_id",
         "enable" : "enable"
+    },
+    "options" : {
+        "showAction" : {
+            "poller" : {
+              "functionParams" : "object",
+              "help": "The poller",
+              "type": "string",
+              "toTransform" : "poller",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "createAction" : {
+            "name" : {
+              "functionParams" : "params",
+              "help": "The poller name",
+              "type": "string",
+              "toTransform" : "name",
+              "multiple" : false,
+              "required" : true
+            },
+            "port" : {
+              "functionParams" : "params",
+              "help": "The poller port",
+              "type": "string",
+              "toTransform" : "port",
+              "multiple" : false,
+              "required" : true
+            },
+            "template-name" : {
+              "functionParams" : "params",
+              "help": "The template poller name",
+              "type": "string",
+              "toTransform" : "tmpl_name",
+              "multiple" : false,
+              "required" : true
+            },
+            "node" : {
+              "functionParams" : "params",
+              "help": "The template node id",
+              "type": "string",
+              "toTransform" : "node_id",
+              "multiple" : false,
+              "required" : false
+            },
+            "retention" : {
+              "functionParams" : "params",
+              "help": "one peer retention",
+              "type": "string",
+              "toTransform" : "one_per_retention",
+              "multiple" : false,
+              "required" : false
+            },
+            "organization" : {
+              "functionParams" : "params",
+              "help": "The organization id",
+              "type": "string",
+              "toTransform" : "organization_id",
+              "multiple" : false,
+              "required" : false
+            },
+            "enable" : {
+              "functionParams" : "params",
+              "help": "Enable poller (0 or 1)",
+              "type": "number",
+              "toTransform" : "enable",
+              "multiple" : false,
+              "required" : false
+            }
+        },
+        "updateAction" : {
+            "poller" : {
+              "functionParams" : "object",
+              "help": "The poller",
+              "type": "string",
+              "toTransform" : "poller",
+              "multiple" : false,
+              "required" : true
+            },
+            "name" : {
+              "functionParams" : "params",
+              "help": "The poller name",
+              "type": "string",
+              "toTransform" : "name",
+              "multiple" : false,
+              "required" : false
+            },
+            "port" : {
+              "functionParams" : "params",
+              "help": "The poller port",
+              "type": "string",
+              "toTransform" : "port",
+              "multiple" : false,
+              "required" : false
+            },
+            "template-name" : {
+              "functionParams" : "params",
+              "help": "The template poller name",
+              "type": "string",
+              "toTransform" : "tmpl_name",
+              "multiple" : false,
+              "required" : false
+            },
+            "node" : {
+              "functionParams" : "params",
+              "help": "The template node id",
+              "type": "string",
+              "toTransform" : "node_id",
+              "multiple" : false,
+              "required" : false
+            },
+            "retention" : {
+              "functionParams" : "params",
+              "help": "one peer retention",
+              "type": "string",
+              "toTransform" : "one_per_retention",
+              "multiple" : false,
+              "required" : false
+            },
+            "organization" : {
+              "functionParams" : "params",
+              "help": "The organization id",
+              "type": "string",
+              "toTransform" : "organization_id",
+              "multiple" : false,
+              "required" : false
+            },
+            "enable" : {
+              "functionParams" : "params",
+              "help": "Enable poller (0 or 1)",
+              "type": "number",
+              "toTransform" : "enable",
+              "multiple" : false,
+              "required" : false
+            }
+        },
+        "deleteAction" : {
+            "poller" : {
+              "functionParams" : "object",
+              "help": "The poller",
+              "type": "string",
+              "toTransform" : "poller",
+              "multiple" : false,
+              "required" : true
+            }
+        }
     }
 }
