@@ -39,6 +39,7 @@ use CentreonAdministration\Models\User;
 use CentreonAdministration\Models\Apitoken;
 use CentreonAdministration\Models\Contact;
 use CentreonAdministration\Models\ContactInfo;
+use CentreonAdministration\Repository\ContactRepository;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use CentreonSecurity\Internal\Sso;
@@ -81,14 +82,8 @@ class UserRepository extends Repository
      * @param array $givenParameters
      * @return integer
      */
-    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    public static function create($givenParameters, $origin = "wizard", $route = "", $validate = true, $validateMandatory = true)
     {
-        if ($validate) {
-            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
-        }
-        
-        $contactId = Contact::insert(array('description' => $givenParameters['login'] . " contact"));
-        
         if (isset($givenParameters['password']) && $givenParameters['password']) {
             $givenParameters['password'] = static::generateHashedPassword($givenParameters);
         }
@@ -96,12 +91,31 @@ class UserRepository extends Repository
         $currentDate = date('Y-m-d H:i:s');
         $givenParameters['createdat'] = $currentDate;
         $givenParameters['updatedat'] = $currentDate;
-        $givenParameters['contact_id'] = $contactId;
         
-        $newId = parent::create($givenParameters);
+        $userId = parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
+
+        $contactId = ContactRepository::create(
+            array(
+                'description' => $givenParameters['login'] . " contact"
+            ),
+            $origin,
+            $route,
+            false,
+            false
+        );
         
+        parent::update(
+            array(
+                'object_id' => $userId,
+                'contact_id' => $contactId
+            ),
+            $origin,
+            $route,
+            false,
+            false
+        );
         
-        return $newId;
+        return $userId;
     }
 
     /**

@@ -65,7 +65,7 @@ class TemplateField implements ValidatorInterface
     {
         $resultError = _($params['name'] . ' is mandatory');
 
-        if ($params['require'] && (!isset($value) || is_null($value))) {
+        if ($params['require'] && (!isset($value) || trim($value) == "")) {
             throw new Exception($resultError, 255);
         }
     }

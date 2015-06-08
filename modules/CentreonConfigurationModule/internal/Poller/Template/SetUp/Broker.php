@@ -32,9 +32,9 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace CentreonConfiguration\Internal\Poller\Template\Setup;
+namespace CentreonConfiguration\Internal\Poller\Template\SetUp;
 
-use CentreonConfiguration\Internal\Poller\Template\Setup\Setup;
+use CentreonConfiguration\Internal\Poller\Template\SetUp\SetUp;
 /**
  * Description of BrokerTemplateManager
  *
