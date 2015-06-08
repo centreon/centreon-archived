@@ -225,7 +225,7 @@ class HostRepository extends Repository
             $stmt->execute(array($hostId));
         }
         
-        $issues = array();
+        //$issues = array();
         $issues['indirect_issues'] = array();
         $issues['direct_issues'] = array();
         while ($row = $stmt->fetch()) {
