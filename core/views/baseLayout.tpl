@@ -183,27 +183,26 @@
             <div class="full-height-scroll">{block name="content"}{/block}</div>
         </div>
 
-            <div class="bottombar">
-                <div  class="footer_links col-sm-8 col-md-4">
-                    <a href="http://documentation.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Documentation{/t}"><i class="fa fa-book"></i></a>
-                    <a href="https://github.com/centreon/centreon" data-toggle="tooltip" data-placement="top" title="{t}Source{/t}"><i class="fa fa-github"></i></a>
-                    <a href="http://forge.centreon.com" data-toggle="tooltip" data-placement="top" title="{t}Forge{/t}"><i class="fa fa-inbox"></i></a>
-                    <a href="https://plus.google.com/u/0/s/centreon"  data-toggle="tooltip" data-placement="top" title="{t}Google +{/t}"><i class="fa fa-google-plus-square"></i></a>
-                    <a href="https://twitter.com/Centreon" data-toggle="tooltip" data-placement="top" title="{t}Twitter{/t}"><i class="fa fa-twitter"></i></a>
-                    <a href="https://www.facebook.com/pages/Centreon/157748944280967" data-toggle="tooltip" data-placement="top" title="{t}Facebook{/t}"><i class="fa fa-facebook"></i></a>
-                    <a href="http://forge.centreon.com/projects/centreon/issues/new" data-toggle="tooltip" data-placement="top" title="{t}Bug ?{/t}"><i class="fa fa-bug"></i></a>
-                    <a href="http://www.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Web{/t}"><i class="fa fa-desktop"></i></a>
-                </div>
-
-                <p class="signature col-sm-4 col-md-4 col-md-offset-4"> <a href="http://www.centreon.com/">Centreon </a><small>Beta</small> &copy; 2005-2015</p>
+        <div class="bottombar">
+            <div  class="footer_links col-sm-8 col-md-4">
+                <a href="http://documentation.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Documentation{/t}"><i class="fa fa-book"></i></a>
+                <a href="https://github.com/centreon/centreon" data-toggle="tooltip" data-placement="top" title="{t}Source{/t}"><i class="fa fa-github"></i></a>
+                <a href="http://forge.centreon.com" data-toggle="tooltip" data-placement="top" title="{t}Forge{/t}"><i class="fa fa-inbox"></i></a>
+                <a href="https://plus.google.com/u/0/s/centreon"  data-toggle="tooltip" data-placement="top" title="{t}Google +{/t}"><i class="fa fa-google-plus-square"></i></a>
+                <a href="https://twitter.com/Centreon" data-toggle="tooltip" data-placement="top" title="{t}Twitter{/t}"><i class="fa fa-twitter"></i></a>
+                <a href="https://www.facebook.com/pages/Centreon/157748944280967" data-toggle="tooltip" data-placement="top" title="{t}Facebook{/t}"><i class="fa fa-facebook"></i></a>
+                <a href="http://forge.centreon.com/projects/centreon/issues/new" data-toggle="tooltip" data-placement="top" title="{t}Bug ?{/t}"><i class="fa fa-bug"></i></a>
+                <a href="http://www.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Web{/t}"><i class="fa fa-desktop"></i></a>
             </div>
+
+            <p class="signature col-sm-4 col-md-4 col-md-offset-4"> <a href="http://www.centreon.com/">Centreon </a><small>Beta</small> &copy; 2005-2015</p>
+        </div>
 
        <div class="modal fade" id="modal" role="dialog" aria-labelledby="wizard" aria-hidden="true">
            <div class="modal-dialog modal-lg">
                <div class="modal-content"></div>
            </div>
        </div>
-
     </div>
 
     {foreach from=$jsBottomFileList item='jsFile'}
