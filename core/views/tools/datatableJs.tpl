@@ -94,7 +94,7 @@
 
                                 $.each(t, function(index,item) {
                                     var menuId = '#'+item.name+'_id';
-                                    console.log(item.default);
+                                    //console.log(item.default);
                                     if(typeof(item.default) == 'undefined' || item.default == 0){
                                         $(menuId).on('click',function(){
                                             $.ajax({
@@ -129,7 +129,7 @@
                                                 // remplir le menu correspondant
 
                                                 var c = '#' + item.name + '_Slider' ;
-                                                console.log(item.tpl);
+                                                //console.log(item.tpl);
                                                 $.get(item.tpl, function(tpl){
 
                                                     var template = Hogan.compile(tpl);
