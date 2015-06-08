@@ -100,7 +100,7 @@ class Installer extends AbstractModuleInstaller
             $repository::setRelationMap(static::$relationMap);
             $repository::setObjectName($this->objectName);
             $repository::setObjectClass($this->objectClass);
-            $repository::setSaveEvents(false);
+            //$repository::setSaveEvents(false);
             $user = $repository::checkUser('admin', 'centreon');
         } catch (Exception $e) {
             $adminUser = array(
