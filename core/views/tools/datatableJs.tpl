@@ -21,11 +21,11 @@
 
                 var t = data.DT_RowData.right_side_menu_list;
 
-
                 if (typeof t !== 'undefined') {
 
                     $(row).on('click', function(e){
                         $('#sideRight').sideSlide.add(row,data);
+
                         var target = $( e.target );
                         if(target.is("a")){
                             if($(this).hasClass('selected')){
