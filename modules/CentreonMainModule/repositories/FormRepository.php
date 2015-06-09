@@ -161,7 +161,7 @@ abstract class FormRepository extends ListRepository
             $db->beginTransaction();
             
             $sField = $class::getUniqueLabelField();
-            if (isset($sField) && isset($givenParameters[$sField])) {
+            if (isset($sField) && isset($givenParameters[$sField]) && !is_null($class::getSlugField())) {
                 $oSlugify = new CentreonSlugify($class, get_called_class());
                 $sSlug = $oSlugify->slug($givenParameters[$sField]);
                 $givenParameters[$class::getSlugField()] = $sSlug;
@@ -263,9 +263,9 @@ abstract class FormRepository extends ListRepository
         $givenParameters[$pk] = $givenParameters['object_id'];
         
         $sField = $class::getUniqueLabelField();
-        if (isset($givenParameters[$sField])) {
+        if (isset($givenParameters[$sField]) && !is_null($class::getSlugField())) {
             $oSlugify = new CentreonSlugify($class, get_called_class());
-            $sSlug = $oSlugify->slug($givenParameters[$sField]);
+            $sSlug = $oSlugify->slug($givenParameters[$sField], $givenParameters['object_id']);
             $givenParameters[$class::getSlugField()] = $sSlug;
         }
                        
