@@ -6,7 +6,7 @@
 	<redirect_route>/centreon-configuration/poller</redirect_route>
 	<section name="General">
             <block name="General settings">
-		<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+		<field name="name" label="Name" normalized_name="name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
                     <validators>
                         <validator rules="remote" serverside="centreon-main.unique" />
                         <validator rules="forbiddenChar" serverside="core.ForbiddenChar">
@@ -15,10 +15,10 @@
                     </validators>
                 <help>Name which will be used for identifying the poller.</help>
 		</field>
-		<field name="ip_address" label="IP address" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">
+		<field name="ip_address" label="IP address" normalized_name="ip-address" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">
                     <help>IP address of the poller which must be relative to the local poller.</help>
 		</field>
-                <field name="tmpl_name" label="Poller template" default_value="" advanced="0" type="selectwithchange" parent_field="" mandatory="1">
+                <field name="tmpl_name" label="Poller template" normalized_name="template" default_value="" advanced="0" type="selectwithchange" parent_field="" mandatory="1">
                     <attributes>
                         <initCallback>loadTemplateSteps</initCallback>
                         <additionalRoute>/centreon-configuration/poller/templates/form</additionalRoute>
@@ -31,7 +31,7 @@
                 </field>
             </block>
             <block name="Additional information">
-                <field name="enable" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
+                <field name="enable" label="Status" normalized_name="enable" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
                   <attributes>
                     <choices>
                       <Enabled>1</Enabled>
