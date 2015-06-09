@@ -80,40 +80,63 @@ class CentreonSlugify
 
     public function __construct($oModel, $oRepository)
     {
-        $this->oObject = new Slugify($this->sRegex);
+        if (!is_null($oModel::getSlugField())) {
+            $this->oObject = new Slugify($this->sRegex);
 
-        $this->oRepository = $oRepository;
-        $this->oModel = $oModel;
-        $this->sSlugField = $oModel::getSlugField();
+            $this->oRepository = $oRepository;
+            $this->oModel = $oModel;
+            $this->sSlugField = $oModel::getSlugField();
+        }
     }
     
     /**
      * @param string $sValue Description
+     * @param int $iIobjectId
      * @return string
      */
-    public function slug($sValue)
+    public function slug($sValue, $iIobjectId = '')
     {
         $sSlug = $this->oObject->slugify($sValue);
         $oRepo= $this->oRepository;
-
-        $aObject = $oRepo::getList("*", -1, 0, null, 'asc', array($this->sSlugField => $sSlug));
+        $oModel = $this->oModel;
         
-        $sSlugNew = self::concat($sSlug, count($aObject));
+        $aObject = $oRepo::getList("*", -1, 0, null, 'asc', array($this->sSlugField => $sSlug));
+            
+        $sSlugNew = self::concat($oModel, $sSlug, $iIobjectId, $aObject);
 
         return $sSlugNew;
     }
     /**
-     * 
+     * @param object $oModel Description
      * @param type $sValue
+     * @param int $iIobjectId
+     * @param array $aObject Description
      * @return string
      */
-    public static function concat($sValue, $iNb)
+    public static function concat($oModel, $sValue, $iIobjectId, $aObject)
     {
         $sSlugNew = "";
+        $iNb = count($aObject);
         $aValues = explode(static::$sGlue, $sValue);
         $iLast = end($aValues);
+        
         if ($iNb == 0) {
             $sSlugNew = $sValue;
+        } else if($iNb ==1 && !empty($iIobjectId))  {
+            
+            $sPrimary = $oModel::getPrimaryKey();
+            if (!empty($sPrimary)) {
+                if (isset($aObject[$sPrimary]) && $aObject[$sPrimary] == $iIobjectId)
+                    $sSlugNew = $sValue;
+            } else {
+                if (is_int($iLast)) {
+                    $iPos = strrpos($sValue, static::$sGlue);
+                    $sSlugNew = substr($sValue, 0, $iPos).static::$sGlue.($iNb + 1);
+                } else {
+                    static::$index++;
+                    $sSlugNew = $sValue.static::$sGlue.static::$index;
+                }
+            }
         } else {
             if (is_int($iLast)) {
                 $iPos = strrpos($sValue, static::$sGlue);
