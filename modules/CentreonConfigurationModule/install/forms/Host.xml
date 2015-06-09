@@ -153,7 +153,7 @@
         </section>
 		<section name="Relations">
 			<block name="Parentships">
-				<field normalized_name="parents" ame="host_parents" label="Parents Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+				<field normalized_name="parents" name="host_parents" label="Parents Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<help></help>
 					<attributes>
 						<object_type>object</object_type>
