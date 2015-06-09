@@ -261,7 +261,7 @@
               "multiple" : false,
               "required" : false
             },
-            "active-checks" : {
+            "active-checks-enabled" : {
               "functionParams" : "params",
               "help": "Active check enable (0 or 1)",
               "type": "number",
@@ -269,7 +269,7 @@
               "multiple" : false,
               "required" : false
             },
-            "passive-checks" : {
+            "passive-checks-enabled" : {
               "functionParams" : "params",
               "help": "Passive check enable (0 or 1)",
               "type": "number",
