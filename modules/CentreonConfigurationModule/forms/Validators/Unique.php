@@ -80,18 +80,6 @@ class Unique implements ValidatorInterface
         $iId = '';
         $return = '';
         
-        /*
-        if (isset($params['object'])) {
-            if (isset($params['extraParams']['module']) && !empty($params['extraParams']['module'])) {
-                $oModule = $params['extraParams']['module'];
-            } else {
-                $oModule = "CentreonConfiguration";
-            }
-            
-            $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
-        }
-        */
-
         if (isset($params['object']) && $params['object'] == 'service') {
             $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
             
