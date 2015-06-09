@@ -278,9 +278,9 @@ class HostController extends FormController
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
         
-        if (count($macroList) > 0) {
+        //if (count($macroList) > 0) {
             CustomMacroRepository::saveHostCustomMacro($givenParameters['object_id'], $macroList);
-        }
+        //}
         
         //Delete all tags
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
