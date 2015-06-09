@@ -46,10 +46,13 @@
 	 */
 	$DBRESULT = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' AND `nagios_server_id` = '".$tab['id']."' LIMIT 1");
 	if ($DBRESULT->numRows()) {
-		$nagios = $DBRESULT->fetchRow();
-		$DBRESULT->free();
+            $nagios = $DBRESULT->fetchRow();
+            $DBRESULT->free();
 	    $nagiosCFGFile = $nagiosCFGPath.$tab['id']."/".$nagios['cfg_file'];
 	    unset($nagios['cfg_file']);
+            if (isset($tab["monitoring_engine"]) && ($tab["monitoring_engine"] != "CENGINE") && isset($nagios["log_pid"])) {
+                unset($nagios["log_pid"]);
+            }
 	} else {
 		throw new RuntimeException('No main file available for this poller. Please add one main file in Configuration > Monitoring Engines > Main.cfg.');
 	}    
