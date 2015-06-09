@@ -38,7 +38,7 @@ namespace Centreon\Internal\Installer;
 use Centreon\Internal\Di;
 use Centreon\Models\Validators;
 use Centreon\Models\Module;
-
+use Cocur\Slugify\Slugify;
 /**
  * Description of Form
  *
@@ -373,9 +373,9 @@ class Form
         if (!isset(self::$fields[$key])) {
             $sql = 'INSERT INTO cfg_forms_fields 
                 (name, label, default_value, attributes, advanced, type, 
-                help, module_id, parent_field, parent_value, child_actions, mandatory, child_mandatory, show_label) VALUES 
+                help, module_id, parent_field, parent_value, child_actions, mandatory, child_mandatory, show_label, normalized_name) VALUES 
                 (:name, :label, :default_value, :attributes, :advanced, 
-                :type, :help, :module_id, :parent_field, :parent_value, :child_actions, :mandatory, :child_mandatory, :show_label)';
+                :type, :help, :module_id, :parent_field, :parent_value, :child_actions, :mandatory, :child_mandatory, :show_label, :normalized_name)';
         } else {
             $sql = 'UPDATE cfg_forms_fields SET label = :label,
                 default_value = :default_value,
@@ -389,7 +389,8 @@ class Form
                 child_actions = :child_actions,
                 mandatory = :mandatory,
                 child_mandatory = :child_mandatory,
-                show_label = :show_label
+                show_label = :show_label,
+                normalized_name = :normalized_name
                 WHERE name = :name
                 AND field_id = :field_id';
         }
@@ -415,6 +416,18 @@ class Form
             $data['show_label'] = 1;
             $stmt->bindParam(':show_label', $data['show_label']);
         }
+        
+        
+        if(isset($data['normalized_name']) && !empty($data['normalized_name'])){
+            $stmt->bindParam(':normalized_name', $data['normalized_name']);
+        }else{
+            $slugifier = new Slugify('/([^a-z0-9]|-)+/');
+            $sSlug = $slugifier->slugify($data['name']);
+            $stmt->bindParam(':normalized_name', $sSlug);
+        }
+        
+        
+        
         
         
         if (!isset($data['mandatory'])) {
@@ -790,6 +803,7 @@ class Form
                         'mandatory' => $field['mandatory'],
                         'help' => $field->help,
                         'show_label' => $field['show_label'],
+                        'normalized_name' => $field['normalized_name']
                     );
                     self::insertField(array_map('strval', $fieldData));
                     $blockFieldData = array(
