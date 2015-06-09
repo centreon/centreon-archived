@@ -24,10 +24,10 @@
                 if (typeof t !== 'undefined') {
 
                     $(row).on('click', function(e){
-                        $('#sideRight').sideSlide.add(row,data);
 
                         var target = $( e.target );
-                        if(target.is("a")){
+
+                        if(target.is("tr")){
                             if($(this).hasClass('selected')){
                                 $(this).removeClass('selected');
                             }else{
@@ -39,7 +39,7 @@
                                 $('#tableLeft').css('margin-right','0%');
                                 $('#sideRight').css('display','none');
                             }else {
-
+                                $('#sideRight').sideSlide.add(row,data);
                                 $('#tableLeft').css('margin-right','310px');
                                 $('#sideRight').css('display','block');
 
@@ -49,6 +49,9 @@
                 }
 
             },
+             "infoCallback": function( settings, start, end, max, total, pre ) {
+                return start +" to "+ end + " of "+ total;
+              },
             "processing": true,
             "ajax": "{url_for url=$objectUrl}",
             "serverSide": true,
@@ -59,7 +62,7 @@
                 "processing": "Loading information. Please wait a moment."
             },
             {$datatableParameters.configuration}
-            'dom': "R<'row'r<'col-md-11 text-right'T C ><'col-md-1'l>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            'dom': "R<'row'r<'col-md-10 text-right'T C ><'col-md-2'l>>t<'row'<'col-md-2'i><'col-md-10'p>>",
             responsive: true,
             "columns": [
                 {$datatableParameters.header.columnHeader}
