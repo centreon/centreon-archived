@@ -49,6 +49,42 @@ use Centreon\Internal\Database\Migrate;
  */
 class MigrateCommand extends AbstractCommand
 {
+    
+    public $options = array(
+        "generateDiffAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        ),
+        "downAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        ),
+        "upAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        )
+    );
+    
+    
+    
     /**
      * 
      * @param string $module

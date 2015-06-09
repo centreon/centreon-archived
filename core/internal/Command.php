@@ -269,7 +269,7 @@ class Command
         $listOptions = array_merge($listOptions,
             array(
             'h|help' => array(
-                'help' => 'The contact description',
+                'help' => 'help',
                 'type' => 'boolean',
                 'functionParams' => '',
                 "toTransform" => '',

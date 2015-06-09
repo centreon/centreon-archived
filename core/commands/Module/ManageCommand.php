@@ -50,6 +50,93 @@ use Centreon\Internal\Installer\Form;
  */
 class ManageCommand extends AbstractCommand
 {
+    
+    public $options = array(
+        "installAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "The module name",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => true
+            ),
+            "verbose" => array(
+                "functionParams" => "verbose",
+                "help" => "verbose",
+                "type" => "number",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        ),
+        "upgradeAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "The module name",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => true
+            ),
+            "verbose" => array(
+                "functionParams" => "verbose",
+                "help" => "verbose",
+                "type" => "number",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        ),
+        "uninstallAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "The module name",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => true
+            ),
+            "verbose" => array(
+                "functionParams" => "verbose",
+                "help" => "verbose",
+                "type" => "number",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        ),
+        "deployStaticAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "The module name",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => true
+            ),
+            "removeOld" => array(
+                "functionParams" => "removeOld",
+                "help" => "removeOld",
+                "type" => "number",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        ),
+        "deployFormsAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "The module name",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => true
+            )
+        )
+    );
+            
+            
     /**
      * 
      * @param string $module
