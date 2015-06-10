@@ -293,6 +293,25 @@ class Informations
     
     /**
      * 
+     * @param type $moduleName
+     * @return type
+     */
+    public static function getModuleTables($moduleName)
+    {
+        $tableList = array();
+        $tableFilesPath = static::getModulePath($moduleName) . '/install/db/centreon/*.xml';
+        $tableFiles = glob($tableFilesPath);
+        
+        
+        foreach ($tableFiles as $tableFile) {
+            $tableList[] = basename($tableFile, '.xml');
+        }
+        
+        return $tableList;
+    }
+
+    /**
+     * 
      * @param string $canonicalName
      * @param array $result
      */

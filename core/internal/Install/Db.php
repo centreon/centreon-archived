@@ -48,8 +48,9 @@ class Db
      * @param type $operation
      * @param type $targetDbName
      */
-    public static function update($targetDbName = 'centreon')
+    public static function update($module)
     {
+        $targetDbName = 'centreon';
         ini_set('memory_limit', '-1');
         $di = Di::getDefault();
         $config = $di->get('config');
@@ -93,24 +94,10 @@ class Db
         
         if ($diff !== false) {
             $strDiff = $platform->getModifyDatabaseDDL($diff);
-            file_put_contents("/tmp/installSqlLog.sql", $strDiff);
+            $sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
+            $finalSql = implode(";\n\n", static::keepCreateStatement($sqlToBeExecuted, $module));
+            \PropelSQLParser::executeString($finalSql, $db);
         }
-        //$sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
-        //unlink("/tmp/installSqlLog.sql");
-        
-        // Loading Modules Pre Update Operations
-        self::preUpdate();
-        
-        // to sent to verify
-        //$tablesToBeDropped = self::getTablesToBeRemoved($sqlToBeExecuted);
-        
-        // Perform Update
-        if ($diff !== false) {
-            \PropelSQLParser::executeString($strDiff, $db);
-        }
-        
-        // Loading Modules Post Update Operations
-        self::postUpdate();
         
         // Empty Target DB
         self::deleteTargetDbSchema($targetDbName);
@@ -158,6 +145,10 @@ class Db
         return $tablesToBeRemoved;
     }
     
+    /**
+     * 
+     * @param type $targetDbName
+     */
     private static function deleteTargetDbSchema($targetDbName = 'centreon')
     {
         // Initialize configuration
@@ -194,8 +185,9 @@ class Db
     }
 
     /**
-     *
-     * @param string $path
+     * 
+     * @param type $path
+     * @return boolean
      */
     private static function deleteFolder($path)
     {
@@ -217,6 +209,7 @@ class Db
     /**
      * 
      * @param type $targetDbName
+     * @return type
      */
     private static function buildTargetDbSchema($targetDbName = 'centreon')
     {
@@ -334,6 +327,11 @@ class Db
         }
     }
     
+    /**
+     * 
+     * @param type $dbName
+     * @return type
+     */
     private static function getDbConnector($dbName)
     {
         $di = Di::getDefault();
@@ -349,17 +347,25 @@ class Db
     
     /**
      * 
+     * @param type $queries
      */
-    private static function preUpdate()
+    private static function keepCreateStatement($queries, $module)
     {
+        $createQueries = array();
+        $moduleTables = Informations::getModuleTables($module);
         
-    }
-    
-    /**
-     * 
-     */
-    private static function postUpdate()
-    {
+        $numberOfQueries = count($queries);
+        for ($i=0; $i<$numberOfQueries; $i++) {
+            if (strpos($queries[$i], "CREATE TABLE") !== false) {
+                preg_match("/\`\w+\`/", $queries[$i], $rawTargetTable);
+                
+                $targetTable = trim($rawTargetTable[0], '`');
+                if (in_array($targetTable, $moduleTables)) {
+                    $createQueries[] = $queries[$i];
+                }
+            }
+        }
         
+        return $createQueries;
     }
 }
