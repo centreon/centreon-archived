@@ -48,4 +48,5 @@ class Timezone extends CentreonBaseModel
     protected static $table = "cfg_timezones";
     protected static $primaryKey = "timezone_id";
     protected static $uniqueLabelField = "name";
+    protected static $slugField        = "slug";
 }

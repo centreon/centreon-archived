@@ -51,17 +51,35 @@ class AuthorizedValues implements ValidatorInterface
      */
     public function validate($value, $params = array())
     {
-        $aLegalChars = explode(',', $params['values']);
- 
-        if (!in_array($value, $aLegalChars)) {
-             $result = array(
-                'success' => false,
-                'error' => _('"'.$value. '" is not authorized value '.$value.'. The authorized values is '.$params['values'].'')
-            );
-        } else {
-            $result = array('success' => true);
-        }
+        $result = array();
+        if (isset($params['method'])) {
+            $methods = explode("/", $params['method']);
 
+            $repositorie = $methods[0]."\\Repository\\".$methods[1];
+              
+            $aDatas = $repositorie::$methods[2]($value);
+            
+            if (count($aDatas) == 0) {
+                 $result = array(
+                    'success' => false,
+                    'error' => _('"'.$value. '" is not authorized value '.$value.'.')
+                );
+            } else {
+                $result = array('success' => true);
+            }
+ 
+        } else {
+            $aLegalChars = explode(',', $params['values']);
+
+            if (!in_array($value, $aLegalChars)) {
+                 $result = array(
+                    'success' => false,
+                    'error' => _('"'.$value. '" is not authorized value '.$value.'. The authorized values is '.$params['values'].'')
+                );
+            } else {
+                $result = array('success' => true);
+            }
+        }
         return $result;
     }
 }
