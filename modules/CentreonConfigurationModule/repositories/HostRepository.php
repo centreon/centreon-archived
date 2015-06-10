@@ -114,6 +114,20 @@ class HostRepository extends Repository
         return $id;
     }
 
+    /**
+     * Host update action
+     *
+     * @param array $givenParameters
+     * @throws \Centreon\Internal\Exception
+     */
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {
+        parent::update($givenParameters, $origin, $route, $validate, $validateMandatory);
+        if (isset($givenParameters['object_id'])) {
+            self::deployServices($givenParameters['object_id']);
+        }
+    }
+
     public static function getIconImagePath($hostId){
    // Initializing connection
         $di = Di::getDefault();
