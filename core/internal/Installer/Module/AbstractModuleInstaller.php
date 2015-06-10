@@ -678,7 +678,7 @@ abstract class AbstractModuleInstaller
         $config = $di->get('config');
         $dbName = $config->get('db_centreon', 'dbname');
         echo "Updating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
-        Db::update($dbName);
+        Db::update($this->moduleSlug);
         echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
         if ($installDefault) {
             Db::loadDefaultDatas($this->moduleDirectory . 'install/datas');

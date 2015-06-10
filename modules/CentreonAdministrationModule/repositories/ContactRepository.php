@@ -169,11 +169,13 @@ class ContactRepository extends Repository
         if (isset($givenParameters['description'])) {
             $infoToUpdate['description'] = $givenParameters['description'];
         }
-        
-        $oSlugify = new CentreonSlugify($class, get_called_class());
-        $sSlug = $oSlugify->slug($givenParameters[$class::getUniqueLabelField()]);
-        $infoToUpdate[$class::getSlugField()] = $sSlug;
-        
+        $class = static::$objectClass;
+        $sField = $class::getUniqueLabelField();
+        if (isset($givenParameters[$sField])) {
+            $oSlugify = new CentreonSlugify($class, get_called_class());
+            $sSlug = $oSlugify->slug($givenParameters[$sField]);
+            $infoToUpdate[$class::getSlugField()] = $sSlug;
+        }
         return Contact::update($givenParameters['object_id'], $infoToUpdate);
-    }            
+    }
 }

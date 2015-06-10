@@ -32,41 +32,41 @@
  * For more information : contact@centreon.com
  *
  */
+namespace CentreonConfiguration\Forms\Validators;
 
-namespace CentreonAdministration\Repository;
-
-use CentreonAdministration\Models\Aclresource;
-use Centreon\Internal\Di;
+use Centreon\Internal\Form\Validators\ValidatorInterface;
 use Centreon\Internal\Exception;
 
 /**
  * @author Kevin Duret <kduret@centreon.com>
  * @package Centreon
- * @subpackage Repository
+ * @subpackage Core
  */
-class AclresourceRepository extends Repository
+class TemplateField implements ValidatorInterface
 {
     /**
+     * validate custom field for a template
      *
-     * @var string
+     * @param string $value The field value
+     * @param array $params The field params
      */
-    public static $tableName = 'cfg_acl_resources';
-    
+    public function validate($value, $params = array())
+    {
+        self::validateMandatory($value, $params);
+    }
+
     /**
+     * validate mandatory custom field for a template
      *
-     * @var string
+     * @param string $value The field value
+     * @param array $params The field params
      */
-    public static $objectName = 'Aclresource';
-    
-    public static $objectClass = '\CentreonAdministration\Models\Aclresource';
-    
-    /**
-     *
-     * @var type 
-     */
-    public static $unicityFields = array(
-        'fields' => array(
-            'aclresource' => 'cfg_acl_resources, acl_resource_id, name'
-        ),
-    );
+    private function validateMandatory($value, $params = array())
+    {
+        $resultError = _($params['name'] . ' is mandatory');
+
+        if ($params['require'] && (!isset($value) || trim($value) == "")) {
+            throw new Exception($resultError, 255);
+        }
+    }
 }

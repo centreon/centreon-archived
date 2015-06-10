@@ -6,13 +6,13 @@
 		<redirect_route>/centreon-configuration/servicetemplate</redirect_route>
 		<section name="Service configuration">
 			<block name="General information">
-                            <field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                            <field   normalized_name="description" name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
                                 <validators>
                                     <validator rules="remote" serverside="centreon-main.unique" />
                                 </validators>
                             </field>
-				<field name="service_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
-				<field name="service_template_model_stm_id" label="Service Template Model" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+				<field normalized_name="alias" name="service_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+				<field normalized_name="template-model-stm" name="service_template_model_stm_id" label="Service Template Model" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/centreon-configuration/servicetemplate/formlist/[i:id]</defaultValuesRoute>
@@ -24,7 +24,7 @@
                                         </validator>
                                     </validators>
 				</field>
-				<field name="service_template_hosts" label="Linked with host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+				<field normalized_name="host-templates" name="service_template_hosts" label="Linked with host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/centreon-configuration/hosttemplate/formlist</defaultValuesRoute>
@@ -32,7 +32,7 @@
 						<multiple>true</multiple>
 					</attributes>
 				</field>
-				<field name="service_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
+				<field normalized_name="icon" name="service_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
@@ -41,7 +41,7 @@
 						<wizardRoute>/media/image/add</wizardRoute>
 					</attributes>
 				</field>
-				<field name="domain_id" label="Domain" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+				<field  normalized_name="domain" name="domain_id" label="Domain" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
             		<help>Define the domain of the Service template</help>
 		            <attributes>
         		        <object_type>object</object_type>
@@ -67,7 +67,7 @@
                 </field>
 			</block>
 			<block name="Check properties">
-				<field name="service_is_volatile" label="Is volatile" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+				<field  normalized_name="volatile" name="service_is_volatile" label="Is volatile" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -76,7 +76,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+				<field normalized_name="timeperiod" name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
@@ -84,18 +84,18 @@
 						<multiple>false</multiple>
 					</attributes>
 				</field>
-				<field name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+				<field normalized_name="command" name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/command/formlist?type=2</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/checkcommand</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
-				<field name="service_max_check_attempts" label="Max check attempts" default_value="" advanced="0" type="integer" parent_field="" mandatory="0"></field>
-				<field name="service_normal_check_interval" label="Normal check interval" default_value="" advanced="0" type="integer" parent_field="" mandatory="0"></field>
-				<field name="service_retry_check_interval" label="Retry check interval" default_value="" advanced="0" type="integer" parent_field="" mandatory="0"></field>
-				<field name="service_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+				<field normalized_name="max-check-attempts" name="service_max_check_attempts" label="Max check attempts" default_value="" advanced="0" type="integer" parent_field="" mandatory="0"></field>
+				<field normalized_name="normal-check-interval" name="service_normal_check_interval" label="Normal check interval" default_value="" advanced="0" type="integer" parent_field="" mandatory="0"></field>
+				<field normalized_name="retry-check-interval" name="service_retry_check_interval" label="Retry check interval" default_value="" advanced="0" type="integer" parent_field="" mandatory="0"></field>
+				<field normalized_name="active-checks-enabled" name="service_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -108,7 +108,7 @@
 		</section>
 		<section name="SNMP Traps">
 			<block name="Traps configuration">
-				<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+				<field normalized_name="traps" name="service_traps" label="Linked with SNMP traps" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/centreon-configuration/trap/formlist</defaultValuesRoute>
@@ -131,7 +131,7 @@
 				</field>
 			</block>
 			<block name="Freshness control options">
-				<field name="service_check_freshness" label="Check freshness" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+				<field normalized_name="check-freshness" name="service_check_freshness" label="Check freshness" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -140,10 +140,10 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_freshness_threshold" label="Freshness threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
+				<field normalized_name="freshness-threshold" name="service_freshness_threshold" label="Freshness threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
 			</block>
 			<block name="Flapping options">
-				<field name="service_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+				<field normalized_name="flap-detection-enabled" name="service_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -152,11 +152,11 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_low_flap_threshold" label="Low flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
-				<field name="service_high_flap_threshold" label="High flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
+				<field normalized_name="low-flap-threshold" name="service_low_flap_threshold" label="Low flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
+				<field normalized_name="high-flap-threshold" name="service_high_flap_threshold" label="High flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
 			</block>
 			<block name="Event handler">
-				<field name="service_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+				<field normalized_name="eventhandler-enabled" name="service_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -165,7 +165,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="command_command_id2" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+				<field normalized_name="command2" name="command_command_id2" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>

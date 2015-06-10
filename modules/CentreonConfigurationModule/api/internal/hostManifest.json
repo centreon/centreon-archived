@@ -15,5 +15,189 @@
         "description" : "host_alias",
         "address" : "host_address",
         "activate" : "host_activate"
+    },
+    "options" : {
+        "createAction" : {
+        },
+        "showAction" : {
+            "host" : {
+              "functionParams" : "object",
+              "help": "The host",
+              "type": "string",
+              "toTransform" : "host",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "deleteAction" : {
+            "host" : {
+              "functionParams" : "object",
+              "help": "The host",
+              "type": "string",
+              "toTransform" : "host",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "listTagAction" : {
+            "host" : {
+              "functionParams" : "object",
+              "help": "The host",
+              "type": "string",
+              "toTransform" : "host",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "addTagAction" : {
+            "host" : {
+              "functionParams" : "object",
+              "help": "The host",
+              "type": "string",
+              "toTransform" : "host",
+              "multiple" : false,
+              "required" : true
+            },
+            "tag" : {
+                "functionParams" : "tag",
+                "help": "The tag",
+                "type": "string",
+                "toTransform" : "",
+                "multiple" : false,
+                "required" : true
+            }
+        },
+        "removeTagAction" : {
+            "host" : {
+              "functionParams" : "object",
+              "help": "The host",
+              "type": "string",
+              "toTransform" : "host",
+              "multiple" : false,
+              "required" : true
+            },
+            "tag" : {
+                "functionParams" : "tag",
+                "help": "The tag",
+                "type": "string",
+                "toTransform" : "",
+                "multiple" : false,
+                "required" : true
+            }
+        },
+        "updateAction" : {
+            "host" : {
+              "functionParams" : "object",
+              "help": "The host",
+              "type": "string",
+              "toTransform" : "host",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "addMacroAction" : {
+            "host" : {
+              "functionParams" : "object",
+              "help": "The host",
+              "type": "string",
+              "toTransform" : "host",
+              "multiple" : false,
+              "required" : true
+            },
+            "name" : {
+              "functionParams" : "params",
+              "help": "The host description",
+              "type": "string",
+              "toTransform" : "name",
+              "multiple" : false,
+              "required" : false
+            },
+            "value" : {
+              "functionParams" : "params",
+              "help": "The macro value",
+              "type": "string",
+              "toTransform" : "value",
+              "multiple" : false,
+              "required" : false
+            },
+            "hidden" : {
+              "functionParams" : "params",
+              "help": "",
+              "type": "Number",
+              "toTransform" : "hidden",
+              "multiple" : false,
+              "required" : false
+            }
+        },
+        "listMacroAction" : {
+            "host" : {
+              "functionParams" : "object",
+              "help": "The host",
+              "type": "string",
+              "toTransform" : "host",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "removeMacroAction" : {
+            "host" : {
+              "functionParams" : "object",
+              "help": "The host",
+              "type": "string",
+              "toTransform" : "host",
+              "multiple" : false,
+              "required" : true
+            },
+            "macro" : {
+              "functionParams" : "macro",
+              "help": "The macro name",
+              "type": "string",
+              "toTransform" : "",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "updateMacroAction" : {
+            "host" : {
+              "functionParams" : "object",
+              "help": "The host",
+              "type": "string",
+              "toTransform" : "host",
+              "multiple" : false,
+              "required" : true
+            },
+            "macro" : {
+              "functionParams" : "macro",
+              "help": "The macro name",
+              "type": "string",
+              "toTransform" : "",
+              "multiple" : false,
+              "required" : true
+            },
+            "value" : {
+              "functionParams" : "params",
+              "help": "The macro value",
+              "type": "string",
+              "toTransform" : "value",
+              "multiple" : false,
+              "required" : false
+            },
+            "name" : {
+              "functionParams" : "params",
+              "help": "The new macro name",
+              "type": "string",
+              "toTransform" : "name",
+              "multiple" : false,
+              "required" : false
+            },
+            "hidden" : {
+              "functionParams" : "params",
+              "help": "Is password",
+              "type": "number",
+              "toTransform" : "hidden",
+              "multiple" : false,
+              "required" : false
+            }
+        }
     }
 }

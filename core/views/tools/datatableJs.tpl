@@ -12,43 +12,21 @@
 
         <!-- Init DataTable -->
         var flagMenuCreated = false;
+        $('#sideRight').sideSlide();
         oTable = $('#datatable{$object}').dataTable({
 
         /* Right side details */
 
             "rowCallback": function( row, data ) {
-                var t = data.DT_RowData.right_side_menu_list;
 
-                var d = data.DT_RowData.right_side_default_menu;
+                var t = data.DT_RowData.right_side_menu_list;
 
                 if (typeof t !== 'undefined') {
 
-                    if(!flagMenuCreated){
-                        // Menu generation
-
-                       var sideItem = '';
-                       var sideContent = '';
-
-                        //Create default container
-
-                       var defaultWrapper = '<section id="'+d.name+'_Slider"></section>';
-
-                        // Create Side tab items
-
-                       for (var i=0;i<t.length;i++) {
-                           sideItem += '<li id="'+t[i].name+'_id"><a href="#'+t[i].name+'_Slider"><i class="icon-'+t[i].name+'"></i>'+ '<h6>' + t[i].name+'</h6></a></li>';
-                           sideContent+='<section id="'+t[i].name+'_Slider"></section>';
-                       }
-                       $('#sideRight').html(defaultWrapper+'<section class="bodyWrapper"><div class="row"><nav class="sideNav"><ul class="sideMenu">' + sideItem + '</h6></nav><div class="bodyContent col-md-10">' +sideContent + '</div></div></div></div>');
-
-                       $('#sideRight').tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
-                       $('#sideRight li').removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
-
-                       flagMenuCreated = true;
-                     }
-
                     $(row).on('click', function(e){
+
                         var target = $( e.target );
+
                         if(target.is("a")){
                             if($(this).hasClass('selected')){
                                 $(this).removeClass('selected');
@@ -61,95 +39,19 @@
                                 $('#tableLeft').css('margin-right','0%');
                                 $('#sideRight').css('display','none');
                             }else {
-
-                                // default menu here
-
-                                $.ajax({
-                                    url: d.url,
-                                    type: "GET",
-                                    dataType: 'JSON',
-                                    success : function(e){
-
-                                        // remplir le menu correspondant
-
-                                        var a = '#' + d.name + '_Slider' ;
-                                        $.get(d.tpl, function(tpl){
-
-                                            var template = Hogan.compile(tpl);
-                                            var rendered = template.render(e);
-                                            $(a).html(rendered);
-                                        });
-
-                                        $('#tableLeft').css('margin-right','310px');
-                                        $('#sideRight').css('display','block');
-                                    },
-                                    error : function(error){
-                                    console.log('error');
-                                    }
-                                });
-
-
+                                $('#sideRight').sideSlide.add(row,data);
                                 $('#tableLeft').css('margin-right','310px');
                                 $('#sideRight').css('display','block');
-
-                                $.each(t, function(index,item) {
-                                    var menuId = '#'+item.name+'_id';
-                                    console.log(item.default);
-                                    if(typeof(item.default) == 'undefined' || item.default == 0){
-                                        $(menuId).on('click',function(){
-                                            $.ajax({
-                                                url: item.url,
-                                                type: "GET",
-                                                dataType: 'JSON',
-                                                success : function(e){
-
-                                                    // remplir le menu correspondant
-
-                                                    var c = '#' + item.name + '_Slider' ;
-                                                    $.get(item.tpl, function(tpl){
-
-                                                        var template = Hogan.compile(tpl);
-                                                        var rendered = template.render(e);
-                                                        $(c).html(rendered);
-                                                    });
-                                                },
-                                                error : function(error){
-                                                console.log(error);
-                                                }
-                                            });
-                                        });
-
-                                    }else if(typeof(item.default) !== 'undefined' && item.default == 1){
-                                        $.ajax({
-                                            url: item.url,
-                                            type: "GET",
-                                            dataType: 'JSON',
-                                            success : function(e){
-
-                                                // remplir le menu correspondant
-
-                                                var c = '#' + item.name + '_Slider' ;
-                                                console.log(item.tpl);
-                                                $.get(item.tpl, function(tpl){
-
-                                                    var template = Hogan.compile(tpl);
-                                                    var rendered = template.render(e);
-                                                    $(c).html(rendered);
-                                                });
-                                            },
-                                            error : function(error){
-                                            console.log('error');
-                                            }
-                                        });
-
-                                    }
-                                });
 
                             }
                         }
                     });
                 }
+
             },
+             "infoCallback": function( settings, start, end, max, total, pre ) {
+                return start +" to "+ end + " of "+ total;
+              },
             "processing": true,
             "ajax": "{url_for url=$objectUrl}",
             "serverSide": true,
@@ -160,7 +62,7 @@
                 "processing": "Loading information. Please wait a moment."
             },
             {$datatableParameters.configuration}
-            'dom': "R<'row'r<'col-md-11 text-right'T C ><'col-md-1'l>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            'dom': "R<'row'r<'col-md-10 text-right'T C ><'col-md-2'l>>t<'row'<'col-md-2'i><'col-md-10'p>>",
             responsive: true,
             "columns": [
                 {$datatableParameters.header.columnHeader}

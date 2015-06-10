@@ -75,12 +75,19 @@ table.dataTable thead .sorting:after {
     background-color: @white;
   }
 
+  div.ColVis {
+    margin-bottom: 0;
+  }
   .DTTT {
     margin-right: 5px;
     top: @paddingElem/2;
     a {
       display: table-cell;
       padding-top: @paddingElem/2 !important;
+      &:hover {
+        border: 1px solid @white;
+        span:before {color: @lightGray1;}
+      }
       span {
         &:before{
           content: "\e61f";
@@ -172,10 +179,17 @@ table.dataTable thead .sorting:after {
   color: @thirdBlue;
   text-decoration: none;
   background-color: @lightGray1;
-  border-width: 0px;
-  box-shadow: 1px 2px 2px @lightGray;
+  border: 1px solid @white;
+  box-shadow: 2px 1px 2px @lightGray;
   margin: 0 2px;
   border-radius: 2px !important;
+  padding : @paddingElem @paddingElem*2;
+
+  &:hover {
+    color: @white;
+    background-color: @lightGray;
+    border: 1px solid @white;
+  }
 }
 
 .pagination {
@@ -185,9 +199,8 @@ table.dataTable thead .sorting:after {
       color: #fff;
       cursor: default;
       background-color: @thirdBlue;
-      border-width: 0px 0px 2px 0px;
-      border-color: @darkBlue;
-      box-shadow: 1px 0px 2px @darkBlue;
+      box-shadow: 1px 2px 2px @lightGray;
+      border: 1px solid @white;
     }
   }
 }
@@ -196,8 +209,8 @@ table.dataTable thead .sorting:after {
   color: @darkGray2;
   cursor: not-allowed;
   background-color:@lightGray;
-  border-width: 0px;
-  box-shadow: 1px 2px 2px @darkGray1;
+  box-shadow: 1px 2px 2px @lightGray;
+  border: 1px solid @white;
 }
 
 /* -- Scroll bar -- */
@@ -219,5 +232,20 @@ table.dataTable thead .sorting:after {
   }
   &::-webkit-scrollbar-thumb:hover {
     background-color: #aaa;
+  }
+}
+
+// Line length
+
+.dataTables_length {
+  select {
+    height: 40px;
+    padding: @paddingElem @paddingElem*2;
+    margin-top: 3px;
+
+    outline: 0;
+    border-radius: 3px;
+    box-shadow: 2px 1px 1px @lightGray;
+    border: 1px solid @lightGray;
   }
 }

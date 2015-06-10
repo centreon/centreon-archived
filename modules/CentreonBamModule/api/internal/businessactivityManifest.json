@@ -8,5 +8,50 @@
         "name" : "name",
         "description" : "description",
         "type" : "ba_type_id"
+    },
+    "options" : {
+        "showAction" : {
+            "bam" : {
+              "functionParams" : "object",
+              "help": "The bam",
+              "type": "string",
+              "toTransform" : "bam",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "createAction" : {
+            
+        },
+        "updateAction" : {
+            "bam" : {
+              "functionParams" : "object",
+              "help": "The bam",
+              "type": "string",
+              "toTransform" : "bam",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "deleteAction" : {
+            "bam" : {
+              "functionParams" : "object",
+              "help": "The bam",
+              "type": "string",
+              "toTransform" : "bam",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "duplicateAction" : {
+           "bam" : {
+              "functionParams" : "object",
+              "help": "The bam",
+              "type": "string",
+              "toTransform" : "bam",
+              "multiple" : false,
+              "required" : true
+            } 
+        }
     }
 }

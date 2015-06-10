@@ -38,7 +38,7 @@ namespace Centreon\Internal\Installer;
 use Centreon\Internal\Di;
 use Centreon\Models\Validators;
 use Centreon\Models\Module;
-
+use Cocur\Slugify\Slugify;
 /**
  * Description of Form
  *
@@ -373,9 +373,9 @@ class Form
         if (!isset(self::$fields[$key])) {
             $sql = 'INSERT INTO cfg_forms_fields 
                 (name, label, default_value, attributes, advanced, type, 
-                help, module_id, parent_field, parent_value, child_actions, mandatory, child_mandatory, show_label) VALUES 
+                help, module_id, parent_field, parent_value, child_actions, mandatory, child_mandatory, show_label, normalized_name) VALUES 
                 (:name, :label, :default_value, :attributes, :advanced, 
-                :type, :help, :module_id, :parent_field, :parent_value, :child_actions, :mandatory, :child_mandatory, :show_label)';
+                :type, :help, :module_id, :parent_field, :parent_value, :child_actions, :mandatory, :child_mandatory, :show_label, :normalized_name)';
         } else {
             $sql = 'UPDATE cfg_forms_fields SET label = :label,
                 default_value = :default_value,
@@ -389,7 +389,8 @@ class Form
                 child_actions = :child_actions,
                 mandatory = :mandatory,
                 child_mandatory = :child_mandatory,
-                show_label = :show_label
+                show_label = :show_label,
+                normalized_name = :normalized_name
                 WHERE name = :name
                 AND field_id = :field_id';
         }
@@ -415,6 +416,18 @@ class Form
             $data['show_label'] = 1;
             $stmt->bindParam(':show_label', $data['show_label']);
         }
+        
+        
+        if(isset($data['normalized_name']) && !empty($data['normalized_name'])){
+            $stmt->bindParam(':normalized_name', $data['normalized_name']);
+        }else{
+            $slugifier = new Slugify('/([^a-z0-9]|-)+/');
+            $sSlug = $slugifier->slugify($data['name']);
+            $stmt->bindParam(':normalized_name', $sSlug);
+        }
+        
+        
+        
         
         
         if (!isset($data['mandatory'])) {
@@ -483,47 +496,57 @@ class Form
         $db = Di::getDefault()->get('db_centreon');
         $fname = (string)$data['field_name'];
         $validators = $data['validators'];
-        if (isset(self::$fields[$fname]) && !is_null($validators->validator)) {
-            foreach ($validators->validator as $validator) {
-                if (isset($validator['serverside'])) {
-                    $serverside = (string)$validator['serverside'];
-                } else {
-                    $serverside = null;
-                }
-                if (isset(self::$validators[$serverside])) {
-                    $stmt = $db->prepare(
-                        'DELETE FROM cfg_forms_fields_validators_relations '
-                        . 'WHERE validator_id = :validator_id AND field_id = :field_id'
-                    );
-                    $stmt->bindParam(':validator_id', self::$validators[$serverside]);
-                    $stmt->bindParam(':field_id', self::$fields[$fname]);
-                    $stmt->execute();
 
-                    $stmt = $db->prepare(
-                        'REPLACE INTO cfg_forms_fields_validators_relations (validator_id, field_id, client_side_event, params, server_side) '
-                        . 'VALUES (:validator_id, :field_id, :client_side_event, :params, :server_side)'
-                    );
-                    $stmt->bindParam(':validator_id', self::$validators[$serverside]);
-                    $stmt->bindParam(':field_id', self::$fields[$fname]);
-                    $stmt->bindValue(':client_side_event', (string)$validator['rules']);
-                    
-                    if (is_null($serverside)) {
-                        $stmt->bindValue(':server_side', '0');
+        if (isset(self::$fields[$fname])) {
+            $formName = (string)$data['form_name'];
+            if (isset(static::$forms[$formName])) {
+                $stmt = $db->prepare('DELETE fv FROM cfg_forms_fields_validators_relations fv 
+                    JOIN cfg_forms_blocks_fields_relations bf ON fv.field_id = bf.field_id
+                   JOIN cfg_forms_blocks fbf on fbf.block_id = bf.block_id
+                   JOIN cfg_forms_sections fs ON fs.section_id = fbf.section_id
+                   WHERE form_id = :form_id AND fv.field_id = :field_id' 
+               );
+               $stmt->bindParam(':field_id', self::$fields[$fname]);
+               $stmt->bindParam(':form_id', self::$forms[$formName]);
+               $stmt->execute();
+            }
+            
+            if (!is_null($validators->validator)) {
+                foreach ($validators->validator as $validator) {
+                    if (isset($validator['serverside'])) {
+                        $serverside = (string)$validator['serverside'];
                     } else {
-                        $stmt->bindValue(':server_side', '1');
+                        $serverside = null;
                     }
-                    
-                    //unset($validator['rules']);
-                    $validatorParams = array();
-                    foreach ($validator->argument as $argument) {
-                        //$validatorParams = (string)$argument['name'] . '=' . $argument;
-                        $validatorName = (string)$argument['name'];
-                        $validatorValue = (string)$argument;
-                        $validatorParams[$validatorName] = $validatorValue;
+
+                    if (isset(self::$validators[$serverside])) {
+
+                        $stmt = $db->prepare(
+                            'REPLACE INTO cfg_forms_fields_validators_relations (validator_id, field_id, client_side_event, params, server_side) '
+                            . 'VALUES (:validator_id, :field_id, :client_side_event, :params, :server_side)'
+                        );
+                        $stmt->bindParam(':validator_id', self::$validators[$serverside]);
+                        $stmt->bindParam(':field_id', self::$fields[$fname]);
+                        $stmt->bindValue(':client_side_event', (string)$validator['rules']);
+
+                        if (is_null($serverside)) {
+                            $stmt->bindValue(':server_side', '0');
+                        } else {
+                            $stmt->bindValue(':server_side', '1');
+                        }
+
+                        //unset($validator['rules']);
+                        $validatorParams = array();
+                        foreach ($validator->argument as $argument) {
+                            //$validatorParams = (string)$argument['name'] . '=' . $argument;
+                            $validatorName = (string)$argument['name'];
+                            $validatorValue = (string)$argument;
+                            $validatorParams[$validatorName] = $validatorValue;
+                        }
+                        $encodedParams = json_encode($validatorParams);
+                        $stmt->bindParam(':params', $encodedParams);
+                        $stmt->execute();
                     }
-                    $encodedParams = json_encode($validatorParams);
-                    $stmt->bindParam(':params', $encodedParams);
-                    $stmt->execute();
                 }
             }
         }
@@ -691,6 +714,7 @@ class Form
                 );
                 self::addFieldToStep(array_map('strval', $stepFieldData));
                 $fieldValidators = array(
+                    'form_name' => $wizard['name'],
                     'field_name' => $field['name'],
                     'validators' => $field->validators
                 );
@@ -779,6 +803,7 @@ class Form
                         'mandatory' => $field['mandatory'],
                         'help' => $field->help,
                         'show_label' => $field['show_label'],
+                        'normalized_name' => $field['normalized_name']
                     );
                     self::insertField(array_map('strval', $fieldData));
                     $blockFieldData = array(
@@ -791,6 +816,7 @@ class Form
                     );
                     self::addFieldToBlock($blockFieldData);
                     $fieldValidators = array(
+                        'form_name' => $form['name'],
                         'field_name' => $field['name'],
                         'validators' => $field->validators
                     );

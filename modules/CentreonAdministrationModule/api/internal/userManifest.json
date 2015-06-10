@@ -14,5 +14,50 @@
         "language" : "language_id",
         "timezone" : "timezone_id",
         "authentication type" : "auth_type"
+    },
+    "options" : {
+        "showAction" : {
+            "user" : {
+              "functionParams" : "object",
+              "help": "The user",
+              "type": "string",
+              "toTransform" : "user",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "createAction" : {
+            
+        },
+        "updateAction" : {
+            "user" : {
+              "functionParams" : "object",
+              "help": "The user",
+              "type": "string",
+              "toTransform" : "user",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "deleteAction" : {
+            "user" : {
+              "functionParams" : "object",
+              "help": "The user",
+              "type": "string",
+              "toTransform" : "user",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "duplicateAction" : {
+            "user" : {
+              "functionParams" : "object",
+              "help": "The user",
+              "type": "string",
+              "toTransform" : "user",
+              "multiple" : false,
+              "required" : true
+            }
+        } 
     }
 }

@@ -36,6 +36,8 @@
 namespace CentreonConfiguration\Repository;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
+use CentreonConfiguration\Forms\Validators\TemplateField as TemplateFieldValidator;
 use CentreonConfiguration\Internal\Poller\Template\Manager as TemplateManager;
 use CentreonConfiguration\Events\EngineFormSave;
 use CentreonConfiguration\Events\BrokerFormSave;
@@ -138,6 +140,49 @@ class PollerRepository extends Repository
     }
 
     /**
+     *
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     */
+    protected static function validateForm($givenParameters, $origin = "", $route = "", $validateMandatory = true)
+    {
+        if (is_a($givenParameters, '\Klein\DataCollection\DataCollection')) {
+            $givenParameters = $givenParameters->all();
+        }
+
+        self::getPollerTemplates();
+        $di = Di::getDefault();
+        $pollerTemplateList = $di->get('pollerTemplate');
+
+        /* Check if poller template exists */
+        if (!isset($givenParameters['tmpl_name']) || !isset($pollerTemplateList[$givenParameters['tmpl_name']])) {
+            $sTpl = "";
+            if (isset($givenParameters['tmpl_name'])) {
+                $sTpl = $givenParameters['tmpl_name'];
+            }
+            throw new Exception(_("Poller template '" . $sTpl . "' does not exist"), 255);
+        }
+
+        $myLiteTemplate = unserialize($pollerTemplateList[$givenParameters['tmpl_name']]);
+        $myTemplate = $myLiteTemplate->toFullTemplate();
+        $setups = $myTemplate->getBrokerPart()->getSetup();
+        $customFields = array();
+        foreach ($setups as $setup) {
+            $customFields = $setup->getFields();
+            $value = null;
+            foreach ($customFields as $customField) {
+                if (isset($givenParameters[$customField['name']])) {
+                    $value = $givenParameters[$customField['name']];
+                }
+                TemplateFieldValidator::validate($value, $customField);
+            }
+        }
+
+        parent::validateForm($givenParameters, $origin, $route, $validateMandatory);
+    }
+
+    /**
      * Create a poller
      *
      * @param array $params The parameters for create a poller
@@ -147,7 +192,7 @@ class PollerRepository extends Repository
     {
         try {
             if ($validate) {
-                self::validateForm($params, $origin, $route, $validate, $validateMandatory);
+                self::validateForm($params, $origin, $route, $validateMandatory);
             }
 
             $di = Di::getDefault();
@@ -155,13 +200,6 @@ class PollerRepository extends Repository
 
             $nodeId = NodeRepository::create($params);
 
-            /*$pollerParams = array(
-                'node_id' => $nodeId,
-                'name' => $params['name'],
-                'organization_id' => $orgId,
-                'port' => 0,
-                'tmpl_name' => $params['tmpl_name']
-            );*/
             $params['node_id'] = $nodeId;
             $params['organization_id'] = $orgId;
             $params['port'] = 0;
@@ -176,7 +214,7 @@ class PollerRepository extends Repository
 
             return $pollerId;
         } catch (Exception $e) {
-            return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+            throw new Exception($e->getMessage(), 255);
         }
     }
 
@@ -190,7 +228,7 @@ class PollerRepository extends Repository
     {
         
         if ($validate) {
-            self::validateForm($params, "form", $route, $validate, $validateMandatory);
+            self::validateForm($params, "form", $route, $validateMandatory);
         }
         
         $di = Di::getDefault();
@@ -198,14 +236,6 @@ class PollerRepository extends Repository
         NodeRepository::update($params);
         
         parent::update($params, $origin, $route, true, false);
-
-        /*if (isset($params['poller_tmpl'])) {
-            $engineEvent = new EngineFormSave($poller_id, $params);
-            $di->get('events')->emit('centreon-configuration.engine.form.save', array($engineEvent));
-        
-            $brokerEvent = new BrokerFormSave($poller_id, $params);
-            $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));
-        }*/
     }
 
 
@@ -253,7 +283,7 @@ class PollerRepository extends Repository
         /* Load template information for poller */
         $listTpl = TemplateManager::buildTemplatesList();
         if (!isset($listTpl[$tmplName])) {
-            throw new Exception('The template is not found on list of templates');
+            throw new Exception('The template is not found on list of templates', 255);
         }
         
         return $listTpl[$tmplName];

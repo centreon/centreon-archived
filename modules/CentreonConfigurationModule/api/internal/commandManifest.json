@@ -8,5 +8,50 @@
         "name" : "command_name",
         "command line" : "command_line",
         "type" : "command_type"
+    },
+    "options" : {
+        "showAction" : {
+            "command" : {
+              "functionParams" : "object",
+              "help": "The command",
+              "type": "string",
+              "toTransform" : "command",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "createAction" : {
+            
+        },
+        "updateAction" : {
+            "command" : {
+              "functionParams" : "object",
+              "help": "The command",
+              "type": "string",
+              "toTransform" : "command",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "deleteAction" : {
+            "command" : {
+              "functionParams" : "object",
+              "help": "The command",
+              "type": "string",
+              "toTransform" : "command",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "duplicateAction" : {
+            "command" : {
+              "functionParams" : "object",
+              "help": "The command",
+              "type": "string",
+              "toTransform" : "command",
+              "multiple" : false,
+              "required" : true
+            }
+        }
     }
 }

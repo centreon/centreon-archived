@@ -34,74 +34,27 @@
  * 
  */
 
-namespace CentreonConfiguration\Internal\Poller\Template;
 
-use CentreonConfiguration\Internal\Poller\Template\SetUp\Broker as BrokerSetUp;
+namespace Centreon\Internal\Form\Validators;
 
 /**
- * Description of Broker
+ * Description of CustomMacroValidator
  *
- * @author lionel
+ * @author bsauveton
  */
-class Broker
+class CustomMacroValidator implements ValidatorInterface
 {
-    /**
-     *
-     * @var string 
-     */
-    private $brokerPath;
-    
-    /**
-     *
-     * @var array 
-     */
-    private $setUp;
-    
+    public function __construct()
+    {
+        
+    }
     /**
      * 
-     * @param string $brokerPath
      */
-    public function __construct($brokerPath)
+    public function validate($value, $params = array())
     {
-        $this->brokerPath = $brokerPath;
-        $this->getBrokerPart();
+        echo 'test of CustomMacroValidator';
+        //die;
     }
-    
-    /**
-     * 
-     * @throws Exception
-     */
-    private function getBrokerPart()
-    {
-        $uniqueTplContent = array();
-        foreach ($this->brokerPath as $uniqueBrokerPath) {
-            $tplContent = json_decode(file_get_contents($uniqueBrokerPath), true);
-            if (!isset($tplContent['content']['broker'])) {
-                throw new \Exception("No Broker Part Found");
-            }
-            foreach($tplContent['content']['broker']['setup'] as $section) {
-                $this->setUp[] = new BrokerSetUp($section);
-            }
-        }
-    }
-
-    /**
-     * 
-     * @param array $steps
-     */
-    public function genSteps(&$steps)
-    {
-        foreach ($this->setUp as $singleSetUp) {
-            $singleSetUp->genForm($steps);
-        }
-    }
-    
-    /**
-     * 
-     * @return array
-     */
-    public function getSetup()
-    {
-        return $this->setUp;
-    }
+    //put your code here
 }

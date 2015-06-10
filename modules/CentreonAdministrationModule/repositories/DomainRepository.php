@@ -88,14 +88,10 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      */
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
-        if ($validate) {
-            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
-        }
-        
         $parentId = Domain::getIdByParameter('name', array('Application'));
         $givenParameters['parent_id'] = $parentId[0];
         $givenParameters['isroot'] = 0;
-        parent::create($givenParameters);
+        parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
     }
     
     /**
@@ -420,18 +416,5 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         );
 
         return $normalizeMetricSet;
-    }
-    
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
-    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {
-        parent::update($givenParameters, "form", $route, $validate, $validateMandatory);
     }
 }

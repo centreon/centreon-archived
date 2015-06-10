@@ -87,6 +87,34 @@ abstract class SetUp
     {
         return $this->name;
     }
+
+    /**
+     *
+     * @return string
+     */
+    public function getForms()
+    {
+        return $this->forms;
+    }
+
+    /**
+     *
+     * @return array $fields
+     */
+    public function getFields()
+    {
+        $fields = array();
+
+        if (!is_null($this->forms)) {
+            foreach ($this->forms['steps'] as $step) {
+                foreach ($step['fields'] as $field) {
+                    $fields[] = $field;
+                }
+            }
+        }
+
+        return $fields;
+    }
     
     /**
      * 

@@ -12,5 +12,50 @@
         "description" : "description",
         "command line" : "connector_line",
         "activate" : "enabled"
+    },
+    "options" : {
+        "showAction" : {
+            "connector" : {
+              "functionParams" : "object",
+              "help": "The connector",
+              "type": "string",
+              "toTransform" : "connector",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "createAction" : {
+            
+        },
+        "updateAction" : {
+            "connector" : {
+              "functionParams" : "object",
+              "help": "The connector",
+              "type": "string",
+              "toTransform" : "connector",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "deleteAction" : {
+            "connector" : {
+              "functionParams" : "object",
+              "help": "The connector",
+              "type": "string",
+              "toTransform" : "connector",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "duplicateAction" : {
+            "connector" : {
+              "functionParams" : "object",
+              "help": "The connector",
+              "type": "string",
+              "toTransform" : "connector",
+              "multiple" : false,
+              "required" : true
+            }
+        }
     }
 }

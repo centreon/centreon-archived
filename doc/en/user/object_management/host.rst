@@ -67,8 +67,6 @@ host_snmp_version              Host snmp version
 
 host_location                  TODO
 
-host_comment                   Host comments
-
 host_event_handler_enabled     Event handler enable (0 or 1)
 
 command_command_id2            Event handler command
@@ -215,7 +213,7 @@ Add Macro
 
 In order to add a macro to a host, use **addMacro** action::
 
-  ./centreonConsole centreon-configuration:host:addMacro object="host[host1]":params="name[macro1name];value[macro1value];ispassword[0]"
+  ./centreonConsole centreon-configuration:host:addMacro object="host[host1]":params="name[macro1name];value[macro1value];hidden[0]"
 
 Remove Macro
 ------------
@@ -229,5 +227,5 @@ Update Macro
 
 In order to update a macro from a host, use **updateMacro** action::
 
-  ./centreonConsole centreon-configuration:host:updateMacro object="host[host1]":macro="macro1name":params="value[macro1newvalue];name[macro1newname];ispassword[1];"
+  ./centreonConsole centreon-configuration:host:updateMacro object="host[host1]":macro="macro1name":params="value[macro1newvalue];name[macro1newname];hidden[1];"
 

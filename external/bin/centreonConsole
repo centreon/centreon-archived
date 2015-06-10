@@ -15,7 +15,7 @@
     // Get Options
     $shortOpts = "hvlu::p::";
     $options = getopt($shortOpts);
-
+    
     // Remove options from the list of arguments
     foreach($options as $o => $a)
     {
@@ -35,9 +35,7 @@
     if (isset($argv[1])) {
         $requestLine = $argv[1];
     }
-    if (isset($argv[2])) {
-        $parametersLine = $argv[2];
-    }
+    $subcommandArgs = array_slice($argv, 2);
 
     // Check Options
     if (isset($options['h'])) {
@@ -60,7 +58,7 @@
     }
 
     try {
-        $commandeLineManager = new \Centreon\Internal\Command($requestLine, $parametersLine);
+        $commandeLineManager = new \Centreon\Internal\Command($requestLine, $subcommandArgs);
         if ($helpMode) {
             $commandeLineManager->getHelp();
         } elseif ($listMode) {

@@ -54,7 +54,8 @@ $(document).ready(function () {
 
     // Add slimscroll to element
     $('.full-height-scroll').slimscroll({
-        height: '100%'
+        height: '100%',
+        allowPageScroll: true
     })
 
     // MetisMenu
@@ -213,7 +214,7 @@ $(document).ready(function() {
     if($.support.placeholder) {
       $("form.CentreonForm").centreonForm();
     }
+
+
 });
-
-
 

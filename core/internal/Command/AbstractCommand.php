@@ -77,18 +77,43 @@ abstract class AbstractCommand
     {
         $classReflection = new \ReflectionClass($this);
         $methodReflection = $classReflection->getMethod($method);
+        $options = array();
+        if(isset($this->options[$method])){
+            $options = $this->options[$method];
+        }
+        $finalArgsOption = array();
+        $missingParams = array();
+        foreach($options as $key=>$option){
+            if(isset($args[$key])){
+                if(!empty($option['toTransform'])){
+                    $finalArgsOption[$option['functionParams']][$option['toTransform']] = $args[$key];
+                }else{
+                    $finalArgsOption[$option['functionParams']] = $args[$key];
+                }
+            }else if($option['required']){
+                $missingParams[] = $key;
+            }
+        }
+
+        if(!empty($missingParams)){
+            $errorMessage = 'The following mandatory parameters are missing :';
+            foreach($missingParams as $params){
+                $errorMessage .= "\n   - ".$params;
+            }
+            throw new \Exception($errorMessage);
+        }
 
         $pass = array();
         foreach ($methodReflection->getParameters() as $param) {
-            if (isset($args[$param->getName()])) {
-                $pass[] = $args[$param->getName()];
+            if (isset($finalArgsOption[$param->getName()])) {
+                $pass[] = $finalArgsOption[$param->getName()];
             } elseif ($param->isOptional()) {
                 $pass[] = $param->getDefaultValue();
             } else {
                 throw new \Exception('The parameter "' . $param->getName(). '" is missing');
             }
         }
-        
-        $methodReflection->invokeArgs($this, $pass);
+
+        $methodReflection->invokeArgs($this, $finalArgsOption);
     }
 }

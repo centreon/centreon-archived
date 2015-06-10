@@ -177,6 +177,8 @@ class Template extends \Smarty
         $this->addJs('jquery.min.js');
         $this->addJs('jquery-ui.min.js');
 
+        $this->addJs('sideSlide.plugin.js');
+
         $this->addJs('jquery.qtip.min.js');
         $this->addJs('centreon.help.tooltip.js');
         $this->addJs('bootstrap.min.js');
@@ -190,7 +192,7 @@ class Template extends \Smarty
         $this->addJs('centreon.custom.js');
         $this->addJs('jquery.sidr.min.js');
         $this->addJs('centreon.custom.js');
-        $this->addJs('jquery.slimscroll.min.js');
+        $this->addJs('jquery.slimscroll.js');
         $this->addJs('moment-with-locales.js');
         $this->addJs('moment-timezone-with-data.min.js');
         $this->addJs('centreon.parentfield.js');

@@ -159,9 +159,14 @@ abstract class FormRepository extends ListRepository
             $givenParameters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
             
             $db->beginTransaction();
-            $oSlugify = new CentreonSlugify($class, get_called_class());             
-            $givenParameters[$class::getSlugField()]  = $oSlugify->slug($givenParameters[$class::getUniqueLabelField()]);
             
+            $sField = $class::getUniqueLabelField();
+            if (isset($sField) && isset($givenParameters[$sField]) && !is_null($class::getSlugField())) {
+                $oSlugify = new CentreonSlugify($class, get_called_class());
+                $sSlug = $oSlugify->slug($givenParameters[$sField]);
+                $givenParameters[$class::getSlugField()] = $sSlug;
+            }
+                    
             //var_dump($givenParameters);die;
             foreach ($givenParameters as $key => $value) {
                 if (in_array($key, $columns)) {
@@ -257,10 +262,13 @@ abstract class FormRepository extends ListRepository
         $pk = $class::getPrimaryKey();
         $givenParameters[$pk] = $givenParameters['object_id'];
         
-        $oSlugify = new CentreonSlugify($class, get_called_class());
-        $sSlug = $oSlugify->slug($givenParameters[$class::getUniqueLabelField()]);
-        $givenParameters[$class::getSlugField()] = $sSlug;
-               
+        $sField = $class::getUniqueLabelField();
+        if (isset($givenParameters[$sField]) && !is_null($class::getSlugField())) {
+            $oSlugify = new CentreonSlugify($class, get_called_class());
+            $sSlug = $oSlugify->slug($givenParameters[$sField], $givenParameters['object_id']);
+            $givenParameters[$class::getSlugField()] = $sSlug;
+        }
+                       
         if (!isset($givenParameters[$pk])) {
             throw new \Exception('Primary key of object is not defined');
         }

@@ -10,5 +10,50 @@
         "manufacturer" : "manufacturer_id",
         "traps args" : "traps_args",
         "traps status" : "traps_status"
+    },
+    "options" : {
+        "showAction" : {
+            "traps" : {
+              "functionParams" : "object",
+              "help": "The trap",
+              "type": "string",
+              "toTransform" : "traps",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "createAction" : {
+            
+        },
+        "updateAction" : {
+            "traps" : {
+              "functionParams" : "object",
+              "help": "The trap",
+              "type": "string",
+              "toTransform" : "traps",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "deleteAction" : {
+            "traps" : {
+              "functionParams" : "object",
+              "help": "The trap",
+              "type": "string",
+              "toTransform" : "traps",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "duplicateAction" : {
+            "traps" : {
+              "functionParams" : "object",
+              "help": "The trap",
+              "type": "string",
+              "toTransform" : "traps",
+              "multiple" : false,
+              "required" : true
+            }
+        }
     }
 }

@@ -14,5 +14,50 @@
         "thursday" : "tp_thursday",
         "friday" : "tp_friday",
         "saturday" : "tp_saturday"
+    },
+    "options" : {
+        "showAction" : {
+            "timeperiod" : {
+              "functionParams" : "object",
+              "help": "The time period",
+              "type": "string",
+              "toTransform" : "timeperiod",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "createAction" : {
+
+        },
+        "updateAction" : {
+            "timeperiod" : {
+              "functionParams" : "object",
+              "help": "The time period",
+              "type": "string",
+              "toTransform" : "timeperiod",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "deleteAction" : {
+            "timeperiod" : {
+              "functionParams" : "object",
+              "help": "The time period",
+              "type": "string",
+              "toTransform" : "timeperiod",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "duplicateAction" : {
+            "timeperiod" : {
+              "functionParams" : "object",
+              "help": "The time period",
+              "type": "string",
+              "toTransform" : "timeperiod",
+              "multiple" : false,
+              "required" : true
+            }
+        }
     }
 }

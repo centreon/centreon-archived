@@ -4,30 +4,30 @@
  // transition: all 0.2s linear;
 }
 #sideRight.sideRightWrapper {
-   position: absolute;
-   right: 15px;
-   width: 310px;
-   //margin-left : @paddingElem*2;
-   height: 80%;
-   background-color: @lightGray1;
-   top: 182px;
-   border-left: 3px solid @lightGray2;
-   padding: 0px 0 @paddingElem*2  0;
-   display:none;
-   z-index: 0 /*-2*/;
+  position: absolute;
+  right: 15px;
+  width: 310px;
+  //margin-left : @paddingElem*2;
+  height: 100%;
+  background-color: @lightGray1;
+  top: 130px;
+  border-left: 3px solid @lightGray2;
+  padding: 0px 0 @paddingElem*2  0;
+  display: none;
+  z-index: 0 /*-2*/;
 
   /* Header  */
 
   .headerWrapper {
-      padding: 0 @paddingElem*2 @paddingElem*2 @paddingElem*2;
-      background-color: lighten(@lightGray1,3%);
-      border-bottom: 1px solid @white;
-      .iconWrapper {
-        text-align: center;
-        border-right: 1px solid @white;
-        box-shadow: -3px 0px 10px -9px black inset;
-        padding: @paddingElem*2 0;
-      }
+    padding: 0 @paddingElem*2 @paddingElem*2 @paddingElem*2;
+    background-color: lighten(@lightGray1, 3%);
+    border-bottom: 1px solid @white;
+    .iconWrapper {
+      text-align: center;
+      border-right: 1px solid @white;
+      box-shadow: -3px 0px 10px -9px black inset;
+      padding: @paddingElem*2 0;
+    }
 
     h4 {
       font-size: 100%;
@@ -46,7 +46,7 @@
         .icon-service {
           font-size: 18px;
         }
-        li{
+        li {
           strong {
             display: block;
           }
@@ -72,51 +72,67 @@
     }
 
   }
-  .bodyWrapper {
-    padding: 0 @paddingElem*2 @paddingElem*2 @paddingElem*2;
-    .sideNav {
-      ul {
-        width: auto;
-        li {
-          width: auto;
-          border-bottom: 1px solid white;
 
-          &.ui-tabs-active {
-            background-color: @darkGray2;
-            a {
-              color: white;
-              background-color: transparent;
-              &:focus {
-                outline: none;
-              }
+  .sideNav {
+    padding: 0;
+    ul {
+      width: auto;
+      li {
+        width: auto;
+        border-bottom: 1px solid white;
+
+        &.ui-tabs-active {
+          background-color: @darkGray2;
+          a {
+            color: white;
+            background-color: transparent;
+            &:focus {
+              outline: none;
             }
           }
-          h6 {
-            display: none;
-          }
-          a {
-            padding: @paddingElem*2;
-            color: @lightGray3;
-            background-color: lighten(@lightGray,5%);
+        }
+        h6 {
+          display: none;
+        }
+        a {
+          padding: @paddingElem*2 14px;
+          text-decoration: none;
+          border-right: 2px solid @white;
+          display: inline-block;
+          color: @lightGray3;
+          background-color: lighten(@lightGray, 5%);
+
+          //box-shadow: -4px 0px 11px -9px black;
+
+          &:hover, &:active {
+
+            box-shadow: -12px 3px 8px -15px #000000 inset;
+            background-color: @darkGray2;
+            color: @white;
+            transition: all 0.3s linear;
           }
         }
       }
     }
+  }
 
-    .bodyContent {
-      border-left: 1px solid @white;
-      box-shadow: -4px 0px 11px -9px black;
-      section {
-        width: auto;
-        float: none;
-        padding : 0;
+  .bodyWrapper {
+    height: ~"calc(100% - 350px)";
 
-        .panel-heading {
-          padding: 0;
-          border-bottom: 1px solid @lightGray;
-          overflow: hidden;
+  .bodyContent {
+    padding: 0 @paddingElem*2 0 @paddingElem*2;
+    //border-left: 1px solid @white;
+    section {
+      width: auto;
+      float: none;
+      padding: 0;
 
-        .panel-title>a {
+      .panel-heading {
+        padding: 0;
+        border-bottom: 1px solid @lightGray;
+        overflow: hidden;
+
+        .panel-title > a {
           color: inherit;
           padding: @paddingElem @paddingElem*2;
           position: relative;
@@ -125,9 +141,9 @@
           line-height: 22px;
         }
       }
-      }
     }
   }
+}
  }
 
 .sidr {

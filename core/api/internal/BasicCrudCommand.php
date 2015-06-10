@@ -226,9 +226,6 @@ class BasicCrudCommand extends BasicCrud
         $this->echoTable($inputTable,$tableInfos);
         
     }
-    
-    
-    
-    
+
     
 }

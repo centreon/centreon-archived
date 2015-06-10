@@ -157,6 +157,7 @@ abstract class ListController extends Controller
             ->addJs('dataTables.tableTools.min.js')
             ->addJs('dataTables.colVis.min.js')
             ->addJs('hogan-3.0.0.min.js')
+            ->addJs('sideSlide.plugin.js')
 
             ->addJs('dataTables.colReorder.min.js')
             ->addJs('bootstrap-dataTables-paging.js')

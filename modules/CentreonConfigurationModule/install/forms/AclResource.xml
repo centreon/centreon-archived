@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
-    <form name="cfg_aclresource_form">
+    <form name="aclresource_form">
         <route>/centreon-administration/aclresource/update</route>
         <redirect>1</redirect>
         <redirect_route>/centreon-administration/aclresource</redirect_route>

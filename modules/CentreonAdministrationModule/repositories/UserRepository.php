@@ -39,6 +39,7 @@ use CentreonAdministration\Models\User;
 use CentreonAdministration\Models\Apitoken;
 use CentreonAdministration\Models\Contact;
 use CentreonAdministration\Models\ContactInfo;
+use CentreonAdministration\Repository\ContactRepository;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use CentreonSecurity\Internal\Sso;
@@ -81,14 +82,8 @@ class UserRepository extends Repository
      * @param array $givenParameters
      * @return integer
      */
-    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    public static function create($givenParameters, $origin = "wizard", $route = "", $validate = true, $validateMandatory = true)
     {
-        if ($validate) {
-            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
-        }
-        
-        $contactId = Contact::insert(array('description' => $givenParameters['login'] . " contact"));
-        
         if (isset($givenParameters['password']) && $givenParameters['password']) {
             $givenParameters['password'] = static::generateHashedPassword($givenParameters);
         }
@@ -96,12 +91,31 @@ class UserRepository extends Repository
         $currentDate = date('Y-m-d H:i:s');
         $givenParameters['createdat'] = $currentDate;
         $givenParameters['updatedat'] = $currentDate;
-        $givenParameters['contact_id'] = $contactId;
         
-        $newId = parent::create($givenParameters);
+        $userId = parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
+
+        $contactId = ContactRepository::create(
+            array(
+                'description' => $givenParameters['login'] . " contact"
+            ),
+            $origin,
+            $route,
+            false,
+            false
+        );
         
+        parent::update(
+            array(
+                'object_id' => $userId,
+                'contact_id' => $contactId
+            ),
+            $origin,
+            $route,
+            false,
+            false
+        );
         
-        return $newId;
+        return $userId;
     }
 
     /**
@@ -154,31 +168,31 @@ class UserRepository extends Repository
         return true;
     }
     
-    
-    /**
+     /**
      *
      * @param array $ids
      * @param object $currentUser
      */
-    public static function delete($ids,$currentUser)
+    public static function delete($ids, $currentUser = '')
     {
         
+        if (isset($currentUser) && $currentUser instanceof User && in_array($currentUser->getId(),$ids)) {
+            throw new Exception('You can\'t delete yourself', 4404);
+        }
+        
         if(!self::isLastAdmin($ids)){
-            if(!in_array($currentUser->getId(),$ids)){
-                foreach ($ids as $id) {
-                    $contact = User::getParameters($id, array('contact_id'));
-                    if (isset($contact['contact_id'])) {
-                        Contact::delete($contact['contact_id']);
-                    }
+            foreach ($ids as $id) {
+                $contact = User::getParameters($id, array('contact_id'));
+                if (isset($contact['contact_id'])) {
+                    Contact::delete($contact['contact_id']);
                 }
-                parent::delete($ids);
-            }else{
-                throw new Exception('You can\'t delete yourself', 4404);
             }
+            parent::delete($ids);
         }else{
             throw new Exception('You can\'t delete the last admin', 4404);
         }
     }
+
     
     /**
      * 

@@ -35,6 +35,7 @@
  */
 
 namespace CentreonConfiguration\Repository;
+use \Centreon\Internal\Exception\Http\BadRequestException;
 
 use Centreon\Internal\Di;
 
@@ -45,6 +46,16 @@ use Centreon\Internal\Di;
  */
 class CustomMacroRepository
 {
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array(
+            'macroHost'    => 'cfg_customvariables_hosts, host_macro_id, host_macro_name',
+            'macroService' => 'cfg_customvariables_services, svc_macro_id, svc_macro_name'
+        ),
+    );
     /**
      * 
      * @param type $objectId
@@ -70,19 +81,24 @@ class CustomMacroRepository
     public static function saveHostCustomMacro($objectId, $submittedValues, $deleteFirst = true)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
-        
-        if($deleteFirst){
+
+        if ($deleteFirst){
             $deleteRequest = "DELETE FROM cfg_customvariables_hosts WHERE host_host_id = :host";
             $stmtDelete = $dbconn->prepare($deleteRequest);
             $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
             $stmtDelete->execute();
+        } else {
+            foreach ($submittedValues as $customMacroName => $customMacro) {
+                self::validate('host', $customMacroName, $objectId);
+            }
         }
         
         
         $insertRequest = "INSERT INTO cfg_customvariables_hosts(host_macro_name, host_macro_value, is_password, host_host_id)"
             . " VALUES(:macro_name, :macro_value, :is_password, :host)";
         $stmtInsert = $dbconn->prepare($insertRequest);
-        foreach ($submittedValues as $customMacroName => $customMacro) {
+        
+        foreach ($submittedValues as $customMacroName => $customMacro) {            
             $stmtInsert->bindValue(':macro_name', '$_HOST' . $customMacroName . '$', \PDO::PARAM_STR);
             $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
             $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
@@ -122,6 +138,10 @@ class CustomMacroRepository
             $stmtDelete = $dbconn->prepare($deleteRequest);
             $stmtDelete->bindParam(':svc', $objectId, \PDO::PARAM_INT);
             $stmtDelete->execute();
+        } else {
+            foreach ($submittedValues as $customMacroName => $customMacro) {
+                self::validate('service', $customMacroName, $objectId);
+            }
         }
         $insertRequest = "INSERT INTO cfg_customvariables_services(svc_macro_name, svc_macro_value, is_password, svc_svc_id)"
             . " VALUES(:macro_name, :macro_value, :is_password, :svc)";
@@ -130,7 +150,7 @@ class CustomMacroRepository
         foreach ($submittedValues as $customMacroName => $customMacro) {
             $stmtInsert->bindValue(':macro_name', '$_SERVICE' . $customMacroName . '$', \PDO::PARAM_STR);
             $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-            $stmtInsert->bindParam(':is_password', $customMacro['is_password'], \PDO::PARAM_INT);
+            $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
             $stmtInsert->bindParam(':svc', $objectId, \PDO::PARAM_INT);
             $stmtInsert->execute();
         }
@@ -151,11 +171,14 @@ class CustomMacroRepository
         $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
         $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
         $stmtDelete->execute();
-        if($stmtDelete->rowCount() == 0){
+        
+        $deletedRow = $stmtDelete->rowCount();
+        
+        if($deletedRow == 0){
             throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
         }
         
-        return $stmtDelete->rowCount();
+        return $deletedRow;
     }
 
     /**
@@ -172,11 +195,13 @@ class CustomMacroRepository
         $stmtDelete->bindParam(':service', $objectId, \PDO::PARAM_INT);
         $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
         $stmtDelete->execute();
-        if($stmtDelete->rowCount() == 0){
+        $deletedRow = $stmtDelete->rowCount();
+        
+        if($deletedRow == 0){
             throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
         }
         
-        return $stmtDelete->rowCount();
+        return $deletedRow;
     }
     
     /**
@@ -193,26 +218,26 @@ class CustomMacroRepository
 
         $setPart = "";
         $paramArray = array();
-        foreach($params as $index=>$param1){
-            if(array_key_exists($index,$arrayUpdatable)){
-                if(!empty($paramArray)){
-                    $setPart = ' , '.$setPart;
+        foreach ($params as $index=>$param1){
+            if (array_key_exists($index,$arrayUpdatable)) {
+                if (!empty($paramArray)) {
+                    $setPart = $setPart.' , ';
                 }
-                if(isset($arrayUpdatable[$index]['field']) && $arrayUpdatable[$index]['field'] == 'host_macro_name'){
+                if (isset($arrayUpdatable[$index]['field']) && $arrayUpdatable[$index]['field'] == 'host_macro_name') {
                     $macroName = '$_HOST'.$param1.'$';
                     $param1 = $macroName;
                 }
                 $setPart .= $arrayUpdatable[$index]['field'].' = :'.$arrayUpdatable[$index]['field'].' ';
-                $paramArray = array(':'.$arrayUpdatable[$index]['field'] => 
+                $paramArray = array_merge($paramArray,array(':'.$arrayUpdatable[$index]['field'] => 
                                     array('param' => $param1 , 'type' => $arrayUpdatable[$index]['type'])
-                                );
+                                ));
             }
         }
         
         if(!empty($paramArray)){
             $setPart = ' SET '.$setPart;
         }
-        
+
         $dbconn = Di::getDefault()->get('db_centreon');
         
         $macroName = '$_HOST'.$macro.'$';
@@ -221,15 +246,23 @@ class CustomMacroRepository
                 . "WHERE host_host_id = :host "
                 . "AND host_macro_name = :macro_name ";
 
-        $stmtDelete = $dbconn->prepare($updateRequest);
+        $stmtUpdate = $dbconn->prepare($updateRequest);
         
         foreach($paramArray as $index=>$param2){
-            $stmtDelete->bindParam($index, $param2['param'], $param2['type']);
+            $stmtUpdate->bindParam($index, $param2['param'], $param2['type']);
         }
         
-        $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
-        $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
-        $stmtDelete->execute();
+        $stmtUpdate->bindParam(':host', $objectId, \PDO::PARAM_INT);
+        $stmtUpdate->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
+        $stmtUpdate->execute();
+        
+        $updatedRow = $stmtUpdate->rowCount();
+        
+        if($updatedRow == 0){
+            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
+        }
+        
+        return $updatedRow;
 
     }
     
@@ -247,10 +280,10 @@ class CustomMacroRepository
 
         $setPart = "";
         $paramArray = array();
-        foreach($params as $index=>$param1){
-            if(array_key_exists($index,$arrayUpdatable)){
+        foreach ($params as $index=>$param1){
+            if(array_key_exists($index, $arrayUpdatable)){
                 if(!empty($paramArray)){
-                    $setPart = ' , '.$setPart;
+                    $setPart = $setPart.' , ';
                 }
                 if(isset($arrayUpdatable[$index]['field']) && $arrayUpdatable[$index]['field'] == 'svc_macro_name'){
                     $macroName = '$_SERVICE'.$param1.'$';
@@ -259,9 +292,9 @@ class CustomMacroRepository
                 
                 
                 $setPart .= $arrayUpdatable[$index]['field'].' = :'.$arrayUpdatable[$index]['field'].' ';
-                $paramArray = array(':'.$arrayUpdatable[$index]['field'] => 
+                $paramArray = array_merge($paramArray,array(':'.$arrayUpdatable[$index]['field'] => 
                                     array('param' => $param1 , 'type' => $arrayUpdatable[$index]['type'])
-                                );
+                                ));
             }
         }
         
@@ -276,20 +309,101 @@ class CustomMacroRepository
                 . $setPart
                 . "WHERE svc_svc_id = :service "
                 . "AND svc_macro_name = :macro_name ";
-
-        $stmtDelete = $dbconn->prepare($updateRequest);
+        
+        $stmtUpdate = $dbconn->prepare($updateRequest);
         
         foreach($paramArray as $index=>$param2){
-            $stmtDelete->bindParam($index, $param2['param'], $param2['type']);
+            $stmtUpdate->bindParam($index, $param2['param'], $param2['type']);
         }
         
-        $stmtDelete->bindParam(':service', $objectId, \PDO::PARAM_INT);
-        $stmtDelete->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
-        $stmtDelete->execute();
+        $stmtUpdate->bindParam(':service', $objectId, \PDO::PARAM_INT);
+        $stmtUpdate->bindParam(':macro_name', $macroName, \PDO::PARAM_STR);
+        $stmtUpdate->execute();
 
+        $updatedRow = $stmtUpdate->rowCount();
+        
+        if($updatedRow == 0){
+            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
+        }
+        
+        return $updatedRow;
     }
     
-    
-    
-    
+    /**
+     * 
+     * @param type $sType
+     * @param type $sNameMacro
+     * @param type $iIdObject
+     * @return type
+     */
+    public static function validate($sType, $sNameMacro, $iIdObject)
+    {
+        $tables = array();
+        $conditions = array();
+        $objectId = 0;
+        $errors = array();
+        
+        $bSuccess = true;
+        $resultError = _("Object already exists");
+        $sMessage = '';
+        
+        $db = Di::getDefault()->get('db_centreon');
+        
+        if (!in_array($sType, array('host', 'service'))) {
+            return ;
+        }
+        
+        if ($sType == 'host') {
+            $sElement = 'host_macro_id';
+            $query = 'SELECT host_macro_id FROM cfg_customvariables_hosts WHERE host_macro_name = :host_macro_name'
+                    . ' AND host_host_id = :host_host_id';
+            $stmt = $db->prepare($query);
+            $macroName = '$_HOST'.$sNameMacro.'$';
+            $stmt->bindParam(':host_macro_name', $macroName, \PDO::PARAM_STR);
+            $stmt->bindParam(':host_host_id', $iIdObject, \PDO::PARAM_INT);
+
+        } else {
+            $sElement = 'svc_macro_id';
+            $query = 'SELECT svc_macro_id FROM cfg_customvariables_services WHERE svc_macro_name = :svc_macro_name'
+                    . ' AND svc_svc_id = :svc_svc_id';
+            
+            $stmt = $db->prepare($query);
+            $macroName = '$_SERVICE'.$sNameMacro.'$';
+            $stmt->bindParam(':svc_macro_name', $macroName, \PDO::PARAM_STR);
+            $stmt->bindParam(':svc_svc_id', $iIdObject, \PDO::PARAM_INT);
+             
+        }
+        
+        $stmt->execute();
+
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (count($result) > 0) {
+            $iIdReturned = $result[0][$sElement];
+            $bSuccess = false;
+            $sMessage = $resultError;
+            
+        }
+        //$reponse = array('success' => $bSuccess, 'error' => $sMessage);
+        
+        if ($bSuccess === false) {
+            $errors[] = $sMessage;
+        }
+                    
+         // If we got error, we throw Exception
+        if (count($errors) > 0) {
+            self::raiseValidationException($errors);
+        }
+        
+        
+    }
+    /**
+     * 
+     * @param type $errors
+     * @throws \Exception
+     */
+    public function raiseValidationException($errors)
+    {
+        throw new BadRequestException('Validation error', $errors);
+    }
 }

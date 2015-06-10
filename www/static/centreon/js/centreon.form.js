@@ -49,7 +49,9 @@
     }
     this.$elem.validate({
       rules: rules,
-      invalidHandler: this.invalidHandler
+      invalidHandler: function (event, validator) {
+        self.invalidHandler(event, validator);
+      }
     });
   }
 
@@ -82,6 +84,12 @@
         $parent = $el.closest(".form-group"),
         $help = $parent.find("cite"),
         name = $el.attr("name");
+
+    /* Test if name is set, else it's not the primary element input */
+    if (name === undefined) {
+      name = $parent.find("input[name]").attr("name");
+    }
+
     /* Test if the help is in cache */
     if (this.groups[name]["help"] !== undefined) {
       if (false === $parent.hasClass("has-error")) {
@@ -162,7 +170,7 @@
     $list.closest(".flash").addClass("alert-danger").show();
     /* Focus the first element in error */
     $firstInput.focus();
-    $("body").scrollTo($firstInput);
+    $("body").scrollTop($firstInput);
   };
 
   $.fn.centreonForm = function (options) {

@@ -43,6 +43,38 @@ use Centreon\Internal\Command\AbstractCommand;
  */
 class InfosCommand extends AbstractCommand
 {
+    
+    public $options = array(
+        "simpleListAction" => array(
+            "onlyActivated" => array(
+                "functionParams" => "onlyActivated",
+                "help" => "",
+                "type" => "number",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        ),
+        "extendedListAction" => array(
+            "onlyActivated" => array(
+                "functionParams" => "onlyActivated",
+                "help" => "",
+                "type" => "number",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            ),
+            "header" => array(
+                "functionParams" => "header",
+                "help" => "",
+                "type" => "number",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        )
+    );
+
     /**
      * List module names
      * @param string $type
