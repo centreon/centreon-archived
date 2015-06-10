@@ -43,6 +43,7 @@ use GetOptionKit\OptionCollection;
 use GetOptionKit\OptionParser;
 use GetOptionKit\OptionPrinter\ConsoleOptionPrinter;
 
+
 class Command
 {
     private $requestLine;
@@ -210,6 +211,64 @@ class Command
         if (!method_exists($aliveObject, $action)) {
             throw new Exception("The action '$action' doesn't exist");
         }
+       
+        
+        $route = "";
+        $db = Di::getDefault()->get('db_centreon');
+        
+        switch ($action){
+            case 'updateAction' : 
+                $route = '/'.$module.'/'.$aliveObject->objectName.'/update';
+                $sql = 'select ff.* from cfg_forms f
+                        inner join cfg_forms_sections fs on fs.form_id = f.form_id
+                        inner join cfg_forms_blocks fb on fb.section_id = fs.section_id
+                        inner join cfg_forms_blocks_fields_relations fbfr on fbfr.block_id = fb.block_id
+                        inner join cfg_forms_fields ff on ff.field_id = fbfr.field_id
+                        where f.route = :route';
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
+                $stmt->execute();
+                $rows = $stmt->fetchAll();
+                foreach($rows as $row){
+                    if(!isset($aliveObject->options['updateAction'][$row['normalized_name']])){
+                        $aliveObject->options['updateAction'][$row['normalized_name']] = array(
+                            'functionParams' => 'params',
+                            'help' => $row['help'],
+                            'type' => 'string',
+                            'toTransform' => $row['name'],
+                            'multiple' => '',
+                            'required' => false
+                        );
+                    }
+                }
+                break;
+            case 'createAction' : 
+                $route = '/'.$module.'/'.$aliveObject->objectName.'/add';
+                $sql = 'select ff.* from cfg_forms_wizards fw
+                        inner join cfg_forms_steps fs on fs.wizard_id = fw.wizard_id
+                        inner join cfg_forms_steps_fields_relations fsfr on fsfr.step_id = fs.step_id
+                        inner join cfg_forms_fields ff on ff.field_id = fsfr.field_id
+                        where fw.route = :route';
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
+                $stmt->execute();
+                $rows = $stmt->fetchAll();
+                foreach($rows as $row){
+                    if(!isset($aliveObject->options['createAction'][$row['normalized_name']])){
+                        $aliveObject->options['createAction'][$row['normalized_name']] = array(
+                            'functionParams' => 'params',
+                            'help' => $row['help'],
+                            'type' => 'string',
+                            'toTransform' => $row['name'],
+                            'multiple' => '',
+                            'required' => $row['mandatory']
+                        );
+                    }
+                }
+                break;
+            default : 
+                break;
+        }
         
         $actionArgs = array();
         $this->getArgs($actionArgs, $aliveObject, $action);
@@ -277,6 +336,8 @@ class Command
             )
         );
         
+        
+        
         $specs = new OptionCollection();
         /** 
          * {
@@ -298,7 +359,6 @@ class Command
             }
             $specs->add($option, $spec['help'])->isa($spec['type']);
         }
-        
         
         try {
             $parser = new OptionParser($specs);
