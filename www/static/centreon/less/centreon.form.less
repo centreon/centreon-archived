@@ -23,12 +23,26 @@ label, input[type="text"], input[type="number"], textarea {
     }
 
     .inheritanceTags {
-      bottom: -@paddingElem !important;
+      bottom: -4px !important;
       width: 80% !important;
+
+      a {
+        text-decoration: none !important;
+        color: @darkGray !important;
+        &:hover {
+          color: @firstGreenLighten !important;
+          transition: all 0.2s linear !important;
+          font-weight: 300 !important;
+          cursor: pointer !important;
+        }
+      }
 
       ul {
         margin-bottom: 0px !important;
-      }
+        li {
+
+          }
+        }
     }
 
   }
