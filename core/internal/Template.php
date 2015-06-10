@@ -177,6 +177,8 @@ class Template extends \Smarty
         $this->addJs('jquery.min.js');
         $this->addJs('jquery-ui.min.js');
 
+        $this->addJs('sideSlide.plugin.js');
+
         $this->addJs('jquery.qtip.min.js');
         $this->addJs('centreon.help.tooltip.js');
         $this->addJs('bootstrap.min.js');

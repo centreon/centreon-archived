@@ -10,9 +10,6 @@ label, input[type="text"], input[type="number"], textarea {
   background-color: @lightGray1;
   position: relative;
 
-  .CentreonForm {
-    //display: flex;
-  }
 }
 .formWrapper {
 
@@ -24,4 +21,14 @@ label, input[type="text"], input[type="number"], textarea {
     .form-group {
       margin-bottom: @paddingElem*3;
     }
+
+    .inheritanceTags {
+      bottom: -@paddingElem !important;
+      width: 80% !important;
+
+      ul {
+        margin-bottom: 0px !important;
+      }
+    }
+
   }
