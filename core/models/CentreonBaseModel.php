@@ -139,7 +139,7 @@ abstract class CentreonBaseModel extends CentreonModel
             if ($sqlValues != "") {
                 $sqlValues .= ",";
             }
-            $sqlFields .= $key;
+            $sqlFields .= "`" . $key . "`";
             $sqlValues .= "?";
             if ($value == "" && !isset($not_null_attributes[$key])) {
                 $value = null;
@@ -225,7 +225,7 @@ abstract class CentreonBaseModel extends CentreonModel
                 $sqlUpdate .= ",";
             }
             $paramKey = ":{$key}";
-            $sqlUpdate .= $key . " = {$paramKey} ";
+            $sqlUpdate .= '`' . $key . "` = {$paramKey} ";
             if ($value == "" && !isset($not_null_attributes[$key])) {
                 $value = null;
             } elseif (!is_numeric($value) && isset($is_int_attribute[$key])) {

@@ -32,71 +32,47 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace Centreon\Internal\Form\Component;
 
-//use Centreon\Internal\Di;
+use Centreon\Internal\Di;
+use Centreon\Internal\Form\Component\Component;
 
 /**
- * Html Checkobox element
- * 
- * @author Lionel Assepo <lassepo@centreon.com>
+ * Component for a input with selection of time unit
+ *
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  * @package Centreon
- * @subpackage Core
+ * @subpackage Form
+ * @version 3.0.0
  */
-class Checkbox extends Component
+class Inputtimeunit extends Component
 {
     /**
-     * Return the HTML representation of the checkbox field
-     * 
-     * @param array $element
+     * Generate and return the html for the element
+     *
+     * @param array $element The element to parse
      * @return array
      */
     public static function renderHtmlInput(array $element)
     {
+        file_put_contents("/tmp/debug_form", var_export($element, true));
+        $tpl = Di::getDefault()->get('template');
 
-        /*$tpl = Di::getDefault()->get('template');
-        load CssFile
-        $tpl->addCss('bootstrap-toggle.min.css');
-
-         Load JsFile
-        $tpl->addJs('bootstrap-toggle.min.js');
-        $tpl->addJs('component/centreon.checkbox.js'); */
-
-
-        (isset($element['html']) ? $value = $element['html'] :  $value = '');
-
-        $values = explode(',', $element['html']);
-        
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
         }
-        
-        $addClass = '';
-        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
-            $addClass .= 'mandatory-field ';
-        }
-        
-        $inputHtml = '';
-        $myJs = '';
-        $i = 1;
-        
-        foreach ($element['label_choices'] as $key => $choice) {
-            $htmlSelected = '';
-            if (in_array($choice, $values)) {
-                $htmlSelected = 'checked=checked';
-            }
-            $inputHtml .= '<label class="label-controller" for="'.$element['id'] . $i . '">'.
-                        '<input '.'id="'.$element['id']. $i . '" '.
-                        'type="'.$element['label_type'].'" '.'name="'.$element['name'].'[]" '.
-                        'value=' . $choice . ' '.$htmlSelected.' '.
-                        '/>'.' '.$key.
-                        '</label>';
-            $i++;
-        }
+
+        $element['clsTypeUnit'] = 'input-time-unit';
+
+        $tpl->assign('element', $element);
+        $tpl->addJs('component/centreon.inputWithUnit.js');
         
         return array(
-            'html' => $inputHtml,
-            'js' => $myJs
+            'html' => $tpl->fetch('file:[Core]/form/component/inputwithunit.tpl'),
+            'js' => '$(function () {
+                    $(".input-time-unit").centreonInputWithUnit();
+                });'
         );
     }
 }

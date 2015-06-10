@@ -179,6 +179,13 @@ abstract class FormController extends ListController
     {
         $givenParameters = clone $this->getParams('post');
 
+        /* Convert array parameters */
+        foreach ($givenParameters as $key => $value) {
+            if (is_array($value)) {
+                $givenParameters[$key] = join(',', $value);
+            }
+        }
+
         try {
             $repository = $this->repository;
             $repository::update($givenParameters, 'form', $this->getUri());
