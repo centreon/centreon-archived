@@ -6,7 +6,7 @@
         <redirect_route></redirect_route>
         <section name="Broker">
             <block name="General information">
-                <field name="directory_config" label="Broker config directory" normalized_name="broker-config-dir" default_value="/etc/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">	
+                <field name="directory_config" label="Broker config directory" normalized_name="broker-conf-dir" default_value="/etc/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">	
                     <help>Broker configuration directory.</help>
                 </field>
                 <field name="directory_modules" label="Broker modules directory" normalized_name="broker-modules-dir" default_value="/usr/share/centreon/lib/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">

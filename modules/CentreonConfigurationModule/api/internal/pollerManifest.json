@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "poller_id,node_id,name,port,one_per_retention,tmpl_name,organization_id,enable",
+    "liteAttributesSet" : "poller_id,node_id,name,one_per_retention,tmpl_name,organization_id,enable",
     "repository" : "\\CentreonConfiguration\\Repository\\PollerRepository",
     "objectBaseUrl" : "poller",
     "objectClass" : "\\CentreonConfiguration\\Models\\Poller",
