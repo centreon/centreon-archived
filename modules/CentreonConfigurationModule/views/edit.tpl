@@ -126,7 +126,8 @@
             {/if}
             {if isset($inheritanceTagsUrl)}
                 var sText = '';
-                //console.log("disabledItem");
+                var sText1 = '';
+
                 $.ajax({
                       url: "{$inheritanceTagsUrl}",
                       dataType: 'json',
@@ -137,22 +138,23 @@
                             $.each(data.values, function(key, value) {
 
                                  if (value != null) {
-                                    var disabledItem =
-                                    ""+value+"";
+                                    var disabledItem = '<li class="tagGlobalNotDelete">'+value+'</li>';
+                                    var disabledItem1 = value;
 
                                     //$('#s2id_host_tags').children('ul').prepend(disabledItem);
                                     sText =  sText+' '+ disabledItem;
-
+                                    sText1 = sText1+' '+ disabledItem1;
                                  }
                                  i = key+1;
                               });
                                 //console.log(i);
+                                $('div[id$="tags_inheritance"]').addClass("inheritanceTags");
 
                              if(i > 2) {
-                                $('div[id$="tags_inheritance"]').html('<button tabindex="0" type="button" data-toggle="popover" class="btnC btnDefault" data-placement="bottom" data-content="'+sText+'">Inherited tags</button>');
+                                $('div[id$="tags_inheritance"]').html('<a tabindex="0" data-toggle="popover" data-placement="bottom" data-content="'+sText1+'">Inherited tags <i class="icon-plus ico-16"></i></a>');
                                $('[data-toggle="popover"]').popover();
                             } else {
-                                $('div[id$="tags_inheritance"]').html(sText);
+                                $('div[id$="tags_inheritance"]').html('<ul>'+sText+'</ul>');
                             }
                           }
                       }
