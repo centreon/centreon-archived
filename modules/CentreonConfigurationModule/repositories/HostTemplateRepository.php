@@ -42,6 +42,8 @@ use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Models\Timeperiod;
 use Centreon\Internal\Utils\YesNoDefault;
+use CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate as HostTemplateServiceTemplateRelation;
+use CentreonConfiguration\Models\Relation\Hosttemplate\Hosttemplate as HostTemplateHostTemplateRelation;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -100,6 +102,50 @@ class HostTemplateRepository extends Repository
      * @var string
      */
     public static $objectName = 'Hosttemplate';
+
+    /**
+     * Host template create action
+     *
+     * @param array $givenParameters
+     * @return int id of created object
+     */
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {
+        $id = parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
+        HostRepository::deployServices($id);
+        return $id;
+    }
+
+    /**
+     * Host template update action
+     *
+     * @param array $givenParameters
+     */
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {
+        $previousLinkedServiceTemplates = HostTemplateServiceTemplateRelation::getTargetIdFromSourceId('service_service_id', 'host_host_id', $givenParameters['object_id']);
+
+        parent::update($givenParameters, $origin, $route, $validate, $validateMandatory);
+
+        $linkedServiceTemplates = HostTemplateServiceTemplateRelation::getTargetIdFromSourceId('service_service_id', 'host_host_id', $givenParameters['object_id']);
+        if(count(array_diff_assoc($linkedServiceTemplates, $previousLinkedServiceTemplates))) {
+            //$linkedHostIds = self::getLinkedHosts($givenParameters['object_id']);
+            $linkedHosts = HostRepository::getTemplateChainInverse($givenParameters['object_id']);
+            foreach ($linkedHosts as $host) {
+                HostRepository::deployServices($host['id'], $givenParameters['object_id']);
+            }
+        }
+    }
+
+    /**
+     * Host template update action
+     *
+     * @param array $givenParameters
+     */
+    public static function getLinkedHosts($hostTemplateId)
+    {
+        $hosts = HostTemplateHostTemplateRelation::getTargetIdFromSourceId('host_host_id', 'host_tpl_id', $givenParameters['object_id']);
+    }
 
      /**
      * Get relations 
