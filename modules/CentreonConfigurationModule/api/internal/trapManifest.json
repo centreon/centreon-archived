@@ -23,46 +23,7 @@
             }
         },
         "createAction" : {
-            "name" : {
-              "functionParams" : "params",
-              "help": "The trap name",
-              "type": "string",
-              "toTransform" : "traps_name",
-              "multiple" : false,
-              "required" : true
-            },
-            "oid" : {
-              "functionParams" : "params",
-              "help": "The trap OID",
-              "type": "string",
-              "toTransform" : "traps_oid",
-              "multiple" : false,
-              "required" : true
-            },
-            "manufacturer" : {
-              "functionParams" : "params",
-              "help": "Identifiant of manufacturer",
-              "type": "number",
-              "toTransform" : "manufacturer_id",
-              "multiple" : false,
-              "required" : true
-            },
-            "args" : {
-              "functionParams" : "params",
-              "help": "Output message",
-              "type": "string",
-              "toTransform" : "traps_args",
-              "multiple" : false,
-              "required" : true
-            },
-            "status" : {
-              "functionParams" : "params",
-              "help": "Default status",
-              "type": "string",
-              "toTransform" : "traps_status",
-              "multiple" : false,
-              "required" : false
-            }
+            
         },
         "updateAction" : {
             "traps" : {
@@ -72,46 +33,6 @@
               "toTransform" : "traps",
               "multiple" : false,
               "required" : true
-            },
-            "name" : {
-              "functionParams" : "params",
-              "help": "The trap name",
-              "type": "string",
-              "toTransform" : "traps_name",
-              "multiple" : false,
-              "required" : false
-            },
-            "oid" : {
-              "functionParams" : "params",
-              "help": "The trap OID",
-              "type": "string",
-              "toTransform" : "traps_oid",
-              "multiple" : false,
-              "required" : false
-            },
-            "manufacturer" : {
-              "functionParams" : "params",
-              "help": "Identifiant of manufacturer",
-              "type": "number",
-              "toTransform" : "manufacturer_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "args" : {
-              "functionParams" : "params",
-              "help": "Output message",
-              "type": "string",
-              "toTransform" : "traps_args",
-              "multiple" : false,
-              "required" : false
-            },
-            "status" : {
-              "functionParams" : "params",
-              "help": "Default status",
-              "type": "string",
-              "toTransform" : "traps_status",
-              "multiple" : false,
-              "required" : false
             }
         },
         "deleteAction" : {
