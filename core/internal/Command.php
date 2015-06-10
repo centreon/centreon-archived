@@ -230,14 +230,16 @@ class Command
                 $stmt->execute();
                 $rows = $stmt->fetchAll();
                 foreach($rows as $row){
-                    $aliveObject->options['updateAction'][$row['normalized_name']] = array(
-                        'functionParams' => 'params',
-                        'help' => $row['help'],
-                        'type' => 'string',
-                        'toTransform' => $row['name'],
-                        'multiple' => '',
-                        'required' => $row['mandatory']
-                    );
+                    if(!isset($aliveObject->options['updateAction'][$row['normalized_name']])){
+                        $aliveObject->options['updateAction'][$row['normalized_name']] = array(
+                            'functionParams' => 'params',
+                            'help' => $row['help'],
+                            'type' => 'string',
+                            'toTransform' => $row['name'],
+                            'multiple' => '',
+                            'required' => $row['mandatory']
+                        );
+                    }
                 }
                 break;
             case 'createAction' : 
@@ -252,14 +254,16 @@ class Command
                 $stmt->execute();
                 $rows = $stmt->fetchAll();
                 foreach($rows as $row){
-                    $aliveObject->options['createAction'][$row['normalized_name']] = array(
-                        'functionParams' => 'params',
-                        'help' => $row['help'],
-                        'type' => 'string',
-                        'toTransform' => $row['name'],
-                        'multiple' => '',
-                        'required' => $row['mandatory']
-                    );
+                    if(!isset($aliveObject->options['createAction'][$row['normalized_name']])){
+                        $aliveObject->options['createAction'][$row['normalized_name']] = array(
+                            'functionParams' => 'params',
+                            'help' => $row['help'],
+                            'type' => 'string',
+                            'toTransform' => $row['name'],
+                            'multiple' => '',
+                            'required' => $row['mandatory']
+                        );
+                    }
                 }
                 break;
             default : 
