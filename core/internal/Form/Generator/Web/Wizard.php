@@ -105,7 +105,9 @@ class Wizard extends Full
             }
             $this->formDefaults[$row['name']] = $row['default_value'];
             $this->addFieldToForm($row);
-            $this->formComponents[$row['step_name']]['default'][] = $row;
+            if ($row['type'] != 'hidden') {
+                $this->formComponents[$row['step_name']]['default'][] = $row;
+            }
         }
     }
     

@@ -13,6 +13,7 @@ The list of object commands is available with the following commandline :
 .. toctree::
    :maxdepth: 2
 
+   poller
    timeperiod
    command
    user

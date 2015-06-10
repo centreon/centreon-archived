@@ -236,6 +236,14 @@ abstract class ListController extends Controller
     public function createAction($sendResponse = true)
     {
         $givenParameters = clone $this->getParams('post');
+
+        /* Convert array parameters */
+        foreach ($givenParameters as $key => $value) {
+            if (is_array($value)) {
+                $givenParameters[$key] = join(',', $value);
+            }
+        }
+
         try {
             $repository = $this->repository;
             $id = $repository::create($givenParameters, 'wizard', $this->getUri());

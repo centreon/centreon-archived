@@ -1,0 +1,12 @@
+{
+    "liteAttributesSet" : "",
+    "repository" : "\\CentreonBam\\Repository\\IndicatorRepository",
+    "objectBaseUrl" : "kpi",
+    "objectClass" : "\\CentreonBam\\Models\\Indicator",
+    "attributesMap" : {
+
+    },
+    "options" : {
+        
+    }
+}

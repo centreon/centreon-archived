@@ -15,13 +15,13 @@
                 <field name="conf_dir" label="Engine conf directory" normalized_name="engine-conf-dir" default_value="/etc/centreon-engine/" advanced="0" type="text" parent_field="" mandatory="1">
                     <help>Configuration directory of the monitoring engine.</help>
                 </field>
-                <field name="log_dir" label="Engine log directory" normalized_name="engine-log-dir" default_value="/var/log/centreon-engine/" advanced="0" type="text" parent_field="" mandatory="1">
+                <field name="log_dir" label="Engine log directory" normalized_name="engine-logs-dir" default_value="/var/log/centreon-engine/" advanced="0" type="text" parent_field="" mandatory="1">
                     <help>Engine log directory.</help>
                 </field>
                 <field name="var_lib_dir" label="Engine var liv directory" normalized_name="engine-var-lib-dir" default_value="/var/lib/centreon-engine/" advanced="0" type="text" parent_field="" mandatory="1">
                     <help>lib directory of the monitoring engine.</help>
                 </field>
-                <field name="module_dir" label="Engine module directory" normalized_name="engine-module-dir" default_value="/usr/lib64/centreon-engine/" advanced="0" type="text" parent_field="" mandatory="1">
+                <field name="module_dir" label="Engine module directory" normalized_name="engine-modules-dir" default_value="/usr/lib64/centreon-engine/" advanced="0" type="text" parent_field="" mandatory="1">
                     <help>Engine module directory.</help>
                 </field>
                 <field name="check_host_freshness" label="Check host freshness" normalized_name="engine-host-freshness" default_value="0" advanced="1" type="radio" parent_field="" mandatory="0">

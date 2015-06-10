@@ -38,7 +38,7 @@ namespace Centreon\Api\Internal;
 use Centreon\Internal\Command\AbstractCommand;
 use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Exception;
-
+use Centreon\Internal\Di;
 /**
  * Description of BasicCrud
  *
@@ -150,6 +150,78 @@ class BasicCrud extends AbstractCommand
         // Settin object base url
         $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . $this->objectName;
     }
+    
+    
+    /** Get the fields from xml forms for update and create action
+     * 
+     * @param string $action
+     * @param string $module
+     */
+    public function getFieldsFromForms($action,$module){
+        
+        $route = "";
+        $db = Di::getDefault()->get('db_centreon');
+        
+        
+        
+        switch ($action){
+            case 'updateAction' : 
+                $route = '/'.$module.'/'.$this->objectName.'/update';
+                $sql = 'select ff.* from cfg_forms f
+                        inner join cfg_forms_sections fs on fs.form_id = f.form_id
+                        inner join cfg_forms_blocks fb on fb.section_id = fs.section_id
+                        inner join cfg_forms_blocks_fields_relations fbfr on fbfr.block_id = fb.block_id
+                        inner join cfg_forms_fields ff on ff.field_id = fbfr.field_id
+                        where f.route = :route';
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
+                $stmt->execute();
+                $rows = $stmt->fetchAll();
+                foreach($rows as $row){
+                    if(!isset($this->options['updateAction'][$row['normalized_name']])){
+                        $this->options['updateAction'][$row['normalized_name']] = array(
+                            'functionParams' => 'params',
+                            'help' => $row['help'],
+                            'type' => 'string',
+                            'toTransform' => $row['name'],
+                            'multiple' => '',
+                            'required' => false
+                        );
+                    }
+                }
+                break;
+            case 'createAction' : 
+                $parentsArray = array();
+                $route = '/'.$module.'/'.$this->objectName.'/add';
+                $sql = 'select ff.* from cfg_forms_wizards fw
+                        inner join cfg_forms_steps fs on fs.wizard_id = fw.wizard_id
+                        inner join cfg_forms_steps_fields_relations fsfr on fsfr.step_id = fs.step_id
+                        inner join cfg_forms_fields ff on ff.field_id = fsfr.field_id
+                        where fw.route = :route';
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
+                $stmt->execute();
+                $rows = $stmt->fetchAll();
+                foreach($rows as $row){
+                    if(!isset($this->options['createAction'][$row['normalized_name']])){
+                        $this->options['createAction'][$row['normalized_name']] = array(
+                            'functionParams' => 'params',
+                            'help' => $row['help'],
+                            'type' => 'string',
+                            'toTransform' => $row['name'],
+                            'multiple' => '',
+                            'required' => $row['mandatory']
+                        );
+                    }
+                }
+                break;
+            default : 
+                break;
+        }
+    }
+    
+    
+    
     
     /**
      * 

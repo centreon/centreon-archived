@@ -126,28 +126,52 @@
             {/if}
             {if isset($inheritanceTagsUrl)}
                 var sText = '';
-                //console.log("disabledItem");
+                var sText1 = '';
+
                 $.ajax({
                       url: "{$inheritanceTagsUrl}",
                       dataType: 'json',
                       type: 'get',
                       success: function(data, textStatus, jqXHR) {
                         if (data.success) {
-
+                            var i = 0 ;
                             $.each(data.values, function(key, value) {
 
                                  if (value != null) {
-                                    var disabledItem = /*$(*/
-                                    "<span>"+value+"</span>" /*)*/;
+                                    var disabledItem = '<li class="tagGlobalNotDelete">'+value+'</li>';
+                                    var disabledItem1 = value;
 
                                     //$('#s2id_host_tags').children('ul').prepend(disabledItem);
                                     sText =  sText+' '+ disabledItem;
+                                    sText1 = sText1+' '+ disabledItem1;
                                  }
+                                 i = key+1;
                               });
-                            $('div[id$="tags_inheritance"]').addClass('tagInheritance').html(sText);
+                                //console.log(i);
+                                $('div[id$="tags_inheritance"]').addClass("inheritanceTags");
+
+                             if(i > 4) {
+
+                                    var a = $('<a tabindex="0" data-toggle="popover" data-placement="bottom">Inherited tags <i class="icon-plus ico-16"></i></a>');
+
+                                    $('div[id$="tags_inheritance"]').html(a);
+                                    a.append('<div id="popover_content_wrapper" style="display: none"><ul>'+sText+'</ul>');
+
+                               $('[data-toggle="popover"]').popover(
+                               {
+                                    html : true,
+                                        content: function() {
+                                          return $('#popover_content_wrapper').html();
+                                        }
+                               }
+                               );
+                            } else {
+                                $('div[id$="tags_inheritance"]').html('<ul>'+sText+'</ul>');
+                            }
                           }
                       }
                 });
+
             {/if}
         });
         

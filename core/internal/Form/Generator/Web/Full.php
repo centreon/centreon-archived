@@ -165,6 +165,9 @@ class Full extends Generator
     protected function addFieldToForm($field)
     {
         switch ($field['type']) {
+            case 'hidden':
+                $this->formHandler->addHidden($field['name'], $field['default_value']);
+                break;
             default:
                 $this->formHandler->addStatic($field, $this->extraParams);
                 break;
@@ -335,10 +338,13 @@ class Full extends Generator
         if (is_string($defaultValues)) {
             // Get the mapped columns for the object
             $objectColumns = $defaultValues::getColumns();
-            $fields = implode(',', array_intersect($objectColumns, array_keys($this->formDefaults)));
+            $fields = array_intersect($objectColumns, array_keys($this->formDefaults));
+            $fields = array_map(function ($field) {
+                return "`" . $field . "`";
+            }, $fields);
             
             // Get the mapped values and if no value saved for the field, the default one is set
-            $myValues = $defaultValues::getParameters($objectId, $fields);
+            $myValues = $defaultValues::getParameters($objectId, join(", ", $fields));
             foreach ($myValues as $key => &$value) {
                 if (is_null($value)) {
                     $value = $this->formDefaults[$key];

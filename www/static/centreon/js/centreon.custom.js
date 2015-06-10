@@ -214,5 +214,7 @@ $(document).ready(function() {
     if($.support.placeholder) {
       $("form.CentreonForm").centreonForm();
     }
+
+
 });
 
