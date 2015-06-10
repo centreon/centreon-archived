@@ -22,38 +22,7 @@
             }
         },
         "createAction" : {
-            "name" : {
-              "functionParams" : "params",
-              "help": "Manufacturer name",
-              "type": "string",
-              "toTransform" : "name",
-              "multiple" : false,
-              "required" : true
-            },
-            "alias" : {
-              "functionParams" : "params",
-              "help": "Alias manufacturer",
-              "type": "string",
-              "toTransform" : "alias",
-              "multiple" : false,
-              "required" : false
-            },
-            "description" : {
-              "functionParams" : "params",
-              "help": "Identifiant of manufacturer",
-              "type": "string",
-              "toTransform" : "description",
-              "multiple" : false,
-              "required" : false
-            },
-            "organization" : {
-              "functionParams" : "params",
-              "help": "Organization id",
-              "type": "string",
-              "toTransform" : "organization_id",
-              "multiple" : false,
-              "required" : false
-            }
+            
         },
         "updateAction" : {
             "manufacturer" : {
@@ -63,38 +32,6 @@
               "toTransform" : "manufacturer",
               "multiple" : false,
               "required" : true
-            },
-            "name" : {
-              "functionParams" : "params",
-              "help": "New manufacturer name",
-              "type": "string",
-              "toTransform" : "name",
-              "multiple" : false,
-              "required" : false
-            },
-            "alias" : {
-              "functionParams" : "params",
-              "help": "Alias manufacturer",
-              "type": "string",
-              "toTransform" : "alias",
-              "multiple" : false,
-              "required" : false
-            },
-            "description" : {
-              "functionParams" : "params",
-              "help": "Identifiant of manufacturer",
-              "type": "string",
-              "toTransform" : "description",
-              "multiple" : false,
-              "required" : false
-            },
-            "organization" : {
-              "functionParams" : "params",
-              "help": "Organization id",
-              "type": "string",
-              "toTransform" : "organization_id",
-              "multiple" : false,
-              "required" : false
             }
         },
         "deleteAction" : {

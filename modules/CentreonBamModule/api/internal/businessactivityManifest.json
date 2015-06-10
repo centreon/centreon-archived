@@ -21,62 +21,7 @@
             }
         },
         "createAction" : {
-            "name" : {
-              "functionParams" : "params",
-              "help": "Business activity name",
-              "type": "string",
-              "toTransform" : "name",
-              "multiple" : false,
-              "required" : true
-            },
-            "type" : {
-              "functionParams" : "params",
-              "help": "usiness activity type id",
-              "type": "number",
-              "toTransform" : "ba_type_id",
-              "multiple" : false,
-              "required" : true
-            },
-            "level-w" : {
-              "functionParams" : "params",
-              "help": "Warning threshold",
-              "type": "number",
-              "toTransform" : "level_w",
-              "multiple" : false,
-              "required" : true
-            },
-            "level-c" : {
-              "functionParams" : "params",
-              "help": "Critical threshold",
-              "type": "number",
-              "toTransform" : "level_c",
-              "multiple" : false,
-              "required" : true
-            },
-            "activate" : {
-              "functionParams" : "params",
-              "help": "Enable (0 or 1)",
-              "type": "number",
-              "toTransform" : "activate",
-              "multiple" : false,
-              "required" : true
-            },
-            "icon" : {
-              "functionParams" : "params",
-              "help": "Icon id",
-              "type": "number",
-              "toTransform" : "icon_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "reporting-period" : {
-              "functionParams" : "params",
-              "help": "Reporting period id",
-              "type": "number",
-              "toTransform" : "id_reporting_period",
-              "multiple" : false,
-              "required" : false
-            }
+            
         },
         "updateAction" : {
             "bam" : {
@@ -86,62 +31,6 @@
               "toTransform" : "bam",
               "multiple" : false,
               "required" : true
-            },
-            "name" : {
-              "functionParams" : "params",
-              "help": "Business activity name",
-              "type": "string",
-              "toTransform" : "name",
-              "multiple" : false,
-              "required" : false
-            },
-            "type" : {
-              "functionParams" : "params",
-              "help": "usiness activity type id",
-              "type": "number",
-              "toTransform" : "ba_type_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "level-w" : {
-              "functionParams" : "params",
-              "help": "Warning threshold",
-              "type": "number",
-              "toTransform" : "level_w",
-              "multiple" : false,
-              "required" : false
-            },
-            "level-c" : {
-              "functionParams" : "params",
-              "help": "Critical threshold",
-              "type": "number",
-              "toTransform" : "level_c",
-              "multiple" : false,
-              "required" : false
-            },
-            "activate" : {
-              "functionParams" : "params",
-              "help": "Enable (0 or 1)",
-              "type": "number",
-              "toTransform" : "activate",
-              "multiple" : false,
-              "required" : false
-            },
-            "icon" : {
-              "functionParams" : "params",
-              "help": "Icon id",
-              "type": "number",
-              "toTransform" : "icon_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "reporting-period" : {
-              "functionParams" : "params",
-              "help": "Reporting period id",
-              "type": "number",
-              "toTransform" : "id_reporting_period",
-              "multiple" : false,
-              "required" : false
             }
         },
         "deleteAction" : {

@@ -21,54 +21,7 @@
             }
         },
         "createAction" : {
-            "name" : {
-              "functionParams" : "params",
-              "help": "Command name",
-              "type": "string",
-              "toTransform" : "command_name",
-              "multiple" : false,
-              "required" : true
-            },
-            "type" : {
-              "functionParams" : "params",
-              "help": "Command type",
-              "type": "string",
-              "toTransform" : "command_type",
-              "multiple" : false,
-              "required" : true
-            },
-            "command-line" : {
-              "functionParams" : "params",
-              "help": "Command line",
-              "type": "string",
-              "toTransform" : "command_line",
-              "multiple" : false,
-              "required" : true
-            },
-            "enable-shell" : {
-              "functionParams" : "params",
-              "help": "Enable shell (0 or 1)",
-              "type": "number",
-              "toTransform" : "enable_shell",
-              "multiple" : false,
-              "required" : false
-            },
-            "connector" : {
-              "functionParams" : "params",
-              "help": "Connector id",
-              "type": "number",
-              "toTransform" : "connector_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "comment" : {
-              "functionParams" : "params",
-              "help": "Comments for the command",
-              "type": "string",
-              "toTransform" : "command_comment",
-              "multiple" : false,
-              "required" : false
-            }
+            
         },
         "updateAction" : {
             "command" : {
@@ -78,54 +31,6 @@
               "toTransform" : "command",
               "multiple" : false,
               "required" : true
-            },
-            "name" : {
-              "functionParams" : "params",
-              "help": "Command name",
-              "type": "string",
-              "toTransform" : "command_name",
-              "multiple" : false,
-              "required" : false
-            },
-            "type" : {
-              "functionParams" : "params",
-              "help": "Command type",
-              "type": "string",
-              "toTransform" : "command_type",
-              "multiple" : false,
-              "required" : false
-            },
-            "command-line" : {
-              "functionParams" : "params",
-              "help": "Command line",
-              "type": "string",
-              "toTransform" : "command_line",
-              "multiple" : false,
-              "required" : false
-            },
-            "enable-shell" : {
-              "functionParams" : "params",
-              "help": "Enable shell (0 or 1)",
-              "type": "number",
-              "toTransform" : "enable_shell",
-              "multiple" : false,
-              "required" : false
-            },
-            "connector" : {
-              "functionParams" : "params",
-              "help": "Connector id",
-              "type": "number",
-              "toTransform" : "connector_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "comment" : {
-              "functionParams" : "params",
-              "help": "Comments for the command",
-              "type": "string",
-              "toTransform" : "command_comment",
-              "multiple" : false,
-              "required" : false
             }
         },
         "deleteAction" : {
