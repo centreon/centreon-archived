@@ -48,7 +48,7 @@ class Db
      * @param type $operation
      * @param type $targetDbName
      */
-    public static function update($module)
+    public static function update($module, $action = 'create')
     {
         $targetDbName = 'centreon';
         ini_set('memory_limit', '-1');
@@ -95,7 +95,12 @@ class Db
         if ($diff !== false) {
             $strDiff = $platform->getModifyDatabaseDDL($diff);
             $sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
-            $finalSql = implode(";\n\n", static::keepCreateStatement($sqlToBeExecuted, $module));
+            
+            if ($action == 'create') {
+                $finalSql = implode(";\n\n", static::keepCreateStatement($sqlToBeExecuted, $module));
+            } elseif ($action == 'delete') {
+                $finalSql = implode(";\n\n", static::keepDeleteStatement($sqlToBeExecuted, $module));
+            }
             \PropelSQLParser::executeString($finalSql, $db);
         }
         
@@ -347,16 +352,41 @@ class Db
     
     /**
      * 
-     * @param type $queries
+     * @param array $queries
+     * @param string $module
+     * @return array
      */
     private static function keepCreateStatement($queries, $module)
     {
-        $createQueries = array();
+        return static::keepStatement("CREATE TABLE", $queries, $module);
+    }
+    
+    /**
+     * 
+     * @param array $queries
+     * @param string $module
+     * @return array
+     */
+    private static function keepDeleteStatement($queries, $module)
+    {
+        return static::keepStatement('DROP TABLE', $queries, $module);
+    }
+    
+    /**
+     * 
+     * @param string $statement
+     * @param array $queries
+     * @param string $module
+     * @return array
+     */
+    private static function keepStatement($statement, $queries, $module)
+    {
+        $finalQueries = array();
         $moduleTables = Informations::getModuleTables($module);
         
         $numberOfQueries = count($queries);
         for ($i=0; $i<$numberOfQueries; $i++) {
-            if (strpos($queries[$i], "CREATE TABLE") !== false) {
+            if (strpos($queries[$i], $statement) !== false) {
                 preg_match("/\`\w+\`/", $queries[$i], $rawTargetTable);
                 
                 $targetTable = trim($rawTargetTable[0], '`');
@@ -366,6 +396,6 @@ class Db
             }
         }
         
-        return $createQueries;
+        return $finalQueries;
     }
 }
