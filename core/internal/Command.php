@@ -237,7 +237,7 @@ class Command
                             'type' => 'string',
                             'toTransform' => $row['name'],
                             'multiple' => '',
-                            'required' => $row['mandatory']
+                            'required' => false
                         );
                     }
                 }
@@ -270,6 +270,9 @@ class Command
                 break;
         }
 
+        var_dump($aliveObject->options['createAction']);
+        die;
+        
         $actionArgs = array();
         $this->getArgs($actionArgs, $aliveObject, $action);
         
