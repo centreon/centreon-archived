@@ -45,8 +45,8 @@ class Db
 {
     /**
      * 
-     * @param type $operation
-     * @param type $targetDbName
+     * @param type $module
+     * @param type $action
      */
     public static function update($module, $action = 'create')
     {
@@ -358,7 +358,7 @@ class Db
      */
     private static function keepCreateStatement($queries, $module)
     {
-        return static::keepStatement("CREATE TABLE", $queries, $module);
+        return static::keepStatement('CREATE TABLE', $queries, $module);
     }
     
     /**
@@ -391,7 +391,7 @@ class Db
                 
                 $targetTable = trim($rawTargetTable[0], '`');
                 if (in_array($targetTable, $moduleTables)) {
-                    $createQueries[] = $queries[$i];
+                    $finalQueries[] = $queries[$i];
                 }
             }
         }
