@@ -237,7 +237,7 @@ class Command
                             'type' => 'string',
                             'toTransform' => $row['name'],
                             'multiple' => '',
-                            'required' => $row['mandatory']
+                            'required' => false
                         );
                     }
                 }
@@ -269,7 +269,7 @@ class Command
             default : 
                 break;
         }
-
+        
         $actionArgs = array();
         $this->getArgs($actionArgs, $aliveObject, $action);
         
