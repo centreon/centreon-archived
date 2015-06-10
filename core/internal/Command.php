@@ -269,9 +269,6 @@ class Command
             default : 
                 break;
         }
-
-        var_dump($aliveObject->options['createAction']);
-        die;
         
         $actionArgs = array();
         $this->getArgs($actionArgs, $aliveObject, $action);
