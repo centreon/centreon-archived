@@ -133,21 +133,31 @@
                       type: 'get',
                       success: function(data, textStatus, jqXHR) {
                         if (data.success) {
-
+                            var i = 0 ;
                             $.each(data.values, function(key, value) {
 
                                  if (value != null) {
-                                    var disabledItem = /*$(*/
-                                    "<span>"+value+"</span>" /*)*/;
+                                    var disabledItem =
+                                    ""+value+"";
 
                                     //$('#s2id_host_tags').children('ul').prepend(disabledItem);
                                     sText =  sText+' '+ disabledItem;
+
                                  }
+                                 i = key+1;
                               });
-                            $('div[id$="tags_inheritance"]').addClass('tagInheritance').html(sText);
+                                //console.log(i);
+
+                             if(i > 2) {
+                                $('div[id$="tags_inheritance"]').html('<button tabindex="0" type="button" data-toggle="popover" class="btnC btnDefault" data-placement="bottom" data-content="'+sText+'">Inherited tags</button>');
+                               $('[data-toggle="popover"]').popover();
+                            } else {
+                                $('div[id$="tags_inheritance"]').html(sText);
+                            }
                           }
                       }
                 });
+
             {/if}
         });
         
