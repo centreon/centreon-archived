@@ -27,7 +27,7 @@
 
                         var target = $( e.target );
 
-                        if(target.is("tr")){
+                        if(target.is("a")){
                             if($(this).hasClass('selected')){
                                 $(this).removeClass('selected');
                             }else{

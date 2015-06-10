@@ -6,22 +6,22 @@
         <redirect_route></redirect_route>
         <section name="Broker">
             <block name="General information">
-                <field name="directory_config" label="Broker config directory" default_value="/etc/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">	
+                <field name="directory_config" label="Broker config directory" normalized_name="broker-conf-dir" default_value="/etc/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">	
                     <help>Broker configuration directory.</help>
                 </field>
-                <field name="directory_modules" label="Broker modules directory" default_value="/usr/share/centreon/lib/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">
+                <field name="directory_modules" label="Broker modules directory" normalized_name="broker-modules-dir" default_value="/usr/share/centreon/lib/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">
                     <help>Broker modules directory.</help>
                 </field>
-                <field name="directory_data" label="Broker data directory" default_value="/var/lib/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">
+                <field name="directory_data" label="Broker data directory" normalized_name="broker-data-dir" default_value="/var/lib/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">
                     <help>Broker data directory.</help>
                 </field>
-                <field name="directory_logs" label="Broker logs directory" default_value="/var/log/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">
+                <field name="directory_logs" label="Broker logs directory" normalized_name="broker-logs-dir" default_value="/var/log/centreon-broker/" advanced="0" type="text" parent_field="" mandatory="1">
                     <help>Broker logs directory.</help>
                 </field>
-                <field name="directory_cbmod" label="Broker module directory" default_value="/usr/lib64/nagios/" advanced="0" type="text" parent_field="" mandatory="1">
+                <field name="directory_cbmod" label="Broker module directory" normalized_name="broker-cbmod-dir" default_value="/usr/lib64/nagios/" advanced="0" type="text" parent_field="" mandatory="1">
                     <help>Broker module directory.</help>
                 </field>
-                <field name="init_script" label="Broker init script" default_value="/etc/init.d/cbd" advanced="0" type="text" parent_field="" mandatory="1">
+                <field name="init_script" label="Broker init script" normalized_name="broker-init-script" default_value="/etc/init.d/cbd" advanced="0" type="text" parent_field="" mandatory="1">
                     <help>Broker init script.</help>
                 </field>
       </block>
