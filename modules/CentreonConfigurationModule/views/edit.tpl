@@ -150,9 +150,21 @@
                                 //console.log(i);
                                 $('div[id$="tags_inheritance"]').addClass("inheritanceTags");
 
-                             if(i > 2) {
-                                $('div[id$="tags_inheritance"]').html('<a tabindex="0" data-toggle="popover" data-placement="bottom" data-content="'+sText1+'">Inherited tags <i class="icon-plus ico-16"></i></a>');
-                               $('[data-toggle="popover"]').popover();
+                             if(i > 4) {
+
+                                    var a = $('<a tabindex="0" data-toggle="popover" data-placement="bottom">Inherited tags <i class="icon-plus ico-16"></i></a>');
+
+                                    $('div[id$="tags_inheritance"]').html(a);
+                                    a.append('<div id="popover_content_wrapper" style="display: none"><ul>'+sText+'</ul>');
+
+                               $('[data-toggle="popover"]').popover(
+                               {
+                                    html : true,
+                                        content: function() {
+                                          return $('#popover_content_wrapper').html();
+                                        }
+                               }
+                               );
                             } else {
                                 $('div[id$="tags_inheritance"]').html('<ul>'+sText+'</ul>');
                             }
