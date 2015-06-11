@@ -8,6 +8,10 @@
         "hosttemplate_servicetemplates" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Servicetemplate",
         "host_icon" : "\\CentreonConfiguration\\Models\\Relation\\Hosttemplate\\Icon"
     },
+    "paramsToExclude" : [
+      "host_custommacros",
+      "host_tags" 
+    ],
     "attributesMap" : {
         "id" : "host_id",
         "name" : "host_name",

@@ -9,6 +9,10 @@
             "group": false
         }
     ],
+    "paramsToExclude" : [
+      "service_custommacros",
+      "service_tags" 
+    ],
     "repository" : "\\CentreonConfiguration\\Repository\\ServiceRepository",
     "objectBaseUrl" : "service",
     "objectClass" : "\\CentreonConfiguration\\Models\\Service",
