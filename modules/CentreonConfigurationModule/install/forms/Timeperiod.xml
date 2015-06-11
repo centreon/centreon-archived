@@ -26,7 +26,7 @@
 		<field name="tp_saturday" label="Saturday" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 	  </block>
     </section>
-	<section name="Inclusions / Exclusions">
+	<section name="Inclusions Exclusions">
 	  <block name="Inclusion of timeperiods">
 		<field name="tp_include" label="Include timeperiod" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 		  <attributes>

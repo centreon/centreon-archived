@@ -51,6 +51,10 @@
         }
         
     ],
+    "paramsToExclude" : [
+      "host_custommacros",
+      "host_tags" 
+    ],
     "attributesMap" : {
         "id" : "host_id",
         "name" : "host_name",

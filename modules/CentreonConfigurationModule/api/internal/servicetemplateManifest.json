@@ -8,6 +8,10 @@
         "service_parents" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Serviceparents",
         "service_children" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Servicechildren"
     },
+    "paramsToExclude" : [
+      "service_custommacros",
+      "service_tags" 
+    ],
     "attributesMap" : {
         "id" : "service_id",
         "name" : "service_description",

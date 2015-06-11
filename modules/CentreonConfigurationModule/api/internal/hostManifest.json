@@ -84,6 +84,10 @@
         }
         
     ],
+    "paramsToExclude" : [
+      "host_custommacros",
+      "host_tags" 
+    ],
     "attributesMap" : {
         "id" : "host_id",
         "name" : "host_name",
@@ -93,6 +97,15 @@
     },
     "options" : {
         "createAction" : {
+            "enable" : {
+              "functionParams" : "params",
+              "help": "enable",
+              "type": "number",
+              "toTransform" : "host_activate",
+              "multiple" : false,
+              "required" : false,
+              "defaultValue" : 1
+            }
         },
         "showAction" : {
             "host" : {

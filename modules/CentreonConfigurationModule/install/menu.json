@@ -117,6 +117,20 @@
                         "route": "/centreon-configuration/resource"
                     }
                 ]
+            },
+            {
+              "name": "Notifications",
+              "short_name": "conf_notifications",
+              "icon_class": "fa fa-envelope",
+              "order": 8,
+              "menus": [
+                {
+                  "name": "Notification methods",
+                  "short_name": "conf_notifications_methods",
+                  "route": "/centreon-configuration/notification-method",
+                  "order": 1
+                }
+              ]
             }
         ]
     }

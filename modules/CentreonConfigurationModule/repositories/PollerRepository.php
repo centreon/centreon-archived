@@ -288,4 +288,38 @@ class PollerRepository extends Repository
         
         return $listTpl[$tmplName];
     }
+
+    /**
+     *
+     * @param integer $pollerId
+     * @return type
+     * @throws Exception
+     */
+    public static function addCommandTemplateInfos($templateName = null)
+    {
+        self::getPollerTemplates();
+        $di = Di::getDefault();
+        $pollerTemplateList = $di->get('pollerTemplate');
+
+        /* Check if poller template exists */
+        if (!isset($templateName) || !isset($pollerTemplateList[$templateName])) {
+            $sTpl = "";
+            if (isset($templateName)) {
+                $sTpl = $templateName;
+            }
+            throw new Exception(_("Poller template '" . $sTpl . "' does not exist"), 255);
+        }
+
+        $myLiteTemplate = unserialize($pollerTemplateList[$templateName]);
+        $myTemplate = $myLiteTemplate->toFullTemplate();
+        $setups = $myTemplate->getBrokerPart()->getSetup();
+        $customFields = array();
+        foreach ($setups as $setup) {
+            $TempCustomFields = $setup->getFields();
+            foreach ($TempCustomFields as $TempCustomField) {
+                $customFields[] = $TempCustomField;
+            }
+        }
+        return $customFields;
+    }
 }
