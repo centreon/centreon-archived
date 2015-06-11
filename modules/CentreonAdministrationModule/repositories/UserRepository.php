@@ -85,9 +85,8 @@ class UserRepository extends Repository
     public static function create($givenParameters, $origin = "wizard", $route = "", $validate = true, $validateMandatory = true)
     {
         if (isset($givenParameters['password']) && $givenParameters['password']) {
-            $givenParameters['password'] = static::generateHashedPassword($givenParameters);
+            $givenParameters['password2'] = static::generateHashedPassword($givenParameters);
         }
-        
         $currentDate = date('Y-m-d H:i:s');
         $givenParameters['createdat'] = $currentDate;
         $givenParameters['updatedat'] = $currentDate;
@@ -125,15 +124,11 @@ class UserRepository extends Repository
      */
     public static function update($givenParameters, $origin = "form", $route = "", $validate = true, $validateMandatory = true)
     {
-        if ($validate) {
-            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
-        }
-
         /* Do not perform update if password is empty */
         if (isset($givenParameters['password']) && $givenParameters['password'] == '') {
             unset($givenParameters['password']);
         } elseif (isset($givenParameters['password'])) {
-            $givenParameters['password'] = self::generateHashedPassword($givenParameters);
+            $givenParameters['password2'] = self::generateHashedPassword($givenParameters);
         }
         
         if (isset($givenParameters['login']) && !is_null($givenParameters['login']) && !isset($givenParameters['object_id'])) {

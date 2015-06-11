@@ -78,7 +78,7 @@ class String extends RespectValidationAbstract
      *
      * @var type 
      */
-    protected static$sMessageError = "The value is incorrect.";
+    protected static $sMessageError = "The value is incorrect.";
 
     /**
      * 

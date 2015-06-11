@@ -75,6 +75,10 @@ class PostSave
     public function getObjectName()
     {
         $parameters = $this->parameters;
-        return $parameters['object'];
+        $sReturn = NULL;
+        if (isset($parameters['object'])) {
+            $sReturn = $parameters['object'];
+        }
+        return $sReturn;
     }
 }

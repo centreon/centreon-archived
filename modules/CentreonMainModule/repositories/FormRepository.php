@@ -151,6 +151,9 @@ abstract class FormRepository extends ListRepository
                 self::validateForm($givenParameters, $origin, $route, $validateMandatory);
             }
             
+            if (isset($givenParameters['password']) && isset($givenParameters['password2'])) {
+                $givenParameters['password'] = $givenParameters['password2'];
+            }
         
             $class = static::$objectClass;
             $pk = $class::getPrimaryKey();
@@ -243,6 +246,10 @@ abstract class FormRepository extends ListRepository
     {
         if ($validate) {
             self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+        
+        if (isset($givenParameters['password']) && isset($givenParameters['password2'])) {
+            $givenParameters['password'] = $givenParameters['password2'];
         }
 
         $extraParameters = array();
