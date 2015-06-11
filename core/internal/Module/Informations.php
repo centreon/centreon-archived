@@ -245,7 +245,14 @@ class Informations
     public static function getModulePath($moduleName)
     {
         $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
-        $realPath = $path . '/modules/' . self::getModuleCommonName($moduleName) . 'Module/';
+        
+        $realPath = '';
+        if ($moduleName == 'core') {
+            $realPath .= $path;
+        } else {
+            $realPath .= $path . '/modules/' . self::getModuleCommonName($moduleName) . 'Module/';
+        }
+        
         return realpath($realPath);
     }
 
@@ -300,6 +307,7 @@ class Informations
     {
         $tableList = array();
         $tableFilesPath = static::getModulePath($moduleName) . '/install/db/centreon/*.xml';
+        
         $tableFiles = glob($tableFilesPath);
         
         

@@ -66,7 +66,7 @@ class Install extends AbstractInstall
             
             echo Colorize::colorizeMessage("Starting to install Centreon 3.0", "info") . "\n";
             echo "Creating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
-            Db::update($dbName);
+            Db::update('core');
             echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
             
             $modulesToInstall = self::getCoreModules();
