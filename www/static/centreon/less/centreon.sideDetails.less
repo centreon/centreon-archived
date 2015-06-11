@@ -1,16 +1,17 @@
 @import "../../centreon-administration/less/centreon.tag.less";
 
-#hostListing {
+.Listing {
  // transition: all 0.2s linear;
+  position: relative;
 }
 #sideRight.sideRightWrapper {
   position: absolute;
-  right: 15px;
+  right: 0px;
   width: 310px;
   //margin-left : @paddingElem*2;
   height: 100%;
   background-color: @lightGray1;
-  top: 130px;
+  top: 73px;
   border-left: 3px solid @lightGray2;
   padding: 0px 0 @paddingElem*2  0;
   display: none;
@@ -117,7 +118,7 @@
   }
 
   .bodyWrapper {
-    height: ~"calc(100% - 350px)";
+    height: ~"calc(100% - 295px)";
 
   .bodyContent {
     padding: 0 @paddingElem*2 0 @paddingElem*2;
