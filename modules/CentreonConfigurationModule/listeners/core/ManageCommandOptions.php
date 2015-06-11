@@ -76,7 +76,7 @@ class ManageCommandOptions
             if (isset($newInfo['help'])) {
                 $newOption[$newInfo['name']]['help'] = $newInfo['help'];
             }
-            if (isset($newInfo['require']) && ($newInfo['require'] == true)) {
+            if (isset($newInfo['require']) && ($newInfo['require'] == true) && ($event->getAction() == 'createAction')) {
                 $newOption[$newInfo['name']]['required'] = '1';
             }
             $event->addOption($newOption);
