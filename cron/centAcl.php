@@ -239,6 +239,7 @@ try {
      */
 
     $tabGroups = array();
+    $groupStr = "";
     $query = "SELECT DISTINCT acl_groups.acl_group_id, acl_resources.acl_res_id " .
         "FROM acl_res_group_relations, `acl_groups`, `acl_resources` " .
         "WHERE acl_groups.acl_group_id = acl_res_group_relations.acl_group_id " .
@@ -249,6 +250,10 @@ try {
     $DBRESULT1 = $pearDB->query($query);
     while ($result = $DBRESULT1->fetchRow()) {
         $tabGroups[$result["acl_group_id"]] = 1;
+        if ($groupStr != '') {
+            $groupStr .= ",";      
+        }
+        $groupStr = $result["acl_group_id"];
     }
     $DBRESULT1->free();
     unset($result);
@@ -409,13 +414,15 @@ try {
         $res = $pearDB->query($query);
         while ($row = $res->fetchRow()) {
             foreach ($sgCache as $acl_g_id => $acl_g) {
-                foreach ($acl_g as $rId => $value) {
-                    if ($rId == $row['acl_res_id']) {
-                        if (!isset($sgCache[$acl_g_id][$rId][$row['host_host_id']])) {
-                            $sgCache[$acl_g_id][$rId][$row['host_host_id']] = array();
+                if (isset($tabGroups[$acl_g_id])) {
+                    foreach ($acl_g as $rId => $value) {
+                        if ($rId == $row['acl_res_id']) {
+                            if (!isset($sgCache[$acl_g_id][$rId][$row['host_host_id']])) {
+                                $sgCache[$acl_g_id][$rId][$row['host_host_id']] = array();
+                            }
+                            $sgCache[$acl_g_id][$rId][$row['host_host_id']][$svcCache[$row['service_service_id']]] = $row['service_service_id'];
                         }
-                        $sgCache[$acl_g_id][$rId][$row['host_host_id']][$svcCache[$row['service_service_id']]] = $row['service_service_id'];
-                    }
+                    }                    
                 }
             }
         }
@@ -489,28 +496,26 @@ try {
                  * Give Authorized Categories
                  */
                 $authorizedCategories = getAuthorizedCategories($acl_group_id, $res2["acl_res_id"]);
-                $Host = getFilteredHostCategories($Host, $acl_group_id, $res2["acl_res_id"]);
-                $Host = getFilteredPollers($Host, $acl_group_id, $res2['acl_res_id']);
                 
                 /*
                  * get all Service groups
                  */
                 $sgReq = "SELECT host_name, host_id, service_description, service_id 
-                      FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service`
-                      WHERE acl_res_id = '" . $res2["acl_res_id"] . "'
-		      AND host.host_id = servicegroup_relation.host_host_id
-		      AND service.service_id = servicegroup_relation.service_service_id
-		      AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
-                      AND service_activate = '1'
-		      UNION
-                      SELECT host_name, host_id, service_description, service_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service`, `hostgroup`, `hostgroup_relation`
-		      WHERE acl_res_id = '" . $res2["acl_res_id"] . "'
-		      AND hostgroup.hg_id = servicegroup_relation.hostgroup_hg_id
-                      AND servicegroup_relation.hostgroup_hg_id = hostgroup_relation.hostgroup_hg_id
-		      AND hostgroup_relation.host_host_id = host.host_id
-                      AND service.service_id = servicegroup_relation.service_service_id
-		      AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
-		      AND service_activate = '1'";
+                            FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service`
+                            WHERE acl_res_id = '" . $res2["acl_res_id"] . "'
+                		        AND host.host_id = servicegroup_relation.host_host_id
+                		        AND service.service_id = servicegroup_relation.service_service_id
+                		        AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
+                                AND service_activate = '1'
+                		  UNION
+                          SELECT host_name, host_id, service_description, service_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service`, `hostgroup`, `hostgroup_relation`
+                		    WHERE acl_res_id = '" . $res2["acl_res_id"] . "'
+                		        AND hostgroup.hg_id = servicegroup_relation.hostgroup_hg_id
+                                AND servicegroup_relation.hostgroup_hg_id = hostgroup_relation.hostgroup_hg_id
+                		        AND hostgroup_relation.host_host_id = host.host_id
+                                AND service.service_id = servicegroup_relation.service_service_id
+                		        AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
+                		        AND service_activate = '1'";
                 $DBRESULT3 = $pearDB->query($sgReq);
                 $sgElem = array();
                 $tmpH = array();
@@ -539,7 +544,11 @@ try {
                 }
                 unset($tmpH);
                 unset($sgElem);
-                
+
+                // Filter
+                $Host = getFilteredHostCategories($Host, $acl_group_id, $res2["acl_res_id"]);
+                $Host = getFilteredPollers($Host, $acl_group_id, $res2['acl_res_id']);                
+
                 /*
                  * Initialize and first filter
                  */
@@ -553,8 +562,17 @@ try {
                     }
                     unset($tab);
                 }
+
+                // Purge all elements not visible
+                foreach ($tabElem as $key => $value) {
+                    if (isset($Host[$hostNameCache[$key]])) {
+                        ;
+                    } else {
+                        unset($tabElem[$key]);
+                    }
+                }
                 unset($Host);
-                
+                    
                 /*
                  * Set meta services
                  */
@@ -636,5 +654,3 @@ try {
 } catch (Exception $e) {
     programExit($e->getMessage());
 }
-
-?>

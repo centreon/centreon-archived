@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
  	/*
@@ -92,16 +89,15 @@
             $host = array();
 		}
 		while ($row = $DBRESULT->fetchRow()) {
-            //is a template
-		    if (isset($hostTemplateCache[$row['host_host_id']])) {
-                foreach ($hostTemplateCache[$row['host_host_id']] as $hId) {
+            if (isset($hostTemplateCache[$row['host_host_id']])) {
+            	// is a template
+		        foreach ($hostTemplateCache[$row['host_host_id']] as $hId) {
                     if (isset($hostTmp[$hId])) {
                         $host[$hId] = $hostCache[$hId];
                     }
                 }
-            }
-            //is not a template
-            elseif (isset($hostTmp[$row['host_host_id']])) {
+            } elseif (isset($hostTmp[$row['host_host_id']])) {
+            	// is not a template
                 $host[$row['host_host_id']] = $hostCache[$row['host_host_id']];
             }
 		}
@@ -152,20 +148,19 @@
 		/*
 		 * Init Table of template
 		 */
-                $loopBreak = array();
+        $loopBreak = array();
 		while (1) {
-                    if (isset($svcTplCache[$service_id]) && 
-                            !isset($loopBreak[$service_id])) {
-                        if (isset($svcCatCache[$service_id])) {
-                            foreach ($svcCatCache[$service_id] as $ct_id => $flag) {
-                                $tabCategory[$ct_id] = $ct_id;
-                            }
-			}
-                        $loopBreak[$service_id] = true;
-			$service_id = $svcTplCache[$service_id];
-                    } else {
-                        return $tabCategory;
+            if (isset($svcTplCache[$service_id]) && !isset($loopBreak[$service_id])) {
+                if (isset($svcCatCache[$service_id])) {
+                    foreach ($svcCatCache[$service_id] as $ct_id => $flag) {
+                        $tabCategory[$ct_id] = $ct_id;
                     }
+				}
+                $loopBreak[$service_id] = true;
+				$service_id = $svcTplCache[$service_id];
+            } else {
+                return $tabCategory;
+            }
 		}
 	}
 
@@ -188,6 +183,7 @@
             }
         }
 		return $svc;
+		
 		/*
 		 * Init Acl Table
 		 */
@@ -195,8 +191,7 @@
 		$condition = "";
 		if ($groupstr != "") {
 			$condition = " WHERE `acl_group_id` IN (".$groupstr.") AND ";
-		}
-		else {
+		} else {
 			$condition = " WHERE ";
 		}
 
@@ -227,8 +222,7 @@
 	 * @param int $res_id The ACL ressource id
 	 * @return bool
 	 */
-	function hasPollerFilter($res_id)
-	{
+	function hasPollerFilter($res_id) {
 	    global $pearDB;
 
 	    if (!is_numeric($res_id)) {
