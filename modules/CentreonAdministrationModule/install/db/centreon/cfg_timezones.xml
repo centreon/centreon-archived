@@ -6,6 +6,7 @@
         <column name="offset" phpName="offset" type="VARCHAR" size="200" required="true"/>
         <column name="dst_offset" phpName="dstOffset" type="VARCHAR" size="200" required="true"/>
         <column name="description" phpName="description" type="VARCHAR" size="200" required="false"/>
+        <column name="slug" phpName="Slug" type="VARCHAR" size="254" required="true"/>
         <unique name="name">
             <unique-column name="name"/>
         </unique>

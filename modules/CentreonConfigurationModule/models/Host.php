@@ -281,4 +281,16 @@ class Host extends CentreonBaseModel
             $db->commit();
         }
     }
+    
+    /**
+     * @param string $paramName
+     * @param array $paramValues
+     * @param array $extraConditions
+     * @return array
+     */
+    public static function getIdByParameter($paramName, $paramValues = array(), $extraConditions = array())
+    {        
+        $extraConditions['host_register'] = '1';
+        return parent::getIdByParameter($paramName, $paramValues, $extraConditions);
+    }
 }
