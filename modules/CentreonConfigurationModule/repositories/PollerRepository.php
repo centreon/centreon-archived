@@ -227,8 +227,7 @@ class PollerRepository extends Repository
      * @param array $givenParameters The parameters for update a poller
      */
     public static function update($params, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {
-        
+    {    
         if ($validate) {
             self::validateForm($params, "form", $route, $validateMandatory);
         }

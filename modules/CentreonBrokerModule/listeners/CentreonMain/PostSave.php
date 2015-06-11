@@ -37,6 +37,7 @@ namespace CentreonBroker\Listeners\CentreonMain;
 
 use CentreonMain\Events\PostSave as PostSaveEvent;
 use CentreonBroker\Repository\BrokerRepository;
+use CentreonConfiguration\Models\Poller;
 
 class PostSave
 {
@@ -47,13 +48,15 @@ class PostSave
     {
         $parameters = $event->getParameters();
         $extraParameters = $event->getExtraParameters();
-        if (isset($extraParameters['centreon-broker'])) {
+        if ($event->getObjectName() === 'poller') {
             foreach ($parameters as $key => $value) {
                 $extraParameters['centreon-broker'][$key] = $value;
             }
-            if ($event->getObjectName() === 'poller') {
-                BrokerRepository::save($event->getObjectId(), $extraParameters['centreon-broker']);
+            if (($event->getAction() === 'update') && !isset($extraParameters['centreon-broker']['tmpl_name'])) {
+                $templateName = Poller::getParameters($extraParameters['centreon-broker']['object_id'], 'tmpl_name');
+                $extraParameters['centreon-broker']['tmpl_name'] = $templateName['tmpl_name'];
             }
+            BrokerRepository::save($event->getObjectId(), $extraParameters['centreon-broker']);
         }
     }
 }

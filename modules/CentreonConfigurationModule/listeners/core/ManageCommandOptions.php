@@ -37,6 +37,7 @@ namespace CentreonConfiguration\Listeners\Core;
 
 use Centreon\Events\ManageCommandOptions as ManageCommandOptionsEvent;
 use CentreonConfiguration\Repository\PollerRepository;
+use CentreonConfiguration\Models\Poller;
 
 class ManageCommandOptions
 {
@@ -51,6 +52,13 @@ class ManageCommandOptions
         if ($event->getObjectName() == 'poller') {
             if (($event->getAction() == 'createAction') && isset($args['template'])) {
                 $newInfos = PollerRepository::addCommandTemplateInfos($args['template']);
+            } else if (($event->getAction() == 'updateAction') && isset($args['poller'])) {
+                $pollerIds = Poller::getIdByParameter('slug', array($args['poller']));
+                if (isset($pollerIds[0])) {
+                    $pollerId = $pollerIds[0];
+                    $templateName = Poller::getParameters($pollerId, 'tmpl_name');
+                    $newInfos = PollerRepository::addCommandTemplateInfos($templateName['tmpl_name']);
+                }
             }
         }
 
