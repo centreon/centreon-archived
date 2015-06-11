@@ -308,6 +308,7 @@ class Command
             $manageCommandOptionsEvent = new ManageCommandOptionsEvent($aliveObject->objectName, $action, $listOptions, $parsedOptions);
             $events->emit('core.manage.command.options', array($manageCommandOptionsEvent));
             $listOptions = $manageCommandOptionsEvent->getOptions();
+            $aliveObject->options[$action] = $listOptions;
         }
         
         $specs = new OptionCollection();
