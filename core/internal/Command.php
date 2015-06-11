@@ -220,7 +220,6 @@ class Command
         
         $actionArgs = array();
         $this->getArgs($actionArgs, $aliveObject, $action);
-        
         // Call the action
         $aliveObject->named($action, $actionArgs);
         
