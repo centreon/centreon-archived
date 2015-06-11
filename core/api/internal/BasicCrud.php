@@ -388,6 +388,10 @@ class BasicCrud extends AbstractCommand
             $aFieldAttribute[] = $externalAttribute['type'];
         }
 
+        /*
+        var_dump($params);
+        die;
+         */
         foreach ($params as $key => $param) { 
             if (in_array($key, $aFieldAttribute)) { 
                 foreach ($this->externalAttributeSet as $externalAttribute) {
@@ -405,6 +409,24 @@ class BasicCrud extends AbstractCommand
                             throw new \Exception($sMessage);
                         }
 
+                    } elseif ($externalAttribute['link'] == 'multiple' && $key === $externalAttribute['type']) {
+                        $aFields = explode(",", $externalAttribute['fields']);
+                        $aDatas = explode(',', $params[$externalAttribute['type']]);
+ 
+                        foreach ($aDatas as $sData) {
+                            $sData = trim($sData);
+                           
+                            $iId =  $externalAttribute['objectClass']::getIdByParameter($aFields[1], $sData);
+                            if (count($iId) > 0) {
+                                $finalParamList[$key] = $iId[0];
+                            } else {
+                                $sMessage = static::OBJ_NOT_EXIST;
+                                if (!empty($externalAttribute['message'])) {
+                                    $sMessage = $externalAttribute['message'];
+                                }
+                                throw new \Exception($sMessage);
+                            }
+                        }
                     }
                 }
                  
@@ -464,7 +486,7 @@ class BasicCrud extends AbstractCommand
                     true,
                     false
                 );
-        \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully updated54", true, 'green');
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully updated", true, 'green');
         
     }
     
