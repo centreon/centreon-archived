@@ -276,9 +276,11 @@ try {
         $res->free();
         
         $hostCache = array();
+        $hostNameCache = array();
         $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1'");
         while ($h = $DBRESULT->fetchRow()) {
             $hostCache[$h["host_id"]] = $h["host_name"];
+            $hostNameCache[$h["host_name"]] = $h["host_id"];
         }
         $DBRESULT->free();
         unset($h);
