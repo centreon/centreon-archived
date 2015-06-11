@@ -135,7 +135,7 @@ class BrokerRepository
                                     foreach ($module[$type] as $typeInfo) {
                                         /* Key */
                                         foreach ($typeInfo as $key => $value) {
-                                            if (is_string($value) && preg_match("/%([\w_]+)%/", $value, $matches)) {
+                                            if (is_string($value) && preg_match("/%([\w_]+|[\w-]+)%/", $value, $matches)) {
                                                 if (isset($params[$matches[1]]) && trim($params[$matches[1]]) !== "") {
                                                     static::insertPollerInfo($pollerId, $matches[1], $params[$matches[1]]);
                                                 }

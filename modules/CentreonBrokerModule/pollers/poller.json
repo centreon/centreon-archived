@@ -33,7 +33,7 @@
                                             {
                                                 "type" :"tcp",
                                                 "name" : "central-output",
-                                                "host": "%broker_central_ip%",
+                                                "host": "%broker-central-ip%",
                                                 "port" : "5668",
                                                 "filters": [
                                                   {
