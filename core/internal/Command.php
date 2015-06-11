@@ -39,9 +39,12 @@ namespace Centreon\Internal;
 use Centreon\Internal\Di;
 use Centreon\Internal\Utils\CommandLine\Colorize;
 use Centreon\Internal\Module\Informations;
+use GetOptionKit\Argument;
 use GetOptionKit\OptionCollection;
 use GetOptionKit\OptionParser;
+use GetOptionKit\OptionResult;
 use GetOptionKit\OptionPrinter\ConsoleOptionPrinter;
+use Centreon\Events\ManageCommandOptions as ManageCommandOptionsEvent;
 
 
 class Command
@@ -283,18 +286,32 @@ class Command
                 'required' => false)
             )
         );
+
+        $specs = new OptionCollection();
+        foreach ($listOptions as $option => $spec) {
+            if ($spec['type'] != 'boolean') {
+                if ($spec['multiple']) {
+                    $option .= '+';
+                } else if ($spec['required']) {
+                    $option .= ':';
+                } else {
+                    $option .= '?';
+                }
+            }
+            $specs->add($option, $spec['help'])->isa($spec['type']);
+        }        
         
-        
+        $parser = new OptionParser($specs);
+        $parsedOptions = self::parseOptions($this->arguments, $parser);
+
+        if (isset($aliveObject->objectName)) {
+            $events = Di::getDefault()->get('events');
+            $manageCommandOptionsEvent = new ManageCommandOptionsEvent($aliveObject->objectName, $action, $listOptions, $parsedOptions);
+            $events->emit('core.manage.command.options', array($manageCommandOptionsEvent));
+            $listOptions = $manageCommandOptionsEvent->getOptions();
+        }
         
         $specs = new OptionCollection();
-        /** 
-         * {
-         *   "description" => {
-         *     "help": "The contact description",
-         *     "type": "string"
-         *   }
-         * ]
-         */
         foreach ($listOptions as $option => $spec) {
             if ($spec['type'] != 'boolean') {
                 if ($spec['multiple']) {
@@ -316,7 +333,6 @@ class Command
         }
 
         if ($options->help) {
-            //echo "centreonConsole centreon-configuration:Service:listMacro\n\n";
             $printer = new ConsoleOptionPrinter();
             echo $printer->render($specs);
             die;
@@ -414,5 +430,46 @@ class Command
                 }
             }
         }
+    }
+
+    /**
+     *
+     * @param array $argv
+     * @param OptionParser $parser
+     * @return $result
+     */
+    public function parseOptions(array $argv, $parser)
+    {
+        $result = array();
+        $argv = $parser->preprocessingArguments($argv);
+        $len = count($argv);
+        for ($i = 0; $i < $len; ++$i)
+        {
+            $arg = new Argument( $argv[$i] );
+            if (! $arg->isOption()) {
+                continue;
+            }
+
+            $next = null;
+            if ($i + 1 < count($argv) )  {
+                $next = new Argument($argv[$i + 1]);
+            }
+            $spec = $parser->specs->get($arg->getOptionName());
+            if (! $spec) {
+                continue;
+            }
+            if ($spec->isRequired()) {
+                if (! $parser->foundRequireValue($spec, $arg, $next) ) {
+                    continue;
+                }
+                $parser->takeOptionValue($spec, $arg, $next);
+                
+                if ($next && ! $next->anyOfOptions($parser->specs)) {
+                    $result[$spec->getId()] = $next->arg;
+                    $i++;
+                }
+            } 
+        }
+        return $result;
     }
 }

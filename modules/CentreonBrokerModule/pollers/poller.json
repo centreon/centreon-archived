@@ -13,7 +13,7 @@
                                 "fields": [
                                     {
                                         "label" : "Central IP Address",
-                                        "name": "broker_central_ip",
+                                        "name": "broker-central-ip",
                                         "type" : "text",
                                         "require": true
                                     }
