@@ -138,7 +138,7 @@
 				</field>
 			</block>
 			<block name="Additional information">
-				<field normalized_name="enable" name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
+				<field normalized_name="disable" name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>

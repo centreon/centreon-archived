@@ -279,7 +279,8 @@ class Command
                 'type' => 'boolean',
                 'functionParams' => '',
                 "toTransform" => '',
-                'required' => false)
+                'required' => false,
+                'defaultValue' => false)
             )
         );
         
@@ -309,20 +310,36 @@ class Command
         
         try {
             $parser = new OptionParser($specs);
-            $options = $parser->parse($this->arguments);
+            $optionsParsed = $parser->parse($this->arguments);
         } catch (RequireValueException $ex) {
             echo $ex->getMessage();
         }
 
-        if ($options->help) {
+        if ($optionsParsed->help) {
             //echo "centreonConsole centreon-configuration:Service:listMacro\n\n";
             $printer = new ConsoleOptionPrinter();
             echo $printer->render($specs);
             die;
         }
-        foreach( $options as $key => $spec ) {
+        foreach( $optionsParsed as $key => $spec ) {
             $argsList[$key] = $spec->value;
         }
+        
+        foreach($listOptions as $key=>$options){
+            if($options['type'] === 'boolean'){
+                if(!isset($argsList[$key])){
+                    $argsList[$key] = $options['defaultValue'];
+                }else{
+                    $argsList[$key] = !$options['defaultValue'];
+                }
+                if ($argsList[$key]) {
+                    $argsList[$key] = 1;
+                } else {
+                    $argsList[$key] = 0;
+                }
+            }
+        }
+        
     }
     
     /**

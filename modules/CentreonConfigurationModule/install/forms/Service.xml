@@ -88,7 +88,7 @@
 		  </attributes>
           <help>Specify the time period during which active checks of this service can be made.</help>
 		</field>
-		<field normalized_name="command2" name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
+		<field normalized_name="command" name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
 		  <attributes>
 			<object_type>object</object_type>
 			<defaultValuesRoute>/centreon-configuration/command/formlist?type=2</defaultValuesRoute>

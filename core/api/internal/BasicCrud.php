@@ -154,6 +154,14 @@ class BasicCrud extends AbstractCommand
         $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . $this->objectName;
     }
     
+    private function getChoices($attr){
+        $choices = "";
+        if(!empty($attr['choices'])){
+            $choices = " Choices => ".implode(' , ',array_keys($attr['choices']));
+        }
+        return $choices;
+    }
+    
     
     /** Get the fields from xml forms for update and create action
      * 
@@ -183,13 +191,16 @@ class BasicCrud extends AbstractCommand
                 foreach($rows as $row){
                     if(!in_array($row['name'], $this->paramsToExclude)){
                         if(!isset($this->options['updateAction'][$row['normalized_name']])){
+                            
+                            $attributes = json_decode($row['attributes'],true);
                             $this->options['updateAction'][$row['normalized_name']] = array(
                                 'functionParams' => 'params',
-                                'help' => $row['help'],
+                                'help' => $row['help'].$this->getChoices($attributes),
                                 'type' => 'string',
                                 'toTransform' => $row['name'],
                                 'multiple' => '',
-                                'required' => false
+                                'required' => false,
+                                'attributes' => $attributes
                             );
                         }
                     }
@@ -209,13 +220,16 @@ class BasicCrud extends AbstractCommand
                 foreach($rows as $row){
                     if(!in_array($row['name'], $this->paramsToExclude)){
                         if(!isset($this->options['createAction'][$row['normalized_name']])){
+                            
+                            $attributes = json_decode($row['attributes'],true);
                             $this->options['createAction'][$row['normalized_name']] = array(
                                 'functionParams' => 'params',
-                                'help' => $row['help'],
+                                'help' => $row['help'].$this->getChoices($attributes),
                                 'type' => 'string',
                                 'toTransform' => $row['name'],
                                 'multiple' => '',
-                                'required' => $row['mandatory']
+                                'required' => $row['mandatory'],
+                                'attributes' => $attributes
                             );
                         }
                     }
@@ -440,7 +454,7 @@ class BasicCrud extends AbstractCommand
         $repository = $this->repository;
         $paramList = $this->parseObjectParams($params);
         $paramList['object'] = $this->objectName;
-
+        
         $idOfCreatedElement = $repository::create(
                     $paramList,
                     'api',

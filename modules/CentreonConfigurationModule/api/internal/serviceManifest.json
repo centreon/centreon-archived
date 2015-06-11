@@ -153,7 +153,23 @@
             }
         },
         "createAction" : {
-            
+            "command" : {
+              "functionParams" : "params",
+              "help": "The command",
+              "type": "string",
+              "toTransform" : "command_command_id",
+              "multiple" : false,
+              "required" : false
+            },
+            "disable" : {
+              "functionParams" : "params",
+              "help": "disable",
+              "type": "boolean",
+              "toTransform" : "service_activate",
+              "multiple" : false,
+              "required" : false,
+              "defaultValue" : true
+            }
         },
         "updateAction" : {
             "host" : {
@@ -163,6 +179,15 @@
               "toTransform" : "host",
               "multiple" : false,
               "required" : true
+            },
+            "disable" : {
+              "functionParams" : "params",
+              "help": "disable",
+              "type": "boolean",
+              "toTransform" : "service_activate",
+              "multiple" : false,
+              "required" : false,
+              "defaultValue" : true
             }
         },
         "listMacroAction" : {
