@@ -52,9 +52,7 @@ class PostSave
                 $extraParameters['centreon-broker'][$key] = $value;
             }
             if ($event->getObjectName() === 'poller') {
-                if (isset($extraParameters['centreon-broker'])) {
-                    BrokerRepository::save($event->getObjectId(), $extraParameters['centreon-broker']);
-                }
+                BrokerRepository::save($event->getObjectId(), $extraParameters['centreon-broker']);
             }
         }
     }

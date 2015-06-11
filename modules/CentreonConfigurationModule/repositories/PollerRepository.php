@@ -156,7 +156,7 @@ class PollerRepository extends Repository
         $pollerTemplateList = $di->get('pollerTemplate');
 
         /* Check if poller template exists */
-        if (!isset($givenParameters['tmpl_name']) || !isset($pollerTemplateList[$givenParameters['tmpl_name']])) {
+        if (isset($givenParameters['tmpl_name']) && !isset($pollerTemplateList[$givenParameters['tmpl_name']])) {
             $sTpl = "";
             if (isset($givenParameters['tmpl_name'])) {
                 $sTpl = $givenParameters['tmpl_name'];
@@ -164,18 +164,20 @@ class PollerRepository extends Repository
             throw new Exception(_("Poller template '" . $sTpl . "' does not exist"), 255);
         }
 
-        $myLiteTemplate = unserialize($pollerTemplateList[$givenParameters['tmpl_name']]);
-        $myTemplate = $myLiteTemplate->toFullTemplate();
-        $setups = $myTemplate->getBrokerPart()->getSetup();
-        $customFields = array();
-        foreach ($setups as $setup) {
-            $customFields = $setup->getFields();
-            $value = null;
-            foreach ($customFields as $customField) {
-                if (isset($givenParameters[$customField['name']])) {
-                    $value = $givenParameters[$customField['name']];
+        if (isset($givenParameters['tmpl_name'])) {
+            $myLiteTemplate = unserialize($pollerTemplateList[$givenParameters['tmpl_name']]);
+            $myTemplate = $myLiteTemplate->toFullTemplate();
+            $setups = $myTemplate->getBrokerPart()->getSetup();
+            $customFields = array();
+            foreach ($setups as $setup) {
+                $customFields = $setup->getFields();
+                $value = null;
+                foreach ($customFields as $customField) {
+                    if (isset($givenParameters[$customField['name']])) {
+                        $value = $givenParameters[$customField['name']];
+                    }
+                    TemplateFieldValidator::validate($value, $customField);
                 }
-                TemplateFieldValidator::validate($value, $customField);
             }
         }
 

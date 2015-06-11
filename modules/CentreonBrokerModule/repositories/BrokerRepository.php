@@ -72,37 +72,41 @@ class BrokerRepository
         $stmt->execute();
         $row = $stmt->fetch();
         $stmt->closeCursor();
+
+        $sqlParams = array();
+        $sqlParams['poller_id'] = $pollerId;
+        if (isset($params['directory_config'])) {
+            $sqlParams['directory_config'] = $params['directory_config'];
+        }
+        if (isset($params['directory_modules'])) {
+            $sqlParams['directory_modules'] = $params['directory_modules'];
+        }
+        if (isset($params['directory_logs'])) {
+            $sqlParams['directory_logs'] = $params['directory_logs'];
+        }
+        if (isset($params['directory_data'])) {
+            $sqlParams['directory_data'] = $params['directory_data'];
+        }
+        if (isset($params['init_script'])) {
+            $sqlParams['init_script'] = $params['init_script'];
+        }
+        if (isset($params['directory_cbmod'])) {
+            $sqlParams['directory_cbmod'] = $params['directory_cbmod'];
+        }
         if ($row['poller'] > 0) {
             /* Update */
-            $query = "UPDATE cfg_centreonbroker_paths SET 
-                directory_config = :broker_etc_directory,
-                directory_modules = :broker_module_directory,
-                directory_logs = :broker_logs_directory,
-                directory_data = :broker_data_directory,
-                directory_cbmod = :broker_cbmod_directory,
-                init_script = :init_script
-                WHERE poller_id = :poller_id";
+            Broker::update($pollerId, $sqlParams);
         } else {
             /* Insert */
-            $query = "INSERT INTO cfg_centreonbroker_paths
-                (poller_id, directory_config, directory_modules, directory_logs, 
-                directory_data, init_script, directory_cbmod) VALUES
-                (:poller_id, :broker_etc_directory, :broker_module_directory, 
-                :broker_logs_directory, :broker_data_directory, :init_script, :broker_cbmod_directory)";
+            Broker::insert($sqlParams, true);
         }
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':poller_id', $pollerId);
-        $stmt->bindParam(':broker_etc_directory', $arr['directory_config'], \PDO::PARAM_STR);
-        $stmt->bindParam(':broker_module_directory', $arr['directory_modules'], \PDO::PARAM_STR);
-        $stmt->bindParam(':broker_logs_directory', $arr['directory_logs'], \PDO::PARAM_STR);
-        $stmt->bindParam(':broker_data_directory', $arr['directory_data'], \PDO::PARAM_STR);
-        $stmt->bindParam(':init_script', $arr['init_script'], \PDO::PARAM_STR);
-        $stmt->bindParam(':broker_cbmod_directory', $arr['directory_cbmod'], \PDO::PARAM_STR);
-        $stmt->execute();
         
         /* Save extract params */
         $listTpl = PollerTemplateManager::buildTemplatesList();
-        $tmpl = $params['tmpl_name'];
+        $tmpl = "";
+        if (isset($params['tmpl_name'])) {
+            $tmpl = $params['tmpl_name'];
+        }
         if (!isset($listTpl[$tmpl])) {
             return;
         }
