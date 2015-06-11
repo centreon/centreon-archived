@@ -38,10 +38,12 @@
                             if($(this).hasClass('selected')){
                                 $('#tableLeft').css('margin-right','0%');
                                 $('#sideRight').css('display','none');
+                                //$('.Listing').css('margin-right','0px');
                             }else {
                                 $('#sideRight').sideSlide.add(row,data);
-                                $('#tableLeft').css('margin-right','310px');
+                                $('#tableLeft').css('margin-right','292px');
                                 $('#sideRight').css('display','block');
+                                //$('.Listing').css('margin-right','15px');
 
                             }
                         }
@@ -130,10 +132,10 @@
 
         /* -- Refresh Datatable's Datas -- */
 
-        setInterval(function () {
+        /*setInterval(function () {
             $(".overlay" ).qtip( "destroy", true );
             oTable.api().ajax.reload(null, false);
-        }, 60000);
+        }, 60000);*/
 
         /* -- Show datatable's selected line  -- */
         function toggleSelectedAction() {

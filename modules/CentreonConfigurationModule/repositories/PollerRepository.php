@@ -156,7 +156,7 @@ class PollerRepository extends Repository
         $pollerTemplateList = $di->get('pollerTemplate');
 
         /* Check if poller template exists */
-        if (!isset($givenParameters['tmpl_name']) || !isset($pollerTemplateList[$givenParameters['tmpl_name']])) {
+        if (isset($givenParameters['tmpl_name']) && !isset($pollerTemplateList[$givenParameters['tmpl_name']])) {
             $sTpl = "";
             if (isset($givenParameters['tmpl_name'])) {
                 $sTpl = $givenParameters['tmpl_name'];
@@ -164,18 +164,20 @@ class PollerRepository extends Repository
             throw new Exception(_("Poller template '" . $sTpl . "' does not exist"), 255);
         }
 
-        $myLiteTemplate = unserialize($pollerTemplateList[$givenParameters['tmpl_name']]);
-        $myTemplate = $myLiteTemplate->toFullTemplate();
-        $setups = $myTemplate->getBrokerPart()->getSetup();
-        $customFields = array();
-        foreach ($setups as $setup) {
-            $customFields = $setup->getFields();
-            $value = null;
-            foreach ($customFields as $customField) {
-                if (isset($givenParameters[$customField['name']])) {
-                    $value = $givenParameters[$customField['name']];
+        if (isset($givenParameters['tmpl_name'])) {
+            $myLiteTemplate = unserialize($pollerTemplateList[$givenParameters['tmpl_name']]);
+            $myTemplate = $myLiteTemplate->toFullTemplate();
+            $setups = $myTemplate->getBrokerPart()->getSetup();
+            $customFields = array();
+            foreach ($setups as $setup) {
+                $customFields = $setup->getFields();
+                $value = null;
+                foreach ($customFields as $customField) {
+                    if (isset($givenParameters[$customField['name']])) {
+                        $value = $givenParameters[$customField['name']];
+                    }
+                    TemplateFieldValidator::validate($value, $customField);
                 }
-                TemplateFieldValidator::validate($value, $customField);
             }
         }
 
@@ -225,8 +227,7 @@ class PollerRepository extends Repository
      * @param array $givenParameters The parameters for update a poller
      */
     public static function update($params, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {
-        
+    {    
         if ($validate) {
             self::validateForm($params, "form", $route, $validateMandatory);
         }
@@ -287,5 +288,39 @@ class PollerRepository extends Repository
         }
         
         return $listTpl[$tmplName];
+    }
+
+    /**
+     *
+     * @param integer $pollerId
+     * @return type
+     * @throws Exception
+     */
+    public static function addCommandTemplateInfos($templateName = null)
+    {
+        self::getPollerTemplates();
+        $di = Di::getDefault();
+        $pollerTemplateList = $di->get('pollerTemplate');
+
+        /* Check if poller template exists */
+        if (!isset($templateName) || !isset($pollerTemplateList[$templateName])) {
+            $sTpl = "";
+            if (isset($templateName)) {
+                $sTpl = $templateName;
+            }
+            throw new Exception(_("Poller template '" . $sTpl . "' does not exist"), 255);
+        }
+
+        $myLiteTemplate = unserialize($pollerTemplateList[$templateName]);
+        $myTemplate = $myLiteTemplate->toFullTemplate();
+        $setups = $myTemplate->getBrokerPart()->getSetup();
+        $customFields = array();
+        foreach ($setups as $setup) {
+            $TempCustomFields = $setup->getFields();
+            foreach ($TempCustomFields as $TempCustomField) {
+                $customFields[] = $TempCustomField;
+            }
+        }
+        return $customFields;
     }
 }

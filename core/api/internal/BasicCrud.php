@@ -401,9 +401,16 @@ class BasicCrud extends AbstractCommand
     {
         $repository = $this->repository;
         
-        $objectSlug = $repository::getIdFromUnicity($this->parseObjectParams($objectSlug));
+       //$objectSlug = $repository::getIdFromUnicity($this->parseObjectParams($objectSlug));
         
-        //
+        $aId = $repository::getListBySlugName($objectSlug[$this->objectName]);
+        if (count($aId) > 0) {
+            $objectSlug = $aId[0]['id'];
+        } else {
+            throw new \Exception(static::OBJ_NOT_EXIST);
+        }
+        
+
         $fields = (!is_null($fields)) ? $fields : '*';
         
         $object = $repository::load($objectSlug, $fields);
@@ -419,29 +426,64 @@ class BasicCrud extends AbstractCommand
      */
     protected function parseObjectParams($params)
     {
-        
-        
-        
-        
-        // 
-        /*$finalParamList = array();
+        $finalParamList = array();
+ 
+        $aFieldAttribute = array();
+        foreach ($this->externalAttributeSet as $externalAttribute) {
+            $aFieldAttribute[] = $externalAttribute['type'];
+        }
 
-        // First we seperate the params
-        $rawParamList = explode(';', $params);
+        /*
+        var_dump($params);
+        die;
+         */
+        foreach ($params as $key => $param) { 
+            if (in_array($key, $aFieldAttribute)) { 
+                foreach ($this->externalAttributeSet as $externalAttribute) {
+                    if ($externalAttribute['link'] == 'simple' && $key === $externalAttribute['type']) {
+                        $aFields = explode(",", $externalAttribute['fields']);
+                        $iId =  $externalAttribute['objectClass']::getIdByParameter($aFields[1], $params[$externalAttribute['type']]);
 
-        // 
-        foreach ($rawParamList as $param) {
-            $openingDelimiterPos = strpos($param, '[');
-            $closingDelimiterPos = strrpos($param, ']');
-            if (($openingDelimiterPos !== false) || ($closingDelimiterPos !== false)) {
-                $paramName = substr($param, 0, $openingDelimiterPos);
-                $paramValue = substr($param, $openingDelimiterPos + 1, ($closingDelimiterPos - $openingDelimiterPos) - 1);
-                $finalParamList[$paramName] = $paramValue;
+                        if (count($iId) > 0) {
+                            $finalParamList[$key] = $iId[0];
+                        } else {
+                            $sMessage = static::OBJ_NOT_EXIST;
+                            if (!empty($externalAttribute['message'])) {
+                                $sMessage = $externalAttribute['message'];
+                            }
+                            throw new \Exception($sMessage);
+                        }
+
+                    } elseif ($externalAttribute['link'] == 'multiple' && $key === $externalAttribute['type']) {
+                        $aFields = explode(",", $externalAttribute['fields']);
+                        $aDatas = explode(',', $params[$externalAttribute['type']]);
+ 
+                        foreach ($aDatas as $sData) {
+                            $sData = trim($sData);
+                           
+                            $iId =  $externalAttribute['objectClass']::getIdByParameter($aFields[1], $sData);
+                            if (count($iId) > 0) {
+                                $finalParamList[$key] = $iId[0];
+                            } else {
+                                $sMessage = static::OBJ_NOT_EXIST;
+                                if (!empty($externalAttribute['message'])) {
+                                    $sMessage = $externalAttribute['message'];
+                                }
+                                throw new \Exception($sMessage);
+                            }
+                        }
+                    }
+                }
+                 
+            } else {
+               $finalParamList[$key] = $param; 
             }
-        }*/
-
-        // 
-        return $params;
+        }
+        /*
+        var_dump($finalParamList);
+        die;
+         */
+        return $finalParamList;
     }
     
     
@@ -474,7 +516,13 @@ class BasicCrud extends AbstractCommand
 
         $paramList = $this->parseObjectParams($params);
         $paramList['object'] = $this->objectName;
-        $paramList['object_id'] = $repository::getIdFromUnicity($this->parseObjectParams($object));
+
+        $aId = $repository::getListBySlugName($object[$this->objectName]);
+        if (count($aId) > 0) {
+            $paramList['object_id'] = $aId[0]['id'];
+        } else {
+            throw new \Exception(static::OBJ_NOT_EXIST);
+        }
 
         $repository::update(
                     $paramList,
@@ -494,7 +542,14 @@ class BasicCrud extends AbstractCommand
     public function deleteAction($object)
     {
         $repository = $this->repository;
-        $id = $repository::getIdFromUnicity($this->parseObjectParams($object));
+        $id = '';
+        //$id = $repository::getIdFromUnicity($this->parseObjectParams($object));
+        $aId = $repository::getListBySlugName($object[$this->objectName]);
+        if (count($aId) > 0) {
+            $id = $aId[0]['id'];
+        } else {
+            throw new \Exception(static::OBJ_NOT_EXIST);
+        }
         $repository::delete(array($id));
         \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully deleted", true, 'green');
     }

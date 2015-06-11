@@ -96,11 +96,16 @@ class Db
             $strDiff = $platform->getModifyDatabaseDDL($diff);
             $sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
             
+            $finalSql = "\nSET FOREIGN_KEY_CHECKS = 0;\n\n";
+
             if ($action == 'create') {
-                $finalSql = implode(";\n\n", static::keepCreateStatement($sqlToBeExecuted, $module));
+                $finalSql .= implode(";\n\n", static::keepCreateStatement($sqlToBeExecuted, $module));
             } elseif ($action == 'delete') {
-                $finalSql = implode(";\n\n", static::keepDeleteStatement($sqlToBeExecuted, $module));
+                $finalSql .= implode(";\n\n", static::keepDeleteStatement($sqlToBeExecuted, $module));
             }
+
+            $finalSql .= ";\n\nSET FOREIGN_KEY_CHECKS = 1;\n\n";
+
             \PropelSQLParser::executeString($finalSql, $db);
         }
         

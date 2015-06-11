@@ -9,6 +9,16 @@
         "command line" : "command_line",
         "type" : "command_type"
     },
+    "externalAttributeSet" : [
+        {
+            "type": "connector_id",
+            "fields": "id,slug",
+            "message": "The object connector not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Connector",
+            "group": false
+        }
+    ],
     "options" : {
         "showAction" : {
             "command" : {

@@ -13,6 +13,16 @@
         "command line" : "connector_line",
         "activate" : "enabled"
     },
+    "externalAttributeSet" : [
+        {
+            "type": "connector_command",
+            "fields": "command_id,command_slug",
+            "message": "The object command not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Command",
+            "group": false
+        }
+    ],
     "options" : {
         "showAction" : {
             "connector" : {
