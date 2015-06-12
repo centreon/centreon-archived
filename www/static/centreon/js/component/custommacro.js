@@ -1,5 +1,7 @@
 function initCustomMacro() {
-    $(".clonable").centreonClone();
+    $(".clonable").centreonClone({
+        nbElementForScroll: 3
+    });
     $( ".clonable" ).sortable({
         handle: ".clonehandle",
         containment: "parent",
