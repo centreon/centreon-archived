@@ -5,6 +5,7 @@
             <i data-action="add" class="icon-plus"></i>Add custom macro
         </a>
     </div>
+    <hr>
 </div>
 
         
@@ -14,7 +15,6 @@
             <p class="muted">Nothing here, use the "Add" button</p>
         </li>-->
         <li class="clone_template" style="display:none;">
-            <hr>
             <div class="row clone-cell">
 
                 <div class="col-md-1">
@@ -49,19 +49,19 @@
 
                 <div class="clonehandle col-md-1"><i class="icon-move"></i></div>
 
-                <div class="form-group col-md-4">
+                <div class="col-md-4">
                     <label class="label-controller floatLabel">Name</label>
                     <input class="form-control" name="macro_name[{$i}]" type="text" value="{$macro['macro_name']}"/>
                 </div>
 
-                <div class="form-group col-md-4">
+                <div class="col-md-4">
                     <label class="label-controller floatLabel">Value</label>
                     <input class="hidden-value form-control" name="macro_value[{$i}]" type="text" value="{$macro['macro_value']}"/>
                 </div>
 
                 <div class="remove-trigger col-md-1" style="cursor:pointer;"><i class="icon-delete"></i></div>
 
-                <div class="form-group col-md-2">
+                <div class="col-md-2">
 
                     <input class="hidden-value-trigger" type="checkbox" name="macro_hidden[{$i}]"
                     {if (isset($macro['macro_hidden']) and ($macro['macro_hidden'] > 0))}
@@ -76,6 +76,12 @@
         </li>
         {assign var=i value=$i+1}
         {/foreach}
+
     </ul>
 </div>
 <input id="cloned_element_index" name="cloned_element_index" type="hidden" value="0" />
+
+<script>
+           //console.log({$i});
+
+ </script>

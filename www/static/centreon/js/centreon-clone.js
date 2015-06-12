@@ -4,9 +4,11 @@
 
     this.settings = settings;
     this.$elem = $elem;
+    this.maxHeight = false;
 
     /* Count number of already in page */
     this.pos = this.$elem.find('.cloned_element').length;
+
     if (this.pos == 0) {
       this.pos = 1;
     }
@@ -22,6 +24,7 @@
     /* Add event */
     this.$addBtn.on('click', function() {
       self.addElement();
+      self.resizeHeight();
     });
     this.$elem.on('click', '.remove-trigger', function() {
       var $el = $(this).closest('li.cloned_element');
@@ -31,6 +34,8 @@
       var $el = $(this).closest('li.cloned_element');
       self.changeElement($el);
     });
+
+    this.resizeHeight();
   }
 
   CentreonClone.prototype = {
@@ -39,7 +44,7 @@
           $newEl = this.$template.clone().css('display', 'block')
                      .removeClass('clone_template')
                      .addClass('cloned_element')
-                     .appendTo(this.$elem);
+                     .prependTo(this.$elem);
 
       if (typeof values !== 'undefined') {
         $.each(values, function(key, value) {
@@ -51,6 +56,7 @@
         $(el).attr('name', $(el).attr('name').replace('#index#', self.pos));
       });
       self.pos += 1;
+
 
       $.each(this.settings.events.add, function(idx, fct) {
         fct($newEl);
@@ -67,6 +73,28 @@
       $.each(this.settings.events.change, function(idx, fct) {
         fct($el);
       });
+    },
+    resizeHeight: function() {
+
+        var nbElem = this.settings.nbElementForScroll;
+        console.log('max '+nbElem+' existant '+this.pos);
+
+        this.height = this.$elem.find('.cloned_element').height();
+        console.log(this.height);
+
+      if (this.pos > 0 && this.pos > nbElem) {
+
+          var countHeight = nbElem * this.height+'px';
+          console.log(countHeight);
+
+          console.log(this.$elem.height());
+          $(this.$elem).slimScroll({
+              height: countHeight,
+              railOpacity: 0.9
+          });
+
+       this.maxHeight = true;
+      }
     }
   };
 
@@ -93,6 +121,7 @@
 
   $.fn.centreonClone.defaults = {
     name: null,
+    nbElementForScroll: 5,
     events: {
       add: [],
       remove: [],
