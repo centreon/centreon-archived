@@ -125,9 +125,12 @@ class CentreonSlugify
         } else if($iNb ==1 && !empty($iIobjectId))  {
             
             $sPrimary = $oModel::getPrimaryKey();
+            
             if (!empty($sPrimary)) {
-                if (isset($aObject[$sPrimary]) && $aObject[$sPrimary] == $iIobjectId)
+                if (isset($aObject[0][$sPrimary]) && $aObject[0][$sPrimary] == $iIobjectId) {
                     $sSlugNew = $sValue;
+                }
+
             } else {
                 if (is_int($iLast)) {
                     $iPos = strrpos($sValue, static::$sGlue);

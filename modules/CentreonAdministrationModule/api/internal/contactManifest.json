@@ -8,6 +8,16 @@
         "description" : "description",
         "timezone" : "timezone_id"
     },
+    "externalAttributeSet" : [
+        {
+            "type": "timezone_id",
+            "fields": "timezone_id,slug",
+            "message": "The object timezone not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonAdministration\\Models\\Timezone",
+            "group": false
+        }
+    ],
     "options" : {
         "showAction" : {
             "contact" : {

@@ -97,14 +97,14 @@
     },
     "options" : {
         "createAction" : {
-            "enable" : {
+            "disable" : {
               "functionParams" : "params",
-              "help": "enable",
-              "type": "number",
+              "help": "disable",
+              "type": "boolean",
               "toTransform" : "host_activate",
               "multiple" : false,
               "required" : false,
-              "defaultValue" : 1
+              "defaultValue" : true
             }
         },
         "showAction" : {
@@ -181,6 +181,15 @@
               "toTransform" : "host",
               "multiple" : false,
               "required" : true
+            },
+            "disable" : {
+              "functionParams" : "params",
+              "help": "disable",
+              "type": "boolean",
+              "toTransform" : "host_activate",
+              "multiple" : false,
+              "required" : false,
+              "defaultValue" : true
             }
         },
         "addMacroAction" : {

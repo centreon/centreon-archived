@@ -15,6 +15,24 @@
         "friday" : "tp_friday",
         "saturday" : "tp_saturday"
     },
+    "externalAttributeSet" : [
+        {
+            "type": "tp_include",
+            "fields": "tp_id,tp_slug",
+            "message": "The object timeperiod not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Timeperiod",
+            "group": false
+        },
+        {
+            "type": "tp_exclude",
+            "fields": "tp_id,tp_slug",
+            "message": "The object timeperiod not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Timeperiod",
+            "group": false
+        }
+    ],
     "options" : {
         "showAction" : {
             "timeperiod" : {

@@ -48,38 +48,23 @@ class AuthorizedValues implements ValidatorInterface
     }
     /**
      * 
+     * @param type $value
+     * @param type $params
+     * @return boolean
      */
     public function validate($value, $params = array())
     {
-        $result = array();
-        if (isset($params['method'])) {
-            $methods = explode("/", $params['method']);
+        $aLegalChars = explode(',', $params['values']);
 
-            $repositorie = $methods[0]."\\Repository\\".$methods[1];
-              
-            $aDatas = $repositorie::$methods[2]($value);
-            
-            if (count($aDatas) == 0) {
-                 $result = array(
-                    'success' => false,
-                    'error' => _('"'.$value. '" is not authorized value '.$value.'.')
-                );
-            } else {
-                $result = array('success' => true);
-            }
- 
+        if (!in_array($value, $aLegalChars)) {
+             $result = array(
+                'success' => false,
+                'error' => _('"'.$value. '" is not authorized value '.$value.'. The authorized values is '.$params['values'].'')
+            );
         } else {
-            $aLegalChars = explode(',', $params['values']);
-
-            if (!in_array($value, $aLegalChars)) {
-                 $result = array(
-                    'success' => false,
-                    'error' => _('"'.$value. '" is not authorized value '.$value.'. The authorized values is '.$params['values'].'')
-                );
-            } else {
-                $result = array('success' => true);
-            }
+            $result = array('success' => true);
         }
+
         return $result;
     }
 }

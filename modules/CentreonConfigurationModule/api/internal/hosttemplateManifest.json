@@ -75,7 +75,7 @@
             }
         },
         "deleteAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -85,7 +85,7 @@
             }
         },
         "listTagAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -95,7 +95,7 @@
             }
         },
         "addTagAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -113,7 +113,7 @@
             }
         },
         "removeTagAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -131,7 +131,7 @@
             }
         },
         "updateAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -141,7 +141,7 @@
             }
         },
         "addMacroAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -175,7 +175,7 @@
             }
         },
         "listMacroAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -185,7 +185,7 @@
             }
         },
         "removeMacroAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -203,7 +203,7 @@
             }
         },
         "updateMacroAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
