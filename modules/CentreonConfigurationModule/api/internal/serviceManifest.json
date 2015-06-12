@@ -220,6 +220,14 @@
               "multiple" : false,
               "required" : true
             },
+            "service" : {
+              "functionParams" : "object",
+              "help": "The service",
+              "type": "string",
+              "toTransform" : "service",
+              "multiple" : false,
+              "required" : true
+            },
             "disable" : {
               "functionParams" : "params",
               "help": "disable",
