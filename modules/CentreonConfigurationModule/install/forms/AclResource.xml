@@ -21,7 +21,7 @@
                 <field name="aclresource_host_tags" label="Linked host tags" default_value="" advanced="0" type="select" parent_field="centreon-configuration__aclresource_all_hosts" parent_value="0" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
-                        <defaultValuesRoute>/centreon-configuration/aclresource/host/tag/formlist</defaultValuesRoute>
+                        <defaultValuesRoute>/centreon-configuration/host/tag/formlist</defaultValuesRoute>
                         <listValuesRoute>/centreon-configuration/aclresource/[i:id]/host/tag</listValuesRoute>
                         <multiple>true</multiple>
                     </attributes>
@@ -39,7 +39,7 @@
                 <field name="aclresource_service_tags" label="Linked service tags" default_value="" advanced="0" type="select" parent_field="centreon-configuration__aclresource_all_hosts" parent_value="0" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
-                        <defaultValuesRoute>/centreon-configuration/aclresource/service/tag/formlist</defaultValuesRoute>
+                        <defaultValuesRoute>/centreon-configuration/service/tag/formlist</defaultValuesRoute>
                         <listValuesRoute>/centreon-configuration/aclresource/[i:id]/service/tag</listValuesRoute>
                         <multiple>true</multiple>
                     </attributes>

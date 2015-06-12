@@ -599,9 +599,9 @@ class HostController extends FormController
      * Get host tag list for acl resource
      *
      * @method get
-     * @route /aclresource/host/tag/formlist
+     * @route /host/tag/formlist
      */
-     public function hostTagsForAclResourceAction()
+     public function hostTagsAction()
     {
         $di = Di::getDefault();
         $router = $di->get('router');
