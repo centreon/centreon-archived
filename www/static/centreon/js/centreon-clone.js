@@ -77,17 +77,13 @@
     resizeHeight: function() {
 
         var nbElem = this.settings.nbElementForScroll;
-        console.log('max '+nbElem+' existant '+this.pos);
 
         this.height = this.$elem.find('.cloned_element').height();
-        console.log(this.height);
 
       if (this.pos > 0 && this.pos > nbElem) {
 
           var countHeight = nbElem * this.height+'px';
-          console.log(countHeight);
 
-          console.log(this.$elem.height());
           $(this.$elem).slimScroll({
               height: countHeight,
               railOpacity: 0.9
