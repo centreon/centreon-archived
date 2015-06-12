@@ -72,6 +72,22 @@ class Migrate extends PropelMigration
      */
     public function up()
     {
+        $this->runPhing('migration-up');
+    }
+    
+    /**
+     * 
+     */
+    public function migrate()
+    {
         $this->runPhing('migrate');
+    }
+    
+    /**
+     * 
+     */
+    public function status()
+    {
+        $this->runPhing('status');
     }
 }

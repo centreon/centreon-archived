@@ -80,6 +80,26 @@ class MigrateCommand extends AbstractCommand
                 "multiple" => false,
                 "required" => false
             )
+        ),
+        "statusAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        ),
+        "migrateAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
         )
     );
     
@@ -111,9 +131,11 @@ class MigrateCommand extends AbstractCommand
      * 
      * @param string $module
      */
-    public function status($module = 'centreon')
+    public function statusAction($module = 'centreon')
     {
         InputOutput::display(_("Lists the migrations yet to be executed"));
+        $migrationManager = new Migrate($module);
+        $migrationManager->status();
     }
     
     /**
@@ -125,5 +147,16 @@ class MigrateCommand extends AbstractCommand
         InputOutput::display(_("Executes the next migrations up"));
         $migrationManager = new Migrate($module);
         $migrationManager->up();
+    }
+    
+    /**
+     * 
+     * @param string $module
+     */
+    public function migrateAction($module = 'centreon')
+    {
+        InputOutput::display(_("Executes all migrations"));
+        $migrationManager = new Migrate($module);
+        $migrationManager->migrate();
     }
 }
