@@ -129,6 +129,12 @@
                   "short_name": "conf_notifications_methods",
                   "route": "/centreon-configuration/notification-method",
                   "order": 1
+                },
+                {
+                  "name": "Notification rules",
+                  "short_name": "conf_notifications_rules",
+                  "route": "/centreon-configuration/notification-rule",
+                  "order": 2
                 }
               ]
             }

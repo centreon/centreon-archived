@@ -230,4 +230,19 @@ class ContactController extends FormController
           
         $this->router->response()->json(array('success' => true));
     }
+
+    /**
+     * Get contact tag list 
+     *
+     * @method get
+     * @route /contact/tag/formlist
+     */
+    public function contactTagsAction()
+    {
+        $router = Di::getDefault()->get('router');
+
+        $list = TagsRepository::getGlobalList('contact');
+
+        $router->response()->json($list);
+    }
 }

@@ -7,7 +7,7 @@
     <column name="description" phpName="Description" type="VARCHAR" size="255" required="true"/>
     <column name="method_id" phpName="MethodId" type="INTEGER" required="true"/>
     <column name="owner_id" phpName="OwnerId" sqlType="int(10) unsigned" type="INTEGER" />
-    <column name="timeperiod_id" phpName="TimeperiodId" type="INTEGER" required="true"/>
+    <column name="timeperiod_id" phpName="TimeperiodId" type="INTEGER"/>
     <column name="enabled" phpName="Enabled" type="INTEGER" size="1" defaultValue="1"/>
     <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
     <unique name="notification_rule_name">

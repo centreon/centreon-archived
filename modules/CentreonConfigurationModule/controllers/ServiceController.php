@@ -471,12 +471,12 @@ class ServiceController extends FormController
     }
 
      /**
-     * Get service tag list for acl resource
+     * Get service tag list
      *
      * @method get
-     * @route /aclresource/service/tag/formlist
+     * @route /service/tag/formlist
      */
-     public function serviceTagsForAclResourceAction()
+     public function serviceTagsAction()
     {
         $di = Di::getDefault();
         $router = $di->get('router');
