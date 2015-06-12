@@ -6,11 +6,11 @@
         <redirect_route>/centreon-administration/aclresource</redirect_route>
         <section name="Business activities">
             <block name="General information">
-                <field name="aclresource_all_bas" label="All business activities" default_value="0" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
+                <field name="aclresource_all_bas" label="All business activities" normalized_name="all-bas" default_value="0" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
                 </field>
             </block>
             <block name="Relations">
-                <field name="aclresource_business_activities" label="Linked business activities" default_value="" advanced="0" type="select" parent_field="centreon-bam__aclresource_all_bas" parent_value="0" mandatory="0">
+                <field name="aclresource_business_activities" label="Linked business activities" normalized_name="business-activities" default_value="" advanced="0" type="select" parent_field="centreon-bam__aclresource_all_bas" parent_value="0" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-bam/businessactivity/formlist</defaultValuesRoute>
@@ -18,7 +18,7 @@
                         <multiple>true</multiple>
                     </attributes>
                 </field>
-                <field name="aclresource_business_activity_tags" label="Linked business activity tags" default_value="" advanced="0" type="select" parent_field="centreon-bam__aclresource_all_bas" parent_value="0" mandatory="0">
+                <field name="aclresource_business_activity_tags" label="Linked business activity tags" normalized_name="business-activity-tags" default_value="" advanced="0" type="select" parent_field="centreon-bam__aclresource_all_bas" parent_value="0" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-bam/aclresource/businessactivity/tag/formlist</defaultValuesRoute>
