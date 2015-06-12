@@ -9,6 +9,22 @@
             "group": false
         },
         {
+            "type": "service_hosts",
+            "fields": "host_id,host_slug",
+            "message": "The object host not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Host",
+            "group": false
+        },
+        {
+            "type": "domain_id",
+            "fields": "domain_id,slug",
+            "message": "The object domain not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonAdministration\\Models\\Domain",
+            "group": false
+        },
+        {
             "type": "environment_id",
             "fields": "environment_id,slug",
             "message": "The object environment not in database",
@@ -45,9 +61,18 @@
             "fields": "service_id,service_slug",
             "message": "The object serviceTemplate not in database",
             "link": "multiple",
-            "objectClass": "\\CentreonConfiguration\\Models\\Servicetemplate ",
+            "objectClass": "\\CentreonConfiguration\\Models\\Servicetemplate",
+            "group": false
+        },
+        {
+            "type": "service_traps",
+            "fields": "traps_id,traps_slug",
+            "message": "The object traps not in database",
+            "link": "multiple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Trap",
             "group": false
         }
+        
     ],
     "paramsToExclude" : [
       "service_custommacros",

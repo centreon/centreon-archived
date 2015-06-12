@@ -9,6 +9,16 @@
         "description" : "description",
         "type" : "ba_type_id"
     },
+    "externalAttributeSet" : [
+        {
+            "type": "id_reporting_period",
+            "fields": "tp_id,tp_slug",
+            "message": "The object timeperiod not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Timeperiod",
+            "group": false
+        }
+    ],
     "options" : {
         "showAction" : {
             "bam" : {

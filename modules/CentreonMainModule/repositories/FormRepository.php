@@ -169,8 +169,7 @@ abstract class FormRepository extends ListRepository
                 $sSlug = $oSlugify->slug($givenParameters[$sField]);
                 $givenParameters[$class::getSlugField()] = $sSlug;
             }
-                    
-            //var_dump($givenParameters);die;
+
             foreach ($givenParameters as $key => $value) {
                 if (in_array($key, $columns)) {
                     if (!is_array($value)) {
@@ -393,7 +392,7 @@ abstract class FormRepository extends ListRepository
         $idField = $class::getPrimaryKey();
         $slugField = $class::getSlugField();
         $filters = array(
-            $slugField => '%'.$searchStr.'%'
+            $slugField => $searchStr
         );
 
         $columns = $class::getColumns();
