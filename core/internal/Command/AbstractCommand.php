@@ -127,7 +127,7 @@ abstract class AbstractCommand
             } else {
                 throw new \Exception('The parameter "' . $param->getName(). '" is missing');
             }
-        }
+        }        
         $methodReflection->invokeArgs($this, $finalArgsOption);
     }
 }

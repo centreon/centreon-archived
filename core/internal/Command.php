@@ -275,17 +275,7 @@ class Command
         if(isset($aliveObject->options[$action])){
             $listOptions = $aliveObject->options[$action];
         }
-        $listOptions = array_merge($listOptions,
-            array(
-            'h|help' => array(
-                'help' => 'help',
-                'type' => 'boolean',
-                'functionParams' => '',
-                "toTransform" => '',
-                'required' => false,
-                'defaultValue' => false)
-            )
-        );
+        
 
         $specs = new OptionCollection();
         foreach ($listOptions as $option => $spec) {
@@ -303,7 +293,7 @@ class Command
         
         $parser = new OptionParser($specs);
         $parsedOptions = self::parseOptions($this->arguments, $parser);
-
+        
         if (isset($aliveObject->objectName)) {
             $events = Di::getDefault()->get('events');
             $manageCommandOptionsEvent = new ManageCommandOptionsEvent($aliveObject->objectName, $action, $listOptions, $parsedOptions);
@@ -311,6 +301,18 @@ class Command
             $listOptions = $manageCommandOptionsEvent->getOptions();
             $aliveObject->options[$action] = $listOptions;
         }
+        
+        $listOptions = array_merge($listOptions,
+            array(
+            'h|help' => array(
+                'help' => 'help',
+                'type' => 'boolean',
+                'functionParams' => '',
+                "toTransform" => '',
+                'required' => false,
+                'defaultValue' => false)
+            )
+        );
         
         $specs = new OptionCollection();
         foreach ($listOptions as $option => $spec) {
@@ -359,6 +361,7 @@ class Command
                 }
             }
         }
+        
         
     }
     
