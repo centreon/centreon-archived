@@ -13,7 +13,7 @@
                                 "fields": [
                                     {
                                         "label" : "Central IP Address",
-                                        "name": "broker_central_ip",
+                                        "name": "broker-central-ip",
                                         "type" : "text",
                                         "require": true
                                     }
@@ -33,7 +33,7 @@
                                             {
                                                 "type" :"tcp",
                                                 "name" : "central-output",
-                                                "host": "%broker_central_ip%",
+                                                "host": "%broker-central-ip%",
                                                 "port" : "5668",
                                                 "filters": [
                                                   {

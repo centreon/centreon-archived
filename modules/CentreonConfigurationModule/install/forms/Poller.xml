@@ -32,12 +32,17 @@
             </block>
             <block name="Additional information">
                 <field name="enable" label="Status" normalized_name="enable" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
-                  <attributes>
-                    <choices>
-                      <Enabled>1</Enabled>
-                      <Disabled>0</Disabled>
-                    </choices>
-                  </attributes>
+                    <attributes>
+                      <choices>
+                        <Enabled>1</Enabled>
+                        <Disabled>0</Disabled>
+                      </choices>
+                    </attributes>
+                    <validators>
+                        <validator rules="remote" serverside="core.AuthorizedValues">
+                            <argument name="values">0,1</argument>
+                        </validator>
+                    </validators>
                 </field>
             </block>
 	</section>

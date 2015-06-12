@@ -7,6 +7,7 @@
         <column name="mimetype" phpName="Mimetype" type="VARCHAR" size="255" required="true"/>
         <column name="filetype" phpName="Filetype" type="BOOLEAN" size="1" required="true" defaultValue="true"/>
         <column name="binary_content" phpName="BinaryContent" type="BLOB" required="true"/>
+        <column name="slug" phpName="Slug" type="VARCHAR" size="254" required="true"/>
         <unique name="binaries_idx01">
             <unique-column name="checksum"/>
             <unique-column name="mimetype"/>

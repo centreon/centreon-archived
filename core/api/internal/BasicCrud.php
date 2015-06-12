@@ -49,6 +49,9 @@ class BasicCrud extends AbstractCommand
     
     public $options = array();
     
+    protected $paramsToExclude = array();
+
+
     /**
      *
      * @var type 
@@ -151,6 +154,14 @@ class BasicCrud extends AbstractCommand
         $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . $this->objectName;
     }
     
+    private function getChoices($attr){
+        $choices = "";
+        if(!empty($attr['choices'])){
+            $choices = " Choices => ".implode(' , ',array_keys($attr['choices']));
+        }
+        return $choices;
+    }
+    
     
     /** Get the fields from xml forms for update and create action
      * 
@@ -172,57 +183,91 @@ class BasicCrud extends AbstractCommand
                         inner join cfg_forms_blocks fb on fb.section_id = fs.section_id
                         inner join cfg_forms_blocks_fields_relations fbfr on fbfr.block_id = fb.block_id
                         inner join cfg_forms_fields ff on ff.field_id = fbfr.field_id
-                        where f.route = :route';
+                        where f.route = :route and ff.normalized_name != "" and ff.normalized_name is not null';
                 $stmt = $db->prepare($sql);
                 $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
                 $stmt->execute();
                 $rows = $stmt->fetchAll();
                 foreach($rows as $row){
-                    if(!isset($this->options['updateAction'][$row['normalized_name']])){
-                        $this->options['updateAction'][$row['normalized_name']] = array(
-                            'functionParams' => 'params',
-                            'help' => $row['help'],
-                            'type' => 'string',
-                            'toTransform' => $row['name'],
-                            'multiple' => '',
-                            'required' => false
-                        );
+                    if(!in_array($row['name'], $this->paramsToExclude)){
+                        if(!isset($this->options['updateAction'][$row['normalized_name']])){
+                            
+                            $attributes = json_decode($row['attributes'],true);
+                            $this->options['updateAction'][$row['normalized_name']] = array(
+                                'functionParams' => 'params',
+                                'help' => $row['help'].$this->getChoices($attributes),
+                                'type' => 'string',
+                                'toTransform' => $row['name'],
+                                'multiple' => '',
+                                'required' => false,
+                                'attributes' => $attributes
+                            );
+                        }
                     }
                 }
                 break;
             case 'createAction' : 
-                $parentsArray = array();
                 $route = '/'.$module.'/'.$this->objectName.'/add';
                 $sql = 'select ff.* from cfg_forms_wizards fw
                         inner join cfg_forms_steps fs on fs.wizard_id = fw.wizard_id
                         inner join cfg_forms_steps_fields_relations fsfr on fsfr.step_id = fs.step_id
                         inner join cfg_forms_fields ff on ff.field_id = fsfr.field_id
-                        where fw.route = :route';
+                        where fw.route = :route and ff.normalized_name != "" and ff.normalized_name is not null';
                 $stmt = $db->prepare($sql);
                 $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
                 $stmt->execute();
                 $rows = $stmt->fetchAll();
                 foreach($rows as $row){
-                    if(!isset($this->options['createAction'][$row['normalized_name']])){
-                        $this->options['createAction'][$row['normalized_name']] = array(
+                    if(!in_array($row['name'], $this->paramsToExclude)){
+                        if(!isset($this->options['createAction'][$row['normalized_name']])){
+                            
+                            $attributes = json_decode($row['attributes'],true);
+                            $this->options['createAction'][$row['normalized_name']] = array(
+                                'functionParams' => 'params',
+                                'help' => $row['help'].$this->getChoices($attributes),
+                                'type' => 'string',
+                                'toTransform' => $row['name'],
+                                'multiple' => '',
+                                'required' => $row['mandatory'],
+                                'attributes' => $attributes
+                            );
+                        }
+                    }
+                }
+                
+                /*** add default values from global form ***/
+                $route = '/'.$module.'/'.$this->objectName.'/update';
+                $sql = 'select ff.* from cfg_forms f
+                        inner join cfg_forms_sections fs on fs.form_id = f.form_id
+                        inner join cfg_forms_blocks fb on fb.section_id = fs.section_id
+                        inner join cfg_forms_blocks_fields_relations fbfr on fbfr.block_id = fb.block_id
+                        inner join cfg_forms_fields ff on ff.field_id = fbfr.field_id
+                        where f.route = :route and ff.normalized_name != "" and ff.normalized_name is not null and ff.default_value != "" and ff.default_value is not null';
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
+                $stmt->execute();
+                $rowsDefault = $stmt->fetchAll();
+                
+                foreach($rowsDefault as $rowDefault){
+                    if(!isset($this->options['createAction'][$rowDefault['normalized_name']])){
+                        $this->options['createAction'][$rowDefault['normalized_name']] = array(
                             'functionParams' => 'params',
-                            'help' => $row['help'],
+                            'help' => '',
                             'type' => 'string',
-                            'toTransform' => $row['name'],
+                            'toTransform' => $rowDefault['name'],
                             'multiple' => '',
-                            'required' => $row['mandatory']
+                            'required' => false,
+                            'defaultValue' => $rowDefault['default_value']
                         );
                     }
                 }
+                
                 break;
             default : 
                 break;
         }
     }
-    
-    
-    
-    
+
     /**
      * 
      */
@@ -356,9 +401,16 @@ class BasicCrud extends AbstractCommand
     {
         $repository = $this->repository;
         
-        $objectSlug = $repository::getIdFromUnicity($this->parseObjectParams($objectSlug));
+       //$objectSlug = $repository::getIdFromUnicity($this->parseObjectParams($objectSlug));
         
-        //
+        $aId = $repository::getListBySlugName($objectSlug[$this->objectName]);
+        if (count($aId) > 0) {
+            $objectSlug = $aId[0]['id'];
+        } else {
+            throw new \Exception(static::OBJ_NOT_EXIST);
+        }
+        
+
         $fields = (!is_null($fields)) ? $fields : '*';
         
         $object = $repository::load($objectSlug, $fields);
@@ -374,29 +426,64 @@ class BasicCrud extends AbstractCommand
      */
     protected function parseObjectParams($params)
     {
-        
-        
-        
-        
-        // 
-        /*$finalParamList = array();
+        $finalParamList = array();
+ 
+        $aFieldAttribute = array();
+        foreach ($this->externalAttributeSet as $externalAttribute) {
+            $aFieldAttribute[] = $externalAttribute['type'];
+        }
 
-        // First we seperate the params
-        $rawParamList = explode(';', $params);
+        /*
+        var_dump($params);
+        die;
+         */
+        foreach ($params as $key => $param) { 
+            if (in_array($key, $aFieldAttribute)) { 
+                foreach ($this->externalAttributeSet as $externalAttribute) {
+                    if ($externalAttribute['link'] == 'simple' && $key === $externalAttribute['type']) {
+                        $aFields = explode(",", $externalAttribute['fields']);
+                        $iId =  $externalAttribute['objectClass']::getIdByParameter($aFields[1], $params[$externalAttribute['type']]);
 
-        // 
-        foreach ($rawParamList as $param) {
-            $openingDelimiterPos = strpos($param, '[');
-            $closingDelimiterPos = strrpos($param, ']');
-            if (($openingDelimiterPos !== false) || ($closingDelimiterPos !== false)) {
-                $paramName = substr($param, 0, $openingDelimiterPos);
-                $paramValue = substr($param, $openingDelimiterPos + 1, ($closingDelimiterPos - $openingDelimiterPos) - 1);
-                $finalParamList[$paramName] = $paramValue;
+                        if (count($iId) > 0) {
+                            $finalParamList[$key] = $iId[0];
+                        } else {
+                            $sMessage = static::OBJ_NOT_EXIST;
+                            if (!empty($externalAttribute['message'])) {
+                                $sMessage = $externalAttribute['message'];
+                            }
+                            throw new \Exception($sMessage);
+                        }
+
+                    } elseif ($externalAttribute['link'] == 'multiple' && $key === $externalAttribute['type']) {
+                        $aFields = explode(",", $externalAttribute['fields']);
+                        $aDatas = explode(',', $params[$externalAttribute['type']]);
+ 
+                        foreach ($aDatas as $sData) {
+                            $sData = trim($sData);
+                           
+                            $iId =  $externalAttribute['objectClass']::getIdByParameter($aFields[1], $sData);
+                            if (count($iId) > 0) {
+                                $finalParamList[$key] = $iId[0];
+                            } else {
+                                $sMessage = static::OBJ_NOT_EXIST;
+                                if (!empty($externalAttribute['message'])) {
+                                    $sMessage = $externalAttribute['message'];
+                                }
+                                throw new \Exception($sMessage);
+                            }
+                        }
+                    }
+                }
+                 
+            } else {
+               $finalParamList[$key] = $param; 
             }
-        }*/
-
-        // 
-        return $params;
+        }
+        /*
+        var_dump($finalParamList);
+        die;
+         */
+        return $finalParamList;
     }
     
     
@@ -409,7 +496,7 @@ class BasicCrud extends AbstractCommand
         $repository = $this->repository;
         $paramList = $this->parseObjectParams($params);
         $paramList['object'] = $this->objectName;
-
+        
         $idOfCreatedElement = $repository::create(
                     $paramList,
                     'api',
@@ -429,7 +516,13 @@ class BasicCrud extends AbstractCommand
 
         $paramList = $this->parseObjectParams($params);
         $paramList['object'] = $this->objectName;
-        $paramList['object_id'] = $repository::getIdFromUnicity($this->parseObjectParams($object));
+
+        $aId = $repository::getListBySlugName($object[$this->objectName]);
+        if (count($aId) > 0) {
+            $paramList['object_id'] = $aId[0]['id'];
+        } else {
+            throw new \Exception(static::OBJ_NOT_EXIST);
+        }
 
         $repository::update(
                     $paramList,
@@ -449,7 +542,14 @@ class BasicCrud extends AbstractCommand
     public function deleteAction($object)
     {
         $repository = $this->repository;
-        $id = $repository::getIdFromUnicity($this->parseObjectParams($object));
+        $id = '';
+        //$id = $repository::getIdFromUnicity($this->parseObjectParams($object));
+        $aId = $repository::getListBySlugName($object[$this->objectName]);
+        if (count($aId) > 0) {
+            $id = $aId[0]['id'];
+        } else {
+            throw new \Exception(static::OBJ_NOT_EXIST);
+        }
         $repository::delete(array($id));
         \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully deleted", true, 'green');
     }

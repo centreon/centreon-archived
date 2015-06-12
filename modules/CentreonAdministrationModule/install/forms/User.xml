@@ -28,15 +28,18 @@
                 </field>
             </block>
             <block name="Authentication">
-                <field name="password" label="Password" default_value="" advanced="0" type="password" parent_field="" mandatory="0"></field>
+                <field name="password" label="Password" default_value="" advanced="0" type="password" parent_field="" mandatory="0">
+                    <validators>
+                        <validator rules="size" serverside="core.String">
+                            <argument name="minlength">4</argument>
+                            <argument name="maxlength">255</argument> 
+                        </validator>
+                    </validators>
+                </field>
                 <field name="password_confirm" label="Confirm password" default_value="" advanced="0" type="password" parent_field="" mandatory="0">
                     <validators>
                         <validator rules="equalTo" serverside="core.EqualTo">
                             <argument name="equalfield">password</argument>
-                        </validator>
-                        <validator rules="size" serverside="core.String">
-                            <argument name="minlength">4</argument>
-                            <argument name="maxlength">255</argument> 
                         </validator>
                     </validators>
                 </field>
@@ -48,6 +51,11 @@
                             <LDAP>ldap</LDAP>
                         </choices>
                     </attributes>
+                    <validators>
+                        <validator rules="remote" serverside="core.AuthorizedValues">
+                            <argument name="values">local,ldap</argument>
+                        </validator>
+                    </validators>
                 </field>
             </block>
             <block name="ACL">

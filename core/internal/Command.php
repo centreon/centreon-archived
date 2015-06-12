@@ -39,9 +39,12 @@ namespace Centreon\Internal;
 use Centreon\Internal\Di;
 use Centreon\Internal\Utils\CommandLine\Colorize;
 use Centreon\Internal\Module\Informations;
+use GetOptionKit\Argument;
 use GetOptionKit\OptionCollection;
 use GetOptionKit\OptionParser;
+use GetOptionKit\OptionResult;
 use GetOptionKit\OptionPrinter\ConsoleOptionPrinter;
+use Centreon\Events\ManageCommandOptions as ManageCommandOptionsEvent;
 
 
 class Command
@@ -220,7 +223,6 @@ class Command
         
         $actionArgs = array();
         $this->getArgs($actionArgs, $aliveObject, $action);
-        
         // Call the action
         $aliveObject->named($action, $actionArgs);
         
@@ -280,21 +282,37 @@ class Command
                 'type' => 'boolean',
                 'functionParams' => '',
                 "toTransform" => '',
-                'required' => false)
+                'required' => false,
+                'defaultValue' => false)
             )
         );
+
+        $specs = new OptionCollection();
+        foreach ($listOptions as $option => $spec) {
+            if ($spec['type'] != 'boolean') {
+                if ($spec['multiple']) {
+                    $option .= '+';
+                } else if ($spec['required']) {
+                    $option .= ':';
+                } else {
+                    $option .= '?';
+                }
+            }
+            $specs->add($option, $spec['help'])->isa($spec['type']);
+        }        
         
-        
+        $parser = new OptionParser($specs);
+        $parsedOptions = self::parseOptions($this->arguments, $parser);
+
+        if (isset($aliveObject->objectName)) {
+            $events = Di::getDefault()->get('events');
+            $manageCommandOptionsEvent = new ManageCommandOptionsEvent($aliveObject->objectName, $action, $listOptions, $parsedOptions);
+            $events->emit('core.manage.command.options', array($manageCommandOptionsEvent));
+            $listOptions = $manageCommandOptionsEvent->getOptions();
+            $aliveObject->options[$action] = $listOptions;
+        }
         
         $specs = new OptionCollection();
-        /** 
-         * {
-         *   "description" => {
-         *     "help": "The contact description",
-         *     "type": "string"
-         *   }
-         * ]
-         */
         foreach ($listOptions as $option => $spec) {
             if ($spec['type'] != 'boolean') {
                 if ($spec['multiple']) {
@@ -310,20 +328,36 @@ class Command
         
         try {
             $parser = new OptionParser($specs);
-            $options = $parser->parse($this->arguments);
+            $optionsParsed = $parser->parse($this->arguments);
         } catch (RequireValueException $ex) {
             echo $ex->getMessage();
         }
 
-        if ($options->help) {
+        if ($optionsParsed->help) {
             //echo "centreonConsole centreon-configuration:Service:listMacro\n\n";
             $printer = new ConsoleOptionPrinter();
             echo $printer->render($specs);
             die;
         }
-        foreach( $options as $key => $spec ) {
+        foreach( $optionsParsed as $key => $spec ) {
             $argsList[$key] = $spec->value;
         }
+        
+        foreach($listOptions as $key=>$options){
+            if($options['type'] === 'boolean'){
+                if(!isset($argsList[$key])){
+                    $argsList[$key] = $options['defaultValue'];
+                }else{
+                    $argsList[$key] = !$options['defaultValue'];
+                }
+                if ($argsList[$key]) {
+                    $argsList[$key] = 1;
+                } else {
+                    $argsList[$key] = 0;
+                }
+            }
+        }
+        
     }
     
     /**
@@ -414,5 +448,46 @@ class Command
                 }
             }
         }
+    }
+
+    /**
+     *
+     * @param array $argv
+     * @param OptionParser $parser
+     * @return $result
+     */
+    public function parseOptions(array $argv, $parser)
+    {
+        $result = array();
+        $argv = $parser->preprocessingArguments($argv);
+        $len = count($argv);
+        for ($i = 0; $i < $len; ++$i)
+        {
+            $arg = new Argument( $argv[$i] );
+            if (! $arg->isOption()) {
+                continue;
+            }
+
+            $next = null;
+            if ($i + 1 < count($argv) )  {
+                $next = new Argument($argv[$i + 1]);
+            }
+            $spec = $parser->specs->get($arg->getOptionName());
+            if (! $spec) {
+                continue;
+            }
+            if ($spec->isRequired()) {
+                if (! $parser->foundRequireValue($spec, $arg, $next) ) {
+                    continue;
+                }
+                $parser->takeOptionValue($spec, $arg, $next);
+                
+                if ($next && ! $next->anyOfOptions($parser->specs)) {
+                    $result[$spec->getId()] = $next->arg;
+                    $i++;
+                }
+            } 
+        }
+        return $result;
     }
 }

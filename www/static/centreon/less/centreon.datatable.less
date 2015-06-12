@@ -80,7 +80,8 @@ table.dataTable thead .sorting:after {
   }
   .DTTT {
     margin-right: 5px;
-    top: @paddingElem/2;
+    //top: @paddingElem/2;
+    float: right;
     a {
       display: table-cell;
       padding-top: @paddingElem/2 !important;
@@ -100,8 +101,18 @@ table.dataTable thead .sorting:after {
   }
 
   .dataTables_length {
-    display: block;
-    width: 100%;
+    /*display: block;
+    width: 100%;*/
+    float: right;
+
+    select {
+      height: 40px;
+      padding: @paddingElem @paddingElem*2;
+      outline: 0;
+      border-radius: 3px;
+      box-shadow: 2px 1px 1px @lightGray;
+      border: 1px solid @lightGray;
+    }
   }
 
   table {
@@ -218,6 +229,11 @@ table.dataTable thead .sorting:after {
 // datatable Scroll bar
 
 .table-responsive {
+  .centreon_table {
+    a {
+      position: relative;
+    }
+  }
   &::-webkit-scrollbar{
     width: 12px;
     height: @paddingElem*2;
@@ -232,20 +248,5 @@ table.dataTable thead .sorting:after {
   }
   &::-webkit-scrollbar-thumb:hover {
     background-color: #aaa;
-  }
-}
-
-// Line length
-
-.dataTables_length {
-  select {
-    height: 40px;
-    padding: @paddingElem @paddingElem*2;
-    margin-top: 3px;
-
-    outline: 0;
-    border-radius: 3px;
-    box-shadow: 2px 1px 1px @lightGray;
-    border: 1px solid @lightGray;
   }
 }

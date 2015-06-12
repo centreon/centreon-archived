@@ -33,38 +33,53 @@
  *
  */
 
-namespace Centreon\Internal\Form\Validators;
+namespace Centreon\Events;
 
 /**
- * @author Toufik MECHOUET <tmechouet@centreon.com>
- * @package Centreon
- * @subpackage Core
+ * This event allows modules to manage options of centreonConsole
  */
-class AuthorizedValues implements ValidatorInterface
+class ManageCommandOptions
 {
-    public function __construct()
+    private $objectName;
+    private $action;
+    private $options;
+    private $args;
+
+    public function __construct($objectName, $action, $options = array(), $args = array())
     {
-        
+        $this->objectName = $objectName;
+        $this->action = $action;
+        $this->options = $options;
+        $this->args = $args;
     }
-    /**
-     * 
-     * @param type $value
-     * @param type $params
-     * @return boolean
-     */
-    public function validate($value, $params = array())
+
+    public function getObjectName()
     {
-        $aLegalChars = explode(',', $params['values']);
+        return $this->objectName;
+    }
 
-        if (!in_array($value, $aLegalChars)) {
-             $result = array(
-                'success' => false,
-                'error' => _('"'.$value. '" is not authorized value '.$value.'. The authorized values is '.$params['values'].'')
-            );
-        } else {
-            $result = array('success' => true);
-        }
+    public function getAction()
+    {
+        return $this->action;
+    }
 
-        return $result;
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    public function getArgs()
+    {
+        return $this->args;
+    }
+
+    public function addOption($option)
+    {
+        $this->options = array_merge($this->options, $option);
+    }
+
+    public function addArg($arg)
+    {
+        $this->args[] = $arg;
     }
 }

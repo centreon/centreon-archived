@@ -81,10 +81,18 @@ abstract class AbstractCommand
         if(isset($this->options[$method])){
             $options = $this->options[$method];
         }
+        
+        $defaultValues = array();
+        
         $finalArgsOption = array();
         $missingParams = array();
+        
         foreach($options as $key=>$option){
             if(isset($args[$key])){
+                if(!empty($option['attributes']['choices'])){
+                    $args[$key] = $option['attributes']['choices'][$args[$key]];
+                }
+                
                 if(!empty($option['toTransform'])){
                     $finalArgsOption[$option['functionParams']][$option['toTransform']] = $args[$key];
                 }else{
@@ -92,9 +100,16 @@ abstract class AbstractCommand
                 }
             }else if($option['required']){
                 $missingParams[] = $key;
+            }else if(isset($option['defaultValue'])){
+                if(!empty($option['toTransform'])){
+                    $finalArgsOption[$option['functionParams']][$option['toTransform']] = $option['defaultValue'];
+                }else{
+                    $finalArgsOption[$option['functionParams']] = $option['defaultValue'];
+                }
             }
         }
 
+        
         if(!empty($missingParams)){
             $errorMessage = 'The following mandatory parameters are missing :';
             foreach($missingParams as $params){
@@ -113,7 +128,6 @@ abstract class AbstractCommand
                 throw new \Exception('The parameter "' . $param->getName(). '" is missing');
             }
         }
-
         $methodReflection->invokeArgs($this, $finalArgsOption);
     }
 }

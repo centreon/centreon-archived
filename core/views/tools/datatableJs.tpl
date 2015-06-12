@@ -38,10 +38,12 @@
                             if($(this).hasClass('selected')){
                                 $('#tableLeft').css('margin-right','0%');
                                 $('#sideRight').css('display','none');
+                                //$('.Listing').css('margin-right','0px');
                             }else {
                                 $('#sideRight').sideSlide.add(row,data);
-                                $('#tableLeft').css('margin-right','310px');
+                                $('#tableLeft').css('margin-right','292px');
                                 $('#sideRight').css('display','block');
+                                //$('.Listing').css('margin-right','15px');
 
                             }
                         }
@@ -62,7 +64,7 @@
                 "processing": "Loading information. Please wait a moment."
             },
             {$datatableParameters.configuration}
-            'dom': "R<'row'r<'col-md-10 text-right'T C ><'col-md-2'l>>t<'row'<'col-md-2'i><'col-md-10'p>>",
+            'dom': "R<'row'r<'col-md-12 text-right'l T C >>t<'row'<'col-md-2'i><'col-md-10'p>>",
             responsive: true,
             "columns": [
                 {$datatableParameters.header.columnHeader}
@@ -130,10 +132,10 @@
 
         /* -- Refresh Datatable's Datas -- */
 
-        setInterval(function () {
+        /*setInterval(function () {
             $(".overlay" ).qtip( "destroy", true );
             oTable.api().ajax.reload(null, false);
-        }, 60000);
+        }, 60000);*/
 
         /* -- Show datatable's selected line  -- */
         function toggleSelectedAction() {
@@ -871,5 +873,10 @@ $( document ).ready(function() {
             }
         });
     }
+
+     var a = $(".dataTables_length").first();
+             a.css({
+                 'width' : '68px'
+             });
 });
 </script>

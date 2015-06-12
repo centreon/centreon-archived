@@ -151,6 +151,9 @@ abstract class FormRepository extends ListRepository
                 self::validateForm($givenParameters, $origin, $route, $validateMandatory);
             }
             
+            if (isset($givenParameters['password']) && isset($givenParameters['password2'])) {
+                $givenParameters['password'] = $givenParameters['password2'];
+            }
         
             $class = static::$objectClass;
             $pk = $class::getPrimaryKey();
@@ -243,6 +246,10 @@ abstract class FormRepository extends ListRepository
     {
         if ($validate) {
             self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+        
+        if (isset($givenParameters['password']) && isset($givenParameters['password2'])) {
+            $givenParameters['password'] = $givenParameters['password2'];
         }
 
         $extraParameters = array();
@@ -367,5 +374,42 @@ abstract class FormRepository extends ListRepository
         foreach ($listDuplicate as $id => $nb) {
             $objClass::duplicate($id, $nb);
         }
+    }
+    
+    /**
+     * Get list of objects
+     *
+     * @param string $searchStr
+     * @return array
+     */
+    public static function getListBySlugName($searchStr = "")
+    {
+        if (!empty(static::$secondaryObjectClass)) {
+            $class = static::$secondaryObjectClass;
+        } else {
+            $class = static::$objectClass;
+        }
+        
+        $idField = $class::getPrimaryKey();
+        $slugField = $class::getSlugField();
+        $filters = array(
+            $slugField => '%'.$searchStr.'%'
+        );
+
+        $columns = $class::getColumns();
+        if (in_array(static::ORGANIZATION_FIELD, $columns)) {
+           $filters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
+        }
+       
+
+        $list = $class::getList(array($idField, $slugField), -1, 0, null, "ASC", $filters, "AND");
+        $finalList = array();
+        foreach ($list as $obj) {
+            $finalList[] = array(
+                "id" => $obj[$idField],
+                "text" => $obj[$slugField]
+            );
+        }
+        return $finalList;
     }
 }

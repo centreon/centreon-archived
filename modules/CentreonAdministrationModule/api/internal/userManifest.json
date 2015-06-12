@@ -15,6 +15,16 @@
         "timezone" : "timezone_id",
         "authentication type" : "auth_type"
     },
+    "externalAttributeSet" : [
+        {
+            "type": "language_id",
+            "fields": "language_id,slug",
+            "message": "The object language not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonAdministration\\Models\\Language",
+            "group": false
+        }
+    ],
     "options" : {
         "showAction" : {
             "user" : {

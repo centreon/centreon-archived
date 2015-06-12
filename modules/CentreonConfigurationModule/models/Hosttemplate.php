@@ -300,4 +300,16 @@ class Hosttemplate extends CentreonBaseModel
             $db->commit();
         }
     }
+    
+    /**
+     * @param string $paramName
+     * @param array $paramValues
+     * @param array $extraConditions
+     * @return array
+     */
+    public static function getIdByParameter($paramName, $paramValues = array(), $extraConditions = array())
+    {        
+        $extraConditions['host_register'] = '0';
+        return parent::getIdByParameter($paramName, $paramValues, $extraConditions);
+    }
 }

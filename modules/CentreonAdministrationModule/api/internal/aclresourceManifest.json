@@ -1,0 +1,69 @@
+{
+    "liteAttributesSet" : "acl_resource_id,name,description,usergroups",
+     "externalAttributeSet" : [
+        {
+            "type": "usergroups",
+            "fields": "usergroup_id",
+            "link": "relation",
+            "objectClass": "aclresource_usergroups",
+            "group": false
+        }
+    ],
+    "repository" : "\\CentreonAdministration\\Repository\\AclresourceRepository",
+    "objectBaseUrl" : "aclresource",
+    "objectClass" : "\\CentreonAdministration\\Models\\Aclresource",
+    "relationMap" : {
+        "aclresource_usergroups" : "\\CentreonAdministration\\Models\\Relation\\Aclresource\\Usergroup"
+    },
+    "attributesMap" : {
+        "id" : "acl_resource_id",
+        "name" : "name",
+        "description" : "description",
+        "usergroups" : "usergroups"
+    },
+    "options" : {
+        "showAction" : {
+            "aclresource" : {
+              "functionParams" : "object",
+              "help": "The acl resource",
+              "type": "string",
+              "toTransform" : "aclresource",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "createAction" : {
+
+        },
+        "updateAction" : {
+            "aclresource" : {
+              "functionParams" : "object",
+              "help": "The acl resource",
+              "type": "string",
+              "toTransform" : "aclresource",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "deleteAction" : {
+            "aclresource" : {
+              "functionParams" : "object",
+              "help": "The acl resource",
+              "type": "string",
+              "toTransform" : "aclresource",
+              "multiple" : false,
+              "required" : true
+            }
+        },
+        "duplicateAction" : {
+            "aclresource" : {
+              "functionParams" : "object",
+              "help": "The acl resource",
+              "type": "string",
+              "toTransform" : "aclresource",
+              "multiple" : false,
+              "required" : true
+            }
+        }
+    }
+}

@@ -5,9 +5,56 @@
     "objectClass" : "\\CentreonConfiguration\\Models\\Hosttemplate",
     "relationMap" : {
         "host_hosttemplates" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Hosttemplate",
-        "hosttemplate_servicetemplates" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Servicetemplate",
+        "hosttemplate_servicetemplates" : "\\CentreonConfiguration\\Models\\Relation\\Hosttemplate\\Servicetemplate",
         "host_icon" : "\\CentreonConfiguration\\Models\\Relation\\Hosttemplate\\Icon"
     },
+    "externalAttributeSet" : [
+        {
+            "type": "command_command_id",
+            "fields": "command_id,command_slug",
+            "message": "The object command not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Command",
+            "group": false
+        },
+        {
+            "type": "command_command_id2",
+            "fields": "command_id,command_slug",
+            "message": "The object command not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Command",
+            "group": false
+        },
+        {
+            "type": "timeperiod_tp_id",
+            "fields": "tp_id,tp_slug",
+            "message": "The object timeperiod not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Timeperiod",
+            "group": false
+        },
+        {
+            "type": "hosttemplate_servicetemplates",
+            "fields": "service_id,service_slug",
+            "message": "The Servicetemplate host not in database",
+            "link": "multiple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Servicetemplate",
+            "group": false
+        },
+        {
+            "type": "host_hosttemplates",
+            "fields": "host_id,host_slug",
+            "message": "The object hostTemplate not in database",
+            "link": "multiple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Hosttemplate",
+            "group": false
+        }
+        
+    ],
+    "paramsToExclude" : [
+      "host_custommacros",
+      "host_tags" 
+    ],
     "attributesMap" : {
         "id" : "host_id",
         "name" : "host_name",
@@ -28,7 +75,7 @@
             }
         },
         "deleteAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -38,7 +85,7 @@
             }
         },
         "listTagAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -48,7 +95,7 @@
             }
         },
         "addTagAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -66,7 +113,7 @@
             }
         },
         "removeTagAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -84,7 +131,7 @@
             }
         },
         "updateAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -94,7 +141,7 @@
             }
         },
         "addMacroAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -128,7 +175,7 @@
             }
         },
         "listMacroAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -138,7 +185,7 @@
             }
         },
         "removeMacroAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
@@ -156,7 +203,7 @@
             }
         },
         "updateMacroAction" : {
-            "hosttemplate" : {
+            "host-template" : {
               "functionParams" : "object",
               "help": "The host",
               "type": "string",
