@@ -90,7 +90,9 @@ abstract class AbstractCommand
         foreach($options as $key=>$option){
             if(isset($args[$key])){
                 if(!empty($option['attributes']['choices'])){
-                    $args[$key] = $option['attributes']['choices'][$args[$key]];
+                    if(isset($option['attributes']['choices'][$args[$key]])){
+                        $args[$key] = $option['attributes']['choices'][$args[$key]];
+                    }
                 }
                 
                 if(!empty($option['toTransform'])){
