@@ -145,6 +145,65 @@
          }
       }
   }
+
+  /*---- Checkbox Fields --- */
+
+  .checkbox-styled,.radio-styled{
+
+
+    input[type="radio"],
+    input[type="checkbox"]{
+      position: absolute;
+      z-index: -1;
+      opacity: 0;
+      filter: alpha(opacity=0);
+
+    }
+      span {
+        position: relative;
+        padding-left: 30px;
+        display: inline-block;
+        cursor: pointer;
+        vertical-align: text-top;
+        &:before {
+          content: "";
+          position: absolute;
+          left: 0;
+          z-index: 1;
+          width: 20px;
+          height: 20px;
+          border: 2px solid @darkGray2;
+
+          -webkit-transition: all 0.2s ease-in-out;
+          -o-transition: all 0.2s ease-in-out;
+          transition: all 0.2s ease-in-out;
+        }
+      }
+    label {
+      padding-left: 0;
+    }
+    &.disabled {
+        span {
+          &:before {
+            border-color: #e5e6e6;
+          }
+        }
+
+      }
+  }
+
+
+  .checkbox-styled:not(ie8) input:checked ~ span:before {
+    -webkit-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    height: 10px;
+    border-color: #0aa89e;
+    border-top-style: none;
+    border-right-style: none;
+  }
+
   /*---- Radio Fields --- */
 
   .choiceGroup {
