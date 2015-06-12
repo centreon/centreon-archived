@@ -126,6 +126,14 @@ class BasicCrud extends AbstractCommand
     /**
      * 
      */
+    static $aRenameModules = array(
+        'businessactivity' => "bam"
+    );
+
+
+    /**
+     * 
+     */
     public function __construct()
     {
         parent::__construct();
@@ -400,20 +408,20 @@ class BasicCrud extends AbstractCommand
     public function showAction($objectSlug, $fields = null, $linkedObject = '')
     {
         $repository = $this->repository;
-        
+
        //$objectSlug = $repository::getIdFromUnicity($this->parseObjectParams($objectSlug));
-        
+
         $aId = $repository::getListBySlugName($objectSlug[$this->objectName]);
         if (count($aId) > 0) {
             $objectSlug = $aId[0]['id'];
         } else {
             throw new \Exception(static::OBJ_NOT_EXIST);
         }
-        
 
         $fields = (!is_null($fields)) ? $fields : '*';
-        
+                
         $object = $repository::load($objectSlug, $fields);
+        
         $this->normalizeSingleSet($object, false);
         
         return $object;
@@ -497,6 +505,7 @@ class BasicCrud extends AbstractCommand
         $paramList = $this->parseObjectParams($params);
         $paramList['object'] = $this->objectName;
         
+
         $idOfCreatedElement = $repository::create(
                     $paramList,
                     'api',
@@ -517,7 +526,9 @@ class BasicCrud extends AbstractCommand
         $paramList = $this->parseObjectParams($params);
         $paramList['object'] = $this->objectName;
 
-        $aId = $repository::getListBySlugName($object[$this->objectName]);
+        $sName = static::renameObject($this->objectName);
+
+        $aId = $repository::getListBySlugName($object[$sName]);
         if (count($aId) > 0) {
             $paramList['object_id'] = $aId[0]['id'];
         } else {
@@ -561,5 +572,17 @@ class BasicCrud extends AbstractCommand
     public function duplicateAction()
     {
         echo "Not implemented yet";
+    }
+    
+    /**
+     * 
+     */
+    public static function renameObject ($sName)
+    {
+        if (array_key_exists($sName, static::$aRenameModules)) {
+            return static::$aRenameModules[$sName];
+        } else {
+            return $sName;
+        }
     }
 }

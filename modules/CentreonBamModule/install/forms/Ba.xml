@@ -58,6 +58,11 @@
                             <Disabled>0</Disabled>
                         </choices>
                     </attributes>
+                    <validators>
+                        <validator rules="remote" serverside="core.AuthorizedValues">
+                            <argument name="values">0,1</argument>
+                        </validator>
+                    </validators>
                 </field>
             </block>
         </section>
