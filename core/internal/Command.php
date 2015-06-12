@@ -343,6 +343,8 @@ class Command
             $argsList[$key] = $spec->value;
         }
         
+        unset($listOptions['h|help']);
+        
         foreach($listOptions as $key=>$options){
             if($options['type'] === 'boolean'){
                 if(!isset($argsList[$key])){
