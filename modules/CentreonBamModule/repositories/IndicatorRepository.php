@@ -604,7 +604,7 @@ class IndicatorRepository extends FormRepository
         }
 
         // Execute request
-        $stmt = $db->prepare($sql);
+        $stmt = $db->prepare($query);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
         if (count($result) > 0) {

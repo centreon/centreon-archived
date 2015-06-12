@@ -1,12 +1,24 @@
 {
-    "liteAttributesSet" : "",
+    "liteAttributesSet" : "kpi_id,state_type,kpi_type,host_id,service_id,current_status",
     "repository" : "\\CentreonBam\\Repository\\IndicatorRepository",
-    "objectBaseUrl" : "kpi",
+    "objectBaseUrl" : "indicator",
     "objectClass" : "\\CentreonBam\\Models\\Indicator",
     "attributesMap" : {
 
     },
     "options" : {
-        
+        "createAction" : {
+            
+        },
+        "updateAction" : {
+            "indicator" : {
+              "functionParams" : "object",
+              "help": "The indicator",
+              "type": "string",
+              "toTransform" : "indicator",
+              "multiple" : false,
+              "required" : true
+            }
+        }
     }
 }

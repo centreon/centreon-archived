@@ -247,7 +247,6 @@ class BasicCrud extends AbstractCommand
                 $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
                 $stmt->execute();
                 $rowsDefault = $stmt->fetchAll();
-                
                 foreach($rowsDefault as $rowDefault){
                     if(!isset($this->options['createAction'][$rowDefault['normalized_name']])){
                         $this->options['createAction'][$rowDefault['normalized_name']] = array(
@@ -259,6 +258,8 @@ class BasicCrud extends AbstractCommand
                             'required' => false,
                             'defaultValue' => $rowDefault['default_value']
                         );
+                    }else if(!isset($this->options['createAction'][$rowDefault['normalized_name']]['defaultValue'])){
+                        $this->options['createAction'][$rowDefault['normalized_name']]['defaultValue'] = $rowDefault['default_value'];
                     }
                 }
                 

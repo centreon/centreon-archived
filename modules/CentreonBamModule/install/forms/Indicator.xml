@@ -7,6 +7,10 @@
         <section name="Configuration">
             <block name="Information">
                 <field name="kpi_type" label="Object" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
+                    <validators>
+                    	<validator serverside="centreon-bam.indicatorType" >
+                        </validator>
+                    </validators>
                      <attributes>
                          <choices>
                              <service>0</service>
@@ -14,6 +18,7 @@
                              <boolean>3</boolean>
                          </choices>
                      </attributes>
+                     
                 </field>
                 <field name="service_id" label="Linked with service" default_value="" advanced="0" type="select" parent_field="kpi_type" parent_value="0" mandatory="0">
                     <attributes>
