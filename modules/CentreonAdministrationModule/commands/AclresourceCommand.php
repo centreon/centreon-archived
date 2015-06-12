@@ -32,75 +32,23 @@
  * For more information : contact@centreon.com
  *
  */
+namespace CentreonAdministration\Commands;
 
-namespace CentreonConfiguration\Repository;
-
-use CentreonConfiguration\Repository\Repository;
-use CentreonConfiguration\Models\Relation\Aclresource\Hosttag as AclresourceHosttagRelation;
-use CentreonAdministration\Models\Tag;
+use Centreon\Api\Internal\BasicCrudCommand;
 
 /**
- * @author Kevin Duret <kduret@centreon.com>
- * @package Centreon
- * @subpackage Repository
+ * 
  */
-class HostTagRepository extends Repository
+class AclresourceCommand extends BasicCrudCommand
 {
-    public static $objectClass = '\CentreonConfiguration\Models\Hosttag';
-    
     /**
      *
      * @var type 
      */
-    public static $unicityFields = array(
-        'fields' => array(
-            'host' => 'cfg_tags_hosts,tag_id'
-        ),
-    );
-
-    /**
-     * update Host tag acl
-     *
-     * @param string $action
-     * @param int $objectId
-     * @param array $hostTagId
-     */
-    public static function updateHostTagAcl($action, $objectId, $hostTagIds)
+    public $objectName = 'aclresource';
+    
+    public function __construct()
     {
-        if (($action === 'create') || ($action === 'update')) {
-            AclresourceHosttagRelation::delete($objectId);
-            foreach ($hostTagIds as $hostTagId) {
-                AclresourceHosttagRelation::insert($objectId, $hostTagId);
-            }
-        }
-    }
-
-    /**
-     * get Host tags by acl id
-     *
-     * @param int $aclId
-     */
-    public static function getHostTagsByAclResourceId($aclId)
-    {
-        $hostTagIdList = AclresourceHosttagRelation::getTargetIdFromSourceId(
-            'tag_id',
-            'acl_resource_id',
-            $aclId
-        );
-
-        $tagList = array();
-        if (count($hostTagIdList) > 0) {
-            $tagList = Tag::getParameters($hostTagIdList, 'tagname');
-        }
-
-        $finalTagList = array();
-        foreach ($tagList as $tag) {
-            $finalTagList[] = array(
-                "id" => $tag['tag_id'],
-                "text" => $tag['tagname']
-            );
-        }
-
-        return $finalTagList;
+        parent::__construct();
     }
 }

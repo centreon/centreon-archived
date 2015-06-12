@@ -67,7 +67,7 @@ class ServiceTagRepository extends Repository
      */
     public static function updateServiceTagAcl($action, $objectId, $serviceTagIds)
     {
-        if ($action === 'update') {
+        if (($action === 'create') || ($action === 'update')) {
             AclresourceServicetagRelation::delete($objectId);
             foreach ($serviceTagIds as $serviceTagId) {
                 AclresourceServicetagRelation::insert($objectId, $serviceTagId);

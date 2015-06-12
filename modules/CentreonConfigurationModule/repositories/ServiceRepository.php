@@ -528,7 +528,7 @@ class ServiceRepository extends Repository
      */
     public static function updateServiceAcl($action, $objectId, $serviceIds)
     {
-        if ($action === 'update') {
+        if (($action === 'create') || ($action === 'update')) {
             AclresourceServiceRelation::delete($objectId);
             foreach ($serviceIds as $serviceId) {
                 AclresourceServiceRelation::insert($objectId, $serviceId);

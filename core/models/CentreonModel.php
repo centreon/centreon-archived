@@ -123,14 +123,21 @@ abstract class CentreonModel
             if (isset(static::$aclResourceType)) {
                 $aclResourceType = static::$aclResourceType;
             }
-            $sql .=  static::$table;
+            $sql .= static::$table;
         } else {
             $explodedTables = explode(',',$tablesString);
             $tableToParse = $explodedTables[0];
-            $firstObject = static::$firstObject;
-            $primaryKey = $firstObject::$primaryKey;
-            if (isset($firstObject::$aclResourceType)) {
-                $aclResourceType = $firstObject::$aclResourceType;
+            if (isset(static::$primaryKey)) {
+                $primaryKey = static::$primaryKey;
+                if (isset(static::$aclResourceType)) {
+                    $aclResourceType = static::$aclResourceType;
+                }
+            } else if (isset(static::$firstObject)) {
+                $firstObject = static::$firstObject;
+                $primaryKey = $firstObject::$primaryKey;
+                if (isset($firstObject::$aclResourceType)) {
+                    $aclResourceType = $firstObject::$aclResourceType;
+                }
             }
             $sql .= $tablesString;
         }
@@ -341,14 +348,36 @@ abstract class CentreonModel
     public static function getColumns()
     {
         $result = array();
-        if (isset(static::$databaseName) && isset(static::$table)) {
-            $aliasTable = explode(" ", static::$table);
+        $tables = array();
+
+        if (isset(static::$databaseName)) {
+            if(isset(static::$table)){
+                $tables[] = static::$table;
+            }
+
+            if(isset(static::$firstObject)){
+                $firstObject = static::$firstObject;
+                if (isset($firstObject::$table)) {
+                    $tables[] = $firstObject::$table;
+                }
+            }
+
+            if(isset(static::$secondObject)){
+                $secondObject = static::$secondObject;
+                if (isset($secondObject::$table)) {
+                    $tables[] = $secondObject::$table;
+                }
+            }
+        }
+
+        foreach ($tables as $table) {
+            $aliasTable = explode(" ", $table);
             if (isset($aliasTable[1])) {
                 $showTableName = $aliasTable[0];
                 $aliasTable = $aliasTable[1];
             } else {
-                $showTableName = static::$table;
-                $aliasTable = static::$table;
+                $showTableName = $table;
+                $aliasTable = $table;
             }
 
             $db = Di::getDefault()->get(static::$databaseName);

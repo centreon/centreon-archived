@@ -42,8 +42,8 @@ use Centreon\Models\CentreonRelationModel;
 class Usergroup extends CentreonRelationModel
 {
     protected static $relationTable = "cfg_acl_resources_usergroups_relations";
-    protected static $firstKey = "usergroup_id";
-    protected static $secondKey = "acl_resource_id";
-    public static $firstObject =  "\CentreonAdministration\Models\Usergroup";
-    public static $secondObject = "\CentreonAdministration\Models\Aclresource";
+    protected static $firstKey = "acl_resource_id";
+    protected static $secondKey = "usergroup_id";
+    public static $firstObject =  "\CentreonAdministration\Models\Aclresource";
+    public static $secondObject = "\CentreonAdministration\Models\Usergroup";
 }

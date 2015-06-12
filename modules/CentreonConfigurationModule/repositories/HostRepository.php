@@ -668,7 +668,7 @@ class HostRepository extends Repository
      */
     public static function updateHostAcl($action, $objectId, $hostIds)
     {
-        if ($action === 'update') {
+        if (($action === 'create') || ($action === 'update')) {
             AclresourceHostRelation::delete($objectId);
             foreach ($hostIds as $hostId) {
                 AclresourceHostRelation::insert($objectId, $hostId);
@@ -683,7 +683,7 @@ class HostRepository extends Repository
      */
     public static function updateAllHostsAcl($action, $objectId, $allHosts)
     {
-        if ($action === 'update') {
+        if (($action === 'create') || ($action === 'update')) {
             try {
                 AclresourceHostsParams::delete($objectId);
             } catch (\Exception $e) {
