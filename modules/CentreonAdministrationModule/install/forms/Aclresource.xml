@@ -6,15 +6,15 @@
         <redirect_route>/centreon-administration/aclresource</redirect_route>
         <section name="General">
             <block name="General information">
-                <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                <field name="name" label="Name" normalized_name="name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
                     <validators>
                         <validator rules="remote" serverside="centreon-main.unique" />
                     </validators>
                 </field>
-                <field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+                <field name="description" label="Description" normalized_name="description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
             </block>
             <block name="Relations">
-                <field name="aclresource_usergroups" label="Linked usergroups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field name="aclresource_usergroups" label="Linked usergroups" normalized_name="usergroups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-administration/usergroup/formlist</defaultValuesRoute>
@@ -25,7 +25,7 @@
                 </field>
             </block>
             <block name="Filters">
-                <field name="aclresource_environments" label="Linked environments" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field name="aclresource_environments" label="Linked environments" normalized_name="environments" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-administration/environment/formlist</defaultValuesRoute>
@@ -34,7 +34,7 @@
                         <ordered>false</ordered>
                     </attributes>
                 </field>
-                <field name="aclresource_domains" label="Linked domains" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field name="aclresource_domains" label="Linked domains" normalized_name="domains" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-administration/domain/formlist</defaultValuesRoute>

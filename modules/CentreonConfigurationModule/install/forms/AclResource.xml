@@ -47,13 +47,4 @@
             </block>
         </section>
     </form>
-    <wizard name="add_aclresource_hosts_services">
-        <route>/centreon-administration/aclresource/add</route>
-        <step name="Hosts and services">
-            <field name="aclresource_hosts" mandatory="0"></field>
-            <field name="aclresource_host_tags" mandatory="0"></field>
-            <field name="aclresource_services" mandatory="0"></field>
-            <field name="aclresource_service_tags" mandatory="0"></field>
-        </step>
-    </wizard>
 </forms>
