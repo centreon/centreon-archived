@@ -165,6 +165,7 @@ class Wizard extends Full
         $di = Di::getDefault();
         $tpl = $di->get('template');
         $tpl->assign('name', $this->formName);
+        $tpl->assign('formName', $this->formName);
         $tpl->assign('formElements', $formElements);
         $tpl->assign('steps', $this->formComponents);
         return $tpl->fetch('tools/modalWizard.tpl');

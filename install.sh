@@ -175,6 +175,8 @@ external/bin/centreonConsole core:module:manage:install --module=centreon-perfor
 \cp -r modules/CentreonConfigurationModule/static/centreon-configuration/ www/static/
 
 chown apache.apache /srv/centreon/www/uploads/images
+chown apache.apache /srv/centreon/www/uploads/imagesthumb/
+
 usermod -a -G centreon-engine apache
 usermod -a -G centreon-broker apache
 
