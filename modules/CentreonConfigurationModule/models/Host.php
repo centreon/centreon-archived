@@ -97,7 +97,7 @@ class Host extends CentreonBaseModel
             }
             $sqlFields .= $key;
             $sqlValues .= "?";
-            if ($value == "" && !isset($not_null_attributes[$key])) {
+            if ($value === "" && !isset($not_null_attributes[$key])) {
                 $value = null;
             } elseif (!is_numeric($value) && isset($is_int_attribute[$key])) {
                 $value = null;
@@ -114,6 +114,8 @@ class Host extends CentreonBaseModel
             
             
         }
+        
+        
         if ($sqlFields && $sqlValues) {
             $sql .= "(".$sqlFields.") VALUES (".$sqlValues.")";
             $stmt = $db->prepare($sql);

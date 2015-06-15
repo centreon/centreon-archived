@@ -233,7 +233,8 @@
               "toTransform" : "service_activate",
               "multiple" : false,
               "required" : false,
-              "defaultValue" : true
+              "booleanValue" : false,
+              "booleanSetDefault" : true
             }
         },
         "updateAction" : {
@@ -260,7 +261,16 @@
               "toTransform" : "service_activate",
               "multiple" : false,
               "required" : false,
-              "defaultValue" : true
+              "booleanValue" : false
+            },
+            "enable" : {
+              "functionParams" : "params",
+              "help": "disable",
+              "type": "boolean",
+              "toTransform" : "service_activate",
+              "multiple" : false,
+              "required" : false,
+              "booleanValue" : true
             }
         },
         "listMacroAction" : {
@@ -336,7 +346,7 @@
               "functionParams" : "params",
               "help": "The macro value",
               "type": "string",
-              "toTransform" : "value",
+              "toTransform" : "svc_macro_value",
               "multiple" : false,
               "required" : false
             },
@@ -344,17 +354,27 @@
               "functionParams" : "params",
               "help": "The new macro name",
               "type": "string",
-              "toTransform" : "name",
+              "toTransform" : "svc_macro_name",
               "multiple" : false,
               "required" : false
             },
             "hidden" : {
               "functionParams" : "params",
-              "help": "Is password",
-              "type": "number",
-              "toTransform" : "hidden",
+              "help": "hide as password",
+              "type": "boolean",
+              "toTransform" : "is_password",
               "multiple" : false,
-              "required" : false
+              "required" : false,
+              "booleanValue" : true
+            },
+            "show" : {
+              "functionParams" : "params",
+              "help": "hide as password",
+              "type": "boolean",
+              "toTransform" : "is_password",
+              "multiple" : false,
+              "required" : false,
+              "booleanValue" : false
             }
         },
         "addMacroAction" : {
@@ -378,7 +398,7 @@
               "functionParams" : "params",
               "help": "The host description",
               "type": "string",
-              "toTransform" : "name",
+              "toTransform" : "svc_macro_name",
               "multiple" : false,
               "required" : false
             },
@@ -386,17 +406,19 @@
               "functionParams" : "params",
               "help": "The macro value",
               "type": "string",
-              "toTransform" : "value",
+              "toTransform" : "svc_macro_value",
               "multiple" : false,
               "required" : false
             },
             "hidden" : {
               "functionParams" : "params",
-              "help": "",
-              "type": "Number",
-              "toTransform" : "hidden",
+              "help": "hide as password",
+              "type": "boolean",
+              "toTransform" : "is_password",
               "multiple" : false,
-              "required" : false
+              "required" : false,
+              "booleanSetDefault" : true,
+              "booleanValue" : true
             }
         }
     }
