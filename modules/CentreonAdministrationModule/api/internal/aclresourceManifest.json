@@ -1,11 +1,28 @@
 {
-    "liteAttributesSet" : "acl_resource_id,name,description,usergroups",
-     "externalAttributeSet" : [
+    "liteAttributesSet" : "acl_resource_id,name,description,usergroups,domains,environments",
+    "externalAttributeSet" : [
         {
-            "type": "usergroups",
-            "fields": "usergroup_id",
-            "link": "relation",
-            "objectClass": "aclresource_usergroups",
+            "type": "aclresource_usergroups",
+            "fields": "usergroup_id,slug",
+            "message": "Usergroup object not in database",
+            "link": "multiple",
+            "objectClass": "\\CentreonAdministration\\Models\\Usergroup",
+            "group": false
+        },
+        {
+            "type": "aclresource_domains",
+            "fields": "domain_id,slug",
+            "message": "Domain object not in database",
+            "link": "multiple",
+            "objectClass": "\\CentreonAdministration\\Models\\Domain",
+            "group": false
+        },
+        {
+            "type": "aclresource_environments",
+            "fields": "environment_id,slug",
+            "message": "Environment object not in database",
+            "link": "multiple",
+            "objectClass": "\\CentreonAdministration\\Models\\Environment",
             "group": false
         }
     ],
@@ -13,13 +30,17 @@
     "objectBaseUrl" : "aclresource",
     "objectClass" : "\\CentreonAdministration\\Models\\Aclresource",
     "relationMap" : {
-        "aclresource_usergroups" : "\\CentreonAdministration\\Models\\Relation\\Aclresource\\Usergroup"
+        "aclresource_usergroups" : "\\CentreonAdministration\\Models\\Relation\\Aclresource\\Usergroup",
+        "aclresource_domains" : "\\CentreonAdministration\\Models\\Relation\\Aclresource\\Domain",
+        "aclresource_environments" : "\\CentreonAdministration\\Models\\Relation\\Aclresource\\Environment"
     },
     "attributesMap" : {
         "id" : "acl_resource_id",
         "name" : "name",
         "description" : "description",
-        "usergroups" : "usergroups"
+        "usergroups" : "aclresource_usergroups",
+        "domains" : "aclresource_domains",
+        "environments" : "aclresource_environments"
     },
     "options" : {
         "showAction" : {

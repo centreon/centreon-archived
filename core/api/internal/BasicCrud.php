@@ -467,12 +467,13 @@ class BasicCrud extends AbstractCommand
                         $aFields = explode(",", $externalAttribute['fields']);
                         $aDatas = explode(',', $params[$externalAttribute['type']]);
  
+                        $tempParamList = array();
                         foreach ($aDatas as $sData) {
                             $sData = trim($sData);
                            
                             $iId =  $externalAttribute['objectClass']::getIdByParameter($aFields[1], $sData);
                             if (count($iId) > 0) {
-                                $finalParamList[$key] = $iId[0];
+                                $tempParamList[] = $iId[0];
                             } else {
                                 $sMessage = static::OBJ_NOT_EXIST;
                                 if (!empty($externalAttribute['message'])) {
@@ -481,6 +482,7 @@ class BasicCrud extends AbstractCommand
                                 throw new \Exception($sMessage);
                             }
                         }
+                        $finalParamList[$key] = implode(',', $tempParamList);
                     }
                 }
                  
@@ -488,10 +490,7 @@ class BasicCrud extends AbstractCommand
                $finalParamList[$key] = $param; 
             }
         }
-        /*
-        var_dump($finalParamList);
-        die;
-         */
+
         return $finalParamList;
     }
     
