@@ -76,7 +76,7 @@ class Radio extends Component
                 if ($value == $choice) {
                     $htmlSelected = 'checked=checked';
                 }
-                $inputHtml .= '<label class="label-controller" for="'.$element['id'] . $i . '">'.
+                $inputHtml .= '<label class="label-controller radio-styled" for="'.$element['id'] . $i . '">'.
                             '<input '.'id="'.$element['id']. $i . '" '.
                             'type="'.$element['label_type'].'" '.'name="'.$element['name'].'" '.
                             'value=' . $choice . ' '.$htmlSelected.' '.
@@ -85,7 +85,7 @@ class Radio extends Component
                     $inputHtml .= ' data-parentfield="' . $element['label_parent_field'] . '"';
                     $inputHtml .= ' data-parentvalue="' . $element['label_parent_value'] . '"';
                 }
-                $inputHtml .= ' />'.' '.$key.
+                $inputHtml .= ' /><span></span>'.' '.$key.
                             '</label>';
                 $i++;
             }
