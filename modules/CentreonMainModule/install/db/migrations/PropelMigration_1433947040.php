@@ -42,8 +42,6 @@ class PropelMigration_1433947040
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS `log_data_bin`;
-
 ALTER TABLE `cfg_timezones`
     ADD `slug` VARCHAR(254) NOT NULL AFTER `description`;
 
@@ -68,15 +66,6 @@ SET FOREIGN_KEY_CHECKS = 1;
 SET FOREIGN_KEY_CHECKS = 0;
 
 ALTER TABLE `cfg_timezones` DROP `slug`;
-
-CREATE TABLE `log_data_bin`
-(
-    `id_metric` INTEGER,
-    `ctime` INTEGER,
-    `value` FLOAT,
-    `status` enum(\'0\',\'1\',\'2\',\'3\',\'4\'),
-    INDEX `index_metric` (`id_metric`)
-) ENGINE=MyISAM;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
