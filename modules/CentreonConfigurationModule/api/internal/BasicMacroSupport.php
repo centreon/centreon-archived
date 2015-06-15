@@ -76,7 +76,15 @@ class BasicMacroSupport extends BasicCrudCommand
         
         try {
             $repository = $this->repository;
-            $objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
+            //$objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
+            $sName = $this->objectName;
+           
+            $aId = $repository::getListBySlugName($object[$sName]);
+            if (count($aId) > 0) {
+                $objectId = $aId[0]['id'];
+            } else {
+                throw new \Exception(static::OBJ_NOT_EXIST);
+            }
             switch($this->objectName){
                 case 'host' :
                     CustomMacroRepository::saveHostCustomMacro($objectId, $formatedParams, false);
@@ -113,7 +121,15 @@ class BasicMacroSupport extends BasicCrudCommand
         
         try {
             $repository = $this->repository;
-            $objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
+            //$objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
+            $sName = $this->objectName;
+           
+            $aId = $repository::getListBySlugName($object[$sName]);
+            if (count($aId) > 0) {
+                $objectId = $aId[0]['id'];
+            } else {
+                throw new \Exception(static::OBJ_NOT_EXIST);
+            }
             switch($this->objectName){
                 case 'host' :
                     CustomMacroRepository::updateHostCustomMacro($objectId,$macro,$paramList);
@@ -145,7 +161,15 @@ class BasicMacroSupport extends BasicCrudCommand
     {
         try {
             $repository = $this->repository;
-            $objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
+            //$objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
+            $sName = $this->objectName;
+           
+            $aId = $repository::getListBySlugName($object[$sName]);
+            if (count($aId) > 0) {
+                $objectId = $aId[0]['id'];
+            } else {
+                throw new \Exception(static::OBJ_NOT_EXIST);
+            }
             $macros = array();
             switch($this->objectName){
                 case 'host' :
@@ -185,7 +209,15 @@ class BasicMacroSupport extends BasicCrudCommand
     {
         try {
             $repository = $this->repository;
-            $objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
+            //$objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
+            $sName = $this->objectName;
+           
+            $aId = $repository::getListBySlugName($object[$sName]);
+            if (count($aId) > 0) {
+                $objectId = $aId[0]['id'];
+            } else {
+                throw new \Exception(static::OBJ_NOT_EXIST);
+            }
             switch($this->objectName){
                 case 'host' :
                     CustomMacroRepository::deleteHostCustomMacro($objectId,$macro);
