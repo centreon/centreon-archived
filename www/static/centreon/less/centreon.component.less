@@ -146,7 +146,7 @@
       }
   }
 
-  /*---- Checkbox Fields --- */
+  /*---- Checkbox & radio Fields --- */
 
   .checkbox-styled,.radio-styled{
 
@@ -161,7 +161,7 @@
     }
       span {
         position: relative;
-        padding-left: 30px;
+        padding-left: @paddingElem*3;
         display: inline-block;
         cursor: pointer;
         vertical-align: text-top;
@@ -170,8 +170,8 @@
           position: absolute;
           left: 0;
           z-index: 1;
-          width: 20px;
-          height: 20px;
+          width: @paddingElem*3;
+          height: @paddingElem*3;
           border: 2px solid @darkGray2;
 
           -webkit-transition: all 0.2s ease-in-out;
@@ -193,15 +193,20 @@
   }
 
 
-  .checkbox-styled:not(ie8) input:checked ~ span:before {
-    -webkit-transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
-    -o-transform: rotate(-45deg);
-    transform: rotate(-45deg);
-    height: 10px;
-    border-color: #0aa89e;
-    border-top-style: none;
-    border-right-style: none;
+  .checkbox-styled {
+    input {
+
+      span:before {
+        -webkit-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        -o-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+        height: 10px;
+        border-color: #0aa89e;
+        border-top-style: none;
+        border-right-style: none;
+      }
+    }
   }
 
   /*---- Radio Fields --- */
@@ -217,6 +222,47 @@
       font-weight: normal;
       font-size: 13px;
     }
+  }
+
+  .radio-styled {
+
+    input ~ span {
+
+    &:before {
+      top: 0;
+      border-radius: 50%;
+      -webkit-transition: all 0.15s ease-in-out;
+      -o-transition: all 0.15s ease-in-out;
+      transition: all 0.15s ease-in-out;
+    }
+    &:after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      z-index: 1;
+      width: 0;
+      height: 0;
+      background-color: #0aa89e;
+      border-radius: 50%;
+      -webkit-transition: all 0.15s ease-in-out;
+      -o-transition: all 0.15s ease-in-out;
+      transition: all 0.15s ease-in-out;
+    }
+    }
+
+    input:checked ~ span{
+
+    &:before {
+      border-color: #0aa89e;
+    }
+      &:after {
+        left: 4px;
+        top: 4px;
+        width: 10px;
+        height: 10px;
+      }
+      }
   }
 }
 /* -- Select Drop --*/
