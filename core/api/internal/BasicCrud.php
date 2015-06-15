@@ -39,6 +39,7 @@ use Centreon\Internal\Command\AbstractCommand;
 use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
+
 /**
  * Description of BasicCrud
  *
@@ -283,13 +284,47 @@ class BasicCrud extends AbstractCommand
     private function parseManifest()
     {
         $manifestDir = realpath(Informations::getModulePath(static::$moduleShortName) . '/');
-        $manifestFile = $manifestDir . '/api/internal/' . $this->objectName . 'Manifest.json';
-        $this->objectManifest = json_decode(file_get_contents($manifestFile), true);
+        $manifestFile = $this->objectName . 'Manifest.json';
+        $manifestPath = $manifestDir . '/api/internal/' . $manifestFile;
+        $objectManifest = json_decode(file_get_contents($manifestPath), true);
+
+        $moduleList = Informations::getModuleList();
+        foreach ($moduleList as $module) {
+            if ($module !== static::$moduleShortName) {
+                $modulePath = Informations::getModulePath($module);
+                if (file_exists($modulePath . '/api/internal/' . $manifestFile)) {
+                    $objectManifest = self::mergeManifest($objectManifest, json_decode(file_get_contents($modulePath . '/api/internal/' . $manifestFile), true));
+                }
+            }
+        }
+        $this->objectManifest = $objectManifest;
+
         foreach ($this->objectManifest as $mKey => $mValue) {
             if (property_exists($this, $mKey)) {
                 $this->$mKey = $mValue;
             }
         }
+    }
+
+    /**
+     *
+     */
+    private function mergeManifest($objectManifest, $additionalManifest)
+    {
+        if (isset($additionalManifest['liteAttributesSet'])) {
+            $objectManifest['liteAttributesSet'] = $objectManifest['liteAttributesSet'] . ',' . $additionalManifest['liteAttributesSet'];
+        }
+        if (isset($additionalManifest['externalAttributeSet'])) {
+            $objectManifest['externalAttributeSet'] = array_merge($objectManifest['externalAttributeSet'], $additionalManifest['externalAttributeSet']);
+        }
+        if (isset($additionalManifest['relationMap'])) {
+            $objectManifest['relationMap'] = array_merge($objectManifest['relationMap'], $additionalManifest['relationMap']);
+        }
+        if (isset($additionalManifest['attributesMap'])) {
+            $objectManifest['attributesMap'] = array_merge($objectManifest['attributesMap'], $additionalManifest['attributesMap']);
+        }
+
+        return $objectManifest;
     }
     
     /**

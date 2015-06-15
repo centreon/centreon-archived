@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "acl_resource_id,name,description,usergroups,domains,environments",
+    "liteAttributesSet" : "acl_resource_id,name,description,aclresource_usergroups,aclresource_domains,aclresource_environments",
     "externalAttributeSet" : [
         {
             "type": "aclresource_usergroups",
