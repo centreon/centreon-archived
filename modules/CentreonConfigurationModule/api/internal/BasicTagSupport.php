@@ -49,12 +49,33 @@ class BasicTagSupport extends BasicMacroSupport
      */
     public function addTagAction($object, $tag)
     {
+        $iNbDeleted = 0;
+        $sLibTag = 'tag';
+        
         try {
             $repository = $this->repository;
-            $object = $repository::getIdFromUnicity($this->parseObjectParams($object));
-            TagsRepository::add($tag, $this->objectName, $object, 3);
+            $sName = $this->objectName;
+           
+            $aId = $repository::getListBySlugName($object[$sName]);
+            if (count($aId) > 0) {
+                $object = $aId[0]['id'];
+            } else {
+                throw new \Exception(static::OBJ_NOT_EXIST);
+            }
+            
+            $aTags = explode(",", $tag);
+            
+            foreach ($aTags as $sTag) {
+                TagsRepository::add($sTag, $this->objectName, $object, 3);
+                $iNbDeleted++;
+                
+            }
+            
+            if ($iNbDeleted >1) 
+                $sLibTag .= "s";
+            
             \Centreon\Internal\Utils\CommandLine\InputOutput::display(
-                "The tag has been successfully added to the object",
+                "The tag ".$sLibTag." been successfully added to the object",
                 true,
                 'green'
             );
@@ -71,8 +92,17 @@ class BasicTagSupport extends BasicMacroSupport
     {
         try {
             $repository = $this->repository;
-            $object = $repository::getIdFromUnicity($this->parseObjectParams($object));
+            
+            $sName = $this->objectName;
+           
+            $aId = $repository::getListBySlugName($object[$sName]);
+            if (count($aId) > 0) {
+                $object = $aId[0]['id'];
+            } else {
+                throw new \Exception(static::OBJ_NOT_EXIST);
+            }
             $TagList = TagsRepository::getList($this->objectName, $object, 1);
+            
             foreach ($TagList as $tag) {
                 echo $tag['text'] . "\n";
             }
@@ -88,15 +118,35 @@ class BasicTagSupport extends BasicMacroSupport
      */
     public function removeTagAction($object, $tag)
     {
+        $iNbDeleted = 0;
+        $sLibTag  = "tag";
         try {
             $repository = $this->repository;
-            $object = $repository::getIdFromUnicity($this->parseObjectParams($object));
-            TagsRepository::delete($tag, $this->objectName, $object);
+            $sName = $this->objectName;
+           
+            $aId = $repository::getListBySlugName($object[$sName]);
+            if (count($aId) > 0) {
+                $object = $aId[0]['id'];
+            } else {
+                throw new \Exception(static::OBJ_NOT_EXIST);
+            }
+            
+            $aTags = explode(",", $tag);
+            foreach ($aTags as $sTag) {
+                TagsRepository::delete($sTag, $this->objectName, $object);
+                $iNbDeleted++;
+                
+            }
+            if ($iNbDeleted >1) 
+                $sLibTag .= "s";
+            
+
             \Centreon\Internal\Utils\CommandLine\InputOutput::display(
-                "The tag has been successfully removed from the object",
+                "The ".$sLibTag." has been successfully removed from the object",
                 true,
                 'green'
             );
+
         } catch (\Exception $ex) {
             \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
         }
