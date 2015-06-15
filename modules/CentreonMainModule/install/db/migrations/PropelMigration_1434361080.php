@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1433947040.
- * Generated on 2015-06-10 16:37:20 by root
+ * up to version 1434361080.
+ * Generated on 2015-06-15 11:38:00 by root
  */
-class PropelMigration_1433947040
+class PropelMigration_1434361080
 {
 
     public function preUp($manager)
@@ -42,6 +42,8 @@ class PropelMigration_1433947040
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
+ALTER TABLE `cfg_tags` DROP `slug`;
+
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
@@ -63,7 +65,8 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cfg_timezones` DROP `slug`;
+ALTER TABLE `cfg_tags`
+    ADD `slug` VARCHAR(254) NOT NULL AFTER `tagname`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

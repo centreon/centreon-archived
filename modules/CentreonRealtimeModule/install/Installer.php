@@ -67,7 +67,18 @@ class Installer extends AbstractModuleInstaller
      */
     public function customInstall()
     {
+        $db = Di::getDefault()->get('db_centreon');
         
+        $sSql = "CREATE TABLE IF NOT EXISTS `log_data_bin`
+        (
+            `id_metric` INTEGER,
+            `ctime` INTEGER,
+            `value` FLOAT,
+            `status` enum(\'0\',\'1\',\'2\',\'3\',\'4\'),
+            INDEX `index_metric` (`id_metric`)
+        ) ENGINE=MyISAM;";
+        
+        \PropelSQLParser::executeString($sSql, $db);
     }
     
     /**
