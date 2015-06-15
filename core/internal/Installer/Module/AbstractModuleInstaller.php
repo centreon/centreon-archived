@@ -508,14 +508,24 @@ abstract class AbstractModuleInstaller
         $message = $this->colorizeText(_("Checking operation validity..."));
         $this->displayOperationMessage($message, false);
         
-        if ($operation === 'uninstall') {
-            $this->checkReverseModulesDependencies();
-        } else {
-            // Check modules dependencies
-            $this->checkModulesDependencies();
-        
-            // Check system dependencies
-            $this->checkSystemDependencies();
+        switch ($operation) {
+            case 'install':
+                $this->checkModulesDependencies();
+                $this->checkSystemDependencies();
+                break;
+            
+            case 'uninstall':
+                $this->checkReverseModulesDependencies();
+                break;
+            
+            case 'upgrade':
+                $this->checkReverseModulesDependencies();
+                $this->checkModulesDependencies();
+                $this->checkSystemDependencies();
+                break;
+
+            default:
+                break;
         }
         
         $message = $this->colorizeMessage(_("     Done"), 'green');
@@ -549,7 +559,6 @@ abstract class AbstractModuleInstaller
                         
             $this->installValidators();
             
-            $currentModuleId = Informations::getModuleIdByName($this->moduleSlug);
             $myFormFiles = glob($this->moduleDirectory. '/install/forms/*.xml');
             foreach ($myFormFiles as $formFile) {
                 Form::installFromXml($this->moduleId, $formFile);
@@ -669,14 +678,11 @@ abstract class AbstractModuleInstaller
     }
     
     /**
-     * @todo After seeing Propel
+     * 
+     * @param type $installDefault
      */
     protected function installDb($installDefault = true)
     {
-        // Initialize configuration
-        $di = Di::getDefault();
-        $config = $di->get('config');
-        $dbName = $config->get('db_centreon', 'dbname');
         echo "Updating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
         Db::update($this->moduleSlug);
         echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
@@ -685,6 +691,15 @@ abstract class AbstractModuleInstaller
         }
     }
     
+    /**
+     * 
+     */
+    protected function removeDb()
+    {
+        Db::update($this->moduleSlug, 'delete');
+    }
+
+
     /**
      * 
      * @param int $moduleId
