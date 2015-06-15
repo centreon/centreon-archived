@@ -76,17 +76,18 @@
                 <div class="remove-trigger col-md-1" style="cursor:pointer;"><i class="icon-delete ico-18"></i></div>
 
                 <div class="col-md-2">
-
-                    <div class="checkbox checkbox-styled">
-                        <label>
-                            <input class="hidden-value-trigger" type="checkbox" name="macro_hidden[{$i}]"
-                            {if (isset($macro['macro_hidden']) and ($macro['macro_hidden'] > 0))}
-                            checked=checked
-                            {/if}
-                             />
-                            <span>Hide</span>
-                        </label>
-                      </div>
+                    <div class="form-group">
+                        <div class="checkbox checkbox-styled">
+                            <label>
+                                <input class="hidden-value-trigger" type="checkbox" name="macro_hidden[{$i}]"
+                                {if (isset($macro['macro_hidden']) and ($macro['macro_hidden'] > 0))}
+                                checked=checked
+                                {/if}
+                                 />
+                                <span>Hide</span>
+                            </label>
+                        </div>
+                 </div>
 
 
 
