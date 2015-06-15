@@ -161,7 +161,7 @@
     }
       span {
         position: relative;
-        padding-left: @paddingElem*3;
+        padding-left: 20px;
         display: inline-block;
         cursor: pointer;
         vertical-align: text-top;
@@ -194,9 +194,7 @@
 
 
   .checkbox-styled {
-    input {
-
-      span:before {
+    input:checked ~ span:before {
         -webkit-transform: rotate(-45deg);
         -ms-transform: rotate(-45deg);
         -o-transform: rotate(-45deg);
@@ -206,7 +204,6 @@
         border-top-style: none;
         border-right-style: none;
       }
-    }
   }
 
   /*---- Radio Fields --- */
