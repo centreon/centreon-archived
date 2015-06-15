@@ -37,8 +37,6 @@ namespace Centreon\Commands\Database;
 
 use Centreon\Internal\Command\AbstractCommand;
 use Centreon\Internal\Exception;
-use Centreon\Internal\Di;
-use Centreon\Internal\Installer\Database\Installer as DbInstaller;
 
 class ToolsCommand extends AbstractCommand
 {

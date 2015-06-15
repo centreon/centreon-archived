@@ -159,4 +159,14 @@ class MigrateCommand extends AbstractCommand
         $migrationManager = new Migrate($module);
         $migrationManager->migrate();
     }
+    
+    /**
+     * 
+     * @param string $module
+     * @param string $class
+     */
+    public function createAction($module, $class)
+    {
+        
+    }
 }
