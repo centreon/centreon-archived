@@ -43,8 +43,7 @@ use Centreon\Models\CentreonBaseModel;
 
 class Icon extends CentreonBaseModel
 {
-    protected static $table = "cfg_view_images";
-    protected static $primaryKey = "img_id";
-    protected static $uniqueLabelField = "img_name";
-    
+    protected static $table = "cfg_binaries";
+    protected static $primaryKey = "binary_id";
+    protected static $uniqueLabelField = "filename";
 }

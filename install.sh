@@ -152,6 +152,10 @@ service snmpd start
 
 # Install centreon-plugins
 git clone https://github.com/centreon/centreon-plugins.git /usr/lib/nagios/plugins/centreon-plugins/
+chmod 755 /usr/lib/nagios/plugins/centreon-plugins/centreon_plugins.pl
+
+chown root /usr/lib/nagios/plugins/check_icmp
+chmod u+s /usr/lib/nagios/plugins/check_icmp
 
 # Install php module for rrdtools
 yum install -y php54-php-pecl-rrd
@@ -175,6 +179,8 @@ external/bin/centreonConsole core:module:manage:install --module=centreon-perfor
 \cp -r modules/CentreonConfigurationModule/static/centreon-configuration/ www/static/
 
 chown apache.apache /srv/centreon/www/uploads/images
+chown apache.apache /srv/centreon/www/uploads/imagesthumb/
+
 usermod -a -G centreon-engine apache
 usermod -a -G centreon-broker apache
 

@@ -155,6 +155,7 @@ class BasicRepository
      */
     public static function getIdFromUnicity($unicityParams)
     {
+        $db = Di::getDefault()->get('db_centreon');
         $objClass = static::$objectClass;
         $tables = array();
         $conditions = array();
@@ -179,7 +180,7 @@ class BasicRepository
             if (isset(static::$unicityFields['fields'][$key])) {
                 $fieldComponents = explode (',', static::$unicityFields['fields'][$key]);
                 $tables[] = $fieldComponents[0];
-                $conditions[] = $fieldComponents[2] . "='$unicityParam'";
+                $conditions[] = $fieldComponents[2] . "=".$db->quote($unicityParam);
             }
         }
         
@@ -193,7 +194,7 @@ class BasicRepository
         $query .= 'FROM ' . implode(', ', $tables) . ' WHERE ' . implode(' AND ', $conditions);
         //echo $query;die;
         // Execute request
-        $db = Di::getDefault()->get('db_centreon');
+
         $stmt = $db->query($query);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
