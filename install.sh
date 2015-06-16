@@ -154,6 +154,9 @@ service snmpd start
 git clone https://github.com/centreon/centreon-plugins.git /usr/lib/nagios/plugins/centreon-plugins/
 chmod 755 /usr/lib/nagios/plugins/centreon-plugins/centreon_plugins.pl
 
+chown root /usr/lib/nagios/plugins/check_icmp
+chmod u+s /usr/lib/nagios/plugins/check_icmp
+
 # Install php module for rrdtools
 yum install -y php54-php-pecl-rrd
 
