@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="cfg_curve_config" idMethod="native">
+        <column name="graph_template_id" type="INTEGER" required="true" primaryKey="true" />
+        <column name="metric_name" type="VARCHAR" size="255" required="true" primaryKey="true" />
+        <column name="color" type="VARCHAR" size="7" />
+        <column name="is_negative" type="INTEGER" size="1" required="true" defaultValue="0" />
+        <column name="fill" type="INTEGER" size="1" required="true" defaultValue="0" />
+        <foreign-key foreignTable="cfg_graph_template" name="cfg_curve_config_fk1" onDelete="CASCADE">
+          <reference local="graph_template_id" foreign="graph_template_id" />
+        </foreign-key>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

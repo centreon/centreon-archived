@@ -36,6 +36,7 @@
 
 namespace CentreonRealtime\Install;
 
+use Centreon\Internal\Di;
 use Centreon\Internal\Installer\Module\AbstractModuleInstaller;
 
 /**
@@ -74,7 +75,7 @@ class Installer extends AbstractModuleInstaller
             `id_metric` INTEGER,
             `ctime` INTEGER,
             `value` FLOAT,
-            `status` enum(\'0\',\'1\',\'2\',\'3\',\'4\'),
+            `status` enum('0','1','2','3','4'),
             INDEX `index_metric` (`id_metric`)
         ) ENGINE=MyISAM;";
         

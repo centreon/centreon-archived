@@ -91,7 +91,7 @@
     }
 
     /* Test if the help is in cache */
-    if (this.groups[name]["help"] !== undefined) {
+    if ((name !== undefined) && (this.groups[name]["help"] !== undefined)) {
       if (false === $parent.hasClass("has-error")) {
         $help.html(this.groups[name]["help"]);
       }

@@ -2,30 +2,35 @@
     {
         "domain_id" : 1,
         "name": "Network",
+        "slug": "network",
         "description": "Network domain",
         "isroot": 1
     },
     {
         "domain_id" : 2,
         "name": "Hardware",
+        "slug": "hardware",
         "description": "Hardware domain",
         "isroot": 1
     },
     {
         "domain_id" : 3,
         "name": "System",
+        "slug": "system",
         "description": "System domain",
         "isroot": 1
     },
     {
         "domain_id" : 4,
         "name": "Application",
+        "slug": "application",
         "description": "Application domain",
         "isroot": 1
     },
     {
         "domain_id" : 5,
         "name": "CPU",
+        "slug": "cpu",
         "description": "Cpu domain",
         "isroot": 0,
         "parent_id": 3
@@ -33,6 +38,7 @@
     {
         "domain_id" : 6,
         "name": "Memory",
+        "slug": "memory",
         "description": "Memory domain",
         "isroot": 0,
         "parent_id": 3
@@ -40,6 +46,7 @@
     {
         "domain_id" : 7,
         "name": "Swap",
+        "slug": "swap",
         "description": "Swap domain",
         "isroot": 0,
         "parent_id": 3
@@ -47,6 +54,7 @@
     {
         "domain_id" : 8,
         "name": "FileSystem",
+        "slug": "filesystem",
         "description": "File System domain",
         "isroot": 0,
         "parent_id": 3
@@ -54,6 +62,7 @@
     {
         "domain_id" : 9,
         "name": "Traffic",
+        "slug": "traffic",
         "description": "Traffic domain",
         "isroot": 0,
         "parent_id": 2

@@ -759,11 +759,13 @@ class IndicatorRepository extends FormRepository
         if (isset($unicityParams['id_ba']) && !empty($unicityParams['id_ba'])) {
             $query .= " AND id_ba = '".$unicityParams['id_ba']."'";
         }
+        $query .= ' LIMIT 1';
 
         // Execute request
         $stmt = $db->prepare($query);
+        $stmt->execute();
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        
+
         if (count($result) > 0) {
             $objectId = $result[0][$sElement];
         }

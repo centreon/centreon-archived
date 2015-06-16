@@ -73,7 +73,7 @@ class Textarea extends Component
                     'id="'.$element['id'].'" '.
                     'name="'.$element['name'].'" '.
                     'class="form-control '.$addClass.'" '.
-                    'rows="3" '.' maxlength="150"'.
+                    'rows="3" '.
                     $placeholder.
                     $required;
         if ($element['label_parent_field'] != '' && $element['label_parent_value'] != '') {
