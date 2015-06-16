@@ -25,7 +25,7 @@
         <column name="in_downtime" phpName="InDowntime" type="BOOLEAN" size="1"/>
         <column name="dependency_dep_id" phpName="DependencyDepId" type="INTEGER"/>
         <column name="graph_id" phpName="GraphId" type="INTEGER"/>
-        <column name="icon_id" phpName="IconId" type="INTEGER"/>
+        <column name="icon_id" phpName="IconId" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
         <column name="graph_style" phpName="GraphStyle" type="VARCHAR" size="254"/>
         <column name="activate" phpName="Activate" type="TINYINT" defaultValue="1"/>
         <column name="comment" phpName="Comment" type="LONGVARCHAR"/>
