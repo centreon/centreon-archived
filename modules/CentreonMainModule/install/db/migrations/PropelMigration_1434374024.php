@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1433947040.
- * Generated on 2015-06-10 16:37:20 by root
+ * up to version 1434374024.
+ * Generated on 2015-06-15 15:13:44 by root
  */
-class PropelMigration_1433947040
+class PropelMigration_1434374024
 {
 
     public function preUp($manager)
@@ -42,6 +42,14 @@ class PropelMigration_1433947040
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
+ALTER TABLE `cfg_bam` DROP FOREIGN KEY `mod_bam_ibfk_4`;
+
+ALTER TABLE `cfg_bam` ADD CONSTRAINT `mod_bam_ibfk_4`
+    FOREIGN KEY (`icon_id`)
+    REFERENCES `cfg_binaries` (`binary_id`)
+    ON DELETE SET NULL;
+    
+
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
@@ -63,7 +71,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cfg_timezones` DROP `slug`;
+ALTER TABLE `cfg_bam` DROP FOREIGN KEY `mod_bam_ibfk_4`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

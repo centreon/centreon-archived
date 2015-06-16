@@ -119,7 +119,7 @@ class TagsRepository extends Repository
                 )
             );
         }
-   
+           
         /* Insert relation tag */
         if (!self::isLink($resourceName, $resourceId, $tagId)) {
             self::associateTagWithResource($resourceName, $tagId, $resourceId, $iIdTemplate);
@@ -278,29 +278,13 @@ class TagsRepository extends Repository
         if (count($tag) === 0) {
             throw new Exception("The tag is not found for user");
         }
-        return $tag[0]['tag_id'];
-            
-
         
-        /*
-        $tag = Tag::getList(
-            'tag_id',
-            1,
-            0,
-            null,
-            'ASC',
-            $aFilter,
-            'AND',
-            '',
-            ''
-        );
-        
-        if (count($tag) === 0) {
-            throw new Exception("The tag is not found for user");
+        if (isset($tag[0]['tag_id'])) {
+            $sRep = $tag[0]['tag_id'];
+        } else {
+            $sRep = "";
         }
-        return $tag[0]['tag_id'];
-         * 
-         */
+        return $sRep;
     }
 
     /**

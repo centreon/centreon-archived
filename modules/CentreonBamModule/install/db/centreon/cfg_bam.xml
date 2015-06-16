@@ -34,8 +34,8 @@
         <foreign-key foreignTable="cfg_timeperiods" name="mod_bam_ibfk_5" onDelete="SET NULL">
             <reference local="id_reporting_period" foreign="tp_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_view_images" name="mod_bam_ibfk_4" onDelete="SET NULL">
-            <reference local="icon_id" foreign="img_id"/>
+        <foreign-key foreignTable="cfg_binaries" name="mod_bam_ibfk_4" onDelete="SET NULL">
+            <reference local="icon_id" foreign="binary_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_organizations" name="bam_ibfk_6" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="organization_id" foreign="organization_id"/>

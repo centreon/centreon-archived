@@ -85,12 +85,12 @@ class Checkbox extends Component
             if (in_array($choice, $values)) {
                 $htmlSelected = 'checked=checked';
             }
-            $inputHtml .= '<label class="label-controller" for="'.$element['id'] . $i . '">'.
+            $inputHtml .= '<div class="checkbox checkbox-styled"><label class="label-controller" for="'.$element['id'] . $i . '">'.
                         '<input '.'id="'.$element['id']. $i . '" '.
                         'type="'.$element['label_type'].'" '.'name="'.$element['name'].'[]" '.
                         'value=' . $choice . ' '.$htmlSelected.' '.
-                        '/>'.' '.$key.
-                        '</label>';
+                        '/><span>'.' '.$key.'</span>'.
+                        '</label></div>';
             $i++;
         }
         

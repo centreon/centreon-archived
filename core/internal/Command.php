@@ -346,18 +346,19 @@ class Command
         }
         
         unset($listOptions['h|help']);
-        
         foreach($listOptions as $key=>$options){
             if($options['type'] === 'boolean'){
-                if(!isset($argsList[$key])){
-                    $argsList[$key] = $options['defaultValue'];
-                }else{
-                    $argsList[$key] = !$options['defaultValue'];
-                }
-                if ($argsList[$key]) {
-                    $argsList[$key] = 1;
-                } else {
-                    $argsList[$key] = 0;
+                if(isset($options['booleanValue'])){
+                    if(isset($argsList[$key])){
+                        $argsList[$key] = $options['booleanValue'];
+                    }else if(isset($options['booleanSetDefault']) && $options['booleanSetDefault']){
+                        $argsList[$key] = !$options['booleanValue'];
+                    }
+                    if (isset($argsList[$key]) && $argsList[$key]) { //true 
+                        $argsList[$key] = 1;
+                    } else if(isset($argsList[$key])){ //false
+                        $argsList[$key] = 0;
+                    }
                 }
             }
         }

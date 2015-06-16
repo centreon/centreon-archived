@@ -104,7 +104,8 @@
               "toTransform" : "host_activate",
               "multiple" : false,
               "required" : false,
-              "defaultValue" : true
+              "booleanValue" : false,
+              "booleanSetDefault" : true
             }
         },
         "showAction" : {
@@ -189,7 +190,16 @@
               "toTransform" : "host_activate",
               "multiple" : false,
               "required" : false,
-              "defaultValue" : true
+              "booleanValue" : false
+            },
+            "enable" : {
+              "functionParams" : "params",
+              "help": "disable",
+              "type": "boolean",
+              "toTransform" : "host_activate",
+              "multiple" : false,
+              "required" : false,
+              "booleanValue" : true
             }
         },
         "addMacroAction" : {
@@ -205,25 +215,79 @@
               "functionParams" : "params",
               "help": "The host description",
               "type": "string",
-              "toTransform" : "name",
+              "toTransform" : "host_macro_name",
               "multiple" : false,
-              "required" : false
+              "required" : true
             },
             "value" : {
               "functionParams" : "params",
               "help": "The macro value",
               "type": "string",
-              "toTransform" : "value",
+              "toTransform" : "host_macro_value",
+              "multiple" : false,
+              "required" : true
+            },
+            "hidden" : {
+              "functionParams" : "params",
+              "help": "",
+              "type": "boolean",
+              "toTransform" : "is_password",
+              "multiple" : false,
+              "required" : false,
+              "booleanValue" : true,
+              "booleanSetDefault" : true
+            }
+        },
+        "updateMacroAction" : {
+            "host" : {
+              "functionParams" : "object",
+              "help": "The host",
+              "type": "string",
+              "toTransform" : "host",
+              "multiple" : false,
+              "required" : true
+            },
+            "macro" : {
+              "functionParams" : "macro",
+              "help": "The macro name",
+              "type": "string",
+              "toTransform" : "",
+              "multiple" : false,
+              "required" : true
+            },
+            "value" : {
+              "functionParams" : "params",
+              "help": "The macro value",
+              "type": "string",
+              "toTransform" : "host_macro_value",
+              "multiple" : false,
+              "required" : false
+            },
+            "name" : {
+              "functionParams" : "params",
+              "help": "The new macro name",
+              "type": "string",
+              "toTransform" : "host_macro_name",
               "multiple" : false,
               "required" : false
             },
             "hidden" : {
               "functionParams" : "params",
-              "help": "",
-              "type": "Number",
-              "toTransform" : "hidden",
+              "help": "Is password",
+              "type": "boolean",
+              "toTransform" : "is_password",
               "multiple" : false,
-              "required" : false
+              "required" : false,
+              "booleanValue" : true
+            },
+            "show" : {
+              "functionParams" : "params",
+              "help": "Is password",
+              "type": "boolean",
+              "toTransform" : "is_password",
+              "multiple" : false,
+              "required" : false,
+              "booleanValue" : false
             }
         },
         "listMacroAction" : {
@@ -252,48 +316,6 @@
               "toTransform" : "",
               "multiple" : false,
               "required" : true
-            }
-        },
-        "updateMacroAction" : {
-            "host" : {
-              "functionParams" : "object",
-              "help": "The host",
-              "type": "string",
-              "toTransform" : "host",
-              "multiple" : false,
-              "required" : true
-            },
-            "macro" : {
-              "functionParams" : "macro",
-              "help": "The macro name",
-              "type": "string",
-              "toTransform" : "",
-              "multiple" : false,
-              "required" : true
-            },
-            "value" : {
-              "functionParams" : "params",
-              "help": "The macro value",
-              "type": "string",
-              "toTransform" : "value",
-              "multiple" : false,
-              "required" : false
-            },
-            "name" : {
-              "functionParams" : "params",
-              "help": "The new macro name",
-              "type": "string",
-              "toTransform" : "name",
-              "multiple" : false,
-              "required" : false
-            },
-            "hidden" : {
-              "functionParams" : "params",
-              "help": "Is password",
-              "type": "number",
-              "toTransform" : "hidden",
-              "multiple" : false,
-              "required" : false
             }
         }
     }
