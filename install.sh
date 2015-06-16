@@ -152,6 +152,7 @@ service snmpd start
 
 # Install centreon-plugins
 git clone https://github.com/centreon/centreon-plugins.git /usr/lib/nagios/plugins/centreon-plugins/
+chmod 755 /usr/lib/nagios/plugins/centreon-plugins/centreon_plugins.pl
 
 # Install php module for rrdtools
 yum install -y php54-php-pecl-rrd
