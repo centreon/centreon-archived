@@ -323,7 +323,7 @@ class ConfigGenerateRepository
                     array_values($this->baseConfig),
                     $key
                 );
-                $key = str_replace(array('/','.'),'-',$key);
+                $key = str_replace(array('/','.', ' '), '-', $key);
                 $file->writeElement($key, $value);
             }
         }

@@ -165,7 +165,7 @@ class Db
         // Initialize configuration
         $di = Di::getDefault();
         $config = $di->get('config');
-        $centreonPath = $config->get('global', 'centreon_path');
+        $centreonPath = $config->get('global', 'centreon_generate_tmp_dir');
         
         $targetFolder = $centreonPath . '/tmp/db/target/' . $targetDbName . '/';
         $currentFolder = $centreonPath . '/tmp/db/current/' . $targetDbName . '/';
