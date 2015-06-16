@@ -35,45 +35,22 @@
  */
 
 
-namespace CentreonBam\Commands;
+namespace CentreonBam\Repository;
 
-use Centreon\Api\Internal\BasicCrudCommand;
-use CentreonBam\Repository\IndicatorRepository;
+use CentreonMain\Repository\FormRepository;
+use Centreon\Internal\Di;
+
+
 /**
- * Description of KpiCommand
+ * Description of BooleanIndicatorRepository
  *
  * @author bsauveton
  */
-class IndicatorCommand extends BasicCrudCommand
+class BooleanIndicatorRepository extends FormRepository
 {
-    /**
-     *
-     * @var type 
-     */
-    public $objectName = 'indicator';
     
-    public function __construct()
-    {
-        parent::__construct();
-    }
-    
-    public function createAction($params){
-        IndicatorRepository::createIndicator($this->parseObjectParams($params), 'api', '/centreon-bam/indicator/update');
-        \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
-    }
-    
-    /**
-     * 
-     * @param array $params
-     * @detail $params array service required The indicator
-     * @detail $params string host 
-     * @detail $params boolean hidden 
-     */
-    public function updateAction($object,$params){
-        IndicatorRepository::updateIndicator($this->parseObjectParams($params), 'api', '/centreon-bam/indicator/update',false,$this->parseObjectParams($object));
-        \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully updated", true, 'green');
-    }
+    public static $objectClass = '\CentreonBam\Models\BooleanIndicator';
     
     
+    //put your code here
 }
-

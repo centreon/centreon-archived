@@ -50,6 +50,8 @@ use CentreonBam\Models\Relation\Aclresource\BusinessActivity as AclresourceBusin
 class BusinessActivityRepository extends FormRepository
 {
     
+    
+    public static $objectClass = '\CentreonBam\Models\BusinessActivity';
     /**
      *
      * @var type 
