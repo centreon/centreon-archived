@@ -349,7 +349,7 @@ class ServiceDatatable extends Datatable
             foreach ($aTags as $oTags) {
                 if (!in_array($oTags['id'], $aTagUsed)) {
                     $aTagUsed[] = $oTags['id'];
-                    $myServiceSet['tagname'] = TagsRepository::getTag('service',$myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], 1);
+                    $myServiceSet['tagname'] .= TagsRepository::getTag('service',$myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], 1);
                 }
             }
 
