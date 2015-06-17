@@ -1,20 +1,18 @@
 $(function () {
   var tagExpand = false;
  // var chaine = '^([\w.-])+$';
-  var chaine = '^([a-zA-Z0-9_.-])+$';
-  var regexTags = new RegExp(chaine, "g");
+
   var sMessageUnsuportedCharacter = 'Unauthorized character. Allowed characters are alphanumeric characters, "_", "." and "-"';
   var sMessageLengthTag = 'you must enter a text of 3 characters minimum';
-
+  var chaine = '^([a-zA-Z0-9_.-])+$';
   function saveTag( $newTag ) {
     var tmplTagCmpl,
         tmplTag = "<div class='tag' data-resourceid='<%resourceid%>' data-resourcetype='<%resourcetype%>' data-tagid='<%tagid%>'>"
           + "<div class='tagname'><%tagname%></div>"
           + "<div class='remove'><a href='#'>&times;</a></div>"
           + "</div>";
-
-    tagName = $newTag.find( "input" ).val().trim();
-    
+    var regexTags = new RegExp(chaine, "g");
+    var tagName = $newTag.find( "input" ).val().trim();
     /* Does not accept empty tag */
     if ( tagName === "" ) {
       return;
