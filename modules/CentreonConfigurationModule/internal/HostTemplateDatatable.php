@@ -269,7 +269,7 @@ class HostTemplateDatatable extends Datatable
             foreach ($aTags as $oTags) {
                 if (!in_array($oTags['id'], $aTagUsed)) {
                     $aTagUsed[] = $oTags['id'];
-                    $myHostSet['tagname'] = TagsRepository::getTag('host',$myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], 1);
+                    $myHostSet['tagname'] .= TagsRepository::getTag('host',$myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], 1);
                 }
             }
 
