@@ -90,10 +90,9 @@ class Manager
      */
     public function setDeploymentMode($deploymentMode)
     {
-        if (($deploymentMode !== 'production') || ($deploymentMode !== 'development')) {
+        if (($deploymentMode !== 'production') && ($deploymentMode !== 'development')) {
             throw new \OutOfBoundsException;
         }
-
         $this->deploymentMode = $deploymentMode;
     }
     
@@ -127,6 +126,25 @@ class Manager
      * 
      * @return string
      */
+    public function getPhinxConfigurationFile()
+    {
+        $di = Di::getDefault();
+        $tmpPath = $di->get('config')->get('global', 'centreon_generate_tmp_dir');
+        
+        $finalPath = $tmpPath . '/centreon/' . str_replace('-', '_', $this->moduleSlug) . '/';
+        if (!file_exists($finalPath)) {
+            mkdir($finalPath, 0777, true);
+        }
+        
+        $finalPath .= 'phinxConfigFile.php';
+        
+        return $finalPath;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
     public function buildMigrationPathForProduction()
     {
         $finalPath = Informations::getModulePath($this->moduleSlug);
@@ -144,15 +162,14 @@ class Manager
         $di = Di::getDefault();
         $tmpPath = $di->get('config')->get('global', 'centreon_generate_tmp_dir');
         
-        $finalPath = $tmpPath . '/centreon/' . str_replace('-', '_', $this->moduleSlug) . '/';
-        
+        $finalPath = $tmpPath . '/centreon/' . str_replace('-', '_', $this->moduleSlug) . '/migrations/';
         if (!file_exists($finalPath)) {
             mkdir($finalPath, 0777, true);
         }
         
         return $finalPath;
     }
-
+    
     /**
      * 
      * @param string $migrationTable
@@ -169,27 +186,52 @@ class Manager
     public function generateConfiguration()
     {
         $di = Di::getDefault();
-        $targetDb = 'db_centreon';
-        $dbConnector = $di->get($targetDb);
+        $centreonPath = $di->get('config')->get('global', 'centreon_path');
+        $bootstrapPath = $centreonPath . '/bootstrap.php';
+        $configPath = $centreonPath . '/config/';
+        
+        // Starting File
+        $configurationFileContent = "<?php\n\n";
+        
+        // Add requirements
+        $configurationFileContent .= "    define('CENTREON_ETC', '$configPath');\n";
+        $configurationFileContent .= '    $bootstrap = "' . $bootstrapPath . '";' . "\n";
+        $configurationFileContent .= '    require_once $bootstrap;' . "\n";
+        $configurationFileContent .= "    use Centreon\Internal\Di;\n\n";
+        
+        // Init bootstrap
+        $configurationFileContent .= '    $bootstrapInit = new \Centreon\Internal\Bootstrap();' . "\n";
+        $configurationFileContent .= '    $bootstrapInit->init();' . "\n\n";
+        
+        // get DbConnector
+        $configurationFileContent .= '    $di = Di::getDefault();' . "\n";
+        $configurationFileContent .= '    $targetDb = "db_centreon";' . "\n";
+        $configurationFileContent .= '    $dbConnector = $di->get($targetDb);' . "\n\n";
+        
+        // returning Config Parameters
+        $configurationFileContent .= "    return array(\n";
         
         // Configuring paths
-        $paths = array(
-            'migrations' => $this->getMigrationPath()
-        );
+        $configurationFileContent .= '        "paths" => array(' . "\n";
+        $configurationFileContent .= '            "migrations" => ';
+        $configurationFileContent .= '"' . $this->getMigrationPath() . '"' . "\n";
+        $configurationFileContent .= "        ),\n";
         
         // Configuring Module Environment
-        $currentModuleEnvironment = array(
-            'default_migration_table' => $this->getMigrationTable(),
-            'default_database' => 'centreon',
-            'centreon' => array(
-                'connection' => $dbConnector
-            )
-        );
+        $configurationFileContent .= '        "environments" => array(' . "\n";
+        $configurationFileContent .= '            "default_migration_table" => ';
+        $configurationFileContent .= '"' . $this->getMigrationTable() . '",' . "\n";
+        $configurationFileContent .= '            "default_database" => ';
+        $configurationFileContent .= '"centreon",' . "\n";
+        $configurationFileContent .= '            "centreon" => array(' . "\n";
+        $configurationFileContent .= '                "connection" => $dbConnector'  . "\n";
+        $configurationFileContent .= '           )' . "\n";
+        $configurationFileContent .= '       )' . "\n";
         
-        // Return configuration of current module
-        return array(
-            'paths' => $paths,
-            'environments' => $currentModuleEnvironment
-        );
+        // Ending File
+        $configurationFileContent .= "    );\n";
+        
+        // Flush into phinxConfigFile
+        file_put_contents($this->getPhinxConfigurationFile(), $configurationFileContent);
     }
 }

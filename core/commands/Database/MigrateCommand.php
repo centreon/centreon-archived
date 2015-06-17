@@ -41,6 +41,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Utils\CommandLine\InputOutput;
 use Centreon\Internal\Database\GenerateDiff;
 use Centreon\Internal\Database\Migrate;
+use Centreon\Internal\Installer\Migration\Manager;
 
 /**
  * Description of MigrateCommand
@@ -94,6 +95,34 @@ class MigrateCommand extends AbstractCommand
         "migrateAction" => array(
             "module" => array(
                 "functionParams" => "module",
+                "help" => "",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        ),
+        "initAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        ),
+        "createAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            ),
+            "class" => array(
+                "functionParams" => "class",
                 "help" => "",
                 "type" => "string",
                 "toTransform" => "",
@@ -162,11 +191,41 @@ class MigrateCommand extends AbstractCommand
     
     /**
      * 
+     * @param type $module
+     */
+    public function initAction($module)
+    {
+        //$cmd = 'phinx create ' . $class;
+        $migrationManager = new Manager($module, 'development');
+        $migrationManager->generateConfiguration();
+        
+        //shell_exec($cmd);
+    }
+    
+    /**
+     * 
      * @param string $module
      * @param string $class
      */
     public function createAction($module, $class)
     {
-        
+        $migrationManager = new Manager($module, 'development');
+        $cmd = $this->getPhinxCallLine() .'create ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= ' ' . $class;
+        var_dump($cmd);
+        shell_exec($cmd);
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    private function getPhinxCallLine()
+    {
+        $di = Di::getDefault();
+        $centreonPath = $di->get('config')->get('global', 'centreon_path');
+        $callCmd = 'php ' . $centreonPath . '/vendor/bin/phinx ';
+        return $callCmd;
     }
 }
