@@ -4,7 +4,7 @@
     "objectBaseUrl" : "hosttemplate",
     "objectClass" : "\\CentreonConfiguration\\Models\\Hosttemplate",
     "relationMap" : {
-        "host_hosttemplates" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Hosttemplate",
+        "host_hosttemplates" : "\\CentreonConfiguration\\Models\\Relation\\Hosttemplate\\Hosttemplate",
         "hosttemplate_servicetemplates" : "\\CentreonConfiguration\\Models\\Relation\\Hosttemplate\\Servicetemplate",
         "host_icon" : "\\CentreonConfiguration\\Models\\Relation\\Hosttemplate\\Icon"
     },
