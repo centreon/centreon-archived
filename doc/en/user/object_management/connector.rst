@@ -56,6 +56,7 @@ In order to show a connector, use **show** action::
   ./centreonConsole centreon-configuration:Connector:show --connector 'ssh-connector'
   id: 2
   name: SSH Connector
+  slug: ssh-connector
   description:
   command_line: $USER3$/centreon_connector_ssh
   activate: 1
@@ -68,7 +69,7 @@ Create
 
 In order to create a connector, use **create** action::
 
-  ./centreonConsole centreon-configuration:Connector:create --name 'SSH Connector' --command-line '$USER3$/ssh_connector' --enabled 1
+  ./centreonConsole centreon-configuration:Connector:create --name 'ssh-connector' --command-line '$USER3$/ssh_connector' --enabled 1
   Object successfully created
 
 Update
@@ -76,7 +77,7 @@ Update
 
 In order to update a connector, use **update** action::
 
-  ./centreonConsole centreon-configuration:Connector:update object="command[ssh_connector]":params="description[SSH Connector];enabled[0]"
+  ./centreonConsole centreon-configuration:Connector:update --command 'ssh-connector' --description 'ssh-connector' --enabled 0
   Object successfully updated
 
 Delete
@@ -84,7 +85,7 @@ Delete
 
 In order to delete a connector, use **delete** action::
 
-  ./centreonConsole centreon-configuration:Connector:delete object="connector[ssh_connector]"
+  ./centreonConsole centreon-configuration:Connector:delete --connector 'ssh-connector'
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -92,6 +93,6 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a connector, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:Connector:duplicate object="command[ssh_connector]"
+  ./centreonConsole centreon-configuration:Connector:duplicate --command 'ssh-connector'
   Object successfully duplicated
 
