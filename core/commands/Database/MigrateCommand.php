@@ -52,36 +52,6 @@ class MigrateCommand extends AbstractCommand
 {
     
     public $options = array(
-        "generateDiffAction" => array(
-            "module" => array(
-                "functionParams" => "module",
-                "help" => "",
-                "type" => "string",
-                "toTransform" => "",
-                "multiple" => false,
-                "required" => false
-            )
-        ),
-        "downAction" => array(
-            "module" => array(
-                "functionParams" => "module",
-                "help" => "",
-                "type" => "string",
-                "toTransform" => "",
-                "multiple" => false,
-                "required" => false
-            )
-        ),
-        "upAction" => array(
-            "module" => array(
-                "functionParams" => "module",
-                "help" => "",
-                "type" => "string",
-                "toTransform" => "",
-                "multiple" => false,
-                "required" => false
-            )
-        ),
         "statusAction" => array(
             "module" => array(
                 "functionParams" => "module",
@@ -132,61 +102,46 @@ class MigrateCommand extends AbstractCommand
         )
     );
     
-    
-    
     /**
      * 
      * @param string $module
      */
-    public function generateDiffAction($module = 'centreon')
-    {
-        InputOutput::display(_("Generates SQL diff between the XML schemas and the current database structure"));
-        $diffGenerator = new GenerateDiff($module);
-        $diffGenerator->getDiff();
-    }
-    
-    /**
-     * 
-     * @param string $module
-     */
-    public function downAction($module = 'centreon')
-    {
-        InputOutput::display(_("Executes the next migrations down"));
-        $migrationManager = new Migrate($module);
-        $migrationManager->down();
-    }
-    
-    /**
-     * 
-     * @param string $module
-     */
-    public function statusAction($module = 'centreon')
+    public function statusAction($module)
     {
         InputOutput::display(_("Lists the migrations yet to be executed"));
-        $migrationManager = new Migrate($module);
-        $migrationManager->status();
+        $migrationManager = new Manager($module, 'production');
+        $cmd = $this->getPhinxCallLine() .'status ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= '-e '. $module;
+        shell_exec($cmd);
     }
     
     /**
      * 
      * @param string $module
      */
-    public function upAction($module = 'centreon')
-    {
-        InputOutput::display(_("Executes the next migrations up"));
-        $migrationManager = new Migrate($module);
-        $migrationManager->up();
-    }
-    
-    /**
-     * 
-     * @param string $module
-     */
-    public function migrateAction($module = 'centreon')
+    public function migrateAction($module)
     {
         InputOutput::display(_("Executes all migrations"));
-        $migrationManager = new Migrate($module);
-        $migrationManager->migrate();
+        $migrationManager = new Manager($module, 'production');
+        $cmd = $this->getPhinxCallLine() .'migrate ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= '-e '. $module;
+        shell_exec($cmd);
+    }
+    
+    /**
+     * 
+     * @param string $module
+     */
+    public function rollbackAction($module)
+    {
+        InputOutput::display(_("Revert all migrations"));
+        $migrationManager = new Manager($module, 'production');
+        $cmd = $this->getPhinxCallLine() .'rollback ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= '-e '. $module;
+        shell_exec($cmd);
     }
     
     /**
@@ -195,11 +150,8 @@ class MigrateCommand extends AbstractCommand
      */
     public function initAction($module)
     {
-        //$cmd = 'phinx create ' . $class;
         $migrationManager = new Manager($module, 'development');
         $migrationManager->generateConfiguration();
-        
-        //shell_exec($cmd);
     }
     
     /**
@@ -213,7 +165,6 @@ class MigrateCommand extends AbstractCommand
         $cmd = $this->getPhinxCallLine() .'create ';
         $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
         $cmd .= ' ' . $class;
-        var_dump($cmd);
         shell_exec($cmd);
     }
     
