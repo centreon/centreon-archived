@@ -37,6 +37,7 @@ namespace CentreonBroker\Repository;
 
 use Centreon\Internal\Di;
 use CentreonBroker\Models\Broker;
+use CentreonBroker\Models\BrokerPollerValues;
 use CentreonAdministration\Repository\OptionRepository;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
 
@@ -96,6 +97,7 @@ class BrokerRepository
         if ($row['poller'] > 0) {
             /* Update */
             Broker::update($pollerId, $sqlParams);
+            BrokerPollerValues::delete($pollerId, false);
         } else {
             /* Insert */
             Broker::insert($sqlParams, true);

@@ -21,7 +21,7 @@
                 <field name="tmpl_name" label="Poller template" normalized_name="template" default_value="" advanced="0" type="selectwithchange" parent_field="" mandatory="1">
                     <attributes>
                         <initCallback>loadTemplateSteps</initCallback>
-                        <additionalRoute>/centreon-configuration/poller/templates/form</additionalRoute>
+                        <additionalRoute>/centreon-configuration/poller/[i:id]/templates/form</additionalRoute>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-configuration/poller/templates</defaultValuesRoute>
                         <listValuesRoute>/centreon-configuration/poller/[i:id]/template</listValuesRoute>

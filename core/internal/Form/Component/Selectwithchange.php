@@ -52,6 +52,7 @@ class Selectwithchange extends Select
     {
         $extraData = 'data-callback="' . $element['label_initCallback'] . '"';
         if (isset($element['label_additionalRoute']) && trim($element['label_additionalRoute'])) {
+            $element['label_additionalRoute'] = Di::getDefault()->get('router')->getPathFor($element['label_additionalRoute'], $element['label_extra']);
             $extraData .= ' data-extra-url="' . $element['label_additionalRoute'] . '"';
         }
         $render = parent::renderHtmlInput($element);

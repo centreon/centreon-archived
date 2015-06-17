@@ -174,13 +174,13 @@ abstract class CentreonBaseModel extends CentreonModel
      *
      * @param int $objectId
      */
-    public static function delete($objectId)
+    public static function delete($objectId, $notFoundError = true)
     {
         $db = Di::getDefault()->get(static::$databaseName);
         $sql = "DELETE FROM  " . static::$table . " WHERE ". static::$primaryKey . " = ?";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($objectId));
-        if (1 !== $stmt->rowCount()) {
+        if ((1 !== $stmt->rowCount()) && $notFoundError) {
             throw new Exception(static::OBJ_NOT_EXIST);
         }
     }
