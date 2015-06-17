@@ -129,9 +129,9 @@ class Manager
     public function getPhinxConfigurationFile()
     {
         $di = Di::getDefault();
-        $tmpPath = $di->get('config')->get('global', 'centreon_generate_tmp_dir');
+        $centreonModuleVarPath = $di->get('config')->get('global', 'centreon_module_var');
         
-        $finalPath = $tmpPath . '/centreon/' . str_replace('-', '_', $this->moduleSlug) . '/';
+        $finalPath = $centreonModuleVarPath . '/' . str_replace('-', '_', $this->moduleSlug) . '/';
         if (!file_exists($finalPath)) {
             mkdir($finalPath, 0777, true);
         }
