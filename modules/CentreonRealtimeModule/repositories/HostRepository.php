@@ -178,7 +178,7 @@ class HostRepository extends Repository
         $stmt->execute(array($node['issue_id']));
         $parent = array($node);
         $flag = false;
-        while ($row = $stmt->fetch()) {
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if(!$flag){
                 $parent = array();
                 $flag = true;
@@ -228,7 +228,7 @@ class HostRepository extends Repository
         //$issues = array();
         $issues['indirect_issues'] = array();
         $issues['direct_issues'] = array();
-        while ($row = $stmt->fetch()) {
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $finalParent = self::recursiveTree($row,$row['issue_id']);
             if($finalParent[0]['is_parent'] != 0){
                 $row['parents'] = $finalParent;

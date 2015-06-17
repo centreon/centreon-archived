@@ -77,6 +77,7 @@ class BasicMacroSupport extends BasicCrudCommand
                 throw new \Exception(static::OBJ_NOT_EXIST);
             }
             switch($this->objectName){
+                case 'hosttemplate' : 
                 case 'host' :
                     if(isset($paramList['host_macro_name']) && isset($paramList['host_macro_value'])){
                         $formatedParams = array(
@@ -94,6 +95,7 @@ class BasicMacroSupport extends BasicCrudCommand
                         'green'
                     );
                     break;
+                case 'servicetemplate' : 
                 case 'service' : 
                     if(isset($paramList['svc_macro_name']) && isset($paramList['svc_macro_value'])){
                         $formatedParams = array(
