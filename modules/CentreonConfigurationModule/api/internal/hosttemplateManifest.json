@@ -199,7 +199,9 @@
               "type": "Number",
               "toTransform" : "hidden",
               "multiple" : false,
-              "required" : false
+              "required" : false,
+              "booleanValue" : true,
+              "booleanSetDefault" : true
             }
         },
         "listMacroAction" : {
@@ -266,10 +268,20 @@
             "hidden" : {
               "functionParams" : "params",
               "help": "Is password",
-              "type": "number",
-              "toTransform" : "hidden",
+              "type": "boolean",
+              "toTransform" : "is_password",
               "multiple" : false,
-              "required" : false
+              "required" : false,
+              "booleanValue" : true
+            },
+            "show" : {
+              "functionParams" : "params",
+              "help": "Is password",
+              "type": "boolean",
+              "toTransform" : "is_password",
+              "multiple" : false,
+              "required" : false,
+              "booleanValue" : false
             }
         }
     }
