@@ -55,7 +55,7 @@ class IndicatorType implements ValidatorInterface
         $errorMessage = "";
         
         if(empty($params['extraParams']['id_indicator_ba'])){
-            $errorMessage .= "\n".'--id-indicator-ba required';
+            $errorMessage .= "\n".'--indicator-ba-slug required';
         }
         
         
@@ -88,7 +88,7 @@ class IndicatorType implements ValidatorInterface
         $errorMessage = "";
         
         if(empty($params['extraParams']['service_id'])){
-            $errorMessage .= "\n".'--service-id required';
+            $errorMessage .= "\n".'--service-slug required';
         }
         
         /*
@@ -120,7 +120,7 @@ class IndicatorType implements ValidatorInterface
         $errorMessage = "";
         
         if(empty($params['extraParams']['boolean_name'])){
-            $errorMessage .= "\n".'--boolean-name required';
+            $errorMessage .= "\n".'--boolean-slug required';
         }
         
         if(empty($params['extraParams']['boolean_expression'])){
