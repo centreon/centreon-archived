@@ -81,7 +81,7 @@ echo " ==== Creating host templates ==== "
 ./external/bin/centreonConsole centreon-configuration:HostTemplate:addMacro --host-template='generic-host' --name='PACKETNUMBER' --value='1'
 
 # TODO Possible to do it in one single line ?
-./external/bin/centreonConsole centreon-configuration:HostTemplate:create --name='OS-Linux-SNMP'  --service-templates='os-linux-snmp-cpu' 
+./external/bin/centreonConsole centreon-configuration:HostTemplate:create --name='OS-Linux-SNMP'  --service-templates='os-linux-snmp-cpu' --host-templates='generic-host'
 ./external/bin/centreonConsole centreon-configuration:HostTemplate:update --host-template='os-linux-snmp-2' --service-templates='os-linux-snmp-load'
 ./external/bin/centreonConsole centreon-configuration:HostTemplate:update --host-template='os-linux-snmp-2' --service-templates='os-linux-snmp-swap'
 ./external/bin/centreonConsole centreon-configuration:HostTemplate:update --host-template='os-linux-snmp-2' --service-templates='os-linux-snmp-memory'
