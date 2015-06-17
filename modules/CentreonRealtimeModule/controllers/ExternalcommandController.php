@@ -146,7 +146,7 @@ class ExternalcommandController extends Controller
                     break;
             }
             $router->response()->json(array('message' => _('Command has been successfully submitted')));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $router->response()->json(array('message' => $e->getMessage()));
         }
     }
