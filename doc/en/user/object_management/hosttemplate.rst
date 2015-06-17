@@ -11,73 +11,59 @@ Available parameters are the following:
 ============================== ================================
 Parameter                      Description
 ============================== ================================
-**host_name**                  Host name
+**--name**                     Host name
 
-**host_activate**              Enable (0 or 1)
+**--enabled**                  Enable (0 or 1)
 
-host_alias                     Host alias
+--alias                        Host alias
 
-host_hosttemplates             Linked host templates id
+--host-templates               Linked host templates slug
 
-hosttemplate_servicetemplates  Linked service templates id
+--service-templates            Linked service templates slug
 
-host_check_interval            Check interval
+--check-interval               Check interval
 
-host_retry_interval            Retry interval
+--retry-check-interval         Retry interval
 
-host_max_check_attempts        Max check attempts
+--max-check-attempts           Max check attempts
 
-poller_id                      Poller id
+--poller                       Poller slug
 
-timezone_id                    Timezone id
+--timezone                     Timezone slug
 
-host_icon                      Host icon
+--icon                         Host icon
 
-environment_id                 Environment id
+--environment                  Environment slug
 
-organization_id                Organization id
+--timeperiod                   Timeperiod slug
 
-timeperiod_tp_id               Timeperiod id
+--command                      Check command slug
 
-command_command_id             Check command id
+--comment                      Host comments
 
-host_active_checks_enabled     Active check enable (0 or 1)
+--obsess                       TODO
 
-host_passive_checks_enabled    Passive check enable (0 or 1)
+--check-freshness              Freshness enable (0 or 1)
 
-host_comment                   Host comments
+--freshness-threshold          Freshness threshold
 
-host_obsess_over_host          TODO
+--flap-detection-enabled       Flap detection enable (0 or 1)
 
-host_check_freshness           Freshness enable (0 or 1)
+--low-flap-threshold           Low flap detection threshold
 
-host_freshness_threshold       Freshness threshold
+--high-flap-threshold          High flap detection threshold
 
-host_flap_detection_enabled    Flap detection enable (0 or 1)
+--flap-detection-enabled       Flap detection options
 
-host_low_flap_threshold        Low flap detection threshold
+--comment                      Host comments
 
-host_high_flap_threshold       High flap detection threshold
+--eventhandler-enabled         Event handler enable (0 or 1)
 
-flap_detection_options         Flap detection options
+--command2                     Event handler command
 
-host_snmp_community            Host snmp community
+--parents                      Host parents slug
 
-host_snmp_version              Host snmp version
-
-host_location                  TODO
-
-host_comment                   Host comments
-
-host_event_handler_enabled     Event handler enable (0 or 1)
-
-command_command_id2            Event handler command
-
-host_parents                   Host parents id
-
-host_childs                    Host children id
-
-activate                       Host enable (0 or 1)
+--childs                       Host children slug
 ============================== ================================
 
 List
@@ -108,7 +94,7 @@ Show
 
 In order to show a host template, use **show** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:show object="hosttemplate[HT1]"
+  ./centreonConsole centreon-configuration:hostTemplate:show --hosttemplate "HT1"
   id: 2
   command_command_id:
   command_command_id_arg1:
@@ -116,6 +102,7 @@ In order to show a host template, use **show** action::
   command_command_id2:
   command_command_id_arg2:
   name: HT1
+  slug: HT1
   description: HT1
   host_address:
   host_max_check_attempts:
@@ -149,7 +136,7 @@ Create
 
 In order to create a host template, use **create** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:create params="host_name[HT1];host_activate[1]"
+  ./centreonConsole centreon-configuration:hostTemplate:create --name "HT1" --enabled
   Object successfully created
 
 Update
@@ -157,7 +144,7 @@ Update
 
 In order to update a host template, use **update** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:update object="hosttemplate[HT1]":params="host_alias[host template 1]"
+  ./centreonConsole centreon-configuration:hostTemplate:update --hosttemplate "HT1" --alias "host template 1"
   Object successfully updated
 
 Delete
@@ -165,7 +152,7 @@ Delete
 
 In order to delete a host template, use **delete** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:delete object="hosttemplate[HT1]"
+  ./centreonConsole centreon-configuration:hostTemplate:delete --hosttemplate "HT1"
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -173,7 +160,7 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a host template, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:duplicate object="hosttemplate[HT1]"
+  ./centreonConsole centreon-configuration:hostTemplate:duplicate --hosttemplate "HT1"
   Object successfully duplicated
 
 List tag
@@ -181,7 +168,7 @@ List tag
 
 In order to list tags of a host template, use **listTag** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:listTag object="hosttemplate[HT1]"
+  ./centreonConsole centreon-configuration:hostTemplate:listTag --hosttemplate "HT1"
   tag1
 
 Add tag
@@ -189,12 +176,12 @@ Add tag
 
 In order to add a tag to a host template, use **addTag** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:addTag object="hostTemplate[HT1]":tag="tag1"
+  ./centreonConsole centreon-configuration:hostTemplate:addTag --hostTemplate "HT1" --tag "tag1"
 
 Remove tag
 ----------
 
 In order to remove a tag from a host template, use **removeTag** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:removeTag object="hostTemplate[HT1]":tag="tag1"
+  ./centreonConsole centreon-configuration:hostTemplate:removeTag --hostTemplate "HT1" --tag "tag1"
 

@@ -11,71 +11,59 @@ Available parameters are the following:
 ============================== ================================
 Parameter                      Description
 ============================== ================================
-**host_name**                  Host name
+**--name**                     Host name
 
-**host_address**               Host address
+**--address**                  Host address
 
-**host_activate**              Enable (0 or 1)
+**--disable**                  Enable (0 or 1)
 
-host_alias                     Host alias
+--alias                        Host alias
 
-host_hosttemplates             Linked host templates id
+--host-templates               Linked host templates slug
 
-host_check_interval            Check interval
+--check-interval               Check interval
 
-host_retry_interval            Retry interval
+--retry-check-interval         Retry interval
 
-host_max_check_attempts        Max check attempts
+--max-check-attempts           Max check attempts
 
-poller_id                      Poller id
+--poller                       Poller slug
 
-timezone_id                    Timezone id
+--timezone                     Timezone slug
 
-host_icon                      Host icon
+--icon                         Host icon
 
-environment_id                 Environment id
+--environment                  Environment slug
 
-organization_id                Organization id
+--timeperiod                   Timeperiod slug
 
-timeperiod_tp_id               Timeperiod id
+--command                      Check command slug
 
-command_command_id             Check command id
+--active-checks-enabled        Active check enable (0 or 1)
 
-host_active_checks_enabled     Active check enable (0 or 1)
+--comment                      Host comments
 
-host_passive_checks_enabled    Passive check enable (0 or 1)
+--obsess                       TODO
 
-host_comment                   Host comments
+--check-freshness              Freshness enable (0 or 1)
 
-host_obsess_over_host          TODO
+--freshness-threshold          Freshness threshold
 
-host_check_freshness           Freshness enable (0 or 1)
+--flap-detection-enabled       Flap detection enable (0 or 1)
 
-host_freshness_threshold       Freshness threshold
+--low-flap-threshold           Low flap detection threshold
 
-host_flap_detection_enabled    Flap detection enable (0 or 1)
+--high-flap-threshold          High flap detection threshold
 
-host_low_flap_threshold        Low flap detection threshold
+--flap-detection-enabled       Flap detection options
 
-host_high_flap_threshold       High flap detection threshold
+--eventhandler-enabled         Event handler enable (0 or 1)
 
-flap_detection_options         Flap detection options
+--command2                     Event handler command
 
-host_snmp_community            Host snmp community
+--parents                      Host parents slug
 
-host_snmp_version              Host snmp version
-
-host_location                  TODO
-
-host_event_handler_enabled     Event handler enable (0 or 1)
-
-command_command_id2            Event handler command
-
-host_parents                   Host parents id
-
-host_childs                    Host children id
-
-activate                       Host enable (0 or 1)
+--childs                       Host children slug
 ============================== ================================
 
 List
@@ -108,7 +96,7 @@ Show
 
 In order to show a host, use **show** action::
 
-  ./centreonConsole centreon-configuration:host:show object="host[host1]"
+  ./centreonConsole centreon-configuration:host:show --host "host1"
   id: 1
   command_command_id:
   command_command_id_arg1:
@@ -116,6 +104,7 @@ In order to show a host, use **show** action::
   command_command_id2:
   command_command_id_arg2:
   name: host1
+  sluge: host1
   description: host1
   address: 127.0.0.1
   host_max_check_attempts:
@@ -149,7 +138,7 @@ Create
 
 In order to create a host, use **create** action::
 
-  ./centreonConsole centreon-configuration:host:create params="host_name[host1];host_activate[1];host_address[127.0.0.1];host_max_check_attempts[5]"
+  ./centreonConsole centreon-configuration:host:create --name "host1" --enabled --address "127.0.0.1" ---max-check-attempts "5"
   Object successfully created
 
 Update
@@ -157,7 +146,7 @@ Update
 
 In order to update a host, use **update** action::
 
-  ./centreonConsole centreon-configuration:host:update object="host[host1]":params="host_hosttemplates[1];poller_id[1]"
+  ./centreonConsole centreon-configuration:host:update --host "host1" --host-templates 'host-tpl' --poller 'central'
   Object successfully updated
 
 Delete
@@ -165,7 +154,7 @@ Delete
 
 In order to delete a host, use **delete** action::
 
-  ./centreonConsole centreon-configuration:host:delete object="host[host1]"
+  ./centreonConsole centreon-configuration:host:delete --host "host1"
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -173,7 +162,7 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a host, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:host:duplicate object="host[host1]"
+  ./centreonConsole centreon-configuration:host:duplicate --host "host1"
   Object successfully duplicated
 
 List tag
@@ -181,7 +170,7 @@ List tag
 
 In order to list tags of a host, use **listTag** action::
 
-  ./centreonConsole centreon-configuration:host:listTag object="host[host1]"
+  ./centreonConsole centreon-configuration:host:listTag --host "host1"
   tag1
 
 Add tag
@@ -189,14 +178,14 @@ Add tag
 
 In order to add a tag to a host, use **addTag** action::
 
-  ./centreonConsole centreon-configuration:host:addTag object="host[host1]":tag="tag1"
+  ./centreonConsole centreon-configuration:host:addTag --host "host1" --tag "tag1"
 
 Remove tag
 ----------
 
 In order to remove a tag from a host, use **removeTag** action::
 
-  ./centreonConsole centreon-configuration:host:removeTag object="host[host1]":tag="tag1"
+  ./centreonConsole centreon-configuration:host:removeTag --host "host1" --tag "tag1"
 
 
 
@@ -205,7 +194,7 @@ List Macro
 
 In order to list macros of a host, use **listMacro** action::
 
-  ./centreonConsole centreon-configuration:host:listMacro object="host[host1]"
+  ./centreonConsole centreon-configuration:host:listMacro --host "host1"
   tag1
 
 Add Macro
@@ -213,19 +202,19 @@ Add Macro
 
 In order to add a macro to a host, use **addMacro** action::
 
-  ./centreonConsole centreon-configuration:host:addMacro object="host[host1]":params="name[macro1name];value[macro1value];hidden[0]"
+  ./centreonConsole centreon-configuration:host:addMacro --host "host1" --name "macro1name" --value "macro1value" --hidden 0
 
 Remove Macro
 ------------
 
 In order to remove a macro from a host, use **removeMacro** action::
 
-  ./centreonConsole centreon-configuration:host:removeMacro object="host[host1]":macro="macro1name"
+  ./centreonConsole centreon-configuration:host:removeMacro --host "host1" --macro "macro1name"
 
 Update Macro
 ------------
 
 In order to update a macro from a host, use **updateMacro** action::
 
-  ./centreonConsole centreon-configuration:host:updateMacro object="host[host1]":macro="macro1name":params="value[macro1newvalue];name[macro1newname];hidden[1];"
+  ./centreonConsole centreon-configuration:host:updateMacro --host "host1" --macro "macro1name" --value "macro1newvalue" --name"macro1newname" --hidden 1
 
