@@ -148,7 +148,7 @@
       $parent = $el.closest(".form-group");
       $el = $parent.find("input[name]");
     }
-    if ($.trim($el.val()) !== "") {
+    if (($.trim($el.val()) !== "") || ($el.hasClass("select2-offscreen"))) {
       this.showLabel($el);
     } else {
       this.hideLabel($el);
