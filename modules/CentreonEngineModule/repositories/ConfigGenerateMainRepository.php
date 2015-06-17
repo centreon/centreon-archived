@@ -273,6 +273,7 @@ class ConfigGenerateMainRepository
         $pathList[] = "%conf_dir%/check-command.cfg";
         $pathList[] = "%conf_dir%/timeperiods.cfg";
         $pathList[] = "%conf_dir%/connectors.cfg";
+        $pathList[] = "%conf_dir%/resources.cfg";
         
         $dirList[] = "%conf_dir%/objects/";
         $dirList[] = "%conf_dir%/resources/";
