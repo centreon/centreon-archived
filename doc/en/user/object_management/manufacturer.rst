@@ -57,10 +57,11 @@ Show
 
 In order to show a manufacturer, use **show** action::
 
-  ./centreonConsole centreon-configuration:Manufacturer:show object="manufacturer[DELL]"
+  ./centreonConsole centreon-configuration:Manufacturer:show --manufacturer 'DELL'
   id: 1
   name: DELL
   alias: DELL
+  slug: DELL
   description: DELL desciption
   organization id: 1
 
@@ -70,15 +71,30 @@ Create
 
 In order to create a manufacturer, use **create** action::
 
-  ./centreonConsole centreon-configuration:manufacturer:create params="name[HP];alias[HP1];description[HP description];"
+  ./centreonConsole centreon-configuration:manufacturer:create --name 'HP' --alias 'HP1' --description 'HP description'
   Object successfully created
+
+In order to se all parametres, use this command
+  ./centreonConsole centreon-configuration:manufacturer:create -h
+
+   --name=<string>
+		
+
+   --alias[=<string>]
+		
+
+   --description[=<string>]
+		
+
+   -h, --help
+		help
 
 Update
 ------
 
 In order to update a manufacturer, use **update** action::
 
-  ./centreonConsole centreon-configuration:Manufacturer:update object="manufacturer[HP]":params="name[HP2];alias[HP1];description[HP description];"
+  ./centreonConsole centreon-configuration:Manufacturer:update --manufacturer 'HP' --name 'HP2' --alias 'HP1' --description 'HP description'
   Object successfully updated
 
 Delete
@@ -86,7 +102,7 @@ Delete
 
 In order to delete a manufacturer, use **delete** action::
 
-  ./centreonConsole centreon-configuration:Manufacturer:delete object="manufacturer[HP]"
+  ./centreonConsole centreon-configuration:Manufacturer:delete --manufacturer 'HP'
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -94,6 +110,6 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a manufacturer, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:Manufacturer:duplicate object="manufacturer[HP]"
+  ./centreonConsole centreon-configuration:Manufacturer:duplicate --manufacturer 'HP'
   Object successfully duplicated
 

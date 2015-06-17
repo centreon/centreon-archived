@@ -13,13 +13,13 @@ Parameter          Description
 ================== ======================
 **name**           Connector name
 
-**command_line**   Command line
+**command-line**   Command line
 
 **enabled**        Enable (0 or 1)
 
 description        Connector description
 
-connector_command  Linked commands
+connector-command  Linked commands
 ================== ======================
 
 List
@@ -53,7 +53,7 @@ Show
 
 In order to show a connector, use **show** action::
 
-  ./centreonConsole centreon-configuration:Connector:show object="connector[SSH Connector]"
+  ./centreonConsole centreon-configuration:Connector:show --connector 'ssh-connector'
   id: 2
   name: SSH Connector
   description:
@@ -68,7 +68,7 @@ Create
 
 In order to create a connector, use **create** action::
 
-  ./centreonConsole centreon-configuration:Connector:create params="name[ssh_connector];command_line[$USER3$/ssh_connector];enabled[1]"
+  ./centreonConsole centreon-configuration:Connector:create --name 'SSH Connector' --command-line '$USER3$/ssh_connector' --enabled 1
   Object successfully created
 
 Update
