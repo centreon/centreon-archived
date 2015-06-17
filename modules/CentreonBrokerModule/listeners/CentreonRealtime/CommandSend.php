@@ -52,6 +52,14 @@ class CommandSend
     {
         // @todo found poller where I am
         $varlib = "/var/lib/centreon-broker";
-        file_put_contents($varlib . '/extcommand-' . $command->getPollerId() . '.fifo', $command->getCommand());
+        $sFile  = 'extcommand-broker-' . $command->getPollerId() . '.fifo';
+        
+        if (file_exists($varlib."/".$sFile)) {
+            file_put_contents($varlib . '/'.$sFile, $command->getCommand(), FILE_APPEND);
+        } else {
+            throw new \Exception ("The configuration file of broker is not exists");
+    
+        }
+        
     }
 }
