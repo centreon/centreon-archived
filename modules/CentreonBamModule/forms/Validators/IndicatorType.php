@@ -91,6 +91,10 @@ class IndicatorType implements ValidatorInterface
             $errorMessage .= "\n".'--service-slug required';
         }
         
+        if(empty($params['extraParams']['host_id'])){
+            $errorMessage .= "\n".'--host-slug required';
+        }
+        
         /*
         if(!empty($params['extraParams']['boolean_name'])){
             $errorMessage .= "\n".'--boolean-name not allowed';
