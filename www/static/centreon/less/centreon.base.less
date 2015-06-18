@@ -709,11 +709,11 @@ td.incident-extended-info {
   }
 
   &.status-up .container-fluid >.row {
-    border-left: 3px solid @brand-success;
+    border-left: 3px solid @success;
   }
 
   &.status-down .container-fluid >.row {
-    border-left: 3px solid @brand-danger;
+    border-left: 3px solid @danger;
   }
 
   &.status-unknown .container-fluid >.row {
@@ -727,17 +727,17 @@ td.incident-extended-info {
 
 .label-up,.label-ok {
   text-transform: capitalize;
-  background-color: @brand-success;
+  background-color: @success;
 }
 
 .label-warning {
   text-transform: capitalize;
-  background-color: @brand-warning;
+  background-color: @warning;
 }
 
 .label-down,.label-critical {
   text-transform: capitalize;
-  background-color: @brand-danger;
+  background-color: @danger;
 }
 
 .label-unknown {
@@ -776,47 +776,75 @@ td.incident-extended-info {
 }
 
 .infinite-scroll {
-  height: 700px; /* @todo min-height 100% */
+  //height: ~"calc(100% - 295px)";
+  height: 760px; /* @todo min-height 100% */
   overflow-y: scroll;
-  width: 100%;
-  transition: width 1s;
+  //width: 100%;
+  //transition: width .5s;
 
-  &.active {
-    width: 60%;
-  }
+  /*&:after {
+  content: "";
+  border-right: 1px solid white;
+  right: -33px;
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 100%;
+}*/
+
+  /*&.active {
+    width: 70%;
+  }*/
 }
 
 .event-detail {
-  width: 0;
-  transition: width 1s;
-  padding-left: 25px;
+  //width: 0;
+ // transition: width .5s;
+  //padding-left: 25px;
 
-  &.active {
-    width: 40%;
-  }
+  /*&.active {
+    width: 30%;
+  }*/
+
+  //height: 100%;
+  height: ~"calc(100% - 72px)";
+  position: absolute;
+  right: 0;
+  background-color: @lightGray1;
+  //top: 73px;
+  border-left: 3px solid @lightGray2;
 
   & > .row {
-    background-color: @gray-lighter;
+    //background-color: @gray-lighter;
     padding: 10px 5px;
   }
 
   .object-name {
     font-weight: bold;
-    font-size: 1.2em;
-    margin-bottom: 5px;
+    font-size: 90%;
+    color: @darkGray;
   }
 
   .date {
-    color: @gray-light;
+    color: @firstGreen;
+    font-size: 75%;
+    font-weight: 600;
   }
 
   .description {
     margin-top: 10px;
+    font-size: 90%;
   }
 }
 
 .event {
   pointer: pointer;
+  float: left;
+  width: 100%;
+
+  &:nth-child(2n+1) {
+    background-color: @white;
+  }
 
   &.active {
     background-color: @gray-lighter;
@@ -826,38 +854,40 @@ td.incident-extended-info {
     border-left: 4px solid;
   }
   &.status-0 {
-    border-left-color: @brand-success;
+    border-left-color: @success;
   }
   &.status-1 {
-    border-left-color: @brand-warning;
+    border-left-color: @warning;
   }
   &.status-2 {
-    border-left-color: @brand-danger;
+    border-left-color: @danger;
   }
 
-  .logo {
-    font-size: 20px;
+  .event-icon {
     text-align: center;
-    margin-right: auto;
-    margin-left: auto;
-
-    img {
-      height: 20px;
-    }
+    margin: .5em 0px .5em 10px;
+    float: left;
+  }
+  
+  .event-content {
+    float: left;
+    width: ~"calc(100% - 30px)";
   }
 
   .object-name {
     font-weight: bold;
-    font-size: 1.2em;
-    margin-bottom: 5px;
+    color: @darkGray;
+    font-size: 90%;
   }
 
   .duration {
-    color: @gray-light;
+    color: @firstGreen;
+    font-size: 75%;
+    font-weight: 600;
   }
 
   .description {
-    margin-top: 10px;
+    font-size: 85%;
   }
 
   padding: 10px 5px;
@@ -866,4 +896,5 @@ td.incident-extended-info {
 .classColor {
   background-color: @color_timezone;
 }
+
 

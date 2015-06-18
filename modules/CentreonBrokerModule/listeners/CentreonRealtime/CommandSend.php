@@ -53,7 +53,7 @@ class CommandSend
         // @todo found poller where I am
         $varlib = "/var/lib/centreon-broker";
         if ($command->getType() === 'broker') {
-            $sFile  = 'extcommand-broker-' . $command->getPollerId() . '.fifo';
+            $sFile  = 'central-broker.cmd';
         } else if ($command->getType() === 'engine') {
             $sFile  = 'extcommand-engine-' . $command->getPollerId() . '.fifo';
         }
