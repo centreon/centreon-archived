@@ -174,6 +174,7 @@ external/bin/centreonConsole core:internal:install
 external/bin/centreonConsole core:module:manage:install --module=centreon-broker
 external/bin/centreonConsole core:module:manage:install --module=centreon-engine
 external/bin/centreonConsole core:module:manage:install --module=centreon-performance 
+external/bin/centreonConsole core:module:manage:install --module=centreon-bam
 \cp -r modules/CentreonAdministrationModule/static/centreon-administration/ www/static/
 \cp -r modules/CentreonPerformanceModule/static/centreon-performance/ www/static/
 \cp -r modules/CentreonConfigurationModule/static/centreon-configuration/ www/static/
