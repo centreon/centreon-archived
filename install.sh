@@ -198,6 +198,13 @@ chown centreon: /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp
 chmod g+ws /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
 setfacl -R -m d:u:centreon:rwX,d:g:centreon:rwX,d:o:r-X /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
 
+# Create RRD paths
+mkdir /var/lib/centreon
+mkdir /var/lib/centreon/metrics
+mkdir /var/lib/centreon/status
+chown -R centreon-broker /var/lib/centreon/metrics
+chown -R centreon-broker /var/lib/centreon/status
+
 # Start services
 # Nothing to do, they should already be running due to previous steps
 
