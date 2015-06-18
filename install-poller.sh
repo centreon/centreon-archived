@@ -76,7 +76,8 @@ wget http://yum.centreon.com/standard/3.0/stable/RPM-GPG-KEY-CES -O /etc/pki/rpm
 
 # Broker
 # Note "*" is important to install modules
-yum install -y centreon-broker*
+# /!\ No need to install all broker packages on pollers (otherwise cbd will be executed)
+yum install -y centreon-broker-cbd
 service cbd start
 
 # Engine
@@ -182,6 +183,13 @@ usermod -a -G centreon-engine,centreon-broker centreon
 # Activate services on boot
 chkconfig --level 2345 centengine on
 chkconfig --level 2345 snmpd on
+
+# Create RRD paths
+mkdir /var/lib/centreon
+mkdir /var/lib/centreon/metrics
+mkdir /var/lib/centreon/status
+chown -R centreon-broker /var/lib/centreon/metrics
+chown -R centreon-broker /var/lib/centreon/status
 
 # End of script
 
