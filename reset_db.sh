@@ -11,9 +11,4 @@ external/bin/centreonConsole core:module:manage:install --module=centreon-engine
 external/bin/centreonConsole core:module:manage:install --module=centreon-performance 
 external/bin/centreonConsole core:module:manage:install --module=centreon-bam
 
-# Purge previously generated conf
-rm -rf /tmp/engine/generate/*
-rm -rf /tmp/engine/apply/*
-rm -rf /tmp/broker/apply/*
-rm -rf /tmp/broker/generate/*
 
