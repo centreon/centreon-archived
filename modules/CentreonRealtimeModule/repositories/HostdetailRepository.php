@@ -144,4 +144,30 @@ class HostdetailRepository extends ObjectdetailRepository
         }
         throw new Exception('Unknown command');
     }
+
+    /**
+     * Get type of a given command
+     *
+     * @param int $cmdId
+     * @throws \Centreon\Internal\Exception
+     */
+    public static function getCommandType($cmdId)
+    {
+        static $commands = null;
+
+        if (is_null($commands)) {
+            $commands = array();
+            $commands[self::SCHEDULE_CHECK] = "engine";
+            $commands[self::ACKNOWLEDGE] = "broker";
+            $commands[self::REMOVE_ACKNOWLEDGE] = "broker";
+            $commands[self::DOWNTIME] = "broker";
+            $commands[self::REMOVE_DOWNTIME] = "broker";
+            $commands[self::ENABLE_CHECK] = "engine";
+            $commands[self::DISABLE_CHECK] = "engine";
+        }
+        if (isset($commands[$cmdId])) {
+            return $commands[$cmdId];
+        }
+        throw new Exception('Unknown command');
+    }
 }

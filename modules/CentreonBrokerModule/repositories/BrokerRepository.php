@@ -142,7 +142,8 @@ class BrokerRepository
                                                     static::insertPollerInfo($pollerId, $matches[1], $params[$matches[1]]);
                                                 }
                                             } else {
-                                                $finalKey = $module['general']['name']
+                                                /* @todo add user infos */
+                                                /* $finalKey = $module['general']['name']
                                                     . '-'
                                                     . $type
                                                     . '-'
@@ -157,7 +158,7 @@ class BrokerRepository
                                                     } else {
                                                         static::insertUserInfo($configId, $type, $groupNb, $finalKey, $value);
                                                     }
-                                                }
+                                                }*/
                                             }
                                         }
                                         $groupNb++;

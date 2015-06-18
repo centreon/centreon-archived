@@ -11,12 +11,13 @@ echo " ==== Creating pollers ==== "
 
 #./external/bin/centreonConsole centreon-configuration:poller:create --name=poller6 --template=Poller --ip-address="127.0.0.1" --engine-init-script='/etc/init.d/centengine' --engine-binary='/usr/sbin/centengine' --engine-modules-dir='/usr/lib64/centreon-engine/' --engine-conf-dir='/etc/centreon-engine/' --engine-logs-dir='/var/log/centreon-engine/' --engine-var-lib-dir='/var/lib/centreon-engine/' --broker-conf-dir='/etc/centreon-broker/' --broker-modules-dir='/usr/share/centreon/lib/centreon-broker/' --broker-data-dir='/var/lib/centreon-broker' --broker-logs-dir='/var/log/centreon-broker/' --broker-cbmod-dir='/usr/lib64/nagios/' --broker-init-script='/etc/init.d/cbd' --broker-central-ip="10.30.2.34"
 
+echo " ==== Creating timeperiods ==== "
+./external/bin/centreonConsole centreon-configuration:Timeperiod:create --tp-name='24x7' --tp-sunday='00:00-24:00' --tp-monday='00:00-24:00' --tp-tuesday='00:00-24:00' --tp-wednesday='00:00-24:00' --tp-thursday='00:00-24:00' --tp-friday='00:00-24:00' --tp-saturday='00:00-24:00'
+ ./external/bin/centreonConsole centreon-configuration:Timeperiod:create --tp-name='Working hours' --tp-monday='09:00-18:00' --tp-tuesday='09:00-18:00' --tp-wednesday='09:00-18:00' --tp-thursday='09:00-18:00' --tp-friday='09:00-18:00'
+
 echo " ==== Creating notif commands ==== "
 ./external/bin/centreonConsole centreon-configuration:Command:create --command-name='Send mail' --command-type=1 --command-line='mail -s test test'
 
-############################################
-# Check commands
-############################################
 echo " ==== Creating check commands ==== "
 ./external/bin/centreonConsole centreon-configuration:Command:create --command-name='check_centreon_ping' --command-type=2 --command-line='$USER1$/check_icmp -H $HOSTADDRESS$ -n $_SERVICEPACKETNUMBER$ -w $_SERVICEWARNING$ -c $_SERVICECRITICAL$'
 # TODO add check host alive
@@ -27,11 +28,7 @@ echo " ==== Creating check commands ==== "
 ./external/bin/centreonConsole centreon-configuration:Command:create --command-name='OS-Linux_SNMP-traffic-name' --command-type=2 --command-line='$USER1$/centreon-plugins/centreon_plugins.pl --plugin=os::linux::snmp::plugin --mode=traffic --hostname=$HOSTADDRESS$ --snmp-version=$_HOSTSNMPVERSION$ --snmp-community=$_HOSTSNMPCOMMUNITY$ $_HOSTSNMPEXTRAOPTIONS$ --interface="$_SERVICEINTERFACENAME$" --name --warning-in="$_SERVICEWARNINGIN$" --critical-in="$_SERVICECRITICALIN$" --warning-out="$_SERVICEWARNINGOUT$" --critical-out="$_SERVICECRITICALOUT$" $_SERVICEEXTRAOPTIONS$'
 ./external/bin/centreonConsole centreon-configuration:Command:create --command-name='OS-Linux-SNMP-disk-name' --command-type=2 --command-line='$USER1$/centreon-plugins/centreon_plugins.pl --plugin=os::linux::snmp::plugin --mode=storage --hostname=$HOSTADDRESS$ --snmp-version=$_HOSTSNMPVERSION$ --snmp-community=$_HOSTSNMPCOMMUNITY$ $_HOSTSNMPEXTRAOPTIONS$ --storage "$_SERVICEDISKNAME$" --name --display-transform-src="$_SERVICETRANSFORMSRC$" --display-transform-dst="$_SERVICETRANSFORMDST$" --warning="$_SERVICEWARNING$" --critical="$_SERVICECRITICAL$" $_SERVICEEXTRAOPTIONS$'
 
-############################################
-# Service templates
-############################################
 echo " ==== Creating service templates ==== "
-# 1
 # TODO cannot set service_max_check_attempts = 3 here during creation, possib le for update
 ./external/bin/centreonConsole centreon-configuration:ServiceTemplate:create --description='generic-service' 
 ./external/bin/centreonConsole centreon-configuration:ServiceTemplate:update --service-template='generic-service' --max-check-attempts=3
@@ -70,9 +67,6 @@ echo " ==== Creating service templates ==== "
 ./external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-linux-snmp-disk-name' --name='WARNING' --value='80'
 ./external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-linux-snmp-disk-name' --name='CRITICAL' --value='90'
 
-############################################
-# Host templates
-############################################
 echo " ==== Creating host templates ==== "
 ./external/bin/centreonConsole centreon-configuration:HostTemplate:create --name='generic-host' 
 ./external/bin/centreonConsole centreon-configuration:HostTemplate:update --host-template='generic-host' --max-check-attempts=3 --service-templates='ping-lan' --command='check-centreon-ping'
@@ -80,27 +74,13 @@ echo " ==== Creating host templates ==== "
 ./external/bin/centreonConsole centreon-configuration:HostTemplate:addMacro --host-template='generic-host' --name='CRITICAL' --value='5000,100%'
 ./external/bin/centreonConsole centreon-configuration:HostTemplate:addMacro --host-template='generic-host' --name='PACKETNUMBER' --value='1'
 
-# TODO Possible to do it in one single line ?
-./external/bin/centreonConsole centreon-configuration:HostTemplate:create --name='OS-Linux-SNMP'  --service-templates='os-linux-snmp-cpu' --host-templates='generic-host'
-./external/bin/centreonConsole centreon-configuration:HostTemplate:update --host-template='os-linux-snmp-2' --service-templates='os-linux-snmp-load'
-./external/bin/centreonConsole centreon-configuration:HostTemplate:update --host-template='os-linux-snmp-2' --service-templates='os-linux-snmp-swap'
-./external/bin/centreonConsole centreon-configuration:HostTemplate:update --host-template='os-linux-snmp-2' --service-templates='os-linux-snmp-memory'
+./external/bin/centreonConsole centreon-configuration:HostTemplate:create --name='OS-Linux-SNMP'  --service-templates='os-linux-snmp-cpu' --service-templates='os-linux-snmp-load' --service-templates='os-linux-snmp-swap' --service-templates='os-linux-snmp-memory' --host-templates='generic-host'
 
-# OS-Linux-SNMP inherit from generic-service
-
-############################################
-# Hosts
-############################################
 echo " ==== Creating hosts ==== "
 ./external/bin/centreonConsole centreon-configuration:Host:create --name='Centreon-export' --address='10.30.2.87' --host-templates='generic-host' --poller='central'
 ./external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-RWE-PP' --address='10.30.2.127' --host-templates='os-linux-snmp-2' --poller='central'
 ./external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES22' --address='10.50.1.84' --host-templates='os-linux-snmp-2' --poller='central'
 ./external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES3' --address='10.50.1.85' --host-templates='os-linux-snmp-2' --poller='central'
 
-
-############################################
-# Services
-############################################
-echo " ==== Creating services ==== "
-#1
+echo " ==== Creating services (TODO) ==== "
 

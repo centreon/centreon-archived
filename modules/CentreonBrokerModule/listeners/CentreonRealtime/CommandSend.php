@@ -52,9 +52,13 @@ class CommandSend
     {
         // @todo found poller where I am
         $varlib = "/var/lib/centreon-broker";
-        $sFile  = 'extcommand-engine-' . $command->getPollerId() . '.fifo';
+        if ($command->getType() === 'broker') {
+            $sFile  = 'extcommand-broker-' . $command->getPollerId() . '.fifo';
+        } else if ($command->getType() === 'engine') {
+            $sFile  = 'extcommand-engine-' . $command->getPollerId() . '.fifo';
+        }
         
-        if (file_exists($varlib."/".$sFile)) {
+        if (isset($sFile) && file_exists($varlib."/".$sFile)) {
             file_put_contents($varlib . '/'.$sFile, $command->getCommand(), FILE_APPEND);
         } else {
             throw new \Exception ("The external command file of broker does not exist");
