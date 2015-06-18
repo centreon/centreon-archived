@@ -57,7 +57,7 @@ class CommandSend
         if (file_exists($varlib."/".$sFile)) {
             file_put_contents($varlib . '/'.$sFile, $command->getCommand(), FILE_APPEND);
         } else {
-            throw new \Exception ("The configuration file of broker is not exists");
+            throw new \Exception ("The external command file of broker does not exist");
     
         }
         
