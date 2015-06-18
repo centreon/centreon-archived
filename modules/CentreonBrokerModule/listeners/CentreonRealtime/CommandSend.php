@@ -59,8 +59,6 @@ class CommandSend
         }
         
         if (isset($sFile) && file_exists($varlib."/".$sFile)) {
-var_dump($varlib . '/'.$sFile);
-var_dump($command->getCommand());
             file_put_contents($varlib . '/'.$sFile, $command->getCommand(), FILE_APPEND);
         } else {
             throw new \Exception ("The external command file of broker does not exist");

@@ -575,6 +575,12 @@ class BrokerRepository
         );
         $defaultOptionsValues = OptionRepository::get('default', $defaultOptionskeys);
         
+        foreach($defaultOptionskeys as $key){
+            if(!isset($defaultOptionsValues[$key])){
+                $defaultOptionsValues[$key] = '';
+            }
+        }
+        
         $defaultOptionsValuesKeys = array_keys($defaultOptionsValues);
         foreach ($defaultOptionsValuesKeys as &$optValue) {
             switch($optValue) {
