@@ -41,6 +41,8 @@ use Centreon\Models\CentreonBaseModel;
 use CentreonConfiguration\Models\Relation\Host\Service as HostServiceRelation;
 use CentreonConfiguration\Models\Service;
 use CentreonConfiguration\Models\Relation\Host\Hosttemplate as HostHosttemplateRelation;
+use Centreon\Internal\CentreonSlugify;
+
 
 /**
  * Used for interacting with hosts
@@ -149,8 +151,14 @@ class Hosttemplate extends CentreonBaseModel
             if (is_null($hostTemplateId)) {
                 $deployedServices[$hostId][$service['service_description']] =  true;
             } elseif (!isset($deployedServices[$hostId][$service['service_alias']])) {
+                $oRepositorie = "CentreonConfiguration\Repository\ServiceRepository";
+                
+                $oSlugify = new CentreonSlugify(self, $oRepositorie);
+                $sSlug = $oSlugify->slug($service['service_alias']);
+            
                 $serviceId = Service::insert(
                     array(
+                        'service_slug'        => $sSlug,
                         'service_description' => $service['service_alias'],
                         'service_template_model_stm_id' => $service['service_id'],
                         'service_register' => 1,
