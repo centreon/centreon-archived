@@ -50,6 +50,7 @@ use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Controllers\FormController;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
+use CentreonRealtime\Repository\HostRepository as HostRealTimeRepository;
 
 class HostController extends FormController
 {
@@ -539,7 +540,7 @@ class HostController extends FormController
 
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
-
+        $data['realTimeData'] = HostRealTimeRepository::getRealTimeData($params['id']);
         $hostConfiguration = HostRepository::formatDataForSlider($data);
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
         $edit_url = $this->router->getPathFor("/centreon-configuration/host/".$params['id']);

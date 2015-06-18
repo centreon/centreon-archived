@@ -30,7 +30,15 @@ div.centreon-status-s-2
     color: @white;
 }
 
-/*td.centreon-status-3,
+td.centreon-status-s-3,
+.table-striped>tbody>tr:nth-child(odd)>td.centreon-status-s-3,
+div.centreon-status-s-3
+{
+  background-color: @lightGray3;
+  color: @darkGray;
+}
+
+td.centreon-status-3,
 .table-striped>tbody>tr:nth-child(odd)>td.centreon-status-3,
 div.centreon-status-3
 {
@@ -52,7 +60,7 @@ div.centreon-status-5
 {
     background-color: @state-success-bg;
     color: @state-success-text;
-}*/
+}
 
 tr.centreon-border-info {
     border-left: 4px solid @brand-info;
