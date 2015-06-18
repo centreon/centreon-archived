@@ -3,17 +3,17 @@
 {block name="title"}{t}Incidents{/t}{/block}
 
 {block name="content"}
-<div class="content-container">
+<div class="col-lg-12">
   <table class="table table-striped table-condensed table-bordered dataTable" id="incidents">
   <thead>
     <tr role='row'>
-      <th class="span-1">&nbsp;</th>
+      <th class="span-1">{t}Actions{/t}</th>
       <th class="span-2">{t}Host{/t}</th>
       <th class="span-2">{t}Service{/t}</th>
       <th class="span-1">{t}Status{/t}</th>
       <th class="span-1">{t}Duration{/t}</th>
       <th class="span-5">{t}Output{/t}</th>
-      <th class="badge-new-events" style="display: none;"><a href="#"><i class="fa fa-caret-up"></i> <span></span></a></th>
+      <!--<th class="badge-new-events" style="display: none;"><a href="#"><i class="fa fa-caret-up"></i> <span></span></a></th>-->
     </tr>
   </thead>
   <tbody>
@@ -49,15 +49,16 @@ $(function() {
         <a href='{{{url_graph}}}'><i class='fa fa-sitemap'></i></a> \
         <a href='#'><i class='fa fa-ticket'></i></a> \
       </td> \
-      <td class='span-2'><a href='host/{{{host_id}}}'><i class='fa fa-hdd-o'></i> {{{host_name}}}</a></td> \
-      <td class='span-2'><a href='service/{{{service_id}}}'><i class='fa fa-gear'></i> {{{service_desc}}}</a></td> \
+      <td class='span-2'><a href='host/{{{host_id}}}'><i class='icon-host ico-18'></i> {{{host_name}}}</a></td> \
+      <td class='span-2'><a href='service/{{{service_id}}}'><i class='icon-service ico-18'></i> {{{service_desc}}}</a></td> \
       <td class='span-1 centreon-status-s-{{{state}}}' style='text-align:center;'>{{{status}}}</td> \
       <td class='span-1' style='text-align:right;'>{{{duration}}}</td> \
       <td class='span-5'>{{{output}}}</td> \
     </tr> \
-    <tr style='display: none;' id='ext_infos_{{{issue_id}}}'> \
-      <td class='span-12 incident-extended-info'>&nbsp;</td> \
-    </tr>"{/literal}
+    //<tr style='display: none;' id='ext_infos_{{{issue_id}}}'> \
+    //  <td class='span-12 incident-extended-info'>&nbsp;</td> \
+   // </tr>"
+   {/literal}
   });
 
   $("#incidents > tbody").on("click", "a.ext_infos", function(e) {

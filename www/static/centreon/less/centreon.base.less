@@ -508,7 +508,7 @@ hr {
   tr,
   td,
   th {
-    display: block;
+    //display: block;
   }
 
   th.badge-new-events {
@@ -537,33 +537,34 @@ hr {
   }
 
   thead > tr {
-    display: block;
+    //display: block;
     //width: 97%;
-    width: ~"calc(100% - 16px)";
+    //width: ~"calc(100% - 16px)";
   }
 
   tr:after {
     content: ' ';
     display: block;
     visibility: hidden;
-    clear: both;
+    //clear: both;
   }
 
   tbody {
-    overflow-y: auto;
+    //overflow-y: auto;
     overflow-x: hidden;
-    width: 100%;
+   // width: 100%;
     height: 200px;
   }
 
   thead th,
   tbody td {
-    float: left;
+    //float: left;
     font-size: 12px;
-    line-height: 30px;
+    line-height: 20px;
     min-height: 30px;
+    padding: @paddingElem @paddingElem*2 !important;
   }
-
+/*
   .span-1 {
     width: percentage(1 / 12);
   }
@@ -610,7 +611,7 @@ hr {
 
   .span-12 {
     width: percentage(12 / 12);
-  }
+  }*/
 }
 
 /* Incidents */
