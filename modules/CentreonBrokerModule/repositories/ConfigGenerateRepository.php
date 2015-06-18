@@ -388,7 +388,7 @@ class ConfigGenerateRepository
             $file->writeElement("name", "cfg-engine-central-module-" . $poller['name']);
             $file->writeElement("type", "dump_dir");
             $file->writeElement("path", $configGeneratePath . '/apply/' . $poller['poller_id']);
-            $file->writeElement("tagname", "cfg-engine-central-module" . $poller['poller_id']);
+            $file->writeElement("tagname", "cfg-engine-central-module-" . $poller['poller_id']);
             $file->endElement();
         }
     }
@@ -405,7 +405,7 @@ class ConfigGenerateRepository
         $configGeneratePath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir'), '/') . '/broker';
         foreach ($pollers as $poller) {
             $file->startElement("input");
-            $file->writeElement("name", "cfg-broker-central-module" . $poller['name']);
+            $file->writeElement("name", "cfg-broker-central-module-" . $poller['name']);
             $file->writeElement("type", "dump_dir");
             $file->writeElement("path", $configGeneratePath . '/apply/' . $poller['poller_id']);
             $file->writeElement("tagname", "cfg-broker-central-module-" . $poller['poller_id']);
