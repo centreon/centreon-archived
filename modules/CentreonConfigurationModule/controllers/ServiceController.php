@@ -78,8 +78,8 @@ class ServiceController extends FormController
     public function listAction()
     {
         $router = Di::getDefault()->get('router');
-        $this->tpl->addJs('centreon.overlay.js')
-            ->addJs('jquery.qtip.min.js')
+        $this->tpl->addJs('jquery.qtip.min.js')
+        //addJs('centreon.overlay.js')
             ->addJs('hogan-3.0.0.min.js')
             ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addJs('moment-with-locales.js')

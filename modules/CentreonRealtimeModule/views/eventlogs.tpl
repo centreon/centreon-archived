@@ -3,21 +3,21 @@
 {block name="title"}{t}Event Logs{/t}{/block}
 
 {block name="content"}
-<div class="content-container">
+<div class="col-lg-12">
   <!-- Search block -->
   <form id="filters">
   {include file='tools/datatable-search.tpl'}
   </form>
   <!-- End search block -->
   <div class="row">
-    <div class="infinite-scroll col-sm-1">
+    <div class="infinite-scroll col-md-12">
     </div>
-    <div class="event-detail col-sm-1" style="display: none;">
+    <div class="event-detail" style="display: none">
       <div class="row">
         <div class="col-sm-10 object-name">
         </div>
         <div class="pull-right status">
-         <div class="label"></div>
+         <div class="label"><i class=""></i></div>
         </div>
         <div class="col-sm-12 date">
         </div>
@@ -36,18 +36,15 @@
 <script>
 $(function() {
   {literal}
-  var eventlogTmpl = '<div class="row event status-{{{status}}}" data-statustext="{{{status_text}}}" data-statusclass="{{{status_css}}}" data-serviceid="{{{service_id}}}">' +
-    '<div class="col-xs-1 logo">' +
+  var eventlogTmpl = '<div class="event inactive status-{{{status}}}" data-statustext="{{{status_text}}}" data-statusclass="{{{status_css}}}" data-serviceid="{{{service_id}}}">' +
+    '<div class="event-icon">' +
     '  {{{logo}}}' +
     '</div>' +
-    '<div class="col-xs-11">' +
-    '  <div class="row">' +
-    '    <div class="col-xs-12">' +
+    '<div class="event-content col-xs-11">' +
     '     <span class="object-name">{{{object_name}}}</span>' +
-    '     <span class="pull-right duration" data-duration="{{{datetime}}}"></span>' +
-    '   </div>' +
-    '    <div class="col-xs-12 description">' +
-  	'      {{{description}}}' +
+    '     <span class="pull-right duration " data-statusclass="{{{status_css}}}" data-duration="{{{datetime}}}"></span>' +
+    '     <div class="description">' +
+    '      {{{description}}}' +
     '    </div>' +
     '    <div class="action">' + 
     '      <div class="row">' +
@@ -56,7 +53,6 @@ $(function() {
     '        </div>' +
     '      </div>' +
     '    </div>' +
-    '  </div>' +
     '</div>' +
   '</div>';
   {/literal}
@@ -86,8 +82,43 @@ $(function() {
     $($picker.element[0]).trigger('change');
   });
 
+      /* --------------------------- modified Code ------------------------------------- */
+
+        var $infinite = $(".infinite-scroll");
+        var flag = 0;
+
+      $infinite.on("click", ".event", function(e) {
+
+         if(flag == 1 && $(this).hasClass("active")){
+
+            $infinite.removeClass("col-md-8").addClass("col-md-12");
+            $(".event-detail").removeClass("col-md-4").hide();
+            $(this).removeClass("active").addClass("inactive");
+            flag = 0 ;
+          } else { if($(this).hasClass("inactive")) {
+
+            $infinite.find(".event").removeClass("active").addClass("inactive");
+            $infinite.removeClass("col-md-12").addClass("col-md-8");
+            $(".event-detail").addClass("col-md-4").show();
+            $(this).removeClass("inactive").addClass("active");
+
+              $(".event-detail .object-name").text($(this).find(".object-name").text());
+              var time = $(this).find('.duration').data('duration');
+              $(".event-detail .date").text(moment.unix(time).calendar());
+              $(".event-detail .description").text($(this).find(".description").text());
+              var statusClass = $(this).data("statusclass");
+              $(".event-detail .status > .label").text(
+                $(this).data("statustext")
+              ).removeClass().addClass("label " + statusClass);
+                flag = 1;
+            }
+          }
+      });
+
+     /* -----------------------------------------------------------------------------------*/
+
   //jsUrl.graph = "{url_for url='/centreon-performance/graph'}";
-  $(".infinite-scroll").on("click", ".event", function () {
+  /*$(".infinite-scroll").on("click", ".event", function () {
     if ($(this).hasClass("active")) {
       $(this).removeClass("active");
       $(".infinite-scroll").removeClass("active");
@@ -108,7 +139,7 @@ $(function() {
       var statusClass = $(this).data("statusclass");
       $(".event-detail .status > .label").text(
         $(this).data("statustext")
-      ).removeClass().addClass("label " + statusClass);
+      ).removeClass().addClass("label " + statusClass);*/
       /* Load graph if function exists */
       /*if (typeof addChart === "function") {
         var serviceId = $(this).data("serviceid");
@@ -116,8 +147,8 @@ $(function() {
           addChart("graph", serviceId, time - 1800, time + 1800);
         }
       }*/
-    }
-  });
+  //  }
+ // });
 
   function runSearch() {
       $("input[name='advsearch']").centreonsearch("fillAssociateFields");
