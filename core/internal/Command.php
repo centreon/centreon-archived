@@ -361,8 +361,13 @@ class Command
                     }
                 }
             }
+            
+            if(isset($argsList[$key]) && $options['multiple']){
+                if(is_array($argsList[$key])){
+                    $argsList[$key] = implode(',',$argsList[$key]);
+                }
+            }
         }
-        
         
     }
     
