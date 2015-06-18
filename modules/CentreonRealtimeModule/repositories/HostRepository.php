@@ -72,7 +72,7 @@ class HostRepository extends Repository
     public static $hook = 'displayHostRtColumn';
     
     /**
-     * Get service status
+     * Get host status
      *
      * @param int $hostId
      * @return mixed
@@ -90,6 +90,25 @@ class HostRepository extends Repository
             return $row['state'];
         }
         return -1;
+    }
+    
+    /**
+     * Get host realtimeData
+     *
+     * @param int $hostId
+     * @return mixed
+     */
+    public static function getRealTimeData($hostId){
+        // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+
+        $stmt = $dbconn->prepare('SELECT * FROM rt_hosts WHERE host_id = ? AND enabled = 1 LIMIT 1');
+        $stmt->execute(array($hostId));
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return $row;
+        }
+        
     }
     
     /**

@@ -349,6 +349,25 @@ class HostRepository extends Repository
         if(!empty($data['icon'])){
             $checkdata[_('icon')] = $data['icon'];
         }
+        
+        if(!empty($data['realTimeData'])){
+            $checkdata[_('state')] = "";
+            if(!empty($data['realTimeData']['state'])){
+                $checkdata[_('state')] = $data['realTimeData']['state'];
+            }
+            
+            $checkdata[_('last_check')] = "";
+            if(!empty($data['realTimeData']['last_check'])){
+                $checkdata[_('last_check')] = $data['realTimeData']['last_check'];
+            }
+            
+            $checkdata[_('next_check')] = "";
+            if(!empty($data['realTimeData']['next_check'])){
+                $checkdata[_('next_check')] = $data['realTimeData']['next_check'];
+            }
+        }
+        
+        
         return $checkdata;
     }
     
