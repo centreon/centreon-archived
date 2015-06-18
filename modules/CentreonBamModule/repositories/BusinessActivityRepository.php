@@ -60,6 +60,33 @@ class BusinessActivityRepository extends FormRepository
         'fields' => array('bam' => 'cfg_bam, ba_id, name'
         ),
     );
+
+    /**
+     * Generic create action
+     *
+     * @param array $givenParameters
+     * @return int id of created object
+     */
+    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    {
+        $id = parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
+
+        self::createVirtualService($id);
+
+        return $id;
+    }
+
+    /**
+     * Delete an object
+     *
+     * @param array $ids | array of ids to delete
+     */
+    public static function delete($ids)
+    {
+        parent::delete($ids);
+
+        self::deleteVirtualService($ids);
+    }
     
     /**
      * 
