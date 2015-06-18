@@ -27,7 +27,8 @@
                                 "normal" : [
                                     {
                                         "general" : {
-                                            "name" : "central-module"
+                                            "name" : "central-module",
+                                            "command_file": "%global_broker_data_directory%/central-module.cmd",
                                         },
                                         "output" : [
                                             {

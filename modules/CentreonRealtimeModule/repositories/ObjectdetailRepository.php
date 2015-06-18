@@ -58,8 +58,9 @@ class ObjectdetailRepository
     public static function sendCommand($cmdId, $pollerId, $params)
     {
         $prefix = sprintf("[%u] ", time());
+        $commandType = static::getCommandType($cmdId);
         $command = $prefix . static::getCommandString($cmdId) . ";" .implode(';', $params) . "\n";
-        $eventObj = new ExternalCommand($pollerId, $command);
+        $eventObj = new ExternalCommand($pollerId, $command, $commandType);
         Di::getDefault()->get('events')->emit('centreon-realtime.command.send', array($eventObj));
     }
 

@@ -11,7 +11,8 @@
                 "normal": [
                   {
                     "general": {
-                      "name": "central-module"
+                      "name": "central-module",
+                      "command_file": "%global_broker_data_directory%/central-module.cmd"
                     },
                     "output": [
                       {
@@ -103,6 +104,11 @@
                       }
                     ],
                     "output": [
+                      {
+                        "type": "node_events",
+                        "name": "notification-ack-downtime",
+                        "cache": "yes"
+                      },
                       {
                         "type": "sql",
                         "name": "central-sql"
