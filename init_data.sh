@@ -87,15 +87,21 @@ echo " ==== Creating hosts ==== "
 echo " ==== Creating services (TODO) ==== "
 
 echo " ==== Creating KPI and BA ==== "
+
+# FIXME slugs are not unique per host for the moment
+# So we are forcing slugs via SQL temporary to work arount it for the sprint review
+mysql -u root centreon -e "update cfg_services set service_slug='memory'  where service_description='memory';"
+mysql -u root centreon -e "update cfg_services set service_slug='ping'  where service_description='ping';"
+
 ./external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les ping des machines des PP' --ba-type-id=1 --level-w=70 --level-c=50
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --host-slug='ces3-rwe-pp' --service-slug='ping-lan' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --host-slug='ces3-qde-pp-ces22' --service-slug='ping-lan' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --host-slug='ces3-qde-pp-ces3' --service-slug='ping-lan' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --host-slug='ces3-rwe-pp' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --host-slug='ces3-qde-pp-ces22' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --host-slug='ces3-qde-pp-ces3' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 
 ./external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les memory des machines des PP' --ba-type-id=1 --level-w=70 --level-c=50
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --host-slug='ces3-rwe-pp' --service-slug='os-linux-snmp-memory' --drop-warning='10' --drop-critical='50' --drop-warning='30'
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --host-slug='ces3-qde-pp-ces22' --service-slug='os-linux-snmp-memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --host-slug='ces3-qde-pp-ces3' --service-slug='os-linux-snmp-memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --host-slug='ces3-rwe-pp' --service-slug='memory' --drop-warning='10' --drop-critical='50' --drop-warning='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --host-slug='ces3-qde-pp-ces22' --service-slug='memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --host-slug='ces3-qde-pp-ces3' --service-slug='memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 
 # Put the 2 BAs in a new BA
 ./external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA ping + memory PP' --ba-type-id=1 --level-w=70 --level-c=50
