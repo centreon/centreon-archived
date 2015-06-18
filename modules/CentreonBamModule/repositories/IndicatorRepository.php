@@ -149,16 +149,24 @@ class IndicatorRepository extends FormRepository
         foreach ($givenParameters as $k => $v) {
             $parameters[$k] = $v;
         }
-               
-        
-        if ($parameters['kpi_type'] === '0' || $parameters['kpi_type'] ===  '2' || $parameters['kpi_type'] ===  '3') {
+        if($parameters['kpi_type'] !== '1'){
+            if($origin !== 'api'){
+                if (is_a($givenParameters, '\Klein\DataCollection\DataCollection')) {
+                    $givenParameters = $givenParameters->all();
+                }
+                $givenParameters['host_id'] = true;
+            }
             self::validateForm($givenParameters, $origin, $route);
         }
+            
+        
 
         
         $lastIndicatorId = self::createBasicIndicator($parameters);
         if ($parameters['kpi_type'] === '0') {
-            $parameters['service_id'] = $parameters['service_id'].'_'.$parameters['host_id'];
+            if($origin === 'api'){
+                $parameters['service_id'] = $parameters['service_id'].'_'.$parameters['host_id'];
+            }
             self::createServiceIndicator($lastIndicatorId, $parameters);
         } else if ($parameters['kpi_type'] === '1') {
             self::createMetaserviceIndicator($lastIndicatorId, $parameters);
