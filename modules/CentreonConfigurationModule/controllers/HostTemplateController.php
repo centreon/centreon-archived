@@ -184,9 +184,6 @@ class HostTemplateController extends FormController
             }
         }   
         
-        if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
-            $givenParameters['host_alias'] = $givenParameters['host_name'];
-        }
         $id = parent::createAction(false);
         
         if (count($macroList) > 0) {

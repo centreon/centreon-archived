@@ -137,10 +137,10 @@ class CentreonSlugify
             $sSlugNew = $sValue;
         } else {
             $iHighSlug = static::highPrefixSlug($aObject, $sSlugField);
-            $sSlugTemp = substr($sValue, 0, $iPos).static::$sGlue.$iHighSlug;
+            //$sSlugTemp = substr($sValue, 0, $iPos).static::$sGlue.$iHighSlug;
             
-            if (static::testSlug($sSlugTemp, $aObject, $sSlugField, $iIobjectId, $sPrimary)) {
-                $sSlugNew = substr($sValue, 0, $iPos).static::$sGlue.($iHighSlug);
+            if (static::testSlug($sValue, $aObject, $sSlugField, $iIobjectId, $sPrimary)) {
+                $sSlugNew = $sValue;
             } elseif (is_numeric($iLast)) {  
                 $sSlugNew = substr($sValue, 0, $iPos).static::$sGlue.($iHighSlug + 1);
             } else {
