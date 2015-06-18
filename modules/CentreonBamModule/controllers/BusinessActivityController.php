@@ -84,7 +84,6 @@ class BusinessActivityController extends FormController
                 }
             }
 
-            BusinessActivityRepository::createVirtualService($id);
             $aData = array('success' => true);
         } catch (\Exception $e) {
             $aData = array('success' => false, 'error' => $e->getMessage());
@@ -202,21 +201,6 @@ class BusinessActivityController extends FormController
         }        
     }
 
-    /**
-     * Delete a business activity
-     *
-     *
-     * @method post
-     * @route /businessactivity/delete
-     */
-    public function deleteAction()
-    {
-        $givenParameters = $this->getParams('post');
-
-        BusinessActivityRepository::deleteVirtualService($givenParameters['ids']);
-        parent::deleteAction();
-    }
-    
     /**
      * Get list of icons for a specific business activity
      *
