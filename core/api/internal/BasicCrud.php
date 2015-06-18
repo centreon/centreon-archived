@@ -170,6 +170,7 @@ class BasicCrud extends AbstractCommand
         }
         return $choices;
     }
+
     
     
     /** Get the fields from xml forms for update and create action
@@ -202,12 +203,16 @@ class BasicCrud extends AbstractCommand
                         if(!isset($this->options['updateAction'][$row['normalized_name']])){
                             
                             $attributes = json_decode($row['attributes'],true);
+                            $multiple = false;
+                            if(isset($attributes['multiple'])){
+                                $multiple = $attributes['multiple'];
+                            }
                             $this->options['updateAction'][$row['normalized_name']] = array(
                                 'functionParams' => 'params',
                                 'help' => $row['help'].$this->getChoices($attributes),
                                 'type' => 'string',
                                 'toTransform' => $row['name'],
-                                'multiple' => '',
+                                'multiple' => $multiple,
                                 'required' => false,
                                 'attributes' => $attributes
                             );
@@ -231,12 +236,16 @@ class BasicCrud extends AbstractCommand
                         if(!isset($this->options['createAction'][$row['normalized_name']])){
                             
                             $attributes = json_decode($row['attributes'],true);
+                            $multiple = false;
+                            if(isset($attributes['multiple'])){
+                                $multiple = $attributes['multiple'];
+                            }
                             $this->options['createAction'][$row['normalized_name']] = array(
                                 'functionParams' => 'params',
                                 'help' => $row['help'].$this->getChoices($attributes),
                                 'type' => 'string',
                                 'toTransform' => $row['name'],
-                                'multiple' => '',
+                                'multiple' => $multiple,
                                 'required' => $row['mandatory'],
                                 'attributes' => $attributes
                             );
@@ -500,6 +509,7 @@ class BasicCrud extends AbstractCommand
                         }
 
                     } elseif ($externalAttribute['link'] == 'multiple' && $key === $externalAttribute['type']) {
+
                         $aFields = explode(",", $externalAttribute['fields']);
                         $aDatas = explode(',', $params[$externalAttribute['type']]);
  
