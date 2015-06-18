@@ -11,17 +11,17 @@ Available parameters are the following:
 ================== =========================
 Parameter          Description
 ================== =========================
-**command_name**   Command name
+**command-name**   Command name
 
-**command_type**   Command type
+**command-type**   Command type
 
-**command_line**   Command line
+**command-line**   Command line
 
-enable_shell       Enable shell (0 or 1)
+enable-shell       Enable shell (0 or 1)
 
-connector_id       Connector id
+connector-id       Connector id
 
-command_comment    Comments for the command
+command-comment    Comments for the command
 ================== =========================
 
 List
@@ -53,10 +53,11 @@ Show
 
 In order to show a command, use **show** action::
 
-  ./centreonConsole centreon-configuration:Command:show object="command[check_icmp]"
+  ./centreonConsole centreon-configuration:Command:show --command 'check-icmp'
   id: 1
   connector_id:
   name: check_icmp
+  command_slug: check-icmp
   command line: $USER1$/check_icmp -H $HOSTADDRESS$
   command_example:
   type: 2
@@ -71,7 +72,7 @@ Create
 
 In order to create a command, use **create** action::
 
-  ./centreonConsole centreon-configuration:Command:create params="command_name[check_icmp];command_type[2];command_line[$USER1$/check_icmp -H $HOSTADDRESS$]"
+  ./centreonConsole centreon-configuration:Command:create --command-name 'check_icmp' --command-type 2 --command-line '$USER1$/check_icmp -H $HOSTADDRESS$'
   Object successfully created
 
 Update
@@ -79,7 +80,7 @@ Update
 
 In order to update a command, use **update** action::
 
-  ./centreonConsole centreon-configuration:Command:update object="command[check_icmp]":params="command_line[$USER1$/check_icmp -H $HOSTADDRESS$ -c 5]"
+  ./centreonConsole centreon-configuration:Command:update --command 'check-icmp' --command-line '$USER1$/check_icmp -H $HOSTADDRESS$ -c 5'
   Object successfully updated
 
 Delete
@@ -87,7 +88,7 @@ Delete
 
 In order to delete a command, use **delete** action::
 
-  ./centreonConsole centreon-configuration:Command:delete object="command[check_icmp]"
+  ./centreonConsole centreon-configuration:Command:delete --command 'check-icmp'
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -95,6 +96,6 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a command, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:Command:duplicate object="command[check_icmp]"
+  ./centreonConsole centreon-configuration:Command:duplicate --command 'check-icmp'
   Object successfully duplicated
 

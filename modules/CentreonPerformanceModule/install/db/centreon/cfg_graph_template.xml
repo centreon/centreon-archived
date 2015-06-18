@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="cfg_graph_template" idMethod="native">
+        <column name="graph_template_id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true" />
+        <column name="svc_tmpl_id" type="INTEGER" required="true" />
+        <column name="draw_status" type="INTEGER" size="1" required="true" defaultValue="0" />
+        <column name="split" type="INTEGER" size="1" required="true" defaultValue="0" />
+        <column name="stackable" type="INTEGER" size="1" required="true" defaultValue="0" />
+        <column name="scale" type="INTEGER" size="1" required="true" defaultValue="0" />
+        <foreign-key foreignTable="cfg_services" name="graph_template_fk_1" onDelete="CASCADE">
+            <reference local="svc_tmpl_id" foreign="service_id" />
+        </foreign-key>
+        <unique name="cfg_graph_template_u1">
+          <unique-column name="svc_tmpl_id"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table> 
+</database>

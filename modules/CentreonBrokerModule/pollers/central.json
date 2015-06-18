@@ -11,7 +11,8 @@
                 "normal": [
                   {
                     "general": {
-                      "name": "central-module"
+                      "name": "central-module",
+                      "command_file": "%global_broker_data_directory%/central-module.cmd"
                     },
                     "output": [
                       {
@@ -27,20 +28,38 @@
                         ]
                       },
                       {
+                        "buffering_timeout": "10",
+                        "read_timeout": "10",
+                        "retry_interval": "60",
                         "type": "dumper",
-                        "tagname": "extcommand-%poller_name%",
+                        "tagname": "extcommand-engine-central-module-%poller_id%",
                         "path": "%engine_var_lib_dir%/rw/centengine.cmd",
-                        "name": "extcommand-%poller_name%"
+                        "name": "extcommand-engine-central-module-%poller_name%"
                       },
                       {
+                        "buffering_timeout": "10",
+                        "read_timeout": "10",
+                        "retry_interval": "60",
                         "type": "dumper",
-                        "tagname": "cfg-engine-%poller_name%",
+                        "tagname": "extcommand-broker-central-module-%poller_id%",
+                        "path": "%global_broker_data_directory%/central-module.cmd",
+                        "name": "extcommand-engine-central-module-%poller_name%"
+                      },
+                      {
+                        "buffering_timeout": "10",
+                        "read_timeout": "10",
+                        "retry_interval": "60",
+                        "type": "dumper",
+                        "tagname": "cfg-engine-central-module-%poller_id%",
                         "path": "%engine_conf_dir%/$FILENAME$",
                         "name": "cfg-engine-%poller_name%"
                       },
                       {
+                        "buffering_timeout": "10",
+                        "read_timeout": "10",
+                        "retry_interval": "60",
                         "type": "dumper",
-                        "tagname": "cfg-broker-%poller_name%",
+                        "tagname": "cfg-broker-central-module-%poller_id%",
                         "path": "%global_broker_etc_directory%/$FILENAME$",
                         "name": "cfg-broker-%poller_name%"
                       }
@@ -85,6 +104,11 @@
                       }
                     ],
                     "output": [
+                      {
+                        "type": "node_events",
+                        "name": "notification-ack-downtime",
+                        "cache": "yes"
+                      },
                       {
                         "type": "sql",
                         "name": "central-sql"

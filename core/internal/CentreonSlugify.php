@@ -96,12 +96,22 @@ class CentreonSlugify
      */
     public function slug($sValue, $iIobjectId = '')
     {
-        $sSlug = $this->oObject->slugify($sValue);
-        $oRepo= $this->oRepository;
+        $oRepo  = $this->oRepository;
         $oModel = $this->oModel;
         
-        $aObject = $oRepo::getList("*", -1, 0, null, 'asc', array($this->sSlugField => $sSlug));
-            
+        $sSlug  = $this->oObject->slugify($sValue);
+        
+        $aValues  = explode(static::$sGlue, $sSlug);
+        $iLast    = end($aValues);
+        
+        if (is_numeric($iLast)) {
+            $iPos     = strrpos($sSlug, static::$sGlue);
+            $sSlugToSearch = substr($sSlug, 0, $iPos).static::$sGlue;
+        } else {
+            $sSlugToSearch = $sSlug;
+        }
+        
+       $aObject = $oRepo::getList("*", -1, 0, null, 'asc', array($this->sSlugField => $sSlugToSearch."%"));
         $sSlugNew = self::concat($oModel, $sSlug, $iIobjectId, $aObject);
 
         return $sSlugNew;
@@ -116,39 +126,75 @@ class CentreonSlugify
     public static function concat($oModel, $sValue, $iIobjectId, $aObject)
     {
         $sSlugNew = "";
-        $iNb = count($aObject);
-        $aValues = explode(static::$sGlue, $sValue);
-        $iLast = end($aValues);
+        $iNb      = count($aObject);
+        $aValues  = explode(static::$sGlue, $sValue);
+        $iLast    = end($aValues);
+        $iPos     = strrpos($sValue, static::$sGlue);
+        $sPrimary = $oModel::getPrimaryKey();
+        $sSlugField = $oModel::getSlugField();
         
         if ($iNb == 0) {
             $sSlugNew = $sValue;
-        } else if($iNb ==1 && !empty($iIobjectId))  {
-            
-            $sPrimary = $oModel::getPrimaryKey();
-            
-            if (!empty($sPrimary)) {
-                if (isset($aObject[0][$sPrimary]) && $aObject[0][$sPrimary] == $iIobjectId) {
-                    $sSlugNew = $sValue;
-                }
-
-            } else {
-                if (is_int($iLast)) {
-                    $iPos = strrpos($sValue, static::$sGlue);
-                    $sSlugNew = substr($sValue, 0, $iPos).static::$sGlue.($iNb + 1);
-                } else {
-                    static::$index++;
-                    $sSlugNew = $sValue.static::$sGlue.static::$index;
-                }
-            }
         } else {
-            if (is_int($iLast)) {
-                $iPos = strrpos($sValue, static::$sGlue);
-                $sSlugNew = substr($sValue, 0, $iPos).static::$sGlue.($iNb + 1);
+            $iHighSlug = static::highPrefixSlug($aObject, $sSlugField);
+            //$sSlugTemp = substr($sValue, 0, $iPos).static::$sGlue.$iHighSlug;
+            
+            if (static::testSlug($sValue, $aObject, $sSlugField, $iIobjectId, $sPrimary)) {
+                $sSlugNew = $sValue;
+            } elseif (is_numeric($iLast)) {  
+                $sSlugNew = substr($sValue, 0, $iPos).static::$sGlue.($iHighSlug + 1);
             } else {
                 static::$index++;
                 $sSlugNew = $sValue.static::$sGlue.static::$index;
             }
         }
+       
         return $sSlugNew;
+    }
+    /**
+     * 
+     * @param array $aObject
+     * @param string $sSlugField
+     * @return int
+     */
+    
+    public static function highPrefixSlug($aObject, $sSlugField)
+    {
+        $iReturn = 1;
+        foreach ($aObject as $cle => $valeur) {
+            
+            if (isset($valeur[$sSlugField])) {
+                $aValues = explode(static::$sGlue, $valeur[$sSlugField]);
+                $iEnd    = end($aValues);
+                if (is_numeric($iEnd) && $iEnd > $iReturn) {
+                    $iReturn = $iEnd;
+                }
+            }
+        }
+        return $iReturn;
+    }
+    
+    /**
+     * 
+     * @param string $sNewSlug   new slug
+     * @param array  $aObject    array containts the slug in database
+     * @param string $sSlugField name of field slug in model
+     * @param int    $iIdObject  id of object which is updated
+     * @param string $sPrimary   name of field ID in model
+     * @return boolean
+     */
+    public static function testSlug($sNewSlug, $aObject, $sSlugField, $iIdObject, $sPrimary)
+    {
+        foreach ($aObject as $cle => $valeur) { 
+            if (isset($valeur[$sSlugField]) 
+                    && $sNewSlug == $valeur[$sSlugField] 
+                    && !empty($iIdObject)
+                    && $iIdObject == $valeur[$sPrimary]) {
+                        return true;
+                
+            }
+        }
+
+        return false;
     }
 }

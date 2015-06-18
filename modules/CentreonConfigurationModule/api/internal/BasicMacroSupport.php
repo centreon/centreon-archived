@@ -77,6 +77,7 @@ class BasicMacroSupport extends BasicCrudCommand
                 throw new \Exception(static::OBJ_NOT_EXIST);
             }
             switch($this->objectName){
+                case 'hosttemplate' : 
                 case 'host' :
                     if(isset($paramList['host_macro_name']) && isset($paramList['host_macro_value'])){
                         $formatedParams = array(
@@ -94,6 +95,7 @@ class BasicMacroSupport extends BasicCrudCommand
                         'green'
                     );
                     break;
+                case 'servicetemplate' : 
                 case 'service' : 
                     if(isset($paramList['svc_macro_name']) && isset($paramList['svc_macro_value'])){
                         $formatedParams = array(
@@ -146,9 +148,11 @@ class BasicMacroSupport extends BasicCrudCommand
                 throw new \Exception(static::OBJ_NOT_EXIST);
             }
             switch($this->objectName){
+                case 'hosttemplate' : 
                 case 'host' :
                     CustomMacroRepository::updateHostCustomMacro($objectId,$macro,$paramList);
                     break;
+                case 'servicetemplate' :
                 case 'service' : 
                     CustomMacroRepository::updateServiceCustomMacro($objectId,$macro,$paramList);
                     break;
@@ -187,9 +191,11 @@ class BasicMacroSupport extends BasicCrudCommand
             }
             $macros = array();
             switch($this->objectName){
+                case 'hosttemplate' : 
                 case 'host' :
                     $macros = CustomMacroRepository::loadHostCustomMacro($objectId);
                     break;
+                case 'servicetemplate' :
                 case 'service' : 
                     $macros = CustomMacroRepository::loadServiceCustomMacro($objectId);
                     break;
@@ -234,9 +240,11 @@ class BasicMacroSupport extends BasicCrudCommand
                 throw new \Exception(static::OBJ_NOT_EXIST);
             }
             switch($this->objectName){
+                case 'hosttemplate' : 
                 case 'host' :
                     CustomMacroRepository::deleteHostCustomMacro($objectId,$macro);
                     break;
+                case 'servicetemplate' :
                 case 'service' : 
                     CustomMacroRepository::deleteServiceCustomMacro($objectId,$macro);
                     break;

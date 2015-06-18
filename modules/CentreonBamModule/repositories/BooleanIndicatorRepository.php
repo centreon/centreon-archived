@@ -34,16 +34,23 @@
  * 
  */
 
-namespace CentreonBam\Models;
 
+namespace CentreonBam\Repository;
+
+use CentreonMain\Repository\FormRepository;
 use Centreon\Internal\Di;
-use Centreon\Models\CentreonBaseModel;
 
 
-
-class Icon extends CentreonBaseModel
+/**
+ * Description of BooleanIndicatorRepository
+ *
+ * @author bsauveton
+ */
+class BooleanIndicatorRepository extends FormRepository
 {
-    protected static $table = "cfg_binaries";
-    protected static $primaryKey = "binary_id";
-    protected static $uniqueLabelField = "filename";
+    
+    public static $objectClass = '\CentreonBam\Models\BooleanIndicator';
+    
+    
+    //put your code here
 }

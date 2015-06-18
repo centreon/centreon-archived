@@ -231,7 +231,6 @@ class Informations
             'centreon-configuration',
             'centreon-realtime',
             'centreon-customview',
-            'centreon-bam',
         );
         
         return $coreModuleList;

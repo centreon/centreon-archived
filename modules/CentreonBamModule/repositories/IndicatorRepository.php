@@ -38,7 +38,10 @@ namespace CentreonBam\Repository;
 use Centreon\Internal\Di;
 use CentreonMain\Repository\FormRepository;
 use CentreonBam\Models\BooleanIndicator;
-
+use CentreonBam\Models\Indicator;
+use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Repository\HostRepository;
+use Centreon\Internal\CentreonSlugify;
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package CentreonBam
@@ -100,7 +103,40 @@ class IndicatorRepository extends FormRepository
 
         return $booleanParameters;
     }
+/*
+    public static function createIndicatorConsole($givenParameters, $origin, $route){
+        $parameters = array();
+        foreach ($givenParameters as $k => $v) {
+            $parameters[$k] = $v;
+        }
 
+        if ($parameters['kpi_type'] === '0' || $parameters['kpi_type'] ===  '2' || $parameters['kpi_type'] ===  '3') {
+            //self::validateForm($givenParameters, $origin, $route);
+        }
+        
+        $parameters['id_ba'] = BusinessActivityRepository::getIdFromUnicity(array('bam' => $parameters['id_ba']));
+        
+        $lastIndicatorId = self::createBasicIndicator($parameters);
+        
+        
+        if ($parameters['kpi_type'] === '0') {
+            $host_id = HostRepository::getIdFromUnicity(array('host' => $parameters['host']));
+            ServiceRepository::$objectClass = '\CentreonConfiguration\Models\Service';
+            $service_id = ServiceRepository::getIdFromUnicity(array('service' => $parameters['service_id'], 'host' => $parameters['host']));
+            if(!is_null($host_id) && !is_null($service_id)){
+                $parameters['service_id'] = $service_id.'_'.$host_id;
+                self::createServiceIndicator($lastIndicatorId, $parameters);
+            }
+        } else if ($parameters['kpi_type'] === '1') {
+            self::createMetaserviceIndicator($lastIndicatorId, $parameters);
+        } else if ($parameters['kpi_type'] === '2') {
+            $parameters['id_indicator_ba'] = BusinessActivityRepository::getIdFromUnicity(array('bam' => $parameters['id_indicator_ba']));
+            self::createBaIndicator($lastIndicatorId, $parameters);
+        } else if ($parameters['kpi_type'] === '3') {
+            self::createBooleanIndicator($lastIndicatorId, $parameters);
+        }
+    }*/
+    
     /**
      *
      * @param string $givenParameters
@@ -108,19 +144,21 @@ class IndicatorRepository extends FormRepository
      */
     public static function createIndicator($givenParameters, $origin, $route)
     {
+
         $parameters = array();
         foreach ($givenParameters as $k => $v) {
             $parameters[$k] = $v;
         }
                
-
+        
         if ($parameters['kpi_type'] === '0' || $parameters['kpi_type'] ===  '2' || $parameters['kpi_type'] ===  '3') {
             self::validateForm($givenParameters, $origin, $route);
         }
+
         
         $lastIndicatorId = self::createBasicIndicator($parameters);
-        
         if ($parameters['kpi_type'] === '0') {
+            $parameters['service_id'] = $parameters['service_id'].'_'.$parameters['host_id'];
             self::createServiceIndicator($lastIndicatorId, $parameters);
         } else if ($parameters['kpi_type'] === '1') {
             self::createMetaserviceIndicator($lastIndicatorId, $parameters);
@@ -147,7 +185,6 @@ class IndicatorRepository extends FormRepository
         if (trim($parameters['id_ba']) == "") {
             unset($parameters['id_ba']);
         }
-
         $class = static::$objectClass;
         $lastIndicatorId = $class::insert($parameters);
         if (is_null($lastIndicatorId)) {
@@ -222,11 +259,21 @@ class IndicatorRepository extends FormRepository
     public static function createBooleanIndicator($lastIndicatorId, $parameters)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
+        
+        $class = '\CentreonBam\Models\BooleanIndicator';
+        $repoClass = '\CentreonBam\Repository\BooleanIndicatorRepository';
+        
+        $sSlug = $parameters['boolean_name'];
+ 
+        $oSlugify = new CentreonSlugify($class, $repoClass);
+        $sSlug = $oSlugify->slug($parameters['boolean_name']);
+        
 
-        $insertBooleanRequest = "INSERT INTO cfg_bam_boolean(name, expression, bool_state)"
-                . " VALUES(:boolean_name, :boolean_expression, :bool_state)";
+        $insertBooleanRequest = "INSERT INTO cfg_bam_boolean(name, expression, bool_state, slug)"
+                . " VALUES(:boolean_name, :boolean_expression, :bool_state, :slug)";
         $stmtBooleanInsert = $dbconn->prepare($insertBooleanRequest);
-        $stmtBooleanInsert->bindParam(':boolean_name', $parameters['boolean_name'], \PDO::PARAM_INT);
+        $stmtBooleanInsert->bindParam(':boolean_name', $parameters['boolean_name'], \PDO::PARAM_STR);
+        $stmtBooleanInsert->bindParam(':slug', $sSlug, \PDO::PARAM_STR);
         $stmtBooleanInsert->bindParam(':boolean_expression', $parameters['boolean_expression'], \PDO::PARAM_INT);
         $stmtBooleanInsert->bindParam(':bool_state', $parameters['bool_state'], \PDO::PARAM_INT);
         $stmtBooleanInsert->execute();
@@ -246,10 +293,39 @@ class IndicatorRepository extends FormRepository
      * @param array $givenParameters
      * @throws \Centreon\Internal\Exception
      */
-    public static function updateIndicator($givenParameters, $origin = "", $route = "")
+    public static function updateIndicator($givenParameters, $origin = "", $route = "", $validateMandatory = true, $object = null)
     {
-        self::validateForm($givenParameters, $origin, $route);
+        self::validateForm($givenParameters, $origin, $route, $validateMandatory);
 
+        
+        switch ($origin){
+            case 'api' : 
+                $kpi = Indicator::getKpi($object);
+                if(!empty($kpi)){
+                    $givenParameters['object_id'] = $kpi['kpi_id'];
+                    if(!isset($givenParameters['kpi_type'])){
+                        $givenParameters['kpi_type'] = $kpi['kpi_type'];
+                        if(isset($givenParameters['service_id']) && isset($givenParameters['host_id'])){
+                            $givenParameters['service_id'] = $givenParameters['service_id'].'_'.$givenParameters['host_id'];
+                        }else if(isset($kpi['service_id']) && !is_null($kpi['service_id'])){
+                            $givenParameters['service_id'] = $kpi['service_id'].'_'.$kpi['host_id'];
+                        }
+                    }else{
+                        if(isset($givenParameters['service_id']) && isset($givenParameters['host_id'])){
+                            $givenParameters['service_id'] = $givenParameters['service_id'].'_'.$givenParameters['host_id'];
+                        }
+                    }
+                }else{
+                    throw new \Exception('This object is not defined');
+                }
+                break;
+            case 'web' : 
+                break;
+            default :
+                break;
+        }
+        
+        
         $class = static::$objectClass;
         $pk = $class::getPrimaryKey();
         $givenParameters[$pk] = $givenParameters['object_id'];
@@ -325,6 +401,87 @@ class IndicatorRepository extends FormRepository
             static::postSave($id, 'update', $givenParameters);
         }
     }
+    
+    
+    public static function updateIndicatorConsole($object,$givenParameters, $origin = "", $route = "", $validateMandatory = true){
+
+        self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        $class = static::$objectClass;
+        $db = Di::getDefault()->get('db_centreon');
+        $kpi = Indicator::getKpi($object);
+        $id = $kpi['kpi_id'];
+        
+        $columns = $class::getColumns();
+        $updateValues = array();
+        
+        
+        foreach ($givenParameters as $key => $value) {
+            if (in_array($key, $columns)) {
+                if (is_string($value)) {
+                    $updateValues[$key] = trim($value);
+                } else {
+                    $updateValues[$key] = $value;
+                }
+            }
+        }
+
+        $relBooleanIndicator = '\CentreonBam\Models\BooleanIndicator';
+
+        if ($kpi['kpi_type'] === '0') {
+            $serviceHostId = explode('_',$updateValues['service_id']);
+            $updateValues['service_id'] = $serviceHostId[0];
+            $updateValues['host_id'] = $serviceHostId[1];
+            $updateValues['boolean_id'] = null;
+            $updateValues['id_indicator_ba'] = null;
+            $updateValues['meta_id'] = null;
+        } elseif ($kpi['kpi_type'] === '1') {
+            $updateValues['host_id'] = null;
+            $updateValues['service_id'] = null;
+            $updateValues['boolean_id'] = null;
+            $updateValues['id_indicator_ba'] = null;
+        } elseif ($kpi['kpi_type'] === '2') {
+            $updateValues['host_id'] = null;
+            $updateValues['service_id'] = null;
+            $updateValues['boolean_id'] = null;
+            $updateValues['meta_id'] = null;
+        } elseif ($kpi['kpi_type'] === '3') {
+            $updateValues['host_id'] = null;
+            $updateValues['service_id'] = null;
+            $updateValues['meta_id'] = null;
+            $updateValues['id_indicator_ba'] = null;
+            $updateValuesBoolean = array();
+            $updateValuesBoolean['expression'] = $givenParameters['boolean_expression'];
+            $updateValuesBoolean['name'] = $givenParameters['boolean_name'];
+            $updateValuesBoolean['bool_state'] = $givenParameters['bool_state'];
+            
+            $resultBoolean = BooleanIndicator::getIdByParameter('name', $updateValuesBoolean['name']);
+            if (count($resultBoolean) > 0) {
+                $iIdBoolean = $resultBoolean[0];
+            }
+            if (!isset($iIdBoolean) || (isset($iIdBoolean) && empty($iIdBoolean))) {
+                $updateValues['boolean_id'] = $relBooleanIndicator::insert($updateValuesBoolean);
+            } else {
+                $updateValues['boolean_id'] = $iIdBoolean;
+                $relBooleanIndicator::update($updateValues['boolean_id'], $updateValuesBoolean);
+            }
+        }
+
+        if ($kpi['kpi_type'] !== '3') {
+            $booleanId = $class::getParameters($kpi['kpi_id'], 'boolean_id');
+            $class::update($id, $updateValues);
+            if (isset($booleanId['boolean_id'])) {
+                $relBooleanIndicator::delete($booleanId['boolean_id']);
+            }
+        } else {
+            $class::update($id, $updateValues);
+        }
+
+        if (method_exists(get_called_class(), 'postSave')) {
+            static::postSave($id, 'update', $givenParameters);
+        }
+    } 
+    
+    
 
     /**
      * Used for duplicating object

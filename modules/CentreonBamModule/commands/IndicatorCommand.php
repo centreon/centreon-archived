@@ -39,6 +39,7 @@ namespace CentreonBam\Commands;
 
 use Centreon\Api\Internal\BasicCrudCommand;
 use CentreonBam\Repository\IndicatorRepository;
+use CentreonBam\Models\Indicator;
 /**
  * Description of KpiCommand
  *
@@ -58,8 +59,43 @@ class IndicatorCommand extends BasicCrudCommand
     }
     
     public function createAction($params){
-        IndicatorRepository::createIndicator($params, 'api', '/centreon-bam/indicator/update');
+        IndicatorRepository::createIndicator($this->parseObjectParams($params), 'api', '/centreon-bam/indicator/update');
         \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
+    }
+    
+    /**
+     * 
+     * @param array $params
+     * @detail $params array service required The indicator
+     * @detail $params string host 
+     * @detail $params boolean hidden 
+     */
+    public function updateAction($object,$params){
+        IndicatorRepository::updateIndicator($this->parseObjectParams($params), 'api', '/centreon-bam/indicator/update',false,$this->parseObjectParams($object));
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully updated", true, 'green');
+    }
+    
+    public function deleteAction($object){
+        $kpi = Indicator::getKpi($this->parseObjectParams($object));
+        IndicatorRepository::delete(array($kpi['kpi_id']));
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully deleted", true, 'green');
+    }
+    
+    public function showAction($object){
+        $kpi = Indicator::getKpi($this->parseObjectParams($object));
+        $this->normalizeSingleSet($kpi);
+        $result = '';
+        foreach ($kpi as $key => $value) {
+            $result .= $key . ': ' . $value . "\n";
+        }
+        
+        echo $result;
+        
+        
+        
+        
+        
+        
     }
     
     

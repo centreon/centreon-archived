@@ -41,5 +41,35 @@ function loadTemplateSteps( data, $el, url ) {
         }
       });
     }
+  } else if ($( "#poller_form" ).length) {
+    if ( $el === undefined ) {
+      $el = $( "#tmpl_name" );
+    }
+
+    /* Remove old additional fields */
+    $( "#poller_form" ).find( ".additional-field" ).remove();
+
+    if ( data !== null && url !== undefined ) {
+      $.ajax({
+        url: url,
+        type: "post",
+        data: { name: data.id },
+        dataType: "json",
+        success: function( data, textStatus, jqXHR ) {
+          var nbField = 1;
+          /* Add additional fields */
+          $.each( data.steps, function( idx, field ) {
+            var fieldId = "additionalField" + nbField;
+            nbField++;
+            $( "<div></div>" )
+              .attr( "id", fieldId )
+              .addClass( "additional-field" )
+              .addClass( "col-md-6" )
+              .html( field.html )
+              .appendTo( $("#tmpl_name").closest(".panel-body") );
+          });
+        }
+      });
+    }
   }
 }

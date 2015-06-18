@@ -13,7 +13,7 @@ Parameter          Description
 ================== =========================
 **description**    Contact description
 
-timezone_id        Timezone id
+timezone-id        Timezone id
 ================== =========================
 
 List
@@ -43,17 +43,18 @@ Show
 
 In order to show a contact, use **show** action::
 
-  ./centreonConsole centreon-administration:contact:show object=contact["admin contact"]
-  id: 1
-  description: admin contact
-  timezone:
+  ./centreonConsole centreon-administration:contact:show --contact "john"
+  id: 5
+  description: john
+  slug: john
+  timezone: 
 
 Create
 ------
 
 In order to create a contact, use **create** action::
 
-  ./centreonConsole centreon-administration:contact:create params=description[john]
+  ./centreonConsole centreon-administration:contact:create --description 'john'
   Object successfully created
 
 Update
@@ -61,7 +62,7 @@ Update
 
 In order to update a contact, use **update** action::
 
-  ./centreonConsole centreon-administration:contact:update object="contact[john]":params="timezone_id[1]"
+  ./centreonConsole centreon-administration:contact:update --contact "john" --timezone-id 'africa-accra'
   Object successfully updated
 
 Delete
@@ -69,7 +70,7 @@ Delete
 
 In order to delete a contact, use **delete** action::
 
-  ./centreonConsole centreon-administration:contact:delete object="contact[john]"
+  ./centreonConsole centreon-administration:contact:delete --contact "john"
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -77,6 +78,6 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a contact, use **duplicate** action::
 
-  ./centreonConsole centreon-administration:contact:duplicate object="contact[john]"
+  ./centreonConsole centreon-administration:contact:duplicate --contact "john"
   Object successfully duplicated
 

@@ -68,7 +68,7 @@ class Wizard extends Full
         /*$baseUrl = rtrim($di->get('config')->get('global', 'base_url'), '/');
         $route = str_replace($baseUrl, '', $route);*/
 
-        $query = "SELECT f.field_id as field_id, w.name as wizard_name, s.name as step_name, 
+        $query = "SELECT f.field_id as field_id, w.name as wizard_name, s.name as step_name, f.show_label,
             s.rank as step_rank, f.mandatory as mandatory, f.parent_field as parent_field, f.parent_value as parent_value,
             f.child_mandatory as child_mandatory, f.child_actions as child_actions, sf.rank as field_pos,
             f.name as name, f.label, f.default_value, f.attributes, f.type, f.help
@@ -165,6 +165,7 @@ class Wizard extends Full
         $di = Di::getDefault();
         $tpl = $di->get('template');
         $tpl->assign('name', $this->formName);
+        $tpl->assign('formName', $this->formName);
         $tpl->assign('formElements', $formElements);
         $tpl->assign('steps', $this->formComponents);
         return $tpl->fetch('tools/modalWizard.tpl');

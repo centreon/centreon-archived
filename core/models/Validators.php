@@ -54,7 +54,7 @@ class Validators extends CentreonBaseModel
      *
      * @param string $sName
      */
-    public static function delete($sName = "")
+    public static function delete($sName = "", $notFoundError = true)
     {
         $db = Di::getDefault()->get('db_centreon');
         $sql = "DELETE FROM  " . static::$table ;

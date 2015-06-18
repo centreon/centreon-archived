@@ -215,7 +215,7 @@
               "functionParams" : "params",
               "help": "The macro value",
               "type": "string",
-              "toTransform" : "value",
+              "toTransform" : "svc_macro_value",
               "multiple" : false,
               "required" : false
             },
@@ -223,17 +223,27 @@
               "functionParams" : "params",
               "help": "The new macro name",
               "type": "string",
-              "toTransform" : "name",
+              "toTransform" : "svc_macro_name",
               "multiple" : false,
               "required" : false
             },
             "hidden" : {
               "functionParams" : "params",
-              "help": "Is password",
-              "type": "number",
-              "toTransform" : "hidden",
+              "help": "hide as password",
+              "type": "boolean",
+              "toTransform" : "is_password",
               "multiple" : false,
-              "required" : false
+              "required" : false,
+              "booleanValue" : true
+            },
+            "show" : {
+              "functionParams" : "params",
+              "help": "hide as password",
+              "type": "boolean",
+              "toTransform" : "is_password",
+              "multiple" : false,
+              "required" : false,
+              "booleanValue" : false
             }
         },
         "addMacroAction" : {
@@ -249,7 +259,7 @@
               "functionParams" : "params",
               "help": "The macro name",
               "type": "string",
-              "toTransform" : "name",
+              "toTransform" : "svc_macro_name",
               "multiple" : false,
               "required" : false
             },
@@ -257,17 +267,19 @@
               "functionParams" : "params",
               "help": "The macro value",
               "type": "string",
-              "toTransform" : "value",
+              "toTransform" : "svc_macro_value",
               "multiple" : false,
               "required" : false
             },
             "hidden" : {
               "functionParams" : "params",
-              "help": "Is password ?",
-              "type": "Number",
-              "toTransform" : "hidden",
+              "help": "hide as password",
+              "type": "boolean",
+              "toTransform" : "is_password",
               "multiple" : false,
-              "required" : false
+              "required" : false,
+              "booleanSetDefault" : true,
+              "booleanValue" : true
             }
         }
     }

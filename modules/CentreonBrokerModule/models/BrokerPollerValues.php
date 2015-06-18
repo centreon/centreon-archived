@@ -31,73 +31,24 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonConfiguration\Events;
+namespace CentreonBroker\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
- * Parameters for events centreon-configuration.broker.poller.conf
+ * Used for interacting with broker poller values
  *
- * @author Maximilien Bersoult <mbersoult@centreon.com>
- * @version 3.0.0
+ * @author Kevin Duret <kduret@centreon.com>
  * @package Centreon
- * @subpackage CentreonConfiguration
+ * @subpackage Broker
+ * @version 3.0.0
  */
-class BrokerPollerConf
+class BrokerPollerValues extends CentreonBaseModel
 {
-    /**
-     * Refers to the poller id
-     * @var int
-     */
-    private $pollerId;
-
-    /**
-     * The list of values saved in databases
-     * @var array
-     */
-    private $values;
-
-    /**
-     * Constructor
-     *
-     * @param int $pollerId The poller id
-     * @param array $values The list of values
-     */
-    public function __construct($pollerId, &$values)
-    {
-        $this->pollerId = $pollerId;
-        $this->values = &$values;
-    }
-
-    /**
-     * Return the poller id
-     *
-     * @return int
-     */
-    public function getPollerId()
-    {
-        return $this->pollerId;
-    }
-
-    /**
-     * Return the values
-     *
-     * @return array
-     */
-    public function getValues()
-    {
-        return $this->values;
-    }
-
-    /**
-     * Append values to configuration
-     *
-     * @param array $values The values to append
-     */
-    public function addValues($values)
-    {
-        foreach ($values as $key => $value) {
-            $this->values[$key] = $value;
-        }
-    }
+    protected static $table = "cfg_centreonbroker_pollervalues";
+    protected static $primaryKey = "poller_id";
+    protected static $uniqueLabelField = "poller_id";
 }

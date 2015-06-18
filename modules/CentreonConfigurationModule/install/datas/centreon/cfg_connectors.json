@@ -2,6 +2,7 @@
     {
         "id": 1,
         "name": "Perl Connector",
+        "slug": "perl-connector",
         "description": "",
         "command_line": "$USER3$/centreon_connector_perl",
         "enabled": 1,
@@ -18,6 +19,7 @@
     {
         "id": 2,
         "name": "SSH Connector",
+        "slug": "ssh-connector",
         "description": "",
         "command_line": "$USER3$/centreon_connector_ssh",
         "enabled": 1,
