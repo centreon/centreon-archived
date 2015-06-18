@@ -127,7 +127,6 @@ class Validator
     private function validateDatas($validationScheme, $submittedDatas, $validateMandatory = true)
     {
         $errors = array();
-
         if ($validateMandatory) {
             // If not all mandatory parameters are in the dataset, throw an exception
             $missingKeys = array();
@@ -166,6 +165,15 @@ class Validator
                     
                     // Launch validation
                     $result = $validator->validate($value, $validatorParams);
+
+                    //If field is not mandatory and the value is empty ==> when can validate
+                    if (!in_array($key, $validationScheme['mandatory'])
+                            && $validatorElement['call'] == 'core.String'
+                            && strpos($validatorElement['params'], 'minlength')
+                            && empty($value)
+                            ) {
+                            $result['success'] = true;
+                    }
                     
                     if ($result['success'] === false) {
                         $errors[] = $result['error'];
