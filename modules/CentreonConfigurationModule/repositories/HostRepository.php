@@ -48,6 +48,7 @@ use CentreonConfiguration\Models\Relation\Host\Service as HostServiceRelation;
 use CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate as HostTemplateServiceTemplateRelation;
 use CentreonConfiguration\Models\Relation\Service\Hosttemplate as ServiceHostTemplateRelation;
 use CentreonConfiguration\Models\Relation\Aclresource\Host as AclresourceHostRelation;
+use Centreon\Internal\CentreonSlugify;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -470,9 +471,7 @@ class HostRepository extends Repository
             $templatesTmp['icon'] = self::getIconImagePath($template['host_id']);
             $templatesTmp['servicesTemplate'] = HostTemplateRepository::getRelationsCustom("\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate", $template['host_id']);
             $templatesTmp['templates'] = self::getTemplateChainTree($template['host_id'], $depth);
-            
-            
-            
+
             $templates[] = $templatesTmp;
         }
         return $templates;
@@ -617,8 +616,11 @@ class HostRepository extends Repository
         // get host services
         $aHostServices = HostServiceRelation::getMergedParameters(
             array('host_id'),
-            array('service_id',
-            'service_description'),
+            array(
+                'service_id',
+                'service_description',
+                'service_alias'
+            ),
             -1,
             0,
             null,
@@ -633,7 +635,11 @@ class HostRepository extends Repository
 
             $aHostTemplateServiceTemplates = HostTemplateServiceTemplateRelation::getMergedParameters(
                 array('host_id'),
-                array('service_id', 'service_description'),
+                array(
+                    'service_id', 
+                    'service_description',
+                    'service_alias'
+                ),
                 -1,
                 0,
                 null,
@@ -658,13 +664,31 @@ class HostRepository extends Repository
 
         // get services linked to the host
         $aServicesDescription = array_values(array_column($aHostServices, 'service_description'));
+        
+        $repository = "CentreonConfiguration\Repository\ServiceRepository";
+        $repository::setRelationMap(
+                array(
+                        "service_hosts" => "\\CentreonConfiguration\\Models\\Relation\\Service\\Host",
+                        "service_parents" => "\\CentreonConfiguration\\Models\\Relation\\Service\\Serviceparents",
+                        "service_children" => "\\CentreonConfiguration\\Models\\Relation\\Service\\Servicechildren")
+            );
+        $repository::setObjectName("Service");
+        $repository::setObjectClass("\CentreonConfiguration\\Models\\Service");
+        $oModel       = "CentreonConfiguration\Models\Service";
 
+        $oSlugify = new CentreonSlugify($oModel, $repository);
+        
         $db->beginTransaction();
-
+        
         // create services which don't yet exist
         foreach ($aHostServiceTemplates as $oHostServiceTemplate) {
             if (!in_array($oHostServiceTemplate['service_description'], $aServicesDescription)) {
-                $newService['service_description'] = $oHostServiceTemplate['service_description'];
+                $sSlug = $oSlugify->slug($oHostServiceTemplate['service_alias']);
+                
+                $newService['service_slug'] = $sSlug;
+                
+                $newService['service_description'] = $oHostServiceTemplate['service_alias'];
+                //$newService['service_alias'] = $oHostServiceTemplate['service_alias'];
                 $newService['service_template_model_stm_id'] = $oHostServiceTemplate['service_id'];
                 $newService['service_register'] = 1;
                 $newService['service_activate'] = 1;
