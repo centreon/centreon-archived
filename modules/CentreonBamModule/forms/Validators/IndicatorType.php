@@ -195,6 +195,8 @@ class IndicatorType implements ValidatorInterface
                     }
                     break;
                 default : 
+                    $bSuccess = false;
+                    $sMessage = 'Wrong params for ba type';
                     break;
             }
             
