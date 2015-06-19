@@ -154,7 +154,7 @@ class ServiceTemplateController extends FormController
         }
         
         if (count($macroList) > 0) {
-            CustomMacroRepository::saveServiceCustomMacro($givenParameters['object_id'], $macroList);
+            CustomMacroRepository::saveServiceCustomMacro(self::$objectName, $givenParameters['object_id'], $macroList);
         }
 
         //Delete all tags
@@ -219,7 +219,7 @@ class ServiceTemplateController extends FormController
         $id = parent::createAction(false);
         
         if (count($macroList) > 0) {
-            CustomMacroRepository::saveServiceCustomMacro($id, $macroList);
+            CustomMacroRepository::saveServiceCustomMacro(self::$objectName, $id, $macroList);
         }
         
         if (isset($givenParameters['service_tags'])) {

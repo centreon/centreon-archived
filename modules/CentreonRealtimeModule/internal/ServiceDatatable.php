@@ -38,6 +38,7 @@ namespace CentreonRealtime\Internal;
 
 use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
 use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+use CentreonRealtime\Repository\ServiceRepository as ServiceRealtimeRepository;
 use CentreonRealtime\Models\Host;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Datatable;
@@ -314,6 +315,13 @@ class ServiceDatatable extends Datatable
             $myServiceSet['description'] = '<span>'
                 . $icon
                 . ''.$myServiceSet['description'].'</span>';
+
+            if ($myServiceSet['state'] != '0' && $myServiceSet['state'] != '4') {
+                $acknowledgement = ServiceRealtimeRepository::getAcknowledgementInfos($myServiceSet['service_id']);
+                if (count($acknowledgement) > 0) {
+                    $myServiceSet['description'] .= ' <i class="fa fa-thumb-tack"></i>';
+                }
+            }
 
             if ($myServiceSet['perfdata'] != '') {
                 $myServiceSet['ico'] = '<span data-overlay-url="/centreon-realtime/service/'

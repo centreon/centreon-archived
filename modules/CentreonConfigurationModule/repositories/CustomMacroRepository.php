@@ -78,7 +78,7 @@ class CustomMacroRepository
      * @param type $objectId
      * @param type $submittedValues
      */
-    public static function saveHostCustomMacro($objectId, $submittedValues, $deleteFirst = true)
+    public static function saveHostCustomMacro($sTypeObject, $objectId, $submittedValues, $deleteFirst = true)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
 
@@ -89,7 +89,7 @@ class CustomMacroRepository
             $stmtDelete->execute();
         } else {
             foreach ($submittedValues as $customMacroName => $customMacro) {
-                self::validate('host', $customMacroName, $objectId);
+                self::validate($sTypeObject, $customMacroName, $objectId);
             }
         }
         
@@ -126,9 +126,11 @@ class CustomMacroRepository
     /**
      * 
      * @param type $objectId
+     * @param type $iHostId
      * @param type $submittedValues
+     * @param type $deleteFirst
      */
-    public static function saveServiceCustomMacro($objectId, $submittedValues, $deleteFirst = true)
+    public static function saveServiceCustomMacro($sTypeObject, $objectId, $submittedValues, $deleteFirst = true, $iHostId = null)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
         
@@ -139,7 +141,7 @@ class CustomMacroRepository
             $stmtDelete->execute();
         } else {
             foreach ($submittedValues as $customMacroName => $customMacro) {
-                self::validate('service', $customMacroName, $objectId);
+                self::validate($sTypeObject, $customMacroName, $objectId, $iHostId);
             }
         }
         $insertRequest = "INSERT INTO cfg_customvariables_services(svc_macro_name, svc_macro_value, is_password, svc_svc_id)"
@@ -344,7 +346,7 @@ class CustomMacroRepository
      * @param type $iIdObject
      * @return type
      */
-    public static function validate($sType, $sNameMacro, $iIdObject)
+    public static function validate($sType, $sNameMacro, $iIdObject, $iHostId = null)
     {
         $tables = array();
         $conditions = array();
@@ -357,11 +359,11 @@ class CustomMacroRepository
         
         $db = Di::getDefault()->get('db_centreon');
         
-        if (!in_array($sType, array('host', 'service'))) {
+        if (!in_array($sType, array('host', 'hosttemplate', 'service', 'servicetemplate'))) {
             return ;
         }
         
-        if ($sType == 'host') {
+        if ($sType == 'host' || $sType == 'hosttemplate') {
             $sElement = 'host_macro_id';
             $query = 'SELECT host_macro_id FROM cfg_customvariables_hosts WHERE host_macro_name = :host_macro_name'
                     . ' AND host_host_id = :host_host_id';
@@ -370,16 +372,26 @@ class CustomMacroRepository
             $stmt->bindParam(':host_macro_name', $macroName, \PDO::PARAM_STR);
             $stmt->bindParam(':host_host_id', $iIdObject, \PDO::PARAM_INT);
 
-        } else {
+        } elseif ($sType == 'servicetemplate') {
+       
             $sElement = 'svc_macro_id';
             $query = 'SELECT svc_macro_id FROM cfg_customvariables_services WHERE svc_macro_name = :svc_macro_name'
                     . ' AND svc_svc_id = :svc_svc_id';
-            
+  
             $stmt = $db->prepare($query);
             $macroName = '$_SERVICE'.$sNameMacro.'$';
             $stmt->bindParam(':svc_macro_name', $macroName, \PDO::PARAM_STR);
-            $stmt->bindParam(':svc_svc_id', $iIdObject, \PDO::PARAM_INT);
-             
+            $stmt->bindParam(':svc_svc_id', $iIdObject, \PDO::PARAM_INT); 
+        } else {
+            $sElement = 'svc_macro_id';
+            $query = 'SELECT svc_macro_id FROM cfg_customvariables_services join cfg_hosts_services_relations on service_service_id = svc_svc_id'
+                    . ' WHERE svc_macro_name = :svc_macro_name'
+                    . ' AND svc_svc_id = :svc_svc_id ';
+
+            $stmt = $db->prepare($query);
+            $macroName = '$_SERVICE'.$sNameMacro.'$';
+            $stmt->bindParam(':svc_macro_name', $macroName, \PDO::PARAM_STR);
+            $stmt->bindParam(':svc_svc_id', $iIdObject, \PDO::PARAM_INT); 
         }
         
         $stmt->execute();
@@ -391,9 +403,7 @@ class CustomMacroRepository
             $bSuccess = false;
             $sMessage = $resultError;
             
-        }
-        //$reponse = array('success' => $bSuccess, 'error' => $sMessage);
-        
+        }        
         if ($bSuccess === false) {
             $errors[] = $sMessage;
         }

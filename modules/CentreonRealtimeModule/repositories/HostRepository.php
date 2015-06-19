@@ -110,6 +110,33 @@ class HostRepository extends Repository
         }
         
     }
+
+    /**
+     * Get host acknowledgement information
+     *
+     * @param int $host_id
+     * @return array
+     */
+    public static function getAcknowledgementInfos($host_id)
+    {
+        $acknowledgement = array();
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+
+        $stmt = $dbconn->prepare('SELECT acknowledgement_id, entry_time, author, comment_data
+            FROM rt_acknowledgements
+            WHERE host_id = ?
+            AND service_id IS NULL
+            AND deletion_time IS NULL');
+
+        $stmt->execute(array($host_id));
+
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $acknowledgement = $row;
+        }
+
+        return $acknowledgement;
+    }
     
     /**
      * 

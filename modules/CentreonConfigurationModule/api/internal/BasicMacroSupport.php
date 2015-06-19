@@ -54,20 +54,11 @@ class BasicMacroSupport extends BasicCrudCommand
      * @param array $params
     */
     public function addMacroAction($object, $params)
-    {
-        
-        $paramList = $this->parseObjectParams($params);
-        /*
-        if(!isset($paramList['hidden']) || !is_numeric($paramList['hidden']) || $paramList['hidden'] < 0 || $paramList['hidden'] > 1){
-            $paramList['hidden'] = 0;
-        }*/
-        
-        
-        
-        
+    {       
+      
+        $paramList = $this->parseObjectParams($params);        
         try {
             $repository = $this->repository;
-            //$objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
             $sName = $this->objectName;
            
             $aId = $repository::getListBySlugName($object[$sName]);
@@ -76,6 +67,7 @@ class BasicMacroSupport extends BasicCrudCommand
             } else {
                 throw new \Exception(static::OBJ_NOT_EXIST);
             }
+            
             switch($this->objectName){
                 case 'hosttemplate' : 
                 case 'host' :
@@ -88,7 +80,7 @@ class BasicMacroSupport extends BasicCrudCommand
                             )
                         );
                     }
-                    CustomMacroRepository::saveHostCustomMacro($objectId, $formatedParams, false);
+                    CustomMacroRepository::saveHostCustomMacro($this->objectName, $objectId, $formatedParams, false);
                     \Centreon\Internal\Utils\CommandLine\InputOutput::display(
                         "The macro '".$paramList['host_macro_name']."' has been successfully added to the object",
                         true,
@@ -96,7 +88,6 @@ class BasicMacroSupport extends BasicCrudCommand
                     );
                     break;
                 case 'servicetemplate' : 
-                case 'service' : 
                     if(isset($paramList['svc_macro_name']) && isset($paramList['svc_macro_value'])){
                         $formatedParams = array(
                             $paramList['svc_macro_name'] => 
@@ -106,7 +97,49 @@ class BasicMacroSupport extends BasicCrudCommand
                             )
                         );
                     }
-                    CustomMacroRepository::saveServiceCustomMacro($objectId, $formatedParams, false);
+                    CustomMacroRepository::saveServiceCustomMacro($this->objectName, $objectId, $formatedParams, false);
+                    \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+                        "The macro '".$paramList['svc_macro_name']."' has been successfully added to the object",
+                        true,
+                        'green'
+                    );
+                    break;
+                case 'service' :
+                    $aId = \CentreonConfiguration\Repository\HostRepository::getListBySlugName($object['host']);
+                    if (count($aId) > 0) {
+                        $hostId = $aId[0]['id'];
+                    } else {
+                        throw new \Exception(static::OBJ_NOT_EXIST);
+                    }
+                    
+                    $aData = \CentreonConfiguration\Models\Relation\Host\Service::getMergedParameters(
+                            array('host_id'),
+                            array("service_id"),
+                            -1,
+                            0,
+                            null,
+                            "ASC",
+                            array(
+                                'host_name' => $object['host'],
+                                'service_id' => $object['service']
+                            )
+                    );
+            
+                    if (count($aData) == 0) {
+                        throw new \Exception(static::OBJ_NOT_EXIST);
+                    } else {
+                        $objectId = $aData[0]['service_id'];
+                    }
+                    if (isset($paramList['svc_macro_name']) && isset($paramList['svc_macro_value'])) {
+                        $formatedParams = array(
+                            $paramList['svc_macro_name'] => 
+                                array(
+                                    'value' => $paramList['svc_macro_value'],
+                                    'is_password' => $paramList['is_password']
+                            )
+                        );
+                    }
+                    CustomMacroRepository::saveServiceCustomMacro($this->objectName, $objectId, $formatedParams, false, $hostId);
                     \Centreon\Internal\Utils\CommandLine\InputOutput::display(
                         "The macro '".$paramList['svc_macro_name']."' has been successfully added to the object",
                         true,
