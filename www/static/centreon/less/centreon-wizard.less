@@ -4,9 +4,9 @@
     position: relative;
     overflow: hidden;
     background-color: #f9f9f9;
-    border: 1px solid #d4d4d4;
-    border-radius: 4px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+    border-radius: 0px;
+    box-shadow: 0 3px 0px @lightGray2;
+  border-bottom: 1px solid @lightGray;
 }
 
 .wizard:before, .wizard:after {
@@ -93,8 +93,8 @@
 }
 
 .wizard ul li.active {
-    color: #3a87ad;
-    background: #f1f6fc;
+    color: @white;
+    background: @firstGreen;
 }
 
 .wizard ul li.active .chevron:before {
@@ -106,7 +106,8 @@
 }
 
 .wizard ul li.active .badge {
-    background: #3a87ad;
+    background: @white;
+    color: @firstGreen;
 }
 
 .wizard ul li.complete .badge {
@@ -115,7 +116,6 @@
 
 .wizard ul li:first-child {
     padding-left: 20px;
-    border-radius: 4px 0 0 4px;
 }
 
 .wizard .actions {
@@ -162,7 +162,7 @@
     top: -20px;
     border: 20px solid transparent;
     border-right: 0;
-    border-left: 14px solid #ededed;
+    border-left: 24px solid #ededed;
 }
 
 .modal .wizard ul li.complete:hover .chevron:before {
@@ -177,8 +177,12 @@
     padding-left: 10px;
 }
 
+.modal .wizard ul li.active .chevron {
+  border-left: 14px solid @firstGreenDarken;
+}
+
 .modal .wizard ul li.active .chevron:before {
-    border-left: 14px solid #f1f6fc;
+    border-left: 24px solid @firstGreen;
 }
 
 .modal .wizard .actions {

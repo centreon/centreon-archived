@@ -311,6 +311,10 @@ class IndicatorRepository extends FormRepository
                 $kpi = Indicator::getKpi($object);
                 if(!empty($kpi)){
                     $givenParameters['object_id'] = $kpi['kpi_id'];
+                    
+                    
+                    
+                    
                     if(!isset($givenParameters['kpi_type'])){
                         $givenParameters['kpi_type'] = $kpi['kpi_type'];
                         if(isset($givenParameters['service_id']) && isset($givenParameters['host_id'])){
@@ -321,6 +325,17 @@ class IndicatorRepository extends FormRepository
                     }else{
                         if(isset($givenParameters['service_id']) && isset($givenParameters['host_id'])){
                             $givenParameters['service_id'] = $givenParameters['service_id'].'_'.$givenParameters['host_id'];
+                        }
+                    }
+                    if($givenParameters['kpi_type'] == '3'){
+                        if(!isset($givenParameters['boolean_name'])){
+                            $givenParameters['boolean_name'] = $kpi['name'];
+                        }
+                        if(!isset($givenParameters['boolean_expression'])){
+                            $givenParameters['boolean_expression'] = $kpi['expression'];
+                        }
+                        if(!isset($givenParameters['bool_state'])){
+                            $givenParameters['bool_state'] = $kpi['bool_state'];
                         }
                     }
                 }else{

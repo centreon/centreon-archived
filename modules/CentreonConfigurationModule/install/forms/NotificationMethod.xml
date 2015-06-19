@@ -38,7 +38,7 @@
               <Down>d</Down>
               <Critical>c</Critical>
               <Warning>w</Warning>
-              <Unreachable>u</Unreachable>
+              <Unreachable>n</Unreachable>
               <Unknown>u</Unknown>
               <Ok>o</Ok>
             </choices>

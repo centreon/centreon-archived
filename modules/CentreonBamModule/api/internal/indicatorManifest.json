@@ -106,6 +106,14 @@
               "toTransform" : "host_id",
               "multiple" : false,
               "required" : false
+            },
+            "boolean" : {
+              "functionParams" : "object",
+              "help": "The indicator",
+              "type": "string",
+              "toTransform" : "boolean_id",
+              "multiple" : false,
+              "required" : false
             }
         },
         "showAction" : {
@@ -140,7 +148,16 @@
               "toTransform" : "host_id",
               "multiple" : false,
               "required" : false
+            },
+            "boolean" : {
+              "functionParams" : "object",
+              "help": "The indicator",
+              "type": "string",
+              "toTransform" : "boolean_id",
+              "multiple" : false,
+              "required" : false
             }
+            
         },
         "updateAction" : {
             "ba" : {

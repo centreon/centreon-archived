@@ -114,6 +114,7 @@ class Indicator extends CentreonBaseModel
             $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }else if(isset($object['boolean_id'])){
             $query = ' select * from cfg_bam_kpi i '
+                    . ' inner join cfg_bam_boolean cbb on cbb.boolean_id = i.boolean_id '
                     . ' where i.boolean_id = :boolean_id and id_ba = :id_ba ';
             $stmt = $db->prepare($query);
             $stmt->bindParam(':boolean_id', $object['boolean_id'], \PDO::PARAM_INT);
