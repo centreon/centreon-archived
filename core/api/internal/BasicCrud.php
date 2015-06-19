@@ -557,6 +557,8 @@ class BasicCrud extends AbstractCommand
                     'api',
                     $this->objectBaseUrl . '/update'
                 );
+        $slug = $repository::getSlugNameById($idOfCreatedElement);
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display($slug, true, 'green');
         \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
     }
     
