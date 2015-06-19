@@ -262,5 +262,13 @@
     {
         "key": "es_pass",
         "value": ""
+    },
+    {
+        "key": "rrd_metric_path",
+        "value": "/var/lib/centreon/metrics/"
+    },
+    {
+        "key": "rrd_status_path",
+        "value": "/var/lib/centreon/status/"
     }
 ]
