@@ -188,8 +188,10 @@ chkconfig --level 2345 snmpd on
 mkdir /var/lib/centreon
 mkdir /var/lib/centreon/metrics
 mkdir /var/lib/centreon/status
+mkdir /var/lib/centreon/centplugins
 chown -R centreon-broker /var/lib/centreon/metrics
 chown -R centreon-broker /var/lib/centreon/status
+chown -R centreon-engine /var/lib/centreon/centplugins
 
 # End of script
 
