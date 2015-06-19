@@ -235,7 +235,12 @@ abstract class FormRepository extends ListRepository
         $slug = $class::getSlugField();
         $object = null;
         if(!is_null($slug)){
-            $object = $class::getParameters($id, $slug);
+            try{
+                $object = $class::getParameters($id, $slug);
+            } catch (Exception $ex) {
+
+            }
+            
         }
         if(!empty($object)){
             return $object[$slug];
