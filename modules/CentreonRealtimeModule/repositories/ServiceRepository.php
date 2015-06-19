@@ -104,7 +104,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
     /**
      * Get service acknowledgement information
      *
-     * @param int $host_id
+     * @param int $service_id
      * @return array
      */
     public static function getAcknowledgementInfos($service_id)

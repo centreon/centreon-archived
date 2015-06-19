@@ -36,6 +36,7 @@
 namespace CentreonRealtime\Internal;
 
 use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use CentreonRealtime\Repository\HostRepository as HostRealtimeRepository;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Datatable;
 use CentreonAdministration\Repository\TagsRepository;
@@ -251,7 +252,6 @@ class HostDatatable extends Datatable
      */
     protected function formatDatas(&$resultSet)
     {
-        $previousHost = '';
         foreach ($resultSet as $key => &$myHostSet) {
             $aTagUsed = array();
             // @todo remove virtual hosts and virtual services
@@ -261,18 +261,23 @@ class HostDatatable extends Datatable
             }
 
             // Set host_name
-            if ($myHostSet['name'] === $previousHost) {
-                $myHostSet['name'] = '';
-            } else {
-                $previousHost = $myHostSet['name'];
-                $myHostSet['name'] = '<span class="icoListing">'.HostConfigurationRepository::getIconImage(
-                    $myHostSet['name']).'</span>'.$myHostSet['name'];
+            $myHostSet['name'] = '<span class="icoListing">'
+                . HostConfigurationRepository::getIconImage($myHostSet['name'])
+                . '</span>' . $myHostSet['name'];
+
+            if ($myHostSet['state'] != '0' && $myHostSet['state'] != '4') {
+                $acknowledgement = HostRealtimeRepository::getAcknowledgementInfos($myHostSet['host_id']);
+                if (count($acknowledgement) > 0) {
+                    $myHostSet['name'] .= ' <i class="fa fa-thumb-tack"></i>';
+                }
             }
+
             $myHostSet['duration'] = Datetime::humanReadable(
                 $myHostSet['duration'],
                 Datetime::PRECISION_FORMAT,
                 2
             );
+
             $myHostSet['last_check'] = Datetime::humanReadable(
                 $myHostSet['last_check'],
                 Datetime::PRECISION_FORMAT,
