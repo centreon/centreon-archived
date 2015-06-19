@@ -39,6 +39,7 @@ namespace CentreonBam\Commands;
 
 use Centreon\Api\Internal\BasicCrudCommand;
 use CentreonBam\Repository\IndicatorRepository;
+use CentreonBam\Repository\BooleanIndicatorRepository;
 use CentreonBam\Models\Indicator;
 /**
  * Description of KpiCommand
@@ -59,7 +60,13 @@ class IndicatorCommand extends BasicCrudCommand
     }
     
     public function createAction($params){
-        IndicatorRepository::createIndicator($this->parseObjectParams($params), 'api', '/centreon-bam/indicator/update');
+        $id = IndicatorRepository::createIndicator($this->parseObjectParams($params), 'api', '/centreon-bam/indicator/update');
+
+        // show slug of boolean indicator only
+        if(!is_null($id)){
+            $slug = BooleanIndicatorRepository::getSlugNameById($id);
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display($slug, true, 'green');
+        }
         \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
     }
     

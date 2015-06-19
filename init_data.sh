@@ -33,7 +33,7 @@ echo " ==== Creating check commands ==== "
 echo " ==== Creating service templates ==== "
 # TODO cannot set service_max_check_attempts = 3 here during creation, possib le for update
 ./external/bin/centreonConsole centreon-configuration:ServiceTemplate:create --description='generic-service' 
-./external/bin/centreonConsole centreon-configuration:ServiceTemplate:update --service-template='generic-service' --max-check-attempts=3
+./external/bin/centreonConsole centreon-configuration:ServiceTemplate:update --service-template='generic-service' --max-check-attempts=3 --timeperiod='24x7'
 
 ./external/bin/centreonConsole centreon-configuration:ServiceTemplate:create --description='ping-lan' --alias='ping' --template-model-stm='generic-service' --command='check-centreon-ping'
 ./external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='ping-lan' --name='WARNING' --value='200,20%'
@@ -61,8 +61,10 @@ echo " ==== Creating service templates ==== "
 
 ./external/bin/centreonConsole centreon-configuration:ServiceTemplate:create --description='OS-Linux-SNMP-traffic-name' --alias='traffic-name' --template-model-stm='generic-service' --command='os-linux-snmp-traffic-name'
 ./external/bin/centreonConsole centreon-configuration:ServiceTemplate:update --service-template='os-linux-snmp-traffic-name' --domain='traffic'
-./external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-linux-snmp-traffic-name' --name='WARNING' --value='80'
-./external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-linux-snmp-traffic-name' --name='CRITICAL' --value='90'
+./external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-linux-snmp-traffic-name' --name='WARNINGIN' --value='80'
+./external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-linux-snmp-traffic-name' --name='CRITICALIN' --value='90'
+./external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-linux-snmp-traffic-name' --name='WARNINGOUT' --value='80'
+./external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-linux-snmp-traffic-name' --name='CRITICALOUT' --value='90'
 
 ./external/bin/centreonConsole centreon-configuration:ServiceTemplate:create --description='OS-Linux-SNMP-disk-name' --alias='disk-name' --template-model-stm='generic-service' --command='os-linux-snmp-disk-name'
 ./external/bin/centreonConsole centreon-configuration:ServiceTemplate:update --service-template='os-linux-snmp-disk-name' --domain='filesystem'
@@ -84,7 +86,24 @@ echo " ==== Creating hosts ==== "
 ./external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES22' --address='10.50.1.84' --host-templates='os-linux-snmp-2' --poller='central'
 ./external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES3' --address='10.50.1.85' --host-templates='os-linux-snmp-2' --poller='central'
 
-echo " ==== Creating services (TODO) ==== "
+echo " ==== Creating services  ==== "
+./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-rwe-pp' --template-model-stm='OS-Linux-SNMP-traffic-name'
+./external/bin/centreonConsole centreon-configuration:Service:addMacro --host='ces3-rwe-pp' --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0' 
+
+#./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-qde-pp-ces22' --template-model-stm='OS-Linux-SNMP-traffic-name'
+#./external/bin/centreonConsole centreon-configuration:Service:addMacro --host='ces3-qde-pp-ces22' --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0'
+
+#./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-qde-pp-ces3' --template-model-stm='OS-Linux-SNMP-traffic-name'
+#./external/bin/centreonConsole centreon-configuration:Service:addMacro --host='ces3-qde-pp-ces3' --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0'
+
+./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-rwe-pp' --template-model-stm='OS-Linux-SNMP-disk-name'
+./external/bin/centreonConsole centreon-configuration:Service:addMacro --host='ces3-rwe-pp' --service='disk' --name='DISKNAME' --value='/'
+
+#./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-qde-pp-ces22' --template-model-stm='OS-Linux-SNMP-disk-name'
+#./external/bin/centreonConsole centreon-configuration:Service:addMacro --host='ces3-qde-pp-ces22' --service='disk' --name='DISKNAME' --value='/'
+
+#./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-qde-pp-ces3' --template-model-stm='OS-Linux-SNMP-disk-name'
+#./external/bin/centreonConsole centreon-configuration:Service:addMacro --host='ces3-qde-pp-ces3' --service='disk' --name='DISKNAME' --value='/'
 
 echo " ==== Creating KPI and BA ==== "
 

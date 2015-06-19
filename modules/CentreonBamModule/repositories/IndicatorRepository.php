@@ -158,11 +158,8 @@ class IndicatorRepository extends FormRepository
             }
             self::validateForm($givenParameters, $origin, $route);
         }
-            
-        
-
-        
         $lastIndicatorId = self::createBasicIndicator($parameters);
+        $booleanId = null;
         if ($parameters['kpi_type'] === '0') {
             if($origin === 'api'){
                 $parameters['service_id'] = $parameters['service_id'].'_'.$parameters['host_id'];
@@ -173,8 +170,9 @@ class IndicatorRepository extends FormRepository
         } else if ($parameters['kpi_type'] === '2') {
             self::createBaIndicator($lastIndicatorId, $parameters);
         } else if ($parameters['kpi_type'] === '3') {
-            self::createBooleanIndicator($lastIndicatorId, $parameters);
+            $booleanId = self::createBooleanIndicator($lastIndicatorId, $parameters);
         }
+        return $booleanId;
     }
 
     /**
@@ -293,6 +291,8 @@ class IndicatorRepository extends FormRepository
         $stmtIndicatorInsert->bindParam(':boolean_id', $lastBooleanId, \PDO::PARAM_INT);
         $stmtIndicatorInsert->bindParam(':kpi_id', $lastIndicatorId, \PDO::PARAM_INT);
         $stmtIndicatorInsert->execute();
+        return $lastBooleanId;
+        
     }
 
     /**
@@ -311,10 +311,6 @@ class IndicatorRepository extends FormRepository
                 $kpi = Indicator::getKpi($object);
                 if(!empty($kpi)){
                     $givenParameters['object_id'] = $kpi['kpi_id'];
-                    
-                    
-                    
-                    
                     if(!isset($givenParameters['kpi_type'])){
                         $givenParameters['kpi_type'] = $kpi['kpi_type'];
                         if(isset($givenParameters['service_id']) && isset($givenParameters['host_id'])){
