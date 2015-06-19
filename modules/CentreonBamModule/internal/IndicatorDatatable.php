@@ -183,9 +183,9 @@ class IndicatorDatatable extends Datatable
 
         // Add object column
         // Can be service, metaservice or BA
-        $sqlKpiService = 'SELECT k.kpi_id, h.host_name, s.service_id, s.service_description
-            FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations hs, cfg_bam_kpi k 
-            WHERE s.service_id=k.service_id and hs.host_host_id=h.host_id and hs.service_service_id=s.service_id';
+        $sqlKpiService = 'SELECT k.kpi_id, h.host_name, s.service_description'
+            . ' FROM cfg_hosts h, cfg_services s, cfg_bam_kpi k'
+            . ' WHERE s.service_id=k.service_id and h.host_id=k.host_id';
         $stmtKpiService = $dbconn->query($sqlKpiService);
         $resultKpiService = $stmtKpiService->fetchAll(\PDO::FETCH_ASSOC);
 
