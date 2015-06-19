@@ -203,8 +203,10 @@ setfacl -R -m d:u:centreon:rwX,d:g:centreon:rwX,d:o:r-X /tmp/broker/generate /tm
 mkdir /var/lib/centreon
 mkdir /var/lib/centreon/metrics
 mkdir /var/lib/centreon/status
+mkdir /var/lib/centreon/centplugins
 chown -R centreon-broker /var/lib/centreon/metrics
 chown -R centreon-broker /var/lib/centreon/status
+chown -R centreon-engine /var/lib/centreon/centplugins
 
 # Start services
 # Nothing to do, they should already be running due to previous steps
