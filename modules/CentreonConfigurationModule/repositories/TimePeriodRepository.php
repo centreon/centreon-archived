@@ -103,7 +103,7 @@ class TimePeriodRepository extends Repository
      
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {       
-        parent::create($givenParameters, $origin, $route, $validateMandatory);
+        return parent::create($givenParameters, $origin, $route, $validateMandatory);
     }
     /**
      * 
