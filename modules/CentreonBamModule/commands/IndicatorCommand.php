@@ -97,12 +97,6 @@ class IndicatorCommand extends BasicCrudCommand
         }
         
         echo $result;
-        
-        
-        
-        
-        
-        
     }
     
     

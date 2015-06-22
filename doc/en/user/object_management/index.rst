@@ -24,6 +24,7 @@ The list of object commands is available with the following commandline :
    hosttemplate
    service
    servicetemplate
+   kpi
    businessactivity
    trap
    manufacturer
