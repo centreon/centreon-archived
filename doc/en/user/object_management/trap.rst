@@ -8,20 +8,20 @@ Object name: **centreon-configuration:Trap**
 
 Available parameters are the following:
 
-==================  ===========================
-Parameter           Description
-==================  ===========================
-*traps-name**       Trap name
+==================    ===========================
+Parameter             Description
+==================    ===========================
+*--traps-name**       Trap name
 
-**traps-oid**       OID
+**--traps-oid**       OID
 
-**manufacturer-id** Identifiant of manufacturer
+**--manufacturer-id** Slug name of manufacturer
 
-**traps-args**      Output message
+**--traps-args**      Output message
 
-traps-status        Default status
+--traps-status        Default status
 
-================== =============================
+==================    =============================
 
 List
 ----

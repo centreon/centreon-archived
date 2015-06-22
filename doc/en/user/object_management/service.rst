@@ -122,7 +122,7 @@ Create
 
 In order to create a service, use **create** action::
 
-  ./centreonConsole centreon-configuration:service:create --description=service1 --host=Centreon-export
+  ./centreonConsole centreon-configuration:service:create --description 'service1' --host 'Centreon-export'
   Object successfully created
 
 Update
@@ -130,7 +130,7 @@ Update
 
 In order to update a service, use **update** action::
 
-  ./centreon/external/bin/centreonConsole centreon-configuration:service:update --service=service1 --host=Centreon-export --description=service2
+  ./centreon/external/bin/centreonConsole centreon-configuration:service:update --service 'service1' --host 'Centreon-export' --description 'service2'
   Object successfully updated
 
 Delete
@@ -138,7 +138,7 @@ Delete
 
 In order to delete a service, use **delete** action::
 
-  ./centreonConsole centreon-configuration:service:delete --service=service1 --host=Centreon-export
+  ./centreonConsole centreon-configuration:service:delete --service 'service1' --host 'Centreon-export'
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -146,7 +146,7 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a service, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:service:duplicate --service=service1 --host=Centreon-export
+  ./centreonConsole centreon-configuration:service:duplicate --service 'service1' --host 'Centreon-export'
   Object successfully duplicated
 
 List tag
@@ -154,7 +154,7 @@ List tag
 
 In order to list tags of a service, use **listTag** action::
 
-  ./centreonConsole centreon-configuration:service:listTag --service=service1 --host=Centreon-export
+  ./centreonConsole centreon-configuration:service:listTag --service 'service1' --host 'Centreon-export'
   tag-service-1
   tag1
 
@@ -163,7 +163,7 @@ Add tag
 
 In order to add a tag to a service, use **addTag** action::
 
-  ./centreonConsole centreon-configuration:service:addTag --service=service1 --host=Centreon-export --tag="tag1"
+  ./centreonConsole centreon-configuration:service:addTag --service 'service1' --host 'Centreon-export' --tag "tag1"
   The tag has been successfully added to the object
 
 Remove tag
@@ -171,7 +171,7 @@ Remove tag
 
 In order to remove a tag from a service, use **removeTag** action::
 
-  ./centreonConsole centreon-configuration:service:removeTag --service=service1 --host=Centreon-export --tag="tag1"
+  ./centreonConsole centreon-configuration:service:removeTag --service 'service1' --host 'Centreon-export' --tag "tag1"
   The tag has been successfully removed from the object
 
 
@@ -180,7 +180,7 @@ List Macro
 
 In order to list macros of a service, use **listMacro** action::
 
-  ./centreonConsole centreon-configuration:service:listMacro --service=service1 --host=Centreon-export
+  ./centreonConsole centreon-configuration:service:listMacro --service 'service1' --host 'Centreon-export'
   tag1
 
 Add Macro
@@ -188,18 +188,18 @@ Add Macro
 
 In order to add a macro to a service, use **addMacro** action::
 
-  ./centreonConsole centreon-configuration:service:addMacro --service=service1 --host=Centreon-export --name=macro1name --value=macro1value --hidden=0
+  ./centreonConsole centreon-configuration:service:addMacro --service 'service1' --host 'Centreon-export' --name 'macro1name' --value 'macro1value' --hidden '0'
 
 Remove Macro
 ------------
 
 In order to remove a macro from a service, use **removeMacro** action::
 
-  ./centreonConsole centreon-configuration:service:removeMacro --service=service1 --host=Centreon-export --macro="macro1name"
+  ./centreonConsole centreon-configuration:service:removeMacro --service "service1" --host "Centreon-export" --macro "macro1name"
 
 Update Macro
 ------------
 
 In order to update a macro from a service, use **updateMacro** action::
 
-  ./centreonConsole centreon-configuration:service:updateMacro --service=service1 --host=Centreon-export --macro="macro1name" --value=macro1newvalue --name=macro1newname --hidden=1
+  ./centreonConsole centreon-configuration:service:updateMacro --service "service1" --host "Centreon-export" --macro "macro1name" --value "macro1newvalue" --name "macro1newname" --hidden "1"
