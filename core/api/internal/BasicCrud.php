@@ -128,7 +128,8 @@ class BasicCrud extends AbstractCommand
      * 
      */
     static $aRenameModules = array(
-        'businessactivity' => "bam"
+        'businessactivity' => "bam",
+        'trap' => "traps"
     );
 
 
@@ -602,8 +603,9 @@ class BasicCrud extends AbstractCommand
     {
         $repository = $this->repository;
         $id = '';
-        //$id = $repository::getIdFromUnicity($this->parseObjectParams($object));
-        $aId = $repository::getListBySlugName($object[$this->objectName]);
+        $sName = static::renameObject($this->objectName);
+        
+        $aId = $repository::getListBySlugName($object[$sName]);
         if (count($aId) > 0) {
             $id = $aId[0]['id'];
         } else {

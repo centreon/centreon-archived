@@ -13,9 +13,9 @@ Parameter          Description
 ================== =========================
 **login**          User login
 
-**is_admin**       Admin (0 or 1)
+**is-admin**       Admin (0 or 1)
 
-**is_activated**   Enable (0 or 1)
+**is-activated**   Enable (0 or 1)
 
 firstname          User firstname
 
@@ -23,11 +23,11 @@ lastname           User lastname
 
 password           User password
 
-language_id        Language id
+language-id        Slug name of Language
 
-timezone_id        Timezone id
+timezone-id        Slug name of Timezone
 
-auth_type          Authentication type
+auth-type          Authentication type
 ================== =========================
 
 List
@@ -69,9 +69,10 @@ Show
 
 In order to show a user, use **show** action::
 
-  ./centreonConsole centreon-administration:user:show object=user[jdoe]
+  ./centreonConsole centreon-administration:user:show --user 'jdoe'
   id: 5
   login: jdoe
+  slug: jdoe
   password:
   admin: 1
   is_locked: 0
@@ -92,7 +93,7 @@ Create
 
 In order to create a user, use **create** action::
 
-  ./centreonConsole centreon-administration:user:create params="login[jdoe];password[johndoe];firstname[John];lastname[Doe];is_admin[1];is_activated[1]"
+  ./centreonConsole centreon-administration:user:create --login 'jdoe' --password 'johndoe' --firstname 'John' --lastname 'Doe' --is-admin '1' --is-activated '1'
   Object successfully created
 
 Update
@@ -100,7 +101,7 @@ Update
 
 In order to update a user, use **update** action::
 
-  ./centreonConsole centreon-administration:user:update object="user[jdoe]":params="is_admin[0]"
+  ./centreonConsole centreon-administration:user:update --user 'jdoe' --is-admin "0"
   Object successfully updated
 
 Delete
@@ -108,7 +109,7 @@ Delete
 
 In order to delete a user, use **delete** action::
 
-  ./centreonConsole centreon-administration:user:delete object="user[jdoe]"
+  ./centreonConsole centreon-administration:user:delete --user "jdoe"
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -116,6 +117,6 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a user, use **duplicate** action::
 
-  ./centreonConsole centreon-administration:user:duplicate object="user[jdoe]"
+  ./centreonConsole centreon-administration:user:duplicate --user "jdoe"
   Object successfully duplicated
 

@@ -11,23 +11,23 @@ Available parameters are the following:
 ================== =========================
 Parameter          Description
 ================== =========================
-**tp_name**        Timeperiod name
+**tp-name**        Timeperiod name
 
-tp_alias           Timeperiod alias
+tp-alias           Timeperiod alias
 
-tp_sunday          Sunday period
+tp-sunday          Sunday period
 
-tp_monday          Monday period
+tp-monday          Monday period
 
-tp_tuesday         Tuesday period
+tp-tuesday         Tuesday period
 
-tp_wednesday       Wednesday period
+tp-wednesday       Wednesday period
 
-tp_thursday        Thursday period
+tp-thursday        Thursday period
 
-tp_friday          Friday period
+tp-friday          Friday period
 
-tp_saturday        Saturday period
+tp-saturday        Saturday period
 ================== =========================
 
 List
@@ -68,7 +68,7 @@ Show
 
 In order to show a timeperiod, use **show** action::
 
-  ./centreonConsole centreon-configuration:timeperiod:show object=timeperiod[24x7]
+  ./centreonConsole centreon-configuration:timeperiod:show --timeperiod '24x7'
   id: 3
   name: 24x7
   alias: 00:00-24:00
@@ -86,7 +86,7 @@ Create
 
 In order to create a timeperiod, use **create** action::
 
-  ./centreonConsole centreon-configuration:timeperiod:create params="tp_name[24x7];tp_alias[24x7];tp_sunday[00:00-24:00];tp_monday[00:00-24:00];tp_tuesday[00:00-24:00];tp_wednesday[00:00-24:00];tp_thursday[00:00-24:00];tp_friday[00:00-24:00];tp_saturday[00:00-24:00]"
+  ./centreonConsole centreon-configuration:timeperiod:create --tp-name '24x7' --tp-alias '24x7' --tp-sunday '00:00-24:00' --tp-monday '00:00-24:00' --tp-tuesday '00:00-24:00' --tp-wednesday '00:00-24:00' --tp-thursday '00:00-24:00' --tp-friday '00:00-24:00' --tp-saturday '00:00-24:00'
   Object successfully created
 
 Update
@@ -94,7 +94,7 @@ Update
 
 In order to update a timeperiod, use **update** action::
 
-  ./centreonConsole centreon-configuration:timeperiod:update object="timeperiod[24x7]":params="tp_sunday[00:00-24:00]"
+  ./centreonConsole centreon-configuration:timeperiod:update --timeperiod "24x7" --tp-sunday '00:00-24:00'
   Object successfully updated
 
 Delete
@@ -102,7 +102,7 @@ Delete
 
 In order to delete a timeperiod, use **delete** action::
 
-  ./centreonConsole centreon-configuration:timeperiod:delete object="timeperiod[24x7]"
+  ./centreonConsole centreon-configuration:timeperiod:delete --timeperiod '24x7'
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -110,6 +110,6 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a timeperiod, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:timeperiod:duplicate object="timeperiod[24x7]"
+  ./centreonConsole centreon-configuration:timeperiod:duplicate --timeperiod '24x7'
   Object successfully duplicated
 

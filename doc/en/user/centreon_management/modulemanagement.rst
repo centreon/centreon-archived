@@ -38,7 +38,7 @@ If you execute this command:
 
 ::
 
-   external/bin/centreonConsole core:module:Manage:upgrade module=centreon-performance
+   external/bin/centreonConsole core:module:Manage:upgrade --module centreon-performance
    
 You have this this response: 
 ::
@@ -56,13 +56,13 @@ Uninstall
 This command will remove the module given in argument, it will remove its forms.
 ::
    
-   external/bin/centreonConsole core:module:Manage:uninstall module=myModuleName
+   external/bin/centreonConsole core:module:Manage:uninstall --module myModuleName
 
 If you execute this command:
 
 ::
 
-   external/bin/centreonConsole core:module:Manage:uninstall module=centreon-performance
+   external/bin/centreonConsole core:module:Manage:uninstall --module centreon-performance
 
 You have this this response: 
 ::
@@ -77,7 +77,7 @@ Deploy statics file
 This command move the static files (LESS, CSS and JS) in the directory adequate.
 ::
 
-   external/bin/centreonConsole core:module:Manage:deployStatic module=myModuleName
+   external/bin/centreonConsole core:module:Manage:deployStatic --module myModuleName
 
 Deploy forms
 ^^^^^^^^^^^^
@@ -85,4 +85,4 @@ This command regenerates the forms contained in this module. The possible values
 
 ::
 
-   external/bin/centreonConsole core:module:Manage:deployForms module=myModuleName
+   external/bin/centreonConsole core:module:Manage:deployForms --module myModuleName
