@@ -127,10 +127,7 @@ class BasicCrud extends AbstractCommand
     /**
      * 
      */
-    static $aRenameModules = array(
-        'businessactivity' => "bam"
-    );
-
+    static $aRenameModules = array();
 
     /**
      * 

@@ -31,7 +31,7 @@ List
 
 In order to list business activities, use **list** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:list params="name[ba1];ba_type_id[1];level_w[90];level_c[80];activate[1]"
+  ./centreonConsole centreon-bam:BusinessActivity:list
   id;name;type;description;level_w;level_c
   1;ba1;1;;90;80
 
@@ -58,9 +58,10 @@ Show
 
 In order to show a business activity, use **show** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:show object="bam[ba1]"
-  id: 1
+  ./centreonConsole centreon-bam:BusinessActivity:show --businessactivity=ba1
+  id: 4
   name: ba1
+  slug: ba1
   description:
   level_w: 90
   level_c: 80
@@ -94,7 +95,7 @@ Create
 
 In order to create a business activity, use **create** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:create params="name[ba1];ba_type_id[1];level_w[90];level_c[80];activate[1]"
+  ./centreonConsole centreon-bam:BusinessActivity:create --name=ba1 --ba-type-id=1 --level-w=90 --level-c=80
   Object successfully created
 
 Update
@@ -102,7 +103,7 @@ Update
 
 In order to update a business activity, use **update** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:update object="bam[ba1]":params="name[ba2]"
+  ./centreonConsole centreon-bam:BusinessActivity:update --businessactivity=ba1 --name=ba2
   Object successfully updated
 
 Delete
@@ -110,7 +111,7 @@ Delete
 
 In order to delete a business activity, use **delete** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:delete object="bam[ba2]"
+  ./centreonConsole centreon-bam:BusinessActivity:delete --businessactivity=ba1
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -118,7 +119,7 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a business activity, use **duplicate** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:duplicate object="bam[ba2]"
+  ./centreonConsole centreon-bam:BusinessActivity:duplicate --businessactivity=ba1
   Object successfully duplicated
 
 List tag (Not yet implemented)
@@ -126,7 +127,7 @@ List tag (Not yet implemented)
 
 In order to list tags of a business activity, use **listTag** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:listTag object="bam[ba2]"
+  ./centreonConsole centreon-bam:BusinessActivity:listTag --businessactivity=ba1
   tag-ba-1
 
 Add tag (Not yet implemented)
@@ -134,7 +135,7 @@ Add tag (Not yet implemented)
 
 In order to add a tag to a business activity, use **addTag** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:addTag object="bam[ba2]":tag="tag-ba-1"
+  ./centreonConsole centreon-bam:BusinessActivity:addTag --businessactivity=ba1 --tag=tag-ba-1
   The tag has been successfully added to the object
 
 Remove tag (Not yet implemented)
@@ -142,6 +143,6 @@ Remove tag (Not yet implemented)
 
 In order to remove a tag from a business activity, use **removeTag** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:removeTag object="bam[ba2]":tag="tag-ba-1"
+  ./centreonConsole centreon-bam:BusinessActivity:removeTag --businessactivity=ba1 --tag=tag-ba-1
   The tag has been successfully removed from the object
 

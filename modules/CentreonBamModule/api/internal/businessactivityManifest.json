@@ -21,11 +21,11 @@
     ],
     "options" : {
         "showAction" : {
-            "bam" : {
+            "businessactivity" : {
               "functionParams" : "object",
               "help": "The bam",
               "type": "string",
-              "toTransform" : "bam",
+              "toTransform" : "businessactivity",
               "multiple" : false,
               "required" : true
             }
@@ -34,27 +34,27 @@
             
         },
         "updateAction" : {
-            "bam" : {
+            "businessactivity" : {
               "functionParams" : "object",
               "help": "The bam",
               "type": "string",
-              "toTransform" : "bam",
+              "toTransform" : "businessactivity",
               "multiple" : false,
               "required" : true
             }
         },
         "deleteAction" : {
-            "bam" : {
+            "businessactivity" : {
               "functionParams" : "object",
               "help": "The bam",
               "type": "string",
-              "toTransform" : "bam",
+              "toTransform" : "businessactivity",
               "multiple" : false,
               "required" : true
             }
         },
         "duplicateAction" : {
-           "bam" : {
+           "businessactivity" : {
               "functionParams" : "object",
               "help": "The bam",
               "type": "string",
