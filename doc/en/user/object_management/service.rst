@@ -11,53 +11,47 @@ Available parameters are the following:
 ===================================== ================================
 Parameter                             Description
 ===================================== ================================
-**service_description**               Service description
+**--description**                     Service description
 
-**service_hosts**                     Linked hosts id
+--template-model-stm                  Linked service template
 
-**command_command_id**                Check command id
+--icon                                Service icon
 
-service_template_model_stm_id         Linked service template id
+--environment                         Service environment
 
-service_normal_check_interval         Normal check interval
+--domain                              Service domain
 
-service_retry_check_interval          Retry check interval
+--type                                Service type (alerting, metrology)
 
-service_max_check_attempts            Max check attempts
+--timeperiod                          Check timeperiod
 
-domain_id                             Domain id
+--command2                            Check command
 
-environment_id                        Environment id
+--max-check-attempts                  Max check attempts
 
-service_icon                          Service icon
+--normal-check-interval               Normal check interval
 
-timeperiod_tp_id                      Timeperiod id
+--retry-check-interval                Retry check interval
 
-service_type                          Service type
+--active-checks-enabled               Active checks enabled
 
-service_is_volatile                   Service volatile
+--volatile                            Service volatile
 
-service_traps                         Linked service traps id
+--traps                               Linked service traps id
 
-service_active_checks_enabled         Active check enable (0 or 1)
+--service-obsess-over-host            TODO
 
-service_passive_checks_enabled        Passive check enable (0 or 1)
+--check-freshness                     Freshness enabled
 
-service_obsess_over_host              TODO
+--freshness-threshold                 Freshness threshold
 
-service_check_freshness               Freshness enable (0 or 1)
+--flap-detection-enabled              Flap detection enbled
 
-service_freshness_threshold           Freshness threshold
+--low-flap-threshold                  Low flap threshold
 
-service_flap_detection_enabled        Flap detection enable (0 or 1)
+--high-flap-detection                 High flap threshold
 
-service_low_flap_threshold            Low flap detection threshold
-
-service_high_flap_threshold           High flap detection threshold
-
-service_event_handler_enabled         Event handler enable (0 or 1)
-
-command_command_id2                   Event handler command
+--eventhandler-enabled                Event handler enabled
 ===================================== ================================
 
 List
@@ -66,21 +60,23 @@ List
 In order to list services, use **list** action::
 
   ./centreonConsole centreon-configuration:service:list
-  service_id;service_description;service_template_model_stm_id;service_activate
-  1;service1;;1
+  id;name;activate;host_id;host_name
+  9;ping;1;2;OS-Linux-SNMP
 
 Columns are the following:
 
 ============================== ==========================
 Column                         Description
 ============================== ==========================
-service_id                     Service id
+id                             Service id
 
-service_description            Service description
+name                           Service name
 
-service_template_model_stm_id  Linked service template id
+activate                       Service enabled
 
-service_activate               Enable (0 or 1)
+host_id                        Host id
+
+host_name                      Host name
 ============================== ==========================
 
 Show
@@ -88,23 +84,21 @@ Show
 
 In order to show a service, use **show** action::
 
-  ./centreonConsole centreon-configuration:service:show object="service[service1];host[host1]"
-  id: 1
-  template:
-  command_command_id: 1
+  ./centreonConsole centreon-configuration:service:show --host=Centreon-export --service=memory
+  id: 13
+  template: 5
+  command_command_id:
   timeperiod_tp_id:
   command_command_id2:
-  name: service1
+  name: memory
+  service_slug: memory
   service_alias:
-  display_name:
   service_is_volatile: 2
   service_max_check_attempts:
   service_normal_check_interval:
   service_retry_check_interval:
   service_active_checks_enabled: 2
-  service_passive_checks_enabled: 2
   initial_state:
-  service_parallelize_check: 2
   service_obsess_over_service: 2
   service_check_freshness: 2
   service_freshness_threshold:
@@ -128,7 +122,7 @@ Create
 
 In order to create a service, use **create** action::
 
-  ./centreonConsole centreon-configuration:service:create object="service[service1]":params="service_description[service1];timeperiod_tp_id[1];command_command_id[1];service_max_check_attempts[3];service_hosts[1]"
+  ./centreonConsole centreon-configuration:service:create --description=service1 --host=Centreon-export
   Object successfully created
 
 Update
@@ -136,7 +130,7 @@ Update
 
 In order to update a service, use **update** action::
 
-  ./centreon/external/bin/centreonConsole centreon-configuration:service:update object="service[service1];host[host1]":params="service_max_check_attempts[1]"
+  ./centreon/external/bin/centreonConsole centreon-configuration:service:update --service=service1 --host=Centreon-export --description=service2
   Object successfully updated
 
 Delete
@@ -144,7 +138,7 @@ Delete
 
 In order to delete a service, use **delete** action::
 
-  ./srv/centreon/external/bin/centreonConsole centreon-configuration:service:delete object="service[service1]"
+  ./centreonConsole centreon-configuration:service:delete --service=service1 --host=Centreon-export
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -152,7 +146,7 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a service, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:service:duplicate object="service[service1]"
+  ./centreonConsole centreon-configuration:service:duplicate --service=service1 --host=Centreon-export
   Object successfully duplicated
 
 List tag
@@ -160,7 +154,7 @@ List tag
 
 In order to list tags of a service, use **listTag** action::
 
-  ./centreonConsole centreon-configuration:service:listTag object="service[service1];host[host1]"
+  ./centreonConsole centreon-configuration:service:listTag --service=service1 --host=Centreon-export
   tag-service-1
   tag1
 
@@ -169,7 +163,7 @@ Add tag
 
 In order to add a tag to a service, use **addTag** action::
 
-  ./centreonConsole centreon-configuration:service:addTag object="service[service1];host[host1]":tag="tag1"
+  ./centreonConsole centreon-configuration:service:addTag --service=service1 --host=Centreon-export --tag="tag1"
   The tag has been successfully added to the object
 
 Remove tag
@@ -177,7 +171,7 @@ Remove tag
 
 In order to remove a tag from a service, use **removeTag** action::
 
-  ./centreonConsole centreon-configuration:service:removeTag object="service[service1];host[host1]":tag="tag1"
+  ./centreonConsole centreon-configuration:service:removeTag --service=service1 --host=Centreon-export --tag="tag1"
   The tag has been successfully removed from the object
 
 
@@ -186,7 +180,7 @@ List Macro
 
 In order to list macros of a service, use **listMacro** action::
 
-  ./centreonConsole centreon-configuration:service:listMacro object="service[service1]"
+  ./centreonConsole centreon-configuration:service:listMacro --service=service1 --host=Centreon-export
   tag1
 
 Add Macro
@@ -194,18 +188,18 @@ Add Macro
 
 In order to add a macro to a service, use **addMacro** action::
 
-  ./centreonConsole centreon-configuration:service:addMacro object="host[host1];service[service1]":params="name[macro1name];value[macro1value];hidden[0]"
+  ./centreonConsole centreon-configuration:service:addMacro --service=service1 --host=Centreon-export --name=macro1name --value=macro1value --hidden=0
 
 Remove Macro
 ------------
 
 In order to remove a macro from a service, use **removeMacro** action::
 
-  ./centreonConsole centreon-configuration:service:removeMacro object="host[host1];service[service1]":macro="macro1name"
+  ./centreonConsole centreon-configuration:service:removeMacro --service=service1 --host=Centreon-export --macro="macro1name"
 
 Update Macro
 ------------
 
 In order to update a macro from a service, use **updateMacro** action::
 
-  ./centreonConsole centreon-configuration:service:updateMacro object="host[host1];service[service1]":macro="macro1name":params="value[macro1newvalue];name[macro1newname];hidden[1];"
+  ./centreonConsole centreon-configuration:service:updateMacro --service=service1 --host=Centreon-export --macro="macro1name" --value=macro1newvalue --name=macro1newname --hidden=1
