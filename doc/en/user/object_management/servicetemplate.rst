@@ -199,4 +199,4 @@ Update Macro
 
 In order to update a macro from a service, use **updateMacro** action::
 
-  ./centreonConsole centreon-configuration:serviceTemplate:updateMacro --service=service1 --macro="macro1name" --value=macro1newvalue --name=macro1newname --hidden=1
+  ./centreonConsole centreon-configuration:serviceTemplate:updateMacro --service service1 --macro 'macro1name' --value macro1newvalue --name macro1newname --hidden '1'
