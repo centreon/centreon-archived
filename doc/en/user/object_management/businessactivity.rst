@@ -8,23 +8,23 @@ Object name: **centreon-bam:BusinessActivity**
 
 Available parameters are the following:
 
-==================== ================================
+======================= ================================
 Parameter                             Description
-==================== ================================
-**name**             Business activity name
+======================= ================================
+**--name**              Business activity name
 
-**ba_type_id**       Business activity type id
+**--ba-type-id**        Business activity type id
 
-**level_w**          Warning threshold
+**--level-w**           Warning threshold
 
-**level_c**          Critical threshold
+**--level-c**           Critical threshold
 
-**activate**         Enable (0 or 1)
+**--activate**          Enable (0 or 1)
 
-icon_id              Icon id
+--icon-id               Icon id
 
-id_reporting_period  Reporting period id
-==================== ================================
+--id-reporting-period   Reporting period id
+======================= ================================
 
 List
 ----
