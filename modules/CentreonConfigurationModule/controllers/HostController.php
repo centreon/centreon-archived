@@ -176,7 +176,7 @@ class HostController extends FormController
         $id = parent::createAction(false);
 
         if (count($macroList) > 0) {
-            CustomMacroRepository::saveHostCustomMacro($id, $macroList);
+            CustomMacroRepository::saveHostCustomMacro(self::$objectName, $id, $macroList);
         }
         
         if (isset($givenParameters['host_tags'])) {
@@ -271,7 +271,7 @@ class HostController extends FormController
             }
         }
         
-        CustomMacroRepository::saveHostCustomMacro($givenParameters['object_id'], $macroList);
+        CustomMacroRepository::saveHostCustomMacro(self::$objectName, $givenParameters['object_id'], $macroList);
         
         //Delete all tags
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);

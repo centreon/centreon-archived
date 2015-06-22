@@ -132,7 +132,6 @@ class BasicCrud extends AbstractCommand
         'trap' => "traps"
     );
 
-
     /**
      * 
      */
@@ -488,10 +487,6 @@ class BasicCrud extends AbstractCommand
             $aFieldAttribute[] = $externalAttribute['type'];
         }
 
-        /*
-        var_dump($params);
-        die;
-         */
         foreach ($params as $key => $param) { 
             if (in_array($key, $aFieldAttribute)) { 
                 foreach ($this->externalAttributeSet as $externalAttribute) {
