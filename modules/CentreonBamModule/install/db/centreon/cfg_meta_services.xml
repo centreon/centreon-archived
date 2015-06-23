@@ -15,10 +15,13 @@
     <column name="metric" phpName="Metric" type="VARCHAR" size="255"/>
     <column name="warning" phpName="Warning" type="VARCHAR" size="254"/>
     <column name="critical" phpName="Critical" type="VARCHAR" size="254"/>
-    <column name="graph_id" phpName="GraphId" type="INTEGER"/>
     <column name="meta_comment" phpName="MetaComment" type="LONGVARCHAR"/>
     <column name="meta_activate" phpName="MetaActivate" type="CHAR" sqlType="enum('0','1')"/>
     <column name="value" phpName="Value" type="FLOAT"/>
+    <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true" defaultValue="1"/>
+    <foreign-key foreignTable="cfg_organizations" name="meta_services_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <reference local="organization_id" foreign="organization_id"/>
+    </foreign-key>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
