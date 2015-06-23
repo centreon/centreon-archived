@@ -13,7 +13,7 @@ Parameter                      Description
 ============================== ================================
 **--name**                     Host name
 
-**--enabled**                  Enable (0 or 1)
+**--disable**                  Enable (0 or 1)
 
 --alias                        Host alias
 
@@ -136,7 +136,7 @@ Create
 
 In order to create a host template, use **create** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:create --name "HT1" --enabled
+  ./centreonConsole centreon-configuration:hostTemplate:create --name "HT1" --disable
   Object successfully created
 
 Update
@@ -144,7 +144,7 @@ Update
 
 In order to update a host template, use **update** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:update --hosttemplate "HT1" --alias "host template 1"
+  ./centreonConsole centreon-configuration:hostTemplate:update --host-template "HT1" --alias "host template 1"
   Object successfully updated
 
 Delete
