@@ -36,14 +36,17 @@
 namespace CentreonAdministration\Models;
 
 use Centreon\Internal\Di;
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Description of Options
  *
  * @author lionel
  */
-class Options
+class Options extends CentreonBaseModel
 {
+    public static $table = 'cfg_options';
+
     /**
      * 
      * @return type
