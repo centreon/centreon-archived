@@ -14,6 +14,7 @@
         <column name="service_normal_check_interval" phpName="ServiceNormalCheckInterval" type="INTEGER" required="false"/>
         <column name="service_retry_check_interval" phpName="ServiceRetryCheckInterval" type="INTEGER" required="false"/>
         <column name="service_active_checks_enabled" phpName="ServiceActiveChecksEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
+        <column name="service_timeout" phpName="ServiceTimeout" type="VARCHAR" size="10" required="false"/>
         <column name="initial_state" phpName="InitialState" type="CHAR" sqlType="enum('o','w','u','c')" required="false"/>
         <column name="service_obsess_over_service" phpName="ServiceObsessOverService" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
         <column name="service_check_freshness" phpName="ServiceCheckFreshness" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
