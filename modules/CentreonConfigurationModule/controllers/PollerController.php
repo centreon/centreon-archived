@@ -189,7 +189,7 @@ class PollerController extends FormController
      * Get default template for a poller
      *
      * @method post
-     * @route /poller/templates/form
+     * @route /poller/[i:id]/templates/form
      */
     public function getFormForTemplateAction()
     {
@@ -205,8 +205,8 @@ class PollerController extends FormController
         $myTemplate = $myLiteTemplate->toFullTemplate();
 
         $pollerId = null;
-        if (isset($params['poller'])) {
-            $pollerId = $params['poller'];
+        if (isset($params['id'])) {
+            $pollerId = $params['id'];
         }
         
         $router->response()->json($myTemplate->genForm($pollerId));

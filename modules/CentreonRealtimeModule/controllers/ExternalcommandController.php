@@ -146,7 +146,7 @@ class ExternalcommandController extends Controller
                     break;
             }
             $router->response()->json(array('message' => _('Command has been successfully submitted')));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $router->response()->json(array('message' => $e->getMessage()));
         }
     }
@@ -165,7 +165,7 @@ class ExternalcommandController extends Controller
         try {
             $repository::processCommand($cmdId, $objectIds);
             $template->assign('commandResult', _('command has been successfully submitted.'));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $template->assign('commandResult', $e->getMessage());
         }
         $template->display('file:[CentreonRealtimeModule]action_confirm.tpl');
@@ -196,6 +196,7 @@ class ExternalcommandController extends Controller
     {
         $template = Di::getDefault()->get('template');
         $template->addCss('daterangepicker-bs3.css');
+        $template->addCss('centreon.less');
         $template->addJs('daterangepicker.js');
         $user = $_SESSION['user'];
         $template->assign('user', $user->getName());

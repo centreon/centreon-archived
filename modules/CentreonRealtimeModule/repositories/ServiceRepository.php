@@ -38,6 +38,7 @@ namespace CentreonRealtime\Repository;
 use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
 use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
 use CentreonRealtime\Models\Service as ServiceRealtime;
+use CentreonRealtime\Models\Acknowledgements;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Di;
 
@@ -98,6 +99,32 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
             return $row['state'];
         }
         return -1;
+    }
+
+    /**
+     * Get service acknowledgement information
+     *
+     * @param int $service_id
+     * @return array
+     */
+    public static function getAcknowledgementInfos($service_id)
+    {
+        $acknowledgement = array();
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+
+        $stmt = $dbconn->prepare('SELECT acknowledgement_id, entry_time, author, comment_data
+            FROM rt_acknowledgements
+            WHERE service_id = ?
+            AND deletion_time IS NULL');
+
+        $stmt->execute(array($service_id));
+
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $acknowledgement = $row;
+        }
+
+        return $acknowledgement;
     }
     
     

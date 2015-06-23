@@ -275,7 +275,8 @@ class ConfigGenerateRepository
                     foreach ($value as $action) {
                         switch ($action) {
                             case 'pollerCommandLine':
-                                $this->addCommandLineBlock($file);
+                                $this->addEngineCommandLineBlock($file);
+                                $this->addBrokerCommandLineBlock($file);
                                 break;
                             case 'pollerConfigCentreonEngine':
                                 $this->addConfigCentreonEngineBlock($file);
@@ -323,7 +324,7 @@ class ConfigGenerateRepository
                     array_values($this->baseConfig),
                     $key
                 );
-                $key = str_replace(array('/','.'),'-',$key);
+                $key = str_replace(array('/','.', ' '), '-', $key);
                 $file->writeElement($key, $value);
             }
         }
@@ -337,17 +338,37 @@ class ConfigGenerateRepository
      *
      * @param \XMLWriter $gile The xml file
      */
-    private function addCommandLineBlock($file)
+    private function addBrokerCommandLineBlock($file)
     {
         /* Get poller list */
         $pollers = Poller::getList();
         $varlib = $this->baseConfig['%global_broker_data_directory%'];
         foreach ($pollers as $poller) {
             $file->startElement("input");
-            $file->writeElement("name", "extcommand-" . $poller['name']);
+            $file->writeElement("name", "extcommand-broker-central-module-" . $poller['name']);
             $file->writeElement("type", "dump_fifo");
-            $file->writeElement("path", $varlib . "/extcommand-" . $poller['poller_id'] . '.fifo');
-            $file->writeElement("tagname", "extcommand-" . $poller['name']);
+            $file->writeElement("path", $varlib . "/extcommand-broker-" . $poller['poller_id'] . '.fifo');
+            $file->writeElement("tagname", "extcommand-broker-central-module-" . $poller['poller_id']);
+            $file->endElement();
+        }
+    }
+
+    /**
+     * Add block for external command line
+     *
+     * @param \XMLWriter $gile The xml file
+     */
+    private function addEngineCommandLineBlock($file)
+    {
+        /* Get poller list */
+        $pollers = Poller::getList();
+        $varlib = $this->baseConfig['%global_broker_data_directory%'];
+        foreach ($pollers as $poller) {
+            $file->startElement("input");
+            $file->writeElement("name", "extcommand-engine-central-module-" . $poller['name']);
+            $file->writeElement("type", "dump_fifo");
+            $file->writeElement("path", $varlib . "/extcommand-engine-" . $poller['poller_id'] . '.fifo');
+            $file->writeElement("tagname", "extcommand-engine-central-module-" . $poller['poller_id']);
             $file->endElement();
         }
     }
@@ -364,10 +385,10 @@ class ConfigGenerateRepository
         $configGeneratePath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir'), '/') . '/engine';
         foreach ($pollers as $poller) {
             $file->startElement("input");
-            $file->writeElement("name", "cfg-engine-" . $poller['name']);
+            $file->writeElement("name", "cfg-engine-central-module-" . $poller['name']);
             $file->writeElement("type", "dump_dir");
             $file->writeElement("path", $configGeneratePath . '/apply/' . $poller['poller_id']);
-            $file->writeElement("tagname", "cfg-engine-" . $poller['name']);
+            $file->writeElement("tagname", "cfg-engine-central-module-" . $poller['poller_id']);
             $file->endElement();
         }
     }
@@ -384,10 +405,10 @@ class ConfigGenerateRepository
         $configGeneratePath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir'), '/') . '/broker';
         foreach ($pollers as $poller) {
             $file->startElement("input");
-            $file->writeElement("name", "cfg-broker-" . $poller['name']);
+            $file->writeElement("name", "cfg-broker-central-module-" . $poller['name']);
             $file->writeElement("type", "dump_dir");
             $file->writeElement("path", $configGeneratePath . '/apply/' . $poller['poller_id']);
-            $file->writeElement("tagname", "cfg-broker-" . $poller['name']);
+            $file->writeElement("tagname", "cfg-broker-central-module-" . $poller['poller_id']);
             $file->endElement();
         }
     }

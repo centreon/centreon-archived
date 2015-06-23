@@ -39,60 +39,45 @@ use Centreon\Internal\Form;
 use Centreon\Internal\Form\Generator\Web\Full;
 use CentreonAdministration\Models\Options;
 use CentreonAdministration\Repository\OptionRepository;
-use Centreon\Internal\Controller;
+use Centreon\Controllers\FormController;
 
 /**
  * Description of OptionsController
  *
  * @author lionel
  */
-class OptionsController extends Controller
+class OptionsController extends FormController
 {
+    protected $objectDisplayName = 'Options';
+    public static $objectName = 'options';
+    protected $objectBaseUrl = '/centreon-administration/options/centreon';
+    protected $objectClass = '\CentreonAdministration\Models\Options';
+
     public static $moduleName = 'centreon-administration';
-    
+    protected $repository = '\CentreonAdministration\Repository\OptionRepository';
+    public static $relationMap = array();
+
     /**
+     *
      * @method get
      * @route /options/centreon
      */
-    public function centreonAction()
+    public function editAction($additionnalParamsForSmarty = array(), $defaultValues = array())
     {
-        //
-        $objectFormUpdateUrl = '/centreon-administration/options/centreon/update';
-        
-        $myForm = new Full($objectFormUpdateUrl);
-        $myForm->getFormFromDatabase();
-        
-        // get object Current Values
-        $myForm->setDefaultValues(Options::getList());
-        
-        // Display page
-        $this->tpl->assign('pageTitle', 'Centreon Options');
-        $this->tpl->assign('form', $myForm->getFormHandler()->toSmarty());
-        $this->tpl->assign('formComponents', $myForm->getFormComponents());
-        $this->tpl->assign('hookParams', array('pollerId' => 1));
-        $this->tpl->assign('formName', $myForm->getName());
-        $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
-        $this->tpl->display('editoptions.tpl');
+        $defaultValues = Options::getList();
+        parent::editAction($additionnalParamsForSmarty, $defaultValues);
     }
-    
+
+
     /**
+     * Update centreon options
+     *
+     *
      * @method post
      * @route /options/centreon/update
      */
     public function updateAction()
     {
-        $givenParameters = clone $this->getParams('post');
-        
-        try {
-            OptionRepository::update($givenParameters, "default", "form", $this->getUri());
-            
-            if (isset($givenParameters['token'])) {
-                unset($givenParameters['token']);
-            }
-            
-            $this->router->response()->json(array('success' => true));
-        } catch (Exception $ex) {
-            $this->router->response()->json(array('success' => false,'error' => $ex->getMessage()));
-        }
+        parent::updateAction();
     }
 }

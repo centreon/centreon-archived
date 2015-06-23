@@ -29,7 +29,11 @@
 
     /* Add event */
     $elem.on("blur change", function () {
-      if ($elem.attr("type") == "checkbox") {
+      if ($elem.attr("type") == "radio") {
+        if ($elem.is(":checked")) {
+          self.display($elem.val());
+        }
+      } else if ($elem.attr("type") == "checkbox") {
         if ($elem.is(":checked")) {
           self.display(1);
         } else {
@@ -66,11 +70,11 @@
       $.each(this.elements, function (key, val) {
         if (key == value) {
           $.each(val, function (idx, $elem) {
-            $elem.parent(".form-group").show();
+            $elem.closest(".form-group").show();
           });
         } else {
           $.each(val, function (idx, $elem) {
-            $elem.parent(".form-group").hide();
+            $elem.closest(".form-group").hide();
           });
         }
       });

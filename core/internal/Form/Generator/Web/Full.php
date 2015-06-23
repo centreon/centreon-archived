@@ -335,7 +335,7 @@ class Full extends Generator
      */
     public function setDefaultValues($defaultValues, $objectId = "")
     {
-        if (is_string($defaultValues)) {
+        if (isset($objectId) && is_string($defaultValues)) {
             // Get the mapped columns for the object
             $objectColumns = $defaultValues::getColumns();
             $fields = array_intersect($objectColumns, array_keys($this->formDefaults));

@@ -50,6 +50,7 @@ use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Controllers\FormController;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
+use CentreonRealtime\Repository\HostRepository as HostRealTimeRepository;
 
 class HostController extends FormController
 {
@@ -171,15 +172,11 @@ class HostController extends FormController
                 }
             }
         }
-        
-                      
-        if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
-            $givenParameters['host_alias'] = $givenParameters['host_name'];
-        }
+
         $id = parent::createAction(false);
 
         if (count($macroList) > 0) {
-            CustomMacroRepository::saveHostCustomMacro($id, $macroList);
+            CustomMacroRepository::saveHostCustomMacro(self::$objectName, $id, $macroList);
         }
         
         if (isset($givenParameters['host_tags'])) {
@@ -273,14 +270,8 @@ class HostController extends FormController
                 }
             }
         }
-
-        if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
-            $givenParameters['host_alias'] = $givenParameters['host_name'];
-        }
         
-        //if (count($macroList) > 0) {
-            CustomMacroRepository::saveHostCustomMacro($givenParameters['object_id'], $macroList);
-        //}
+        CustomMacroRepository::saveHostCustomMacro(self::$objectName, $givenParameters['object_id'], $macroList);
         
         //Delete all tags
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
@@ -549,7 +540,7 @@ class HostController extends FormController
 
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
-
+        $data['realTimeData'] = HostRealTimeRepository::getRealTimeData($params['id']);
         $hostConfiguration = HostRepository::formatDataForSlider($data);
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
         $edit_url = $this->router->getPathFor("/centreon-configuration/host/".$params['id']);

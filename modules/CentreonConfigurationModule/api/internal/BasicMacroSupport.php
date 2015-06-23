@@ -54,29 +54,11 @@ class BasicMacroSupport extends BasicCrudCommand
      * @param array $params
     */
     public function addMacroAction($object, $params)
-    {
-        
-        $paramList = $this->parseObjectParams($params);
-        
-        if(!isset($paramList['hidden']) || !is_numeric($paramList['hidden']) || $paramList['hidden'] < 0 || $paramList['hidden'] > 1){
-            $paramList['hidden'] = 0;
-        }
-        
-        
-        if(isset($paramList['name']) && isset($paramList['value'])){
-            $formatedParams = array(
-                            $paramList['name'] => 
-                                array(
-                                    'value' => $paramList['value'],
-                                    'is_password' => $paramList['hidden']
-                                )
-                            );
-        }
-        
-        
+    {       
+      
+        $paramList = $this->parseObjectParams($params);        
         try {
             $repository = $this->repository;
-            //$objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
             $sName = $this->objectName;
            
             $aId = $repository::getListBySlugName($object[$sName]);
@@ -85,21 +67,73 @@ class BasicMacroSupport extends BasicCrudCommand
             } else {
                 throw new \Exception(static::OBJ_NOT_EXIST);
             }
+            
             switch($this->objectName){
+                case 'hosttemplate' : 
                 case 'host' :
-                    CustomMacroRepository::saveHostCustomMacro($objectId, $formatedParams, false);
+                    if(isset($paramList['host_macro_name']) && isset($paramList['host_macro_value'])){
+                        $formatedParams = array(
+                            $paramList['host_macro_name'] => 
+                                array(
+                                    'value' => $paramList['host_macro_value'],
+                                    'is_password' => $paramList['is_password']
+                            )
+                        );
+                    }
+                    CustomMacroRepository::saveHostCustomMacro($this->objectName, $objectId, $formatedParams, false);
+                    \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+                        "The macro '".$paramList['host_macro_name']."' has been successfully added to the object",
+                        true,
+                        'green'
+                    );
                     break;
-                case 'service' : 
-                    CustomMacroRepository::saveServiceCustomMacro($objectId, $formatedParams, false);
+                case 'servicetemplate' : 
+                    if(isset($paramList['svc_macro_name']) && isset($paramList['svc_macro_value'])){
+                        $formatedParams = array(
+                            $paramList['svc_macro_name'] => 
+                                array(
+                                    'value' => $paramList['svc_macro_value'],
+                                    'is_password' => $paramList['is_password']
+                            )
+                        );
+                    }
+                    CustomMacroRepository::saveServiceCustomMacro($this->objectName, $objectId, $formatedParams, false);
+                    \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+                        "The macro '".$paramList['svc_macro_name']."' has been successfully added to the object",
+                        true,
+                        'green'
+                    );
+                    break;
+                case 'service' :
+                    $aData = \CentreonConfiguration\Repository\ServiceRepository::getServiceBySlugs($object['service'], $object['host']);
+
+                    if (count($aData) == 0) {
+                        throw new \Exception(static::OBJ_NOT_EXIST);
+                    } else {
+                        $objectId = $aData['service_id'];
+                        $hostId   = $aData['host_id'];
+                    }
+
+                    if (isset($paramList['svc_macro_name']) && isset($paramList['svc_macro_value'])) {
+                        $formatedParams = array(
+                            $paramList['svc_macro_name'] => 
+                                array(
+                                    'value' => $paramList['svc_macro_value'],
+                                    'is_password' => $paramList['is_password']
+                            )
+                        );
+                    }
+                    CustomMacroRepository::saveServiceCustomMacro($this->objectName, $objectId, $formatedParams, false, $hostId);
+                    \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+                        "The macro '".$paramList['svc_macro_name']."' has been successfully added to the object",
+                        true,
+                        'green'
+                    );
                     break;
                 default :
                     break;
             }
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display(
-                "The macro '".$paramList['name']."' has been successfully added to the object",
-                true,
-                'green'
-            );
+            
         } catch(\Exception $ex) {
             \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
         }
@@ -114,10 +148,10 @@ class BasicMacroSupport extends BasicCrudCommand
     public function updateMacroAction($object, $macro, $params)
     {
         $paramList = $this->parseObjectParams($params);
-        
+        /*
         if(!isset($paramList['hidden']) || !is_numeric($paramList['hidden']) || $paramList['hidden'] < 0 || $paramList['hidden'] > 1){
             $paramList['hidden'] = 0;
-        }
+        }*/
         
         try {
             $repository = $this->repository;
@@ -131,9 +165,11 @@ class BasicMacroSupport extends BasicCrudCommand
                 throw new \Exception(static::OBJ_NOT_EXIST);
             }
             switch($this->objectName){
+                case 'hosttemplate' : 
                 case 'host' :
                     CustomMacroRepository::updateHostCustomMacro($objectId,$macro,$paramList);
                     break;
+                case 'servicetemplate' :
                 case 'service' : 
                     CustomMacroRepository::updateServiceCustomMacro($objectId,$macro,$paramList);
                     break;
@@ -172,9 +208,11 @@ class BasicMacroSupport extends BasicCrudCommand
             }
             $macros = array();
             switch($this->objectName){
+                case 'hosttemplate' : 
                 case 'host' :
                     $macros = CustomMacroRepository::loadHostCustomMacro($objectId);
                     break;
+                case 'servicetemplate' :
                 case 'service' : 
                     $macros = CustomMacroRepository::loadServiceCustomMacro($objectId);
                     break;
@@ -219,9 +257,11 @@ class BasicMacroSupport extends BasicCrudCommand
                 throw new \Exception(static::OBJ_NOT_EXIST);
             }
             switch($this->objectName){
+                case 'hosttemplate' : 
                 case 'host' :
                     CustomMacroRepository::deleteHostCustomMacro($objectId,$macro);
                     break;
+                case 'servicetemplate' :
                 case 'service' : 
                     CustomMacroRepository::deleteServiceCustomMacro($objectId,$macro);
                     break;

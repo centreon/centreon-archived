@@ -152,6 +152,10 @@ service snmpd start
 
 # Install centreon-plugins
 git clone https://github.com/centreon/centreon-plugins.git /usr/lib/nagios/plugins/centreon-plugins/
+chmod 755 /usr/lib/nagios/plugins/centreon-plugins/centreon_plugins.pl
+
+chown root /usr/lib/nagios/plugins/check_icmp
+chmod u+s /usr/lib/nagios/plugins/check_icmp
 
 # Install php module for rrdtools
 yum install -y php54-php-pecl-rrd
@@ -170,11 +174,14 @@ external/bin/centreonConsole core:internal:install
 external/bin/centreonConsole core:module:manage:install --module=centreon-broker
 external/bin/centreonConsole core:module:manage:install --module=centreon-engine
 external/bin/centreonConsole core:module:manage:install --module=centreon-performance 
+external/bin/centreonConsole core:module:manage:install --module=centreon-bam
 \cp -r modules/CentreonAdministrationModule/static/centreon-administration/ www/static/
 \cp -r modules/CentreonPerformanceModule/static/centreon-performance/ www/static/
 \cp -r modules/CentreonConfigurationModule/static/centreon-configuration/ www/static/
 
 chown apache.apache /srv/centreon/www/uploads/images
+chown apache.apache /srv/centreon/www/uploads/imagesthumb/
+
 usermod -a -G centreon-engine apache
 usermod -a -G centreon-broker apache
 
@@ -191,6 +198,15 @@ mkdir -p /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine
 chown centreon: /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
 chmod g+ws /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
 setfacl -R -m d:u:centreon:rwX,d:g:centreon:rwX,d:o:r-X /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
+
+# Create RRD paths
+mkdir /var/lib/centreon
+mkdir /var/lib/centreon/metrics
+mkdir /var/lib/centreon/status
+mkdir /var/lib/centreon/centplugins
+chown -R centreon-broker /var/lib/centreon/metrics
+chown -R centreon-broker /var/lib/centreon/status
+chown -R centreon-engine /var/lib/centreon/centplugins
 
 # Start services
 # Nothing to do, they should already be running due to previous steps

@@ -25,7 +25,7 @@
         <column name="in_downtime" phpName="InDowntime" type="BOOLEAN" size="1"/>
         <column name="dependency_dep_id" phpName="DependencyDepId" type="INTEGER"/>
         <column name="graph_id" phpName="GraphId" type="INTEGER"/>
-        <column name="icon_id" phpName="IconId" type="INTEGER"/>
+        <column name="icon_id" phpName="IconId" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
         <column name="graph_style" phpName="GraphStyle" type="VARCHAR" size="254"/>
         <column name="activate" phpName="Activate" type="TINYINT" defaultValue="1"/>
         <column name="comment" phpName="Comment" type="LONGVARCHAR"/>
@@ -34,8 +34,8 @@
         <foreign-key foreignTable="cfg_timeperiods" name="mod_bam_ibfk_5" onDelete="SET NULL">
             <reference local="id_reporting_period" foreign="tp_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_view_images" name="mod_bam_ibfk_4" onDelete="SET NULL">
-            <reference local="icon_id" foreign="img_id"/>
+        <foreign-key foreignTable="cfg_binaries" name="mod_bam_ibfk_4" onDelete="SET NULL">
+            <reference local="icon_id" foreign="binary_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_organizations" name="bam_ibfk_6" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="organization_id" foreign="organization_id"/>

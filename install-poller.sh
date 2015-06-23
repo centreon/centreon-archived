@@ -76,7 +76,8 @@ wget http://yum.centreon.com/standard/3.0/stable/RPM-GPG-KEY-CES -O /etc/pki/rpm
 
 # Broker
 # Note "*" is important to install modules
-yum install -y centreon-broker*
+# /!\ No need to install all broker packages on pollers (otherwise cbd will be executed)
+yum install -y centreon-broker-cbd
 service cbd start
 
 # Engine
@@ -161,6 +162,10 @@ service snmpd start
 
 # Install centreon-plugins
 git clone https://github.com/centreon/centreon-plugins.git /usr/lib/nagios/plugins/centreon-plugins/
+chmod 755 /usr/lib/nagios/plugins/centreon-plugins/centreon_plugins.pl
+
+chown root /usr/lib/nagios/plugins/check_icmp
+chmod u+s /usr/lib/nagios/plugins/check_icmp
 
 # Check and create group/user centreon
 getent group centreon &>/dev/null || groupadd -r centreon
@@ -178,6 +183,15 @@ usermod -a -G centreon-engine,centreon-broker centreon
 # Activate services on boot
 chkconfig --level 2345 centengine on
 chkconfig --level 2345 snmpd on
+
+# Create RRD paths
+mkdir /var/lib/centreon
+mkdir /var/lib/centreon/metrics
+mkdir /var/lib/centreon/status
+mkdir /var/lib/centreon/centplugins
+chown -R centreon-broker /var/lib/centreon/metrics
+chown -R centreon-broker /var/lib/centreon/status
+chown -R centreon-engine /var/lib/centreon/centplugins
 
 # End of script
 

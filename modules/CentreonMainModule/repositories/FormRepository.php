@@ -230,6 +230,24 @@ abstract class FormRepository extends ListRepository
         return $id;
     }
     
+    public static function getSlugNameById($id){
+        $class = static::$objectClass;
+        $slug = $class::getSlugField();
+        $object = null;
+        if(!is_null($slug)){
+            try{
+                $object = $class::getParameters($id, $slug);
+            } catch (Exception $ex) {
+
+            }
+            
+        }
+        if(!empty($object)){
+            return $object[$slug];
+        }
+        return "";
+    }
+    
     public static function disable($givenParameters)
     {
         static::update($givenParameters, '', '', false);

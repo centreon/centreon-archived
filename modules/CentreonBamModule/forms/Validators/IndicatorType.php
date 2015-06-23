@@ -46,35 +46,15 @@ use Centreon\Internal\Form\Validators\ValidatorInterface;
  */
 class IndicatorType implements ValidatorInterface
 {
-    
-    
-    
+
     private function baFieldsCheck($params)
     {    
         
         $errorMessage = "";
         
         if(empty($params['extraParams']['id_indicator_ba'])){
-            $errorMessage .= "\n".'--id-indicator-ba required';
+            $errorMessage .= "\n".'--indicator-ba-slug required';
         }
-        
-        
-        /*
-        if(!empty($params['extraParams']['boolean_name'])){
-            $errorMessage .= "\n".'--boolean-name not allowed';
-        }
-        
-        if(!empty($params['extraParams']['boolean_expression'])){
-            $errorMessage .= "\n".'--boolean-expression not allowed';
-        }
-        
-        if(!empty($params['extraParams']['bool_state'])){
-            $errorMessage .= "\n".'--bool-state not allowed';
-        }
-
-        if(!empty($params['extraParams']['service_id'])){
-            $errorMessage .= "\n".'--service-id not allowed';
-        }*/
         
         if(empty($errorMessage)){
             return false;
@@ -86,27 +66,14 @@ class IndicatorType implements ValidatorInterface
     private function serviceFieldsCheck($params){
         
         $errorMessage = "";
-        
+
         if(empty($params['extraParams']['service_id'])){
-            $errorMessage .= "\n".'--service-id required';
+            $errorMessage .= "\n".'--service-slug required';
         }
         
-        /*
-        if(!empty($params['extraParams']['boolean_name'])){
-            $errorMessage .= "\n".'--boolean-name not allowed';
+        if(empty($params['extraParams']['host_id'])){
+            $errorMessage .= "\n".'--host-slug required';
         }
-        
-        if(!empty($params['extraParams']['boolean_expression'])){
-            $errorMessage .= "\n".'--boolean-expression not allowed';
-        }
-        
-        if(!empty($params['extraParams']['bool_state'])){
-            $errorMessage .= "\n".'--bool-state not allowed';
-        }
-        
-        if(!empty($params['extraParams']['id_indicator_ba'])){
-            $errorMessage .= "\n".'--id-indicator-ba not allowed';
-        }*/
         
         if(empty($errorMessage)){
             return false;
@@ -120,7 +87,7 @@ class IndicatorType implements ValidatorInterface
         $errorMessage = "";
         
         if(empty($params['extraParams']['boolean_name'])){
-            $errorMessage .= "\n".'--boolean-name required';
+            $errorMessage .= "\n".'--boolean-slug required';
         }
         
         if(empty($params['extraParams']['boolean_expression'])){
@@ -130,15 +97,7 @@ class IndicatorType implements ValidatorInterface
         if(empty($params['extraParams']['bool_state'])){
             $errorMessage .= "\n".'--bool-state required';
         }
-        /*
-        if(!empty($params['extraParams']['service_id'])){
-            $errorMessage .= "\n".'--service-id not allowed';
-        }
-        
-        if(!empty($params['extraParams']['id_indicator_ba'])){
-            $errorMessage .= "\n".'--id-indicator-ba not allowed';
-        }
-        */
+
         if(empty($errorMessage)){
             return false;
         }else{
@@ -147,18 +106,17 @@ class IndicatorType implements ValidatorInterface
         
     }
     
-    
     /**
      * 
      * @param type $value
      * @param array $params
      * @return boolean
      */
-    
     public function validate($value, $params = array(), $sContext = 'server')
     {
         $bSuccess = false;
         $sMessage = "";
+        
         if(isset($params['extraParams']['kpi_type'])){
             switch ($params['extraParams']['kpi_type']){
                 case "0" :
@@ -191,17 +149,18 @@ class IndicatorType implements ValidatorInterface
                     }
                     break;
                 default : 
+                    $bSuccess = false;
+                    $sMessage = 'Wrong params "'.$params['extraParams']['kpi_type'].'" for ba type, must be : BA, service or boolean';
                     break;
             }
-            
+        }else{
+
         }
         
         
         $reponse = array('success' => $bSuccess, 'error' => $sMessage);
         return $reponse;
     }
-    
-    
-    
+
     //put your code here
 }

@@ -234,6 +234,7 @@ class ConfigGenerateMainRepository
      */
     private static function getConfigFiles($poller_id)
     {
+        $includeList = array();
         $pathList = array();
         $resList = array();
         $dirList = array();
@@ -273,11 +274,13 @@ class ConfigGenerateMainRepository
         $pathList[] = "%conf_dir%/check-command.cfg";
         $pathList[] = "%conf_dir%/timeperiods.cfg";
         $pathList[] = "%conf_dir%/connectors.cfg";
+
+        $includeList[] = "%conf_dir%/resources.cfg";
         
         $dirList[] = "%conf_dir%/objects/";
         $dirList[] = "%conf_dir%/resources/";
 
-        return array("cfg_file" => $pathList, "resource_file" => $resList, "cfg_dir" => $dirList);
+        return array("cfg_file" => $pathList, "resource_file" => $resList, "cfg_dir" => $dirList, "cfg_include" => $includeList);
     }
 
     /**

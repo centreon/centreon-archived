@@ -38,7 +38,7 @@
               <Down>d</Down>
               <Critical>c</Critical>
               <Warning>w</Warning>
-              <Unreachable>u</Unreachable>
+              <Unreachable>n</Unreachable>
               <Unknown>u</Unknown>
               <Ok>o</Ok>
             </choices>
@@ -55,11 +55,11 @@
             </choices>
           </attributes>
         </field>
-        <field name="start" label="Start" default_value="" advanced="0" type="inputtimeunit" parent_field="" mandatory="1">
-          <help>When the contact begin to receive the notification</help>
+        <field name="start" label="Start" default_value="" advanced="0" type="inputtimeunit" parent_field="" mandatory="0">
+          <help>When the contact begin to receive the notification, if not set the notification is active from the first.</help>
         </field>
-        <field name="end" label="End" default_value="" advanced="0" type="inputtimeunit" parent_field="" mandatory="1">
-          <help>When the contact end to receive the notification</help>
+        <field name="end" label="End" default_value="" advanced="0" type="inputtimeunit" parent_field="" mandatory="0">
+          <help>When the contact end to receive the notification, if not set the notification is always active.</help>
         </field>
         <field name="interval_unit" label="" default_value="" advanced="0" type="hidden" parent_field="" mandatory="1">
         </field>

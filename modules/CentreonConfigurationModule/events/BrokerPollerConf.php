@@ -80,6 +80,16 @@ class BrokerPollerConf
     }
 
     /**
+     * Return the values
+     *
+     * @return array
+     */
+    public function getValues()
+    {
+        return $this->values;
+    }
+
+    /**
      * Append values to configuration
      *
      * @param array $values The values to append

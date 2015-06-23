@@ -153,6 +153,7 @@ class Template
             $events = Di::getDefault()->get('events');
             $eventParams = new BrokerPollerConfEvent($pollerId, $values);
             $events->emit('centreon-configuration.broker.poller.conf', array($eventParams));
+            $values = $eventParams->getValues();
         }
         return $this->loadSteps($values);
     }

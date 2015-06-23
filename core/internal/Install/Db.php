@@ -37,6 +37,7 @@
 namespace Centreon\Internal\Install;
 
 use Centreon\Internal\Utils\Filesystem\File;
+use Centreon\Internal\Utils\Filesystem\Directory;
 use Centreon\Internal\Di;
 use Centreon\Custom\Propel\CentreonMysqlPlatform; 
 use Centreon\Internal\Module\Informations;
@@ -84,7 +85,7 @@ class Db
         // Retreive target DB State
         $updatedAppData = new \AppData($platform);
         self::getDbFromXml($updatedAppData, 'centreon');
-        
+               
         // Get diff between current db state and target db state
         $diff = \PropelDatabaseComparator::computeDiff(
             $currentDb,
@@ -146,7 +147,7 @@ class Db
         // Initialize configuration
         $di = Di::getDefault();
         $config = $di->get('config');
-        $centreonPath = $config->get('global', 'centreon_path');
+        $centreonPath = $config->get('global', 'centreon_generate_tmp_dir');
         
         $targetFolder = $centreonPath . '/tmp/db/target/' . $targetDbName . '/';
         $currentFolder = $centreonPath . '/tmp/db/current/' . $targetDbName . '/';
@@ -173,7 +174,7 @@ class Db
             unlink($fileList[$i]);
         }
         
-        self::deleteFolder($targetFolder);
+        Directory::delete($targetFolder, true);
     }
 
     /**
@@ -185,7 +186,7 @@ class Db
     {
         if (is_dir($path) === true) {
             $files = array_diff(scandir($path), array('.', '..'));
-
+            
             foreach ($files as $file) {
                 unlink(realpath($path) . '/' . $file);
             }

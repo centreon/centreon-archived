@@ -89,6 +89,8 @@ class WriteConfigFileRepository
             return "cfg_file";
         } elseif ("centengine.cfg" == substr($filename, -14)) {
             return "main_file";
+        } elseif ("resources.cfg" == substr($filename, -13)) {
+            return "cfg_include";
         } else {
             return "cfg_dir";
         }

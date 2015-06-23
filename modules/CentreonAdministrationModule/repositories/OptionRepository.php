@@ -43,28 +43,16 @@ use Centreon\Internal\Form\Validators\Validator;
  * @package Centreon
  * @subpackage Repository
  */
-class OptionRepository
+class OptionRepository extends Repository
 {
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     */
-    protected static function validateForm($givenParameters, $origin = "", $route = "")
-    {
-        $formValidator = new Validator($origin, array('route' => $route, 'params' => array(), 'version' => '3.0.0'));
-        $formValidator->validate($givenParameters->all());
-    }
-    
     /**
      * 
      * @param type $submittedValues
      * @param type $group
      */
-    public static function update($submittedValues, $group = "default", $origin = "", $route = "")
+    public static function update($submittedValues, $origin = "", $route = "")
     {
-        self::validateForm($submittedValues, $origin, $route);
+        static::validateForm($submittedValues, $origin, $route);
         $currentOptionsList = Options::getOptionsKeysList();
 
         $optionsToSave = array();
@@ -79,7 +67,7 @@ class OptionRepository
         }
 
         Options::update($optionsToUpdate);
-        Options::insert($optionsToSave, $group);
+        Options::insert($optionsToSave, 'default');
     }
     
     /**

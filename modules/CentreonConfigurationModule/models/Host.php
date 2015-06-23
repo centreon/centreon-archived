@@ -60,7 +60,34 @@ class Host extends CentreonBaseModel
         "\CentreonConfiguration\Models\Relation\Host\Hostparents",
         "\CentreonConfiguration\Models\Relation\Host\Hostchildren"
     );
+    
+    /*
+    * @relation \CentreonConfiguration\Models\Relation\Host\Service  
+    */
+    //protected $services;
+    
+    /*
+    * @relation \CentreonConfiguration\Models\Relation\Host\Hostparents
+    */
+    //protected $hostparents;
 
+    /*
+    * @relation \CentreonConfiguration\Models\Relation\Host\Hostchildren
+    */
+    //protected $hostchildrens;
+    
+    /*
+    * @simple command_command_id CentreonConfiguration\Models\Command
+    */
+    //protected $command;
+
+    /*
+     * @many CentreonConfiguration\Models\Test host_id
+     */
+    //protected $test;
+    
+    
+    
     protected static $aclResourceType = 1;
 
     /*protected static $basicFilters = array(
@@ -97,7 +124,7 @@ class Host extends CentreonBaseModel
             }
             $sqlFields .= $key;
             $sqlValues .= "?";
-            if ($value == "" && !isset($not_null_attributes[$key])) {
+            if ($value === "" && !isset($not_null_attributes[$key])) {
                 $value = null;
             } elseif (!is_numeric($value) && isset($is_int_attribute[$key])) {
                 $value = null;
@@ -114,6 +141,8 @@ class Host extends CentreonBaseModel
             
             
         }
+        
+        
         if ($sqlFields && $sqlValues) {
             $sql .= "(".$sqlFields.") VALUES (".$sqlValues.")";
             $stmt = $db->prepare($sql);

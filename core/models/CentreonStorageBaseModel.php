@@ -170,7 +170,7 @@ abstract class CentreonStorageBaseModel
      *
      * @param int $objectId
      */
-    public static function delete($objectId)
+    public static function delete($objectId, $notFoundError = true)
     {
         $db = Di::getDefault()->get('db_centreon');
         $sql = "DELETE FROM  " . static::$table . " WHERE ". static::$primaryKey . " = ?";

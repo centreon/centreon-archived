@@ -6,13 +6,9 @@ mysql -u root -e "drop database centreon;"
 mysql -u root -e "create database centreon;"
 
 external/bin/centreonConsole core:internal:install
-external/bin/centreonConsole core:module:manage:install moduleName=centreon-broker
-external/bin/centreonConsole core:module:manage:install moduleName=centreon-engine
-external/bin/centreonConsole core:module:manage:install moduleName=centreon-performance 
+external/bin/centreonConsole core:module:manage:install --module=centreon-broker
+external/bin/centreonConsole core:module:manage:install --module=centreon-engine
+external/bin/centreonConsole core:module:manage:install --module=centreon-performance 
+external/bin/centreonConsole core:module:manage:install --module=centreon-bam
 
-# Purge previously generated conf
-rm -rf /tmp/engine/generate/*
-rm -rf /tmp/engine/apply/*
-rm -rf /tmp/broker/apply/*
-rm -rf /tmp/broker/generate/*
 

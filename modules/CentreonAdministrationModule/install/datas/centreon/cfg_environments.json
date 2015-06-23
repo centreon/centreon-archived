@@ -1,12 +1,14 @@
 [
     {
         "name": "Production",
+        "slug": "production",
         "description": "Production environment",
         "level": 5,
         "organization_id": 1
     },
     {
         "name": "Preproduction",
+        "slug": "preproduction",
         "description": "Preproduction environment",
         "level": 10,
         "organization_id": 1

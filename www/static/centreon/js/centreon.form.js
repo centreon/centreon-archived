@@ -91,7 +91,7 @@
     }
 
     /* Test if the help is in cache */
-    if (this.groups[name]["help"] !== undefined) {
+    if ((name !== undefined) && (this.groups[name]["help"] !== undefined)) {
       if (false === $parent.hasClass("has-error")) {
         $help.html(this.groups[name]["help"]);
       }
@@ -148,7 +148,7 @@
       $parent = $el.closest(".form-group");
       $el = $parent.find("input[name]");
     }
-    if ($.trim($el.val()) !== "") {
+    if (($.trim($el.val()) !== "") || ($el.hasClass("select2-offscreen"))) {
       this.showLabel($el);
     } else {
       this.hideLabel($el);

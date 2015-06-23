@@ -4,7 +4,7 @@
     "objectBaseUrl" : "hosttemplate",
     "objectClass" : "\\CentreonConfiguration\\Models\\Hosttemplate",
     "relationMap" : {
-        "host_hosttemplates" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Hosttemplate",
+        "host_hosttemplates" : "\\CentreonConfiguration\\Models\\Relation\\Hosttemplate\\Hosttemplate",
         "hosttemplate_servicetemplates" : "\\CentreonConfiguration\\Models\\Relation\\Hosttemplate\\Servicetemplate",
         "host_icon" : "\\CentreonConfiguration\\Models\\Relation\\Hosttemplate\\Icon"
     },
@@ -63,6 +63,16 @@
     },
     "options" : {
         "createAction" : {
+            "disable" : {
+              "functionParams" : "params",
+              "help": "disable",
+              "type": "boolean",
+              "toTransform" : "host_activate",
+              "multiple" : false,
+              "required" : false,
+              "booleanValue" : false,
+              "booleanSetDefault" : true
+            }
         },
         "showAction" : {
             "hosttemplate" : {
@@ -138,6 +148,24 @@
               "toTransform" : "hosttemplate",
               "multiple" : false,
               "required" : true
+            },
+            "disable" : {
+              "functionParams" : "params",
+              "help": "disable",
+              "type": "boolean",
+              "toTransform" : "host_activate",
+              "multiple" : false,
+              "required" : false,
+              "booleanValue" : false
+            },
+            "enable" : {
+              "functionParams" : "params",
+              "help": "disable",
+              "type": "boolean",
+              "toTransform" : "host_activate",
+              "multiple" : false,
+              "required" : false,
+              "booleanValue" : true
             }
         },
         "addMacroAction" : {
@@ -153,7 +181,7 @@
               "functionParams" : "params",
               "help": "The host description",
               "type": "string",
-              "toTransform" : "name",
+              "toTransform" : "host_macro_name",
               "multiple" : false,
               "required" : false
             },
@@ -161,17 +189,19 @@
               "functionParams" : "params",
               "help": "The macro value",
               "type": "string",
-              "toTransform" : "value",
+              "toTransform" : "host_macro_value",
               "multiple" : false,
               "required" : false
             },
             "hidden" : {
               "functionParams" : "params",
               "help": "",
-              "type": "Number",
-              "toTransform" : "hidden",
+              "type": "boolean",
+              "toTransform" : "is_password",
               "multiple" : false,
-              "required" : false
+              "required" : false,
+              "booleanValue" : true,
+              "booleanSetDefault" : true
             }
         },
         "listMacroAction" : {
@@ -223,7 +253,7 @@
               "functionParams" : "params",
               "help": "The macro value",
               "type": "string",
-              "toTransform" : "value",
+              "toTransform" : "host_macro_value",
               "multiple" : false,
               "required" : false
             },
@@ -231,17 +261,27 @@
               "functionParams" : "params",
               "help": "The new macro name",
               "type": "string",
-              "toTransform" : "name",
+              "toTransform" : "host_macro_name",
               "multiple" : false,
               "required" : false
             },
             "hidden" : {
               "functionParams" : "params",
               "help": "Is password",
-              "type": "number",
-              "toTransform" : "hidden",
+              "type": "boolean",
+              "toTransform" : "is_password",
               "multiple" : false,
-              "required" : false
+              "required" : false,
+              "booleanValue" : true
+            },
+            "show" : {
+              "functionParams" : "params",
+              "help": "Is password",
+              "type": "boolean",
+              "toTransform" : "is_password",
+              "multiple" : false,
+              "required" : false,
+              "booleanValue" : false
             }
         }
     }

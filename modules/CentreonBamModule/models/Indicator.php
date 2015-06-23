@@ -37,6 +37,7 @@ namespace CentreonBam\Models;
 
 use Centreon\Models\CentreonBaseModel;
 use CentreonBam\Repository\IndicatorRepository;
+use Centreon\Internal\Di;
 
 /**
  * Used for interacting with host categories
@@ -88,4 +89,45 @@ class Indicator extends CentreonBaseModel
 
         return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
     }
+    
+    public static function getKpi($object){
+        
+        $params = array();
+        $db = Di::getDefault()->get('db_centreon');
+        $result = null;
+        if(isset($object['service_id']) && isset($object['host_id'])){
+            $query = ' select * from cfg_bam_kpi i '
+                    . ' where i.service_id = :service_id and i.host_id = :host_id and i.id_ba = :id_ba ';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':service_id', $object['service_id'], \PDO::PARAM_INT);
+            $stmt->bindParam(':host_id', $object['host_id'], \PDO::PARAM_INT);
+            $stmt->bindParam(':id_ba', $object['id_ba'], \PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        }else if(isset($object['id_indicator_ba'])){
+            $query = ' select * from cfg_bam_kpi i '
+                   . ' where id_indicator_ba = :id_indicator_ba and id_ba = :id_ba ';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':id_indicator_ba', $object['id_indicator_ba'], \PDO::PARAM_INT);
+            $stmt->bindParam(':id_ba', $object['id_ba'], \PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        }else if(isset($object['boolean_id'])){
+            $query = ' select * from cfg_bam_kpi i '
+                    . ' inner join cfg_bam_boolean cbb on cbb.boolean_id = i.boolean_id '
+                    . ' where i.boolean_id = :boolean_id and id_ba = :id_ba ';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':boolean_id', $object['boolean_id'], \PDO::PARAM_INT);
+            $stmt->bindParam(':id_ba', $object['id_ba'], \PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        }
+
+        
+        if(!empty($result)){
+            return $result[0];
+        }
+    }
+    
+    
 }

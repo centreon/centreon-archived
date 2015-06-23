@@ -78,8 +78,8 @@ class ServiceController extends FormController
     public function listAction()
     {
         $router = Di::getDefault()->get('router');
-        $this->tpl->addJs('centreon.overlay.js')
-            ->addJs('jquery.qtip.min.js')
+        $this->tpl->addJs('jquery.qtip.min.js')
+        //addJs('centreon.overlay.js')
             ->addJs('hogan-3.0.0.min.js')
             ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addJs('moment-with-locales.js')
@@ -228,7 +228,7 @@ class ServiceController extends FormController
         }
         
         //if (count($macroList) > 0) {
-            CustomMacroRepository::saveServiceCustomMacro($givenParameters['object_id'], $macroList);
+            CustomMacroRepository::saveServiceCustomMacro(self::$objectName, $givenParameters['object_id'], $macroList);
         //}
         
         //Delete all tags
@@ -292,7 +292,7 @@ class ServiceController extends FormController
         $id = parent::createAction(false);
         
         if (count($macroList) > 0) {
-            CustomMacroRepository::saveServiceCustomMacro($id, $macroList);
+            CustomMacroRepository::saveServiceCustomMacro(self::$objectName, $id, $macroList);
         }
         
         if (isset($givenParameters['service_tags'])) {

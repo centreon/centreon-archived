@@ -141,7 +141,7 @@ abstract class CentreonBaseModel extends CentreonModel
             }
             $sqlFields .= "`" . $key . "`";
             $sqlValues .= "?";
-            if ($value == "" && !isset($not_null_attributes[$key])) {
+            if ($value === "" && !isset($not_null_attributes[$key])) {
                 $value = null;
             } elseif (!is_numeric($value) && isset($is_int_attribute[$key])) {
                 $value = null;
@@ -174,13 +174,13 @@ abstract class CentreonBaseModel extends CentreonModel
      *
      * @param int $objectId
      */
-    public static function delete($objectId)
+    public static function delete($objectId, $notFoundError = true)
     {
         $db = Di::getDefault()->get(static::$databaseName);
         $sql = "DELETE FROM  " . static::$table . " WHERE ". static::$primaryKey . " = ?";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($objectId));
-        if (1 !== $stmt->rowCount()) {
+        if ((1 !== $stmt->rowCount()) && $notFoundError) {
             throw new Exception(static::OBJ_NOT_EXIST);
         }
     }
@@ -226,11 +226,13 @@ abstract class CentreonBaseModel extends CentreonModel
             }
             $paramKey = ":{$key}";
             $sqlUpdate .= '`' . $key . "` = {$paramKey} ";
-            if ($value == "" && !isset($not_null_attributes[$key])) {
+            
+            if ($value === "" && !isset($not_null_attributes[$key])) {
                 $value = null;
             } elseif (!is_numeric($value) && isset($is_int_attribute[$key])) {
                 $value = null;
             }
+            
             if (is_null($value)) {
                 $type = \PDO::PARAM_NULL;
             } else if (isset($is_int_attribute[$key])) {
@@ -241,6 +243,8 @@ abstract class CentreonBaseModel extends CentreonModel
             $sqlParams[$paramKey] = array('value' => $value, 'type' => $type);
         }
 
+        
+        
         if ($sqlUpdate) {
             $db = Di::getDefault()->get(static::$databaseName);
             $sqlParams[':source_object_id'] = array('value' => $objectId, 'type' => \PDO::PARAM_INT);

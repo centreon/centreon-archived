@@ -72,7 +72,7 @@ class HostRepository extends Repository
     public static $hook = 'displayHostRtColumn';
     
     /**
-     * Get service status
+     * Get host status
      *
      * @param int $hostId
      * @return mixed
@@ -90,6 +90,52 @@ class HostRepository extends Repository
             return $row['state'];
         }
         return -1;
+    }
+    
+    /**
+     * Get host realtimeData
+     *
+     * @param int $hostId
+     * @return mixed
+     */
+    public static function getRealTimeData($hostId){
+        // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+
+        $stmt = $dbconn->prepare('SELECT * FROM rt_hosts WHERE host_id = ? AND enabled = 1 LIMIT 1');
+        $stmt->execute(array($hostId));
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return $row;
+        }
+        
+    }
+
+    /**
+     * Get host acknowledgement information
+     *
+     * @param int $host_id
+     * @return array
+     */
+    public static function getAcknowledgementInfos($host_id)
+    {
+        $acknowledgement = array();
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+
+        $stmt = $dbconn->prepare('SELECT acknowledgement_id, entry_time, author, comment_data
+            FROM rt_acknowledgements
+            WHERE host_id = ?
+            AND service_id IS NULL
+            AND deletion_time IS NULL');
+
+        $stmt->execute(array($host_id));
+
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $acknowledgement = $row;
+        }
+
+        return $acknowledgement;
     }
     
     /**
@@ -178,7 +224,7 @@ class HostRepository extends Repository
         $stmt->execute(array($node['issue_id']));
         $parent = array($node);
         $flag = false;
-        while ($row = $stmt->fetch()) {
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if(!$flag){
                 $parent = array();
                 $flag = true;
@@ -228,7 +274,7 @@ class HostRepository extends Repository
         //$issues = array();
         $issues['indirect_issues'] = array();
         $issues['direct_issues'] = array();
-        while ($row = $stmt->fetch()) {
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $finalParent = self::recursiveTree($row,$row['issue_id']);
             if($finalParent[0]['is_parent'] != 0){
                 $row['parents'] = $finalParent;

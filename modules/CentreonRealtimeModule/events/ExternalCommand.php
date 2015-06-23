@@ -60,15 +60,23 @@ class ExternalCommand
     private $command;
 
     /**
+     * The type
+     *
+     * @var string
+     */
+    private $type;
+
+    /**
      * Constructor
      *
      * @param int $pollerId The poller id
      * @param string $command The command
      */
-    public function __construct($pollerId, $command)
+    public function __construct($pollerId, $command, $type = 'engine')
     {
         $this->pollerId = $pollerId;
         $this->command = $command;
+        $this->type = $type;
     }
 
     /**
@@ -89,5 +97,15 @@ class ExternalCommand
     public function getCommand()
     {
         return $this->command;
+    }
+
+    /**
+     * Get the command type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }

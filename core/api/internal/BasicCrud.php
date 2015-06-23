@@ -39,6 +39,7 @@ use Centreon\Internal\Command\AbstractCommand;
 use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
+
 /**
  * Description of BasicCrud
  *
@@ -127,9 +128,9 @@ class BasicCrud extends AbstractCommand
      * 
      */
     static $aRenameModules = array(
-        'businessactivity' => "bam"
+        'businessactivity' => "bam",
+        'trap' => "traps"
     );
-
 
     /**
      * 
@@ -169,6 +170,7 @@ class BasicCrud extends AbstractCommand
         }
         return $choices;
     }
+
     
     
     /** Get the fields from xml forms for update and create action
@@ -201,12 +203,16 @@ class BasicCrud extends AbstractCommand
                         if(!isset($this->options['updateAction'][$row['normalized_name']])){
                             
                             $attributes = json_decode($row['attributes'],true);
+                            $multiple = false;
+                            if(isset($attributes['multiple'])){
+                                $multiple = $attributes['multiple'];
+                            }
                             $this->options['updateAction'][$row['normalized_name']] = array(
                                 'functionParams' => 'params',
                                 'help' => $row['help'].$this->getChoices($attributes),
                                 'type' => 'string',
                                 'toTransform' => $row['name'],
-                                'multiple' => '',
+                                'multiple' => $multiple,
                                 'required' => false,
                                 'attributes' => $attributes
                             );
@@ -230,12 +236,16 @@ class BasicCrud extends AbstractCommand
                         if(!isset($this->options['createAction'][$row['normalized_name']])){
                             
                             $attributes = json_decode($row['attributes'],true);
+                            $multiple = false;
+                            if(isset($attributes['multiple'])){
+                                $multiple = $attributes['multiple'];
+                            }
                             $this->options['createAction'][$row['normalized_name']] = array(
                                 'functionParams' => 'params',
                                 'help' => $row['help'].$this->getChoices($attributes),
                                 'type' => 'string',
                                 'toTransform' => $row['name'],
-                                'multiple' => '',
+                                'multiple' => $multiple,
                                 'required' => $row['mandatory'],
                                 'attributes' => $attributes
                             );
@@ -283,13 +293,47 @@ class BasicCrud extends AbstractCommand
     private function parseManifest()
     {
         $manifestDir = realpath(Informations::getModulePath(static::$moduleShortName) . '/');
-        $manifestFile = $manifestDir . '/api/internal/' . $this->objectName . 'Manifest.json';
-        $this->objectManifest = json_decode(file_get_contents($manifestFile), true);
+        $manifestFile = $this->objectName . 'Manifest.json';
+        $manifestPath = $manifestDir . '/api/internal/' . $manifestFile;
+        $objectManifest = json_decode(file_get_contents($manifestPath), true);
+
+        $moduleList = Informations::getModuleList();
+        foreach ($moduleList as $module) {
+            if ($module !== static::$moduleShortName) {
+                $modulePath = Informations::getModulePath($module);
+                if (file_exists($modulePath . '/api/internal/' . $manifestFile)) {
+                    $objectManifest = self::mergeManifest($objectManifest, json_decode(file_get_contents($modulePath . '/api/internal/' . $manifestFile), true));
+                }
+            }
+        }
+        $this->objectManifest = $objectManifest;
+
         foreach ($this->objectManifest as $mKey => $mValue) {
             if (property_exists($this, $mKey)) {
                 $this->$mKey = $mValue;
             }
         }
+    }
+
+    /**
+     *
+     */
+    private function mergeManifest($objectManifest, $additionalManifest)
+    {
+        if (isset($additionalManifest['liteAttributesSet'])) {
+            $objectManifest['liteAttributesSet'] = $objectManifest['liteAttributesSet'] . ',' . $additionalManifest['liteAttributesSet'];
+        }
+        if (isset($additionalManifest['externalAttributeSet'])) {
+            $objectManifest['externalAttributeSet'] = array_merge($objectManifest['externalAttributeSet'], $additionalManifest['externalAttributeSet']);
+        }
+        if (isset($additionalManifest['relationMap'])) {
+            $objectManifest['relationMap'] = array_merge($objectManifest['relationMap'], $additionalManifest['relationMap']);
+        }
+        if (isset($additionalManifest['attributesMap'])) {
+            $objectManifest['attributesMap'] = array_merge($objectManifest['attributesMap'], $additionalManifest['attributesMap']);
+        }
+
+        return $objectManifest;
     }
     
     /**
@@ -327,6 +371,7 @@ class BasicCrud extends AbstractCommand
                 unset($newDataset[$dKey]);
             }
         }
+        
         
         $dataset = $newDataset;
     }
@@ -442,10 +487,6 @@ class BasicCrud extends AbstractCommand
             $aFieldAttribute[] = $externalAttribute['type'];
         }
 
-        /*
-        var_dump($params);
-        die;
-         */
         foreach ($params as $key => $param) { 
             if (in_array($key, $aFieldAttribute)) { 
                 foreach ($this->externalAttributeSet as $externalAttribute) {
@@ -464,15 +505,17 @@ class BasicCrud extends AbstractCommand
                         }
 
                     } elseif ($externalAttribute['link'] == 'multiple' && $key === $externalAttribute['type']) {
+
                         $aFields = explode(",", $externalAttribute['fields']);
                         $aDatas = explode(',', $params[$externalAttribute['type']]);
  
+                        $tempParamList = array();
                         foreach ($aDatas as $sData) {
                             $sData = trim($sData);
                            
                             $iId =  $externalAttribute['objectClass']::getIdByParameter($aFields[1], $sData);
                             if (count($iId) > 0) {
-                                $finalParamList[$key] = $iId[0];
+                                $tempParamList[] = $iId[0];
                             } else {
                                 $sMessage = static::OBJ_NOT_EXIST;
                                 if (!empty($externalAttribute['message'])) {
@@ -481,6 +524,7 @@ class BasicCrud extends AbstractCommand
                                 throw new \Exception($sMessage);
                             }
                         }
+                        $finalParamList[$key] = implode(',', $tempParamList);
                     }
                 }
                  
@@ -488,10 +532,7 @@ class BasicCrud extends AbstractCommand
                $finalParamList[$key] = $param; 
             }
         }
-        /*
-        var_dump($finalParamList);
-        die;
-         */
+
         return $finalParamList;
     }
     
@@ -512,6 +553,8 @@ class BasicCrud extends AbstractCommand
                     'api',
                     $this->objectBaseUrl . '/update'
                 );
+        $slug = $repository::getSlugNameById($idOfCreatedElement);
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display($slug, true, 'green');
         \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
     }
     
@@ -555,8 +598,9 @@ class BasicCrud extends AbstractCommand
     {
         $repository = $this->repository;
         $id = '';
-        //$id = $repository::getIdFromUnicity($this->parseObjectParams($object));
-        $aId = $repository::getListBySlugName($object[$this->objectName]);
+        $sName = static::renameObject($this->objectName);
+        
+        $aId = $repository::getListBySlugName($object[$sName]);
         if (count($aId) > 0) {
             $id = $aId[0]['id'];
         } else {

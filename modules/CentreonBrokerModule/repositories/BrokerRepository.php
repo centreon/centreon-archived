@@ -37,6 +37,7 @@ namespace CentreonBroker\Repository;
 
 use Centreon\Internal\Di;
 use CentreonBroker\Models\Broker;
+use CentreonBroker\Models\BrokerPollerValues;
 use CentreonAdministration\Repository\OptionRepository;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
 
@@ -96,6 +97,7 @@ class BrokerRepository
         if ($row['poller'] > 0) {
             /* Update */
             Broker::update($pollerId, $sqlParams);
+            BrokerPollerValues::delete($pollerId, false);
         } else {
             /* Insert */
             Broker::insert($sqlParams, true);
@@ -140,7 +142,8 @@ class BrokerRepository
                                                     static::insertPollerInfo($pollerId, $matches[1], $params[$matches[1]]);
                                                 }
                                             } else {
-                                                $finalKey = $module['general']['name']
+                                                /* @todo add user infos */
+                                                /* $finalKey = $module['general']['name']
                                                     . '-'
                                                     . $type
                                                     . '-'
@@ -155,7 +158,7 @@ class BrokerRepository
                                                     } else {
                                                         static::insertUserInfo($configId, $type, $groupNb, $finalKey, $value);
                                                     }
-                                                }
+                                                }*/
                                             }
                                         }
                                         $groupNb++;
@@ -571,6 +574,12 @@ class BrokerRepository
             'broker_data_directory',
         );
         $defaultOptionsValues = OptionRepository::get('default', $defaultOptionskeys);
+        
+        foreach($defaultOptionskeys as $key){
+            if(!isset($defaultOptionsValues[$key])){
+                $defaultOptionsValues[$key] = '';
+            }
+        }
         
         $defaultOptionsValuesKeys = array_keys($defaultOptionsValues);
         foreach ($defaultOptionsValuesKeys as &$optValue) {

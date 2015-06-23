@@ -8,20 +8,20 @@ Object name: **centreon-configuration:Trap**
 
 Available parameters are the following:
 
-==================  ===========================
-Parameter           Description
-==================  ===========================
-*traps_name**       Trap name
+==================    ===========================
+Parameter             Description
+==================    ===========================
+*--traps-name**       Trap name
 
-**traps_oid**       OID
+**--traps-oid**       OID
 
-**manufacturer_id** Identifiant of manufacturer
+**--manufacturer-id** Slug name of manufacturer
 
-**traps_args**      Output message
+**--traps-args**      Output message
 
-traps_status        Default status
+--traps-status        Default status
 
-================== =============================
+==================    =============================
 
 List
 ----
@@ -59,7 +59,7 @@ Show
 
 In order to show a trap, use **show** action::
 
-  ./centreonConsole centreon-configuration:Trap:show object="traps[ccmCLIRunningConfigChanged]"
+  ./centreonConsole centreon-configuration:Trap:show --traps "ccmCLIRunningConfigChanged"
   id: 4
   name: ccmCLIRunningConfigChanged
   traps oid: .1.3.6.1.4.1.9.9.43.2.0.2
@@ -88,7 +88,7 @@ Create
 
 In order to create a trap, use **create** action::
 
-  ./centreonConsole centreon-configuration:trap:create params="traps_name[linkDown];traps_oid[.1.3.6.1.6.3.1.1.5.3];manufacturer_id[1];traps_args[Link down on interface $2. State: $4.];traps_status[3]"
+  ./centreonConsole centreon-configuration:trap:create --traps-name "linkDown" --traps-oid '.1.3.6.1.6.3.1.1.5.3' --manufacturer-id 'dell' --traps-args 'Link down on interface $2. State: $4.' --traps-status "3"
   Object successfully created
 
 Update
@@ -96,7 +96,7 @@ Update
 
 In order to update a trap, use **update** action::
 
-  ./centreonConsole centreon-configuration:trap:update object="traps[linkDown]":params="traps_name[linkDown2];traps_oid[.1.3.6];manufacturer_id[1];traps_args[Link down on interface $2. State: $4.];traps_status[3]"
+  ./centreonConsole centreon-configuration:trap:update --traps "linkDown" --traps-name 'linkDown2' --traps-oid '.1.3.6' --manufacturer-id 'dell' --traps-args 'Link down on interface $2. State: $4.' --traps-status "3"
   Object successfully updated
 
 Delete
@@ -104,7 +104,7 @@ Delete
 
 In order to delete a trap, use **delete** action::
 
-  ./centreonConsole centreon-configuration:Trap:delete object="traps[linkDown]"
+  ./centreonConsole centreon-configuration:Trap:delete --traps "linkDown"
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -112,6 +112,6 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a trap, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:Trap:duplicate object="traps[linkDown]"
+  ./centreonConsole centreon-configuration:Trap:duplicate --traps 'linkDown'
   Object successfully duplicated
 

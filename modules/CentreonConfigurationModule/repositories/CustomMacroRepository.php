@@ -78,7 +78,7 @@ class CustomMacroRepository
      * @param type $objectId
      * @param type $submittedValues
      */
-    public static function saveHostCustomMacro($objectId, $submittedValues, $deleteFirst = true)
+    public static function saveHostCustomMacro($sTypeObject, $objectId, $submittedValues, $deleteFirst = true)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
 
@@ -89,10 +89,9 @@ class CustomMacroRepository
             $stmtDelete->execute();
         } else {
             foreach ($submittedValues as $customMacroName => $customMacro) {
-                self::validate('host', $customMacroName, $objectId);
+                self::validate($sTypeObject, $customMacroName, $objectId);
             }
         }
-        
         
         $insertRequest = "INSERT INTO cfg_customvariables_hosts(host_macro_name, host_macro_value, is_password, host_host_id)"
             . " VALUES(:macro_name, :macro_value, :is_password, :host)";
@@ -101,7 +100,7 @@ class CustomMacroRepository
         foreach ($submittedValues as $customMacroName => $customMacro) {            
             $stmtInsert->bindValue(':macro_name', '$_HOST' . $customMacroName . '$', \PDO::PARAM_STR);
             $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-            $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
+            $stmtInsert->bindParam(':is_password', $customMacro['is_password'], \PDO::PARAM_INT);
             $stmtInsert->bindParam(':host', $objectId, \PDO::PARAM_INT);
             $stmtInsert->execute();
         }
@@ -127,9 +126,11 @@ class CustomMacroRepository
     /**
      * 
      * @param type $objectId
+     * @param type $iHostId
      * @param type $submittedValues
+     * @param type $deleteFirst
      */
-    public static function saveServiceCustomMacro($objectId, $submittedValues, $deleteFirst = true)
+    public static function saveServiceCustomMacro($sTypeObject, $objectId, $submittedValues, $deleteFirst = true, $iHostId = null)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
         
@@ -140,7 +141,7 @@ class CustomMacroRepository
             $stmtDelete->execute();
         } else {
             foreach ($submittedValues as $customMacroName => $customMacro) {
-                self::validate('service', $customMacroName, $objectId);
+                self::validate($sTypeObject, $customMacroName, $objectId, $iHostId);
             }
         }
         $insertRequest = "INSERT INTO cfg_customvariables_services(svc_macro_name, svc_macro_value, is_password, svc_svc_id)"
@@ -150,7 +151,7 @@ class CustomMacroRepository
         foreach ($submittedValues as $customMacroName => $customMacro) {
             $stmtInsert->bindValue(':macro_name', '$_SERVICE' . $customMacroName . '$', \PDO::PARAM_STR);
             $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-            $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
+            $stmtInsert->bindParam(':is_password', $customMacro['is_password'], \PDO::PARAM_INT);
             $stmtInsert->bindParam(':svc', $objectId, \PDO::PARAM_INT);
             $stmtInsert->execute();
         }
@@ -212,27 +213,34 @@ class CustomMacroRepository
      */
     public static function updateHostCustomMacro($objectId, $macro, $params){
 
-        $arrayUpdatable = array('value' => array('field' => 'host_macro_value' , 'type' => \PDO::PARAM_STR)
-                                ,'hidden' => array('field' => 'is_password' , 'type' => \PDO::PARAM_INT)
-                                ,'name' => array('field' => 'host_macro_name' , 'type' => \PDO::PARAM_STR));
-
         $setPart = "";
         $paramArray = array();
-        foreach ($params as $index=>$param1){
-            if (array_key_exists($index,$arrayUpdatable)) {
-                if (!empty($paramArray)) {
-                    $setPart = $setPart.' , ';
-                }
-                if (isset($arrayUpdatable[$index]['field']) && $arrayUpdatable[$index]['field'] == 'host_macro_name') {
-                    $macroName = '$_HOST'.$param1.'$';
-                    $param1 = $macroName;
-                }
-                $setPart .= $arrayUpdatable[$index]['field'].' = :'.$arrayUpdatable[$index]['field'].' ';
-                $paramArray = array_merge($paramArray,array(':'.$arrayUpdatable[$index]['field'] => 
-                                    array('param' => $param1 , 'type' => $arrayUpdatable[$index]['type'])
-                                ));
+
+        
+        if(isset($params['host_macro_value'])){
+            if (!empty($paramArray)) {
+                $setPart = $setPart.' , ';
             }
+            $setPart .= ' host_macro_value = :host_macro_value ';
+            $paramArray[':host_macro_value'] = array('param' => $params['host_macro_value'] , 'type' => \PDO::PARAM_STR);
         }
+        
+        if(isset($params['host_macro_name'])){
+            if (!empty($paramArray)) {
+                $setPart = $setPart.' , ';
+            }
+            $setPart .= ' host_macro_name = :host_macro_name ';
+            $paramArray[':host_macro_name'] = array('param' => $params['host_macro_name'] , 'type' => \PDO::PARAM_STR);
+        }
+        
+        if(isset($params['is_password'])){
+            if (!empty($paramArray)) {
+                $setPart = $setPart.' , ';
+            }
+            $setPart .= ' is_password = :is_password ';
+            $paramArray[':is_password'] = array('param' => $params['is_password'] , 'type' => \PDO::PARAM_INT);
+        }
+
         
         if(!empty($paramArray)){
             $setPart = ' SET '.$setPart;
@@ -274,30 +282,32 @@ class CustomMacroRepository
      */
     public static function updateServiceCustomMacro($objectId, $macro, $params)
     {
-       $arrayUpdatable = array('value' => array('field' => 'svc_macro_value' , 'type' => \PDO::PARAM_STR)
-                                ,'hidden' => array('field' => 'is_password' , 'type' => \PDO::PARAM_INT)
-                                ,'name' => array('field' => 'svc_macro_name' , 'type' => \PDO::PARAM_STR));
-
         $setPart = "";
         $paramArray = array();
-        foreach ($params as $index=>$param1){
-            if(array_key_exists($index, $arrayUpdatable)){
-                if(!empty($paramArray)){
-                    $setPart = $setPart.' , ';
-                }
-                if(isset($arrayUpdatable[$index]['field']) && $arrayUpdatable[$index]['field'] == 'svc_macro_name'){
-                    $macroName = '$_SERVICE'.$param1.'$';
-                    $param1 = $macroName;
-                }
-                
-                
-                $setPart .= $arrayUpdatable[$index]['field'].' = :'.$arrayUpdatable[$index]['field'].' ';
-                $paramArray = array_merge($paramArray,array(':'.$arrayUpdatable[$index]['field'] => 
-                                    array('param' => $param1 , 'type' => $arrayUpdatable[$index]['type'])
-                                ));
+        if(isset($params['svc_macro_value'])){
+            if (!empty($paramArray)) {
+                $setPart = $setPart.' , ';
             }
+            $setPart .= ' svc_macro_value = :svc_macro_value ';
+            $paramArray[':svc_macro_value'] = array('param' => $params['svc_macro_value'] , 'type' => \PDO::PARAM_STR);
         }
         
+        if(isset($params['svc_macro_name'])){
+            if (!empty($paramArray)) {
+                $setPart = $setPart.' , ';
+            }
+            $setPart .= ' svc_macro_name = :svc_macro_name ';
+            $paramArray[':svc_macro_name'] = array('param' => $params['svc_macro_name'] , 'type' => \PDO::PARAM_STR);
+        }
+        
+        if(isset($params['is_password'])){
+            if (!empty($paramArray)) {
+                $setPart = $setPart.' , ';
+            }
+            $setPart .= ' is_password = :is_password ';
+            $paramArray[':is_password'] = array('param' => $params['is_password'] , 'type' => \PDO::PARAM_INT);
+        }
+
         if(!empty($paramArray)){
             $setPart = ' SET '.$setPart;
         }
@@ -336,7 +346,7 @@ class CustomMacroRepository
      * @param type $iIdObject
      * @return type
      */
-    public static function validate($sType, $sNameMacro, $iIdObject)
+    public static function validate($sType, $sNameMacro, $iIdObject, $iHostId = null)
     {
         $tables = array();
         $conditions = array();
@@ -349,11 +359,11 @@ class CustomMacroRepository
         
         $db = Di::getDefault()->get('db_centreon');
         
-        if (!in_array($sType, array('host', 'service'))) {
+        if (!in_array($sType, array('host', 'hosttemplate', 'service', 'servicetemplate'))) {
             return ;
         }
         
-        if ($sType == 'host') {
+        if ($sType == 'host' || $sType == 'hosttemplate') {
             $sElement = 'host_macro_id';
             $query = 'SELECT host_macro_id FROM cfg_customvariables_hosts WHERE host_macro_name = :host_macro_name'
                     . ' AND host_host_id = :host_host_id';
@@ -362,16 +372,26 @@ class CustomMacroRepository
             $stmt->bindParam(':host_macro_name', $macroName, \PDO::PARAM_STR);
             $stmt->bindParam(':host_host_id', $iIdObject, \PDO::PARAM_INT);
 
-        } else {
+        } elseif ($sType == 'servicetemplate') {
+       
             $sElement = 'svc_macro_id';
             $query = 'SELECT svc_macro_id FROM cfg_customvariables_services WHERE svc_macro_name = :svc_macro_name'
                     . ' AND svc_svc_id = :svc_svc_id';
-            
+  
             $stmt = $db->prepare($query);
             $macroName = '$_SERVICE'.$sNameMacro.'$';
             $stmt->bindParam(':svc_macro_name', $macroName, \PDO::PARAM_STR);
-            $stmt->bindParam(':svc_svc_id', $iIdObject, \PDO::PARAM_INT);
-             
+            $stmt->bindParam(':svc_svc_id', $iIdObject, \PDO::PARAM_INT); 
+        } else {
+            $sElement = 'svc_macro_id';
+            $query = 'SELECT svc_macro_id FROM cfg_customvariables_services join cfg_hosts_services_relations on service_service_id = svc_svc_id'
+                    . ' WHERE svc_macro_name = :svc_macro_name'
+                    . ' AND svc_svc_id = :svc_svc_id ';
+
+            $stmt = $db->prepare($query);
+            $macroName = '$_SERVICE'.$sNameMacro.'$';
+            $stmt->bindParam(':svc_macro_name', $macroName, \PDO::PARAM_STR);
+            $stmt->bindParam(':svc_svc_id', $iIdObject, \PDO::PARAM_INT); 
         }
         
         $stmt->execute();
@@ -383,9 +403,7 @@ class CustomMacroRepository
             $bSuccess = false;
             $sMessage = $resultError;
             
-        }
-        //$reponse = array('success' => $bSuccess, 'error' => $sMessage);
-        
+        }        
         if ($bSuccess === false) {
             $errors[] = $sMessage;
         }

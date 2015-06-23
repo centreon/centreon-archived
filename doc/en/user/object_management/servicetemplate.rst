@@ -11,55 +11,47 @@ Available parameters are the following:
 ===================================== ================================
 Parameter                             Description
 ===================================== ================================
-**service_description**               Service template description
+**--description**                     Service template description
 
-service_alias                         Service template alias
+--alias                               Service template alias
 
-service_template_hosts                Linked host templates id
+--host-templates                      Linked host templates id
 
-command_command_id                    Check command id
+--command                             Slug name of Check command
 
-service_template_model_stm_id         Linked service template id
+--template-model-stm                  Slug name of Linked service template
 
-service_normal_check_interval         Normal check interval
+--normal-check-interval               Normal check interval
 
-service_retry_check_interval          Retry check interval
+--retry-check-interval                Retry check interval
 
-service_max_check_attempts            Max check attempts
+--max-check-attempts                  Max check attempts
 
-domain_id                             Domain id
+--domain                              Slug name of Domain
 
-environment_id                        Environment id
+--icon                                Service template icon
 
-service_icon                          Service template icon
+--timeperiod                          Slug name of Timeperiod
 
-timeperiod_tp_id                      Timeperiod id
+--volatile                            Service volatile
 
-service_type                          Service type
+--traps                               Slug name of Linked service traps
 
-service_is_volatile                   Service volatile
+--service-obsess-over-host            TODO
 
-service_traps                         Linked service traps id
+--check-freshness                     Freshness enable (0 or 1)
 
-service_active_checks_enabled         Active check enable (0 or 1)
+--freshness-threshold                 Freshness threshold
 
-service_passive_checks_enabled        Passive check enable (0 or 1)
+--flap-detection-enabled              Flap detection enable (0 or 1)
 
-service_obsess_over_host              TODO
+--low-flap-threshold                  Low flap detection threshold
 
-service_check_freshness               Freshness enable (0 or 1)
+--high-flap-threshold                 High flap detection threshold
 
-service_freshness_threshold           Freshness threshold
+--eventhandler-enabled                Event handler enable (0 or 1)
 
-service_flap_detection_enabled        Flap detection enable (0 or 1)
-
-service_low_flap_threshold            Low flap detection threshold
-
-service_high_flap_threshold           High flap detection threshold
-
-service_event_handler_enabled         Event handler enable (0 or 1)
-
-command_command_id2                   Event handler command
+--command2                            Event handler command
 ===================================== ================================
 
 List
@@ -88,7 +80,7 @@ Show
 
 In order to show a service, use **show** action::
 
-  ./centreonConsole centreon-configuration:serviceTemplate:show object=servicetemplate[ST1]
+  ./centreonConsole centreon-configuration:serviceTemplate:show --servicetemplate 'ST1'
   id: 2
   service_template_model_stm_id:
   command_command_id: 4
@@ -128,7 +120,7 @@ Create
 
 In order to create a service template, use **create** action::
 
-  ./centreonConsole centreon-configuration:serviceTemplate:create params="service_description[ST1]"
+  ./centreonConsole centreon-configuration:serviceTemplate:create --description "ST1"
   Object successfully created
 
 Update
@@ -136,7 +128,7 @@ Update
 
 In order to update a service template, use **update** action::
 
-  ./centreonConsole centreon-configuration:serviceTemplate:update object="servicetemplate[ST1]":params="service_alias[service template 1];service_max_check_attempts[4]"
+  ./centreonConsole centreon-configuration:serviceTemplate:update --service-template 'ST1' --alias 'service template 1' --max-check-attempts "4"
   Object successfully updated
 
 Delete
@@ -144,7 +136,7 @@ Delete
 
 In order to delete a service template, use **delete** action::
 
-  ./centreonConsole centreon-configuration:serviceTemplate:delete object="servicetemplate[ST1]"
+  ./centreonConsole centreon-configuration:serviceTemplate:delete --service-template "ST1"
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -152,7 +144,7 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a service template, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:serviceTemplate:duplicate object="servicetemplate[ST1]"
+  ./centreonConsole centreon-configuration:serviceTemplate:duplicate --service-template "ST1"
   Object successfully duplicated
 
 List tag
@@ -160,7 +152,7 @@ List tag
 
 In order to list tags of a service template, use **listTag** action::
 
-  ./centreonConsole centreon-configuration:serviceTemplate:listTag object="servicetemplate[ST1]"
+  ./centreonConsole centreon-configuration:serviceTemplate:listTag --service-template "ST1"
   tag1
 
 Add tag
@@ -168,7 +160,7 @@ Add tag
 
 In order to add a tag to a service template, use **addTag** action::
 
-  ./centreonConsole centreon-configuration:serviceTemplate:addTag object="servicetemplate[ST1]":tag="tag2
+  ./centreonConsole centreon-configuration:serviceTemplate:addTag --service-template "ST1" --tag "tag2
   The tag has been successfully added to the object
 
 Remove tag
@@ -176,6 +168,35 @@ Remove tag
 
 In order to remove a tag from a service, use **removeTag** action::
 
-  ./centreonConsole centreon-configuration:serviceTemplate:removeTag object="servicetemplate[ST1]":tag="tag2"
+  ./centreonConsole centreon-configuration:serviceTemplate:removeTag --service-template "ST1" --tag "tag2"
   The tag has been successfully removed from the object
 
+
+List Macro
+----------
+
+In order to list macros of a service, use **listMacro** action::
+
+  ./centreonConsole centreon-configuration:serviceTemplate:listMacro --service-template service1
+  tag1
+
+Add Macro
+---------
+
+In order to add a macro to a service, use **addMacro** action::
+
+  ./centreonConsole centreon-configuration:serviceTemplate:addMacro --service-template service1 --name macro1name --value macro1value --hidden 0
+
+Remove Macro
+------------
+
+In order to remove a macro from a service, use **removeMacro** action::
+
+  ./centreonConsole centreon-configuration:serviceTemplate:removeMacro --service-template service1 --macro "macro1name"
+
+Update Macro
+------------
+
+In order to update a macro from a service, use **updateMacro** action::
+
+  ./centreonConsole centreon-configuration:serviceTemplate:updateMacro --service service1 --macro 'macro1name' --value macro1newvalue --name macro1newname --hidden '1'

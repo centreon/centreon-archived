@@ -10,7 +10,7 @@ then
     
     # List of modules to reinstall
     # Order is important at the moment, see https://centreon.atlassian.net/browse/WEB-117
-    moduleList="centreon-main centreon-administration centreon-configuration centreon-realtime centreon-performance centreon-bam centreon-customview"
+    moduleList="centreon-main centreon-administration centreon-configuration centreon-realtime centreon-performance centreon-bam centreon-customview centreon-engine centreon-broker"
     
     for module in $moduleList
     do
