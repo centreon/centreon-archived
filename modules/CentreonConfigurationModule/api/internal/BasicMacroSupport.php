@@ -105,31 +105,15 @@ class BasicMacroSupport extends BasicCrudCommand
                     );
                     break;
                 case 'service' :
-                    $aId = \CentreonConfiguration\Repository\HostRepository::getListBySlugName($object['host']);
-                    if (count($aId) > 0) {
-                        $hostId = $aId[0]['id'];
-                    } else {
-                        throw new \Exception(static::OBJ_NOT_EXIST);
-                    }
-                    
-                    $aData = \CentreonConfiguration\Models\Relation\Host\Service::getMergedParameters(
-                            array('host_id'),
-                            array("service_id"),
-                            -1,
-                            0,
-                            null,
-                            "ASC",
-                            array(
-                                'host_name' => $object['host'],
-                                'service_id' => $object['service']
-                            )
-                    );
-            
+                    $aData = \CentreonConfiguration\Repository\ServiceRepository::getServiceBySlugs($object['service'], $object['host']);
+
                     if (count($aData) == 0) {
                         throw new \Exception(static::OBJ_NOT_EXIST);
                     } else {
-                        $objectId = $aData[0]['service_id'];
+                        $objectId = $aData['service_id'];
+                        $hostId   = $aData['host_id'];
                     }
+
                     if (isset($paramList['svc_macro_name']) && isset($paramList['svc_macro_value'])) {
                         $formatedParams = array(
                             $paramList['svc_macro_name'] => 
