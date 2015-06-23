@@ -280,5 +280,48 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->save();
+
+        // Creation of table cfg_escalations_hosts_relations
+        $cfg_escalations_hosts_relations = $this->table('cfg_escalations_hosts_relations', array('id' => false, 'primary_key' => array('ehr_id')));
+        $cfg_escalations_hosts_relations->addColumn('ehr_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('escalation_esc_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('host_host_id', 'integer', array('signed' => false, 'null' => true))
+                ->addForeignKey('escalation_esc_id', 'cfg_escalations', 'esc_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('host_host_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('escalation_esc_id'))
+                ->addIndex(array('host_host_id'))
+                ->save();
+
+        // Creation of table cfg_escalations_servicess_relations
+        $cfg_escalations_services_relations = $this->table('cfg_escalations_services_relations', array('id' => false, 'primary_key' => array('esr_id')));
+        $cfg_escalations_services_relations->addColumn('esr_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('escalation_esc_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('service_service_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('host_host_id', 'integer', array('signed' => false, 'null' => true))
+                ->addForeignKey('escalation_esc_id', 'cfg_escalations', 'esc_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('service_service_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('host_host_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('escalation_esc_id'))
+                ->addIndex(array('service_service_id'))
+                ->addIndex(array('host_host_id'))
+                ->save();
+
+        // Creation of table cfg_escalations
+        $cfg_escalations = $this->table('cfg_escalations', array('id' => false, 'primary_key' => array('esc_id')));
+        $cfg_escalations->addColumn('esc_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('esc_name', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('esc_alias', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('first_notification', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('last_notification', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('notification_interval', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('escalation_period', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('escalation_options1', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('escalation_options2', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('esc_comment', 'text', array('null' => true))
+                ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('escalation_period', 'cfg_timeperiods', 'tp_id', array('delete'=> 'SET_NULL', 'update'=> 'RESTRICT'))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('escalation_period'))
+                ->save();
     }
 }
