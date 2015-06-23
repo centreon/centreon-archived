@@ -571,4 +571,38 @@ class ServiceRepository extends Repository
 
         return $finalServiceList;
     }
+    
+    /**
+     * Returns service_id
+     *
+     * @param string $sSlugService
+     * @param string $sSlugHost
+     * @return array
+     */
+    public static function getServiceBySlugs($sSlugService, $sSlugHost)
+    {
+        $db = Di::getDefault()->get('db_centreon');
+
+        $sql = "SELECT s.service_id, h.host_id
+            FROM cfg_services s, cfg_hosts_services_relations hsr, cfg_hosts h
+            WHERE s.service_id = hsr.service_service_id 
+            AND hsr.host_host_id = h.host_id
+            AND service_register = '1' 
+            AND host_register = '1' 
+            AND h.host_slug = :host_slug
+            AND s.service_slug = :service_slug ";
+        
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':host_slug', $sSlugHost, \PDO::PARAM_STR);
+        $stmt->bindParam(':service_slug', $sSlugService, \PDO::PARAM_STR);
+        $stmt->execute();
+        
+        $arr = array();
+
+        if ($stmt->rowCount() == 1) {
+            $arr = $stmt->fetch(\PDO::FETCH_ASSOC);
+        }
+
+        return $arr;
+    }
 }

@@ -477,11 +477,6 @@ class HostRepository extends Repository
         return $templates;
 
     }
-    
-    
-    
-    
-    
 
     /**
      * Get template chain (id, text)
@@ -685,10 +680,8 @@ class HostRepository extends Repository
             if (!in_array($oHostServiceTemplate['service_description'], $aServicesDescription)) {
                 $sSlug = $oSlugify->slug($oHostServiceTemplate['service_alias']);
                 
-                $newService['service_slug'] = $sSlug;
-                
+                $newService['service_slug'] = $sSlug;            
                 $newService['service_description'] = $oHostServiceTemplate['service_alias'];
-                //$newService['service_alias'] = $oHostServiceTemplate['service_alias'];
                 $newService['service_template_model_stm_id'] = $oHostServiceTemplate['service_id'];
                 $newService['service_register'] = 1;
                 $newService['service_activate'] = 1;
