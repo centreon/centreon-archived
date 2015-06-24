@@ -294,69 +294,48 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('user_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('login','string', array('limit' => 200, 'null' => false))
                 ->addColumn('slug','string', array('limit' => 255, 'null' => false))
-                ->addColumn('password','string', array('limit' => 255, 'null' => true))
+                ->addColumn('password','string', array('limit' => 255, 'null' => false))
                 ->addColumn('is_admin','integer', array('null' => false, 'default' => 0))
-                ->addColumn('is_locked','integer', array('null' => false, 'default' => 0))          
-                ->addColumn('is_activated','integer', array('null' => false, 'default' => 1))          
+                ->addColumn('is_locked','integer', array('null' => false, 'default' => 0))       
+                ->addColumn('is_activated','integer', array('null' => false, 'default' => 1))
                 ->addColumn('is_password_old','boolean', array('null' => false, 'default' => 0))          
-                ->addColumn('language_id','integer', array('null' => false, 'default' => 1))          
+                ->addColumn('language_id','integer', array('null' => true))
+                ->addColumn('timezone_id','integer', array('null' => true))
+                ->addColumn('contact_id','integer', array('null' => true))
+                ->addColumn('createdat','timestamp', array('null' => false))
+                ->addColumn('updatedat','timestamp', array('null' => false))
+                ->addColumn('auth_type','string', array('limit' => 200, 'null' => false))
+                ->addColumn('firstname','string', array('limit' => 200, 'null' => true))
+                ->addColumn('lastname','string', array('limit' => 200, 'null' => true))
+                ->addColumn('autologin_key','string', array('limit' => 200, 'null' => true))
+                ->addIndex(array('login'), array('unique' => true))
+                ->addIndex(array('language_id'), array('unique' => false))
+                ->addIndex(array('timezone_id'), array('unique' => false))
+                ->addIndex(array('contact_id'), array('unique' => false))
+                ->addForeignKey('language_id', 'cfg_languages', 'language_id', array('delete'=> 'setnull', 'update'=> 'RESTRICT'))
+                ->addForeignKey('timezone_id', 'cfg_timezones', 'timezone_id', array('delete'=> 'setnull', 'update'=> 'RESTRICT'))
+                ->addForeignKey('contact_id', 'cfg_contacts', 'contact_id', array('delete'=> 'setnull', 'update'=> 'RESTRICT'))
+                ->save();
+
+
+        $cfg_users_timezones_relations = $this->table('cfg_users_timezones_relations', array('id' => false, 'primary_key' => array('user_id', 'timezone_id')));
+        $cfg_users_timezones_relations
+                ->addColumn('user_id','integer', array('signed' => false, 'null' => false))
+                ->addColumn('timezone_id','integer', array('null' => false))
+                ->addForeignKey('timezone_id', 'cfg_timezones', 'timezone_id', array('delete'=> 'CASCADE'))
+                ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE'))
                 ->save();
         
-        /*
-
-
-<table name="cfg_users" phpName="User" idMethod="native">
-        <column name="user_id" phpName="userId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
-        <column name="login" phpName="login" type="VARCHAR" size="200" required="true"/>
-        <column name="slug" phpName="Slug" type="VARCHAR" size="254" required="true"/>
-        <column name="password" phpName="password" type="VARCHAR" size="255" required="true"/>
-        <column name="is_admin" phpName="isAdmin" type="TINYINT" required="true" defaultValue="0"/>
-        <column name="is_locked" phpName="isLocked" type="TINYINT" required="true" defaultValue="0"/>
-        <column name="is_activated" phpName="isActivated" type="TINYINT" required="true" defaultValue="1"/>
-        <column name="is_password_old" phpName="isPasswordOld" type="TINYINT" required="true" defaultValue="0"/>
-        <column name="language_id" phpName="languageId" type="INTEGER" required="false"/>
-        <column name="timezone_id" phpName="timezoneId" type="INTEGER" required="false"/>
-        <column name="contact_id" phpName="contactId" type="INTEGER" required="false"/>
-        <column name="createdat" phpName="createdAt" type="TIMESTAMP" required="true"/>
-        <column name="updatedat" phpName="updatedAt" type="TIMESTAMP" required="true"/>
-        <column name="auth_type" phpName="authType" type="VARCHAR" size="200" required="true"/>
-        <column name="firstname" phpName="firstname" type="VARCHAR" size="200" required="false"/>
-        <column name="lastname" phpName="lastname" type="VARCHAR" size="200" required="false"/>
-        <column name="autologin_key" phpName="autologinKey" type="VARCHAR" size="200" required="false"/>
-        <unique name="user_login">
-            <unique-column name="login"/>
-        </unique>
-        <foreign-key foreignTable="cfg_languages" name="user_language_ibfk_1" onDelete="setnull" onUpdate="RESTRICT">
-            <reference local="language_id" foreign="language_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_timezones" name="user_timezone_ibfk_1" onDelete="setnull" onUpdate="RESTRICT">
-            <reference local="timezone_id" foreign="timezone_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_contacts" name="user_contact_ibfk_1" onDelete="setnull" onUpdate="RESTRICT">
-            <reference local="contact_id" foreign="contact_id"/>
-        </foreign-key>
-        <index name="user_language_ibfk_1">
-            <index-column name="language_id"/>
-        </index>
-        <index name="user_timezone_ibfk_1">
-            <index-column name="timezone_id"/>
-        </index>
-        <index name="user_contact_ibfk_1">
-            <index-column name="contact_id"/>
-        </index>
-        <vendor type="mysql">
-            <parameter name="Engine" value="InnoDB"/>
-        </vendor>
-    </table>
-
-         */
-        
-        
-        
-        
-        
-        
-        
+        $cfg_users_usergroups_relations = $this->table('cfg_users_usergroups_relations', array('id' => false, 'primary_key' => array('uugr_id')));
+        $cfg_users_usergroups_relations
+                ->addColumn('uugr_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
+                ->addColumn('user_id','integer', array('signed' => false, 'null' => true))
+                ->addColumn('usergroup_id','integer', array('null' => true))
+                ->addIndex(array('user_id'), array('unique' => false))
+                ->addIndex(array('usergroup_id'), array('unique' => false))
+                ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('usergroup_id', 'cfg_usergroups', 'usergroup_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
    
     }
 }
