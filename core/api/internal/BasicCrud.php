@@ -455,8 +455,6 @@ class BasicCrud extends AbstractCommand
     {
         $repository = $this->repository;
 
-       //$objectSlug = $repository::getIdFromUnicity($this->parseObjectParams($objectSlug));
-
         $aId = $repository::getListBySlugName($objectSlug[$this->objectName]);
         if (count($aId) > 0) {
             $objectSlug = $aId[0]['id'];

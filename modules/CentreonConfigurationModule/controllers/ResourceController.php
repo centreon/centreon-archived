@@ -62,4 +62,15 @@ class ResourceController extends FormController
     {
         parent::getRelations(static::$relationMap['resource_pollers']);
     }
+    
+    /**
+     * Create a new resource
+     *
+     * @method post
+     * @route /resource/add
+     */
+    public function createAction()
+    {
+        parent::createAction();
+    }
 }

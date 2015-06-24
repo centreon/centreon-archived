@@ -28,3 +28,4 @@ The list of object commands is available with the following commandline :
    businessactivity
    trap
    manufacturer
+   resource
