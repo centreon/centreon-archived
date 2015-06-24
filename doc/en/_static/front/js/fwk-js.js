@@ -26,7 +26,7 @@ $(document).ready(function() {
 
         // Code for adding/removing classes here
 
-        $('.CentreonForm .form-group').find('input, textarea').on('keyup blur focus', function(e){
+        $('.CentreonForm .form-group').find('input[type="text"], textarea').on('keyup blur focus', function(e){
 
             // Cache our selectors
             var $this = $(this),

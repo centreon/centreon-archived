@@ -1,3 +1,7 @@
+.CentreonForm .form-group {
+    margin-bottom: 18px;
+}
+
 /* input */
 
 label, input[type="text"],input[type="number"], textarea {
@@ -33,11 +37,11 @@ label, input[type="text"],input[type="number"], textarea {
     position: absolute;
     color: #0079ac;
     width: 60%;
-    height: 20px;
+    //height: 20px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    bottom: -3px;
+    bottom: 2px;
     left: 2em;
 }
 
@@ -47,7 +51,7 @@ label, input[type="text"],input[type="number"], textarea {
     font-size: 80%;
     color: #58585a;
     position: absolute;
-    bottom: 3px;
+    bottom: 2px;
     right: 1.5em;
     width: 30%;
     text-align: right;
@@ -122,7 +126,7 @@ label.floatLabel {
     box-shadow: 2px 1px 1px #d1d2d4;
 }
 .btnDefault {
-    color: #e7e7e8;
+    color: #818285;
     background-color: #e7e7e8;
 }
 .btnDefault:focus {
@@ -132,6 +136,110 @@ label.floatLabel {
      color: #e7e7e8;
      background-color: #a7a9ac;
      transition: all 0.3s ease;
+ }
+
+/* -- Radiobox -- */
+
+.CentreonForm .choiceGroup {
+    margin-top: 20px;
+    padding: 3px 18px;
+    border-radius: 3px;
+    box-shadow: 2px 1px 1px #d1d2d4;
+    border: 1px solid #d1d2d4;
+}
+
+.CentreonForm .choiceGroup label {
+    font-weight: normal;
+    font-size: 13px;
+}
+
+/*---- Checkbox & radio Fields --- */
+
+.CentreonForm .checkbox-styled input[type="radio"],
+.CentreonForm .radio-styled input[type="radio"],
+.CentreonForm .checkbox-styled input[type="checkbox"],
+.CentreonForm .radio-styled input[type="checkbox"]{
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+.CentreonForm .checkbox-styled span,
+.CentreonForm .radio-styled span {
+    position: relative;
+    padding-left: 20px;
+    display: inline-block !important;
+    cursor: pointer;
+    vertical-align: text-top;
+}
+
+.CentreonForm .checkbox-styled span:before,.radio-styled span:before {
+     content: "";
+     position: absolute;
+     left: 0;
+     z-index: 1;
+     width: 18px;
+     height: 18px;
+     border: 2px solid #a7a9ac;
+
+     -webkit-transition: all 0.2s ease-in-out;
+     -o-transition: all 0.2s ease-in-out;
+     transition: all 0.2s ease-in-out;
+ }
+.CentreonForm .checkbox-styled label,
+.CentreonForm .radio-styled label{
+    padding-left: 0;
+}
+.CentreonForm .checkbox-styled label.disabled span:before,
+.CentreonForm .radio-styled label.disabled span:before{
+     border-color: #e5e6e6;
+ }
+
+.CentreonForm .checkbox-styled input:checked ~ span:before {
+    -webkit-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    height: 10px;
+    border-color: #0aa89e;
+    border-top-style: none;
+    border-right-style: none;
+}
+
+/*---- Radio Fields --- */
+
+.CentreonForm .radio-styled input ~ span:before {
+
+     top: 0;
+     border-radius: 50%;
+     -webkit-transition: all 0.15s ease-in-out;
+     -o-transition: all 0.15s ease-in-out;
+     transition: all 0.15s ease-in-out;
+ }
+
+.CentreonForm .radio-styled input ~ span:after {
+     content: "";
+     position: absolute;
+     left: 10px;
+     top: 10px;
+     z-index: 1;
+     width: 0;
+     height: 0;
+     background-color: #0aa89e;
+     border-radius: 50%;
+     -webkit-transition: all 0.15s ease-in-out;
+     -o-transition: all 0.15s ease-in-out;
+     transition: all 0.15s ease-in-out;
+ }
+
+.CentreonForm .radio-styled input:checked ~ span:before {
+     border-color: #0aa89e;
+ }
+.CentreonForm .radio-styled input:checked ~ span::after {
+     left: 4px;
+     top: 4px;
+     width: 10px;
+     height: 10px;
  }
 
 /* -- Success button -- */
