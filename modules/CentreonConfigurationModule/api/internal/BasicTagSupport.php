@@ -49,8 +49,9 @@ class BasicTagSupport extends BasicMacroSupport
      */
     public function addTagAction($object, $tag)
     {
-        $iNbDeleted = 0;
+        $iNbAdded = 0;
         $sLibTag = 'tag';
+        $aError = array();
         
         try {
             $repository = $this->repository;
@@ -66,19 +67,48 @@ class BasicTagSupport extends BasicMacroSupport
             $aTags = explode(",", $tag);
             
             foreach ($aTags as $sTag) {
-                TagsRepository::add($sTag, $this->objectName, $object, 3);
-                $iNbDeleted++;
-                
+                $bOkyToAdd = true;
+                $iIdTag = TagsRepository::getTagId($sTag, 1, 0);
+                if (!empty($iIdTag)) {
+                    $bLink = TagsRepository::isLink($sName, $object, $iIdTag);
+                    if ($bLink) {
+                        $aError[] = $sTag;
+                        $bOkyToAdd = false;
+                    }
+                }
+                if ($bOkyToAdd) {
+                    TagsRepository::add($sTag, $this->objectName, $object, 1);
+                    $iNbAdded++;
+                }
             }
             
-            if ($iNbDeleted >1) 
+            if (count($aTags) >1) 
                 $sLibTag .= "s";
             
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display(
-                "The tag ".$sLibTag." been successfully added to the object",
-                true,
-                'green'
-            );
+            if ($iNbAdded > 0 && count($aError) == 0) {
+                \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+                    "The ".$sLibTag." been successfully added to the object",
+                    true,
+                    'green'
+                );
+            } elseif ($iNbAdded > 0 && count($aError) > 0) {
+                \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+                    "The ".$sLibTag." has been successfully added to the object",
+                    true,
+                    'green'
+                );
+                \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+                    "but some is not added '". implode("', '", $aError)."'",
+                    true,
+                    'red'
+                );
+            } else {
+                \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+                    "This ".$sLibTag." is already exists",
+                    true,
+                    'red'
+                );
+            }
         } catch(\Exception $ex) {
             \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
         }
