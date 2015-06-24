@@ -323,5 +323,468 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('escalation_period'))
                 ->save();
+
+        // Creation of table cfg_hosts_checkcmd_args_relations
+        $cfg_hosts_checkcmd_args_relations = $this->table('cfg_hosts_checkcmd_args_relations', array('id' => false, 'primary_key' => array('host_id')));
+        $cfg_hosts_checkcmd_args_relations->addColumn('host_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('arg_number', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('arg_value', 'string', array('limit' => 255, 'null' => false))
+                ->addForeignKey('host_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('host_id'))
+                ->save();
+
+        // Creation of table cfg_hosts_hostparents_relations
+        $cfg_hosts_hostparents_relations = $this->table('cfg_hosts_hostparents_relations', array('id' => false, 'primary_key' => array('hhr_id')));
+        $cfg_hosts_hostparents_relations->addColumn('hhr_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('host_parent_hp_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('host_host_id', 'integer', array('signed' => false, 'null' => true))
+                ->addForeignKey('host_parent_hp_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('host_host_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('host_parent_hp_id'))
+                ->addIndex(array('host_host_id'))
+                ->save();
+
+        // Creation of table cfg_hosts_images_relations
+        $cfg_hosts_images_relations = $this->table('cfg_hosts_images_relations', array('id' => false, 'primary_key' => array('host_id', 'binary_id')));
+        $cfg_hosts_images_relations->addColumn('host_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('binary_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('host_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('binary_id', 'cfg_binaries', 'binary_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('host_id'))
+                ->addIndex(array('binary_id'))
+                ->save();
+
+        // Creation of table cfg_hosts_services_relations
+        $cfg_hosts_services_relations = $this->table('cfg_hosts_services_relations', array('id' => false, 'primary_key' => array('hsr_id')));
+        $cfg_hosts_services_relations->addColumn('hsr_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('host_host_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('service_service_id', 'integer', array('signed' => false, 'null' => true))
+                ->addForeignKey('host_host_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('service_service_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('host_host_id'))
+                ->addIndex(array('service_service_id'))
+                ->addIndex(array('host_host_id', 'service_service_id'))
+                ->save();
+
+        // Creation of table cfg_hosts_templates_relations
+        $cfg_hosts_templates_relations = $this->table('cfg_hosts_templates_relations', array('id' => false, 'primary_key' => array('host_host_id', 'host_tpl_id')));
+        $cfg_hosts_templates_relations->addColumn('host_host_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('host_tpl_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('order', 'integer', array('signed' => false, 'null' => true))
+                ->addForeignKey('host_host_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('host_tpl_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('host_tpl_id'))
+                ->save();
+
+        // Creation of table cfg_hosts
+        $cfg_hosts = $this->table('cfg_hosts', array('id' => false, 'primary_key' => array('host_id')));
+        $cfg_hosts->addColumn('host_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('command_command_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('command_command_id_arg1', 'text', array('null' => true))
+                ->addColumn('timeperiod_tp_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('command_command_id2', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('command_command_id_arg2', 'text', array('null' => true))
+                ->addColumn('host_name', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('host_slug', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('host_alias', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('host_address', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('host_max_check_attempts', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('host_check_interval', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('host_retry_check_interval', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('host_active_checks_enabled', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('host_checks_enabled', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('initial_state', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('host_obsess_over_host', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('host_check_freshness', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('host_freshness_threshold', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('host_event_handler_enabled', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('host_low_flap_threshold', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('host_high_flap_threshold', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('host_flap_detection_enabled', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('flap_detection_options', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('host_snmp_community', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('host_snmp_version', 'string', array('limit' => 5, 'null' => true))
+                ->addColumn('host_location', 'integer', array('signed' => false, 'null' => true, 'default' => 0))
+                ->addColumn('host_comment', 'text', array('null' => true))
+                ->addColumn('host_register', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('host_activate', 'string', array('limit' => 1, 'null' => true, 'default' => '1'))
+                ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('environment_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('poller_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('timezone_id', 'integer', array('signed' => false, 'null' => true))
+                ->addForeignKey('command_command_id', 'cfg_commands', 'command_id', array('delete'=> 'SET_NULL', 'update'=> 'RESTRICT'))
+                ->addForeignKey('command_command_id2', 'cfg_commands', 'command_id', array('delete'=> 'SET_NULL', 'update'=> 'RESTRICT'))
+                ->addForeignKey('timeperiod_tp_id', 'cfg_timeperiods', 'tp_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('environment_id', 'cfg_environments', 'environment_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('poller_id', 'cfg_pollers', 'poller_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('timezone_id', 'cfg_timezones', 'timezone_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('command_command_id'))
+                ->addIndex(array('command_command_id2'))
+                ->addIndex(array('timeperiod_tp_id'))
+                ->addIndex(array('host_name', 'organization_id'))
+                ->addIndex(array('host_id', 'host_register'))
+                ->addIndex(array('host_alias'))
+                ->addIndex(array('host_register'))
+                ->save();
+
+        // Creation of table cfg_nodes
+        $cfg_nodes = $this->table('cfg_nodes', array('id' => false, 'primary_key' => array('node_id')));
+        $cfg_nodes->addColumn('node_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('name', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('ip_address', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('enable', 'integer', array('limit' => 1, 'signed' => false, 'null' => false, 'defaut' => 1))
+                ->addColumn('multiple_poller', 'integer', array('limit' => 1, 'signed' => false, 'null' => false, 'defaut' => 0))
+                ->addIndex(array('name'))
+                ->save();
+
+        // Creation of table cfg_notification_methods
+        $cfg_notification_methods = $this->table('cfg_notification_methods', array('id' => false, 'primary_key' => array('method_id')));
+        $cfg_notification_methods->addColumn('method_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('name', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('slug', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('description', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('interval', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('interval_unit', 'string', array('limit' => 1, 'null' => false))
+                ->addColumn('command_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('status', 'string', array('limit' => 32, 'null' => false))
+                ->addColumn('types', 'string', array('limit' => 32, 'null' => false))
+                ->addColumn('start', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('start_unit', 'string', array('limit' => 1, 'null' => false))
+                ->addColumn('end', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('end_unit', 'string', array('limit' => 1, 'null' => false))
+                ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('command_id', 'cfg_commands', 'command_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('name'))
+                ->addIndex(array('slug'))
+                ->save();
+
+        // Creation of table cfg_notification_rules_contacts_relations
+        $cfg_notification_rules_contacts_relations = $this->table('cfg_notification_rules_contacts_relations', array('id' => false, 'primary_key' => array('rule_id', 'contact_id')));
+        $cfg_notification_rules_contacts_relations->addColumn('rule_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('contact_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('rule_id', 'cfg_notification_rules', 'rule_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('contact_id', 'cfg_contacts', 'contact_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_notification_rules_hosts_relations
+        $cfg_notification_rules_hosts_relations = $this->table('cfg_notification_rules_hosts_relations', array('id' => false, 'primary_key' => array('rule_id', 'host_id')));
+        $cfg_notification_rules_hosts_relations->addColumn('rule_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('host_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('rule_id', 'cfg_notification_rules', 'rule_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('host_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_notification_rules_services_relations
+        $cfg_notification_rules_services_relations = $this->table('cfg_notification_rules_services_relations', array('id' => false, 'primary_key' => array('rule_id', 'service_id')));
+        $cfg_notification_rules_services_relations->addColumn('rule_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('service_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('rule_id', 'cfg_notification_rules', 'rule_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('service_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_notification_rules_tags_relations
+        $cfg_notification_rules_tags_relations = $this->table('cfg_notification_rules_tags_relations', array('id' => false, 'primary_key' => array('rule_id', 'tag_id')));
+        $cfg_notification_rules_tags_relations->addColumn('rule_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('tag_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('resource_type', 'integer', array('limit' => 1, 'signed' => false, 'null' => false))
+                ->addForeignKey('rule_id', 'cfg_notification_rules', 'rule_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('tag_id', 'cfg_tags', 'tag_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_notification_rules
+        $cfg_notification_rules = $this->table('cfg_notification_rules', array('id' => false, 'primary_key' => array('rule_id')));
+        $cfg_notification_rules->addColumn('rule_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('name', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('slug', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('description', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('method_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('owner_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('timeperiod_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('enabled', 'string', array('limit' => 1, 'null' => false, 'default' => 1))
+                ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('method_id', 'cfg_notification_methods', 'method_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
+                ->addForeignKey('owner_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
+                ->addForeignKey('timeperiod_id', 'cfg_timeperiods', 'timeperiod_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_pollers_commands_relations
+        $cfg_pollers_commmands_relations = $this->table('cfg_pollers_commands_relations', array('id' => false, 'primary_key' => array('poller_id', 'command_id')));
+        $cfg_pollers_commands_relations->addColumn('poller_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('command_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('command_order', 'integer', array('limit' => 3, 'signed' => false, 'null' => true))
+                ->addForeignKey('poller_id', 'cfg_pollers', 'poller_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('command_id', 'cfg_commands', 'command_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('poller_id'))
+                ->addIndex(array('command_id'))
+                ->save();
+
+        // Creation of table cfg_pollers
+        $cfg_pollers = $this->table('cfg_pollers', array('id' => false, 'primary_key' => array('poller_id')));
+        $cfg_pollers->addColumn('poller_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('node_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('name', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('slug', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('port', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('one_per_retention', 'integer', array('limit' => 1, 'signed' => false, 'null' => false, 'default' => 1))
+                ->addColumn('tmpl_name', 'string', array('limit' => 50, 'null' => false))
+                ->addColumn('enable', 'integer', array('limit' => 1, 'signed' => false, 'null' => false, 'default' => 1))
+                ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('node_id', 'cfg_nodes', 'node_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_resources_instances_relations
+        $cfg_resources_instances_relations = $this->table('cfg_resources_instances_relations', array('id' => false, 'primary_key' => array('resource_id', 'instance_id')));
+        $cfg_resources_instances_relations->addColumn('resource_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('instance_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('resource_id', 'cfg_resources', 'resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('instance_id', 'cfg_pollers', 'poller_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('resource_id'))
+                ->addIndex(array('instance_id'))
+                ->save();
+
+        // Creation of table cfg_resources
+        $cfg_resources = $this->table('cfg_resources', array('id' => false, 'primary_key' => array('resource_id')));
+        $cfg_resources->addColumn('resource_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('resource_name', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('resource_slug', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('resource_line', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('resource_comment', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('resource_activate', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_services_checkcmd_args_relations
+        $cfg_services_checkcmd_args_relations = $this->table('cfg_services_checkcmd_args_relations', array('id' => false, 'primary_key' => array('service_id')));
+        $cfg_services_checkcmd_args_relations->addColumn('service_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('arg_number', 'integer', array('limit' => 3, 'signed' => false, 'null' => false))
+                ->addColumn('arg_value', 'string', array('limit' => 255, 'null' => true))
+                ->addForeignKey('service_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('service_id'))
+                ->save();
+
+        // Creation of table cfg_services_hosts_templates_relations
+        $cfg_services_hosts_templates_relations = $this->table('cfg_services_hosts_templates_relations', array('id' => false, 'primary_key' => array('service_id', 'host_tpl_id')));
+        $cfg_services_hosts_templates_relations->addColumn('service_id', 'integer', array('signed' => false, 'null' => false, 'default' => 0))
+                ->addColumn('host_tpl_id', 'integer', array('signed' => false, 'null' => false, 'default' => 0))
+                ->addForeignKey('service_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('host_tpl_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('service_id'))
+                ->addIndex(array('host_tpl_id'))
+                ->save();
+
+        // Creation of table cfg_services_images_relations
+        $cfg_services_images_relations = $this->table('cfg_services_images_relations', array('id' => false, 'primary_key' => array('service_id', 'binary_id')));
+        $cfg_services_images_relations->addColumn('service_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('binary_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('service_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('binary_id', 'cfg_binaries', 'binary_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('service_id'))
+                ->addIndex(array('binary_id'))
+                ->save();
+
+        // Creation of table cfg_services
+        $cfg_services = $this->table('cfg_services', array('id' => false, 'primary_key' => array('service_id')));
+        $cfg_services->addColumn('service_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('service_template_model_stm_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('command_command_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('timeperiod_tp_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('command_command_id2', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('service_description', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('service_slug', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('service_alias', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('service_is_volatile', 'string', array('limit' => 1, 'null' => true, 'default' => 2))
+                ->addColumn('service_max_check_attempts', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('service_normal_check_interval', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('service_retry_check_interval', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('service_active_checks_enabled', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('initial_state', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('service_check_freshness', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('service_freshness_threshold', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('service_event_handler_enabled', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('service_low_flap_threshold', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('service_high_flap_threshold', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('service_flap_detection_enabled', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('service_comment', 'text', array('null' => true))
+                ->addColumn('command_command_id_arg', 'text', array('null' => true))
+                ->addColumn('command_command_id_arg2', 'text', array('null' => true))
+                ->addColumn('service_locked', 'boolean', array('limit' => 1, 'null' => true, 'default' => 0))
+                ->addColumn('service_register', 'string', array('limit' => 1, 'null' => true, 'default' => 0))
+                ->addColumn('service_activate', 'string', array('limit' => 1, 'null' => true, 'default' => '1'))
+                ->addColumn('service_type', 'string', array('limit' => 1, 'null' => false, 'default' => '1'))
+                ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('environment_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('domain_id', 'integer', array('signed' => false, 'null' => true))
+                ->addForeignKey('command_command_id', 'cfg_commands', 'command_id', array('delete'=> 'SET_NULL', 'update'=> 'RESTRICT'))
+                ->addForeignKey('command_command_id2', 'cfg_commands', 'command_id', array('delete'=> 'SET_NULL', 'update'=> 'RESTRICT'))
+                ->addForeignKey('timeperiod_tp_id', 'cfg_timeperiods', 'tp_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('environment_id', 'cfg_environments', 'environment_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('domain_id', 'cfg_domains', 'domain_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('service_template_model_stm_id', 'cfg_services', 'service_id', array('delete'=> 'SET_NULL', 'update'=> 'RESTRICT'))
+                ->addIndex(array('service_template_model_stm_id'))
+                ->addIndex(array('command_command_id'))
+                ->addIndex(array('command_command_id2'))
+                ->addIndex(array('timeperiod_tp_id'))
+                ->addIndex(array('service_id', 'organization_id'))
+                ->addIndex(array('service_id', 'service_register'))
+                ->addIndex(array('service_description'))
+                ->save();
+
+        // Creation of table cfg_tags_hosts
+        $cfg_tags_hosts = $this->table('cfg_tags_hosts', array('id' => false, 'primary_key' => array('tag_id', 'resource_id')));
+        $cfg_tags_hosts->addColumn('tag_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('resource_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('template_id', 'integer', array('signed' => false, 'null' => true))
+                ->addForeignKey('tag_id', 'cfg_tags', 'tag_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_tags_services
+        $cfg_tags_services = $this->table('cfg_tags_services', array('id' => false, 'primary_key' => array('tag_id', 'resource_id')));
+        $cfg_tags_services->addColumn('tag_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('resource_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('template_id', 'integer', array('signed' => false, 'null' => true))
+                ->addForeignKey('tag_id', 'cfg_tags', 'tag_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_timeperiods_exceptions
+        $cfg_timeperiods_exceptions = $this->table('cfg_timeperiods_exceptions', array('id' => false, 'primary_key' => array('exception_id')));
+        $cfg_timeperiods_exceptions->addColumn('exception_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('timeperiod_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('days', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('timerange', 'string', array('limit' => 255, 'null' => false))
+                ->addForeignKey('timeperiod_id', 'cfg_timeperiods', 'tp_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('timeperiod_id'))
+                ->save();
+
+        // Creation of table cfg_timeperiods_exclude_relations
+        $cfg_timeperiods_exclude_relations = $this->table('cfg_timeperiods_exclude_relations', array('id' => false, 'primary_key' => array('exclude_id')));
+        $cfg_timeperiods_exclude_relations->addColumn('exclude_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('timeperiod_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('timeperiod_exclude_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('timeperiod_id', 'cfg_timeperiods', 'tp_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('timeperiod_exclude_id', 'cfg_timeperiods', 'tp_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_timeperiods_include_relations
+        $cfg_timeperiods_include_relations = $this->table('cfg_timeperiods_include_relations', array('id' => false, 'primary_key' => array('include_id')));
+        $cfg_timeperiods_include_relations->addColumn('include_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('timeperiod_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('timeperiod_include_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('timeperiod_id', 'cfg_timeperiods', 'tp_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('timeperiod_include_id', 'cfg_timeperiods', 'tp_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_timeperiods
+        $cfg_timeperiods = $this->table('cfg_timeperiods', array('id' => false, 'primary_key' => array('tp_id')));
+        $cfg_timeperiods->addColumn('tp_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('tp_name', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('tp_slug', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('tp_alias', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('tp_sunday', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('tp_monnday', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('tp_tuesday', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('tp_wednesday', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('tp_thursday', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('tp_friday', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('tp_saturday', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_traps_matching_properties
+        $cfg_traps_matching_properties = $this->table('cfg_traps_matching_properties', array('id' => false, 'primary_key' => array('tmo_id')));
+        $cfg_traps_matching_properties->addColumn('tmo_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('trap_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('tmo_order', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('tmo_regexp', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('tmo_string', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('tmo_status', 'integer', array('signed' => false, 'null' => true))
+                ->addForeignKey('trap_id', 'cfg_traps', 'traps_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('trap_id'))
+                ->save();
+
+        // Creation of table cfg_traps_preexec
+        $cfg_traps_preexec = $this->table('cfg_traps_preexec', array('id' => false, 'primary_key' => array('trap_id')));
+        $cfg_traps_preexec->addColumn('trap_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('trap_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('tpe_order', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('tpe_string', 'string', array('limit' => 512, 'null' => true))
+                ->addForeignKey('trap_id', 'cfg_traps', 'traps_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('trap_id'))
+                ->save();
+
+        // Creation of table cfg_traps_services_relations
+        $cfg_traps_services_relations = $this->table('cfg_traps_services_relations', array('id' => false, 'primary_key' => array('tsr_id')));
+        $cfg_traps_services_relations->addColumn('tsr_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('traps_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('service_id', 'integer', array('signed' => false, 'null' => true))
+                ->addForeignKey('traps_id', 'cfg_traps', 'traps_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('service_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('traps_id'))
+                ->addIndex(array('service_id'))
+                ->save();
+
+        // Creation of table cfg_traps_vendors
+        $cfg_traps_vendors = $this->table('cfg_traps_vendors', array('id' => false, 'primary_key' => array('id')));
+        $cfg_traps_vendors->addColumn('id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('name', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('slug', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('alias', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('description', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+
+        // Creation of table cfg_traps
+        $cfg_traps = $this->table('cfg_traps', array('id' => false, 'primary_key' => array('id')));
+        $cfg_traps->addColumn('traps_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('traps_name', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('traps_slug', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('traps_oid', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('traps_args', 'text', array('limit' => 255, 'null' => true))
+                ->addColumn('traps_status', 'string', array('limit' => 2, 'null' => true))
+                ->addColumn('manufacturer_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('traps_reschedule_svc_enable', 'string', array('limit' => 1, 'null' => true, 'default' => 0))
+                ->addColumn('traps_execution_command', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('traps_execution_command_enable', 'string', array('limit' => 1, 'null' => true, 'default' => 0))
+                ->addColumn('traps_submit_result_enable', 'string', array('limit' => 1, 'null' => true, 'default' => 0))
+                ->addColumn('traps_advanced_treatment', 'string', array('limit' => 1, 'null' => true, 'default' => 0))
+                ->addColumn('traps_advanced_treatment_default', 'string', array('limit' => 1, 'null' => true, 'default' => 0))
+                ->addColumn('traps_timeout', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('traps_exec_interval', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('traps_log', 'string', array('limit' => 1, 'null' => true, 'default' => 0))
+                ->addColumn('traps_routing_mode', 'string', array('limit' => 1, 'null' => true, 'default' => 0))
+                ->addColumn('traps_routing_value', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('traps_exec_method', 'string', array('limit' => 1, 'null' => true, 'default' => 0))
+                ->addColumn('traps_comments', 'text', array('limit' => 255, 'null' => true))
+                ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('manufacturer_id', 'cfg_traps_vendors', 'id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('traps_id'))
+                ->addIndex(array('manufacturer_id'))
+                ->save();
+
+        // Creation of table cfg_virtual_metrics
+        $cfg_virtual_metrics = $this->table('cfg_virtual_metrics', array('id' => false, 'primary_key' => array('id')));
+        $cfg_virtual_metrics->addColumn('vmetric_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+                ->addColumn('index_id', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('vmetric_name', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('def_type', 'string', array('limit' => 1, 'null' => true, 'default' => 0))
+                ->addColumn('rpn_function', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('warn', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('crit', 'integer', array('signed' => false, 'null' => true))
+                ->addColumn('unit_name', 'string', array('limit' => 32, 'null' => true))
+                ->addColumn('hidden', 'string', array('limit' => 1, 'null' => true, 'default' => 0))
+                ->addColumn('comment', 'text', array('limit' => 255, 'null' => true))
+                ->addColumn('vmetric_activate', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('ck_state', 'string', array('limit' => 1, 'null' => true))
+                ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
     }
 }
