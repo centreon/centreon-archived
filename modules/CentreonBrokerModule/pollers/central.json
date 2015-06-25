@@ -11,15 +11,27 @@
                 "normal": [
                   {
                     "general": {
-                      "name": "central-module",
-                      "command_file": "%global_broker_data_directory%/central-module.cmd"
+                      "name": "poller-module",
+                      "broker_id": "%broker_id%",
+                      "broker_name": "%broker_name%",
+                      "poller_id": "%poller_id%",
+                      "poller_name": "%poller_name%",
+                      "command_file": "%global_broker_data_directory%/poller-module.cmd"
                     },
+                    "input": [
+                      {
+                        "type": "tcp",
+                        "name": "poller-transfer-input",
+                        "host": "localhost",
+                        "port": "5669"
+                      }
+                    ],
                     "output": [
                       {
-                        "type" :"ipv4",
-                        "name" : "central-output",
-                        "port" : "5668",
+                        "type" :"tcp",
+                        "name" : "poller-output",
                         "host" : "localhost",
+                        "port" : "5668",
                         "protocol": "bbdo",
                         "filters": [
                           {
@@ -28,70 +40,60 @@
                         ]
                       },
                       {
-                        "buffering_timeout": "10",
-                        "read_timeout": "10",
-                        "retry_interval": "60",
                         "type": "dumper",
-                        "tagname": "extcommand-engine-central-module-%poller_id%",
+                        "tagname": "extcommands-broker-$BROKERID$",
+                        "path": "%global_broker_data_directory%/poller-module.cmd",
+                        "name": "poller-module-extcommands-broker"
+                      },
+                      {
+                        "type": "dumper",
+                        "tagname": "extcommands-engine-$BROKERID$",
                         "path": "%engine_var_lib_dir%/rw/centengine.cmd",
-                        "name": "extcommand-engine-central-module-%poller_name%"
+                        "name": "poller-module-extcommands-engine"
                       },
                       {
-                        "buffering_timeout": "10",
-                        "read_timeout": "10",
-                        "retry_interval": "60",
                         "type": "dumper",
-                        "tagname": "extcommand-broker-central-module-%poller_id%",
-                        "path": "%global_broker_data_directory%/central-module.cmd",
-                        "name": "extcommand-engine-central-module-%poller_name%"
-                      },
-                      {
-                        "buffering_timeout": "10",
-                        "read_timeout": "10",
-                        "retry_interval": "60",
-                        "type": "dumper",
-                        "tagname": "cfg-engine-central-module-%poller_id%",
-                        "path": "%engine_conf_dir%/$FILENAME$",
-                        "name": "cfg-engine-%poller_name%"
-                      },
-                      {
-                        "buffering_timeout": "10",
-                        "read_timeout": "10",
-                        "retry_interval": "60",
-                        "type": "dumper",
-                        "tagname": "cfg-broker-central-module-%poller_id%",
+                        "tagname": "cfg-broker-$BROKERID$",
                         "path": "%global_broker_etc_directory%/$FILENAME$",
-                        "name": "cfg-broker-%poller_name%"
-                      }
-                    ],
-                    "input": [
+                        "name": "poller-module-cfg-broker"
+                      },
                       {
-                        "type": "tcp",
-                        "name": "central-transfert-input",
-                        "host": "localhost",
-                        "port": "5669"
+                        "type": "dumper",
+                        "tagname": "cfg-engine-$BROKERID$",
+                        "path": "%engine_conf_dir%/$FILENAME$",
+                        "name": "poller-module-cfg-engine"
                       }
                     ],
                     "logger": [
                       {
                         "type": "file",
-                        "name": "%global_broker_logs_directory%/central-module.log"
+                        "name": "%global_broker_logs_directory%/poller-module.log",
+                        "config": "yes",
+                        "info": "yes",
+                        "error": "yes",
+                        "debug": "no",
+                        "level": "low"
                       }
                     ],
                     "stats": [
                       {
                         "type": "stats",
-                        "name": "stats-central-broker",
-                        "fifo": "/var/lib/centreon-broker/stats-central-module.fifo"
+                        "name": "poller-module-stats",
+                        "fifo": "%global_broker_data_directory%/poller-module.stats"
                       }
                     ]
                   },
                   {
                     "general": {
                       "name": "central-broker",
+                      "broker_id": "%broker_id%",
+                      "broker_name": "%broker_name%",
+                      "poller_id": "%poller_id%",
+                      "poller_name": "%poller_name%",
                       "command_file": "%global_broker_data_directory%/central-broker.cmd",
                       "%callback%": [
-                        "pollerCommandLine",
+                        "pollerCommandLineCentreonEngine",
+                        "pollerCommandLineCentreonBroker",
                         "pollerConfigCentreonEngine",
                         "pollerConfigCentreonBroker"
                       ]
@@ -106,22 +108,22 @@
                     "output": [
                       {
                         "type": "node_events",
-                        "name": "notification-ack-downtime",
+                        "name": "central-broker-nodeevents",
                         "cache": "yes"
                       },
                       {
                         "type": "sql",
-                        "name": "central-sql"
+                        "name": "central-broker-sql"
                       },
                       {
                         "type": "storage",
-                        "name": "central-storage"
+                        "name": "central-broker-storage"
                       },
                       {
-                        "type": "ipv4",
-                        "name": "central-rrd",
-                        "port": "5670",
+                        "type": "tcp",
+                        "name": "central-broker-rrd",
                         "host": "localhost",
+                        "port": "5670",
                         "protocol": "bbdo",
                         "tls": "no",
                         "negociation": "yes",
@@ -129,7 +131,7 @@
                       },
                       {
                         "type": "tcp",
-                        "name": "central-transfert-output",
+                        "name": "central-broker-transfer-output-poller-module",
                         "port": "5669",
                         "filters": [
                           {
@@ -138,7 +140,7 @@
                         ]
                       },
                       {
-                        "name": "correlation",
+                        "name": "central-broker-correlation",
                         "type": "correlation",
                         "file": "%global_broker_etc_directory%/correlation.xml"
                       }
@@ -152,8 +154,8 @@
                     "stats": [
                       {
                         "type": "stats",
-                        "name": "stats-central-broker",
-                        "fifo": "/var/lib/centreon-broker/stats-central-broker.fifo"
+                        "name": "central-broker-stats",
+                        "fifo": "%global_broker_data_directory%/central-broker.stats"
                       }
                     ]
                   },
@@ -163,8 +165,8 @@
                     },
                     "input": [
                       {
-                        "type": "ipv4",
-                        "name": "central-rrd",
+                        "type": "tcp",
+                        "name": "central-rrd-input",
                         "port": "5670",
                         "protocol": "bbdo",
                         "tls": "auto",
@@ -175,7 +177,7 @@
                     "output": [
                       {
                         "type": "rrd",
-                        "name": "storage-rrd"
+                        "name": "central-rrd-files"
                       }
                     ],
                     "logger": [
@@ -188,7 +190,7 @@
                       {
                         "type": "stats",
                         "name": "stats-central-rrd",
-                        "fifo": "/var/lib/centreon-broker/stats-central-rrd.fifo"
+                        "fifo": "%global_broker_data_directory%/central-rrd.stats"
                       }
                     ]
                   }

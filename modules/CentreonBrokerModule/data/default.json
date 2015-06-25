@@ -1,24 +1,20 @@
 {
   "general": {
     "module_directory": "%global_broker_modules_directory%",
-    "instance": "%poller_id%",
-    "instance_name": "%name%",
-    "event_queue_max_size": 50000,
+    "event_queue_max_size": 10000,
     "flush_logs": "no",
     "log_thread_id": "no",
     "log_timestamp": "yes",
     "cache_directory": "%global_broker_data_directory%"
   },
   "logger": {
-    "config": "no",
+    "config": "yes",
     "debug": "no",
     "error": "yes",
-    "info": "no",
-    "level": 2
+    "info": "yes",
+    "level": "low"
   },
   "output": {
-    "buffering_timeout": 10,
-    "read_timeout": 10,
     "retry_interval": 60,
     "type": {
       "file": {
@@ -49,6 +45,7 @@
         "length": 15552000
       },
       "sql": {
+        "buffering_timeout": 10,
         "db_type": "%global_db_type%",
         "db_host": "%global_db_host%",
         "db_port": "%global_db_port%",
@@ -86,8 +83,6 @@
     }
   },
   "input": {
-    "buffering_timeout": 10,
-    "read_timeout": 10,
     "retry_interval": 60,
     "type": {
       "file": {
@@ -114,6 +109,7 @@
         "check_replication": 0
       },
       "sql": {
+        "buffering_timeout": 10,
         "db_type": "%global_db_type%",
         "db_host": "%global_db_host%",
         "db_port": "%global_db_port%",
