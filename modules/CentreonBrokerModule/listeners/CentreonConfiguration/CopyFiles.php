@@ -61,9 +61,9 @@ class CopyFiles
         $output = array();
         exec("cp -Rf $tmpdir/broker/generate/{$event->getPollerId()}/* {$tmpdir}/broker/apply/{$event->getPollerId()}/ 2>&1", $output, $status);
         if ($status) {
-            throw new Exception('Error while copying Broker configuration files' . "\n" . implode("\n", $output));
+            $event->setOutput(_('Error while copying Broker configuration files') . "\n" . implode("\n", $output));
+        } else {
+            $event->setOutput(_('Successfully copied files for Broker.'));
         }
-
-        $event->setOutput(_('Successfully copied files for Broker.'));
     }
 }

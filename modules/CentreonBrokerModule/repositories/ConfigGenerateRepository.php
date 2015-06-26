@@ -40,6 +40,7 @@ use Centreon\Internal\Db as CentreonDb;
 use Centreon\Internal\Exception;
 use CentreonConfiguration\Models\Poller;
 use CentreonBroker\Models\Broker;
+use CentreonBroker\Models\BrokerPollerValues;
 use CentreonBroker\Repository\BrokerRepository;
 use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
@@ -372,7 +373,7 @@ class ConfigGenerateRepository
         $brokerModules = self::getBrokerModules();
         foreach ($brokerModules as $brokerModule) {
             $file->startElement("input");
-            $file->writeElement("name", "central-broker-extcommands-engine-poller-module" . $brokerModule['config_id']);
+            $file->writeElement("name", "central-broker-extcommands-engine-poller-module-" . $brokerModule['config_id']);
             $file->writeElement("type", "dump_fifo");
             $file->writeElement("path", $this->baseConfig['%global_broker_data_directory%'] . "/central-broker-extcommands-engine-central-module.cmd");
             $file->writeElement("tagname", "extcommands-engine-" . $brokerModule['config_id']);
@@ -387,17 +388,25 @@ class ConfigGenerateRepository
      */
     private function addConfigCentreonEngineBlock($file)
     {
+        $db = Di::getDefault()->get('db_centreon');
+
+        $sql = "DELETE FROM cfg_centreonbroker_pollervalues WHERE poller_id = ? and name = ?";
+        $stmt = $db->prepare($sql);
+
         /* The path for generate configuration */
         $configGeneratePath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir'), '/') . '/engine';
         /* Get broker modules list */
         $brokerModules = self::getBrokerModules();
         foreach ($brokerModules as $brokerModule) {
-            $file->startElement("input");
-            $file->writeElement("name", "centreon-broker-cfg-engine-poller-module-" . $brokerModule['config_id']);
+            $name = "central-broker-cfg-engine-poller-module-" . $brokerModule['config_id'];
+            $file->startElement("output");
+            $file->writeElement("name", $name);
             $file->writeElement("type", "dump_dir");
             $file->writeElement("path", $configGeneratePath . '/apply/' . $brokerModule['poller_id']);
             $file->writeElement("tagname", "cfg-engine-" . $brokerModule['config_id']);
             $file->endElement();
+            $stmt->execute(array($brokerModule['poller_id'], 'dump_dir_engine'));
+            BrokerPollerValues::insert(array('poller_id' => $brokerModule['poller_id'], 'name' => 'dump_dir_engine', 'value' => $name), true);
         }
     }
 
@@ -408,17 +417,25 @@ class ConfigGenerateRepository
      */
     private function addConfigCentreonBrokerBlock($file)
     {
+        $db = Di::getDefault()->get('db_centreon');;
+
+        $sql = "DELETE FROM cfg_centreonbroker_pollervalues WHERE poller_id = ? and name = ?";
+        $stmt = $db->prepare($sql);
+
         /* The path for generate configuration */
         $configGeneratePath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir'), '/') . '/broker';
         /* Get broker modules list */
         $brokerModules = self::getBrokerModules();
         foreach ($brokerModules as $brokerModule) {
-            $file->startElement("input");
-            $file->writeElement("name", "centreon-broker-cfg-broker-poller-module" . $brokerModule['config_id']);
+            $name = "central-broker-cfg-broker-poller-module-" . $brokerModule['config_id'];
+            $file->startElement("output");
+            $file->writeElement("name", $name);
             $file->writeElement("type", "dump_dir");
             $file->writeElement("path", $configGeneratePath . '/apply/' . $brokerModule['poller_id']);
             $file->writeElement("tagname", "cfg-broker-" . $brokerModule['config_id']);
             $file->endElement();
+            $stmt->execute(array($brokerModule['poller_id'], 'dump_dir_broker'));
+            BrokerPollerValues::insert(array('poller_id' => $brokerModule['poller_id'], 'name' => 'dump_dir_broker', 'value' => $name), true);
         }
     }
 

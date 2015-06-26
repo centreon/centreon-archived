@@ -208,12 +208,6 @@ class PollerRepository extends Repository
 
             $pollerId = parent::create($params, $origin, $route, true, false);
 
-            /*$engineEvent = new EngineFormSave($pollerId, $params);
-            $di->get('events')->emit('centreon-configuration.engine.form.save', array($engineEvent));
-
-            $brokerEvent = new BrokerFormSave($pollerId, $params);
-            $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));*/
-
             return $pollerId;
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), 255);

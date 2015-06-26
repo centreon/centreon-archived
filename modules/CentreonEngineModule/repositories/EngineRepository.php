@@ -120,4 +120,20 @@ class EngineRepository extends FormRepository
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $data;
     }
+
+    
+    /**
+     * Send external command for poller
+     *
+     * @param int $cmdId
+     */
+    public static function sendCommand($command)
+    {
+        $externalCommandFile = '/var/lib/centreon-broker/extcommand-engine-' . $command->getPollerId() . '.fifo';
+        if (isset($sFile) && file_exists($externalCommandFile)) {
+            file_put_contents($externalCommandFile, $command, FILE_APPEND);
+        } else {
+            throw new \Exception ("The external command file of broker does not exist");
+        }
+    }
 }

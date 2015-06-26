@@ -33,11 +33,11 @@
  *
  */
 
-namespace CentreonBroker\Listeners\CentreonRealtime;
+namespace CentreonEngine\Listeners\CentreonRealtime;
 
 use Centreon\Internal\Di;
 use CentreonRealtime\Events\ExternalCommand;
-use CentreonBroker\Repository\BrokerRepository;
+use CentreonEngine\Repository\EngineRepository;
 
 /**
  * Listeners for send a command
@@ -52,9 +52,8 @@ class CommandSend
     public static function execute(ExternalCommand $command)
     {
         // @todo found poller where I am
-        if ($command->getType() === 'broker') {
-            BrokerRepository::sendCommand($command->getCommand());
+        if ($command->getType() === 'engine') {
+            EngineRepository::sendCommand($command->getCommand());
         }
-        
     }
 }

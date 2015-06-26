@@ -117,26 +117,9 @@ class PollerDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-//            'source' => 'other',
             'dataSource' => '\CentreonConfiguration\Models\Node',
             'innerJoin' => 'cfg_pollers.node_id = cfg_nodes.node_id'
         ),
-        /*array (
-            'title' => 'Localhost',
-            'name' => 'localhost',
-            'data' => 'localhost',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'select',
-                'parameters' => array(
-                    '0' => 'No',
-                    '1' => 'Yes'
-                )
-            ),
-        ),*/
         array (
             'title' => 'Is Running',
             'name' => 'running',
@@ -145,7 +128,6 @@ class PollerDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
-//            'source' => 'other',
             'dataSource' => '\CentreonRealtime\Models\Instances',
             'leftJoin' => 'cfg_pollers.name = rt_instances.name',
             'cast' => array(
@@ -189,7 +171,6 @@ class PollerDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-//            'source' => 'other',
             'dataSource' => '\CentreonRealtime\Models\Instances'
         ),
         array (
@@ -223,7 +204,6 @@ class PollerDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-//            'source' => 'other',
             'dataSource' => '\CentreonRealtime\Models\Instances'
         ),
         array (
@@ -234,7 +214,6 @@ class PollerDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-//            'source' => 'other',
             'dataSource' => '\CentreonRealtime\Models\Instances'
         ),
         array (
@@ -245,13 +224,8 @@ class PollerDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => false,
-//            'source' => 'other',
             'dataSource' => '\CentreonRealtime\Models\Instances'
         )
-
-        
-        
-        
     );
 
     /**
@@ -471,7 +445,6 @@ class PollerDatatable extends Datatable
         // Get datatabases connections
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
-        
         
         $stmt = $dbconn->prepare($sql);
         $stmt->execute();

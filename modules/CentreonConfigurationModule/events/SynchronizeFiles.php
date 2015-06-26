@@ -33,46 +33,6 @@
  *
  */
 
-namespace CentreonEngine\Listeners\CentreonConfiguration;
+namespace CentreonConfiguration\Events;
 
-use Centreon\Internal\Di;
-use Centreon\Internal\Exception;
-use CentreonEngine\Repository\ConfigGenerateMainRepository;
-use CentreonConfiguration\Events\CopyFiles as CopyFilesEvent;
-use CentreonEngine\Repository\EngineRepository;
-
-class CopyFiles
-{
-    /**
-     * Execute action 
-     *
-     * @param \CentreonConfiguration\Events\CopyFiles $event
-     * @throws Exception
-     */
-    public static function execute(CopyFilesEvent $event)
-    {
-        $config = Di::getDefault()->get('config');
-        $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
-
-        $output = array();
-        exec("rm -rf {$tmpdir}/engine/apply/{$event->getPollerId()}/resources/*.cfg 2>&1", $output, $statusDelete);
-        if ($statusDelete) {
-            $event->setOutput(_('Error while deleting Engine configuration files') . "\n" . implode("\n", $output));
-        }
-
-        if (false === is_dir($tmpdir . '/engine/apply/' . $event->getPollerId())) {
-            if (false === mkdir($tmpdir . '/engine/apply/' . $event->getPollerId())) {
-                throw new Exception("Error while prepare copy of Engine configuration files\n");
-            }
-        }
-        $output = array();
-        exec("cp -Rf $tmpdir/engine/generate/{$event->getPollerId()}/* {$tmpdir}/engine/apply/{$event->getPollerId()}/ 2>&1", $output, $statusCopy);
-        if ($statusCopy) {
-            $event->setOutput(_('Error while copying Engine configuration files') . "\n" . implode("\n", $output));
-        }
-
-        if (!$statusDelete && !$statusCopy) {
-            $event->setOutput(_('Successfully copied files for Engine.'));
-        }
-    }
-}
+class SynchronizeFiles extends NodeEvent {}

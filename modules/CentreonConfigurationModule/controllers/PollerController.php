@@ -60,7 +60,7 @@ class PollerController extends FormController
     public static $enableDisableFieldName = 'enable';
 
     /**
-     * List users
+     * List pollerss
      *
      * @method get
      * @route /poller
