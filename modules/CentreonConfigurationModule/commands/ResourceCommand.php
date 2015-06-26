@@ -32,69 +32,23 @@
  * For more information : contact@centreon.com
  *
  */
+namespace CentreonConfiguration\Commands;
 
-namespace CentreonConfiguration\Repository;
+use Centreon\Api\Internal\BasicCrudCommand;
 
 /**
- * @author Lionel Assepo <lassepo@centreon.com>
- * @package Centreon
- * @subpackage Repository
+ * 
  */
-class ResourceRepository extends \CentreonConfiguration\Repository\Repository
+class ResourceCommand extends BasicCrudCommand
 {
-    /**
-     *
-     * @var string
-     */
-    public static $tableName = 'cfg_resources';
-    
-    /**
-     *
-     * @var string
-     */
-    public static $objectName = 'Resource';
-    
-    public static $objectClass = '\CentreonConfiguration\Models\Resource';
-    
-    
     /**
      *
      * @var type 
      */
+    public $objectName = 'resource';
     
-    public static $unicityFields = array(
-        'fields' => array(
-            'resources' => 'cfg_resources, resource_id, resource_name',
-            'poller' => 'cfg_pollers, poller_id, cfg_pollers.name',
-            ),
-        'joint' => 'cfg_resources_instances_relations',
-        'jointCondition' => 'cfg_resources.resource_id = cfg_resources_instances_relations.resource_id AND cfg_pollers.poller_id = cfg_resources_instances_relations.instance_id'
-    );
-    
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
-    
-    public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
+    public function __construct()
     {
-        parent::create($givenParameters, $origin, $route);
-    }
-    
-    /**
-     * 
-     * @param type $givenParameters
-     * @param type $origin
-     * @param type $route
-     * @param type $validate
-     * @param type $validateMandatory
-     */
-    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
-    {       
-        parent::update($givenParameters, $origin, $route);
+        parent::__construct();
     }
 }
