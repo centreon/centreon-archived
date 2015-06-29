@@ -53,7 +53,7 @@ class CommandSend
     {
         // @todo found poller where I am
         if ($command->getType() === 'engine') {
-            EngineRepository::sendCommand($command->getCommand());
+            EngineRepository::sendCommand($command->getCommand(), $command->getPollerId());
         }
     }
 }

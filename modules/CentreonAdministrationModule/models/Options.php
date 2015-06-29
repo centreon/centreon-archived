@@ -77,23 +77,23 @@ class Options extends CentreonBaseModel
         
         $conditions = "";
         if (!is_null($group)) {
-            $conditions .= "WHERE `group` = '" . $db->quote($group) . "'";
+            $conditions .= "WHERE `group` = " . $db->quote($group);
         }
         
         if (count($options) > 0) {
-            $listOfOptionKeys = "";
-            foreach ($options as $optionKey) {
-                $listOfOptionKeys .= "'$optionKey',";
+            foreach ($options as &$optionKey) {
+                $optionKey = $db->quote($optionKey);
             }
+            $listOfOptionKeys = implode(',', $options); 
             
             if (empty($conditions)) {
                 $conditions .= "WHERE ";
             } else {
                 $conditions .= "AND ";
             }
-            $conditions .= '`key` IN (' . rtrim($db->quote($listOfOptionKeys), ',') . ')';
+            $conditions .= '`key` IN (' . $listOfOptionKeys . ')';
         }
-        
+
         $stmt = $db->query("SELECT `key`, `value` FROM `cfg_options` $conditions");
         
         $savedOptions = $stmt->fetchAll(\PDO::FETCH_ASSOC);
