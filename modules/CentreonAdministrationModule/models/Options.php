@@ -77,7 +77,7 @@ class Options extends CentreonBaseModel
         
         $conditions = "";
         if (!is_null($group)) {
-            $conditions .= "WHERE `group` = '$group'";
+            $conditions .= "WHERE `group` = '" . $db->quote($group) . "'";
         }
         
         if (count($options) > 0) {
@@ -91,7 +91,7 @@ class Options extends CentreonBaseModel
             } else {
                 $conditions .= "AND ";
             }
-            $conditions .= '`key` IN (' . rtrim($listOfOptionKeys, ',') . ')';
+            $conditions .= '`key` IN (' . rtrim($db->quote($listOfOptionKeys), ',') . ')';
         }
         
         $stmt = $db->query("SELECT `key`, `value` FROM `cfg_options` $conditions");

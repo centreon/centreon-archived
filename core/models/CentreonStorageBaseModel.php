@@ -511,9 +511,11 @@ abstract class CentreonStorageBaseModel
         $isUnique = true;
         $dbconn = Di::getDefault()->get('db_centreon');
         $unicityRequest = "SELECT ".static::$uniqueLabelField.", ".static::$primaryKey
-            ." FROM ".static::$table
-            ." WHERE ".static::$uniqueLabelField."='$uniqueFieldvalue'";
-        $stmt = $dbconn->query($unicityRequest);
+            ." FROM " . static::$table
+            ." WHERE " . static::$uniqueLabelField . " = :uniqueValue";
+        $stmt = $dbconn->prepare($unicityRequest);
+        $stmt->bindParam(':uniqueValue', $uniqueValue, \PDO::PARAM_STR);
+        $stmt->execute();
         $resultUnique = $stmt->fetch(\PDO::FETCH_ASSOC);
         
         if (count($resultUnique) > 0) {

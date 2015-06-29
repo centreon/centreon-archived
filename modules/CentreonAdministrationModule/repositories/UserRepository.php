@@ -152,6 +152,13 @@ class UserRepository extends Repository
     public static function isLastAdmin($ids){
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
+
+        /* Test if ids is numeric */
+        array_map(function ($id) {
+            if (false === is_numeric($id)) {
+                throw new \Exception("An id is not a numeric value");
+            }
+        }, $ids);
         
         $query = "SELECT count(u.user_id) as admin_nbr from cfg_users u where u.is_admin = 1 and u.user_id not in (".implode(',',$ids).") ";
         $stmt = $dbconn->query($query);
@@ -290,16 +297,18 @@ class UserRepository extends Repository
         // Initializing connection
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
+        $ctp = "NULL";
         
         if ($object == 'host') {
             $ctp = 'timeperiod_tp_id';
         }
         $query = "SELECT tp_name, ".$object."_notification_options "
             . "FROM cfg_users, cfg_timeperiods "
-            . "WHERE user_id='$contactId' "
+            . "WHERE user_id= :contactId "
             . "AND tp_id = $ctp" ;
         
-        $stmt = $dbconn->query($query);
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':contactId', $contactId, \PDO::PARAM_INT);
         $resultSet = $stmt->fetch();
         
         if ($resultSet === false) {

@@ -282,29 +282,40 @@ class Hosttemplate extends CentreonBaseModel
             $sourceParams['host_name'] = $originalName . '_' . $j;
             /* Insert the duplicate host */
             $lastId = static::insert($sourceParams);
+            if (false === is_numeric($lastId)) {
+                throw new \Exception("The value is not numeric");
+            }
             $listDuplicateId[] = $lastId;
             /* Insert relation */
             $db->beginTransaction();
             /* Add relation between host template and service template */
             $queryRelServiceTmpl = "INSERT INTO cfg_hosts_services_relations (host_host_id, service_service_id)
                 SELECT " . $lastId . ", service_service_id FROM cfg_hosts_services_relations
-                    WHERE host_host_id = " . $sourceObjectId;
-            $db->query($queryRelServiceTmpl);
+                    WHERE host_host_id = :sourceObjectId";
+            $stmt = $db->prepare($queryRelServiceTmpl);
+            $stmt->bindParam(':sourceObjectId', $sourceObjectId, \PDO::PARAM_INT);
+            $stmt->execute();
             /* Duplicate macros */
             $queryDupMacros = "INSERT INTO cfg_customvariables_hosts (host_macro_name, host_macro_value, is_password, host_host_id)
                 SELECT host_macro_name, host_macro_value, is_password, " . $lastId . " FROM cfg_customvariables_hosts
-                    WHERE host_host_id = " . $sourceObjectId;
-            $db->query($queryDupMacros);
+                    WHERE host_host_id = :sourceObjectId";
+            $stmt = $db->prepare($queryDupMacros);
+            $stmt->bindParam(':sourceObjectId', $sourceObjectId, \PDO::PARAM_INT);
+            $stmt->execute();
             /* Host template */
             $queryDupTemplate = "INSERT INTO cfg_hosts_templates_relations (host_host_id, host_tpl_id, `order`)
                 SELECT " . $lastId . ", host_tpl_id, `order` FROM cfg_hosts_templates_relations
-                    WHERE host_host_id = " . $sourceObjectId;
-            $db->query($queryDupTemplate);
+                    WHERE host_host_id = :sourceObjectId";
+            $stmt = $db->prepare($queryDupTemplate);
+            $stmt->bindParam(':sourceObjectId', $sourceObjectId, \PDO::PARAM_INT);
+            $stmt->execute();
             /* Host global tags */
             $queryDupTag = "INSERT INTO cfg_tags_hosts (tag_id, resource_id)
                 SELECT th.tag_id, " . $lastId . " FROM cfg_tags_hosts th, cfg_tags t
-                    WHERE t.user_id IS NULL AND t.tag_id = th.tag_id AND th.resource_id = " . $sourceObjectId;
-            $db->query($queryDupTag);
+                    WHERE t.user_id IS NULL AND t.tag_id = th.tag_id AND th.resource_id = :sourceObjectId";
+            $stmt = $db->prepare($queryDupTag);
+            $stmt->bindParam(':sourceObjectId', $sourceObjectId, \PDO::PARAM_INT);
+            $stmt->execute();
             $db->commit();
         }
     }

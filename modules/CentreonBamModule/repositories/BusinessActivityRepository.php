@@ -102,12 +102,14 @@ class BusinessActivityRepository extends FormRepository
         
         $finalRoute = "";
         
-        $stmt = $dbconn->query(
+        $stmt = $dbconn->prepare(
             "SELECT b.filename "
             . "FROM cfg_bam ba, cfg_binaries b "
-            . "WHERE ba.name = '$name' "
+            . "WHERE ba.name = :baName "
             . "AND ba.icon_id = b.binary_id "
         );
+        $stmt->bindParam(":baName", $name, \PDO::PARAM_STR);
+        $stmt->execute();
         $baIconResult = $stmt->fetch(\PDO::FETCH_ASSOC);
         
         if (!is_null($baIconResult['filename'])) {
@@ -141,8 +143,11 @@ class BusinessActivityRepository extends FormRepository
 
         $sql = "SELECT k.kpi_id "
             . "FROM cfg_bam_kpi k "
-            . "WHERE k.id_ba='$id' ";
-        $stmt = $dbconn->query($sql);
+            . "WHERE k.id_ba= :id";
+
+        $stmt = $dbconn->prepare($sql);
+        $stmt->bindValue(":id", $id, \PDO::PARAM_INT);
+        $stmt->execute();
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         $resultIndicators = array();

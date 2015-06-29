@@ -141,14 +141,16 @@ class HostRepository extends Repository
         $alreadyProcessed = false;
 
 
+        $stmt = $dbconn->prepare(
+            "SELECT b.filename "
+            . "FROM cfg_hosts h, cfg_hosts_images_relations hir, cfg_binaries b "
+            . "WHERE h.host_id = :hostId "
+            . "AND h.host_id = hir.host_id "
+            . "AND hir.binary_id = b.binary_id"
+        );
         while (empty($finalRoute['value'])) {
-            $stmt = $dbconn->query(
-                "SELECT b.filename "
-                . "FROM cfg_hosts h, cfg_hosts_images_relations hir, cfg_binaries b "
-                . "WHERE h.host_id = '$hostId' "
-                . "AND h.host_id = hir.host_id "
-                . "AND hir.binary_id = b.binary_id"
-            );
+            $stmt->bindParam(':hostId', $hostId, \PDO::PARAM_INT);
+            $stmt->execute();
             $ehiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if (!is_null($ehiResult['filename'])) {
@@ -204,14 +206,16 @@ class HostRepository extends Repository
             $hostId = $hostIdTab[0];
         }
 
+        $stmt = $dbconn->prepare(
+            "SELECT b.filename "
+            . "FROM cfg_hosts h, cfg_hosts_images_relations hir, cfg_binaries b "
+            . "WHERE h.host_id = :hostId "
+            . "AND h.host_id = hir.host_id "
+            . "AND hir.binary_id = b.binary_id"
+        );
         while (empty($finalRoute)) {
-            $stmt = $dbconn->query(
-                "SELECT b.filename "
-                . "FROM cfg_hosts h, cfg_hosts_images_relations hir, cfg_binaries b "
-                . "WHERE h.host_id = '$hostId' "
-                . "AND h.host_id = hir.host_id "
-                . "AND hir.binary_id = b.binary_id"
-            );
+            $stmt->bindParam(':hostId', $hostId, \PDO::PARAM_INT);
+            $stmt->execute();
             $ehiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if (!is_null($ehiResult['filename'])) {
