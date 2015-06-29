@@ -159,9 +159,11 @@ abstract class Generator
                     AND
                         fs.form_id = f.form_id
                     AND
-                        f.route = '$this->formRoute'
+                        f.route = :route
             )";
-        $stmt = $this->dbconn->query($mandatoryQuery);
+        $stmt = $this->dbconn->prepare($mandatoryQuery);
+        $stmt->bindParam(':route', $this->formRoute, \PDO::PARAM_STR);
+        $stmt->execute();
         $mandatoryFieldList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
         return array_column($mandatoryFieldList, 'name');

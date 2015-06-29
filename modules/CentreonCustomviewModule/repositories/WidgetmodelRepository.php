@@ -249,10 +249,10 @@ class WidgetmodelRepository extends Repository
                 if (!empty($paramValue) || $paramValue === "0") {
                     $colNumber = substr($paramName, strlen('sSearch_'));
                     if (substr($c[$colNumber], 0, 11) !== '[SPECFIELD]') {
-                        $searchString = $c[$colNumber]." like '%".$paramValue."%' ";
+                        $searchString = $c[$colNumber]." like '%" . $dbconn->quote($paramValue) . "%' ";
                     } else {
                         $customSearchString = substr($c[$colNumber], 11);
-                        $searchString = str_replace('::search_value::', '%'.$paramValue.'%', $customSearchString);
+                        $searchString = str_replace('::search_value::', '%' . $dbconn->quote($paramValue) . '%', $customSearchString);
                     }
                     
                     if (empty($conditions)) {

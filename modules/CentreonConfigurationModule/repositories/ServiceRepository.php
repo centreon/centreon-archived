@@ -104,14 +104,16 @@ class ServiceRepository extends Repository
         
         $tab = array();
         while (1) {
-            $stmt = $dbconn->query(
+            $stmt = $dbconn->prepare(
                 "SELECT "
                 . "`".$field."`, "
                 . "service_template_model_stm_id "
                 . "FROM cfg_services "
                 . "WHERE "
-                . "service_id = '".$service_id."' LIMIT 1"
+                . "service_id = :service_id  LIMIT 1"
             );
+            $stmt->bindParam(':service_id', $service_id, \PDO::PARAM_INT);
+            $stmt->execute();
             $row = $stmt->fetchAll();
             if ($row[0][$field]) {
                 return $row[0][$field];
@@ -139,9 +141,11 @@ class ServiceRepository extends Repository
         $dbconn = $di->get('db_centreon');
         $tplArr = null;
         
-        $stmt = $dbconn->query(
-            "SELECT service_description FROM cfg_services WHERE service_id = '".$service_template_id."' LIMIT 1"
+        $stmt = $dbconn->prepare(
+            "SELECT service_description FROM cfg_services WHERE service_id = :svcTmplId LIMIT 1"
         );
+        $stmt->bindParam(':svcTmplId', $service_template_id, \PDO::PARAM_INT);
+        $stmt->execute();
         $row = $stmt->fetchAll();
         if (count($row) > 0) {
             $tplArr = array(
@@ -179,14 +183,16 @@ class ServiceRepository extends Repository
         $dbconn = $di->get('db_centreon');
 
         $tab = array();
+        $stmt = $dbconn->prepare(
+            "SELECT "
+            . "service_alias, service_template_model_stm_id "
+            . "FROM cfg_services "
+            . "WHERE "
+            . "service_id = :serviceId LIMIT 1"
+        );
         while (1) {
-            $stmt = $dbconn->query(
-                "SELECT "
-                . "service_alias, service_template_model_stm_id "
-                . "FROM cfg_services "
-                . "WHERE "
-                . "service_id = '".$service_id."' LIMIT 1"
-            );
+            $stmt->bindParam(':serviceId', $service_id, \PDO::PARAM_INT);
+            $stmt->execute();
             $row = $stmt->fetchRow();
             if ($row["service_alias"]) {
                 return html_entity_decode(db2str($row["service_alias"]), ENT_QUOTES, "UTF-8");
@@ -216,13 +222,15 @@ class ServiceRepository extends Repository
         
         $finalRoute = "";
         
+        $stmt = $dbconn->prepare(
+            "SELECT b.filename, s.service_template_model_stm_id "
+            . "FROM cfg_services s, cfg_services_images_relations sir, cfg_binaries b "
+            . "WHERE s.service_id = :service_id "
+            . "AND s.service_id = sir.service_id AND sir.binary_id = b.binary_id"
+        );
         while (1) {
-            $stmt = $dbconn->query(
-                "SELECT b.filename, s.service_template_model_stm_id "
-                . "FROM cfg_services s, cfg_services_images_relations sir, cfg_binaries b "
-                . "WHERE s.service_id = '$service_id' "
-                . "AND s.service_id = sir.service_id AND sir.binary_id = b.binary_id"
-            );
+            $stmt->bindParam(':service_id', $service_id, \PDO::PARAM_INT);
+            $stmt->execute();
             $esiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if (!is_null($esiResult['filename'])) {

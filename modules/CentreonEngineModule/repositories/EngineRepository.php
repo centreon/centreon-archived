@@ -127,10 +127,10 @@ class EngineRepository extends FormRepository
      *
      * @param int $cmdId
      */
-    public static function sendCommand($command)
+    public static function sendCommand($command, $pollerId)
     {
-        $externalCommandFile = '/var/lib/centreon-broker/extcommand-engine-' . $command->getPollerId() . '.fifo';
-        if (isset($sFile) && file_exists($externalCommandFile)) {
+        $externalCommandFile = '/var/lib/centreon-broker/central-broker-extcommands-engine-poller-module-' . $pollerId . '.cmd';
+        if (file_exists($externalCommandFile)) {
             file_put_contents($externalCommandFile, $command, FILE_APPEND);
         } else {
             throw new \Exception ("The external command file of broker does not exist");

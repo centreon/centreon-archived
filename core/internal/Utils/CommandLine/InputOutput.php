@@ -55,24 +55,24 @@ class InputOutput
      */
     public static function prompt($message = "", $conditions = null)
     {
-        $returnNotOk = true;
+        $success = false;
         
         $message = Colorize::colorizeText($message, "blue");
         
         $promptMessage = $message;
-        while ($returnNotOk) {
+        while (!$success) {
             echo $promptMessage . " => ";
             $userAnswer = trim(fgets(STDIN));
 
             if (isset($conditions)) {
                 $conditions($userAnswer, $result);
                 if ($result['success']) {
-                    $returnNotOk = false;
+                    $success = true;
                 } else {
                     $promptMessage = Colorize::colorizeText($result['message'], "red") . "\n" . $message;
                 }
             } else {
-                $returnNotOk = false;
+                $success = true;
             }
         }
         return $userAnswer;

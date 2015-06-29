@@ -60,9 +60,11 @@ class Informations
     {
         $dependencySatisfied = false;
         $db = Di::getDefault()->get('db_centreon');
-        $sql = "SELECT name, version FROM cfg_modules WHERE name = '$module[name]'";
-        $res = $db->query($sql);
-        $dependency = $res->fetchAll(\PDO::FETCH_ASSOC);
+        $sql = "SELECT name, version FROM cfg_modules WHERE name = :moduleName";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':moduleName', $module['name'], \PDO::PARAM_STR);
+        $stmt->execute();
+        $dependency = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
         if (is_array($dependency) && count($dependency) > 0) {
             if (version_compare($dependency[0]['version'], $module['version'], '>=')) {

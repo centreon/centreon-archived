@@ -104,7 +104,8 @@ sub acl_resource_add_filters {
     }
     if (defined($options{resource_config}->{filter_environnement}) and scalar(@{$options{resource_config}->{filter_environnement}}) > 0) {
         push @{$filters{hosts}}, "cfg_hosts.environment_id IN (" . join(', ',  @{$options{resource_config}->{filter_environnement}}) . ")";
-        push @{$filters{services}}, "cfg_services.environment_id IN (" . join(', ',  @{$options{resource_config}->{filter_environnement}}) . ")";
+        # Not yet.
+        #push @{$filters{services}}, "cfg_services.environment_id IN (" . join(', ',  @{$options{resource_config}->{filter_environnement}}) . ")";
     }
     if (defined($options{resource_config}->{filter_pollers}) and scalar(@{$options{resource_config}->{filter_pollers}}) > 0) {
         push @{$filters{hosts}}, "cfg_hosts.poller_id IN (" . join(', ',  @{$options{resource_config}->{filter_pollers}}) . ")";
@@ -118,7 +119,7 @@ sub acl_resource_add_filters {
     }
     
     foreach (keys %filters) {
-        $options{filters}->{$_} = join(' AND ', @{$filters{$_}}) if (scalar(@{$filters{$_}}) > 0);
+        $options{filters}->{$_} = ' AND ' . join(' AND ', @{$filters{$_}}) if (scalar(@{$filters{$_}}) > 0);
     }
 }
 
@@ -163,9 +164,9 @@ sub acl_resource_list_hs {
                         $filters->{hosts} . ')';
     }
     
-    $self->{logger}->writeLogDebug("centreondacl: request: " . join(' UNION ', @{$requests}));
+    $self->{logger}->writeLogDebug("centreondacl: request: " . join(' UNION ALL ', @{$requests}));
     return 2 if (scalar(@{$requests}) == 0);
-    return $self->{class_object}->custom_execute(request => join(' UNION ', @{$requests}), mode => 0);
+    return $self->{class_object}->custom_execute(request => join(' UNION ALL ', @{$requests}), mode => 0);
 }
 
 sub set_default_resource_config {
@@ -201,8 +202,8 @@ sub acl_get_resources_config {
     }
     
     # Get hosts
-    my $request = 'SELECT cfg_acl_resources.acl_resource_id, host_id, type FROM cfg_acl_resources, cfg_acl_resources_hosts_relations WHERE ' . $filter . ' AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_hosts_relations.acl_resource_id';
-    my ($status, $datas) = $self->{class_object}->custom_execute(request => $request, mode => 2);
+    $request = 'SELECT cfg_acl_resources.acl_resource_id, host_id, type FROM cfg_acl_resources, cfg_acl_resources_hosts_relations WHERE ' . $filter . ' AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_hosts_relations.acl_resource_id';
+    ($status, $datas) = $self->{class_object}->custom_execute(request => $request, mode => 2);
     return 1 if ($status == -1);
     foreach (@{$datas}) {
         $self->set_default_resource_config(config => $resource_configs, acl_resource_id => $$_[0]) if (!defined($resource_configs->{$$_[0]}));
@@ -211,8 +212,8 @@ sub acl_get_resources_config {
     }
     
     # Get host tags
-    my $request = 'SELECT cfg_acl_resources.acl_resource_id, tag_id, type FROM cfg_acl_resources, cfg_acl_resources_tags_hosts_relations WHERE ' . $filter . ' AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_tags_hosts_relations.acl_resource_id';
-    my ($status, $datas) = $self->{class_object}->custom_execute(request => $request, mode => 2);
+    $request = 'SELECT cfg_acl_resources.acl_resource_id, tag_id, type FROM cfg_acl_resources, cfg_acl_resources_tags_hosts_relations WHERE ' . $filter . ' AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_tags_hosts_relations.acl_resource_id';
+    ($status, $datas) = $self->{class_object}->custom_execute(request => $request, mode => 2);
     return 1 if ($status == -1);
     foreach (@{$datas}) {
         $self->set_default_resource_config(config => $resource_configs, acl_resource_id => $$_[0]) if (!defined($resource_configs->{$$_[0]}));
@@ -222,13 +223,33 @@ sub acl_get_resources_config {
     }
     
     # Get services
-    my $request = 'SELECT cfg_acl_resources.acl_resource_id, service_id, type FROM cfg_acl_resources, cfg_acl_resources_services_relations WHERE ' . $filter . ' AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_services_relations.acl_resource_id';
-    my ($status, $datas) = $self->{class_object}->custom_execute(request => $request, mode => 2);
+    $request = 'SELECT cfg_acl_resources.acl_resource_id, service_id, type FROM cfg_acl_resources, cfg_acl_resources_services_relations WHERE ' . $filter . ' AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_services_relations.acl_resource_id';
+    ($status, $datas) = $self->{class_object}->custom_execute(request => $request, mode => 2);
     return 1 if ($status == -1);
     foreach (@{$datas}) {
         $self->set_default_resource_config(config => $resource_configs, acl_resource_id => $$_[0]) if (!defined($resource_configs->{$$_[0]}));
         # 0 = inclus, 2 => exclude (pas de filtre pour les services)
         push @{$resource_configs->{$$_[0]}->{service_ids}}, $$_[1] if ($$_[2] == 0);
+    }
+    
+    # Get Environment
+    $request = 'SELECT cfg_acl_resources.acl_resource_id, environment_id, type FROM cfg_acl_resources, cfg_acl_resources_environments_relations WHERE ' . $filter . ' AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_environments_relations.acl_resource_id';
+    ($status, $datas) = $self->{class_object}->custom_execute(request => $request, mode => 2);
+    return 1 if ($status == -1);
+    foreach (@{$datas}) {
+        $self->set_default_resource_config(config => $resource_configs, acl_resource_id => $$_[0]) if (!defined($resource_configs->{$$_[0]}));
+        # 0 = inclus, 2 => exclude (pas de filtre pour les services)
+        push @{$resource_configs->{$$_[0]}->{filter_environnement}}, $$_[1]; #if ($$_[2] == 0);
+    }
+    
+    # Get Domains
+    $request = 'SELECT cfg_acl_resources.acl_resource_id, domain_id, type FROM cfg_acl_resources, cfg_acl_resources_domains_relations WHERE ' . $filter . ' AND cfg_acl_resources.acl_resource_id = cfg_acl_resources_domains_relations.acl_resource_id';
+    ($status, $datas) = $self->{class_object}->custom_execute(request => $request, mode => 2);
+    return 1 if ($status == -1);
+    foreach (@{$datas}) {
+        $self->set_default_resource_config(config => $resource_configs, acl_resource_id => $$_[0]) if (!defined($resource_configs->{$$_[0]}));
+        # 0 = inclus, 2 => exclude (pas de filtre pour les services)
+        push @{$resource_configs->{$$_[0]}->{filter_domains}}, $$_[1]; #if ($$_[2] == 0);
     }
     
     return (0, $resource_configs);

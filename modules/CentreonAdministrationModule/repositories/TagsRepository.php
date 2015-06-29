@@ -716,7 +716,6 @@ class TagsRepository extends Repository
                 }
             }
         } elseif ($resourceName == 'service') {
-            
             $templates = ServiceRepository::getListTemplates($resourceId, array(), -1);
             foreach ($templates as $template) {
                 $aTagsInSvc = TagsRepository::getList('service', $template, 1, 0);
@@ -731,5 +730,4 @@ class TagsRepository extends Repository
 
         return array('success' => true, 'values' => $aTags);
     }
- 
 }

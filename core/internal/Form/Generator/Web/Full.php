@@ -70,8 +70,10 @@ class Full extends Generator
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $queryForm = "SELECT form_id, name, redirect, redirect_route FROM cfg_forms WHERE route = '$this->formRoute'";
-        $stmtForm = $dbconn->query($queryForm);
+        $queryForm = "SELECT form_id, name, redirect, redirect_route FROM cfg_forms WHERE route = :route";
+        $stmtForm = $dbconn->prepare($queryForm);
+        $stmtForm->bindParam(':route', $this->formRoute, \PDO::PARAM_STR);
+        $stmtForm->execute();
         $formInfo = $stmtForm->fetchAll();
 
         if (!isset($formInfo[0])) {
@@ -87,52 +89,58 @@ class Full extends Generator
         
         $sectionQuery = 'SELECT section_id, name '
             . 'FROM cfg_forms_sections '
-            . 'WHERE form_id='.$formId.' '
+            . 'WHERE form_id = :formId '
             . 'ORDER BY rank ASC';
         
-        $sectionStmt = $dbconn->query($sectionQuery);
+        $sectionStmt = $dbconn->prepare($sectionQuery);
+        $sectionStmt->bindParam(':formId', $formId, \PDO::PARAM_INT);
+        $sectionStmt->execute();
         $sectionList = $sectionStmt->fetchAll(\PDO::FETCH_ASSOC);
         
         $firstSectionDetected = false;
         
+        $blockQuery = 'SELECT block_id, name '
+            . 'FROM cfg_forms_blocks '
+            . 'WHERE section_id= :sectionId '
+            . 'ORDER BY rank ASC';
+            
+        $blockStmt = $dbconn->prepare($blockQuery);
         foreach ($sectionList as $section) {
             if (!$firstSectionDetected) {
                 $this->firstSection = $section['name'];
                 $firstSectionDetected = true;
             }
             
-            $blockQuery = 'SELECT block_id, name '
-            . 'FROM cfg_forms_blocks '
-            . 'WHERE section_id='.$section['section_id'].' '
-            . 'ORDER BY rank ASC';
-            
-            $blockStmt = $dbconn->query($blockQuery);
+            $blockStmt->bindParam(':sectionId', $section['section_id'], \PDO::PARAM_INT);
+            $blockStmt->execute();
             $blockList = $blockStmt->fetchAll(\PDO::FETCH_ASSOC);
             $this->formComponents[$section['name']] = array();
             
-            foreach ($blockList as $block) {
-                
-                $fieldQuery = 'SELECT '
-                    . 'f.field_id, f.name, f.label, f.default_value, f.attributes, f.show_label, '
-                    . 'f.type, f.help, f.help_url, f.advanced, f.mandatory, f.parent_field, '
-                    . 'f.parent_value, f.child_actions, f.child_mandatory '
-                    . 'FROM cfg_forms_fields f, cfg_forms_blocks_fields_relations bfr '
-                    . 'WHERE bfr.block_id='.$block['block_id'].' '
-		    . 'AND bfr.field_id = f.field_id ' 
-		    . "AND bfr.product_version = '" . $this->productVersion . "' " 
+            $fieldQuery = 'SELECT '
+                . 'f.field_id, f.name, f.label, f.default_value, f.attributes, f.show_label, '
+                . 'f.type, f.help, f.help_url, f.advanced, f.mandatory, f.parent_field, '
+                . 'f.parent_value, f.child_actions, f.child_mandatory '
+                . 'FROM cfg_forms_fields f, cfg_forms_blocks_fields_relations bfr '
+                . 'WHERE bfr.block_id= :blockId '
+		            . 'AND bfr.field_id = f.field_id ' 
+		            . "AND bfr.product_version = :productVersion "
                     . 'ORDER BY rank ASC';
-                
+            $fieldStmt = $dbconn->prepare($fieldQuery);
+            foreach ($blockList as $block) {
                 $this->formComponents[$section['name']][$block['name']] = array();
-                $fieldStmt = $dbconn->query($fieldQuery);
+                $fieldStmt->bindParam(':blockId', $block['block_id'], \PDO::PARAM_INT);
+                $fieldStmt->bindParam(':productVersion', $this->productVersion, \PDO::PARAM_STR);
+                $fieldStmt->execute();
                 $fieldList = $fieldStmt->fetchAll(\PDO::FETCH_ASSOC);
                 
+                $validatorQuery = "SELECT v.route as validator_action, vr.params as params, vr.client_side_event as rules "
+                    . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
+                    . "WHERE vr.field_id = :fieldId "
+                    . "AND vr.validator_id = v.validator_id";
+                $validatorStmt = $dbconn->prepare($validatorQuery);
                 foreach ($fieldList as $field) {
-                    
-                    $validatorQuery = "SELECT v.route as validator_action, vr.params as params, vr.client_side_event as rules "
-                        . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
-                        . "WHERE vr.field_id = $field[field_id] "
-                        . "AND vr.validator_id = v.validator_id";
-                    $validatorStmt = $dbconn->query($validatorQuery);
+                    $validatorStmt->bindParam(':fieldId', $field['field_id'], \PDO::PARAM_INT);
+                    $validatorStmt->execute();
                     while ($validator = $validatorStmt->fetch()) {
                         $validator['params'] = json_decode($validator['params'], true);
                         $field['validators'][] = $validator;

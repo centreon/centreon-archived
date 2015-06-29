@@ -158,9 +158,11 @@ class ServicetemplateRepository extends Repository
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $stmt = $dbconn->query(
-            "SELECT service_description FROM cfg_services WHERE service_id = '".$service_template_id."' LIMIT 1"
+        $stmt = $dbconn->prepare(
+            "SELECT service_description FROM cfg_services WHERE service_id = :service_template_id LIMIT 1"
         );
+        $stmt->bindParam(':service_template_id', $service_template_id, \PDO::PARAM_INT);
+        $stmt->execute();
         
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if (isset($row["service_description"])) {
