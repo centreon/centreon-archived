@@ -161,7 +161,7 @@ class FreshInstall extends AbstractMigration
         $cfg_widgets_parameters_range
                 ->addColumn('parameter_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('min_range','integer', array('null' => false))
-                ->addColumn('integer','integer', array('null' => false))
+                ->addColumn('max_range','integer', array('null' => false))
                 ->addColumn('step','integer', array('null' => false))
                 ->addIndex(array('parameter_id'), array('unique' => false))
                 ->addForeignKey('parameter_id', 'cfg_widgets_parameters', 'parameter_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))

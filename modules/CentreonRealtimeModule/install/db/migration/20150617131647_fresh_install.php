@@ -17,7 +17,7 @@
  * this program; if not, see <http://www.gnu.org/licenses>.
  * 
  * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * combined work based on this program. Thus, the terms and conditions               of the GNU 
  * General Public License cover the whole combination.
  * 
  * As a special exception, the copyright holders of this program give CENTREON 
@@ -53,290 +53,513 @@ class FreshInstall extends AbstractMigration
      */
     public function change()
     {
+        $cfg_acl_actions = $this->table('cfg_acl_actions', array('id' => false, 'primary_key' => 'acl_action_id'));
+        $cfg_acl_actions
+                ->addColumn('acl_action_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('acl_action_name','string',array('limit' => 255, 'null' => true))
+                ->addColumn('acl_action_description','string', array('limit' => 255,'null' => true))
+                ->addColumn('acl_action_activate','string', array('null' => true, "default" => 1, ))
+                ->addColumn('organization_id','integer', array('null' => true))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();    
+        
+        $cfg_acl_actions_rules = $this->table('cfg_acl_actions_rules', array('id' => false, 'primary_key' => 'aar_id'));
+        $cfg_acl_actions_rules
+                ->addColumn('aar_id','integer', array('identity' => true,'null' => false))
+                ->addColumn('acl_action_rule_id','integer', array('null' => true))
+                ->addColumn('acl_action_name','string', array('limit' => 255,'null' => true))
+                ->addColumn('organization_id','integer', array('null' => true))
+                ->addIndex(array('acl_action_rule_id'), array('unique' => false))
+                ->addForeignKey('acl_action_rule_id', 'cfg_acl_actions', 'acl_action_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->save();
+      
+        $cfg_acl_group_actions_relations = $this->table('cfg_acl_group_actions_relations', array('id' => false, 'primary_key' => 'agar_id'));
+        $cfg_acl_group_actions_relations
+                ->addColumn('agar_id','integer', array('identity' => true,'null' => false))
+                ->addColumn('acl_action_id','integer', array('null' => true))
+                ->addColumn('acl_group_id','integer', array('null' => true))
+                ->addIndex(array('acl_action_id'), array('unique' => false))
+                ->addIndex(array('acl_group_id'), array('unique' => false))
+                ->save();
 
-        $cfg_acl_resources = $this->table('cfg_acl_resources', array('id' => false, 'primary_key' => 'acl_resource_id'));
-        $cfg_acl_resources
-                ->addColumn('acl_resource_id','integer', array('identity' => true, 'null' => false))
-                ->addColumn('name','string',array('limit' => 255), array('null' => false))
-                ->addColumn('slug','string',array('limit' => 255), array('null' => false))
-                ->addColumn('description','string',array('limit' => 255, 'null' => true))
-                ->addColumn('organization_id','integer', array('null' => false))
+        $log_action = $this->table('log_action', array('id' => false, 'primary_key' => array('action_log_id')));
+        $log_action
+                ->addColumn('widget_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('action_log_date','integer', array('null' => false))
+                ->addColumn('object_type','string',array('limit' => 255, 'null' => false))
+                ->addColumn('object_id','integer', array('null' => false))
+                ->addColumn('object_name','string',array('limit' => 255, 'null' => false))
+                ->addColumn('action_type','string',array('limit' => 255, 'null' => false))
+                ->addColumn('action_type','string',array('limit' => 255, 'null' => false))
+                ->addColumn('log_contact_id','integer', array('null' => true))
+                ->addIndex(array('log_contact_id'), array('unique' => false))
+                ->save();
+
+        $log_action_modification = $this->table('log_action_modification', array('id' => false, 'primary_key' => 'modification_id')); 
+        $log_action_modification
+                ->addColumn('modification_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('field_name','string',array('limit' => 255, 'null' => false))
+                ->addColumn('field_value','string',array('limit' => 255, 'null' => false))
+                ->addColumn('action_log_id','integer',array('null' => false))
+                ->addIndex(array('action_log_id'), array('unique' => false))
+                ->save();
+                
+        $log_archive_host = $this->table('log_archive_host', array('id' => false, 'primary_key' => array('log_id')));
+        $log_archive_host
+                ->addColumn('log_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('host_id','integer', array('null' => true))
+                ->addColumn('UPTimeScheduled','integer', array('null' => true))
+                ->addColumn('UPnbEvent','integer', array('null' => true))
+                ->addColumn('UPTimeAverageAck','integer', array('null' => false))
+                ->addColumn('UPTimeAverageRecovery','integer', array('null' => false))
+                ->addColumn('DOWNTimeScheduled','integer', array('null' => true))
+                ->addColumn('DOWNnbEvent','integer', array('null' => true))
+                ->addColumn('DOWNTimeAverageAck','integer', array('null' => false))
+                ->addColumn('DOWNTimeAverageRecovery','integer', array('null' => false))
+                ->addColumn('UNREACHABLETimeScheduled','integer', array('null' => true))
+                ->addColumn('UNREACHABLEnbEvent','integer', array('null' => true))
+                ->addColumn('UNREACHABLETimeAverageAck','integer', array('null' => false))
+                ->addColumn('UNREACHABLETimeAverageRecovery','integer', array('null' => false))
+                ->addColumn('UNDETERMINEDTimeScheduled','integer', array('null' => true))
+                ->addColumn('MaintenanceTime','integer', array('null' => true, "default" => 0))
+                ->addColumn('date_end','integer', array('null' => true))
+                ->addColumn('date_start','integer', array('null' => true))               
+                ->addIndex(array('log_id'), array('unique' => true))
+                ->addIndex(array('host_id'), array('unique' => false))
+                ->addIndex(array('date_start'), array('unique' => false))
+                ->addIndex(array('date_end'), array('unique' => false))
+                ->save();
+
+        $log_archive_last_status = $this->table('log_archive_last_status', array('id' => false, 'primary_key' => array('log_archive_last_status_id')));
+        $log_archive_last_status
+                ->addColumn('log_archive_last_status_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('host_id','integer', array('null' => false))
+                ->addColumn('service_id','integer', array('null' => false))
+                ->addColumn('host_name','string', array('limit' => 255, 'null' => true))
+                ->addColumn('service_description','string', array('limit' => 255, 'null' => true))
+                ->addColumn('status','string', array('limit' => 255, 'null' => true))
+                ->addColumn('ctime','integer', array('null' => false))
+                ->save();
+        
+        $log_archive_service = $this->table('log_archive_service', array('id' => false, 'primary_key' => array('log_id')));
+        $log_archive_service
+                ->addColumn('log_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('host_id','integer', array('null' => false, "default" => 0))
+                ->addColumn('service_id','integer', array('null' => false, "default" => 0))
+                ->addColumn('OKTimeScheduled','integer', array('null' => false, "default" => 0))
+                ->addColumn('OKnbEvent','integer', array('null' => false, "default" => 0))
+                ->addColumn('OKTimeAverageAck','integer', array('null' => false))
+                ->addColumn('OKTimeAverageRecovery','integer', array('null' => false))
+                ->addColumn('WARNINGTimeScheduled','integer', array('null' => false, "default" => 0))
+                ->addColumn('WARNINGnbEvent','integer', array('null' => false, "default" => 0))
+                ->addColumn('WARNINGTimeAverageAck','integer', array('null' => false))
+                ->addColumn('WARNINGTimeAverageRecovery','integer', array('null' => false))
+                ->addColumn('UNKNOWNTimeScheduled','integer', array('null' => false, "default" => 0))
+                ->addColumn('UNKNOWNnbEvent','integer', array('null' => false, "default" => 0))
+                ->addColumn('UNKNOWNTimeAverageAck','integer', array('null' => false))
+                ->addColumn('UNKNOWNTimeAverageRecovery','integer', array('null' => false))
+                ->addColumn('CRITICALTimeScheduled','integer', array('null' => false, "default" => 0))
+                ->addColumn('CRITICALnbEvent','integer', array('null' => false, "default" => 0))
+                ->addColumn('CRITICALTimeAverageAck','integer', array('null' => false))
+                ->addColumn('CRITICALTimeAverageRecovery','integer', array('null' => false))
+                ->addColumn('UNDETERMINEDTimeScheduled','integer', array('null' => false, "default" => 0))
+                ->addColumn('MaintenanceTime','integer', array('null' => true, "default" => 0))
+                ->addColumn('date_end','integer', array('null' => true))
+                ->addColumn('date_start','integer', array('null' => true))               
+                ->addIndex(array('host_id'), array('unique' => false))
+                ->addIndex(array('service_id'), array('unique' => false))
+                ->addIndex(array('date_start'), array('unique' => false))
+                ->addIndex(array('date_end'), array('unique' => false))
+                ->save();
+
+        $log_logs = $this->table('log_logs', array('id' => false, 'primary_key' => array('log_id')));
+        $log_logs
+                ->addColumn('log_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('ctime','integer', array('null' => true))
+                ->addColumn('host_id','integer', array('null' => true))
+                ->addColumn('host_name','string', array('limit' => 255, 'null' => true))
+                ->addColumn('instance_name','string', array('limit' => 255, 'null' => false))
+                ->addColumn('issue_id','integer', array('null' => false))
+                ->addColumn('msg_type','integer', array('null' => false))
+                ->addColumn('notification_cmd','string', array('limit' => 255, 'null' => true))
+                ->addColumn('notification_contact','string', array('limit' => 255, 'null' => true))
+                ->addColumn('output','text', array('null' => true))
+                ->addColumn('retry','integer', array('null' => true))
+                ->addColumn('service_description','string', array('limit' => 255, 'null' => true))
+                ->addColumn('retry','integer', array('null' => true))
+                ->addColumn('service_id','integer', array('null' => true))
+                ->addColumn('status','integer', array('null' => true))
+                ->addColumn('type','integer', array('null' => true))
+                ->addIndex(array('host_name'), array('unique' => false))
+                ->addIndex(array('service_description'), array('unique' => false))
+                ->addIndex(array('status'), array('unique' => false))
+                ->addIndex(array('instance_name'), array('unique' => false))
+                ->addIndex(array('ctime'), array('unique' => false))
+                ->addIndex(array('host_id', 'service_id', 'msg_type', 'status', 'ctime'), array('unique' => false))
+                ->addIndex(array('host_id', 'msg_type', 'status', 'ctime'), array('unique' => false))
+                ->addIndex(array('host_id', 'msg_type', 'status', 'ctime'), array('unique' => false))
+                ->save();
+        
+        $log_snmptt = $this->table('log_snmptt', array('id' => false, 'primary_key' => array('trap_id')));
+        $log_snmptt
+                ->addColumn('trap_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('trap_oid','text', array('null' => false))
+                ->addColumn('trap_ip','string', array('limit' => 50, 'null' => true))
+                ->addColumn('trap_community','string', array('limit' => 50, 'null' => true))
+                ->addColumn('trap_infos','text', array('null' => false))
+                ->save();
+               
+        $log_traps = $this->table('log_traps', array('id' => false, 'primary_key' => array('trap_id')));
+        $log_traps
+                ->addColumn('trap_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('trap_time','integer', array('null' => true))
+                ->addColumn('timeout','string', array('limit' => 50, 'null' => true))
+                ->addColumn('host_name','string', array('limit' => 255, 'null' => true))
+                ->addColumn('ip_address','string', array('limit' => 255, 'null' => true))
+                ->addColumn('agent_host_name','string', array('limit' => 255, 'null' => true))
+                ->addColumn('agent_ip_address','string', array('limit' => 255, 'null' => true))
+                ->addColumn('trap_oid','string', array('limit' => 512, 'null' => true))
+                ->addColumn('trap_name','string', array('limit' => 255, 'null' => true))
+                ->addColumn('vendor','string', array('limit' => 255, 'null' => true))
+                ->addColumn('status','integer', array('null' => true))
+                ->addColumn('severity_id','integer', array('null' => true))
+                ->addColumn('status','string', array('limit' => 255, 'null' => true))
+                ->addColumn('severity_id','integer', array('null' => true))
+                ->addColumn('severity_name','string', array('limit' => 255, 'null' => true))
+                ->addColumn('output_message','string', array('limit' => 255, 'null' => true))
+                ->addIndex(array('trap_id'), array('unique' => false))
+                ->addIndex(array('trap_time'), array('unique' => false))
+                ->save();
+              
+        $log_traps = $this->table('log_traps_args', array('id' => false, 'primary_key' => array('fk_log_traps')));
+        $log_traps
+                ->addColumn('fk_log_traps','integer', array('null' => false))
+                ->addColumn('arg_number','integer', array('null' => true))
+                ->addColumn('arg_oid','string', array('limit' => 255, 'null' => true))
+                ->addColumn('arg_value','string', array('limit' => 255, 'null' => true))
+                ->addColumn('trap_time','integer', array('null' => true))
+                ->addIndex(array('fk_log_traps'), array('unique' => false))
+                ->save();
+
+        $rt_acknowledgements = $this->table('rt_acknowledgements', array('id' => false, 'primary_key' => array('acknowledgement_id')));
+        $rt_acknowledgements
+                ->addColumn('acknowledgement_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('entry_time','integer', array('null' => false))
+                ->addColumn('host_id','integer', array('null' => false))
+                ->addColumn('service_id','integer', array('null' => true))
+                ->addColumn('author','string', array('limit' => 64, 'null' => true))
+                ->addColumn('comment_data','string', array('limit' => 255, 'null' => true))
+                ->addColumn('deletion_time','integer', array('null' => true))
+                ->addColumn('instance_id','integer', array('null' => true))
+                ->addColumn('notify_contacts','integer', array('null' => true))
+                ->addColumn('persistent_comment','integer', array('null' => true))
+                ->addColumn('state','integer', array('null' => true))
+                ->addColumn('sticky','integer', array('null' => true))
+                ->addColumn('type','integer', array('null' => true))
+                ->addForeignKey('host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('instance_id', 'rt_instances', 'instance_id', array('delete'=> 'SET NULL', 'update'=> 'RESTRICT'))
+                ->addIndex(array('entry_time', 'host_id', 'service_id'), array('unique' => true))
+                ->addIndex(array('host_id'), array('unique' => false))
+                ->addIndex(array('instance_id'), array('unique' => false))
+                ->addIndex(array('entry_time'), array('unique' => false))
+                ->save();
+        
+        $rt_acl = $this->table('rt_acl', array('id' => false, 'primary_key' => array('acl_id')));
+        $rt_acl
+                ->addColumn('acl_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('host_id','integer', array('null' => false))
+                ->addColumn('host_name','string', array('limit' => 255, 'null' => true))
+                ->addColumn('service_id','integer', array('null' => false))
+                ->addColumn('service_description','string', array('limit' => 255, 'null' => true))
+                ->addColumn('group_id','integer', array('null' => false))
+                ->addIndex(array('host_name'), array('unique' => false))
+                ->addIndex(array('service_description'), array('unique' => false))
+                ->addIndex(array('host_name', 'service_description', 'group_id'), array('unique' => true))
+                ->addIndex(array('host_id', 'service_id', 'group_id'), array('unique' => true))
+                ->addIndex(array('host_name', 'group_id'), array('unique' => true))
+                ->save();
+
+        $rt_comments = $this->table('rt_comments', array('id' => false, 'primary_key' => array('comment_id')));
+        $rt_comments
+                ->addColumn('comment_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('entry_time','integer', array('null' => false))
+                ->addColumn('host_id','integer', array('null' => false))
+                ->addColumn('service_id','integer', array('null' => true))
+                ->addColumn('author','string', array('limit' => 64, 'null' => true))
+                ->addColumn('data','text', array('null' => true))
+                ->addColumn('deletion_time','integer', array('null' => false))
+                ->addColumn('entry_type','integer', array('null' => false))
+                ->addColumn('expire_time','integer', array('null' => false))
+                ->addColumn('expires','integer', array('null' => false))
+                ->addColumn('instance_id','integer', array('null' => false))
+                ->addColumn('internal_id','integer', array('null' => false))
+                ->addColumn('persistent','integer', array('null' => false))
+                ->addColumn('source','integer', array('null' => false))
+                ->addColumn('type','integer', array('null' => false))
+                ->addForeignKey('host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('instance_id', 'rt_instances', 'instance_id', array('delete'=> 'SET NULL', 'update'=> 'RESTRICT'))
+                ->addIndex(array('entry_time', 'host_id', 'service_id'), array('unique' => true))
+                ->addIndex(array('internal_id'), array('unique' => false))
+                ->addIndex(array('host_id'), array('unique' => false))
+                ->addIndex(array('instance_id'), array('unique' => false))
+                ->save();
+        
+        $rt_downtimes = $this->table('rt_downtimes', array('id' => false, 'primary_key' => array('downtime_id')));
+        $rt_downtimes
+                ->addColumn('downtime_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('entry_time','integer', array('null' => false))
+                ->addColumn('host_id','integer', array('null' => false))
+                ->addColumn('service_id','integer', array('null' => false))
+                ->addColumn('author','string', array('limit' => 64, 'null' => true))
+                ->addColumn('cancelled','integer', array('null' => true))
+                ->addColumn('comment_data','text', array('null' => true))                
+                ->addColumn('deletion_time','integer', array('null' => true))
+                ->addColumn('duration','integer', array('null' => false))
+                ->addColumn('end_time','integer', array('null' => false))
+                ->addColumn('fixed','integer', array('null' => false))
+                ->addColumn('instance_id','integer', array('null' => false))
+                ->addColumn('internal_id','integer', array('null' => false))
+                ->addColumn('start_time','integer', array('null' => false))
+                ->addColumn('actual_start_time','integer', array('null' => false))
+                ->addColumn('started','integer', array('null' => false))
+                ->addColumn('triggered_by','integer', array('null' => false))
+                ->addColumn('type','integer', array('null' => false))
+                ->addColumn('is_recurring','integer', array('null' => false))
+                ->addColumn('recurring_interval','integer', array('null' => false))
+                ->addColumn('recurring_timeperiod','string', array('limit' => 200, 'null' => true))
+                ->addForeignKey('host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('instance_id', 'rt_instances', 'instance_id', array('delete'=> 'SET NULL', 'update'=> 'RESTRICT'))
+                ->addIndex(array('entry_time', 'host_id', 'service_id'), array('unique' => true))
+                ->addIndex(array('host_id'), array('unique' => false))
+                ->addIndex(array('instance_id'), array('unique' => false))
+                ->addIndex(array('entry_time'), array('unique' => false))
+                ->addIndex(array('host_id', 'start_time'), array('unique' => true))
+                ->save();
+        
+        $rt_eventhandlers = $this->table('rt_eventhandlers', array('id' => false, 'primary_key' => array('eventhandler_id')));
+        $rt_eventhandlers
+                ->addColumn('eventhandler_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('host_id','integer', array('null' => true))
+                ->addColumn('service_id','integer', array('null' => true))
+                ->addColumn('start_time','integer', array('null' => true))
+                ->addColumn('command_args','string', array('limit' => 255, 'null' => true))
+                ->addColumn('command_line','string', array('limit' => 255, 'null' => true))
+                ->addColumn('early_timeout','integer', array('null' => true))
+                ->addColumn('end_time','integer', array('null' => true))
+                ->addColumn('execution_time','integer', array('null' => true))
+                ->addColumn('output','string', array('limit' => 255, 'null' => true))
+                ->addColumn('return_code','integer', array('null' => true))
+                ->addColumn('state','text', array('null' => true))                
+                ->addColumn('state_type','integer', array('null' => true))
+                ->addColumn('timeout','integer', array('null' => false))
+                ->addColumn('type','integer', array('null' => false))
+                ->addForeignKey('host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('host_id', 'service_id', 'start_time'), array('unique' => true))
+                ->save();
+
+        $rt_flappingstatuses = $this->table('rt_flappingstatuses', array('id' => false, 'primary_key' => array('flappingstatus_id')));
+        $rt_flappingstatuses
+                ->addColumn('flappingstatus_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('host_id','integer', array('null' => true))
+                ->addColumn('service_id','integer', array('null' => true))
+                ->addColumn('event_time','integer', array('null' => true))
+                ->addColumn('comment_time','integer', array('null' => true))
+                ->addColumn('event_type','integer', array('null' => true))
+                ->addColumn('comment_time','integer', array('null' => true))
+                ->addColumn('event_type','integer', array('null' => true))
+                ->addColumn('high_threshold','integer', array('null' => true))
+                ->addColumn('internal_comment_id','integer', array('null' => true))
+                ->addColumn('low_threshold','integer', array('null' => true))
+                ->addColumn('percent_state_change','integer', array('null' => true))
+                ->addColumn('reason_type','integer', array('null' => true))
+                ->addColumn('type','integer', array('null' => true))
+                ->addForeignKey('host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('host_id', 'service_id', 'event_time'), array('unique' => true))
+                ->save();
+        
+        $rt_hostgroups = $this->table('rt_hostgroups', array('id' => false, 'primary_key' => array('hostgroup_id')));
+        $rt_hostgroups
+                ->addColumn('hostgroup_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('instance_id','integer', array('null' => false))
+                ->addColumn('name','string', array('limit' => 255, 'null' => false))
+                ->addColumn('action_url','string', array('limit' => 160, 'null' => true))
+                ->addColumn('alias','string', array('limit' => 255, 'null' => true))
+                ->addColumn('notes','string', array('limit' => 160, 'null' => true))
+                ->addColumn('notes_url','string', array('limit' => 160, 'null' => true))
+                ->addColumn('enabled','integer', array('null' => true))
+                ->addForeignKey('instance_id', 'rt_instances', 'instance_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('name', 'instance_id'), array('unique' => true))
+                ->save();
+       
+        $rt_hosts = $this->table('rt_hosts', array('id' => false, 'primary_key' => array('host_id')));
+        $rt_hosts
+                ->addColumn('host_id','integer', array('null' => false))
+                ->addColumn('name','string', array('limit' => 255, 'null' => false))
+                ->addColumn('instance_id','integer', array('null' => false))
+                ->addColumn('acknowledged','integer', array('null' => true))
+                ->addColumn('acknowledgement_type','integer', array('null' => true))
+                ->addColumn('action_url','string', array('limit' => 255, 'null' => true))
+                ->addColumn('active_checks','integer', array('null' => true))
+                ->addColumn('address','string', array('limit' => 75, 'null' => true))
+                ->addColumn('alias','string', array('limit' => 100, 'null' => true))
+                ->addColumn('check_attempt','integer', array('null' => true))
+                ->addColumn('check_command','text', array('null' => true))
+                ->addColumn('check_freshness','integer', array('null' => true))
+                ->addColumn('check_interval','integer', array('null' => true))
+                ->addColumn('check_period','string', array('limit' => 75, 'null' => true))
+                ->addColumn('check_type','integer', array('null' => true))
+                ->addColumn('checked','integer', array('null' => true))
+                ->addColumn('command_line','string', array('limit' => 75, 'null' => true))
+                ->addColumn('default_active_checks','integer', array('null' => true))
+                ->addColumn('default_event_handler_enabled','integer', array('null' => true))
+                ->addColumn('default_failure_prediction','integer', array('null' => true))
+                ->addColumn('default_flap_detection','integer', array('null' => true))
+                ->addColumn('default_notify','integer', array('null' => true))
+                ->addColumn('default_passive_checks','integer', array('null' => true))
+                ->addColumn('default_process_perfdata','integer', array('null' => true))
+                ->addColumn('check_pdisplay_nameeriod','string', array('limit' => 100, 'null' => true))
+                ->addColumn('enabled','integer', array('null' => true))
+                ->addColumn('event_handler','string', array('limit' => 255, 'null' => true))
+                ->addColumn('event_handler_enabled','integer', array('null' => true))
+                ->addColumn('execution_time','integer', array('null' => true))
+                ->addColumn('failure_prediction','integer', array('null' => true))
+                ->addColumn('first_notification_delay','integer', array('null' => true))
+                ->addColumn('flap_detection','integer', array('null' => true))
+                ->addColumn('flap_detection_on_down','integer', array('null' => true))
+                ->addColumn('flap_detection_on_unreachable','integer', array('null' => true))
+                ->addColumn('flap_detection_on_up','integer', array('null' => true))
+                ->addColumn('flapping','integer', array('null' => true))
+                ->addColumn('freshness_threshold','integer', array('null' => true))
+                ->addColumn('high_flap_threshold','integer', array('null' => true))
+                ->addColumn('icon_image','string', array('limit' => 255, 'null' => true))
+                ->addColumn('icon_image_alt','string', array('limit' => 255, 'null' => true))
+                ->addColumn('last_check','integer', array('null' => true))
+                ->addColumn('last_hard_state','integer', array('null' => true))
+                ->addColumn('last_hard_state_change','integer', array('null' => true))
+                ->addColumn('last_notification','integer', array('null' => true))
+                ->addColumn('last_state_change','integer', array('null' => true))
+                ->addColumn('last_time_down','integer', array('null' => true))
+                ->addColumn('last_time_unreachable','integer', array('null' => true))
+                ->addColumn('last_time_up','integer', array('null' => true))
                 ->addColumn('last_update','integer', array('null' => true))
-                ->addColumn('status','integer', array('null' => false, 'default' => 1))
-                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addColumn('latency','integer', array('null' => true))
+                ->addColumn('low_flap_threshold','integer', array('null' => true))
+                ->addColumn('max_check_attempts','integer', array('null' => true))
+                ->addColumn('modified_attributes','integer', array('null' => true))
+                ->addColumn('next_check','integer', array('null' => true))
+                ->addColumn('next_host_notification','integer', array('null' => true))
+                ->addColumn('no_more_notifications','integer', array('null' => true))
+                ->addColumn('notes','integer', array('null' => true))
+                ->addColumn('notes_url','string', array('limit' => 255, 'null' => true))
+                ->addColumn('notification_interval','integer', array('null' => true))
+                ->addColumn('notification_number','integer', array('null' => true))
+                ->addColumn('notification_period','string', array('limit' => 75, 'null' => true))
+                ->addColumn('notify','integer', array('null' => true))
+                ->addColumn('notify_on_down','integer', array('null' => true))
+                ->addColumn('notify_on_downtime','integer', array('null' => true))
+                ->addColumn('notify_on_flapping','integer', array('null' => true))
+                ->addColumn('notify_on_recovery','integer', array('null' => true))
+                ->addColumn('notify_on_unreachable','integer', array('null' => true))
+                ->addColumn('obsess_over_host','integer', array('null' => true))
+                ->addColumn('output','text', array('null' => true))
+                ->addColumn('passive_checks','integer', array('null' => true))
+                ->addColumn('percent_state_change','integer', array('null' => true))
+                ->addColumn('perfdata','text', array('null' => true))
+                ->addColumn('process_perfdata','integer', array('null' => true))
+                ->addColumn('real_state','integer', array('null' => true))
+                ->addColumn('retain_nonstatus_information','integer', array('null' => true))
+                ->addColumn('retain_status_information','integer', array('null' => true))
+                ->addColumn('retry_interval','integer', array('null' => true))
+                ->addColumn('scheduled_downtime_depth','integer', array('null' => true))
+                ->addColumn('should_be_scheduled','integer', array('null' => true))
+                ->addColumn('stalk_on_down','integer', array('null' => true))
+                ->addColumn('stalk_on_unreachable','integer', array('null' => true))
+                ->addColumn('stalk_on_up','integer', array('null' => true))
+                ->addColumn('state','integer', array('null' => true))
+                ->addColumn('state_type','integer', array('null' => true))
+                ->addColumn('statusmap_image','string', array('limit' => 255, 'null' => true))
+                ->addForeignKey('instance_id', 'rt_instances', 'instance_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('host_id'), array('unique' => false))
+                ->addIndex(array('instance_id'), array('unique' => false))
+                ->addIndex(array('name'), array('unique' => false))
                 ->save();
         
-        $cfg_acl_resources_cache = $this->table('cfg_acl_resources_cache', array('id' => false, 'primary_key' => array('organization_id', 'acl_resource_id', 'resource_type', 'resource_id')));
-        $cfg_acl_resources
-                ->addColumn('organization_id','integer', array('null' => false))
-                ->addColumn('acl_resource_id','integer', array('null' => false))
-                ->addColumn('resource_type','integer', array('null' => false))
-                ->addColumn('resource_id','integer', array('null' => false))
-                ->addIndex(array('organization_id'), array('unique' => false))
-                ->addIndex(array('acl_resource_id'), array('unique' => false))
-                ->addIndex(array('resource_type'), array('unique' => false))
-                ->addIndex(array('resource_id'), array('unique' => false))
-                ->save();
-
-        
-        $cfg_acl_resources_domains_relations = $this->table('cfg_acl_resources_domains_relations', array('id' => false, 'primary_key' => array('ardr_id')));
-        $cfg_acl_resources_domains_relations
-                ->addColumn('ardr_id','integer', array('identity' => true, 'null' => false))
-                ->addColumn('acl_resource_id','integer', array('null' => false))
-                ->addColumn('domain_id','integer', array('null' => true))
-                ->addColumn('type','integer', array('null' => false, 'default' => 0))
-                ->addColumn('resource_id','integer')
-                ->addIndex(array('acl_resource_id'), array('unique' => false))
-                ->addIndex(array('domain_id'), array('unique' => false))
-                ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->addForeignKey('domain_id', 'cfg_domains', 'domain_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+        $rt_hosts_hostgroups = $this->table('rt_hosts_hostgroups', array('id' => false, 'primary_key' => array('host_id', 'hostgroup_id')));
+        $rt_hosts_hostgroups
+                ->addColumn('host_id','integer', array('null' => false))
+                ->addColumn('hostgroup_id','integer', array('null' => false))
+                ->addForeignKey('host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('hostgroup_id', 'rt_hostgroups', 'hostgroup_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('host_id', 'hostgroup_id'), array('unique' => true))
+                ->addIndex(array('hostgroup_id'), array('unique' => false))
                 ->save();
         
-        
-        $cfg_acl_resources_environments_relations = $this->table('cfg_acl_resources_environments_relations', array('id' => false, 'primary_key' => array('ardr_id')));
-        $cfg_acl_resources_environments_relations
-                ->addColumn('arer_id','integer', array('identity' => true, 'null' => false))
-                ->addColumn('acl_resource_id','integer', array('null' => true))
-                ->addColumn('environment_id','integer', array('null' => true))
-                ->addColumn('type','integer', array('null' => false, 'default' => 0))
-                ->addIndex(array('acl_resource_id'), array('unique' => false))
-                ->addIndex(array('environment_id'), array('unique' => false))
-                ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->addForeignKey('environment_id', 'cfg_environments', 'environment_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
-         
-        $cfg_acl_resources_usergroups_relations = $this->table('cfg_acl_resources_usergroups_relations', array('id' => false, 'primary_key' => array('arugr_id')));
-        $cfg_acl_resources_usergroups_relations
-                ->addColumn('arugr_id','integer', array('identity' => true, 'null' => false))
-                ->addColumn('acl_resource_id','integer', array('null' => true))
-                ->addColumn('usergroup_id','integer', array('null' => true))
-                ->addIndex(array('acl_resource_id'), array('unique' => false))
-                ->addIndex(array('usergroup_id'), array('unique' => false))
-                ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->addForeignKey('usergroup_id', 'cfg_usergroups', 'usergroup_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
-          
-        $cfg_acl_resource_type = $this->table('cfg_acl_resource_type', array('id' => false, 'primary_key' => array('acl_resource_type_id'))); 
-        $cfg_acl_resource_type
-                ->addColumn('acl_resource_type_id','integer', array('identity' => true, 'null' => false))
-                ->addColumn('name','string',array('limit' => 255, 'null' => false))
-                ->addIndex(array('resource_type_id'), array('unique' => false))
+        $rt_hosts_hosts_dependencies = $this->table('rt_hosts_hosts_dependencies', array('id' => false, 'primary_key' => array('dependent_host_id', 'host_id')));
+        $rt_hosts_hosts_dependencies
+                ->addColumn('dependent_host_id','integer', array('null' => false))
+                ->addColumn('host_id','integer', array('null' => false))
+                ->addColumn('dependency_period','string', array('limit' => 75, 'null' => true))
+                ->addColumn('execution_failure_options','string', array('limit' => 15, 'null' => true))
+                ->addColumn('inherits_parent','integer', array('null' => false))
+                ->addColumn('notification_failure_options','string', array('limit' => 15, 'null' => true))
+                ->addForeignKey('host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('dependent_host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('dependent_host_id', 'host_id'), array('unique' => true))
+                ->addIndex(array('host_id'), array('unique' => false))
                 ->save();
         
-        $cfg_api_tokens = $this->table('cfg_api_tokens', array('id' => false, 'primary_key' => array('api_token_id')));
-        $cfg_api_tokens
-                ->addColumn('api_token_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('value','string', array('limit' => 200, 'null' => false))
-                ->addColumn('user_id','integer', array('signed' => false, 'null' => false))
-                ->addColumn('updatedat','timestamp', array('null' => false))
-                ->addIndex(array('user_id'), array('unique' => false))
-                ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
-        
-  
-        
-        $cfg_contacts = $this->table('cfg_contacts', array('id' => false, 'primary_key' => array('contact_id')));
-        $cfg_contacts
-                ->addColumn('contact_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('description','string', array('limit' => 200, 'null' => true))
-                ->addColumn('slug','string', array('limit' => 255, 'null' => true))
-                ->addColumn('timezone_id','integer', array('null' => false))
-                ->addForeignKey('timezone_id', 'cfg_timezones', 'timezone_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
-        
-        
-        $cfg_contacts_infos = $this->table('cfg_contacts_infos', array('id' => false, 'primary_key' => array('contact_info_id')));
-        $cfg_contacts_infos
-                ->addColumn('contact_info_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('info_key','string', array('limit' => 200, 'null' => false))
-                ->addColumn('info_value','string', array('limit' => 200, 'null' => false))
-                ->addColumn('contact_id','integer', array('null' => false))
-                ->addIndex(array('contact_id'), array('unique' => false))
-                ->addForeignKey('contact_id', 'cfg_contacts', 'contact_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
-        
-        $cfg_domains = $this->table('cfg_domains', array('id' => false, 'primary_key' => array('domain_id')));
-        $cfg_domains
-                ->addColumn('domain_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('name','string', array('limit' => 255, 'null' => false))
-                ->addColumn('slug','string', array('limit' => 255, 'null' => false))
-                ->addColumn('description','string', array('limit' => 255, 'null' => true))
-                ->addColumn('isroot','integer', array('null' => false))
+        $rt_hoststateevents = $this->table('rt_hoststateevents', array('id' => false, 'primary_key' => array('child_id', 'parent_id')));
+        $rt_hoststateevents
+                ->addColumn('child_id','integer', array('null' => false))
                 ->addColumn('parent_id','integer', array('null' => false))
-                ->addColumn('icon_id','integer', array('null' => true))
-                ->addIndex(array('name'), array('unique' => true))
-                ->addForeignKey('parent_id', 'cfg_domains', 'domain_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->addForeignKey('icon_id', 'cfg_binaries', 'binary_id', array('delete'=> 'SETNULL', 'update'=> 'RESTRICT'))
-                ->save();
-        
-        $cfg_environments = $this->table('cfg_environments', array('id' => false, 'primary_key' => array('environment_id')));
-        $cfg_environments
-                ->addColumn('environment_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('name','string', array('limit' => 255, 'null' => false))
-                ->addColumn('slug','string', array('limit' => 255, 'null' => false))
-                ->addColumn('description','string', array('limit' => 255, 'null' => true))
-                ->addColumn('level','integer', array('null' => false))
-                ->addColumn('organization_id','integer', array('null' => false))
-                ->addColumn('icon_id','integer', array('signed' => false, 'null' => true))
-                ->addIndex(array('name'), array('unique' => true))
-                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->addForeignKey('icon_id', 'cfg_binaries', 'binary_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
-        
-        $cfg_languages = $this->table('cfg_languages', array('id' => false, 'primary_key' => array('language_id')));
-        $cfg_languages
-                ->addColumn('language_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('name','string', array('limit' => 200, 'null' => false))
-                ->addColumn('slug','string', array('limit' => 255, 'null' => false))
-                ->addColumn('description','string', array('limit' => 200, 'null' => true))
-                ->addIndex(array('name'), array('unique' => true))
-                ->save();
-        
-        
-        $cfg_options = $this->table('cfg_options', array('id' => false, 'primary_key' => array('option_id')));
-        $cfg_options
-                ->addColumn('option_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('group','string', array('limit' => 255, 'null' => false, 'default' =>  "default"))
-                ->addColumn('key','string', array('limit' => 255, 'null' => true))
-                ->addColumn('value','string', array('limit' => 255, 'null' => true))
-                ->save();
-        
-        
-        $cfg_organizations = $this->table('cfg_organizations', array('id' => false, 'primary_key' => array('organization_id')));
-        $cfg_organizations
-                ->addColumn('organization_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('name','string', array('limit' => 255, 'null' => false))
-                ->addColumn('shortname','string', array('limit' => 100, 'null' => true))
-                ->addColumn('active','integer', array('default' =>  1))
-                ->addIndex(array('name'), array('unique' => true))
-                ->addIndex(array('shortname'), array('unique' => true))
-                ->save();
-        
-        
-        $cfg_organizations_modules_relations = $this->table('cfg_organizations_modules_relations', array('id' => false, 'primary_key' => array('organization_id', 'module_id')));
-        $cfg_organizations_modules_relations
-                ->addColumn('organization_id','integer', array('null' => false))
-                ->addColumn('module_id','integer', array('null' => false))
-                ->addColumn('is_activated','integer', array('null' => true, 'default' =>  0))
-                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE'))
-                ->addForeignKey('module_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE'))
-                ->save();
-        
-        
-        $cfg_organizations_users_relations = $this->table('cfg_organizations_users_relations', array('id' => false, 'primary_key' => array('organization_id', 'user_id')));
-        $cfg_organizations_users_relations
-                ->addColumn('organization_id','integer', array('null' => false))
-                ->addColumn('user_id','integer', array('null' => false))
-                ->addColumn('is_default','integer', array('null' => true, 'default' =>  0))
-                ->addColumn('is_admin','integer', array('null' => true, 'default' =>  0))
-                ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE'))
-                ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE'))
-                ->save();
-        
-        
-        $cfg_searches = $this->table('cfg_searches', array('id' => false, 'primary_key' => array('search_id')));
-        $cfg_searches
-                ->addColumn('search_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('user_id','integer', array('null' => false, 'signed' => false))
-                ->addColumn('route','string', array('limit' => 255, 'null' => false))
-                ->addColumn('label','string', array('limit' => 255, 'null' => false))
-                ->addColumn('searchText','string', array('limit' => MysqlAdapter::TEXT_REGULAR, 'null' => false))
-                ->addIndex(array('user_id', 'label', 'route'), array('unique' => true))
-                ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
-        
-        
-        
-        $cfg_tags = $this->table('cfg_tags', array('id' => false, 'primary_key' => array('tag_id')));
-        $cfg_tags
-                ->addColumn('tag_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('user_id','integer', array('null' => true, 'signed' => false))
-                ->addColumn('tagname','string', array('limit' => 100, 'null' => false))
-                ->addIndex(array('user_id', 'tagname'), array('unique' => true))
-                ->save();
-        
-        
-        $cfg_tags_contacts = $this->table('cfg_tags_contacts', array('id' => false, 'primary_key' => array('tag_id', 'resource_id')));
-        $cfg_tags_contacts
-                ->addColumn('tag_id','integer', array('null' => false))
-                ->addColumn('resource_id','integer', array('null' => false))
-                ->addColumn('template_id','integer', array('null' => true))
-                ->addForeignKey('tag_id', 'cfg_tags', 'tag_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->addForeignKey('resource_id', 'cfg_contacts', 'contact_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
-        
-        
-        $cfg_timezones = $this->table('cfg_timezones', array('id' => false, 'primary_key' => array('timezone_id')));
-        $cfg_timezones
-                ->addColumn('timezone_id','integer', array('identity' => true, 'null' => false))
-                ->addColumn('name','string', array('limit' => 200, 'null' => false))
-                ->addColumn('offset','string', array('limit' => 200, 'null' => false))
-                ->addColumn('dst_offset','string', array('limit' => 200, 'null' => false))
-                ->addColumn('description','string', array('limit' => 255, 'null' => true))
-                ->addColumn('slug','string', array('limit' => 255, 'null' => false))
-                ->addIndex(array('name'), array('unique' => true))
-                ->save();
-        
-        
-        $cfg_usergroups = $this->table('cfg_usergroups', array('id' => false, 'primary_key' => array('timezone_id')));
-        $cfg_usergroups
-                ->addColumn('usergroup_id','integer', array('identity' => true, 'null' => false))
-                ->addColumn('name','string', array('limit' => 255, 'null' => false))
-                ->addColumn('slug','string', array('limit' => 255, 'null' => false))
-                ->addColumn('description','string', array('limit' => 255, 'null' => true))
-                ->addColumn('status','integer', array('null' => false, 'default' => 1))
-                ->addColumn('locked','integer', array('null' => false, 'default' => 0))                
-                ->save();
-        
-        
-        $cfg_users = $this->table('cfg_users', array('id' => false, 'primary_key' => array('user_id')));
-        $cfg_users
-                ->addColumn('user_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('login','string', array('limit' => 200, 'null' => false))
-                ->addColumn('slug','string', array('limit' => 255, 'null' => false))
-                ->addColumn('password','string', array('limit' => 255, 'null' => false))
-                ->addColumn('is_admin','integer', array('null' => false, 'default' => 0))
-                ->addColumn('is_locked','integer', array('null' => false, 'default' => 0))       
-                ->addColumn('is_activated','integer', array('null' => false, 'default' => 1))
-                ->addColumn('is_password_old','boolean', array('null' => false, 'default' => 0))          
-                ->addColumn('language_id','integer', array('null' => true))
-                ->addColumn('timezone_id','integer', array('null' => true))
-                ->addColumn('contact_id','integer', array('null' => true))
-                ->addColumn('createdat','timestamp', array('null' => false))
-                ->addColumn('updatedat','timestamp', array('null' => false))
-                ->addColumn('auth_type','string', array('limit' => 200, 'null' => false))
-                ->addColumn('firstname','string', array('limit' => 200, 'null' => true))
-                ->addColumn('lastname','string', array('limit' => 200, 'null' => true))
-                ->addColumn('autologin_key','string', array('limit' => 200, 'null' => true))
-                ->addIndex(array('login'), array('unique' => true))
-                ->addIndex(array('language_id'), array('unique' => false))
-                ->addIndex(array('timezone_id'), array('unique' => false))
-                ->addIndex(array('contact_id'), array('unique' => false))
-                ->addForeignKey('language_id', 'cfg_languages', 'language_id', array('delete'=> 'setnull', 'update'=> 'RESTRICT'))
-                ->addForeignKey('timezone_id', 'cfg_timezones', 'timezone_id', array('delete'=> 'setnull', 'update'=> 'RESTRICT'))
-                ->addForeignKey('contact_id', 'cfg_contacts', 'contact_id', array('delete'=> 'setnull', 'update'=> 'RESTRICT'))
+                ->addForeignKey('child_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('parent_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('child_id', 'parent_id'), array('unique' => true))
+                ->addIndex(array('parent_id'), array('unique' => false))
                 ->save();
 
-
-        $cfg_users_timezones_relations = $this->table('cfg_users_timezones_relations', array('id' => false, 'primary_key' => array('user_id', 'timezone_id')));
-        $cfg_users_timezones_relations
-                ->addColumn('user_id','integer', array('signed' => false, 'null' => false))
-                ->addColumn('timezone_id','integer', array('null' => false))
-                ->addForeignKey('timezone_id', 'cfg_timezones', 'timezone_id', array('delete'=> 'CASCADE'))
-                ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE'))
+        $rt_hosts_hosts_parents = $this->table('rt_hosts_hosts_parents', array('id' => false, 'primary_key' => 'hoststateevent_id'));
+        $rt_hosts_hosts_parents
+                ->addColumn('hoststateevent_id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('end_time','integer', array('null' => true))
+                ->addColumn('host_id','integer', array('null' => false))
+                ->addColumn('start_time','integer', array('null' => false))
+                ->addColumn('state','integer', array('null' => false))
+                ->addColumn('last_update','integer', array('null' => false, 'default' => 0))
+                ->addColumn('in_downtime','integer', array('null' => false))
+                ->addColumn('ack_time','integer', array('null' => true))
+                ->addIndex(array('host_id', 'start_time'), array('unique' => true))
+                ->addIndex(array('start_time'), array('unique' => false))
+                ->addIndex(array('end_time'), array('unique' => false))
                 ->save();
         
-        $cfg_users_usergroups_relations = $this->table('cfg_users_usergroups_relations', array('id' => false, 'primary_key' => array('uugr_id')));
-        $cfg_users_usergroups_relations
-                ->addColumn('uugr_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('user_id','integer', array('signed' => false, 'null' => true))
-                ->addColumn('usergroup_id','integer', array('null' => true))
-                ->addIndex(array('user_id'), array('unique' => false))
-                ->addIndex(array('usergroup_id'), array('unique' => false))
-                ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->addForeignKey('usergroup_id', 'cfg_usergroups', 'usergroup_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+        $rt_index_data = $this->table('rt_index_data', array('id' => false, 'primary_key' => 'id'));
+        $rt_index_data
+                ->addColumn('id','integer', array('identity' => true, 'null' => false))
+                ->addColumn('host_name','string', array('limit' => 255, 'null' => true))
+                ->addColumn('host_id','integer', array('null' => true))
+                ->addColumn('service_description','string', array('limit' => 255, 'null' => true))
+                ->addColumn('service_id','integer', array('null' => true))
+                ->addColumn('check_interval','integer', array('null' => true))
+                ->addColumn('special','string', array('limit' => 1, 'null' => true, "default" => "0"))
+                ->addColumn('hidden','string', array('limit' => 1, 'null' => true, "default" => "0"))
+                ->addColumn('locked','string', array('limit' => 1, 'null' => true, "default" => "0"))
+                ->addColumn('trashed','string', array('limit' => 1, 'null' => true, "default" => "0"))
+                ->addColumn('must_be_rebuild','string', array('limit' => 1, 'null' => true, "default" => "0"))
+                ->addColumn('storage_type','string', array('limit' => 1, 'null' => true, "default" => "2"))
+                ->addColumn('to_delete','integer', array('null' => true, "default" => "0"))
+                ->addColumn('rrd_retention','integer', array('null' => true))
+                
+ 
+                ->addIndex(array('host_id', 'service_id'), array('unique' => true))
+                ->addIndex(array('start_thost_nameime'), array('unique' => false))
+                ->addIndex(array('service_description'), array('unique' => false))
+                ->addIndex(array('host_id'), array('unique' => false))
+                ->addIndex(array('service_id'), array('unique' => false))
+                ->addIndex(array('must_be_rebuild'), array('unique' => false))
+                ->addIndex(array('trashed'), array('unique' => false))
                 ->save();
-   
+        
     }
 }
-    
