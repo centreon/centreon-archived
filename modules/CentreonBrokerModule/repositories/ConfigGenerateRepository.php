@@ -354,9 +354,9 @@ class ConfigGenerateRepository
         $brokerModules = self::getBrokerModules();
         foreach ($brokerModules as $brokerModule) {
             $file->startElement("input");
-            $file->writeElement("name", "central-broker-extcommands-broker-poller-module-" . $brokerModule['config_id']);
+            $file->writeElement("name", "central-broker-extcommands-broker-poller-module-" . $brokerModule['poller_id']);
             $file->writeElement("type", "dump_fifo");
-            $file->writeElement("path", $this->baseConfig['%global_broker_data_directory%'] . "/central-broker-extcommands-broker-poller-module-" . $brokerModule['config_id'] . ".cmd");
+            $file->writeElement("path", $this->baseConfig['%global_broker_data_directory%'] . "/central-broker-extcommands-broker-poller-module-" . $brokerModule['poller_id'] . ".cmd");
             $file->writeElement("tagname", "extcommands-broker-" . $brokerModule['config_id']);
             $file->endElement();
         }
@@ -373,9 +373,9 @@ class ConfigGenerateRepository
         $brokerModules = self::getBrokerModules();
         foreach ($brokerModules as $brokerModule) {
             $file->startElement("input");
-            $file->writeElement("name", "central-broker-extcommands-engine-poller-module-" . $brokerModule['config_id']);
+            $file->writeElement("name", "central-broker-extcommands-engine-poller-module-" . $brokerModule['poller_id']);
             $file->writeElement("type", "dump_fifo");
-            $file->writeElement("path", $this->baseConfig['%global_broker_data_directory%'] . "/central-broker-extcommands-engine-poller-module-" . $brokerModule['config_id'] . ".cmd");
+            $file->writeElement("path", $this->baseConfig['%global_broker_data_directory%'] . "/central-broker-extcommands-engine-poller-module-" . $brokerModule['poller_id'] . ".cmd");
             $file->writeElement("tagname", "extcommands-engine-" . $brokerModule['config_id']);
             $file->endElement();
         }
