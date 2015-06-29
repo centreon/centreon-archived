@@ -197,7 +197,6 @@ class TagsRepository extends Repository
         }
         
         $query .= " ORDER BY tagname ASC";
-var_dump($query);
       
         $stmt = $dbconn->prepare($query);
         
