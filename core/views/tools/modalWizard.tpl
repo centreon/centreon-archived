@@ -1,3 +1,5 @@
+
+{include file="[Core]/form/validators.tpl"}
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 <h4>
@@ -84,5 +86,6 @@ $(function() {
     rules: (formValidRule["{$formName}"] === undefined ? {} : formValidRule["{$formName}"])
   });
 });
+
 </script>
-{include file="[Core]/form/validators.tpl"}
+

@@ -235,4 +235,9 @@
   }
     </script>
 {include file="[Core]/form/validators.tpl"}
+<script>
+    $("#{$formName}").centreonForm({
+    rules: (formValidRule["{$formName}"] === undefined ? {} : formValidRule["{$formName}"])
+    });
+</script>
 {/block}

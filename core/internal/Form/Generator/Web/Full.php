@@ -408,10 +408,10 @@ class Full extends Generator
         foreach ($validatorsRawList as $validator) {
             $validatorsFinalList[$validator['field_name']][] = array(
                 'call' => $validator['validator_name'],
-                'params' => $validator['params']
+                'params' => $validator['params'],
+                'label' => $validator['field_label']
             );
         }
-        
         return array('fieldScheme' => $validatorsFinalList);
     }
     

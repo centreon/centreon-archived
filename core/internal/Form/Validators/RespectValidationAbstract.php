@@ -36,7 +36,7 @@
 namespace Centreon\Internal\Form\Validators;
 
 use Respect\Validation\Validator as v;
-
+use Respect\Validation\Exceptions\NestedValidationExceptionInterface;
 /**
  * Description of RespectValidationAbstract
  *
@@ -80,25 +80,45 @@ abstract class RespectValidationAbstract implements ValidatorInterface
      * @param type $value
      * @return type
      */
-    public function validate($value, $params = array())
+    public function validate($value, $params = array(), $label = "")
     {
         $validators = $this->buildValidationChain();
         $callStr = $this->contextCall;
+        
         $obj = \Respect\Validation\Validator::$callStr();
         foreach ($validators as $func => $param) {
             $obj = call_user_func_array(array($obj, $func), $param);
         }
         
-        $response = $obj->validate($value);
+
+
+        $errorMessage = "";
+        $response = false;
+        $errors = array();
+        try{
+            $obj->setName($label)->assert($value);
+            $response = true;
+        } catch (NestedValidationExceptionInterface $exception) {
+            $errors = $exception->findMessages(array_keys($validators));
+            foreach($errors as $error){
+                $errorMessage .= $error.'<br/>';
+            }
+            
+            
+            //$errors = $exception->setName($label)->getFullMessage();
+        }
+        
+        
           
         if ($response) {
             $result = array('success' => true);
         } else {
             $result = array(
                 'success' => false,
-                'error' => _($this->sMessageError)
+                'error' => $errorMessage
             );
         }
+
         return $result;
     }
 
