@@ -40,7 +40,7 @@
     var self = this,
         $group = $("<div class='input-group'></div>");
     this.$btn = $("<button type='button' class='btnC btnDefault dropdown-toggle' data-toggle='dropdown' aria-expanded='false'><span class='legend'></span> <span class='caret'></span></button>");
-    this.$input = $("<input type='text' class='form-control'>");
+    this.$input = $("<input type='number' class='form-control'>");
     this.$listUnit = $("<ul class='dropdown-menu dropdown-menu-right' role='menu'></ul>");
     $.each(this.settings.units, function (idx, unit) {
       var $legend = $("<span class='legend'></span>").text(unit.legend),
@@ -107,12 +107,18 @@
    */
   CentreonInputWithUnit.prototype.setUnit = function ($el, refreshValue) {
     var legend = $el.find("span.legend").text(),
-        refreshValue = (refreshValue === undefined ? true : refreshValue);
+        refreshValue = (refreshValue === undefined ? true : refreshValue),
+        inputValue;
     this.$btn.find("span.legend").text(legend);
     this.$unit.val(legend);
 
     if (refreshValue) {
-      this.$elem.val(parseFloat(this.$input.val()) * this.getUnitByLegend(legend).multiple);
+      inputValue = parseFloat(this.$input.val());
+      if (isNaN(inputValue)) {
+        this.$elem.val("");
+      } else {
+        this.$elem.val(inputValue * this.getUnitByLegend(legend).multiple);
+      }
     }
   };
 
