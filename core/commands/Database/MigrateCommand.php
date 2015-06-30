@@ -126,7 +126,7 @@ class MigrateCommand extends AbstractCommand
         $migrationManager = new Manager($module, 'production');
         $cmd = $this->getPhinxCallLine() .'migrate ';
         $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
-        $cmd .= '-e '. $module;
+        $cmd .= ' -e '. $module;
         shell_exec($cmd);
     }
     

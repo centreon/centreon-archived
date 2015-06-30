@@ -1,6 +1,7 @@
 <?php
 
 use Phinx\Migration\AbstractMigration;
+use Phinx\Db\Adapter\MysqlAdapter;
 
 class FreshInstall extends AbstractMigration
 {
@@ -31,16 +32,17 @@ class FreshInstall extends AbstractMigration
         
         // Creation of table cfg_modules_hooks
         $cfg_modules_hooks = $this->table('cfg_modules_hooks', array('id' => false, 'primary_key' => array('hook_id', 'module_id')));
-        $cfg_modules_hooks->addColumn('hook_id', 'integer', array('signed' => false, 'null' => false))
+        $cfg_modules_hooks
+                ->addColumn('hook_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('module_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('module_hook_name', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('module_hook_description', 'string', array('limit' => 255, 'null' => false))
-                ->addForeignKey('hook_id', 'cfg_hooks', 'id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
+                ->addForeignKey('hook_id', 'cfg_hooks', 'hook_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
                 ->addForeignKey('module_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
                 ->save();
         
         // Creation of table cfg_modules_dependencies
-        $cfg_modules_dependencies = $this->table('cfg_modules_dependencies', array('id' => false, 'primary_key' => array('hook_id', 'module_id')));
+        $cfg_modules_dependencies = $this->table('cfg_modules_dependencies', array('id' => false, 'primary_key' => 'id'));
         $cfg_modules_dependencies->addColumn('id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('parent_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('child_id', 'integer', array('signed' => false, 'null' => false))
@@ -62,7 +64,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('menu_block', 'string', array('limit' => 10, 'null' => false, 'default' => 'submenu'))
                 ->addColumn('parent_id', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('module_id', 'integer', array('signed' => false, 'null' => false))
-                ->addForeignKey('parent_id', 'cfg_menus', 'id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
+                ->addForeignKey('parent_id', 'cfg_menus', 'menu_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
                 ->addForeignKey('module_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
                 ->save();
         
@@ -70,6 +72,7 @@ class FreshInstall extends AbstractMigration
         $cfg_binaries = $this->table('cfg_binaries', array('id' => false, 'primary_key' => array('binary_id')));
         $cfg_binaries->addColumn('binary_id', 'integer', array('signed' => false, 'identity' => true, 'null' => true))
                 ->addColumn('username', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('filename', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('checksum', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('mimetype', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('filetype', 'boolean', array('null' => false))
@@ -91,15 +94,15 @@ class FreshInstall extends AbstractMigration
         
         // Creation of table cfg_binary_type_binaries_relations
         $cfg_binary_type_binaries_relations = $this->table('cfg_binary_type_binaries_relations', array('id' => false, 'primary_key' => array('binary_type_id', 'binary_id')));
-        $cfg_binary_type_binaries_relations->addColumn('binary_type_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
-                ->addColumn('binary_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
+        $cfg_binary_type_binaries_relations->addColumn('binary_type_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('binary_id', 'integer', array('signed' => false, 'null' => false))
                 ->addForeignKey('binary_type_id', 'cfg_binary_type', 'binary_type_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
                 ->addForeignKey('binary_id', 'cfg_binaries', 'binary_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
                 ->save();
         
         // Creation of table cfg_bookmarks
         $cfg_bookmarks = $this->table('cfg_bookmarks', array('id' => false, 'primary_key' => array('bookmark_id')));
-        $cfg_bookmarks->addColumn('binary_id', 'integer', array('signed' => false, 'identity' => true,'null' => false))
+        $cfg_bookmarks->addColumn('bookmark_id', 'integer', array('signed' => false, 'identity' => true,'null' => false))
                 ->addColumn('user_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('label', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('type', 'string', array('limit' => 255, 'null' => false))
@@ -111,19 +114,19 @@ class FreshInstall extends AbstractMigration
                 ->save();
         
         // Creation of table cfg_forms
-        $cfg_forms = $this->table('cfg_forms', array('id' => false, 'primary_key' => array('form_id', 'module_id')));
+        $cfg_forms = $this->table('cfg_forms', array('id' => false, 'primary_key' => array('form_id')));
         $cfg_forms->addColumn('form_id', 'integer', array('signed' => false, 'identity' => true,'null' => false))
                 ->addColumn('name', 'string', array('limit' => 45, 'null' => false))
                 ->addColumn('route', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('redirect', 'boolean', array('null' => false, 'default' => 0))
                 ->addColumn('redirect_route', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('module_id', 'integer', array('signed' => false, 'null' => false))
-                ->addIndex(array('name'), array('unique' => true))
+                ->addIndex(array('route'), array('unique' => true))
                 ->addForeignKey('module_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
                 ->save();
         
         // Creation of table cdg_forms_sections
-        $cfg_forms_sections = $this->table('cfg_forms_sections', array('id' => false, 'primary_key' => array('section_id', 'form_id')));
+        $cfg_forms_sections = $this->table('cfg_forms_sections', array('id' => false, 'primary_key' => array('section_id')));
         $cfg_forms_sections->addColumn('section_id', 'integer', array('signed' => false, 'identity' => true,'null' => false))
                 ->addColumn('name', 'string', array('limit' => 45, 'null' => false))
                 ->addColumn('rank', 'integer', array('signed' => false, 'null' => false))
@@ -132,12 +135,12 @@ class FreshInstall extends AbstractMigration
                 ->save();
         
         // Creation of table cfg_forms_blocks
-        $cfg_forms_blocks = $this->table('cfg_forms_blocks', array('id' => false, 'primary_key' => array('block_id', 'section_id')));
+        $cfg_forms_blocks = $this->table('cfg_forms_blocks', array('id' => false, 'primary_key' => array('block_id')));
         $cfg_forms_blocks->addColumn('block_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('name', 'string', array('limit' => 45, 'null' => false))
                 ->addColumn('rank', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('section_id', 'integer', array('signed' => false, 'null' => false))
-                ->addForeignKey('section_id', 'cfg_forms_section', 'section_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
+                ->addForeignKey('section_id', 'cfg_forms_sections', 'section_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
                 ->save();
         
         // Creation of table cfg_forms_fields
@@ -160,6 +163,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('show_label', 'boolean', array('null' => false, 'default' => 1))
                 ->addColumn('module_id', 'integer', array('signed' => false, 'null' => false))
                 ->addForeignKey('module_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
+                ->addIndex(array('module_id'), array('unique' => false))
                 ->save();
         
         // Creation of table cfg_forms_blocks_fields_relations
@@ -173,7 +177,7 @@ class FreshInstall extends AbstractMigration
                 ->save();
         
         // Creation of table cfg_forms_validators
-        $cfg_forms_validators = $this->table('cfg_forms_validators', array('id' => false, 'primary_key' => array('block_id', 'field_id')));
+        $cfg_forms_validators = $this->table('cfg_forms_validators', array('id' => false, 'primary_key' => array('validator_id')));
         $cfg_forms_validators->addColumn('validator_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('name', 'string', array('limit' => 45, 'null' => false))
                 ->addColumn('route', 'string', array('limit' => 255, 'null' => false))
@@ -204,7 +208,41 @@ class FreshInstall extends AbstractMigration
         $cfg_forms_steps->addColumn('step_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('module_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('name', 'string', array('limit' => 45, 'null' => false))
-                ->addColumn('name', 'string', array('limit' => 45, 'null' => false))
+                ->addColumn('wizard_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('rank', 'integer', array('signed' => false, 'null' => false))
                 ->save();
+        
+        // Creation of table cfg_forms_steps_fields_relations
+        $cfg_forms_steps_fields_relations = $this->table('cfg_forms_steps_fields_relations', array('id' => false, 'primary_key' => array('step_id', 'field_id')));
+        $cfg_forms_steps_fields_relations->addColumn('step_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('field_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('rank', 'integer', array('signed' => false, 'null' => false))
+                ->addForeignKey('step_id', 'cfg_forms_steps', 'step_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
+                ->addForeignKey('field_id', 'cfg_forms_fields', 'field_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
+                ->addIndex(array('field_id'), array('unique' => false))
+                ->addIndex(array('step_id'), array('unique' => false))
+                ->save();
+    }
+    
+    /**
+    * Migrate Up.
+    */
+    public function up()
+    {
+        $this->execute('INSERT INTO cfg_informations ("key", "value") values ("version", "2.99.2")');
+        
+        $this->execute('INSERT INTO cfg_timezones ("name", "description", "offset", "dst_offset") values ("Africa\/Abidjan", "", "+00:00", "+00:00")');
+        $this->execute('INSERT INTO cfg_timezones ("name", "description", "offset", "dst_offset") values ("Africa\/Accra", "", "+00:00", "+00:00")');
+        
+     
+        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot") values (1, "Network", "network", "Network domain", 1)');
+        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot") values (2, "Hardware", "hardware", "Hardware domain", 1)');
+        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot") values (3, "System", "system", "System domain", 1)');
+        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot") values (4, "Application", "application", "Application domain", 1)');
+        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (5, "CPU", "cpu", "Cpu domain", 1, 3)');
+        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (6, "Memory", "memory", "Memory domain", 1, 3)');
+        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (7, "Swap", "swap", "Swap domain", 1, 3)');
+        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (8, "FileSystem", "filesystem", "FileSystem domain", 1, 3)');
+        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (9, "Traffic", "traffic", "Traffic domain", 1, 2)');
     }
 }

@@ -52,7 +52,7 @@ use Centreon\Internal\Hook;
 use Centreon\Models\Module;
 use Centreon\Internal\Di;
 use Centreon\Internal\Install\Db;
-use Centreon\Internal\Database\Migrate;
+use Centreon\Internal\Installer\Migration\Manager;
 
 /**
  * 
@@ -157,7 +157,13 @@ abstract class AbstractModuleInstaller
         $this->versionManager->setTemporaryVersion('install', true);
         
         // Install DB
-        $this->installDb();
+        //$this->installDb();
+        $migrationManager = new Manager($this->moduleSlug, 'production');
+        $migrationManager->generateConfiguration();
+        $cmd = $this->getPhinxCallLine() .'migrate ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= ' -e '. $this->moduleSlug;
+        shell_exec($cmd);
         
         // Install menu
         $this->installMenu();
@@ -560,9 +566,11 @@ abstract class AbstractModuleInstaller
             $this->installValidators();
             
             $myFormFiles = glob($this->moduleDirectory. '/install/forms/*.xml');
+            /*
             foreach ($myFormFiles as $formFile) {
                 Form::installFromXml($this->moduleId, $formFile);
             }
+            */
             $message = $this->colorizeMessage(_("     Done"), 'green');
             $this->displayOperationMessage($message);
         } catch (FilesystemException $ex) {
@@ -719,5 +727,16 @@ abstract class AbstractModuleInstaller
                 self::parseMenuArray($moduleId, $menu['menus'], $menu['short_name']);
             }
         }
+    }
+    /**
+     * 
+     * @return string
+     */
+    private function getPhinxCallLine()
+    {
+        $di = Di::getDefault();
+        $centreonPath = $di->get('config')->get('global', 'centreon_path');
+        $callCmd = 'php ' . $centreonPath . '/vendor/bin/phinx ';
+        return $callCmd;
     }
 }

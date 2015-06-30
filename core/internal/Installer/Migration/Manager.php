@@ -201,7 +201,8 @@ class Manager
         
         // Init bootstrap
         $configurationFileContent .= '    $bootstrapInit = new \Centreon\Internal\Bootstrap();' . "\n";
-        $configurationFileContent .= '    $bootstrapInit->init();' . "\n\n";
+        $configurationFileContent .= '    $sectionToInit = array("configuration", "database", "cache", "logger", "organization", "events");'. "\n";
+        $configurationFileContent .= '    $bootstrapInit->init($sectionToInit);' . "\n\n";
         
         // get DbConnector
         $configurationFileContent .= '    $di = Di::getDefault();' . "\n";
@@ -223,7 +224,7 @@ class Manager
         $configurationFileContent .= '"' . $this->getMigrationTable() . '",' . "\n";
         $configurationFileContent .= '            "default_database" => ';
         $configurationFileContent .= '"centreon",' . "\n";
-        $configurationFileContent .= '            "centreon" => array(' . "\n";
+        $configurationFileContent .= '            "'.$this->moduleSlug.'" => array(' . "\n";
         $configurationFileContent .= '                "connection" => $dbConnector'  . "\n";
         $configurationFileContent .= '           )' . "\n";
         $configurationFileContent .= '       )' . "\n";
