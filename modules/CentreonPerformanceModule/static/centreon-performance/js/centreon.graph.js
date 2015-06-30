@@ -83,6 +83,10 @@ function addChart( graphId, serviceId, startTime, endTime ) {
           show: false
         }
       }));
+    },
+    error: function( jqXHR, textStatus, errorThrown ) {
+      $response = $.parseJSON(jqXHR.responseText);
+      $("#" + graphId).html($response.error);
     }
   });
 }
@@ -108,6 +112,15 @@ function updateChart( startTime, endTime ) {
         charts[ idx ].load({
           columns: columns
         });
+      },
+      statusCode: {
+        500: function() {
+          alert('error 500');
+        }
+      },
+      error: function( jqXHR, textStatus, errorThrown ) {
+        $response = $.parseJSON(jqXHR.responseText);
+        $("#" + graphId).html($response.error);
       }
     });
   });

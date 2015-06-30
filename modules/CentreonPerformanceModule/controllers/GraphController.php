@@ -95,60 +95,67 @@ class GraphController extends Controller
      */
     public function graphDataAction()
     {
-        $router = Di::getDefault()->get('router');
-        /* Get post information */
-        $end = $router->request()->param('end_time', time());
-        $start = $router->request()->param('start_time', $end - (3600 * 72));
-        $serviceId = $router->request()->param('service_id');
-        if (is_null($serviceId)) {
-            // @todo Error http
-        }
-
-        $service = new ServiceGraphRepository($serviceId, $start, $end);
-
-        $data = array();
-        $serviceData = $service->getValues(200);
-        /* Get times and convert for javascript */
-        $data['times'] = array_keys($serviceData[0]['data']);
-        $data['times'] = array_map(function($time) {
-            return $time * 1000;
-        }, $data['times']);
-        $data['metrics'] = array();
-        /* Check unit for human readable */
-        $units = array();
-        foreach ($serviceData as $metric) {
-            if (false === isset($units[$metric['unit']])) {
-                $units[$metric['unit']] = 0;
+        try {
+            $router = Di::getDefault()->get('router');
+            /* Get post information */
+            $end = $router->request()->param('end_time', time());
+            $start = $router->request()->param('start_time', $end - (3600 * 72));
+            $serviceId = $router->request()->param('service_id');
+            if (is_null($serviceId)) {
+                throw new \Exception("Can't get service id");
             }
-            $values = array_map(function($value) {
-                if (strval($value) == "NAN") {
-                    return 0;
+
+            $service = new ServiceGraphRepository($serviceId, $start, $end);
+
+            $data = array();
+            $serviceData = $service->getValues(200);
+            /* Get times and convert for javascript */
+            $data['times'] = array_keys($serviceData[0]['data']);
+            $data['times'] = array_map(function($time) {
+                return $time * 1000;
+            }, $data['times']);
+            $data['metrics'] = array();
+            /* Check unit for human readable */
+            $units = array();
+            foreach ($serviceData as $metric) {
+                if (false === isset($units[$metric['unit']])) {
+                    $units[$metric['unit']] = 0;
                 }
-                return $value;
-            }, $metric['data']);
-            $factor = HumanReadable::getFactor($values);
-            if ($units[$metric['unit']] < $factor) {
-                $units[$metric['unit']] = $factor;
-            }
-        }
-
-        /* Convert data for c3js */
-        foreach ($serviceData as $metric) {
-            $metric['data'] = array_values($metric['data']);
-            $metric['data'] = array_map(function($data) {
-                if (strval($data) == "NAN") {
-                    return null;
+                $values = array_map(function($value) {
+                    if (strval($value) == "NAN") {
+                        return 0;
+                    }
+                    return $value;
+                }, $metric['data']);
+                $factor = HumanReadable::getFactor($values);
+                if ($units[$metric['unit']] < $factor) {
+                    $units[$metric['unit']] = $factor;
                 }
-                return $data;
-            }, $metric['data']);
-            $metric['data'] = HumanReadable::convertArrayWithFactor($metric['data'], $metric['unit'], $units[$metric['unit']], 3);
-            if (in_array($metric['unit'], array_keys(HumanReadable::$units))) {
-                $metric['unit'] = HumanReadable::$units[$metric['unit']]['units'][$units[$metric['unit']]];
             }
-            $data['metrics'][] = $metric;
-        }
 
-        $router->response()->json($data);
+            /* Convert data for c3js */
+            foreach ($serviceData as $metric) {
+                $metric['data'] = array_values($metric['data']);
+                $metric['data'] = array_map(function($data) {
+                    if (strval($data) == "NAN") {
+                        return null;
+                    }
+                    return $data;
+                }, $metric['data']);
+                $metric['data'] = HumanReadable::convertArrayWithFactor($metric['data'], $metric['unit'], $units[$metric['unit']], 3);
+                if (in_array($metric['unit'], array_keys(HumanReadable::$units))) {
+                    $metric['unit'] = HumanReadable::$units[$metric['unit']]['units'][$units[$metric['unit']]];
+                }
+                $data['metrics'][] = $metric;
+            }
+
+            $router->response()->json($data);
+        } catch (\Exception $e) {
+            $router->response()->code(500)->json(array(
+                'success' => false,
+                'error' => $e->getMessage()
+            ));
+        }
     }
 
 
