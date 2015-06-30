@@ -56,26 +56,26 @@ class FreshInstall extends AbstractMigration
 
         $cfg_centreonbroker = $this->table('cfg_centreonbroker', array('id' => false, 'primary_key' => 'config_id'));
         $cfg_centreonbroker
-                ->addColumn('config_id','integer', array('identity' => true, 'null' => false))
-                ->addColumn('poller_id','integer', array('null' => false))
+                ->addColumn('config_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
+                ->addColumn('poller_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('config_name','string',array('limit' => 100, 'null' => false))
-                ->addColumn('flush_logs','integer', array('null' => true))
-                ->addColumn('write_timestamp','integer', array('null' => true))
-                ->addColumn('write_thread_id','integer', array('null' => true))
-                ->addColumn('event_queue_max_size','integer', array('null' => true))
+                ->addColumn('flush_logs','integer', array('signed' => false, 'null' => true))
+                ->addColumn('write_timestamp','integer', array('signed' => false, 'null' => true))
+                ->addColumn('write_thread_id','integer', array('signed' => false, 'null' => true))
+                ->addColumn('event_queue_max_size','integer', array('signed' => false, 'null' => true))
                 ->addForeignKey('poller_id', 'cfg_pollers', 'poller_id', array('delete'=> 'CASCADE'))
                 ->save();
         
         $cfg_centreonbroker_info = $this->table('cfg_centreonbroker_info', array('id' => false, 'primary_key' => array('config_id', 'config_key')));
         $cfg_centreonbroker_info
-                ->addColumn('config_id','integer', array('null' => false))
+                ->addColumn('config_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('config_key','string', array('limit' => 255,'null' => false))
                 ->addColumn('config_value','string',array('limit' => 255, 'null' => false))
                 ->addColumn('config_group','string',array('limit' => 50, 'null' => false))
-                ->addColumn('config_group_id','integer', array('null' => true))
-                ->addColumn('grp_level','integer', array('null' => false, "default" => "0"))
-                ->addColumn('subgrp_id','integer', array('null' => true))
-                ->addColumn('parent_grp_id','integer', array('null' => true))
+                ->addColumn('config_group_id','integer', array('signed' => false, 'null' => true))
+                ->addColumn('grp_level','integer', array('signed' => false, 'null' => false, "default" => "0"))
+                ->addColumn('subgrp_id','integer', array('signed' => false, 'null' => true))
+                ->addColumn('parent_grp_id','integer', array('signed' => false, 'null' => true))
                 ->addIndex(array('config_id'), array('unique' => false))
                 ->addIndex(array('config_id', 'config_group'), array('unique' => false))
                 ->addForeignKey('config_id', 'cfg_centreonbroker', 'config_id', array('delete'=> 'CASCADE', 'update' => "RESTRICT"))
@@ -83,7 +83,7 @@ class FreshInstall extends AbstractMigration
         
         $cfg_centreonbroker_paths = $this->table('cfg_centreonbroker_paths', array('id' => false, 'primary_key' => 'poller_id'));
         $cfg_centreonbroker_paths
-                ->addColumn('poller_id','integer', array('null' => false))
+                ->addColumn('poller_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('directory_config','string', array('limit' => 255,'null' => false))
                 ->addColumn('directory_modules','string',array('limit' => 255, 'null' => false))
                 ->addColumn('directory_data','string',array('limit' => 255, 'null' => false))
@@ -96,7 +96,7 @@ class FreshInstall extends AbstractMigration
         
         $cfg_centreonbroker_pollervalues = $this->table('cfg_centreonbroker_pollervalues', array('id' => false, 'primary_key' => array('poller_id', 'name')));
         $cfg_centreonbroker_pollervalues
-                ->addColumn('poller_id','integer', array('null' => false))
+                ->addColumn('poller_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('name','string', array('limit' => 255,'null' => false))
                 ->addColumn('value','string',array('limit' => 255, 'null' => false))
                 ->addForeignKey('poller_id', 'cfg_pollers', 'poller_id', array('delete'=> 'CASCADE'))
