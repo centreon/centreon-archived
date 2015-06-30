@@ -601,7 +601,7 @@ class HostController extends FormController
      * @method get
      * @route /host/tag/formlist
      */
-     public function hostTagsAction()
+    public function hostTagsAction()
     {
         $di = Di::getDefault();
         $router = $di->get('router');
@@ -609,5 +609,51 @@ class HostController extends FormController
         $list = TagsRepository::getGlobalList('host');
 
         $router->response()->json($list);
+    }
+
+    /**
+     * Get host snmp version list
+     *
+     * @method get
+     * @route /host/snmp-version/formlist
+     */
+    public function hostSnmpVersionsAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $list = array(
+            array("id" => "1", "text" => "1"),
+            array("id" => "2c", "text" => "2c"),
+            array("id" => "3", "text" => "3")
+        );
+
+        $router->response()->json($list);
+    }
+
+    /**
+     * Get snmp version for a specific host
+     *
+     * @method get
+     * @route /host/[i:id]/snmp-version
+     */
+    public function snmpVersionForHostAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        $requestParam = $this->getParams('named');
+
+
+        $snmpVersionParam = Host::getParameters($requestParam['id'], 'host_snmp_version');
+
+        $snmpVersion = array();
+        if (isset($snmpVersionParam['host_snmp_version'])) {
+            $snmpVersion = array(
+                "id" => $snmpVersionParam['host_snmp_version'],
+                "text" => $snmpVersionParam['host_snmp_version']
+            );
+        }
+
+        $router->response()->json($snmpVersion);
     }
 }

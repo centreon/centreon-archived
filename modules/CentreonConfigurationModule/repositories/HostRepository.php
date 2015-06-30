@@ -651,7 +651,7 @@ class HostRepository extends Repository
             foreach ($aHostTemplateServiceTemplates as $oHostTemplateServiceTemplate) {
                 $merge = true;
                 foreach ($aHostServiceTemplates as $oHostServiceTemplate) {
-                    if ($oHostTemplateServiceTemplate['service_description'] === $oHostServiceTemplate['service_description']) {
+                    if ($oHostTemplateServiceTemplate['service_alias'] === $oHostServiceTemplate['service_alias']) {
                         $merge = false;
                     }
                 }
@@ -673,7 +673,7 @@ class HostRepository extends Repository
             );
         $repository::setObjectName("Service");
         $repository::setObjectClass("\CentreonConfiguration\\Models\\Service");
-        $oModel       = "CentreonConfiguration\Models\Service";
+        $oModel = "CentreonConfiguration\Models\Service";
 
         $oSlugify = new CentreonSlugify($oModel, $repository);
         
@@ -681,7 +681,7 @@ class HostRepository extends Repository
         
         // create services which don't yet exist
         foreach ($aHostServiceTemplates as $oHostServiceTemplate) {
-            if (!in_array($oHostServiceTemplate['service_description'], $aServicesDescription)) {
+            if (!in_array($oHostServiceTemplate['service_alias'], $aServicesDescription)) {
                 $sSlug = $oSlugify->slug($oHostServiceTemplate['service_alias']);
                 
                 $newService['service_slug'] = $sSlug;            
