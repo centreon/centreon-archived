@@ -37,7 +37,7 @@
 /**
  * Description of 20150617131647_fresh_install
  *
- * @author bsauveton
+ * @author tmechouet
  */
 use Phinx\Migration\AbstractMigration;
 
