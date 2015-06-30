@@ -58,6 +58,8 @@
             "ajax": "{url_for url=$objectUrl}",
             "serverSide": true,
             "length": 25,
+           // "pageLength": 10,  use this to change default page lenght
+            "bStateSave": true,
             "lengthMenu": [[10, 25, 50], [10, 25, 50]],
             "language": {
                 "lengthMenu": "_MENU_",
