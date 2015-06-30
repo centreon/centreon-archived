@@ -220,12 +220,8 @@ class Template extends \Smarty
      */
     public function display($template = null, $cache_id = null, $compile_id = null, $parent = null)
     {
-        if ($this->templateFile === "") {
-            $this->templateFile = $template;
-        }
-        $this->loadResources();
-        $this->assign('customJs', $this->customJs);
-        parent::display($this->templateFile, $cache_id, $compile_id, $parent);
+        $response = Di::getDefault()->get('router')->response();
+        $response->body($this->fetch($template, $cache_id, $compile_id, $parent));
     }
     
     /**
