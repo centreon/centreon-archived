@@ -279,22 +279,54 @@ sub insert_result {
             return 1;
        }
     }
+    if (!defined($options{hs_sth})) {
+        $self->{db_centreon}->commit();
+        return 0;
+    }
     
     # In Oracle 11: IGNORE_ROW_ON_DUPKEY_INDEX 
     # MS SQL: IGNORE_DUP_KEY
     # Postgres: ???
-    ($status, $sth) = $self->{db_centreon}->query('INSERT IGNORE INTO cfg_acl_resources_cache VALUES (' . $self->{organization_id} . ', ' . $options{acl_resource_id} . ', ?, ?)', prepare_only => 1);
+    my $prepare_str = '(' . $self->{organization_id} . ', ' . $options{acl_resource_id} . ', ?, ?)';
+    for (my $i = 1; $i < $self->{config}{sql_bulk}; $i++) {
+        $prepare_str .= ', (' . $self->{organization_id} . ', ' . $options{acl_resource_id} . ', ?, ?)';
+    }
+    ($status, $sth) = $self->{db_centreon}->query('INSERT IGNORE INTO cfg_acl_resources_cache VALUES ' . $prepare_str, prepare_only => 1);
     my $rows = [];
     my %host_insert = ();
     my $i = 0;
+    my @array_binds = ();
     while (my $row = ( shift(@$rows) || # get row from cache, or reload cache:
                        shift(@{$rows = $options{hs_sth}->fetchall_arrayref(undef, $self->{config}{sql_fetch})||[]})) ) {
-        $i++;
+        
         if (!defined($host_insert{$$row[0]})) {
             $host_insert{$$row[0]} = 1;
-            return 1 if ($self->insert_execute(sth => $sth, bind => [1, $$row[0]]));
+            push @array_binds, 1, $$row[0];
+            $i++;
+            if ($i == $self->{config}{sql_bulk}) {
+                return 1 if ($self->insert_execute(sth => $sth, bind => \@array_binds));
+                $i = 0;
+                @array_binds = ();
+            }
         }
-        return 1 if ($self->insert_execute(sth => $sth, bind => [2, $$row[1]]));
+        
+        push @array_binds, 2, $$row[1];
+        $i++;
+        if ($i == $self->{config}{sql_bulk}) {
+            return 1 if ($self->insert_execute(sth => $sth, bind => \@array_binds));
+            $i = 0;
+            @array_binds = ();
+        }
+    }
+    
+    if (scalar(@array_binds) > 0) {
+        my $query = 'INSERT IGNORE INTO cfg_acl_resources_cache VALUES (' . $self->{organization_id} . ', ' . $options{acl_resource_id} . ', ?, ?)';
+        my $num = scalar(@array_binds) / 2;
+        for (my $i = 1; $i < $num; $i++) {
+            $query .= ', (' . $self->{organization_id} . ', ' . $options{acl_resource_id} . ', ?, ?)';
+        }
+        ($status, $sth) = $self->{db_centreon}->query($query, prepare_only => 1);
+        return 1 if ($self->insert_execute(sth => $sth, bind => \@array_binds));
     }
     
     $self->{db_centreon}->commit();
@@ -316,11 +348,6 @@ sub action_aclresync {
         ($status, $sth) = $self->acl_resource_list_hs(resource_config => $resource_configs->{$acl_resource_id});
         if ($status == -1) {
             return 1;
-        }
-
-        if ($status == 2) {
-            $self->{logger}->writeLogDebug("centreondacl: organization $self->{organization_id} acl resource $acl_resource_id : finished resync (emtpy resource)");
-            next;
         }
 
         $status = $self->insert_result(acl_resource_id => $acl_resource_id, hs_sth => $sth, first_request => "DELETE FROM cfg_acl_resources_cache WHERE organization_id = '" . $self->{organization_id} . "' AND acl_resource_id = " . $acl_resource_id);
@@ -400,7 +427,7 @@ sub run {
     while (1) {
         # we try to do all we can
         my $rev = zmq_poll($self->{poll}, 5000);
-        if ($rev == 0 && $self->{stop} == 1) {
+        if (defined($rev) && $rev == 0 && $self->{stop} == 1) {
             $self->{logger}->writeLogInfo("centreond-acl $$ has quit");
             zmq_close($socket);
             exit(0);
@@ -408,7 +435,7 @@ sub run {
 
         # Check if we need to quit
         if ($on_demand == 1) {
-            if ($rev == 0) {
+            if (defined($rev) && $rev == 0) {
                 if (time() - $on_demand_time > $self->{config}{on_demand_time}) {
                     $self->{logger}->writeLogInfo("centreond-acl $$ has quit");
                     zmq_close($socket);
