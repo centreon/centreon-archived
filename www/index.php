@@ -64,7 +64,6 @@ if (file_exists("install.php") && (isset($requestUri[2]) && ($requestUri[2] != '
     $router = \Centreon\Internal\Di::getDefault()->get('router');
     try {
         $router->dispatch();
-        $router->response()->send();
     } catch (\Exception $e) {
         // Something wrong happens during request processing
         // If we are in "dev" environment, we are dumping a raw text-only stacktrace full screen
