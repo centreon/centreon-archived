@@ -189,7 +189,7 @@
                     "stats": [
                       {
                         "type": "stats",
-                        "name": "stats-central-rrd",
+                        "name": "central-rrd-stats",
                         "fifo": "%global_broker_data_directory%/central-rrd.stats"
                       }
                     ]
