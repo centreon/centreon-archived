@@ -130,6 +130,15 @@ class HostController extends FormController
                 
         $myDatatable = new HostDatatable($this->getParams('get'), $this->objectClass);
         $myDataForDatatable = $myDatatable->getDatas();
+
+        /* Secure strings */
+        for ($i = 0; $i < count($myDataForDatatable['data']); $i++) {
+            foreach ($myDataForDatatable['data'] as $key => $value) {
+                if (is_string($value)) {
+                    $myDataForDatatable['data'][$key] = String::escapeSecure($value);
+                }
+            }
+        }
           
         $router->response()->json($myDataForDatatable);
     }
