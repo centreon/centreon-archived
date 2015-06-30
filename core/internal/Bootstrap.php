@@ -235,7 +235,7 @@ class Bootstrap
                                 $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), 0);
                                 $response->code(403)->json(array("message" => "CSRF Token is no valid"));
                             } else {
-                                if ($tokenValue == '' || Csrf::mustBeGenerate($request->method())) {
+                                if (Csrf::mustBeGenerate($request->method())) {
                                     /* Generate and send a new csrf cookie */
                                     $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), 0);
                                 }
