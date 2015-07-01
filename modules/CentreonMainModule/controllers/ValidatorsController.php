@@ -161,7 +161,11 @@ class ValidatorsController extends Controller
         $aParams = array('object' => $params['object'], 'extraParams' => $params);
         
         $oValidator = new Unique();
-        echo json_encode($oValidator->validate($value, $aParams, static::$sContext));
+        
+        
+        $this->router->response()->json($oValidator->validate($value, $aParams, static::$sContext));
+        //die('test');
+        //echo json_encode($oValidator->validate($value, $aParams, static::$sContext));
         
        
     }

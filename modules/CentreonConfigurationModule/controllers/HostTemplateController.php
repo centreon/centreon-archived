@@ -186,8 +186,18 @@ class HostTemplateController extends FormController
         
         $id = parent::createAction(false);
         
+        
+        
+        
+        
         if (count($macroList) > 0) {
-            CustomMacroRepository::saveHostCustomMacro(self::$objectName, $id, $macroList);
+            
+            try{
+                CustomMacroRepository::saveHostCustomMacro(self::$objectName, $id, $macroList);
+            } catch (\Exception $ex) {
+                $errorMessage = $ex->getMessage();
+                $this->router->response()->json(array('success' => false,'error' => $errorMessage));
+            }
         }
         
         if (isset($givenParameters['host_tags'])) {
@@ -252,7 +262,13 @@ class HostTemplateController extends FormController
         }
         
         if (count($macroList) > 0) {
-            CustomMacroRepository::saveHostCustomMacro(self::$objectName, $givenParameters['object_id'], $macroList);
+            
+            try{
+                CustomMacroRepository::saveHostCustomMacro(self::$objectName, $givenParameters['object_id'], $macroList);
+            } catch (\Exception $ex) {
+                $errorMessage = $ex->getMessage();
+                $this->router->response()->json(array('success' => false,'error' => $errorMessage));
+            }
         }
         
         //Delete tags directilly rattached to the object
