@@ -119,7 +119,7 @@ class Full extends Generator
             $fieldQuery = 'SELECT '
                 . 'f.field_id, f.name, f.label, f.default_value, f.attributes, f.show_label, '
                 . 'f.type, f.help, f.help_url, f.advanced, f.mandatory, f.parent_field, '
-                . 'f.parent_value, f.child_actions, f.child_mandatory '
+                . 'f.parent_value, f.child_actions, f.child_mandatory, f.width '
                 . 'FROM cfg_forms_fields f, cfg_forms_blocks_fields_relations bfr '
                 . 'WHERE bfr.block_id= :blockId '
 		            . 'AND bfr.field_id = f.field_id ' 
@@ -276,13 +276,14 @@ class Full extends Generator
                 $formRendering .= '<div class="panel-body">';
                 foreach ($blockComponents as $component) {
                     if (isset($formElements[$component['name']]['html'])) {
-                        $formRendering .= '<div class="col-md-6">';
+                        $componentWidth = '6';
+                        if (isset($component['width']) && ($component['width'] != "")) {
+                            $componentWidth = $component['width'];
+                        }
+                        $formRendering .= '<div class="col-md-' . $componentWidth . '">';
                         $formRendering .= $formElements[$component['name']]['html'];
-                        /*if ($component['advanced'] == '1') {
-                            $formRendering .= ' advanced';
-                        }*/
 
-                         $formRendering .= '</div>';
+                        $formRendering .= '</div>';
                     }
                 }
                 $formRendering .= '</div>';

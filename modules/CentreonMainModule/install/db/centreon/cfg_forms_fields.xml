@@ -17,9 +17,8 @@
         <column name="child_actions" phpName="ChildActions" type="VARCHAR" size="45" required="false"/>
         <column name="child_mandatory" phpName="ChildMandatory" type="CHAR" required="true" defaultValue="0"/>
         <column name="show_label" phpName="ShowLabel" type="CHAR" required="true" defaultValue="1"/>
-        
         <column name="normalized_name" phpName="NormalizedName" type="VARCHAR" size="100" required="true" defaultValue=""/>
-        
+        <column name="width" phpName="Width" type="VARCHAR" size="2" required="false"/>
         <foreign-key foreignTable="cfg_modules" name="fk_form_field_1" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="module_id" foreign="id"/>
         </foreign-key>

@@ -373,9 +373,9 @@ class Form
         if (!isset(self::$fields[$key])) {
             $sql = 'INSERT INTO cfg_forms_fields 
                 (name, label, default_value, attributes, advanced, type, 
-                help, module_id, parent_field, parent_value, child_actions, mandatory, child_mandatory, show_label, normalized_name) VALUES 
+                help, module_id, parent_field, parent_value, child_actions, mandatory, child_mandatory, show_label, normalized_name, width) VALUES 
                 (:name, :label, :default_value, :attributes, :advanced, 
-                :type, :help, :module_id, :parent_field, :parent_value, :child_actions, :mandatory, :child_mandatory, :show_label, :normalized_name)';
+                :type, :help, :module_id, :parent_field, :parent_value, :child_actions, :mandatory, :child_mandatory, :show_label, :normalized_name, :width)';
         } else {
             $sql = 'UPDATE cfg_forms_fields SET label = :label,
                 default_value = :default_value,
@@ -390,7 +390,8 @@ class Form
                 mandatory = :mandatory,
                 child_mandatory = :child_mandatory,
                 show_label = :show_label,
-                normalized_name = :normalized_name
+                normalized_name = :normalized_name,
+                width = :width
                 WHERE name = :name
                 AND field_id = :field_id';
         }
@@ -412,7 +413,7 @@ class Form
         $stmt->bindParam(':child_actions', $data['child_actions']);
         if(isset($data['show_label'])){
             $stmt->bindParam(':show_label', $data['show_label']);
-        }else{
+        } else {
             $data['show_label'] = 1;
             $stmt->bindParam(':show_label', $data['show_label']);
         }
@@ -420,15 +421,11 @@ class Form
         
         if(isset($data['normalized_name']) && !empty($data['normalized_name'])){
             $stmt->bindParam(':normalized_name', $data['normalized_name']);
-        }else{
+        } else {
             $slugifier = new Slugify('/([^a-z0-9]|-)+/');
             $sSlug = $slugifier->slugify($data['name']);
             $stmt->bindParam(':normalized_name', $sSlug);
         }
-        
-        
-        
-        
         
         if (!isset($data['mandatory'])) {
             $data['mandatory'] = '0';
@@ -444,6 +441,12 @@ class Form
             $data['parent_value'] = null;
         }
         $stmt->bindParam(':parent_value', $data['parent_value']);
+
+        if (!isset($data['width']) || ($data['width'] === "")) {
+            $stmt->bindValue(':width', null);
+        } else {
+            $stmt->bindParam(':width', $data['width']);
+        }
         
         $stmt->execute();
         if (!isset(self::$fields[$key])) {
@@ -787,7 +790,10 @@ class Form
                     if(!isset($field['show_label'])){
                         $field['show_label'] = 1;
                     }
-                    
+
+                    if(!isset($field['width'])){
+                        $field['width'] = null;
+                    }
                     
                     $fieldData = array(
                         'name' => $field['name'],
@@ -803,7 +809,8 @@ class Form
                         'mandatory' => $field['mandatory'],
                         'help' => $field->help,
                         'show_label' => $field['show_label'],
-                        'normalized_name' => $field['normalized_name']
+                        'normalized_name' => $field['normalized_name'],
+                        'width' => $field['width']
                     );
                     self::insertField(array_map('strval', $fieldData));
                     $blockFieldData = array(
