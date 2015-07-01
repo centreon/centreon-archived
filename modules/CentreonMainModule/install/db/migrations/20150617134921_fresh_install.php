@@ -187,6 +187,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('child_mandatory', 'boolean', array('null' => true, 'default' => 0))
                 ->addColumn('show_label', 'boolean', array('null' => false, 'default' => 1))
                 ->addColumn('module_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('width', 'string', array('limit' => 2, 'null' => true))
                 ->addForeignKey('module_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
                 ->addIndex(array('module_id'), array('unique' => false))
                 ->save();
