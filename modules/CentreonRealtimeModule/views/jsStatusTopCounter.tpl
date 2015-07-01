@@ -75,7 +75,7 @@ $(function() {
                 $pollerStatus = $('<div></div>').addClass('col-xs-1'),
                 $pollerLatency = $('<div></div>').addClass('col-xs-4');
             /* Add name */
-            $('<div></div>').addClass('col-xs-7').text(poller.name).appendTo($pollerLine);
+            $('<div></div>').addClass('col-xs-7').text(poller.name.escapeSecure()).appendTo($pollerLine);
             /* Add status */
             if (poller.running == null || poller.running == 0) {
               $pollerStatus.addClass('mini danger').append(
