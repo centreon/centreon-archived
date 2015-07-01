@@ -59,7 +59,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('organization_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('name','string', array('limit' => 255, 'null' => false))
                 ->addColumn('shortname','string', array('limit' => 100, 'null' => true))
-                ->addColumn('active','integer', array('default' =>  1))
+                ->addColumn('active','integer', array('default' =>  1, 'limit' => MysqlAdapter::INT_TINY))
                 ->addIndex(array('name'), array('unique' => true))
                 ->addIndex(array('shortname'), array('unique' => true))
                 ->save();
@@ -103,8 +103,8 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('contact_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('description','string', array('limit' => 200, 'null' => true))
                 ->addColumn('slug','string', array('limit' => 255, 'null' => true))
-                ->addColumn('timezone_id','integer', array('signed' => false,'null' => false))
-                //->addForeignKey('timezone_id', 'cfg_timezones', 'timezone_id', array('delete'=> 'RESTRICT', 'update'=> 'RESTRICT'))
+                ->addColumn('timezone_id','integer', array('signed' => false, 'null' => true))
+                ->addForeignKey('timezone_id', 'cfg_timezones', 'timezone_id', array('delete'=> 'SET_NULL', 'update'=> 'RESTRICT'))
                 ->save();
         
         $cfg_usergroups = $this->table('cfg_usergroups', array('id' => false, 'primary_key' => array('usergroup_id')));
@@ -113,8 +113,8 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('name','string', array('limit' => 255, 'null' => false))
                 ->addColumn('slug','string', array('limit' => 255, 'null' => false))
                 ->addColumn('description','string', array('limit' => 255, 'null' => true))
-                ->addColumn('status','integer', array('null' => false, 'signed' => false, 'default' => 1))
-                ->addColumn('locked','integer', array('null' => false, 'signed' => false, 'default' => 0))                
+                ->addColumn('status','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 1))
+                ->addColumn('locked','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 0))                
                 ->save();
         
         
@@ -124,10 +124,10 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('login','string', array('limit' => 200, 'null' => false))
                 ->addColumn('slug','string', array('limit' => 255, 'null' => false))
                 ->addColumn('password','string', array('limit' => 255, 'null' => false))
-                ->addColumn('is_admin','integer', array('null' => false, 'signed' => false, 'default' => 0))
-                ->addColumn('is_locked','integer', array('null' => false, 'signed' => false, 'default' => 0))       
-                ->addColumn('is_activated','integer', array('null' => false, 'signed' => false, 'default' => 1))
-                ->addColumn('is_password_old','boolean', array('null' => false, 'default' => 0))          
+                ->addColumn('is_admin','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 0))
+                ->addColumn('is_locked','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 0))       
+                ->addColumn('is_activated','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 1))
+                ->addColumn('is_password_old','boolean', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'default' => 0))          
                 ->addColumn('language_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('timezone_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('contact_id','integer', array('signed' => false, 'null' => true))
@@ -153,7 +153,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('slug','string', array('limit' => 255, 'null' => false))
                 ->addColumn('description','string', array('limit' => 255, 'null' => true))
                 ->addColumn('isroot','integer', array('signed' => false, 'null' => false))
-                ->addColumn('parent_id','integer', array('signed' => false, 'null' => false))
+                ->addColumn('parent_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('icon_id','integer', array('signed' => false, 'null' => true))
                 ->addIndex(array('name'), array('unique' => true))
                 ->addForeignKey('parent_id', 'cfg_domains', 'domain_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
@@ -168,7 +168,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('description','string',array('limit' => 255, 'null' => true))
                 ->addColumn('organization_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('last_update','integer', array('signed' => false, 'null' => true))
-                ->addColumn('status','integer', array('signed' => false, 'null' => false, 'default' => 1))
+                ->addColumn('status','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false, 'default' => 1))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->save();
         
@@ -176,7 +176,7 @@ class FreshInstall extends AbstractMigration
         $cfg_acl_resources_cache
                 ->addColumn('organization_id','integer', array('signed' => false,'null' => false))
                 ->addColumn('acl_resource_id','integer', array('signed' => false,'null' => false))
-                ->addColumn('resource_type','integer', array('signed' => false,'null' => false))
+                ->addColumn('resource_type','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false))
                 ->addColumn('resource_id','integer', array('signed' => false,'null' => false))
                 ->addIndex(array('organization_id'), array('unique' => false))
                 ->addIndex(array('acl_resource_id'), array('unique' => false))
@@ -190,7 +190,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('ardr_id','integer', array('identity' => true,'signed' => false, 'null' => false))
                 ->addColumn('acl_resource_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('domain_id','integer', array('signed' => false, 'null' => true))
-                ->addColumn('type','integer', array('signed' => false, 'null' => false, 'default' => 0))
+                ->addColumn('type','integer', array('signed' => false, 'null' => false, 'limit' => MysqlAdapter::INT_TINY, 'default' => 0))
                 ->addIndex(array('acl_resource_id'), array('unique' => false))
                 ->addIndex(array('domain_id'), array('unique' => false))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
@@ -203,7 +203,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('arer_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('acl_resource_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('environment_id','integer', array('signed' => false, 'null' => true))
-                ->addColumn('type','integer', array('null' => false, 'signed' => false, 'default' => 0))
+                ->addColumn('type','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 0))
                 ->addIndex(array('acl_resource_id'), array('unique' => false))
                 ->addIndex(array('environment_id'), array('unique' => false))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
@@ -238,11 +238,6 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->save();
         
-  
-        
-        
-        
-        
         $cfg_contacts_infos = $this->table('cfg_contacts_infos', array('id' => false, 'primary_key' => array('contact_info_id')));
         $cfg_contacts_infos
                 ->addColumn('contact_info_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
@@ -252,10 +247,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('contact_id'), array('unique' => false))
                 ->addForeignKey('contact_id', 'cfg_contacts', 'contact_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->save();
-        
-        
-        
-        
+
         $cfg_options = $this->table('cfg_options', array('id' => false, 'primary_key' => array('option_id')));
         $cfg_options
                 ->addColumn('option_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
@@ -268,7 +260,7 @@ class FreshInstall extends AbstractMigration
         $cfg_organizations_modules_relations
                 ->addColumn('organization_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('module_id','integer', array('signed' => false, 'null' => false))
-                ->addColumn('is_activated','integer', array('signed' => false, 'null' => true, 'default' =>  0))
+                ->addColumn('is_activated','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, 'default' =>  0))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE'))
                 ->addForeignKey('module_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE'))
                 ->save();
@@ -278,8 +270,8 @@ class FreshInstall extends AbstractMigration
         $cfg_organizations_users_relations
                 ->addColumn('organization_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('user_id','integer', array('signed' => false, 'null' => false))
-                ->addColumn('is_default','integer', array('signed' => false, 'null' => true, 'default' =>  0))
-                ->addColumn('is_admin','integer', array('signed' => false, 'null' => true, 'default' =>  0))
+                ->addColumn('is_default','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, 'default' =>  0))
+                ->addColumn('is_admin','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, 'default' =>  0))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE'))
                 ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE'))
                 ->save();
@@ -333,6 +325,90 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('usergroup_id', 'cfg_usergroups', 'usergroup_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->save(); 
+        
+        $this->execute('INSERT INTO cfg_organizations (organization_id, name, shortname, active) values (1, "Default organization", "default_organization", 1)');
+        $this->execute('INSERT INTO cfg_organizations (organization_id, name, shortname, active) values (2, "Client organization", "client", 0)');
+        
+        $this->execute('INSERT INTO cfg_domains (domain_id, name, slug, description, isroot) values (1, "Network", "network", "Network domain", 1)');
+        $this->execute('INSERT INTO cfg_domains (domain_id, name, slug, description, isroot) values (2, "Hardware", "hardware", "Hardware domain", 1)');
+        $this->execute('INSERT INTO cfg_domains (domain_id, name, slug, description, isroot) values (3, "System", "system", "System domain", 1)');
+        $this->execute('INSERT INTO cfg_domains (domain_id, name, slug, description, isroot) values (4, "Application", "application", "Application domain", 1)');
+        $this->execute('INSERT INTO cfg_domains (domain_id, name, slug, description, isroot, parent_id) values (5, "CPU", "cpu", "Cpu domain", 1, 3)');
+        $this->execute('INSERT INTO cfg_domains (domain_id, name, slug, description, isroot, parent_id) values (6, "Memory", "memory", "Memory domain", 1, 3)');
+        $this->execute('INSERT INTO cfg_domains (domain_id, name, slug, description, isroot, parent_id) values (7, "Swap", "swap", "Swap domain", 1, 3)');
+        $this->execute('INSERT INTO cfg_domains (domain_id, name, slug, description, isroot, parent_id) values (8, "Filesystem", "filesystem", "Filesystem domain", 1, 3)');
+        $this->execute('INSERT INTO cfg_domains (domain_id, name, slug, description, isroot, parent_id) values (9, "Traffic", "traffic", "Traffic domain", 1, 2)');
+
+        $this->execute('INSERT INTO cfg_environments (name, slug, description, level, organization_id) values ("Production", "production", "Production environment", 5, 1)');
+        $this->execute('INSERT INTO cfg_environments (name, slug, description, level, organization_id) values ("Preproduction", "preproduction", "Preproduction environment", 10, 1)');
+
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("ldap_dns_use_ssl", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("ldap_dns_use_tls", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("ldap_auth_enable", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("ldap_auto_import", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("ldap_srv_dns", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("ldap_dns_use_domain", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("ldap_search_timeout", 60)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("ldap_search_limit", 60)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("ldap_last_acl_update", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("ldap_contact_tmpl", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_up", "#19EE11")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_down", "#F91E05")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_unreachable", "#82CFD8")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_ok", "#13EB3A")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_warning", "#F8C706")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_critical", "#F91D05")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_pending", "#2AD1D4")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_unknown", "#DCDADA")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("session_expire", 120)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("maxViewMonitoring", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("maxViewConfiguration", 30)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("AjaxTimeReloadMonitoring", 15)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("AjaxTimeReloadStatistic", 15)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("AjaxFirstTimeReloadMonitoring", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("AjaxFirstTimeReloadStatistic", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("gmt", 1)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("mailer_path_bin", "@BIN_MAIL@")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("snmp_community", "public")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("snmp_version", 1)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("snmptt_unknowntrap_log_file", "snmpttunknown.log")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("snmpttconvertmib_path_bin", "@INSTALL_DIR_CENTREON@/bin/snmpttconvertmib")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("perl_library_path", "/usr/local/lib")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("rrdtool_path_bin", "@BIN_RRDTOOL@")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("rrdtool_version", "1.2")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("debug_path", "@CENTREON_LOG@/")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("debug_auth", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("debug_engine_import", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("debug_rrdtool", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("debug_ldap_import", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("debug_inventory", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_ack", "#FAED60")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_host_down", "#FCC22A")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_host_unreachable", "#9CD9F1")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_line_critical", "#F96461")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("color_downtime", "#FBC5E8")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("enable_autologin", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("display_autologin_shortcut", 1)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("monitoring_ack_svc", 1)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("monitoring_dwt_duration", 3600)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("monitoring_ack_active_checks", 1)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("monitoring_ack_persistent", 1)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("monitoring_ack_notify", 0)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("monitoring_ack_sticky", 1)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("monitoring_dwt_fixed", 1)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("index_data", 1)');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("broker_etc_directory", "/etc/centreon-broker")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("broker_module_directory", "/usr/share/centreon/lib/centreon-broker")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("broker_logs_directory", "/var/log/centreon-broker")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("broker_data_directory", "/var/lib/centreon-broker")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("broker_cbmod_directory", "/usr/lib64/nagios")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("broker_init_script", "/etc/init.d/cbd")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("es_url", "http://localhost:9200")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("es_security", "none")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("es_user", "")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("es_pass", "")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("rrd_metric_path", "/var/lib/centreon/metrics/")');
+        $this->execute('INSERT INTO cfg_options (`key`, `value`) values ("rrd_status_path", "/var/lib/centreon/status/")');
     }
 
     /**
@@ -340,89 +416,8 @@ class FreshInstall extends AbstractMigration
     */
     public function up()
     {
-        $this->execute('INSERT INTO cfg_domains ("domain_id", "name", "slug", "description", "isroot") values (1, "Network", "network", "Network domain", 1)');
-        $this->execute('INSERT INTO cfg_domains ("domain_id", "name", "slug", "description", "isroot") values (2, "Hardware", "hardware", "Hardware domain", 1)');
-        $this->execute('INSERT INTO cfg_domains ("domain_id", "name", "slug", "description", "isroot") values (3, "System", "system", "System domain", 1)');
-        $this->execute('INSERT INTO cfg_domains ("domain_id", "name", "slug", "description", "isroot") values (4, "Application", "application", "Application domain", 1)');
-        $this->execute('INSERT INTO cfg_domains ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (5, "CPU", "cpu", "Cpu domain", 1, 3)');
-        $this->execute('INSERT INTO cfg_domains ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (6, "Memory", "memory", "Memory domain", 1, 3)');
-        $this->execute('INSERT INTO cfg_domains ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (7, "Swap", "swap", "Swap domain", 1, 3)');
-        $this->execute('INSERT INTO cfg_domains ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (8, "Filesystem", "filesystem", "Filesystem domain", 1, 3)');
-        $this->execute('INSERT INTO cfg_domains ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (9, "Traffic", "traffic", "Traffic domain", 1, 2)');
+        
 
-        $this->execute('INSERT INTO cfg_environments ("name", "slug", "description", "level", "organization_id") values ("Production", "production", "Production environment", 5, 1)');
-        $this->execute('INSERT INTO cfg_environments ("name", "slug", "description", "level", "organization_id") values ("Preproduction", "preproduction", "Preproduction environment", 10, 1)');
-
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("ldap_dns_use_ssl", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("ldap_dns_use_tls", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("ldap_auth_enable", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("ldap_auto_import", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("ldap_srv_dns", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("ldap_dns_use_domain", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("ldap_search_timeout", 60)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("ldap_search_limit", 60)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("ldap_last_acl_update", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("ldap_contact_tmpl", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_up", "#19EE11")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_down", "#F91E05")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_unreachable", "#82CFD8")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_ok", "#13EB3A")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_warning", "#F8C706")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_critical", "#F91D05")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_pending", "#2AD1D4")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_unknown", "#DCDADA")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("session_expire", 120)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("maxViewMonitoring", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("maxViewConfiguration", 30)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("AjaxTimeReloadMonitoring", 15)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("AjaxTimeReloadStatistic", 15)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("AjaxFirstTimeReloadMonitoring", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("AjaxFirstTimeReloadStatistic", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("gmt", 1)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("mailer_path_bin", "@BIN_MAIL@")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("snmp_community", "public")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("snmp_version", 1)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("snmptt_unknowntrap_log_file", "snmpttunknown.log")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("snmpttconvertmib_path_bin", "@INSTALL_DIR_CENTREON@/bin/snmpttconvertmib")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("perl_library_path", "/usr/local/lib")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("rrdtool_path_bin", "@BIN_RRDTOOL@")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("rrdtool_version", "1.2")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("debug_path", "@CENTREON_LOG@/")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("debug_auth", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("debug_engine_import", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("debug_rrdtool", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("debug_ldap_import", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("debug_inventory", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_ack", "#FAED60")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_host_down", "#FCC22A")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_host_unreachable", "#9CD9F1")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_line_critical", "#F96461")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("color_downtime", "#FBC5E8")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("enable_autologin", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("display_autologin_shortcut", 1)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("monitoring_ack_svc", 1)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("monitoring_dwt_duration", 3600)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("monitoring_ack_active_checks", 1)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("monitoring_ack_persistent", 1)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("monitoring_ack_notify", 0)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("monitoring_ack_sticky", 1)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("monitoring_dwt_fixed", 1)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("index_data", 1)');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("broker_etc_directory", "/etc/centreon-broker")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("broker_module_directory", "/usr/share/centreon/lib/centreon-broker")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("broker_logs_directory", "/var/log/centreon-broker")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("broker_data_directory", "/var/lib/centreon-broker")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("broker_cbmod_directory", "/usr/lib64/nagios")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("broker_init_script", "/etc/init.d/cbd")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("es_url", "http://localhost:9200")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("es_security", "none")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("es_user", "")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("es_pass", "")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("rrd_metric_path", "/var/lib/centreon/metrics/")');
-        $this->execute('INSERT INTO cfg_options ("key", "value") values ("rrd_status_path", "/var/lib/centreon/status/")');
-
-        $this->execute('INSERT INTO cfg_organizations ("organization_id", "name", "shortname", "active") values (1, "Default organization", "default_organization", 1)');
-        $this->execute('INSERT INTO cfg_organizations ("organization_id", "name", "shortname", "active") values (2, "Client organization", "client", 0)');
     }
 }
     

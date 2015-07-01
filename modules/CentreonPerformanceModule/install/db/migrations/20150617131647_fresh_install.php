@@ -40,6 +40,8 @@
  * @author tmechouet
  */
 use Phinx\Migration\AbstractMigration;
+use Phinx\Db\Adapter\MysqlAdapter;
+
 
 class FreshInstall extends AbstractMigration
 {
@@ -53,14 +55,14 @@ class FreshInstall extends AbstractMigration
      */
     public function change()
     {
-        $graph_template_id = $this->table('graph_template_id', array('id' => false, 'primary_key' => 'graph_template_id'));
+        $graph_template_id = $this->table('cfg_graph_template', array('id' => false, 'primary_key' => 'graph_template_id'));
         $graph_template_id
-                ->addColumn('graph_template_id','integer', array('identity' => true, 'null' => false))
-                ->addColumn('svc_tmpl_id','integer', array('null' => false))
-                ->addColumn('draw_status','integer', array('null' => false, "default" => 0))
-                ->addColumn('split','integer', array('null' => false, "default" => 0))
+                ->addColumn('graph_template_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
+                ->addColumn('svc_tmpl_id','integer', array('signed' => false,'null' => false))
+                ->addColumn('draw_status','integer', array('signed' => false,'null' => false, "default" => 0))
+                ->addColumn('split','integer', array('signed' => false, 'null' => false, "default" => 0))
                 ->addColumn('stackable','integer', array('null' => false, "default" => 0))
-                ->addColumn('scale','integer', array('null' => false, "default" => 0))
+                ->addColumn('scale','integer', array('signed' => false, 'null' => false, "default" => 0))
                 ->addForeignKey('svc_tmpl_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE'))
                 ->addIndex(array('svc_tmpl_id'), array('unique' => false))
                 ->save();
@@ -68,18 +70,18 @@ class FreshInstall extends AbstractMigration
         
         $cfg_curve_config = $this->table('cfg_curve_config', array('id' => false, 'primary_key' => array('graph_template_id', 'metric_name')));
         $cfg_curve_config
-                ->addColumn('graph_template_id','integer', array('null' => false))
+                ->addColumn('graph_template_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('metric_name','string',array('limit' => 255), array('null' => false))
                 ->addColumn('color','string',array('limit' => 7), array('null' => true))
-                ->addColumn('is_negative','integer',array('null' => false, "default" => 0))
-                ->addColumn('fill','integer',array('null' => false, "default" => 0))
+                ->addColumn('is_negative','integer',array('signed' => false, 'null' => false, "default" => 0))
+                ->addColumn('fill','integer',array('signed' => false, 'null' => false, "default" => 0))
                 ->addForeignKey('graph_template_id', 'cfg_graph_template', 'graph_template_id', array('delete'=> 'CASCADE'))
                 ->save();
         
         
         $cfg_graph_views = $this->table('cfg_graph_views', array('id' => false, 'primary_key' => 'graph_view_id'));
-        $cfg_curve_config
-                ->addColumn('graph_view_id','integer', array('identity' => true, 'null' => false))
+        $cfg_graph_views
+                ->addColumn('graph_view_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('name','string',array('limit' => 255), array('null' => false))
                 ->addColumn('privacy','string',array('limit' => 7), array('null' => true, "default" => 0))
                 ->addColumn('owner_id','integer',array('null' => false, 'signed' => false, "default" => 0))
@@ -89,9 +91,9 @@ class FreshInstall extends AbstractMigration
         
         $cfg_graph_views_services = $this->table('cfg_graph_views_services', array('id' => false, 'primary_key' => array('graph_view_id', 'service_id')));
         $cfg_graph_views_services
-                ->addColumn('graph_view_id','integer', array('null' => false))
-                ->addColumn('service_id','integer',array('null' => false))
-                ->addColumn('order','integer',array('null' => false, "default" => 0))
+                ->addColumn('graph_view_id','integer', array('signed' => false, 'null' => false))
+                ->addColumn('service_id','integer',array('signed' => false, 'null' => false))
+                ->addColumn('order','integer',array('signed' => false, 'null' => false, "default" => 0))
                 ->addForeignKey('graph_view_id', 'cfg_graph_views', 'graph_view_id', array('delete'=> 'CASCADE'))
                 ->addForeignKey('service_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE'))
                 ->save();
