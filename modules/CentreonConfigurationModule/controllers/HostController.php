@@ -133,9 +133,9 @@ class HostController extends FormController
 
         /* Secure strings */
         for ($i = 0; $i < count($myDataForDatatable['data']); $i++) {
-            foreach ($myDataForDatatable['data'] as $key => $value) {
+            foreach ($myDataForDatatable['data'][$i] as $key => $value) {
                 if (is_string($value)) {
-                    $myDataForDatatable['data'][$key] = String::escapeSecure($value);
+                    $myDataForDatatable['data'][$i][$key] = String::escapeSecure($value);
                 }
             }
         }
