@@ -412,7 +412,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('timeperiod_id', 'excluded_timeperiod_id'), array('unique' => true))
                 ->save();
 
-                // Creation of table cfg_acl_resources_bas_relations
+        // Creation of table cfg_acl_resources_bas_relations
         $cfg_acl_resources_bas_relations = $this->table('cfg_acl_resources_bas_relations', array('id' => false, 'primary_key' => array('arbar_id')));
         $cfg_acl_resources_bas_relations->addColumn('arbar_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('acl_resource_id', 'integer', array('signed' => false, 'null' => false))
@@ -423,5 +423,15 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('acl_resource_id'), array('unique' => false))
                 ->addIndex(array('ba_id'), array('unique' => false))
                 ->save();
+    }
+
+    /**
+    * Migrate Up.
+    */
+    public function up()
+    {
+        $this->execute('INSERT INTO cfg_bam_ba_type ("ba_type_id", "name", "description") values (1, "Business Unit", "Business Unit")');
+        $this->execute('INSERT INTO cfg_bam_ba_type ("ba_type_id", "name", "description") values (2, "Application", "Application")');
+        $this->execute('INSERT INTO cfg_bam_ba_type ("ba_type_id", "name", "description") values (3, "Middleware", "Middleware")');
     }
 }
