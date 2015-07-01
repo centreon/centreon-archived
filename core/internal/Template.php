@@ -198,6 +198,7 @@ class Template extends \Smarty
         $this->addJs('centreon.parentfield.js');
         $this->addJs('centreon.form.js');
         $this->addJs('centreon.validate.js');
+        $this->addJs('centreon.utils.js');
         $this->addJs('jquery.validation/jquery.validate.min.js');
     }
     
