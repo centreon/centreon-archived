@@ -28,7 +28,7 @@
    <div class="step-pane{if $step@index == 0} active{/if}" id="{$name}_{$step@index + 1}">
      <div class="row">
      {foreach $step['default'] as $component}
-       <div class="col-xs-12">
+       <div class="col-xs-{$component['width']}">
        {$formElements[$component['name']]['html']}
        </div>
      {/foreach}
