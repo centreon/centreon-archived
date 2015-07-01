@@ -177,8 +177,29 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('widget_id'), array('unique' => false))
                 ->addForeignKey('widget_id', 'cfg_widgets', 'widget_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('parameter_id', 'cfg_widgets_parameters', 'parameter_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
-        
+                ->save();     
+    }
+
+    /**
+    * Migrate Up.
+    */
+    public function up()
+    {
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (1, "text", 0)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (2, "boolean", 0)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (3, "hidden", 0)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (4, "password", 0)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (5, "list", 0)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (6, "range", 0)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (7, "compare", 0)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (8, "sort", 0)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (9, "date", 0)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (10, "host", 1)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (11, "hostTemplate", 1)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (12, "serviceTemplate", 1)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (13, "hostgroup", 1)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (14, "servicegroup", 1)');
+        $this->execute('INSERT INTO cfg_widgets_parameters_fields_types ("field_type_id", "ft_typename", "is_connector") values (15, "service", 1)');
     }
 }
     
