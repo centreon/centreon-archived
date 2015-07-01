@@ -434,4 +434,14 @@ class FreshInstall extends AbstractMigration
         $this->execute('INSERT INTO cfg_bam_ba_type ("ba_type_id", "name", "description") values (2, "Application", "Application")');
         $this->execute('INSERT INTO cfg_bam_ba_type ("ba_type_id", "name", "description") values (3, "Middleware", "Middleware")');
     }
+
+    /**
+    * Migrate Down.
+    */
+    public function down()
+    {
+        $this->execute('DELETE FROM cfg_bam_ba_type WHERE "ba_type_id" = 1');
+        $this->execute('DELETE FROM cfg_bam_ba_type WHERE "ba_type_id" = 2');
+        $this->execute('DELETE FROM cfg_bam_ba_type WHERE "ba_type_id" = 3');
+    }
 }
