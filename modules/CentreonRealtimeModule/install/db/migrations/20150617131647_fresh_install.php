@@ -801,6 +801,20 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('last_restart','integer', array('signed' => false, 'null' => true))
                 ->addColumn('average','integer', array('signed' => false, 'null' => true))
                 ->save();
+         
+        $rt_customvariables = $this->table('rt_customvariables', array('id' => false, 'primary_key' => 'customvariable_id'));
+        $rt_customvariables
+                ->addColumn('customvariable_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
+                ->addColumn('host_id','integer', array('signed' => false, 'null' => true))
+                ->addColumn('name', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('service_id','integer', array('signed' => false, 'null' => true))
+                ->addColumn('default_value', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('modified','boolean', array('null' => true))
+                ->addColumn('type','integer', array('signed' => false, 'null' => true))
+                ->addColumn('update_time','integer', array('signed' => false, 'null' => true))
+                ->addColumn('value', 'string', array('limit' => 255, 'null' => true))
+                ->addIndex(array('host_id', 'name', 'service_id'), array('unique' => true))
+                ->save();
  
     }
 }

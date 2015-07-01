@@ -15,6 +15,31 @@ class FreshInstall extends AbstractMigration
      */
     public function change()
     {
+        // Creation of table cfg_sessions
+        $cfg_sessions = $this->table('cfg_sessions', array('id' => false, 'primary_key' => array('session_id')));
+        $cfg_sessions->addColumn('session_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('session_start_time', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('last_reload', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('ip_address', 'string', array('limit' => 45, 'null' => false))
+                ->addColumn('route', 'string', array('limit' => 255, 'null' => false))
+                ->addColumn('update_acl', 'boolean', array('null' => false, 'default' => 0))
+                ->save();
+                
+        // Creation of table cfg_forms_massive_change
+        $cfg_forms_massive_change = $this->table('cfg_forms_massive_change', array('id' => false, 'primary_key' => array('massive_change_id')));
+        $cfg_forms_massive_change
+                ->addColumn('massive_change_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('name', 'string', array('limit' => 45, 'null' => false))
+                ->addColumn('route', 'string', array('limit' => 45, 'null' => false))
+                ->save();
+        
+         // Creation of table cfg_forms_massive_change_fields_relations
+        $cfg_forms_massive_change_fields_relations = $this->table('cfg_forms_massive_change_fields_relations', array('id' => false, 'primary_key' => array('massive_change_id', 'field_id')));
+        $cfg_forms_massive_change_fields_relations
+                ->addColumn('massive_change_id', 'integer', array('signed' => false, 'null' => false))
+                ->addColumn('field_id', 'integer', array('signed' => false, 'null' => false))
+                ->save();
+        
         // Creation of table cfg_informations
         $cfg_informations = $this->table('cfg_informations', array('id' => false, 'primary_key' => array('information_id')));
         $cfg_informations->addColumn('information_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
@@ -222,6 +247,8 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('field_id'), array('unique' => false))
                 ->addIndex(array('step_id'), array('unique' => false))
                 ->save();
+        
+        $this->execute('INSERT INTO cfg_informations (`key`, `value`) values ("version", "2.99.2")');
     }
     
     /**
@@ -229,20 +256,6 @@ class FreshInstall extends AbstractMigration
     */
     public function up()
     {
-        $this->execute('INSERT INTO cfg_informations ("key", "value") values ("version", "2.99.2")');
-        
-        $this->execute('INSERT INTO cfg_timezones ("name", "description", "offset", "dst_offset") values ("Africa\/Abidjan", "", "+00:00", "+00:00")');
-        $this->execute('INSERT INTO cfg_timezones ("name", "description", "offset", "dst_offset") values ("Africa\/Accra", "", "+00:00", "+00:00")');
-        
-     
-        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot") values (1, "Network", "network", "Network domain", 1)');
-        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot") values (2, "Hardware", "hardware", "Hardware domain", 1)');
-        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot") values (3, "System", "system", "System domain", 1)');
-        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot") values (4, "Application", "application", "Application domain", 1)');
-        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (5, "CPU", "cpu", "Cpu domain", 1, 3)');
-        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (6, "Memory", "memory", "Memory domain", 1, 3)');
-        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (7, "Swap", "swap", "Swap domain", 1, 3)');
-        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (8, "FileSystem", "filesystem", "FileSystem domain", 1, 3)');
-        $this->execute('INSERT INTO cfg_informations ("domain_id", "name", "slug", "description", "isroot", "parent_id") values (9, "Traffic", "traffic", "Traffic domain", 1, 2)');
+
     }
 }

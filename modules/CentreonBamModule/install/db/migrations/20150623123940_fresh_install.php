@@ -425,6 +425,10 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('acl_resource_id'), array('unique' => false))
                 ->addIndex(array('ba_id'), array('unique' => false))
                 ->save();
+        
+        $this->execute('INSERT INTO cfg_bam_ba_type (ba_type_id, name, description) values (1, "Business Unit", "Business Unit")');
+        $this->execute('INSERT INTO cfg_bam_ba_type (ba_type_id, name, description) values (2, "Application", "Application")');
+        $this->execute('INSERT INTO cfg_bam_ba_type (ba_type_id, name, description) values (3, "Middleware", "Middleware")');
     }
 
     /**
@@ -432,9 +436,7 @@ class FreshInstall extends AbstractMigration
     */
     public function up()
     {
-        $this->execute('INSERT INTO cfg_bam_ba_type ("ba_type_id", "name", "description") values (1, "Business Unit", "Business Unit")');
-        $this->execute('INSERT INTO cfg_bam_ba_type ("ba_type_id", "name", "description") values (2, "Application", "Application")');
-        $this->execute('INSERT INTO cfg_bam_ba_type ("ba_type_id", "name", "description") values (3, "Middleware", "Middleware")');
+        
     }
 
     /**
