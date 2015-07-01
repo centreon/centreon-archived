@@ -42,6 +42,7 @@ use Centreon\Models\WidgetModel;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
 use Centreon\Internal\Form;
+use Centreon\Internal\Utils\String;
 
 class ExtensionsController extends Controller
 {

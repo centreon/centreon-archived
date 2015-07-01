@@ -40,6 +40,7 @@ use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Internal\Controller;
 use CentreonAdministration\Internal\TagDatatable;
 use Centreon\Internal\Form\Generator\Web\Full as WebFormGenerator;
+use Centreon\Internal\Utils\String;
 
 /**
  * Controller for tag action

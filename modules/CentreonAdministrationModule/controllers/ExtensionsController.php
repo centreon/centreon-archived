@@ -40,6 +40,7 @@ use Centreon\Internal\Controller;
 use Centreon\Internal\Di;
 use Centreon\Models\Module;
 use Centreon\Internal\Form;
+use Centreon\Internal\Utils\String;
 
 class ExtensionsController extends Controller
 {

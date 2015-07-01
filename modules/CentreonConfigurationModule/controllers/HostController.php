@@ -51,6 +51,7 @@ use Centreon\Controllers\FormController;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
 use CentreonRealtime\Repository\HostRepository as HostRealTimeRepository;
+use Centreon\Internal\Utils\String;
 
 class HostController extends FormController
 {
