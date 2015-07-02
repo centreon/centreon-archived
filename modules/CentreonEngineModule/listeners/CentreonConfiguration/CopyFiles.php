@@ -55,7 +55,7 @@ class CopyFiles
         $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
         $output = array();
-        exec("rm -rf {$tmpdir}/engine/apply/{$event->getPollerId()}/resources/*.cfg 2>&1", $output, $statusDelete);
+        exec("rm -rf {$tmpdir}/engine/apply/{$event->getPollerId()}/* 2>&1", $output, $statusDelete);
         if ($statusDelete) {
             $event->setOutput(_('Error while deleting Engine configuration files') . "\n" . implode("\n", $output));
         }

@@ -68,7 +68,11 @@ class GenerateEngine
         static::$path = rtrim(static::$path, '/') . '/engine/generate/';
         static::$fileList = array();
 
-        system("rm -rf " . static::$path . $event->getPollerId() . "/resources/");
+        $output = array();
+        exec("rm -rf " . static::$path . $event->getPollerId() . "/* 2>&1", $output, $statusDelete);
+        if ($statusDelete) {
+            $event->setOutput(_('Error while deleting Engine temporary configuration files') . "\n" . implode("\n", $output));
+        }
 
         $event->setOutput(
             sprintf(
@@ -159,7 +163,7 @@ class GenerateEngine
             static::$fileList,
             $event->getPollerId(),
             static::$path,
-            "objects/hostTemplates.cfg",
+            "hostTemplates.cfg",
             $hostMacroEvent
         );
         $event->setOutput('hostTemplates.cfg');
@@ -168,7 +172,7 @@ class GenerateEngine
             static::$fileList,
             $event->getPollerId(),
             static::$path,
-            "objects/serviceTemplates.cfg",
+            "serviceTemplates.cfg",
             $serviceMacroEvent
         );
         $event->setOutput('serviceTemplate.cfg');
