@@ -61,7 +61,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('ar_description','string', array('limit' => 255, 'null' => false, "default" => "Default description"))
                 ->addColumn('ar_type','string', array('limit' => 50, 'null' => false))
                 ->addColumn('ar_enable', 'string', array('limit' => 1, 'default' => '0', 'null' => true))
-                ->save();       
+                ->create();       
         
         $cfg_auth_resources_info = $this->table('cfg_auth_resources_info', array('id' => false, 'primary_key' => array('ar_id', 'ari_name')));
         $cfg_auth_resources_info
@@ -69,7 +69,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('ari_name','string', array('limit' => 100,'null' => true))
                 ->addColumn('ari_value','string', array('limit' => 255,'null' => true))
                 ->addForeignKey('ar_id', 'cfg_auth_resources', 'ar_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
               
         $cfg_auth_resources_servers = $this->table('cfg_auth_resources_servers', array('id' => false, 'primary_key' => 'ldap_server_id'));
         $cfg_auth_resources_servers
@@ -82,7 +82,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('server_order','integer', array('signed' => false, 'null' => true))
                 ->addForeignKey('auth_resource_id', 'cfg_auth_resources', 'ar_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('auth_resource_id'), array('unique' => false))
-                ->save();
+                ->create();
  
     }
 }

@@ -225,7 +225,8 @@ class Manager
         $configurationFileContent .= '            "default_database" => ';
         $configurationFileContent .= '"centreon",' . "\n";
         $configurationFileContent .= '            "'.$this->moduleSlug.'" => array(' . "\n";
-        $configurationFileContent .= '                "connection" => $dbConnector'  . "\n";
+        $configurationFileContent .= '                "connection" => $dbConnector,'  . "\n";
+        $configurationFileContent .= '                "name" => "centreon"'  . "\n";
         $configurationFileContent .= '           )' . "\n";
         $configurationFileContent .= '       )' . "\n";
         

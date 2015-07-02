@@ -66,7 +66,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('write_thread_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('event_queue_max_size','integer', array('signed' => false, 'null' => true))
                 ->addForeignKey('poller_id', 'cfg_pollers', 'poller_id', array('delete'=> 'CASCADE'))
-                ->save();
+                ->create();
         
         $cfg_centreonbroker_info = $this->table('cfg_centreonbroker_info', array('id' => false, 'primary_key' => array('config_id', 'config_key')));
         $cfg_centreonbroker_info
@@ -81,7 +81,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('config_id'), array('unique' => false))
                 ->addIndex(array('config_id', 'config_group'), array('unique' => false))
                 ->addForeignKey('config_id', 'cfg_centreonbroker', 'config_id', array('delete'=> 'CASCADE', 'update' => "RESTRICT"))
-                ->save();
+                ->create();
         
         $cfg_centreonbroker_paths = $this->table('cfg_centreonbroker_paths', array('id' => false, 'primary_key' => 'poller_id'));
         $cfg_centreonbroker_paths
@@ -93,7 +93,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('directory_cbmod','string',array('limit' => 255, 'null' => false))
                 ->addColumn('init_script','string',array('limit' => 255, 'null' => false))
                 ->addForeignKey('poller_id', 'cfg_pollers', 'poller_id', array('delete'=> 'CASCADE'))
-                ->save();
+                ->create();
         
         
         $cfg_centreonbroker_pollervalues = $this->table('cfg_centreonbroker_pollervalues', array('id' => false, 'primary_key' => array('poller_id', 'name')));
@@ -102,7 +102,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('name','string', array('limit' => 255,'null' => false))
                 ->addColumn('value','string',array('limit' => 255, 'null' => false))
                 ->addForeignKey('poller_id', 'cfg_pollers', 'poller_id', array('delete'=> 'CASCADE'))
-                ->save();   
+                ->create();   
     }
 }
     

@@ -72,7 +72,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('isactivated','integer',array('signed' => false, 'null' => false))
                 ->addColumn('isinstalled','integer',array('signed' => false, 'null' => false))
                 ->addForeignKey('module_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
         
         $cfg_custom_views = $this->table('cfg_custom_views', array('id' => false, 'primary_key' => 'custom_view_id'));
         $cfg_custom_views
@@ -82,7 +82,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('locked','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, "default" => 0))
                 ->addColumn('owner_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('position','text',array('null' => true))
-                ->save();    
+                ->create();    
         
         $cfg_custom_views_default = $this->table('cfg_custom_views_default', array('id' => false, 'primary_key' => array('user_id', 'custom_view_id')));
         $cfg_custom_views_default
@@ -92,7 +92,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('custom_view_id'), array('unique' => false))
                 ->addForeignKey('user_id', 'cfg_contacts', 'contact_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('custom_view_id', 'cfg_custom_views', 'custom_view_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
         
         $cfg_custom_views_users_relations = $this->table('cfg_custom_views_users_relations', array('id' => false, 'primary_key' => 'custom_view_id'));
         $cfg_custom_views_users_relations
@@ -101,7 +101,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('is_default','integer', array('signed' => false, 'null' => false))
                 ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('custom_view_id', 'cfg_custom_views', 'custom_view_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
                
         $cfg_organizations_widget_models_relations = $this->table('cfg_organizations_widget_models_relations', array('id' => false, 'primary_key' => array('organization_id', 'widget_model_id')));
         $cfg_organizations_widget_models_relations
@@ -109,7 +109,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('widget_model_id','integer', array('signed' => false, 'null' => true))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE'))
                 ->addForeignKey('widget_model_id', 'cfg_widgets_models', 'widget_model_id', array('delete'=> 'CASCADE'))
-                ->save();
+                ->create();
          
         $cfg_widgets = $this->table('cfg_widgets', array('id' => false, 'primary_key' => array('widget_id')));
         $cfg_widgets
@@ -123,14 +123,14 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('custom_view_id', 'cfg_custom_views', 'custom_view_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('widget_model_id', 'cfg_widgets_models', 'widget_model_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
              
         $cfg_widgets_parameters_fields_types = $this->table('cfg_widgets_parameters_fields_types', array('id' => false, 'primary_key' => array('field_type_id')));
         $cfg_widgets_parameters_fields_types
                 ->addColumn('field_type_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('ft_typename','string', array('limit' => 50, 'null' => false))
                 ->addColumn('is_connector','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false, "default" => "0"))
-                ->save();
+                ->create();
         
         $cfg_widgets_parameters = $this->table('cfg_widgets_parameters', array('id' => false, 'primary_key' => array('parameter_id')));
         $cfg_widgets_parameters
@@ -147,7 +147,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('field_type_id'), array('unique' => false))
                 ->addForeignKey('widget_model_id', 'cfg_widgets_models', 'widget_model_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('field_type_id', 'cfg_widgets_parameters_fields_types', 'field_type_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
        
         $cfg_widgets_parameters_multiple_options = $this->table('cfg_widgets_parameters_multiple_options', array('id' => false, 'primary_key' => array('parameter_id')));
         $cfg_widgets_parameters_multiple_options
@@ -156,7 +156,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('option_value','string', array('limit' => 255, 'null' => false))
                 ->addIndex(array('parameter_id'), array('unique' => false))
                 ->addForeignKey('parameter_id', 'cfg_widgets_parameters', 'parameter_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
            
         $cfg_widgets_parameters_range = $this->table('cfg_widgets_parameters_range', array('id' => false, 'primary_key' => array('parameter_id')));
         $cfg_widgets_parameters_range
@@ -166,7 +166,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('step','integer', array('signed' => false, 'null' => false))
                 ->addIndex(array('parameter_id'), array('unique' => false))
                 ->addForeignKey('parameter_id', 'cfg_widgets_parameters', 'parameter_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
         
         $cfg_widgets_preferences = $this->table('cfg_widgets_preferences', array('id' => false, 'primary_key' => array('widget_id', 'parameter_id')));
         $cfg_widgets_preferences
@@ -178,7 +178,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('widget_id'), array('unique' => false))
                 ->addForeignKey('widget_id', 'cfg_widgets', 'widget_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('parameter_id', 'cfg_widgets_parameters', 'parameter_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();     
+                ->create();     
     }
 
     /**

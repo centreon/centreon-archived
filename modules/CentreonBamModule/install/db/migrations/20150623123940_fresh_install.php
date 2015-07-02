@@ -22,7 +22,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('all_business_activities', 'integer', array('null' => true, 'limit' => MysqlAdapter::INT_TINY, 'default' => 0))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('acl_resource_id'))
-                ->save();
+                ->create();
         
         // Creation of table cfg_tags_bas
         $cfg_tags_bas = $this->table('cfg_tags_bas', array('id' => false, 'primary_key' => array('tag_id', 'resource_id')));
@@ -31,7 +31,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('template_id', 'integer', array('signed' => false, 'null' => true))
                 ->addForeignKey('tag_id', 'cfg_tags', 'tag_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('tag_id', 'resource_id'), array('unique' => true))
-                ->save();
+                ->create();
 
         // Creation of table cfg_acl_resources_tags_bas_relations
         $cfg_acl_resources_tags_bas_relations = $this->table('cfg_acl_resources_tags_bas_relations', array('id' => false, 'primary_key' => array('artbar_id')));
@@ -43,7 +43,7 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('tag_id', 'cfg_tags_bas', 'tag_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('acl_resource_id'), array('unique' => false))
                 ->addIndex(array('tag_id'), array('unique' => false))
-                ->save();
+                ->create();
         
         // Creation of table cfg_bam_ba_type
         $cfg_bam_ba_type = $this->table('cfg_bam_ba_type', array('id' => false, 'primary_key' => array('ba_type_id')));
@@ -51,7 +51,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('name', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('description', 'string', array('limit' => 255, 'null' => true))
                 ->addIndex(array('name'), array('unique' => false))
-                ->save();
+                ->create();
         
          // Creation of table cfg_bam
         $cfg_bam = $this->table('cfg_bam', array('id' => false, 'primary_key' => array('ba_id')));
@@ -100,7 +100,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('dependency_dep_id'), array('unique' => false))
                 ->addIndex(array('icon_id'), array('unique' => false))
                 ->addIndex(array('graph_id'), array('unique' => false))
-                ->save();
+                ->create();
 
         // Creation of table cfg_bam_ba_groups
         $cfg_bam_ba_groups = $this->table('cfg_bam_ba_groups', array('id' => false, 'primary_key' => array('id_ba_group')));
@@ -109,7 +109,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('ba_group_description', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('visible', 'string', array('limit' => 1, 'null' => true, 'default' => '1'))
                 ->addIndex(array('ba_group_name'), array('unique' => true))
-                ->save();
+                ->create();
         
         // Creation of table cfg_bam_bagroup_ba_relation
         $cfg_bam_bagroup_ba_relation = $this->table('cfg_bam_bagroup_ba_relation', array('id' => false, 'primary_key' => array('id_ba', 'id_ba_group')));
@@ -120,7 +120,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('id_ba'), array('unique' => false))
                 ->addIndex(array('id_ba_group'), array('unique' => false))
                 ->addIndex(array('id_ba', 'id_ba_group'), array('unique' => true))
-                ->save();
+                ->create();
 
         // Creation of table cfg_bam_boolean
         $cfg_bam_boolean = $this->table('cfg_bam_boolean', array('id' => false, 'primary_key' => array('boolean_id')));
@@ -132,7 +132,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('comments', 'text', array('null' => true))
                 ->addColumn('activate', 'integer', array('limit' => 1, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => false))
                 ->addIndex(array('name'), array('unique' => true))
-                ->save();
+                ->create();
 
         // Creation of table cfg_meta_services
         $cfg_meta_services = $this->table('cfg_meta_services', array('id' => false, 'primary_key' => array('meta_id')));
@@ -156,7 +156,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('meta_name'), array('unique' => true))
-                ->save();
+                ->create();
         
         // Creation of table cfg_bam_impacts
         $cfg_bam_impacts = $this->table('cfg_bam_impacts', array('id' => false, 'primary_key' => array('id_impact')));
@@ -166,7 +166,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('color', 'string', array('limit' => 7, 'null' => true))
                 ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
 
         // Creation of table cfg_bam_kpi
         $cfg_bam_kpi = $this->table('cfg_bam_kpi', array('id' => false, 'primary_key' => array('kpi_id')));
@@ -211,7 +211,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('service_id'), array('unique' => false))
                 ->addIndex(array('meta_id'), array('unique' => false))
                 ->addIndex(array('boolean_id'), array('unique' => false))
-                ->save();
+                ->create();
         
         
         // Creation of table mod_bam_reporting_ba
@@ -224,7 +224,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('sla_month_duration_crit', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('sla_month_duration_warn', 'integer', array('signed' => false, 'null' => true))
                 ->addIndex(array('ba_name'), array('unique' => true))
-                ->save();
+                ->create();
         
         // Creation of table cfg_bam_relations_ba_timeperiods
         $cfg_bam_relations_ba_timeperiods = $this->table('cfg_bam_relations_ba_timeperiods', array('id' => false, 'primary_key' => array('ba_id', 'tp_id')));
@@ -235,7 +235,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('ba_id'), array('unique' => false))
                 ->addIndex(array('tp_id'), array('unique' => false))
                 ->addIndex(array('ba_id', 'tp_id'), array('unique' => true))
-                ->save();
+                ->create();
 
         // Creation of table cfg_meta_services_relations
         $cfg_meta_services_relations = $this->table('cfg_meta_services_relations', array('id' => false, 'primary_key' => array('meta_id', 'host_id', 'metric_id')));
@@ -246,7 +246,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('activate', 'integer', array('limit' => 1, 'signed' => false, 'null' => true))
                 ->addForeignKey('meta_id', 'cfg_meta_services', 'meta_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('meta_id', 'host_id', 'metric_id'), array('unique' => true))
-                ->save();
+                ->create();
 
         // Creation of table mod_bam_reporting_ba_availabilities
         $mod_bam_reporting_ba_availabilities = $this->table('mod_bam_reporting_ba_availabilities', array('id' => false, 'primary_key' => array('ba_id')));
@@ -264,7 +264,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('nb_downtime', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('timeperiod_is_default', 'boolean', array('null' => true))
                 ->addIndex(array('ba_id', 'time_id', 'timeperiod_id'), array('unique' => true))
-                ->save();
+                ->create();
 
         // Creation of table mod_bam_reporting_ba_events
         $mod_bam_reporting_ba_events = $this->table('mod_bam_reporting_ba_events', array('id' => false, 'primary_key' => array('ba_event_id')));
@@ -278,7 +278,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('start_time'), array('unique' => false))
                 ->addIndex(array('end_time'), array('unique' => false))
                 ->addIndex(array('ba_id', 'start_time'), array('unique' => true))
-                ->save();
+                ->create();
         
         // Creation of table mod_bam_reporting_ba_events_durations
         $mod_bam_reporting_ba_events_durations = $this->table('mod_bam_reporting_ba_events_durations', array('id' => false, 'primary_key' => array('ba_event_id')));
@@ -292,7 +292,7 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('ba_event_id', 'mod_bam_reporting_ba_events', 'ba_event_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('ba_event_id', 'timeperiod_id'), array('unique' => true))
                 ->addIndex(array('start_time', 'end_time'), array('unique' => false))
-                ->save();
+                ->create();
 
         
         // Creation of table mod_bam_reporting_bv
@@ -301,7 +301,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('bv_name', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('bv_description', 'string', array('limit' => 255, 'null' => true))
                 ->addIndex(array('bv_name'), array('unique' => true))
-                ->save();
+                ->create();
 
         // Creation of table mod_bam_reporting_kpi_events
         $mod_bam_reporting_kpi_events = $this->table('mod_bam_reporting_kpi_events', array('id' => false, 'primary_key' => array('kpi_event_id')));
@@ -315,7 +315,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('first_output', 'text', array('null' => true))
                 ->addColumn('first_perfdata', 'string', array('limit' => 255, 'null' => true))
                 ->addIndex(array('kpi_id', 'start_time'), array('unique' => true))
-                ->save();
+                ->create();
 
         // Creation of table mod_bam_reporting_kpi
         $mod_bam_reporting_kpi = $this->table('mod_bam_reporting_kpi', array('id' => false, 'primary_key' => array('kpi_id')));
@@ -340,7 +340,7 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('kpi_ba_id', 'mod_bam_reporting_ba', 'ba_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('ba_id'), array('unique' => false))
                 ->addIndex(array('kpi_ba_id'), array('unique' => false))
-                ->save();
+                ->create();
 
         // Creation of table mod_bam_reporting_relations_ba_bv
         $mod_bam_reporting_relations_ba_bv = $this->table('mod_bam_reporting_relations_ba_bv', array('id' => false, 'primary_key' => array('bv_id', 'ba_id')));
@@ -351,7 +351,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('bv_id'), array('unique' => false))
                 ->addIndex(array('ba_id'), array('unique' => false))
                 ->addIndex(array('bv_id', 'ba_id'), array('unique' => true))
-                ->save();
+                ->create();
 
         // Creation of table mod_bam_reporting_relations_ba_kpi_events
         $mod_bam_reporting_relations_ba_kpi_events = $this->table('mod_bam_reporting_relations_ba_kpi_events', array('id' => false, 'primary_key' => array('ba_event_id', 'kpi_event_id')));
@@ -363,7 +363,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('kpi_event_id'), array('unique' => false))
                 ->addIndex(array('ba_event_id', 'kpi_event_id'), array('unique' => true))
                 ->addColumn('sunday', 'string', array('limit' => 255, 'null' => true))
-                ->save();
+                ->create();
 
         
         // Creation of table mod_bam_reporting_timeperiods
@@ -380,7 +380,7 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('timeperiod_id', 'mod_bam_reporting_timeperiods', 'timeperiod_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('timeperiod_id'), array('unique' => false))
                 ->addIndex(array('name'), array('unique' => true))
-                ->save();
+                ->create();
         
         
         // Creation of table mod_bam_reporting_relations_ba_timeperiods
@@ -392,7 +392,7 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('timeperiod_id', 'mod_bam_reporting_timeperiods', 'timeperiod_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('ba_id'), array('unique' => false))
                 ->addIndex(array('timeperiod_id'), array('unique' => false))
-                ->save();
+                ->create();
 
         // Creation of table mod_bam_reporting_timeperiods_exceptions
         $mod_bam_reporting_timeperiods_exceptions = $this->table('mod_bam_reporting_timeperiods_exceptions', array('id' => false, 'primary_key' => array('timeperiod_id')));
@@ -401,7 +401,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('timerange', 'string', array('limit' => 255, 'null' => false))
                 ->addForeignKey('timeperiod_id', 'mod_bam_reporting_timeperiods', 'timeperiod_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('timeperiod_id'), array('unique' => false))
-                ->save();
+                ->create();
 
         // Creation of table mod_bam_reporting_timeperiods_exclusions
         $mod_bam_reporting_timeperiods_exclusions = $this->table('mod_bam_reporting_timeperiods_exclusions', array('id' => false, 'primary_key' => array('timeperiod_id', 'excluded_timeperiod_id')));
@@ -412,7 +412,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('timeperiod_id'), array('unique' => false))
                 ->addIndex(array('excluded_timeperiod_id'), array('unique' => false))
                 ->addIndex(array('timeperiod_id', 'excluded_timeperiod_id'), array('unique' => true))
-                ->save();
+                ->create();
 
         // Creation of table cfg_acl_resources_bas_relations
         $cfg_acl_resources_bas_relations = $this->table('cfg_acl_resources_bas_relations', array('id' => false, 'primary_key' => array('arbar_id')));
@@ -424,7 +424,11 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('ba_id', 'cfg_bam', 'ba_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('acl_resource_id'), array('unique' => false))
                 ->addIndex(array('ba_id'), array('unique' => false))
-                ->save();
+                ->create();
+        
+        $this->execute('INSERT INTO cfg_bam_ba_type (ba_type_id, name, description) values (1, "Business Unit", "Business Unit")');
+        $this->execute('INSERT INTO cfg_bam_ba_type (ba_type_id, name, description) values (2, "Application", "Application")');
+        $this->execute('INSERT INTO cfg_bam_ba_type (ba_type_id, name, description) values (3, "Middleware", "Middleware")');
     }
 
     /**
@@ -432,9 +436,7 @@ class FreshInstall extends AbstractMigration
     */
     public function up()
     {
-        $this->execute('INSERT INTO cfg_bam_ba_type ("ba_type_id", "name", "description") values (1, "Business Unit", "Business Unit")');
-        $this->execute('INSERT INTO cfg_bam_ba_type ("ba_type_id", "name", "description") values (2, "Application", "Application")');
-        $this->execute('INSERT INTO cfg_bam_ba_type ("ba_type_id", "name", "description") values (3, "Middleware", "Middleware")');
+        
     }
 
     /**

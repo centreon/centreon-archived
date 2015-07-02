@@ -62,7 +62,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('active','integer', array('default' =>  1, 'limit' => MysqlAdapter::INT_TINY))
                 ->addIndex(array('name'), array('unique' => true))
                 ->addIndex(array('shortname'), array('unique' => true))
-                ->save();
+                ->create();
         
         $cfg_environments = $this->table('cfg_environments', array('id' => false, 'primary_key' => array('environment_id')));
         $cfg_environments
@@ -76,7 +76,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('name'), array('unique' => true))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('icon_id', 'cfg_binaries', 'binary_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
         
         $cfg_timezones = $this->table('cfg_timezones', array('id' => false, 'primary_key' => array('timezone_id')));
         $cfg_timezones
@@ -87,7 +87,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('description','string', array('limit' => 255, 'null' => true))
                 ->addColumn('slug','string', array('limit' => 255, 'null' => false))
                 ->addIndex(array('name'), array('unique' => true))
-                ->save();
+                ->create();
         
         $cfg_languages = $this->table('cfg_languages', array('id' => false, 'primary_key' => array('language_id')));
         $cfg_languages
@@ -96,7 +96,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('slug','string', array('limit' => 255, 'null' => false))
                 ->addColumn('description','string', array('limit' => 200, 'null' => true))
                 ->addIndex(array('name'), array('unique' => true))
-                ->save();
+                ->create();
         
         $cfg_contacts = $this->table('cfg_contacts', array('id' => false, 'primary_key' => array('contact_id')));
         $cfg_contacts
@@ -105,7 +105,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('slug','string', array('limit' => 255, 'null' => true))
                 ->addColumn('timezone_id','integer', array('signed' => false, 'null' => true))
                 ->addForeignKey('timezone_id', 'cfg_timezones', 'timezone_id', array('delete'=> 'SET_NULL', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
         
         $cfg_usergroups = $this->table('cfg_usergroups', array('id' => false, 'primary_key' => array('usergroup_id')));
         $cfg_usergroups
@@ -115,7 +115,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('description','string', array('limit' => 255, 'null' => true))
                 ->addColumn('status','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 1))
                 ->addColumn('locked','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 0))                
-                ->save();
+                ->create();
         
         
         $cfg_users = $this->table('cfg_users', array('id' => false, 'primary_key' => array('user_id')));
@@ -144,7 +144,7 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('language_id', 'cfg_languages', 'language_id', array('delete'=> 'SET_NULL', 'update'=> 'RESTRICT'))
                 ->addForeignKey('timezone_id', 'cfg_timezones', 'timezone_id', array('delete'=> 'SET_NULL', 'update'=> 'RESTRICT'))
                 ->addForeignKey('contact_id', 'cfg_contacts', 'contact_id', array('delete'=> 'SET_NULL', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
         
         $cfg_domains = $this->table('cfg_domains', array('id' => false, 'primary_key' => array('domain_id')));
         $cfg_domains
@@ -158,7 +158,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('name'), array('unique' => true))
                 ->addForeignKey('parent_id', 'cfg_domains', 'domain_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('icon_id', 'cfg_binaries', 'binary_id', array('delete'=> 'SET_NULL', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
         
         $cfg_acl_resources = $this->table('cfg_acl_resources', array('id' => false, 'primary_key' => 'acl_resource_id'));
         $cfg_acl_resources
@@ -170,7 +170,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('last_update','integer', array('signed' => false, 'null' => true))
                 ->addColumn('status','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false, 'default' => 1))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
         
         $cfg_acl_resources_cache = $this->table('cfg_acl_resources_cache', array('id' => false, 'primary_key' => array('organization_id', 'acl_resource_id', 'resource_type', 'resource_id')));
         $cfg_acl_resources_cache
@@ -182,7 +182,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('acl_resource_id'), array('unique' => false))
                 ->addIndex(array('resource_type'), array('unique' => false))
                 ->addIndex(array('resource_id'), array('unique' => false))
-                ->save();
+                ->create();
 
         
         $cfg_acl_resources_domains_relations = $this->table('cfg_acl_resources_domains_relations', array('id' => false, 'primary_key' => array('ardr_id')));
@@ -195,7 +195,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('domain_id'), array('unique' => false))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('domain_id', 'cfg_domains', 'domain_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
         
         
         $cfg_acl_resources_environments_relations = $this->table('cfg_acl_resources_environments_relations', array('id' => false, 'primary_key' => array('arer_id')));
@@ -208,7 +208,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('environment_id'), array('unique' => false))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('environment_id', 'cfg_environments', 'environment_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
          
         $cfg_acl_resources_usergroups_relations = $this->table('cfg_acl_resources_usergroups_relations', array('id' => false, 'primary_key' => array('arugr_id')));
         $cfg_acl_resources_usergroups_relations
@@ -219,24 +219,24 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('usergroup_id'), array('unique' => false))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('usergroup_id', 'cfg_usergroups', 'usergroup_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
           
         $cfg_acl_resource_type = $this->table('cfg_acl_resource_type', array('id' => false, 'primary_key' => array('acl_resource_type_id'))); 
         $cfg_acl_resource_type
                 ->addColumn('acl_resource_type_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('name','string',array('limit' => 255, 'null' => false))
                 ->addIndex(array('acl_resource_type_id'), array('unique' => false))
-                ->save();
+                ->create();
         
         $cfg_api_tokens = $this->table('cfg_api_tokens', array('id' => false, 'primary_key' => array('api_token_id')));
         $cfg_api_tokens
                 ->addColumn('api_token_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('value','string', array('limit' => 200, 'null' => false))
-                ->addColumn('user_id','integer', array('signed' => false, 'signed' => false, 'null' => false))
+                ->addColumn('user_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('updatedat','timestamp', array('null' => false))
                 ->addIndex(array('user_id'), array('unique' => false))
                 ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
         
         $cfg_contacts_infos = $this->table('cfg_contacts_infos', array('id' => false, 'primary_key' => array('contact_info_id')));
         $cfg_contacts_infos
@@ -246,7 +246,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('contact_id','integer', array('signed' => false, 'null' => false))
                 ->addIndex(array('contact_id'), array('unique' => false))
                 ->addForeignKey('contact_id', 'cfg_contacts', 'contact_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
 
         $cfg_options = $this->table('cfg_options', array('id' => false, 'primary_key' => array('option_id')));
         $cfg_options
@@ -254,7 +254,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('group','string', array('limit' => 255, 'null' => false, 'default' =>  "default"))
                 ->addColumn('key','string', array('limit' => 255, 'null' => true))
                 ->addColumn('value','string', array('limit' => 255, 'null' => true))
-                ->save();       
+                ->create();       
         
         $cfg_organizations_modules_relations = $this->table('cfg_organizations_modules_relations', array('id' => false, 'primary_key' => array('organization_id', 'module_id')));
         $cfg_organizations_modules_relations
@@ -263,7 +263,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('is_activated','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, 'default' =>  0))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE'))
                 ->addForeignKey('module_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE'))
-                ->save();
+                ->create();
         
         
         $cfg_organizations_users_relations = $this->table('cfg_organizations_users_relations', array('id' => false, 'primary_key' => array('organization_id', 'user_id')));
@@ -274,7 +274,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('is_admin','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, 'default' =>  0))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE'))
                 ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE'))
-                ->save();
+                ->create();
         
         
         $cfg_searches = $this->table('cfg_searches', array('id' => false, 'primary_key' => array('search_id')));
@@ -286,7 +286,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('searchText','string', array('limit' => MysqlAdapter::TEXT_REGULAR, 'null' => false))
                 ->addIndex(array('user_id', 'label', 'route'), array('unique' => true))
                 ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
         
         
         
@@ -295,7 +295,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('user_id','integer', array('null' => true, 'signed' => false))
                 ->addColumn('tagname','string', array('limit' => 100, 'null' => false))
                 ->addIndex(array('user_id', 'tagname'), array('unique' => true))
-                ->save();
+                ->create();
         
         
         $cfg_tags_contacts = $this->table('cfg_tags_contacts', array('id' => false, 'primary_key' => array('tag_id', 'resource_id')));
@@ -305,7 +305,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('template_id','integer', array('signed' => false, 'null' => true))
                 ->addForeignKey('tag_id', 'cfg_tags', 'tag_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('resource_id', 'cfg_contacts', 'contact_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
 
         $cfg_users_timezones_relations = $this->table('cfg_users_timezones_relations', array('id' => false, 'primary_key' => array('user_id', 'timezone_id')));
         $cfg_users_timezones_relations
@@ -313,7 +313,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('timezone_id','integer', array('signed' => false, 'null' => false))
                 ->addForeignKey('timezone_id', 'cfg_timezones', 'timezone_id', array('delete'=> 'CASCADE'))
                 ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE'))
-                ->save();
+                ->create();
         
         $cfg_users_usergroups_relations = $this->table('cfg_users_usergroups_relations', array('id' => false, 'primary_key' => array('uugr_id')));
         $cfg_users_usergroups_relations
@@ -324,7 +324,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('usergroup_id'), array('unique' => false))
                 ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('usergroup_id', 'cfg_usergroups', 'usergroup_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save(); 
+                ->create(); 
         
         $this->execute('INSERT INTO cfg_organizations (organization_id, name, shortname, active) values (1, "Default organization", "default_organization", 1)');
         $this->execute('INSERT INTO cfg_organizations (organization_id, name, shortname, active) values (2, "Client organization", "client", 0)');

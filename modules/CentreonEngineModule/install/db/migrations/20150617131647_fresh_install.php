@@ -109,7 +109,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('ocsp_command'), array('unique' => false))
                 ->addIndex(array('ochp_command'), array('unique' => false))
                 ->addIndex(array('poller_id'), array('unique' => false))
-                ->save();
+                ->create();
         
 
         $cfg_engine_broker_module = $this->table('cfg_engine_broker_module', array('id' => false, 'primary_key' => 'bk_mod_id'));
@@ -119,7 +119,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('broker_module','string',array('limit' => 255), array('null' => false))
                 ->addForeignKey('poller_id', 'cfg_engine', 'poller_id', array('update'=> 'RESTRICT'))
                 ->addIndex(array('poller_id'), array('unique' => false))
-                ->save();
+                ->create();
         
     }
 }
