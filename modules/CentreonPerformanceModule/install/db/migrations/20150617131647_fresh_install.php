@@ -65,7 +65,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('scale','integer', array('signed' => false, 'null' => false, "default" => 0))
                 ->addForeignKey('svc_tmpl_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE'))
                 ->addIndex(array('svc_tmpl_id'), array('unique' => false))
-                ->save();
+                ->create();
         
         
         $cfg_curve_config = $this->table('cfg_curve_config', array('id' => false, 'primary_key' => array('graph_template_id', 'metric_name')));
@@ -76,7 +76,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('is_negative','integer',array('signed' => false, 'null' => false, "default" => 0))
                 ->addColumn('fill','integer',array('signed' => false, 'null' => false, "default" => 0))
                 ->addForeignKey('graph_template_id', 'cfg_graph_template', 'graph_template_id', array('delete'=> 'CASCADE'))
-                ->save();
+                ->create();
         
         
         $cfg_graph_views = $this->table('cfg_graph_views', array('id' => false, 'primary_key' => 'graph_view_id'));
@@ -86,7 +86,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('privacy','string',array('limit' => 7), array('null' => true, "default" => 0))
                 ->addColumn('owner_id','integer',array('null' => false, 'signed' => false, "default" => 0))
                 ->addForeignKey('owner_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE'))
-                ->save();
+                ->create();
         
         
         $cfg_graph_views_services = $this->table('cfg_graph_views_services', array('id' => false, 'primary_key' => array('graph_view_id', 'service_id')));
@@ -96,7 +96,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('order','integer',array('signed' => false, 'null' => false, "default" => 0))
                 ->addForeignKey('graph_view_id', 'cfg_graph_views', 'graph_view_id', array('delete'=> 'CASCADE'))
                 ->addForeignKey('service_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE'))
-                ->save();
+                ->create();
     }
 }
     

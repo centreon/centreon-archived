@@ -62,7 +62,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('acl_action_activate', 'string', array('limit' => 1, 'null' => true, 'default' => "1"))
                 ->addColumn('organization_id','integer', array('signed' => false, 'null' => true))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();    
+                ->create();    
         
         $cfg_acl_actions_rules = $this->table('cfg_acl_actions_rules', array('id' => false, 'primary_key' => 'aar_id'));
         $cfg_acl_actions_rules
@@ -73,7 +73,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('acl_action_rule_id'), array('unique' => false))
                 ->addForeignKey('acl_action_rule_id', 'cfg_acl_actions', 'acl_action_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
-                ->save();
+                ->create();
       
         $cfg_acl_group_actions_relations = $this->table('cfg_acl_group_actions_relations', array('id' => false, 'primary_key' => 'agar_id'));
         $cfg_acl_group_actions_relations
@@ -82,7 +82,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('acl_group_id','integer', array('signed' => false, 'null' => true))
                 ->addIndex(array('acl_action_id'), array('unique' => false))
                 ->addIndex(array('acl_group_id'), array('unique' => false))
-                ->save();
+                ->create();
 
         $log_action = $this->table('log_action', array('id' => false, 'primary_key' => array('action_log_id')));
         $log_action
@@ -94,7 +94,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('action_type','string',array('limit' => 255, 'null' => false))
                 ->addColumn('log_contact_id','integer', array('signed' => false, 'null' => true))
                 ->addIndex(array('log_contact_id'), array('unique' => false))
-                ->save();
+                ->create();
 
         $log_action_modification = $this->table('log_action_modification', array('id' => false, 'primary_key' => 'modification_id')); 
         $log_action_modification
@@ -103,7 +103,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('field_value','string',array('limit' => 255, 'null' => false))
                 ->addColumn('action_log_id','integer',array('signed' => false, 'null' => false))
                 ->addIndex(array('action_log_id'), array('unique' => false))
-                ->save();
+                ->create();
                 
         $log_archive_host = $this->table('log_archive_host', array('id' => false, 'primary_key' => array('log_id')));
         $log_archive_host
@@ -129,7 +129,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('host_id'), array('unique' => false))
                 ->addIndex(array('date_start'), array('unique' => false))
                 ->addIndex(array('date_end'), array('unique' => false))
-                ->save();
+                ->create();
 
         $log_archive_last_status = $this->table('log_archive_last_status', array('id' => false, 'primary_key' => array('log_archive_last_status_id')));
         $log_archive_last_status
@@ -140,7 +140,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('service_description','string', array('limit' => 255, 'null' => true))
                 ->addColumn('status','string', array('limit' => 255, 'null' => true))
                 ->addColumn('ctime','integer', array('null' => false))
-                ->save();
+                ->create();
         
         $log_archive_service = $this->table('log_archive_service', array('id' => false, 'primary_key' => array('log_id')));
         $log_archive_service
@@ -171,12 +171,12 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('service_id'), array('unique' => false))
                 ->addIndex(array('date_start'), array('unique' => false))
                 ->addIndex(array('date_end'), array('unique' => false))
-                ->save();
+                ->create();
         
         $rt_instances = $this->table('rt_instances', array('id' => false, 'primary_key' => 'instance_id'));
         $rt_instances
                 ->addColumn('instance_id','integer', array('signed' => false, 'null' => false))
-                ->addColumn('host_name','string', array('limit' => 255, 'null' => false, "default" => "localhost"))
+                ->addColumn('name','string', array('limit' => 255, 'null' => false, "default" => "localhost"))
                 ->addColumn('active_host_checks','integer', array('signed' => false, 'null' => true))
                 ->addColumn('active_service_checks','integer', array('signed' => false, 'null' => true))
                 ->addColumn('address','string', array('limit' => 128, 'null' => true))
@@ -208,7 +208,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('version','integer', array('signed' => false, 'null' => true))
                 ->addColumn('deleted','integer', array('signed' => false, 'null' => true))
                 ->addColumn('outdated','integer', array('signed' => false, 'null' => true))
-                ->save();
+                ->create();
         
         
         $rt_hosts = $this->table('rt_hosts', array('id' => false, 'primary_key' => array('host_id')));
@@ -302,7 +302,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('host_id'), array('unique' => false))
                 ->addIndex(array('instance_id'), array('unique' => false))
                 ->addIndex(array('name'), array('unique' => false))
-                ->save();
+                ->create();
 
         $log_logs = $this->table('log_logs', array('id' => false, 'primary_key' => array('log_id')));
         $log_logs
@@ -329,7 +329,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('host_id', 'service_id', 'msg_type', 'status', 'ctime'), array('unique' => false))
                 ->addIndex(array('host_id', 'msg_type', 'status', 'ctime'), array('unique' => false))
                 ->addIndex(array('host_id', 'msg_type', 'status', 'ctime'), array('unique' => false))
-                ->save();
+                ->create();
         
         $log_snmptt = $this->table('log_snmptt', array('id' => false, 'primary_key' => array('trap_id')));
         $log_snmptt
@@ -338,7 +338,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('trap_ip','string', array('limit' => 50, 'null' => true))
                 ->addColumn('trap_community','string', array('limit' => 50, 'null' => true))
                 ->addColumn('trap_infos','text', array('null' => false))
-                ->save();
+                ->create();
                 
         $log_traps = $this->table('log_traps', array('id' => false, 'primary_key' => array('trap_id')));
         $log_traps
@@ -358,7 +358,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('output_message','string', array('limit' => 2048, 'null' => true))
                 ->addIndex(array('trap_id'), array('unique' => false))
                 ->addIndex(array('trap_time'), array('unique' => false))
-                ->save();
+                ->create();
               
         $log_traps = $this->table('log_traps_args', array('id' => false, 'primary_key' => array('fk_log_traps')));
         $log_traps
@@ -368,7 +368,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('arg_value','string', array('limit' => 255, 'null' => true))
                 ->addColumn('trap_time','integer', array('signed' => false, 'null' => true))
                 ->addIndex(array('fk_log_traps'), array('unique' => false))
-                ->save();
+                ->create();
 
         $rt_acl = $this->table('rt_acl', array('id' => false, 'primary_key' => array('acl_id')));
         $rt_acl
@@ -383,7 +383,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('host_name', 'service_description', 'group_id'), array('unique' => true))
                 ->addIndex(array('host_id', 'service_id', 'group_id'), array('unique' => true))
                 ->addIndex(array('host_name', 'group_id'), array('unique' => true))
-                ->save();
+                ->create();
         
         $rt_downtimes = $this->table('rt_downtimes', array('id' => false, 'primary_key' => array('downtime_id')));
         $rt_downtimes
@@ -415,7 +415,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('instance_id'), array('unique' => false))
                 ->addIndex(array('entry_time'), array('unique' => false))
                 ->addIndex(array('host_id', 'start_time'), array('unique' => true))
-                ->save();
+                ->create();
         
         $rt_eventhandlers = $this->table('rt_eventhandlers', array('id' => false, 'primary_key' => array('eventhandler_id')));
         $rt_eventhandlers
@@ -436,7 +436,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('type','integer', array('signed' => false, 'null' => false))
                 ->addForeignKey('host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('host_id', 'service_id', 'start_time'), array('unique' => true))
-                ->save();
+                ->create();
 
         $rt_flappingstatuses = $this->table('rt_flappingstatuses', array('id' => false, 'primary_key' => array('flappingstatus_id')));
         $rt_flappingstatuses
@@ -454,7 +454,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('type','integer', array('signed' => false, 'null' => true))
                 ->addForeignKey('host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('host_id', 'service_id', 'event_time'), array('unique' => true))
-                ->save();
+                ->create();
 
         $rt_comments = $this->table('rt_comments', array('id' => false, 'primary_key' => array('comment_id')));
         $rt_comments
@@ -479,7 +479,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('internal_id'), array('unique' => false))
                 ->addIndex(array('host_id'), array('unique' => false))
                 ->addIndex(array('instance_id'), array('unique' => false))
-                ->save();
+                ->create();
                
         $rt_acknowledgements = $this->table('rt_acknowledgements', array('id' => false, 'primary_key' => array('acknowledgement_id')));
         $rt_acknowledgements
@@ -502,7 +502,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('host_id'), array('unique' => false))
                 ->addIndex(array('instance_id'), array('unique' => false))
                 ->addIndex(array('entry_time'), array('unique' => false))
-                ->save();
+                ->create();
         
         $rt_services = $this->table('rt_services', array('id' => false, 'primary_key' => array('host_id', 'service_id')));
         $rt_services
@@ -598,7 +598,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('host_id', 'service_id'), array('unique' => true))
                 ->addIndex(array('service_id'), array('unique' => false))
                 ->addIndex(array('description'), array('unique' => false))
-                ->save();
+                ->create();
               
         $rt_hosts_hosts_dependencies = $this->table('rt_hosts_hosts_dependencies', array('id' => false, 'primary_key' => array('dependent_host_id', 'host_id')));
         $rt_hosts_hosts_dependencies
@@ -612,7 +612,7 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('dependent_host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('dependent_host_id', 'host_id'), array('unique' => true))
                 ->addIndex(array('host_id'), array('unique' => false))
-                ->save();
+                ->create();
             
         $rt_hoststateevents = $this->table('rt_hoststateevents', array('id' => false, 'primary_key' => array('hoststateevent_id')));
         $rt_hoststateevents
@@ -626,7 +626,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('ack_time','integer', array('signed' => false, 'null' => true))
                 ->addIndex(array('host_id', 'start_time'), array('unique' => true))
                 ->addIndex(array('start_time'), array('unique' => false))
-                ->save();
+                ->create();
 
         $rt_hosts_hosts_parents = $this->table('rt_hosts_hosts_parents', array('id' => false, 'primary_key' => 'hoststateevent_id'));
         $rt_hosts_hosts_parents
@@ -641,7 +641,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('host_id', 'start_time'), array('unique' => true))
                 ->addIndex(array('start_time'), array('unique' => false))
                 ->addIndex(array('end_time'), array('unique' => false))
-                ->save();
+                ->create();
                 
         $rt_index_data = $this->table('rt_index_data', array('id' => false, 'primary_key' => 'id'));
         $rt_index_data
@@ -666,7 +666,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('service_id'), array('unique' => false))
                 ->addIndex(array('must_be_rebuild'), array('unique' => false))
                 ->addIndex(array('trashed'), array('unique' => false))
-                ->save();
+                ->create();
         
         $rt_issues = $this->table('rt_issues', array('id' => false, 'primary_key' => 'issue_id'));
         $rt_issues
@@ -679,7 +679,7 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('host_id', 'service_id', 'start_time'), array('unique' => true))
                 ->addIndex(array('start_time'), array('unique' => false))
-                ->save();
+                ->create();
                 
         $rt_issues_issues_parents = $this->table('rt_issues_issues_parents', array('id' => false, 'primary_key' => 'child_id'));
         $rt_issues_issues_parents
@@ -691,7 +691,7 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('parent_id', 'rt_issues', 'issue_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('child_id'), array('unique' => false))
                 ->addIndex(array('parent_id'), array('unique' => false))
-                ->save();       
+                ->create();       
         
         $rt_metrics = $this->table('rt_metrics', array('id' => false, 'primary_key' => 'metric_id'));
         $rt_metrics
@@ -714,7 +714,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('to_delete','integer', array('signed' => false, 'null' => false))
                 ->addIndex(array('index_id', 'metric_name'), array('unique' => true))
                 ->addIndex(array('index_id'), array('unique' => false))
-                ->save();
+                ->create();
         
         $rt_modules = $this->table('rt_modules', array('id' => false, 'primary_key' => 'module_id'));
         $rt_modules
@@ -726,7 +726,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('should_be_loaded','integer', array('signed' => false, 'null' => true))
                 ->addForeignKey('instance_id', 'rt_instances', 'instance_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('instance_id'), array('unique' => false))
-                ->save();
+                ->create();
         
         $rt_notifications = $this->table('rt_notifications', array('id' => false, 'primary_key' => 'notification_id'));
         $rt_notifications
@@ -747,14 +747,14 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('type','integer', array('signed' => false, 'null' => true))
                 ->addForeignKey('host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('host_id', 'service_id', 'start_time'), array('unique' => true))
-                ->save();
+                ->create();
         
         $rt_schemaversion = $this->table('rt_schemaversion', array('id' => false, 'primary_key' => 'schema_id'));
         $rt_schemaversion
                 ->addColumn('schema_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('software','string', array('limit' => 128, 'null' => false))
                 ->addColumn('version','integer', array('signed' => false, 'null' => false))
-                ->save();  
+                ->create();  
         
         $rt_services_services_dependencies = $this->table('rt_services_services_dependencies', array('id' => false, 'primary_key' => array('dependent_host_id', 'dependent_service_id', 'host_id', 'service_id')));
         $rt_services_services_dependencies
@@ -770,7 +770,7 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('host_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('dependent_host_id', 'dependent_service_id', 'host_id', 'service_id'), array('unique' => true))
                 ->addIndex(array('host_id'), array('unique' => false))
-                ->save();
+                ->create();
         
         $rt_servicestateevents = $this->table('rt_servicestateevents', array('id' => false, 'primary_key' => 'servicestateevent_id'));
         $rt_servicestateevents
@@ -786,7 +786,7 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('host_id', 'service_id', 'start_time'), array('unique' => true))
                 ->addIndex(array('start_time'), array('unique' => false))
                 ->addIndex(array('end_time'), array('unique' => false))
-                ->save();
+                ->create();
        
         $rt_statistics = $this->table('rt_statistics', array('id' => false, 'primary_key' => 'id'));
         $rt_statistics
@@ -800,7 +800,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('cpt','integer', array('signed' => false, 'null' => true))
                 ->addColumn('last_restart','integer', array('signed' => false, 'null' => true))
                 ->addColumn('average','integer', array('signed' => false, 'null' => true))
-                ->save();
+                ->create();
          
         $rt_customvariables = $this->table('rt_customvariables', array('id' => false, 'primary_key' => 'customvariable_id'));
         $rt_customvariables
@@ -814,7 +814,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('update_time','integer', array('signed' => false, 'null' => true))
                 ->addColumn('value', 'string', array('limit' => 255, 'null' => true))
                 ->addIndex(array('host_id', 'name', 'service_id'), array('unique' => true))
-                ->save();
+                ->create();
  
     }
 }
