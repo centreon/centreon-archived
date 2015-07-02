@@ -566,11 +566,11 @@ abstract class AbstractModuleInstaller
             $this->installValidators();
             
             $myFormFiles = glob($this->moduleDirectory. '/install/forms/*.xml');
-            /*
+            
             foreach ($myFormFiles as $formFile) {
                 Form::installFromXml($this->moduleId, $formFile);
             }
-            */
+            
             $message = $this->colorizeMessage(_("     Done"), 'green');
             $this->displayOperationMessage($message);
         } catch (FilesystemException $ex) {

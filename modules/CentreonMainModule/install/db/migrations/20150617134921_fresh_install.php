@@ -231,7 +231,7 @@ class FreshInstall extends AbstractMigration
         
         // Creation of table cfg_forms_steps
         $cfg_forms_steps = $this->table('cfg_forms_steps', array('id' => false, 'primary_key' => array('step_id', 'wizard_id')));
-        $cfg_forms_steps->addColumn('step_id', 'integer', array('signed' => false, 'null' => false))
+        $cfg_forms_steps->addColumn('step_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('module_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('name', 'string', array('limit' => 45, 'null' => false))
                 ->addColumn('wizard_id', 'integer', array('signed' => false, 'null' => false))
