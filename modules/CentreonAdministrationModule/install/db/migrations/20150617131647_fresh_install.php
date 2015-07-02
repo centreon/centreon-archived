@@ -232,7 +232,7 @@ class FreshInstall extends AbstractMigration
         $cfg_api_tokens
                 ->addColumn('api_token_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('value','string', array('limit' => 200, 'null' => false))
-                ->addColumn('user_id','integer', array('signed' => false, 'signed' => false, 'null' => false))
+                ->addColumn('user_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('updatedat','timestamp', array('null' => false))
                 ->addIndex(array('user_id'), array('unique' => false))
                 ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
