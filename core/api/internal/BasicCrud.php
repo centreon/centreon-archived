@@ -75,7 +75,7 @@ class BasicCrud extends AbstractCommand
      *
      * @var type 
      */
-    protected $attributesMap = array();
+    public $attributesMap = array();
     
     /**
      *
@@ -171,6 +171,121 @@ class BasicCrud extends AbstractCommand
         return $choices;
     }
 
+    public function getFieldsFromForm($route,$required){
+        $db = Di::getDefault()->get('db_centreon');
+        $sql = 'select ff.* from cfg_forms f
+                    inner join cfg_forms_sections fs on fs.form_id = f.form_id
+                    inner join cfg_forms_blocks fb on fb.section_id = fs.section_id
+                    inner join cfg_forms_blocks_fields_relations fbfr on fbfr.block_id = fb.block_id
+                    inner join cfg_forms_fields ff on ff.field_id = fbfr.field_id
+                    where f.route = :route and ff.normalized_name != "" and ff.normalized_name is not null';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+
+        foreach($rows as $row){
+            $attributes = json_decode($row['attributes'],true);
+            $multiple = false;
+            $mandatory = false;
+            if($required){
+                $mandatory = $row['mandatory'];
+            }
+            if(isset($attributes['multiple'])){
+                $multiple = $attributes['multiple'];
+            }
+            $this->options[$row['normalized_name']] = array(
+                'paramType' => 'params',
+                'help' => $row['help'].$this->getChoices($attributes),
+                'type' => 'string',
+                'name' => $row['name'],
+                'multiple' => $multiple,
+                'required' => $required,
+                'attributes' => $attributes
+            );
+            
+            if($required){
+                $this->options[$row['normalized_name']]['defaultValue'] = $row['default_value'];
+            }
+        }
+    }
+
+    public function getObject($object){
+        
+        $typeInfos = explode('|',$object['objectType']);
+        $type = 'string';
+        $multiple = false;
+        if($typeInfos[0] == 'Array'){
+            $multiple = true;
+        }else{
+            $type = $typeInfos[0]; 
+        }
+        $this->options[$object['objectName']] = array(
+            'paramType' => 'object',
+            'help' => $object['objectComment'],
+            'type' => $type,
+            'name' => $this->attributesMap[$object['objectName']],
+            'multiple' => $multiple,
+            'required' => true
+        );
+    }
+    
+    public function getCustomsParams($paramsArray){
+        
+        foreach($paramsArray as $param){
+            $multiple = false;
+            $typeInfos = explode('|',$param['paramType']);
+            $type = 'string';
+            $defaultValue = null;
+            $booleanValue = null;
+            $booleanSetDefault = null;
+            $isNotNone = true;
+            if(!empty($typeInfos[0])){
+                $hasDefault = false;
+                if($typeInfos[0] == 'none'){
+                    unset($this->options[$param['paramName']]);
+                    $isNotNone = false;
+                }else if($typeInfos[0] == 'Array'){
+                    $multiple = true;
+                }else{
+                   $type = $typeInfos[0]; 
+                }
+                if($typeInfos[0] === 'boolean'){
+                    if(!empty($typeInfos[1])){
+                        $booleanValue = ($typeInfos[1] == 'true') ? true : false;
+                        if($param['paramRequired']){
+                            $booleanSetDefault = true;
+                        }
+                    }
+                }else if(!empty($typeInfos[1])){
+                    $defaultValue = $typeInfos[1];
+                }
+            }
+            
+            if($isNotNone){
+                $this->options[$param['paramName']] = array(
+                    'paramType' => 'params',
+                    'help' => $param['paramComment'],
+                    'type' => $type,
+                    'name' => $this->attributesMap[$param['paramName']],
+                    'multiple' => $multiple,
+                    'required' => $param['paramRequired']
+                );
+
+                if(!is_null($defaultValue)){
+                    $this->options[$param['paramName']]['defaultValue'] = $defaultValue;
+                }
+
+                if(!is_null($booleanValue)){
+                    $this->options[$param['paramName']]['booleanValue'] = $booleanValue;
+                }
+
+                if(!is_null($booleanSetDefault)){
+                    $this->options[$param['paramName']]['booleanSetDefault'] = $booleanSetDefault;
+                }
+            }
+        }
+    }
     
     
     /** Get the fields from xml forms for update and create action

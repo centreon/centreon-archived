@@ -78,8 +78,8 @@ abstract class AbstractCommand
         $classReflection = new \ReflectionClass($this);
         $methodReflection = $classReflection->getMethod($method);
         $options = array();
-        if(isset($this->options[$method])){
-            $options = $this->options[$method];
+        if(isset($this->options)){
+            $options = $this->options;
         }
         
         $defaultValues = array();
@@ -95,18 +95,18 @@ abstract class AbstractCommand
                     }
                 }
                 
-                if(!empty($option['toTransform'])){
-                    $finalArgsOption[$option['functionParams']][$option['toTransform']] = $args[$key];
+                if(!empty($option['name'])){
+                    $finalArgsOption[$option['paramType']][$option['name']] = $args[$key];
                 }else{
-                    $finalArgsOption[$option['functionParams']] = $args[$key];
+                    $finalArgsOption[$option['paramType']] = $args[$key];
                 }
             }else if($option['required']){
                 $missingParams[] = $key;
             }else if(isset($option['defaultValue'])){
-                if(!empty($option['toTransform'])){
-                    $finalArgsOption[$option['functionParams']][$option['toTransform']] = $option['defaultValue'];
+                if(!empty($option['name'])){
+                    $finalArgsOption[$option['paramType']][$option['name']] = $option['defaultValue'];
                 }else{
-                    $finalArgsOption[$option['functionParams']] = $option['defaultValue'];
+                    $finalArgsOption[$option['paramType']] = $option['defaultValue'];
                 }
             }
         }
@@ -130,6 +130,7 @@ abstract class AbstractCommand
                 throw new \Exception('The parameter "' . $param->getName(). '" is missing');
             }
         }        
-        $methodReflection->invokeArgs($this, $finalArgsOption);
+        
+        $methodReflection->invokeArgs($this, $pass);
     }
 }

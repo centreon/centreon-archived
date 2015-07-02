@@ -51,5 +51,29 @@ class HostCommand extends BasicTagSupport
     {
         parent::__construct();
     }
+    
+    
+    /**
+     * 
+     * @cmdForm /centreon-configuration/host/update required
+     * @cmdParam none host-custommacros optional hide this
+     * @cmdParam boolean|false disable required disable the host because it sucks
+     */
+    public function createAction($params) {
+        parent::createAction($params);
+    }
+    
+    
+    /**
+     * 
+     * @cmdForm /centreon-configuration/host/update optional
+     * @cmdParam none host-custommacros optional hide this
+     * @cmdParam boolean|false disable optional disable the host because it sucks
+     * @cmdParam boolean|true enable optional enable the host because it rocks
+     * @cmdObject string host the host
+     */
+    public function updateAction($object, $params) {
+        parent::updateAction($object, $params);
+    }
 
 }

@@ -188,6 +188,84 @@ class Command
         }
     }
     
+    public function getFormsParams($aliveObject,$docComment){
+        preg_match_all('/@cmdForm\s+(\S+|\/)+\s+(\S+)/', $docComment, $matches);
+        $formRoute = "";
+        $required = false;
+        if(!empty($matches[1][0])){
+            $formRoute = $matches[1][0];
+            if(!empty($matches[2][0])){
+                switch($matches[2][0]){
+                    case 'required' : 
+                        $required = true;
+                        break;
+                    case 'optional' : 
+                    default :
+                        $required = false;
+                        break;
+                }
+            }
+            if (method_exists($aliveObject, 'getFieldsFromForm')) {
+                $aliveObject->getFieldsFromForm($formRoute,$required);
+            }
+        }
+    }
+    
+    public function getObject($aliveObject,$docComment){
+        preg_match_all('/@cmdObject\s+(\S+)\s+(\S+)\s*(.*)/', $docComment, $matches);
+        $object = array();
+        if(!empty($matches[1])){
+            if(!empty($matches[1][0])){
+                $object['objectType'] = $matches[1][0];
+            }
+
+            if(!empty($matches[2][0])){
+                $object['objectName'] = $matches[2][0];
+            }
+
+            if(!empty($matches[3][0])){
+                $object['objectComment'] = $matches[3][0];
+            }
+
+            if (method_exists($aliveObject, 'getObject')) {
+                $aliveObject->getObject($object);
+            }
+        }
+    }
+    
+    public function getCustomsParams($aliveObject,$docComment){
+        
+        preg_match_all('/@cmdParam\s+(\S+)\s+(\S+)\s+(\S+)\s*(.*)/', $docComment, $matches);
+        
+        
+        
+        $paramsArray = array();
+        if(!empty($matches[1])){
+            foreach($matches[1] as $key=>$paramType){
+                $paramsArray[$key]['paramType'] = $paramType;
+            }
+        }
+        if(!empty($matches[2])){
+            foreach($matches[2] as $key=>$paramName){
+                $paramsArray[$key]['paramName'] = $paramName;
+            }
+        }
+        if(!empty($matches[3])){
+            foreach($matches[3] as $key=>$paramRequired){
+                $paramsArray[$key]['paramRequired'] = ($paramRequired == 'required') ? true : false;
+            }
+        }
+        if(!empty($matches[4])){
+            foreach($matches[4] as $key=>$paramComment){
+                $paramsArray[$key]['paramComment'] = $paramComment;
+            }
+        }
+
+        $aliveObject->getCustomsParams($paramsArray);
+
+    }
+    
+    
     /**
      * 
      * @throws Exception
@@ -214,12 +292,14 @@ class Command
         if (!method_exists($aliveObject, $action)) {
             throw new Exception("The action '$action' doesn't exist");
         }
-       
         
-        if (method_exists($aliveObject, 'getFieldsFromForms')) {
-            $aliveObject->getFieldsFromForms($action,$module);
-        }
+        $classReflection = new \ReflectionClass($aliveObject);
+        $methodReflection = $classReflection->getMethod($action);
+        $docComment = $methodReflection->getDocComment();
         
+        $this->getFormsParams($aliveObject, $docComment);
+        $this->getObject($aliveObject, $docComment);
+        $this->getCustomsParams($aliveObject, $docComment);
         
         $actionArgs = array();
         $this->getArgs($actionArgs, $aliveObject, $action);
@@ -272,8 +352,8 @@ class Command
     private function getArgs(array &$argsList, $aliveObject, $action)
     {
         $listOptions = array();
-        if(isset($aliveObject->options[$action])){
-            $listOptions = $aliveObject->options[$action];
+        if(isset($aliveObject->options)){
+            $listOptions = $aliveObject->options;
         }
         
 
@@ -299,7 +379,7 @@ class Command
             $manageCommandOptionsEvent = new ManageCommandOptionsEvent($aliveObject->objectName, $action, $listOptions, $parsedOptions);
             $events->emit('core.manage.command.options', array($manageCommandOptionsEvent));
             $listOptions = $manageCommandOptionsEvent->getOptions();
-            $aliveObject->options[$action] = $listOptions;
+            $aliveObject->options = $listOptions;
         }
         
         $listOptions = array_merge($listOptions,
@@ -344,7 +424,6 @@ class Command
         foreach( $optionsParsed as $key => $spec ) {
             $argsList[$key] = $spec->value;
         }
-        
         unset($listOptions['h|help']);
         foreach($listOptions as $key=>$options){
             if($options['type'] === 'boolean'){
@@ -368,7 +447,6 @@ class Command
                 }
             }
         }
-        
     }
     
     /**
