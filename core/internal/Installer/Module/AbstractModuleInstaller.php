@@ -157,7 +157,6 @@ abstract class AbstractModuleInstaller
         $this->versionManager->setTemporaryVersion('install', true);
         
         // Install DB
-        //$this->installDb();
         $migrationManager = new Manager($this->moduleSlug, 'production');
         $migrationManager->generateConfiguration();
         $cmd = $this->getPhinxCallLine() .'migrate ';
@@ -226,8 +225,11 @@ abstract class AbstractModuleInstaller
         $this->moduleId = Informations::getModuleIdByName($this->moduleSlug);
         
         // Install DB
-        $migrationManager = new Migrate($this->moduleSlug, $this->moduleDirectory . '/install/db/');
-        $migrationManager->up();
+        $migrationManager = new Manager($this->moduleSlug, 'production');
+        $cmd = $this->getPhinxCallLine() .'migrate ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= ' -e '. $this->moduleSlug;
+        shell_exec($cmd);
         
         // Install menu
         $this->installMenu();
@@ -540,7 +542,6 @@ abstract class AbstractModuleInstaller
     
     /**
      * 
-     * @throws FilesystemException
      */
     protected function installValidators()
     {
