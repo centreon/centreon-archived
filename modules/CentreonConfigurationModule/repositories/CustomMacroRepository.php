@@ -46,6 +46,9 @@ use Centreon\Internal\Di;
  */
 class CustomMacroRepository
 {
+    
+    public static $forbidenCHar = "`~$^&\"|'<>";
+    
     /**
      *
      * @var type 
@@ -407,7 +410,7 @@ class CustomMacroRepository
             $errors[] = $sMessage;
         }
         
-        $params['characters'] = "~!$%^&|<>?,;()\=\"'";
+        $params['characters'] = self::$forbidenCHar;
         $res = ForbiddenChar::validate($sNameMacro,$params);
         if(!$res['success']){
             $errors[] = 'Macro name : '.$res['error'];
