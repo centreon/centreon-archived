@@ -145,7 +145,7 @@ class FreshInstall extends AbstractMigration
         $cfg_downtimes = $this->table('cfg_downtimes', array('id' => false, 'primary_key' => array('dt_id')));
         $cfg_downtimes->addColumn('dt_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('dt_name', 'string', array('limit' => 100, 'null' => false))
-                ->addColumn('description', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('dt_description', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('dt_activate', 'integer', array('signed' => false, 'null' => true, 'default' => 1))
                 ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
