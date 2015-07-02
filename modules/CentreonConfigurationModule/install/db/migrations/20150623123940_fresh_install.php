@@ -39,7 +39,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('tp_slug', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('tp_alias', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('tp_sunday', 'string', array('limit' => 255, 'null' => true))
-                ->addColumn('tp_monnday', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('tp_monday', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('tp_tuesday', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('tp_wednesday', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('tp_thursday', 'string', array('limit' => 255, 'null' => true))
@@ -144,7 +144,7 @@ class FreshInstall extends AbstractMigration
         // Creation of table cfg_downtimes
         $cfg_downtimes = $this->table('cfg_downtimes', array('id' => false, 'primary_key' => array('dt_id')));
         $cfg_downtimes->addColumn('dt_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
-                ->addColumn('name', 'string', array('limit' => 100, 'null' => false))
+                ->addColumn('dt_name', 'string', array('limit' => 100, 'null' => false))
                 ->addColumn('description', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('dt_activate', 'integer', array('signed' => false, 'null' => true, 'default' => 1))
                 ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
