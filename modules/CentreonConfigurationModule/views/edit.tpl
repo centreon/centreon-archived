@@ -77,6 +77,8 @@
                   } else {
                       alertMessage(data.error, "notif-danger");
                   }
+              }).error(function(){
+                alertModalMessage("an error occured", "alert-danger");
               });
             }
             return false;
