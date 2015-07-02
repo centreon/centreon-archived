@@ -38,6 +38,7 @@ namespace CentreonBroker\Listeners\CentreonConfiguration;
 use CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
 use CentreonBroker\Repository\ConfigCorrelationRepository;
 use CentreonBroker\Repository\ConfigGenerateRepository;
+use Centreon\Internal\Di;
 
 class GenerateEngine
 {
@@ -47,6 +48,16 @@ class GenerateEngine
      */
     public static function execute(GenerateEngineEvent $event)
     {
+        $config = Di::getDefault()->get('config');
+        $path = $config->get('global', 'centreon_generate_tmp_dir');
+        $path = rtrim($path, '/') . '/broker/generate/';
+
+        $output = array();
+        exec("rm -rf " . $path . $event->getPollerId() . "/* 2>&1", $output, $statusDelete);
+        if ($statusDelete) {
+            $event->setOutput(_('Error while deleting Broker temporary configuration files') . "\n" . implode("\n", $output));
+        }
+
         $configBroker = new ConfigGenerateRepository();
         $configBroker->generate($event->getPollerId());
         ConfigCorrelationRepository::generate($event->getPollerId());        

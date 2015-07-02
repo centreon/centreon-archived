@@ -164,7 +164,7 @@ class HostTemplateRepository
             $content[] = $tmp;
         }
         /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, "API");
+        WriteConfigFileRepository::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, "API");
         unset($content);
     }
 

@@ -185,12 +185,9 @@ class HostRepository extends HostTemplateRepository
                 $content[] = $contentService;
             }
             
-            /* Write Check-Command configuration file */
-            //print "Write : " . $path . $poller_id . "/".$filename . $host_name . "-" . $host_id . ".cfg \n<br>";
-
             WriteConfigFileRepository::writeObjectFile(
                 $content,
-                $path.$poller_id."/".$filename.$host_name."-".$host_id.".cfg",
+                $path . $poller_id . "/objects.d/" . $filename . $host_name . "-" . $host_id . ".cfg",
                 $filesList,
                 "API"
             );

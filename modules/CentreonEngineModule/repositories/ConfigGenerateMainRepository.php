@@ -255,32 +255,26 @@ class ConfigGenerateMainRepository
             }
         }
 
-        /* Check that Object directory exists */
-        if (!file_exists($path.$poller_id."/objects/")) {
-            if (!is_dir($path.$poller_id."/objects/")) {
-                mkdir($path.$poller_id."/objects/");
+        /* Check that main configuration directory exists */
+        if (!file_exists($path.$poller_id."/conf.d/")) {
+            if (!is_dir($path.$poller_id."/conf.d/")) {
+                mkdir($path.$poller_id."/conf.d/");
             }
         }
 
-        /* Check that Ressources directory exists */
-        if (!file_exists($path.$poller_id."/resources/")) {
-            if (!is_dir($path.$poller_id."/resources/")) {
-                mkdir($path.$poller_id."/resources/");
+        /* Check that objects directory exists */
+        if (!file_exists($path.$poller_id."/objects.d/")) {
+            if (!is_dir($path.$poller_id."/objects.d/")) {
+                mkdir($path.$poller_id."/objects.d/");
             }
         }
 
-        /* Add fixed path files */
-        $pathList[] = "%conf_dir%/misc-command.cfg";
-        $pathList[] = "%conf_dir%/check-command.cfg";
-        $pathList[] = "%conf_dir%/timeperiods.cfg";
-        $pathList[] = "%conf_dir%/connectors.cfg";
-
-        $includeList[] = "%conf_dir%/resources.cfg";
+        $includeDirList[] = "conf.d/";
         
-        $dirList[] = "%conf_dir%/objects/";
-        $dirList[] = "%conf_dir%/resources/";
+        $dirList[] = "objects.d/";
+        $dirList[] = "objects.d/resources/";
 
-        return array("cfg_file" => $pathList, "resource_file" => $resList, "cfg_dir" => $dirList, "cfg_include" => $includeList);
+        return array("cfg_file" => $pathList, "resource_file" => $resList, "cfg_dir" => $dirList, "cfg_include_dir" => $includeDirList);
     }
 
     /**
