@@ -277,8 +277,12 @@ class Full extends Generator
                 foreach ($blockComponents as $component) {
                     if (isset($formElements[$component['name']]['html'])) {
                         $componentWidth = '6';
-                        if (isset($component['width']) && ($component['width'] != "")) {
-                            $componentWidth = $component['width'];
+                        if (isset($component['width'])) {
+                            if ($component['width'] == 1) {
+                                $componentWidth = 4;
+                            } elseif ($component['width'] == 3) {
+                                $componentWidth = 12;
+                            }
                         }
                         $formRendering .= '<div class="col-md-' . $componentWidth . '">';
                         $formRendering .= $formElements[$component['name']]['html'];

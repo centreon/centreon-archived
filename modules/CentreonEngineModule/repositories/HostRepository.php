@@ -116,9 +116,9 @@ class HostRepository extends HostTemplateRepository
                     /* Add host_id macro for broker - This is mandatory*/
                     $tmpData["_HOST_ID"] = $host_id;
                     $host_name = "";
-                } elseif ($key == "host_snmp_community") {
+                } elseif (($key == "host_snmp_community") && ($value != "")) {
                     $tmpData["_SNMPCOMMUNITY"] = $value;
-                } elseif ($key == "host_snmp_version") {
+                } elseif (($key == "host_snmp_version") && ($value != "")) {
                     $tmpData["_SNMPVERSION"] = $value;
                 } elseif ((!isset($disableField[$key]) && $value != "")) {
                     if (isset($disableField[$key]) && $value != 2) {

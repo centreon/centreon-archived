@@ -132,6 +132,7 @@ class WriteConfigFileRepository
     {
         /* Check that the content is not empty */
         if ($content != "") {
+//var_dump($content);
             /* Init File */
             $handle = static::initFile($filename);
             

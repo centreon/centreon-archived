@@ -34,7 +34,9 @@
  */
 
 /* Define the path to configuration files */
-define('CENTREON_ETC', '../config/');
+if (!defined('CENTREON_ETC')) {
+    define('CENTREON_ETC', '../config/');
+}
 
 $centreon_path = __DIR__;
 

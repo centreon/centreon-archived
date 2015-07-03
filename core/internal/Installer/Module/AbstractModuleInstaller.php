@@ -52,7 +52,7 @@ use Centreon\Internal\Hook;
 use Centreon\Models\Module;
 use Centreon\Internal\Di;
 use Centreon\Internal\Install\Db;
-use Centreon\Internal\Database\Migrate;
+use Centreon\Internal\Installer\Migration\Manager;
 
 /**
  * 
@@ -157,7 +157,12 @@ abstract class AbstractModuleInstaller
         $this->versionManager->setTemporaryVersion('install', true);
         
         // Install DB
-        $this->installDb();
+        $migrationManager = new Manager($this->moduleSlug, 'production');
+        $migrationManager->generateConfiguration();
+        $cmd = $this->getPhinxCallLine() .'migrate ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= ' -e '. $this->moduleSlug;
+        shell_exec($cmd);
         
         // Install menu
         $this->installMenu();
@@ -220,8 +225,11 @@ abstract class AbstractModuleInstaller
         $this->moduleId = Informations::getModuleIdByName($this->moduleSlug);
         
         // Install DB
-        $migrationManager = new Migrate($this->moduleSlug, $this->moduleDirectory . '/install/db/');
-        $migrationManager->up();
+        $migrationManager = new Manager($this->moduleSlug, 'production');
+        $cmd = $this->getPhinxCallLine() .'migrate ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= ' -e '. $this->moduleSlug;
+        shell_exec($cmd);
         
         // Install menu
         $this->installMenu();
@@ -508,14 +516,24 @@ abstract class AbstractModuleInstaller
         $message = $this->colorizeText(_("Checking operation validity..."));
         $this->displayOperationMessage($message, false);
         
-        if ($operation === 'uninstall') {
-            $this->checkReverseModulesDependencies();
-        } else {
-            // Check modules dependencies
-            $this->checkModulesDependencies();
-        
-            // Check system dependencies
-            $this->checkSystemDependencies();
+        switch ($operation) {
+            case 'install':
+                $this->checkModulesDependencies();
+                $this->checkSystemDependencies();
+                break;
+            
+            case 'uninstall':
+                $this->checkReverseModulesDependencies();
+                break;
+            
+            case 'upgrade':
+                $this->checkReverseModulesDependencies();
+                $this->checkModulesDependencies();
+                $this->checkSystemDependencies();
+                break;
+
+            default:
+                break;
         }
         
         $message = $this->colorizeMessage(_("     Done"), 'green');
@@ -524,7 +542,6 @@ abstract class AbstractModuleInstaller
     
     /**
      * 
-     * @throws FilesystemException
      */
     protected function installValidators()
     {
@@ -549,11 +566,12 @@ abstract class AbstractModuleInstaller
                         
             $this->installValidators();
             
-            $currentModuleId = Informations::getModuleIdByName($this->moduleSlug);
             $myFormFiles = glob($this->moduleDirectory. '/install/forms/*.xml');
+            
             foreach ($myFormFiles as $formFile) {
                 Form::installFromXml($this->moduleId, $formFile);
             }
+            
             $message = $this->colorizeMessage(_("     Done"), 'green');
             $this->displayOperationMessage($message);
         } catch (FilesystemException $ex) {
@@ -669,14 +687,11 @@ abstract class AbstractModuleInstaller
     }
     
     /**
-     * @todo After seeing Propel
+     * 
+     * @param type $installDefault
      */
     protected function installDb($installDefault = true)
     {
-        // Initialize configuration
-        $di = Di::getDefault();
-        $config = $di->get('config');
-        $dbName = $config->get('db_centreon', 'dbname');
         echo "Updating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
         Db::update($this->moduleSlug);
         echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
@@ -685,6 +700,15 @@ abstract class AbstractModuleInstaller
         }
     }
     
+    /**
+     * 
+     */
+    protected function removeDb()
+    {
+        Db::update($this->moduleSlug, 'delete');
+    }
+
+
     /**
      * 
      * @param int $moduleId
@@ -704,5 +728,16 @@ abstract class AbstractModuleInstaller
                 self::parseMenuArray($moduleId, $menu['menus'], $menu['short_name']);
             }
         }
+    }
+    /**
+     * 
+     * @return string
+     */
+    private function getPhinxCallLine()
+    {
+        $di = Di::getDefault();
+        $centreonPath = $di->get('config')->get('global', 'centreon_path');
+        $callCmd = 'php ' . $centreonPath . '/vendor/bin/phinx ';
+        return $callCmd;
     }
 }

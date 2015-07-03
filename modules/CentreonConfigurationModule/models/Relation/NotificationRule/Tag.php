@@ -42,7 +42,7 @@ use Centreon\Models\CentreonRelationModel;
 class Tag extends CentreonRelationModel
 {
     protected static $resourceType = null;
-    protected static $relationTable = "cfg_notification_rules_tags_relation";
+    protected static $relationTable = "cfg_notification_rules_tags_relations";
     protected static $firstKey = "rule_id";
     protected static $secondKey = "tag_id";
     public static $firstObject = '\CentreonConfiguration\Models\NotificationRule';

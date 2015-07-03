@@ -103,39 +103,6 @@ class IndicatorRepository extends FormRepository
 
         return $booleanParameters;
     }
-/*
-    public static function createIndicatorConsole($givenParameters, $origin, $route){
-        $parameters = array();
-        foreach ($givenParameters as $k => $v) {
-            $parameters[$k] = $v;
-        }
-
-        if ($parameters['kpi_type'] === '0' || $parameters['kpi_type'] ===  '2' || $parameters['kpi_type'] ===  '3') {
-            //self::validateForm($givenParameters, $origin, $route);
-        }
-        
-        $parameters['id_ba'] = BusinessActivityRepository::getIdFromUnicity(array('bam' => $parameters['id_ba']));
-        
-        $lastIndicatorId = self::createBasicIndicator($parameters);
-        
-        
-        if ($parameters['kpi_type'] === '0') {
-            $host_id = HostRepository::getIdFromUnicity(array('host' => $parameters['host']));
-            ServiceRepository::$objectClass = '\CentreonConfiguration\Models\Service';
-            $service_id = ServiceRepository::getIdFromUnicity(array('service' => $parameters['service_id'], 'host' => $parameters['host']));
-            if(!is_null($host_id) && !is_null($service_id)){
-                $parameters['service_id'] = $service_id.'_'.$host_id;
-                self::createServiceIndicator($lastIndicatorId, $parameters);
-            }
-        } else if ($parameters['kpi_type'] === '1') {
-            self::createMetaserviceIndicator($lastIndicatorId, $parameters);
-        } else if ($parameters['kpi_type'] === '2') {
-            $parameters['id_indicator_ba'] = BusinessActivityRepository::getIdFromUnicity(array('bam' => $parameters['id_indicator_ba']));
-            self::createBaIndicator($lastIndicatorId, $parameters);
-        } else if ($parameters['kpi_type'] === '3') {
-            self::createBooleanIndicator($lastIndicatorId, $parameters);
-        }
-    }*/
     
     /**
      *
@@ -144,11 +111,13 @@ class IndicatorRepository extends FormRepository
      */
     public static function createIndicator($givenParameters, $origin, $route)
     {
+        $givenParameters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
 
         $parameters = array();
         foreach ($givenParameters as $k => $v) {
             $parameters[$k] = $v;
         }
+
         if($parameters['kpi_type'] !== '1'){
             if($origin !== 'api'){
                 if (is_a($givenParameters, '\Klein\DataCollection\DataCollection')) {
@@ -183,7 +152,7 @@ class IndicatorRepository extends FormRepository
     public static function createBasicIndicator($parameters)
     {
         foreach ($parameters as $k => $v) {
-            if ($k !== 'kpi_type' && $k !== 'drop_warning' && $k !== 'drop_critical' && $k !== 'drop_unknown' && $k !== 'id_ba') {
+            if ($k !== 'kpi_type' && $k !== 'drop_warning' && $k !== 'drop_critical' && $k !== 'drop_unknown' && $k !== 'id_ba' && $k !== 'organization_id') {
                 unset($parameters[$k]);
             }
         }

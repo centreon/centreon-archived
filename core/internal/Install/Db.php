@@ -46,8 +46,8 @@ class Db
 {
     /**
      * 
-     * @param type $module
-     * @param type $action
+     * @param string $module
+     * @param string $action
      */
     public static function update($module, $action = 'create')
     {
@@ -140,25 +140,7 @@ class Db
     
     /**
      * 
-     * @param array $sqlStatements
-     * @return array
-     */
-    public static function getTablesToBeRemoved($sqlStatements)
-    {
-        $tablesToBeRemoved = array();
-        
-        foreach ($sqlStatements as $statement) {
-            if (strpos($statement, "DROP TABLE IF EXISTS") !== false) {
-                $tablesToBeRemoved[] = trim(substr($statement, strlen("DROP TABLE IF EXISTS")));
-            }
-        }
-        
-        return $tablesToBeRemoved;
-    }
-    
-    /**
-     * 
-     * @param type $targetDbName
+     * @param string $targetDbName
      */
     private static function deleteTargetDbSchema($targetDbName = 'centreon')
     {
@@ -197,7 +179,7 @@ class Db
 
     /**
      * 
-     * @param type $path
+     * @param string $path
      * @return boolean
      */
     private static function deleteFolder($path)
@@ -340,7 +322,7 @@ class Db
     
     /**
      * 
-     * @param type $dbName
+     * @param string $dbName
      * @return type
      */
     private static function getDbConnector($dbName)

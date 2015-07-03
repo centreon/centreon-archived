@@ -110,7 +110,7 @@ class Wizard extends Full
                 $this->formComponents[$row['step_name']]['default'] = array();
             }
 
-            if (!isset($row['width']) || ($row['width'] == "")) {
+            if (!isset($row['width']) || (($row['width'] != 4) && ($row['width'] != 6))) {
                 $row['width'] = '12';
             }
 

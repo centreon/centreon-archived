@@ -41,6 +41,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Utils\CommandLine\InputOutput;
 use Centreon\Internal\Database\GenerateDiff;
 use Centreon\Internal\Database\Migrate;
+use Centreon\Internal\Installer\Migration\Manager;
 
 /**
  * Description of MigrateCommand
@@ -51,36 +52,6 @@ class MigrateCommand extends AbstractCommand
 {
     
     public $options = array(
-        "generateDiffAction" => array(
-            "module" => array(
-                "functionParams" => "module",
-                "help" => "",
-                "type" => "string",
-                "toTransform" => "",
-                "multiple" => false,
-                "required" => false
-            )
-        ),
-        "downAction" => array(
-            "module" => array(
-                "functionParams" => "module",
-                "help" => "",
-                "type" => "string",
-                "toTransform" => "",
-                "multiple" => false,
-                "required" => false
-            )
-        ),
-        "upAction" => array(
-            "module" => array(
-                "functionParams" => "module",
-                "help" => "",
-                "type" => "string",
-                "toTransform" => "",
-                "multiple" => false,
-                "required" => false
-            )
-        ),
         "statusAction" => array(
             "module" => array(
                 "functionParams" => "module",
@@ -100,63 +71,112 @@ class MigrateCommand extends AbstractCommand
                 "multiple" => false,
                 "required" => false
             )
+        ),
+        "initAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
+        ),
+        "createAction" => array(
+            "module" => array(
+                "functionParams" => "module",
+                "help" => "",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            ),
+            "class" => array(
+                "functionParams" => "class",
+                "help" => "",
+                "type" => "string",
+                "toTransform" => "",
+                "multiple" => false,
+                "required" => false
+            )
         )
     );
     
-    
-    
     /**
      * 
      * @param string $module
      */
-    public function generateDiffAction($module = 'centreon')
-    {
-        InputOutput::display(_("Generates SQL diff between the XML schemas and the current database structure"));
-        $diffGenerator = new GenerateDiff($module);
-        $diffGenerator->getDiff();
-    }
-    
-    /**
-     * 
-     * @param string $module
-     */
-    public function downAction($module = 'centreon')
-    {
-        InputOutput::display(_("Executes the next migrations down"));
-        $migrationManager = new Migrate($module);
-        $migrationManager->down();
-    }
-    
-    /**
-     * 
-     * @param string $module
-     */
-    public function statusAction($module = 'centreon')
+    public function statusAction($module)
     {
         InputOutput::display(_("Lists the migrations yet to be executed"));
-        $migrationManager = new Migrate($module);
-        $migrationManager->status();
+        $migrationManager = new Manager($module, 'production');
+        $cmd = $this->getPhinxCallLine() .'status ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= '-e '. $module;
+        shell_exec($cmd);
     }
     
     /**
      * 
      * @param string $module
      */
-    public function upAction($module = 'centreon')
-    {
-        InputOutput::display(_("Executes the next migrations up"));
-        $migrationManager = new Migrate($module);
-        $migrationManager->up();
-    }
-    
-    /**
-     * 
-     * @param string $module
-     */
-    public function migrateAction($module = 'centreon')
+    public function migrateAction($module)
     {
         InputOutput::display(_("Executes all migrations"));
-        $migrationManager = new Migrate($module);
-        $migrationManager->migrate();
+        $migrationManager = new Manager($module, 'production');
+        $cmd = $this->getPhinxCallLine() .'migrate ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= ' -e '. $module;
+        shell_exec($cmd);
+    }
+    
+    /**
+     * 
+     * @param string $module
+     */
+    public function rollbackAction($module)
+    {
+        InputOutput::display(_("Revert all migrations"));
+        $migrationManager = new Manager($module, 'production');
+        $cmd = $this->getPhinxCallLine() .'rollback ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= '-e '. $module;
+        shell_exec($cmd);
+    }
+    
+    /**
+     * 
+     * @param type $module
+     */
+    public function initAction($module)
+    {
+        $migrationManager = new Manager($module, 'development');
+        $migrationManager->generateConfiguration();
+    }
+    
+    /**
+     * 
+     * @param string $module
+     * @param string $class
+     */
+    public function createAction($module, $class)
+    {
+        $migrationManager = new Manager($module, 'development');
+        $cmd = $this->getPhinxCallLine() .'create ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= ' ' . $class;
+        shell_exec($cmd);
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    private function getPhinxCallLine()
+    {
+        $di = Di::getDefault();
+        $centreonPath = $di->get('config')->get('global', 'centreon_path');
+        $callCmd = 'php ' . $centreonPath . '/vendor/bin/phinx ';
+        return $callCmd;
     }
 }

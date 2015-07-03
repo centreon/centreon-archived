@@ -31,19 +31,56 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonConfiguration\Models\Relation\NotificationRule;
+namespace CentreonEngine\Repository;
 
 use Centreon\Internal\Di;
-use Centreon\Models\CentreonRelationModel;
+use CentreonEngine\Models\Engine;
+use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
 
-class Service extends CentreonRelationModel
+/**
+ * @author Julien Mathis <jmathis@centreon.com>
+ * @version 3.0.0
+ */
+class ConfigGenerateModulesRepository
 {
-    protected static $relationTable = "cfg_notification_rules_services_relations";
-    protected static $firstKey = "rule_id";
-    protected static $secondKey = "service_id";
-    public static $firstObject = '\CentreonConfiguration\Models\NotificationRule';
-    public static $secondObject = "\CentreonConfiguration\Models\Service";
+    /** 
+     * Generate modules configuration files
+     * @param array $filesList
+     * @param int $pollerId
+     * @param string $path
+     * @param object $event
+     * @return value
+     */
+    public function generate(& $filesList, $pollerId, $path, $event)
+    {
+        $di = Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        $modules = array();
+
+        /* Retrieve broker modules */
+        $events = Di::getDefault()->get('events');
+        $moduleEvent = new BrokerModuleEvent($pollerId);
+        $events->emit('centreon-configuration.broker.module', array($moduleEvent));
+        $brokerModules = $moduleEvent->getModules();
+        foreach ($brokerModules as $brokerModule) {
+            $modules[]['broker_module'] = $brokerModule;
+        }
+
+        /* External command module */
+        $moduleDir = Engine::getParameters($pollerId, 'module_dir');
+        $modules[]['broker_module'] = rtrim($moduleDir['module_dir'], '/') . '/externalcmd.so';
+
+        /* Write modules configuration files */
+        foreach ($modules as $module) {
+            $filename = preg_match('/\/?(\w+)\.so/', $module['broker_module'], $matches);
+            if (!empty($matches[1])) {
+                WriteConfigFileRepository::writeParamsFile($module, $path . $pollerId . "/conf.d/" . $matches[1] . '.cfg', $filesList, $user = "API");
+            }
+        }
+    }
 }

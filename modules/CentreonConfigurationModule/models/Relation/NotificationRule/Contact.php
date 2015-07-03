@@ -41,7 +41,7 @@ use Centreon\Models\CentreonRelationModel;
 
 class Contact extends CentreonRelationModel
 {
-    protected static $relationTable = "cfg_notification_rules_contacts_relation";
+    protected static $relationTable = "cfg_notification_rules_contacts_relations";
     protected static $firstKey = "rule_id";
     protected static $secondKey = "contact_id";
     public static $firstObject = '\CentreonConfiguration\Models\NotificationRule';

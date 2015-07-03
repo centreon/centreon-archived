@@ -41,7 +41,7 @@ use Centreon\Models\CentreonRelationModel;
 
 class Host extends CentreonRelationModel
 {
-    protected static $relationTable = "cfg_notification_rules_hosts_relation";
+    protected static $relationTable = "cfg_notification_rules_hosts_relations";
     protected static $firstKey = "rule_id";
     protected static $secondKey = "host_id";
     public static $firstObject = '\CentreonConfiguration\Models\NotificationRule';

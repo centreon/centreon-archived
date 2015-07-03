@@ -186,25 +186,29 @@ class IndicatorDatatable extends Datatable
         $sqlKpiService = 'SELECT k.kpi_id, h.host_name, s.service_description'
             . ' FROM cfg_hosts h, cfg_services s, cfg_bam_kpi k'
             . ' WHERE s.service_id=k.service_id and h.host_id=k.host_id';
-        $stmtKpiService = $dbconn->query($sqlKpiService);
+        $stmtKpiService = $dbconn->prepare($sqlKpiService);
+        $stmtKpiService->execute();
         $resultKpiService = $stmtKpiService->fetchAll(\PDO::FETCH_ASSOC);
 
-        $sqlKpiMetaservice = 'SELECT k.kpi_id,ms.meta_id
-            FROM cfg_meta_services ms,cfg_bam_kpi k
-            WHERE ms.meta_id=k.meta_id';
-        $stmtKpiMetaservice = $dbconn->query($sqlKpiMetaservice);
+        $sqlKpiMetaservice = 'SELECT k.kpi_id,ms.meta_id'
+            . ' FROM cfg_meta_services ms,cfg_bam_kpi k'
+            . ' WHERE ms.meta_id=k.meta_id';
+        $stmtKpiMetaservice = $dbconn->prepare($sqlKpiMetaservice);
+        $stmtKpiMetaservice->execute();
         $resultKpiMetaservice = $stmtKpiMetaservice->fetchAll(\PDO::FETCH_ASSOC);
 
-        $sqlKpiBa = 'SELECT k.kpi_id,b.ba_id,b.name
-            FROM cfg_bam b,cfg_bam_kpi k
-            WHERE b.ba_id=k.id_indicator_ba';
-        $stmtKpiBa = $dbconn->query($sqlKpiBa);
+        $sqlKpiBa = 'SELECT k.kpi_id,b.ba_id,b.name'
+            . ' FROM cfg_bam b,cfg_bam_kpi k'
+            . ' WHERE b.ba_id=k.id_indicator_ba';
+        $stmtKpiBa = $dbconn->prepare($sqlKpiBa);
+        $stmtKpiBa->execute();
         $resultKpiBa = $stmtKpiBa->fetchAll(\PDO::FETCH_ASSOC);
 
-        $sqlKpiBoolean = 'SELECT k.kpi_id,b.boolean_id,b.name
-            FROM cfg_bam_boolean b,cfg_bam_kpi k
-            WHERE b.boolean_id=k.boolean_id';
-        $stmtKpiBoolean = $dbconn->query($sqlKpiBoolean);
+        $sqlKpiBoolean = 'SELECT k.kpi_id,b.boolean_id,b.name'
+            . ' FROM cfg_bam_boolean b,cfg_bam_kpi k'
+            . ' WHERE b.boolean_id=k.boolean_id';
+        $stmtKpiBoolean = $dbconn->prepare($sqlKpiBoolean);
+        $stmtKpiBoolean->execute();
         $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
         
         foreach ($resultSet as &$kpi) {
@@ -278,6 +282,5 @@ class IndicatorDatatable extends Datatable
                 }
             }
         }
-        //var_dump($resultSet);die;
     }
 }

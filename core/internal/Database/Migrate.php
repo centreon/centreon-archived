@@ -48,12 +48,18 @@ class Migrate extends PropelMigration
 {
     /**
      * 
+     */
+    
+    public $module;
+    /**
+     * 
      * @param string $module
      * @param string $migrationClassPath
      */
     public function __construct($module = 'centreon', $migrationClassPath = null)
     {
         parent::__construct('centreon');
+        $this->module = $module;
         if (!is_null($migrationClassPath)) {
             $this->setOutputDir($migrationClassPath);
         }
@@ -80,7 +86,12 @@ class Migrate extends PropelMigration
      */
     public function migrate()
     {
-        $this->runPhing('migrate');
+        InputOutput::display(_("Executes all migrations"));
+        $migrationManager = new Manager($module, 'production');
+        $cmd = $this->getPhinxCallLine() .'migrate ';
+        $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+        $cmd .= '-e '. $this->module;
+        shell_exec($cmd);
     }
     
     /**

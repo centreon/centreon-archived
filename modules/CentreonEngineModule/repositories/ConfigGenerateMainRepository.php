@@ -203,9 +203,6 @@ class ConfigGenerateMainRepository
             }
         }
 
-        /* Write broker modules */
-        $finalConf['broker_module'] = static::getBrokerConf($poller_id, $finalConf['module_dir']);
-
         /* Exclude parameters */
         static::unsetParameters($finalConf);
 
@@ -275,27 +272,6 @@ class ConfigGenerateMainRepository
         $dirList[] = "objects.d/resources/";
 
         return array("cfg_file" => $pathList, "resource_file" => $resList, "cfg_dir" => $dirList, "cfg_include_dir" => $includeDirList);
-    }
-
-    /**
-     * Returns an array of broker module directives 
-     *
-     * @param int $pollerId
-     * @param string $moduleDir
-     * @return array
-     */
-    private static function getBrokerConf($pollerId, $moduleDir)
-    {
-        /* Retrieve broker modules */
-        $events = Di::getDefault()->get('events');
-        $moduleEvent = new BrokerModuleEvent($pollerId);
-        $events->emit('centreon-configuration.broker.module', array($moduleEvent));
-        $brokerModules = $moduleEvent->getModules();
-        
-        /* External command module */
-        $brokerModules[] = rtrim($moduleDir, '/') . '/externalcmd.so';
-
-        return $brokerModules;
     }
 
     /**
