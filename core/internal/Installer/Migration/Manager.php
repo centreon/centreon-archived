@@ -148,7 +148,7 @@ class Manager
     public function buildMigrationPathForProduction()
     {
         $finalPath = Informations::getModulePath($this->moduleSlug);
-        $finalPath .= '/install/db/migrations/';
+        $finalPath .= '/install/db/';
         
         return $finalPath;
     }

@@ -793,6 +793,10 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('host_tpl_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('host_tpl_id'))
                 ->create();
-        
+
+
+        $this->execute('INSERT INTO cfg_connectors (id, name, slug, description, command_line, enabled, created, modified, organization_id) values (1, "Perl Connector", "perl-connector", "", "$USER3$/centreon_connector_perl", 1, ' . time() . ', ' . time() . ', 1)');
+        $this->execute('INSERT INTO cfg_connectors (id, name, slug, description, command_line, enabled, created, modified, organization_id) values (2, "SSH Connector", "ssh-connector", "", "$USER3$/centreon_connector_ssh", 1, ' . time() . ', ' . time() . ', 1)');
+
     }
 }
