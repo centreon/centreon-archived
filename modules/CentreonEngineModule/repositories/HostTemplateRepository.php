@@ -110,9 +110,9 @@ class HostTemplateRepository
             foreach ($row as $key => $value) {
                 if ($key == "host_id") {
                     $host_id = $row["host_id"];
-                } elseif ($key == "host_snmp_community") {
+                } elseif (($key == "host_snmp_community") && ($value != "")) {
                     $tmpData["_SNMPCOMMUNITY"] = $value;
-                } elseif ($key == "host_snmp_version") {
+                } elseif (($key == "host_snmp_version") && ($value != "")) {
                     $tmpData["_SNMPVERSION"] = $value;
                 } elseif ((!isset($disableField[$key]) && $value != "")) {
                     if (isset($disableField[$key]) && $value != 2) {
