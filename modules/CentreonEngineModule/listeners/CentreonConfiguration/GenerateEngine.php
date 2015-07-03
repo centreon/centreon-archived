@@ -46,6 +46,7 @@ use CentreonEngine\Repository\ServicetemplateRepository;
 use CentreonEngine\Repository\UserRepository;
 use CentreonEngine\Repository\UsergroupRepository;
 use CentreonEngine\Repository\ConfigGenerateResourcesRepository;
+use CentreonEngine\Repository\ConfigGenerateModulesRepository;
 use CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
 use CentreonEngine\Events\GetMacroHost as HostMacroEvent;
 use CentreonEngine\Events\GetMacroService as ServiceMacroEvent;
@@ -98,6 +99,7 @@ class GenerateEngine
             "centengine.cfg"
         );
         $event->setOutput('centengine.cfg');
+//var_dump(static::$fileList);
 
         /* Generate Debugging Main File */
         ConfigGenerateMainRepository::generate(
@@ -143,6 +145,13 @@ class GenerateEngine
             "resources.cfg"
         );
         $event->setOutput('resources.cfg');
+
+        ConfigGenerateModulesRepository::generate(
+            static::$fileList,
+            $event->getPollerId(),
+            static::$path,
+            $event
+        );
 
         TimePeriodRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "timeperiods.cfg");
         $event->setOutput('timeperiods.cfg');
