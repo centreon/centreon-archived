@@ -56,10 +56,12 @@ class HostCommand extends BasicTagSupport
     /**
      * 
      * @cmdForm /centreon-configuration/host/update required
-     * @cmdParam none host-custommacros optional hide this
-     * @cmdParam boolean|false disable required disable the host because it sucks
+     * @cmdParam none host-custommacros optional
+     * @cmdParam none host-tags optional
+     * @cmdParam boolean|false disable required disable the host
      */
-    public function createAction($params) {
+    public function createAction($params) 
+    {
         parent::createAction($params);
     }
     
@@ -67,13 +69,106 @@ class HostCommand extends BasicTagSupport
     /**
      * 
      * @cmdForm /centreon-configuration/host/update optional
-     * @cmdParam none host-custommacros optional hide this
+     * @cmdObject string host the host
+     * @cmdParam none host-custommacros optional
+     * @cmdParam none host-tags optional
      * @cmdParam boolean|false disable optional disable the host because it sucks
-     * @cmdParam boolean|true enable optional enable the host because it rocks
+     * @cmdParam boolean|true enable optional enable the host
+     */
+    public function updateAction($object, $params) 
+    {
+        parent::updateAction($object, $params);
+    }
+    
+    /**
+     * 
      * @cmdObject string host the host
      */
-    public function updateAction($object, $params) {
-        parent::updateAction($object, $params);
+    public function showAction($object, $fields = null, $linkedObject = '') 
+    {
+        parent::showAction($object, $fields, $linkedObject);
+    }
+    
+    /**
+     * 
+     * @cmdObject string host the host
+     */
+    public function deleteAction($object) 
+    {
+        parent::deleteAction($object);
+    }
+    
+    /**
+     * 
+     * @cmdObject string host the host
+     */
+    public function listTagAction($object = null) 
+    {
+        parent::listTagAction($object);
+    }
+    
+    /**
+     * 
+     * @cmdObject string host the host
+     * @cmdParam string tag required the tag
+     */
+    public function addTagAction($object, $params) 
+    {
+        parent::addTagAction($object, $params['tag']);
+    }
+    
+    /**
+     * 
+     * @cmdObject string host the host
+     * @cmdParam string tag required the tag
+     */
+    public function removeTagAction($object, $params) 
+    {
+        parent::removeTagAction($object, $params['tag']);
+    }
+    
+    /**
+     * 
+     * @cmdObject string host the host
+     * @cmdParam string name required the macro name
+     * @cmdParam string value required the macro value
+     * @cmdParam boolean|true hidden required is the macro hidden ?
+     */
+    public function addMacroAction($object, $params) 
+    {
+        parent::addMacroAction($object, $params);
+    }
+    
+    
+    /**
+     * 
+     * @cmdObject string host the host
+     * @cmdObject string macro the macro to update
+     * @cmdParam string name optional the macro name
+     * @cmdParam string value optional the macro value
+     * @cmdParam boolean|true hidden optional is the macro hidden ?
+     * @cmdParam boolean|false show optional is the macro showed ?
+     */
+    public function updateMacroAction($object, $params) {
+        parent::updateMacroAction($object, $object['macro'], $params);
+    }
+    
+    /**
+     * 
+     * @cmdObject string host the host
+     */
+    public function listMacroAction($object = null) {
+        parent::listMacroAction($object);
+    }
+    
+    
+    /**
+     * 
+     * @cmdObject string host the host
+     * @cmdObject string macro the macro to update
+     */
+    public function removeMacroAction($object, $params) {
+        parent::removeMacroAction($object, $object['macro']);
     }
 
 }

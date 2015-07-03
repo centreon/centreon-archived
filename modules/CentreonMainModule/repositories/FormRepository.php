@@ -142,6 +142,7 @@ abstract class FormRepository extends ListRepository
             }
         }
 
+
         $events = Di::getDefault()->get('events');
         $preSaveEvent = new PreSaveEvent('create', $givenParameters, $extraParameters);
         $events->emit('centreon-main.pre.save', array($preSaveEvent));
@@ -174,14 +175,12 @@ abstract class FormRepository extends ListRepository
                 if (in_array($key, $columns)) {
                     if (!is_array($value)) {
                         $value = trim($value);
-                        if (!empty($value)) {
+                        if (!empty($value) || $value === "0" || $value === 0) {
                             $insertParams[$key] = trim($value);
                         }
                     }
                 }
             }
-
-            
             
             $id = $class::insert($insertParams);
             if (is_null($id)) {

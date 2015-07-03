@@ -63,6 +63,8 @@ class BasicRepository
      * @var string
      */
     protected static $objectName;
+    
+    protected static $attributesMap;
 
 
     /**
@@ -85,7 +87,22 @@ class BasicRepository
     {
         static::$relationMap = $relationMap;
     }
+    
+    public static function setAttributesMap($attributesMap)
+    {
+        static::$attributesMap = $attributesMap;
+    }
 
+    public static function transco(&$params){
+        
+        $newArrayParam = array();
+        foreach($params as $key=>$param){
+            $newArrayParam[static::$attributesMap[$key]] = $param;
+        }
+        $params = $newArrayParam;
+    }
+    
+    
     /**
      * Set object name property
      *

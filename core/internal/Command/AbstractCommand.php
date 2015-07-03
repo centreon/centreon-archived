@@ -73,64 +73,8 @@ abstract class AbstractCommand
      * @param array $args
      * @return mixed
      */
-    public function named($method, array $args)
+    public function named($methodReflection, array $pass)
     {
-        $classReflection = new \ReflectionClass($this);
-        $methodReflection = $classReflection->getMethod($method);
-        $options = array();
-        if(isset($this->options)){
-            $options = $this->options;
-        }
-        
-        $defaultValues = array();
-        
-        $finalArgsOption = array();
-        $missingParams = array();
-        
-        foreach($options as $key=>$option){
-            if(isset($args[$key])){
-                if(!empty($option['attributes']['choices'])){
-                    if(isset($option['attributes']['choices'][$args[$key]])){
-                        $args[$key] = $option['attributes']['choices'][$args[$key]];
-                    }
-                }
-                
-                if(!empty($option['name'])){
-                    $finalArgsOption[$option['paramType']][$option['name']] = $args[$key];
-                }else{
-                    $finalArgsOption[$option['paramType']] = $args[$key];
-                }
-            }else if($option['required']){
-                $missingParams[] = $key;
-            }else if(isset($option['defaultValue'])){
-                if(!empty($option['name'])){
-                    $finalArgsOption[$option['paramType']][$option['name']] = $option['defaultValue'];
-                }else{
-                    $finalArgsOption[$option['paramType']] = $option['defaultValue'];
-                }
-            }
-        }
-
-        
-        if(!empty($missingParams)){
-            $errorMessage = 'The following mandatory parameters are missing :';
-            foreach($missingParams as $params){
-                $errorMessage .= "\n   - ".$params;
-            }
-            throw new \Exception($errorMessage);
-        }
-
-        $pass = array();
-        foreach ($methodReflection->getParameters() as $param) {
-            if (isset($finalArgsOption[$param->getName()])) {
-                $pass[] = $finalArgsOption[$param->getName()];
-            } elseif ($param->isOptional()) {
-                $pass[] = $param->getDefaultValue();
-            } else {
-                throw new \Exception('The parameter "' . $param->getName(). '" is missing');
-            }
-        }        
-        
         $methodReflection->invokeArgs($this, $pass);
     }
 }

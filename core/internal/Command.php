@@ -190,7 +190,7 @@ class Command
     
     public function getFormsParams($aliveObject,$docComment){
         preg_match_all('/@cmdForm\s+(\S+|\/)+\s+(\S+)/', $docComment, $matches);
-        $formRoute = "";
+        $formRoute = null;
         $required = false;
         if(!empty($matches[1][0])){
             $formRoute = $matches[1][0];
@@ -211,34 +211,37 @@ class Command
         }
     }
     
-    public function getObject($aliveObject,$docComment){
+    public function getObject($aliveObject,$docComment,$globalOptional = false){
         preg_match_all('/@cmdObject\s+(\S+)\s+(\S+)\s*(.*)/', $docComment, $matches);
-        $object = array();
+        $objectArray = array();
         if(!empty($matches[1])){
-            if(!empty($matches[1][0])){
-                $object['objectType'] = $matches[1][0];
-            }
-
-            if(!empty($matches[2][0])){
-                $object['objectName'] = $matches[2][0];
-            }
-
-            if(!empty($matches[3][0])){
-                $object['objectComment'] = $matches[3][0];
-            }
-
-            if (method_exists($aliveObject, 'getObject')) {
-                $aliveObject->getObject($object);
+            foreach($matches[1] as $key=>$objectType){
+                $objectArray[$key]['objectType'] = $objectType;
             }
         }
+        
+        if(!empty($matches[2])){
+            foreach($matches[2] as $key=>$objectName){
+                $objectArray[$key]['objectName'] = $objectName;
+            }
+        }
+        
+        if(!empty($matches[3])){
+            foreach($matches[3] as $key=>$objectComment){
+                $objectArray[$key]['objectComment'] = $objectComment;
+            }
+        }
+
+        if (method_exists($aliveObject, 'getObject')) {
+            $aliveObject->getObject($objectArray,$globalOptional);
+        }
+        
     }
     
-    public function getCustomsParams($aliveObject,$docComment){
+    public function getCustomsParams($aliveObject,$docComment,$globalOptional = false){
         
         preg_match_all('/@cmdParam\s+(\S+)\s+(\S+)\s+(\S+)\s*(.*)/', $docComment, $matches);
-        
-        
-        
+
         $paramsArray = array();
         if(!empty($matches[1])){
             foreach($matches[1] as $key=>$paramType){
@@ -260,8 +263,11 @@ class Command
                 $paramsArray[$key]['paramComment'] = $paramComment;
             }
         }
-
-        $aliveObject->getCustomsParams($paramsArray);
+        
+        if (method_exists($aliveObject, 'getCustomsParams')) {
+            $aliveObject->getCustomsParams($paramsArray,$globalOptional);
+        }
+        
 
     }
     
@@ -296,15 +302,31 @@ class Command
         $classReflection = new \ReflectionClass($aliveObject);
         $methodReflection = $classReflection->getMethod($action);
         $docComment = $methodReflection->getDocComment();
+        $methodParams = $methodReflection->getParameters();
+        $globalOptional['object'] = false;
+        $globalOptional['params'] = false;
+        foreach ($methodParams as $param) {
+            $globalOptional[$param->getName()] = $param->isOptional();
+        }   
         
         $this->getFormsParams($aliveObject, $docComment);
-        $this->getObject($aliveObject, $docComment);
-        $this->getCustomsParams($aliveObject, $docComment);
+        $aliveObject->refreshAttributesMap();
+        $this->getObject($aliveObject, $docComment, $globalOptional['object']);
+        $this->getCustomsParams($aliveObject, $docComment, $globalOptional['params']);
         
         $actionArgs = array();
         $this->getArgs($actionArgs, $aliveObject, $action);
+
+        $pass = array();
+        if(isset($actionArgs['object'])){
+            $pass[] = $actionArgs['object'];
+        }
+        if(isset($actionArgs['params'])){
+            $pass[] = $actionArgs['params'];
+        }
+        
         // Call the action
-        $aliveObject->named($action, $actionArgs);
+        $aliveObject->named($methodReflection, $pass);
         
         echo "\n";
     }
@@ -416,36 +438,61 @@ class Command
         }
 
         if ($optionsParsed->help) {
-            //echo "centreonConsole centreon-configuration:Service:listMacro\n\n";
             $printer = new ConsoleOptionPrinter();
             echo $printer->render($specs);
             die;
         }
-        foreach( $optionsParsed as $key => $spec ) {
-            $argsList[$key] = $spec->value;
-        }
         unset($listOptions['h|help']);
+        $this->manageConsoleParams($listOptions,$optionsParsed,$argsList);
+
+    }
+    
+    private function manageConsoleParams($listOptions,$optionsParsed,&$argsList){
+        foreach( $optionsParsed as $key => $spec ) {
+            $argsList[$listOptions[$key]['paramType']][$key] = $spec->value;
+        }
+        
+        
         foreach($listOptions as $key=>$options){
             if($options['type'] === 'boolean'){
                 if(isset($options['booleanValue'])){
-                    if(isset($argsList[$key])){
-                        $argsList[$key] = $options['booleanValue'];
+                    if(isset($argsList[$options['paramType']][$key])){
+                        $argsList[$options['paramType']][$key] = $options['booleanValue'];
                     }else if(isset($options['booleanSetDefault']) && $options['booleanSetDefault']){
-                        $argsList[$key] = !$options['booleanValue'];
+                        $argsList[$options['paramType']][$key] = !$options['booleanValue'];
                     }
-                    if (isset($argsList[$key]) && $argsList[$key]) { //true 
-                        $argsList[$key] = 1;
-                    } else if(isset($argsList[$key])){ //false
-                        $argsList[$key] = 0;
+                    if (isset($argsList[$options['paramType']][$key]) && $argsList[$options['paramType']][$key]) { //true 
+                        $argsList[$options['paramType']][$key] = 1;
+                    } else if(isset($argsList[$options['paramType']][$key])){ //false
+                        $argsList[$options['paramType']][$key] = 0;
                     }
                 }
+            }
+            if(isset($argsList[$options['paramType']][$key]) && $options['multiple']){
+                if(is_array($argsList[$options['paramType']][$key])){
+                    $argsList[$options['paramType']][$key] = implode(',',$argsList[$options['paramType']][$key]);
+                }
+            }
+            if(isset($argsList[$options['paramType']][$key])){
+                if(!empty($options['attributes']['choices'])){
+                    if(isset($options['attributes']['choices'][$argsList[$options['paramType']][$key]])){
+                        $argsList[$options['paramType']][$key] = $options['attributes']['choices'][$argsList[$options['paramType']][$key]];
+                    }
+                }
+            }else if(isset($options['defaultValue'])){
+                $argsList[$options['paramType']][$key] = $options['defaultValue'];
+            }else if($options['required']){
+                $missingParams[] = $key;
+            }
+        }
+        
+        if(!empty($missingParams)){
+            $errorMessage = 'The following mandatory parameters are missing :';
+            foreach($missingParams as $params){
+                $errorMessage .= "\n   - ".$params;
             }
             
-            if(isset($argsList[$key]) && $options['multiple']){
-                if(is_array($argsList[$key])){
-                    $argsList[$key] = implode(',',$argsList[$key]);
-                }
-            }
+            throw new \Exception($errorMessage);
         }
     }
     

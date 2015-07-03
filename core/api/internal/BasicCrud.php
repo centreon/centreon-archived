@@ -155,12 +155,18 @@ class BasicCrud extends AbstractCommand
         $repository::setRelationMap($this->relationMap);
         $repository::setObjectName($this->objectName);
         $repository::setObjectClass($this->objectClass);
+        $repository::setAttributesMap($this->attributesMap);
         if (!empty($this->secondaryObjectClass)) {
             $repository::setSecondaryObjectClass($this->secondaryObjectClass);
         }
 
         // Settin object base url
         $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . $this->objectName;
+    }
+    
+    public function refreshAttributesMap(){
+        $repository = $this->repository;
+        $repository::setAttributesMap($this->attributesMap);
     }
     
     private function getChoices($attr){
@@ -189,52 +195,66 @@ class BasicCrud extends AbstractCommand
             $multiple = false;
             $mandatory = false;
             if($required){
-                $mandatory = $row['mandatory'];
+                if($row['mandatory'] !== "0"){
+                    $mandatory = true;
+                }
             }
             if(isset($attributes['multiple'])){
                 $multiple = $attributes['multiple'];
             }
+            if(empty($this->attributesMap[$row['normalized_name']])){
+                $this->attributesMap[$row['normalized_name']] = $row['name'];
+            }
+            
             $this->options[$row['normalized_name']] = array(
                 'paramType' => 'params',
                 'help' => $row['help'].$this->getChoices($attributes),
                 'type' => 'string',
-                'name' => $row['name'],
                 'multiple' => $multiple,
-                'required' => $required,
+                'required' => $mandatory,
                 'attributes' => $attributes
             );
             
-            if($required){
+            if($required && isset($row['default_value']) && $row['default_value'] != ""){
                 $this->options[$row['normalized_name']]['defaultValue'] = $row['default_value'];
             }
         }
     }
 
-    public function getObject($object){
-        
-        $typeInfos = explode('|',$object['objectType']);
-        $type = 'string';
-        $multiple = false;
-        if($typeInfos[0] == 'Array'){
-            $multiple = true;
-        }else{
-            $type = $typeInfos[0]; 
+    public function getObject($objectArray, $globalOptional = false)
+    {
+        $required = true;
+        if($globalOptional){
+            $required = false;
         }
-        $this->options[$object['objectName']] = array(
-            'paramType' => 'object',
-            'help' => $object['objectComment'],
-            'type' => $type,
-            'name' => $this->attributesMap[$object['objectName']],
-            'multiple' => $multiple,
-            'required' => true
-        );
+        foreach($objectArray as $object){
+            $typeInfos = explode('|',$object['objectType']);
+            $type = 'string';
+            $multiple = false;
+            $objectName = $object['objectName'];
+            if($typeInfos[0] == 'Array'){
+                $multiple = true;
+            }else{
+                $type = $typeInfos[0]; 
+            }
+            $this->options[$objectName] = array(
+                'paramType' => 'object',
+                'help' => $object['objectComment'],
+                'type' => $type,
+                'multiple' => $multiple,
+                'required' => $required
+            );
+        }
     }
     
-    public function getCustomsParams($paramsArray){
-        
+    public function getCustomsParams($paramsArray,$globalOptional = false)
+    {
         foreach($paramsArray as $param){
             $multiple = false;
             $typeInfos = explode('|',$param['paramType']);
+            
+            $paramName = $param['paramName'];
+
             $type = 'string';
             $defaultValue = null;
             $booleanValue = null;
@@ -243,7 +263,7 @@ class BasicCrud extends AbstractCommand
             if(!empty($typeInfos[0])){
                 $hasDefault = false;
                 if($typeInfos[0] == 'none'){
-                    unset($this->options[$param['paramName']]);
+                    unset($this->options[$paramName]);
                     $isNotNone = false;
                 }else if($typeInfos[0] == 'Array'){
                     $multiple = true;
@@ -263,144 +283,29 @@ class BasicCrud extends AbstractCommand
             }
             
             if($isNotNone){
-                $this->options[$param['paramName']] = array(
+                $this->options[$paramName] = array(
                     'paramType' => 'params',
                     'help' => $param['paramComment'],
                     'type' => $type,
-                    'name' => $this->attributesMap[$param['paramName']],
                     'multiple' => $multiple,
-                    'required' => $param['paramRequired']
+                    'required' => ($globalOptional) ? false : $param['paramRequired']
                 );
 
                 if(!is_null($defaultValue)){
-                    $this->options[$param['paramName']]['defaultValue'] = $defaultValue;
+                    $this->options[$paramName]['defaultValue'] = $defaultValue;
                 }
 
                 if(!is_null($booleanValue)){
-                    $this->options[$param['paramName']]['booleanValue'] = $booleanValue;
+                    $this->options[$paramName]['booleanValue'] = $booleanValue;
                 }
 
                 if(!is_null($booleanSetDefault)){
-                    $this->options[$param['paramName']]['booleanSetDefault'] = $booleanSetDefault;
+                    $this->options[$paramName]['booleanSetDefault'] = $booleanSetDefault;
                 }
             }
         }
     }
     
-    
-    /** Get the fields from xml forms for update and create action
-     * 
-     * @param string $action
-     * @param string $module
-     */
-    public function getFieldsFromForms($action,$module){
-        
-        $route = "";
-        $db = Di::getDefault()->get('db_centreon');
-        
-        
-        
-        switch ($action){
-            case 'updateAction' : 
-                $route = '/'.$module.'/'.$this->objectName.'/update';
-                $sql = 'select ff.* from cfg_forms f
-                        inner join cfg_forms_sections fs on fs.form_id = f.form_id
-                        inner join cfg_forms_blocks fb on fb.section_id = fs.section_id
-                        inner join cfg_forms_blocks_fields_relations fbfr on fbfr.block_id = fb.block_id
-                        inner join cfg_forms_fields ff on ff.field_id = fbfr.field_id
-                        where f.route = :route and ff.normalized_name != "" and ff.normalized_name is not null';
-                $stmt = $db->prepare($sql);
-                $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
-                $stmt->execute();
-                $rows = $stmt->fetchAll();
-                foreach($rows as $row){
-                    if(!in_array($row['name'], $this->paramsToExclude)){
-                        if(!isset($this->options['updateAction'][$row['normalized_name']])){
-                            
-                            $attributes = json_decode($row['attributes'],true);
-                            $multiple = false;
-                            if(isset($attributes['multiple'])){
-                                $multiple = $attributes['multiple'];
-                            }
-                            $this->options['updateAction'][$row['normalized_name']] = array(
-                                'functionParams' => 'params',
-                                'help' => $row['help'].$this->getChoices($attributes),
-                                'type' => 'string',
-                                'toTransform' => $row['name'],
-                                'multiple' => $multiple,
-                                'required' => false,
-                                'attributes' => $attributes
-                            );
-                        }
-                    }
-                }
-                break;
-            case 'createAction' : 
-                $route = '/'.$module.'/'.$this->objectName.'/add';
-                $sql = 'select ff.* from cfg_forms_wizards fw
-                        inner join cfg_forms_steps fs on fs.wizard_id = fw.wizard_id
-                        inner join cfg_forms_steps_fields_relations fsfr on fsfr.step_id = fs.step_id
-                        inner join cfg_forms_fields ff on ff.field_id = fsfr.field_id
-                        where fw.route = :route and ff.normalized_name != "" and ff.normalized_name is not null';
-                $stmt = $db->prepare($sql);
-                $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
-                $stmt->execute();
-                $rows = $stmt->fetchAll();
-                foreach($rows as $row){
-                    if(!in_array($row['name'], $this->paramsToExclude)){
-                        if(!isset($this->options['createAction'][$row['normalized_name']])){
-                            
-                            $attributes = json_decode($row['attributes'],true);
-                            $multiple = false;
-                            if(isset($attributes['multiple'])){
-                                $multiple = $attributes['multiple'];
-                            }
-                            $this->options['createAction'][$row['normalized_name']] = array(
-                                'functionParams' => 'params',
-                                'help' => $row['help'].$this->getChoices($attributes),
-                                'type' => 'string',
-                                'toTransform' => $row['name'],
-                                'multiple' => $multiple,
-                                'required' => $row['mandatory'],
-                                'attributes' => $attributes
-                            );
-                        }
-                    }
-                }
-                
-                /*** add default values from global form ***/
-                $route = '/'.$module.'/'.$this->objectName.'/update';
-                $sql = 'select ff.* from cfg_forms f
-                        inner join cfg_forms_sections fs on fs.form_id = f.form_id
-                        inner join cfg_forms_blocks fb on fb.section_id = fs.section_id
-                        inner join cfg_forms_blocks_fields_relations fbfr on fbfr.block_id = fb.block_id
-                        inner join cfg_forms_fields ff on ff.field_id = fbfr.field_id
-                        where f.route = :route and ff.normalized_name != "" and ff.normalized_name is not null and ff.default_value != "" and ff.default_value is not null';
-                $stmt = $db->prepare($sql);
-                $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
-                $stmt->execute();
-                $rowsDefault = $stmt->fetchAll();
-                foreach($rowsDefault as $rowDefault){
-                    if(!isset($this->options['createAction'][$rowDefault['normalized_name']])){
-                        $this->options['createAction'][$rowDefault['normalized_name']] = array(
-                            'functionParams' => 'params',
-                            'help' => '',
-                            'type' => 'string',
-                            'toTransform' => $rowDefault['name'],
-                            'multiple' => '',
-                            'required' => false,
-                            'defaultValue' => $rowDefault['default_value']
-                        );
-                    }else if(!isset($this->options['createAction'][$rowDefault['normalized_name']]['defaultValue'])){
-                        $this->options['createAction'][$rowDefault['normalized_name']]['defaultValue'] = $rowDefault['default_value'];
-                    }
-                }
-                
-                break;
-            default : 
-                break;
-        }
-    }
 
     /**
      * 
@@ -569,7 +474,7 @@ class BasicCrud extends AbstractCommand
     public function showAction($objectSlug, $fields = null, $linkedObject = '')
     {
         $repository = $this->repository;
-
+        $repository::transco($objectSlug);
         $aId = $repository::getListBySlugName($objectSlug[$this->objectName]);
         if (count($aId) > 0) {
             $objectSlug = $aId[0]['id'];
@@ -657,6 +562,10 @@ class BasicCrud extends AbstractCommand
     public function createAction($params)
     {
         $repository = $this->repository;
+        $repository::transco($params);
+        
+        
+        
         $paramList = $this->parseObjectParams($params);
         $paramList['object'] = $this->objectName;
         
@@ -679,7 +588,8 @@ class BasicCrud extends AbstractCommand
     public function updateAction($object, $params)
     {
         $repository = $this->repository;
-
+        $repository->transco($params);
+        $repository->transco($object);
         $paramList = $this->parseObjectParams($params);
         $paramList['object'] = $this->objectName;
 
@@ -710,6 +620,7 @@ class BasicCrud extends AbstractCommand
     public function deleteAction($object)
     {
         $repository = $this->repository;
+        $repository->transco($object);
         $id = '';
         $sName = static::renameObject($this->objectName);
         

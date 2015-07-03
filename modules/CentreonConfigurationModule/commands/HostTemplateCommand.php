@@ -51,4 +51,9 @@ class HostTemplateCommand extends BasicTagSupport
     {
         parent::__construct();
     }
+    
+    public function createAction($params) {
+        parent::createAction($params);
+    }
+    
 }
