@@ -39,6 +39,8 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Db as CentreonDb;
 use Centreon\Internal\Exception;
 use CentreonConfiguration\Models\Poller;
+use CentreonBroker\Models\Broker;
+use CentreonBroker\Models\BrokerPollerValues;
 use CentreonBroker\Repository\BrokerRepository;
 use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
@@ -131,8 +133,11 @@ class ConfigGenerateRepository
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
         $stmt->execute();
-        while ($row = $stmt->fetch()) {
-            $this->baseConfig['%name%'] = $row['name'];
+        $result = $stmt->fetchAll();
+
+        foreach ($result as $row) {
+            $this->baseConfig['%broker_name%'] = $row['config_name'];
+            $this->baseConfig['%poller_name%'] = $row['name'];
             static::generateModule($row);
         }
     }
@@ -145,6 +150,9 @@ class ConfigGenerateRepository
     private function generateModule($row)
     {
         $filename = $this->tmpPath . '/' . $this->pollerId . '/' . $row['config_name'] . '.xml';
+
+        // store broker id
+        $this->baseConfig['%broker_id%'] = $row['config_id'];
 
         $moduleInformation = $this->getInformationFromTpl($row['config_name']);
 
@@ -274,8 +282,10 @@ class ConfigGenerateRepository
                 if ($key == '%callback%') {
                     foreach ($value as $action) {
                         switch ($action) {
-                            case 'pollerCommandLine':
+                            case 'pollerCommandLineCentreonEngine':
                                 $this->addEngineCommandLineBlock($file);
+                                break;
+                            case 'pollerCommandLineCentreonBroker':
                                 $this->addBrokerCommandLineBlock($file);
                                 break;
                             case 'pollerConfigCentreonEngine':
@@ -340,15 +350,14 @@ class ConfigGenerateRepository
      */
     private function addBrokerCommandLineBlock($file)
     {
-        /* Get poller list */
-        $pollers = Poller::getList();
-        $varlib = $this->baseConfig['%global_broker_data_directory%'];
-        foreach ($pollers as $poller) {
+        /* Get broker modules list */
+        $brokerModules = self::getBrokerModules();
+        foreach ($brokerModules as $brokerModule) {
             $file->startElement("input");
-            $file->writeElement("name", "extcommand-broker-central-module-" . $poller['name']);
+            $file->writeElement("name", "central-broker-extcommands-broker-poller-module-" . $brokerModule['poller_id']);
             $file->writeElement("type", "dump_fifo");
-            $file->writeElement("path", $varlib . "/extcommand-broker-" . $poller['poller_id'] . '.fifo');
-            $file->writeElement("tagname", "extcommand-broker-central-module-" . $poller['poller_id']);
+            $file->writeElement("path", $this->baseConfig['%global_broker_data_directory%'] . "/central-broker-extcommands-broker-poller-module-" . $brokerModule['poller_id'] . ".cmd");
+            $file->writeElement("tagname", "extcommands-broker-" . $brokerModule['config_id']);
             $file->endElement();
         }
     }
@@ -360,15 +369,14 @@ class ConfigGenerateRepository
      */
     private function addEngineCommandLineBlock($file)
     {
-        /* Get poller list */
-        $pollers = Poller::getList();
-        $varlib = $this->baseConfig['%global_broker_data_directory%'];
-        foreach ($pollers as $poller) {
+        /* Get broker modules list */
+        $brokerModules = self::getBrokerModules();
+        foreach ($brokerModules as $brokerModule) {
             $file->startElement("input");
-            $file->writeElement("name", "extcommand-engine-central-module-" . $poller['name']);
+            $file->writeElement("name", "central-broker-extcommands-engine-poller-module-" . $brokerModule['poller_id']);
             $file->writeElement("type", "dump_fifo");
-            $file->writeElement("path", $varlib . "/extcommand-engine-" . $poller['poller_id'] . '.fifo');
-            $file->writeElement("tagname", "extcommand-engine-central-module-" . $poller['poller_id']);
+            $file->writeElement("path", $this->baseConfig['%global_broker_data_directory%'] . "/central-broker-extcommands-engine-poller-module-" . $brokerModule['poller_id'] . ".cmd");
+            $file->writeElement("tagname", "extcommands-engine-" . $brokerModule['config_id']);
             $file->endElement();
         }
     }
@@ -380,16 +388,25 @@ class ConfigGenerateRepository
      */
     private function addConfigCentreonEngineBlock($file)
     {
-        $pollers = Poller::getList();
+        $db = Di::getDefault()->get('db_centreon');
+
+        $sql = "DELETE FROM cfg_centreonbroker_pollervalues WHERE poller_id = ? and name = ?";
+        $stmt = $db->prepare($sql);
+
         /* The path for generate configuration */
         $configGeneratePath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir'), '/') . '/engine';
-        foreach ($pollers as $poller) {
-            $file->startElement("input");
-            $file->writeElement("name", "cfg-engine-central-module-" . $poller['name']);
+        /* Get broker modules list */
+        $brokerModules = self::getBrokerModules();
+        foreach ($brokerModules as $brokerModule) {
+            $name = "central-broker-cfg-engine-poller-module-" . $brokerModule['config_id'];
+            $file->startElement("output");
+            $file->writeElement("name", $name);
             $file->writeElement("type", "dump_dir");
-            $file->writeElement("path", $configGeneratePath . '/apply/' . $poller['poller_id']);
-            $file->writeElement("tagname", "cfg-engine-central-module-" . $poller['poller_id']);
+            $file->writeElement("path", $configGeneratePath . '/apply/' . $brokerModule['poller_id']);
+            $file->writeElement("tagname", "cfg-engine-" . $brokerModule['config_id']);
             $file->endElement();
+            $stmt->execute(array($brokerModule['poller_id'], 'dump_dir_engine'));
+            BrokerPollerValues::insert(array('poller_id' => $brokerModule['poller_id'], 'name' => 'dump_dir_engine', 'value' => $name), true);
         }
     }
 
@@ -400,16 +417,25 @@ class ConfigGenerateRepository
      */
     private function addConfigCentreonBrokerBlock($file)
     {
-        $pollers = Poller::getList();
+        $db = Di::getDefault()->get('db_centreon');;
+
+        $sql = "DELETE FROM cfg_centreonbroker_pollervalues WHERE poller_id = ? and name = ?";
+        $stmt = $db->prepare($sql);
+
         /* The path for generate configuration */
         $configGeneratePath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir'), '/') . '/broker';
-        foreach ($pollers as $poller) {
-            $file->startElement("input");
-            $file->writeElement("name", "cfg-broker-central-module-" . $poller['name']);
+        /* Get broker modules list */
+        $brokerModules = self::getBrokerModules();
+        foreach ($brokerModules as $brokerModule) {
+            $name = "central-broker-cfg-broker-poller-module-" . $brokerModule['config_id'];
+            $file->startElement("output");
+            $file->writeElement("name", $name);
             $file->writeElement("type", "dump_dir");
-            $file->writeElement("path", $configGeneratePath . '/apply/' . $poller['poller_id']);
-            $file->writeElement("tagname", "cfg-broker-central-module-" . $poller['poller_id']);
+            $file->writeElement("path", $configGeneratePath . '/apply/' . $brokerModule['poller_id']);
+            $file->writeElement("tagname", "cfg-broker-" . $brokerModule['config_id']);
             $file->endElement();
+            $stmt->execute(array($brokerModule['poller_id'], 'dump_dir_broker'));
+            BrokerPollerValues::insert(array('poller_id' => $brokerModule['poller_id'], 'name' => 'dump_dir_broker', 'value' => $name), true);
         }
     }
 
@@ -538,5 +564,24 @@ class ConfigGenerateRepository
             $this->parsedDefault[$module] = $values;
         }
         return $values;
+    }
+
+    /**
+     * Get broker ids of poller modules
+     *
+     * @return array
+     */
+    private function getBrokerModules()
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $query = 'SELECT config_id, poller_id'
+            . ' FROM cfg_centreonbroker'
+            . ' WHERE config_name like "%module%"';
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        return $result;
     }
 }

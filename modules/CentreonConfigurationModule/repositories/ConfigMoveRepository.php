@@ -37,6 +37,7 @@ namespace CentreonConfiguration\Repository;
 
 use Centreon\Internal\Exception;
 use CentreonConfiguration\Events\CopyFiles;
+use CentreonConfiguration\Events\SynchronizeFiles;
 
 /**
  * Factory for ConfigTest Engine
@@ -67,9 +68,16 @@ class ConfigMoveRepository extends ConfigRepositoryAbstract
         try {
             /* Get Path */
             $event = $this->di->get('events');
+
             $eventObj = new CopyFiles($this->pollerId);
             $event->emit('centreon-configuration.copy.files', array($eventObj));
             $this->output = array_merge($this->output, $eventObj->getOutput());
+
+            /* Event for external commands */
+            $eventObj = new SynchronizeFiles($this->pollerId);
+            $event->emit('centreon-configuration.synchronize.files', array($eventObj));
+            $this->output = array_merge($this->output, $eventObj->getOutput());
+
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();
             $this->status = false;

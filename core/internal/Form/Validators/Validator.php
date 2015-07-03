@@ -162,9 +162,13 @@ class Validator
                     $validator = new $call($validatorElement['params']);
                     $validatorParams = array_merge($objectParams, json_decode($validatorElement['params'], true));
                     $validatorParams['extraParams'] = $submittedDatas;
-                    
+                    $labelElement = $key;
+                    if (isset($validatorElement['label'])) {
+                        $labelElement = $validatorElement['label'];
+                    }
+
                     // Launch validation
-                    $result = $validator->validate($value, $validatorParams);
+                    $result = $validator->validate($value, $validatorParams, $labelElement);
 
                     //If field is not mandatory and the value is empty ==> when can validate
                     if (!in_array($key, $validationScheme['mandatory'])

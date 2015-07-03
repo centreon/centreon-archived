@@ -55,9 +55,9 @@ class CopyFiles
         $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
         $output = array();
-        exec("rm -rf {$tmpdir}/engine/apply/{$event->getPollerId()}/resources/*.cfg 2>&1", $output, $status);
-        if ($status) {
-            throw new Exception('Error while copying Engine configuration files' . "\n" . implode("\n", $output));
+        exec("rm -rf {$tmpdir}/engine/apply/{$event->getPollerId()}/* 2>&1", $output, $statusDelete);
+        if ($statusDelete) {
+            $event->setOutput(_('Error while deleting Engine configuration files') . "\n" . implode("\n", $output));
         }
 
         if (false === is_dir($tmpdir . '/engine/apply/' . $event->getPollerId())) {
@@ -66,10 +66,13 @@ class CopyFiles
             }
         }
         $output = array();
-        exec("cp -Rf $tmpdir/engine/generate/{$event->getPollerId()}/* {$tmpdir}/engine/apply/{$event->getPollerId()}/ 2>&1", $output, $status);
-        if ($status) {
-            throw new Exception('Error while copying Engine configuration files'. "\n" . implode("\n", $output));
+        exec("cp -Rf $tmpdir/engine/generate/{$event->getPollerId()}/* {$tmpdir}/engine/apply/{$event->getPollerId()}/ 2>&1", $output, $statusCopy);
+        if ($statusCopy) {
+            $event->setOutput(_('Error while copying Engine configuration files') . "\n" . implode("\n", $output));
         }
-        $event->setOutput(_('Successfully copied files for Engine.'));
+
+        if (!$statusDelete && !$statusCopy) {
+            $event->setOutput(_('Successfully copied files for Engine.'));
+        }
     }
 }

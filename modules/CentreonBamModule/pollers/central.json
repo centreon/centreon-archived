@@ -16,14 +16,14 @@
                     "output": [
                       {
                         "type": "bam",
-                        "name": "centreon-bam-monitoring",
-                        "queries_per_transaction": "0",
-                        "command_file": "/var/lib/centreon-engine/rw/centengine.cmd"
+                        "name": "central-broker-bam-monitoring",
+                        "queries_per_transaction": "1000",
+                        "command_file": "%engine_var_lib_dir%/rw/centengine.cmd"
                       },
                       {
                         "type": "bam_bi",
-                        "name": "centreon-bam-reporting",
-                        "queries_per_transaction": "0",
+                        "name": "central-broker-bam-reporting",
+                        "queries_per_transaction": "1000",
                         "filters": [
                           {
                             "category": "bam"

@@ -82,12 +82,7 @@ class ResourceRepository extends \CentreonConfiguration\Repository\Repository
     
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
-        /*
-        if ($validate) {
-            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
-        }
-         */      
-        parent::create($givenParameters, "wizard", $route);
+        parent::create($givenParameters, $origin, $route);
     }
     
     /**
@@ -100,6 +95,6 @@ class ResourceRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {       
-        parent::update($givenParameters, "form", $route);
+        parent::update($givenParameters, $origin, $route);
     }
 }

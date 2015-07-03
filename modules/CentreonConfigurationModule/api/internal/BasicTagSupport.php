@@ -36,6 +36,7 @@
 namespace CentreonConfiguration\Api\Internal;
 use CentreonConfiguration\Api\Internal\BasicMacroSupport;
 use CentreonAdministration\Repository\TagsRepository;
+use \Centreon\Internal\Utils\CommandLine\InputOutput;
 
 /**
  * 
@@ -49,10 +50,12 @@ class BasicTagSupport extends BasicMacroSupport
      */
     public function addTagAction($object, $tag)
     {
-        $iNbDeleted = 0;
+        $iNbAdded = 0;
         $sLibTag = 'tag';
+        $aError = array();
         
         try {
+
             $repository = $this->repository;
             $sName = $this->objectName;
            
@@ -66,21 +69,51 @@ class BasicTagSupport extends BasicMacroSupport
             $aTags = explode(",", $tag);
             
             foreach ($aTags as $sTag) {
-                TagsRepository::add($sTag, $this->objectName, $object, 3);
-                $iNbDeleted++;
-                
+                $bOkyToAdd = true;
+                $iIdTag = TagsRepository::getTagId($sTag, 1, 0);
+                if (!empty($iIdTag)) {
+                    $bLink = TagsRepository::isLink($sName, $object, $iIdTag);
+                    if ($bLink) {
+                        $aError[] = $sTag;
+                        $bOkyToAdd = false;
+                    }
+                }
+                if ($bOkyToAdd) {
+                    TagsRepository::add($sTag, $this->objectName, $object, 1);
+                    $iNbAdded++;
+                }
             }
             
-            if ($iNbDeleted >1) 
+            if (count($aTags) == 1) {
+                $sLibTag = $aTags[0];
+            } else if (count($aTags) > 1) {
                 $sLibTag .= "s";
+            }
             
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display(
-                "The tag ".$sLibTag." been successfully added to the object",
-                true,
-                'green'
-            );
+            if ($iNbAdded > 0) {
+                InputOutput::display(
+                    $sLibTag . " has been successfully added to the object",
+                    true,
+                    'green'
+                );
+
+                if ($iNbAdded > 0 && count($aError) > 0) {
+                    InputOutput::display(
+                        "but some tags already exists : '". implode("', '", $aError)."'",
+                        true,
+                        'red'
+                    );
+                }
+            } else {
+                InputOutput::display(
+                    $sLibTag . " already exists",
+                    true,
+                    'red'
+                );
+            }
+
         } catch(\Exception $ex) {
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+            InputOutput::display($ex->getMessage(), true, 'red');
         }
     }
     
@@ -107,7 +140,7 @@ class BasicTagSupport extends BasicMacroSupport
                 echo $tag['text'] . "\n";
             }
         } catch (\Exception $ex) {
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+            InputOutput::display($ex->getMessage(), true, 'red');
         }
     }
     
@@ -141,14 +174,14 @@ class BasicTagSupport extends BasicMacroSupport
                 $sLibTag .= "s";
             
 
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display(
-                "The ".$sLibTag." has been successfully removed from the object",
+            InputOutput::display(
+                $sLibTag." has been successfully removed from the object",
                 true,
                 'green'
             );
 
         } catch (\Exception $ex) {
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+            InputOutput::display($ex->getMessage(), true, 'red');
         }
     }
 }

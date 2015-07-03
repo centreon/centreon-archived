@@ -54,11 +54,6 @@ class DisplaySvcGraph
      */
     public static function execute($params)
     {
-        if (!isset($params['svc_id'])) {
-            return array(
-                'template' => 'empty.tpl'
-            );
-        }
         return array(
             'template' => 'displaySvcGraph.tpl',
             'variables' => $params

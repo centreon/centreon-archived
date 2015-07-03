@@ -467,7 +467,7 @@ $(function() {
               $('<td data-time="'+values.datetime+'"></td>').text(moment.unix(values.datetime).format(sDefaultFormatDate))
             )
             .append(
-              $('<td></td>').html(values.service)
+              $('<td></td>').html(values.service.escapeSecure())
             )
             .append(
               $('<td></td>').addClass(colorCss + values.status).text(state)
@@ -476,7 +476,7 @@ $(function() {
               $('<td></td>').text(type)
             )
             .append(
-              $('<td></td>').html(values.output)
+              $('<td></td>').html(values.output.escapeSecure())
             )
             .appendTo('#eventlogs tbody')
         });

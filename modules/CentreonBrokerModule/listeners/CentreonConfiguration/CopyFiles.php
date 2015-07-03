@@ -58,12 +58,19 @@ class CopyFiles
                 throw new Exception("Error while prepare copy of Broker configuration files\n");
             }
         }
+
         $output = array();
-        exec("cp -Rf $tmpdir/broker/generate/{$event->getPollerId()}/* {$tmpdir}/broker/apply/{$event->getPollerId()}/ 2>&1", $output, $status);
-        if ($status) {
-            throw new Exception('Error while copying Broker configuration files' . "\n" . implode("\n", $output));
+        exec("rm -rf {$tmpdir}/broker/apply/{$event->getPollerId()}/* 2>&1", $output, $statusDelete);
+        if ($statusDelete) {
+            $event->setOutput(_('Error while deleting Broker configuration files') . "\n" . implode("\n", $output));
         }
 
-        $event->setOutput(_('Successfully copied files for Broker.'));
+        exec("cp -Rf $tmpdir/broker/generate/{$event->getPollerId()}/* {$tmpdir}/broker/apply/{$event->getPollerId()}/ 2>&1", $output, $status);
+
+        if ($status) {
+            $event->setOutput(_('Error while copying Broker configuration files') . "\n" . implode("\n", $output));
+        } else {
+            $event->setOutput(_('Successfully copied files for Broker.'));
+        }
     }
 }

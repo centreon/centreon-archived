@@ -37,6 +37,7 @@ namespace CentreonBroker\Listeners\CentreonRealtime;
 
 use Centreon\Internal\Di;
 use CentreonRealtime\Events\ExternalCommand;
+use CentreonBroker\Repository\BrokerRepository;
 
 /**
  * Listeners for send a command
@@ -51,18 +52,8 @@ class CommandSend
     public static function execute(ExternalCommand $command)
     {
         // @todo found poller where I am
-        $varlib = "/var/lib/centreon-broker";
         if ($command->getType() === 'broker') {
-            $sFile  = 'central-broker.cmd';
-        } else if ($command->getType() === 'engine') {
-            $sFile  = 'extcommand-engine-' . $command->getPollerId() . '.fifo';
-        }
-        
-        if (isset($sFile) && file_exists($varlib."/".$sFile)) {
-            file_put_contents($varlib . '/'.$sFile, $command->getCommand(), FILE_APPEND);
-        } else {
-            throw new \Exception ("The external command file of broker does not exist");
-    
+            BrokerRepository::sendCommand($command->getCommand());
         }
         
     }

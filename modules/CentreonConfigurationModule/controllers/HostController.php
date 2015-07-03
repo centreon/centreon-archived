@@ -51,6 +51,7 @@ use Centreon\Controllers\FormController;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
 use CentreonRealtime\Repository\HostRepository as HostRealTimeRepository;
+use Centreon\Internal\Utils\String;
 
 class HostController extends FormController
 {
@@ -130,6 +131,15 @@ class HostController extends FormController
                 
         $myDatatable = new HostDatatable($this->getParams('get'), $this->objectClass);
         $myDataForDatatable = $myDatatable->getDatas();
+
+        /* Secure strings */
+        for ($i = 0; $i < count($myDataForDatatable['data']); $i++) {
+            foreach ($myDataForDatatable['data'][$i] as $key => $value) {
+                if (is_string($value)) {
+                    $myDataForDatatable['data'][$i][$key] = String::escapeSecure($value);
+                }
+            }
+        }
           
         $router->response()->json($myDataForDatatable);
     }
@@ -176,7 +186,13 @@ class HostController extends FormController
         $id = parent::createAction(false);
 
         if (count($macroList) > 0) {
-            CustomMacroRepository::saveHostCustomMacro(self::$objectName, $id, $macroList);
+            try{
+                CustomMacroRepository::saveHostCustomMacro(self::$objectName, $id, $macroList);
+            } catch (\Exception $ex) {
+                $errorMessage = $ex->getMessage();
+                $this->router->response()->json(array('success' => false,'error' => $errorMessage));
+            }
+            
         }
         
         if (isset($givenParameters['host_tags'])) {
@@ -271,7 +287,16 @@ class HostController extends FormController
             }
         }
         
-        CustomMacroRepository::saveHostCustomMacro(self::$objectName, $givenParameters['object_id'], $macroList);
+        try{
+            CustomMacroRepository::saveHostCustomMacro(self::$objectName, $givenParameters['object_id'], $macroList);
+        } catch (\Exception $ex) {
+            $errorMessage = $ex->getMessage();
+            $this->router->response()->json(array('success' => false,'error' => $errorMessage));
+        }
+        
+        
+        
+        //CustomMacroRepository::saveHostCustomMacro(self::$objectName, $givenParameters['object_id'], $macroList);
         
         //Delete all tags
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
@@ -592,7 +617,7 @@ class HostController extends FormController
      * @method get
      * @route /host/tag/formlist
      */
-     public function hostTagsAction()
+    public function hostTagsAction()
     {
         $di = Di::getDefault();
         $router = $di->get('router');
@@ -600,5 +625,51 @@ class HostController extends FormController
         $list = TagsRepository::getGlobalList('host');
 
         $router->response()->json($list);
+    }
+
+    /**
+     * Get host snmp version list
+     *
+     * @method get
+     * @route /host/snmp-version/formlist
+     */
+    public function hostSnmpVersionsAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $list = array(
+            array("id" => "1", "text" => "1"),
+            array("id" => "2c", "text" => "2c"),
+            array("id" => "3", "text" => "3")
+        );
+
+        $router->response()->json($list);
+    }
+
+    /**
+     * Get snmp version for a specific host
+     *
+     * @method get
+     * @route /host/[i:id]/snmp-version
+     */
+    public function snmpVersionForHostAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        $requestParam = $this->getParams('named');
+
+
+        $snmpVersionParam = Host::getParameters($requestParam['id'], 'host_snmp_version');
+
+        $snmpVersion = array();
+        if (isset($snmpVersionParam['host_snmp_version'])) {
+            $snmpVersion = array(
+                "id" => $snmpVersionParam['host_snmp_version'],
+                "text" => $snmpVersionParam['host_snmp_version']
+            );
+        }
+
+        $router->response()->json($snmpVersion);
     }
 }

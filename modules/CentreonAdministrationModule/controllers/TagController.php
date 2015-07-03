@@ -40,6 +40,7 @@ use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Internal\Controller;
 use CentreonAdministration\Internal\TagDatatable;
 use Centreon\Internal\Form\Generator\Web\Full as WebFormGenerator;
+use Centreon\Internal\Utils\String;
 
 /**
  * Controller for tag action
@@ -266,6 +267,14 @@ class TagController extends Controller
         
         $myDatatable = new TagDatatable($this->getParams('get'), $this->objectClass);
         $myDataForDatatable = $myDatatable->getDatas();
+        /* Secure strings */
+        for ($i = 0; $i < count($myDataForDatatable['data']); $i++) {
+            foreach ($myDataForDatatable['data'][$i] as $key => $value) {
+                if (is_string($value)) {
+                    $myDataForDatatable['data'][$i][$key] = String::escapeSecure($value);
+                }
+            }
+        }
           
         $router->response()->json($myDataForDatatable);
     }

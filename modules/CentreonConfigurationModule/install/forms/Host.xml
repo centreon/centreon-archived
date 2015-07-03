@@ -141,6 +141,18 @@
                         </validator>
                     </validators>
                 </field>
+                <field name="host_snmp_community" normalized_name="snmp-community" label="Snmp community" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+                    <help>Host snmp community.</help>
+                </field>
+                <field  normalized_name="snmp-version" name="host_snmp_version" label="Snmp version" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <help>Host snmp version.</help>
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-configuration/host/snmp-version/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-configuration/host/[i:id]/snmp-version</listValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+                </field>
             </block>
             <block name="Additional information">
                 <field normalized_name="disable" name="host_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
@@ -157,7 +169,7 @@
                     </validators>
                 </field>
                 <field normalized_name="comment" name="host_comment" label="Comments" default_value="" advanced="1" type="textarea" parent_field="" mandatory="0">
-                    <help>Macros are used as object-specific variables/properties, which can be referenced in commands and extended infos. Example: a macro named MACADDRESS can be referenced as $_HOSTMACADDRESS$.</help>
+                    <help>Host comments.</help>
                 </field>
             </block>
         </section>

@@ -11,6 +11,9 @@ echo " ==== Creating pollers ==== "
 
 #./external/bin/centreonConsole centreon-configuration:poller:create --name=poller6 --template=Poller --ip-address="127.0.0.1" --engine-init-script='/etc/init.d/centengine' --engine-binary='/usr/sbin/centengine' --engine-modules-dir='/usr/lib64/centreon-engine/' --engine-conf-dir='/etc/centreon-engine/' --engine-logs-dir='/var/log/centreon-engine/' --engine-var-lib-dir='/var/lib/centreon-engine/' --broker-conf-dir='/etc/centreon-broker/' --broker-modules-dir='/usr/share/centreon/lib/centreon-broker/' --broker-data-dir='/var/lib/centreon-broker' --broker-logs-dir='/var/log/centreon-broker/' --broker-cbmod-dir='/usr/lib64/nagios/' --broker-init-script='/etc/init.d/cbd' --broker-central-ip="10.30.2.34"
 
+echo " ==== Creating resource macro === "
+/srv/centreon/external/bin/centreonConsole centreon-configuration:Resource:create --resource-name='$USER1$' --resource-line='/usr/lib/nagios/plugins' --resource-pollers='Central' --resource-activate='Enabled'
+
 echo " ==== Creating timeperiods ==== "
 ./external/bin/centreonConsole centreon-configuration:Timeperiod:create --tp-name='24x7' --tp-alias='24x7' --tp-sunday='00:00-24:00' --tp-monday='00:00-24:00' --tp-tuesday='00:00-24:00' --tp-wednesday='00:00-24:00' --tp-thursday='00:00-24:00' --tp-friday='00:00-24:00' --tp-saturday='00:00-24:00'
  ./external/bin/centreonConsole centreon-configuration:Timeperiod:create --tp-name='Working hours' --tp-alias='Working hours' --tp-monday='09:00-18:00' --tp-tuesday='09:00-18:00' --tp-wednesday='09:00-18:00' --tp-thursday='09:00-18:00' --tp-friday='09:00-18:00'
@@ -73,7 +76,7 @@ echo " ==== Creating service templates ==== "
 
 echo " ==== Creating host templates ==== "
 ./external/bin/centreonConsole centreon-configuration:HostTemplate:create --name='generic-host' 
-./external/bin/centreonConsole centreon-configuration:HostTemplate:update --host-template='generic-host' --max-check-attempts=3 --service-templates='ping-lan' --command='check-host-alive'
+./external/bin/centreonConsole centreon-configuration:HostTemplate:update --host-template='generic-host' --max-check-attempts=3 --service-templates='ping-lan' --command='check-host-alive' --snmp-community='public' --snmp-version='2c'
 ./external/bin/centreonConsole centreon-configuration:HostTemplate:addMacro --host-template='generic-host' --name='WARNING' --value='3000,80%'
 ./external/bin/centreonConsole centreon-configuration:HostTemplate:addMacro --host-template='generic-host' --name='CRITICAL' --value='5000,100%'
 ./external/bin/centreonConsole centreon-configuration:HostTemplate:addMacro --host-template='generic-host' --name='PACKETNUMBER' --value='1'

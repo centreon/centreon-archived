@@ -1,3 +1,5 @@
+
+{include file="[Core]/form/validators.tpl"}
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 <h4>
@@ -26,7 +28,7 @@
    <div class="step-pane{if $step@index == 0} active{/if}" id="{$name}_{$step@index + 1}">
      <div class="row">
      {foreach $step['default'] as $component}
-       <div class="col-xs-12">
+       <div class="col-xs-{$component['width']}">
        {$formElements[$component['name']]['html']}
        </div>
      {/foreach}
@@ -84,5 +86,6 @@ $(function() {
     rules: (formValidRule["{$formName}"] === undefined ? {} : formValidRule["{$formName}"])
   });
 });
+
 </script>
-{include file="[Core]/form/validators.tpl"}
+

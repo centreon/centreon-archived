@@ -131,14 +131,17 @@ class BasicRepository
         // request to get Help and Help url for the field
         $fieldHelpRequest = "SELECT help, help_url "
             . "FROM cfg_forms_fields cff, cfg_forms_blocks_fields_relations cfbfr, cfg_forms_blocks cfb, cfg_forms_sections cfs, cfg_forms cf "
-            . "WHERE cff.name = '$formField' "
-            . "AND cf.route = '$formRoute' "
+            . "WHERE cff.name = :formField "
+            . "AND cf.route = :formRoute "
             . "AND cfs.form_id = cf.form_id "
             . "AND cfb.section_id = cfs.section_id "
             . "AND cfbfr.block_id = cfb.block_id "
             . "AND cfbfr.field_id = cff.field_id ";
         $db = Di::getDefault()->get('db_centreon');
-        $stmt = $db->query($fieldHelpRequest);
+        $stmt = $db->prepare($fieldHelpRequest);
+        $stmt->bindParam(':formField', $formField, \PDO::PARAM_STR);
+        $stmt->bindParam(':formRoute', $formRoute, \PDO::PARAM_STR);
+        $stmt->execute();
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
         if (count($result) > 0) {

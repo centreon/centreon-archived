@@ -40,6 +40,7 @@ use CentreonBroker\Models\Broker;
 use CentreonBroker\Models\BrokerPollerValues;
 use CentreonAdministration\Repository\OptionRepository;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
+use CentreonRealtime\Events\ExternalCommand;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -603,5 +604,45 @@ class BrokerRepository
         }
         
         return $globalOptions;
+    }
+
+    /**
+     * Send external command for poller
+     *
+     * @param int $cmdId
+     */
+    public static function sendCommand($command)
+    {
+        /* @todo get external command path dynamically */
+        if (file_exists('/var/lib/centreon-broker/central-broker.cmd')) {
+            file_put_contents('/var/lib/centreon-broker/central-broker.cmd', $command, FILE_APPEND);
+        } else {
+            throw new \Exception ("The external command file of broker does not exist");
+        }
+    }
+
+    /**
+     * Send external command for poller
+     *
+     * @param int $pollerId
+     */
+    public static function getConfigEndpoints($pollerId)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $query = 'SELECT value'
+            . ' FROM cfg_centreonbroker_pollervalues'
+            . ' WHERE poller_id = :poller_id'
+            . ' AND name like "%dump_dir%"';
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $endpoints = array();
+        while ($row = $stmt->fetch()) {
+            $endpoints[] = $row['value'];
+        }
+
+        return $endpoints;
     }
 }

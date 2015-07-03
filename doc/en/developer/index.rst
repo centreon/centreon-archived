@@ -8,3 +8,4 @@ In the developer guide, there are the documentation for write a module, widget a
 
    rest_api/index
    module/index
+   front/front

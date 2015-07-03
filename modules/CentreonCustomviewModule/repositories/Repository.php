@@ -200,10 +200,10 @@ abstract class Repository
                 if (!empty($paramValue) || $paramValue === "0") {
                     $colNumber = substr($paramName, strlen('sSearch_'));
                     if (substr($c[$colNumber], 0, 11) !== '[SPECFIELD]') {
-                        $searchString = $c[$colNumber]." like '%".$paramValue."%' ";
+                        $searchString = $c[$colNumber]." like '%" . $dbconn->quote($paramValue) . "%' ";
                     } else {
                         $customSearchString = substr($c[$colNumber], 11);
-                        $searchString = str_replace('::search_value::', '%'.$paramValue.'%', $customSearchString);
+                        $searchString = str_replace('::search_value::', '%' . $dbconn->quote($paramValue) . '%', $customSearchString);
                     }
                     
                     if (empty($conditions)) {
@@ -320,9 +320,9 @@ abstract class Repository
                     $colNumber = substr($paramName, strlen('sSearch_'));
                     
                     if (substr($c[$colNumber], 0, 11) === '[SPECFIELD]') {
-                        $research = str_replace('::search_value::', '%'.$paramValue.'%', substr($c[$colNumber], 11));
+                        $research = str_replace('::search_value::', '%' . $dbconn->quote($paramValue) . '%', substr($c[$colNumber], 11));
                     } else {
-                        $research = $c[$colNumber]." like '%".$paramValue."%' ";
+                        $research = $c[$colNumber]." like '%" . $dbconn->quote($paramValue) ."%' ";
                     }
                     
                     if (empty($conditions)) {

@@ -72,6 +72,7 @@ var elRules = {};
 {if $eventValidation['extraJs']}
   {$eventValidation['extraJs']}
 {/if}
+    
 formValidRule["{$formName}"] = rules;
 </script>
 {/block}

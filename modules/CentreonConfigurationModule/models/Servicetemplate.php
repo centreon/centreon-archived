@@ -255,24 +255,33 @@ class Servicetemplate extends CentreonBaseModel
             $sourceParams['service_description'] = $newName;
             /* Insert the duplicate service */
             $lastId = static::insert($sourceParams);
+            if (false === is_numeric($lastId)) {
+                throw new \Exception("The value is not numeric");
+            }
             $listDuplicateId[] = $lastId;
             /* Insert relation */
             $db->beginTransaction();
             /*  Duplicate macros for new service */
             $queryDupMacros = "INSERT INTO cfg_customvariables_services (svc_macro_name, svc_macro_value, is_password, svc_svc_id)
                 SELECT svc_macro_name, svc_macro_value, is_password, " . $lastId . " FROM cfg_customvariables_services
-                    WHERE svc_svc_id = " . $sourceObjectId;
-            $db->query($queryDupMacros);
+                    WHERE svc_svc_id = :sourceObjectId";
+            $stmt = $db->prepare($queryDupMacros);
+            $stmt->bindParam(':sourceObjectId', $sourceObjectId, \PDO::PARAM_INT);
+            $stmt->execute();
             /* Service global tags */
             $queryDupTag = "INSERT INTO cfg_tags_services (tag_id, resource_id)
                 SELECT ts.tag_id, " . $lastId . " FROM cfg_tags_services ts, cfg_tags t
-                    WHERE t.user_id IS NULL AND t.tag_id = ts.tag_id AND ts.resource_id = " . $sourceObjectId;
-            $db->query($queryDupTag);
+                    WHERE t.user_id IS NULL AND t.tag_id = ts.tag_id AND ts.resource_id = :sourceObjectId";
+            $stmt = $db->prepare($queryDupTag);
+            $stmt->bindParam(':sourceObjectId', $sourceObjectId, \PDO::PARAM_INT);
+            $stmt->execute();
             /* Add relation to host template */
             $queryDupHostRelation = "INSERT INTO cfg_hosts_services_relations (host_host_id, service_service_id)
                 SELECT host_host_id, " . $lastId . " FROM cfg_hosts_services_relations
-                    WHERE service_service_id = " . $sourceObjectId;
-            $db->query($queryDupHostRelation);
+                    WHERE service_service_id = :sourceObjectId";
+            $stmt = $db->prepare($queryDupHostRelation);
+            $stmt->bindParam(':sourceObjectId', $sourceObjectId, \PDO::PARAM_INT);
+            $stmt->execute();
             $db->commit();
         }
         return $listDuplicateId;

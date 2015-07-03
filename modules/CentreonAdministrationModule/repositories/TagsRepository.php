@@ -251,9 +251,10 @@ class TagsRepository extends Repository
      *
      * @param string $tagName The tag
      * @param int $bGlobal
+     * @param int $bDisplayError
      * @return int
      */
-    public static function getTagId($tagName, $bGlobal = 0)
+    public static function getTagId($tagName, $bGlobal = 0, $bDisplayError = 1)
     {
         $tagName = trim($tagName);
         if (empty($tagName)) {
@@ -263,20 +264,22 @@ class TagsRepository extends Repository
         $dbconn = Di::getDefault()->get('db_centreon'); 
         $query = "SELECT tag_id FROM cfg_tags WHERE tagname = '".$tagName."'";
         if ($bGlobal == 0) {
-           $query .= " AND user_id = ".$_SESSION['user']->getId();
+           $query .= " AND user_id = :user_id";
            
         }
         
         $query .= " LIMIT 1";
         $stmt = $dbconn->prepare($query);
         
-        //die($query);
-
+        if ($bGlobal == 0) {
+            $stmt->bindParam(':user_id', $_SESSION['user']->getId(), \PDO::PARAM_INT);
+        }
+        
         $stmt->execute();
         $tag = $stmt->fetchAll(\PDO::FETCH_ASSOC);
   
-        if (count($tag) === 0) {
-            throw new Exception("The tag is not found for user");
+        if (count($tag) === 0 && $bDisplayError == 1) {
+            throw new Exception("The tag is not found in this object");
         }
         
         if (isset($tag[0]['tag_id'])) {
@@ -338,10 +341,12 @@ class TagsRepository extends Repository
         $dbconn = Di::getDefault()->get('db_centreon');
 
         if (!$bNotDelete) {
-            $sQuery = "DELETE FROM cfg_tags_" . $resourceName . "s WHERE resource_id = ".$objectId." "
+            $sQuery = "DELETE FROM cfg_tags_" . $resourceName . "s WHERE resource_id = :resource_id "
                 . "AND tag_id in (select tag_id from cfg_tags where user_id is null)";
-            
-            $dbconn->query($sQuery);
+                       
+            $stmt = $dbconn->prepare($sQuery);
+            $stmt->bindParam(':resource_id', $objectId, \PDO::PARAM_INT);
+            $stmt->execute();
         }
         
         foreach ($submittedValues as $s => $tagName) {
@@ -398,15 +403,35 @@ class TagsRepository extends Repository
         $userId = $_SESSION['user']->getId();
         
         $sSearch = trim($sSearch);
-        
-        if ($sType == 1) {
-            $query = "SELECT tag_id, tagname FROM cfg_tags where user_id is null ".(!empty($sSearch) ? ' AND tagname LIKE "%'.$sSearch.'%"' : '')." ORDER BY tagname ASC ";   
+        if (!empty($sSearch)) {
+            if ($sType == 1) {
+                $query = "SELECT tag_id, tagname FROM cfg_tags where user_id is null AND tagname LIKE :search  ORDER BY tagname ASC ";   
+            } else {
+                $query = "SELECT tag_id, tagname FROM cfg_tags where user_id = :user_id AND tagname LIKE :search ORDER BY tagname ASC ";   
+            }
         } else {
-            $query = "SELECT tag_id, tagname FROM cfg_tags where user_id =".$userId." ".(!empty($sSearch) ? ' AND tagname LIKE "%'.$sSearch.'%"' : '')." ORDER BY tagname ASC ";   
+            if ($sType == 1) {
+                $query = "SELECT tag_id, tagname FROM cfg_tags where user_id is null ORDER BY tagname ASC ";   
+            } else {
+                $query = "SELECT tag_id, tagname FROM cfg_tags where user_id = :user_id ORDER BY tagname ASC ";   
+            }
         }
-        
-       
+
         $stmt = $dbconn->prepare($query);
+        
+        if (!empty($sSearch)) {
+            $sSearch  = "%".$sSearch."%";
+            if ($sType == 1) {
+                $stmt->bindParam(':search', $sSearch, \PDO::PARAM_STR);
+            } else {
+                $stmt->bindParam(':user_id', $userId, \PDO::PARAM_INT);
+                $stmt->bindParam(':search', $sSearch, \PDO::PARAM_STR);
+            }
+        } else {
+            if ($sType != 1) {
+                $stmt->bindParam(':user_id', $userId, \PDO::PARAM_INT);
+            }
+        }
 
         $stmt->execute();
         $tags = array();
@@ -431,18 +456,20 @@ class TagsRepository extends Repository
         if (!is_array($aDatas) || count($aDatas) == 0) {
             return;
         }
-        
-        $sIdTags = implode(",", $aDatas);
-                
-        foreach (static::$resourceType as $resource) {
-            $sQuery = "DELETE FROM cfg_tags_" . $resource . "s WHERE tag_id IN (".$sIdTags.")";
-            $oSmt = $dbconn->prepare($sQuery);
-            $oSmt->execute();
-        }
-        
-        $sQueryDelete = "DELETE FROM cfg_tags WHERE tag_id IN (".$sIdTags.")";
+
+        $sQueryDelete = "DELETE FROM cfg_tags WHERE tag_id = :id";
         $oSmtDelete = $dbconn->prepare($sQueryDelete);
-        $oSmtDelete->execute();      
+        foreach ($aDatas as $id) {
+            foreach (static::$resourceType as $resource) {
+                $sQuery = "DELETE FROM cfg_tags_" . $resource . "s WHERE tag_id = :id";
+                $oSmt = $dbconn->prepare($sQuery);
+                $oSmt->bindParam(':id', $id, \PDO::PARAM_INT);
+                $oSmt->execute();
+            }
+            
+            $oSmtDelete->bindParam(':id', $id, \PDO::PARAM_INT);
+            $oSmtDelete->execute(); 
+        }
     }
     /**
      * 
@@ -483,8 +510,6 @@ class TagsRepository extends Repository
         if (empty($tagName)) {
             return;
         }
-        
-
         
         $dbconn = Di::getDefault()->get('db_centreon');
         
@@ -611,14 +636,16 @@ class TagsRepository extends Repository
         $dbconn = Di::getDefault()->get('db_centreon');
         $resourceName = self::convertResource($resourceName);
         
-        $sQuery = "DELETE FROM cfg_tags_" . $resourceName . "s WHERE resource_id = ".$resourceId." "
+        $sQuery = "DELETE FROM cfg_tags_" . $resourceName . "s WHERE resource_id = :resource_id "
                 . "AND tag_id in (select tag_id from cfg_tags where user_id is null)";
         
         if ($isTempalte == 1) {
            $sQuery .= " AND template_id > 0 "; 
         }
-        $dbconn->query($sQuery);  
-
+        
+        $stmt = $dbconn->prepare($sQuery);
+        $stmt->bindParam(':resource_id', $resourceId, \PDO::PARAM_INT);
+        $stmt->execute();
     }
     
     
@@ -684,22 +711,17 @@ class TagsRepository extends Repository
                 foreach ($aTagsInHost as $oTags) {
                     if (!in_array($oTags['id'], $aTagUsed)) {
                         $aTagUsed[] = $oTags['id'];
-                        //$oTags['locked'] = true;
-                        //$aTags[] = $oTags;
                         $aTags[] = $oTags['text'];
                     }
                 }
             }
         } elseif ($resourceName == 'service') {
-            
             $templates = ServiceRepository::getListTemplates($resourceId, array(), -1);
             foreach ($templates as $template) {
                 $aTagsInSvc = TagsRepository::getList('service', $template, 1, 0);
                 foreach ($aTagsInSvc as $oTags) {
                     if (!in_array($oTags['id'], $aTagUsed)) {
                         $aTagUsed[] = $oTags['id'];
-                        //$oTags['locked'] = true;
-                        //$aTags[] = $oTags;
                         $aTags[] = $oTags['text'];
                     }
                 }
@@ -708,5 +730,4 @@ class TagsRepository extends Repository
 
         return array('success' => true, 'values' => $aTags);
     }
- 
 }

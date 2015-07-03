@@ -38,7 +38,7 @@ namespace CentreonConfiguration\Api\Internal;
 
 use Centreon\Api\Internal\BasicCrudCommand;
 use CentreonConfiguration\Repository\CustomMacroRepository;
-
+use Centreon\Internal\Utils\CommandLine\InputOutput;
 
 /**
  * Description of BasicMacroSupport
@@ -81,7 +81,7 @@ class BasicMacroSupport extends BasicCrudCommand
                         );
                     }
                     CustomMacroRepository::saveHostCustomMacro($this->objectName, $objectId, $formatedParams, false);
-                    \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+                    InputOutput::display(
                         "The macro '".$paramList['host_macro_name']."' has been successfully added to the object",
                         true,
                         'green'
@@ -98,7 +98,7 @@ class BasicMacroSupport extends BasicCrudCommand
                         );
                     }
                     CustomMacroRepository::saveServiceCustomMacro($this->objectName, $objectId, $formatedParams, false);
-                    \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+                    InputOutput::display(
                         "The macro '".$paramList['svc_macro_name']."' has been successfully added to the object",
                         true,
                         'green'
@@ -124,7 +124,7 @@ class BasicMacroSupport extends BasicCrudCommand
                         );
                     }
                     CustomMacroRepository::saveServiceCustomMacro($this->objectName, $objectId, $formatedParams, false, $hostId);
-                    \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+                    InputOutput::display(
                         "The macro '".$paramList['svc_macro_name']."' has been successfully added to the object",
                         true,
                         'green'
@@ -135,7 +135,7 @@ class BasicMacroSupport extends BasicCrudCommand
             }
             
         } catch(\Exception $ex) {
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+            InputOutput::display($ex->getMessage(), true, 'red');
         }
     }
     
@@ -176,14 +176,14 @@ class BasicMacroSupport extends BasicCrudCommand
                 default :
                     break;
             }
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+            InputOutput::display(
                 "The macro '".$macro."' has been successfully updated",
                 true,
                 'green'
             );
 
         } catch (\Exception $ex) {
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+            InputOutput::display($ex->getMessage(), true, 'red');
         }
         
     }
@@ -225,14 +225,14 @@ class BasicMacroSupport extends BasicCrudCommand
             if(!empty($macros)){
                 echo "macro_name;macro_value;macro_hidden";
             }else{
-                \Centreon\Internal\Utils\CommandLine\InputOutput::display('No results', true, 'red');
+                InputOutput::display('No results', true, 'red');
             }
             
             foreach ($macros as $macro) {
                 echo "\n".$macro['macro_name'] . ";" . $macro['macro_value'] . ";" . $macro['macro_hidden'];
             }
         } catch (\Exception $ex) {
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+            InputOutput::display($ex->getMessage(), true, 'red');
         }
     }
     
@@ -268,13 +268,13 @@ class BasicMacroSupport extends BasicCrudCommand
                 default :
                     break;
             }
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display(
+            InputOutput::display(
                 "The macro '".$macro."' has been successfully removed from the object",
                 true,
                 'green'
             );
         } catch (\Exception $ex) {
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+            InputOutput::display($ex->getMessage(), true, 'red');
         }
     }
     

@@ -187,7 +187,7 @@ usermod -a -G centreon-broker apache
 
 # Check and create group/user centreon
 getent group centreon &>/dev/null || groupadd -r centreon
-getent passwd centreon &>/dev/null || useradd -g centreon -m -d /var/spool/centreon -r centreon
+getent passwd centreon &>/dev/null || useradd -g centreon -m -d /var/lib/centreon -r centreon
 usermod -a -G centreon apache
 
 # Needed to apply new groups to the process

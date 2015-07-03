@@ -227,9 +227,14 @@ class ServiceController extends FormController
             }
         }
         
-        //if (count($macroList) > 0) {
-            CustomMacroRepository::saveServiceCustomMacro(self::$objectName, $givenParameters['object_id'], $macroList);
-        //}
+        if (count($macroList) > 0) {
+            try{
+                CustomMacroRepository::saveServiceCustomMacro(self::$objectName, $givenParameters['object_id'], $macroList);
+            } catch (\Exception $ex) {
+                $errorMessage = $ex->getMessage();
+                $this->router->response()->json(array('success' => false,'error' => $errorMessage));
+            }
+        }
         
         //Delete all tags
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
@@ -292,7 +297,13 @@ class ServiceController extends FormController
         $id = parent::createAction(false);
         
         if (count($macroList) > 0) {
-            CustomMacroRepository::saveServiceCustomMacro(self::$objectName, $id, $macroList);
+            try{
+                CustomMacroRepository::saveServiceCustomMacro(self::$objectName, $id, $macroList);
+            } catch (\Exception $ex) {
+                $errorMessage = $ex->getMessage();
+                $this->router->response()->json(array('success' => false,'error' => $errorMessage));
+            }
+            
         }
         
         if (isset($givenParameters['service_tags'])) {

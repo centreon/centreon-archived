@@ -77,26 +77,38 @@ class Rrd extends AbstractStorage
      */
     public function getValues($metricId, $rows = 100)
     {
-        $options = array(
-            '--start', $this->startTime,
-            '--end', $this->endTime,
-            '--maxrows', $rows,
-            'DEF:metric=' . $this->rrdPath . '/' . $metricId . '.rrd:value:AVERAGE',
-            'XPORT:metric:"Values"'
-        );
-        $values = rrd_xport($options);
-        if (false === $values) {
-            throw new \Exception("Error when getting metric values");
+        $rrdFile = $this->rrdPath . '/' . $metricId . '.rrd';
+        if (file_exists($rrdFile)) {
+            $options = array(
+                '--start', $this->startTime,
+                '--end', $this->endTime,
+                '--maxrows', $rows,
+                'DEF:metric=' . $rrdFile . ':value:AVERAGE',
+                'XPORT:metric:"Values"'
+            );
+
+            $values = rrd_xport($options);
+            if (false === $values) {
+                throw new \Exception("Error when getting metric values");
+            }
+
+            return $values['data'][0]['data'];
+        } else {
+            throw new \Exception("rrd file " . $rrdFile . " doesn't exist");
         }
-        return $values['data'][0]['data'];
     }
     
     public function getSpecificValues($metricId)
     {
-        $values = rrd_fetch(
-            $this->rrdPath . '/' . $metricId . '.rrd',
-            array("AVERAGE", "--resolution", "300", "--start", "now", "--end", "start-1h" )
-        );
+        $rrdFile = $this->rrdPath . '/' . $metricId . '.rrd';
+        if (file_exists($rrdFile)) {
+            $values = rrd_fetch(
+                $rrdFile,
+                array("AVERAGE", "--resolution", "300", "--start", "now", "--end", "start-1h" )
+            );
+        } else {
+            throw new \Exception("rrd file " . $rrdFile . " doesn't exist");
+        }
         
         return $values;
     }

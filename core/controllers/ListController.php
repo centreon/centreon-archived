@@ -42,6 +42,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Controller;
 use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Utils\String;
 
 /**
  * Abstact class for configuration controller
@@ -300,6 +301,14 @@ abstract class ListController extends Controller
     {
         $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
         $myDataForDatatable = $myDatatable->getDatas();
+        /* Secure strings */
+        for ($i = 0; $i < count($myDataForDatatable['data']); $i++) {
+            foreach ($myDataForDatatable['data'][$i] as $key => $value) {
+                if (is_string($value)) {
+                    $myDataForDatatable['data'][$i][$key] = String::escapeSecure($value);
+                }
+            }
+        }
         $this->router->response()->json($myDataForDatatable);
     }
 

@@ -36,7 +36,7 @@
 
 namespace CentreonConfiguration\Repository;
 use \Centreon\Internal\Exception\Http\BadRequestException;
-
+use Centreon\Internal\Form\Validators\ForbiddenChar;
 use Centreon\Internal\Di;
 
 /**
@@ -46,6 +46,9 @@ use Centreon\Internal\Di;
  */
 class CustomMacroRepository
 {
+    
+    public static $forbidenCHar = "`~$^&\"|'<>";
+    
     /**
      *
      * @var type 
@@ -87,12 +90,11 @@ class CustomMacroRepository
             $stmtDelete = $dbconn->prepare($deleteRequest);
             $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
             $stmtDelete->execute();
-        } else {
-            foreach ($submittedValues as $customMacroName => $customMacro) {
-                self::validate($sTypeObject, $customMacroName, $objectId);
-            }
         }
-        
+        foreach ($submittedValues as $customMacroName => $customMacro) {
+            self::validate($sTypeObject, $customMacroName, $objectId);
+            
+        }        
         $insertRequest = "INSERT INTO cfg_customvariables_hosts(host_macro_name, host_macro_value, is_password, host_host_id)"
             . " VALUES(:macro_name, :macro_value, :is_password, :host)";
         $stmtInsert = $dbconn->prepare($insertRequest);
@@ -139,10 +141,10 @@ class CustomMacroRepository
             $stmtDelete = $dbconn->prepare($deleteRequest);
             $stmtDelete->bindParam(':svc', $objectId, \PDO::PARAM_INT);
             $stmtDelete->execute();
-        } else {
-            foreach ($submittedValues as $customMacroName => $customMacro) {
-                self::validate($sTypeObject, $customMacroName, $objectId, $iHostId);
-            }
+        }
+        foreach ($submittedValues as $customMacroName => $customMacro) {
+            self::validate($sTypeObject, $customMacroName, $objectId, $iHostId);
+            
         }
         $insertRequest = "INSERT INTO cfg_customvariables_services(svc_macro_name, svc_macro_value, is_password, svc_svc_id)"
             . " VALUES(:macro_name, :macro_value, :is_password, :svc)";
@@ -407,7 +409,14 @@ class CustomMacroRepository
         if ($bSuccess === false) {
             $errors[] = $sMessage;
         }
-                    
+        
+        $params['characters'] = self::$forbidenCHar;
+        $res = ForbiddenChar::validate($sNameMacro,$params);
+        if(!$res['success']){
+            $errors[] = 'Macro name : '.$res['error'];
+        }       
+        
+        
          // If we got error, we throw Exception
         if (count($errors) > 0) {
             self::raiseValidationException($errors);

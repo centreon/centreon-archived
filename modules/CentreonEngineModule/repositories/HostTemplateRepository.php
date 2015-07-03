@@ -110,6 +110,10 @@ class HostTemplateRepository
             foreach ($row as $key => $value) {
                 if ($key == "host_id") {
                     $host_id = $row["host_id"];
+                } elseif (($key == "host_snmp_community") && ($value != "")) {
+                    $tmpData["_SNMPCOMMUNITY"] = $value;
+                } elseif (($key == "host_snmp_version") && ($value != "")) {
+                    $tmpData["_SNMPVERSION"] = $value;
                 } elseif ((!isset($disableField[$key]) && $value != "")) {
                     if (isset($disableField[$key]) && $value != 2) {
                         ;
@@ -160,7 +164,7 @@ class HostTemplateRepository
             $content[] = $tmp;
         }
         /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, "API");
+        WriteConfigFileRepository::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, "API");
         unset($content);
     }
 
@@ -171,8 +175,8 @@ class HostTemplateRepository
      */
     protected static function getFields()
     {
-        $fields = "host_id, host_name, host_alias, host_address, "
-            . "host_max_check_attempts, host_check_interval, host_active_checks_enabled,  "
+        $fields = "host_id, host_name, host_alias, host_address, host_snmp_version, host_snmp_community, "
+            . "host_max_check_attempts, host_check_interval, host_active_checks_enabled, "
             . "command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, "
             . "host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, "
             . "command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, "

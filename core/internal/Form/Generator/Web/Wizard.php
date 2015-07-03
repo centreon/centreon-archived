@@ -71,7 +71,7 @@ class Wizard extends Full
         $query = "SELECT f.field_id as field_id, w.name as wizard_name, s.name as step_name, f.show_label,
             s.rank as step_rank, f.mandatory as mandatory, f.parent_field as parent_field, f.parent_value as parent_value,
             f.child_mandatory as child_mandatory, f.child_actions as child_actions, sf.rank as field_pos,
-            f.name as name, f.label, f.default_value, f.attributes, f.type, f.help
+            f.name as name, f.label, f.default_value, f.attributes, f.type, f.help, f.width
             FROM cfg_forms_wizards w, cfg_forms_steps s, cfg_forms_steps_fields_relations sf, cfg_forms_fields f
             WHERE w.route = :route
                 AND w.wizard_id = s.wizard_id
@@ -82,13 +82,18 @@ class Wizard extends Full
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':route', $route);
         $stmt->execute();
+
+        $validatorQuery = "SELECT v.route as validator_action, vr.params as params, vr.client_side_event as rules "
+                    . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
+                    . "WHERE vr.field_id = :fieldId "
+                    . "AND vr.validator_id = v.validator_id";
+        $validatorStmt = $dbconn->prepare($validatorQuery);
         while ($row = $stmt->fetch()) {
+
+            $validatorStmt->bindParam(':fieldId', $row['field_id'], \PDO::PARAM_INT);
+            $validatorStmt->execute();
+
             // Get validators
-            $validatorQuery = "SELECT v.route as validator_action, vr.params as params, vr.client_side_event as rules "
-                        . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
-                        . "WHERE vr.field_id = $row[field_id] "
-                        . "AND vr.validator_id = v.validator_id";
-            $validatorStmt = $dbconn->query($validatorQuery);
             while ($validator = $validatorStmt->fetch()) {
                 $validator['params'] = json_decode($validator['params'], true);
                 $row['validators'][] = $validator;
@@ -99,10 +104,16 @@ class Wizard extends Full
                 $this->formHandler = new Form($this->formName);
                 $this->formHandler->setFormId("wizard_form");
             }
+
             if (false === isset($this->formComponents[$row['step_name']])) {
                 $this->formComponents[$row['step_name']] = array();
                 $this->formComponents[$row['step_name']]['default'] = array();
             }
+
+            if (!isset($row['width']) || (($row['width'] != 4) && ($row['width'] != 6))) {
+                $row['width'] = '12';
+            }
+
             $this->formDefaults[$row['name']] = $row['default_value'];
             $this->addFieldToForm($row);
             if ($row['type'] != 'hidden') {

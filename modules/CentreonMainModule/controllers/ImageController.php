@@ -85,7 +85,7 @@ class ImageController extends Controller
         $dbconn = $di->get('db_centreon');
         $query = 'SELECT binary_id, filename FROM cfg_binaries';
         if (isset($givenParameters['q']) && !empty($givenParameters['q'])) {
-            $query .= " WHERE filename like '%".$givenParameters['q']."%'";
+            $query .= " WHERE filename like '%" . $dbconn->quote($givenParameters['q']) . "%'";
         }
         $query .= " ORDER BY filename ASC";
         
