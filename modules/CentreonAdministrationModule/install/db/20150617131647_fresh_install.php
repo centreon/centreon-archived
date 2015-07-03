@@ -39,7 +39,6 @@
  *
  * @author tmechouet
  */
-use Phinx\Db\Adapter\MysqlAdapter;
 use Phinx\Migration\AbstractMigration;
 
 class FreshInstall extends AbstractMigration
@@ -59,7 +58,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('organization_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('name','string', array('limit' => 255, 'null' => false))
                 ->addColumn('shortname','string', array('limit' => 100, 'null' => true))
-                ->addColumn('active','integer', array('default' =>  1, 'limit' => MysqlAdapter::INT_TINY))
+                ->addColumn('active','integer', array('default' =>  1, 'limit' => 255))
                 ->addIndex(array('name'), array('unique' => true))
                 ->addIndex(array('shortname'), array('unique' => true))
                 ->create();
@@ -113,8 +112,8 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('name','string', array('limit' => 255, 'null' => false))
                 ->addColumn('slug','string', array('limit' => 255, 'null' => false))
                 ->addColumn('description','string', array('limit' => 255, 'null' => true))
-                ->addColumn('status','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 1))
-                ->addColumn('locked','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 0))                
+                ->addColumn('status','integer', array('null' => false, 'limit' => 255, 'signed' => false, 'default' => 1))
+                ->addColumn('locked','integer', array('null' => false, 'limit' => 255, 'signed' => false, 'default' => 0))                
                 ->create();
         
         
@@ -124,10 +123,10 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('login','string', array('limit' => 200, 'null' => false))
                 ->addColumn('slug','string', array('limit' => 255, 'null' => false))
                 ->addColumn('password','string', array('limit' => 255, 'null' => false))
-                ->addColumn('is_admin','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 0))
-                ->addColumn('is_locked','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 0))       
-                ->addColumn('is_activated','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 1))
-                ->addColumn('is_password_old','boolean', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'default' => 0))          
+                ->addColumn('is_admin','integer', array('null' => false, 'limit' => 255, 'signed' => false, 'default' => 0))
+                ->addColumn('is_locked','integer', array('null' => false, 'limit' => 255, 'signed' => false, 'default' => 0))       
+                ->addColumn('is_activated','integer', array('null' => false, 'limit' => 255, 'signed' => false, 'default' => 1))
+                ->addColumn('is_password_old','boolean', array('null' => false, 'limit' => 255, 'default' => 0))          
                 ->addColumn('language_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('timezone_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('contact_id','integer', array('signed' => false, 'null' => true))
@@ -168,7 +167,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('description','string',array('limit' => 255, 'null' => true))
                 ->addColumn('organization_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('last_update','integer', array('signed' => false, 'null' => true))
-                ->addColumn('status','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false, 'default' => 1))
+                ->addColumn('status','integer', array('signed' => false, 'limit' => 255, 'null' => false, 'default' => 1))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->create();
         
@@ -176,7 +175,7 @@ class FreshInstall extends AbstractMigration
         $cfg_acl_resources_cache
                 ->addColumn('organization_id','integer', array('signed' => false,'null' => false))
                 ->addColumn('acl_resource_id','integer', array('signed' => false,'null' => false))
-                ->addColumn('resource_type','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false))
+                ->addColumn('resource_type','integer', array('signed' => false, 'limit' => 255, 'null' => false))
                 ->addColumn('resource_id','integer', array('signed' => false,'null' => false))
                 ->addIndex(array('organization_id'), array('unique' => false))
                 ->addIndex(array('acl_resource_id'), array('unique' => false))
@@ -190,7 +189,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('ardr_id','integer', array('identity' => true,'signed' => false, 'null' => false))
                 ->addColumn('acl_resource_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('domain_id','integer', array('signed' => false, 'null' => true))
-                ->addColumn('type','integer', array('signed' => false, 'null' => false, 'limit' => MysqlAdapter::INT_TINY, 'default' => 0))
+                ->addColumn('type','integer', array('signed' => false, 'null' => false, 'limit' => 255, 'default' => 0))
                 ->addIndex(array('acl_resource_id'), array('unique' => false))
                 ->addIndex(array('domain_id'), array('unique' => false))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
@@ -203,7 +202,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('arer_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('acl_resource_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('environment_id','integer', array('signed' => false, 'null' => true))
-                ->addColumn('type','integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 0))
+                ->addColumn('type','integer', array('null' => false, 'limit' => 255, 'signed' => false, 'default' => 0))
                 ->addIndex(array('acl_resource_id'), array('unique' => false))
                 ->addIndex(array('environment_id'), array('unique' => false))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
@@ -260,7 +259,7 @@ class FreshInstall extends AbstractMigration
         $cfg_organizations_modules_relations
                 ->addColumn('organization_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('module_id','integer', array('signed' => false, 'null' => false))
-                ->addColumn('is_activated','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, 'default' =>  0))
+                ->addColumn('is_activated','integer', array('signed' => false, 'limit' => 255, 'null' => true, 'default' =>  0))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE'))
                 ->addForeignKey('module_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE'))
                 ->create();
@@ -270,8 +269,8 @@ class FreshInstall extends AbstractMigration
         $cfg_organizations_users_relations
                 ->addColumn('organization_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('user_id','integer', array('signed' => false, 'null' => false))
-                ->addColumn('is_default','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, 'default' =>  0))
-                ->addColumn('is_admin','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, 'default' =>  0))
+                ->addColumn('is_default','integer', array('signed' => false, 'limit' => 255, 'null' => true, 'default' =>  0))
+                ->addColumn('is_admin','integer', array('signed' => false, 'limit' => 255, 'null' => true, 'default' =>  0))
                 ->addForeignKey('organization_id', 'cfg_organizations', 'organization_id', array('delete'=> 'CASCADE'))
                 ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE'))
                 ->create();
@@ -283,7 +282,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('user_id','integer', array('null' => false, 'signed' => false))
                 ->addColumn('route','string', array('limit' => 255, 'null' => false))
                 ->addColumn('label','string', array('limit' => 255, 'null' => false))
-                ->addColumn('searchText','string', array('limit' => MysqlAdapter::TEXT_REGULAR, 'null' => false))
+                ->addColumn('searchText','text', array('null' => false))
                 ->addIndex(array('user_id', 'label', 'route'), array('unique' => true))
                 ->addForeignKey('user_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->create();

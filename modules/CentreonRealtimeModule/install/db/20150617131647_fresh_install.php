@@ -40,7 +40,6 @@
  * @author tmechouet
  */
 use Phinx\Migration\AbstractMigration;
-use Phinx\Db\Adapter\MysqlAdapter;
 
 class FreshInstall extends AbstractMigration
 {
@@ -311,15 +310,15 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('host_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('host_name','string', array('limit' => 255, 'null' => true))
                 ->addColumn('instance_name','string', array('limit' => 255, 'null' => false))
-                ->addColumn('issue_id','integer', array('signed' => false, 'null' => false))
-                ->addColumn('msg_type','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false))
+                ->addColumn('issue_id','integer', array('signed' => false, 'null' => true))
+                ->addColumn('msg_type','integer', array('signed' => false, 'limit' => 255, 'null' => false))
                 ->addColumn('notification_cmd','string', array('limit' => 255, 'null' => true))
                 ->addColumn('notification_contact','string', array('limit' => 255, 'null' => true))
                 ->addColumn('output','text', array('null' => true))
                 ->addColumn('retry','integer', array('signed' => false, 'null' => true))
                 ->addColumn('service_description','string', array('limit' => 255, 'null' => true))
                 ->addColumn('service_id','integer', array('signed' => false, 'null' => true))
-                ->addColumn('status','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true))
+                ->addColumn('status','integer', array('signed' => false, 'limit' => 255, 'null' => true))
                 ->addColumn('type','integer', array('signed' => false, 'null' => true))
                 ->addIndex(array('host_name'), array('unique' => false))
                 ->addIndex(array('service_description'), array('unique' => false))
@@ -402,6 +401,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('internal_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('start_time','integer', array('signed' => false, 'null' => false))
                 ->addColumn('actual_start_time','integer', array('signed' => false, 'null' => false))
+                ->addColumn('actual_end_time','integer', array('signed' => false, 'null' => false))
                 ->addColumn('started','integer', array('signed' => false, 'null' => false))
                 ->addColumn('triggered_by','integer', array('signed' => false, 'null' => false))
                 ->addColumn('type','integer', array('signed' => false, 'null' => false))
@@ -620,27 +620,22 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('end_time','integer', array('signed' => false, 'null' => true))
                 ->addColumn('host_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('start_time','integer', array('signed' => false, 'null' => false))
-                ->addColumn('state','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true))
-                ->addColumn('last_update','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true))
-                ->addColumn('in_downtime','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true))
+                ->addColumn('state','integer', array('signed' => false, 'limit' => 255, 'null' => true))
+                ->addColumn('last_update','integer', array('signed' => false, 'limit' => 255, 'null' => true))
+                ->addColumn('in_downtime','integer', array('signed' => false, 'limit' => 255, 'null' => true))
                 ->addColumn('ack_time','integer', array('signed' => false, 'null' => true))
                 ->addIndex(array('host_id', 'start_time'), array('unique' => true))
                 ->addIndex(array('start_time'), array('unique' => false))
                 ->create();
 
-        $rt_hosts_hosts_parents = $this->table('rt_hosts_hosts_parents', array('id' => false, 'primary_key' => 'hoststateevent_id'));
-        $rt_hosts_hosts_parents
-                ->addColumn('hoststateevent_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
-                ->addColumn('end_time','integer', array('signed' => false, 'null' => true))
-                ->addColumn('host_id','integer', array('signed' => false, 'null' => false))
-                ->addColumn('start_time','integer', array('signed' => false, 'null' => false))
-                ->addColumn('state','integer', array('signed' => false, 'null' => false))
-                ->addColumn('last_update','integer', array('signed' => false, 'null' => false, 'default' => 0))
-                ->addColumn('in_downtime','integer', array('signed' => false, 'null' => false))
-                ->addColumn('ack_time','integer', array('signed' => false, 'null' => true))
-                ->addIndex(array('host_id', 'start_time'), array('unique' => true))
-                ->addIndex(array('start_time'), array('unique' => false))
-                ->addIndex(array('end_time'), array('unique' => false))
+        $rt_hosts_hosts_parents = $this->table('rt_hosts_hosts_parents', array('id' => false, 'primary_key' => array('child_id', 'parent_id')));
+        $rt_hosts_hosts_parents->addColumn('child_id','integer', array('identity' => false, 'signed' => false, 'null' => false))
+                ->addColumn('parent_id','integer', array('identity' => false, 'signed' => false, 'null' => false))
+                ->addForeignKey('parent_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addForeignKey('child_id', 'rt_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
+                ->addIndex(array('child_id', 'parent_id'), array('unique' => true))
+                ->addIndex(array('child_id'), array('unique' => false))
+                ->addIndex(array('parent_id'), array('unique' => false))
                 ->create();
                 
         $rt_index_data = $this->table('rt_index_data', array('id' => false, 'primary_key' => 'id'));
@@ -779,10 +774,10 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('host_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('service_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('start_time','integer', array('signed' => false, 'null' => false))
-                ->addColumn('state','integer', array('limit' => MysqlAdapter::INT_TINY, 'null' => false))
-                ->addColumn('last_update','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false, "default" => "0"))
-                ->addColumn('in_downtime','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false))
-                ->addColumn('ack_time','integer', array('signed' => false, 'null' => false))
+                ->addColumn('state','integer', array('limit' => 255, 'null' => false))
+                ->addColumn('last_update','integer', array('signed' => false, 'limit' => 255, 'null' => false, "default" => "0"))
+                ->addColumn('in_downtime','integer', array('signed' => false, 'limit' => 255, 'null' => false))
+                ->addColumn('ack_time','integer', array('signed' => false, 'null' => true))
                 ->addIndex(array('host_id', 'service_id', 'start_time'), array('unique' => true))
                 ->addIndex(array('start_time'), array('unique' => false))
                 ->addIndex(array('end_time'), array('unique' => false))

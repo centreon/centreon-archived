@@ -40,8 +40,6 @@
  * @author tmechouet
  */
 use Phinx\Migration\AbstractMigration;
-use Phinx\Db\Adapter\MysqlAdapter;
-
 
 class FreshInstall extends AbstractMigration
 {

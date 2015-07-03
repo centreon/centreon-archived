@@ -1,7 +1,6 @@
 <?php
 
 use Phinx\Migration\AbstractMigration;
-use Phinx\Db\Adapter\MysqlAdapter;
 
 class FreshInstall extends AbstractMigration
 {
@@ -85,7 +84,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('icon', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('icon_class', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('bgcolor', 'string', array('limit' => 255, 'null' => true))
-                ->addColumn('menu_order', 'integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true))
+                ->addColumn('menu_order', 'integer', array('signed' => false, 'limit' => 255, 'null' => true))
                 ->addColumn('menu_block', 'string', array('limit' => 10, 'null' => false, 'default' => 'submenu'))
                 ->addColumn('parent_id', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('module_id', 'integer', array('signed' => false, 'null' => false))
@@ -101,7 +100,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('checksum', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('mimetype', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('filetype', 'boolean', array('null' => false))
-                ->addColumn('binary_content', 'binary', array('limit' => MysqlAdapter::BLOB_LONG, 'null' => false))
+                ->addColumn('binary_content', 'binary', array('limit' => 16777215, 'null' => false))
                 ->addColumn('slug', 'string', array('limit' => 254, 'null' => false))
                 ->addIndex(array('checksum', 'mimetype'), array('unique' => true))
                 ->addIndex(array('filename', 'filetype'), array('unique' => true))
@@ -175,11 +174,11 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('normalized_name', 'string', array('limit' => 100, 'null' => false))
                 ->addColumn('label', 'string', array('limit' => 45, 'null' => false))
                 ->addColumn('default_value', 'string', array('limit' => 45, 'null' => false))
-                ->addColumn('attributes', 'string', array('limit' => MysqlAdapter::TEXT_REGULAR, 'null' => true))
+                ->addColumn('attributes', 'string', array('limit' => 65535, 'null' => true))
                 ->addColumn('advanced', 'boolean', array('null' => false, 'default' => 0))
                 ->addColumn('mandatory', 'boolean', array('null' => false, 'default' => 0))
                 ->addColumn('type', 'string', array('limit' => 255, 'null' => false))
-                ->addColumn('help', 'string', array('limit' => MysqlAdapter::TEXT_REGULAR, 'null' => true))
+                ->addColumn('help', 'string', array('limit' => 65535, 'null' => true))
                 ->addColumn('help_url', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('parent_field', 'string', array('limit' => 45, 'null' => true))
                 ->addColumn('parent_value', 'string', array('limit' => 45, 'null' => true))

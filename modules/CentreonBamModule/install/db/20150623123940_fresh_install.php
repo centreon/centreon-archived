@@ -1,7 +1,6 @@
 <?php
 
 use Phinx\Migration\AbstractMigration;
-use Phinx\Db\Adapter\MysqlAdapter;
 
 class FreshInstall extends AbstractMigration
 {
@@ -19,7 +18,7 @@ class FreshInstall extends AbstractMigration
         $cfg_acl_resources_business_activities_params = $this->table('cfg_acl_resources_business_activities_params', array('id' => false, 'primary_key' => array('acl_resource_id')));
         $cfg_acl_resources_business_activities_params
                 ->addColumn('acl_resource_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
-                ->addColumn('all_business_activities', 'integer', array('null' => true, 'limit' => MysqlAdapter::INT_TINY, 'default' => 0))
+                ->addColumn('all_business_activities', 'integer', array('null' => true, 'limit' => 255, 'default' => 0))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('acl_resource_id'))
                 ->create();
@@ -38,7 +37,7 @@ class FreshInstall extends AbstractMigration
         $cfg_acl_resources_tags_bas_relations->addColumn('artbar_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('acl_resource_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('tag_id', 'integer', array('signed' => false, 'null' => false))
-                ->addColumn('type', 'integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false, 'default' => 0))
+                ->addColumn('type', 'integer', array('signed' => false, 'limit' => 255, 'null' => false, 'default' => 0))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('tag_id', 'cfg_tags_bas', 'tag_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('acl_resource_id'), array('unique' => false))
@@ -75,13 +74,13 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('acknowledged', 'float', array('signed' => false, 'null' => false, 'default' => 0))
                 ->addColumn('must_be_rebuild', 'string', array('limit' => 1, 'null' => true, 'default' => '0'))
                 ->addColumn('last_state_change', 'integer', array('signed' => false, 'null' => true))
-                ->addColumn('current_status', 'integer', array('limit' => 1, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => true))
+                ->addColumn('current_status', 'integer', array('limit' => 1, 'limit' => 255, 'signed' => false, 'null' => true))
                 ->addColumn('in_downtime', 'boolean', array('null' => true))
                 ->addColumn('dependency_dep_id', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('graph_id', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('icon_id', 'integer', array('limit' => 10, 'signed' => false, 'null' => true))
                 ->addColumn('graph_style', 'string', array('limit' => 255, 'null' => true))
-                ->addColumn('activate', 'integer', array('limit' => 1, 'signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, 'default' => 1))
+                ->addColumn('activate', 'integer', array('limit' => 1, 'signed' => false, 'limit' => 255, 'null' => true, 'default' => 1))
                 ->addColumn('comment', 'text', array('null' => true))
                 ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('ba_type_id', 'integer', array('signed' => false, 'null' => false))
@@ -130,7 +129,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('expression', 'text', array('null' => false))
                 ->addColumn('bool_state', 'boolean', array('null' => false, 'default' => true))
                 ->addColumn('comments', 'text', array('null' => true))
-                ->addColumn('activate', 'integer', array('limit' => 1, 'limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => false))
+                ->addColumn('activate', 'integer', array('limit' => 255, 'signed' => false, 'null' => false))
                 ->addIndex(array('name'), array('unique' => true))
                 ->create();
 
@@ -161,7 +160,7 @@ class FreshInstall extends AbstractMigration
         // Creation of table cfg_bam_impacts
         $cfg_bam_impacts = $this->table('cfg_bam_impacts', array('id' => false, 'primary_key' => array('id_impact')));
         $cfg_bam_impacts->addColumn('id_impact', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
-                ->addColumn('code', 'integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false))
+                ->addColumn('code', 'integer', array('signed' => false, 'limit' => 255, 'null' => false))
                 ->addColumn('impact', 'float', array('signed' => false, 'null' => false))
                 ->addColumn('color', 'string', array('limit' => 7, 'null' => true))
                 ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
@@ -171,8 +170,8 @@ class FreshInstall extends AbstractMigration
         // Creation of table cfg_bam_kpi
         $cfg_bam_kpi = $this->table('cfg_bam_kpi', array('id' => false, 'primary_key' => array('kpi_id')));
         $cfg_bam_kpi->addColumn('kpi_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
-                ->addColumn('state_type', 'integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false, 'default' => 1))
-                ->addColumn('kpi_type', 'integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false, 'default' => 0))
+                ->addColumn('state_type', 'integer', array('signed' => false, 'limit' => 255, 'null' => false, 'default' => 1))
+                ->addColumn('kpi_type', 'integer', array('signed' => false, 'limit' => 255, 'null' => false, 'default' => 0))
                 ->addColumn('host_id', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('service_id', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('id_indicator_ba', 'integer', array('signed' => false, 'null' => true))
@@ -185,16 +184,16 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('downtime', 'float', array('signed' => false, 'null' => true))
                 ->addColumn('acknowledged', 'float', array('signed' => false, 'null' => true))
                 ->addColumn('comments', 'text', array('null' => true))
-                ->addColumn('config_type', 'integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true))
+                ->addColumn('config_type', 'integer', array('signed' => false, 'limit' => 255, 'null' => true))
                 ->addColumn('drop_warning', 'float', array('signed' => false, 'null' => true))
                 ->addColumn('drop_warning_impact_id', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('drop_critical', 'float', array('signed' => false, 'null' => true))
                 ->addColumn('drop_critical_impact_id', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('drop_unknown', 'float', array('signed' => false, 'null' => true))
                 ->addColumn('drop_unknown_impact_id', 'integer', array('signed' => false, 'null' => true))
-                ->addColumn('activate', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => true, 'default' => 1))
-                ->addColumn('ignore_downtime', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => true, 'default' => 0))
-                ->addColumn('ignore_acknowledged', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => true, 'default' => 0))
+                ->addColumn('activate', 'integer', array('limit' => 255, 'signed' => false, 'null' => true, 'default' => 1))
+                ->addColumn('ignore_downtime', 'integer', array('limit' => 255, 'signed' => false, 'null' => true, 'default' => 0))
+                ->addColumn('ignore_acknowledged', 'integer', array('limit' => 255, 'signed' => false, 'null' => true, 'default' => 0))
                 ->addColumn('last_state_change', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('in_downtime', 'boolean', array('null' => true))
                 ->addColumn('organization_id', 'integer', array('signed' => false, 'null' => false))
@@ -273,7 +272,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('start_time', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('end_time', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('first_level', 'integer', array('signed' => false, 'null' => true))
-                ->addColumn('status', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => true))
+                ->addColumn('status', 'integer', array('limit' => 255, 'signed' => false, 'null' => true))
                 ->addColumn('in_downtime', 'boolean', array('null' => true))
                 ->addIndex(array('start_time'), array('unique' => false))
                 ->addIndex(array('end_time'), array('unique' => false))
@@ -309,9 +308,9 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('kpi_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('start_time', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('end_time', 'integer', array('signed' => false, 'null' => true))
-                ->addColumn('status', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => true))
+                ->addColumn('status', 'integer', array('limit' => 255, 'signed' => false, 'null' => true))
                 ->addColumn('in_downtime', 'boolean', array('null' => true))
-                ->addColumn('impact_level', 'integer', array('limit' => MysqlAdapter::INT_TINY,'signed' => false, 'null' => true))
+                ->addColumn('impact_level', 'integer', array('limit' => 255,'signed' => false, 'null' => true))
                 ->addColumn('first_output', 'text', array('null' => true))
                 ->addColumn('first_perfdata', 'string', array('limit' => 255, 'null' => true))
                 ->addIndex(array('kpi_id', 'start_time'), array('unique' => true))
@@ -373,7 +372,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('sunday', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('monday', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('tuesday', 'string', array('limit' => 255, 'null' => true))
-                ->addColumn('wedneday', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('wednesday', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('thursday', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('friday', 'string', array('limit' => 255, 'null' => true))
                 ->addColumn('saturday', 'string', array('limit' => 255, 'null' => true))
@@ -419,7 +418,7 @@ class FreshInstall extends AbstractMigration
         $cfg_acl_resources_bas_relations->addColumn('arbar_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('acl_resource_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('ba_id', 'integer', array('signed' => false, 'null' => false))
-                ->addColumn('type', 'integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false, 'default' => 0))
+                ->addColumn('type', 'integer', array('signed' => false, 'limit' => 255, 'null' => false, 'default' => 0))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('ba_id', 'cfg_bam', 'ba_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('acl_resource_id'), array('unique' => false))

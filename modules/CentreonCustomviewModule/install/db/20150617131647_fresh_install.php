@@ -40,7 +40,6 @@
  * @author tmechouet
  */
 use Phinx\Migration\AbstractMigration;
-use Phinx\Db\Adapter\MysqlAdapter;
 
 class FreshInstall extends AbstractMigration
 {
@@ -78,8 +77,8 @@ class FreshInstall extends AbstractMigration
         $cfg_custom_views
                 ->addColumn('custom_view_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('name','string',array('limit' => 255, 'null' => false))
-                ->addColumn('mode','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, "default" => 0))
-                ->addColumn('locked','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, "default" => 0))
+                ->addColumn('mode','integer', array('signed' => false, 'limit' => 255, 'null' => true, "default" => 0))
+                ->addColumn('locked','integer', array('signed' => false, 'limit' => 255, 'null' => true, "default" => 0))
                 ->addColumn('owner_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('position','text',array('null' => true))
                 ->create();    
@@ -129,7 +128,7 @@ class FreshInstall extends AbstractMigration
         $cfg_widgets_parameters_fields_types
                 ->addColumn('field_type_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('ft_typename','string', array('limit' => 50, 'null' => false))
-                ->addColumn('is_connector','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false, "default" => "0"))
+                ->addColumn('is_connector','integer', array('signed' => false, 'limit' => 255, 'null' => false, "default" => "0"))
                 ->create();
         
         $cfg_widgets_parameters = $this->table('cfg_widgets_parameters', array('id' => false, 'primary_key' => array('parameter_id')));
@@ -139,7 +138,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('default_value','string', array('limit' => 255, 'null' => true))
                 ->addColumn('header_title','string', array('limit' => 255, 'null' => true))
                 ->addColumn('require_permission','string', array('limit' => 255, 'null' => false))
-                ->addColumn('parameter_order','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => false))
+                ->addColumn('parameter_order','integer', array('signed' => false, 'limit' => 255, 'null' => false))
                 ->addColumn('widget_model_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('field_type_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('is_filter','integer', array('signed' => false, 'null' => false, "default" => "0"))
@@ -173,7 +172,7 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('widget_id','integer', array('signed' => false, 'null' => true))
                 ->addColumn('parameter_id','integer', array('signed' => false, 'null' => false))
                 ->addColumn('preference_value','string', array('limit' => 255, 'null' => false))
-                ->addColumn('comparator','integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true))
+                ->addColumn('comparator','integer', array('signed' => false, 'limit' => 255, 'null' => true))
                 ->addIndex(array('parameter_id'), array('unique' => false))
                 ->addIndex(array('widget_id'), array('unique' => false))
                 ->addForeignKey('widget_id', 'cfg_widgets', 'widget_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))

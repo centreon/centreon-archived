@@ -1,7 +1,6 @@
 <?php
 
 use Phinx\Migration\AbstractMigration;
-use Phinx\Db\Adapter\MysqlAdapter;
 
 class FreshInstall extends AbstractMigration
 {
@@ -89,7 +88,7 @@ class FreshInstall extends AbstractMigration
         // Creation of table cfg_acl_resources_hosts_params
         $cfg_acl_resources_hosts_params = $this->table('cfg_acl_resources_hosts_params', array('id' => false, 'primary_key' => array('acl_resource_id')));
         $cfg_acl_resources_hosts_params->addColumn('acl_resource_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
-                ->addColumn('all_hosts', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'null' => true, 'default' => 0))
+                ->addColumn('all_hosts', 'integer', array('limit' => 255, 'null' => true, 'default' => 0))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('acl_resource_id'))
                 ->create();
@@ -100,9 +99,9 @@ class FreshInstall extends AbstractMigration
                 ->addColumn('connector_id', 'integer', array('signed' => false, 'null' => true))
                 ->addColumn('command_name', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('command_slug', 'string', array('limit' => 255, 'null' => true))
-                ->addColumn('command_line', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('command_line', 'text', array('null' => true))
                 ->addColumn('command_example', 'string', array('limit' => 255, 'null' => true))
-                ->addColumn('command_type', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => false, 'default' => 2))
+                ->addColumn('command_type', 'integer', array('limit' => 255, 'signed' => false, 'null' => false, 'default' => 2))
                 ->addColumn('enable_shell', 'integer', array('signed' => false, 'null' => false, 'default' => 0))
                 ->addColumn('command_comment', 'text', array('null' => true))
                 ->addColumn('graph_id', 'integer', array('signed' => false, 'null' => true))
@@ -229,7 +228,7 @@ class FreshInstall extends AbstractMigration
         $cfg_customvariables_hosts->addColumn('host_macro_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('host_macro_name', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('host_macro_value', 'string', array('limit' => 255, 'null' => false))
-                ->addColumn('is_password', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => true))
+                ->addColumn('is_password', 'integer', array('limit' => 255, 'signed' => false, 'null' => true))
                 ->addColumn('host_host_id', 'integer', array('signed' => false, 'null' => false))
                 ->addForeignKey('host_host_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('host_host_id'))
@@ -240,7 +239,7 @@ class FreshInstall extends AbstractMigration
         $cfg_acl_resources_hosts_relations->addColumn('arhr_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('acl_resource_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('host_id', 'integer', array('signed' => false, 'null' => false))
-                ->addColumn('type', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => false, 'default' => 0))
+                ->addColumn('type', 'integer', array('limit' => 255, 'signed' => false, 'null' => false, 'default' => 0))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('host_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('acl_resource_id'))
@@ -315,7 +314,7 @@ class FreshInstall extends AbstractMigration
         $cfg_pollers_commmands_relations = $this->table('cfg_pollers_commands_relations', array('id' => false, 'primary_key' => array('poller_id', 'command_id')));
         $cfg_pollers_commmands_relations->addColumn('poller_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('command_id', 'integer', array('signed' => false, 'null' => false))
-                ->addColumn('command_order', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => true))
+                ->addColumn('command_order', 'integer', array('limit' => 255, 'signed' => false, 'null' => true))
                 ->addForeignKey('poller_id', 'cfg_pollers', 'poller_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('command_id', 'cfg_commands', 'command_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('poller_id'))
@@ -384,7 +383,7 @@ class FreshInstall extends AbstractMigration
         // Creation of table cfg_services_checkcmd_args_relations
         $cfg_services_checkcmd_args_relations = $this->table('cfg_services_checkcmd_args_relations', array('id' => false, 'primary_key' => array('service_id')));
         $cfg_services_checkcmd_args_relations->addColumn('service_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
-                ->addColumn('arg_number', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => false))
+                ->addColumn('arg_number', 'integer', array('limit' => 255, 'signed' => false, 'null' => false))
                 ->addColumn('arg_value', 'string', array('limit' => 255, 'null' => true))
                 ->addForeignKey('service_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('service_id'))
@@ -465,7 +464,7 @@ class FreshInstall extends AbstractMigration
         $cfg_customvariables_services->addColumn('svc_macro_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('svc_macro_name', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('svc_macro_value', 'string', array('limit' => 255, 'null' => false))
-                ->addColumn('is_password', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => true))
+                ->addColumn('is_password', 'integer', array('limit' => 255, 'signed' => false, 'null' => true))
                 ->addColumn('svc_svc_id', 'integer', array('signed' => false, 'null' => false))
                 ->addForeignKey('svc_svc_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('svc_svc_id'))
@@ -476,7 +475,7 @@ class FreshInstall extends AbstractMigration
         $cfg_acl_resources_services_relations->addColumn('arsr_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('acl_resource_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('service_id', 'integer', array('signed' => false, 'null' => false))
-                ->addColumn('type', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => false, 'default' => 0))
+                ->addColumn('type', 'integer', array('limit' => 255, 'signed' => false, 'null' => false, 'default' => 0))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('service_id', 'cfg_services', 'service_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('acl_resource_id'))
@@ -642,7 +641,7 @@ class FreshInstall extends AbstractMigration
         $cfg_acl_resources_tags_hosts_relations->addColumn('arthr_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('acl_resource_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('tag_id', 'integer', array('signed' => false, 'null' => false))
-                ->addColumn('type', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => false, 'default' => 0))
+                ->addColumn('type', 'integer', array('limit' => 255, 'signed' => false, 'null' => false, 'default' => 0))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('tag_id', 'cfg_tags_hosts', 'tag_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('acl_resource_id'))
@@ -654,7 +653,7 @@ class FreshInstall extends AbstractMigration
         $cfg_acl_resources_tags_services_relations->addColumn('artsr_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('acl_resource_id', 'integer', array('signed' => false, 'null' => false))
                 ->addColumn('tag_id', 'integer', array('signed' => false, 'null' => false))
-                ->addColumn('type', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => false, 'default' => 0))
+                ->addColumn('type', 'integer', array('limit' => 255, 'signed' => false, 'null' => false, 'default' => 0))
                 ->addForeignKey('acl_resource_id', 'cfg_acl_resources', 'acl_resource_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addForeignKey('tag_id', 'cfg_tags_services', 'tag_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('acl_resource_id'))
@@ -720,7 +719,7 @@ class FreshInstall extends AbstractMigration
          // Creation of table cfg_hosts_checkcmd_args_relations
         $cfg_hosts_checkcmd_args_relations = $this->table('cfg_hosts_checkcmd_args_relations', array('id' => false, 'primary_key' => array('host_id')));
         $cfg_hosts_checkcmd_args_relations->addColumn('host_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
-                ->addColumn('arg_number', 'integer', array('limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'null' => true))
+                ->addColumn('arg_number', 'integer', array('limit' => 255, 'signed' => false, 'null' => true))
                 ->addColumn('arg_value', 'string', array('limit' => 255, 'null' => false))
                 ->addForeignKey('host_id', 'cfg_hosts', 'host_id', array('delete'=> 'CASCADE', 'update'=> 'RESTRICT'))
                 ->addIndex(array('host_id'))
