@@ -77,33 +77,35 @@ sub parseServiceLog {
     my $downTime = $centreonDownTime->getDownTime($allIds, $start, $end, 2);
 
     while (my $row = $logs->fetchrow_hashref()) {
-        my $id  = $row->{'host_name'}.";;".$row->{'service_description'};
+        my $id  = $row->{host_name}.";;".$row->{service_description};
         if (defined($allIds->{$id})) {
-            my $statusCode = $row->{'status'};            
-            if ($self->{'dbLayer'} eq "ndo") {
-                $statusCode = $serviceStates{$row->{'status'}};
+            my $statusCode = $row->{status};            
+            if ($self->{dbLayer} eq "ndo") {
+                $statusCode = $serviceStates{$row->{status}};
             }            
             if (defined($currentEvents->{$id})) {
                 my $eventInfos =  $currentEvents->{$id}; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id | in_downtime. The last one is optionnal                
                 if ($statusCode ne "" && defined($eventInfos->[1]) && $eventInfos->[1] ne "" && $eventInfos->[1] != $statusCode) {                                        
                     my ($hostId, $serviceId) = split (";;", $allIds->{$id});
+                    my $result = {};
                     if ($eventInfos->[2] != 0) {
                         # If eventId of log is defined, update the last day event
-                        $events->updateEventEndTime($id, $hostId, $serviceId, $eventInfos->[0], $row->{'ctime'}, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 0, $downTime);
+                        $result = $events->updateEventEndTime($id, $hostId, $serviceId, $eventInfos->[0], $row->{ctime}, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 0, $downTime, $eventInfos->[4]);
                     } else {
-                        if ($row->{'ctime'} > $eventInfos->[0]) {
-                            $events->insertEvent($id, $hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $row->{'ctime'}, 0, $downTime);
+                        if ($row->{ctime} > $eventInfos->[0]) {
+                            $result = $events->insertEvent($id, $hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $row->{ctime}, 0, $downTime, $eventInfos->[4]);
                         }
                     }
-                    $eventInfos->[0] = $row->{'ctime'};
-                    $eventInfos->[1] = $statusCode;                    
+                    $eventInfos->[0] = $row->{ctime};
+                    $eventInfos->[1] = $statusCode;
                     $eventInfos->[2] = 0;
                     $eventInfos->[3] = 0;
+                    $eventInfos->[4] = defined($result->{in_ack}) ? $result->{in_ack} : 0;
                     $currentEvents->{$id} = $eventInfos;
                 }
             } else {
                 my @tab;                
-                @tab = ($row->{'ctime'}, $statusCode, 0, 0);                
+                @tab = ($row->{ctime}, $statusCode, 0, 0, 0);                
                 $currentEvents->{$id} = \@tab;
             }
 
@@ -135,31 +137,33 @@ sub parseHostLog {
     my $downTime = $centreonDownTime->getDownTime($allIds, $start, $end, 1);
 
     while (my $row = $logs->fetchrow_hashref()) {
-        my $id  = $row->{'host_name'};
+        my $id  = $row->{host_name};
         if (defined($allIds->{$id})) {
-            my $statusCode = $row->{'status'};            
-            if ($self->{'dbLayer'} eq "ndo") {
-                $statusCode = $hostStates{$row->{'status'}};
+            my $statusCode = $row->{status};            
+            if ($self->{dbLayer} eq "ndo") {
+                $statusCode = $hostStates{$row->{status}};
             }
             if (defined($currentEvents->{$id})) {
                 my $eventInfos =  $currentEvents->{$id}; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id. The last one is optionnal
                 if ($statusCode ne "" && defined($eventInfos->[1]) && $eventInfos->[1] ne "" && $eventInfos->[1] != $statusCode) {
+                    my $result = {};
                     if ($eventInfos->[2] != 0) {
                         # If eventId of log is defined, update the last day event
-                        $events->updateEventEndTime($id, $allIds->{$id}, $eventInfos->[0], $row->{'ctime'}, $eventInfos->[1], $eventInfos->[2],$eventInfos->[3], 0, $downTime);
+                        $result = $events->updateEventEndTime($id, $allIds->{$id}, $eventInfos->[0], $row->{'ctime'}, $eventInfos->[1], $eventInfos->[2],$eventInfos->[3], 0, $downTime, $eventInfos->[4]);
                     } else {
-                        if ($row->{'ctime'} > $eventInfos->[0]) {
-                            $events->insertEvent($id, $allIds->{$id}, $eventInfos->[1], $eventInfos->[0], $row->{'ctime'}, 0, $downTime);
+                        if ($row->{ctime} > $eventInfos->[0]) {
+                            $result = $events->insertEvent($id, $allIds->{$id}, $eventInfos->[1], $eventInfos->[0], $row->{'ctime'}, 0, $downTime, $eventInfos->[4]);
                         }
                     }
                     $eventInfos->[0] = $row->{'ctime'};
                     $eventInfos->[1] = $statusCode;
                     $eventInfos->[2] = 0;
                     $eventInfos->[3] = 0;
+                    $eventInfos->[4] = defined($result->{in_ack}) ? $result->{in_ack} : 0;
                     $currentEvents->{$id} = $eventInfos;
                 }
             } else {
-                my @tab = ($row->{'ctime'}, $statusCode, 0, 0);
+                my @tab = ($row->{'ctime'}, $statusCode, 0, 0, 0);
                 $currentEvents->{$id} = \@tab;
             }
         }
@@ -183,9 +187,9 @@ sub insertLastServiceEvents {
     while (my ($id, $eventInfos) = each (%$currentEvents)) {
         my ($hostId, $serviceId) = split (";;", $allIds->{$id});
         if ($eventInfos->[2] != 0) {
-            $events->updateEventEndTime($id, $hostId, $serviceId, $eventInfos->[0], $end, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 1, $downTime);
+            $events->updateEventEndTime($id, $hostId, $serviceId, $eventInfos->[0], $end, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 1, $downTime, $eventInfos->[4]);
         } else {
-            $events->insertEvent($id, $hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $end, 1, $downTime);
+            $events->insertEvent($id, $hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $end, 1, $downTime, $eventInfos->[4]);
         }
     }
 }
@@ -204,9 +208,9 @@ sub insertLastHostEvents {
 
     while (my ($id, $eventInfos) = each (%$currentEvents)) {
         if ($eventInfos->[2] != 0) {
-            $events->updateEventEndTime($id, $allIds->{$id}, $eventInfos->[0], $end, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 1, $downTime);
+            $events->updateEventEndTime($id, $allIds->{$id}, $eventInfos->[0], $end, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 1, $downTime, $eventInfos->[4]);
         } else {
-            $events->insertEvent($id, $allIds->{$id}, $eventInfos->[1], $eventInfos->[0], $end, 1, $downTime);
+            $events->insertEvent($id, $allIds->{$id}, $eventInfos->[1], $eventInfos->[0], $end, 1, $downTime, $eventInfos->[4]);
         }
     }
 }

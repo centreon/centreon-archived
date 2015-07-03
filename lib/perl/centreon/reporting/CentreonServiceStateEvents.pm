@@ -115,14 +115,14 @@ sub getLastStates {
     
     my $currentStates = {};
     
-    my $query = "SELECT `host_id`, `service_id`, `state`, `servicestateevent_id`, `end_time`, `in_downtime`".
+    my $query = "SELECT `host_id`, `service_id`, `state`, `servicestateevent_id`, `end_time`, `in_downtime`, `in_ack`".
                 " FROM `servicestateevents`".
                 " WHERE `last_update` = 1";
     my ($status, $sth) = $centstorage->query($query);
     while(my $row = $sth->fetchrow_hashref()) {
         my $serviceId = $row->{host_id}.";;".$row->{service_id};
         if (defined($serviceNames->{$serviceId})) {
-            my @tab = ($row->{end_time}, $row->{state}, $row->{servicestateevent_id}, $row->{in_downtime});
+            my @tab = ($row->{end_time}, $row->{state}, $row->{servicestateevent_id}, $row->{in_downtime}, $row->{in_ack});
             $currentStates->{$serviceNames->{$serviceId}} = \@tab;
         }
     }
@@ -141,7 +141,8 @@ sub updateEventEndTime {
     my $centstatus = $self->{centstatus};
     my $centreonAck = $self->{centreonAck};
     my $centreonDownTime = $self->{centreonDownTime};
-    my ($id, $hostId, $serviceId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift, shift, shift);
+    my ($id, $hostId, $serviceId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime, $inAck) = @_;
+    my $return = {};
     
     my ($hostName, $serviceDescription) = split (";;", $id);
     my ($events, $updateTime);
@@ -150,19 +151,25 @@ sub updateEventEndTime {
     if (defined($events)) {
         $totalEvents = scalar(@$events);
     }
-    my $ack = $centreonAck->getServiceAckTime($start, $updateTime, $hostName, $serviceDescription);
+    my ($ack, $sticky) = $centreonAck->getServiceAckTime($start, $updateTime, $hostName, $serviceDescription);
+    if (defined($ack) && $sticky == 1) {
+        $inAck = 1;
+    }
     if (!$totalEvents && $updateTime) {
-        my $query = "UPDATE `servicestateevents` SET `end_time` = ".$updateTime.", `ack_time`= IFNULL(ack_time,$ack), `last_update`=".$lastUpdate.
+        my $query = "UPDATE `servicestateevents` SET `end_time` = ".$updateTime.", `ack_time`= IFNULL(ack_time,$ack), `in_ack` = '$inAck', `last_update`=".$lastUpdate.
                     " WHERE `servicestateevent_id` = ".$eventId;
         $centstorage->query($query);
-    }else {
+    } else {
         if ($updateTime) {
-            my $query = "UPDATE `servicestateevents` SET `end_time` = ".$updateTime.", `ack_time`= IFNULL(ack_time,$ack), `last_update`= 0".
+            my $query = "UPDATE `servicestateevents` SET `end_time` = ".$updateTime.", `ack_time`= IFNULL(ack_time,$ack), `in_ack` = '$inAck', `last_update`= 0".
                     " WHERE `servicestateevent_id` = ".$eventId;
             $centstorage->query($query);
         }
-        $self->insertEventTable($id, $hostId, $serviceId, $state, $lastUpdate, $events);
+        return $self->insertEventTable($id, $hostId, $serviceId, $state, $lastUpdate, $events, $inAck);
     }
+    
+    $return->{in_ack} = $inAck;
+    return $return;
 }
 
 # insert a new incident for service
@@ -175,39 +182,66 @@ sub updateEventEndTime {
 sub insertEvent {
     my $self = shift;
     my $centreonDownTime = $self->{centreonDownTime};
-    my ($id, $hostId, $serviceId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift);
+    my ($id, $hostId, $serviceId, $state, $start, $end, $lastUpdate, $downTime, $inAck) = @_;
     my $events = $centreonDownTime->splitInsertEventDownTime($hostId.";;".$serviceId, $start, $end, $downTime, $state);    
+    my $return = { in_ack => $inAck };
+    
     if ($state ne "") {
-        $self->insertEventTable($id, $hostId, $serviceId, $state, $lastUpdate, $events);
+        return $self->insertEventTable($id, $hostId, $serviceId, $state, $lastUpdate, $events, $inAck);
     }
+    
+    return $return;
 }
 
 sub insertEventTable {
     my $self = shift;
     my $centstorage = $self->{centstorage};
     my $centreonAck = $self->{centreonAck};
-    my ($id, $hostId, $serviceId, $state, $lastUpdate, $events) =  (shift, shift, shift, shift, shift, shift);
+    my ($id, $hostId, $serviceId, $state, $lastUpdate, $events, $inAck) =  @_;
+    my $return = {};
     
     my $query_start = "INSERT INTO `servicestateevents`".
-                      " (`host_id`, `service_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`, `ack_time`)".
+                      " (`host_id`, `service_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`, `ack_time`, `in_ack`)".
                       " VALUES (";
-            
+    
+    # Stick ack is removed
+    if ($state == 0) {
+        $inAck = 0;
+    }
     my $count = 0;
     my ($hostName, $serviceDescription) = split (";;", $id);
     for ($count = 0; $count < scalar(@$events) - 1; $count++) {
         my $tab = $events->[$count];
-        my $ack = $centreonAck->getServiceAckTime($tab->[0], $tab->[1], $hostName, $serviceDescription);
-        my $query_end = $hostId.", ".$serviceId.", ".$state.", ".$tab->[0].", ".$tab->[1].", 0, ".$tab->[2].", ".$ack.")";
+        
+        my ($ack, $sticky) = $centreonAck->getServiceAckTime($tab->[0], $tab->[1], $hostName, $serviceDescription);
+        if ($inAck == 1) {
+            $sticky = 1;
+            $ack = $tab->[0];
+        }
+        if (defined($ack) && $sticky == 1) {
+            $inAck = 1;
+        }
+        my $query_end = $hostId.", ".$serviceId.", ".$state.", ".$tab->[0].", ".$tab->[1].", 0, ".$tab->[2].", ".$ack.", '$sticky')";
         $centstorage->query($query_start.$query_end);
     }
     if (scalar(@$events)) {
         my $tab = $events->[$count];
         if (defined($hostId) && defined($serviceId) && defined($state)) {
-            my $ack = $centreonAck->getServiceAckTime($tab->[0], $tab->[1], $hostName, $serviceDescription);
-            my $query_end = $hostId.", ".$serviceId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].", ".$ack.")";
+            my ($ack, $sticky) = $centreonAck->getServiceAckTime($tab->[0], $tab->[1], $hostName, $serviceDescription);
+            if ($inAck == 1) {
+                $sticky = 1;
+                $ack = $tab->[0];
+            }
+            if (defined($ack) && $sticky == 1) {
+                $inAck = 1;
+            }
+            my $query_end = $hostId.", ".$serviceId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].", ".$ack.", '$sticky')";
             $centstorage->query($query_start.$query_end);
         }
     }
+    
+    $return->{in_ack} = $inAck;
+    return $return;
 }
 
 # Truncate service incident table
