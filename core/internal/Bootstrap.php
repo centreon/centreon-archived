@@ -36,6 +36,7 @@
 namespace Centreon\Internal;
 
 use Evenement\EventEmitter;
+use Centreon\Internal\Module\Informations as Module;
 
 /**
  * Class Bootstrap
@@ -149,6 +150,27 @@ class Bootstrap
     private function initConfigFromDb()
     {
         $this->di->get('config')->loadFromDb();
+    }
+
+    /**
+     * Load application constant
+     *
+     * Load module constant if database is loaded
+     */
+    private function initConstants()
+    {
+        require $this->di->get('config')->get('global', 'centreon_path') . '/core/internal/Constant.php';
+
+        try {
+            $this->di->get('db_centreon');
+            foreach (Module::getModuleList() as $moduleName) {
+                $modulePath = Module::getModulePath($moduleName);
+                if (file_exists($modulePath . '/config/Constant.php')) {
+                    require $modulePath . '/config/Constant.php';
+                }
+            }
+        } catch (\Exception $e) {
+        }
     }
 
     /**
