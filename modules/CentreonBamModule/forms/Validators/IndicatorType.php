@@ -70,10 +70,10 @@ class IndicatorType implements ValidatorInterface
         if(empty($params['extraParams']['service_id'])){
             $errorMessage .= "\n".'--service-slug required';
         }
-        
+        /*
         if(empty($params['extraParams']['host_id'])){
             $errorMessage .= "\n".'--host-slug required';
-        }
+        }*/
         
         if(empty($errorMessage)){
             return false;

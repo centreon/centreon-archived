@@ -9,7 +9,12 @@
         "host" : "host_id",
         "service" : "service_id",
         "ba" : "id_ba",
-        "indicator_ba" : "id_indicator_ba"
+        "indicator_ba" : "id_indicator_ba",
+        "type" : "kpi_type",
+        "disable" : "activate",
+        "indicator-ba" : "id_indicator_ba",
+        "service" : "service_id",
+        "boolean" : "boolean_id"
     },
     "externalAttributeSet" : [
         {
@@ -54,178 +59,6 @@
         }
     ],
     "options" : {
-        "createAction" : {
-            "host-slug" : {
-              "functionParams" : "params",
-              "help": "The indicator host",
-              "type": "string",
-              "toTransform" : "host_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "disable" : {
-              "functionParams" : "params",
-              "help": "disable",
-              "type": "boolean",
-              "toTransform" : "activate",
-              "multiple" : false,
-              "required" : false,
-              "booleanValue" : false,
-              "booleanSetDefault" : true
-            }
-        },
-        "deleteAction" : {
-            "ba" : {
-              "functionParams" : "object",
-              "help": "The indicator's Ba target",
-              "type": "string",
-              "toTransform" : "id_ba",
-              "multiple" : false,
-              "required" : true
-            },
-            "indicator-ba" : {
-              "functionParams" : "object",
-              "help": "The indicator Ba",
-              "type": "string",
-              "toTransform" : "id_indicator_ba",
-              "multiple" : false,
-              "required" : false
-            },
-            "service" : {
-              "functionParams" : "object",
-              "help": "The indicator service",
-              "type": "string",
-              "toTransform" : "service_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "host" : {
-              "functionParams" : "object",
-              "help": "The indicator host",
-              "type": "string",
-              "toTransform" : "host_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "boolean" : {
-              "functionParams" : "object",
-              "help": "The indicator",
-              "type": "string",
-              "toTransform" : "boolean_id",
-              "multiple" : false,
-              "required" : false
-            }
-        },
-        "showAction" : {
-            "ba" : {
-              "functionParams" : "object",
-              "help": "The indicator's Ba target",
-              "type": "string",
-              "toTransform" : "id_ba",
-              "multiple" : false,
-              "required" : true
-            },
-            "indicator-ba" : {
-              "functionParams" : "object",
-              "help": "The indicator Ba",
-              "type": "string",
-              "toTransform" : "id_indicator_ba",
-              "multiple" : false,
-              "required" : false
-            },
-            "service" : {
-              "functionParams" : "object",
-              "help": "The indicator service",
-              "type": "string",
-              "toTransform" : "service_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "host" : {
-              "functionParams" : "object",
-              "help": "The indicator host",
-              "type": "string",
-              "toTransform" : "host_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "boolean" : {
-              "functionParams" : "object",
-              "help": "The indicator",
-              "type": "string",
-              "toTransform" : "boolean_id",
-              "multiple" : false,
-              "required" : false
-            }
-            
-        },
-        "updateAction" : {
-            "ba" : {
-              "functionParams" : "object",
-              "help": "The indicator's Ba target",
-              "type": "string",
-              "toTransform" : "id_ba",
-              "multiple" : false,
-              "required" : true
-            },
-            "indicator-ba" : {
-              "functionParams" : "object",
-              "help": "The indicator Ba",
-              "type": "string",
-              "toTransform" : "id_indicator_ba",
-              "multiple" : false,
-              "required" : false
-            },
-            "service" : {
-              "functionParams" : "object",
-              "help": "The indicator service",
-              "type": "string",
-              "toTransform" : "service_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "host" : {
-              "functionParams" : "object",
-              "help": "The indicator host",
-              "type": "string",
-              "toTransform" : "host_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "host-slug" : {
-              "functionParams" : "params",
-              "help": "host to update",
-              "type": "string",
-              "toTransform" : "host_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "boolean" : {
-              "functionParams" : "object",
-              "help": "The indicator",
-              "type": "string",
-              "toTransform" : "boolean_id",
-              "multiple" : false,
-              "required" : false
-            },
-            "disable" : {
-              "functionParams" : "params",
-              "help": "disable indicator",
-              "type": "boolean",
-              "toTransform" : "activate",
-              "multiple" : false,
-              "required" : false,
-              "booleanValue" : false
-            },
-            "enable" : {
-              "functionParams" : "params",
-              "help": "enable indicator",
-              "type": "boolean",
-              "toTransform" : "activate",
-              "multiple" : false,
-              "required" : false,
-              "booleanValue" : true
-            }
-        }
+        
     }
 }

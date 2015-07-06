@@ -11,7 +11,8 @@
         "activate" : "resource_activate",
         "comment" : "resource_comment",
         "pollers" : "name",
-        "organization" : "organization_id"
+        "organization" : "organization_id",
+        "resource" : "resource"
     },
     "externalAttributeSet" : [
         {

@@ -51,4 +51,35 @@ class PollerCommand extends BasicCrudCommand
     {
         parent::__construct();
     }
+    
+    /**
+     * @cmdForm /centreon-configuration/poller/update required
+     */
+    public function createAction($params) {
+        parent::createAction($params);
+    }
+    
+    /**
+     * @cmdForm /centreon-configuration/poller/update optional
+     * @cmdObject string poller the poller
+     */
+    public function updateAction($object, $params) {
+        parent::updateAction($object, $params);
+    }
+    
+    /**
+     * @cmdObject string poller the poller
+     */
+    public function showAction($object, $fields = null, $linkedObject = '') {
+        parent::showAction($object, $fields, $linkedObject);
+    }
+    
+     
+    /**
+     * @cmdObject string poller the poller
+     */
+    public function deleteAction($object) {
+        parent::deleteAction($object);
+    }
+    
 }

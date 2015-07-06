@@ -212,7 +212,7 @@ class Command
     }
     
     public function getObject($aliveObject,$docComment,$globalOptional = false){
-        preg_match_all('/@cmdObject\s+(\S+)\s+(\S+)\s*(.*)/', $docComment, $matches);
+        preg_match_all('/@cmdObject\s+(\S+)\s+(\S+)\s*?(.*)?/', $docComment, $matches);
         $objectArray = array();
         if(!empty($matches[1])){
             foreach($matches[1] as $key=>$objectType){
@@ -240,7 +240,7 @@ class Command
     
     public function getCustomsParams($aliveObject,$docComment,$globalOptional = false){
         
-        preg_match_all('/@cmdParam\s+(\S+)\s+(\S+)\s+(\S+)\s*(.*)/', $docComment, $matches);
+        preg_match_all('/@cmdParam\s+(\S+)\s+(\S+)\s+(\S+)\s*?(.*)?/', $docComment, $matches);
 
         $paramsArray = array();
         if(!empty($matches[1])){
@@ -381,7 +381,6 @@ class Command
             $listOptions = $aliveObject->options;
         }
         
-
         $specs = new OptionCollection();    
         
         foreach ($listOptions as $option => $spec) {
@@ -489,7 +488,7 @@ class Command
                 $missingParams[] = $key;
             }
         }
-        
+
         if(!empty($missingParams)){
             $errorMessage = 'The following mandatory parameters are missing :';
             foreach($missingParams as $params){

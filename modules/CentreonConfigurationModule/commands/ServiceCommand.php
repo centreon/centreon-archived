@@ -51,4 +51,115 @@ class ServiceCommand extends BasicTagSupport
     {
         parent::__construct();
     }
+    
+    /**
+     * 
+     * @cmdForm /centreon-configuration/service/update required 
+     * @cmdParam none service-custommacros optional
+     * @cmdParam none service-tags optional
+     * @cmdParam none enable optional 
+     * @cmdParam boolean|false disable required disable the host 
+     */
+    public function createAction($params) {
+        parent::createAction($params);
+    }
+    
+    /**
+     * 
+     * @cmdForm /centreon-configuration/service/update optional
+     * @cmdObject string service the service
+     * @cmdParam none service-custommacros optional
+     * @cmdParam none service-tags optional
+     * @cmdParam boolean|false disable optional disable the host because it sucks
+     * @cmdParam boolean|true enable optional enable the host
+     */
+    public function updateAction($object, $params) 
+    {
+        parent::updateAction($object, $params);
+    }
+    
+    /**
+     * 
+     * @cmdObject string service the service
+     */
+    public function showAction($object, $fields = null, $linkedObject = '') {
+        parent::showAction($object, $fields, $linkedObject);
+    }
+    
+    /**
+     * 
+     * @cmdObject string service the service
+     */
+    public function deleteAction($object) {
+        parent::deleteAction($object);
+    }
+    
+    /**
+     * 
+     * @cmdObject string service the service
+     */
+    public function listTagAction($object = null) {
+        parent::listTagAction($object);
+    }
+    
+    /**
+     * 
+     * @cmdObject string service the service
+     * @cmdParam string tag required the tag
+     */
+    public function addTagAction($object, $params) {
+        parent::addTagAction($object, $params['tag']);
+    }
+    
+    /**
+     * 
+     * @cmdObject string service the service
+     * @cmdParam string tag required the tag
+     */
+    public function removeTagAction($object, $params) {
+        parent::removeTagAction($object, $params['tag']);
+    }
+    
+    /**
+     * 
+     * @cmdObject string service the service
+     * @cmdParam string name required the macro name
+     * @cmdParam string value required the macro value
+     * @cmdParam boolean|true hidden required is the macro hidden ?
+     */
+    public function addMacroAction($object, $params) {
+        parent::addMacroAction($object, $params);
+    }
+    
+    /**
+     * 
+     * @cmdObject string service the service
+     * @cmdObject string macro the macro to update
+     * @cmdParam string name optional the macro name
+     * @cmdParam string value optional the macro value
+     * @cmdParam boolean|true hidden optional is the macro hidden ?
+     * @cmdParam boolean|false show optional is the macro showed ?
+     */
+    public function updateMacroAction($object, $params) {
+        parent::updateMacroAction($object, $object['macro'], $params);
+    }
+    
+    /**
+     * 
+     * @cmdObject string service the service
+     * @cmdObject string macro the macro to update
+     */
+    public function removeMacroAction($object, $params = null) {
+        parent::removeMacroAction($object, $object['macro']);
+    }
+    
+    /**
+     * 
+     * @cmdObject string service the service
+     */
+    public function listMacroAction($object = null) {
+        parent::listMacroAction($object);
+    }
+    
+    
 }
