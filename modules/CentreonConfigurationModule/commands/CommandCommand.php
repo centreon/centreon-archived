@@ -70,6 +70,7 @@ class CommandCommand extends BasicCrudCommand
     }
     
     /**
+     * @cmdForm /centreon-configuration/command/update map
      * @cmdObject string command the command
      */
     public function showAction($object, $fields = null, $linkedObject = '') {

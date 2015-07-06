@@ -68,6 +68,7 @@ class TrapCommand extends BasicCrudCommand
     }
     
     /**
+     * @cmdForm /centreon-configuration/trap/update map
      * @cmdObject string traps the traps
      */
     public function showAction($object, $fields = null, $linkedObject = '') {

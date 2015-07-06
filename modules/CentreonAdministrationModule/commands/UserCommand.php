@@ -69,6 +69,7 @@ class UserCommand extends BasicCrudCommand
     
     
     /**
+     * @cmdForm /centreon-administration/user/update map
      * @cmdObject string user the user
      */
     public function showAction($object, $fields = null, $linkedObject = '') {

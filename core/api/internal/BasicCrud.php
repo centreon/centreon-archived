@@ -177,6 +177,26 @@ class BasicCrud extends AbstractCommand
         return $choices;
     }
 
+    public function getAttributesMapFromForm($route){
+        $db = Di::getDefault()->get('db_centreon');
+        $sql = 'select ff.* from cfg_forms f
+                    inner join cfg_forms_sections fs on fs.form_id = f.form_id
+                    inner join cfg_forms_blocks fb on fb.section_id = fs.section_id
+                    inner join cfg_forms_blocks_fields_relations fbfr on fbfr.block_id = fb.block_id
+                    inner join cfg_forms_fields ff on ff.field_id = fbfr.field_id
+                    where f.route = :route and ff.normalized_name != "" and ff.normalized_name is not null';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+        foreach($rows as $row){
+            if(empty($this->attributesMap[$row['normalized_name']])){
+                $this->attributesMap[$row['normalized_name']] = $row['name'];
+            }
+        }
+        
+    }
+    
     public function getFieldsFromForm($route,$required){
         $db = Di::getDefault()->get('db_centreon');
         $sql = 'select ff.* from cfg_forms f

@@ -79,7 +79,7 @@ class ServiceCommand extends BasicTagSupport
     }
     
     /**
-     * 
+     * @cmdForm /centreon-configuration/service/update map
      * @cmdObject string service the service
      */
     public function showAction($object, $fields = null, $linkedObject = '') {

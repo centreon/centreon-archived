@@ -68,6 +68,7 @@ class ResourceCommand extends BasicCrudCommand
     }
     
     /**
+     * @cmdForm /centreon-configuration/resource/update map
      * @cmdObject string resource the resource
      */
     public function showAction($object, $fields = null, $linkedObject = '') {

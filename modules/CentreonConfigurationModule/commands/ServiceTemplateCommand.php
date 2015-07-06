@@ -75,7 +75,7 @@ class ServiceTemplateCommand extends BasicTagSupport
     }
     
     /**
-     * 
+     * @cmdForm /centreon-configuration/servicetemplate/update map 
      * @cmdObject string service-template the service
      */
     public function showAction($object, $fields = null, $linkedObject = '') {

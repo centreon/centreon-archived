@@ -60,6 +60,7 @@ class AclresourceCommand extends BasicCrudCommand
     }
     
     /**
+     * @cmdForm /centreon-administration/aclresource/update map
      * @cmdObject string aclresource the acl resource
      */
     public function showAction($object, $fields = null, $linkedObject = '') {

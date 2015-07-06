@@ -68,6 +68,7 @@ class ConnectorCommand extends BasicCrudCommand
     }
     
     /**
+     * @cmdForm /centreon-configuration/connector/update map
      * @cmdObject string connector the connector
      */
     public function showAction($object, $fields = null, $linkedObject = '') {

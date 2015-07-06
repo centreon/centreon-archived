@@ -70,6 +70,7 @@ class ContactCommand extends BasicCrudCommand
     }
     
     /**
+     * @cmdForm /centreon-administration/contact/update map
      * @cmdObject string contact the contact
      */
     public function showAction($object, $fields = null, $linkedObject = '') {
