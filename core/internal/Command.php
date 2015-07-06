@@ -310,7 +310,10 @@ class Command
         }   
         
         $this->getFormsParams($aliveObject, $docComment);
-        $aliveObject->refreshAttributesMap();
+        if (method_exists($aliveObject, 'refreshAttributesMap')) {
+            $aliveObject->refreshAttributesMap();
+        }
+        
         $this->getObject($aliveObject, $docComment, $globalOptional['object']);
         $this->getCustomsParams($aliveObject, $docComment, $globalOptional['params']);
         
@@ -379,7 +382,8 @@ class Command
         }
         
 
-        $specs = new OptionCollection();
+        $specs = new OptionCollection();    
+        
         foreach ($listOptions as $option => $spec) {
             if ($spec['type'] != 'boolean') {
                 if ($spec['multiple']) {

@@ -51,7 +51,9 @@ use Centreon\Internal\Installer\Form;
 class ManageCommand extends AbstractCommand
 {
     
-    public $options = array(
+    public $options = array();
+    
+    /*public $options = array(
         "installAction" => array(
             "module" => array(
                 "functionParams" => "module",
@@ -134,66 +136,67 @@ class ManageCommand extends AbstractCommand
                 "required" => true
             )
         )
-    );
+    );*/
             
             
     /**
      * 
-     * @param string $module
-     * @param integer $verbose
+     * @cmdObject string module the host
+     * @cmdParam boolean|true verbose optional is verbose ?
      */
-    public function installAction($module, $verbose = 1)
+    public function installAction($object, $params = null)
     {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->install($verbose);
+        $moduleInstaller = Informations::getModuleInstaller('console', $object['module']);
+        $moduleInstaller->install($params['verbose']);
     }
     
     /**
      * 
-     * @param string $module
-     * @param integer $verbose
+     * @cmdObject string module the host
+     * @cmdParam boolean|true verbose optional is verbose ?
      */
-    public function upgradeAction($module, $verbose = 1)
+    public function upgradeAction($object, $params = null)
     {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->upgrade($verbose);
+        $moduleInstaller = Informations::getModuleInstaller('console', $object['module']);
+        $moduleInstaller->upgrade($params['verbose']);
     }
     
     /**
      * 
-     * @param string $module
-     * @param integer $verbose
+     * @cmdObject string module the host
+     * @cmdParam boolean|true verbose optional is verbose ?
      */
-    public function uninstallAction($module, $verbose = 1)
+    public function uninstallAction($object, $params = null)
     {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->uninstall($verbose);
+        $moduleInstaller = Informations::getModuleInstaller('console', $object['module']);
+        $moduleInstaller->uninstall($params['verbose']);
     }
     
     /**
      * 
-     * @param string $module
-     * @param integer $removeOld
+     * @cmdObject string module the host
+     * @cmdParam boolean|true removeOld optional is verbose ?
      */
-    public function deployStaticAction($module, $removeOld = 1)
+    public function deployStaticAction($object, $params = null)
     {
-        if ($removeOld == true) {
-            StaticFiles::remove($module);
+        if ($params['removeOld'] == true) {
+            StaticFiles::remove($object['module']);
         }
-        StaticFiles::deploy($module);
+        StaticFiles::deploy($object['module']);
     }
     
     /**
      * 
-     * @param string $module
+     * @cmdObject string module the host
      */
-    public function deployFormsAction($module)
+    public function deployFormsAction($object)
     {
-        $modulePath = Informations::getModulePath($module);
-        $moduleId = Informations::getModuleIdByName($module);
+        $modulePath = Informations::getModulePath($object['module']);
+        $moduleId = Informations::getModuleIdByName($object['module']);
         $formsFiles = $modulePath . '/install/forms/*.xml';
         foreach (glob($formsFiles) as $xmlFile) {
             Form::installFromXml($moduleId, $xmlFile);
         }
     }
+
 }
