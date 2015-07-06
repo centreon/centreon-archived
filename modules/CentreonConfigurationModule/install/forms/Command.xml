@@ -9,9 +9,7 @@
                 <field name="command_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
                     <validators>
                         <validator rules="remote" serverside="centreon-main.unique" />
-                        <validator rules="forbiddenChar" serverside="core.ForbiddenChar">
-                            <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
-                        </validator>
+                        <validator rules="illegalChars" serverside="core.IllegalChars" />
                     </validators>
                     <help>The command name is used to identify and display this command in contact, host and service definitions.</help>
                 </field>

@@ -40,6 +40,7 @@ use Centreon\Internal\Exception;
 use CentreonConfiguration\Models\Poller;
 use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
+use CentreonConfiguration\Repository\CustomMacroRepository;
 
 /**
  * Factory for ConfigGenerate Engine For centengine.cfg
@@ -166,6 +167,10 @@ class ConfigGenerateMainRepository
         $objectDirectives = static::getConfigFiles($poller_id);
 
         $finalConf = array_merge($finalConf, $objectDirectives);
+
+        /* Add illegal chars */
+        $finalConf['illegal_macro_output_chars'] = CustomMacroRepository::$forbidenCHar;
+        $finalConf['illegal_object_name_chars'] = CENTREON_ILLEGAL_CHAR_OBJ;
         
         /* Set real etc path of the poller */
         static::$finalPath = $finalConf['conf_dir'];

@@ -51,6 +51,8 @@ var elRules = {};
       {if $options['equalfield']}
         elRules['equalTo'] = "#{$options['equalfield']}";
       {/if}
+    {elseif $type == 'illegalChars'}
+      elRules['forbiddenChar'] = "$smarty.const.CENTREON_ILLEGAL_CHAR_OBJ";
     {elseif $type == 'ipaddress'}
       {* TODO *}
     {elseif $type == 'depends'}
