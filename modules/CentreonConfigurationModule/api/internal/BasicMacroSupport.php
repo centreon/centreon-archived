@@ -47,6 +47,18 @@ use Centreon\Internal\Utils\CommandLine\InputOutput;
  */
 class BasicMacroSupport extends BasicCrudCommand
 {
+    
+    public static $attributesMapHost = array(
+        "name" => "host_macro_name",
+        "value" => "host_macro_value",
+        "hidden" => "is_password"
+    );
+    
+    public static $attributesMapService = array(
+        "name" => "svc_macro_name",
+        "value" => "svc_macro_value",
+        "hidden" => "is_password"
+    );
 
     /**
      * 
@@ -60,17 +72,18 @@ class BasicMacroSupport extends BasicCrudCommand
         try {
             $repository = $this->repository;
             $sName = $this->objectName;
-           
+            $repository::transco($object);
             $aId = $repository::getListBySlugName($object[$sName]);
             if (count($aId) > 0) {
                 $objectId = $aId[0]['id'];
             } else {
                 throw new \Exception(static::OBJ_NOT_EXIST);
             }
-            
             switch($this->objectName){
                 case 'hosttemplate' : 
                 case 'host' :
+                CustomMacroRepository::setAttributesMap(self::$attributesMapHost);
+                CustomMacroRepository::transco($paramList);
                     if(isset($paramList['host_macro_name']) && isset($paramList['host_macro_value'])){
                         $formatedParams = array(
                             $paramList['host_macro_name'] => 
@@ -88,6 +101,8 @@ class BasicMacroSupport extends BasicCrudCommand
                     );
                     break;
                 case 'servicetemplate' : 
+                    CustomMacroRepository::setAttributesMap(self::$attributesMapService);
+                    CustomMacroRepository::transco($paramList);
                     if(isset($paramList['svc_macro_name']) && isset($paramList['svc_macro_value'])){
                         $formatedParams = array(
                             $paramList['svc_macro_name'] => 
@@ -105,7 +120,9 @@ class BasicMacroSupport extends BasicCrudCommand
                     );
                     break;
                 case 'service' :
-                    $aData = \CentreonConfiguration\Repository\ServiceRepository::getServiceBySlugs($object['service'], $object['host']);
+                    CustomMacroRepository::setAttributesMap(self::$attributesMapService);
+                    CustomMacroRepository::transco($paramList);
+                    $aData = \CentreonConfiguration\Repository\ServiceRepository::getServiceBySlugs($object['service']);
 
                     if (count($aData) == 0) {
                         throw new \Exception(static::OBJ_NOT_EXIST);
@@ -123,6 +140,7 @@ class BasicMacroSupport extends BasicCrudCommand
                             )
                         );
                     }
+                    
                     CustomMacroRepository::saveServiceCustomMacro($this->objectName, $objectId, $formatedParams, false, $hostId);
                     InputOutput::display(
                         "The macro '".$paramList['svc_macro_name']."' has been successfully added to the object",
@@ -148,6 +166,7 @@ class BasicMacroSupport extends BasicCrudCommand
     public function updateMacroAction($object, $macro, $params)
     {
         $paramList = $this->parseObjectParams($params);
+        
         /*
         if(!isset($paramList['hidden']) || !is_numeric($paramList['hidden']) || $paramList['hidden'] < 0 || $paramList['hidden'] > 1){
             $paramList['hidden'] = 0;
@@ -157,6 +176,7 @@ class BasicMacroSupport extends BasicCrudCommand
             $repository = $this->repository;
             //$objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
             $sName = $this->objectName;
+            $repository::transco($object);
            
             $aId = $repository::getListBySlugName($object[$sName]);
             if (count($aId) > 0) {
@@ -167,10 +187,14 @@ class BasicMacroSupport extends BasicCrudCommand
             switch($this->objectName){
                 case 'hosttemplate' : 
                 case 'host' :
+                    CustomMacroRepository::setAttributesMap(self::$attributesMapHost);
+                    CustomMacroRepository::transco($paramList);
                     CustomMacroRepository::updateHostCustomMacro($objectId,$macro,$paramList);
                     break;
                 case 'servicetemplate' :
                 case 'service' : 
+                    CustomMacroRepository::setAttributesMap(self::$attributesMapService);
+                    CustomMacroRepository::transco($paramList);
                     CustomMacroRepository::updateServiceCustomMacro($objectId,$macro,$paramList);
                     break;
                 default :
@@ -199,7 +223,7 @@ class BasicMacroSupport extends BasicCrudCommand
             $repository = $this->repository;
             //$objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
             $sName = $this->objectName;
-           
+            $repository::transco($object);
             $aId = $repository::getListBySlugName($object[$sName]);
             if (count($aId) > 0) {
                 $objectId = $aId[0]['id'];
@@ -249,6 +273,7 @@ class BasicMacroSupport extends BasicCrudCommand
             $repository = $this->repository;
             //$objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
             $sName = $this->objectName;
+            $repository::transco($object);
            
             $aId = $repository::getListBySlugName($object[$sName]);
             if (count($aId) > 0) {
@@ -259,10 +284,14 @@ class BasicMacroSupport extends BasicCrudCommand
             switch($this->objectName){
                 case 'hosttemplate' : 
                 case 'host' :
+                    CustomMacroRepository::setAttributesMap(self::$attributesMapHost);
+                    CustomMacroRepository::transco($macro);
                     CustomMacroRepository::deleteHostCustomMacro($objectId,$macro);
                     break;
                 case 'servicetemplate' :
                 case 'service' : 
+                    CustomMacroRepository::setAttributesMap(self::$attributesMapService);
+                    CustomMacroRepository::transco($macro);
                     CustomMacroRepository::deleteServiceCustomMacro($objectId,$macro);
                     break;
                 default :

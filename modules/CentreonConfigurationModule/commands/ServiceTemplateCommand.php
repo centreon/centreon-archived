@@ -69,8 +69,6 @@ class ServiceTemplateCommand extends BasicTagSupport
      * @cmdObject string service-template the service template
      * @cmdParam none service-custommacros optional
      * @cmdParam none service-tags optional
-     * @cmdParam boolean|false disable optional disable the host because it sucks
-     * @cmdParam boolean|true enable optional enable the host
      */
     public function updateAction($object, $params) {
         parent::updateAction($object, $params);
