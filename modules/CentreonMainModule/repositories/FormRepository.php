@@ -93,7 +93,6 @@ abstract class FormRepository extends ListRepository
             }
         }
         
-
         $list = $class::getList(array($idField, $uniqueField), -1, 0, null, "ASC", $filters, "AND");
         $finalList = array();
         foreach ($list as $obj) {
@@ -142,7 +141,6 @@ abstract class FormRepository extends ListRepository
             }
         }
 
-
         $events = Di::getDefault()->get('events');
         $preSaveEvent = new PreSaveEvent('create', $givenParameters, $extraParameters);
         $events->emit('centreon-main.pre.save', array($preSaveEvent));
@@ -165,7 +163,11 @@ abstract class FormRepository extends ListRepository
             $db->beginTransaction();
             
             $sField = $class::getUniqueLabelField();
-            if (isset($sField) && isset($givenParameters[$sField]) && !is_null($class::getSlugField())) {
+            if (isset($sField) 
+                    && isset($givenParameters[$sField]) 
+                    && !is_null($class::getSlugField())
+                    && is_null($givenParameters[$class::getSlugField()])) {
+                
                 $oSlugify = new CentreonSlugify($class, get_called_class());
                 $sSlug = $oSlugify->slug($givenParameters[$sField]);
                 $givenParameters[$class::getSlugField()] = $sSlug;
@@ -286,7 +288,9 @@ abstract class FormRepository extends ListRepository
         $givenParameters[$pk] = $givenParameters['object_id'];
         
         $sField = $class::getUniqueLabelField();
-        if (isset($givenParameters[$sField]) && !is_null($class::getSlugField())) {
+        if (isset($givenParameters[$sField]) 
+                && !is_null($class::getSlugField())
+                && is_null($givenParameters[$class::getSlugField()])) {
             $oSlugify = new CentreonSlugify($class, get_called_class());
             $sSlug = $oSlugify->slug($givenParameters[$sField], $givenParameters['object_id']);
             $givenParameters[$class::getSlugField()] = $sSlug;

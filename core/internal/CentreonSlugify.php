@@ -111,7 +111,7 @@ class CentreonSlugify
             $sSlugToSearch = $sSlug;
         }
         
-       $aObject = $oRepo::getList("*", -1, 0, null, 'asc', array($this->sSlugField => $sSlugToSearch."%"));
+        $aObject = $oRepo::getList("*", -1, 0, null, 'asc', array($this->sSlugField => $sSlugToSearch."%"));
         $sSlugNew = self::concat($oModel, $sSlug, $iIobjectId, $aObject);
 
         return $sSlugNew;
@@ -137,7 +137,6 @@ class CentreonSlugify
             $sSlugNew = $sValue;
         } else {
             $iHighSlug = static::highPrefixSlug($aObject, $sSlugField);
-            //$sSlugTemp = substr($sValue, 0, $iPos).static::$sGlue.$iHighSlug;
             
             if (static::testSlug($sValue, $aObject, $sSlugField, $iIobjectId, $sPrimary)) {
                 $sSlugNew = $sValue;
