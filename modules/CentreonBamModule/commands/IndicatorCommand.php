@@ -59,7 +59,13 @@ class IndicatorCommand extends BasicCrudCommand
         parent::__construct();
     }
     
+    /**
+     * 
+     * @cmdForm /centreon-bam/indicator/update required 
+     * @cmdParam boolean|false disable required disable 
+     */
     public function createAction($params){
+        IndicatorRepository::transco($params);
         $id = IndicatorRepository::createIndicator($this->parseObjectParams($params), 'api', '/centreon-bam/indicator/update');
 
         // show slug of boolean indicator only
@@ -72,23 +78,43 @@ class IndicatorCommand extends BasicCrudCommand
     
     /**
      * 
-     * @param array $params
-     * @detail $params array service required The indicator
-     * @detail $params string host 
-     * @detail $params boolean hidden 
+     * @cmdForm /centreon-bam/indicator/update optional 
+     * @cmdObject string ba the ba
+     * @cmdObject string indicator-ba the indicator-ba kpi
+     * @cmdObject string service the service kpi
+     * @cmdObject string boolean the boolean kpi 
+     * @cmdParam none service-tags optional
+     * @cmdParam boolean|false disable optional disable 
+     * @cmdParam boolean|true enable optional enable 
      */
     public function updateAction($object,$params){
+        IndicatorRepository::transco($params);
+        IndicatorRepository::transco($object);
         IndicatorRepository::updateIndicator($this->parseObjectParams($params), 'api', '/centreon-bam/indicator/update',false,$this->parseObjectParams($object));
         \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully updated", true, 'green');
     }
     
+    /**
+     * @cmdObject string ba the ba
+     * @cmdObject string indicator-ba the indicator-ba kpi
+     * @cmdObject string service the service kpi
+     * @cmdObject string boolean the boolean kpi 
+     */
     public function deleteAction($object){
+        IndicatorRepository::transco($object);
         $kpi = Indicator::getKpi($this->parseObjectParams($object));
         IndicatorRepository::delete(array($kpi['kpi_id']));
         \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully deleted", true, 'green');
     }
     
+    /**
+     * @cmdObject string ba the ba
+     * @cmdObject string indicator-ba the indicator-ba kpi
+     * @cmdObject string service the service kpi
+     * @cmdObject string boolean the boolean kpi 
+     */
     public function showAction($object){
+        IndicatorRepository::transco($object);
         $kpi = Indicator::getKpi($this->parseObjectParams($object));
         $this->normalizeSingleSet($kpi);
         $result = '';

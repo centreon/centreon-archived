@@ -44,7 +44,7 @@ use Centreon\Internal\Di;
  *
  * @author lionel
  */
-class CustomMacroRepository
+class CustomMacroRepository extends Repository
 {
     
     public static $forbidenCHar = "`~$^&\"|'<>";
@@ -59,6 +59,8 @@ class CustomMacroRepository
             'macroService' => 'cfg_customvariables_services, svc_macro_id, svc_macro_name'
         ),
     );
+    
+    
     /**
      * 
      * @param type $objectId

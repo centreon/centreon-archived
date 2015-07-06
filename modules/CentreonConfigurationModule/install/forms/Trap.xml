@@ -15,7 +15,7 @@
                     </validators>
                 </field>
                 <field name="traps_oid" label="OID" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-                <field name="manufacturer_id" label="Manufacturer" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field name="manufacturer_id" label="Manufacturer" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-configuration/manufacturer/formlist</defaultValuesRoute>

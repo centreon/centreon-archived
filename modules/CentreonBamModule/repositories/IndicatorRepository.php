@@ -131,7 +131,7 @@ class IndicatorRepository extends FormRepository
         $booleanId = null;
         if ($parameters['kpi_type'] === '0') {
             if($origin === 'api'){
-                $parameters['service_id'] = $parameters['service_id'].'_'.$parameters['host_id'];
+                //$parameters['service_id'] = $parameters['service_id'].'_'.$parameters['host_id'];
             }
             self::createServiceIndicator($lastIndicatorId, $parameters);
         } else if ($parameters['kpi_type'] === '1') {
@@ -178,13 +178,13 @@ class IndicatorRepository extends FormRepository
     {
         $dbconn = Di::getDefault()->get('db_centreon');
 
-        list($serviceId, $hostId) = explode('_', $parameters['service_id']);
-
-        $insertRequest = "UPDATE cfg_bam_kpi"
-            . " SET host_id=:host_id, service_id=:service_id"
+        //list($serviceId, $hostId) = explode('_', $parameters['service_id']);
+        $serviceId = $parameters['service_id'];
+        $insertRequest = "UPDATE cfg_bam_kpi kpi "
+            . " INNER JOIN cfg_hosts_services_relations hsr ON hsr.service_service_id = :service_id "
+            . " SET kpi.host_id=hsr.host_host_id, kpi.service_id=:service_id"
             . " WHERE kpi_id=:kpi_id";
         $stmtInsert = $dbconn->prepare($insertRequest);
-        $stmtInsert->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
         $stmtInsert->bindParam(':service_id', $serviceId, \PDO::PARAM_INT);
         $stmtInsert->bindParam(':kpi_id', $lastIndicatorId, \PDO::PARAM_INT);
         $stmtInsert->execute();

@@ -51,4 +51,35 @@ class AclresourceCommand extends BasicCrudCommand
     {
         parent::__construct();
     }
+    
+    /**
+     * @cmdForm /centreon-administration/aclresource/update required
+     */
+    public function createAction($params) {
+        parent::createAction($params);
+    }
+    
+    /**
+     * @cmdObject string aclresource the acl resource
+     */
+    public function showAction($object, $fields = null, $linkedObject = '') {
+        parent::showAction($object, $fields, $linkedObject);
+    }
+    
+    /**
+     * 
+     * @cmdForm /centreon-administration/aclresource/update optional
+     * @cmdObject string aclresource the acl resource
+     */
+    public function updateAction($object, $params) {
+        parent::updateAction($object, $params);
+    }
+    
+    /**
+     * @cmdObject string aclresource the acl resource
+     */
+    public function deleteAction($object) {
+        parent::deleteAction($object);
+    }
+    
 }

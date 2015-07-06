@@ -40,51 +40,10 @@
         "description" : "description",
         "usergroups" : "aclresource_usergroups",
         "domains" : "aclresource_domains",
-        "environments" : "aclresource_environments"
+        "environments" : "aclresource_environments",
+        "aclresource" : "aclresource"
     },
     "options" : {
-        "showAction" : {
-            "aclresource" : {
-              "functionParams" : "object",
-              "help": "The acl resource",
-              "type": "string",
-              "toTransform" : "aclresource",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "createAction" : {
 
-        },
-        "updateAction" : {
-            "aclresource" : {
-              "functionParams" : "object",
-              "help": "The acl resource",
-              "type": "string",
-              "toTransform" : "aclresource",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "deleteAction" : {
-            "aclresource" : {
-              "functionParams" : "object",
-              "help": "The acl resource",
-              "type": "string",
-              "toTransform" : "aclresource",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "duplicateAction" : {
-            "aclresource" : {
-              "functionParams" : "object",
-              "help": "The acl resource",
-              "type": "string",
-              "toTransform" : "aclresource",
-              "multiple" : false,
-              "required" : true
-            }
-        }
     }
 }

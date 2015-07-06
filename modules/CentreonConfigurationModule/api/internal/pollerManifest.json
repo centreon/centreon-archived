@@ -11,41 +11,10 @@
         "one peer retention" : "one_per_retention",
         "template name" : "tmpl_name",
         "organization" : "organization_id",
-        "enable" : "enable"
+        "enable" : "enable",
+        "poller" : "poller"
     },
     "options" : {
-        "showAction" : {
-            "poller" : {
-              "functionParams" : "object",
-              "help": "The poller",
-              "type": "string",
-              "toTransform" : "poller",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "createAction" : {
-            
-        },
-        "updateAction" : {
-            "poller" : {
-              "functionParams" : "object",
-              "help": "The poller",
-              "type": "string",
-              "toTransform" : "poller",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "deleteAction" : {
-            "poller" : {
-              "functionParams" : "object",
-              "help": "The poller",
-              "type": "string",
-              "toTransform" : "poller",
-              "multiple" : false,
-              "required" : true
-            }
-        }
+
     }
 }

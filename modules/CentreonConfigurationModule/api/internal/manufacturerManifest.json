@@ -8,51 +8,10 @@
         "name" : "name",
         "alias" : "alias",
         "description" : "description",
-        "organization id" : "organization_id"
+        "organization id" : "organization_id",
+        "manufacturer" : "manufacturer"
     },
     "options" : {
-        "showAction" : {
-            "manufacturer" : {
-              "functionParams" : "object",
-              "help": "The manufacturer",
-              "type": "string",
-              "toTransform" : "manufacturer",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "createAction" : {
-            
-        },
-        "updateAction" : {
-            "manufacturer" : {
-              "functionParams" : "object",
-              "help": "The manufacturer",
-              "type": "string",
-              "toTransform" : "manufacturer",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "deleteAction" : {
-            "manufacturer" : {
-              "functionParams" : "object",
-              "help": "The manufacturer",
-              "type": "string",
-              "toTransform" : "manufacturer",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "duplicateAction" : {
-            "manufacturer" : {
-              "functionParams" : "object",
-              "help": "The manufacturer",
-              "type": "string",
-              "toTransform" : "manufacturer",
-              "multiple" : false,
-              "required" : true
-            }
-        }
+
     }
 }

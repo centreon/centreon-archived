@@ -15,5 +15,7 @@
     "state_retention_file": "%var_lib_dir%/status.sav",
     "status_file": "%var_lib_dir%/status.dat",
     "use_setpgid": "1",
-    "command_file": "%var_lib_dir%/rw/centengine.cmd"
+    "command_file": "%var_lib_dir%/rw/centengine.cmd",
+    "illegal_macro_output_chars": "%illegal_macro_output_chars%",
+    "illegal_object_name_chars": "%illegal_object_name_chars%"
 }

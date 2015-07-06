@@ -32,54 +32,32 @@
  * For more information : contact@centreon.com
  *
  */
-namespace CentreonAdministration\Commands;
 
-use Centreon\Api\Internal\BasicCrudCommand;
+namespace Centreon\Internal\Form\Validators;
 
 /**
- * 
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
+ *
+ * @package Centreon
+ * @subpackage Core
  */
-class UserCommand extends BasicCrudCommand
+class IllegalChars extends ForbiddenChar
 {
     /**
+     * Validate function for illegal characters
      *
-     * @var type 
+     * Use the object illegal characters constant
+     *
+     * Validator params
+     *   - None
+     *
+     * @param string $value The value to validate
+     * @param array $params The list of parameters for this validator
+     * @return array
      */
-    public $objectName = 'user';
-    
-    public function __construct()
-    {
-        parent::__construct();
+    public function validate($value, $params = array()) {
+        $params['characters'] = CENTREON_ILLEGAL_CHAR_OBJ;
+        return parent::validate($value, $params);
     }
-    
-    /**
-     * @cmdForm /centreon-administration/user/update required
-     */
-    public function createAction($params) {
-        parent::createAction($params);
-    }
-    
-    /**
-     * @cmdForm /centreon-administration/user/update optional
-     * @cmdObject string user the user
-     */
-    public function updateAction($object, $params) {
-        parent::updateAction($object, $params);
-    }
-    
-    
-    /**
-     * @cmdObject string user the user
-     */
-    public function showAction($object, $fields = null, $linkedObject = '') {
-        parent::showAction($object, $fields, $linkedObject);
-    }
-    
-    /**
-     * @cmdObject string user the user
-     */
-    public function deleteAction($object) {
-        parent::deleteAction($object);
-    }
-    
 }
+

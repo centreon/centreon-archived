@@ -6,7 +6,8 @@
     "attributesMap" : {
         "id" : "contact_id",
         "description" : "description",
-        "timezone" : "timezone_id"
+        "timezone" : "timezone_id",
+        "contact" : "contact"
     },
     "externalAttributeSet" : [
         {
@@ -19,48 +20,6 @@
         }
     ],
     "options" : {
-        "showAction" : {
-            "contact" : {
-              "functionParams" : "object",
-              "help": "The contact",
-              "type": "string",
-              "toTransform" : "contact",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "createAction" : {
 
-        },
-        "updateAction" : {
-            "contact" : {
-              "functionParams" : "object",
-              "help": "The contact",
-              "type": "string",
-              "toTransform" : "contact",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "deleteAction" : {
-            "contact" : {
-              "functionParams" : "object",
-              "help": "The contact",
-              "type": "string",
-              "toTransform" : "contact",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "duplicateAction" : {
-            "contact" : {
-              "functionParams" : "object",
-              "help": "The contact",
-              "type": "string",
-              "toTransform" : "contact",
-              "multiple" : false,
-              "required" : true
-            }
-        }
     }
 }

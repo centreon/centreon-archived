@@ -32,54 +32,11 @@
  * For more information : contact@centreon.com
  *
  */
-namespace CentreonAdministration\Commands;
 
-use Centreon\Api\Internal\BasicCrudCommand;
 
 /**
- * 
+ * List of constant for Centreon
  */
-class UserCommand extends BasicCrudCommand
-{
-    /**
-     *
-     * @var type 
-     */
-    public $objectName = 'user';
-    
-    public function __construct()
-    {
-        parent::__construct();
-    }
-    
-    /**
-     * @cmdForm /centreon-administration/user/update required
-     */
-    public function createAction($params) {
-        parent::createAction($params);
-    }
-    
-    /**
-     * @cmdForm /centreon-administration/user/update optional
-     * @cmdObject string user the user
-     */
-    public function updateAction($object, $params) {
-        parent::updateAction($object, $params);
-    }
-    
-    
-    /**
-     * @cmdObject string user the user
-     */
-    public function showAction($object, $fields = null, $linkedObject = '') {
-        parent::showAction($object, $fields, $linkedObject);
-    }
-    
-    /**
-     * @cmdObject string user the user
-     */
-    public function deleteAction($object) {
-        parent::deleteAction($object);
-    }
-    
-}
+
+/* Illegal macro for Centreon Engine Object name */
+define('CENTREON_ILLEGAL_CHAR_OBJ', '`~!$%^&*”|\'<>?,()=');

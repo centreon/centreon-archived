@@ -97,7 +97,12 @@ class BasicRepository
         
         $newArrayParam = array();
         foreach($params as $key=>$param){
-            $newArrayParam[static::$attributesMap[$key]] = $param;
+            if(isset(static::$attributesMap[$key])){
+                $newArrayParam[static::$attributesMap[$key]] = $param;
+            }else{
+                $newArrayParam[$key] = $param;
+            }
+            
         }
         $params = $newArrayParam;
     }

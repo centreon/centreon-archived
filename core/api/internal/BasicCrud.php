@@ -502,8 +502,8 @@ class BasicCrud extends AbstractCommand
     public function updateAction($object, $params)
     {
         $repository = $this->repository;
-        $repository->transco($params);
-        $repository->transco($object);
+        $repository::transco($params);
+        $repository::transco($object);
         $paramList = $this->parseObjectParams($params);
         $paramList['object'] = $this->objectName;
 
@@ -534,7 +534,7 @@ class BasicCrud extends AbstractCommand
     public function deleteAction($object)
     {
         $repository = $this->repository;
-        $repository->transco($object);
+        $repository::transco($object);
         $id = '';
         $sName = static::renameObject($this->objectName);
         

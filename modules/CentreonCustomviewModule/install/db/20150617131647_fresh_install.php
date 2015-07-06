@@ -135,6 +135,7 @@ class FreshInstall extends AbstractMigration
         $cfg_widgets_parameters
                 ->addColumn('parameter_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
                 ->addColumn('parameter_name','string', array('limit' => 255, 'null' => false))
+                ->addColumn('parameter_code_name','string', array('limit' => 255, 'null' => false))
                 ->addColumn('default_value','string', array('limit' => 255, 'null' => true))
                 ->addColumn('header_title','string', array('limit' => 255, 'null' => true))
                 ->addColumn('require_permission','string', array('limit' => 255, 'null' => false))
