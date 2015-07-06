@@ -47,7 +47,7 @@ $(document).ready(function() {
                     $('#sideRight').css('display','block');
                 },
                 error : function(error){
-                    console.log('error');
+                    alertModalMessage("an error occured", "alert-danger");
                 }
             });
 
@@ -80,7 +80,7 @@ $(document).ready(function() {
                             });
                         },
                         error : function(error){
-                            console.log(error);
+                            alertModalMessage("an error occured", "alert-danger");
                         }
                     });
                 });
@@ -102,7 +102,7 @@ $(document).ready(function() {
                             });
                         },
                         error : function(error){
-                            console.log(error);
+                            alertModalMessage("an error occured", "alert-danger");
                         }
                     });
                 }
