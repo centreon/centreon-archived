@@ -39,4 +39,4 @@
  */
 
 /* Illegal macro for Centreon Engine Object name */
-define('CENTREON_ILLEGAL_CHAR_OBJ', '');
+define('CENTREON_ILLEGAL_CHAR_OBJ', '`~!$%^&*”|\'<>?,()=');
