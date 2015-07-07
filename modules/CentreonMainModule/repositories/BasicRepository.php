@@ -96,15 +96,18 @@ class BasicRepository
     public static function transco(&$params){
         
         $newArrayParam = array();
-        foreach($params as $key=>$param){
-            if(isset(static::$attributesMap[$key])){
-                $newArrayParam[static::$attributesMap[$key]] = $param;
-            }else{
-                $newArrayParam[$key] = $param;
+        if(is_array($params)){
+            foreach($params as $key=>$param){
+                if(isset(static::$attributesMap[$key])){
+                    $newArrayParam[static::$attributesMap[$key]] = $param;
+                }else{
+                    $newArrayParam[$key] = $param;
+                }
+
             }
-            
+            $params = $newArrayParam;
         }
-        $params = $newArrayParam;
+        
     }
     
     
