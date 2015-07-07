@@ -66,14 +66,8 @@ class Csrf
      */
     public static function checkToken($value, $method = 'POST')
     {
-        if($method === 'POST'){
-            error_log('header : '.$value.' ; session : '.$_SESSION[self::$sessionTokenName]."\n",3,"/var/tmp/my-errors.log");
-        }
-        
         if (false === in_array(strtoupper($method), self::$ignoreMethod)) {
-            error_log('header : '.$value.' ; session : '.$_SESSION[self::$sessionTokenName]."\n",3,"/var/tmp/my-errors.log");
             if ($value != $_SESSION[self::$sessionTokenName]) {
-                error_log("plantage \n",3,"/var/tmp/my-errors.log");
                 return false;
             }
         }
@@ -101,7 +95,7 @@ class Csrf
      */
     public static function mustBeGenerate($method = 'POST')
     {
-        if (false === isset($_SESSION[self::$sessionTokenName]) || false === in_array(strtoupper($method), self::$ignoreMethod)) {
+        if (false === isset($_SESSION[self::$sessionTokenName])) {
             return true;
         }
         return false;

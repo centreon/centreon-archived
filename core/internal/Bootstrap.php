@@ -252,18 +252,12 @@ class Bootstrap
                             return false;
                         });
                         if (count($matchingRoute) == 0) {
-                            if($request->method() === 'POST'){
-                                error_log($request->pathname()."\n",3,"/var/tmp/my-errors.log");
-                            }
-                            
-                            
-                            
                             if (false === Csrf::checkToken($tokenValue, $request->method())) {
                                 $toSend = true;
-                                $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), 0);
-                                $response->sendCookies(true);
                                 $response->code(403)->json(array("message" => "CSRF Token is no valid"));
-                                // @todo clean end the query
+                                $response->send();
+                                // @todo Exception
+                                exit();
                             } else {
                                 if (Csrf::mustBeGenerate($request->method())) {
                                     /* Generate and send a new csrf cookie */
