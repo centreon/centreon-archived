@@ -50,33 +50,33 @@ use CentreonConfiguration\Repository\ConfigTestRepository;
 class ConfigCommand extends AbstractCommand
 {
     /**
-     * Action for Generating configuration files
-     * @param integer $id Poller id
+     * @cmdObject number id the poller id
      */
-    public function generateAction($id)
+    public function generateAction($object)
     {
+        $id = $object['id'];
         $obj = new ConfigGenerateRepository($id);
         $obj->generate();
         echo $obj->getOutput();
     }
 
     /**
-     * Action for Move configuration files
-     * @param integer $id Poller id
+     * @cmdObject number id the poller id
      */
-    public function moveAction($id)
+    public function moveAction($object)
     {
+        $id = $object['id'];
         $obj = new ConfigMoveRepository($id);
         $obj->moveConfig();
         echo $obj->getOutput();
     }
 
     /**
-     * Action for testing configuration files
-     * @param integer $id Poller id
+     * @cmdObject number id the poller id
      */
-    public function testAction($id)
+    public function testAction($object)
     {
+        $id = $object['id'];
         $obj = new ConfigTestRepository($id);
         $obj->checkConfig();
         // Only CentEngine is tested at the moment
@@ -94,12 +94,15 @@ class ConfigCommand extends AbstractCommand
     }
 
     /**
-     * Action for Apply configuration
-     * @param integer $id Poller id
-     * @param string $action Action to be applied
+
+    /**
+     * @cmdObject number id the poller id
+     * @cmdParam string action required the action 
      */
-    public function applyAction($id, $action)
+    public function applyAction($object, $param)
     {
+        $id = $object['id'];
+        $action = $param['action'];
         $obj = new ConfigApplyRepository($id);
         $obj->action($action);
         echo $obj->getOutput();
