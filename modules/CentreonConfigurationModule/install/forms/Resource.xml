@@ -28,7 +28,7 @@
                 <field name="resource_comment" label="Comment" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0">
                     <help>Comment of the resource.</help>
                 </field>
-                <field name="resource_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+                <field name="resource_activate" normalized_name="disable" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
                     <attributes>
                         <choices>
                             <Enabled>1</Enabled>

@@ -69,7 +69,7 @@ class BasicMacroSupport extends BasicCrudCommand
     {       
       
         $paramList = $this->parseObjectParams($params);        
-        try {
+        //try {
             $repository = $this->repository;
             $sName = $this->objectName;
             $repository::transco($object);
@@ -152,9 +152,9 @@ class BasicMacroSupport extends BasicCrudCommand
                     break;
             }
             
-        } catch(\Exception $ex) {
+        /*} catch(\Exception $ex) {
             InputOutput::display($ex->getMessage(), true, 'red');
-        }
+        }*/
     }
     
     /**
@@ -166,13 +166,8 @@ class BasicMacroSupport extends BasicCrudCommand
     public function updateMacroAction($object, $macro, $params)
     {
         $paramList = $this->parseObjectParams($params);
-        
-        /*
-        if(!isset($paramList['hidden']) || !is_numeric($paramList['hidden']) || $paramList['hidden'] < 0 || $paramList['hidden'] > 1){
-            $paramList['hidden'] = 0;
-        }*/
-        
-        try {
+                
+       // try {
             $repository = $this->repository;
             //$objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
             $sName = $this->objectName;
@@ -206,9 +201,9 @@ class BasicMacroSupport extends BasicCrudCommand
                 'green'
             );
 
-        } catch (\Exception $ex) {
+       /* } catch (\Exception $ex) {
             InputOutput::display($ex->getMessage(), true, 'red');
-        }
+        }*/
         
     }
     
@@ -219,7 +214,7 @@ class BasicMacroSupport extends BasicCrudCommand
      */
     public function listMacroAction($object = null)
     {
-        try {
+        //try {
             $repository = $this->repository;
             //$objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
             $sName = $this->objectName;
@@ -255,9 +250,9 @@ class BasicMacroSupport extends BasicCrudCommand
             foreach ($macros as $macro) {
                 echo "\n".$macro['macro_name'] . ";" . $macro['macro_value'] . ";" . $macro['macro_hidden'];
             }
-        } catch (\Exception $ex) {
+        /*} catch (\Exception $ex) {
             InputOutput::display($ex->getMessage(), true, 'red');
-        }
+        }*/
     }
     
     
@@ -269,7 +264,7 @@ class BasicMacroSupport extends BasicCrudCommand
      */
     public function removeMacroAction($object, $macro)
     {
-        try {
+        //try {
             $repository = $this->repository;
             //$objectId = $repository::getIdFromUnicity($this->parseObjectParams($object));
             $sName = $this->objectName;
@@ -302,11 +297,8 @@ class BasicMacroSupport extends BasicCrudCommand
                 true,
                 'green'
             );
-        } catch (\Exception $ex) {
+       /* } catch (\Exception $ex) {
             InputOutput::display($ex->getMessage(), true, 'red');
-        }
+        }*/
     }
-    
-    
-    //put your code here
 }
