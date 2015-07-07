@@ -47,51 +47,58 @@ use Centreon\Internal\Di;
  */
 class BasicCrud extends AbstractCommand
 {
-    
+    /**
+     *
+     * @var array 
+     */
     public $options = array();
     
+    /**
+     *
+     * @var array 
+     */
     protected $paramsToExclude = array();
 
 
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $objectManifest = '';
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     protected $liteAttributesSet = array();
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     protected $externalAttributeSet = array();
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     public $attributesMap = array();
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $objectName = '';
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $objectBaseUrl = '';
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $objectClass = '';
     
@@ -103,19 +110,19 @@ class BasicCrud extends AbstractCommand
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     public static $moduleShortName = '';
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     public $relationMap = array();
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     public $simpleRelationMap = array();
     
@@ -127,7 +134,7 @@ class BasicCrud extends AbstractCommand
     /**
      * 
      */
-    static $aRenameModules = array(
+    public static $aRenameModules = array(
         'businessactivity' => "bam",
         'trap' => "traps"
     );
@@ -164,20 +171,35 @@ class BasicCrud extends AbstractCommand
         $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . $this->objectName;
     }
     
-    public function refreshAttributesMap(){
+    /**
+     * 
+     */
+    public function refreshAttributesMap()
+    {
         $repository = $this->repository;
         $repository::setAttributesMap($this->attributesMap);
     }
     
-    private function getChoices($attr){
+    /**
+     * 
+     * @param type $attr
+     * @return string
+     */
+    private function getChoices($attr)
+    {
         $choices = "";
-        if(!empty($attr['choices'])){
-            $choices = " Choices => ".implode(' , ',array_keys($attr['choices']));
+        if (!empty($attr['choices'])) {
+            $choices = " Choices => ".implode(' , ', array_keys($attr['choices']));
         }
         return $choices;
     }
 
-    public function getAttributesMapFromForm($route){
+    /**
+     * 
+     * @param string $route
+     */
+    public function getAttributesMapFromForm($route)
+    {
         $db = Di::getDefault()->get('db_centreon');
         $sql = 'select ff.* from cfg_forms f
                     inner join cfg_forms_sections fs on fs.form_id = f.form_id
@@ -189,15 +211,21 @@ class BasicCrud extends AbstractCommand
         $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
         $stmt->execute();
         $rows = $stmt->fetchAll();
-        foreach($rows as $row){
-            if(empty($this->attributesMap[$row['normalized_name']])){
+        foreach ($rows as $row) {
+            if (empty($this->attributesMap[$row['normalized_name']])) {
                 $this->attributesMap[$row['normalized_name']] = $row['name'];
             }
         }
         
     }
     
-    public function getFieldsFromForm($route,$required){
+    /**
+     * 
+     * @param string $route
+     * @param type $required
+     */
+    public function getFieldsFromForm($route, $required)
+    {
         $db = Di::getDefault()->get('db_centreon');
         $sql = 'select ff.* from cfg_forms f
                     inner join cfg_forms_sections fs on fs.form_id = f.form_id
@@ -210,19 +238,21 @@ class BasicCrud extends AbstractCommand
         $stmt->execute();
         $rows = $stmt->fetchAll();
 
-        foreach($rows as $row){
-            $attributes = json_decode($row['attributes'],true);
+        foreach ($rows as $row) {
+            $attributes = json_decode($row['attributes'], true);
             $multiple = false;
             $mandatory = false;
-            if($required){
-                if($row['mandatory'] !== "0"){
+            if ($required) {
+                if ($row['mandatory'] !== "0") {
                     $mandatory = true;
                 }
             }
-            if(isset($attributes['multiple'])){
+            
+            if (isset($attributes['multiple'])) {
                 $multiple = $attributes['multiple'];
             }
-            if(empty($this->attributesMap[$row['normalized_name']])){
+            
+            if (empty($this->attributesMap[$row['normalized_name']])) {
                 $this->attributesMap[$row['normalized_name']] = $row['name'];
             }
             
@@ -235,7 +265,7 @@ class BasicCrud extends AbstractCommand
                 'attributes' => $attributes
             );
             
-            if($required && isset($row['default_value']) && $row['default_value'] != ""){
+            if ($required && isset($row['default_value']) && $row['default_value'] != "") {
                 $this->options[$row['normalized_name']]['defaultValue'] = $row['default_value'];
             }
         }
@@ -256,7 +286,10 @@ class BasicCrud extends AbstractCommand
             if ($module !== static::$moduleShortName) {
                 $modulePath = Informations::getModulePath($module);
                 if (file_exists($modulePath . '/api/internal/' . $manifestFile)) {
-                    $objectManifest = self::mergeManifest($objectManifest, json_decode(file_get_contents($modulePath . '/api/internal/' . $manifestFile), true));
+                    $objectManifest = self::mergeManifest(
+                        $objectManifest,
+                        json_decode(file_get_contents($modulePath . '/api/internal/' . $manifestFile), true)
+                    );
                 }
             }
         }
@@ -270,21 +303,28 @@ class BasicCrud extends AbstractCommand
     }
 
     /**
-     *
+     * 
+     * @param array $objectManifest
+     * @param array $additionalManifest
+     * @return array
      */
     private function mergeManifest($objectManifest, $additionalManifest)
     {
         if (isset($additionalManifest['liteAttributesSet'])) {
-            $objectManifest['liteAttributesSet'] = $objectManifest['liteAttributesSet'] . ',' . $additionalManifest['liteAttributesSet'];
+            $objectManifest['liteAttributesSet'] =
+                $objectManifest['liteAttributesSet'] . ',' . $additionalManifest['liteAttributesSet'];
         }
         if (isset($additionalManifest['externalAttributeSet'])) {
-            $objectManifest['externalAttributeSet'] = array_merge($objectManifest['externalAttributeSet'], $additionalManifest['externalAttributeSet']);
+            $objectManifest['externalAttributeSet'] =
+                array_merge($objectManifest['externalAttributeSet'], $additionalManifest['externalAttributeSet']);
         }
         if (isset($additionalManifest['relationMap'])) {
-            $objectManifest['relationMap'] = array_merge($objectManifest['relationMap'], $additionalManifest['relationMap']);
+            $objectManifest['relationMap'] =
+                array_merge($objectManifest['relationMap'], $additionalManifest['relationMap']);
         }
         if (isset($additionalManifest['attributesMap'])) {
-            $objectManifest['attributesMap'] = array_merge($objectManifest['attributesMap'], $additionalManifest['attributesMap']);
+            $objectManifest['attributesMap'] =
+                array_merge($objectManifest['attributesMap'], $additionalManifest['attributesMap']);
         }
 
         return $objectManifest;
@@ -292,8 +332,8 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
-     * @param type $dataset
-     * @param type $strict
+     * @param array $dataset
+     * @param boolean $strict
      */
     protected function normalizeParams(&$dataset, $strict = true)
     {
@@ -304,13 +344,13 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
-     * @param type $dataset
-     * @param type $strict
+     * @param array $dataset
+     * @param boolean $strict
      */
     protected function normalizeSingleSet(&$dataset, $strict = true)
     {
         $newDataset = array();
-        foreach($dataset as $dKey => $dValue) {
+        foreach ($dataset as $dKey => $dValue) {
             $normalizeKey = array_search($dKey, $this->attributesMap);
             if ($normalizeKey !== false) {
                 $newDataset[$normalizeKey] = $dValue;
@@ -326,7 +366,6 @@ class BasicCrud extends AbstractCommand
             }
         }
         
-        
         $dataset = $newDataset;
     }
 
@@ -339,7 +378,6 @@ class BasicCrud extends AbstractCommand
      */
     public function listAction($fields = null, $count = -1, $offset = 0)
     {
-        
         // Getting the repository name
         $repository = $this->repository;
 
@@ -436,8 +474,9 @@ class BasicCrud extends AbstractCommand
         foreach ($this->externalAttributeSet as $externalAttribute) {
             $aFieldAttribute[] = $externalAttribute['type'];
         }
-        foreach ($params as $key => $param) { 
-            if (in_array($key, $aFieldAttribute)) { 
+
+        foreach ($params as $key => $param) {
+            if (in_array($key, $aFieldAttribute)) {
                 foreach ($this->externalAttributeSet as $externalAttribute) {
                     if ($externalAttribute['link'] == 'simple' && $key === $externalAttribute['type']) {
                         $aFields = explode(",", $externalAttribute['fields']);
@@ -445,6 +484,7 @@ class BasicCrud extends AbstractCommand
                             $aFields[1],
                             $params[$externalAttribute['type']]
                         );
+
                         if (count($iId) > 0) {
                             $finalParamList[$key] = $iId[0];
                         } else {
@@ -478,7 +518,7 @@ class BasicCrud extends AbstractCommand
                     }
                 }
             } else {
-               $finalParamList[$key] = $param; 
+                $finalParamList[$key] = $param;
             }
         }
         return $finalParamList;
@@ -493,8 +533,10 @@ class BasicCrud extends AbstractCommand
     {
         $repository = $this->repository;
         $repository::transco($params);
+        
         $paramList = $this->parseObjectParams($params);
         $paramList['object'] = $this->objectName;
+        
         $idOfCreatedElement = $repository::create(
             $paramList,
             'api',
@@ -539,7 +581,7 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
-     * @param type $object
+     * @param string $object
      */
     public function deleteAction($object)
     {
@@ -568,6 +610,8 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
+     * @param string $sName
+     * @return string
      */
     public static function renameObject ($sName)
     {

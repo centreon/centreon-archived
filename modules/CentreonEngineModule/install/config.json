@@ -9,11 +9,11 @@
     "isdisableable" : false,
     "url" : "",
     "description" : "Centreon Engine Module",
-    "core version" : "2.99.2",
+    "core version" : "2.99.5",
     "dependencies" : [
         {
             "name" : "centreon-configuration",
-            "version" : "2.99.2"
+            "version" : "2.99.5"
         }
     ],
     "optionnal dependencies" : [

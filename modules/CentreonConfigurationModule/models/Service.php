@@ -325,7 +325,27 @@ class Service extends CentreonBaseModel
         return true;   
     }
     
-    public static function getHostSlugFromServiceSlug($serviceslug){
+    /**
+     * 
+     * @param int $iId
+     * @param string $sSlug
+     */
+    public static function updateSlug($iId, $sSlug)
+    {
+        $db = Di::getDefault()->get(static::$databaseName);
+        if (empty($sSlug) || empty($iId)) {
+            return;
+        }
+
+        $query = "UPDATE ".static::$table." SET ".static::$slugField." = :slug WHERE ".static::$primaryKey." = :svc_id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam('svc_id', $iId, \PDO::PARAM_INT);
+        $stmt->bindParam('slug', $sSlug, \PDO::PARAM_STR);
+        $stmt->execute();        
+    }
+    
+    public static function getHostSlugFromServiceSlug($serviceslug)
+    {
         $db = Di::getDefault()->get(static::$databaseName);
         $query = "Select h.host_slug from cfg_services s"
             . " inner join cfg_hosts_services_relations hsr on hsr.service_service_id = s.service_id "
@@ -339,4 +359,5 @@ class Service extends CentreonBaseModel
             return $row['host_slug'];
         }
     }
+    
 }

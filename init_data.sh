@@ -85,13 +85,13 @@ echo " ==== Creating host templates ==== "
 
 echo " ==== Creating hosts ==== "
 ./external/bin/centreonConsole centreon-configuration:Host:create --name='Centreon-export' --address='10.30.2.87' --host-templates='generic-host' --poller='central'
-./external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-RWE-PP' --address='10.30.2.127' --host-templates='os-linux-snmp-2' --poller='central'
-./external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES22' --address='10.50.1.84' --host-templates='os-linux-snmp-2' --poller='central'
-./external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES3' --address='10.50.1.85' --host-templates='os-linux-snmp-2' --poller='central'
+./external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-RWE-PP' --address='10.30.2.127' --host-templates='os-linux-snmp' --poller='central'
+./external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES22' --address='10.50.1.84' --host-templates='os-linux-snmp' --poller='central'
+./external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES3' --address='10.50.1.85' --host-templates='os-linux-snmp' --poller='central'
 
 echo " ==== Creating services  ==== "
 ./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-rwe-pp' --template-model-stm='OS-Linux-SNMP-traffic-name'
-./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0' 
+./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='ces3-rwe-pp-traffic-eth0' --name='INTERFACENAME' --value='eth0' 
 
 #./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-qde-pp-ces22' --template-model-stm='OS-Linux-SNMP-traffic-name'
 #./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0'
@@ -100,7 +100,7 @@ echo " ==== Creating services  ==== "
 #./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0'
 
 ./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-rwe-pp' --template-model-stm='OS-Linux-SNMP-disk-name'
-./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='disk' --name='DISKNAME' --value='/'
+./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='ces3-rwe-pp-disk' --name='DISKNAME' --value='/'
 
 #./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-qde-pp-ces22' --template-model-stm='OS-Linux-SNMP-disk-name'
 #./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='disk' --name='DISKNAME' --value='/'
@@ -112,18 +112,17 @@ echo " ==== Creating KPI and BA ==== "
 
 # FIXME slugs are not unique per host for the moment
 # So we are forcing slugs via SQL temporary to work arount it for the sprint review
-mysql -u root centreon -e "update cfg_services set service_slug='memory'  where service_description='memory';"
-mysql -u root centreon -e "update cfg_services set service_slug='ping'  where service_description='ping';"
+
 
 ./external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les ping des machines des PP' --ba-type-id=1 --level-w=70 --level-c=50
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='os-linux-snmp-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='os-linux-snmp-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='os-linux-snmp-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 
 ./external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les memory des machines des PP' --ba-type-id=1 --level-w=70 --level-c=50
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --service-slug='memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --service-slug='memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --service-slug='memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --service-slug='ces3-rwe-pp-memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --service-slug='ces3-rwe-pp-memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --service-slug='ces3-rwe-pp-memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 
 # Put the 2 BAs in a new BA
 ./external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA ping + memory PP' --ba-type-id=1 --level-w=70 --level-c=50

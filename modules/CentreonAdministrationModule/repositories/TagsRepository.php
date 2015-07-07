@@ -101,7 +101,6 @@ class TagsRepository extends Repository
     public static function add($tagName, $resourceName, $resourceId, $bGlobal = 0, $iIdTemplate =  '')
     {
         $resourceName = self::convertResource($resourceName);
-        
         if (!in_array($resourceName, static::$resourceType)) {
             throw new Exception("This resource type does not support tags.");
         }
@@ -613,7 +612,12 @@ class TagsRepository extends Repository
      * @return boolean
      */
     public static function isLink($resourceName, $resourceId, $tagId)
-    {
+    {       
+        $resourceName = self::convertResource($resourceName);
+        if (!in_array($resourceName, static::$resourceType)) {
+            throw new Exception("This resource type does not support tags.");
+        }
+        
         $dbconn = Di::getDefault()->get('db_centreon');
         foreach (static::$resourceType as $resource) {
             $query = "SELECT COUNT(*) as nb FROM cfg_tags_" . $resourceName . "s WHERE tag_id = :tag_id AND resource_id = :resource_id";

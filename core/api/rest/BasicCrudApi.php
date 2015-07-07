@@ -178,7 +178,7 @@ class BasicCrudApi extends Api
     protected function normalizeSingleSet(&$dataset, $strict = true)
     {
         $newDataset = array();
-        foreach($dataset as $dKey => $dValue) {
+        foreach ($dataset as $dKey => $dValue) {
             $normalizeKey = array_search($dKey, $this->attributesMap);
             if ($normalizeKey !== false) {
                 $newDataset[$normalizeKey] = $dValue;
@@ -204,7 +204,6 @@ class BasicCrudApi extends Api
      */
     public function listAction()
     {
-        // 
         $headers = $this->request->headers();
         $version = null;
         if (isset($headers['centreon-version'])) {
@@ -212,7 +211,6 @@ class BasicCrudApi extends Api
         } /* mode strict */
         $calledMethod = '\\' . get_called_class() . '::' . __FUNCTION__;
         static::executeRoute($calledMethod, $version);
-        
     }
     
     /**
@@ -235,7 +233,6 @@ class BasicCrudApi extends Api
         
         $this->normalizeParams($list);
         
-        // 
         foreach ($list as &$singleObject) {
             $finalLink = $this->router->getPathFor($objLink, array('id' => $singleObject['id']));
             $singleObject['href'] = 'http://' . $headers['host'] . $finalLink;
@@ -260,7 +257,7 @@ class BasicCrudApi extends Api
     private function viewObject()
     {
         $headers = $this->request->headers();
-        // 
+        
         $params = $this->getParams();
         $hostUrl = 'http://' . $headers['host'];
         $repository = $this->repository;
@@ -290,10 +287,11 @@ class BasicCrudApi extends Api
                 $object['href'] = $hostUrl . $finalLink;
             }
 
-            // 
+            //
             $links = array();
             foreach ($linkedObjects as $linkedObject) {
-                $links[$this->objectName . '.' . $linkedObject] = $hostUrl . "/$linkedObject/" . '{' . $linkedObject . '}';
+                $links[$this->objectName . '.' . $linkedObject] =
+                    $hostUrl . "/$linkedObject/" . '{' . $linkedObject . '}';
             }
 
             // aaaa
@@ -335,7 +333,7 @@ class BasicCrudApi extends Api
      */
     public function createAction()
     {
-        // 
+        //
         $params = $this->getParams();
         $apiResourceObjects = json_decode($params['data'], true);
 
@@ -438,7 +436,7 @@ class BasicCrudApi extends Api
      */
     public function deleteAction()
     {
-        // 
+        //
         $params = $this->getParams();
         $repository = $this->repository;
         $returnCode = 204;
@@ -481,7 +479,11 @@ class BasicCrudApi extends Api
                 }
                 
             } elseif (isset($this->simpleRelationMap[$linkedObject])) {
-                $fList = $repository::getSimpleRelation($this->simpleRelationMap[$linkedObject], $linkedObject, $objectId);
+                $fList = $repository::getSimpleRelation(
+                    $this->simpleRelationMap[$linkedObject],
+                    $linkedObject,
+                    $objectId
+                );
             }
             
             if (count($fList) > 0) {
