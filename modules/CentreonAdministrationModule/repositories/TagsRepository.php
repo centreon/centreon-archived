@@ -82,6 +82,10 @@ class TagsRepository extends Repository
         ),
     );
     
+    public static $attributesMap = array(
+        
+    );
+    
     protected static function convertResource($sResource)
     {
         if (array_key_exists($sResource, self::$aConvertResource)) {

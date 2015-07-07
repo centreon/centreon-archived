@@ -192,6 +192,7 @@ class Command
         preg_match_all('/@cmdForm\s+(\S+|\/)+\s+(\S+)/', $docComment, $matches);
         $formRoute = null;
         $required = false;
+        $attributeMap = false;
         if(!empty($matches[1][0])){
             $formRoute = $matches[1][0];
             if(!empty($matches[2][0])){
@@ -199,15 +200,25 @@ class Command
                     case 'required' : 
                         $required = true;
                         break;
+                    case 'map' :
+                        $attributeMap = true;
+                        break;
                     case 'optional' : 
                     default :
                         $required = false;
                         break;
                 }
             }
-            if (method_exists($aliveObject, 'getFieldsFromForm')) {
-                $aliveObject->getFieldsFromForm($formRoute,$required);
+            if(!$attributeMap){
+                if (method_exists($aliveObject, 'getFieldsFromForm')) {
+                    $aliveObject->getFieldsFromForm($formRoute,$required);
+                }
+            }else{
+                if (method_exists($aliveObject, 'getAttributesMapFromForm')) {
+                    $aliveObject->getAttributesMapFromForm($formRoute);
+                }
             }
+            
         }
     }
     

@@ -68,6 +68,7 @@ class ManufacturerCommand extends BasicCrudCommand
     }
     
     /**
+     * @cmdForm /centreon-configuration/manufacturer/update map
      * @cmdObject string manufacturer the manufacturer
      */
     public function showAction($object, $fields = null, $linkedObject = '') {

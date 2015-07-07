@@ -84,7 +84,7 @@ class ObjectdetailRepository
                 case static::ACKNOWLEDGE:
                     $options = array(
                         isset($additionalParams['sticky']) ? 1 : 0,
-                        isset($additionalParams['notify']) ? 1 : 0,
+                        isset($additionalParams['notify']) ? $additionalParams['notify'] : 0,
                         isset($additionalParams['persistent']) ? 1 : 0,
                         $additionalParams['author'],
                         $additionalParams['comment']

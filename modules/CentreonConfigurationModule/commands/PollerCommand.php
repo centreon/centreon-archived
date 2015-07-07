@@ -68,6 +68,7 @@ class PollerCommand extends BasicCrudCommand
     }
     
     /**
+     * @cmdForm /centreon-configuration/poller/update map
      * @cmdObject string poller the poller
      */
     public function showAction($object, $fields = null, $linkedObject = '') {

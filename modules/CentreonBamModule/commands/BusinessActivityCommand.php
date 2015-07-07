@@ -64,7 +64,7 @@ class BusinessActivityCommand extends BasicCrudCommand
     }
     
     /**
-     * 
+     * @cmdForm /centreon-bam/businessactivity/update map 
      * @cmdObject string ba the ba
      * 
      */     

@@ -58,7 +58,7 @@ class BasicTagSupport extends BasicMacroSupport
 
             $repository = $this->repository;
             $sName = $this->objectName;
-           
+            $repository::transco($object);
             $aId = $repository::getListBySlugName($object[$sName]);
             if (count($aId) > 0) {
                 $object = $aId[0]['id'];
@@ -125,7 +125,7 @@ class BasicTagSupport extends BasicMacroSupport
     {
         try {
             $repository = $this->repository;
-            
+            $repository::transco($object);
             $sName = $this->objectName;
            
             $aId = $repository::getListBySlugName($object[$sName]);

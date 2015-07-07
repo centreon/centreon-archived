@@ -68,6 +68,7 @@ class TimeperiodCommand extends BasicCrudCommand
     }
     
     /**
+     * @cmdForm /centreon-configuration/timeperiod/update map
      * @cmdObject string timeperiod the timeperiod
      */
     public function showAction($object, $fields = null, $linkedObject = '') {

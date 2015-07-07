@@ -35,48 +35,6 @@
         "resource_pollers" : "\\CentreonConfiguration\\Models\\Relation\\Resource\\Poller"
     },
     "options" : {
-        "showAction" : {
-            "resource" : {
-              "functionParams" : "object",
-              "help": "The resource",
-              "type": "string",
-              "toTransform" : "resource",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "createAction" : {
-            
-        },
-        "updateAction" : {
-            "resource" : {
-              "functionParams" : "object",
-              "help": "The resource",
-              "type": "string",
-              "toTransform" : "resource",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "deleteAction" : {
-            "resource" : {
-              "functionParams" : "object",
-              "help": "The resource",
-              "type": "string",
-              "toTransform" : "resource",
-              "multiple" : false,
-              "required" : true
-            }
-        },
-        "duplicateAction" : {
-            "resource" : {
-              "functionParams" : "object",
-              "help": "The resource",
-              "type": "string",
-              "toTransform" : "resource",
-              "multiple" : false,
-              "required" : true
-            }
-        }
+
     }
 }

@@ -15,9 +15,6 @@
 						<input type="checkbox" name="sticky"> {t}Sticky{/t}
 					</label>
 					<label class="btn btn-primary">
-						<input type="checkbox" name="notify"> {t}Notify{/t}
-					</label>
-					<label class="btn btn-primary">
 						<input type="checkbox" name="persistent"> {t}Persistent{/t}
 					</label>
 					<label class="btn btn-primary">
@@ -26,6 +23,27 @@
 				</div>
 			</div>
 		</div>
+                <div class="form-group">
+                    <div class="col-sm-2 text-right">
+                        {t}Notify{/t}
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="choiceGroup">
+                            <label class="label-controller radio-styled" for="notify1">
+                                <input id="notify1" type="radio" name="notify" value="2">
+                                Yes
+                            </label>
+                            <label class="label-controller radio-styled" for="notify2">
+                                <input id="notify2" type="radio" name="notify" value="0" checked="checked">
+                                No
+                            </label>
+                            <label class="label-controller radio-styled" for="notify3">
+                                <input id="notify3" type="radio" name="notify" value="1">
+                                Force
+                            </label>
+                        </div>
+                    </div>
+                </div>            
 		<div class="form-group">
 			<div class="col-sm-2 text-right">
 				{t}Message{/t}

@@ -80,7 +80,7 @@ class HostTemplateCommand extends BasicTagSupport
     }
     
     /**
-     * 
+     * @cmdForm /centreon-configuration/hosttemplate/update map 
      * @cmdObject string host-template the host
      */
     public function showAction($object, $fields = null, $linkedObject = '') 

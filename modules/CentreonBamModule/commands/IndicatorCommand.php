@@ -108,6 +108,7 @@ class IndicatorCommand extends BasicCrudCommand
     }
     
     /**
+     * @cmdForm /centreon-bam/indicator/update map
      * @cmdObject string ba the ba
      * @cmdObject string indicator-ba the indicator-ba kpi
      * @cmdObject string service the service kpi

@@ -91,22 +91,22 @@ echo " ==== Creating hosts ==== "
 
 echo " ==== Creating services  ==== "
 ./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-rwe-pp' --template-model-stm='OS-Linux-SNMP-traffic-name'
-./external/bin/centreonConsole centreon-configuration:Service:addMacro --host='ces3-rwe-pp' --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0' 
+./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0' 
 
 #./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-qde-pp-ces22' --template-model-stm='OS-Linux-SNMP-traffic-name'
-#./external/bin/centreonConsole centreon-configuration:Service:addMacro --host='ces3-qde-pp-ces22' --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0'
+#./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0'
 
 #./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-qde-pp-ces3' --template-model-stm='OS-Linux-SNMP-traffic-name'
-#./external/bin/centreonConsole centreon-configuration:Service:addMacro --host='ces3-qde-pp-ces3' --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0'
+#./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0'
 
 ./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-rwe-pp' --template-model-stm='OS-Linux-SNMP-disk-name'
-./external/bin/centreonConsole centreon-configuration:Service:addMacro --host='ces3-rwe-pp' --service='disk' --name='DISKNAME' --value='/'
+./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='disk' --name='DISKNAME' --value='/'
 
 #./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-qde-pp-ces22' --template-model-stm='OS-Linux-SNMP-disk-name'
-#./external/bin/centreonConsole centreon-configuration:Service:addMacro --host='ces3-qde-pp-ces22' --service='disk' --name='DISKNAME' --value='/'
+#./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='disk' --name='DISKNAME' --value='/'
 
 #./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-qde-pp-ces3' --template-model-stm='OS-Linux-SNMP-disk-name'
-#./external/bin/centreonConsole centreon-configuration:Service:addMacro --host='ces3-qde-pp-ces3' --service='disk' --name='DISKNAME' --value='/'
+#./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='disk' --name='DISKNAME' --value='/'
 
 echo " ==== Creating KPI and BA ==== "
 
@@ -116,14 +116,14 @@ mysql -u root centreon -e "update cfg_services set service_slug='memory'  where 
 mysql -u root centreon -e "update cfg_services set service_slug='ping'  where service_description='ping';"
 
 ./external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les ping des machines des PP' --ba-type-id=1 --level-w=70 --level-c=50
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --host-slug='ces3-rwe-pp' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --host-slug='ces3-qde-pp-ces22' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --host-slug='ces3-qde-pp-ces3' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 
 ./external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les memory des machines des PP' --ba-type-id=1 --level-w=70 --level-c=50
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --host-slug='ces3-rwe-pp' --service-slug='memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --host-slug='ces3-qde-pp-ces22' --service-slug='memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
-./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --host-slug='ces3-qde-pp-ces3' --service-slug='memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --service-slug='memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --service-slug='memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --service-slug='memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 
 # Put the 2 BAs in a new BA
 ./external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA ping + memory PP' --ba-type-id=1 --level-w=70 --level-c=50
