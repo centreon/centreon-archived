@@ -54,8 +54,7 @@ class BasicTagSupport extends BasicMacroSupport
         $sLibTag = 'tag';
         $aError = array();
         
-        try {
-
+      //  try {
             $repository = $this->repository;
             $sName = $this->objectName;
             $repository::transco($object);
@@ -112,9 +111,9 @@ class BasicTagSupport extends BasicMacroSupport
                 );
             }
 
-        } catch(\Exception $ex) {
+       /* } catch(\Exception $ex) {
             InputOutput::display($ex->getMessage(), true, 'red');
-        }
+        }*/
     }
     
     /**
@@ -123,7 +122,7 @@ class BasicTagSupport extends BasicMacroSupport
      */
     public function listTagAction($object = null)
     {
-        try {
+       // try {
             $repository = $this->repository;
             $repository::transco($object);
             $sName = $this->objectName;
@@ -139,9 +138,9 @@ class BasicTagSupport extends BasicMacroSupport
             foreach ($TagList as $tag) {
                 echo $tag['text'] . "\n";
             }
-        } catch (\Exception $ex) {
+        /*} catch (\Exception $ex) {
             InputOutput::display($ex->getMessage(), true, 'red');
-        }
+        }*/
     }
     
     /**
@@ -153,7 +152,7 @@ class BasicTagSupport extends BasicMacroSupport
     {
         $iNbDeleted = 0;
         $sLibTag  = "tag";
-        try {
+        //try {
             $repository = $this->repository;
             $sName = $this->objectName;
             $repository::transco($object);
@@ -180,8 +179,8 @@ class BasicTagSupport extends BasicMacroSupport
                 'green'
             );
 
-        } catch (\Exception $ex) {
+        /*} catch (\Exception $ex) {
             InputOutput::display($ex->getMessage(), true, 'red');
-        }
+        }*/
     }
 }

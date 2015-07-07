@@ -57,9 +57,7 @@ class TagsRepository extends Repository
      */
     private static $resourceType = array(
         'host',
-        //'hosttemplate',
         'service',
-        //'servicetemplate',
         'ba',
         'contact'
     );
