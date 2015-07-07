@@ -731,7 +731,8 @@ class ServiceRepository extends Repository
        
     }
     
-    public static function getHostSlugFromServiceSlug($serviceSlug){
+    public static function getHostSlugFromServiceSlug($serviceSlug)
+    {
         $class = static::$objectClass;
         return $class::getHostSlugFromServiceSlug($serviceSlug);
     }
