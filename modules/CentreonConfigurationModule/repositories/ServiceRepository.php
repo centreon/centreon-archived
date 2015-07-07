@@ -705,5 +705,10 @@ class ServiceRepository extends Repository
         parent::update($givenParameters, $origin, $route, $validate, $validateMandatory);
        
     }
+    
+    public static function getHostSlugFromServiceSlug($serviceSlug){
+        $class = static::$objectClass;
+        return $class::getHostSlugFromServiceSlug($serviceSlug);
+    }
      
 }

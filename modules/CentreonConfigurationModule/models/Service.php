@@ -324,4 +324,19 @@ class Service extends CentreonBaseModel
         }
         return true;   
     }
+    
+    public static function getHostSlugFromServiceSlug($serviceslug){
+        $db = Di::getDefault()->get(static::$databaseName);
+        $query = "Select h.host_slug from cfg_services s"
+            . " inner join cfg_hosts_services_relations hsr on hsr.service_service_id = s.service_id "
+            . " inner join cfg_hosts h on h.host_id = hsr.host_host_id and h.host_register = 1 "
+            . " where s.service_slug = :service_slug ";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':service_slug', $serviceslug, \PDO::PARAM_STR);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if(!empty($row)){
+            return $row['host_slug'];
+        }
+    }
 }

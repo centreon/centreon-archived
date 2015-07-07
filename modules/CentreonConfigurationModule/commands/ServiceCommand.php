@@ -75,6 +75,9 @@ class ServiceCommand extends BasicTagSupport
      */
     public function updateAction($object, $params) 
     {
+        $repository = $this->repository;
+        $host_slug = $repository::getHostSlugFromServiceSlug($object['service']);
+        $params['service_hosts'] = $host_slug;
         parent::updateAction($object, $params);
     }
     
