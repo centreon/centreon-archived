@@ -400,10 +400,13 @@ class ConfigGenerateRepository
         foreach ($brokerModules as $brokerModule) {
             $name = "central-broker-cfg-engine-poller-module-" . $brokerModule['config_id'];
             $file->startElement("output");
-            $file->writeElement("name", $name);
-            $file->writeElement("type", "dump_dir");
-            $file->writeElement("path", $configGeneratePath . '/apply/' . $brokerModule['poller_id']);
-            $file->writeElement("tagname", "cfg-engine-" . $brokerModule['config_id']);
+                $file->writeElement("name", $name);
+                $file->writeElement("type", "dump_dir");
+                $file->writeElement("path", $configGeneratePath . '/apply/' . $brokerModule['poller_id']);
+                $file->writeElement("tagname", "cfg-engine-" . $brokerModule['config_id']);
+                $file->startElement('read_filters');
+                    $file->writeElement("category", "internal");
+                $file->endElement();
             $file->endElement();
             $stmt->execute(array($brokerModule['poller_id'], 'dump_dir_engine'));
             BrokerPollerValues::insert(array('poller_id' => $brokerModule['poller_id'], 'name' => 'dump_dir_engine', 'value' => $name), true);
@@ -429,10 +432,13 @@ class ConfigGenerateRepository
         foreach ($brokerModules as $brokerModule) {
             $name = "central-broker-cfg-broker-poller-module-" . $brokerModule['config_id'];
             $file->startElement("output");
-            $file->writeElement("name", $name);
-            $file->writeElement("type", "dump_dir");
-            $file->writeElement("path", $configGeneratePath . '/apply/' . $brokerModule['poller_id']);
-            $file->writeElement("tagname", "cfg-broker-" . $brokerModule['config_id']);
+                $file->writeElement("name", $name);
+                $file->writeElement("type", "dump_dir");
+                $file->writeElement("path", $configGeneratePath . '/apply/' . $brokerModule['poller_id']);
+                $file->writeElement("tagname", "cfg-broker-" . $brokerModule['config_id']);
+                $file->startElement('read_filters');
+                    $file->writeElement("category", "internal");
+                $file->endElement();
             $file->endElement();
             $stmt->execute(array($brokerModule['poller_id'], 'dump_dir_broker'));
             BrokerPollerValues::insert(array('poller_id' => $brokerModule['poller_id'], 'name' => 'dump_dir_broker', 'value' => $name), true);
