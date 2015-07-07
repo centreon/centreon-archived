@@ -227,9 +227,14 @@
                     url: "{url_for url='/logout'}",
                     type: "GET",
                     success: function(data, textStatus, jqXHR) {
-                        if (data.status) {
-                            window.location.href = "{url_for url='/login'}";
+                        if ( data.success ) {
+                            if (data.status) {
+                                window.location.href = "{url_for url='/login'}";
+                            }
+                        }else{
+                            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
                         }
+                        
                     }
                 });
             });
@@ -322,8 +327,13 @@
                 url: "{url_for url='/status'}",
                 type: 'GET',
                 success: function(data, textStatus, jqXHR) {
-                  statusData = data;
-                  $(document).trigger(eStatus);
+                    if ( data.success ) {
+                        statusData = data;
+                        $(document).trigger(eStatus);
+                    }else{
+                        alertMessage( "{t}An Error Occured {/t}", "alert-danger" );
+                    }
+                  
                 }
               });
             }
