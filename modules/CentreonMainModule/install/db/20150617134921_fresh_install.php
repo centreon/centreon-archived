@@ -248,14 +248,6 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('step_id'), array('unique' => false))
                 ->create();
         
-        $this->execute('INSERT INTO cfg_informations (`key`, `value`) values ("version", "2.99.2")');
-    }
-    
-    /**
-    * Migrate Up.
-    */
-    public function up()
-    {
-
+        $this->execute('INSERT INTO cfg_informations (`key`, `value`) values ("version", "2.99.5")');
     }
 }

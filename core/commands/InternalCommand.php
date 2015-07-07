@@ -57,29 +57,4 @@ class InternalCommand extends AbstractCommand
     {
         Install::installCentreon();
     }
-    
-    /**
-     * 
-     *
-    public function upgradeAction()
-    {
-        Upgrade::updateCentreon();
-    }
-    
-    /**
-     * 
-     *
-    public function migrateAction()
-    {
-        Migrate::migrateCentreon();
-    }
-    
-    /**
-     * 
-     * @param type $removeDb
-     *
-    public function uninstallAction($removeDb = false)
-    {
-        Install::uninstallCentreon($removeDb);
-    }*/
 }

@@ -362,7 +362,7 @@ abstract class CentreonBaseModel extends CentreonModel
     /**
      * Get object parameters
      *
-     * @param int $objectId
+     * @param integer $objectId
      * @param mixed $parameterNames
      * @return array
      */
@@ -413,9 +413,9 @@ abstract class CentreonBaseModel extends CentreonModel
 
     /**
      * 
-     * @param type $id
-     * @param type $parameterNames
-     * @return type
+     * @param integer $id
+     * @param mixed $parameterNames
+     * @return array
      */
     public static function get($id, $parameterNames = "*")
     {

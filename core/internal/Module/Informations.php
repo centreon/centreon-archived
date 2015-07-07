@@ -126,9 +126,11 @@ class Informations
     }
     
     /**
-     * Chzeck to see if the module routes can be reached
+     * Check to see if the module routes can be reached
+     * 
+     * @param sting $moduleName
      * @return boolean
-        */
+     */
     public static function isModuleReachable($moduleName)
     {
         $isReachable = false;
@@ -160,7 +162,7 @@ class Informations
     
     /**
      *
-     * @param boolean $onlyActivated If list only module activated
+     * @param integer $onlyActivated If list only module activated
      * @return array Array of module names (string)
      */
     public static function getModuleList($onlyActivated = 1)
@@ -193,7 +195,7 @@ class Informations
 
     /**
      *
-     * @param boolean $onlyActivated If list only module activated
+     * @param integer $onlyActivated If list only module activated
      * @return array Array of arrays describing modules
      */
     public static function getModuleExtendedList($onlyActivated = 1)
@@ -301,8 +303,8 @@ class Informations
     
     /**
      * 
-     * @param type $moduleName
-     * @return type
+     * @param string $moduleName
+     * @return array
      */
     public static function getModuleTables($moduleName)
     {
@@ -422,9 +424,12 @@ class Informations
         $stmt->execute();
     }
     
-    
-    public static function deleteMenus($moduleId){
-        
+    /**
+     * 
+     * @param integer $moduleId
+     */
+    public static function deleteMenus($moduleId)
+    {
         $db = Di::getDefault()->get('db_centreon');
         
         $sql = "DELETE FROM cfg_menus WHERE module_id = :module_id";

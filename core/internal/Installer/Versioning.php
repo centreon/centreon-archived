@@ -46,25 +46,25 @@ class Versioning
 {
     /**
      *
-     * @var type 
+     * @var string 
      */
     private $currentVersion;
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     private $moduleInfo;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     private $moduleSlug;
     
     /**
      * 
-     * @param type $moduleSlug
+     * @param string $moduleSlug
      */
     public function __construct($moduleSlug = 'core')
     {
@@ -73,7 +73,7 @@ class Versioning
     
     /**
      * 
-     * @param type $moduleInfo
+     * @param array $moduleInfo
      */
     public function setModuleInfo($moduleInfo)
     {
@@ -83,7 +83,7 @@ class Versioning
 
     /**
      * 
-     * @return type
+     * @return string
      */
     public function getVersion()
     {
@@ -93,7 +93,7 @@ class Versioning
 
     /**
      * 
-     * @param type $newVersion
+     * @param string $newVersion
      */
     public function setVersion($newVersion)
     {
@@ -102,7 +102,6 @@ class Versioning
     
     /**
      * 
-     * @param string $moduleName
      */
     public function upgradeVersion()
     {
@@ -112,6 +111,7 @@ class Versioning
     /**
      * 
      * @param string $operation
+     * @param boolean $applyInDb
      * @return string
      */
     public function setTemporaryVersion($operation, $applyInDb = false)
@@ -141,6 +141,7 @@ class Versioning
     /**
      * 
      * @param string $version
+     * @param boolean $addDependencies
      */
     public function updateVersionInDb($version, $addDependencies = false)
     {
@@ -165,7 +166,7 @@ class Versioning
     
     /**
      * 
-     * @param type $moduleId
+     * @param integer $moduleId
      */
     public function setDependencies($moduleId = null)
     {

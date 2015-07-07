@@ -579,7 +579,8 @@ abstract class AbstractModuleInstaller
         }
         
     }
-     /**
+    
+    /**
      * 
      */
     protected function removeValidators()
@@ -641,12 +642,17 @@ abstract class AbstractModuleInstaller
     
     /**
      * 
+     * @param boolean $keepDb
      */
-    protected function remove()
+    protected function remove($keepDb = true)
     {
         $this->preRemove();
         $this->removeHook();
-        $this->removeDb();
+        
+        if (!$keepDb) {
+            $this->removeDb();
+        }
+        
         $this->postRemove();
     }
     
@@ -688,7 +694,7 @@ abstract class AbstractModuleInstaller
     
     /**
      * 
-     * @param type $installDefault
+     * @param boolean $installDefault
      */
     protected function installDb($installDefault = true)
     {
@@ -705,13 +711,13 @@ abstract class AbstractModuleInstaller
      */
     protected function removeDb()
     {
-        Db::update($this->moduleSlug, 'delete');
+        
     }
 
 
     /**
      * 
-     * @param int $moduleId
+     * @param integer $moduleId
      * @param array $menus
      * @param string $parent
      */

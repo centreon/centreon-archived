@@ -78,6 +78,11 @@ abstract class AbstractCommand
         $methodReflection->invokeArgs($this, $pass);
     }
     
+    /**
+     * 
+     * @param type $paramsArray
+     * @param type $globalOptional
+     */
     public function getCustomsParams($paramsArray,$globalOptional = false)
     {
         foreach($paramsArray as $param){
@@ -91,24 +96,24 @@ abstract class AbstractCommand
             $booleanValue = null;
             $booleanSetDefault = null;
             $isNotNone = true;
-            if(!empty($typeInfos[0])){
+            if (!empty($typeInfos[0])) {
                 $hasDefault = false;
-                if($typeInfos[0] == 'none'){
+                if ($typeInfos[0] == 'none') {
                     unset($this->options[$paramName]);
                     $isNotNone = false;
-                }else if($typeInfos[0] == 'Array'){
+                } else if($typeInfos[0] == 'Array') {
                     $multiple = true;
-                }else{
+                } else {
                    $type = $typeInfos[0]; 
                 }
-                if($typeInfos[0] === 'boolean'){
-                    if(!empty($typeInfos[1])){
+                if ($typeInfos[0] === 'boolean') {
+                    if (!empty($typeInfos[1])) {
                         $booleanValue = ($typeInfos[1] == 'true') ? true : false;
-                        if($param['paramRequired']){
+                        if ($param['paramRequired']) {
                             $booleanSetDefault = true;
                         }
                     }
-                }else if(!empty($typeInfos[1])){
+                } else if(!empty($typeInfos[1])) {
                     $defaultValue = $typeInfos[1];
                 }
             }
@@ -122,25 +127,30 @@ abstract class AbstractCommand
                     'required' => ($globalOptional) ? false : $param['paramRequired']
                 );
 
-                if(!is_null($defaultValue)){
+                if (!is_null($defaultValue)) {
                     $this->options[$paramName]['defaultValue'] = $defaultValue;
                 }
 
-                if(!is_null($booleanValue)){
+                if (!is_null($booleanValue)) {
                     $this->options[$paramName]['booleanValue'] = $booleanValue;
                 }
 
-                if(!is_null($booleanSetDefault)){
+                if (!is_null($booleanSetDefault)) {
                     $this->options[$paramName]['booleanSetDefault'] = $booleanSetDefault;
                 }
             }
         }
     }
     
+    /**
+     * 
+     * @param type $objectArray
+     * @param type $globalOptional
+     */
     public function getObject($objectArray, $globalOptional = false)
     {
         $required = true;
-        if($globalOptional){
+        if ($globalOptional) {
             $required = false;
         }
         foreach($objectArray as $object){
@@ -148,9 +158,9 @@ abstract class AbstractCommand
             $type = 'string';
             $multiple = false;
             $objectName = $object['objectName'];
-            if($typeInfos[0] == 'Array'){
+            if ($typeInfos[0] == 'Array') {
                 $multiple = true;
-            }else{
+            } else {
                 $type = $typeInfos[0]; 
             }
             $this->options[$objectName] = array(

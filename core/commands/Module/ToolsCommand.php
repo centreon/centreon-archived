@@ -55,7 +55,7 @@ class ToolsCommand extends AbstractCommand
     {
         $moduleCanonicalName = InputOutput::prompt(
             _("Type the module canonical name here (in CamelCase, it must not contains Module at the ends)"),
-            function($params, &$result) {
+            function ($params, &$result) {
                 call_user_func_array(
                     array('\Centreon\Internal\Module\Informations', 'isCanonicalNameValid'),
                     array($params, &$result)
@@ -74,6 +74,7 @@ class ToolsCommand extends AbstractCommand
         $userAnswer = InputOutput::prompt(
             _("Type the module shortname here (seperate by -) [" . $moduleShortname ."]")
         );
+        
         if (!empty($userAnswer)) {
             $moduleShortname = $userAnswer;
         }
