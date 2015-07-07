@@ -446,7 +446,6 @@ class BasicCrud extends AbstractCommand
     public function showAction($objectSlug, $fields = null, $linkedObject = '')
     {
         $repository = $this->repository;
-        $repository::transco($objectSlug);
         $aId = $repository::getListBySlugName($objectSlug[$this->objectName]);
         if (count($aId) > 0) {
             $objectSlug = $aId[0]['id'];
@@ -471,7 +470,6 @@ class BasicCrud extends AbstractCommand
     protected function parseObjectParams($params)
     {
         $finalParamList = array();
- 
         $aFieldAttribute = array();
         foreach ($this->externalAttributeSet as $externalAttribute) {
             $aFieldAttribute[] = $externalAttribute['type'];
@@ -496,7 +494,6 @@ class BasicCrud extends AbstractCommand
                             }
                             throw new \Exception($sMessage);
                         }
-
                     } elseif ($externalAttribute['link'] == 'multiple' && $key === $externalAttribute['type']) {
 
                         $aFields = explode(",", $externalAttribute['fields']);
@@ -520,12 +517,10 @@ class BasicCrud extends AbstractCommand
                         $finalParamList[$key] = implode(',', $tempParamList);
                     }
                 }
-                 
             } else {
                 $finalParamList[$key] = $param;
             }
         }
-
         return $finalParamList;
     }
     
@@ -562,18 +557,17 @@ class BasicCrud extends AbstractCommand
         $repository = $this->repository;
         $repository::transco($params);
         $repository::transco($object);
-        $paramList = $this->parseObjectParams($params);
+        if (!empty($params)) {
+            $paramList = $this->parseObjectParams($params);
+        }
         $paramList['object'] = $this->objectName;
-
         $sName = static::renameObject($this->objectName);
-
         $aId = $repository::getListBySlugName($object[$sName]);
         if (count($aId) > 0) {
             $paramList['object_id'] = $aId[0]['id'];
         } else {
             throw new \Exception(static::OBJ_NOT_EXIST);
         }
-
         $repository::update(
             $paramList,
             'api',
@@ -581,6 +575,8 @@ class BasicCrud extends AbstractCommand
             true,
             false
         );
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully updated", true, 'green');
+        
     }
     
     /**
@@ -593,7 +589,6 @@ class BasicCrud extends AbstractCommand
         $repository::transco($object);
         $id = '';
         $sName = static::renameObject($this->objectName);
-        
         $aId = $repository::getListBySlugName($object[$sName]);
         if (count($aId) > 0) {
             $id = $aId[0]['id'];

@@ -75,7 +75,7 @@ class HostTemplateCommand extends BasicTagSupport
      * @cmdParam boolean|false disable optional disable the host because it sucks
      * @cmdParam boolean|true enable optional enable the host
      */
-    public function updateAction($object, $params) {
+    public function updateAction($object, $params = null) {
         parent::updateAction($object, $params);
     }
     
