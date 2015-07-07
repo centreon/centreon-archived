@@ -25,11 +25,9 @@
       <arg value="-l" />
       <fileset dir="${basedir}/core">
         <include name="**/*.php"/>
-        <modified/>
       </fileset>
       <fileset dir="${basedir}/modules">
         <include name="**/*.php"/>
-        <modified/>
       </fileset>
     </apply>
   </target>
