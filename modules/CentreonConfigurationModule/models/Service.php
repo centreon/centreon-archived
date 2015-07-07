@@ -324,4 +324,23 @@ class Service extends CentreonBaseModel
         }
         return true;   
     }
+    
+    /**
+     * 
+     * @param int $iId
+     * @param string $sSlug
+     */
+    public static function updateSlug($iId, $sSlug)
+    {
+        $db = Di::getDefault()->get(static::$databaseName);
+        if (empty($sSlug) || empty($iId)) {
+            return;
+        }
+
+        $query = "UPDATE ".static::$table." SET ".static::$slugField." = :slug WHERE ".static::$primaryKey." = :svc_id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam('svc_id', $iId, \PDO::PARAM_INT);
+        $stmt->bindParam('slug', $sSlug, \PDO::PARAM_STR);
+        $stmt->execute();        
+    }
 }

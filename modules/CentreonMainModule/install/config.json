@@ -1,7 +1,7 @@
 {
     "name": "Centreon Main",
     "shortname" : "centreon-main",
-    "version": "2.99.2",
+    "version": "2.99.5",
     "author" : [
         "Centreon"
     ],
@@ -9,7 +9,7 @@
     "isdisableable" : false,
     "url" : "",
     "description" : "Centreon Main Module",
-    "core version" : "2.99.2",
+    "core version" : "2.99.5",
     "dependencies" : [
         
     ],

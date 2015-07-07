@@ -154,7 +154,10 @@ class Hosttemplate extends CentreonBaseModel
                 $oRepositorie = "CentreonConfiguration\Repository\ServiceRepository";
                 
                 $oSlugify = new CentreonSlugify(self, $oRepositorie);
-                $sSlug = $oSlugify->slug($service['service_alias']);
+                
+                $sHostName = Host::get($hostId, 'host_name');
+                $sString = $sHostName['host_name']." ".$service['service_alias'];
+                $sSlug = $oSlugify->slug($sString);
             
                 $serviceId = Service::insert(
                     array(

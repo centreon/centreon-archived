@@ -110,12 +110,14 @@ class CentreonSlugify
         } else {
             $sSlugToSearch = $sSlug;
         }
-        
-        $aObject = $oRepo::getList("*", -1, 0, null, 'asc', array($this->sSlugField => $sSlugToSearch."%"));
-        $sSlugNew = self::concat($oModel, $sSlug, $iIobjectId, $aObject);
 
+        
+        $aObject = $oRepo::getList("*", -1, 0, null, 'asc', array($this->sSlugField => $sSlugToSearch."%"), 'AND');
+        $sSlugNew = self::concat($oModel, $sSlug, $iIobjectId, $aObject);
+       
         return $sSlugNew;
     }
+    
     /**
      * @param object $oModel Description
      * @param type $sValue

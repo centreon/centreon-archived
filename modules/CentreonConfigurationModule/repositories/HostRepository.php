@@ -126,6 +126,7 @@ class HostRepository extends Repository
         parent::update($givenParameters, $origin, $route, $validate, $validateMandatory);
         if (isset($givenParameters['object_id'])) {
             self::deployServices($givenParameters['object_id']);
+            self::updateSlugServices($givenParameters['object_id'], $givenParameters['host_name']);
         }
     }
 
@@ -682,8 +683,15 @@ class HostRepository extends Repository
         // create services which don't yet exist
         foreach ($aHostServiceTemplates as $oHostServiceTemplate) {
             if (!in_array($oHostServiceTemplate['service_alias'], $aServicesDescription)) {
-                $sSlug = $oSlugify->slug($oHostServiceTemplate['service_alias']);
                 
+                $sHostName = Host::get($hostId, 'host_name');
+                if (isset($sHostName['host_name'])) {
+                    $sString = $sHostName['host_name']." ".$oHostServiceTemplate['service_alias'];
+                } else {
+                    $sString = $oHostServiceTemplate['service_alias'];
+                }
+                $sSlug = $oSlugify->slug($sString);
+                               
                 $newService['service_slug'] = $sSlug;            
                 $newService['service_description'] = $oHostServiceTemplate['service_alias'];
                 $newService['service_template_model_stm_id'] = $oHostServiceTemplate['service_id'];
@@ -765,5 +773,49 @@ class HostRepository extends Repository
         }
 
         return $finalHostList;
+    }
+    
+    
+    /**
+     * Update slug services by host
+     *
+     * @param int $iHostId
+     * @param string $sHostName
+     */
+    public static function updateSlugServices($iHostId, $sHostName)
+    {
+        $aServices = array();
+        $db = Di::getDefault()->get('db_centreon');
+        
+        $repository = "CentreonConfiguration\Repository\ServiceRepository";
+        
+        $repository::setObjectName("Service");
+        $repository::setObjectClass("\CentreonConfiguration\\Models\\Service");
+        $oModel = "CentreonConfiguration\Models\Service";
+
+        $oSlugify = new CentreonSlugify($oModel, $repository);
+
+        // get services
+        $aHostServices = HostServiceRelation::getMergedParameters(
+            array('host_id'),
+            array(
+                'service_id',
+                'service_description',
+                'service_alias'
+            ),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('host_id' => $iHostId),
+            "OR"
+        );
+
+        foreach ($aHostServices as $key => $oService) {
+            $sString = $sHostName ." ".$oService['service_description'];
+            $sSlug = $oSlugify->slug($sString);
+            Service::updateSlug($oService['service_id'], $sSlug);
+       }
+        
     }
 }
