@@ -90,25 +90,26 @@ class DumpCommand extends AbstractCommand
  
                 $sSql = '';
 
-                foreach($aData as $value) {
+                foreach ($aData as $value) {
                     $sColumns = implode(',', array_keys($value));
-                    $sSql .= "(".'"'.implode('","',array_values($value)).'"'."), "; 
+                    $sSql .= "(".'"'.implode('","', array_values($value)).'"'."), ";
                 }
                 $sChars = $sInsert.$sColumns.") VALUES ".$sSql;
-                $sContent = substr($sChars, 0, strlen($sChars) - 2 ).";";
-               // echo $sDestination;
+                $sContent = substr($sChars, 0, strlen($sChars) - 2).";";
                 
                 if (empty($sDestination)) {
                     echo $sContent;
-                } else  {
+                } else {
                     if (file_exists($sDestination)) {
                         file_put_contents($sContent, $sDestination);
-                    } else throw new Exception("invalide desination");
+                    } else {
+                        throw new Exception("invalide desination");
+                    }
                 }
              
             } catch (Exception $ex) {
                  return "invalid content";
-            } 
+            }
         }
     }
 }

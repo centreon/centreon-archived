@@ -58,26 +58,25 @@ class ToolsCommand extends AbstractCommand
  
                 $sSql = '';
 
-                foreach($aData as $value) {
+                foreach ($aData as $value) {
                     $sColumns = implode(',', array_keys($value));
-                    $sSql .= "(".'"'.implode('","',array_values($value)).'"'."), "; 
+                    $sSql .= "(".'"'.implode('","', array_values($value)).'"'."), ";
                 }
                 $sChars = $sInsert.$sColumns.") VALUES ".$sSql;
-                $sContent = substr($sChars, 0, strlen($sChars) - 2 ).";";
-               // echo $destination;
+                $sContent = substr($sChars, 0, strlen($sChars) - 2).";";
                 
                 if (empty($destination)) {
                     echo $sContent;
-                } else  {
+                } else {
                     if (file_exists($destination)) {
                         file_put_contents($sContent, $destination);
-                    } else throw new Exception("invalide desination");
+                    } else {
+                        throw new Exception("invalide destination");
+                    }
                 }
-             
             } catch (Exception $ex) {
                 throw new Exception("invalid content");
-                //return "invalid content";
-            } 
+            }
         }
     }
 }
