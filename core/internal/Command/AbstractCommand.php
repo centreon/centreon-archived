@@ -157,6 +157,9 @@ abstract class AbstractCommand
             $typeInfos = explode('|',$object['objectType']);
             $type = 'string';
             $multiple = false;
+            if(!empty($this->objectName)){
+                $object['objectName'] = str_replace('$object',$this->objectName,$object['objectName']);
+            }
             $objectName = $object['objectName'];
             if ($typeInfos[0] == 'Array') {
                 $multiple = true;

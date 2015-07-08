@@ -93,7 +93,8 @@ class BasicRepository
         static::$attributesMap = $attributesMap;
     }
 
-    public static function transco(&$params){
+    public static function transco(&$params)
+    {
         
         $newArrayParam = array();
         if(is_array($params)){
@@ -107,6 +108,14 @@ class BasicRepository
             }
             $params = $newArrayParam;
         }
+        
+    }
+    
+    public static function getSlugByUniqueField($object)
+    {    
+        $objectClass = static::$objectClass;
+        $paramName = static::$objectName.'-name';
+        return $objectClass::getSlugByUniqueField($object[$paramName]);
         
     }
     

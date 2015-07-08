@@ -209,6 +209,11 @@ class ServiceRepository extends Repository
         }
     }
     
+    public function getServiceSlugByUniqueField($service,$host){
+        return Service::getServiceSlugByUniqueField($service,$host);
+    }
+    
+    
     /**
      * 
      * @param int $service_id

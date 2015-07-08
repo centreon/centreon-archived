@@ -35,10 +35,11 @@
 
 namespace Centreon\Commands\Module;
 
-use Centreon\Internal\Module\Informations;
-use Centreon\Internal\Command\AbstractCommand;
-use Centreon\Internal\Installer\StaticFiles;
 use Centreon\Internal\Installer\Form;
+use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Installer\StaticFiles;
+use Centreon\Internal\Installer\Versioning;
+use Centreon\Internal\Command\AbstractCommand;
 
 /**
  * Command line for module management
@@ -74,12 +75,13 @@ class ManageCommand extends AbstractCommand
      * @param string $object
      * @param array $params
      * @cmdObject string module the host
-     * @cmdParam boolean|true verbose optional is verbose ?
+     * @cmdParam boolean|true force required Force the upgrade
+     * @cmdParam boolean|true verbose required is verbose ?
      */
     public function upgradeAction($object, $params = null)
     {
         $moduleInstaller = Informations::getModuleInstaller('console', $object['module']);
-        $moduleInstaller->upgrade($params['verbose']);
+        $moduleInstaller->upgrade($params['force'], $params['verbose']);
     }
     
     /**
@@ -123,5 +125,20 @@ class ManageCommand extends AbstractCommand
         foreach (glob($formsFiles) as $xmlFile) {
             Form::installFromXml($moduleId, $xmlFile);
         }
+    }
+    
+    /**
+     * 
+     * @param type $object
+     * @cmdObject string module Module name
+     * @cmdObject string version version to compare
+     */
+    public function compareVersionAction($object)
+    {
+        $module = $object['module'];
+        $version = $object['version'];
+        
+        $versionManager = new Versioning($module);
+        $versionManager->compareVersion($version);
     }
 }
