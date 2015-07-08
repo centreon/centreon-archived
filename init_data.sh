@@ -124,4 +124,19 @@ echo " ==== Creating KPI and BA ==== "
 ./external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA ping + memory PP' --ba-type-id=1 --level-w=70 --level-c=50
 ./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-ping-memory-pp' --type='BA' --indicator-ba-slug='ba-sur-les-ping-des-machines-des-pp' --drop-warning='10' --drop-critical='50' --drop-warning='30'
 ./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-ping-memory-pp' --type='BA' --indicator-ba-slug='ba-sur-les-memory-des-machines-des-pp' --drop-warning='10' --drop-critical='50' --drop-warning='30'
+
+echo " ==== Generating Configuration ==== "
+
+./external/bin/centreonConsole centreon-configuration:Config:generate --poller=central
+./external/bin/centreonConsole centreon-configuration:Config:move --poller=central
+\cp -r /tmp/engine/apply/1/* /etc/centreon-engine/
+\cp -r /tmp/broker/apply/1/* /etc/centreon-broker/
+chown -R centreon-engine.centreon-engine /etc/centreon-engine
+chown -R centreon-broker.centreon-broker /etc/centreon-broker
+chmod -R u+rwX,go+rX,go-w /etc/centreon-engine/ /etc/centreon-broker
+
+echo " ==== Restarting Engine and Broker ==== "
+
+./external/bin/centreonConsole centreon-configuration:Config:apply --poller=central --action=restart
+
 echo " ==== That's all for now, we've already suffered so much to do it, please applause ==== "
