@@ -235,6 +235,7 @@ class HostController extends FormController
         
         
         $tags['tags'] = array('globals' => $globalTagsValues,'herited' => $heritedTagsValues);
+        $tags['success'] = true;
         /*
         echo '<pre>';
         print_r($tags);
@@ -541,15 +542,15 @@ class HostController extends FormController
      * @route /host/[i:id]/service
      */
     public function hostForServiceAction()
-        {
-            $requestParam = $this->getParams('named');
-            $services = HostRepository::getServicesForHost(static::$relationMap['host_services'],$requestParam['id']);
+    {
+        $requestParam = $this->getParams('named');
+        $services = HostRepository::getServicesForHost(static::$relationMap['host_services'],$requestParam['id']);
 
-            foreach($services as &$service){
-                $service = ServiceRepository::formatDataForSlider($service);
-            }
-            $this->router->response()->json(array('service' => $services));
+        foreach($services as &$service){
+            $service = ServiceRepository::formatDataForSlider($service);
         }
+        $this->router->response()->json(array('service' => $services,'success' => true));
+    }
 
     
     
@@ -569,7 +570,7 @@ class HostController extends FormController
         $hostConfiguration = HostRepository::formatDataForSlider($data);
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
         $edit_url = $this->router->getPathFor("/centreon-configuration/host/".$params['id']);
-        $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus,'edit_url' => $edit_url));
+        $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus,'edit_url' => $edit_url,'success' => true));
     }
 
     /**

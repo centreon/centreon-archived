@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "id,name,alias,description,organization_id",
+    "liteAttributesSet" : "id,name,slug,alias,description,organization_id",
     "repository" : "\\CentreonConfiguration\\Repository\\ManufacturerRepository",
     "objectBaseUrl" : "manufacturer",
     "objectClass" : "\\CentreonConfiguration\\Models\\Manufacturer",
@@ -9,7 +9,8 @@
         "alias" : "alias",
         "description" : "description",
         "organization id" : "organization_id",
-        "manufacturer" : "manufacturer"
+        "manufacturer" : "manufacturer",
+        "slug" : "slug"
     },
     "options" : {
 

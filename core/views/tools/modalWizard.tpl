@@ -71,6 +71,8 @@ $(function() {
         } else {
           alertModalMessage(data.error, "alert-danger");
         }
+      }).error(function (error){
+        alertModalMessage( "{t} An Error Occured {/t}", "alert-danger" );
       });
       return false;
     }

@@ -101,6 +101,9 @@
                      }
                   });
                 }
+              },
+              error : function (){
+                  alertModalMessage("an error occured", "alert-danger");
               }
             });
             
@@ -122,6 +125,9 @@
                        }
                     });
                   }
+                },
+                error : function (){
+                    alertModalMessage("an error occured", "alert-danger");
                 }
               });
             });
@@ -171,6 +177,9 @@
                                 $('div[id$="tags_inheritance"]').html('<ul>'+sText+'</ul>');
                             }
                           }
+                      },
+                      error : function (){
+                          alertModalMessage("an error occured", "alert-danger");
                       }
                 });
 
@@ -202,6 +211,9 @@
             if (data.success) {
                 iId =  data.tagId;
             }
+        },
+        error : function (){
+            alertModalMessage("an error occured", "alert-danger");
         }
       });
     }
@@ -230,6 +242,9 @@
         success: function( data, textStatus, jqXHR ) {
 
 
+        },
+        error : function (){
+            alertModalMessage("an error occured", "alert-danger");
         }
       });
     }

@@ -34,11 +34,11 @@
  *
  */
 
-namespace CentreonMain\Listeners\CentreonMain;
+namespace CentreonRealtime\Listeners\CentreonConfiguration;
 use Centreon\Internal\Di;
 use CentreonMain\Events\SlideMenu as SlideMenuEvent;
 
-class SlideMenu 
+class SlideMenuHost 
 {
     
     public static function execute(SlideMenuEvent $event)
@@ -46,48 +46,6 @@ class SlideMenu
         
         $router = Di::getDefault()->get('router');
         try{
-            
-            $event->setDefaultMenu(
-                array(
-                    'name' => 'host',
-                    'url' => $router->getPathFor('/centreon-configuration/host/snapshotslide/') . $event->getHostId(),
-                    'icon' => '',
-                    'order' => 0,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/host_slide"
-
-                )
-            );
-            
-            $event->addMenu(
-                array(
-                    'name' => 'template',
-                    'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconfslide/') . $event->getHostId(),
-                    'icon' => '',
-                    'order' => 2,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/templates_slide"
-                )
-            );
-            
-            $event->addMenu(
-                array(
-                    'name' => 'tag',
-                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/tags') ,
-                    'icon' => '',
-                    'order' => 1,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/tags_slide",
-                    'default' => 1
-                )
-            );
-            
-            $event->addMenu(
-                array(
-                    'name' => 'service',
-                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getHostId().'/service'),
-                    'icon' => '',
-                    'order' => 4,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/services_slide"
-                )
-            );
             
             $event->addMenu(
                 array(
@@ -98,11 +56,7 @@ class SlideMenu
                     'tpl' => "/viewtpl/CentreonRealtimeModule/incidents_slide"
                 )
             );
-            
-            
-            
-            
-            
+
         }  catch (Exception $e) {
 
         }

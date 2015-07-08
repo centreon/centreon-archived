@@ -78,7 +78,8 @@ class HostTemplateRepository extends Repository
         'host_flap_detection_enabled',
         'flap_detection_options',
         'host_snmp_community',
-        'host_snmp_version'
+        'host_snmp_version',
+        'host_check_timeout'
     );
     
     /**
@@ -357,4 +358,14 @@ class HostTemplateRepository extends Repository
         return $checkdataTemplate;
         
     }
+    
+    public static function getSlugByUniqueField($object){
+        
+        $objectClass = self::$objectClass;
+        return $objectClass::getSlugByUniqueField($object['hosttemplate-name'], array('host_register' => '0'));
+        
+    }
+    
+    
+    
 }

@@ -88,7 +88,7 @@ class MainController extends Controller
         $statusEvent = new Status($status);
 
         $events->emit('centreon-main.status', array($statusEvent));
-
+        $status['success'] = true;
         $router->response()->json($status);
     }
 }

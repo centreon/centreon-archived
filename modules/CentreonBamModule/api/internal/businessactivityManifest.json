@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "ba_id,name,ba_type_id,description,level_w,level_c",
+    "liteAttributesSet" : "ba_id,name,slug,ba_type_id,description,level_w,level_c",
     "repository" : "\\CentreonBam\\Repository\\BusinessActivityRepository",
     "objectBaseUrl" : "businessactivity",
     "objectClass" : "\\CentreonBam\\Models\\BusinessActivity",
@@ -8,7 +8,8 @@
         "name" : "name",
         "description" : "description",
         "type" : "ba_type_id",
-        "ba" : "businessactivity"
+        "ba" : "businessactivity",
+        "slug" : "slug"
     },
     "externalAttributeSet" : [
         {

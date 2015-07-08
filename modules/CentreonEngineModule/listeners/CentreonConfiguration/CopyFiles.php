@@ -66,7 +66,7 @@ class CopyFiles
             }
         }
         $output = array();
-        exec("cp -Rf $tmpdir/engine/generate/{$event->getPollerId()}/* {$tmpdir}/engine/apply/{$event->getPollerId()}/ 2>&1", $output, $statusCopy);
+        exec("cp -Rpf $tmpdir/engine/generate/{$event->getPollerId()}/* {$tmpdir}/engine/apply/{$event->getPollerId()}/ 2>&1", $output, $statusCopy);
         if ($statusCopy) {
             $event->setOutput(_('Error while copying Engine configuration files') . "\n" . implode("\n", $output));
         }

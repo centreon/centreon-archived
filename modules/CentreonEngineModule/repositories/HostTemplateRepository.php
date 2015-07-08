@@ -181,7 +181,7 @@ class HostTemplateRepository
             . "host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, "
             . "command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, "
             . "host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, "
-            . "host_register, timezone_id ";
+            . "host_register, timezone_id, host_check_timeout ";
 
         return $fields;
     }

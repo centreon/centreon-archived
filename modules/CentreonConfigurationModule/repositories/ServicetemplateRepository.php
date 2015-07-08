@@ -299,4 +299,12 @@ class ServicetemplateRepository extends Repository
         }
         return array();
     }
+    
+    public static function getSlugByUniqueField($object){
+        
+        $objectClass = self::$objectClass;
+        return $objectClass::getSlugByUniqueField($object['servicetemplate-name'], array('service_register' => '0'));
+        
+    }
+    
 }

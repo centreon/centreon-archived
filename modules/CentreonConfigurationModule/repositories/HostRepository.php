@@ -83,7 +83,8 @@ class HostRepository extends Repository
         'host_flap_detection_enabled',
         'flap_detection_options',
         'host_snmp_community',
-        'host_snmp_version'
+        'host_snmp_version',
+        'host_check_timeout'
     );
     
     /**
@@ -126,7 +127,9 @@ class HostRepository extends Repository
         parent::update($givenParameters, $origin, $route, $validate, $validateMandatory);
         if (isset($givenParameters['object_id'])) {
             self::deployServices($givenParameters['object_id']);
-            self::updateSlugServices($givenParameters['object_id'], $givenParameters['host_name']);
+            if (isset($givenParameters['host_name'])) {
+                self::updateSlugServices($givenParameters['object_id'], $givenParameters['host_name']);
+            }
         }
     }
 
@@ -818,4 +821,11 @@ class HostRepository extends Repository
        }
         
     }
+    
+    public static function getSlugByUniqueField($object){
+        
+        $objectClass = self::$objectClass;
+        return $objectClass::getSlugByUniqueField($object['host-name'], array('host_register' => '1'));
+    }
+    
 }

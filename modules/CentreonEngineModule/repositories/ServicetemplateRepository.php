@@ -90,7 +90,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
             . "service_active_checks_enabled, initial_state, "
             . "service_obsess_over_service, service_check_freshness, "
             . "service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, "
-            . "service_high_flap_threshold, service_flap_detection_enabled ";
+            . "service_high_flap_threshold, service_flap_detection_enabled, service_check_timeout ";
         
         /* Init Content Array */
         $content = array();
