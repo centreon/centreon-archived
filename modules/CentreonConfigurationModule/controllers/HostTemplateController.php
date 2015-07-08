@@ -550,7 +550,7 @@ class HostTemplateController extends FormController
     {
         $params = $this->getParams();
         $data['host_templates'] = HostRepository::getTemplatesChainConfigurationData($params['id']);
-
+        $data['success'] = true;
         $this->router->response()->json($data);
    }
     

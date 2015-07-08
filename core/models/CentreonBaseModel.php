@@ -89,6 +89,8 @@ abstract class CentreonBaseModel extends CentreonModel
      */
     const OBJ_NOT_EXIST = 'Object not in database.';
 
+    const NO_SLUG = 'Object got no slug.';
+    
     /**
      * 
      * @param array $params
@@ -444,6 +446,31 @@ abstract class CentreonBaseModel extends CentreonModel
         return $result[0];
     }
 
+    public static function getSlugByUniqueField($value,$extraParams = array())
+    {    
+        $db = Di::getDefault()->get(static::$databaseName);
+        $slugField = self::getSlugField();
+        $uniqueField = self::getUniqueLabelField();
+        if(empty($slugField)){
+            throw new Exception(static::NO_SLUG); 
+        }
+        $sql = "Select ". $slugField . " FROM " . static::$table . " WHERE " . $uniqueField ." = ? ";
+        
+        foreach($extraParams as $key => $param){
+            $sql .= " And " . $key . " = ? ";
+        }
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(1, $value, \PDO::PARAM_STR);
+        $i = 2;
+        foreach($extraParams as $param){
+            $stmt->bindValue($i, $param, \PDO::PARAM_STR);
+            $i++;
+        }
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result[$slugField];
+    }
+    
     /**
      * Generic method that allows to retrieve object ids
      * from another object parameter

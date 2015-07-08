@@ -435,6 +435,9 @@
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
                         }
+                    },
+                    error : function (error){
+                        alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
                     }
                 });
             });
@@ -444,26 +447,36 @@
                 type: "GET",
                 dataType: "json",
                 success: function(data, textStatus, jqXHR) {
-                    $.each(data.listMc, function(k, v) {
-                        $("<option></option>").val(k).text(v).appendTo("#mcChooseAttr");
-                    });
-                    $("#mcChooseAttr").select2({
-                        allowClear: true
-                    });
-                    $("#mcChooseAttr").on("change", function(e) {
-                        $("#mcChooseAttr").select2("val", "");
-                        $("#mcChooseAttr > option[value='" + e.added.id + "']").prop({
-                            disabled: true
+                    if(data.success){
+                        $.each(data.listMc, function(k, v) {
+                            $("<option></option>").val(k).text(v).appendTo("#mcChooseAttr");
                         });
-                        $.ajax({
-                            url: "{url_for url=$objectMcFieldsUrl}/" + e.added.id,
-                            type: "GET",
-                            dataType: "html",
-                            success: function(data, textStatus, jqXHR) {
-                                $(data).appendTo($form);
-                            }
+                        $("#mcChooseAttr").select2({
+                            allowClear: true
                         });
-                    });
+                        $("#mcChooseAttr").on("change", function(e) {
+                            $("#mcChooseAttr").select2("val", "");
+                            $("#mcChooseAttr > option[value='" + e.added.id + "']").prop({
+                                disabled: true
+                            });
+                            $.ajax({
+                                url: "{url_for url=$objectMcFieldsUrl}/" + e.added.id,
+                                type: "GET",
+                                dataType: "html",
+                                success: function(data, textStatus, jqXHR) {
+                                    $(data).appendTo($form);
+                                },
+                                error : function (error){
+                                    alertMessage( "{t} An Error Occured {/t}", "alert-danger" )
+                                }
+                            });
+                        });
+                    }else{
+                        alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                    }
+                },
+                error : function(error){
+                    alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
                 }
             });
 
@@ -708,6 +721,8 @@
                   $.each( data.data, function( idx, value ) {
                     result.push( value['text'] );
                   });
+                }else{
+                    alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
                 }
               }
             });
@@ -740,6 +755,9 @@
               } else {
                 alertMessage( data.error, "alert-danger" );
               }
+            },
+            error : function(error){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
             }
           });
         });
@@ -775,6 +793,9 @@
               } else {
                 alertMessage( data.error, "alert-danger" );
               }
+            },
+            error : function (error){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
             }
           });
         });
@@ -802,6 +823,9 @@
               } else {
                 alertMessage( data.error, "alert-danger" );
               }
+            },
+            error : function (error){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
             }
           });
         });
@@ -833,6 +857,9 @@
               } else {
                 alertMessage( data.error, "alert-danger" );
               }
+            },
+            error : function (error){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
             }
           });
         });
@@ -872,6 +899,9 @@ $( document ).ready(function() {
               } else {
                 alertMessage( data.error, "alert-danger" );
               }
+            },
+            error : function (error){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
             }
         });
     }

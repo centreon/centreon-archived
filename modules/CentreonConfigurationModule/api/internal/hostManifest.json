@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "host_id,host_name,host_alias,host_address,host_activate",
+    "liteAttributesSet" : "host_id,host_name,host_slug,host_alias,host_address,host_activate",
     "repository" : "\\CentreonConfiguration\\Repository\\HostRepository",
     "objectBaseUrl" : "host",
     "objectClass" : "\\CentreonConfiguration\\Models\\Host",
@@ -96,7 +96,8 @@
         "activate" : "host_activate",
         "disable" : "host_activate",
         "enable" : "host_activate",
-        "host" : "host"
+        "host" : "host",
+        "slug" : "host_slug"
     },
     "options" : {
     }

@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "acl_resource_id,name,description,aclresource_usergroups,aclresource_domains,aclresource_environments",
+    "liteAttributesSet" : "acl_resource_id,name,slug,description,aclresource_usergroups,aclresource_domains,aclresource_environments",
     "externalAttributeSet" : [
         {
             "type": "aclresource_usergroups",
@@ -41,7 +41,8 @@
         "usergroups" : "aclresource_usergroups",
         "domains" : "aclresource_domains",
         "environments" : "aclresource_environments",
-        "aclresource" : "aclresource"
+        "aclresource" : "aclresource",
+        "slug" : "slug"
     },
     "options" : {
 

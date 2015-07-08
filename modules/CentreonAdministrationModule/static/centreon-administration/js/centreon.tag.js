@@ -52,6 +52,9 @@ $(function () {
             .val( "" );
           tagExpand = false;
         }
+      },
+      error : function (error){
+          alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
       }
     });
       
@@ -101,6 +104,9 @@ $(function () {
         } else {
           $newTag.remove();
         }
+      },
+      error : function(error){
+          alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
       }
     });
   });
@@ -276,6 +282,9 @@ $(function () {
           } else {
             alertModalMessage( data.errmsg );
           }
+        },
+        error : function (error){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
         }
       });
     }

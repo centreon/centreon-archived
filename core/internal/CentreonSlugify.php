@@ -111,9 +111,13 @@ class CentreonSlugify
             $sSlugToSearch = $sSlug;
         }
 
-        
         $aObject = $oRepo::getList("*", -1, 0, null, 'asc', array($this->sSlugField => $sSlugToSearch."%"), 'AND');
-        $sSlugNew = self::concat($oModel, $sSlug, $iIobjectId, $aObject);
+        
+        if (self::slugLength($sSlugToSearch, $aObject, $oModel::getSlugField())) {
+            $sSlugNew = self::concat($oModel, $sSlug, $iIobjectId, $aObject);
+        } else {
+            $sSlugNew = $sSlug;
+        }
        
         return $sSlugNew;
     }
@@ -139,14 +143,13 @@ class CentreonSlugify
             $sSlugNew = $sValue;
         } else {
             $iHighSlug = static::highPrefixSlug($aObject, $sSlugField);
-            
+
             if (static::testSlug($sValue, $aObject, $sSlugField, $iIobjectId, $sPrimary)) {
                 $sSlugNew = $sValue;
             } elseif (is_numeric($iLast)) {  
                 $sSlugNew = substr($sValue, 0, $iPos).static::$sGlue.($iHighSlug + 1);
             } else {
-                static::$index++;
-                $sSlugNew = $sValue.static::$sGlue.static::$index;
+                $sSlugNew = $sValue.static::$sGlue.$iNb;
             }
         }
        
@@ -161,9 +164,8 @@ class CentreonSlugify
     
     public static function highPrefixSlug($aObject, $sSlugField)
     {
-        $iReturn = 1;
+        $iReturn = 0;
         foreach ($aObject as $cle => $valeur) {
-            
             if (isset($valeur[$sSlugField])) {
                 $aValues = explode(static::$sGlue, $valeur[$sSlugField]);
                 $iEnd    = end($aValues);
@@ -172,10 +174,12 @@ class CentreonSlugify
                 }
             }
         }
+
         return $iReturn;
     }
     
     /**
+     * Cette méthode test s'il s'agit d'un update d'un objet, le slug ne sera pas modifié
      * 
      * @param string $sNewSlug   new slug
      * @param array  $aObject    array containts the slug in database
@@ -192,10 +196,29 @@ class CentreonSlugify
                     && !empty($iIdObject)
                     && $iIdObject == $valeur[$sPrimary]) {
                         return true;
-                
             }
         }
 
         return false;
     }
+    
+    /**
+     * 
+     * @param type $sNewSlug
+     * @param type $aObject
+     * @param type $sSlugField
+     * @return boolean
+     */
+    public static function slugLength($sNewSlug, $aObject, $sSlugField)
+    {
+        foreach ($aObject as $cle => $valeur) { 
+            if (isset($valeur[$sSlugField]) 
+                    && strlen($sNewSlug) == strlen($valeur[$sSlugField])) {
+                        return true;
+            }
+        }
+
+        return false;
+    }
+
 }

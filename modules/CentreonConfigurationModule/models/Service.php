@@ -56,6 +56,31 @@ class Service extends CentreonBaseModel
         'service_register' => '1',
     );*/
     
+    public static function getServiceSlugByUniqueField($service,$host){
+        
+        $db = Di::getDefault()->get(static::$databaseName);
+        $slugField = self::getSlugField();
+
+        if(empty($slugField)){
+            throw new Exception(static::NO_SLUG); 
+        }
+        $sql = "Select s.service_slug FROM cfg_services s "
+            . " Inner join cfg_hosts_services_relations hsr on hsr.service_service_id = s.service_id "
+            . " Inner join cfg_hosts h on h.host_id = hsr.host_host_id "
+            . " WHERE s.service_description = :service_description "
+            . " And h.host_name = :host_name "
+            . " And h.host_register = '1' "
+            . " And s.service_register = '1' ";
+        
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':service_description', $service, \PDO::PARAM_STR);
+        $stmt->bindParam(':host_name', $host, \PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['service_slug'];
+    }
+    
+    
     /**
      * Used for inserting object into database
      *

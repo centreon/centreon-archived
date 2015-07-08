@@ -118,6 +118,6 @@ class LoginController extends Controller
     {
         session_regenerate_id(true);
         session_destroy();
-        $this->router->response()->json(array('status' => true));
+        $this->router->response()->json(array('status' => true, 'success' => true));
     }
 }

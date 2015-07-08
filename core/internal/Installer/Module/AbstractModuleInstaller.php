@@ -201,7 +201,7 @@ abstract class AbstractModuleInstaller
      * 
      * @throws NotInstalledException
      */
-    public function upgrade()
+    public function upgrade($force = false)
     {
         if (!Informations::isModuleInstalled($this->moduleSlug)) {
             $exceptionMessage = _("The given module is not installed");
@@ -218,7 +218,9 @@ abstract class AbstractModuleInstaller
         );
         
         // Performing pre operation check
-        $this->checkOperationValidity('upgrade');
+        if (!$force) {
+            $this->checkOperationValidity('upgrade');
+        }
         
         // Set TemporaryVersion
         $this->versionManager->setTemporaryVersion('upgrade', true);

@@ -230,7 +230,7 @@ class PollerRepository extends Repository
 
         NodeRepository::update($params);
         
-        parent::update($params, $origin, $route, true, false);
+        parent::update($params, $origin, $route, $validate, $validateMandatory);
     }
 
 

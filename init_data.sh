@@ -12,7 +12,7 @@ echo " ==== Creating pollers ==== "
 #./external/bin/centreonConsole centreon-configuration:poller:create --name=poller6 --template=Poller --ip-address="127.0.0.1" --engine-init-script='/etc/init.d/centengine' --engine-binary='/usr/sbin/centengine' --engine-modules-dir='/usr/lib64/centreon-engine/' --engine-conf-dir='/etc/centreon-engine/' --engine-logs-dir='/var/log/centreon-engine/' --engine-var-lib-dir='/var/lib/centreon-engine/' --broker-conf-dir='/etc/centreon-broker/' --broker-modules-dir='/usr/share/centreon/lib/centreon-broker/' --broker-data-dir='/var/lib/centreon-broker' --broker-logs-dir='/var/log/centreon-broker/' --broker-cbmod-dir='/usr/lib64/nagios/' --broker-init-script='/etc/init.d/cbd' --broker-central-ip="10.30.2.34"
 
 echo " ==== Creating resource macro === "
-/srv/centreon/external/bin/centreonConsole centreon-configuration:Resource:create --resource-name='$USER1$' --resource-line='/usr/lib/nagios/plugins' --resource-pollers='Central' --resource-activate='Enabled'
+/srv/centreon/external/bin/centreonConsole centreon-configuration:Resource:create --resource-name='$USER1$' --resource-line='/usr/lib/nagios/plugins' --resource-pollers='Central' --disable='Enabled'
 
 echo " ==== Creating timeperiods ==== "
 ./external/bin/centreonConsole centreon-configuration:Timeperiod:create --tp-name='24x7' --tp-alias='24x7' --tp-sunday='00:00-24:00' --tp-monday='00:00-24:00' --tp-tuesday='00:00-24:00' --tp-wednesday='00:00-24:00' --tp-thursday='00:00-24:00' --tp-friday='00:00-24:00' --tp-saturday='00:00-24:00'
@@ -93,26 +93,22 @@ echo " ==== Creating services  ==== "
 ./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-rwe-pp' --template-model-stm='OS-Linux-SNMP-traffic-name'
 ./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='ces3-rwe-pp-traffic-eth0' --name='INTERFACENAME' --value='eth0' 
 
-#./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-qde-pp-ces22' --template-model-stm='OS-Linux-SNMP-traffic-name'
-#./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0'
+./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-qde-pp-ces22' --template-model-stm='OS-Linux-SNMP-traffic-name'
+./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='ces3-qde-pp-ces22-traffic-eth0' --name='INTERFACENAME' --value='eth0'
 
-#./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-qde-pp-ces3' --template-model-stm='OS-Linux-SNMP-traffic-name'
-#./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='Traffic-eth0' --name='INTERFACENAME' --value='eth0'
+./external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-qde-pp-ces3' --template-model-stm='OS-Linux-SNMP-traffic-name'
+./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='ces3-qde-pp-ces3-traffic-eth0' --name='INTERFACENAME' --value='eth0'
 
 ./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-rwe-pp' --template-model-stm='OS-Linux-SNMP-disk-name'
 ./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='ces3-rwe-pp-disk' --name='DISKNAME' --value='/'
 
-#./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-qde-pp-ces22' --template-model-stm='OS-Linux-SNMP-disk-name'
-#./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='disk' --name='DISKNAME' --value='/'
+./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-qde-pp-ces22' --template-model-stm='OS-Linux-SNMP-disk-name'
+./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='ces3-qde-pp-ces22-disk' --name='DISKNAME' --value='/'
 
-#./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-qde-pp-ces3' --template-model-stm='OS-Linux-SNMP-disk-name'
-#./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='disk' --name='DISKNAME' --value='/'
+./external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-qde-pp-ces3' --template-model-stm='OS-Linux-SNMP-disk-name'
+./external/bin/centreonConsole centreon-configuration:Service:addMacro --service='ces3-qde-pp-ces3-disk' --name='DISKNAME' --value='/'
 
 echo " ==== Creating KPI and BA ==== "
-
-# FIXME slugs are not unique per host for the moment
-# So we are forcing slugs via SQL temporary to work arount it for the sprint review
-
 
 ./external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les ping des machines des PP' --ba-type-id=1 --level-w=70 --level-c=50
 ./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='os-linux-snmp-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
@@ -128,4 +124,19 @@ echo " ==== Creating KPI and BA ==== "
 ./external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA ping + memory PP' --ba-type-id=1 --level-w=70 --level-c=50
 ./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-ping-memory-pp' --type='BA' --indicator-ba-slug='ba-sur-les-ping-des-machines-des-pp' --drop-warning='10' --drop-critical='50' --drop-warning='30'
 ./external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-ping-memory-pp' --type='BA' --indicator-ba-slug='ba-sur-les-memory-des-machines-des-pp' --drop-warning='10' --drop-critical='50' --drop-warning='30'
+
+echo " ==== Generating Configuration ==== "
+
+./external/bin/centreonConsole centreon-configuration:Config:generate --poller=central
+./external/bin/centreonConsole centreon-configuration:Config:move --poller=central
+\cp -r /tmp/engine/apply/1/* /etc/centreon-engine/
+\cp -r /tmp/broker/apply/1/* /etc/centreon-broker/
+chown -R centreon-engine.centreon-engine /etc/centreon-engine
+chown -R centreon-broker.centreon-broker /etc/centreon-broker
+chmod -R u+rwX,go+rX,go-w /etc/centreon-engine/ /etc/centreon-broker
+
+echo " ==== Restarting Engine and Broker ==== "
+
+./external/bin/centreonConsole centreon-configuration:Config:apply --poller=central --action=restart
+
 echo " ==== That's all for now, we've already suffered so much to do it, please applause ==== "

@@ -15,7 +15,7 @@ then
     for module in $moduleList
     do
 	echo "Reinstall module : $module " 
-        ./external/bin/centreonConsole core:module:manage:upgrade --module=$module
+        ./external/bin/centreonConsole core:module:manage:upgrade --module=$module --force
     done
     
 else
