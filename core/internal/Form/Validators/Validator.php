@@ -104,10 +104,8 @@ class Validator
      */
     public function validate($submittedDatas, $validateMandatory = true)
     {
-        if (!is_null($this->formGenerator)) {
-            $validationScheme = $this->formGenerator->getValidationScheme(array_keys($submittedDatas));
-            $this->validateDatas($validationScheme, $submittedDatas, $validateMandatory);
-        }
+        $validationScheme = $this->formGenerator->getValidationScheme(array_keys($submittedDatas));
+        $this->validateDatas($validationScheme, $submittedDatas, $validateMandatory);
     }
     
     /**
