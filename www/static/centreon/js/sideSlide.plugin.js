@@ -35,16 +35,21 @@ $(document).ready(function() {
                 success : function(e){
 
                     // Call hogan templates
+                    if(e.success){
+                        $.get(d.tpl, function(tpl){
 
-                    $.get(d.tpl, function(tpl){
+                            var template = Hogan.compile(tpl);
+                            var rendered = template.render(e);
+                            $mainTabWrapper.html(rendered);
+                        });
+                        
+                        $('#tableLeft').css('margin-right','310px');
+                        $('#sideRight').css('display','block');
+                    }else{
+                        alertModalMessage("an error occured", "alert-danger");
+                    }
+                    
 
-                        var template = Hogan.compile(tpl);
-                        var rendered = template.render(e);
-                        $mainTabWrapper.html(rendered);
-                    });
-
-                    $('#tableLeft').css('margin-right','310px');
-                    $('#sideRight').css('display','block');
                 },
                 error : function(error){
                     alertModalMessage("an error occured", "alert-danger");
@@ -71,13 +76,15 @@ $(document).ready(function() {
                         success : function(e){
 
                             // Call hogan templates
-
-                            $.get(item.tpl, function(tpl){
-
-                                var template = Hogan.compile(tpl);
-                                var rendered = template.render(e);
-                                $bodyContent.html(rendered);
-                            });
+                            if(e.success){
+                                $.get(item.tpl, function(tpl){
+                                    var template = Hogan.compile(tpl);
+                                    var rendered = template.render(e);
+                                    $bodyContent.html(rendered);
+                                });
+                            }else{
+                                alertModalMessage("an error occured", "alert-danger");
+                            }
                         },
                         error : function(error){
                             alertModalMessage("an error occured", "alert-danger");
@@ -93,13 +100,16 @@ $(document).ready(function() {
                         success : function(e){
 
                             // Call hogan templates
-
-                            $.get(item.tpl, function(tpl){
-
-                                var template = Hogan.compile(tpl);
-                                var rendered = template.render(e);
-                                $bodyContent.html(rendered);
-                            });
+                            if(e.success){
+                                $.get(item.tpl, function(tpl){
+                                    var template = Hogan.compile(tpl);
+                                    var rendered = template.render(e);
+                                    $bodyContent.html(rendered);
+                                });
+                            }else{
+                                alertModalMessage("an error occured", "alert-danger");
+                            }
+                            
                         },
                         error : function(error){
                             alertModalMessage("an error occured", "alert-danger");

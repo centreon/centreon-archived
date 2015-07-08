@@ -158,6 +158,9 @@
                 } else {
                     alertMessage(data.error, "alert-danger");
                 }
+            })
+            .error(function(){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
             });
             return false;
         });

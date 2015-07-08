@@ -110,7 +110,10 @@ $(function() {
         } else {
           alertModalMessage(data.error, "alert-danger");
         }
-      });
+      })
+      .error(function(error){
+          alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+       });
       return false;
     }
   });
