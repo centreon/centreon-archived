@@ -818,4 +818,11 @@ class HostRepository extends Repository
        }
         
     }
+    
+    public static function getSlugByUniqueField($object){
+        
+        $objectClass = self::$objectClass;
+        return $objectClass::getSlugByUniqueField($object['host-name'], array('host_register' => '1'));
+    }
+    
 }

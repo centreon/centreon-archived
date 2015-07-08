@@ -69,7 +69,8 @@ class Service extends CentreonBaseModel
             . " Inner join cfg_hosts h on h.host_id = hsr.host_host_id "
             . " WHERE s.service_description = :service_description "
             . " And h.host_name = :host_name "
-            . " And h.host_register = '1' ";
+            . " And h.host_register = '1' "
+            . " And s.service_register = '1' ";
         
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':service_description', $service, \PDO::PARAM_STR);

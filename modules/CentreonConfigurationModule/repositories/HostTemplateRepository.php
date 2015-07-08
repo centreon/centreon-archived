@@ -357,4 +357,14 @@ class HostTemplateRepository extends Repository
         return $checkdataTemplate;
         
     }
+    
+    public static function getSlugByUniqueField($object){
+        
+        $objectClass = self::$objectClass;
+        return $objectClass::getSlugByUniqueField($object['hosttemplate-name'], array('host_register' => '0'));
+        
+    }
+    
+    
+    
 }
