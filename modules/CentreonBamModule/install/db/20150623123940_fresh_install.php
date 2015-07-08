@@ -48,6 +48,7 @@ class FreshInstall extends AbstractMigration
         $cfg_bam_ba_type = $this->table('cfg_bam_ba_type', array('id' => false, 'primary_key' => array('ba_type_id')));
         $cfg_bam_ba_type->addColumn('ba_type_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
                 ->addColumn('name', 'string', array('limit' => 255, 'null' => true))
+                ->addColumn('slug', 'string', array('limit' => 255, 'null' => false))
                 ->addColumn('description', 'string', array('limit' => 255, 'null' => true))
                 ->addIndex(array('name'), array('unique' => false))
                 ->create();
