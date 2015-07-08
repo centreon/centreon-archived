@@ -110,6 +110,9 @@
                         </choices>
                     </attributes>
                 </field>
+                <field name="service_check_timeout" normalized_name="timeout" label="Timeout" default_value="" advanced="1" type="integer" parent_field="" mandatory="0">
+                    <help>Service check timeout.</help>
+                </field>
             </block>
         </section>
         <section name="SNMP Traps">

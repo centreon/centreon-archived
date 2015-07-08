@@ -83,7 +83,8 @@ class HostRepository extends Repository
         'host_flap_detection_enabled',
         'flap_detection_options',
         'host_snmp_community',
-        'host_snmp_version'
+        'host_snmp_version',
+        'host_check_timeout'
     );
     
     /**
