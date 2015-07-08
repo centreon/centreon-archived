@@ -65,7 +65,7 @@ class CopyFiles
             $event->setOutput(_('Error while deleting Broker configuration files') . "\n" . implode("\n", $output));
         }
 
-        exec("cp -Rf $tmpdir/broker/generate/{$event->getPollerId()}/* {$tmpdir}/broker/apply/{$event->getPollerId()}/ 2>&1", $output, $status);
+        exec("cp -Rpf $tmpdir/broker/generate/{$event->getPollerId()}/* {$tmpdir}/broker/apply/{$event->getPollerId()}/ 2>&1", $output, $status);
 
         if ($status) {
             $event->setOutput(_('Error while copying Broker configuration files') . "\n" . implode("\n", $output));

@@ -54,6 +54,7 @@ class ResourceCommand extends BasicCrudCommand
     
     /**
      * @cmdForm /centreon-configuration/resource/update required
+     * @cmdParam boolean|false disable optional
      */
     public function createAction($params) {
         parent::createAction($params);
@@ -62,6 +63,8 @@ class ResourceCommand extends BasicCrudCommand
     /**
      * @cmdForm /centreon-configuration/resource/update optional
      * @cmdObject string resource the resource
+     * @cmdParam boolean|false disable optional
+     * @cmdParam boolean|true enable optional
      */
     public function updateAction($object, $params) {
         parent::updateAction($object, $params);
