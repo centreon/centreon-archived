@@ -34,11 +34,11 @@
  *
  */
 
-namespace CentreonMain\Listeners\CentreonMain;
+namespace CentreonConfiguration\Listeners\CentreonConfiguration;
 use Centreon\Internal\Di;
 use CentreonMain\Events\SlideMenu as SlideMenuEvent;
 
-class SlideMenu 
+class SlideMenuHost 
 {
     
     public static function execute(SlideMenuEvent $event)
@@ -88,21 +88,7 @@ class SlideMenu
                     'tpl' => "/viewtpl/CentreonConfigurationModule/services_slide"
                 )
             );
-            
-            $event->addMenu(
-                array(
-                    'name' => 'incident',
-                    'url' => $router->getPathFor('/centreon-realtime/host/'.$event->getHostId().'/issues'),
-                    'icon' => '',
-                    'order' => 5,
-                    'tpl' => "/viewtpl/CentreonRealtimeModule/incidents_slide"
-                )
-            );
-            
-            
-            
-            
-            
+
         }  catch (Exception $e) {
 
         }

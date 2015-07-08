@@ -48,6 +48,9 @@
                 } else {
                     alertMessage(data.error, "alert-danger");
                 }
+            })
+            .error(function(){
+                alertMessage("an error occured", "alert-danger");
             });
             return false;
         });

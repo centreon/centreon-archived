@@ -279,7 +279,7 @@ class HostDatatable extends Datatable
             $sideMenuCustom = new SlideMenu($myHostSet['host_id']);
             
             $events = Di::getDefault()->get('events');
-            $events->emit('centreon-main.slide.menu', array($sideMenuCustom));
+            $events->emit('centreon-configuration.slide.menu.host', array($sideMenuCustom));
             
             //$myHostSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-configuration/host/snapshot/').$myHostSet['host_id'];
             $myHostSet['DT_RowData']['right_side_menu_list'] = $sideMenuCustom->getMenu();

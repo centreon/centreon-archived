@@ -206,6 +206,9 @@
             self.addPeriod(false);
             self.periodPos++;
           });
+        },
+        error : function (error){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
         }
       });
     }

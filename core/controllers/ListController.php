@@ -338,7 +338,7 @@ abstract class ListController extends Controller
         while ($row = $stmt->fetch()) {
             $data['listMc'][$row['field_id']] = $row['label'];
         }
-
+        $data['success'] = true;
         $this->router->response()->json($data);
     }
 

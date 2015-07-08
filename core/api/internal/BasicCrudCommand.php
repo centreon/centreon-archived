@@ -133,6 +133,18 @@ class BasicCrudCommand extends BasicCrud
         parent::duplicateAction();
     }
     
+    /**
+     * 
+     * @cmdObject string $object-name the name of the object
+     */
+    public function getSlugAction($object){
+        
+        $repository = $this->repository;
+        $slug = $repository::getSlugByUniqueField($object);
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display($slug, true, 'green');
+        
+    }
+    
     
     
     private function echoTable($inputTable,$tableInfos){

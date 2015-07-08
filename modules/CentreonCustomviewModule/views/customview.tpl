@@ -112,6 +112,9 @@
                     $('.portlet-content').each(function() {
                         $(this).attr('src', $(this).attr('src'))
                     });
+                },
+                error : function (){
+                    alertMessage("an error occured", "alert-danger");
                 }
             });
         });
