@@ -9,6 +9,8 @@
         "slug" : "resource_slug",
         "line" : "resource_line",
         "activate" : "resource_activate",
+        "enable" : "resource_activate",
+        "disable" : "resource_activate",
         "comment" : "resource_comment",
         "pollers" : "name",
         "organization" : "organization_id",
