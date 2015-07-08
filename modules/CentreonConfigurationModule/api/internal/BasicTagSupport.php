@@ -54,66 +54,54 @@ class BasicTagSupport extends BasicMacroSupport
         $sLibTag = 'tag';
         $aError = array();
         
-      //  try {
-            $repository = $this->repository;
-            $sName = $this->objectName;
-            $repository::transco($object);
-            $aId = $repository::getListBySlugName($object[$sName]);
-            if (count($aId) > 0) {
-                $object = $aId[0]['id'];
-            } else {
-                throw new \Exception(static::OBJ_NOT_EXIST);
-            }
-            
-            $aTags = explode(",", $tag);
-            
-            foreach ($aTags as $sTag) {
-                $bOkyToAdd = true;
-                $iIdTag = TagsRepository::getTagId($sTag, 1, 0);
-                if (!empty($iIdTag)) {
-                    $bLink = TagsRepository::isLink($sName, $object, $iIdTag);
-                    if ($bLink) {
-                        $aError[] = $sTag;
-                        $bOkyToAdd = false;
-                    }
-                }
-                if ($bOkyToAdd) {
-                    TagsRepository::add($sTag, $this->objectName, $object, 1);
-                    $iNbAdded++;
-                }
-            }
-            
-            if (count($aTags) == 1) {
-                $sLibTag = $aTags[0];
-            } else if (count($aTags) > 1) {
-                $sLibTag .= "s";
-            }
-            
-            if ($iNbAdded > 0) {
-                InputOutput::display(
-                    $sLibTag . " has been successfully added to the object",
-                    true,
-                    'green'
-                );
+        $repository = $this->repository;
+        $sName = $this->objectName;
+        $repository::transco($object);
+        $aId = $repository::getListBySlugName($object[$sName]);
+        if (count($aId) > 0) {
+            $object = $aId[0]['id'];
+        } else {
+            throw new \Exception(static::OBJ_NOT_EXIST, 1);
+        }
 
-                if ($iNbAdded > 0 && count($aError) > 0) {
-                    InputOutput::display(
-                        "but some tags already exists : '". implode("', '", $aError)."'",
-                        true,
-                        'red'
-                    );
-                }
-            } else {
-                InputOutput::display(
-                    $sLibTag . " already exists",
-                    true,
-                    'red'
-                );
-            }
+        $aTags = explode(",", $tag);
 
-       /* } catch(\Exception $ex) {
-            InputOutput::display($ex->getMessage(), true, 'red');
-        }*/
+        foreach ($aTags as $sTag) {
+            $bOkyToAdd = true;
+            $iIdTag = TagsRepository::getTagId($sTag, 1, 0);
+            if (!empty($iIdTag)) {
+                $bLink = TagsRepository::isLink($sName, $object, $iIdTag);
+                if ($bLink) {
+                    $aError[] = $sTag;
+                    $bOkyToAdd = false;
+                }
+            }
+            if ($bOkyToAdd) {
+                TagsRepository::add($sTag, $this->objectName, $object, 1);
+                $iNbAdded++;
+            }
+        }
+
+        if (count($aTags) == 1) {
+            $sLibTag = $aTags[0];
+        } else if (count($aTags) > 1) {
+            $sLibTag .= "s";
+        }
+
+        if ($iNbAdded > 0) {
+            InputOutput::display(
+                $sLibTag . " has been successfully added to the object",
+                true,
+                'green'
+            );
+
+            if ($iNbAdded > 0 && count($aError) > 0) {
+                throw new \Exception("but some tags already exists : '". implode("', '", $aError)."'", 1);
+            }
+        } else {
+            throw new \Exception($sLibTag . " already exists", 1);
+        }
+
     }
     
     /**
@@ -122,25 +110,25 @@ class BasicTagSupport extends BasicMacroSupport
      */
     public function listTagAction($object = null)
     {
-       // try {
-            $repository = $this->repository;
-            $repository::transco($object);
-            $sName = $this->objectName;
-           
-            $aId = $repository::getListBySlugName($object[$sName]);
-            if (count($aId) > 0) {
-                $object = $aId[0]['id'];
-            } else {
-                throw new \Exception(static::OBJ_NOT_EXIST);
-            }
-            $TagList = TagsRepository::getList($this->objectName, $object, 1);
-            
+        $repository = $this->repository;
+        $repository::transco($object);
+        $sName = $this->objectName;
+
+        $aId = $repository::getListBySlugName($object[$sName]);
+        if (count($aId) > 0) {
+            $object = $aId[0]['id'];
+        } else {
+            throw new \Exception(static::OBJ_NOT_EXIST, 1);
+        }
+        $TagList = TagsRepository::getList($this->objectName, $object, 1);
+
+        if (count($TagList) >0) {
             foreach ($TagList as $tag) {
                 echo $tag['text'] . "\n";
             }
-        /*} catch (\Exception $ex) {
-            InputOutput::display($ex->getMessage(), true, 'red');
-        }*/
+        } else{
+            throw new \Exception('No results', 1);
+        }
     }
     
     /**
@@ -152,35 +140,38 @@ class BasicTagSupport extends BasicMacroSupport
     {
         $iNbDeleted = 0;
         $sLibTag  = "tag";
-        //try {
-            $repository = $this->repository;
-            $sName = $this->objectName;
-            $repository::transco($object);
-            $aId = $repository::getListBySlugName($object[$sName]);
-            if (count($aId) > 0) {
-                $object = $aId[0]['id'];
-            } else {
-                throw new \Exception(static::OBJ_NOT_EXIST);
-            }
-            
-            $aTags = explode(",", $tag);
-            foreach ($aTags as $sTag) {
-                TagsRepository::delete($sTag, $this->objectName, $object);
-                $iNbDeleted++;
-                
-            }
-            if ($iNbDeleted >1) 
-                $sLibTag .= "s";
-            
+        
+        $repository = $this->repository;
+        $sName = $this->objectName;
+        $repository::transco($object);
+        $aId = $repository::getListBySlugName($object[$sName]);
+        if (count($aId) > 0) {
+            $object = $aId[0]['id'];
+        } else {
+            throw new \Exception(static::OBJ_NOT_EXIST, 1);
+        }
 
-            InputOutput::display(
-                $sLibTag." has been successfully removed from the object",
-                true,
-                'green'
-            );
+        $aTags = explode(",", $tag);
+        foreach ($aTags as $sTag) {
+            $iReturn = TagsRepository::isExist($sTag);
+            $bLinked = TagsRepository::isLink($this->objectName, $object, $iReturn);
 
-        /*} catch (\Exception $ex) {
-            InputOutput::display($ex->getMessage(), true, 'red');
-        }*/
+            if (!$bLinked) {
+                throw new \Exception("This tag can't be found on the object", 1);
+            }
+            TagsRepository::delete($sTag, $this->objectName, $object);
+            $iNbDeleted++;
+
+        }
+        if ($iNbDeleted >1) 
+            $sLibTag .= "s";
+
+
+        InputOutput::display(
+            $sLibTag." has been successfully removed from the object",
+            true,
+            'green'
+        );
+
     }
 }
