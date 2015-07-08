@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "command_id,command_name,command_line,command_type",
+    "liteAttributesSet" : "command_id,command_name,command_slug,command_line,command_type",
     "repository" : "\\CentreonConfiguration\\Repository\\CommandRepository",
     "objectBaseUrl" : "command",
     "objectClass" : "\\CentreonConfiguration\\Models\\Command",
@@ -8,7 +8,8 @@
         "name" : "command_name",
         "command line" : "command_line",
         "type" : "command_type",
-        "command" : "command"
+        "command" : "command",
+        "slug" : "command_slug"
     },
     "externalAttributeSet" : [
         {

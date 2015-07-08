@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "id,name,description,command_line,enabled",
+    "liteAttributesSet" : "id,name,slug,description,command_line,enabled",
     "repository" : "\\CentreonConfiguration\\Repository\\ConnectorRepository",
     "objectBaseUrl" : "connector",
     "objectClass" : "\\CentreonConfiguration\\Models\\Connector",
@@ -12,7 +12,8 @@
         "description" : "description",
         "command line" : "connector_line",
         "activate" : "enabled",
-        "connector" : "connector"
+        "connector" : "connector",
+        "slug" : "slug"
     },
     "externalAttributeSet" : [
         {

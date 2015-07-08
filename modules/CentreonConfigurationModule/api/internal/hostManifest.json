@@ -97,7 +97,7 @@
         "disable" : "host_activate",
         "enable" : "host_activate",
         "host" : "host",
-        "host-slug" : "host_slug"
+        "slug" : "host_slug"
     },
     "options" : {
     }
