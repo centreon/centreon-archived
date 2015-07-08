@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,63 +33,37 @@
  * For more information : contact@centreon.com
  *
  */
-namespace CentreonMain\Controllers;
 
+namespace CentreonRealtime\Listeners\CentreonConfiguration;
 use Centreon\Internal\Di;
-use Centreon\Internal\Controller;
-use CentreonMain\Events\Status;
+use CentreonMain\Events\SlideMenu as SlideMenuEvent;
 
-/**
- * Home controller
- * @authors Sylvestre Ho
- * @package Centreon
- * @subpackage Controllers
- */
-class MainController extends Controller
+class SlideMenuHost 
 {
-    public static $moduleName = 'CentreonMain';
     
-    /**
-     * Action for home page
-     *
-     * @method GET
-     * @route /
-     */
-    public function indexAction()
+    public static function execute(SlideMenuEvent $event)
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-        $backUrl = $router->getPathFor('/centreon-realtime/service');
-        $router->response()->redirect($backUrl, 200);
-    }
-    
-    /**
-     * Action for home page
-     *
-     * @method GET
-     * @route /home
-     */
-    public function homeAction()
-    {
-        $this->display('home.tpl');
-    }
-
-    /**
-     * Route for getting refresh information
-     *
-     * @method GET
-     * @route /status
-     */
-    public function statusAction()
-    {
+        
         $router = Di::getDefault()->get('router');
-        $events = Di::getDefault()->get('events');
-        $status = array();
+        try{
+            
+            $event->addMenu(
+                array(
+                    'name' => 'incident',
+                    'url' => $router->getPathFor('/centreon-realtime/host/'.$event->getHostId().'/issues'),
+                    'icon' => '',
+                    'order' => 5,
+                    'tpl' => "/viewtpl/CentreonRealtimeModule/incidents_slide"
+                )
+            );
 
-        $statusEvent = new Status($status);
+        }  catch (Exception $e) {
 
-        $events->emit('centreon-main.status', array($statusEvent));
-        $status['success'] = true;
-        $router->response()->json($status);
+        }
+        
+       
+        
     }
+    
+    
 }

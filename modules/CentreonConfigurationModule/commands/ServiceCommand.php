@@ -66,6 +66,21 @@ class ServiceCommand extends BasicTagSupport
     
     /**
      * 
+     * @cmdObject string host-name the name of the object
+     * @cmdObject string service-description the name of the object
+     */
+    public function getSlugAction($object){
+        
+        $repository = $this->repository;
+        $slug = $repository::getServiceSlugByUniqueField($object['service-description'],$object['host-name']);
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display($slug, true, 'green');
+        
+    }
+    
+    
+    
+    /**
+     * 
      * @cmdForm /centreon-configuration/service/update optional
      * @cmdObject string service the service
      * @cmdParam none service-custommacros optional
@@ -75,6 +90,9 @@ class ServiceCommand extends BasicTagSupport
      */
     public function updateAction($object, $params) 
     {
+        $repository = $this->repository;
+        $host_slug = $repository::getHostSlugFromServiceSlug($object['service']);
+        $params['service_hosts'] = $host_slug;
         parent::updateAction($object, $params);
     }
     

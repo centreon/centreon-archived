@@ -174,6 +174,7 @@ class HostController extends Controller
     {
         $params = $this->getParams();
         $parent_issues = HostRepository::getParentIncidentsFromHost($params['id']);
+        $parent_issues['success'] = true;
         /*
         echo '<pre>';
         print_r($parent_issues);

@@ -104,10 +104,14 @@
                                        </a>
                                      </div>
                                      <div class="media-body">
-                                       <strong>{$userName}</strong>
-                                       {foreach $userEmails as $userEmail}
-                                         <p><small>{$userEmail}</small></p>
-                                       {/foreach}
+                                       {if isset($userName)}
+                                        <strong>{$userName}</strong>
+                                       {/if}
+                                       {if isset($userEmails)}
+                                        {foreach $userEmails as $userEmail}
+                                          <p><small>{$userEmail}</small></p>
+                                        {/foreach}
+                                       {/if}
                                         <ul class="list-unstyled list-inline ">
                                             <li>
                                                 <a href="#" id="help">{t}Help{/t}</a>
@@ -227,9 +231,14 @@
                     url: "{url_for url='/logout'}",
                     type: "GET",
                     success: function(data, textStatus, jqXHR) {
-                        if (data.status) {
-                            window.location.href = "{url_for url='/login'}";
+                        if ( data.success ) {
+                            if (data.status) {
+                                window.location.href = "{url_for url='/login'}";
+                            }
+                        }else{
+                            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
                         }
+                        
                     }
                 });
             });
@@ -322,8 +331,13 @@
                 url: "{url_for url='/status'}",
                 type: 'GET',
                 success: function(data, textStatus, jqXHR) {
-                  statusData = data;
-                  $(document).trigger(eStatus);
+                    if ( data.success ) {
+                        statusData = data;
+                        $(document).trigger(eStatus);
+                    }else{
+                        alertMessage( "{t}An Error Occured {/t}", "alert-danger" );
+                    }
+                  
                 }
               });
             }

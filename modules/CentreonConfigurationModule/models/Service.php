@@ -56,6 +56,30 @@ class Service extends CentreonBaseModel
         'service_register' => '1',
     );*/
     
+    public static function getServiceSlugByUniqueField($service,$host){
+        
+        $db = Di::getDefault()->get(static::$databaseName);
+        $slugField = self::getSlugField();
+
+        if(empty($slugField)){
+            throw new Exception(static::NO_SLUG); 
+        }
+        $sql = "Select s.service_slug FROM cfg_services s "
+            . " Inner join cfg_hosts_services_relations hsr on hsr.service_service_id = s.service_id "
+            . " Inner join cfg_hosts h on h.host_id = hsr.host_host_id "
+            . " WHERE s.service_description = :service_description "
+            . " And h.host_name = :host_name "
+            . " And h.host_register = '1' ";
+        
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':service_description', $service, \PDO::PARAM_STR);
+        $stmt->bindParam(':host_name', $host, \PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['service_slug'];
+    }
+    
+    
     /**
      * Used for inserting object into database
      *
@@ -324,4 +348,40 @@ class Service extends CentreonBaseModel
         }
         return true;   
     }
+    
+    /**
+     * 
+     * @param int $iId
+     * @param string $sSlug
+     */
+    public static function updateSlug($iId, $sSlug)
+    {
+        $db = Di::getDefault()->get(static::$databaseName);
+        if (empty($sSlug) || empty($iId)) {
+            return;
+        }
+
+        $query = "UPDATE ".static::$table." SET ".static::$slugField." = :slug WHERE ".static::$primaryKey." = :svc_id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam('svc_id', $iId, \PDO::PARAM_INT);
+        $stmt->bindParam('slug', $sSlug, \PDO::PARAM_STR);
+        $stmt->execute();        
+    }
+    
+    public static function getHostSlugFromServiceSlug($serviceslug)
+    {
+        $db = Di::getDefault()->get(static::$databaseName);
+        $query = "Select h.host_slug from cfg_services s"
+            . " inner join cfg_hosts_services_relations hsr on hsr.service_service_id = s.service_id "
+            . " inner join cfg_hosts h on h.host_id = hsr.host_host_id and h.host_register = 1 "
+            . " where s.service_slug = :service_slug ";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':service_slug', $serviceslug, \PDO::PARAM_STR);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if(!empty($row)){
+            return $row['host_slug'];
+        }
+    }
+    
 }

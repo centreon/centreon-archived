@@ -209,6 +209,11 @@ class ServiceRepository extends Repository
         }
     }
     
+    public function getServiceSlugByUniqueField($service,$host){
+        return Service::getServiceSlugByUniqueField($service,$host);
+    }
+    
+    
     /**
      * 
      * @param int $service_id
@@ -309,8 +314,6 @@ class ServiceRepository extends Repository
         }
         return $checkdata;
     }
-    
-    
     
     
     /**
@@ -643,9 +646,12 @@ class ServiceRepository extends Repository
     
     /**
      * Generic create action
-     *
-     * @param array $givenParameters
-     * @return int id of created object
+     * 
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     * @param type $validate
+     * @param type $validateMandatory
      */
    
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
@@ -660,10 +666,20 @@ class ServiceRepository extends Repository
         
         $sField = $class::getUniqueLabelField();
         $aHostId = explode(",", $givenParameters['service_hosts']);
-            if (count($aHostId) > 1) {
-            $sHostName = Host::get($aHostId[1], 'host_name');
 
-            if (isset($sField) && isset($givenParameters[$sField]) && !is_null($class::getSlugField()) && is_null($givenParameters[$class::getSlugField()])) {
+        $aHostId = array_filter($aHostId, 'strlen');
+        if (count($aHostId) > 0) {
+            $sHostName = Host::get(current($aHostId), 'host_name');
+
+            if (isset($sField) 
+                    && isset($givenParameters[$sField]) && !is_null($class::getSlugField()) 
+                    && 
+                    (
+                        (isset($givenParameters[$class::getSlugField()])) && is_null($givenParameters[$class::getSlugField()])
+                        or
+                        !isset($givenParameters[$class::getSlugField()])
+                    )
+               ) {
                 $oSlugify = new CentreonSlugify($class, get_called_class());
                 $sString = $sHostName['host_name']." ".$givenParameters[$sField];
                 $sSlug = $oSlugify->slug($sString);
@@ -675,8 +691,13 @@ class ServiceRepository extends Repository
     
     /**
      * Generic update function
-     *
-     * @param array $givenParameters
+     * 
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     * @param type $validate
+     * @param type $validateMandatory
+     * 
      * @throws \Centreon\Internal\Exception
      */
     public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
@@ -690,11 +711,20 @@ class ServiceRepository extends Repository
         
         $sField = $class::getUniqueLabelField();
         $aHostId = explode(",", $givenParameters['service_hosts']);
-       
+        $aHostId = array_filter($aHostId, 'strlen' );
+        
         if (count($aHostId) > 0) {
-            $sHostName = Host::get($aHostId[0], 'host_name');
+            $sHostName = Host::get(current($aHostId), 'host_name');
             
-            if (isset($sField) && isset($givenParameters[$sField]) && !is_null($class::getSlugField()) && is_null($givenParameters[$class::getSlugField()])) {
+            if (isset($sField) 
+                    && isset($givenParameters[$sField]) && !is_null($class::getSlugField()) 
+                    && 
+                    (
+                        (isset($givenParameters[$class::getSlugField()])) && is_null($givenParameters[$class::getSlugField()])
+                        or
+                        !isset($givenParameters[$class::getSlugField()])
+                    )
+               ) {
                 $oSlugify = new CentreonSlugify($class, get_called_class());
                 $sString = $sHostName['host_name']." ".$givenParameters[$sField];
                 $sSlug = $oSlugify->slug($sString);
@@ -704,6 +734,12 @@ class ServiceRepository extends Repository
 
         parent::update($givenParameters, $origin, $route, $validate, $validateMandatory);
        
+    }
+    
+    public static function getHostSlugFromServiceSlug($serviceSlug)
+    {
+        $class = static::$objectClass;
+        return $class::getHostSlugFromServiceSlug($serviceSlug);
     }
      
 }

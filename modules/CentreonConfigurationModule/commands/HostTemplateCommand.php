@@ -166,7 +166,7 @@ class HostTemplateCommand extends BasicTagSupport
      * @cmdObject string host-template the host
      * @cmdObject string macro the macro to update
      */
-    public function removeMacroAction($object, $params) {
+    public function removeMacroAction($object, $params = null) {
         parent::removeMacroAction($object, $object['macro']);
     }
     

@@ -126,6 +126,14 @@ class IndicatorCommand extends BasicCrudCommand
         echo $result;
     }
     
+    /**
+     * 
+     */
+    public function getSlugAction($object=null){
+        \Centreon\Internal\Utils\CommandLine\InputOutput::display('Not implemented Yet', true, 'red');
+        
+    }
+    
     
 }
 

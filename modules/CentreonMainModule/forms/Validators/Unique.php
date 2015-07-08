@@ -501,7 +501,6 @@ class Unique implements ValidatorInterface
             if (isset($params['extraParams']['kpi_type'])) { 
                 $objClass = "CentreonBam\Repository\IndicatorRepository";
                 
-               // var_dump($params['extraParams']);die;
                 if ($params['extraParams']['kpi_type'] == '0') {
                     $serviceId = "";
                     if (isset($params['extraParams']['service_id'])) {
@@ -586,44 +585,40 @@ class Unique implements ValidatorInterface
         elseif (isset($params['object']) && $params['object'] == 'resource') {
 
             $objClass = "CentreonConfiguration\Repository\ResourceRepository";
-            
-            $aPollers = explode(",", $params['extraParams']['resource_pollers']);
-            $aPollers = array_map('trim', $aPollers);
-            $aPollers = array_diff($aPollers, array( '' ) );
+            if (isset($params['extraParams']['resource_pollers'])) {
+                $aPollers = explode(",", $params['extraParams']['resource_pollers']);
+                $aPollers = array_map('trim', $aPollers);
+                $aPollers = array_diff($aPollers, array( '' ) );
 
-            if (isset($params['extraParams']['resource_name']) && count($aPollers) > 0) {
-                $sLabel = $params['extraParams']['resource_name'];
-                $aParams['resources'] = $sLabel;
-                
-                foreach ($aPollers as $iIdPoller) {
-                    $sPollerName = "";
-                    $aPollerName = Poller::getParameters($iIdPoller, 'name');
-                    if (is_array($aPollerName) && isset($aPollerName['name']) & !empty($aPollerName['name'])) {
-                        $sPollerName = $aPollerName['name'];
-                    }
+                if (isset($params['extraParams']['resource_name']) && count($aPollers) > 0) {
+                    $sLabel = $params['extraParams']['resource_name'];
+                    $aParams['resources'] = $sLabel;
 
-                    $aParams['poller'] = $sPollerName;
-                    
-                    try {
-                        $idReturned = $objClass::getIdFromUnicity($aParams);
-                        $iObjectId = '';
-
-                        if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
-                            $iObjectId = $params['extraParams']['object_id'];
+                    foreach ($aPollers as $iIdPoller) {
+                        $sPollerName = "";
+                        $aPollerName = Poller::getParameters($iIdPoller, 'name');
+                        if (is_array($aPollerName) && isset($aPollerName['name']) & !empty($aPollerName['name'])) {
+                            $sPollerName = $aPollerName['name'];
                         }
-                        $return[] = self::compareResponse($iObjectId, $idReturned);
-                    } catch (MissingParameterException $e) {
-                        $return[] = 0;
+
+                        $aParams['poller'] = $sPollerName;
+
+                        try {
+                            $idReturned = $objClass::getIdFromUnicity($aParams);
+                            $iObjectId = '';
+
+                            if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                                $iObjectId = $params['extraParams']['object_id'];
+                            }
+                            $return[] = self::compareResponse($iObjectId, $idReturned);
+                        } catch (MissingParameterException $e) {
+                            $return[] = 0;
+                        }
+
                     }
-  
                 }
             }
         }
-        /*
-        var_dump($return);
-        //var_dump($params); 
-        die;
-        */
         
         if (is_array($return)) {
             foreach($return as $valeur) {
@@ -639,14 +634,18 @@ class Unique implements ValidatorInterface
                 $sMessage = $resultError;
             }
         }
+        
         if ($sContext == 'client') {
             if (empty($sMessage)) 
                 $sMessage = true;
             $reponse = $sMessage;
         } else {
-            $reponse = array('success' => $bSuccess, 'error' => $sMessage);
+            $reponse = array(
+                'success' => $bSuccess, 
+                'error' => $sMessage
+            );
         }
-        //var_dump($reponse);die;
+
         return $reponse;
     }
     /**

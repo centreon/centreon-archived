@@ -41,6 +41,7 @@ use CentreonConfiguration\Repository\ConfigApplyRepository;
 use CentreonConfiguration\Repository\ConfigGenerateRepository;
 use CentreonConfiguration\Repository\ConfigMoveRepository;
 use CentreonConfiguration\Repository\ConfigTestRepository;
+use CentreonConfiguration\Repository\PollerRepository;
 
 /**
  * @authors Lionel Assepo
@@ -50,58 +51,114 @@ use CentreonConfiguration\Repository\ConfigTestRepository;
 class ConfigCommand extends AbstractCommand
 {
     /**
-     * Action for Generating configuration files
-     * @param integer $id Poller id
+     * @cmdObject string poller the poller slug
      */
-    public function generateAction($id)
+    public function generateAction($object)
     {
-        $obj = new ConfigGenerateRepository($id);
-        $obj->generate();
-        echo $obj->getOutput();
+        $exit = 1;
+        $id = PollerRepository::getIdBySlugName($object['poller']);
+        if(!is_null($id)){
+            $obj = new ConfigGenerateRepository($id);
+            $obj->generate();
+            echo $obj->getOutput();
+            if($obj->getStatus() === 1){
+                $exit = 0;
+            }else{
+                $exit = 1;
+            }
+        }else{
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Error : Poller not in Database", true, 'red');
+            $exit = 1;
+        }
+        exit($exit);
+        
     }
 
     /**
-     * Action for Move configuration files
-     * @param integer $id Poller id
+     * @cmdObject string poller the poller slug
      */
-    public function moveAction($id)
+    public function moveAction($object)
     {
-        $obj = new ConfigMoveRepository($id);
-        $obj->moveConfig();
-        echo $obj->getOutput();
+        $exit = 1;
+        $id = PollerRepository::getIdBySlugName($object['poller']);
+        if(!is_null($id)){
+            $obj = new ConfigMoveRepository($id);
+            $obj->moveConfig();
+            echo $obj->getOutput();
+            if($obj->getStatus() === 1){
+                $exit = 0;
+            }else{
+                $exit = 1;
+            }
+        }else{
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Error : Poller not in Database", true, 'red');
+            $exit = 1;
+        }
+        exit($exit);
     }
 
     /**
-     * Action for testing configuration files
-     * @param integer $id Poller id
+     * @cmdObject string poller the poller slug
      */
-    public function testAction($id)
+    public function testAction($object)
     {
-        $obj = new ConfigTestRepository($id);
-        $obj->checkConfig();
-        // Only CentEngine is tested at the moment
-        // We are formatting the output to have a colored, readable ouput on terminal
-        $totalWarningsStr = Colorize::colorizeMessage('Total Warnings', 'warning');
-        $warningStr = Colorize::colorizeMessage('Warning', 'warning');
-        $totalErrorsStr = Colorize::colorizeMessage('Total Errors', 'danger');
-        $errorStr = Colorize::colorizeMessage('Error', 'danger');
-        $finalStr = $obj->getOutput();
-        $finalStr = str_replace("\nTotal Warnings", "\n".$totalWarningsStr, $finalStr);
-        $finalStr = str_replace("\nWarning", "\n".$warningStr, $finalStr);
-        $finalStr = str_replace("\nTotal Errors", "\n".$totalErrorsStr, $finalStr);
-        $finalStr = str_replace("\nError", "\n".$errorStr, $finalStr);
-        echo $finalStr;
+        $exit = 1;
+        $id = PollerRepository::getIdBySlugName($object['poller']);
+        if(!is_null($id)){
+            $obj = new ConfigTestRepository($id);
+            $obj->checkConfig();
+            // Only CentEngine is tested at the moment
+            // We are formatting the output to have a colored, readable ouput on terminal
+            $totalWarningsStr = Colorize::colorizeMessage('Total Warnings', 'warning');
+            $warningStr = Colorize::colorizeMessage('Warning', 'warning');
+            $totalErrorsStr = Colorize::colorizeMessage('Total Errors', 'danger');
+            $errorStr = Colorize::colorizeMessage('Error', 'danger');
+            $finalStr = $obj->getOutput();
+            $finalStr = str_replace("\nTotal Warnings", "\n".$totalWarningsStr, $finalStr);
+            $finalStr = str_replace("\nWarning", "\n".$warningStr, $finalStr);
+            $finalStr = str_replace("\nTotal Errors", "\n".$totalErrorsStr, $finalStr);
+            $finalStr = str_replace("\nError", "\n".$errorStr, $finalStr);
+            if($obj->getStatus() === 1){
+                $exit = 0;
+            }else{
+                $exit = 1;
+            }
+            echo $finalStr;
+        }else{
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Error : Poller not in Database", true, 'red');
+            $exit = 1;
+        }
+        
+        exit($exit);
+        
+        
     }
 
     /**
-     * Action for Apply configuration
-     * @param integer $id Poller id
-     * @param string $action Action to be applied
+
+    /**
+     * @cmdObject string poller the poller slug
+     * @cmdParam string action required the action 
      */
-    public function applyAction($id, $action)
+    public function applyAction($object, $param)
     {
-        $obj = new ConfigApplyRepository($id);
-        $obj->action($action);
-        echo $obj->getOutput();
+        $exit = 1;
+        $id = PollerRepository::getIdBySlugName($object['poller']);
+        if(!is_null($id)){
+            $action = $param['action'];
+            $obj = new ConfigApplyRepository($id);
+            $obj->action($action);
+            echo $obj->getOutput();
+            if($obj->getStatus() === 1){
+                $exit = 0;
+            }else{
+                $exit = 1;
+            }
+        }else{
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Error : Poller not in Database", true, 'red');
+            $exit = 1;
+        }
+        exit($exit);
+
     }
 }
