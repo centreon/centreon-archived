@@ -133,7 +133,7 @@ echo " ==== Generating Configuration ==== "
 \cp -r /tmp/broker/apply/1/* /etc/centreon-broker/
 chown -R centreon-engine.centreon-engine /etc/centreon-engine
 chown -R centreon-broker.centreon-broker /etc/centreon-broker
-chmod -R u+rwX,go+rX,go-w /etc/centreon-engine/ /etc/centreon-broker
+chmod -R u+rwX,g+rwX /etc/centreon-engine/* /etc/centreon-broker/*
 
 echo " ==== Restarting Engine and Broker ==== "
 
