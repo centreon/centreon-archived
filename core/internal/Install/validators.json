@@ -40,11 +40,7 @@
         "route": "/validator/unique"
     },
     {
-        "name": "centreon-main.circular.dependency",
-        "route": "/validator/CircularDependency"
-    },
-    {
-        "name": "core.IllegalChars",
-        "route": "/validator/IllegalChars"
+        "name": "core.AuthorizedValues",
+        "route": "/validator/AuthorizedValues"
     }
 ]
