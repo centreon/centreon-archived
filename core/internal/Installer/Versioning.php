@@ -189,4 +189,93 @@ class Versioning
             }
         }
     }
+
+    /**
+     * 
+     * @param string $version
+     * @return array
+     */
+    private static function parseVersion($version)
+    {
+        $versionExploded = explode(' ', $version);
+        $comparison = array();
+        
+        if (count($versionExploded) > 0) {
+            $realVersion = $versionExploded[0];
+            
+            preg_match("/^(\^|\~|(?:=|<|>)*)(.+)/", $realVersion, $versionSplitted);
+            
+            if (empty($versionSplitted[1])) {
+                $comparator = '=';
+            } else {
+                $comparator = $versionSplitted[1];
+            }
+            
+            $versionToCompare = $versionSplitted[2];
+            
+            if ($comparator == '~') {
+                $nextVersion = static::getNextSignificantVersion($versionToCompare);
+                $comparison[] = array($versionToCompare, '>=');
+                $comparison[] = array($nextVersion, '<');
+            } elseif (strpos($versionToCompare, '*') !== false) {
+                $nextVersion = static::getNextSignificantVersion($versionToCompare);
+                $comparison[] = array(str_replace('*', '0', $versionToCompare), '>=');
+                $comparison[] = array($nextVersion, '<');
+            } else {
+                $comparison[] = array($versionToCompare, $comparator);
+            }
+        }
+        
+        return $comparison;
+    }
+    
+    /**
+     * 
+     * @param string $version
+     * @return string
+     */
+    public static function getNextSignificantVersion($version)
+    {
+        $versionExploded = explode('.', $version);
+        
+        $finalVersion = '';
+        
+        if (isset($versionExploded[2])) {
+            $versionExploded[1]++;
+            $versionExploded[2] = '0';
+        } elseif (isset($versionExploded[1])) {
+            $versionExploded[0]++;
+            $versionExploded[1] = '0';
+            $versionExploded[2] = '0';
+        } else {
+            $versionExploded[1] = '0';
+            $versionExploded[2] = '0';
+        }
+        
+        $finalVersion .= implode('.', $versionExploded);
+        
+        return $finalVersion;
+    }
+    
+    /**
+     * 
+     * @param string $currentVersion
+     * @param string $targetVersion
+     * @return boolean
+     */
+    public static function compareVersion($currentVersion, $targetVersion)
+    {
+        $comparisons = static::parseVersion($targetVersion);
+        $comparisonSatisfied = false;
+        
+        foreach ($comparisons as $comparison) {
+            if (version_compare($currentVersion, $comparison[0], $comparison[1])) {
+                $comparisonSatisfied = true;
+            } else {
+                $comparisonSatisfied = false;
+            }
+        }
+        
+        return $comparisonSatisfied;
+    }
 }

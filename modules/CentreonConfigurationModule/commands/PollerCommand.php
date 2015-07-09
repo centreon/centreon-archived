@@ -54,6 +54,7 @@ class PollerCommand extends BasicCrudCommand
     
     /**
      * @cmdForm /centreon-configuration/poller/update required
+     * @cmdParam boolean|false disable required
      */
     public function createAction($params) {
         parent::createAction($params);
@@ -62,8 +63,10 @@ class PollerCommand extends BasicCrudCommand
     /**
      * @cmdForm /centreon-configuration/poller/update optional
      * @cmdObject string poller the poller
+     * @cmdParam boolean|false disable optional
+     * @cmdParam boolean|true enable optional
      */
-    public function updateAction($object, $params) {
+    public function updateAction($object, $params = null) {
         parent::updateAction($object, $params);
     }
     

@@ -20,6 +20,9 @@
             "group": false
         }
     ],
+    "paramsToExclude" : [
+      "contact_tags" 
+    ],
     "options" : {
 
     }

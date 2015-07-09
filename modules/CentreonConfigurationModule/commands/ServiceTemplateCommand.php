@@ -57,6 +57,7 @@ class ServiceTemplateCommand extends BasicTagSupport
      * @cmdForm /centreon-configuration/servicetemplate/update required 
      * @cmdParam none service-custommacros optional
      * @cmdParam none service-tags optional
+     * @cmdParam boolean|false disable required disable the serviceTemplate
      */
     public function createAction($params) {
         parent::createAction($params);
@@ -69,8 +70,10 @@ class ServiceTemplateCommand extends BasicTagSupport
      * @cmdObject string service-template the service template
      * @cmdParam none service-custommacros optional
      * @cmdParam none service-tags optional
+     * @cmdParam boolean|false disable optional
+     * @cmdParam boolean|true enable optional
      */
-    public function updateAction($object, $params) {
+    public function updateAction($object, $params = null) {
         parent::updateAction($object, $params);
     }
     

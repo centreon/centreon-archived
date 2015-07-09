@@ -446,7 +446,8 @@ class BasicCrud extends AbstractCommand
     public function showAction($objectSlug, $fields = null, $linkedObject = '')
     {
         $repository = $this->repository;
-        $aId = $repository::getListBySlugName($objectSlug[$this->objectName]);
+        $sName = static::renameObject($this->objectName);
+        $aId = $repository::getListBySlugName($objectSlug[$sName]);
         if (count($aId) > 0) {
             $objectSlug = $aId[0]['id'];
         } else {

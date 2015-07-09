@@ -76,6 +76,8 @@
         "name" : "service_description",
         "status" : "service_activate",
         "service-template" : "servicetemplate",
+        "disable" : "service_activate",
+        "enable" : "service_activate",
         "slug" : "service_slug"
     },
     "options" : {

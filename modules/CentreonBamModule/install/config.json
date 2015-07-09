@@ -1,7 +1,7 @@
 {
     "name": "Centreon Bam",
     "shortname" : "centreon-bam",
-    "version": "2.99.5-dev",
+    "version": "2.99.5",
     "author" : [
         "Centreon"
     ],
@@ -9,19 +9,19 @@
     "isdisableable" : true,
     "url" : "",
     "description" : "Centreon Business Activity Monitoring module",
-    "core version" : "2.99.5",
+    "core version" : "2.99.*",
     "dependencies" : [
         {
             "name" : "centreon-configuration",
-            "version" : "2.99.5"
+            "version" : "2.99.*"
         },
         {
             "name" : "centreon-administration",
-            "version" : "2.99.5"
+            "version" : "2.99.*"
         },
         {
             "name" : "centreon-realtime",
-            "version" : "2.99.5"
+            "version" : "2.99.*"
         }
     ],
     "optionnal dependencies" : [

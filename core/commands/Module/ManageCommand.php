@@ -81,7 +81,8 @@ class ManageCommand extends AbstractCommand
     public function upgradeAction($object, $params = null)
     {
         $moduleInstaller = Informations::getModuleInstaller('console', $object['module']);
-        $moduleInstaller->upgrade($params['force'], $params['verbose']);
+        $moduleInstaller->setForceMode($params['force']);
+        $moduleInstaller->upgrade($params['verbose']);
     }
     
     /**

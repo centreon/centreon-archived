@@ -12,6 +12,7 @@
         "template name" : "tmpl_name",
         "organization" : "organization_id",
         "enable" : "enable",
+        "disable" : "enable",
         "poller" : "poller",
         "slug" : "slug"
     },
