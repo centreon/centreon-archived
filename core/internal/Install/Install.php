@@ -41,7 +41,7 @@ use Centreon\Internal\Install\Migrate;
 use Centreon\Internal\Install\AbstractInstall;
 use Centreon\Internal\Utils\Dependency\PhpDependencies;
 use Centreon\Internal\Module\Dependency;
-use Centreon\Internal\Install\Db;
+use Centreon\Internal\Installer\Migration\Manager;
 use Centreon\Internal\Di;
 
 class Install extends AbstractInstall
@@ -66,7 +66,16 @@ class Install extends AbstractInstall
             
             echo Colorize::colorizeMessage("Starting to install Centreon 3.0", "info") . "\n";
             echo "Creating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
-            Db::update('core');
+
+            // Install DB
+            $migrationManager = new Manager('core', 'production');
+            $migrationManager->generateConfiguration();
+            $cmd = self::getPhinxCallLine() .'migrate ';
+            $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();
+            $cmd .= ' -e core';
+            shell_exec($cmd);
+
+            //Db::update('core');
             echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
             
             $modulesToInstall = self::getCoreModules();
@@ -90,5 +99,17 @@ class Install extends AbstractInstall
     public static function uninstallCentreon($removeDb = false)
     {
         
+    }
+
+    /**
+     *
+     * @return string
+     */
+    private function getPhinxCallLine()
+    {
+        $di = Di::getDefault();
+        $centreonPath = $di->get('config')->get('global', 'centreon_path');
+        $callCmd = 'php ' . $centreonPath . '/vendor/bin/phinx ';
+        return $callCmd;
     }
 }
