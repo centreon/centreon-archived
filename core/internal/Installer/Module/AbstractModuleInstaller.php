@@ -97,9 +97,21 @@ abstract class AbstractModuleInstaller
     
     /**
      *
+     * @var type 
+     */
+    protected $chidlrenModules;
+    
+    /**
+     *
      * @var string 
      */
     protected $launcher;
+    
+    /**
+     *
+     * @var boolean 
+     */
+    protected $forceMode;
     
     /**
      *
@@ -124,6 +136,7 @@ abstract class AbstractModuleInstaller
         $this->versionManager = new Versioning($this->moduleSlug);
         $this->versionManager->setVersion($this->moduleInfo['version']);
         $this->versionManager->setModuleInfo($this->moduleInfo);
+        $this->chidlrenModules = Informations::getChildren($this->moduleSlug, 'id, name, version');
     }
     
     /**
@@ -197,11 +210,21 @@ abstract class AbstractModuleInstaller
     }
     
     /**
+     * 
+     * @param type $force
+     */
+    public function setForceMode($force)
+    {
+        $this->forceMode = $force;
+    }
+
+
+    /**
      * Perform upgrade operation for module
      * 
      * @throws NotInstalledException
      */
-    public function upgrade($force = false)
+    public function upgrade()
     {
         if (!Informations::isModuleInstalled($this->moduleSlug)) {
             $exceptionMessage = _("The given module is not installed");
@@ -218,9 +241,7 @@ abstract class AbstractModuleInstaller
         );
         
         // Performing pre operation check
-        if (!$force) {
-            $this->checkOperationValidity('upgrade');
-        }
+        $this->checkOperationValidity('upgrade');
         
         // Set TemporaryVersion
         $this->versionManager->setTemporaryVersion('upgrade', true);
@@ -236,11 +257,21 @@ abstract class AbstractModuleInstaller
         // Install menu
         $this->installMenu();
         
+        
         // Install Forms
         $this->deployForms();
         
         // Install Hooks
         //$this->installHooks();
+        
+        // Deploy Children Menus and Forms
+        if ($this->forceMode) {
+            foreach ($this->chidlrenModules as $childrenModule) {
+                $childrenModuleDirectory = Informations::getModulePath($childrenModule['name']);
+                $this->deployChildrenForms($childrenModule, $childrenModuleDirectory);
+                $this->installChildrenMenu($childrenModule, $childrenModuleDirectory);
+            }
+        }
         
         // Remove old static files and deploy new ones
         $this->removeStaticFiles();
@@ -487,10 +518,10 @@ abstract class AbstractModuleInstaller
      */
     protected function checkReverseModulesDependencies()
     {
-        $missingDependencies = Informations::getChildren($this->moduleSlug);
-        if (count($missingDependencies) > 0) {
+        if (count($this->chidlrenModules) > 0) {
+            $missingDependenciesName = array_column($this->chidlrenModules, 'name');
             $exceptionMessage = _("This module can't be uninstalled because the following modules depends on it : ") . "\n    - ";
-            $exceptionMessage .= implode("\n    - ", $missingDependencies);
+            $exceptionMessage .= implode("\n    - ", $missingDependenciesName);
             throw new DependenciesConstraintException("\n" . $this->colorizeMessage($exceptionMessage, 'danger'), 1109);
         }
     }
@@ -529,9 +560,11 @@ abstract class AbstractModuleInstaller
                 break;
             
             case 'upgrade':
-                $this->checkReverseModulesDependencies();
-                $this->checkModulesDependencies();
-                $this->checkSystemDependencies();
+                if (!$this->forceMode) {
+                    $this->checkReverseModulesDependencies();
+                    $this->checkModulesDependencies();
+                    $this->checkSystemDependencies();
+                }
                 break;
 
             default:
@@ -579,7 +612,36 @@ abstract class AbstractModuleInstaller
         } catch (FilesystemException $ex) {
             
         }
-        
+    }
+    
+    /**
+     * 
+     * @param type $childrenModuleDirectory
+     */
+    protected function installChildrenValidators($childrenModuleDirectory)
+    {
+        $validatorFile = $childrenModuleDirectory . '/install/validators.json';
+        if (file_exists($validatorFile)) {                       
+            $message = $this->colorizeText(_("Installation of validators..."));
+            $this->displayOperationMessage("\n" . $message, false);
+            Form::insertValidators(json_decode(file_get_contents($validatorFile), true));
+            $message = $this->colorizeMessage(_("     Done"), 'green');
+            $this->displayOperationMessage($message);
+        }
+    }
+    
+    /**
+     * 
+     * @param type $childrenModule
+     * @param type $childrenModuleDirectory
+     */
+    protected function deployChildrenForms($childrenModule, $childrenModuleDirectory)
+    {
+        $this->installChildrenValidators($childrenModuleDirectory);
+        $childrenModuleFormFiles = glob($childrenModuleDirectory. '/install/forms/*.xml');
+        foreach ($childrenModuleFormFiles as $formFile) {
+            Form::installFromXml($childrenModule['id'], $formFile);
+        }
     }
     
     /**
@@ -627,6 +689,7 @@ abstract class AbstractModuleInstaller
     
     /**
      * 
+     * @throws \Exception
      */
     protected function installMenu()
     {
@@ -642,6 +705,27 @@ abstract class AbstractModuleInstaller
         }
     }
     
+    /**
+     * 
+     * @param type $childrenModule
+     * @param type $childrenModuleDirectory
+     * @throws \Exception
+     */
+    protected function installChildrenMenu($childrenModule, $childrenModuleDirectory)
+    {
+        $filejson = $childrenModuleDirectory . 'install/menu.json';
+        Informations::deleteMenus($childrenModule['id']);
+        if (file_exists($filejson)) {
+            $menus = json_decode(file_get_contents($filejson), true);
+            if (!is_null($menus)) {
+                self::parseMenuArray($childrenModule['id'], $menus);
+            } else {
+                throw new \Exception('Error while parsing the menu JSON file of the module');
+            }
+        }
+    }
+
+
     /**
      * 
      * @param boolean $keepDb
