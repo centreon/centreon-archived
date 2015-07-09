@@ -11,11 +11,11 @@ rm -f /etc/centreon-engine/objects.d/resources/*
 mysql -u root -e "drop database centreon;"
 mysql -u root -e "create database centreon;"
 
-external/bin/centreonConsole core:internal:install
-external/bin/centreonConsole core:module:manage:install --module=centreon-broker
-external/bin/centreonConsole core:module:manage:install --module=centreon-engine
-external/bin/centreonConsole core:module:manage:install --module=centreon-performance 
-external/bin/centreonConsole core:module:manage:install --module=centreon-bam
+php external/bin/centreonConsole core:internal:install
+php external/bin/centreonConsole core:module:manage:install --module=centreon-broker
+php external/bin/centreonConsole core:module:manage:install --module=centreon-engine
+php external/bin/centreonConsole core:module:manage:install --module=centreon-performance 
+php external/bin/centreonConsole core:module:manage:install --module=centreon-bam
 
 sed -i -e 's/<poller_id>.*<\/poller_id>/<poller_id>1<\/poller_id>/' /etc/centreon-broker/poller-module.xml
 sed -i -e 's/<poller_name>.*<\/poller_name>/<poller_name>Central<\/poller_name>/' /etc/centreon-broker/poller-module.xml
