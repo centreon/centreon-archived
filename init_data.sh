@@ -33,8 +33,12 @@ php external/bin/centreonConsole centreon-configuration:Command:create --command
 php external/bin/centreonConsole centreon-configuration:Command:create --command-name='OS-Linux_SNMP-traffic-name' --command-type=2 --command-line='$USER1$/centreon-plugins/centreon_plugins.pl --plugin=os::linux::snmp::plugin --mode=traffic --hostname=$HOSTADDRESS$ --snmp-version=$_HOSTSNMPVERSION$ --snmp-community=$_HOSTSNMPCOMMUNITY$ $_HOSTSNMPEXTRAOPTIONS$ --interface="$_SERVICEINTERFACENAME$" --name --warning-in="$_SERVICEWARNINGIN$" --critical-in="$_SERVICECRITICALIN$" --warning-out="$_SERVICEWARNINGOUT$" --critical-out="$_SERVICECRITICALOUT$" $_SERVICEEXTRAOPTIONS$'
 php external/bin/centreonConsole centreon-configuration:Command:create --command-name='OS-Linux-SNMP-disk-name' --command-type=2 --command-line='$USER1$/centreon-plugins/centreon_plugins.pl --plugin=os::linux::snmp::plugin --mode=storage --hostname=$HOSTADDRESS$ --snmp-version=$_HOSTSNMPVERSION$ --snmp-community=$_HOSTSNMPCOMMUNITY$ $_HOSTSNMPEXTRAOPTIONS$ --storage "$_SERVICEDISKNAME$" --name --display-transform-src="$_SERVICETRANSFORMSRC$" --display-transform-dst="$_SERVICETRANSFORMDST$" --warning="$_SERVICEWARNING$" --critical="$_SERVICECRITICAL$" $_SERVICEEXTRAOPTIONS$'
 
+# Windows
+php external/bin/centreonConsole centreon-configuration:Command:create --command-name='OS-Windows-SNMP-memory' --command-type=2 --command-line='$USER1$/centreon-plugins/centreon_plugins.pl --plugin=os::windows::snmp::plugin --mode=memory --hostname=$HOSTADDRESS$ --snmp-version=$_HOSTSNMPVERSION$ --snmp-community=$_HOSTSNMPCOMMUNITY$ $_HOSTSNMPEXTRAOPTIONS$ --warning=$_SERVICEWARNING$ --critical=$_SERVICECRITICAL$ $_SERVICEEXTRAOPTIONS$'
+php external/bin/centreonConsole centreon-configuration:Command:create --command-name='OS-Windows-SNMP-cpu' --command-type=2 --command-line='$USER1$/centreon-plugins/centreon_plugins.pl --plugin=os::windows::snmp::plugin --mode=cpu --hostname=$HOSTADDRESS$ --snmp-version=$_HOSTSNMPVERSION$ --snmp-community=$_HOSTSNMPCOMMUNITY$ $_HOSTSNMPEXTRAOPTIONS$ --warning="$_SERVICEWARNING$"  --critical="$_SERVICECRITICAL$" $_SERVICEEXTRAOPTIONS$'
+php external/bin/centreonConsole centreon-configuration:Command:create --command-name='OS-Windows-SNMP-swap' --command-type=2 --command-line='$USER1$/centreon-plugins/centreon_plugins.pl --plugin=os::windows::snmp::plugin --mode=swap --hostname=$HOSTADDRESS$ --snmp-version=$_HOSTSNMPVERSION$ --snmp-community=$_HOSTSNMPCOMMUNITY$ $_HOSTSNMPEXTRAOPTIONS$ --warning="$_SERVICEWARNING$" --critical="$_SERVICECRITICAL$" $_SERVICEEXTRAOPTIONS$'
+
 echo " ==== Creating service templates ==== "
-# TODO cannot set service_max_check_attempts = 3 here during creation, possib le for update
 php external/bin/centreonConsole centreon-configuration:ServiceTemplate:create --description='generic-service' 
 php external/bin/centreonConsole centreon-configuration:ServiceTemplate:update --service-template='generic-service' --max-check-attempts=3 --timeperiod='24x7'
 
@@ -74,6 +78,22 @@ php external/bin/centreonConsole centreon-configuration:ServiceTemplate:update -
 php external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-linux-snmp-disk-name' --name='WARNING' --value='80'
 php external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-linux-snmp-disk-name' --name='CRITICAL' --value='90'
 
+# Windows
+php external/bin/centreonConsole centreon-configuration:ServiceTemplate:create --description='OS-Windows-SNMP-cpu' --alias='cpu' --template-model-stm='generic-service' --command='os-windows-snmp-cpu'
+php external/bin/centreonConsole centreon-configuration:ServiceTemplate:update --service-template='os-windows-snmp-cpu' --domain='cpu'
+php external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-windows-snmp-cpu' --name='WARNING' --value='80'
+php external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-windows-snmp-cpu' --name='CRITICAL' --value='90'
+ 
+php external/bin/centreonConsole centreon-configuration:ServiceTemplate:create --description='OS-Windows-SNMP-memory' --alias='memory' --template-model-stm='generic-service' --command='os-windows-snmp-memory'
+php external/bin/centreonConsole centreon-configuration:ServiceTemplate:update --service-template='os-windows-snmp-memory' --domain='memory'
+php external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-windows-snmp-memory' --name='WARNING' --value='80'
+php external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-windows-snmp-memory' --name='CRITICAL' --value='90'
+ 
+php external/bin/centreonConsole centreon-configuration:ServiceTemplate:create --description='OS-Windows-SNMP-swap' --alias='swap' --template-model-stm='generic-service' --command='os-windows-snmp-swap'
+php external/bin/centreonConsole centreon-configuration:ServiceTemplate:update --service-template='os-windows-snmp-swap' --domain='swap'
+php external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-windows-snmp-swap' --name='WARNING' --value='10'
+php external/bin/centreonConsole  centreon-configuration:ServiceTemplate:addMacro --service-template='os-windows-snmp-swap' --name='CRITICAL' --value='30'
+
 echo " ==== Creating host templates ==== "
 php external/bin/centreonConsole centreon-configuration:HostTemplate:create --name='generic-host' 
 php external/bin/centreonConsole centreon-configuration:HostTemplate:update --host-template='generic-host' --max-check-attempts=3 --service-templates='ping-lan' --command='check-host-alive' --snmp-community='public' --snmp-version='2c'
@@ -83,11 +103,15 @@ php external/bin/centreonConsole centreon-configuration:HostTemplate:addMacro --
 
 php external/bin/centreonConsole centreon-configuration:HostTemplate:create --name='OS-Linux-SNMP'  --service-templates='os-linux-snmp-cpu' --service-templates='os-linux-snmp-load' --service-templates='os-linux-snmp-swap' --service-templates='os-linux-snmp-memory' --host-templates='generic-host'
 
+php external/bin/centreonConsole centreon-configuration:HostTemplate:create --name='OS-Windows-SNMP'  --service-templates='os-windows-snmp-cpu' --service-templates='os-windows-snmp-swap' --service-templates='os-windows-snmp-memory' --host-templates='generic-host'
+
 echo " ==== Creating hosts ==== "
 php external/bin/centreonConsole centreon-configuration:Host:create --name='Centreon-export' --address='10.30.2.87' --host-templates='generic-host' --poller='central'
 php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-RWE-PP' --address='10.30.2.127' --host-templates='os-linux-snmp' --poller='central'
 php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES22' --address='10.50.1.84' --host-templates='os-linux-snmp' --poller='central'
 php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES3' --address='10.50.1.85' --host-templates='os-linux-snmp' --poller='central'
+
+php external/bin/centreonConsole centreon-configuration:Host:create --name='SRVI-WIN-TEST' --address='10.50.1.158' --host-templates='os-windows-snmp' --poller='central'
 
 echo " ==== Creating services  ==== "
 php external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-rwe-pp' --template-model-stm='OS-Linux-SNMP-traffic-name'
