@@ -100,6 +100,7 @@ class ServiceDatatable extends Datatable
      * @var array 
      */
     public static $columns = array(
+
         array (
             'title' => "Id",
             'name' => 'service_id',
@@ -155,17 +156,6 @@ class ServiceDatatable extends Datatable
             ),
         ),
         array (
-            'title' => "Graph",
-            'name' => 's.host_id',
-            'data' => 'ico',
-            'orderable' => false,
-            'searchable' => false,
-            'type' => 'string',
-            'visible' => true,
-            "width" => '15px',
-            'className' => 'cell_center'
-        ),
-        array (
             'title' => 'Status',
             'name' => 's.state',
             'data' => 'state',
@@ -176,7 +166,7 @@ class ServiceDatatable extends Datatable
             'cast' => array(
                 'type' => 'select',
                 'parameters' => array(
-                    '0' => '<span class="label label-success">OK</span>',
+                    '0' => '<span class="label label-success label-fade-success ">OK</span>',
                     '1' => '<span class="label label-warning">Warning</span>',
                     '2' => '<span class="label label-danger">Critical</span>',
                     '3' => '<span class="label label-default">Unknown</span>',
@@ -195,6 +185,18 @@ class ServiceDatatable extends Datatable
             ),
             'className' => 'cell_center'
         ),
+        array (
+            'title' => "Graph",
+            'name' => 's.host_id',
+            'data' => 'ico',
+            'orderable' => false,
+            'searchable' => false,
+            'type' => 'string',
+            'visible' => true,
+            "width" => '15px',
+            'className' => 'cell_center'
+        ),
+
         array (
             'title' => 'Last Check',
             'name' => '(unix_timestamp(NOW())-s.last_check) AS last_check',

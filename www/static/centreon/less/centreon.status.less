@@ -93,10 +93,28 @@ tr.centreon-border-status-5 {
     border-left: 4px solid @brand-info;
 }*/
 
-.label-success {background-color: @success};
-.label-warning {background-color: @warning};
-.label-danger {background-color: @danger};
+/*.label-success {background-color: @success !important};
+.label-warning {background-color: @warning !important};
+.label-danger {background-color: @danger !important};
+.label-default {background-color: @darkGray !important};*/
 
+.label {
+  &-success {background-color: @success !important};
+  &-warning {background-color: @warning !important};
+  &-danger {background-color: @danger !important};
+  &-default {background-color: @darkGray !important};
+}
+
+.label-fade {
+  &-success {.fade(25%,@success) };
+  &-warning {.fade(25%,@warning) };
+  &-danger {.fade(25%,@danger) };
+  &-default {.fade(25%,@darkGray)};
+}
+
+.fade(@opc, @clr) {
+  background-color: lighten(@clr,@opc);
+}
 
 .success {color: @success};
 .warning {color: @warning};
