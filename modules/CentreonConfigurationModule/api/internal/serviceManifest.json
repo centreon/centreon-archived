@@ -91,8 +91,8 @@
         "name" : "service_description",
         "activate" : "service_activate",
         "template": "service_template_model_stm_id",
-        "disable" : "host_activate",
-        "enable" : "host_activate",
+        "disable" : "service_activate",
+        "enable" : "service_activate",
         "service" : "service",
         "slug" : "service_slug"
     },

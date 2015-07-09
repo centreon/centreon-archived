@@ -18,7 +18,7 @@
                 <field name="lastname" label="Lastname" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
             </block>
             <block name="Locale settings">
-                <field name="language_id" label="Language" default_value="1" advanced="0" type="select" parent_field="" mandatory="0">
+                <field name="language_id" label="Language" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-administration/language/formlist</defaultValuesRoute>

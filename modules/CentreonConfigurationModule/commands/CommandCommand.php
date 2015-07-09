@@ -65,7 +65,7 @@ class CommandCommand extends BasicCrudCommand
      * @cmdForm /centreon-configuration/command/update optional
      * @cmdObject string command the command
      */
-    public function updateAction($object, $params) {
+    public function updateAction($object, $params = null) {
         parent::updateAction($object, $params);
     }
     
