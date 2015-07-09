@@ -120,6 +120,10 @@
                     $('table[id^="datatable"] tbody tr[id=' + selectedCb[ct] + ']').toggleClass('selected');
                 }
             }
+        }).on( 'stateSaveParams.dt', function (e, settings, data) {
+            $.each(data.columns,function(key, d){
+                d.search.search = "";
+            })
         });
         
         $('#datatable{$object} tbody').on('click', 'tr', function (e){
