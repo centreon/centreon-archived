@@ -610,6 +610,7 @@ class IndicatorRepository extends FormRepository
             . ' WHERE s.service_id=k.service_id and hs.host_host_id=h.host_id and hs.service_service_id=s.service_id and k.kpi_id=:id';
         $stmtKpiService = $dbconn->prepare($sqlKpiService);
         $stmtKpiService->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmtKpiService->execute();
         $resultKpiService = $stmtKpiService->fetchAll(\PDO::FETCH_ASSOC);
 
         $sqlKpiMetaservice = 'SELECT k.kpi_id,ms.meta_id'
@@ -617,6 +618,7 @@ class IndicatorRepository extends FormRepository
             . ' WHERE ms.meta_id=k.meta_id and k.kpi_id=:id';
         $stmtKpiMetaservice = $dbconn->prepare($sqlKpiMetaservice);
         $stmtKpiMetaservice->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmtKpiMetaservice->execute();
         $resultKpiMetaservice = $stmtKpiMetaservice->fetchAll(\PDO::FETCH_ASSOC);
 
         $sqlKpiBa = 'SELECT k.kpi_id,b.ba_id,b.name'
@@ -624,13 +626,15 @@ class IndicatorRepository extends FormRepository
             . ' WHERE b.ba_id=k.id_indicator_ba and k.kpi_id=:id';
         $stmtKpiBa = $dbconn->prepare($sqlKpiBa);
         $stmtKpiBa->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmtKpiBa->execute();
         $resultKpiBa = $stmtKpiBa->fetchAll(\PDO::FETCH_ASSOC);
 
         $sqlKpiBoolean = 'SELECT k.kpi_id,b.boolean_id,b.name'
             . ' FROM cfg_bam_boolean b,cfg_bam_kpi k'
-            . 'WHERE b.boolean_id=k.boolean_id and k.kpi_id=:id';
+            . ' WHERE b.boolean_id=k.boolean_id and k.kpi_id=:id';
         $stmtKpiBoolean = $dbconn->prepare($sqlKpiBoolean);
         $stmtKpiBoolean->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmtKpiBoolean->execute();
         $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
 
         $resultKpi = array();
