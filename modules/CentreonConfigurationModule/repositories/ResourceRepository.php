@@ -60,8 +60,7 @@ class ResourceRepository extends \CentreonConfiguration\Repository\Repository
     /**
      *
      * @var type 
-     */
-    
+     */   
     public static $unicityFields = array(
         'fields' => array(
             'resources' => 'cfg_resources, resource_id, resource_name',
@@ -78,11 +77,10 @@ class ResourceRepository extends \CentreonConfiguration\Repository\Repository
      * @param type $route
      * @param type $validate
      * @param type $validateMandatory
-     */
-    
+     */ 
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
-        $id = parent::create($givenParameters, $origin, $route);
+        $id = parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
         return $id;
     }
     
