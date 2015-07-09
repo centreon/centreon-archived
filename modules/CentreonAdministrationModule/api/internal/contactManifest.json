@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "contact_id,description,timezone_id",
+    "liteAttributesSet" : "contact_id,description,slug,timezone_id",
     "repository" : "\\CentreonAdministration\\Repository\\ContactRepository",
     "objectBaseUrl" : "contact",
     "objectClass" : "\\CentreonAdministration\\Models\\Contact",
@@ -7,7 +7,8 @@
         "id" : "contact_id",
         "description" : "description",
         "timezone" : "timezone_id",
-        "contact" : "contact"
+        "contact" : "contact",
+        "slug" : "slug"
     },
     "externalAttributeSet" : [
         {
@@ -18,6 +19,9 @@
             "objectClass": "\\CentreonAdministration\\Models\\Timezone",
             "group": false
         }
+    ],
+    "paramsToExclude" : [
+      "contact_tags" 
     ],
     "options" : {
 

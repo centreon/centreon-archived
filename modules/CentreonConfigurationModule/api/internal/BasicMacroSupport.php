@@ -77,7 +77,7 @@ class BasicMacroSupport extends BasicCrudCommand
             if (count($aId) > 0) {
                 $objectId = $aId[0]['id'];
             } else {
-                throw new \Exception(static::OBJ_NOT_EXIST);
+                throw new \Exception(static::OBJ_NOT_EXIST, 1);
             }
             switch($this->objectName){
                 case 'hosttemplate' : 
@@ -125,7 +125,7 @@ class BasicMacroSupport extends BasicCrudCommand
                     $aData = \CentreonConfiguration\Repository\ServiceRepository::getServiceBySlugs($object['service']);
 
                     if (count($aData) == 0) {
-                        throw new \Exception(static::OBJ_NOT_EXIST);
+                        throw new \Exception(static::OBJ_NOT_EXIST, 1);
                     } else {
                         $objectId = $aData['service_id'];
                         $hostId   = $aData['host_id'];
@@ -177,7 +177,7 @@ class BasicMacroSupport extends BasicCrudCommand
             if (count($aId) > 0) {
                 $objectId = $aId[0]['id'];
             } else {
-                throw new \Exception(static::OBJ_NOT_EXIST);
+                throw new \Exception(static::OBJ_NOT_EXIST, 1);
             }
             switch($this->objectName){
                 case 'hosttemplate' : 
@@ -223,7 +223,7 @@ class BasicMacroSupport extends BasicCrudCommand
             if (count($aId) > 0) {
                 $objectId = $aId[0]['id'];
             } else {
-                throw new \Exception(static::OBJ_NOT_EXIST);
+                throw new \Exception(static::OBJ_NOT_EXIST, 1);
             }
             $macros = array();
             switch($this->objectName){
@@ -244,7 +244,8 @@ class BasicMacroSupport extends BasicCrudCommand
             if(!empty($macros)){
                 echo "macro_name;macro_value;macro_hidden";
             }else{
-                InputOutput::display('No results', true, 'red');
+                //InputOutput::display('No results', true, 'red');
+                throw new \Exception('No results', 1);
             }
             
             foreach ($macros as $macro) {
@@ -274,7 +275,7 @@ class BasicMacroSupport extends BasicCrudCommand
             if (count($aId) > 0) {
                 $objectId = $aId[0]['id'];
             } else {
-                throw new \Exception(static::OBJ_NOT_EXIST);
+                throw new \Exception(static::OBJ_NOT_EXIST, 1);
             }
             switch($this->objectName){
                 case 'hosttemplate' : 

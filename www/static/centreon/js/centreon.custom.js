@@ -212,9 +212,6 @@ $(document).ready(function() {
     // Hide labels by default if placeholders are supported
 
     if($.support.placeholder) {
-      $("form.CentreonForm").centreonForm();
+        $("form.CentreonForm").centreonForm();
     }
-
-
 });
-

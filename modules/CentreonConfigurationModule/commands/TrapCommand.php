@@ -63,7 +63,7 @@ class TrapCommand extends BasicCrudCommand
      * @cmdForm /centreon-configuration/trap/update optional
      * @cmdObject string traps the traps
      */
-    public function updateAction($object, $params) {
+    public function updateAction($object, $params = null) {
         parent::updateAction($object, $params);
     }
     

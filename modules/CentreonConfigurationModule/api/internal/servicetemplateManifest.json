@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "service_id,service_description,service_activate",
+    "liteAttributesSet" : "service_id,service_description,service_slug,service_activate",
     "repository" : "\\CentreonConfiguration\\Repository\\ServicetemplateRepository",
     "objectBaseUrl" : "servicetemplate",
     "objectClass" : "\\CentreonConfiguration\\Models\\Servicetemplate",
@@ -75,7 +75,10 @@
         "id" : "service_id",
         "name" : "service_description",
         "status" : "service_activate",
-        "service-template" : "servicetemplate"
+        "service-template" : "servicetemplate",
+        "disable" : "service_activate",
+        "enable" : "service_activate",
+        "slug" : "service_slug"
     },
     "options" : {
         

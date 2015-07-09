@@ -709,29 +709,30 @@ class ServiceRepository extends Repository
         $pk = $class::getPrimaryKey();
         $columns = $class::getColumns();
         
-        $sField = $class::getUniqueLabelField();
-        $aHostId = explode(",", $givenParameters['service_hosts']);
-        $aHostId = array_filter($aHostId, 'strlen' );
-        
-        if (count($aHostId) > 0) {
-            $sHostName = Host::get(current($aHostId), 'host_name');
-            
-            if (isset($sField) 
-                    && isset($givenParameters[$sField]) && !is_null($class::getSlugField()) 
-                    && 
-                    (
-                        (isset($givenParameters[$class::getSlugField()])) && is_null($givenParameters[$class::getSlugField()])
-                        or
-                        !isset($givenParameters[$class::getSlugField()])
-                    )
-               ) {
-                $oSlugify = new CentreonSlugify($class, get_called_class());
-                $sString = $sHostName['host_name']." ".$givenParameters[$sField];
-                $sSlug = $oSlugify->slug($sString);
-                $givenParameters[$class::getSlugField()] = $sSlug;
+        if (isset($givenParameters['service_hosts'])) {
+            $sField = $class::getUniqueLabelField();
+            $aHostId = explode(",", $givenParameters['service_hosts']);
+            $aHostId = array_filter($aHostId, 'strlen' );
+
+            if (count($aHostId) > 0) {
+                $sHostName = Host::get(current($aHostId), 'host_name');
+
+                if (isset($sField) 
+                        && isset($givenParameters[$sField]) && !is_null($class::getSlugField()) 
+                        && 
+                        (
+                            (isset($givenParameters[$class::getSlugField()])) && is_null($givenParameters[$class::getSlugField()])
+                            or
+                            !isset($givenParameters[$class::getSlugField()])
+                        )
+                   ) {
+                    $oSlugify = new CentreonSlugify($class, get_called_class());
+                    $sString = $sHostName['host_name']." ".$givenParameters[$sField];
+                    $sSlug = $oSlugify->slug($sString);
+                    $givenParameters[$class::getSlugField()] = $sSlug;
+                }
             }
         }
-
         parent::update($givenParameters, $origin, $route, $validate, $validateMandatory);
        
     }

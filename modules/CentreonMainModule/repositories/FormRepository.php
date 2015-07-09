@@ -269,7 +269,7 @@ abstract class FormRepository extends ListRepository
     
     public static function disable($givenParameters)
     {
-        static::update($givenParameters, '', '', false);
+        static::update($givenParameters, '', '', false, false);
     }
 
     /**

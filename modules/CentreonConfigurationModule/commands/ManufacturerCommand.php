@@ -63,7 +63,7 @@ class ManufacturerCommand extends BasicCrudCommand
      * @cmdForm /centreon-configuration/manufacturer/update optional
      * @cmdObject string manufacturer the manufacturer
      */
-    public function updateAction($object, $params) {
+    public function updateAction($object, $params = null) {
         parent::updateAction($object, $params);
     }
     

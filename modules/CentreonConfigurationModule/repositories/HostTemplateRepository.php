@@ -78,7 +78,8 @@ class HostTemplateRepository extends Repository
         'host_flap_detection_enabled',
         'flap_detection_options',
         'host_snmp_community',
-        'host_snmp_version'
+        'host_snmp_version',
+        'host_check_timeout'
     );
     
     /**
@@ -112,7 +113,7 @@ class HostTemplateRepository extends Repository
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
         $id = parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
-        HostRepository::deployServices($id);
+        //HostRepository::deployServices($id);
         return $id;
     }
 
@@ -128,8 +129,7 @@ class HostTemplateRepository extends Repository
         parent::update($givenParameters, $origin, $route, $validate, $validateMandatory);
 
         $linkedServiceTemplates = HostTemplateServiceTemplateRelation::getTargetIdFromSourceId('service_service_id', 'host_host_id', $givenParameters['object_id']);
-        if(count(array_diff_assoc($linkedServiceTemplates, $previousLinkedServiceTemplates))) {
-            //$linkedHostIds = self::getLinkedHosts($givenParameters['object_id']);
+        if (count(array_diff_assoc($linkedServiceTemplates, $previousLinkedServiceTemplates))) {
             $linkedHosts = HostRepository::getTemplateChainInverse($givenParameters['object_id']);
             foreach ($linkedHosts as $host) {
                 HostRepository::deployServices($host['id'], $givenParameters['object_id']);
@@ -147,13 +147,13 @@ class HostTemplateRepository extends Repository
         $hosts = HostTemplateHostTemplateRelation::getTargetIdFromSourceId('host_host_id', 'host_tpl_id', $givenParameters['object_id']);
     }
 
-     /**
-     * Get relations 
-     *
-     * @param string $relClass
-     * @param int $id
-     * @return array 
-     */
+    /**
+    * Get relations 
+    *
+    * @param string $relClass
+    * @param int $id
+    * @return array 
+    */
     public static function getRelationsCustom($relClass, $id)
     {
         $router = Di::getDefault()->get('router');
@@ -186,8 +186,6 @@ class HostTemplateRepository extends Repository
         }
         return $finalList;
     }
-    
-    
     
     /**
      * Get list of host templates
@@ -357,4 +355,14 @@ class HostTemplateRepository extends Repository
         return $checkdataTemplate;
         
     }
+    
+    public static function getSlugByUniqueField($object){
+        
+        $objectClass = self::$objectClass;
+        return $objectClass::getSlugByUniqueField($object['hosttemplate-name'], array('host_register' => '0'));
+        
+    }
+    
+    
+    
 }

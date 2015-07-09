@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "host,service_id,service_description,service_template_model_stm_id,service_activate",
+    "liteAttributesSet" : "host,service_id,service_description,service_slug,service_template_model_stm_id,service_activate",
     "externalAttributeSet" : [
         {
             "type": "host",
@@ -91,9 +91,10 @@
         "name" : "service_description",
         "activate" : "service_activate",
         "template": "service_template_model_stm_id",
-        "disable" : "host_activate",
-        "enable" : "host_activate",
-        "service" : "service"
+        "disable" : "service_activate",
+        "enable" : "service_activate",
+        "service" : "service",
+        "slug" : "service_slug"
     },
     "options" : {
         

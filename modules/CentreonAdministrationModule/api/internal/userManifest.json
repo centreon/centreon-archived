@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "user_id,firstname,lastname,login,is_admin,is_activated,language_id,timezone_id,auth_type",
+    "liteAttributesSet" : "user_id,firstname,lastname,login,slug,is_admin,is_activated,language_id,timezone_id,auth_type",
     "repository" : "\\CentreonAdministration\\Repository\\UserRepository",
     "objectBaseUrl" : "user",
     "objectClass" : "\\CentreonAdministration\\Models\\User",
@@ -11,10 +11,13 @@
         "password" : "password",
         "admin" : "is_admin",
         "enabled" : "is_activated",
+        "enable" : "is_activated",
+        "disable" : "is_activated",
         "language" : "language_id",
         "timezone" : "timezone_id",
         "authentication type" : "auth_type",
-        "user" : "user"
+        "user" : "user",
+        "slug" : "slug"
     },
     "externalAttributeSet" : [
         {

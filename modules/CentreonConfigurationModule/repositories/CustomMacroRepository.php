@@ -180,7 +180,7 @@ class CustomMacroRepository extends Repository
         $deletedRow = $stmtDelete->rowCount();
         
         if($deletedRow == 0){
-            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
+            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object', 1);
         }
         
         return $deletedRow;
@@ -203,7 +203,7 @@ class CustomMacroRepository extends Repository
         $deletedRow = $stmtDelete->rowCount();
         
         if($deletedRow == 0){
-            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
+            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object', 1);
         }
         
         return $deletedRow;
@@ -271,7 +271,7 @@ class CustomMacroRepository extends Repository
         $updatedRow = $stmtUpdate->rowCount();
         
         if($updatedRow == 0){
-            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
+            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object', 1);
         }
         
         return $updatedRow;
@@ -337,7 +337,7 @@ class CustomMacroRepository extends Repository
         $updatedRow = $stmtUpdate->rowCount();
         
         if($updatedRow == 0){
-            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object');
+            throw new \Exception('This macro : \''.$macro.'\' can\'t be found on the object', 1);
         }
         
         return $updatedRow;

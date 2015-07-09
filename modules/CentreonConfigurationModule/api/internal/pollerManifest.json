@@ -1,5 +1,5 @@
 {
-    "liteAttributesSet" : "poller_id,node_id,name,one_per_retention,tmpl_name,organization_id,enable",
+    "liteAttributesSet" : "poller_id,node_id,name,slug,one_per_retention,tmpl_name,organization_id,enable",
     "repository" : "\\CentreonConfiguration\\Repository\\PollerRepository",
     "objectBaseUrl" : "poller",
     "objectClass" : "\\CentreonConfiguration\\Models\\Poller",
@@ -12,7 +12,9 @@
         "template name" : "tmpl_name",
         "organization" : "organization_id",
         "enable" : "enable",
-        "poller" : "poller"
+        "disable" : "enable",
+        "poller" : "poller",
+        "slug" : "slug"
     },
     "options" : {
 
