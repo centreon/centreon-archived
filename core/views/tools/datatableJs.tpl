@@ -19,6 +19,39 @@
 
             "rowCallback": function( row, data ) {
 
+                /*-- Set row state color for datatable  --*/
+
+                   var t = ["success","warning","danger","default"];
+                   var url = window.location.pathname; console.log(url);
+
+                   if(url =='/centreon-realtime/service' || url =='/centreon-realtime/host' ) {
+
+                    for(var i = 0;i<t.length;i++){
+
+                    var span = $(row).find("td:nth-child(3) span").hasClass('label-'+t[i]);
+
+                    if (span) {
+                        switch(t[i]) {
+                            case 'success' :
+                            $(row).css('background-color','#c3ec64');
+                            break;
+                            case 'warning' :
+                            $(row).css('background-color','#ffd193');
+                            break;
+                            case 'danger' :
+                            $(row).css('background-color','#f87292');
+                            break;
+                            case 'default' :
+                            $(row).css('background-color','#98989a');
+                            break;
+                        }
+                      }
+                    }
+                    }
+
+                /* ************************************** */
+
+
                 var t = data.DT_RowData.right_side_menu_list;
 
                 if (typeof t !== 'undefined') {
