@@ -82,7 +82,8 @@ class ResourceRepository extends \CentreonConfiguration\Repository\Repository
     
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
-        parent::create($givenParameters, $origin, $route);
+        $id = parent::create($givenParameters, $origin, $route);
+        return $id;
     }
     
     /**
