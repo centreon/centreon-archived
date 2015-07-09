@@ -34,6 +34,10 @@ $(function () {
       dataType: "json",
       method: "post",
       success: function( data, textStatus, jqXHR ) {
+        if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+        }
         if ( ! data.success ) {
           alertMessage( "Error during save the tag." );
         } else {
@@ -99,6 +103,10 @@ $(function () {
       dataType: "json",
       method: "post",
       success: function( data, textStatus, jqXHR ) {
+        if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+        }
         if ( ! data.success ) {
           alertMessage( "Error during delete the tag." );
         } else {
@@ -276,6 +284,10 @@ $(function () {
         dataType: "json",
         method: "post",
         success: function( data, textStatus, jqXHR ) {
+          if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           if ( data.success ) {
             $( "#modal" ).modal( "hide" );
             oTable.api().ajax.reload( null, false );

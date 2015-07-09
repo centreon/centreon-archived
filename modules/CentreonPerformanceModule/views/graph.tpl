@@ -166,6 +166,10 @@ function saveView(viewId, graphs, viewName, viewPrivacy) {
     },
     dataType: "json",
     success: function(data, textStatus, jqXHR) {
+      if(!isJson(data)){
+        alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+        return false;
+      }
       if (data.success) {
         alertMessage("{t}Graph view saved{/t}", "alert-success", 3);
       } else {
@@ -234,6 +238,10 @@ startTime = moment(endTime).subtract(24, 'hours');
       dataType: "json",
       method: "DELETE",
       success: function(data, textStatus, jqXHR) {
+        if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+        }
         if (data.success) {
           alertMessage("{t}The graph view is deleted{/t}", "alert-success", 3);
           // @todo reset select2 field
@@ -415,6 +423,10 @@ startTime = moment(endTime).subtract(24, 'hours');
       dataType: "json",
       method: "GET",
       success: function(data, textStatus, jqXHR) {
+        if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+        }
         charts = [];
         nbGraph = 0;
         $(".graph").each(function(idx, element) {
@@ -442,6 +454,10 @@ startTime = moment(endTime).subtract(24, 'hours');
           params: viewId
         },
         success: function( data, textStatus, jqXHR ) {
+          if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           if ( data.success ) {
             alertMessage( "{t}Your graph is bookmarked.{/t}", "alert-success", 3 );
             $( "#bookmarkStatus" ).removeClass('fa-star-o');
@@ -462,6 +478,10 @@ $( document ).ready(function() {
             dataType: "json",
             method: "GET",
             success: function(data, textStatus, jqXHR) {
+              if(!isJson(data)){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                return false;
+              }
               charts = [];
               nbGraph = 0;
               $(".graph").each(function(idx, element) {

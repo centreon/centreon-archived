@@ -77,6 +77,10 @@ $(function() {
         dataType: "json",
         data: { incidentId: incidentId },
         success: function( data, textStatus, jqXHR ) {
+          if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           /* Render extended information */
           var rendered = incidentExtInfoCompiled.render( data );
           $( "#ext_infos_" + incidentId + " > td " ).html( rendered );

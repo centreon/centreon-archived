@@ -280,6 +280,10 @@
                     success: function(data, textStatus, jqXHR) {
                         $('#modal').modal('hide');
                         alertClose();
+                        if(!isJson(data)){
+                            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                            return false;
+                        }
                         if (data.success) {
                             oTable.fnDraw();
                             alertMessage('{t}The objects have been successfully deleted{/t}', 'alert-success', 3);
@@ -367,6 +371,10 @@
                         'duplicate': JSON.stringify(formValues)
                     },
                     success: function(data, textStatus, jqXHR) {
+                        if(!isJson(data)){
+                            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                            return false;
+                        }
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
@@ -464,6 +472,10 @@
                     },
                     dataType: 'json',
                     success: function(data, textStatus, jqXHR) {
+                        if(!isJson(data)){
+                            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                            return false;
+                        }
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
@@ -484,6 +496,10 @@
                 type: "GET",
                 dataType: "json",
                 success: function(data, textStatus, jqXHR) {
+                    if(!isJson(data)){
+                        alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                        return false;
+                    }
                     if(data.success){
                         $.each(data.listMc, function(k, v) {
                             $("<option></option>").val(k).text(v).appendTo("#mcChooseAttr");
@@ -576,6 +592,10 @@
                     },
                     dataType: 'json',
                     success: function(data, textStatus, jqXHR) {
+                        if(!isJson(data)){
+                            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                            return false;
+                        }
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
@@ -649,6 +669,10 @@
                     },
                     dataType: 'json',
                     success: function(data, textStatus, jqXHR) {
+                        if(!isJson(data)){
+                            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                            return false;
+                        }
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
@@ -754,6 +778,10 @@
                 searchText: query
               },
               success: function( data, textStatus, jqXHR ) {
+                if(!isJson(data)){
+                    alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                    return false;
+                }
                 if ( data.success ) {
                   $.each( data.data, function( idx, value ) {
                     result.push( value['text'] );
@@ -787,6 +815,10 @@
               searchText: $( "input[name='advsearch']" ).val().trim()
             },
             success: function( data, textStatus, jqXHR ) {
+              if(!isJson(data)){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                return false;
+              }
               if ( data.success ) {
                 alertMessage( "{t}Your search is saved.{/t}", "alert-success", 3 );
               } else {
@@ -820,6 +852,10 @@
               params: $( "input[name='filters']" ).val().trim()
             },
             success: function( data, textStatus, jqXHR ) {
+              if(!isJson(data)){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                return false;
+              }
               if ( data.success ) {
                 loadBookmark(bookmarkUrl);
                  console.log("booow !");
@@ -855,6 +891,10 @@
               label: $( "input[name='filters']" ).val().trim(),
             },
             success: function( data, textStatus, jqXHR ) {
+              if(!isJson(data)){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                return false;
+              }
               if ( data.success ) {
                 alertMessage( "{t}Your search is deleted.{/t}", "alert-success", 3 );
               } else {
@@ -883,6 +923,10 @@
               label: $( "input[name='filters']" ).val().trim(),
             },
             success: function( data, textStatus, jqXHR ) {
+              if(!isJson(data)){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                return false;
+              }
               if ( data.success ) {
                 $( "input[name='advsearch']" ).val( data.data );
                 $( "input[name='advsearch']" ).centreonsearch( "fillAssociateFields" );
@@ -925,6 +969,10 @@ $( document ).ready(function() {
               label: searchFilter,
             },
             success: function( data, textStatus, jqXHR ) {
+              if(!isJson(data)){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                return false;
+              }
               if ( data.success ) {
                 $( "input[name='advsearch']" ).val( data.data );
                 $( "input[name='advsearch']" ).centreonsearch( "fillAssociateFields" );

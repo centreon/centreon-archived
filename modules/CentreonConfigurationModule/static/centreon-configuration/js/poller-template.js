@@ -17,6 +17,10 @@ function loadTemplateSteps( data, $el, url ) {
         data: { name: data.id },
         dataType: "json",
         success: function( data, textStatus, jqXHR ) {
+          if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           var nbStep = 2;
           /* Add additional steps */
           $.each( data.steps, function( idx, step ) {
@@ -56,6 +60,10 @@ function loadTemplateSteps( data, $el, url ) {
         data: { name: data.id },
         dataType: "json",
         success: function( data, textStatus, jqXHR ) {
+          if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           var nbField = 1;
           /* Add additional fields */
           $.each( data.steps, function( idx, field ) {

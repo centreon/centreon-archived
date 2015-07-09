@@ -148,6 +148,10 @@
                 context: document.body
             })
             .success(function(data, status, jqxhr) {
+                if(!isJson(data)){
+                    alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                    return false;
+                }
                 alertClose();
                 if (data.success) {
                     {if isset($formRedirect) && $formRedirect}

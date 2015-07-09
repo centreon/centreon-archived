@@ -214,6 +214,10 @@ $(function() {
       type: 'get',
       dataType: 'json',
       success: function(data, textStatus, jqXHR) {
+        if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+        }
         if (data.success) {
           hostData = data.values;
           $(document).trigger(eData);
@@ -411,6 +415,10 @@ $(function() {
       method: 'get',
       dataType: 'json',
       success: function(data, textStatus, jqXHR) {
+        if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+        }
         $.each(data, function(idx, values) {
           var type, state, colorCss, borderCss, sDate, sTimestamp, date;
           var isService = false;

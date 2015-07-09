@@ -85,6 +85,10 @@ function loadTemplateSteps( data, $el ) {
       },
       dataType: "json",
       success: function( data, textStatus, jqXHR ) {
+        if(!isJson(data)){
+          alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+          return false;
+        }
         var nbStep = 2;
         /* Set active configuration type */
         if ( data.engine ) {
@@ -154,6 +158,10 @@ $(function() {
       dataType: "json",
       type: "post",
       success: function( data, textStatus, jqXHR ) {
+        if(!isJson(data)){
+          alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+          return false;
+        }
         alertClose();
         if ( data.success ) {
           {if isset($formRedirect) && $formRedirect}

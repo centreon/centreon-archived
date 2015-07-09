@@ -62,6 +62,10 @@ function logIn() {
             passwd: $("#passwd").val(),
         },
         success: function(data, textStatus, jqXHR) {
+            if(!isJson(data)){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                return false;
+            }
             if (data.status) {
                 if ('{$base_url}' == '{$redirect}') {
                     window.location.href = data.redirectRoute;

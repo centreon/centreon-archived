@@ -168,14 +168,13 @@ function getUriParametersByName(name) {
 }
 
 function isJson(data){
-    var response=jQuery.parseJSON(data);
-    if(typeof response =='object')
+    if(typeof data === 'object')
     {
       return true;
     }
     else
     {
-      if(response ===false)
+      if(data ===false)
       {
          return true;
       }

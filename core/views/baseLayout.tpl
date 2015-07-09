@@ -231,6 +231,11 @@
                     url: "{url_for url='/logout'}",
                     type: "GET",
                     success: function(data, textStatus, jqXHR) {
+                        if(!isJson(data)){
+                            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                            return false;
+                         }
+                        
                         if ( data.success ) {
                             if (data.status) {
                                 window.location.href = "{url_for url='/login'}";
@@ -309,6 +314,10 @@
                         },
                         dataType: 'json',
                         success: function(data, textStatus, jqXHR) {
+                            if(!isJson(data)){
+                                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                                return false;
+                            }
                             $('#modal').modal('hide');
                             alertClose();
                             if (data.success) {
@@ -331,6 +340,11 @@
                 url: "{url_for url='/status'}",
                 type: 'GET',
                 success: function(data, textStatus, jqXHR) {
+                    
+                    if(!isJson(data)){
+                        alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                        return false;
+                    }
                     if ( data.success ) {
                         statusData = data;
                         $(document).trigger(eStatus);
