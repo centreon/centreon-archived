@@ -129,11 +129,6 @@ echo " ==== Generating Configuration ==== "
 
 ./external/bin/centreonConsole centreon-configuration:Config:generate --poller=central
 ./external/bin/centreonConsole centreon-configuration:Config:move --poller=central
-\cp -r /tmp/engine/apply/1/* /etc/centreon-engine/
-\cp -r /tmp/broker/apply/1/* /etc/centreon-broker/
-chown -R centreon-engine.centreon-engine /etc/centreon-engine
-chown -R centreon-broker.centreon-broker /etc/centreon-broker
-chmod -R u+rwX,g+rwX /etc/centreon-engine/* /etc/centreon-broker/*
 
 echo " ==== Restarting Engine and Broker ==== "
 
