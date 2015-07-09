@@ -70,7 +70,7 @@ class ServiceTemplateCommand extends BasicTagSupport
      * @cmdParam none service-custommacros optional
      * @cmdParam none service-tags optional
      */
-    public function updateAction($object, $params) {
+    public function updateAction($object, $params = null) {
         parent::updateAction($object, $params);
     }
     
