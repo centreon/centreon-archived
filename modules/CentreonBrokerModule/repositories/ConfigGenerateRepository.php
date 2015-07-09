@@ -357,7 +357,7 @@ class ConfigGenerateRepository
             $file->writeElement("name", "central-broker-extcommands-broker-poller-module-" . $brokerModule['poller_id']);
             $file->writeElement("type", "dump_fifo");
             $file->writeElement("path", $this->baseConfig['%global_broker_data_directory%'] . "/central-broker-extcommands-broker-poller-module-" . $brokerModule['poller_id'] . ".cmd");
-            $file->writeElement("tagname", "extcommands-broker-" . $brokerModule['config_id']);
+            $file->writeElement("tagname", "extcommands-broker-" . $brokerModule['poller_id']);
             $file->endElement();
         }
     }
@@ -376,7 +376,7 @@ class ConfigGenerateRepository
             $file->writeElement("name", "central-broker-extcommands-engine-poller-module-" . $brokerModule['poller_id']);
             $file->writeElement("type", "dump_fifo");
             $file->writeElement("path", $this->baseConfig['%global_broker_data_directory%'] . "/central-broker-extcommands-engine-poller-module-" . $brokerModule['poller_id'] . ".cmd");
-            $file->writeElement("tagname", "extcommands-engine-" . $brokerModule['config_id']);
+            $file->writeElement("tagname", "extcommands-engine-" . $brokerModule['poller_id']);
             $file->endElement();
         }
     }
@@ -398,12 +398,12 @@ class ConfigGenerateRepository
         /* Get broker modules list */
         $brokerModules = self::getBrokerModules();
         foreach ($brokerModules as $brokerModule) {
-            $name = "central-broker-cfg-engine-poller-module-" . $brokerModule['config_id'];
+            $name = "central-broker-cfg-engine-poller-module-" . $brokerModule['poller_id'];
             $file->startElement("output");
                 $file->writeElement("name", $name);
                 $file->writeElement("type", "dump_dir");
                 $file->writeElement("path", $configGeneratePath . '/apply/' . $brokerModule['poller_id']);
-                $file->writeElement("tagname", "cfg-engine-" . $brokerModule['config_id']);
+                $file->writeElement("tagname", "cfg-engine-" . $brokerModule['poller_id']);
                 $file->startElement('read_filters');
                     $file->writeElement("category", "internal");
                 $file->endElement();
@@ -430,12 +430,12 @@ class ConfigGenerateRepository
         /* Get broker modules list */
         $brokerModules = self::getBrokerModules();
         foreach ($brokerModules as $brokerModule) {
-            $name = "central-broker-cfg-broker-poller-module-" . $brokerModule['config_id'];
+            $name = "central-broker-cfg-broker-poller-module-" . $brokerModule['poller_id'];
             $file->startElement("output");
                 $file->writeElement("name", $name);
                 $file->writeElement("type", "dump_dir");
                 $file->writeElement("path", $configGeneratePath . '/apply/' . $brokerModule['poller_id']);
-                $file->writeElement("tagname", "cfg-broker-" . $brokerModule['config_id']);
+                $file->writeElement("tagname", "cfg-broker-" . $brokerModule['poller_id']);
                 $file->startElement('read_filters');
                     $file->writeElement("category", "internal");
                 $file->endElement();
