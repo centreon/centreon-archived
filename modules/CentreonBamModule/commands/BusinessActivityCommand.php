@@ -57,7 +57,7 @@ class BusinessActivityCommand extends BasicCrudCommand
     /**
      * 
      * @cmdForm /centreon-bam/businessactivity/update required 
-     * 
+     * @cmdParam boolean|false disable required disable
      */
     public function createAction($params) {
         parent::createAction($params);

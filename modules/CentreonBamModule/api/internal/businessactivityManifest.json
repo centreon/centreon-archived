@@ -9,7 +9,8 @@
         "description" : "description",
         "type" : "ba_type_id",
         "ba" : "businessactivity",
-        "slug" : "slug"
+        "slug" : "slug",
+        "disable" : "activate"
     },
     "externalAttributeSet" : [
         {
