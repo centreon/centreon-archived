@@ -112,6 +112,7 @@ php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3
 php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES3' --address='10.50.1.85' --host-templates='os-linux-snmp' --poller='central'
 
 php external/bin/centreonConsole centreon-configuration:Host:create --name='SRVI-WIN-TEST' --address='10.50.1.158' --host-templates='os-windows-snmp' --poller='central'
+php external/bin/centreonConsole centreon-configuration:Host:create --name='Terminal server GSO' --address='10.41.1.28' --host-templates='os-windows-snmp' --poller='central'
 
 echo " ==== Creating services  ==== "
 php external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-rwe-pp' --template-model-stm='OS-Linux-SNMP-traffic-name'
@@ -132,8 +133,22 @@ php external/bin/centreonConsole centreon-configuration:Service:addMacro --servi
 php external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-qde-pp-ces3' --template-model-stm='OS-Linux-SNMP-disk-name'
 php external/bin/centreonConsole centreon-configuration:Service:addMacro --service='ces3-qde-pp-ces3-disk' --name='DISKNAME' --value='/'
 
-echo " ==== Creating KPI and BA ==== "
+echo " ==== Creating (global) tags  ==== "
+# Targeting all hosts having the same template
+php external/bin/centreonConsole centreon-configuration:HostTemplate:addTag --host-template='os-linux-snmp' --tag='Linux servers'
+php external/bin/centreonConsole centreon-configuration:HostTemplate:addTag --host-template='os-windows-snmp' --tag='Windows servers'
 
+# Host by host
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='ces3-rwe-pp' --tag='Plugins Packs servers'
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='ces3-qde-pp-ces22' --tag='Plugins Packs servers'
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='ces3-qde-pp-ces3' --tag='Plugins Packs servers'
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='srvi-win-test' --tag='Plugins Packs servers'
+
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='ces3-rwe-pp' --tag='Centreon servers'
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='ces3-qde-pp-ces22' --tag='Centreon servers'
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='ces3-qde-pp-ces3' --tag='Centreon servers'
+
+echo " ==== Creating KPI and BA ==== "
 php external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les ping des machines des PP' --ba-type-id=1 --level-w=70 --level-c=50
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ces3-rwe-pp-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ces3-qde-pp-ces22-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
