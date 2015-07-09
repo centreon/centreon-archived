@@ -89,6 +89,8 @@ class IncidentsRepository
         $wheres[] = "i.issue_id NOT IN (SELECT child_id FROM rt_issues_issues_parents WHERE end_time IS NULL)";
         $wheres[] = "i.end_time IS NULL";
         $wheres[] = "he.end_time IS NULL";
+        $wheres[] = "he.state <> 0";
+
         $wheres = array_merge($wheres, $globalWheres);
         if (count($wheres) > 0) {
             $queryHosts .= ' WHERE ' . join(' AND ', $wheres);
@@ -109,6 +111,8 @@ class IncidentsRepository
         $wheres[] = "i.issue_id NOT IN (SELECT child_id FROM rt_issues_issues_parents WHERE end_time IS NULL)";
         $wheres[] = "i.end_time IS NULL";
         $wheres[] = "se.end_time IS NULL";
+        $wheres[] = "se.state <> 0";
+
         $wheres = array_merge($wheres, $globalWheres);
         if (count($wheres) > 0) {
             $queryServices .= ' WHERE ' . join(' AND ', $wheres);
