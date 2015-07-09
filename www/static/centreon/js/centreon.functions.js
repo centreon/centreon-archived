@@ -166,3 +166,22 @@ function getUriParametersByName(name) {
       results = regex.exec(location.search);
   return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
+
+function isJson(data){
+    var response=jQuery.parseJSON(data);
+    if(typeof response =='object')
+    {
+      return true;
+    }
+    else
+    {
+      if(response ===false)
+      {
+         return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+}
