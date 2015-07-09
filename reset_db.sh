@@ -7,6 +7,7 @@
 rm -f /var/lib/centreon-engine/status.sav
 rm -f /var/lib/centreon-broker/*
 rm -f /etc/centreon-engine/objects.d/resources/*
+rm -f /etc/centreon-broker/correlation*
 
 mysql -u root -e "drop database centreon;"
 mysql -u root -e "create database centreon;"
