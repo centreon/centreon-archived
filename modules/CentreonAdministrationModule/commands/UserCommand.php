@@ -54,6 +54,7 @@ class UserCommand extends BasicCrudCommand
     
     /**
      * @cmdForm /centreon-administration/user/update required
+     * @cmdParam boolean|false disable required
      */
     public function createAction($params) {
         parent::createAction($params);
@@ -62,8 +63,10 @@ class UserCommand extends BasicCrudCommand
     /**
      * @cmdForm /centreon-administration/user/update optional
      * @cmdObject string user the user
+     * @cmdParam boolean|false disable optional
+     * @cmdParam boolean|true enable optional
      */
-    public function updateAction($object, $params) {
+    public function updateAction($object, $params = null) {
         parent::updateAction($object, $params);
     }
     

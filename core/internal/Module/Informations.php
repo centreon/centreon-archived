@@ -40,6 +40,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Utils\String\CamelCaseTransformation;
 use Centreon\Models\Module;
 use CentreonMain\Models\ModuleDependency;
+use Centreon\Internal\Installer\Versioning;
 
 /**
  * Gives informations about modules
@@ -67,7 +68,7 @@ class Informations
         $dependency = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
         if (is_array($dependency) && count($dependency) > 0) {
-            if (version_compare($dependency[0]['version'], $module['version'], '>=')) {
+            if (Versioning::compareVersion($dependency[0]['version'], $module['version'])) {
                 $dependencySatisfied = true;
             }
         }
@@ -78,18 +79,19 @@ class Informations
     /**
      * 
      * @param string $module
+     * @param string $params
      * @return array
      */
-    public static function getChildren($module)
+    public static function getChildren($module, $params = 'name')
     {
         $finalChildrenList = array();
         $currentModuleId = static::getModuleIdByName($module);
         $childrenList = ModuleDependency::getList('child_id', -1, 0, null, "ASC", array('parent_id' => $currentModuleId));
         
         foreach ($childrenList as $child) {
-            $childInfo = Module::get($child['child_id'], 'name');
+            $childInfo = Module::get($child['child_id'], $params);
             if (count($childInfo) > 0) {
-                $finalChildrenList[] = $childInfo['name'];
+                $finalChildrenList[] = $childInfo;
             }
         }
         

@@ -55,6 +55,7 @@ class ContactCommand extends BasicCrudCommand
     
     /**
      * @cmdForm /centreon-administration/contact/update required
+     * @cmdParam none contact-tags optional
      */
     public function createAction($params) {
         parent::createAction($params);
@@ -64,8 +65,9 @@ class ContactCommand extends BasicCrudCommand
      * 
      * @cmdForm /centreon-administration/contact/update optional
      * @cmdObject string contact the contact
+     * @cmdParam none contact-tags optional
      */
-    public function updateAction($object, $params) {
+    public function updateAction($object, $params = null) {
         parent::updateAction($object, $params);
     }
     
