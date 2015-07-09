@@ -713,7 +713,7 @@ abstract class AbstractModuleInstaller
      */
     protected function installChildrenMenu($childrenModule, $childrenModuleDirectory)
     {
-        $filejson = $childrenModuleDirectory . 'install/menu.json';
+        $filejson = $childrenModuleDirectory . '/install/menu.json';
         Informations::deleteMenus($childrenModule['id']);
         if (file_exists($filejson)) {
             $menus = json_decode(file_get_contents($filejson), true);
