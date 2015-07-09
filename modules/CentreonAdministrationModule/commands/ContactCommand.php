@@ -34,12 +34,12 @@
  */
 namespace CentreonAdministration\Commands;
 
-use Centreon\Api\Internal\BasicCrudCommand;
+use CentreonConfiguration\Api\Internal\BasicTagSupport;
 
 /**
  * 
  */
-class ContactCommand extends BasicCrudCommand
+class ContactCommand extends BasicTagSupport
 {
     /**
      *
@@ -84,6 +84,35 @@ class ContactCommand extends BasicCrudCommand
      */
     public function deleteAction($object) {
         parent::deleteAction($object);
+    }
+    
+    /**
+     * 
+     * @cmdObject string contact the contact
+     */
+    public function listTagAction($object = null) 
+    {
+        parent::listTagAction($object);
+    }
+    
+    /**
+     * 
+     * @cmdObject string contact the contact
+     * @cmdParam string tag required the contact
+     */
+    public function addTagAction($object, $params) 
+    {
+        parent::addTagAction($object, $params['tag']);
+    }
+    
+    /**
+     * 
+     * @cmdObject string contact the contact
+     * @cmdParam string tag required the tag
+     */
+    public function removeTagAction($object, $params) 
+    {
+        parent::removeTagAction($object, $params['tag']);
     }
     
 }
