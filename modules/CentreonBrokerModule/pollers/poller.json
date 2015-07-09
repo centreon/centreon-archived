@@ -71,7 +71,7 @@
                                           {
                                             "type": "tcp",
                                             "name": "central-transfer-input",
-                                            "host": "%broker_central_ip%",
+                                            "host": "%broker-central-ip%",
                                             "port": "5669"
                                           }
                                         ],
