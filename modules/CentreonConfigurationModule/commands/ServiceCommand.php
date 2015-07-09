@@ -72,13 +72,11 @@ class ServiceCommand extends BasicTagSupport
     public function getSlugAction($object){
         
         $repository = $this->repository;
-        $slug = $repository::getServiceSlugByUniqueField($object['service-description'],$object['host-name']);
+        $slug = $repository::getServiceSlugByUniqueField($object['service-description'], $object['host-name']);
         \Centreon\Internal\Utils\CommandLine\InputOutput::display($slug, true, 'green');
         
     }
-    
-    
-    
+        
     /**
      * 
      * @cmdForm /centreon-configuration/service/update optional
@@ -88,7 +86,7 @@ class ServiceCommand extends BasicTagSupport
      * @cmdParam boolean|false disable optional disable the host because it sucks
      * @cmdParam boolean|true enable optional enable the host
      */
-    public function updateAction($object, $params) 
+    public function updateAction($object, $params = null) 
     {
         $repository = $this->repository;
         $host_slug = $repository::getHostSlugFromServiceSlug($object['service']);
