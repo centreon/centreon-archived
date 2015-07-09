@@ -54,7 +54,7 @@ class ContactController extends FormController
     public static $relationMap = array();
     
     protected $datatableObject = '\CentreonAdministration\Internal\ContactDatatable';
-    public static $isDisableable = true;
+    public static $isDisableable = false;
     
      /**
      * List contact

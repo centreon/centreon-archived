@@ -182,8 +182,9 @@ class IndicatorRepository extends FormRepository
         $serviceId = $parameters['service_id'];
         $insertRequest = "UPDATE cfg_bam_kpi kpi "
             . " INNER JOIN cfg_hosts_services_relations hsr ON hsr.service_service_id = :service_id "
+            . " INNER JOIN cfg_services s ON s.service_id = :service_id and s.service_register = '1'"
             . " SET kpi.host_id=hsr.host_host_id, kpi.service_id=:service_id"
-            . " WHERE kpi_id=:kpi_id";
+            . " WHERE kpi_id=:kpi_id ";
         $stmtInsert = $dbconn->prepare($insertRequest);
         $stmtInsert->bindParam(':service_id', $serviceId, \PDO::PARAM_INT);
         $stmtInsert->bindParam(':kpi_id', $lastIndicatorId, \PDO::PARAM_INT);

@@ -65,16 +65,6 @@ class FreshInstall extends AbstractMigration
                 ->addForeignKey('module_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
                 ->create();
         
-        // Creation of table cfg_modules_dependencies
-        $cfg_modules_dependencies = $this->table('cfg_modules_dependencies', array('id' => false, 'primary_key' => 'id'));
-        $cfg_modules_dependencies->addColumn('id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
-                ->addColumn('parent_id', 'integer', array('signed' => false, 'null' => false))
-                ->addColumn('child_id', 'integer', array('signed' => false, 'null' => false))
-                ->addColumn('optionnal', 'boolean', array('null' => false, 'default' => 0))
-                ->addForeignKey('parent_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
-                ->addForeignKey('child_id', 'cfg_modules', 'id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))
-                ->create();
-        
         // Creation of table cfg_menus
         $cfg_menus = $this->table('cfg_menus', array('id' => false, 'primary_key' => array('menu_id')));
         $cfg_menus->addColumn('menu_id', 'integer', array('signed' => false, 'identity' => true, 'null' => false))
