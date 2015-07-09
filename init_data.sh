@@ -131,7 +131,6 @@ echo " ==== Generating Configuration ==== "
 ./external/bin/centreonConsole centreon-configuration:Config:move --poller=central
 
 echo " ==== Restarting Engine and Broker ==== "
-
 ./external/bin/centreonConsole centreon-configuration:Config:apply --poller=central --action=restart
 
 echo " ==== That's all for now, we've already suffered so much to do it, please applause ==== "

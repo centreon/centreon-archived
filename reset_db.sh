@@ -4,6 +4,7 @@
 
 /etc/init.d/centengine stop
 /etc/init.d/cbd stop
+rm -f /var/lib/centreon-engine/status.sav
 rm -f /var/lib/centreon-broker/*
 rm -f /etc/centreon-engine/objects.d/resources/*
 
