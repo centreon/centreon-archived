@@ -44,25 +44,25 @@
                                             },
                                             {
                                                 "type": "dumper",
-                                                "tagname": "extcommands-broker-$BROKERID$",
+                                                "tagname": "extcommands-broker-$POLLERID$",
                                                 "path": "%global_broker_data_directory%/poller-module.cmd",
                                                 "name": "poller-module-extcommands-broker"
                                             },
                                             {
                                                 "type": "dumper",
-                                                "tagname": "extcommands-engine-$BROKERID$",
+                                                "tagname": "extcommands-engine-$POLLERID$",
                                                 "path": "%engine_var_lib_dir%/rw/centengine.cmd",
                                                 "name": "poller-module-extcommands-engine"
                                             },
                                             {
                                                 "type": "dumper",
-                                                "tagname": "cfg-broker-$BROKERID$",
+                                                "tagname": "cfg-broker-$POLLERID$",
                                                 "path": "%global_broker_etc_directory%/$FILENAME$",
                                                 "name": "poller-module-cfg-broker"
                                             },
                                             {
                                                 "type": "dumper",
-                                                "tagname": "cfg-engine-$BROKERID$",
+                                                "tagname": "cfg-engine-$POLLERID$",
                                                 "path": "%engine_conf_dir%/$FILENAME$",
                                                 "name": "poller-module-cfg-engine"
                                             }

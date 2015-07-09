@@ -72,10 +72,10 @@ class HostCommand extends BasicTagSupport
      * @cmdObject string host the host
      * @cmdParam none host-custommacros optional
      * @cmdParam none host-tags optional
-     * @cmdParam boolean|false disable optional disable the host because it sucks
+     * @cmdParam boolean|false disable optional disable the host
      * @cmdParam boolean|true enable optional enable the host
      */
-    public function updateAction($object, $params) 
+    public function updateAction($object, $params = null) 
     {
         parent::updateAction($object, $params);
     }
