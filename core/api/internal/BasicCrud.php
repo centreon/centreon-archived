@@ -475,7 +475,6 @@ class BasicCrud extends AbstractCommand
         foreach ($this->externalAttributeSet as $externalAttribute) {
             $aFieldAttribute[] = $externalAttribute['type'];
         }
-
         foreach ($params as $key => $param) {
             if (in_array($key, $aFieldAttribute)) {
                 foreach ($this->externalAttributeSet as $externalAttribute) {

@@ -736,4 +736,20 @@ class TagsRepository extends Repository
 
         return array('success' => true, 'values' => $aTags);
     }
+    
+    public static function getTagsIdByResource($resourceName,$tag)
+    {
+        $db = Di::getDefault()->get('db_centreon');
+        $sql = "Select * from cfg_tags tag "
+            . " inner join cfg_tags_".$resourceName." r ON r.tag_id = tag.tag_id AND (r.template_id IS NULL OR r.template_id = 0) "
+            . " where tag.tagname = :tagname ";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':tagname', $tag, \PDO::PARAM_STR);
+        $stmt->execute();
+        $tagsId = array();
+        while ($row = $stmt->fetch()) {
+            $tagsId[] = $row['tag_id'];
+        }
+        return $tagsId;
+    }
 }

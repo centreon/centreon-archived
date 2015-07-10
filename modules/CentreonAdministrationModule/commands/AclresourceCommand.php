@@ -35,7 +35,8 @@
 namespace CentreonAdministration\Commands;
 
 use Centreon\Api\Internal\BasicCrudCommand;
-
+use Centreon\Internal\Di;
+use CentreonAdministration\Events\aclTagsEvent;
 /**
  * 
  */
@@ -54,8 +55,15 @@ class AclresourceCommand extends BasicCrudCommand
     
     /**
      * @cmdForm /centreon-administration/aclresource/update required
-     */
+     * @cmdParam boolean|true all-hosts required all host 
+     * @cmdParam boolean|true all-bas required all bas 
+     */ 
     public function createAction($params) {
+        
+        $events = Di::getDefault()->get('events');
+        $aclTagsEvent = new aclTagsEvent($params);
+        $events->emit('centreon-administration.acl.tag', array($aclTagsEvent));
+        $params = $aclTagsEvent->getParams();
         parent::createAction($params);
     }
     
@@ -63,7 +71,8 @@ class AclresourceCommand extends BasicCrudCommand
      * @cmdForm /centreon-administration/aclresource/update map
      * @cmdObject string aclresource the acl resource
      */
-    public function showAction($object, $fields = null, $linkedObject = '') {
+    public function showAction($object, $fields = null, $linkedObject = '') 
+    {
         parent::showAction($object, $fields, $linkedObject);
     }
     
@@ -71,15 +80,25 @@ class AclresourceCommand extends BasicCrudCommand
      * 
      * @cmdForm /centreon-administration/aclresource/update optional
      * @cmdObject string aclresource the acl resource
+     * @cmdParam boolean|true all-hosts optional all host 
+     * @cmdParam boolean|true all-bas optional all bas 
+     * @cmdParam boolean|true no-hosts optional no host 
+     * @cmdParam boolean|true no-bas optional no bas 
      */
-    public function updateAction($object, $params) {
+    public function updateAction($object, $params) 
+    {
+        $events = Di::getDefault()->get('events');
+        $aclTagsEvent = new aclTagsEvent($params);
+        $events->emit('centreon-administration.acl.tag', array($aclTagsEvent));
+        $params = $aclTagsEvent->getParams();
         parent::updateAction($object, $params);
     }
     
     /**
      * @cmdObject string aclresource the acl resource
      */
-    public function deleteAction($object) {
+    public function deleteAction($object) 
+    {
         parent::deleteAction($object);
     }
     
