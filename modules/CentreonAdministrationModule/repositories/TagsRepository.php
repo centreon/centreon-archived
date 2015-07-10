@@ -740,10 +740,9 @@ class TagsRepository extends Repository
     public static function getTagsIdByResource($resourceName,$tag)
     {
         $db = Di::getDefault()->get('db_centreon');
-        $resourceName = self::convertResource($resourceName);
-        $sql = "Select t.tagname, t.tag_id from cfg_tags t "
-            . " inner join cfg_tags_".$resourceName." r ON r.tag_id = t.tag_id AND (template_id IS NULL OR template_id = 0) "
-            . " where t.tagname = :tagname ";
+        $sql = "Select * from cfg_tags tag "
+            . " inner join cfg_tags_".$resourceName." r ON r.tag_id = tag.tag_id AND (r.template_id IS NULL OR r.template_id = 0) "
+            . " where tag.tagname = :tagname ";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':tagname', $tag, \PDO::PARAM_STR);
         $stmt->execute();
@@ -751,7 +750,6 @@ class TagsRepository extends Repository
         while ($row = $stmt->fetch()) {
             $tagsId[] = $row['tag_id'];
         }
-        
         return $tagsId;
     }
 }
