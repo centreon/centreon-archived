@@ -55,6 +55,8 @@ class AclresourceCommand extends BasicCrudCommand
     
     /**
      * @cmdForm /centreon-administration/aclresource/update required
+     * @cmdParam boolean|true all-hosts required all host 
+     * @cmdParam boolean|true all-bas required all bas 
      */ 
     public function createAction($params) {
         
@@ -78,6 +80,10 @@ class AclresourceCommand extends BasicCrudCommand
      * 
      * @cmdForm /centreon-administration/aclresource/update optional
      * @cmdObject string aclresource the acl resource
+     * @cmdParam boolean|true all-hosts optional all host 
+     * @cmdParam boolean|true all-bas optional all bas 
+     * @cmdParam boolean|true no-hosts optional no host 
+     * @cmdParam boolean|true no-bas optional no bas 
      */
     public function updateAction($object, $params) 
     {
