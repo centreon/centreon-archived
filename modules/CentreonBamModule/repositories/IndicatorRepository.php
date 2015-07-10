@@ -118,7 +118,7 @@ class IndicatorRepository extends FormRepository
             $parameters[$k] = $v;
         }
 
-        if($parameters['kpi_type'] !== '1'){
+        //if($parameters['kpi_type'] !== '1'){
             if($origin !== 'api'){
                 if (is_a($givenParameters, '\Klein\DataCollection\DataCollection')) {
                     $givenParameters = $givenParameters->all();
@@ -126,7 +126,7 @@ class IndicatorRepository extends FormRepository
                 $givenParameters['host_id'] = true;
             }
             self::validateForm($givenParameters, $origin, $route);
-        }
+       // }
         $lastIndicatorId = self::createBasicIndicator($parameters);
         $booleanId = null;
         if ($parameters['kpi_type'] === '0') {

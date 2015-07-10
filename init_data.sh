@@ -134,18 +134,18 @@ php external/bin/centreonConsole centreon-configuration:Service:addMacro --servi
 
 echo " ==== Creating KPI and BA ==== "
 
-php external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les ping des machines des PP' --ba-type-id=1 --level-w=70 --level-c=50
+php external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les ping des machines des PP' --ba-type-id='business-unit' --level-w=70 --level-c=50
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ces3-rwe-pp-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ces3-qde-pp-ces22-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ces3-qde-pp-ces3-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 
-php external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les memory des machines des PP' --ba-type-id=1 --level-w=70 --level-c=50
+php external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les memory des machines des PP' --ba-type-id='business-unit' --level-w=70 --level-c=50
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --service-slug='ces3-rwe-pp-memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --service-slug='ces3-qde-pp-ces22-memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-memory-des-machines-des-pp' --type='service' --service-slug='ces3-qde-pp-ces3-memory' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 
 # Put the 2 BAs in a new BA
-php external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA ping + memory PP' --ba-type-id=1 --level-w=70 --level-c=50
+php external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA ping + memory PP' --ba-type-id='business-unit' --level-w=70 --level-c=50
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-ping-memory-pp' --type='BA' --indicator-ba-slug='ba-sur-les-ping-des-machines-des-pp' --drop-warning='10' --drop-critical='50' --drop-warning='30'
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-ping-memory-pp' --type='BA' --indicator-ba-slug='ba-sur-les-memory-des-machines-des-pp' --drop-warning='10' --drop-critical='50' --drop-warning='30'
 

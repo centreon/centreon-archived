@@ -58,6 +58,8 @@ class BusinessActivityCommand extends BasicCrudCommand
      * 
      * @cmdForm /centreon-bam/businessactivity/update required 
      * @cmdParam boolean|false disable required disable
+     * @cmdParam none ba-tags optional
+     * @cmdParam boolean|false disable required
      */
     public function createAction($params) {
         parent::createAction($params);
@@ -83,8 +85,11 @@ class BusinessActivityCommand extends BasicCrudCommand
     
     /**
      * 
-     * @cmdForm /centreon-bam/businessactivity/update optional 
+     * @cmdForm /centreon-bam/businessactivity/update optional
      * @cmdObject string ba the ba
+     * @cmdParam none ba-tags optional
+     * @cmdParam boolean|false disable optional
+     * @cmdParam boolean|true enable optional
      */
     public function updateAction($object, $params) {
         parent::updateAction($object, $params);
