@@ -113,12 +113,14 @@ class IncidentsController extends Controller
             );
             /* Translate the status */
             if (false === is_null($incident['service_id'])) {
+                $incident['object'] = 's';
                 $incident['status'] = Status::numToString(
                     $incident['state'],
                     Status::TYPE_SERVICE,
                     true
                 );
             } else {
+                $incident['object'] = 'h';
                 $incident['status'] = Status::numToString(
                     $incident['state'],
                     Status::TYPE_HOST,

@@ -28,6 +28,10 @@
                                     {
                                         "general" : {
                                             "name" : "poller-module",
+                                            "broker_id": "%broker_id%",
+                                            "broker_name": "%broker_name%",
+                                            "poller_id": "%poller_id%",
+                                            "poller_name": "%poller_name%",
                                             "command_file": "%global_broker_data_directory%/poller-module.cmd"
                                         },
                                         "output" : [
@@ -71,7 +75,7 @@
                                           {
                                             "type": "tcp",
                                             "name": "central-transfer-input",
-                                            "host": "%broker_central_ip%",
+                                            "host": "%broker-central-ip%",
                                             "port": "5669"
                                           }
                                         ],

@@ -65,7 +65,7 @@ class ManageCommandOptions
         foreach ($newInfos as $newInfo) {
             $newOption = array(
                 $newInfo['name'] => array(
-                    'functionParams' => 'params',
+                    'paramType' => 'params',
                     'help' => '',
                     'type' => 'string',
                     'toTransform' => $newInfo['name'],
