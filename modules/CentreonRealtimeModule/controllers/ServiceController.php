@@ -114,6 +114,7 @@ class ServiceController extends Controller
         /* Datatable */
         $tpl->assign('moduleName', 'CentreonRealtime');
         $tpl->assign('datatableObject', $this->datatableObject);
+        $tpl->assign('objectDisplayName', 'Service');
         $tpl->assign('objectName', 'Service');
         $tpl->assign('objectListUrl', '/centreon-realtime/service/list');
 

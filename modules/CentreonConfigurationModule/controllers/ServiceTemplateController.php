@@ -49,7 +49,7 @@ use CentreonAdministration\Repository\TagsRepository;
  */
 class ServiceTemplateController extends FormController
 {
-    protected $objectDisplayName = 'ServiceTemplate';
+    protected $objectDisplayName = 'Service Template';
     public static $objectName = 'servicetemplate';
     public static $enableDisableFieldName = 'service_activate';
     protected $objectBaseUrl = '/centreon-configuration/servicetemplate';

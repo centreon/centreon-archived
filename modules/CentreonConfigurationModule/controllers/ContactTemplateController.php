@@ -40,7 +40,7 @@ use Centreon\Controllers\FormController;
 
 class ContactTemplateController extends FormController
 {
-    protected $objectDisplayName = 'Contacttemplate';
+    protected $objectDisplayName = 'Contact Template';
     public static $objectName = 'contacttemplate';
     public static $enableDisableFieldName = 'contact_activate';
     protected $objectBaseUrl = '/centreon-configuration/contacttemplate';
