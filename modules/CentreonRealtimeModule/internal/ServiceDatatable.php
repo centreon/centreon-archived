@@ -208,7 +208,7 @@ class ServiceDatatable extends Datatable
         ),
         array (
             'title' => 'Duration',
-            'name' => '(unix_timestamp(NOW())-s.last_hard_state_change) AS duration',
+            'name' => 's.last_hard_state_change AS duration',
             'data' => 'duration',
             'orderable' => false,
             'searchable' => false,
@@ -335,7 +335,7 @@ class ServiceDatatable extends Datatable
             }
 
             $myServiceSet['duration'] = Datetime::humanReadable(
-                $myServiceSet['duration'],
+                time() - $myServiceSet['duration'],
                 Datetime::PRECISION_FORMAT,
                 2
             );

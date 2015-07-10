@@ -81,13 +81,14 @@ class PollerDatatable extends Datatable
      */
     public static $columns = array(
         array (
-            'title' => 'Id',
+            'title' => '#id',
             'name' => 'poller_id',
             'data' => 'poller_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Name',
@@ -107,7 +108,8 @@ class PollerDatatable extends Datatable
                     ),
                     'linkName' => '::name::'
                 )
-            )
+            ),
+            'className' => "cell_center"
         ),
         array (
             'title' => 'IP Address',
@@ -118,7 +120,8 @@ class PollerDatatable extends Datatable
             'type' => 'string',
             'visible' => true,
             'dataSource' => '\CentreonConfiguration\Models\Node',
-            'innerJoin' => 'cfg_pollers.node_id = cfg_nodes.node_id'
+            'innerJoin' => 'cfg_pollers.node_id = cfg_nodes.node_id',
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Is Running',
@@ -136,7 +139,8 @@ class PollerDatatable extends Datatable
                     '0' => '<span class="label label-danger">No</span>',
                     '1' => '<span class="label label-success">Yes</span>'
                 )
-            )
+            ),
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Has changed',
@@ -161,7 +165,8 @@ class PollerDatatable extends Datatable
                     'Yes' => '1',
                     'No' => '0'
                 )
-            )
+            ),
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Version',
@@ -171,7 +176,8 @@ class PollerDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'dataSource' => '\CentreonRealtime\Models\Instances'
+            'dataSource' => '\CentreonRealtime\Models\Instances',
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Status',
@@ -194,7 +200,8 @@ class PollerDatatable extends Datatable
                     'Enabled' => '1',
                     'Disabled' => '0'
                 )
-            )
+            ),
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Last restart',
@@ -204,7 +211,8 @@ class PollerDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'dataSource' => '\CentreonRealtime\Models\Instances'
+            'dataSource' => '\CentreonRealtime\Models\Instances',
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Last update',
@@ -214,7 +222,8 @@ class PollerDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'dataSource' => '\CentreonRealtime\Models\Instances'
+            'dataSource' => '\CentreonRealtime\Models\Instances',
+            'className' => "cell_center"
         ),
         array (
             'title' => 'engine',
@@ -224,7 +233,8 @@ class PollerDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => false,
-            'dataSource' => '\CentreonRealtime\Models\Instances'
+            'dataSource' => '\CentreonRealtime\Models\Instances',
+            'className' => "cell_center"
         )
     );
 

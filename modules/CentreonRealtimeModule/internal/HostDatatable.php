@@ -176,7 +176,7 @@ class HostDatatable extends Datatable
         ),
         array (
             'title' => 'Duration',
-            'name' => '(unix_timestamp(NOW())-last_hard_state_change) AS duration',
+            'name' => 'last_hard_state_change AS duration',
             'data' => 'duration',
             'orderable' => false,
             'searchable' => false,
@@ -273,7 +273,7 @@ class HostDatatable extends Datatable
             }
 
             $myHostSet['duration'] = Datetime::humanReadable(
-                $myHostSet['duration'],
+                time() - $myHostSet['duration'],
                 Datetime::PRECISION_FORMAT,
                 2
             );
