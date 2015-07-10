@@ -504,7 +504,7 @@ class Unique implements ValidatorInterface
                 if ($params['extraParams']['kpi_type'] == '0') {
                     $serviceId = "";
                     if (isset($params['extraParams']['service_id'])) {
-                        list($serviceId, $hostId) = explode('_', $params['extraParams']['service_id']);
+                        $serviceId = $params['extraParams']['service_id'];
   
                     }
                     $aParams['id_ba'] = $params['extraParams']['id_ba'];

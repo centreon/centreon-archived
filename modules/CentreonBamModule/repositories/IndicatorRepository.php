@@ -244,7 +244,6 @@ class IndicatorRepository extends FormRepository
         $oSlugify = new CentreonSlugify($class, $repoClass);
         $sSlug = $oSlugify->slug($parameters['boolean_name']);
         
-
         $insertBooleanRequest = "INSERT INTO cfg_bam_boolean(name, expression, bool_state, slug)"
                 . " VALUES(:boolean_name, :boolean_expression, :bool_state, :slug)";
         $stmtBooleanInsert = $dbconn->prepare($insertBooleanRequest);
@@ -275,7 +274,6 @@ class IndicatorRepository extends FormRepository
     {
         self::validateForm($givenParameters, $origin, $route, $validateMandatory);
 
-        
         switch ($origin){
             case 'api' : 
                 $kpi = Indicator::getKpi($object);
@@ -313,7 +311,6 @@ class IndicatorRepository extends FormRepository
             default :
                 break;
         }
-        
         
         $class = static::$objectClass;
         $pk = $class::getPrimaryKey();
@@ -728,11 +725,7 @@ class IndicatorRepository extends FormRepository
             );
         }
         
-        if ($kpiType == '3' ) {
-            $sElement = "boolean_id";
-        } else {
-            $sElement = "kpi_id";
-        }
+        $sElement = "kpi_id";
         
         $query = 'SELECT ' . $sElement;
         
@@ -747,13 +740,20 @@ class IndicatorRepository extends FormRepository
         
         // Finalizing query
         $query .= ' FROM ' . implode(', ', $tables);
+        if ($kpiType == '3' ) {
+            $query .= ', cfg_bam_kpi';
+        }
         $query .= ' WHERE ' . implode(' AND ', $conditions);
+        if ($kpiType == '3' ) {
+            $query .= ' AND cfg_bam_kpi.boolean_id = cfg_bam_boolean.boolean_id';
+        }
 
         if (isset($unicityParams['id_ba']) && !empty($unicityParams['id_ba'])) {
             $query .= " AND id_ba = '".$unicityParams['id_ba']."'";
         }
         $query .= ' LIMIT 1';
 
+        //echo $query;
         // Execute request
         $stmt = $db->prepare($query);
         $stmt->execute();
@@ -762,7 +762,7 @@ class IndicatorRepository extends FormRepository
         if (count($result) > 0) {
             $objectId = $result[0][$sElement];
         }
-        
+
         return $objectId;
     }
      
