@@ -45,6 +45,8 @@ use CentreonConfiguration\Repository\HostTemplateRepository;
 use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Internal\Datatable;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
+use CentreonConfiguration\Models\Poller;
+
 /**
  * Description of HostDatatable
  *
@@ -157,6 +159,16 @@ class HostDatatable extends Datatable
             'type' => 'string',
             'visible' => true,
             'className' => "cell_center"
+        ),
+        array (
+            'title' => 'Poller',
+            'name' => 'poller_id',
+            'data' => 'poller_id',
+            'orderable' => true,
+            'searchable' => false,
+            'searchLabel' => 'poller',
+            'type' => 'string',
+            'visible' => true,
         ),
         array (
             'title' => 'Interval',
@@ -299,7 +311,15 @@ class HostDatatable extends Datatable
             foreach ($services as $key=>&$service){
                 $service[$key]['service_status'] = ServiceRealTimeRepository::getStatus($myHostSet['host_id'], $service["service_id"]);
             }*/
-                
+
+            /* Poller */
+            if (isset($myHostSet["poller_id"]) && $myHostSet["poller_id"] != "") {
+                $poller = Poller::getParameters($myHostSet["poller_id"], 'name');
+                $myHostSet["poller_id"] = $poller['name'];
+            } else {
+                $myHostSet["poller_id"] = "";
+            }
+
             /* Templates */
             $myHostSet['host_template']  = "";
             //$myHostSet['DT_RowData']['host_template']  = array();
