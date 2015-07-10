@@ -199,7 +199,7 @@ class ServiceDatatable extends Datatable
 
         array (
             'title' => 'Last Check',
-            'name' => '(unix_timestamp(NOW())-s.last_check) AS last_check',
+            'name' => 's.last_check',
             'data' => 'last_check',
             'orderable' => false,
             'searchable' => false,
@@ -341,7 +341,7 @@ class ServiceDatatable extends Datatable
             );
 
             $myServiceSet['last_check'] = Datetime::humanReadable(
-                $myServiceSet['last_check'],
+                time() - $myServiceSet['last_check'],
                 Datetime::PRECISION_FORMAT,
                 2
             );
