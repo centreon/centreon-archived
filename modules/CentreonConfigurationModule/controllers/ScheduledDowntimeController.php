@@ -49,7 +49,7 @@ use CentreonConfiguration\Repository\ScheduledDowntimeRepository;
  */
 class ScheduledDowntimeController extends FormController
 {
-    protected $objectDisplayName = 'ScheduledDowntime';
+    protected $objectDisplayName = 'Scheduled Downtime';
     public static $objectName = 'scheduled-downtime';
     public static $enableDisableFieldName = 'dt_activate';
     protected $objectBaseUrl = '/centreon-configuration/scheduled-downtime';

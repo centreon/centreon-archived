@@ -43,7 +43,7 @@ use CentreonAdministration\Repository\TagsRepository;
 
 class BusinessActivityController extends FormController
 {
-    protected $objectDisplayName = 'BusinessActivity';
+    protected $objectDisplayName = 'Business Activity';
     public static $objectName = 'businessactivity';
     public static $enableDisableFieldName = 'activate';
     protected $objectClass = '\CentreonBam\Models\BusinessActivity';

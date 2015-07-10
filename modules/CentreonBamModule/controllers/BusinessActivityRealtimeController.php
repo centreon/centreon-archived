@@ -108,6 +108,7 @@ class BusinessActivityRealtimeController extends Controller
         $this->tpl->assign('moduleName', 'CentreonBam');
         $this->tpl->assign('datatableObject', $this->datatableObject);
         $this->tpl->assign('objectName', 'BusinessActivity');
+        $this->tpl->assign('objectDisplayName', 'Business Activity');
         //$this->tpl->assign('consoleType', 0); // host console
         $this->tpl->assign('objectListUrl', '/centreon-bam/businessactivity/realtime/list');
         /*

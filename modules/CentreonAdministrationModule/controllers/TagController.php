@@ -327,7 +327,8 @@ class TagController extends Controller
         
         
         /* Display variable */
-        $this->tpl->assign('objectName', $this->objectDisplayName);
+        $this->tpl->assign('objectName', static::$objectName);
+        $this->tpl->assign('objectDisplayName', $this->objectDisplayName);
         $this->tpl->assign('datatableObject', $this->datatableObject);
         $this->tpl->assign('moduleName', static::$moduleName);
         $this->tpl->assign('objectAddUrl', '');

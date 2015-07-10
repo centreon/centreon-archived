@@ -48,7 +48,7 @@ use Centreon\Controllers\FormController;
  */
 class NotificationMethodController extends FormController
 {
-    protected $objectDisplayName = 'NotificationMethod';
+    protected $objectDisplayName = 'Notification Method';
     public static $objectName = 'notification-method';
     protected $objectBaseUrl = '/centreon-configuration/notification-method';
     protected $datatableObject = '\CentreonConfiguration\Internal\NotificationMethodDatatable';
