@@ -249,7 +249,8 @@ class GraphView
                 AND (h.name LIKE :name OR s.description LIKE :name)
                 AND h.host_id = i.host_id
                 AND s.service_id = i.service_id
-                AND i.id = m.index_id";
+                AND i.id = m.index_id
+                ORDER BY h.name, s.description";
 
         if (is_null($filter) || $filter == '') {
             $filterStr = "%";
