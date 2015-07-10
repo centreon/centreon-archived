@@ -166,7 +166,7 @@ class HostDatatable extends Datatable
         ),
         array(
             'title' => 'Last Check',
-            'name' => '(unix_timestamp(NOW())-last_check) AS last_check',
+            'name' => 'last_check',
             'data' => 'last_check',
             'orderable' => false,
             'searchable' => false,
@@ -279,7 +279,7 @@ class HostDatatable extends Datatable
             );
 
             $myHostSet['last_check'] = Datetime::humanReadable(
-                $myHostSet['last_check'],
+                time() - $myHostSet['last_check'],
                 Datetime::PRECISION_FORMAT,
                 2
             );
