@@ -72,6 +72,10 @@ $(function() {
         data: { name: data.id },
         dataType: "json",
         success: function( data, textStatus, jqXHR ) {
+          if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           var nbStep = 2;
           /* Set active configuration type */
           if ( data.engine ) {
@@ -138,6 +142,10 @@ $(function() {
       dataType: "json",
       type: "post",
       success: function( data, textStatus, jqXHR ) {
+        if(!isJson(data)){
+          alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+          return false;
+        }
         alertModalClose();
         if ( data.success ) {
           $('#modal').modal('hide');

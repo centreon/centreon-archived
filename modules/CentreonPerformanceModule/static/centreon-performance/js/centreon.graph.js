@@ -20,6 +20,10 @@ function addChart( graphId, serviceId, startTime, endTime ) {
     },
     dataType: "json",
     success: function( data, textStatus, jqXHR ) {
+      if(!isJson(data)){
+          alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+          return false;
+      }
       var firstMetric = false,
           axes = {},
           axis = {},
@@ -108,6 +112,10 @@ function updateChart( startTime, endTime ) {
       },
       dataType: "json",
       success: function( data, textStatus, jqXHR ) {
+        if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+        }
         var columns = convertColumns( data );
         charts[ idx ].load({
           columns: columns

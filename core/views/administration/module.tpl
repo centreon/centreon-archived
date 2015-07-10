@@ -38,6 +38,11 @@ $(function() {
                size: "small",
                dataType: "json",
                success: function( data, textStatus, jqXHR ) {
+                
+                 if(!isJson(data)){
+                    alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                    return false;
+                 }
                  if ( data.success ) {
                    alertMessage( "{t}The module is enabled{/t}", "alert-success", 3 );
                  } else {
@@ -52,8 +57,12 @@ $(function() {
                type: "get",
                dataType: "json",
                success: function( data, textStatus, jqXHR ) {
+                if(!isJson(data)){
+                    alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                    return false;
+                }
+               
                  if ( data.success ) {
-                   alert
                    alertMessage( "{t}The module is disabled{/t}", "alert-success", 3 );
                  } else {
                    alertMessage( "{t}Error when disabled the module.{/t}", "alert-danger" );

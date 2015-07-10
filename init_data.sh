@@ -12,11 +12,11 @@ php external/bin/centreonConsole centreon-configuration:poller:create --name=cen
 #php external/bin/centreonConsole centreon-configuration:poller:create --name=poller6 --template=Poller --ip-address="127.0.0.1" --engine-init-script='/etc/init.d/centengine' --engine-binary='/usr/sbin/centengine' --engine-modules-dir='/usr/lib64/centreon-engine/' --engine-conf-dir='/etc/centreon-engine/' --engine-logs-dir='/var/log/centreon-engine/' --engine-var-lib-dir='/var/lib/centreon-engine/' --broker-conf-dir='/etc/centreon-broker/' --broker-modules-dir='/usr/share/centreon/lib/centreon-broker/' --broker-data-dir='/var/lib/centreon-broker' --broker-logs-dir='/var/log/centreon-broker/' --broker-cbmod-dir='/usr/lib64/nagios/' --broker-init-script='/etc/init.d/cbd' --broker-central-ip="10.30.2.34"
 
 echo " ==== Creating resource macro === "
-/srv/centreon/external/bin/centreonConsole centreon-configuration:Resource:create --resource-name='$USER1$' --resource-line='/usr/lib/nagios/plugins' --resource-pollers='Central'
+php /srv/centreon/external/bin/centreonConsole centreon-configuration:Resource:create --resource-name='$USER1$' --resource-line='/usr/lib/nagios/plugins' --resource-pollers='Central'
 
 echo " ==== Creating timeperiods ==== "
 php external/bin/centreonConsole centreon-configuration:Timeperiod:create --tp-name='24x7' --tp-alias='24x7' --tp-sunday='00:00-24:00' --tp-monday='00:00-24:00' --tp-tuesday='00:00-24:00' --tp-wednesday='00:00-24:00' --tp-thursday='00:00-24:00' --tp-friday='00:00-24:00' --tp-saturday='00:00-24:00'
- php external/bin/centreonConsole centreon-configuration:Timeperiod:create --tp-name='Working hours' --tp-alias='Working hours' --tp-monday='09:00-18:00' --tp-tuesday='09:00-18:00' --tp-wednesday='09:00-18:00' --tp-thursday='09:00-18:00' --tp-friday='09:00-18:00'
+php external/bin/centreonConsole centreon-configuration:Timeperiod:create --tp-name='Working hours' --tp-alias='Working hours' --tp-monday='09:00-18:00' --tp-tuesday='09:00-18:00' --tp-wednesday='09:00-18:00' --tp-thursday='09:00-18:00' --tp-friday='09:00-18:00'
 
 echo " ==== Creating notif commands ==== "
 php external/bin/centreonConsole centreon-configuration:Command:create --command-name='Send mail' --command-type=1 --command-line='mail -s test test'
@@ -112,6 +112,7 @@ php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3
 php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES3' --address='10.50.1.85' --host-templates='os-linux-snmp' --poller='central'
 
 php external/bin/centreonConsole centreon-configuration:Host:create --name='SRVI-WIN-TEST' --address='10.50.1.158' --host-templates='os-windows-snmp' --poller='central'
+php external/bin/centreonConsole centreon-configuration:Host:create --name='Terminal server GSO' --address='10.41.1.28' --host-templates='os-windows-snmp' --poller='central'
 
 echo " ==== Creating services  ==== "
 php external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-rwe-pp' --template-model-stm='OS-Linux-SNMP-traffic-name'
@@ -132,9 +133,24 @@ php external/bin/centreonConsole centreon-configuration:Service:addMacro --servi
 php external/bin/centreonConsole centreon-configuration:Service:create --description='Disk-/' --host='ces3-qde-pp-ces3' --template-model-stm='OS-Linux-SNMP-disk-name'
 php external/bin/centreonConsole centreon-configuration:Service:addMacro --service='ces3-qde-pp-ces3-disk' --name='DISKNAME' --value='/'
 
-echo " ==== Creating KPI and BA ==== "
+echo " ==== Creating (global) tags  ==== "
+# Targeting all hosts having the same template
+php external/bin/centreonConsole centreon-configuration:HostTemplate:addTag --host-template='os-linux-snmp' --tag='Linux servers'
+php external/bin/centreonConsole centreon-configuration:HostTemplate:addTag --host-template='os-windows-snmp' --tag='Windows servers'
 
+# Host by host
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='ces3-rwe-pp' --tag='Plugins Packs servers'
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='ces3-qde-pp-ces22' --tag='Plugins Packs servers'
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='ces3-qde-pp-ces3' --tag='Plugins Packs servers'
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='srvi-win-test' --tag='Plugins Packs servers'
+
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='ces3-rwe-pp' --tag='Centreon servers'
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='ces3-qde-pp-ces22' --tag='Centreon servers'
+php external/bin/centreonConsole centreon-configuration:Host:addTag --host='ces3-qde-pp-ces3' --tag='Centreon servers'
+
+echo " ==== Creating KPI and BA ==== "
 php external/bin/centreonConsole centreon-bam:BusinessActivity:create --name='BA sur les ping des machines des PP' --ba-type-id='business-unit' --level-w=70 --level-c=50
+
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ces3-rwe-pp-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ces3-qde-pp-ces22-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
 php external/bin/centreonConsole centreon-bam:Indicator:create --ba='ba-sur-les-ping-des-machines-des-pp' --type='service' --service-slug='ces3-qde-pp-ces3-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'

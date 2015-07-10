@@ -84,6 +84,10 @@ $(function() {
           url: '{'/api/centreon-configuration/generatecfg/'|url}' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
+          if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           $csl.append(data.output);
           if (!data.status) {
             $thisBtn.removeAttr('disabled');
@@ -93,6 +97,10 @@ $(function() {
               url: '{'/api/centreon-configuration/testcfg/'|url}' + pollerId,
               dataType: 'json'
             }).success(function(data2, textStatus2, jqXHR2) {
+              if(!isJson(data)){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                return false;
+              }
               $csl.append(format_check_log(data2.output));
               $thisBtn.removeAttr('disabled');
             }).error(function(jqXHR2, textStatus2, errorThrown2) {
@@ -124,6 +132,10 @@ $(function() {
           url: '{'/api/centreon-configuration/generatecfg/'|url}' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
+          if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           $csl.append(data.output);
           $thisBtn.removeAttr('disabled');
         }).error(function(jqXHR, textStatus, errorThrown) {
@@ -149,6 +161,10 @@ $(function() {
           url: '{'/api/centreon-configuration/testcfg/'|url}' + pollerId,
           dataType: 'json'
         }).success(function(data2, textStatus2, jqXHR2) {
+          if(!isJson(data2)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           $csl.append(format_check_log(data2.output));
           $thisBtn.removeAttr('disabled');
         }).error(function(jqXHR2, textStatus2, errorThrown2) {
@@ -176,6 +192,10 @@ $(function() {
           url: '{'/api/centreon-configuration/movecfg/'|url}' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
+          if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           $csl.append(data.output);
           $thisBtn.removeAttr('disabled');
         }).error(function(jqXHR, textStatus, errorThrown) {
@@ -203,6 +223,10 @@ $(function() {
           url: '{'/api/centreon-configuration/'|url}' + action + '/' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
+          if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           $csl.append(data.output);
           $thisBtn.removeAttr('disabled');
         }).error(function(jqXHR, textStatus, errorThrown) {

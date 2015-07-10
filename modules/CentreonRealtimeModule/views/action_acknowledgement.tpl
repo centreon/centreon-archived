@@ -72,6 +72,10 @@
 			url: 'externalcommands/advanced/{$cmdid}',
 			data:  $('#ack-form').serialize()
 		}).done(function(result) {
+                        if(!isJson(result)){
+                            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                            return false;
+                        }
 			$("#command-result").html(' - ' + result.message);
 			$("#cancel-btn").remove();
 			$("#send-btn").html('OK');

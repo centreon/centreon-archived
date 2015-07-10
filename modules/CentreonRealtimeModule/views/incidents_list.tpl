@@ -51,7 +51,7 @@ $(function() {
       </td> \
       <td class='span-2'><a href='host/{{{host_id}}}'><i class='icon-host ico-18'></i> {{{host_name}}}</a></td> \
       <td class='span-2'><a href='service/{{{service_id}}}'><i class='icon-service ico-18'></i> {{{service_desc}}}</a></td> \
-      <td class='span-1 centreon-status-s-{{{state}}}' style='text-align:center;'>{{{status}}}</td> \
+      <td class='span-1 centreon-status-{{{object}}}-{{{state}}}' style='text-align:center;'>{{{status}}}</td> \
       <td class='span-1' style='text-align:right;'>{{{duration}}}</td> \
       <td class='span-5'>{{{output}}}</td> \
     </tr> \
@@ -77,6 +77,10 @@ $(function() {
         dataType: "json",
         data: { incidentId: incidentId },
         success: function( data, textStatus, jqXHR ) {
+          if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           /* Render extended information */
           var rendered = incidentExtInfoCompiled.render( data );
           $( "#ext_infos_" + incidentId + " > td " ).html( rendered );

@@ -200,6 +200,10 @@
         type: "get",
         dataType: "json",
         success: function (data, textStatus, jqXHR) {
+          if(!isJson(data)){
+            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+            return false;
+          }
           $.each(data, function (idx, period) {
             self.periods[self.periodPos] = period;
             self.loadDays(self.periodPos, period);

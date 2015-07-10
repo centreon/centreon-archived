@@ -33,7 +33,10 @@ $(document).ready(function() {
                 dataType: 'JSON',
                 "jsonpCallback": 'callback',
                 success : function(e){
-
+                    if(!isJson(e)){
+                        alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                        return false;
+                    }
                     // Call hogan templates
                     if(e.success){
                         $.get(d.tpl, function(tpl){
@@ -66,6 +69,10 @@ $(document).ready(function() {
                 $sideMenu.append(li);
 
                 a.on('click',function(e){
+                    if(!isJson(e)){
+                        alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                        return false;
+                    }
                     e.preventDefault();
 
                     $.ajax({
@@ -98,7 +105,10 @@ $(document).ready(function() {
                         type: "GET",
                         dataType: 'JSON',
                         success : function(e){
-
+                            if(!isJson(e)){
+                                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                                return false;
+                            }
                             // Call hogan templates
                             if(e.success){
                                 $.get(item.tpl, function(tpl){

@@ -66,17 +66,21 @@
                   data: $(this).serializeArray(),
                   context: document.body
               })
-              .success(function(data, status, jqxhr) {
-                  alertClose();
-                  if (data.success) {
+                .success(function(data, status, jqxhr) {
+                    if(!isJson(data)){
+                      alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                      return false;
+                    }
+                    alertClose();
+                    if (data.success) {
                       {if isset($formRedirect) && $formRedirect}
                           window.location="{url_for url=$formRedirectRoute}";
                       {else}
                           alertMessage("{t}The object has been successfully saved{/t}", "notif-success", 3);
                       {/if}
-                  } else {
-                      alertMessage(data.error, "notif-danger");
-                  }
+                    } else {
+                        alertMessage(data.error, "notif-danger");
+                    }
               }).error(function(){
                 alertModalMessage("an error occured", "alert-danger");
               });
@@ -92,6 +96,10 @@
               dataType: 'json',
               type: 'get',
               success: function(data, textStatus, jqXHR) {
+                if(!isJson(data)){
+                  alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                  return false;
+                }
                 if (data.success) {
                   $.each(data.values, function(key, value) {
                      if (value != null) {
@@ -115,16 +123,20 @@
                 type: 'post',
                 data: { tmpl: e.val },
                 success: function(data, textStatus, jqXHR) {
-                  if (data.success) {
-                    $('span[id$="_inheritance"]').text('');
-                    $.each(data.values, function(key, value) {
-                       if (value != null) {
-                          $('#' + key + '_inheritance').text(value);
-                          $('#' + key).removeClass('mandatory-field');
-                          $('label[for="' + key + '"]').parent().find('span').remove();
-                       }
-                    });
-                  }
+                    if(!isJson(data)){
+                      alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                      return false;
+                    }
+                    if (data.success) {
+                        $('span[id$="_inheritance"]').text('');
+                        $.each(data.values, function(key, value) {
+                           if (value != null) {
+                              $('#' + key + '_inheritance').text(value);
+                              $('#' + key).removeClass('mandatory-field');
+                              $('label[for="' + key + '"]').parent().find('span').remove();
+                           }
+                        });
+                    }
                 },
                 error : function (){
                     alertModalMessage("an error occured", "alert-danger");
@@ -141,6 +153,10 @@
                       dataType: 'json',
                       type: 'get',
                       success: function(data, textStatus, jqXHR) {
+                        if(!isJson(data)){
+                            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                            return false;
+                        }
                         if (data.success) {
                             var i = 0 ;
                             $.each(data.values, function(key, value) {
@@ -208,6 +224,10 @@
         },
         dataType: "json",
         success: function( data, textStatus, jqXHR ) {
+            if(!isJson(data)){
+               alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+               return false;
+            }
             if (data.success) {
                 iId =  data.tagId;
             }
@@ -240,7 +260,10 @@
         },
         dataType: "json",
         success: function( data, textStatus, jqXHR ) {
-
+            if(!isJson(data)){
+                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                return false;
+            }
 
         },
         error : function (){
