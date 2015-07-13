@@ -48,7 +48,7 @@ use Centreon\Controllers\FormController;
  */
 class NotificationRuleController extends FormController
 {
-    protected $objectDisplayName = 'NotificationRule';
+    protected $objectDisplayName = 'Notification Rule';
     public static $objectName = 'notification-rule';
     protected $objectBaseUrl = '/centreon-configuration/notification-rule';
     protected $datatableObject = '\CentreonConfiguration\Internal\NotificationRuleDatatable';

@@ -40,7 +40,7 @@ use Centreon\Controllers\FormController;
 
 class AclresourceController extends FormController
 {
-    protected $objectDisplayName = 'AclResource';
+    protected $objectDisplayName = 'Acl Resource';
     public static $objectName = 'aclresource';
     protected $objectBaseUrl = '/centreon-administration/aclresource';
     protected $objectClass = '\CentreonAdministration\Models\Aclresource';

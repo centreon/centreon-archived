@@ -1,6 +1,6 @@
 {extends file="file:[Core]baseLayout.tpl"}
 
-{block name="title"}{$objectName}{/block}
+{block name="title"}{$objectDisplayName}{/block}
 
 {block name="content"}
 
@@ -11,7 +11,7 @@
 <div class="first-content"></div>
 
 {if isset($objectAddUrl)}
-    {datatable module=$moduleName object=$objectName datatableObject=$datatableObject displayActionBar=$displayActionBar objectAddUrl=$objectAddUrl}
+    {datatable module=$moduleName object=$objectName objectDisplayName=$objectDisplayName datatableObject=$datatableObject displayActionBar=$displayActionBar objectAddUrl=$objectAddUrl}
 {else}
     {datatable module=$moduleName object=$objectName datatableObject=$datatableObject displayActionBar=$displayActionBar}
 {/if}

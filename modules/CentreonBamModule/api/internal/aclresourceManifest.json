@@ -15,6 +15,8 @@
     },
     "attributesMap" : {
         "bas" : "centreon-bam__aclresource_business_activites",
-        "ba-tags" : "centreon-bam__aclresource_business_activity_tags"
+        "ba-tags" : "centreon-bam__aclresource_business_activity_tags",
+        "all-bas" : "centreon-bam__aclresource_all_bas",
+        "no-bas" : "centreon-bam__aclresource_all_bas"
     }
 }

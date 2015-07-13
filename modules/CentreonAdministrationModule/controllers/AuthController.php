@@ -48,7 +48,7 @@ use Centreon\Internal\Utils\String\CamelCaseTransformation;
  */
 class AuthController extends FormController{
     
-    protected $objectDisplayName = 'Auth';
+    protected $objectDisplayName = 'Authentication';
     public static $objectName = 'auth';
     public static $enableDisableFieldName = 'ar_enable';
     protected $datatableObject = '\CentreonAdministration\Internal\AuthDatatable';

@@ -119,6 +119,7 @@ class HostController extends Controller
         $this->tpl->assign('moduleName', 'CentreonRealtime');
         $this->tpl->assign('datatableObject', $this->datatableObject);
         $this->tpl->assign('objectName', 'Host');
+        $this->tpl->assign('objectDisplayName', 'Host');
         $this->tpl->assign('objectListUrl', '/centreon-realtime/host/list');
         
         $actions = array();

@@ -82,8 +82,8 @@ class AclresourceCommand extends BasicCrudCommand
      * @cmdObject string aclresource the acl resource
      * @cmdParam boolean|true all-hosts optional all host 
      * @cmdParam boolean|true all-bas optional all bas 
-     * @cmdParam boolean|true no-hosts optional no host 
-     * @cmdParam boolean|true no-bas optional no bas 
+     * @cmdParam boolean|false no-hosts optional no host 
+     * @cmdParam boolean|false no-bas optional no bas 
      */
     public function updateAction($object, $params) 
     {
