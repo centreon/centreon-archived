@@ -3,7 +3,7 @@
         lastSelectedRow = null;
 
     $(document).ready(function() {
-    	document.onselectstart = function() { return false; };
+    	//document.onselectstart = function() { return false; };
 
         /* -- Show wizard Add button  -- */
         $(".configuration-actions").show();
