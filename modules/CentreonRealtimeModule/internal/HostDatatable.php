@@ -57,7 +57,7 @@ class HostDatatable extends Datatable
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('name', 'asc')
+            array('state', 'asc')
         ),
         'stateSave' => false,
         'paging' => true,
