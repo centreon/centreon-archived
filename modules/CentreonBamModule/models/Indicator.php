@@ -92,7 +92,6 @@ class Indicator extends CentreonBaseModel
     
     public static function getKpi($object)
     {
-        
         $organizationId = Di::getDefault()->get('organization');
 
         $params = array();
@@ -103,9 +102,15 @@ class Indicator extends CentreonBaseModel
             $query = ' select * from cfg_bam_kpi i '
                     . ' where i.service_id = :service_id and i.id_ba = :id_ba '
                     . ' and organization_id = :organization_id';
+            
+            if (isset($object['host_id'])) {
+                $query .= " and i.host_id = :host_id ";
+            }
             $stmt = $db->prepare($query);
             $stmt->bindParam(':service_id', $object['service_id'], \PDO::PARAM_INT);
-            //$stmt->bindParam(':host_id', $object['host_id'], \PDO::PARAM_INT);
+            if (isset($object['host_id'])) {
+                $stmt->bindParam(':host_id', $object['host_id'], \PDO::PARAM_INT);
+            }
             $stmt->bindParam(':id_ba', $object['id_ba'], \PDO::PARAM_INT);
             $stmt->bindParam(':organization_id', $organizationId, \PDO::PARAM_INT);
             $stmt->execute();
@@ -132,7 +137,7 @@ class Indicator extends CentreonBaseModel
             $stmt->execute();
             $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
-
+        
         if(!empty($result)){
             return $result[0];
         }
