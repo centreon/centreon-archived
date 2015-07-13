@@ -175,8 +175,8 @@ class Unique implements ValidatorInterface
     {
         $iObjectId = '';
         $return = '';
-        $aParams = array();
-        
+        $sLabel = '';
+       
         $oRepository = $sModule."\Repository\\".ucfirst($sNameObject."Repository");
         
         if (isset($aDatas['extraParams']['kpi_type']) && !empty($value)) {
@@ -193,7 +193,7 @@ class Unique implements ValidatorInterface
                     $sLabel = $aDatas['extraParams']['id_indicator_ba'];
                 }
                 $aParams['id_ba'] = $aDatas['extraParams']['id_ba'];
-                $aParams['baIndicator'] = $aDatas;
+                $aParams['baIndicator'] = $sLabel;
 
             } elseif ($aDatas['extraParams']['kpi_type'] == '3' && isset($aDatas['extraParams']['boolean_name']) && $aDatas['extraParams']['boolean_name'] == $value) {
                 if (isset($aDatas['extraParams']['boolean_name'])) {
