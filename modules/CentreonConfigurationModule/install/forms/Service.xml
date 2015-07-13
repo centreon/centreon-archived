@@ -68,7 +68,7 @@
                 </field>
             </block>
             <block name="Check properties">
-                <field normalized_name="type" name="service_type" label="Type" default_value="" advanced="0" type="checkbox" parent_field="" mandatory="0">
+                <field normalized_name="type" show_label="0" name="service_type" label="Type" default_value="" advanced="0" type="checkbox" parent_field="" mandatory="0">
                     <attributes>
                         <choices>
                             <Alerting>1</Alerting>
@@ -144,7 +144,7 @@
                 </field>
             </block>
             <block name="Macros">
-                <field  name="service_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
+                <field  name="service_custommacros" label="Custom macros" show_label="0" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
                     <attributes>
                         <object>service</object>
                     </attributes>

@@ -123,7 +123,7 @@
       data.startTime = this.lastTime;
       $.ajax({
         url: this.settings.ajaxUrlGetScroll,
-        type: "POST",
+        type: this.settings.ajaxUrlGetScrollType,
         data: data,
         dataType: "json",
         success: function( data, statusText, jqXHR ) {
@@ -199,7 +199,7 @@
       data.startTime = this.recentTime;
       $.ajax({
         url: this.settings.ajaxUrlGetNew,
-        type: "POST",
+        type: this.settings.ajaxUrlGetNewType,
         data: data,
         dataType: "json",
         success: function( data, statusText, jqXHR ) {
@@ -298,7 +298,9 @@
     cls: "table-infinitescroll",
     parentSelector: ".content",
     ajaxUrlGetScroll: "",
+    ajaxUrlGetScrollType : "POST",
     ajaxUrlGetNew: "",
+    ajaxUrlGetNewType : "POST",
     refresh: 10000,
     limit: 20,
     formFilter: "",

@@ -41,7 +41,8 @@ $(function() {
   var incidentExtInfoCompiled = Hogan.compile( incidentExtInfoTmpl );
 
   $("#incidents").centreonTableInfiniteScroll({
-    "ajaxUrlGetScroll": "{url_for url="/centreon-realtime/incident"}",
+    "ajaxUrlGetScroll": "{url_for url="/centreon-realtime/incidentScroll"}",
+    "ajaxUrlGetScrollType" : "GET",
     "templateRows": "<tr> \
       <td class='span-1'> \{literal}
         <a href='#' class='ext_infos' data-id='{{{issue_id}}}'><i class='fa fa-plus-square-o'></i></a> \
