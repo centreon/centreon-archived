@@ -22,7 +22,7 @@
                 /*-- Set row state color for datatable  --*/
 
                    var t = ["success","warning","danger","default"];
-                   var url = window.location.pathname; console.log(url);
+                   var url = window.location.pathname;
 
                    if(url =='/centreon-realtime/service' || url =='/centreon-realtime/host' ) {
 
@@ -30,22 +30,23 @@
 
                     var span = $(row).find("td:nth-child(3) span").hasClass('label-'+t[i]);
 
+
                     if (span) {
                         switch(t[i]) {
-                            case 'success' :
-                            $(row).css('background-color','#c3ec64');
-                            break;
                             case 'warning' :
-                            $(row).css('background-color','#ffd193');
+                            $(row).css('background-color','rgba(255,154,19,0.6)');
                             break;
+
                             case 'danger' :
-                            $(row).css('background-color','#f87292');
+                             $(row).css("background-color", "rgba(224,11,61,0.7)");
                             break;
+
                             case 'default' :
-                            $(row).css('background-color','#98989a');
+                            $(row).css('background-color','rgba(188,189,192,0.7)');
                             break;
                         }
                       }
+
                     }
                     }
 

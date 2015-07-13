@@ -6,7 +6,7 @@
     <div class="col-md-12">
         <div class="buttonGroup right">
             <button id="advanced_mode_switcher" href="#" class="btnC btnDefault">
-                <i class="icon-switch"></i>
+                <i class="icon-switch-adv"></i>
             </button>
         </div>
         {$form}
@@ -22,6 +22,15 @@
 
 {block name="javascript-bottom" append}
     <script>
+
+
+        /*------ function hideUnadvancedTab() {
+                var $tabActive = $('.form-tabs-header li.active');
+                var nbElem = $tabActive.children("div").children(".form-group").length;
+                console.log(nbElem);
+        } ---------*/
+
+
         function hideEmptyBlocks()
         {
             $(".panel-body").each(function(i, v) {
@@ -34,7 +43,7 @@
                         $hidden += 1;
                     }
                 });
-                
+                console.log('NBform-group '+$hidden+' hidden '+$myFormGroupLength);
                 if ($myFormGroupLength === $hidden) {
                     $(v).prev().css("display", "none");
                 } else {
@@ -45,16 +54,18 @@
         
         $(document).ready(function(e) {
             hideEmptyBlocks();
+            hideUnadvancedTab();
         });
         
         $("#advanced_mode_switcher").on("click", function (event) {
             $(".advanced").toggleClass("advanced-display");
             if ($(".advanced").hasClass('advanced-display')) {
-                $(this).html('<i class="icon-switch-adv"></i>');
-            } else {
                 $(this).html('<i class="icon-switch"></i>');
+            } else {
+                $(this).html('<i class="icon-switch-adv"></i>');
             }
             hideEmptyBlocks();
+            hideUnadvancedTab();
         });
         
         $("#{$formName}").on("submit", function (event) {
