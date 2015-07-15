@@ -4,100 +4,83 @@
 {/block}
 
 {block name="content"}
-<div class="container-fluid">
-  <div class="row row-detail">
-    <div class="col-xs-12 detail-info header" id="name">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-xs-1">
-            <h2>{$host_icon}</h2>
-          </div>
-          <div class="col-xs-9">
-            <div class="row">
-              <div class="col-xs-12">
-                <h3>{$hostname} ({$host_alias})</h3>
+    <div class="col-md-12 detail-info header" id="name">
+        <div class="panel panel-default">
+          <div class="panel-body event">
+              <div class="event-icon">
+                {$host_icon}
               </div>
-              <div class="col-xs-12">
-                {$address}
+              <div class="event-content col-sm-11">
+                    <h4 class="object-name">{$hostname} ({$host_alias}) <span class="label pull-right" id="status"></span></h4>
+                    <h5 class="object-name">{$address} <span class="pull-right">{t}since{/t} <span id="since_status"></span></span> </h5>
               </div>
-            </div>
-          </div> 
-          <div class="col-xs-2">
-            <div class="row">
-              <div class="col-xs-12">
-                <h2><span class="label" id="status"></span></h2>
-              </div>
-              <div class="col-xs-12">
-                {t}since{/t} <span id="since_status"></span>
-              </div>
-            </div>
           </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <div class="row row-detail">
-    <div class="col-xs-12 col-sm-6 detail-info" id="general">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-xs-12">
+    <div class="col-md-6">
+        <div class="panel panel-default" id="general">
+          <div class="panel-heading">
             <h4>{t}Status information{/t}</h4>
           </div>
-          <div class="col-xs-12 title">
-            {t}Output{/t}
-          </div>
-          <div class="col-xs-12">
+          <div class="panel-body">
+            <h6 class="title">{t}Output{/t}</h6>
             <div class="longoutput"></div>
-          </div>
-          <div class="col-xs-12">
             {t}Last check{/t} : <span id="last_check"></span>
-          </div>
-          <div class="col-xs-12">
             {t}Next check{/t} : <span id="next_check"></span>
+            <div class="host-status"></div>
           </div>
         </div>
-      </div>
-      <div class="host-status">
-      </div>
     </div>
-    <div class="col-xs-12 col-sm-6 detail-info" id="network">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-xs-12">
+
+     <div class="col-md-6">
+        <div class="panel panel-default" id="network">
+          <div class="panel-heading">
             <h4>{t}Network Information{/t}</h4>
           </div>
-          <div class="col-xs-12 listing">
-            <ul>
-            </ul>
+          <div class="panel-body">
+            <div class="listing">
+                <ul>
+                </ul>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+
+      <div class="col-md-6">
+          <div class="panel panel-default" id="system">
+            <div class="panel-heading">
+              <h4>{t}System Information{/t}</h4>
+            </div>
+            <div class="panel-body">
+              <div class="col-xs-4 text-center" id="cpu">
+                  <h4>CPU</h4>
+                  <input name="cpu" id="gauge_cpu" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
+              </div>
+              <div class="col-xs-4 text-center" id="memory">
+                  <h4>Memory</h4>
+                  <input name="memory" id="gauge_memory" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
+              </div>
+              <div class="col-xs-4 text-center" id="swap">
+                  <h4>Swap</h4>
+                  <input name="swap" id="gauge_swap" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="col-md-6">
+          <div class="panel panel-default" id="filesystem">
+            <div class="panel-heading">
+              <h4>{t}Filesystem Information{/t}</h4>
+            </div>
+            <div class="panel-body">
+            </div>
+          </div>
+        </div>
   
+  <!--
   <div class="row row-detail">
-    <div class="col-xs-12 col-sm-6 detail-info" id="system">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-xs-12">
-            <h4>{t}System Information{/t}</h4>
-          </div>
-          <div class="col-xs-4 text-center" id="cpu">
-            <h4>CPU</h4>
-            <input name="cpu" id="gauge_cpu" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
-          </div>
-          <div class="col-xs-4 text-center" id="memory">
-            <h4>Memory</h4>
-            <input name="memory" id="gauge_memory" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
-          </div>
-          <div class="col-xs-4 text-center" id="swap">
-            <h4>Swap</h4>
-            <input name="swap" id="gauge_swap" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="col-xs-12 col-sm-6 detail-info" id="filesystem">
       <div class="container-fluid">
         <div class="row">
@@ -107,7 +90,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
   
   <div class="row row-detail" id="application">
     <div class="col-xs-12">
@@ -158,7 +141,6 @@
       </div>
     </div>
   </div>
-</div>
 {/block}
 
 {block name="javascript-bottom" append}

@@ -829,7 +829,7 @@ abstract class AbstractModuleInstaller
     {
         $di = Di::getDefault();
         $centreonPath = $di->get('config')->get('global', 'centreon_path');
-        $callCmd = 'php ' . $centreonPath . '/vendor/bin/phinx ';
+        $callCmd = 'php ' . $centreonPath . '/vendor/robmorgan/phinx/bin/phinx ';
         return $callCmd;
     }
 }
