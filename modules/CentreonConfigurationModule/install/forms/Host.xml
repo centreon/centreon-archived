@@ -17,7 +17,7 @@
                     </validators>
                     <help>Field used in host group and service definitions to reference this particular host.</help>
                 </field>
-                <field name="host_alias" normalized_name="alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+                <field name="host_alias" normalized_name="alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
                     <validators>
                         <validator rules="size" serverside="core.String">
                             <argument name="minlength">3</argument>
