@@ -41,7 +41,7 @@
         "check_replication": 0,
         "store_in_data_bin": "yes",
         "insert_in_index_data": "yes",
-        "interval": 60,
+        "interval": 1,
         "length": 15552000
       },
       "sql": {
