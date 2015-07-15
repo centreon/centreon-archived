@@ -36,8 +36,10 @@ List
 In order to list timeperiods, use **list** action::
 
   ./centreonConsole centreon-configuration:timeperiod:list
-  id;name;sunday;monday;tuesday;wednesday;thursday;friday;saturday
-  3;24x7;00-00:24:00;00-00:24:00;00-00:24:00;00-00:24:00;00-00:24:00;00-00:24:00;00-00:24:00
+  id;name;slug;sunday;monday;tuesday;wednesday;thursday;friday;saturday
+  1;24x7;24x7;00:00-24:00;00:00-24:00;00:00-24:00;00:00-24:00;00:00-24:00;00:00-24:00;00:00-24:00
+  2;Working hours;working-hours;;09:00-18:00;09:00-18:00;09:00-18:00;09:00-18:00;09:00-18:00;
+
 
 Columns are the following:
 
@@ -47,6 +49,8 @@ Column         Description
 id             Timeperiod id
 
 name           Timeperiod name
+
+slug           Timeperiod slug
 
 sunday         Sunday period
 
@@ -71,6 +75,7 @@ In order to show a timeperiod, use **show** action::
   ./centreonConsole centreon-configuration:timeperiod:show --timeperiod '24x7'
   id: 3
   name: 24x7
+  slug: 24x7
   alias: 00:00-24:00
   sunday: 00-00:24:00
   monday: 00-00:24:00
@@ -87,7 +92,16 @@ Create
 In order to create a timeperiod, use **create** action::
 
   ./centreonConsole centreon-configuration:timeperiod:create --tp-name '24x7' --tp-alias '24x7' --tp-sunday '00:00-24:00' --tp-monday '00:00-24:00' --tp-tuesday '00:00-24:00' --tp-wednesday '00:00-24:00' --tp-thursday '00:00-24:00' --tp-friday '00:00-24:00' --tp-saturday '00:00-24:00'
+  24x7
   Object successfully created
+
+
+Slug
+----
+In order to get slug of timeperiod, use **getSlug** action::
+  ./centreonConsole centreon-configuration:timeperiod:getSlug --timeperiod-name 'Working hours'
+  working-hour
+
 
 Update
 ------

@@ -91,7 +91,7 @@ class BusinessActivityCommand extends BasicCrudCommand
      * @cmdParam boolean|false disable optional
      * @cmdParam boolean|true enable optional
      */
-    public function updateAction($object, $params) {
+    public function updateAction($object, $params = null) {
         parent::updateAction($object, $params);
     }
     

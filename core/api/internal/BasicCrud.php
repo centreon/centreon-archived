@@ -135,10 +135,9 @@ class BasicCrud extends AbstractCommand
      * 
      */
     public static $aRenameModules = array(
-        'businessactivity' => "bam",
         'trap' => "traps"
     );
-
+    
     /**
      * 
      */
@@ -444,9 +443,12 @@ class BasicCrud extends AbstractCommand
      * @return type
      */
     public function showAction($objectSlug, $fields = null, $linkedObject = '')
-    {
+    {              
         $repository = $this->repository;
+        $repository::transco($objectSlug);
+
         $sName = static::renameObject($this->objectName);
+
         $aId = $repository::getListBySlugName($objectSlug[$sName]);
         if (count($aId) > 0) {
             $objectSlug = $aId[0]['id'];
@@ -523,8 +525,7 @@ class BasicCrud extends AbstractCommand
         }
         return $finalParamList;
     }
-    
-    
+        
     /**
      * 
      * @param string $params
@@ -561,7 +562,9 @@ class BasicCrud extends AbstractCommand
             $paramList = $this->parseObjectParams($params);
         }
         $paramList['object'] = $this->objectName;
+        
         $sName = static::renameObject($this->objectName);
+        
         $aId = $repository::getListBySlugName($object[$sName]);
         if (count($aId) > 0) {
             $paramList['object_id'] = $aId[0]['id'];
@@ -584,11 +587,12 @@ class BasicCrud extends AbstractCommand
      * @param string $object
      */
     public function deleteAction($object)
-    {
+    {        
         $repository = $this->repository;
         $repository::transco($object);
         $id = '';
         $sName = static::renameObject($this->objectName);
+
         $aId = $repository::getListBySlugName($object[$sName]);
         if (count($aId) > 0) {
             $id = $aId[0]['id'];
