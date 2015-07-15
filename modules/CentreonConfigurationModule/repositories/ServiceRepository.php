@@ -686,7 +686,7 @@ class ServiceRepository extends Repository
                 $givenParameters[$class::getSlugField()] = $sSlug;
             }
         }
-        parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
+        return parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
     }
     
     /**
