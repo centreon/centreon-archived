@@ -89,7 +89,7 @@
             <div class="buttonGroup btDatatable">
                 {if (isset($objectAddUrl) && !empty($objectAddUrl))}
                   <div class="configuration-actions">
-                    <button class="btnC btnSuccess" id="modalAdd">{t}Add {$objectName}{/t}</button>
+                    <button class="btnC btnSuccess" id="modalAdd">{t}Add {$objectDisplayName}{/t}</button>
                   </div>
                 {/if}
 

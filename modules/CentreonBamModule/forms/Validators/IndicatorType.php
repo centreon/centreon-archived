@@ -129,6 +129,8 @@ class IndicatorType implements ValidatorInterface
                     }
                     break;
                 case "1" :
+                    $bSuccess = false;
+                    $sMessage = 'MetaService not implemented yet';
                     break;
                 case "2" : 
                     $error = $this->baFieldsCheck($params);

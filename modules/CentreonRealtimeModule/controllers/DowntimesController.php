@@ -109,6 +109,7 @@ class DowntimesController extends Controller
         $this->tpl->assign('moduleName', 'CentreonRealtime');
         $this->tpl->assign('datatableObject', $this->datatableObject);
         $this->tpl->assign('objectName', 'Downtimes');
+        $this->tpl->assign('objectDisplayName', 'Downtimes');
         $this->tpl->assign('consoleType', 0); // host console
         $this->tpl->assign('objectListUrl', '/centreon-realtime/downtimes/list');
         

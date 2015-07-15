@@ -68,13 +68,13 @@ class IncidentsController extends Controller
     /**
      * Get the list of incidents
      *
-     * @method POST
-     * @route /incident
+     * @method GET
+     * @route /incidentScroll
      */
     public function getListIncidentsAction()
     {
         $router = Di::getDefault()->get('router');
-        $params = $router->request()->paramsPost();
+        $params = $router->request()->paramsGet();
         $filters = $params->all();
 
         $fromTime = null;

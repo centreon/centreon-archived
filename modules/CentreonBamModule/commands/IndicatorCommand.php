@@ -66,6 +66,7 @@ class IndicatorCommand extends BasicCrudCommand
      */
     public function createAction($params){
         IndicatorRepository::transco($params);
+        $params['object'] = $this->objectName;
         $id = IndicatorRepository::createIndicator($this->parseObjectParams($params), 'api', '/centreon-bam/indicator/update');
 
         // show slug of boolean indicator only
@@ -87,10 +88,18 @@ class IndicatorCommand extends BasicCrudCommand
      * @cmdParam boolean|false disable optional disable 
      * @cmdParam boolean|true enable optional enable 
      */
-    public function updateAction($object,$params){
+    public function updateAction($object,$params = null){
         IndicatorRepository::transco($params);
         IndicatorRepository::transco($object);
-        IndicatorRepository::updateIndicator($this->parseObjectParams($params), 'api', '/centreon-bam/indicator/update',false,$this->parseObjectParams($object));
+        $params['object'] = $this->objectName;
+        IndicatorRepository::updateIndicator(
+                $this->parseObjectParams($params), 
+                'api', 
+                '/centreon-bam/indicator/update',
+                false,
+                $this->parseObjectParams($object)
+        );
+        
         \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully updated", true, 'green');
     }
     

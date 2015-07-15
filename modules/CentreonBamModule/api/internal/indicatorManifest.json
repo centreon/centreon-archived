@@ -12,7 +12,6 @@
         "indicator_ba" : "id_indicator_ba",
         "type" : "kpi_type",
         "disable" : "activate",
-        "indicator-ba" : "id_indicator_ba",
         "service" : "service_id",
         "boolean" : "boolean_id"
     },

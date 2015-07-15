@@ -20,9 +20,20 @@
             "link": "simple",
             "objectClass": "\\CentreonConfiguration\\Models\\Timeperiod",
             "group": false
+        },
+        {
+            "type": "ba_type_id",
+            "fields": "ba_type_id,slug",
+            "message": "The object BA type is not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonBam\\Models\\BusinessActivityType",
+            "group": false
         }
     ],
     "options" : {
 
-    }
+    },
+    "paramsToExclude" : [
+      "ba_tags" 
+    ]
 }

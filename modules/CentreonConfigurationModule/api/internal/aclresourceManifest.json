@@ -23,6 +23,8 @@
     },
     "attributesMap" : {
         "hosts" : "centreon-configuration__aclresource_hosts",
-        "services" : "centreon-configuration__aclresource_services"
+        "services" : "centreon-configuration__aclresource_services",
+        "all-hosts" : "centreon-configuration__aclresource_all_hosts",
+        "no-hosts" : "centreon-configuration__aclresource_all_hosts"
     }
 }

@@ -426,9 +426,9 @@ class FreshInstall extends AbstractMigration
                 ->addIndex(array('ba_id'), array('unique' => false))
                 ->create();
         
-        $this->execute('INSERT INTO cfg_bam_ba_type (ba_type_id, name, description) values (1, "Business Unit", "Business Unit")');
-        $this->execute('INSERT INTO cfg_bam_ba_type (ba_type_id, name, description) values (2, "Application", "Application")');
-        $this->execute('INSERT INTO cfg_bam_ba_type (ba_type_id, name, description) values (3, "Middleware", "Middleware")');
+        $this->execute('INSERT INTO cfg_bam_ba_type (ba_type_id, name, description, slug) values (1, "Business Unit", "Business Unit", "business-unit")');
+        $this->execute('INSERT INTO cfg_bam_ba_type (ba_type_id, name, description, slug) values (2, "Application", "Application", "application")');
+        $this->execute('INSERT INTO cfg_bam_ba_type (ba_type_id, name, description, slug) values (3, "Middleware", "Middleware", "middleware")');
     }
 
     /**
