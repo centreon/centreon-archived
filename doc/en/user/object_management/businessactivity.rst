@@ -129,27 +129,27 @@ In order to duplicate a business activity, use **duplicate** action::
   ./centreonConsole centreon-bam:BusinessActivity:duplicate --businessactivity=ba1
   Object successfully duplicated
 
-List tag (Not yet implemented)
-------------------------------
+List tag
+--------
 
 In order to list tags of a business activity, use **listTag** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:listTag --businessactivity=ba1
+  ./centreonConsole centreon-bam:BusinessActivity:listTag --ba=ba1
   tag-ba-1
 
-Add tag (Not yet implemented)
------------------------------
+Add tag
+-------
 
 In order to add a tag to a business activity, use **addTag** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:addTag --businessactivity=ba1 --tag=tag-ba-1
+  ./centreonConsole centreon-bam:BusinessActivity:addTag --ba=ba1 --tag=tag-ba-1
   The tag has been successfully added to the object
 
-Remove tag (Not yet implemented)
---------------------------------
+Remove tag
+----------
 
 In order to remove a tag from a business activity, use **removeTag** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:removeTag --businessactivity=ba1 --tag=tag-ba-1
+  ./centreonConsole centreon-bam:BusinessActivity:removeTag --ba=ba1 --tag=tag-ba-1
   The tag has been successfully removed from the object
 
