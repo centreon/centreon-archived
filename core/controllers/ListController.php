@@ -332,13 +332,15 @@ abstract class ListController extends Controller
             FROM cfg_forms_fields f, cfg_forms_massive_change_fields_relations mcfr, cfg_forms_massive_change mc
             WHERE mc.route = :route
                 AND mc.massive_change_id = mcfr.massive_change_id
-                AND f.field_id = mcfr.field_id"
+                AND f.field_id = mcfr.field_id 
+                ORDER BY f.label ASC"
         );
         $stmt->bindValue(':route', $this->objectBaseUrl . '/mc_fields', \PDO::PARAM_STR);
         $stmt->execute();
         while ($row = $stmt->fetch()) {
             $data['listMc'][$row['field_id']] = $row['label'];
         }
+
         $data['success'] = true;
         $this->router->response()->json($data);
     }
@@ -355,7 +357,7 @@ abstract class ListController extends Controller
     {
         $requestParam = $this->getParams('named');
 
-        $stmt = $this->routeprepare(
+        $stmt = $this->db->prepare(
             "SELECT name, label, default_value, attributes, type, help
             FROM cfg_forms_fields
             WHERE field_id = :id"
@@ -436,13 +438,20 @@ abstract class ListController extends Controller
     {
         $massiveChangeSuccess = true;
         $errorMessage = '';
-        
+        $repository = $this->repository;
         try {
             $params = $this->router->request()->paramsPost();
+            $datas = $params['values'];
 
-            $objClass = $this->objectClass;
             foreach ($params['ids'] as $id) {
-                $objClass::update($id, $params['values']);
+                $datas['object_id'] = $id;
+                $repository::update(
+                    $datas,
+                    'form',
+                    $this->objectBaseUrl . '/update',
+                    true,
+                    false
+                );
             }
         } catch (Exception $e) {
             $massiveChangeSuccess = false;

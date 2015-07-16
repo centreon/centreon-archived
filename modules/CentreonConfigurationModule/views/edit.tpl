@@ -23,12 +23,24 @@
 {block name="javascript-bottom" append}
     <script>
 
+        var tabContentList = {};
 
-        /*------ function hideUnadvancedTab() {
-                var $tabActive = $('.form-tabs-header li.active');
-                var nbElem = $tabActive.children("div").children(".form-group").length;
-                console.log(nbElem);
-        } ---------*/
+        function hideEmptyTab()
+        {
+            var $tabs = $('.form-tabs-header li');
+            $tabs.each(function(index) {
+                divId = $(this).children().attr("href").substr(1);
+                if (tabContentList[divId] == 0) {
+                    if ($(this).hasClass('active')) {
+                        firstTab = $('.form-tabs-header li:first')[0];
+                        $(firstTab).tab('show');
+                    }
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        }
 
 
         function hideEmptyBlocks()
@@ -37,16 +49,19 @@
                 
                 var $myFormGroupLength = $(v).children("div").children(".form-group").length;
                 var $hidden = 0;
+                myTab = $(v).parent().parent().attr("id");
 
                 $(v).children("div").children(".form-group").each(function(j, w) {
                     if ($(w).css("display") === "none") {
                         $hidden += 1;
                     }
                 });
-                console.log('NBform-group '+$hidden+' hidden '+$myFormGroupLength);
+                
                 if ($myFormGroupLength === $hidden) {
+                    tabContentList[myTab] = 0;
                     $(v).prev().css("display", "none");
                 } else {
+                    tabContentList[myTab] = 1;
                     $(v).prev().css("display", "block");
                 }
             });
@@ -54,7 +69,7 @@
         
         $(document).ready(function(e) {
             hideEmptyBlocks();
-            hideUnadvancedTab();
+            hideEmptyTab();
         });
         
         $("#advanced_mode_switcher").on("click", function (event) {
@@ -65,7 +80,7 @@
                 $(this).html('<i class="icon-switch-adv"></i>');
             }
             hideEmptyBlocks();
-            hideUnadvancedTab();
+            hideEmptyTab();
         });
         
         $("#{$formName}").on("submit", function (event) {
