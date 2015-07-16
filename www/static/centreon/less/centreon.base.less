@@ -1,5 +1,9 @@
 html {
   background-color: fade(@black,10%);
+
+  &.loginBg {
+    background: url("../img/bgLogin.jpg") center -26em no-repeat;
+  }
 }
 
 body {
@@ -219,7 +223,7 @@ hr {
 
 /* Login panel */
 .login-wrap:before {
-  position: absolute;
+  /*position: absolute;
   content: '';
   background: url("../img/login.jpg");
   background-size: 100% 100%;
@@ -232,7 +236,7 @@ hr {
   top: 0;
   left: 0;
   height: 100%;
-  width: 100%;
+  width: 100%;*/
 }
 
 .login-footer {
@@ -242,17 +246,38 @@ hr {
 }
 
 .login-box {
-  margin-top: 200px;
+  margin: 31.6em auto 0 ;
+  max-width: 330px;
 }
 
 .login-title {
   font-size: @font-size-h2;
   color: #fff;
+  position: absolute;
+  left: 37%;
+  top: 9em;
+
+  img {
+    margin: 0 auto;
+    width: 20%;
+    display: block;
+  }
+  h2 {
+    text-align: center;
+    margin-top: @paddingElem;
+  }
 }
 
 .panel-login {
   margin-top: 15px;
   border-radius: @login-panel-radius;
+  position: relative;
+  background: rgba(255,255,255,0.4);
+
+  .alertLogin {
+    position: absolute;
+    top: -4em;
+  }
 
   .panel-title {
     padding-bottom: 50px;
@@ -270,6 +295,10 @@ hr {
   .panel-footer {
     border: 0;
     background-color: @login-panel-bgcolor;
+
+    a {
+      color: white;
+    }
 
     .buttons {
       padding-top: 5px;

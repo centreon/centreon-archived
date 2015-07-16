@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html class="loginBg">
 <head>
     <title>{t}Log in{/t} - Centreon : IT Monitoring</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="{url_static url='/centreon/img/favicon_centreon.ico'}" type="image/x-icon">
+    <link rel="icon" href="{url_static url='/centreon/img/centreonFavicon.ico'}" type="image/x-icon">
     {foreach from=$cssFileList item='cssFile'}
     {$cssFile|css}
     {/foreach}
@@ -11,41 +11,41 @@
 <body>
 <div class="login-wrap">
   <div class="container">
-    <div class="row">
-        <div class="col-sm-4 col-sm-offset-4 login-box">
-            <div class="login-title">{t}Centreon{/t}</div>
-            <div class="panel panel-default panel-login"> 
-                <form action="" method="POST" role="form">
+          <div class="login-title">
+            <img  src="{url_static url='centreon/img/icons/ico-centreon.svg'}" alt="Centreon" />
+
+            <h2>{t}Centreon{/t}</h2>
+          </div>
+          <form action="" method="POST" role="form" class="CentreonForm login-box">
+            <div class="panel panel-default panel-login">
+
                 <input type="hidden" name="redirect" value="{$redirect}">
                 <div class="panel-body">
-                    <div class="alert alert-danger" style="display: none;" id="login_error"></div>
-                </div>
-                <div class="panel-body">
                     <div class="form-group">
-                        <label for="login">{t}Login{/t}</label>
+                        <div class="alert alert-danger alertLogin" style="display: none;" id="login_error"></div>
+
+                        <label for="login" class="hidden">{t}Login{/t}</label>
                         <div class="input-group">
                             <input type="login" class="form-control" id="login" placeholder="Login">
                             <span class="input-group-addon"><i class="fa fa-user"></i></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="passwd">{t}Password{/t}</label>
+                        <label for="passwd" class="hidden">{t}Password{/t}</label>
                         <div class="input-group">
                             <input type="password" class="form-control" id="passwd" placeholder="Password">
                             <span class="input-group-addon"><i class="fa fa-lock"></i></span>
                         </div>
                     </div>
-                </div>
-                <div class="panel-footer">
+
                     <div class="buttons">
-                        <button type="submit" name="submit" class="btn btn-login pull-right">{t}Log in{/t}</button>
+                        <button type="submit" name="submit" class="btnC btnInfo pull-right">{t}Log in{/t}</button>
                     </div>
                 </div>
-                </form>
+
             </div>
             <div class='login-footer'>&copy; Centreon 2014 | <a href='http://www.centreon.com/' target='_blank'>Centreon 3.0</a></div>
-        </div>
-    </div>
+          </form>
   </div>
 </div>
 {foreach from=$jsBottomFileList item='jsFile'}
