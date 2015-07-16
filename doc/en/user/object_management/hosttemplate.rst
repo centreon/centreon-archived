@@ -72,8 +72,12 @@ List
 In order to list host templates, use **list** action::
 
   ./centreonConsole centreon-configuration:hostTemplate:list
-  id;name;description;activate
-  2;HT1;HT1;1
+  id;name;slug;description;activate
+  1;generic-host;generic-host;;1
+  2;OS-Linux-SNMP;os-linux-snmp;;1
+  3;OS-Windows-SNMP;os-windows-snmp;;1
+
+
 
 Columns are the following:
 
@@ -83,6 +87,8 @@ Column         Description
 id             Host template id
 
 name           Host template name
+
+slug           Host template slug
 
 description    Host template description
 
@@ -94,7 +100,7 @@ Show
 
 In order to show a host template, use **show** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:show --hosttemplate "HT1"
+  ./centreonConsole centreon-configuration:hostTemplate:show --host-template "generic-host"
   id: 2
   command_command_id:
   command_command_id_arg1:
@@ -102,7 +108,7 @@ In order to show a host template, use **show** action::
   command_command_id2:
   command_command_id_arg2:
   name: HT1
-  slug: HT1
+  slug: ht1
   description: HT1
   host_address:
   host_max_check_attempts:
@@ -137,14 +143,22 @@ Create
 In order to create a host template, use **create** action::
 
   ./centreonConsole centreon-configuration:hostTemplate:create --name "HT1" --disable
+  ht1
   Object successfully created
+
+Slug
+----
+In order to get slug of host template, use **getSlug** action::
+  ./centreonConsole centreon-configuration:hostTemplate:getSlug --description 'HT1'
+  ht1
+
 
 Update
 ------
 
 In order to update a host template, use **update** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:update --host-template "HT1" --alias "host template 1"
+  ./centreonConsole centreon-configuration:hostTemplate:update --host-template "ht1" --alias "host template 1"
   Object successfully updated
 
 Delete
@@ -152,7 +166,7 @@ Delete
 
 In order to delete a host template, use **delete** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:delete --hosttemplate "HT1"
+  ./centreonConsole centreon-configuration:hostTemplate:delete --host-template "ht1"
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -160,7 +174,7 @@ Duplicate (Not yet implemented)
 
 In order to duplicate a host template, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:duplicate --hosttemplate "HT1"
+  ./centreonConsole centreon-configuration:hostTemplate:duplicate --host-template "HT1"
   Object successfully duplicated
 
 List tag
@@ -168,7 +182,7 @@ List tag
 
 In order to list tags of a host template, use **listTag** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:listTag --hosttemplate "HT1"
+  ./centreonConsole centreon-configuration:hostTemplate:listTag --host-template "ht1"
   tag1
 
 Add tag
@@ -176,12 +190,15 @@ Add tag
 
 In order to add a tag to a host template, use **addTag** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:addTag --hostTemplate "HT1" --tag "tag1"
+  ./centreonConsole centreon-configuration:hostTemplate:addTag --host-template "ht1" --tag "tag1"
+  tag1 has been successfully added to the object
+
 
 Remove tag
 ----------
 
 In order to remove a tag from a host template, use **removeTag** action::
 
-  ./centreonConsole centreon-configuration:hostTemplate:removeTag --hostTemplate "HT1" --tag "tag1"
+  ./centreonConsole centreon-configuration:hostTemplate:removeTag --host-template "ht1" --tag "tag1"
+  tag has been successfully removed from the objec
 

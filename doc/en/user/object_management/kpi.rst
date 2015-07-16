@@ -70,7 +70,7 @@ Create
 
 In order to create an indicator, use **create** action::
 
-  ./centreonConsole centreon-bam:Indicator:create --ba='ba1' --type='service' --host-slug='Centreon-export' --service-slug='ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
+  ./centreonConsole centreon-bam:Indicator:create --ba='ba1' --type='service' -service-slug='centreon-export-ping' --drop-warning='10' --drop-critical='50' --drop-unknown='30'
   Object successfully created
 
 Update

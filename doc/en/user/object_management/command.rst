@@ -30,9 +30,11 @@ List
 In order to list commands, use **list** action::
 
   ./centreonConsole centreon-configuration:Command:list
-  id;name;command line;type
-  1;check_icmp;$USER1$/check_icmp -H $HOSTADDRESS$;2
-  2;check_http;$USER1$/check_http -H $HOSTADDRESS$;2
+  id;name;slug;command line;type
+  1;Send mail;send-mail;mail -s test test;1
+  2;check_centreon_ping;check-centreon-ping;$USER1$/check_icmp -H $HOSTADDRESS$ -n $_SERVICEPACKETNUMBER$ -w $_SERVICEWARNING$ -c $_SERVICECRITICAL$;2
+  3;check-host-alive;check-host-alive;$USER1$/check_icmp -H $HOSTADDRESS$ -n $_HOSTPACKETNUMBER$ -w $_HOSTWARNING$ -c $_HOSTCRITICAL$;2
+
 
 Columns are the following:
 
@@ -42,6 +44,8 @@ Column         Description
 id             Command id
 
 name           Command name
+
+slug           Command slug
 
 command line   Command line
 
@@ -53,27 +57,37 @@ Show
 
 In order to show a command, use **show** action::
 
-  ./centreonConsole centreon-configuration:Command:show --command 'check-icmp'
-  id: 1
-  connector_id:
-  name: check_icmp
-  command_slug: check-icmp
-  command line: $USER1$/check_icmp -H $HOSTADDRESS$
-  command_example:
+  ./centreonConsole centreon-configuration:Command:show --command 'check-centreon-ping'
+  id: 2
+  connector-id: 
+  name: check_centreon_ping
+  slug: check-centreon-ping
+  command line: $USER1$/check_icmp -H $HOSTADDRESS$ -n $_SERVICEPACKETNUMBER$ -w $_SERVICEWARNING$ -c $_SERVICECRITICAL$
+  command_example: 
   type: 2
-  enable_shell: 0
-  command_comment:
-  graph_id:
-  cmd_cat_id:
+  enable-shell: 0
+  command-comment: 
+  graph_id: 
+  cmd_cat_id: 
   organization_id: 1
+
 
 Create
 ------
 
 In order to create a command, use **create** action::
 
-  ./centreonConsole centreon-configuration:Command:create --command-name 'check_icmp' --command-type 2 --command-line '$USER1$/check_icmp -H $HOSTADDRESS$'
+  ./centreonConsole centreon-configuration:Command:create --command-name='check_centreon_ping' --command-type=2 --command-line='$USER1$/check_icmp -H $HOSTADDRESS$ -n $_SERVICEPACKETNUMBER$ -w $_SERVICEWARNING$ -c $_SERVICECRITICAL$'
+  check-centreon-ping
   Object successfully created
+
+Slug
+----
+In order to get slug of command, use **getSlug** action::
+  ./centreonConsole centreon-configuration:Command:getSlug --command-name 'OS-Linux-SNMP-memory'
+  os-linux-snmp-memory
+
+
 
 Update
 ------

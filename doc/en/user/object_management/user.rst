@@ -36,9 +36,8 @@ List
 In order to list users, use **list** action::
 
   ./centreonConsole centreon-administration:user:list
-  id;firstname;lastname;login;admin;enabled;language;timezone;authentication type
-  1;admin;admin;admin;1;1;;;
-  2;guest;guest;guest;0;1;;;local
+  id;firstname;lastname;login;slug;admin;enabled;timezone;authentication type
+  1;admin;admin;admin;admin;1;1;;
 
 Columns are the following:
 
@@ -70,23 +69,23 @@ Show
 In order to show a user, use **show** action::
 
   ./centreonConsole centreon-administration:user:show --user 'jdoe'
-  id: 5
-  login: jdoe
-  slug: jdoe
-  password:
+  id: 1
+  login: admin
+  slug: admin
+  password: 725a9a9d352762de6835ae68f047eaaea9c56e31ec99132f341193ec79a8f0a7::8000::1d9350cce7a647f5ff4aa4810e5d13dd5960dd02bcd9c9decfd64de37fa975db0346507f0d188a18e095f4e7fea351dd7e4ae07283159b300885f3c1a2baf056fa438164167941b600b0c9de62bb41a2d9c5f7c1e8c22ce82d37850
   admin: 1
   is_locked: 0
   enabled: 1
-  is_password_old: 0
-  language:
-  timezone:
-  contact_id: 5
-  createdat: 2015-06-01 17:00:58
-  updatedat: 2015-06-01 17:00:58
-  authentication type:
-  firstname: John
-  lastname: Doe
-  autologin_key:
+  is_password_old: 1
+  language: 
+  timezone: 
+  contact_id: 1
+  createdat: 2015-07-13 15:54:19
+  updatedat: 2015-07-13 15:54:19
+  authentication type: 
+  firstname: admin
+  lastname: admin
+  autologin-key: 
 
 Create
 ------
@@ -94,7 +93,14 @@ Create
 In order to create a user, use **create** action::
 
   ./centreonConsole centreon-administration:user:create --login 'jdoe' --password 'johndoe' --firstname 'John' --lastname 'Doe' --is-admin '1' --is-activated '1'
+  jdoe
   Object successfully created
+
+Slug
+----
+In order to get slug of user, use **getSlug** action::
+  ./centreonConsole centreon-administration:user:getSlug --user-name admin
+  admin
 
 Update
 ------

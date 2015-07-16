@@ -694,9 +694,15 @@ class HostRepository extends Repository
                     $sString = $oHostServiceTemplate['service_alias'];
                 }
                 $sSlug = $oSlugify->slug($sString);
+                
+                if (!empty($oHostServiceTemplate['service_alias'])) {
+                    $sData = $oHostServiceTemplateservice['service_alias'];
+                } else {
+                    $sData = $oHostServiceTemplate['service_description'];
+                }
                                
                 $newService['service_slug'] = $sSlug;            
-                $newService['service_description'] = $oHostServiceTemplate['service_alias'];
+                $newService['service_description'] = $sData;
                 $newService['service_template_model_stm_id'] = $oHostServiceTemplate['service_id'];
                 $newService['service_register'] = 1;
                 $newService['service_activate'] = 1;

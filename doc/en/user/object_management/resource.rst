@@ -66,29 +66,37 @@ Show
 In order to show a resource, use **show** action::
 
   ./centreonConsole centreon-configuration:Resource:show --resource "switch"
-  id: 13
+  id: 1
   name: $USER1$
-  resource slug: user1
-  resource line: $1 dfdf/lk $5
-  resource comment: rere fdfd
-  resource activate: 1
+  slug: user1
+  line: /usr/lib/nagios/plugins
+  comment: 
+  activate: 1
   organization: 1
-  poller: 1
+
 
 Create
 ------
 
 In order to create a resource, use **create** action::
 
-  ./centreonConsole centreon-configuration:Resource:create --resource-name "$USER1$" --resource-activate 1 --resource-pollers 'central' --resource-comment 'comment' --resource-line '/usr/lib/nagios/plugins'
+  ./centreonConsole centreon-configuration:Resource:create --resource-name '$USER1$' --resource-pollers 'central' --resource-comment 'comment' --resource-line '/usr/lib/nagios/plugins'
+  user1
   Object successfully created
+
+
+Slug
+----
+In order to get slug of connector, use **getSlug** action::
+  ./centreonConsole centreon-configuration:Resource:getSlug --resource-name '$USER1$'
+  user1
 
 Update
 ------
 
 In order to update a resource, use **update** action::
 
-  ./centreonConsole centreon-configuration:Resource:update --resource 'user1' --resource-name "$USER1$" --resource-activate 1 --resource-pollers 'central' --resource-comment 'comment' --resource-line '/usr/lib/nagios/plugins'
+  ./centreonConsole centreon-configuration:Resource:update --resource 'user1' --resource-name "$USER1$" --resource-pollers 'central' --resource-comment 'comment' --resource-line '/usr/lib/nagios/plugins' --enable
   Object successfully updated
 
 Delete

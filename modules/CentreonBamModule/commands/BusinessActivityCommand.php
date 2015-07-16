@@ -36,12 +36,11 @@
 
 namespace CentreonBam\Commands;
 
-use Centreon\Api\Internal\BasicCrudCommand;
-
+use CentreonConfiguration\Api\Internal\BasicTagSupport;
 /**
  * 
  */
-class BusinessActivityCommand extends BasicCrudCommand
+class BusinessActivityCommand extends BasicTagSupport
 {
     /**
      *
@@ -91,8 +90,38 @@ class BusinessActivityCommand extends BasicCrudCommand
      * @cmdParam boolean|false disable optional
      * @cmdParam boolean|true enable optional
      */
-    public function updateAction($object, $params) {
+    public function updateAction($object, $params = null) {
         parent::updateAction($object, $params);
+    }
+    
+    
+    /**
+     * 
+     * @cmdObject string ba the ba
+     */
+    public function listTagAction($object = null) 
+    {
+        parent::listTagAction($object);
+    }
+    
+    /**
+     * 
+     * @cmdObject string ba the ba
+     * @cmdParam string tag required the ba
+     */
+    public function addTagAction($object, $params) 
+    {
+        parent::addTagAction($object, $params['tag']);
+    }
+    
+    /**
+     * 
+     * @cmdObject string ba the ba
+     * @cmdParam string tag required the tag
+     */
+    public function removeTagAction($object, $params) 
+    {
+        parent::removeTagAction($object, $params['tag']);
     }
     
     
