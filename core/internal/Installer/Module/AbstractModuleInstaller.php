@@ -334,8 +334,11 @@ abstract class AbstractModuleInstaller
         // Remove old static files
         $this->removeStaticFiles();
         
-        //
+        //Remove validators
         $this->removeValidators();
+        
+        //Remove massive change
+        $this->removeMassiveChange();
         
         // Custom removal of the module
         $this->customRemove();
@@ -658,6 +661,18 @@ abstract class AbstractModuleInstaller
             $message = $this->colorizeMessage(_("     Done"), 'green');
             $this->displayOperationMessage($message);
         }
+    }
+    /**
+     * 
+     */
+    protected function removeMassiveChange()
+    {
+        $message = $this->colorizeText(_("Remove massive change..."));
+        $this->displayOperationMessage($message, false);
+        Form::deleteMassiveChange();
+        $message = $this->colorizeMessage(_("     Done"), 'green');
+        $this->displayOperationMessage($message);
+
     }
     
     /**

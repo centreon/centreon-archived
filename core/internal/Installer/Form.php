@@ -400,7 +400,6 @@ class Form
             $stmt->bindParam(':field_id', self::$fields[$key]);
         }
         
-
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':label', $data['label']);
         $stmt->bindParam(':default_value', $data['default_value']);
@@ -452,8 +451,6 @@ class Form
         if (!isset(self::$fields[$key])) {
             self::$fields[$key] = $db->lastInsertId('cfg_forms_fields', 'field_id');
         }
-        
-        
     }
 
     /**
@@ -504,7 +501,7 @@ class Form
             $formName = (string)$data['form_name'];
             if (isset(static::$forms[$formName])) {
                 $stmt = $db->prepare('DELETE fv FROM cfg_forms_fields_validators_relations fv 
-                    JOIN cfg_forms_blocks_fields_relations bf ON fv.field_id = bf.field_id
+                   JOIN cfg_forms_blocks_fields_relations bf ON fv.field_id = bf.field_id
                    JOIN cfg_forms_blocks fbf on fbf.block_id = bf.block_id
                    JOIN cfg_forms_sections fs ON fs.section_id = fbf.section_id
                    WHERE form_id = :form_id AND fv.field_id = :field_id' 
@@ -833,6 +830,34 @@ class Form
                         ';',
                         array($form['name'], $section['name'], $block['name'], $field['name'])
                     );
+                    
+                    //delete link with massive change
+                    $nameField = $field['name'];
+                    if (isset(self::$fields[(string)$nameField])) {
+                        $idField = self::$fields[(string)$nameField];
+
+                        self::deleteFieldToMassiveChange($idField);
+                    }
+                    
+                    //Add field for massive change
+                    if (isset($field['massive_change']) && $field['massive_change'] == '1') {
+                        
+                        $iPos = strrpos($form->route, '/');
+                        if ($iPos > 0) {
+                            $sRoute = substr($form->route, 0, $iPos). "/mc_fields";
+                        
+                            if (isset(self::$fields[(string)$nameField])) {
+                                $idField = self::$fields[(string)$nameField];
+                                $aDatas = array(
+                                    'field_id'   => $idField,
+                                    'form_name'  => $form['name'],
+                                    'route_name' => $sRoute
+                                );
+
+                                self::addFieldToMassiveChange($aDatas);
+                            }
+                        }
+                    }
                 }
                 $insertedBlocks[] = implode(';', array($form['name'], $section['name'], $block['name']));
             }
@@ -995,5 +1020,99 @@ class Form
             }
         }
         $db->commit();
+    }
+    
+    /**
+     * Add field to massive change
+     *
+     * @param array $data
+     */
+    protected static function addFieldToMassiveChange($data)
+    {
+        $massiveId = self::addMassiveChange($data);
+
+        if (isset($data['field_id'])) {
+            $db = Di::getDefault()->get('db_centreon');
+            $stmt = $db->prepare(
+                'INSERT INTO cfg_forms_massive_change_fields_relations (massive_change_id, field_id) '
+                . 'VALUES (:massive_change_id, :field_id)'
+            );
+            $stmt->bindParam(':massive_change_id', $massiveId);
+            $stmt->bindParam(':field_id', $data['field_id']);
+
+            $stmt->execute();
+        }
+    }
+    
+    /**
+     * Add field to massive change
+     *
+     * @param array $data
+     */
+    protected static function addMassiveChange($data)
+    {
+        $massiveId = static::getMassiveChangeId($data);
+        
+        if (empty($massiveId)) {
+            $db = Di::getDefault()->get('db_centreon');
+            $stmt = $db->prepare('INSERT INTO cfg_forms_massive_change (name, route) VALUES (:name, :route)');
+            $stmt->bindParam(':name', $data['form_name']);
+            $stmt->bindParam(':route', $data['route_name']);
+            $stmt->execute();
+            
+            $massiveId = static::getMassiveChangeId($data);
+        }
+        return $massiveId;
+    }
+    
+    /**
+     * 
+     * @param type $data
+     * @return string
+     */
+    public static function getMassiveChangeId($data)
+    {        
+        $dbconn = Di::getDefault()->get('db_centreon'); 
+        $stmt = $dbconn->prepare('SELECT massive_change_id FROM cfg_forms_massive_change WHERE name = :name AND route = :route LIMIT 1');
+        $stmt->bindParam(':name', $data['form_name']);
+        $stmt->bindParam(':route', $data['route_name']);
+            
+        $stmt->execute();
+        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        if (isset($data[0]['massive_change_id'])) {
+            $sRep = $data[0]['massive_change_id'];
+        } else {
+            $sRep = "";
+        }
+        
+        return $sRep;
+    }
+    
+    /**
+     * delete field to massive change
+     *
+     * @param int $iIdField
+     */
+    protected static function deleteFieldToMassiveChange($iIdField)
+    {
+        if (empty($iIdField)) {
+            return;
+        }
+        $db = Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare('DELETE FROM cfg_forms_massive_change_fields_relations WHERE field_id = :field_id');
+        $stmt->bindParam(':field_id', $iIdField);
+        $stmt->execute();
+
+    }
+    /**
+     * delete massive change
+     */
+    protected static function deleteMassiveChange()
+    {
+        $db = Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare('DELETE FROM cfg_forms_massive_change');
+        $stmt->execute();
+
     }
 }
