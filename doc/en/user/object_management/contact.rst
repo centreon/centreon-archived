@@ -22,9 +22,8 @@ List
 In order to list contacts, use **list** action::
 
   ./centreonConsole centreon-administration:contact:list
-  id;description;timezone
-  1;admin contact;
-  2;jdoe contact;
+  id;description;slug
+  1;admin contact;admin-contac
 
 Columns are the following:
 
@@ -55,7 +54,16 @@ Create
 In order to create a contact, use **create** action::
 
   ./centreonConsole centreon-administration:contact:create --description 'john'
+  john
   Object successfully created
+
+
+Slug
+----
+In order to get slug of contact, use **getSlug** action::
+  ./centreonConsole centreon-administration:contact:getSlug --description 'john'
+  john
+
 
 Update
 ------
@@ -80,4 +88,29 @@ In order to duplicate a contact, use **duplicate** action::
 
   ./centreonConsole centreon-administration:contact:duplicate --contact "john"
   Object successfully duplicated
+
+
+List tag
+--------
+
+In order to list tags of a contact, use **listTag** action::
+
+  ./centreonConsole centreon-administration:contact:listTag --contact "john"
+  tag2
+
+Add tag
+-------
+
+In order to add a tag to a contact, use **addTag** action::
+
+  ./centreonConsole centreon-administration:contact:addTag --contact "john" --tag "tag2"
+  tag2 has been successfully added to the object
+
+Remove tag
+----------
+
+In order to remove a tag from a contact, use **removeTag** action::
+
+  ./centreonConsole centreon-administration:contact:removeTag --contact "john" --tag "tag2"
+  The tag has been successfully removed from the object
 

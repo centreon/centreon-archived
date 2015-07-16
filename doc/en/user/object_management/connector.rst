@@ -28,9 +28,10 @@ List
 In order to list commands, use **list** action::
 
   ./centreonConsole centreon-configuration:Connector:list
-  id;name;description;command_line;activate
-  1;Perl Connector;;$USER3$/centreon_connector_perl;1
-  2;SSH Connector;;$USER3$/centreon_connector_ssh;1
+  id;name;slug;description;command_line;activate
+  1;Perl Connector;perl-connector;;$USER3$/centreon_connector_perl;1
+  2;SSH Connector;ssh-connector;;$USER3$/centreon_connector_ssh;1
+
 
 Columns are the following:
 
@@ -40,6 +41,8 @@ Column         Description
 id             Connector id
 
 name           Connector name
+
+slug           Connector slug
 
 description    Connector description
 
@@ -69,15 +72,22 @@ Create
 
 In order to create a connector, use **create** action::
 
-  ./centreonConsole centreon-configuration:Connector:create --name 'ssh-connector' --command-line '$USER3$/ssh_connector' --enabled 1
+  ./centreonConsole centreon-configuration:Connector:create --name 'SSH Connector' --command-line '$USER3$/ssh_connector' --enabled 1
+  ssh-connector-1
   Object successfully created
+
+Slug
+----
+In order to get slug of connector, use **getSlug** action::
+  ./centreonConsole centreon-configuration:Connector:getSlug --connector-name 'Perl Connector'
+  perl-connector
 
 Update
 ------
 
 In order to update a connector, use **update** action::
 
-  ./centreonConsole centreon-configuration:Connector:update --command 'ssh-connector' --description 'ssh-connector' --enabled 0
+  ./centreonConsole centreon-configuration:Connector:update --connector 'ssh-connector' --description 'ssh-connector' --enabled 0
   Object successfully updated
 
 Delete

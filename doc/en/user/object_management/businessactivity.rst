@@ -32,8 +32,10 @@ List
 In order to list business activities, use **list** action::
 
   ./centreonConsole centreon-bam:BusinessActivity:list
-  id;name;type;description;level_w;level_c
-  1;ba1;1;;90;80
+  id;name;slug;description;level_w;level_c
+  1;BA sur les ping des machines des PP;ba-sur-les-ping-des-machines-des-pp;;70;50
+  2;BA sur les memory des machines des PP;ba-sur-les-memory-des-machines-des-pp;;70;50
+  3;BA ping + memory PP;ba-ping-memory-pp;;70;50
 
 Columns are the following:
 
@@ -43,6 +45,8 @@ Column        Description
 id            Business activity id
 
 name          Business activity name
+
+slug          Business activity slug
 
 type          Business activity type
 
@@ -58,52 +62,55 @@ Show
 
 In order to show a business activity, use **show** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:show --businessactivity=ba1
-  id: 4
-  name: ba1
-  slug: ba1
-  description:
-  level_w: 90
-  level_c: 80
-  sla_month_percent_warn:
-  sla_month_percent_crit:
-  sla_month_duration_warn:
-  sla_month_duration_crit:
-  id_reporting_period:
-  max_check_attempts:
-  normal_check_interval:
-  retry_check_interval:
-  current_level:
+  ./centreonConsole centreon-bam:BusinessActivity:show --ba='ba-sur-les-ping-des-machines-des-pp'
+  id: 1
+  name: BA sur les ping des machines des PP
+  slug: ba-sur-les-ping-des-machines-des-pp
+  description: 
+  level-w: 70
+  level-c: 50
+  sla_month_percent_warn: 
+  sla_month_percent_crit: 
+  sla_month_duration_warn: 
+  sla_month_duration_crit: 
+  id-reporting-period: 
+  max_check_attempts: 
+  normal_check_interval: 
+  retry_check_interval: 
+  current_level: 100
   calculate: 0
   downtime: 0
   acknowledged: 0
   must_be_rebuild: 0
-  last_state_change:
-  current_status:
-  in_downtime:
-  dependency_dep_id:
-  graph_id:
-  icon_id:
-  graph_style:
-  activate: 1
-  comment:
+  last_state_change: 1436795692
+  current_status: 0
+  in_downtime: 0
+  dependency_dep_id: 
+  graph_id: 
+  icon-id: 
+  graph_style: 
+  disable: 1
+  comment: 
   organization_id: 1
   type: 1
+
 
 Create
 ------
 
 In order to create a business activity, use **create** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:create --name=ba1 --ba-type-id=1 --level-w=90 --level-c=80
+  ./centreonConsole centreon-bam:BusinessActivity:create --name=ba1 --ba-type-id=application --level-w=90 --level-c=80
+  ba1
   Object successfully created
+
 
 Update
 ------
 
 In order to update a business activity, use **update** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:update --businessactivity=ba1 --name=ba2
+  ./centreonConsole centreon-bam:BusinessActivity:update --ba=ba1 --name=ba2
   Object successfully updated
 
 Delete
@@ -111,7 +118,7 @@ Delete
 
 In order to delete a business activity, use **delete** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:delete --businessactivity=ba1
+  ./centreonConsole centreon-bam:BusinessActivity:delete --ba=ba2
   Object successfully deleted
 
 Duplicate (Not yet implemented)
@@ -122,27 +129,27 @@ In order to duplicate a business activity, use **duplicate** action::
   ./centreonConsole centreon-bam:BusinessActivity:duplicate --businessactivity=ba1
   Object successfully duplicated
 
-List tag (Not yet implemented)
-------------------------------
+List tag
+--------
 
 In order to list tags of a business activity, use **listTag** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:listTag --businessactivity=ba1
+  ./centreonConsole centreon-bam:BusinessActivity:listTag --ba=ba1
   tag-ba-1
 
-Add tag (Not yet implemented)
------------------------------
+Add tag
+-------
 
 In order to add a tag to a business activity, use **addTag** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:addTag --businessactivity=ba1 --tag=tag-ba-1
+  ./centreonConsole centreon-bam:BusinessActivity:addTag --ba=ba1 --tag=tag-ba-1
   The tag has been successfully added to the object
 
-Remove tag (Not yet implemented)
---------------------------------
+Remove tag
+----------
 
 In order to remove a tag from a business activity, use **removeTag** action::
 
-  ./centreonConsole centreon-bam:BusinessActivity:removeTag --businessactivity=ba1 --tag=tag-ba-1
+  ./centreonConsole centreon-bam:BusinessActivity:removeTag --ba=ba1 --tag=tag-ba-1
   The tag has been successfully removed from the object
 

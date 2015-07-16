@@ -48,8 +48,10 @@ List
 In order to list pollers, use **list** action::
 
   ./centreonConsole centreon-configuration:poller:list
-  id;node;name;one peer retention;template name;organization;enable
-  1;1;central;1;Central;1;1
+  id;node;name;slug;one peer retention;template name;organization;enable
+  1;1;central;central;1;Central;1;1
+  2;2;new;new;1;Central;1;1
+
 
 Columns are the following:
 
@@ -61,6 +63,8 @@ id                    Poller id
 node                  Poller node
 
 name                  Poller name
+
+slug                  Poller slug
 
 one peer retention    One peer retention
 
@@ -93,7 +97,16 @@ Create
 In order to create a poller, use **create** action::
 
   ./centreonConsole centreon-configuration:poller:create --name=central1 --template=Central --ip-address="127.0.0.1" --engine-init-script='/etc/init.d/centengine' --engine-binary='/usr/sbin/centengine' --engine-conf-dir='/etc/centreon-engine/' --engine-logs-dir='/var/log/centreon-engine/' --engine-var-lib-dir='/var/lib/centreon-engine/' --engine-modules-dir='/usr/lib64/centreon-engine/' --broker-conf-dir='/etc/centreon-broker/' --broker-modules-dir='/usr/share/centreon/lib/centreon-broker/' --broker-data-dir='/var/lib/centreon-broker' --broker-logs-dir='/var/log/centreon-broker/' --broker-cbmod-dir='/usr/lib64/nagios/' --broker-init-script='/etc/init.d/cbd'
+  central1
   Object successfully created
+
+
+Slug
+----
+In order to get slug of poller, use **getSlug** action::
+  ./centreonConsole centreon-configuration:poller:getSlug --description 'Central'
+  central
+
 
 Update
 ------
