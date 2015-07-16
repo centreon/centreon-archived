@@ -17,7 +17,7 @@
                     </validators>
                     <help>Field used in host group and service definitions to reference this particular host.</help>
                 </field>
-                <field name="host_alias" normalized_name="alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                <field name="host_alias" normalized_name="alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1" massive_change='1'>
                     <validators>
                         <validator rules="size" serverside="core.String">
                             <argument name="minlength">3</argument>
@@ -26,10 +26,10 @@
                     </validators>
                     <help>Field used to define a longer name or description for the host.</help>
                 </field>
-                <field name="host_address" normalized_name="address" label="IP address / DNS" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">
+                <field name="host_address" normalized_name="address" label="IP address / DNS" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1" massive_change='1'>
                     <help>Define the address of the host here. Normally, this should be an IP address, but a FQDN can be used to identify the host instead. If DNS services are not reachable a FQDN could cause problems.</help>
                 </field>                                
-                <field name="timezone_id" label="Timezone" normalized_name="timezone" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field name="timezone_id" label="Timezone" normalized_name="timezone" default_value="" advanced="0" type="select" parent_field="" mandatory="0" massive_change='1'>
                     <help>Define the timezone</help>
                     <attributes>
                         <object_type>object</object_type>
@@ -38,7 +38,7 @@
                         <multiple>false</multiple>
                     </attributes>
                 </field>       
-                <field normalized_name="host-templates" name="host_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field normalized_name="host-templates" name="host_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0" massive_change='1'>
                     <help>This is where you specify the template that you want to inherit properties/variables from. Inherited properties doesn't need to be specified again. "Local" object variables always take precedence over variables defined in the template object. Objects can inherit properties/variables from multiple levels of template objects. When defining multiple sources, the first template specified takes precedence over the later one, in the case where a property is defined in both.</help>
                     <attributes>
                         <object_type>object</object_type>
@@ -52,7 +52,7 @@
                         </validator>
                     </validators>
                 </field>
-                <field normalized_name="icon" name="host_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
+                <field normalized_name="icon" name="host_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0" massive_change='1'>
                     <help>Define the image that should be associated with this host here. This image will be displayed in the various places. The image will look best if it is 40x40 pixels in size.</help>
                     <attributes>
                         <object_type>object</object_type>
@@ -62,7 +62,7 @@
                         <wizardRoute>/media/image/add</wizardRoute>
                     </attributes>
                 </field>
-                <field name="environment_id" normalized_name="environment" label="Environment" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field name="environment_id" normalized_name="environment" label="Environment" default_value="" advanced="0" type="select" parent_field="" mandatory="0" massive_change='1'>
                     <help>Define the environment of the host</help>
                     <attributes>
                         <object_type>object</object_type>
@@ -88,7 +88,7 @@
                 </field>
             </block>
             <block name="Host check properties">
-                <field  normalized_name="poller" name="poller_id" label="Poller" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field  normalized_name="poller" name="poller_id" label="Poller" default_value="" advanced="0" type="select" parent_field="" mandatory="0" massive_change='1'>
                     <help>Define the poller that will monitor the host</help>
                     <attributes>
                         <object_type>object</object_type>
@@ -97,7 +97,7 @@
                         <multiple>false</multiple>
                     </attributes>
                 </field>
-                <field normalized_name="timeperiod" name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field normalized_name="timeperiod" name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0" massive_change='1'>
                     <help>This directive is used to specify the time period during which active checks of this host can be executed.</help>
                     <attributes>
                         <object_type>object</object_type>
@@ -106,7 +106,7 @@
                         <multiple>false</multiple>
                     </attributes>
                 </field>
-                <field normalized_name="command" name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field normalized_name="command" name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="0" massive_change='1'>
                     <help>Specify the command that should be used to check if the host is up or down. Typically, this command would try and ping the host to see if it is "alive". On a non-OK state monitoring engine will assume the host is down. A blank argument disables active checks for the host status and Monitoring Engine will always assume the host is up. This is useful if you are monitoring printers or other devices that are frequently turned off.</help>
                     <attributes>
                         <object_type>object</object_type>
@@ -115,16 +115,16 @@
                         <multiple>false</multiple>
                     </attributes>
                 </field>
-                <field normalized_name="max-check-attempts" name="host_max_check_attempts" label="Max check attempts" default_value="" advanced="1" type="integer" parent_field="" mandatory="0">
+                <field normalized_name="max-check-attempts" name="host_max_check_attempts" label="Max check attempts" default_value="" advanced="1" type="integer" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                 </field>
-                <field normalized_name="check-interval" name="host_check_interval" label="Normal check interval" default_value="" advanced="1" type="integer" parent_field="" mandatory="0">
+                <field normalized_name="check-interval" name="host_check_interval" label="Normal check interval" default_value="" advanced="1" type="integer" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                 </field>
-                <field normalized_name="retry-check-interval" name="host_retry_check_interval" label="Retry check interval" default_value="" advanced="1" type="integer" parent_field="" mandatory="0">
+                <field normalized_name="retry-check-interval" name="host_retry_check_interval" label="Retry check interval" default_value="" advanced="1" type="integer" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                 </field>
-                <field normalized_name="active-checks-enabled" name="host_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+                <field normalized_name="active-checks-enabled" name="host_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0" massive_change='1'>
                     <help>Enable or disable active checks (either regularly scheduled or on-demand) of this host here. By default active host checks are enabled.</help>
                     <attributes>
                         <choices>
@@ -139,13 +139,13 @@
                         </validator>
                     </validators>
                 </field>
-                <field name="host_check_timeout" normalized_name="timeout" label="Timeout" default_value="" advanced="1" type="integer" parent_field="" mandatory="0">
+                <field name="host_check_timeout" normalized_name="timeout" label="Timeout" default_value="" advanced="1" type="integer" parent_field="" mandatory="0" massive_change='1'>
                     <help>Host check timeout.</help>
                 </field>
-                <field name="host_snmp_community" normalized_name="snmp-community" label="Snmp community" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+                <field name="host_snmp_community" normalized_name="snmp-community" label="Snmp community" default_value="" advanced="0" type="text" parent_field="" mandatory="0" massive_change='1'>
                     <help>Host snmp community.</help>
                 </field>
-                <field  normalized_name="snmp-version" name="host_snmp_version" label="Snmp version" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field  normalized_name="snmp-version" name="host_snmp_version" label="Snmp version" default_value="" advanced="0" type="select" parent_field="" mandatory="0" massive_change='1'>
                     <help>Host snmp version.</help>
                     <attributes>
                         <object_type>object</object_type>
@@ -156,7 +156,7 @@
                 </field>
             </block>
             <block name="Additional information">
-                <field normalized_name="disable" name="host_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+                <field normalized_name="disable" name="host_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1" massive_change='1'>
                     <attributes>
                         <choices>
                             <Enabled>1</Enabled>
@@ -169,14 +169,14 @@
                         </validator>
                     </validators>
                 </field>
-                <field normalized_name="comment" name="host_comment" label="Comments" default_value="" advanced="1" type="textarea" parent_field="" mandatory="0">
+                <field normalized_name="comment" name="host_comment" label="Comments" default_value="" advanced="1" type="textarea" parent_field="" mandatory="0" massive_change='1'>
                     <help>Host comments.</help>
                 </field>
             </block>
         </section>
         <section name="Relations">
             <block name="Parentships">
-                <field normalized_name="parents" name="host_parents" label="Parents Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field normalized_name="parents" name="host_parents" label="Parents Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                     <attributes>
                         <object_type>object</object_type>
@@ -185,7 +185,7 @@
                         <multiple>true</multiple>			
                     </attributes>
                 </field>
-                <field normalized_name="childs" name="host_childs" label="Childs Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field normalized_name="childs" name="host_childs" label="Childs Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                     <attributes>
                         <object_type>object</object_type>
@@ -198,7 +198,7 @@
         </section>
         <section name="Data processing">
             <block name="Event handler">
-                <field normalized_name="eventhandler-enabled" name="host_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+                <field normalized_name="eventhandler-enabled" name="host_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                     <attributes>
                         <choices>
@@ -214,7 +214,7 @@
                     </validators>
                     <help></help>
                 </field>
-                <field normalized_name="command2" name="command_command_id2" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+                <field normalized_name="command2" name="command_command_id2" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                     <attributes>
                         <object_type>object</object_type>
@@ -225,7 +225,7 @@
                 </field>
             </block>
             <block name="Freshness control options">
-                <field normalized_name="check-freshness" name="host_check_freshness" label="Check freshness" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+                <field normalized_name="check-freshness" name="host_check_freshness" label="Check freshness" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                     <attributes>
                         <choices>
@@ -240,12 +240,12 @@
                         </validator>
                     </validators>
                 </field>
-                <field normalized_name="freshness-threshold" name="host_freshness_threshold" label="Freshness threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0">
+                <field normalized_name="freshness-threshold" name="host_freshness_threshold" label="Freshness threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                 </field>
             </block>
             <block name="Flapping options">
-                <field normalized_name="flap-detection-enabled" name="host_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+                <field normalized_name="flap-detection-enabled" name="host_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                     <attributes>
                         <choices>
@@ -260,15 +260,15 @@
                         </validator>
                     </validators>
                 </field>
-                <field normalized_name="low-flap-threshold" name="host_low_flap_threshold" label="Low flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0">
+                <field normalized_name="low-flap-threshold" name="host_low_flap_threshold" label="Low flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                 </field>
-                <field normalized_name="high-flap-threshold" name="host_high_flap_threshold" label="High flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0">
+                <field normalized_name="high-flap-threshold" name="host_high_flap_threshold" label="High flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                 </field>
             </block>
             <block name="Data processing">
-                <field normalized_name="obsess" name="host_obsess_over_host" label="Obsess over host" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+                <field normalized_name="obsess" name="host_obsess_over_host" label="Obsess over host" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0" massive_change='1'>
                     <help></help>
                     <attributes>
                         <choices>

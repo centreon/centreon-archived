@@ -577,10 +577,10 @@ class Form
         if (isset($field['attributes']) && $field['attributes']) {
             $params = json_decode($field['attributes'], true);
         }
-        
+
         $params['label'] = $field['label'];
         $params['type'] = $field['type'];
-        $params['mandatory'] = $field['mandatory'];
+        $params['mandatory'] =  isset($field['mandatory']) ? $field['mandatory'] : '';
         $params['parent_field'] = isset($field['parent_field']) ? $field['parent_field'] : '';
         $params['parent_value'] = isset($field['parent_value']) ? $field['parent_value'] : '';
         $params['child_actions'] = isset($field['child_actions']) ? $field['child_actions'] : '';
@@ -784,5 +784,5 @@ class Form
         $this->style = array();
     
         $this->basicSeparator = '&nbsp;';
-    }
+    } 
 }
