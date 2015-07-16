@@ -696,7 +696,7 @@ class HostRepository extends Repository
                 $sSlug = $oSlugify->slug($sString);
                 
                 if (!empty($oHostServiceTemplate['service_alias'])) {
-                    $sData = $oHostServiceTemplateservice['service_alias'];
+                    $sData = $oHostServiceTemplate['service_alias'];
                 } else {
                     $sData = $oHostServiceTemplate['service_description'];
                 }
