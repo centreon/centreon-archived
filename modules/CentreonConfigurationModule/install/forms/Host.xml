@@ -108,6 +108,10 @@
                 </field>
                 <field normalized_name="command" name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
                     <help>Specify the command that should be used to check if the host is up or down. Typically, this command would try and ping the host to see if it is "alive". On a non-OK state monitoring engine will assume the host is down. A blank argument disables active checks for the host status and Monitoring Engine will always assume the host is up. This is useful if you are monitoring printers or other devices that are frequently turned off.</help>
+                    <validators>
+                    	<validator serverside="centreon-configuration.commandIsSetup" >
+                        </validator>
+                    </validators>
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-configuration/command/formlist?type=2</defaultValuesRoute>
@@ -297,6 +301,8 @@
             <field name="host_tags" mandatory="0"></field>
             <field name="environment_id" mandatory="0"></field>
             <field name="poller_id" mandatory="0"></field>
+            <field name="command_command_id" mandatory="0">
+            </field>
         </step>
         <step name="Relations">
             <field name="host_parents" mandatory="0"></field>
