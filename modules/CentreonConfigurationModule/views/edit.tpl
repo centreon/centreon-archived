@@ -32,8 +32,9 @@
                 divId = $(this).children().attr("href").substr(1);
                 if (tabContentList[divId] == 0) {
                     if ($(this).hasClass('active')) {
-                        firstTab = $('.form-tabs-header li:first')[0];
-                        $(firstTab).tab('show');
+                        $("#formHeader > li:first-child").tab("show");
+                        $(".tab-content > .tab-pane").removeClass("active");
+                        $($("#formHeader > li:first-child > a").attr("href")).addClass("active");
                     }
                     $(this).hide();
                 } else {
