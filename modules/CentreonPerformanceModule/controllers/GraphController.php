@@ -70,6 +70,7 @@ class GraphController extends Controller
              ->addJs('moment-timezone-with-data.min.js');
         
         $tmpl->addJs('daterangepicker.js');
+        $tmpl->addJs('hogan-3.0.0.min.js');
         $tmpl->addJs('centreon.graph.js', 'bottom', 'centreon-performance');
         $tmpl->addCss('c3.css');
         $tmpl->addCss('select2.css');
