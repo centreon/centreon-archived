@@ -52,6 +52,8 @@
 {$jsFile|js}
 {/foreach}
 <script>
+var formValidRule = [];
+
 function logIn() {
     $.ajax({
         url: "{url_for url='/login'}",
