@@ -111,6 +111,9 @@ class HostRepository extends Repository
      */
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
+        if($origin == 'api' && !isset($givenParameters['command_command_id'])){
+            $givenParameters['command_command_id'] = " ";
+        }
         $id = parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
         self::deployServices($id);
         return $id;
@@ -124,6 +127,10 @@ class HostRepository extends Repository
      */
     public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
+        if($origin == 'api' && !isset($givenParameters['command_command_id'])){
+            $givenParameters['command_command_id'] = " ";
+        }
+        
         parent::update($givenParameters, $origin, $route, $validate, $validateMandatory);
         if (isset($givenParameters['object_id'])) {
             self::deployServices($givenParameters['object_id']);
@@ -494,7 +501,7 @@ class HostRepository extends Repository
      * @param int $depth The depth to search
      * @return array
      */
-    public static function getTemplateChain($hostId, $alreadyProcessed = array(), $depth = -1)
+    public static function getTemplateChain($hostId, $alreadyProcessed = array(), $depth = -1, $allFields = false)
     {
         $templates = array();
         if (($depth == -1) || ($depth > 0)) {
@@ -508,7 +515,12 @@ class HostRepository extends Repository
                 // @todo improve performance
                 $db = Di::getDefault()->get('db_centreon');
 
-                $sql = "SELECT h.host_id, h.host_name"
+                if(!$allFields){
+                    $fields = "h.host_id, h.host_name";
+                }else{
+                    $fields = " * ";
+                }
+                $sql = "SELECT " . $fields . " " 
                     . " FROM cfg_hosts h, cfg_hosts_templates_relations htr"
                     . " WHERE h.host_id=htr.host_tpl_id"
                     . " AND htr.host_host_id=:host_id"
@@ -521,11 +533,16 @@ class HostRepository extends Repository
                 $row = $stmt->fetchAll();
 
                 foreach ($row as $template) {
-                    $templates[] = array(
-                        "id" => $template['host_id'],
-                        "text" => $template['host_name']
-                    );
-                    $templates = array_merge($templates, self::getTemplateChain($template['host_id'], $alreadyProcessed, $depth));
+                    if(!$allFields){
+                        $templates[] = array(
+                            "id" => $template['host_id'],
+                            "text" => $template['host_name']
+                        );
+                    }else{
+                        $templates[] = $template;
+                    }
+                    
+                    $templates = array_merge($templates, self::getTemplateChain($template['host_id'], $alreadyProcessed, $depth,$allFields));
                 }
                 return $templates;
             }
@@ -622,7 +639,8 @@ class HostRepository extends Repository
             array(
                 'service_id',
                 'service_description',
-                'service_alias'
+                'service_alias',
+                'inherited'
             ),
             -1,
             0,
@@ -653,14 +671,8 @@ class HostRepository extends Repository
 
             // Remove services with same description
             foreach ($aHostTemplateServiceTemplates as $oHostTemplateServiceTemplate) {
-                $merge = true;
-                foreach ($aHostServiceTemplates as $oHostServiceTemplate) {
-                    if ($oHostTemplateServiceTemplate['service_alias'] === $oHostServiceTemplate['service_alias']) {
-                        $merge = false;
-                    }
-                }
-                if ($merge) {
-                    $aHostServiceTemplates[] = $oHostTemplateServiceTemplate;
+                if (!isset($aHostServiceTemplates[$oHostTemplateServiceTemplate['service_alias']])) {
+                    $aHostServiceTemplates[$oHostTemplateServiceTemplate['service_alias']] = $oHostTemplateServiceTemplate;
                 }
             }
         }
@@ -683,10 +695,16 @@ class HostRepository extends Repository
         
         $db->beginTransaction();
         
+        $aTemplateServicesDescription = array_keys($aHostServiceTemplates);
+        foreach($aHostServices as $service){
+            if($service['inherited'] == 1 && !in_array($service['service_description'], $aTemplateServicesDescription)){
+                Service::delete($service['service_id']);
+            }
+        }
+        
         // create services which don't yet exist
         foreach ($aHostServiceTemplates as $oHostServiceTemplate) {
             if (!in_array($oHostServiceTemplate['service_alias'], $aServicesDescription)) {
-                
                 $sHostName = Host::get($hostId, 'host_name');
                 if (isset($sHostName['host_name'])) {
                     $sString = $sHostName['host_name']." ".$oHostServiceTemplate['service_alias'];
@@ -707,7 +725,9 @@ class HostRepository extends Repository
                 $newService['service_register'] = 1;
                 $newService['service_activate'] = 1;
                 $newService['organization_id'] = Di::getDefault()->get('organization');
+                $newService['inherited'] = 1;
                 $serviceId = Service::insert($newService);
+                
                 HostServiceRelation::insert($hostId, $serviceId);
                 ServiceHostTemplateRelation::insert($serviceId, $oHostServiceTemplate['host_id']);
             }
