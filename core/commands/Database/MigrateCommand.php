@@ -50,7 +50,7 @@ use Centreon\Internal\Installer\Migration\Manager;
  */
 class MigrateCommand extends AbstractCommand
 {
-    
+    /*
     public $options = array(
         "statusAction" => array(
             "module" => array(
@@ -100,14 +100,15 @@ class MigrateCommand extends AbstractCommand
                 "required" => false
             )
         )
-    );
+    );*/
     
     /**
      * 
-     * @param string $module
+     * @cmdObject string module the module name
      */
-    public function statusAction($module)
+    public function statusAction($object)
     {
+        $module = $object['module'];
         InputOutput::display(_("Lists the migrations yet to be executed"));
         $migrationManager = new Manager($module, 'production');
         $cmd = $this->getPhinxCallLine() .'status ';
@@ -118,10 +119,11 @@ class MigrateCommand extends AbstractCommand
     
     /**
      * 
-     * @param string $module
+     * @cmdObject string module the module name
      */
-    public function migrateAction($module)
+    public function migrateAction($object)
     {
+        $module = $object['module'];
         InputOutput::display(_("Executes all migrations"));
         $migrationManager = new Manager($module, 'production');
         $cmd = $this->getPhinxCallLine() .'migrate ';
@@ -132,10 +134,11 @@ class MigrateCommand extends AbstractCommand
     
     /**
      * 
-     * @param string $module
+     * @cmdObject string module the module name
      */
-    public function rollbackAction($module)
+    public function rollbackAction($object)
     {
+        $module = $object['module'];
         InputOutput::display(_("Revert all migrations"));
         $migrationManager = new Manager($module, 'production');
         $cmd = $this->getPhinxCallLine() .'rollback ';
@@ -146,21 +149,24 @@ class MigrateCommand extends AbstractCommand
     
     /**
      * 
-     * @param type $module
+     * @cmdObject string module the module name
      */
-    public function initAction($module)
+    public function initAction($object)
     {
+        $module = $object['module'];
         $migrationManager = new Manager($module, 'development');
         $migrationManager->generateConfiguration();
     }
     
     /**
      * 
-     * @param string $module
-     * @param string $class
+     * @cmdObject string module the module name
+     * @cmdParam string class required 
      */
-    public function createAction($module, $class)
+    public function createAction($object, $param)
     {
+        $module = $object['module'];
+        $class = $param['class'];
         $migrationManager = new Manager($module, 'development');
         $cmd = $this->getPhinxCallLine() .'create ';
         $cmd .= '-c '. $migrationManager->getPhinxConfigurationFile();

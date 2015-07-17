@@ -106,13 +106,13 @@ php external/bin/centreonConsole centreon-configuration:HostTemplate:create --na
 php external/bin/centreonConsole centreon-configuration:HostTemplate:create --name='OS-Windows-SNMP'  --service-templates='os-windows-snmp-cpu' --service-templates='os-windows-snmp-swap' --service-templates='os-windows-snmp-memory' --host-templates='generic-host'
 
 echo " ==== Creating hosts ==== "
-php external/bin/centreonConsole centreon-configuration:Host:create --name='Centreon-export' --address='10.30.2.87' --host-templates='generic-host' --poller='central'
-php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-RWE-PP' --address='10.30.2.127' --host-templates='os-linux-snmp' --poller='central'
-php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES22' --address='10.50.1.84' --host-templates='os-linux-snmp' --poller='central'
-php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES3' --address='10.50.1.85' --host-templates='os-linux-snmp' --poller='central'
+php external/bin/centreonConsole centreon-configuration:Host:create --name='Centreon-export' --alias='Centreon-export' --address='10.30.2.87' --host-templates='generic-host' --poller='central'
+php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-RWE-PP' --alias='CES3-RWE-PP' --address='10.30.2.127' --host-templates='os-linux-snmp' --poller='central'
+php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES22' --alias='CES3-QDE-PP-CES22' --address='10.50.1.84' --host-templates='os-linux-snmp' --poller='central'
+php external/bin/centreonConsole centreon-configuration:Host:create --name='CES3-QDE-PP-CES3' --alias='CES3-QDE-PP-CES3' --address='10.50.1.85' --host-templates='os-linux-snmp' --poller='central'
 
-php external/bin/centreonConsole centreon-configuration:Host:create --name='SRVI-WIN-TEST' --address='10.50.1.158' --host-templates='os-windows-snmp' --poller='central'
-php external/bin/centreonConsole centreon-configuration:Host:create --name='Terminal server GSO' --address='10.41.1.28' --host-templates='os-windows-snmp' --poller='central'
+php external/bin/centreonConsole centreon-configuration:Host:create --name='SRVI-WIN-TEST' --alias='SRVI-WIN-TEST' --address='10.50.1.158' --host-templates='os-windows-snmp' --poller='central'
+php external/bin/centreonConsole centreon-configuration:Host:create --name='Terminal server GSO' --alias='Terminal server GSO' --address='10.41.1.28' --host-templates='os-windows-snmp' --poller='central'
 
 echo " ==== Creating services  ==== "
 php external/bin/centreonConsole centreon-configuration:Service:create --description='Traffic-eth0' --host='ces3-rwe-pp' --template-model-stm='OS-Linux-SNMP-traffic-name'

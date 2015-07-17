@@ -686,6 +686,7 @@ class ServiceRepository extends Repository
                 $givenParameters[$class::getSlugField()] = $sSlug;
             }
         }
+        $givenParameters['inherited'] = 0;
         return parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
     }
     

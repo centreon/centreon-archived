@@ -3,7 +3,7 @@ Database managent
 
 Generate database
 -----------------
-This procedure to update the schematic of the database , it will compare the current version with the new schematic generated XML files.
+This procedure to update the schematic of the database, it will compare the current version with the new schematic generated XML files.
 
 ::
 
@@ -17,12 +17,12 @@ Convert sql datas to JSON
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 This command will generate a JSON file from a table in the database . You must replace the argument MyTableName by the name of the table you are interested in.
 
-========= ==================== =======
+========= ==================== ===========
 argument  description          example
-========= ==================== =======
+========= ==================== ===========
 dbname    The name of database db_centreon
 tablename The name of table    cfg_tags
-========= ==================== =======
+========= ==================== ===========
 
 ::
 
@@ -36,7 +36,7 @@ Example of return:
 
 Convert JSON datas to sql
 ^^^^^^^^^^^^^^^^^^^^^^^^^
-This command will generate a SQL code from a JSON file. The file argument will contain the source file. The second argument contains the name of the table in the database . The latter is optional. It is useful if you want to send the answer to a file, if empty the contents will be displayed in the concole.
+This command will generate a SQL code from a JSON file. The file argument will contain the source file. The second argument contains the name of the table in the database. The latter is optional. It is useful if you want to send the answer to a file, if empty the contents will be displayed in the concole.
 
 =========== ================================== ==============
 argument    description                        example
@@ -58,3 +58,4 @@ This command will generate a database migration file. it will not execute, it ma
 ::
 
    external/bin/centreonConsole core:database:Tools:generateMigrationClass
+

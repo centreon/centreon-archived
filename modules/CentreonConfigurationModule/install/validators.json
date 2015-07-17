@@ -42,5 +42,9 @@
     {
         "name": "core.AuthorizedValues",
         "route": "/validator/AuthorizedValues"
+    },
+    {
+        "name": "centreon-configuration.commandIsSetup",
+        "route": "/validator/CommandIsSetup"
     }
 ]

@@ -15,15 +15,17 @@
   <div class="panel panel-default">
     <div class="panel-heading">
       <div class="row search">
-        <form role="form">
+        <form role="form" class="CentreonForm">
           <div class="form-group col-md-3">
             <input type="text" name="period" class="form-control" placeholder="Period" >
           </div>
           <div class="form-group col-md-5">
-            <div class="input-group">
-              <input type="text" id="service" name="service" class="form-control" >
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="button" id="addGraph">{t}Add{/t}</button>
+            <div class="inlineGroup">
+              <div class="Elem1">
+                <input type="text" id="service" name="service" class="form-control" >
+              </div>
+              <span class="Elem2">
+                <button class="btnC btnDefault" type="button" id="addGraph">{t}Add{/t}</button>
               </span>
             </div>
           </div>
@@ -42,7 +44,7 @@
       </div>
     </div>
   </div>
-  <div id="graphs"></div>
+  <div id="graphs" class="row"></div>
 </div>
 <div class="modal fade" id="saveViewModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
@@ -105,50 +107,43 @@
 <script>
 
 var nbGraph = 0;
+{literal}
+var graphTmpl = Hogan.compile("<div class=\"col-xs-12 graph {{classCol}}\">" +
+  "  <div class=\"panel panel-default\">" +
+  "    <div class=\"panel-heading\">" +
+  "      <h5>{{graphTitle}}" +
+  "        <button class=\"close pull-right delete-graph\">&times;</button>" +
+  "        <button class=\"close pull-right stack-graph\">" +
+  "          <i class=\"fa fa-area-chart\"></i>" +
+  "        </button>" +
+  "      </h5>" +
+  "    </div>" +
+  "    <div class=\"panel-body\">" +
+  "      <div class=\"c3\" id=\"{{graphId}}\"></div>" +
+  "    </div>" +
+  "  </div>" +
+  "</div>");
+{/literal}
+
 
 function createGraph(serviceId) {
-  var graphId, startTime, endTime,
+  var graphId, graphEl, startTime, endTime,
       time = $("input[name='period']").val();
-
+  
   ++nbGraph;
   graphId = "graph-" + nbGraph;
   
   /* Add graph */
-  $("<div></div>")
-    .addClass("graph")
-    .data("serviceId", serviceId)
-    .append(
-      $("<div></div>")
-        .css("height", 22)
-        .append(
-          $("<button></button>")
-            .addClass("delete-graph")
-            .addClass("close")
-            .attr("type", "button")
-            .html("&times;")
-        )
-        .append(
-          $("<button></button>")
-            .addClass("stack-graph")
-            .addClass("close")
-            .attr("type", "button")
-            .html('<i class="fa fa-area-chart"></i>')
-        )
-        /*.append(
-          $("<button></button>")
-            .addClass("download-graph")
-            .addClass("close")
-            .attr("type", "button")
-            .html('<i class="fa fa-save"></i>')
-        )*/
-    )
-    .append(
-      $("<div></div>")
-        .addClass("c3")
-        .attr("id", graphId)
-    )
-    .appendTo($("#graphs"));
-  
+  graphEl = graphTmpl.render(
+    {
+      graphId: graphId,
+      graphTitle: $("#service").select2("data").text,
+      classCol: "col-sm-6"
+    }
+  );
+    
+  $(graphEl).data("serviceId", serviceId).appendTo("#graphs");
+    
   startTime = moment(time.split(" - ")[0]).format('X');
   endTime = moment(time.split(" - ")[1]).format('X');
   addChart(graphId, serviceId, startTime, endTime);
