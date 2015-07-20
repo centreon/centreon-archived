@@ -7,6 +7,9 @@ Installation
 .. toctree::
     :maxdepth: 3
 
-    installation/index
-    upgrade/index
+    getting_started
+    requirements
+    downloads
+    from_packages
+    from_sources
 
