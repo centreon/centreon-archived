@@ -11,7 +11,7 @@ Centreon is open source software which enables you to supervise all the elements
 Contents:
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    1_introduction/index
    2_release_notes/index
