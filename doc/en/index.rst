@@ -15,7 +15,9 @@ Contents:
 
    1_introduction/index
    2_release_notes/index
+   :maxdepth: 3
    3_installation/index
+   :maxdepth: 2
    4_quickstart/index
    5_user/index
    6_exploitation/index
