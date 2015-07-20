@@ -9,4 +9,4 @@ Upgrade
 
     from_packages
     from_sources
-    procedures
+    upgrade_procedures
