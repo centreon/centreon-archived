@@ -309,6 +309,10 @@
         input = this.dom.$elem;
     /* Clean all fields */
     $.each( self.associateFields, function( tagName, element ) {
+      if($(element).hasClass('select2')){
+          $( element ).val( "" );
+          $( element ).select2();
+      }
       if ( typeof( element ) == "string" ) {
         $( element ).val( "" );
       } else if ( typeof( element ) == "object" && element instanceof jQuery ) {
@@ -327,8 +331,10 @@
     $.each( this.currentList, function( idx, element ) {
       var tagName,
           sepPos = element.indexOf( ":" );
+          
       if ( sepPos != -1 ) {
         tagName = element.substring( 0, sepPos );
+        
         if ( $.inArray( tagName, Object.keys( self.associateFields ) ) != -1 ) {
           if ( $.inArray( tagName, Object.keys( listUsedTags ) ) == -1 ) {
             listUsedTags[tagName] = [];
@@ -360,6 +366,10 @@
             });
             return listValuesId;
           });
+          if(elTarget.hasClass('select2')){
+            elTarget.select2();
+          }
+          
         }
       }
     });

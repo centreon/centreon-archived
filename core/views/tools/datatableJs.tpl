@@ -121,7 +121,7 @@
                     $('table[id^="datatable"] tbody tr[id=' + selectedCb[ct] + ']').toggleClass('selected');
                 }
             }
-        }).on( 'stateSaveParams.dt', function (e, settings, data) {
+        }).on( 'stateSaveParams.dt ', function (e, settings, data) {
             $.each(data.columns,function(key, d){
                 d.search.search = "";
             })
@@ -332,7 +332,6 @@
                     .attr('for', 'duplicate_' + $(v).data('id'))
                     .html($(v).data('name'))
                     .appendTo($group);
-            //console.log(v);
                 $('<div></div>').addClass('col-sm-1').append(
                     $('<input></input>')
                         .attr('id', 'duplicate_' + $(v).val('id'))
@@ -695,6 +694,7 @@
         var requestSent = true;
         $('input.centreon-search').on('blur keyup', function(e) {
             if (e.type === 'blur' || e.keyCode == 13) {
+                
                 oTable.api().column($(this).data('column-index'))
                     .search(this.value)
                     .draw();
@@ -703,7 +703,7 @@
                 var advString = $( "input[name='advsearch']" ).val();
                 var searchTag = $( this ).data( "searchtag" );
                 var tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" );
-                var splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
+                var splitRegex = new RegExp( "([^\\s\"',]+|\"([^\"]*)\"|'([^']*)')", "g" );
 
                 /* Remove the existing values */
                 advString = advString.replace( tagRegex, "").trim();
@@ -723,9 +723,12 @@
 
             /* Remove the existing values */
             advString = advString.replace( tagRegex, "").trim();
-            while ( match = splitRegex.exec( $( this ).find("option:selected").text() ) ) {
-                advString += " " + searchTag + ":" + match[1];
-            }
+            $( this ).find("option:selected").each(function(ind,elem){
+                while ( match = splitRegex.exec( $(elem).text() ) ) {
+                    advString += " " + searchTag + ":" + match[1];
+                }
+            });
+            
             $( "input[name='advsearch']" ).val( advString.trim() );
             oTable.api().column($(this).data('column-index'))
                 .search($(this).val())
@@ -737,8 +740,10 @@
             fnRunSearch: function(obj) {
               obj.fillAssociateFields();
               $('.centreon-search').each(function(idx, element) {
-                  oTable.api().column($(element).data('column-index'))
-                      .search($(element).val());
+                  if ($(element).data('column-index') !== undefined && $(element).val() !== null) {
+                    oTable.api().column($(element).data('column-index'))
+                        .search($(element).val());
+                  }
               });
               oTable.api().draw();
             },
@@ -859,7 +864,6 @@
               }
               if ( data.success ) {
                 loadBookmark(bookmarkUrl);
-                 console.log("booow !");
                 alertMessage( "{t}Your search is bookmarked.{/t}", "alert-success", 3 );
                 $( "#bookmarkStatus" ).removeClass('fa-star-o');
                 $( "#bookmarkStatus" ).addClass('fa-star');
@@ -950,8 +954,10 @@
             $("input[name='advsearch']").centreonsearch("fillAssociateFields");
             e.preventDefault();
             $('.centreon-search').each(function(idx, element) {
-                oTable.api().column($(element).data('column-index'))
+                if ($(element).data('column-index') !== undefined && $(element).val() !== null) {
+                  oTable.api().column($(element).data('column-index'))
                     .search($(element).val());
+                }
             });
             oTable.api().draw();
         });
@@ -996,5 +1002,7 @@ $( document ).ready(function() {
              a.css({
                  'width' : '68px'
              });
+             
+     $(".select2").select2();
 });
 </script>

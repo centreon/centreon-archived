@@ -175,6 +175,7 @@ class ServiceDatatable extends Datatable
             ),
             'searchParam' => array(
                 'type' => 'select',
+                'multiple' => "true",
                 'additionnalParams' => array(
                     'OK' => '0',
                     'Warning' => '1',
