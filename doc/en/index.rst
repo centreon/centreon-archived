@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to Centreon's documentation!
-####################################
+====================================
 
 Centreon is open source software which enables you to supervise all the elements comprising your information system.
 
@@ -13,9 +13,15 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   developer/index
-   user/index
-
+   1_introduction/index
+   2_release_notes/index
+   3_installation/index
+   4_quickstart/index
+   5_user/index
+   6_exploitation/index
+   7_faq/index
+   8_developer/index
+   
 Additional online resource:
 
 * `Demo <http://demo.centreon.com>`_
