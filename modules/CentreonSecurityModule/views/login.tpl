@@ -12,9 +12,9 @@
 <div class="login-wrap">
   <div class="container">
           <div class="login-title">
-            <img  src="{url_static url='centreon/img/icons/ico-centreon.svg'}" alt="Centreon" />
+            <img  src="{url_static url='centreon/img/centreon.png'}" alt="Centreon" />
 
-            <h2>{t}Centreon{/t}</h2>
+            <h2 class="hidden">{t}Centreon{/t}</h2>
           </div>
           <form action="" method="POST" role="form" class="CentreonForm login-box">
             <div class="panel panel-default panel-login">
