@@ -1,8 +1,13 @@
-User guide
-**********
+User 
+****
 
 .. toctree::
    :maxdepth: 2
 
-   object_management/index
-   centreon_management/index
+   1_web_ui/index
+   2_common_line/index
+   3_rest_api/index
+
+
+
+
