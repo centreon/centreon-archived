@@ -35,7 +35,7 @@
  */
 
 /**
- * Description of 20150720080600_modify_downtime_default_columns_values
+ * Description of 20150720080800_modify_downtime_default_columns_values
  *
  * @author kevin duret <kduret@centreon.com>
  */
@@ -57,6 +57,7 @@ class ModifyDowntimeDefaultColumnValues extends AbstractMigration
         $rt_downtimes->changeColumn('actual_start_time','integer', array('null' => true))
                 ->changeColumn('actual_end_time','integer', array('null' => true))
                 ->changeColumn('triggered_by','integer', array('null' => true))
+                ->changeColumn('service_id','integer', array('null' => true))
                 ->removeIndex(array('host_id', 'start_time'))
                 ->save();
     }

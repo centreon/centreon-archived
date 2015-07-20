@@ -107,6 +107,7 @@ class HostController extends Controller
             ->addJs('jquery.validation/jquery.validate.min.js')
             ->addJs('jquery.validation/additional-methods.min.js')
             ->addJs('hogan-3.0.0.min.js')
+            ->addJs('daterangepicker.js')
             ->addJs('centreon.search.js')
             ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addJs('bootstrap3-typeahead.js')
