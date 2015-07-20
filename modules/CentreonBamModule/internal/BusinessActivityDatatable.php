@@ -140,6 +140,7 @@ class BusinessActivityDatatable extends Datatable
             'width' => 70,
             'searchParam' => array(
                 'type' => 'select',
+                'multiple' => "true",
                 'additionnalParams' => array(
                     'Business Unit' => '1',
                     'Application' => '2',
@@ -156,7 +157,7 @@ class BusinessActivityDatatable extends Datatable
             'type' => 'string',
             'visible' => true,
             'cast' => array(
-            'type' => 'select',
+                'type' => 'select',
                 'parameters' =>array(
                     '0' => '<span class="label label-danger">Disabled</span>',
                     '1' => '<span class="label label-success">Enabled</span>',

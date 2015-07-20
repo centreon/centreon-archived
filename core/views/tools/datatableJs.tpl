@@ -720,18 +720,26 @@
             var searchTag = $( this ).data( "searchtag" );
             var tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" );
             var splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
+            var value = $(this).val();
 
             /* Remove the existing values */
             advString = advString.replace( tagRegex, "").trim();
             $( this ).find("option:selected").each(function(ind,elem){
-                while ( match = splitRegex.exec( $(elem).text() ) ) {
-                    advString += " " + searchTag + ":" + match[1];
+                var value = $(elem).text();
+                if (value.indexOf(' ') !== -1) {
+                    value = '"' + value + '"';
                 }
+                advString += " " + searchTag + ":" + value;
             });
             
             $( "input[name='advsearch']" ).val( advString.trim() );
+            
+            if (value === null) {
+                value = "";
+            }
+            
             oTable.api().column($(this).data('column-index'))
-                .search($(this).val())
+                .search(value)
                 .draw();
         });
 
@@ -936,8 +944,12 @@
                 $( "input[name='advsearch']" ).val( data.data );
                 $( "input[name='advsearch']" ).centreonsearch( "fillAssociateFields" );
                 $( ".centreon-search" ).each( function( idx, element ) {
+                    var value = $(element).val();
+                    if (value === null) {
+                        value = "";
+                    }
                     oTable.api().column( $( element ).data( "column-index" ) )
-                        .search( $( element ).val()) ;
+                        .search( value ) ;
                 });
                 oTable.api().draw();
               } else {
