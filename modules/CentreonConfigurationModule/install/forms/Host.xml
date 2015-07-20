@@ -295,6 +295,7 @@
         <step name="General">
             <field name="host_name" mandatory="1"></field>
             <field name="host_address" mandatory="1"></field>
+            <field name="host_alias" mandatory="1" ></field>
             <field name="timezone_id" mandatory="0"></field>
             <field name="host_hosttemplates" mandatory="0"></field>
             <field name="host_custommacros" mandatory="0" show_label="0"></field>
