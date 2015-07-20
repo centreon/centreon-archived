@@ -61,7 +61,7 @@
   CentreonForm.prototype.initClassInput = function () {
     var self = this;
     this.$elem.find(".form-group").each(function () {
-      var name = $(this).find("input[name]").attr("name");
+      var name = $(this).find("input[name], textarea[name]").attr("name");
       /* Add group in cache */
       self.groups[name] = {
         help: undefined

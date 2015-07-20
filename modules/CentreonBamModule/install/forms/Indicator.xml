@@ -46,11 +46,13 @@
                     <validators>
                     	<validator rules="remote" serverside="centreon-main.unique" />
                     </validators>
+                    <help>Name used to identify the boolean indicator </help>
                 </field>
-                <field name="boolean_expression" normalized_name="boolean-expression" label="Expression" advanced="0" type="textarea" parent_field="kpi_type" parent_value="3" mandatory="0">
+                <field name="boolean_expression" normalized_name="boolean-expression" label="Expression" default_value="" advanced="0" type="textarea" parent_field="kpi_type" parent_value="3" mandatory="0">
                     <attributes>
                         <object>Expression</object>
                     </attributes>
+                    <help>Expression of the boolean indicator </help>
                 </field>
                 <field name="bool_state" normalized_name="boolean-state" label="Is ok if returns" default_value="1" advanced="0" type="radio" parent_field="kpi_type" parent_value="3" mandatory="0">
                     <attributes>
