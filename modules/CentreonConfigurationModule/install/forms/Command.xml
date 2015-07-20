@@ -47,7 +47,7 @@
                 </field>
             </block>
             <block name="Commands linked to connector">
-                <field name="connector_id" label="Connector" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                <field name="connector_id" label="Connector" normalized_name="connector" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-configuration/connector/formlist</defaultValuesRoute>

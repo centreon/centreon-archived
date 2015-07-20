@@ -1,5 +1,9 @@
 html {
   background-color: fade(@black,10%);
+
+  &.loginBg {
+    background: url("../img/bgLogin.jpg") center -8em no-repeat;
+  }
 }
 
 body {
@@ -219,7 +223,7 @@ hr {
 
 /* Login panel */
 .login-wrap:before {
-  position: absolute;
+  /*position: absolute;
   content: '';
   background: url("../img/login.jpg");
   background-size: 100% 100%;
@@ -232,27 +236,64 @@ hr {
   top: 0;
   left: 0;
   height: 100%;
-  width: 100%;
+  width: 100%;*/
 }
 
 .login-footer {
   text-align:center;
   font-size: 12px;
-  color: #fff;
 }
 
 .login-box {
-  margin-top: 200px;
+  margin: 30em 0 0 29em ;
+  max-width: 330px;
+
+  button {
+    width: 100%;
+    transition: all 0.3s ease;
+
+    &:focus {
+      outline: none;
+    }
+    &:hover {
+      background-color: @lightGray2;
+      box-shadow: 1px 2px 2px @lightGray;
+      transition: all 0.3s ease;
+    }
+  }
 }
 
 .login-title {
-  font-size: @font-size-h2;
-  color: #fff;
+  /*font-size: @font-size-h2;
+  color: #fff;*/
+  position: absolute;
+  left: 45.1%;
+  top: 19em;
+
+  img {
+    margin: 0 auto;
+    //width: 20%;
+    display: block;
+  }
+  h2 {
+    text-align: center;
+    margin-top: @paddingElem;
+    color : @black;
+  }
+
 }
 
 .panel-login {
   margin-top: 15px;
   border-radius: @login-panel-radius;
+  position: relative;
+  background: rgba(255,255,255,0.6);
+  //box-shadow: 2px 1px 1px @lightGray;
+
+  .alertLogin {
+    position: absolute;
+    top: -4em;
+  }
 
   .panel-title {
     padding-bottom: 50px;
@@ -270,6 +311,10 @@ hr {
   .panel-footer {
     border: 0;
     background-color: @login-panel-bgcolor;
+
+    a {
+      color: white;
+    }
 
     .buttons {
       padding-top: 5px;

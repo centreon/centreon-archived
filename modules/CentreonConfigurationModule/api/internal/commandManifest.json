@@ -9,7 +9,8 @@
         "command line" : "command_line",
         "type" : "command_type",
         "command" : "command",
-        "slug" : "command_slug"
+        "slug" : "command_slug",
+        "connector" : "connector_id"
     },
     "externalAttributeSet" : [
         {
