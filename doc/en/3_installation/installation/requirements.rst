@@ -4,32 +4,8 @@
 Using CES
 =========
 
-Why choose Centreon Engine and Broker ?
-=======================================
+Please follow our recommandations in order to evoid performance problems. 
 
-Performances
-------------
-The tests carried out by the Centreon teams and some independent users show clearly that the Centreon Engine and Centreon Broker pair performs 8 to 9 times better than the Nagios/NDOUtils pair. Therefore this version of CES no longer supports the installation of the Nagios/NDOUtils pair.
-
-
-Better integration into Centreon
----------------------------------
-The Centreon web interface is more and more oriented towards the use of Centreon Broker. Here are a few examples:
-
-* There is a configuration assistant for Centreon Broker
-* Display performance is greatly improved
-* Some selection filters are only available with the Centreon Broker
-
-New features
-------------
-Several new features make their appearance with Centreon Broker:
-
-* Possibility of encrypting supervision data transmitted to the central server
-* Possibility of compressing supervision data to avoid overloading the bandwidth
-* Use of a new data encrypting protocol (the BBDO protocol) which is more efficient than the NDO protocol
-* Possibility of filtering the type of stream between the components of Centreon Broker to reduce the load and the bandwidth
-* Possibility unidirectional flow between the  Centreon server and its collectors (e.g.: only LAN flows to  DMZ )
- 
 *************
 Prerequisites
 *************
@@ -43,13 +19,13 @@ The table below gives the prerequisites for the installation of CES 3.2:
 +------------------------+--------------------------+----------------+---------------+
 |       500 - 2000       |        1 central         |  2 vCPU / 2 Go |               |
 +------------------------+--------------------------+----------------+---------------+
-|      2000 - 10000      | 1 central + 1 poller     |  4 vCPU / 4 Go | 1 vCPU / 2 Go |
+|      2000 - 10000      |  1 central + 1 poller    |  4 vCPU / 4 Go | 1 vCPU / 2 Go |
 +------------------------+--------------------------+----------------+---------------+
 |      10000 - 20000     |  1 central + 1 poller    |  4 vCPU / 8 Go | 2 vCPU / 2 Go |
 +------------------------+--------------------------+----------------+---------------+
-|      20000 - 50000     | 1 central + 2 pollers    |  4 vCPU / 8 Go | 4 vCPU / 2 Go |
+|      20000 - 50000     |  1 central + 2 pollers   |  4 vCPU / 8 Go | 4 vCPU / 2 Go |
 +------------------------+--------------------------+----------------+---------------+
-|     50000 - 100000     | 1 central + 3 pollers    |  4 vCPU / 8 Go | 4 vCPU / 2 Go |
+|      50000 - 100000    |  1 central + 3 pollers   |  4 vCPU / 8 Go | 4 vCPU / 2 Go |
 +------------------------+--------------------------+----------------+---------------+
 
 .. note::
@@ -63,6 +39,7 @@ The table below gives the prerequisites for the installation of CES 3.2:
 ************
 Installation
 ************
+
 
 Step 1 : Start
 ==============
@@ -80,6 +57,7 @@ Click on **Next**
    :align: center
    :scale: 65%
 
+
 Step 2 : Choice of language
 ===========================
 
@@ -94,6 +72,7 @@ Select the keyboard used by your system and click on **Next**.
 .. image :: /images/user/akeyboard.png
    :align: center
    :scale: 65%
+
 
 Step 3 : General configuration
 ==============================
@@ -178,6 +157,7 @@ Via the web interface
 =====================
 
 Log into web interface via : http://[SERVER_IP]/centreon.
+
 The End of installation wizard of Centreon is displayed, click on **Next**.
 
 .. image :: /images/user/acentreonwelcome.png
@@ -277,19 +257,13 @@ Start monitoring
 
 To start monitoring engine :
  
- 1.	On web interface, go to **Configuration** ==> **Monitoring engines**
- 2.	Leave the default options and click on **Export**
- 3.	Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
- 4.	Check **Move Export Files** and **Restart Monitoring Engine**
- 5.	Click on **Export** again
- 6.     Log into the ‘root’ user on your server
- 7.	Start Centreon Broker
+ 1.	On web interface, go to **Configuration** ==> **Pollers**
+ 2.	Select your unique poller, the "Action" button appear
+ 3.	Select "Apply configuration"
+ 4.	Generate the configuration. Automaticaly, a config check is done by Centreon Engine
+ 5.   Clic **Move Files** 
+ 6.   Now clic **Restart Monitoring Engine**
 
-::
- 
-	/etc/init.d/cbd start
-
-Monitoring is now working.
 
 Introduction to the web interface
 =================================

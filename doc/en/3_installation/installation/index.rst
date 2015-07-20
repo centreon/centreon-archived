@@ -1,11 +1,11 @@
 .. _install:
 
-############
+============
 Installation
-############
+============
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
 
     getting_started
     requirements
