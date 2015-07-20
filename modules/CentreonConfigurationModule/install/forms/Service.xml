@@ -144,7 +144,7 @@
                 </field>
             </block>
             <block name="Macros">
-                <field  name="service_custommacros" label="Custom macros" show_label="0" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0" massive_change='1'>
+                <field  name="service_custommacros" label="Custom macros" show_label="0" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
                     <attributes>
                         <object>service</object>
                     </attributes>

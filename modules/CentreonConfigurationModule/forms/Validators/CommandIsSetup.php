@@ -43,6 +43,7 @@
 namespace CentreonConfiguration\Forms\Validators;
 use Centreon\Internal\Form\Validators\ValidatorInterface;
 use CentreonConfiguration\Repository\HostRepository;
+use CentreonConfiguration\Models\Hosttemplate;
 
 class CommandIsSetup implements ValidatorInterface
 {
@@ -53,11 +54,12 @@ class CommandIsSetup implements ValidatorInterface
     {
         if(!isset($value) || $value === " "){
             // case : UI or API with host-templates params
-            if(isset($params['extraParams']['host_hosttemplates'])){
+            if(isset($params['extraParams']['host_hosttemplates']) && $params['extraParams']['host_hosttemplates'] != " " ){
                 $tplIds = explode(',',$params['extraParams']['host_hosttemplates']);
                 foreach($tplIds as $tplId){
                     if(!empty($tplId)){
-                        $template = \CentreonConfiguration\Models\Hosttemplate::get($tplId);
+                        $template = Hosttemplate::get($tplId);
+                        
                         $childTemplates = HostRepository::getTemplateChain($tplId, array(), -1, true);
                         if(!empty($template['command_command_id'])){
                             $reponse = array('success' => true, 'error' => '');
@@ -71,7 +73,7 @@ class CommandIsSetup implements ValidatorInterface
                         }
                     }
                 }
-            }else{
+            }else if(isset($params['object_id'])){
                 // case : Only UI without host-templates params
                 $childTemplates = HostRepository::getTemplateChain($params['object_id'], array(), -1, true);
                 foreach($childTemplates as $childTemplate){
