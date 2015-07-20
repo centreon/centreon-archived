@@ -74,7 +74,7 @@ class CentreonDb implements DataProviderInterface
         $fields = rtrim($fields, ',');
         $otherFields = rtrim($otherFields, ',');       
         
-        // get fields for search
+        // get fields for search  
         $conditions = array();
         foreach ($params['columns'] as $columnSearch) {
             if ($columnSearch['searchable'] === "true" && (!empty($columnSearch['search']['value']) || $columnSearch['search']['value'] == "0")) {
@@ -87,9 +87,21 @@ class CentreonDb implements DataProviderInterface
                     foreach ($columns as $column) {
                         if ($column['data'] === $columnSearch['data']) {
                             if (isset($column['type']) && (strtolower($column['type']) === 'string')) {
-                                $conditions[$columnSearch['data']] = '%' . $columnSearch['search']['value'] . '%';
+                                preg_match('"([^\\"]+)"', $columnSearch['search']['value'], $result);
+                                preg_replace('"([^\\"]+)"','',$columnSearch['search']['value']);
+                                $aSearch = preg_split( '/[, ]+/', $columnSearch['search']['value'] ); 
+                                foreach($result as $res){
+                                    $aSearch[] = $res;
+                                }
+                                foreach ($aSearch as $sSearch) {
+                                    $conditions[$columnSearch['data']][] = '%' .$sSearch. '%';
+                                }
+                                //$conditions[$columnSearch['data']] = '%' . $columnSearch['search']['value'] . '%';
                             } else {
-                                $conditions[$columnSearch['data']] = $columnSearch['search']['value'];
+                                $aSearch = explode(" ", $columnSearch['search']['value']);
+                                foreach ($aSearch as $sSearch) {
+                                    $conditions[$columnSearch['data']][] = $sSearch;
+                                }
                             }
                         }
                     }

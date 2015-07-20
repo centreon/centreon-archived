@@ -31,8 +31,16 @@
                                 <div class="input-group">
                                     <span class="input-group-addon">{$colSearch.title}</span>
                                     {if $colSearch['type'] == 'select'}
-                                        <select class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" placeholder="{$colSearch.title}" name="{$colName}" data-searchtag="{$colSearch.searchLabel}">
-                                            <option value=""></option>
+                                        {if isset($colSearch["multiple"])}
+                                        {assign "multiple" $colSearch.multiple}
+                                        {else}
+                                        {assign "multiple" "false"}
+                                        {/if}
+                                        <select class="centreon-search{if $multiple !== "false" } select2{/if} form-control"
+                                                data-column-index="{$colSearch.colIndex}"
+                                                placeholder="{$colSearch.title}" name="{$colName}"
+                                                data-searchtag="{$colSearch.searchLabel}"{if $multiple !== "false"} multiple{/if}>
+                                            {if $multiple !== "false" }<option value=""></option>{/if}
                                             {foreach $colSearch.additionnalParams as $optionName=>$optionValue}
                                                 <option value="{$optionValue}">{$optionName}</option>
                                             {/foreach}
@@ -66,8 +74,17 @@
                             <div class="form-group">
                                     <label class="floatLabel">{$colSearch.title}</label>
                                     {if $colSearch['type'] == 'select'}
-                                        <select class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" placeholder="{$colSearch.title}" name="{$colName}" data-searchtag="{$colSearch.searchLabel}">
-                                            <option value=""></option>
+                                        {if isset($colSearch["multiple"])}
+                                        {assign "multiple" $colSearch.multiple}
+                                        {else}
+                                        {assign "multiple" "false"}
+                                        {/if}
+                                        <select class="centreon-search{if $multiple != "false"} select2{/if} form-control"
+                                                data-column-index="{$colSearch.colIndex}"
+                                                placeholder="{$colSearch.title}"
+                                                name="{$colName}"
+                                                data-searchtag="{$colSearch.searchLabel}"{if $multiple != "false"} multiple{/if}>
+                                            {if $multiple == "false"}<option value=""></option>{/if}
                                             {foreach $colSearch.additionnalParams as $optionName=>$optionValue}
                                                 <option value="{$optionValue}">{$optionName}</option>
                                             {/foreach}
