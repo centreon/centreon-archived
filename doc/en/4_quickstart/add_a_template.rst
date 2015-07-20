@@ -1,6 +1,6 @@
 .. _4_quickstart:
 
-Fist Login
-==========
+Add a new template
+==================
 
 
