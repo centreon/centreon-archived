@@ -139,6 +139,7 @@ class CommandDatatable extends Datatable
             ),
             'searchParam' => array(
                 'type' => 'select',
+                'multiple' => "true",
                 'additionnalParams' => array(
                     'Notifications' => '1',
                     'Check' => '2',

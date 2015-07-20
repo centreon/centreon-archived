@@ -38,6 +38,8 @@ namespace CentreonEngine\Listeners\CentreonConfiguration;
 use CentreonConfiguration\Events\EngineProcess as EngineProcessEvent;
 use Centreon\Internal\Exception;
 use CentreonEngine\Models\Engine;
+use CentreonRealtime\Events\ExternalCommand;
+use Centreon\Internal\Di;
 
 class EngineProcess
 {
@@ -48,7 +50,7 @@ class EngineProcess
      */
     public static function execute(EngineProcessEvent $event)
     {
-        $action = $event->getAction();
+        /*$action = $event->getAction();
         if (!in_array($action, array('reload', 'restart', 'forcereload'))) {
             throw new Exception(sprintf('Invalid action for Engine: %s', $action));
         }
@@ -66,6 +68,16 @@ class EngineProcess
         }
         $event->setStatus(
             $status ? false : true
-        );
+        );*/
+        $action = $event->getAction();
+        if ($action == "restart") {
+            $cmd = "[%u] RESTART_PROGRAM\n";
+        } else if ($action == "reload") {
+            $cmd = "[%u] RELOAD_PROGRAM\n";
+        } else {
+            throw new \Exception("Bad type of command.");
+        }
+        $extCommand = new ExternalCommand($event->getPollerId(), sprintf($cmd, time()), 'engine');
+        Di::getDefault()->get('events')->emit('centreon-realtime.command.send', array($extCommand));
     }
 }
