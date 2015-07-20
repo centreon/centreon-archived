@@ -244,6 +244,16 @@ class Form
                 $element['label'] = "";
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
+            case 'radio':
+                $element['input'] = $this->renderHtmlRadio($element);
+                $element['label'] = "";
+                $element['html'] = $this->renderFinalHtml($element);
+                break;
+            case 'checkbox':
+                $element['input'] = $this->renderHtmlCheckbox($element);
+                $element['label'] = "";
+                $element['html'] = $this->renderFinalHtml($element);
+                break;
             case 'static':
                 $className = Component::parseComponentName($element['label_type']);
                 if (class_exists($className) && method_exists($className, 'renderHtmlInput')) {
@@ -304,6 +314,49 @@ class Form
         $tpl->assign('inputElement', $inputElement);
 
         return $tpl->fetch('file:[Core]/form/component/button.tpl');
+    }
+    
+    /**
+     * 
+     * @param array $inputElement
+     * @return string
+     */
+    public function renderHtmlRadio($inputElement)
+    {
+        if (!isset($inputElement['value'])) {
+            $inputElement['value'] = '';
+        }
+
+        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
+            $inputElement['id'] = $inputElement['name'];
+        }
+        
+        $tpl = Di::getDefault()->get('template');
+
+        $tpl->assign('inputElement', $inputElement);
+
+        return $tpl->fetch('file:[Core]/form/component/radio.tpl');
+    }
+    /**
+     * 
+     * @param array $inputElement
+     * @return string
+     */
+    public function renderHtmlCheckbox($inputElement)
+    {
+        if (!isset($inputElement['value'])) {
+            $inputElement['value'] = '';
+        }
+
+        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
+            $inputElement['id'] = $inputElement['name'];
+        }
+        
+        $tpl = Di::getDefault()->get('template');
+
+        $tpl->assign('inputElement', $inputElement);
+
+        return $tpl->fetch('file:[Core]/form/component/radio.tpl');
     }
     
     /**
@@ -502,7 +555,7 @@ class Form
                 $values = json_decode($field['attributes']);
                 $radioValues = array();
                 foreach ($values as $label => $value) {
-                    $radioValues['list'][] = array(
+                    $radioValues['values'] = array(
                         'name' => $label,
                         'label' => $label,
                         'value' => $value
@@ -521,7 +574,7 @@ class Form
                 if (is_array($values) || is_object($values)) {
                     $checkboxValues = array();
                     foreach ($values as $label => $value) {
-                        $checkboxValues['list'][] = array(
+                        $checkboxValues['values'] = array(
                             'name' => $label,
                             'label' => $label,
                             'value' => $value
@@ -784,5 +837,64 @@ class Form
         $this->style = array();
     
         $this->basicSeparator = '&nbsp;';
-    } 
+    }
+    
+    /**
+     * Add custom radio
+     *
+     * @param array $field
+     * @param array $extraParams
+     */
+    public function addRadio($name, $label, $id, $separateur, $radioValues)
+    {        
+        $params = array();
+        
+        if (!isset($id) || (isset($id) && empty($id))) {
+            $id = $name;
+        }
+        
+        $params['label'] = $label;
+        $params['type'] = 'radio';
+
+        if(isset($name)){
+            $general_label = ucwords(str_replace('_', ' ', $name));
+            $params['general_label'] = $general_label;
+            $params['name'] = $name;
+        }
+               
+        if (isset($id)) {
+            $params['id'] = $id;
+        }
+        
+        
+        if (isset($radioValues['values'])) {
+            $params['values'] = (array)$radioValues['values']['value'];
+        }        
+        $elem = $this->formProcessor->addElement('radio', $name, $params);
+    }
+    
+    /**
+     * 
+     * @param type $name
+     * @param type $label
+     * @param type $separteur
+     * @param array $checkboxValues
+     */
+    public function addCheckbox($name, $label, $separteur = '&nbsp;', $checkboxValues = array())
+    {       
+        $params['label'] = $label;
+        $params['type'] = 'checkbox';
+
+        if(isset($name)){
+            $general_label = ucwords(str_replace('_', ' ', $name));
+            $params['general_label'] = $general_label;
+            $params['name'] = $name;
+        }
+                
+        if (isset($checkboxValues['values'])) {
+            $params['values'] = (array)$checkboxValues['values']['value'];
+        }
+                        
+        $elem = $this->formProcessor->addElement('checkbox', $name, $params);
+    }
 }
