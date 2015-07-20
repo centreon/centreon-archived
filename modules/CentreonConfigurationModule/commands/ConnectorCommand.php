@@ -54,6 +54,7 @@ class ConnectorCommand extends BasicCrudCommand
     
     /**
      * @cmdForm /centreon-configuration/connector/update required
+     * @cmdParam boolean|false disable required
      */
     public function createAction($params) {
         parent::createAction($params);
@@ -62,6 +63,8 @@ class ConnectorCommand extends BasicCrudCommand
     /**
      * @cmdForm /centreon-configuration/connector/update optional
      * @cmdObject string connector the connector
+     * @cmdParam boolean|false disable optional disable the connector
+     * @cmdParam boolean|true enable optional enable the connector
      */
     public function updateAction($object, $params) {
         parent::updateAction($object, $params);

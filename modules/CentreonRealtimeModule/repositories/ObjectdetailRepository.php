@@ -96,7 +96,7 @@ class ObjectdetailRepository
                         $additionalParams['end_time'],
                         isset($additionalParams['fixed']) ? 1 : 0,
                         0,
-                        $additionalParams['duration'],
+                        isset($additionalParams['fixed']) ? 0 : $additionalParams['duration'],
                         $additionalParams['author'],
                         $additionalParams['comment']
                     );
