@@ -107,6 +107,7 @@ class IndicatorDatatable extends Datatable
             ),
             'searchParam' => array(
                 'type' => 'select',
+                'multiple' => "true",
                 'additionnalParams' => array(
                     'Service' => '0',
                     'Metaservice' => '1',
