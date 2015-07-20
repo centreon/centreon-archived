@@ -21,7 +21,7 @@
             "type": "connector_command",
             "fields": "command_id,command_slug",
             "message": "The object command not in database",
-            "link": "simple",
+            "link": "multiple",
             "objectClass": "\\CentreonConfiguration\\Models\\Command",
             "group": false
         }
