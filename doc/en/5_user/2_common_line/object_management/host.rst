@@ -148,7 +148,10 @@ Create
 
 In order to create a host, use **create** action::
 
-  ./centreonConsole centreon-configuration:Host:create --name='Centreon-export' --address='10.30.2.87' --poller='central'
+  ./centreonConsole centreon-configuration:Host:create \
+    --name='Centreon-export' \
+    --address='10.30.2.87' \
+    --poller='central'
   centreon-export
   Object successfully created
 
@@ -156,7 +159,8 @@ In order to create a host, use **create** action::
 Slug
 ----
 In order to get slug of host, use **getSlug** action::
-  ./centreonConsole centreon-configuration:Host:getSlug --resource-name 'Centreon-export'
+  ./centreonConsole centreon-configuration:Host:getSlug \
+    --resource-name 'Centreon-export'
   centreon-export
 
 
@@ -165,51 +169,64 @@ Update
 
 In order to update a host, use **update** action::
 
-  ./centreonConsole centreon-configuration:host:update --host "centreon-export" --host-templates 'host-tpl' --poller 'central'
+  ./centreonConsole centreon-configuration:host:update \
+    --host "centreon-export" \
+    --host-templates 'host-tpl' \
+    --poller 'central'
   Object successfully updated
+
 
 Delete
 ------
 
 In order to delete a host, use **delete** action::
 
-  ./centreonConsole centreon-configuration:host:delete --host "centreon-export"
+  ./centreonConsole centreon-configuration:host:delete \
+    --host "centreon-export"
   Object successfully deleted
+
 
 Duplicate (Not yet implemented)
 -------------------------------
 
 In order to duplicate a host, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:host:duplicate --host "host1"
+  ./centreonConsole centreon-configuration:host:duplicate \
+    --host "host1"
   Object successfully duplicated
+
 
 List tag
 --------
 
 In order to list tags of a host, use **listTag** action::
 
-  ./centreonConsole centreon-configuration:host:listTag --host "centreon-export"
+  ./centreonConsole centreon-configuration:host:listTag \
+    --host "centreon-export"
   paris
   rennes
+
 
 Add tag
 -------
 
 In order to add a tag to a host, use **addTag** action::
 
-  ./centreonConsole centreon-configuration:Host:addTag --host='centreon-export' --tag='paris,rennes'
+  ./centreonConsole centreon-configuration:Host:addTag \
+    --host='centreon-export' \
+    --tag='paris,rennes'
   tags has been successfully added to the object
+
 
 Remove tag
 ----------
 
 In order to remove a tag from a host, use **removeTag** action::
 
-  ./centreonConsole centreon-configuration:host:removeTag --host 'centreon-export' --tag "paris"
+  ./centreonConsole centreon-configuration:host:removeTag \
+    --host 'centreon-export' \
+    --tag "paris"
   tag has been successfully removed from the object
-
-
 
 
 List Macro
@@ -217,16 +234,22 @@ List Macro
 
 In order to list macros of a host, use **listMacro** action::
 
-  ./centreonConsole centreon-configuration:host:listMacro --host 'centreon-export'
+  ./centreonConsole centreon-configuration:host:listMacro \
+    --host 'centreon-export'
   macro_name;macro_value;macro_hidden
   $_HOSTmacro1name$;macro1value;1
+
 
 Add Macro
 ---------
 
 In order to add a macro to a host, use **addMacro** action::
 
-  ./centreonConsole centreon-configuration:host:addMacro --host "centreon-export" --name "macro1name" --value "macro1value" --hidden 0
+  ./centreonConsole centreon-configuration:host:addMacro \
+    --host "centreon-export" \
+    --name "macro1name" \
+    --value "macro1value" \
+    --hidden 0
   The macro 'macro1name' has been successfully added to the object
 
 
@@ -235,14 +258,22 @@ Remove Macro
 
 In order to remove a macro from a host, use **removeMacro** action::
 
-  ./centreonConsole centreon-configuration:host:removeMacro --host "centreon-export" --macro "macro1name"
+  ./centreonConsole centreon-configuration:host:removeMacro \
+    --host "centreon-export" \
+    --macro "macro1name"
   The macro 'macro1name' has been successfully removed from the object
+
 
 Update Macro
 ------------
 
 In order to update a macro from a host, use **updateMacro** action::
 
-  ./centreonConsole centreon-configuration:host:updateMacro --host "centreon-export" --macro "macro1name" --value "macro1newvalue" --name="macro1newname" --hidden 1
+  ./centreonConsole centreon-configuration:host:updateMacro \
+    --host "centreon-export" \
+    --macro "macro1name" \
+    --value "macro1newvalue" \
+    --name="macro1newname" \
+    --hidden 1
   The macro 'macro1name' has been successfully updated
 

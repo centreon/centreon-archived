@@ -37,6 +37,7 @@
 namespace CentreonAdministration\Repository;
 
 use Centreon\Internal\Di;
+use CentreonAdministration\Models\ContactInfo;
 
 /**
  * Description of NotificationWayRepository
@@ -45,6 +46,35 @@ use Centreon\Internal\Di;
  */
 class NotificationWayRepository
 {
+    /**
+     * Save contact notification ways
+     *
+     * @param int $id The contact id
+     * @param string $action The action
+     * @param array $params The parameters to save
+     */
+    public static function saveNotificationWays($id, $action = 'add', $listWays = array())
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        if ($action == 'update') {
+            $contactInfos = ContactInfo::getIdByParameter('contact_id', $id);
+            foreach ($contactInfos as $contactInfo) {
+                ContactInfo::delete($contactInfo);
+            }
+        }
+
+        if (count($listWays) > 0) {
+            foreach ($listWays as $name => $params) {
+                ContactInfo::insert(array(
+                    'contact_id' => $id,
+                    'info_key' => $name,
+                    'info_value' => $params['value']
+                ));
+            }
+        }
+    }
+
     /**
      *
      * @return array $notificationWays The list of existing notification ways

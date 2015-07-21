@@ -84,11 +84,10 @@ class CommandIsSetup implements ValidatorInterface
                 }
             }
             
-            $reponse = array('success' => false, 'error' => 'No check command setted on the host or on his templates');
+            $reponse = array('success' => false, 'error' => 'No check command set on the host and its templates');
         }else{
             $reponse = array('success' => true, 'error' => '');
         }
         return $reponse;
     }
-    //put your code here
 }

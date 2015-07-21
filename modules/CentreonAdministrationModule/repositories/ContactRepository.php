@@ -127,37 +127,6 @@ class ContactRepository extends Repository
             TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false, 1);
         }
 
-        $wayList = array();
-        if (isset($givenParameters['way_name']) && isset($givenParameters['way_value'])) {
-            $wayName = $givenParameters['way_name'];
-            $wayValue = $givenParameters['way_value'];
-
-            $nbWay = count($wayName);
-            for($i=0; $i<$nbWay; $i++) {
-                if (!empty($wayName[$i])) {
-                    $wayList[] = array(
-                        'name' => $wayName[$i],
-                        'value' => $wayValue[$i]
-                    );
-                }
-            }
-        }
-
-        $contactInfos = ContactInfo::getIdByParameter('contact_id', $givenParameters['object_id']);
-        foreach ($contactInfos as $contactInfo) {
-            ContactInfo::delete($contactInfo);
-        }
-
-        if (count($wayList) > 0) {
-            foreach ($wayList as $notificationWay) {
-                ContactInfo::insert(array(
-                    'contact_id' => $givenParameters['object_id'],
-                    'info_key' => $notificationWay['name'],
-                    'info_value' => $notificationWay['value']
-                ));
-            }
-        }
-
         $infoToUpdate['contact_id'] = $givenParameters['object_id'];
 
         if (isset($givenParameters['timezone_id']) && is_numeric($givenParameters['timezone_id'])) {

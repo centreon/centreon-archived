@@ -67,9 +67,23 @@ class TimePeriodRepository
         $query = "SELECT * FROM cfg_timeperiods ORDER BY tp_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
+
+        /* Get timeperiod exclusions */
+        $queryExclusions = "SELECT ter.timeperiod_id, t.tp_name FROM cfg_timeperiods_exclude_relations ter, cfg_timeperiods t WHERE ter.timeperiod_exclude_id=t.tp_id";
+        $stmtExclusions = $dbconn->prepare($queryExclusions);
+        $stmtExclusions->execute();
+        $timeperiodExclusions = $stmtExclusions->fetchAll(\PDO::FETCH_ASSOC);
+
+        /* Get timeperiod inclusions */
+        $queryInclusions = "SELECT tir.timeperiod_id, t.tp_name FROM cfg_timeperiods_include_relations tir, cfg_timeperiods t WHERE tir.timeperiod_include_id=t.tp_id";
+        $stmtInclusions = $dbconn->prepare($queryInclusions);
+        $stmtInclusions->execute();
+        $timeperiodInclusions = $stmtInclusions->fetchAll(\PDO::FETCH_ASSOC);
+
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $tmp = array("type" => "timeperiod");
             $tmpData = array();
+
             foreach ($row as $key => $value) {
                 if ($key == 'organization_id' || $key == 'tp_slug') {
                     continue;
@@ -82,6 +96,29 @@ class TimePeriodRepository
                     $tmpData[$key] = $value;
                 }
             }
+
+            /* Generate exclude parameter */
+            $exclusions = array();
+            foreach ($timeperiodExclusions as $timeperiodExclusion) {
+                if ($row['tp_id'] == $timeperiodExclusion['timeperiod_id']) {
+                    $exclusions[] = $timeperiodExclusion['tp_name'];
+                }
+            }
+            if (count($exclusions)) {
+                $tmpData['exclude'] = implode(',', $exclusions);
+            }
+
+            /* Generate include parameter */
+            /*$inclusions = array();
+            foreach ($timeperiodInclusions as $timeperiodInclusion) {
+                if ($row['tp_id'] == $timeperiodInclusion['timeperiod_id']) {
+                    $inclusions[] = $timeperiodInclusion['tp_name'];
+                }
+            }
+            if (count($inclusions)) {
+                $tmpData['include'] = implode(',', $inclusions);
+            }*/
+
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
         }
