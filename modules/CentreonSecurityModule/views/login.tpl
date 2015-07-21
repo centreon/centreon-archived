@@ -12,7 +12,7 @@
 <div class="login-wrap">
   <div class="container">
           <div class="login-title">
-            <img  src="{url_static url='centreon/img/centreon.png'}" alt="Centreon" />
+            <img  src="{url_static url='centreon/img/centreon.png'}" alt="Centreon Logo" />
 
             <h2 class="hidden">{t}Centreon{/t}</h2>
           </div>
@@ -44,7 +44,7 @@
                 </div>
 
             </div>
-            <div class='login-footer'>&copy; Centreon 2014 | <a href='http://www.centreon.com/' target='_blank'>Centreon 3.0</a></div>
+            <div class='login-footer'>&copy; Centreon 2015 | <a href='http://www.centreon.com/' target='_blank'>Centreon 3.0</a></div>
           </form>
   </div>
 </div>
