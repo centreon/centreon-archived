@@ -42,8 +42,8 @@ use Centreon\Models\CentreonRelationModel;
 class Timeperiodexcluded extends CentreonRelationModel
 {
     protected static $relationTable = "cfg_timeperiods_exclude_relations";
-    protected static $firstKey = "timeperiod_id";
-    protected static $secondKey = "timeperiod_exclude_id";
+    protected static $firstKey = "timeperiod_exclude_id";
+    protected static $secondKey = "timeperiod_id";
     public static $firstObject = "\CentreonConfiguration\Models\Timeperiod";
     public static $secondObject = "\CentreonConfiguration\Models\Timeperiod";
     

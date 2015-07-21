@@ -42,8 +42,8 @@ use Centreon\Models\CentreonRelationModel;
 class Timeperiodincluded extends CentreonRelationModel
 {
     protected static $relationTable = "cfg_timeperiods_include_relations";
-    protected static $firstKey = "timeperiod_id";
-    protected static $secondKey = "timeperiod_include_id";
+    protected static $firstKey = "timeperiod_include_id";
+    protected static $secondKey = "timeperiod_id";
     public static $firstObject = "\CentreonConfiguration\Models\Timeperiod";
     public static $secondObject = "\CentreonConfiguration\Models\Timeperiod";
     
