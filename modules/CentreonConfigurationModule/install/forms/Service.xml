@@ -124,6 +124,21 @@
                     </validators>
                     <help>Enable or disable active checks (either regularly scheduled or on-demand) of this service here. By default active service checks are enabled.</help>
                 </field>
+                <field normalized_name="passive-checks-enabled" name="service_passive_checks_enabled" label="Passive checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0" massive_change='1'>
+                    <attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
+                    </attributes>
+                    <validators>
+                        <validator rules="remote" serverside="core.AuthorizedValues">
+                            <argument name="values">0,1,2</argument>
+                        </validator>
+                    </validators>
+                    <help>Enable or disable passive checks. By default passive service checks are enabled.</help>
+                </field>
                 <field normalized_name="volatile" name="service_is_volatile" label="Is volatile" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0" massive_change='1'>
                     <attributes>
                         <choices>

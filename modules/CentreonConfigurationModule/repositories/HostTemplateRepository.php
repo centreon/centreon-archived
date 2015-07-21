@@ -68,7 +68,7 @@ class HostTemplateRepository extends Repository
         'host_check_interval',
         'host_retry_check_interval',
         'host_active_checks_enabled',
-        'host_checks_enabled',
+        'host_passive_checks_enabled',
         'initial_state',
         'host_obsess_over_host',
         'host_check_freshness',

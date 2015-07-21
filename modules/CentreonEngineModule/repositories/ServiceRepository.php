@@ -110,38 +110,33 @@ class ServiceRepository extends ServicetemplateRepository
 
                     /* Add service_id macro for broker - This is mandatory*/
                     $tmpData["_SERVICE_ID"] = $service_id;
+                } elseif (isset($disableField[$key]) && $value != 2 && $value != "") {
+                    $key = str_replace("service_", "", $key);
+                    $tmpData[$key] = $value;
                 } elseif ((!isset($disableField[$key]) && $value != "")) {
-                    if (isset($disableField[$key]) && $value != 2) {
-                        ;
-                    } else {
-                        if ($key != 'service_description') {
-                            $key = str_replace("service_", "", $key);
-                        }
-                        if ($key == 'normal_check_interval') {
-                            $key = "check_interval";
-                        }
-                        if ($key == 'retry_check_interval') {
-                            $key = "retry_interval";
-                        }
-                        if ($key == 'command_command_id_arg' || $key == 'command_command_id_arg2') {
-                            $args = $value;
-                            $writeParam = 0;
-                        }
-                        if ($key == 'check_command' || $key == 'event_handler') {
-                            if (is_numeric($value)) {
-                                $value = CommandConfigurationRepository::getCommandName($value).html_entity_decode($args);
-                            }
-                            $args = "";
-                        }
-                        if ($key == 'check_period') {
-                            $value = TimePeriodConfigurationRepository::getPeriodName($value);
-                        }
-                        if ($key == "template_model_stm_id") {
-                            $key = "use";
-                            $value = ServicetemplateConfigurationRepository::getTemplateName($value);
-                        }
-                        $tmpData[$key] = $value;
+                    if ($key != 'service_description') {
+                        $key = str_replace("service_", "", $key);
                     }
+
+                    if ($key == 'normal_check_interval') {
+                        $key = "check_interval";
+                    } else if ($key == 'retry_check_interval') {
+                        $key = "retry_interval";
+                    } else if ($key == 'command_command_id_arg' || $key == 'command_command_id_arg2') {
+                        $args = $value;
+                        $writeParam = 0;
+                    } else if ($key == 'check_command' || $key == 'event_handler') {
+                        if (is_numeric($value)) {
+                            $value = CommandConfigurationRepository::getCommandName($value).html_entity_decode($args);
+                        }
+                        $args = "";
+                    } else if ($key == 'check_period') {
+                        $value = TimePeriodConfigurationRepository::getPeriodName($value);
+                    } else if ($key == "template_model_stm_id") {
+                        $key = "use";
+                        $value = ServicetemplateConfigurationRepository::getTemplateName($value);
+                    }
+                    $tmpData[$key] = $value;
                 }
             }
              /* Generate macro */

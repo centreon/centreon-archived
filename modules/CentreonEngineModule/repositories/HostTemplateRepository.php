@@ -62,6 +62,7 @@ class HostTemplateRepository
     {
         $content = array();
         $content["host_active_checks_enabled"] = 1;
+        $content["host_passive_checks_enabled"] = 1;
         $content["host_obsess_over_host"] = 1;
         $content["host_check_freshness"] = 1;
         $content["host_event_handler_enabled"] = 1;
@@ -114,26 +115,23 @@ class HostTemplateRepository
                     $tmpData["_SNMPCOMMUNITY"] = $value;
                 } elseif (($key == "host_snmp_version") && ($value != "")) {
                     $tmpData["_SNMPVERSION"] = $value;
+                } elseif (isset($disableField[$key]) && $value != 2 && $value != "") {
+                    $key = str_replace("host_", "", $key);
+                    $tmpData[$key] = $value;
                 } elseif ((!isset($disableField[$key]) && $value != "")) {
-                    if (isset($disableField[$key]) && $value != 2) {
-                        ;
-                    } else {
-                        $key = str_replace("host_", "", $key);
-
-                        if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg2') {
-                            $args = $value;
-                        }
-                        if ($key == 'check_command' || $key == 'event_handler') {
-                            $value = CommandConfigurationRepository::getCommandName($value).$args;
-                            $args = "";
-                        }
-                        if ($key == 'check_period') {
-                            $value = TimePeriodConfigurationRepository::getPeriodName($value);
-                        }
-                        $tmpData[$key] = $value;
+                    $key = str_replace("host_", "", $key);
+                    if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg2') {
+                        $args = $value;
+                    } else if ($key == 'check_command' || $key == 'event_handler') {
+                        $value = CommandConfigurationRepository::getCommandName($value).$args;
+                        $args = "";
+                    } else if ($key == 'check_period') {
+                        $value = TimePeriodConfigurationRepository::getPeriodName($value);
                     }
+                    $tmpData[$key] = $value;
                 }
             }
+
             if (!is_null($host_id)) {
                 $templates = HostTemplateConfigurationRepository::getTemplates($host_id); 
                 if ($templates != "") {
@@ -176,7 +174,7 @@ class HostTemplateRepository
     protected static function getFields()
     {
         $fields = "host_id, host_name, host_alias, host_address, host_snmp_version, host_snmp_community, "
-            . "host_max_check_attempts, host_check_interval, host_active_checks_enabled, "
+            . "host_max_check_attempts, host_check_interval, host_active_checks_enabled, host_passive_checks_enabled, "
             . "command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, "
             . "host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, "
             . "command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, "
