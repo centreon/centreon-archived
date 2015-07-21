@@ -120,36 +120,34 @@ class HostRepository extends HostTemplateRepository
                     $tmpData["_SNMPCOMMUNITY"] = $value;
                 } elseif (($key == "host_snmp_version") && ($value != "")) {
                     $tmpData["_SNMPVERSION"] = $value;
+                } elseif (isset($disableField[$key]) && $value != 2 && $value != "") {
+                    $key = str_replace("host_", "", $key);
+                    $tmpData[$key] = $value;
                 } elseif ((!isset($disableField[$key]) && $value != "")) {
-                    if (isset($disableField[$key]) && $value != 2) {
-                        ;
+                    if ($key != 'host_name') {
+                        $key = str_replace("host_", "", $key);
                     } else {
-                        if ($key != 'host_name') {
-                            $key = str_replace("host_", "", $key);
-                        } else {
-                            $host_name = $value;
-                        }
-                        if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg2') {
-                            $args = $value;
-                        }
-                        if ($key == 'check_command' || $key == 'event_handler') {
-                            $value = CommandConfigurationRepository::getCommandName($value).$args;
-                            $args = "";
-                        }
-                        if ($key == 'check_period') {
-                            $value = TimeperiodConfigurationRepository::getPeriodName($value);
-                        }
-                        if ($key == 'timezone_id') {
-                            $key = 'timezone';
-                            if ($value != 'NULL') {
-                                $tName = \CentreonAdministration\Models\Timezone::getParameters($value, array('name'));
-                                $value = ':'.$tName['name'];
-                            }
-                        }
-                        $tmpData[$key] = $value;
+                        $host_name = $value;
                     }
+
+                    if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg2') {
+                        $args = $value;
+                    } else if ($key == 'check_command' || $key == 'event_handler') {
+                        $value = CommandConfigurationRepository::getCommandName($value).$args;
+                        $args = "";
+                    } else if ($key == 'check_period') {
+                        $value = TimeperiodConfigurationRepository::getPeriodName($value);
+                    } else if ($key == 'timezone_id') {
+                        $key = 'timezone';
+                        if ($value != 'NULL') {
+                            $tName = \CentreonAdministration\Models\Timezone::getParameters($value, array('name'));
+                            $value = ':'.$tName['name'];
+                        }
+                    }
+                    $tmpData[$key] = $value;
                 }
             }
+
             if (!is_null($host_id)) {
                 $templates = HostTemplateConfigurationRepository::getTemplates($host_id); 
                 if ($templates != "") {

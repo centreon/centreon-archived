@@ -132,7 +132,6 @@
                      if (value != null) {
                         $('#' + key + '_inheritance').text(value);
                         $('#' + key).removeClass('mandatory-field');
-                        $('label[for="' + key + '"]').parent().find('span').remove();
                      }
                   });
                 }
