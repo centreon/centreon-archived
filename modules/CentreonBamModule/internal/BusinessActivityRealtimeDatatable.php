@@ -139,6 +139,7 @@ class BusinessActivityRealtimeDatatable extends Datatable
             ),
             'searchParam' => array(
                 'type' => 'select',
+                'multiple' => "true",
                 'additionnalParams' => array(
                     'OK' => '0',
                     'Warning' => '1',
@@ -159,6 +160,7 @@ class BusinessActivityRealtimeDatatable extends Datatable
             'width' => 70,
             'searchParam' => array(
                 'type' => 'select',
+                'multiple' => "true",
                 'additionnalParams' => array(
                     'Business Unit' => '1',
                     'Application' => '2',

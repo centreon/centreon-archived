@@ -153,6 +153,7 @@ class HostDatatable extends Datatable
             ),
             'searchParam' => array(
                 'type' => 'select',
+                'multiple' => "true",
                 'additionnalParams' => array(
                     'UP' => '0',
                     'Down' => '1',

@@ -55,12 +55,14 @@ class Textarea extends Component
         }
         
         if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
-            $placeholder = 'placeholder="'.$element['name'].'" ';
+            $placeholder = 'placeholder="'.$element['label'].'" ';
         }
         
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
         }
+        
+        
         
         $addClass = '';
         $required = '';
