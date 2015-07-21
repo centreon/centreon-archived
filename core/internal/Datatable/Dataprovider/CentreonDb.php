@@ -98,7 +98,7 @@ class CentreonDb implements DataProviderInterface
                                 }
                                 //$conditions[$columnSearch['data']] = '%' . $columnSearch['search']['value'] . '%';
                             } else {
-                                $aSearch = explode(" ", $columnSearch['search']['value']);
+                                $aSearch = preg_split( '/[, ]+/', $columnSearch['search']['value'] );
                                 foreach ($aSearch as $sSearch) {
                                     $conditions[$columnSearch['data']][] = $sSearch;
                                 }
