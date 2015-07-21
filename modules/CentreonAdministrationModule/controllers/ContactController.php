@@ -42,6 +42,7 @@ use CentreonAdministration\Events\ContactinfoListKey;
 use Centreon\Controllers\FormController;
 use Centreon\Internal\Form\Generator\Web\Full as WebFormGenerator;
 use CentreonAdministration\Repository\TagsRepository;
+use CentreonAdministration\Repository\NotificationWayRepository;
 
 class ContactController extends FormController
 {
@@ -141,12 +142,35 @@ class ContactController extends FormController
      */
     public function updateContactAction()
     {
-        $aTags = array();
         $givenParameters = $this->getParams('post');
-        
+
+        $listWays = array();
+        if (isset($givenParameters['way_name']) && isset($givenParameters['way_value'])) {
+
+            $wayName = $givenParameters['way_name'];
+            $wayValue = $givenParameters['way_value'];
+
+            foreach ($wayName as $key => $name) {
+                if (!empty($name) && !empty($wayValue[$key])) {
+                    $listWays[$name] = array(
+                        'value' => $wayValue[$key],
+                    );
+                }
+            }
+        }
+
+        try{
+            NotificationWayRepository::saveNotificationWays($givenParameters['object_id'], 'update', $listWays);
+        } catch (\Exception $ex) {
+            $errorMessage = $ex->getMessage();
+            $this->router->response()->json(array('success' => false,'error' => $errorMessage));
+        }
+
+
         //Delete all tags
         TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
         
+        $aTags = array();
         if (isset($givenParameters['contact_tags'])) {
             $aTagList = explode(",", $givenParameters['contact_tags']);
             foreach ($aTagList as $var) {                
@@ -159,6 +183,8 @@ class ContactController extends FormController
                 TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false, 1);
             }
         }
+
+
         parent::updateAction();
     }
     
@@ -214,6 +240,28 @@ class ContactController extends FormController
         $givenParameters = $this->getParams('post');
  
         $id = parent::createAction(false);
+
+        $listWays = array();
+        if (isset($givenParameters['way_name']) && isset($givenParameters['way_value'])) {
+
+            $wayName = $givenParameters['way_name'];
+            $wayValue = $givenParameters['way_value'];
+
+            foreach ($wayName as $key => $name) {
+                if (!empty($name) && !empty($wayValue[$key])) {
+                    $listWays[$name] = array(
+                        'value' => $wayValue[$key],
+                    );
+                }
+            }
+        }
+
+        try{
+            NotificationWayRepository::saveNotificationWays($id, 'create', $listWays);
+        } catch (\Exception $ex) {
+            $errorMessage = $ex->getMessage();
+            $this->router->response()->json(array('success' => false,'error' => $errorMessage));
+        }
         
         if (isset($givenParameters['contact_tags'])) {
             $aTagList = explode(",", $givenParameters['contact_tags']);

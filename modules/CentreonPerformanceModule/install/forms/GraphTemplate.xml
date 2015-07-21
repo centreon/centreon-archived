@@ -36,7 +36,7 @@
                 </field>
             </block>
             <block name="Curves">
-                <field name="curves" label="Curves" default_value="" advanced="0" type="customcurvegraphcustomgraph" parent_field="" mandatory="0"></field>
+                <field name="curves" label="Curves" default_value="" show_label="0" advanced="0" type="customcurvegraph" parent_field="" mandatory="0"></field>
             </block>
         </section>
     </form>

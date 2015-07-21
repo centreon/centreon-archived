@@ -40,6 +40,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Utils\HumanReadable;
 use Centreon\Controllers\FormController;
 use CentreonPerformance\Repository\GraphView;
+use CentreonPerformance\Repository\GraphTemplate as GraphTemplateRepository;
 
 /**
  * Controller for config template graph
@@ -74,7 +75,15 @@ class ConfigGraphTemplateController extends FormController
     public function listAction()
     {
         $this->tpl->addCss('spectrum.css');
-        $this->tpl->addJs('spectrum.js');
+        $this->tpl->addJs('spectrum.js')
+                  ->addJs('component/customcurvegraph.js');
+
+        $this->tpl->addCustomJs('$(function () {
+                $("#modal").on("loaded.bs.modal", function() {
+                    initCustomCurveGraph();
+                });
+            });');
+
         parent::listAction();
     }
 
@@ -95,7 +104,42 @@ class ConfigGraphTemplateController extends FormController
      */
     public function createAction()
     {
-        parent::createAction();
+        $id = parent::createAction(false);
+
+        $givenParameters = clone $this->getParams('post');
+
+        $listMetrics = array();
+        if (isset($givenParameters['metric_name'])) {
+            foreach ($givenParameters['metric_name'] as $key => $value) {
+                if (!empty($value)) {
+                    $listMetrics[$key]['metric_name'] = $value;
+                    if (isset($givenParameters['metric_fill'][$key])) {
+                        $listMetrics[$key]['metric_fill'] = '1';
+                    } else {
+                        $listMetrics[$key]['metric_fill'] = '0';
+                    }
+                    if (isset($givenParameters['metric_negative'][$key])) {
+                        $listMetrics[$key]['metric_negative'] = '1';
+                    } else {
+                        $listMetrics[$key]['metric_negative'] = '0';
+                    }
+                    if (isset($givenParameters['metric_color'][$key])) {
+                        $listMetrics[$key]['metric_color'] = $givenParameters['metric_color'][$key];
+                    } else {
+                        $listMetrics[$key]['metric_color'] = '#000000';
+                    }
+                }
+            }
+        }
+
+        try{
+            GraphTemplateRepository::saveMetrics($id, 'add', $listMetrics);
+        } catch (\Exception $ex) {
+            $errorMessage = $ex->getMessage();
+            $this->router->response()->json(array('success' => false,'error' => $errorMessage));
+        }
+
+        $this->router->response()->json(array('success' => true));
     }
 
     /**
@@ -135,6 +179,39 @@ class ConfigGraphTemplateController extends FormController
      */
     public function updateAction()
     {
+        $givenParameters = clone $this->getParams('post');
+
+        $listMetrics = array();
+        if (isset($givenParameters['metric_name'])) {
+            foreach ($givenParameters['metric_name'] as $key => $value) {
+                if (!empty($value)) {
+                    $listMetrics[$key]['metric_name'] = $value;
+                    if (isset($givenParameters['metric_fill'][$key])) {
+                        $listMetrics[$key]['metric_fill'] = '1';
+                    } else {
+                        $listMetrics[$key]['metric_fill'] = '0';
+                    }
+                    if (isset($givenParameters['metric_negative'][$key])) {
+                        $listMetrics[$key]['metric_negative'] = '1';
+                    } else {
+                        $listMetrics[$key]['metric_negative'] = '0';
+                    }
+                    if (isset($givenParameters['metric_color'][$key])) {
+                        $listMetrics[$key]['metric_color'] = $givenParameters['metric_color'][$key];
+                    } else {
+                        $listMetrics[$key]['metric_color'] = '#000000';
+                    }
+                }
+            }
+        }
+
+        try{
+            GraphTemplateRepository::saveMetrics($givenParameters['object_id'], 'update', $listMetrics);
+        } catch (\Exception $ex) {
+            $errorMessage = $ex->getMessage();
+            $this->router->response()->json(array('success' => false,'error' => $errorMessage));
+        }
+
         parent::updateAction();
     }
 

@@ -34,7 +34,8 @@
  */
 namespace Centreon\Internal\Form\Component;
 
-use CentreonPerformance\Repository\GraphTemplate;
+use Centreon\Internal\Di;
+use CentreonPerformance\Repository\GraphTemplate as GraphTemplateRepository;
 
 /**
  * Astract for custom form for graph
@@ -58,83 +59,28 @@ abstract class Customcurvegraph extends Component
      */
     public static function renderHtmlInput(array $element)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         /* Add javascript file for clone */
         $tpl = $di->get('template');
+
         $tpl->addJs('centreon-clone.js')
+            ->addJs('component/customcurvegraph.js')
             ->addJs('spectrum.js');
+
         $tpl->addCss('spectrum.css');
-        $router = $di->get('router');
 
-        $metricsUrl = $router->getPathFor('/centreon-performance/configuration/graphtemplate/listMetrics');
-
-        $javascript = '$(function() {
-  $(".clonable").centreonClone({
-    events: {
-      add: [
-        function(element) {
-          element.find(".color-picker").spectrum({
-            showInput: true,
-            allowEmpty: true,
-            preferredFormat: "hex"
-          });
-        }
-      ]
-    }
-  });
-
-  $(".cloned_element .color-picker").spectrum({
-    showInput: true,
-    allowEmpty: true,
-    preferredFormat: "hex"
-  });
-
-  $("body").on("click", ".btn-toggle", function() {
-    $(this).find(".btn").toggleClass("active");
-    if ($(this).find(".btn-primary").size()>0) {
-      $(this).find(".btn").toggleClass("btn-primary");
-    }
-    $(this).find(".btn").toggleClass("btn-default");
-  });
-    
-  $("#load_metrics").on("click", function() {
-    var tmplId = $("#svc_tmpl_id").val();
-    if (tmplId == "") {
-      return;
-    }
-    $.ajax({
-      url: "' . $metricsUrl . '",
-      data: {svc_tmpl_id: tmplId},
-      dataType: "json",
-      type: "post",
-      success: function(data, statusText, jqXHR) {
-        var listMetrics = [];
-        if (data.success) {
-          $("input.metric_id").each(function(idx, el) {
-            listMetrics.push($(el).val());
-          });
-          $.each(data.data, function(idx, metric) {
-            if (-1 == $.inArray(metric, listMetrics)) {
-              $(".clonable").centreonClone("addElement", {
-                "input.metric_id": metric
-              });
-            }
-          });
-        }
-      }
-    });
-  });
-});';
         /* Load default values */
+        $listMetrics = array();
         if (isset($element['label_extra']) && isset($element['label_extra']['id'])) {
             $graphTmplId = $element['label_extra']['id'];
-            $listMetrics = GraphTemplate::getMetrics($graphTmplId);
-            $tpl->assign('metrics', $listMetrics);
+            $listMetrics = GraphTemplateRepository::getMetrics($graphTmplId);
         }
+        $tpl->assign('currentMetrics', $listMetrics);
+
         $tpl->assign('element', $element);
+
         return array(
-            'html' => $tpl->fetch(static::$templateName),
-            'js' => $javascript
+            'html' => $tpl->fetch('file:[Core]/form/component/customcurvegraph.tpl'),
         );
     }
 }

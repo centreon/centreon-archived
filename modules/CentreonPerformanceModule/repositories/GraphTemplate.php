@@ -58,45 +58,39 @@ class GraphTemplate extends FormRepository
             'graphTemplate' => 'cfg_curve_config, graph_template_id, metric_name'
         ),
     );
-    /**
+
+   /**
      * Save the curves for graph template
      *
      * @param int $id The graph template id
      * @param string $action The action
      * @param array $params The parameters to save
      */
-    protected static function postSave($id, $action = 'add', $params = array())
+    public static function saveMetrics($id, $action = 'add', $listMetrics = array())
     {
         $dbconn = Di::getDefault()->get('db_centreon');
+
         if ($action == 'update') {
             $query = "DELETE FROM cfg_curve_config WHERE graph_template_id = :tmpl_id";
             $stmt = $dbconn->prepare($query);
             $stmt->bindValue(':tmpl_id', $id, \PDO::PARAM_INT);
             $stmt->execute();
         }
+
         $query = "INSERT INTO cfg_curve_config (graph_template_id, metric_name, color, is_negative, fill)
             VALUES (:tmpl_id, :name, :color, :neg, :fill)";
         $stmt = $dbconn->prepare($query);
+
         /* Insert metrics */
-        if (isset($params['metric_id'])) {
-            for ($i = 1; $i < count($params['metric_id']); $i++) {
-                $negative = 0;
-                if (isset($params['negative'][$i])) {
-                    $negative = $params['negative'][$i];
-                }
-                $fill = 0;
-                if (isset($params['fill'][$i])) {
-                    $fill = $params['fill'][$i];
-                }
-                $stmt->bindValue(':tmpl_id', $id, \PDO::PARAM_INT);
-                $stmt->bindValue(':name', $params['metric_id'][$i], \PDO::PARAM_STR);
-                $stmt->bindValue(':color', $params['color'][$i], \PDO::PARAM_STR);
-                $stmt->bindValue(':neg', $negative, \PDO::PARAM_INT);
-                $stmt->bindValue(':fill', $fill, \PDO::PARAM_INT);
-                $stmt->execute();
-            }
+        foreach ($listMetrics as $metric) {
+            $stmt->bindValue(':tmpl_id', $id, \PDO::PARAM_INT);
+            $stmt->bindValue(':name', $metric['metric_name'], \PDO::PARAM_STR);
+            $stmt->bindValue(':color', $metric['metric_color'], \PDO::PARAM_STR);
+            $stmt->bindValue(':neg', $metric['metric_negative'], \PDO::PARAM_INT);
+            $stmt->bindValue(':fill', $metric['metric_fill'], \PDO::PARAM_INT);
+            $stmt->execute();
         }
-    } 
+    }
 
     /**
      * Get the list of metrics of a graph template

@@ -102,8 +102,3 @@
     </ul>
 </div>
 <input id="cloned_element_index" name="cloned_element_index" type="hidden" value="0" />
-
-<script>
-           //console.log({$i});
-
- </script>

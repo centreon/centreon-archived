@@ -31,7 +31,7 @@
                         <multiple>true</multiple>
                     </attributes>
 		</field>
-                <field name="contact_notification_way" label="Notification way" default_value="" advanced="0" type="notificationWay" parent_field="" mandatory="0"></field>
+                <field name="contact_notification_way" label="Notification way" show_label="0" default_value="" advanced="0" type="notificationWay" parent_field="" mandatory="0"></field>
             </block>
         </section>
     </form>
