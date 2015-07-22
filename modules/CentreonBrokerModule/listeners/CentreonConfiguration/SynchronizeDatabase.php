@@ -33,60 +33,29 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonBroker\Listeners\CentreonConfiguration;
 
+use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
-use CentreonConfiguration\Events\CopyFiles;
-use CentreonConfiguration\Events\SynchronizeFiles;
-use CentreonConfiguration\Events\SynchronizeDatabase;
+use CentreonConfiguration\Events\SynchronizeDatabase as SynchronizeDatabaseEvent;
+use CentreonBroker\Repository\BrokerRepository;
 
-/**
- * Factory for ConfigTest Engine
- *
- * @author Julien Mathis <jmathis@centreon.com>
- * @version 3.0.0
- */
-
-class ConfigMoveRepository extends ConfigRepositoryAbstract
+class SynchronizeDatabase
 {
     /**
-     * Constructor
-     * 
-     * @param int $pollerId
+     * Execute action 
+     *
+     * @param \CentreonConfiguration\Events\SynchronizeDatabase $event
+     * @throws Exception
      */
-    public function __construct($pollerId)
+    public static function execute(SynchronizeDatabaseEvent $event)
     {
-        parent::__construct($pollerId);
-        $this->output[] = sprintf(_("Copying configuration files of poller %s"), $pollerId);
-    }
-
-    /**
-     * Move configuration files 
-     * 
-     */
-    public function moveConfig()
-    {
+        $command = sprintf("[%u] SYNC_CFG_DB;", time());
+        
         try {
-            /* Get Path */
-            $event = $this->di->get('events');
-
-            $eventObj = new CopyFiles($this->pollerId);
-            $event->emit('centreon-configuration.copy.files', array($eventObj));
-            $this->output = array_merge($this->output, $eventObj->getOutput());
-
-            /* Event for external commands */
-            $eventObj = new SynchronizeFiles($this->pollerId);
-            $event->emit('centreon-configuration.synchronize.files', array($eventObj));
-            $this->output = array_merge($this->output, $eventObj->getOutput());
-            
-            /* Synchronize Database */
-            $eventObj = new SynchronizeDatabase($this->pollerId);
-            $event->emit('centreon-configuration.synchronize.database', array($eventObj));
-            $this->output = array_merge($this->output, $eventObj->getOutput());
-
-        } catch (Exception $e) {
-            $this->output[] = $e->getMessage();
-            $this->status = false;
+            BrokerRepository::sendCommand($command . $event->getPollerId(). "\n");
+        } catch (\Exception $e) {
+            $event->setOutput($e->getMessage());
         }
     }
 }
