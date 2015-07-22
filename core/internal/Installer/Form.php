@@ -1108,7 +1108,7 @@ class Form
     /**
      * delete massive change
      */
-    protected static function deleteMassiveChange()
+    public static function deleteMassiveChange()
     {
         $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare('DELETE FROM cfg_forms_massive_change');
