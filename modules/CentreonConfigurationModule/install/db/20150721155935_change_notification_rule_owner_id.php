@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -31,27 +32,27 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
-
-namespace CentreonConfiguration\Models;
-
-use Centreon\Models\CentreonBaseModel;
 
 /**
- * Used for interacting with notification rule objects
+ * Description of 20150721155935_change_notification_rule_owner_id
  *
- * @author Maximilien Bersoult <mbersoult@centreon.com>
- * @package CentreonConfiguration
- * @subpackage Models
- * @version 3.0.0
+ * @author bsauveton
  */
-class NotificationRule extends CentreonBaseModel
+use Phinx\Migration\AbstractMigration;
+
+class ChangeNotificationRuleOwnerId extends AbstractMigration
 {
-    protected static $table = "cfg_notification_rules";
-    protected static $primaryKey = "rule_id";
-    protected static $uniqueLabelField = "name";
-    protected static $slugField = "slug";
-
+    
+    public function change()
+    {
+        $cfg_notification_rules = $this->table('cfg_notification_rules');
+        $cfg_notification_rules->dropForeignKey('owner_id')
+            ->removeColumn('owner_id')
+            ->addColumn('owner_id', 'integer', array('signed' => false, 'null' => true))
+            ->addForeignKey('owner_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))->save();
+        
+    }
+    
+    //put your code here
 }
-
