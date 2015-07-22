@@ -899,6 +899,7 @@ class Form
         $elem = $this->formProcessor->addElement('checkbox', $name, $params);
     }
     
+    
     /**
      * 
      * @param integer $id
@@ -920,6 +921,7 @@ class Form
         while ($validator = $validatorStmt->fetch()) {
             $myvalidator['rules']  = $validator['rules'];
             $myvalidator['params'] = json_decode($validator['params'], true);
+            $myvalidator['validator_action']  = $validator['validator_action'];
             $validators[] = $myvalidator;
         }
 

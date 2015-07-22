@@ -75,6 +75,7 @@ class Installer extends AbstractModuleInstaller
      */
     public function customRemove()
     {
-        
+        //Remove massive change
+        $this->removeMassiveChange();
     }
 }

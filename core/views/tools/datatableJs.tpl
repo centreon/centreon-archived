@@ -392,6 +392,7 @@
         });
         {/if}
 
+
         /* Massive change modal */
         {if isset($objectMcUrl)}
                     
@@ -399,7 +400,8 @@
             e.preventDefault();
             $('#modal').removeData('bs.modal');
             $('#modal .modal-content').text('');
-
+            rules = {};
+            
             /* MC modal header */
             var $mcHeader = $('<div></div>').addClass('modal-header');
             $('<button></button>')
@@ -414,10 +416,12 @@
 
             /* MC modal body */
             var $mcBody = $('<div></div>').addClass('modal-body');
-            var $form = $('<form></form>').attr('role', 'form')
-                    .attr('novalidate', 'novalidate')
-                    .attr('name', 'massive')
+            var $form = $('<form role="form" id="massive_change" novalidate></form>')
                     .addClass('form-horizontal');
+                 
+            $form.validate({
+            
+            });
             
             var $formGroup = $('<div></div>').addClass('form-group');
             $('<div></div>')
@@ -430,6 +434,7 @@
                         .text('{t}Choose the attribute to change{/t}')
                 ).appendTo($formGroup);
         
+        /*
         $('<div></div>')
             .addClass('flash')
             .addClass('alert')
@@ -448,6 +453,7 @@
                     .attr('id', 'errors')
             )
             .appendTo($formGroup);
+    */
     
             /* Get first select for choose attribute */
             var $divSelect = $('<div></div>').addClass('col-sm-6');
@@ -478,7 +484,7 @@
             $mcFooter.appendTo('#modal .modal-content');
 
             $applyBtn.on('click', function(e) {
-                var mcValues = new Array();
+                var mcValues = {};
                 var valueEmpty = false;
                 var ids = [];
                 var nb = 0;
@@ -486,18 +492,14 @@
                 $.each($form.serializeArray(), function(k, v) {
                     if (v['name'] != 'mcChooseAttr') {
                         if ($.trim(v['value']) != '') {
+                            nb++;
                             mcValues[v['name']] = v['value'];
                         } else {
                             valueEmpty = true;
                             field += v['name']+ ", ";
                         }
-                        alert(v['name']+"["+ v['value']);
                     }
                 });
-                
-                for(var valeur in mcValues){
-                    nb++;
-                }
                 
                 if (valueEmpty) {
                     field = field.substring(0, (field.length) -2 );
@@ -505,17 +507,21 @@
                 } else if (nb == 0) {
                     alertMessage( "{t} Please choose attribute to change {/t}", "alert-danger", "3");
                 } else {
-                    $form.validate();
-
+                   
+                    if ($form.validate().numberOfInvalids() > 0 ) {
+                        return;
+                    }
+   
                     $.each($('table[id^="datatable"] tbody tr[class*="selected"]'), function(k, v) {
                         ids.push($(v).data('id'));
                     });
+                    
                     $.ajax({
                         url: '{url_for url=$objectMcUrl}',
                         type: 'POST',
                         data: {
-                            'values': mcValues,
-                            'ids': ids
+                            'ids': ids,
+                            'values': mcValues
                         },
                         dataType: 'json',
                         success: function(data, textStatus, jqXHR) {
