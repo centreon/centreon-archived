@@ -113,7 +113,6 @@ class HostTemplateRepository extends Repository
     public static function create($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
         $id = parent::create($givenParameters, $origin, $route, $validate, $validateMandatory);
-        //HostRepository::deployServices($id);
         return $id;
     }
 
