@@ -111,7 +111,7 @@
             <field name="level_w" mandatory="1"></field>
             <field name="level_c" mandatory="1"></field>
             <field name="ba_tags" mandatory="0"></field>
-            <field name="poller_id" mandatory="0"></field>
+            <field name="ba_pollers" mandatory="0"></field>
         </step>
         <step name="Indicators">
             <field name="kpi" mandatory="0"></field>
