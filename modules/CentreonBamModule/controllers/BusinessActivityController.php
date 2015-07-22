@@ -50,7 +50,8 @@ class BusinessActivityController extends FormController
     protected $datatableObject = '\CentreonBam\Internal\BusinessActivityDatatable';
     protected $repository = '\CentreonBam\Repository\BusinessActivityRepository'; 
     public static $relationMap = array(
-        'kpi' => '\CentreonBam\Models\Relation\BusinessActivity\Indicator'
+        'kpi' => '\CentreonBam\Models\Relation\BusinessActivity\Indicator',
+        'ba_pollers' => '\CentreonBam\Models\Relation\BusinessActivity\Poller'
     );
    
     public static $isDisableable = true;
@@ -160,6 +161,17 @@ class BusinessActivityController extends FormController
         }
 
         $router->response()->json($finalList);
+    }
+    
+    /**
+     * Get host template for a specific host
+     *
+     * @method get
+     * @route /businessactivity/[i:id]/poller
+     */
+    public function pollerForBaAction()
+    {
+        parent::getRelations(static::$relationMap['ba_pollers']);
     }
  
     /**
