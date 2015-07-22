@@ -143,6 +143,21 @@
                         </validator>
                     </validators>
                 </field>
+                <field normalized_name="passive-checks-enabled" name="host_passive_checks_enabled" label="Passive checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0" massive_change='1'>
+                    <help>Enable or disable passive checks. By default passive host checks are enabled.</help>
+                    <attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
+                    </attributes>
+                    <validators>
+                        <validator rules="remote" serverside="core.AuthorizedValues">
+                            <argument name="values">0,1,2</argument>
+                        </validator>
+                    </validators>
+                </field>
                 <field name="host_check_timeout" normalized_name="timeout" label="Timeout" default_value="" advanced="1" type="integer" parent_field="" mandatory="0" massive_change='1'>
                     <help>Host check timeout.</help>
                 </field>

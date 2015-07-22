@@ -57,6 +57,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
     {
         $content = array();
         $content["service_active_checks_enabled"] = 1;
+        $content["service_passive_checks_enabled"] = 1;
         $content["service_obsess_over_host"] = 1;
         $content["service_check_freshness"] = 1;
         $content["service_event_handler_enabled"] = 1;
@@ -87,7 +88,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
             . "command_command_id_arg, command_command_id AS check_command, timeperiod_tp_id AS check_period, "
             . "command_command_id_arg2, command_command_id2 AS event_handler, service_is_volatile, "
             . "service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, "
-            . "service_active_checks_enabled, initial_state, "
+            . "service_active_checks_enabled, service_passive_checks_enabled, initial_state, "
             . "service_obsess_over_service, service_check_freshness, "
             . "service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, "
             . "service_high_flap_threshold, service_flap_detection_enabled, service_check_timeout ";
@@ -110,42 +111,34 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
             foreach ($row as $key => $value) {
                 if ($key == "service_id") {
                     $service_id = $row["service_id"];
+                } elseif (isset($disableField[$key]) && $value != 2 && $value != "") {
+                    $key = str_replace("service_", "", $key);
+                    $tmpData[$key] = $value;
                 } elseif ((!isset($disableField[$key]) && $value != "")) {
                     $writeParam = 1;
-                    if (isset($disableField[$key]) && $value != 2) {
-                        ;
-                    } else {
-                        $key = str_replace("service_", "", $key);
-                        if ($key == 'description') {
-                            $key = "name";
-                        }
-                        if ($key == 'alias') {
-                            $key = "service_description";
-                        }
-                        if ($key == 'normal_check_interval') {
-                            $key = "check_interval";
-                        }
-                        if ($key == 'retry_check_interval') {
-                            $key = "retry_interval";
-                        }
-                        if ($key == 'command_command_id_arg' || $key == 'command_command_id_arg2') {
-                            $args = $value;
-                            $writeParam = 0;
-                        }
-                        if ($key == 'check_command' || $key == 'event_handler') {
-                            $value = CommandConfigurationRepository::getCommandName($value).html_entity_decode($args);
-                            $args = "";
-                        }
-                        if ($key == 'check_period') {
-                            $value = TimePeriodConfigurationRepository::getPeriodName($value);
-                        }
-                        if ($key == "template_model_stm_id") {
-                            $key = "use";
-                            $value = ServicetemplateConfigurationRepository::getTemplateName($value);
-                        }
-                        if ($writeParam == 1) {
-                            $tmpData[$key] = $value;
-                        }
+                    $key = str_replace("service_", "", $key);
+                    if ($key == 'description') {
+                        $key = "name";
+                    } else if ($key == 'alias') {
+                        $key = "service_description";
+                    } else if ($key == 'normal_check_interval') {
+                        $key = "check_interval";
+                    } else if ($key == 'retry_check_interval') {
+                        $key = "retry_interval";
+                    } else if ($key == 'command_command_id_arg' || $key == 'command_command_id_arg2') {
+                        $args = $value;
+                        $writeParam = 0;
+                    } else if ($key == 'check_command' || $key == 'event_handler') {
+                        $value = CommandConfigurationRepository::getCommandName($value).html_entity_decode($args);
+                        $args = "";
+                    } else if ($key == 'check_period') {
+                        $value = TimePeriodConfigurationRepository::getPeriodName($value);
+                    } else if ($key == "template_model_stm_id") {
+                        $key = "use";
+                        $value = ServicetemplateConfigurationRepository::getTemplateName($value);
+                    }
+                    if ($writeParam == 1) {
+                        $tmpData[$key] = $value;
                     }
                 }
             }

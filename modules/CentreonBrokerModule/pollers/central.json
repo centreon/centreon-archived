@@ -143,6 +143,10 @@
                         "name": "central-broker-correlation",
                         "type": "correlation",
                         "file": "%global_broker_etc_directory%/correlation.xml"
+                      },
+                      {
+                          "name": "central-broker-db-cfg-reader",
+                          "type": "db_cfg_reader"
                       }
                     ],
                     "logger": [

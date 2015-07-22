@@ -24,6 +24,7 @@ connector-id       Connector id
 command-comment    Comments for the command
 ================== =========================
 
+
 List
 ----
 
@@ -52,12 +53,14 @@ command line   Command line
 type           Command type
 ============== ==============
 
+
 Show
 ----
 
 In order to show a command, use **show** action::
 
-  ./centreonConsole centreon-configuration:Command:show --command 'check-centreon-ping'
+  ./centreonConsole centreon-configuration:Command:show \
+    --command 'check-centreon-ping'
   id: 2
   connector-id: 
   name: check_centreon_ping
@@ -77,16 +80,20 @@ Create
 
 In order to create a command, use **create** action::
 
-  ./centreonConsole centreon-configuration:Command:create --command-name='check_centreon_ping' --command-type=2 --command-line='$USER1$/check_icmp -H $HOSTADDRESS$ -n $_SERVICEPACKETNUMBER$ -w $_SERVICEWARNING$ -c $_SERVICECRITICAL$'
+  ./centreonConsole centreon-configuration:Command:create \
+    --command-name='check_centreon_ping' \
+    --command-type=2 \
+    --command-line='$USER1$/check_icmp -H $HOSTADDRESS$ -n $_SERVICEPACKETNUMBER$ -w $_SERVICEWARNING$ -c $_SERVICECRITICAL$'
   check-centreon-ping
   Object successfully created
+
 
 Slug
 ----
 In order to get slug of command, use **getSlug** action::
-  ./centreonConsole centreon-configuration:Command:getSlug --command-name 'OS-Linux-SNMP-memory'
-  os-linux-snmp-memory
-
+  ./centreonConsole centreon-configuration:Command:getSlug \
+    --command-name 'check_centreon_ping'
+  check-centreon-ping
 
 
 Update
@@ -94,22 +101,30 @@ Update
 
 In order to update a command, use **update** action::
 
-  ./centreonConsole centreon-configuration:Command:update --command 'check-icmp' --command-line '$USER1$/check_icmp -H $HOSTADDRESS$ -c 5'
+  ./centreonConsole centreon-configuration:Command:update \
+    --command 'check-centreon-ping' \
+    --command-line '$USER1$/check_icmp -H $HOSTADDRESS$ -c 5'
   Object successfully updated
+
+With the "update" command you can easily update all parameters 
 
 Delete
 ------
 
 In order to delete a command, use **delete** action::
 
-  ./centreonConsole centreon-configuration:Command:delete --command 'check-icmp'
+  ./centreonConsole centreon-configuration:Command:delete \
+    --command 'check-centreon-ping'
   Object successfully deleted
+
 
 Duplicate (Not yet implemented)
 -------------------------------
 
 In order to duplicate a command, use **duplicate** action::
 
-  ./centreonConsole centreon-configuration:Command:duplicate --command 'check-icmp'
+  ./centreonConsole centreon-configuration:Command:duplicate \
+    --command 'check-centreon-ping'
   Object successfully duplicated
+
 
