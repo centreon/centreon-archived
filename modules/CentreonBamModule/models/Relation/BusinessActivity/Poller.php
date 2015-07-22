@@ -34,48 +34,15 @@
  *
  */
 
-namespace CentreonConfiguration\Install;
+namespace CentreonBam\Models\Relation\BusinessActivity;
 
-use Centreon\Internal\Installer\Module\AbstractModuleInstaller;
+use Centreon\Models\CentreonRelationModel;
 
-/**
- * 
- */
-class Installer extends AbstractModuleInstaller
+class Poller extends CentreonRelationModel
 {
-    /**
-     * 
-     * @param type $moduleDirectory
-     * @param type $moduleInfo
-     * @param type $launcher
-     */
-    public function __construct($moduleDirectory, $moduleInfo, $launcher)
-    {
-        parent::__construct($moduleDirectory, $moduleInfo, $launcher);
-    }
-    
-    /**
-     * 
-     */
-    public function customPreInstall()
-    {
-        
-    }
-    
-    /**
-     * 
-     */
-    public function customInstall()
-    {
-        
-    }
-    
-    /**
-     * 
-     */
-    public function customRemove()
-    {
-        //Remove massive change
-        $this->removeMassiveChange();
-    }
+    protected static $relationTable = "cfg_bam_poller_relations";
+    protected static $firstKey = "ba_id";
+    protected static $secondKey = "poller_id";
+    public static $firstObject = "\CentreonBam\Models\BusinessActivity";
+    public static $secondObject = "\CentreonConfiguration\Models\Poller";
 }

@@ -392,13 +392,16 @@
         });
         {/if}
 
+
         /* Massive change modal */
         {if isset($objectMcUrl)}
+                    
         $('#modalMassiveChange').on('click', function(e) {
             e.preventDefault();
             $('#modal').removeData('bs.modal');
             $('#modal .modal-content').text('');
-
+            rules = {};
+            
             /* MC modal header */
             var $mcHeader = $('<div></div>').addClass('modal-header');
             $('<button></button>')
@@ -413,7 +416,13 @@
 
             /* MC modal body */
             var $mcBody = $('<div></div>').addClass('modal-body');
-            var $form = $('<form></form>').attr('role', 'form').addClass('form-horizontal');
+            var $form = $('<form role="form" id="massive_change" novalidate></form>')
+                    .addClass('form-horizontal');
+                 
+            $form.validate({
+            
+            });
+            
             var $formGroup = $('<div></div>').addClass('form-group');
             $('<div></div>')
                 .addClass('col-sm-4')
@@ -424,6 +433,28 @@
                         .addClass('label-controller')
                         .text('{t}Choose the attribute to change{/t}')
                 ).appendTo($formGroup);
+        
+        /*
+        $('<div></div>')
+            .addClass('flash')
+            .addClass('alert')
+            .addClass('fade')
+            .addClass('in')
+            .attr('id', 'modal-flash-message')
+            .append(
+                $('<button></button>')
+                    .attr('type', 'button')
+                    .attr('aria-hidden', 'true')
+                    .addClass('close')
+                    .html('&times;')
+            )
+            .append(
+                $('<ul></ul>')
+                    .attr('id', 'errors')
+            )
+            .appendTo($formGroup);
+    */
+    
             /* Get first select for choose attribute */
             var $divSelect = $('<div></div>').addClass('col-sm-6');
             var $select = $('<select></select>')
@@ -454,41 +485,64 @@
 
             $applyBtn.on('click', function(e) {
                 var mcValues = {};
+                var valueEmpty = false;
                 var ids = [];
+                var nb = 0;
+                var field = '';
                 $.each($form.serializeArray(), function(k, v) {
                     if (v['name'] != 'mcChooseAttr') {
-                        mcValues[v['name']] = v['value'];
-                    }
-                });
-                $.each($('table[id^="datatable"] tbody tr[class*="selected"]'), function(k, v) {
-                    ids.push($(v).data('id'));
-                });
-                $.ajax({
-                    url: '{url_for url=$objectMcUrl}',
-                    type: 'POST',
-                    data: {
-                        'values': mcValues,
-                        'ids': ids
-                    },
-                    dataType: 'json',
-                    success: function(data, textStatus, jqXHR) {
-                        if(!isJson(data)){
-                            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
-                            return false;
-                        }
-                        $('#modal').modal('hide');
-                        alertClose();
-                        if (data.success) {
-                            oTable.fnDraw();
-                            alertMessage('{t}The changes have been applied{/t}', 'alert-success', 3);
+                        if ($.trim(v['value']) != '') {
+                            nb++;
+                            mcValues[v['name']] = v['value'];
                         } else {
-                            alertMessage(data.errorMessage, 'alert-danger');
+                            valueEmpty = true;
+                            field += v['name']+ ", ";
                         }
-                    },
-                    error : function (error){
-                        alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
                     }
                 });
+                
+                if (valueEmpty) {
+                    field = field.substring(0, (field.length) -2 );
+                    alertMessage( "{t} The value(s) is empty : {/t}"+field, "alert-danger", "3");
+                } else if (nb == 0) {
+                    alertMessage( "{t} Please choose attribute to change {/t}", "alert-danger", "3");
+                } else {
+                   
+                    if ($form.validate().numberOfInvalids() > 0 ) {
+                        return;
+                    }
+   
+                    $.each($('table[id^="datatable"] tbody tr[class*="selected"]'), function(k, v) {
+                        ids.push($(v).data('id'));
+                    });
+                    
+                    $.ajax({
+                        url: '{url_for url=$objectMcUrl}',
+                        type: 'POST',
+                        data: {
+                            'ids': ids,
+                            'values': mcValues
+                        },
+                        dataType: 'json',
+                        success: function(data, textStatus, jqXHR) {
+                            if(!isJson(data)){
+                                alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                                return false;
+                            }
+                            $('#modal').modal('hide');
+                            alertClose();
+                            if (data.success) {
+                                oTable.fnDraw();
+                                alertMessage('{t}The changes have been applied{/t}', 'alert-success', 3);
+                            } else {
+                                alertMessage(data.errorMessage, 'alert-danger');
+                            }
+                        },
+                        error : function (error){
+                            alertMessage( "{t} An Error Occured {/t}", "alert-danger" );
+                        }
+                    });
+                }
             });
 
             $.ajax({

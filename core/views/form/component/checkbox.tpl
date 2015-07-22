@@ -1,4 +1,6 @@
-<label class="label-controller floatLabel" for="{$name}">{$inputElement['label_general_label']}</label>
+{if (isset($inputElement['label_general_label'])) } 
+    <label class="label-controller floatLabel" for="{$name}">{$inputElement['label_general_label']}</label>
+{/if}
 {if (isset($inputElement['label_values'])) }    
     <div class="choiceGroup">
         <label class="label-controller" for="{$inputElement['label']}">

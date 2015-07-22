@@ -337,9 +337,6 @@ abstract class AbstractModuleInstaller
         //Remove validators
         $this->removeValidators();
         
-        //Remove massive change
-        $this->removeMassiveChange();
-        
         // Custom removal of the module
         $this->customRemove();
         $this->postRemove();

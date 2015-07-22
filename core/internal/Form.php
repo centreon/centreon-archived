@@ -260,6 +260,7 @@ class Form
                     $element['label'] = $element['label_label'];
                     $in = $className::renderHtmlInput($element);
                     $inVal = $className::addValidation($element);
+                    
                     if (isset($in['html'])) {
                         $element['input'] = $in['html'];
                     }
@@ -657,7 +658,7 @@ class Form
             $params['validators'] = $field['validators'];
         }
         $params['extra'] = $extraParams;
-        
+
         $elem = $this->formProcessor->addElement('static', $field['name'], $params);
     }
     
@@ -896,5 +897,34 @@ class Form
         }
                         
         $elem = $this->formProcessor->addElement('checkbox', $name, $params);
+    }
+    
+    
+    /**
+     * 
+     * @param integer $id
+     */
+    public function getValidatorsByField($id)
+    {
+        $di = Di::getDefault();
+        $this->dbconn = $di->get('db_centreon');
+        $validators = array();
+        
+        $validatorQuery = "SELECT v.route as validator_action, vr.params as params, vr.client_side_event as rules "
+                    . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
+                    . "WHERE vr.field_id = :fieldId "
+                    . "AND vr.validator_id = v.validator_id";
+        $validatorStmt = $this->dbconn->prepare($validatorQuery);
+
+        $validatorStmt->bindParam(':fieldId', $id, \PDO::PARAM_INT);
+        $validatorStmt->execute();
+        while ($validator = $validatorStmt->fetch()) {
+            $myvalidator['rules']  = $validator['rules'];
+            $myvalidator['params'] = json_decode($validator['params'], true);
+            $myvalidator['validator_action']  = $validator['validator_action'];
+            $validators[] = $myvalidator;
+        }
+
+        return $validators;
     }
 }
