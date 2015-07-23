@@ -144,57 +144,285 @@
                          </li>
                     </ul>
                     <ul class="indicators nav navbar-right">
-                        <li class="top-counter top-counter-service">
+                        <li class="top-counter top-counter-critical">
                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                               <i class="icon-fill-critical-incident">
+                               <i class="icon-fill-critical-incident ico-24">
                                 <span class="path1"></span><span class="path2"></span><span class="path3"></span>
                                </i>
                              </a>
                              <div class="indicWrapper">
-                                <p>incidents
-                                    <span>
-                                        <span class="ico-host"></span>26</span>  <span class=""></span>6</span</p>
-                                <p>impacts <span> <span class=""></span>26</span></p>
+                                <div class="titles">
+                                    <p>incidents</p>
+                                    <p>impacts</p>
+                                </div>
+                                <div class="indices">
+                                    <span class="icon-fill-host ico-16"></span> <span class="danger">26</span>
+                                    <span class="icon-fill-service ico-16"></span> <span class="danger"> 50</span>
+                                    <br>
+                                    <span> 236</span>
+                                </div>
                              </div>
-                             <span class="label label-danger hide">42</span>
-                             <ul class="dropdown-menu">
-                             </ul>
+                             <div class="dropdown-menu issuesPopover">
+                                <ul>
+                                    <li>
+                                        <h5>Hosts</h5>
+                                        <p><span class="danger">26 </span> / 256</p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-host ico-16"></span> Host 1</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                     <li>
+                                        <h6><span class="icon-host ico-16"></span> Host 2</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                     </li>
+                                     <li>
+                                        <h6><span class="icon-host ico-16"></span> Host 3</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-host ico-16"></span> Host 3</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-host ico-16"></span> Host 3</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                    <li>
+                                        <p><a href="#" title="more"><span class="icon-plus ico-16"></span></a></p>
+                                    </li>
+                                </ul>
+                                <ul>
+                                    <li>
+                                        <h5>Services</h5>
+                                        <p><span class="danger">50 </span> / 256</p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-service ico-16"></span> Service 1</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                     <li>
+                                        <h6><span class="icon-service ico-16"></span> Service 2</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                     </li>
+                                     <li>
+                                        <h6><span class="icon-service ico-16"></span> Service 3</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-service ico-16"></span> Service 3</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-service ico-16"></span> Service 3</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                    <li>
+                                        <p><a href="#" title="more"><span class="icon-plus ico-16"></span></a></p>
+                                    </li>
+                                </ul>
+                             </div>
                          </li>
-                         <li class="top-counter top-counter-service">
+                         <li class="top-counter top-counter-warning">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="icon-fill-incident">
                                   <span class="path1"></span><span class="path2"></span><span class="path3"></span>
                                 </i>
                               </a>
+                              <div class="indicWrapper">
+                                  <div class="titles">
+                                      <p>incidents</p>
+                                      <p>impacts</p>
+                                  </div>
+                                  <div class="indices">
+                                      <span class="warning">26</span>
+                                      <br>
+                                      <span> 236</span>
+                                  </div>
+                               </div>
                               <span class="label label-warning hide"></span>
-                              <ul class="dropdown-menu">
-                              </ul>
+
+                              <div class="dropdown-menu issuesPopover">
+                                  <ul>
+                                       <li>
+                                          <h5>Services</h5>
+                                          <p><span class="danger">50 </span> / 256</p>
+                                      </li>
+                                      <li>
+                                          <h6><span class="icon-service ico-16"></span> Service 1</h6>
+                                          <p><span class="duration">1h50</span></p>
+                                      </li>
+                                       <li>
+                                          <h6><span class="icon-service ico-16"></span> Service 2</h6>
+                                          <p><span class="duration">1h50</span></p>
+                                       </li>
+                                       <li>
+                                          <h6><span class="icon-service ico-16"></span> Service 3</h6>
+                                          <p><span class="duration">1h50</span></p>
+                                      </li>
+                                      <li>
+                                          <h6><span class="icon-service ico-16"></span> Service 3</h6>
+                                          <p><span class="duration">1h50</span></p>
+                                      </li>
+                                      <li>
+                                          <h6><span class="icon-service ico-16"></span> Service 3</h6>
+                                          <p><span class="duration">1h50</span></p>
+                                      </li>
+                                      <li>
+                                          <p><a href="#" title="more"><span class="icon-plus ico-16"></span></a></p>
+                                      </li>
+                                  </ul>
+                              </div>
                           </li>
 
                           <li class="top-counter top-counter-unknown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                              <i class="icon-fill-unknown-incident">
+                              <i class="icon-fill-unknown-incident ico-24">
                                 <span class="path1"></span><span class="path2"></span><span class="path3"></span>
                               </i>
                             </a>
+                            <div class="indicWrapper">
+                                  <div class="titles">
+                                      <p>pending</p>
+                                      <p>unknown</p>
+                                  </div>
+                                  <div class="indices">
+                                      <span> 50</span>
+                                      <br>
+                                      <span> 236</span>
+                                  </div>
+                            </div>
                             <span class="label label-default hide"></span>
-                            <ul class="dropdown-menu">
-                            </ul>
-                           </li>
+                            <div class="dropdown-menu issuesPopover">
+                                <ul>
+                                    <li>
+                                        <h5>Hosts</h5>
+                                        <p><span class="danger">26 </span> / 256</p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-host ico-16"></span> Host 1</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                     <li>
+                                        <h6><span class="icon-host ico-16"></span> Host 2</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                     </li>
+                                     <li>
+                                        <h6><span class="icon-host ico-16"></span> Host 3</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-host ico-16"></span> Host 3</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-host ico-16"></span> Host 3</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                    <li>
+                                        <p><a href="#" title="more"><span class="icon-plus ico-16"></span></a></p>
+                                    </li>
+                                </ul>
+                                <ul>
+                                    <li>
+                                        <h5>Services</h5>
+                                        <p><span class="danger">50 </span> / 256</p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-service ico-16"></span> Service 1</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                     <li>
+                                        <h6><span class="icon-service ico-16"></span> Service 2</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                     </li>
+                                     <li>
+                                        <h6><span class="icon-service ico-16"></span> Service 3</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-service ico-16"></span> Service 3</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-service ico-16"></span> Service 3</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                    <li>
+                                        <p><a href="#" title="more"><span class="icon-plus ico-16"></span></a></p>
+                                    </li>
+                                </ul>
+                             </div>
+                          </li>
 
-                        <li class="top-counter top-counter-service">
-                            <a href="#" class="dropdown-toggle drop-avatar">
-                                <span class="icon-fill-poller"></span>
+                        <li class="top-counter top-counter-poller">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="icon-fill-poller ico-24"></span>
                             </a>
+                            <div class="indicWrapper">
+                                  <div class="titles">
+                                      <p>stopped</p>
+                                      <p>unknown</p>
+                                  </div>
+                                  <div class="indices">
+                                      <span> 50</span>
+                                      <br>
+                                      <span> 236</span>
+                                  </div>
+                            </div>
+
                         </li>
 
                         <li class="top-counter top-counter-ba">
                             <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
-                                <span class="icon-fill-BA"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></span>
+                                <span class="icon-fill-BA ico-24"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></span>
                             </a>
+
+                            <div class="indicWrapper">
+                                  <div class="titles">
+                                      <p>not perf.</p>
+                                      <p>not avail.</p>
+                                  </div>
+                                  <div class="indices">
+                                      <span> 50</span>
+                                      <br>
+                                      <span> 236</span>
+                                  </div>
+                            </div>
+
                             <span class="label label-danger hide"></span>
                             <span class="label label-warning hide"></span>
-                            <ul class="dropdown-menu"></ul>
+                            <div class="dropdown-menu issuesPopover">
+                              <ul>
+                                   <li>
+                                      <h5>Services</h5>
+                                      <p><span class="danger">50 </span> / 256</p>
+                                  </li>
+                                  <li>
+                                      <h6><span class="icon-service ico-16"></span> Service 1</h6>
+                                      <p><span class="duration">1h50</span></p>
+                                  </li>
+                                   <li>
+                                      <h6><span class="icon-service ico-16"></span> Service 2</h6>
+                                      <p><span class="duration">1h50</span></p>
+                                   </li>
+                                   <li>
+                                      <h6><span class="icon-service ico-16"></span> Service 3</h6>
+                                      <p><span class="duration">1h50</span></p>
+                                  </li>
+                                  <li>
+                                      <h6><span class="icon-service ico-16"></span> Service 3</h6>
+                                      <p><span class="duration">1h50</span></p>
+                                  </li>
+                                  <li>
+                                      <h6><span class="icon-service ico-16"></span> Service 3</h6>
+                                      <p><span class="duration">1h50</span></p>
+                                  </li>
+                                  <li>
+                                      <p><a href="#" title="more"><span class="icon-plus ico-16"></span></a></p>
+                                  </li>
+                              </ul>
+                             </div>
                         </li>
                     </ul>
             </nav>

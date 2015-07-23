@@ -26,8 +26,8 @@
     margin-right: 16px;
 
     a.dropdown-toggle {
-      padding: @paddingElem*2;
-      background-color: @darkBlue;
+      padding: 11px;
+      background-color: @darkGray1;
       display: block;
       &:hover {
         background: liear-gradient(to bottom, lighten(@darkBlue,5%) 0%, @darkBlue 80%);
@@ -70,10 +70,19 @@
   }
   /*-- Time Zone --*/
   .clock{
-    padding: @paddingElem*3 @paddingElem*4;
+    padding: 16px @paddingElem*4;
     display: block;
     font-size: 12px;;
     color: @lightGray;
+    &:before {
+      content: "";
+      border-left: 1px solid @darkGray;
+      width: 1px;
+      height: 26px;
+      position: absolute;
+      top: 11px;
+      left: @paddingElem*2;
+    }
   }
   /*-- Indicators --*/
 
@@ -81,20 +90,62 @@
 
     li{
       float: right;
+      margin-left: @paddingElem*4;
 
       &.top-counter {
 
-        .open>a {
+        &.top-counter-critical {
+          a.dropdown-toggle {
+            &:hover,&:focus {
+              border-bottom: 3px solid @danger;
+            }
+          }
+        }
 
+        &.top-counter-warning {
+          a.dropdown-toggle {
+            &:hover,&:focus {
+              border-bottom: 3px solid @warning;
+            }
+          }
+        }
+        &.top-counter-unknown {
+          a.dropdown-toggle {
+            &:hover,&:focus {
+              border-bottom: 3px solid @darkGray1;
+            }
+          }
+        }
+
+        &.top-counter-poller {
+          a.dropdown-toggle {
+            &:hover,&:focus {
+              border-bottom: 3px solid @darkGray;
+            }
+          }
+        }
+
+        &.top-counter-ba {
+          a.dropdown-toggle {
+            &:hover,&:focus {
+              border-bottom: 3px solid @darkGray;
+            }
+          }
+        }
+
+        &.open>a {
+          background-color: transparent;
           &:focus {
             background-color: transparent;
           }
-          background-color: transparent;
         }
         a {
           color : lighten(@lightGray,0%);
-          padding : @paddingElem*2;
+          padding : @paddingElem*2 @paddingElem;
           float: left;
+          outline-color: transparent;
+          transition: all 0.2s ease;
+          background-color: transparent;
 
           &:hover {
             background-color: transparent;
@@ -106,17 +157,81 @@
           font-size: 12px;
           padding: @paddingElem 0;
 
+          .titles, .indices {
+            float: left;
+            position: relative;
+          }
+          .titles {
           p {
             margin-bottom: 0;
+            padding: 0 @paddingElem 0 0;
+            position: relative;
+            margin-right: @paddingElem;
+            color: @darkGray2;
+
+            &:after {
+              position: absolute;
+              content: "";
+              border-right: 1px solid @white;
+              width: 1px;
+              height: 10px;
+              right: 0;
+              top: 5px;
+              }
+            }
           }
         }
+        .issuesPopover {
+          box-shadow: 2px 1px 1px @lightGray;
+          border: 1px solid @lightGray;
+          margin: 0;
+          border-radius: 0;
+          padding: 0;
 
+          ul {
+            float: left;
+            font-size: 12px;
+            margin-bottom: @paddingElem*2;
+
+            li {
+              float: left;
+              width: 100%;
+              padding: @paddingElem/3 @paddingElem*2;
+              margin-left: 0;
+
+              &:first-child {
+                background-color: @lightGray1;
+                padding: @paddingElem @paddingElem;
+                margin-bottom: @paddingElem;
+              }
+
+              h5,h6 {
+                color: @thirdBlueDarken;
+                font-weight: bold;
+                float: left;
+                margin: 0;
+              }
+              h6 {
+                color: @darkGray;
+                word-wrap: break-word;
+              }
+                p {
+                  font-weight: normal;
+                  float: right;
+                  margin: 0;
+                  color: @darkGray1;
+
+                  a {
+                    padding: 0;
+                    color: @thirdBlue;
+                    text-decoration: none;
+                  }
+                }
+            }
+          }
+        }
       }
-    }
 
-
-    [class^="icon-"], [class*=" icon-"] {
-        font-size : 20px;
     }
   }
 }
