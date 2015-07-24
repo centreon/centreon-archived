@@ -37,6 +37,14 @@ namespace CentreonRealtime\Listeners\CentreonMain;
 
 use CentreonMain\Events\Status as StatusEvent;
 use Centreon\Internal\Di;
+use CentreonRealtime\Repository\HostRepository;
+use CentreonRealtime\Repository\ServiceRepository;
+use CentreonRealtime\Repository\IncidentsRepository;
+
+
+use CentreonConfiguration\Repository\HostRepository as HostRepositoryConfig;
+
+
 
 /**
  * Event to top counter for host and service
@@ -55,6 +63,33 @@ class Status
      */
     public static function execute(StatusEvent $event)
     {
+        /*
+        $router = Di::getDefault()->get('router');
+        $incidents = IncidentsRepository::getIncidents();
+        foreach($incidents as $incident){
+            $childIncidents[] = IncidentsRepository::getChildren($incident['issue_id']);
+        }
+        
+        
+        $hosts = array();
+        foreach($incidents as $key=>$incident){
+            
+            if(!empty($incident['host_id']) || $incident['host_id'] == "0"){
+                $hostsTemp = $incident;
+                $hostsTemp['icon'] = HostRepositoryConfig::getIconImagePath($incident['host_id']);
+                $hostsTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
+                $hosts[] = $hostsTemp;
+            }
+        }
+        
+        var_dump($hosts);
+        */
+        //$returnJson['hosts'] = $hosts;
+        //$returnJson['nb_hosts'] = $nb_hosts;
+        //$returnJson['impacts'] = HostRepository::getImpactNbr();
+        //var_dump(HostRepository::getImpactNbr());
+
+        
         $values = array(
             'services' => array(
                 'unknown' => 0,
@@ -74,12 +109,12 @@ class Status
         );
         $db = Di::getDefault()->get('db_centreon');
 
-        /* Get service critical and warning */
         $query = "SELECT COUNT(service_id) as nb, state
             FROM rt_services
             WHERE state_type = 1
                 AND state IN (1, 2, 3)
                 AND acknowledged = 0
+                OR acknowledged is null
             GROUP BY state";
         $stmt = $db->query($query);
         while ($row = $stmt->fetch()) {
@@ -93,12 +128,12 @@ class Status
         }
         $event->addStatus('service', $values['services']);
 
-        /* Get host critical and warning */
         $query = "SELECT COUNT(host_id) as nb, state
             FROM rt_hosts
             WHERE state_type = 1
                 AND state IN (1, 2, 3)
                 AND acknowledged = 0
+                OR acknowledged is null
             GROUP BY state";
         $stmt = $db->query($query);
         while ($row = $stmt->fetch()) {
@@ -112,7 +147,6 @@ class Status
         }
         $event->addStatus('host', $values['hosts']);
 
-        /* Get poller information */
         $query = "SELECT last_alive, running
             FROM rt_instances
             WHERE deleted != 1";
@@ -126,5 +160,6 @@ class Status
             }
         }
         $event->addStatus('poller', $values['pollers']);
+     
     }
 }
