@@ -75,8 +75,8 @@
     <step name="General">
       <field name="name" mandatory="1"></field>
       <field name="description"></field>
-      <field name="command_id"></field>
-      <field name="interval"></field>
+      <field name="command_id" mandatory="1"></field>
+      <field name="interval" mandatory="1"></field>
       <field name="interval_unit"></field>
     </step>
   </wizard>

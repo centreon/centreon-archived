@@ -52,5 +52,6 @@ class NotificationRule extends CentreonBaseModel
     protected static $primaryKey = "rule_id";
     protected static $uniqueLabelField = "name";
     protected static $slugField = "slug";
+
 }
 

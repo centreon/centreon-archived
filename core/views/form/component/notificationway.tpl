@@ -1,3 +1,4 @@
+<br />
 <div id="notification_way_controls">
     <div id="notification_way_add" class="clone-trigger">
         <a id="add_notification_way" class="addclone" style="padding-right:5px;cursor:pointer;" >

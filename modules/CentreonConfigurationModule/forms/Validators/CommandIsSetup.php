@@ -52,7 +52,12 @@ class CommandIsSetup implements ValidatorInterface
      */
     public function validate($value, $params = array(), $sContext = 'server')
     {
-        if(!isset($value) || $value === " "){
+        if(isset($params['extraParams']['host_active_checks_enabled']) && $params['extraParams']['host_active_checks_enabled'] == "0"){
+            $reponse = array('success' => true, 'error' => '');
+            return $reponse;
+        }
+        
+        if(!isset($value) || $value === " " || $value == ""){
             // case : UI or API with host-templates params
             if(isset($params['extraParams']['host_hosttemplates']) && $params['extraParams']['host_hosttemplates'] != " " ){
                 $tplIds = explode(',',$params['extraParams']['host_hosttemplates']);
@@ -77,7 +82,7 @@ class CommandIsSetup implements ValidatorInterface
                 // case : Only UI without host-templates params
                 $childTemplates = HostRepository::getTemplateChain($params['object_id'], array(), -1, true);
                 foreach($childTemplates as $childTemplate){
-                    if(!empty($childTemplate['command_command_id'])){
+                    if(!empty($childTemplate['command_command_id']) || $childTemplate['command_command_id'] == "0"){
                         $reponse = array('success' => true, 'error' => '');
                         return $reponse;
                     }

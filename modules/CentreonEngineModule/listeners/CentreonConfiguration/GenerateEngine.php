@@ -50,6 +50,7 @@ use CentreonEngine\Repository\ConfigGenerateModulesRepository;
 use CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
 use CentreonEngine\Events\GetMacroHost as HostMacroEvent;
 use CentreonEngine\Events\GetMacroService as ServiceMacroEvent;
+use CentreonEngine\Events\NotificationRuleEvent;
 
 class GenerateEngine
 {
@@ -166,6 +167,9 @@ class GenerateEngine
         $serviceMacroEvent = new ServiceMacroEvent($event->getPollerId());
         $events->emit('centreon-engine.get.macro.service', array($serviceMacroEvent));
 
+        $notificationRulesEvent = new NotificationRuleEvent($event->getPollerId());
+        $events->emit('centreon-engine.set.notifications.rules', array($notificationRulesEvent));
+        
         /* Templates config files */
         HostTemplateRepository::generate(
             static::$fileList,

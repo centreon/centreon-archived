@@ -31,62 +31,18 @@
  *
  * For more information : contact@centreon.com
  *
- */
-
-namespace CentreonConfiguration\Repository;
-
-use Centreon\Internal\Exception;
-use CentreonConfiguration\Events\CopyFiles;
-use CentreonConfiguration\Events\SynchronizeFiles;
-use CentreonConfiguration\Events\SynchronizeDatabase;
-
-/**
- * Factory for ConfigTest Engine
  *
- * @author Julien Mathis <jmathis@centreon.com>
- * @version 3.0.0
  */
 
-class ConfigMoveRepository extends ConfigRepositoryAbstract
+namespace CentreonBam\Models\Relation\BusinessActivity;
+
+use Centreon\Models\CentreonRelationModel;
+
+class Poller extends CentreonRelationModel
 {
-    /**
-     * Constructor
-     * 
-     * @param int $pollerId
-     */
-    public function __construct($pollerId)
-    {
-        parent::__construct($pollerId);
-        $this->output[] = sprintf(_("Copying configuration files of poller %s"), $pollerId);
-    }
-
-    /**
-     * Move configuration files 
-     * 
-     */
-    public function moveConfig()
-    {
-        try {
-            /* Get Path */
-            $event = $this->di->get('events');
-
-            $eventObj = new CopyFiles($this->pollerId);
-            $event->emit('centreon-configuration.copy.files', array($eventObj));
-            $this->output = array_merge($this->output, $eventObj->getOutput());
-
-            /* Event for external commands */
-            $eventObj = new SynchronizeFiles($this->pollerId);
-            $event->emit('centreon-configuration.synchronize.files', array($eventObj));
-            $this->output = array_merge($this->output, $eventObj->getOutput());
-            
-            /* Synchronize Database */
-            $eventObj = new SynchronizeDatabase($this->pollerId);
-            $event->emit('centreon-configuration.synchronize.database', array($eventObj));
-            $this->output = array_merge($this->output, $eventObj->getOutput());
-
-        } catch (Exception $e) {
-            $this->output[] = $e->getMessage();
-            $this->status = false;
-        }
-    }
+    protected static $relationTable = "cfg_bam_poller_relations";
+    protected static $firstKey = "ba_id";
+    protected static $secondKey = "poller_id";
+    public static $firstObject = "\CentreonBam\Models\BusinessActivity";
+    public static $secondObject = "\CentreonConfiguration\Models\Poller";
 }

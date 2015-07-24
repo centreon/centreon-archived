@@ -200,7 +200,7 @@ abstract class AbstractModuleInstaller
         $this->postInstall();
         
         // Ending Message
-        $message = _("Installation of %s module complete");
+        $message = _("Installation of %s module complete \n");
         $this->displayOperationMessage(
             $this->colorizeMessage(
                 sprintf($message, $this->moduleFullName),
@@ -336,9 +336,6 @@ abstract class AbstractModuleInstaller
         
         //Remove validators
         $this->removeValidators();
-        
-        //Remove massive change
-        $this->removeMassiveChange();
         
         // Custom removal of the module
         $this->customRemove();
@@ -586,7 +583,7 @@ abstract class AbstractModuleInstaller
         $validatorFile = $this->moduleDirectory . '/install/validators.json';
         if (file_exists($validatorFile)) {                       
             $message = $this->colorizeText(_("Installation of validators..."));
-            $this->displayOperationMessage("\n" . $message, false);
+            $this->displayOperationMessage($message, false);
             Form::insertValidators(json_decode(file_get_contents($validatorFile), true));
             $message = $this->colorizeMessage(_("     Done"), 'green');
             $this->displayOperationMessage($message);
@@ -599,9 +596,7 @@ abstract class AbstractModuleInstaller
     protected function deployForms()
     {
         try {
-            $message = $this->colorizeText(_("Deployment of Forms..."));
-            $this->displayOperationMessage($message, false);
-                        
+                                  
             $this->installValidators();
             
             $myFormFiles = glob($this->moduleDirectory. '/install/forms/*.xml');
@@ -609,6 +604,8 @@ abstract class AbstractModuleInstaller
             foreach ($myFormFiles as $formFile) {
                 Form::installFromXml($this->moduleId, $formFile);
             }
+            $message = $this->colorizeText(_("Deployment of Forms..."));
+            $this->displayOperationMessage($message, false);
             
             $message = $this->colorizeMessage(_("     Done"), 'green');
             $this->displayOperationMessage($message);
@@ -625,11 +622,11 @@ abstract class AbstractModuleInstaller
     {
         $validatorFile = $childrenModuleDirectory . '/install/validators.json';
         if (file_exists($validatorFile)) {                       
-            $message = $this->colorizeText(_("Installation of validators..."));
-            $this->displayOperationMessage("\n" . $message, false);
+            //$message = $this->colorizeText(_("Installation of validators..."));
+            //$this->displayOperationMessage("\n" . $message, false);
             Form::insertValidators(json_decode(file_get_contents($validatorFile), true));
-            $message = $this->colorizeMessage(_("     Done"), 'green');
-            $this->displayOperationMessage($message);
+            //$message = $this->colorizeMessage(_("     Done"), 'green');
+            //$this->displayOperationMessage($message);
         }
     }
     

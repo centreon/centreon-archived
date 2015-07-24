@@ -48,6 +48,9 @@ class BusinessActivityCommand extends BasicTagSupport
      */
     public $objectName = 'businessactivity';
     
+    /**
+     * 
+     */
     public function __construct()
     {
         parent::__construct();
@@ -60,7 +63,8 @@ class BusinessActivityCommand extends BasicTagSupport
      * @cmdParam none ba-tags optional
      * @cmdParam boolean|false disable required
      */
-    public function createAction($params) {
+    public function createAction($params)
+    {
         parent::createAction($params);
     }
     
@@ -69,7 +73,8 @@ class BusinessActivityCommand extends BasicTagSupport
      * @cmdObject string ba the ba
      * 
      */     
-    public function showAction($object, $fields = null, $linkedObject = '') {
+    public function showAction($object, $fields = null, $linkedObject = '')
+    {
         parent::showAction($object, $fields, $linkedObject);
     }
     
@@ -78,7 +83,8 @@ class BusinessActivityCommand extends BasicTagSupport
      * @cmdObject string ba the ba
      * 
      */     
-    public function deleteAction($object) {
+    public function deleteAction($object)
+    {
         parent::deleteAction($object);
     }
     
@@ -90,7 +96,8 @@ class BusinessActivityCommand extends BasicTagSupport
      * @cmdParam boolean|false disable optional
      * @cmdParam boolean|true enable optional
      */
-    public function updateAction($object, $params = null) {
+    public function updateAction($object, $params = null)
+    {
         parent::updateAction($object, $params);
     }
     

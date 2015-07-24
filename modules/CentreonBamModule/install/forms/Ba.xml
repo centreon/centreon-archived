@@ -9,6 +9,11 @@
                 <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
                     <validators>
                     	<validator rules="remote" serverside="centreon-main.unique" />
+                        <validator rules="illegalChars" serverside="core.IllegalChars" />
+                        <validator rules="size" serverside="core.String">
+                            <argument name="minlength">3</argument>
+                            <argument name="maxlength">255</argument>
+                        </validator>
                     </validators>
                 </field>
                 <field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
@@ -28,6 +33,15 @@
                 </field>
                 <field name="level_w" label="Warning Threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
                 <field name="level_c" label="Critical Threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+                <field  normalized_name="poller" name="ba_pollers" label="Poller" default_value="" advanced="0" type="select" parent_field="" mandatory="0" massive_change='1'>
+                    <help>Define the poller that will monitor the host</help>
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-configuration/poller/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-bam/businessactivity/[i:id]/poller</listValuesRoute>
+                        <multiple>true</multiple>
+                    </attributes>
+                </field>
             </block>
             <block name="Tags">
                 <field name="ba_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
@@ -102,6 +116,7 @@
             <field name="level_w" mandatory="1"></field>
             <field name="level_c" mandatory="1"></field>
             <field name="ba_tags" mandatory="0"></field>
+            <field name="ba_pollers" mandatory="0"></field>
         </step>
         <step name="Indicators">
             <field name="kpi" mandatory="0"></field>

@@ -40,6 +40,7 @@ use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Installer\StaticFiles;
 use Centreon\Internal\Installer\Versioning;
 use Centreon\Internal\Command\AbstractCommand;
+use Centreon\Internal\Utils\CommandLine\Colorize;
 
 /**
  * Command line for module management
@@ -107,10 +108,12 @@ class ManageCommand extends AbstractCommand
      */
     public function deployStaticAction($object, $params = null)
     {
+        echo Colorize::colorizeMessage("Deployment of statics...", "info");
         if ($params['removeOld'] == true) {
             StaticFiles::remove($object['module']);
         }
         StaticFiles::deploy($object['module']);
+        echo Colorize::colorizeMessage("     Done", "success");
     }
     
     /**
@@ -120,12 +123,21 @@ class ManageCommand extends AbstractCommand
      */
     public function deployFormsAction($object)
     {
-        $modulePath = Informations::getModulePath($object['module']);
-        $moduleId = Informations::getModuleIdByName($object['module']);
-        $formsFiles = $modulePath . '/install/forms/*.xml';
-        foreach (glob($formsFiles) as $xmlFile) {
-            Form::installFromXml($moduleId, $xmlFile);
+        try {
+            echo Colorize::colorizeMessage("Deployment of Forms...", "info");
+            $modulePath = Informations::getModulePath($object['module']);
+            $moduleId = Informations::getModuleIdByName($object['module']);
+            $formsFiles = $modulePath . '/install/forms/*.xml';
+            foreach (glob($formsFiles) as $xmlFile) {
+                Form::installFromXml($moduleId, $xmlFile);
+            }
+
+            echo Colorize::colorizeMessage("     Done", "success");
+
+        } catch (FilesystemException $ex) {
+            
         }
+        
     }
     
     /**

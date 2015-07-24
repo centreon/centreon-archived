@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,60 +34,25 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
-
-use Centreon\Internal\Exception;
-use CentreonConfiguration\Events\CopyFiles;
-use CentreonConfiguration\Events\SynchronizeFiles;
-use CentreonConfiguration\Events\SynchronizeDatabase;
-
 /**
- * Factory for ConfigTest Engine
+ * Description of 20150721155935_change_notification_rule_owner_id
  *
- * @author Julien Mathis <jmathis@centreon.com>
- * @version 3.0.0
+ * @author bsauveton
  */
+use Phinx\Migration\AbstractMigration;
 
-class ConfigMoveRepository extends ConfigRepositoryAbstract
+class ChangeNotificationRuleOwnerId extends AbstractMigration
 {
-    /**
-     * Constructor
-     * 
-     * @param int $pollerId
-     */
-    public function __construct($pollerId)
+    
+    public function change()
     {
-        parent::__construct($pollerId);
-        $this->output[] = sprintf(_("Copying configuration files of poller %s"), $pollerId);
+        $cfg_notification_rules = $this->table('cfg_notification_rules');
+        $cfg_notification_rules->dropForeignKey('owner_id')
+            ->removeColumn('owner_id')
+            ->addColumn('owner_id', 'integer', array('signed' => false, 'null' => true))
+            ->addForeignKey('owner_id', 'cfg_users', 'user_id', array('delete'=> 'CASCADE', 'update'=> 'CASCADE'))->save();
+        
     }
-
-    /**
-     * Move configuration files 
-     * 
-     */
-    public function moveConfig()
-    {
-        try {
-            /* Get Path */
-            $event = $this->di->get('events');
-
-            $eventObj = new CopyFiles($this->pollerId);
-            $event->emit('centreon-configuration.copy.files', array($eventObj));
-            $this->output = array_merge($this->output, $eventObj->getOutput());
-
-            /* Event for external commands */
-            $eventObj = new SynchronizeFiles($this->pollerId);
-            $event->emit('centreon-configuration.synchronize.files', array($eventObj));
-            $this->output = array_merge($this->output, $eventObj->getOutput());
-            
-            /* Synchronize Database */
-            $eventObj = new SynchronizeDatabase($this->pollerId);
-            $event->emit('centreon-configuration.synchronize.database', array($eventObj));
-            $this->output = array_merge($this->output, $eventObj->getOutput());
-
-        } catch (Exception $e) {
-            $this->output[] = $e->getMessage();
-            $this->status = false;
-        }
-    }
+    
+    //put your code here
 }

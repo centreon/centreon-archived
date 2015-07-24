@@ -317,7 +317,7 @@ class BusinessActivityRepository extends FormRepository
      */
     public static function updateAllBusinessActivitiesAcl($action, $objectId, $allBas)
     {
-        if ($action === 'update') {
+        if (($action === 'create') || ($action === 'update')) {
             try {
                 AclresourceBusinessActivitiesParams::delete($objectId);
             } catch (\Exception $e) {

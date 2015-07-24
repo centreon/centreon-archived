@@ -150,6 +150,12 @@
                                 <span class="path1"></span><span class="path2"></span><span class="path3"></span>
                                </i>
                              </a>
+                             <div class="indicWrapper">
+                                <p>incidents
+                                    <span>
+                                        <span class="ico-host"></span>26</span>  <span class=""></span>6</span</p>
+                                <p>impacts <span> <span class=""></span>26</span></p>
+                             </div>
                              <span class="label label-danger hide">42</span>
                              <ul class="dropdown-menu">
                              </ul>
@@ -165,15 +171,26 @@
                               </ul>
                           </li>
 
+                          <li class="top-counter top-counter-unknown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                              <i class="icon-fill-unknown-incident">
+                                <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                              </i>
+                            </a>
+                            <span class="label label-default hide"></span>
+                            <ul class="dropdown-menu">
+                            </ul>
+                           </li>
+
                         <li class="top-counter top-counter-service">
                             <a href="#" class="dropdown-toggle drop-avatar">
-                                <i class="icon-pollers"></i>
+                                <span class="icon-fill-poller"></span>
                             </a>
                         </li>
 
-                        <li class="top-counter top-counter-bam">
+                        <li class="top-counter top-counter-ba">
                             <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
-                                <i class="icon-BAM"></i>
+                                <span class="icon-fill-BA"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></span>
                             </a>
                             <span class="label label-danger hide"></span>
                             <span class="label label-warning hide"></span>

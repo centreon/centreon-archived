@@ -365,10 +365,16 @@ abstract class ListController extends Controller
         $stmt->bindValue(':id', $requestParam['id'], \PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch();
+        
+        $row['validators'] = Form::getValidatorsByField($requestParam['id']);
+        $extraParams['id'] = 0;
+        
         $form = new Form('default');
-        $form->add($row, array('id' => 0));
+        $form->add($row, $extraParams);
         $formElements = $form->toSmarty();
         $this->tpl->assign('field', $formElements[$row['name']]['html']);
+        $this->tpl->assign('formName', "massive_change");
+        $this->tpl->assign('typeField',  $row['type']);
         $this->tpl->display('tools/mcField.tpl');
     }
 

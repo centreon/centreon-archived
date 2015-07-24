@@ -69,6 +69,10 @@
                                                 "tagname": "cfg-engine-$POLLERID$",
                                                 "path": "%engine_conf_dir%/$FILENAME$",
                                                 "name": "poller-module-cfg-engine"
+                                            },
+                                            {
+                                                "name": "poller-module-db-cfg-writer",
+                                                "type": "db_cfg_writer"
                                             }
                                         ],
                                         "input": [

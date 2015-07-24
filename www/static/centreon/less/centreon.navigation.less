@@ -17,6 +17,7 @@
   color : @lightGray;
   max-height: @navbar-height;
   height: @navbar-height;
+
   /*-- Profil Menu --*/
   .userProfil {
     background-color: @darkBlue;
@@ -75,25 +76,47 @@
     color: @lightGray;
   }
   /*-- Indicators --*/
+
   .indicators {
+
+    li{
+      float: right;
+
+      &.top-counter {
+
+        .open>a {
+
+          &:focus {
+            background-color: transparent;
+          }
+          background-color: transparent;
+        }
+        a {
+          color : lighten(@lightGray,0%);
+          padding : @paddingElem*2;
+          float: left;
+
+          &:hover {
+            background-color: transparent;
+          }
+        }
+
+        .indicWrapper {
+          float: left;
+          font-size: 12px;
+          padding: @paddingElem 0;
+
+          p {
+            margin-bottom: 0;
+          }
+        }
+
+      }
+    }
+
 
     [class^="icon-"], [class*=" icon-"] {
         font-size : 20px;
-    }
-    li{
-        float: right;
-       .open>a {
-         background-color: transparent;
-       }
-        a {
-            color : lighten(@lightGray,0%);
-            padding : @paddingElem*2;
-
-        &:hover {
-            background-color: transparent;
-        }
-
-        }
     }
   }
 }
