@@ -225,7 +225,7 @@
                          </li>
                          <li class="top-counter top-counter-warning">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="icon-fill-incident">
+                                <i class="icon-fill-incident ico-24">
                                   <span class="path1"></span><span class="path2"></span><span class="path3"></span>
                                 </i>
                               </a>

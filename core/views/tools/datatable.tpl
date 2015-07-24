@@ -8,105 +8,13 @@
    <!-- Datatable-->
 
 
-   <div class="Listing">
-
+   <divid="hostListing">
         <div id="tableLeft">
-        <div class="centreon-search-block form-group CentreonForm" id="accordion">
-
-                    {$clsOffset=""}
-                    {$searchAdv=true}
-                    {if true }
-                            <div class="inlineGroup">
-                            <div class="Elem1"><input type="text" name="advsearch" class="form-control"></div>
-                            <div class="Elem2"><button class="btnC btnDefault" type="button" id="btnSearch"><i class="icon-search"></i></button></div>
-                            </div>
-
-                    {else}
-                    {$searchAdv=false}
-                    {$nbMain=0}
-                    {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
-                        {if $colSearch.main == "true" && $nbMain < 2}
-                            {$nbMain=$nbMain+1}
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <span class="input-group-addon">{$colSearch.title}</span>
-                                    {if $colSearch['type'] == 'select'}
-                                        {if isset($colSearch["multiple"])}
-                                        {assign "multiple" $colSearch.multiple}
-                                        {else}
-                                        {assign "multiple" "false"}
-                                        {/if}
-                                        <select class="centreon-search{if $multiple !== "false" } select2{/if} form-control"
-                                                data-column-index="{$colSearch.colIndex}"
-                                                placeholder="{$colSearch.title}" name="{$colName}"
-                                                data-searchtag="{$colSearch.searchLabel}"{if $multiple !== "false"} multiple{/if}>
-                                            {if $multiple !== "false" }<option value=""></option>{/if}
-                                            {foreach $colSearch.additionnalParams as $optionName=>$optionValue}
-                                                <option value="{$optionValue}">{$optionName}</option>
-                                            {/foreach}
-                                        </select>
-                                    {else}
-                                        <input class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" name="{$colName}" placeholder="{$colSearch.title}" type="text" data-searchtag="{$colSearch.searchLabel}" />
-                                    {/if}
-                                </div>
-                            </div>
-                        {/if}
-                    {/foreach}
-                            {if $nbMain == 0}
-                                {$clsOffset="col-md-offset-8 "}
-                            {elseif $nbMain == 1}
-                                {$clsOffset="col-md-offset-4 "}
-                            {/if}
-                        {/if}
-
-                             <a data-toggle="collapse" class="search-expand" data-parent="#accordion" href="#collapseOne"><b>+</b></a>
-
-
-
-                <div id="collapseOne" class="panel-collapse collapse">
-
-                  <div class="CentreonForm">
-                    <div class="panel-body search-body">
-                            {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
-                            {if (!$searchAdv && $colSearch.main != "true") || $searchAdv }
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                    <label class="floatLabel">{$colSearch.title}</label>
-                                    {if $colSearch['type'] == 'select'}
-                                        {if isset($colSearch["multiple"])}
-                                        {assign "multiple" $colSearch.multiple}
-                                        {else}
-                                        {assign "multiple" "false"}
-                                        {/if}
-                                        <select class="centreon-search{if $multiple != "false"} select2{/if} form-control"
-                                                data-column-index="{$colSearch.colIndex}"
-                                                placeholder="{$colSearch.title}"
-                                                name="{$colName}"
-                                                data-searchtag="{$colSearch.searchLabel}"{if $multiple != "false"} multiple{/if}>
-                                            {if $multiple == "false"}<option value=""></option>{/if}
-                                            {foreach $colSearch.additionnalParams as $optionName=>$optionValue}
-                                                <option value="{$optionValue}">{$optionName}</option>
-                                            {/foreach}
-                                        </select>
-                                    {else}
-
-                                        <input class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" name="{$colName}" placeholder="{$colSearch.title}" type="text" data-searchtag="{$colSearch.searchLabel}"/>
-                                    {/if}
-                            </div>
-                        </div>
-                            {/if}
-                            {/foreach}
-                    </div>
-                </div>
-            </div>
-            </div>
-
             <!-- Add / Actions -->
-            <div class="buttonGroup btDatatable">
+            <div class="buttonGroup">
                 {if (isset($objectAddUrl) && !empty($objectAddUrl))}
                   <div class="configuration-actions">
-                    <button class="btnC btnSuccess" id="modalAdd">{t}Add {$objectDisplayName}{/t}</button>
+                    <button class="btnC btnSuccess" id="modalAdd">{t}Add {$objectName}{/t}</button>
                   </div>
                 {/if}
 
@@ -148,12 +56,12 @@
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-hover centreon_table" id="datatable{$object}" ></table>
             </div>
-
         </div>
 
    </div>
 
 </div>
-
 <aside id="sideRight" class="sideRightWrapper"></aside>
+
+
 
