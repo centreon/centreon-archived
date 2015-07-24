@@ -10,6 +10,10 @@
                     <validators>
                         <validator rules="remote" serverside="centreon-main.unique" />
                         <validator rules="illegalChars" serverside="core.IllegalChars" />
+                        <validator rules="size" serverside="core.String">
+                            <argument name="minlength">3</argument>
+                            <argument name="maxlength">255</argument>
+                        </validator>
                     </validators>
                 </field>
                 <field normalized_name="alias" name="service_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0" massive_change='1'></field>

@@ -433,28 +433,7 @@
                         .addClass('label-controller')
                         .text('{t}Choose the attribute to change{/t}')
                 ).appendTo($formGroup);
-        
-        /*
-        $('<div></div>')
-            .addClass('flash')
-            .addClass('alert')
-            .addClass('fade')
-            .addClass('in')
-            .attr('id', 'modal-flash-message')
-            .append(
-                $('<button></button>')
-                    .attr('type', 'button')
-                    .attr('aria-hidden', 'true')
-                    .addClass('close')
-                    .html('&times;')
-            )
-            .append(
-                $('<ul></ul>')
-                    .attr('id', 'errors')
-            )
-            .appendTo($formGroup);
-    */
-    
+           
             /* Get first select for choose attribute */
             var $divSelect = $('<div></div>').addClass('col-sm-6');
             var $select = $('<select></select>')
