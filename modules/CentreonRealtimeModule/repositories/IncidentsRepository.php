@@ -79,7 +79,7 @@ class IncidentsRepository
 
         /* Subquery for hosts */
         $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, 
-            NULL as description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, 
+            NULL as description, FROM_UNIXTIME(i.start_time) as start_time, i.start_time as stimestamp, i.end_time as etimestamp,  FROM_UNIXTIME(i.end_time) as end_time, 
             he.state as state, h.instance_id, h.output
             FROM rt_issues i, rt_hosts h, rt_hoststateevents he";
         $wheres = array();
@@ -98,7 +98,7 @@ class IncidentsRepository
         
         /* Subquery for services */
         $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, 
-            s.description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, 
+            s.description, FROM_UNIXTIME(i.start_time) as start_time, i.start_time as stimestamp, i.end_time as etimestamp, FROM_UNIXTIME(i.end_time) as end_time, 
             se.state as state, h.instance_id, s.output
             FROM rt_issues i, rt_hosts h, rt_services s, rt_servicestateevents se";
         $wheres = array();
@@ -142,6 +142,8 @@ class IncidentsRepository
                 'service_id' => $row['service_id'],
                 'service_desc' => $row['description'],
                 'start_time' => $row['start_time'],
+                'stimestamp' => $row['stimestamp'],
+                'etimestamp' => $row['etimestamp'],
                 'end_time' => $row['end_time'],
                 'state' => $row['state'],
                 'output' => $row['output'],

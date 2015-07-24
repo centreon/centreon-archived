@@ -40,10 +40,10 @@ use Centreon\Internal\Di;
 use CentreonRealtime\Repository\HostRepository;
 use CentreonRealtime\Repository\ServiceRepository;
 use CentreonRealtime\Repository\IncidentsRepository;
-
-
+use Centreon\Internal\Utils\Datetime;
+use CentreonRealtime\Repository\PollerRepository;
 use CentreonConfiguration\Repository\HostRepository as HostRepositoryConfig;
-
+use CentreonConfiguration\Repository\ServiceRepository as ServiceRepositoryConfig;
 
 
 /**
@@ -63,33 +63,52 @@ class Status
      */
     public static function execute(StatusEvent $event)
     {
-        /*
+        
         $router = Di::getDefault()->get('router');
         $incidents = IncidentsRepository::getIncidents();
-        foreach($incidents as $incident){
-            $childIncidents[] = IncidentsRepository::getChildren($incident['issue_id']);
-        }
-        
-        
+        $childIncidents = array();
         $hosts = array();
+        $services = array();
+        $impact = 0;
         foreach($incidents as $key=>$incident){
-            
+            $childIncidents[] = IncidentsRepository::getChildren($incident['issue_id']);
+            $impact += count($childIncidents);
+            $issue_duration = Datetime::humanReadable(
+                time() - $incident['stimestamp'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
             if(!empty($incident['host_id']) || $incident['host_id'] == "0"){
                 $hostsTemp = $incident;
                 $hostsTemp['icon'] = HostRepositoryConfig::getIconImagePath($incident['host_id']);
                 $hostsTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
+                $hostsTemp['state'] = ServiceRepository::countAllStatusForHost($incident['host_id']);
+                $hostsTemp['issue_duration'] = $issue_duration;
                 $hosts[] = $hostsTemp;
+            }
+            
+            if(!empty($incident['service_id']) || $incident['service_id'] == "0"){
+                $serviceTemp = $incident;
+                $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($incident['host_id']);
+                $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
+                $serviceTemp['issue_duration'] = $issue_duration;
+                $serviceTemp['state'] = ServiceRepository::countAllStatusForHost($incident['host_id']);
+                $services[] = $serviceTemp;
             }
         }
         
-        var_dump($hosts);
-        */
+        $pollers = PollerRepository::pollerStatus();
+        
+        $event->addStatus('hosts', $hosts);
+        $event->addStatus('services', $services);
+        $event->addStatus('pollers', $pollers);
+        
         //$returnJson['hosts'] = $hosts;
         //$returnJson['nb_hosts'] = $nb_hosts;
         //$returnJson['impacts'] = HostRepository::getImpactNbr();
         //var_dump(HostRepository::getImpactNbr());
 
-        
+        /*
         $values = array(
             'services' => array(
                 'unknown' => 0,
@@ -160,6 +179,6 @@ class Status
             }
         }
         $event->addStatus('poller', $values['pollers']);
-     
+     */
     }
 }
