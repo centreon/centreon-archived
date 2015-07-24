@@ -11,6 +11,10 @@
                     <validators>
                         <validator rules="remote" serverside="centreon-main.unique" />
                         <validator rules="illegalChars" serverside="core.IllegalChars" />
+                        <validator rules="size" serverside="core.String">
+                            <argument name="minlength">3</argument>
+                            <argument name="maxlength">255</argument>
+                        </validator>
                     </validators>
                 </field>
                 <field normalized_name="template-model-stm" name="service_template_model_stm_id" label="Template" default_value="" advanced="0" type="select" parent_field="" mandatory="0" massive_change='1'>
