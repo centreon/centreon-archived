@@ -99,7 +99,6 @@ class GenerateEngine
             "centengine.cfg"
         );
         $event->setOutput('centengine.cfg');
-//var_dump(static::$fileList);
 
         /* Generate Debugging Main File */
         ConfigGenerateMainRepository::generate(

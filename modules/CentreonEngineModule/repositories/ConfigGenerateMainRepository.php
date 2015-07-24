@@ -41,6 +41,7 @@ use CentreonConfiguration\Models\Poller;
 use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonConfiguration\Internal\Poller\WriteConfigFile;
 
 /**
  * Factory for ConfigGenerate Engine For centengine.cfg
@@ -80,7 +81,7 @@ class ConfigGenerateMainRepository
         $content = static::getContent($poller_id, $filesList, $testing);
 
         /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
+        WriteConfigFile::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }
 

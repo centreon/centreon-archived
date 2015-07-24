@@ -41,6 +41,7 @@ use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRe
 use CentreonConfiguration\Repository\ServicetemplateRepository as ServicetemplateConfigurationRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
 use Centreon\Internal\Di;
+use CentreonConfiguration\Internal\Poller\WriteConfigFile;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -167,7 +168,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         }
         
         /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, $user = "API");
+        WriteConfigFile::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, $user = "API");
         unset($content);
     }
 }

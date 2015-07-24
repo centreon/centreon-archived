@@ -113,6 +113,20 @@ class ScheduledDowntimeController extends FormController
     }
 
     /**
+     *
+     * @method get
+     * @route /scheduled-downtime/[i:id]
+     */
+    public function editAction($additionnalParamsForSmarty = array(), $defaultValues = array())
+    {
+        $template = Di::getDefault()->get('template');
+        $template->addCss('daterangepicker-bs3.css');
+        $template->addJs('daterangepicker.js');
+
+        parent::editAction($additionnalParamsForSmarty, $defaultValues);
+    }
+
+    /**
      * Update a period
      *
      * @method post

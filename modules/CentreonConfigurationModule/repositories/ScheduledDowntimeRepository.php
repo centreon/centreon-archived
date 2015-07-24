@@ -77,7 +77,8 @@ class ScheduledDowntimeRepository extends \CentreonConfiguration\Repository\Repo
         $stmt->execute();
 
         /* Prepare query for insert period */
-        $query = "INSERT INTO cfg_downtimes_periods (dt_id, dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, dtp_fixed, dtp_duration) VALUES (:id, :time_start, :time_end, :day_of_week, :month_cycle, :day_of_month, :fixed, :duration)";
+        $query = 'INSERT INTO cfg_downtimes_periods (dt_id, dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, dtp_fixed, dtp_duration)'
+            . ' VALUES (:id, :time_start, :time_end, :day_of_week, :month_cycle, :day_of_month, :fixed, :duration)';
         $stmt = $dbconn->prepare($query);
         foreach ($periods as $period) {
             $stmt->bindValue(':id', $dtId, \PDO::PARAM_INT);

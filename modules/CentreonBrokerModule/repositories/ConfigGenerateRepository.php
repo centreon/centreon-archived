@@ -297,7 +297,17 @@ class ConfigGenerateRepository
                         }
                     }
                 } else {
-                    $file->startElement($key);
+                    $valueIsString = false;
+                    foreach (array_values($value) as $subvalue) {
+                        if (is_string($subvalue)) {
+                            $valueIsString = true;
+                        }
+                    }
+
+                    if (!$valueIsString) {
+                        $file->startElement($key);
+                    }
+
                     foreach ($value as $subkey => $subvalue) {
                         if (is_array($subvalue)) {
                             foreach ($subvalue as $kkey => $vvalue) {
@@ -318,10 +328,15 @@ class ConfigGenerateRepository
                             );
                             if (is_string($subkey)) {
                                 $file->writeElement($subkey, $subvalue);
+                            } else {
+                                $file->writeElement($key, $subvalue);
                             }
                         }
                     }
-                    $file->endElement();
+
+                    if (!$valueIsString) {
+                        $file->endElement();
+                    }
                 }
             } else {
                 $value = str_replace(
