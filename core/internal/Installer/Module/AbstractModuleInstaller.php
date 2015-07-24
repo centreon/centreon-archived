@@ -595,22 +595,22 @@ abstract class AbstractModuleInstaller
      */
     protected function deployForms()
     {
+        $message = $this->colorizeText(_("Deployment of Forms..."));
+        $this->displayOperationMessage($message, false);
         try {
                                   
             $this->installValidators();
-            
             $myFormFiles = glob($this->moduleDirectory. '/install/forms/*.xml');
             
             foreach ($myFormFiles as $formFile) {
                 Form::installFromXml($this->moduleId, $formFile);
             }
-            $message = $this->colorizeText(_("Deployment of Forms..."));
-            $this->displayOperationMessage($message, false);
             
             $message = $this->colorizeMessage(_("     Done"), 'green');
             $this->displayOperationMessage($message);
-        } catch (FilesystemException $ex) {
-            
+        } catch (\Exception $ex) {
+            $message = $this->colorizeMessage("     ".$ex->getMessage(), 'danger');
+            $this->displayOperationMessage($message);
         }
     }
     
