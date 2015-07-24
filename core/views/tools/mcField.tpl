@@ -23,6 +23,12 @@ $.validator.addMethod(
 );
 
 var elRules = {};
+
+{if isset($typeField) && $typeField == 'number'}
+    $('#'+$({$fieldName}).attr('id')).rules('add', {
+      number: true
+    });
+{/if}
 {foreach from=$eventValidation['validators'] key=fieldName item=fieldValidators}
   {foreach from=$fieldValidators key=type item=options}
     var cle, valeur;
@@ -74,7 +80,6 @@ var elRules = {};
     {/if}
   {/foreach}
 {/foreach}
-    
 </script>
 
 {/block}

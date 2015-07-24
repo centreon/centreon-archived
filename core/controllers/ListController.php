@@ -374,6 +374,7 @@ abstract class ListController extends Controller
         $formElements = $form->toSmarty();
         $this->tpl->assign('field', $formElements[$row['name']]['html']);
         $this->tpl->assign('formName', "massive_change");
+        $this->tpl->assign('typeField',  $row['type']);
         $this->tpl->display('tools/mcField.tpl');
     }
 
