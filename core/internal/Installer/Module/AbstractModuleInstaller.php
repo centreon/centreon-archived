@@ -622,11 +622,11 @@ abstract class AbstractModuleInstaller
     {
         $validatorFile = $childrenModuleDirectory . '/install/validators.json';
         if (file_exists($validatorFile)) {                       
-            $message = $this->colorizeText(_("Installation of validators..."));
-            $this->displayOperationMessage("\n" . $message, false);
+            //$message = $this->colorizeText(_("Installation of validators..."));
+            //$this->displayOperationMessage("\n" . $message, false);
             Form::insertValidators(json_decode(file_get_contents($validatorFile), true));
-            $message = $this->colorizeMessage(_("     Done"), 'green');
-            $this->displayOperationMessage($message);
+            //$message = $this->colorizeMessage(_("     Done"), 'green');
+            //$this->displayOperationMessage($message);
         }
     }
     

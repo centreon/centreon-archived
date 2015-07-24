@@ -72,11 +72,22 @@ class MetricsFixColumns extends AbstractMigration
             ->save();
         
         /* Change data_bin */
-        $logDataBin = $this->table('log_data_bin');
-        $logDataBin->renameColumn('id_metric', 'metric_id')
-            ->changeColumn('status', 'integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'default' => 3))
-            ->save();
-            
+        $exists_log_data_bin = $this->hasTable('log_data_bin');
+        if ($exists_log_data_bin) {
+            $logDataBin = $this->table('log_data_bin');
+            $logDataBin->renameColumn('id_metric', 'metric_id')
+                ->changeColumn('status', 'integer', array('null' => false, 'limit' => MysqlAdapter::INT_TINY, 'default' => 3))
+                ->save();
+        } else {
+            $logDataBin = $this->table('log_data_bin', array('id' => false));
+            $logDataBin->addColumn('metric_id', 'integer', array('signed' => false, 'null' => false))
+                    ->addColumn('ctime', 'integer', array('signed' => false, 'null' => true))
+                    ->addColumn('value', 'float', array('signed' => false, 'null' => true))
+                    ->addColumn('status', 'integer', array('signed' => false, 'null' => false, 'limit' => MysqlAdapter::INT_TINY, 'default' => 3))
+                    ->addIndex(array('metric_id'), array('unique' => false))
+                    ->create();
+        }
+           
         $this->execute("SET FOREIGN_KEY_CHECKS=1");
     }
 }
