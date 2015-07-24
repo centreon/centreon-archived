@@ -69,10 +69,10 @@ class Status
         $childIncidents = array();
         $hosts = array();
         $services = array();
-        $impact = 0;
+        $impactHosts = 0;
+        $impactServices = 0;
         foreach($incidents as $key=>$incident){
-            $childIncidents[] = IncidentsRepository::getChildren($incident['issue_id']);
-            $impact += count($childIncidents);
+            
             $issue_duration = Datetime::humanReadable(
                 time() - $incident['stimestamp'],
                 Datetime::PRECISION_FORMAT,
@@ -84,6 +84,8 @@ class Status
                 $hostsTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
                 $hostsTemp['state'] = ServiceRepository::countAllStatusForHost($incident['host_id']);
                 $hostsTemp['issue_duration'] = $issue_duration;
+                $childIncidentsHost = IncidentsRepository::getChildren($incident['issue_id']);
+                $impactHosts += count($childIncidentsHost);
                 $hosts[] = $hostsTemp;
             }
             
@@ -93,6 +95,8 @@ class Status
                 $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
                 $serviceTemp['issue_duration'] = $issue_duration;
                 $serviceTemp['state'] = ServiceRepository::countAllStatusForHost($incident['host_id']);
+                $childIncidentsService = IncidentsRepository::getChildren($incident['issue_id']);
+                $impactServices += count($childIncidentsService);
                 $services[] = $serviceTemp;
             }
         }
@@ -102,7 +106,8 @@ class Status
         $event->addStatus('hosts', $hosts);
         $event->addStatus('services', $services);
         $event->addStatus('pollers', $pollers);
-        
+        $event->addStatus('impact_hosts', $impactHosts);
+        $event->addStatus('impact_services', $impactServices);
         //$returnJson['hosts'] = $hosts;
         //$returnJson['nb_hosts'] = $nb_hosts;
         //$returnJson['impacts'] = HostRepository::getImpactNbr();
