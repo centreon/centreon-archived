@@ -366,7 +366,7 @@
                             <div class="indicWrapper">
                                   <div class="titles">
                                       <p>stopped</p>
-                                      <p>unknown</p>
+                                      <p>unreach.</p>
                                   </div>
                                   <div class="indices">
                                       <span> 50</span>
