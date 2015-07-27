@@ -64,39 +64,60 @@ class DowntimeRepository
         /* Init Content Array */
         $content = array();
         $timeperiodContent = array();
+        $downtimes = array();
         
-        /* Generate host downtimes. */
-        $query = 'SELECT d.dt_id, d.dt_name, dhr.host_host_id'
-            . ' FROM cfg_downtimes d, cfg_downtimes_hosts_relations dhr'
-            . ' WHERE d.dt_id=dhr.dt_id';
+        /* Generate host downtimes */
+        $query = 'SELECT d.dt_id, d.dt_name, dp.dtp_id, dp.dtp_fixed, dp.dtp_duration, dhr.host_host_id'
+            . ' FROM cfg_downtimes d, cfg_downtimes_periods dp, cfg_downtimes_hosts_relations dhr'
+            . ' WHERE d.dt_id=dhr.dt_id AND d.dt_id=dp.dt_id'
+            . ' ORDER BY dt_id, dtp_id';
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
+        $downtimes = array_merge($downtimes, $stmt->fetchAll(\PDO::FETCH_ASSOC));
 
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        /* Generate host tag downtimes */
+        $query = 'SELECT d.dt_id, d.dt_name, dp.dtp_id, dp.dtp_fixed, dp.dtp_duration, th.resource_id as host_host_id'
+            . ' FROM cfg_downtimes d, cfg_downtimes_periods dp, cfg_downtimes_hosttags_relations dhr, cfg_tags_hosts th'
+            . ' WHERE d.dt_id=dhr.dt_id AND d.dt_id=dp.dt_id AND dhr.host_tag_id=th.tag_id AND th.template_id=0'
+            . ' ORDER BY dt_id, dtp_id';
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        $downtimes = array_merge($downtimes, $stmt->fetchAll(\PDO::FETCH_ASSOC));
+
+        /* Generate service downtimes */
+        $query = 'SELECT d.dt_id, d.dt_name, dp.dtp_id, dp.dtp_fixed, dp.dtp_duration, hsr.host_host_id, dsr.service_service_id'
+            . ' FROM cfg_downtimes d, cfg_downtimes_periods dp, cfg_downtimes_services_relations dsr, cfg_hosts_services_relations hsr'
+            . ' WHERE d.dt_id=dsr.dt_id AND dsr.service_service_id=hsr.service_service_id AND d.dt_id=dp.dt_id'
+            . ' ORDER BY dt_id, dtp_id';
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        $downtimes = array_merge($downtimes, $stmt->fetchAll(\PDO::FETCH_ASSOC));
+
+        /* Generate service tag downtimes */
+        $query = 'SELECT d.dt_id, d.dt_name, dp.dtp_id, dp.dtp_fixed, dp.dtp_duration, hsr.host_host_id, hsr.service_service_id'
+            . ' FROM cfg_downtimes d, cfg_downtimes_periods dp, cfg_downtimes_servicetags_relations dsr, cfg_tags_services ts, cfg_hosts_services_relations hsr'
+            . ' WHERE d.dt_id=dsr.dt_id AND d.dt_id=dp.dt_id AND dsr.service_tag_id=ts.tag_id AND ts.template_id=0 AND ts.resource_id=hsr.service_service_id'
+            . ' ORDER BY dt_id, dtp_id';
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        $downtimes = array_merge($downtimes, $stmt->fetchAll(\PDO::FETCH_ASSOC));
+
+        foreach ($downtimes as $downtime) {
             $tmp = array("type" => "downtime");
             $tmpData = array();
 
-            $tmpData['host_id'] =  $row['host_host_id'];
-            $tmpData['recurring_timeperiod'] = 'downtime_' . $row['dt_id'];
+            $tmpData['host_id'] =  $downtime['host_host_id'];
 
-            $tmp["content"] = $tmpData;
-            $content[] = $tmp;
-        }
+            if (isset($downtime['service_service_id'])) {
+                $tmpData['service_id'] =  $downtime['service_service_id'];
+            }
 
-        /* Generate service downtimes. */
-        $query = 'SELECT d.dt_id, d.dt_name, hsr.host_host_id, dsr.service_service_id'
-            . ' FROM cfg_downtimes d, cfg_downtimes_services_relations dsr, cfg_hosts_services_relations hsr'
-            . ' WHERE d.dt_id=dsr.dt_id AND dsr.service_service_id=hsr.service_service_id';
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
+            $tmpData['recurring_period'] = 'downtime_' . $downtime['dt_id'] . '_' . $downtime['dtp_id'];
+            $tmpData['fixed'] = $downtime['dtp_fixed'];
 
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $tmp = array("type" => "downtime");
-            $tmpData = array();
-
-            $tmpData['host_id'] =  $row['host_host_id'];
-            $tmpData['service_id'] =  $row['service_service_id'];
-            $tmpData['recurring_timeperiod'] = 'downtime_' . $row['dt_id'];
+            if ($downtime['dtp_fixed'] == 0) {
+                $tmpData['duration'] = $downtime['dtp_duration'];
+            }
 
             $tmp["content"] = $tmpData;
             $content[] = $tmp;

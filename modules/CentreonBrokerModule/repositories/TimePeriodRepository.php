@@ -75,19 +75,19 @@ class TimePeriodRepository
         $content = array();
         
         /* Get information into the database. */
-        $queryDowntimePeriods = 'SELECT dt_id, dtp_start_time, dtp_end_time, dtp_duration, dtp_day_of_week, dtp_day_of_month'
-            . ' FROM cfg_downtimes_periods';
+        $queryDowntimePeriods = 'SELECT dt_id, dtp_id, dtp_start_time, dtp_end_time, dtp_duration, dtp_day_of_week, dtp_day_of_month'
+            . ' FROM cfg_downtimes_periods'
+            . ' ORDER BY dt_id,dtp_id';
         $stmtDowntimePeriods = $dbconn->prepare($queryDowntimePeriods);
         $stmtDowntimePeriods->execute();
         $result = $stmtDowntimePeriods->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_ASSOC);
 
         foreach ($result as $key => $value) {
             $tmp = array("type" => "timeperiod");
-            $tmpData = array();
-
-            $tmpData['timeperiod_name'] = 'downtime_' . $key;
 
             foreach ($value as $subvalue) {
+                $tmpData = array();
+                $tmpData['timeperiod_name'] = 'downtime_' . $key . '_' . $subvalue['dtp_id'];
                 if (isset($subvalue['dtp_day_of_week'])) {
                     $dayOfWeek = explode(',', $subvalue['dtp_day_of_week']);
                     foreach ($dayOfWeek as $day) {
@@ -97,10 +97,10 @@ class TimePeriodRepository
                 if (isset($subvalue['dtp_day_of_month'])) {
                     $tmpData['day'] = $subvalue['dtp_day_of_month'];
                 }
+                $tmp["content"] = $tmpData;
+                $content[] = $tmp;
             }
 
-            $tmp["content"] = $tmpData;
-            $content[] = $tmp;
         }
 
         /* Write Check-Command configuration file */

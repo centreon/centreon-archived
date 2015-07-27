@@ -84,7 +84,7 @@ class ScheduledDowntimeRepository extends \CentreonConfiguration\Repository\Repo
             $stmt->bindValue(':id', $dtId, \PDO::PARAM_INT);
             $stmt->bindValue(':time_start', $period['timeStart'], \PDO::PARAM_STR);
             $stmt->bindValue(':time_end', $period['timeEnd'], \PDO::PARAM_STR);
-            $fixed = ($period['fixed'] == 'fixed' ? 1 : 0);
+            $fixed = (isset($period['fixed']) ? 1 : 0);
             $stmt->bindValue(':fixed', $fixed, \PDO::PARAM_STR);
             if ($period['duration'] === '') {
                 $stmt->bindValue(':duration', null, \PDO::PARAM_NULL);
