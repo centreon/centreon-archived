@@ -66,26 +66,37 @@ class Status
         
         $router = Di::getDefault()->get('router');
         $incidents = IncidentsRepository::getIncidents();
-        $hosts = array();
-        $services = array();
-        $impactHosts = 0;
-        $impactServices = 0;
-        foreach($incidents as $key=>$incident){
-            
+        $arrayStatus = array('success','warning','danger','default','info');
+        $status = array();
+        foreach($incidents as $incident){
+
             $issue_duration = Datetime::humanReadable(
                 time() - $incident['stimestamp'],
                 Datetime::PRECISION_FORMAT,
                 2
             );
+            $state = $arrayStatus[$incident['state']];
+            if(empty($status[$state]['totalIncidents'])){
+                $status[$state]['totalIncidents'] = 0;
+            }
+            $status[$state]['totalIncidents'] = ($status[$state]['totalIncidents']) + 1;
+            if(empty($status[$state]['totalImpact'])){
+                $status[$state]['totalImpact'] = 0;
+            }
+            
+            
+            
             if(!empty($incident['host_id']) || $incident['host_id'] == "0"){
                 $hostsTemp = $incident;
                 $hostsTemp['icon'] = HostRepositoryConfig::getIconImagePath($incident['host_id']);
                 $hostsTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
-                $hostsTemp['state'] = ServiceRepository::countAllStatusForHost($incident['host_id']);
+                $hostsTemp['states'] = ServiceRepository::countAllStatusForHost($incident['host_id']);
                 $hostsTemp['issue_duration'] = $issue_duration;
+
+                $hostsTemp['state'] = $state;
                 $childIncidentsHost = IncidentsRepository::getChildren($incident['issue_id']);
-                $impactHosts += count($childIncidentsHost);
-                $hosts[] = $hostsTemp;
+                $status[$state]['hosts'][] = $hostsTemp;
+                $status[$state]['totalImpact'] = ($status[$state]['totalImpact']) + count($childIncidentsHost);
             }
             
             if(!empty($incident['service_id']) || $incident['service_id'] == "0"){
@@ -93,21 +104,34 @@ class Status
                 $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($incident['host_id']);
                 $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
                 $serviceTemp['issue_duration'] = $issue_duration;
-                $serviceTemp['state'] = ServiceRepository::countAllStatusForHost($incident['host_id']);
+                $serviceTemp['states'] = ServiceRepository::countAllStatusForHost($incident['host_id']);
+                $serviceTemp['state'] = $state;
                 $childIncidentsService = IncidentsRepository::getChildren($incident['issue_id']);
-                $impactServices += count($childIncidentsService);
-                $services[] = $serviceTemp;
+                $status[$state]['services'][] = $serviceTemp;
+                $status[$state]['totalImpact'] = ($status[$state]['totalImpact']) + count($childIncidentsService);
             }
         }
-        
+
+        $pollerArray = array();
         $pollers = PollerRepository::pollerStatus();
-        $event->addStatus('hosts', $hosts);
-        $event->addStatus('nb_incidents_hosts', count($hosts));
-        $event->addStatus('services', $services);
-        $event->addStatus('nb_incidents_services', count($services));
-        $event->addStatus('pollers', $pollers);
-        $event->addStatus('impact_hosts', $impactHosts);
-        $event->addStatus('impact_services', $impactServices);
+        $stopped = 0;
+        $unreachable = 0;
+        foreach($pollers as $poller){
+            if($poller['running'] != "1"){
+                $stopped++;
+            }
+            if($poller['disconnect'] == "1"){
+                $unreachable++;
+            }
+        }
+        $pollerArray['stopped'] = $stopped;
+        $pollerArray['unreachable'] = $unreachable;
+        $pollerArray['pollers'] = $pollers;
+        $event->addStatus('status', $status);
+        //$event->addStatus('nb_incidents_hosts', count($hosts));
+        //$event->addStatus('services', $services);
+        //$event->addStatus('nb_incidents_services', count($services));
+        $event->addStatus('pollers', $pollerArray);
 
         /*
         $values = array(
