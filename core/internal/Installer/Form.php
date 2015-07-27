@@ -560,12 +560,16 @@ class Form
     public static function installFromXml($moduleId, $xmlFile = "")
     {
         $xml = simplexml_load_file($xmlFile);
-        foreach ($xml as $form) {
-            if ($form->getName() == 'form') {
-                self::processForm($form, $moduleId);
-            } elseif ($form->getName() == 'wizard') {
-                self::processWizard($form, $moduleId);
+        if ($xml) {
+            foreach ($xml as $form) {
+                if ($form->getName() == 'form') {
+                    self::processForm($form, $moduleId);
+                } elseif ($form->getName() == 'wizard') {
+                    self::processWizard($form, $moduleId);
+                }
             }
+        } else {
+            throw new \Exception("Error when loading file ".$xmlFile);
         }
     }
 

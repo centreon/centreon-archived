@@ -72,6 +72,32 @@ class HostRepository extends Repository
     public static $hook = 'displayHostRtColumn';
     
     /**
+     * Format data so that it can be displayed in slider
+     *
+     * @param array $data
+     * @return array $checkdata
+     */
+    public static function formatDataForHeader($data)
+    {
+        /* Check data */
+        $checkdata = array();
+        $checkdata[_('id')] = $data['host_id'];
+        $checkdata[_('name')] = $data['name'];
+        $checkdata[_('state')] = $data['state'];
+      
+        if(!empty($data['icon'])){
+            $checkdata[_('icon')] = $data['icon'];
+        }
+        
+        return $checkdata;
+    }
+    
+    
+    
+    
+    
+    
+    /**
      * Get host status
      *
      * @param int $hostId
@@ -199,6 +225,71 @@ class HostRepository extends Repository
         }
         return "<span class='patchState $status'>"
             . "</span>";
+    }
+    
+    public static function getImpactNbr($hostId = null, $serviceId = null){
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        $serviceQuery = "";
+        if(!empty($serviceId)){
+            $serviceQuery = " and i.service_id = :service_id ";
+        }
+        $hostQuery = "";
+        if(!empty($hostId)){
+            $hostQuery = " and i.host_id = :host_id ";
+        }
+        
+        
+        
+        $query = "SELECT i.issue_id, iis.child_id "
+                . "FROM rt_issues i "
+                . "INNER JOIN rt_services rs ON i.service_id = rs.service_id and i.host_id = rs.host_id "
+                . "LEFT JOIN rt_issues_issues_parents iis ON i.issue_id = iis.parent_id "
+                . "INNER JOIN rt_servicestateevents sse ON sse.host_id = i.host_id "
+                . "AND sse.service_id = i.service_id AND sse.start_time >= i.start_time " 
+                . "AND (sse.end_time is null OR sse.end_time <= i.end_time) "
+                . "WHERE i.end_time is null ".$serviceQuery.$hostQuery
+                . "AND iis.child_id is not null "; 
+        $stmt = $dbconn->prepare($query);
+
+        if(!empty($serviceId)){
+            $stmt->bindParam(':service_id', $serviceId, \PDO::PARAM_INT);
+        }
+        if(!empty($hostId)){
+            $stmt->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
+        }
+        
+        $stmt->execute();
+        $impact = 0;
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $impact += self::getAllImpactNbr($row['issue_id']);
+        }
+        return $impact;
+        
+    }
+    
+    public static function getAllImpactNbr($issue_id){
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        $query = "SELECT i.issue_id "
+                . "FROM rt_issues_issues_parents iis "
+                . "INNER JOIN rt_issues i ON i.issue_id = iis.parent_id "
+                . "INNER JOIN rt_services rs ON i.service_id = rs.service_id and i.host_id = rs.host_id "
+                . "INNER JOIN rt_servicestateevents sse ON sse.host_id = i.host_id and sse.service_id = i.service_id "
+                . "and sse.start_time >= i.start_time "
+                . "AND (sse.end_time is null OR sse.end_time <= i.end_time) "
+                . "WHERE iis.parent_id = ? and i.end_time is null";  
+        $stmt = $dbconn->prepare($query);
+        var_dump($query);
+        var_dump($issue_id);
+        $stmt->execute(array($issue_id));
+        $impact = 0;
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $impact++;
+            $impact += self::getAllImpactNbr($row['issue_id']);
+        }
+        return $impact;
+        
     }
     
     
