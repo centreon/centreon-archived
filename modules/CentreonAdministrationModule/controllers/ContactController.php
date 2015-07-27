@@ -67,8 +67,7 @@ class ContactController extends FormController
     {
         $router = Di::getDefault()->get('router');
         $this->tpl->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
-                ->addJs('hogan-3.0.0.min.js')
-            ->addCss('centreon.tag.css', 'centreon-administration');
+                ->addJs('hogan-3.0.0.min.js');
         
         $urls = array(
             'tag' => array(

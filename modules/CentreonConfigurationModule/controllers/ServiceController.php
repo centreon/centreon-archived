@@ -86,8 +86,7 @@ class ServiceController extends FormController
             ->addJs('moment-timezone-with-data.min.js')
             ->addJs('centreon-clone.js')
             ->addJs('component/custommacro.js')
-            ->addCss('centreon.qtip.css')
-            ->addCss('centreon.tag.css', 'centreon-administration');
+            ->addCss('centreon.qtip.css');
         $urls = array(
             'tag' => array(
                 'add' => $router->getPathFor('/centreon-administration/tag/add'),

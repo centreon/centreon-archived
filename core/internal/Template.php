@@ -172,6 +172,7 @@ class Template extends \Smarty
         $this->addCss('centreon.qtip.css');
         $this->addCss('jquery.sidr.light.css');
         $this->addCss('centreon.css');
+        $this->addCss('centreon.tag.css', 'centreon-administration');
 
         /* Load javascript */
         $this->addJs('jquery.min.js');

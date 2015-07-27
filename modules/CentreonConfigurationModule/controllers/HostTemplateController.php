@@ -121,8 +121,7 @@ class HostTemplateController extends FormController
                 ->addJs('moment-with-locales.js')
                 ->addJs('moment-timezone-with-data.min.js')
                 ->addJs('centreon-clone.js')
-                ->addJs('component/custommacro.js')
-                ->addCss('centreon.tag.css', 'centreon-administration');
+                ->addJs('component/custommacro.js');
         
         $urls = array(
             'tag' => array(

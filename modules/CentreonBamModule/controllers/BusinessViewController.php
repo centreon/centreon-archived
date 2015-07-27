@@ -90,8 +90,7 @@ class BusinessViewController extends FormController
     {
         $router = Di::getDefault()->get('router');
         $this->tpl->addJs('hogan-3.0.0.min.js')
-            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
-            ->addCss('centreon.tag.css', 'centreon-administration');
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration');
         $urls = array(
             'tag' => array(
                 'add' => $router->getPathFor('/centreon-administration/tag/add'),
