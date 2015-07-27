@@ -37,6 +37,14 @@ namespace CentreonRealtime\Listeners\CentreonMain;
 
 use CentreonMain\Events\Status as StatusEvent;
 use Centreon\Internal\Di;
+use CentreonRealtime\Repository\HostRepository;
+use CentreonRealtime\Repository\ServiceRepository;
+use CentreonRealtime\Repository\IncidentsRepository;
+use Centreon\Internal\Utils\Datetime;
+use CentreonRealtime\Repository\PollerRepository;
+use CentreonConfiguration\Repository\HostRepository as HostRepositoryConfig;
+use CentreonConfiguration\Repository\ServiceRepository as ServiceRepositoryConfig;
+
 
 /**
  * Event to top counter for host and service
@@ -55,6 +63,53 @@ class Status
      */
     public static function execute(StatusEvent $event)
     {
+        
+        $router = Di::getDefault()->get('router');
+        $incidents = IncidentsRepository::getIncidents();
+        $hosts = array();
+        $services = array();
+        $impactHosts = 0;
+        $impactServices = 0;
+        foreach($incidents as $key=>$incident){
+            
+            $issue_duration = Datetime::humanReadable(
+                time() - $incident['stimestamp'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
+            if(!empty($incident['host_id']) || $incident['host_id'] == "0"){
+                $hostsTemp = $incident;
+                $hostsTemp['icon'] = HostRepositoryConfig::getIconImagePath($incident['host_id']);
+                $hostsTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
+                $hostsTemp['state'] = ServiceRepository::countAllStatusForHost($incident['host_id']);
+                $hostsTemp['issue_duration'] = $issue_duration;
+                $childIncidentsHost = IncidentsRepository::getChildren($incident['issue_id']);
+                $impactHosts += count($childIncidentsHost);
+                $hosts[] = $hostsTemp;
+            }
+            
+            if(!empty($incident['service_id']) || $incident['service_id'] == "0"){
+                $serviceTemp = $incident;
+                $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($incident['host_id']);
+                $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
+                $serviceTemp['issue_duration'] = $issue_duration;
+                $serviceTemp['state'] = ServiceRepository::countAllStatusForHost($incident['host_id']);
+                $childIncidentsService = IncidentsRepository::getChildren($incident['issue_id']);
+                $impactServices += count($childIncidentsService);
+                $services[] = $serviceTemp;
+            }
+        }
+        
+        $pollers = PollerRepository::pollerStatus();
+        $event->addStatus('hosts', $hosts);
+        $event->addStatus('nb_incidents_hosts', count($hosts));
+        $event->addStatus('services', $services);
+        $event->addStatus('nb_incidents_services', count($services));
+        $event->addStatus('pollers', $pollers);
+        $event->addStatus('impact_hosts', $impactHosts);
+        $event->addStatus('impact_services', $impactServices);
+
+        /*
         $values = array(
             'services' => array(
                 'unknown' => 0,
@@ -74,12 +129,12 @@ class Status
         );
         $db = Di::getDefault()->get('db_centreon');
 
-        /* Get service critical and warning */
         $query = "SELECT COUNT(service_id) as nb, state
             FROM rt_services
             WHERE state_type = 1
                 AND state IN (1, 2, 3)
                 AND acknowledged = 0
+                OR acknowledged is null
             GROUP BY state";
         $stmt = $db->query($query);
         while ($row = $stmt->fetch()) {
@@ -93,12 +148,12 @@ class Status
         }
         $event->addStatus('service', $values['services']);
 
-        /* Get host critical and warning */
         $query = "SELECT COUNT(host_id) as nb, state
             FROM rt_hosts
             WHERE state_type = 1
                 AND state IN (1, 2, 3)
                 AND acknowledged = 0
+                OR acknowledged is null
             GROUP BY state";
         $stmt = $db->query($query);
         while ($row = $stmt->fetch()) {
@@ -112,7 +167,6 @@ class Status
         }
         $event->addStatus('host', $values['hosts']);
 
-        /* Get poller information */
         $query = "SELECT last_alive, running
             FROM rt_instances
             WHERE deleted != 1";
@@ -126,5 +180,6 @@ class Status
             }
         }
         $event->addStatus('poller', $values['pollers']);
+     */
     }
 }
