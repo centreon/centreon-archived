@@ -208,8 +208,7 @@ class IndicatorController extends FormController
             ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addJs('jquery.select2/select2.min.js');
 
-        $this->tpl->addCss('centreon.tag.css', 'centreon-administration')
-                  ->addCss('select2.css')
+        $this->tpl->addCss('select2.css')
                   ->addCss('select2-bootstrap.css');
 
         $urls = array(

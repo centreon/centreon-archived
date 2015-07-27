@@ -90,7 +90,6 @@ class HostController extends Controller
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
             ->addCss('dataTables.bootstrap.css')
-            ->addCss('centreon.tag.css', 'centreon-administration')
             ->addCss('select2.css')
             ->addCss('select2-bootstrap.css')
             ->addCss('centreon-wizard.css');
@@ -156,9 +155,8 @@ class HostController extends Controller
         $router = $di->get('router');
         $this->tpl->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addJs('moment-with-locales.js')
-            ->addJs('moment-timezone-with-data.min.js')
-            ->addCss('centreon.tag.css', 'centreon-administration');
-                
+            ->addJs('moment-timezone-with-data.min.js');
+        
         $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
         $myDataForDatatable = $myDatatable->getDatas();
         

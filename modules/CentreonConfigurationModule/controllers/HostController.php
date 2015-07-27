@@ -95,8 +95,7 @@ class HostController extends FormController
             ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addJs('centreon-clone.js')
             ->addJs('component/custommacro.js')
-            ->addCss('centreon.qtip.css')
-            ->addCss('centreon.tag.css', 'centreon-administration');
+            ->addCss('centreon.qtip.css');
         
         $urls = array(
             'tag' => array(

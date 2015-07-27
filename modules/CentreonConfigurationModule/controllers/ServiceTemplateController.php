@@ -88,8 +88,7 @@ class ServiceTemplateController extends FormController
                 ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
                 ->addJs('hogan-3.0.0.min.js')
                 ->addJs('centreon-clone.js')
-                ->addJs('component/custommacro.js')
-                ->addCss('centreon.tag.css', 'centreon-administration');
+                ->addJs('component/custommacro.js');
         
         $urls = array(
             'tag' => array(
