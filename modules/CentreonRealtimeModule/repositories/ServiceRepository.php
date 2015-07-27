@@ -128,6 +128,38 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
     }
     
     
+    public static function formatDataForHeader($data)
+    {
+        /* Check data */
+        $checkdata = array();
+        $checkdata[_('id')] = $data['service_id'];
+        $checkdata[_('name')] = $data['service_desc'];
+        $checkdata[_('state')] = $data['state'];
+      
+        $checkdata[_('icon')] = "";
+        if(!empty($data['icon'])){
+            $checkdata[_('icon')] = $data['icon'];
+        }
+        
+        $checkdata[_('url')] = "";
+        if(!empty($data['url'])){
+            $checkdata[_('url')] = $data['url'];
+        }
+        
+        $checkdata[_('issue_duration')] = "";
+        if(!empty($data['issue_duration'])){
+            $checkdata[_('issue_duration')] = $data['issue_duration'];
+        }
+        
+        $checkdata[_('states')] = "";
+        if(!empty($data['states'])){
+            $checkdata[_('states')] = $data['states'];
+        }
+        
+        
+        return $checkdata;
+    }
+    
     /**
      * Count service status for a host grouped by status id
      *

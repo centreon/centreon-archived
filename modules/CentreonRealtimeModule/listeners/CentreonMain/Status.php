@@ -65,9 +65,29 @@ class Status
     {
         
         $router = Di::getDefault()->get('router');
-        $incidents = IncidentsRepository::getIncidents();
-        $arrayStatus = array('success','warning','danger','default','info');
+        $arrayStatus = array('success','warning','critical','unknown','pending');
         $status = array();
+        $pending = array();
+        $unknown = array();
+        $pending['hosts'] = array();
+        $pending['services'] = array();
+        $unknown['services'] = array();
+        $pollerArray = array();
+        $stopped = 0;
+        $unreachable = 0;
+        //Get total number of hosts
+        $tHosts = \CentreonRealtime\Models\Host::getList("host_id",
+                                        1
+                                    );
+        $totalHosts = $tHosts[0]['host_id'];
+        //Get total number of services
+        $tServices = \CentreonRealtime\Models\Service::getList("service_id",
+                                                1
+                                            );
+        $totalServices = $tServices[0]['service_id'];
+        
+        // Get warning and critical incidents
+        $incidents = IncidentsRepository::getIncidents();
         foreach($incidents as $incident){
 
             $issue_duration = Datetime::humanReadable(
@@ -76,15 +96,18 @@ class Status
                 2
             );
             $state = $arrayStatus[$incident['state']];
-            if(empty($status[$state]['totalIncidents'])){
-                $status[$state]['totalIncidents'] = 0;
+            if(empty($status[$state]['totalHostIncidents'])){
+                $status[$state]['totalHostIncidents'] = 0;
             }
-            $status[$state]['totalIncidents'] = ($status[$state]['totalIncidents']) + 1;
+            
+            if(empty($status[$state]['totalServiceIncidents'])){
+                $status[$state]['totalServiceIncidents'] = 0;
+            }
+            
+            
             if(empty($status[$state]['totalImpact'])){
                 $status[$state]['totalImpact'] = 0;
             }
-            
-            
             
             if(!empty($incident['host_id']) || $incident['host_id'] == "0"){
                 $hostsTemp = $incident;
@@ -92,30 +115,86 @@ class Status
                 $hostsTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
                 $hostsTemp['states'] = ServiceRepository::countAllStatusForHost($incident['host_id']);
                 $hostsTemp['issue_duration'] = $issue_duration;
-
                 $hostsTemp['state'] = $state;
                 $childIncidentsHost = IncidentsRepository::getChildren($incident['issue_id']);
-                $status[$state]['hosts'][] = $hostsTemp;
+                $status[$state]['hosts'][] = HostRepository::formatDataForHeader($hostsTemp);
                 $status[$state]['totalImpact'] = ($status[$state]['totalImpact']) + count($childIncidentsHost);
+                $status[$state]['totalHostIncidents'] = ($status[$state]['totalHostIncidents']) + 1;
             }
             
             if(!empty($incident['service_id']) || $incident['service_id'] == "0"){
                 $serviceTemp = $incident;
-                $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($incident['host_id']);
-                $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
+                $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($incident['service_id']);
+                $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/service/'.$incident['service_id']);
                 $serviceTemp['issue_duration'] = $issue_duration;
-                $serviceTemp['states'] = ServiceRepository::countAllStatusForHost($incident['host_id']);
+                $serviceTemp['states'] = ServiceRepository::getStatus($incident['host_id'],$incident['service_id']);
                 $serviceTemp['state'] = $state;
                 $childIncidentsService = IncidentsRepository::getChildren($incident['issue_id']);
-                $status[$state]['services'][] = $serviceTemp;
+                $status[$state]['services'][] = ServiceRepository::formatDataForHeader($serviceTemp);
                 $status[$state]['totalImpact'] = ($status[$state]['totalImpact']) + count($childIncidentsService);
+                $status[$state]['totalServiceIncidents'] = ($status[$state]['totalServiceIncidents']) + 1;
             }
         }
+        
+        
+        // Get Host and service in "pending" state and service in "unknown" 
+        $hostsPending = \CentreonRealtime\Models\Host::getList("*",
+                                                -1,
+                                                0,
+                                                null,
+                                                "ASC",
+                                                array('state'=>'4')
+                                            );
+        $servicesPendingUnknown = \CentreonRealtime\Models\Service::getList("*",
+                                                -1,
+                                                0,
+                                                null,
+                                                "ASC",
+                                                array('state'=>'4','state'=>'3'),
+                                                "OR"
+                                            );
 
-        $pollerArray = array();
+        foreach($servicesPendingUnknown as $servicePendingUnknown){
+            $duration = Datetime::humanReadable(
+                time() - $servicePendingUnknown['last_update'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
+            if($servicePendingUnknown['state'] == "4"){
+                $serviceTemp = $servicePendingUnknown;
+                $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($servicePendingUnknown['service_id']);
+                $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/service/'.$servicePendingUnknown['service_id']);
+                $serviceTemp['issue_duration'] = $duration;
+                $pending['services'][] = ServiceRepository::formatDataForHeader($serviceTemp);
+            }else if($servicePendingUnknown['state'] == "3"){
+                $serviceTemp = $servicePendingUnknown;
+                $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($servicePendingUnknown['service_id']);
+                $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/service/'.$servicePendingUnknown['service_id']);
+                $serviceTemp['issue_duration'] = $duration;
+                $unknown['services'][] = ServiceRepository::formatDataForHeader($serviceTemp);
+            }
+        }
+        
+        foreach($hostsPending as $hostPending){
+                $duration = Datetime::humanReadable(
+                    time() - $hostPending['last_update'],
+                    Datetime::PRECISION_FORMAT,
+                    2
+                );
+                $hostsTemp = $hostPending;
+                $hostsTemp['icon'] = HostRepositoryConfig::getIconImagePath($hostPending['host_id']);
+                $hostsTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$hostPending['host_id']);
+                $hostsTemp['issue_duration'] = $duration;
+                $pending['hosts'][] = HostRepository::formatDataForHeader($hostsTemp);
+        }
+        $pending['totalHost'] = count($pending['hosts']);
+        $pending['totalService'] = count($pending['services']);
+        $unknown['total'] = count($unknown['services']);
+        
+        
+        
+        //Get pollers infos
         $pollers = PollerRepository::pollerStatus();
-        $stopped = 0;
-        $unreachable = 0;
         foreach($pollers as $poller){
             if($poller['running'] != "1"){
                 $stopped++;
@@ -128,82 +207,14 @@ class Status
         $pollerArray['unreachable'] = $unreachable;
         $pollerArray['pollers'] = $pollers;
         $event->addStatus('status', $status);
-        //$event->addStatus('nb_incidents_hosts', count($hosts));
-        //$event->addStatus('services', $services);
-        //$event->addStatus('nb_incidents_services', count($services));
         $event->addStatus('pollers', $pollerArray);
-
-        /*
-        $values = array(
-            'services' => array(
-                'unknown' => 0,
-                'warning' => 0,
-                'critical' => 0
-            ),
-            'hosts' => array(
-                'unknown' => 0,
-                'warning' => 0,
-                'critical' => 0
-            ),
-            'pollers' => array(
-                'activity' => 0,
-                'stopped' => 0,
-                'latency' => 0
-            )
-        );
-        $db = Di::getDefault()->get('db_centreon');
-
-        $query = "SELECT COUNT(service_id) as nb, state
-            FROM rt_services
-            WHERE state_type = 1
-                AND state IN (1, 2, 3)
-                AND acknowledged = 0
-                OR acknowledged is null
-            GROUP BY state";
-        $stmt = $db->query($query);
-        while ($row = $stmt->fetch()) {
-            if ($row['state'] == 1) {
-                $values['services']['warning'] = $row['nb'];
-            } elseif ($row['state'] == 2) {
-                $values['services']['critical'] = $row['nb'];
-            } elseif ($row['state'] == 3) {
-                $values['services']['unknown'] = $row['nb'];
-            }
-        }
-        $event->addStatus('service', $values['services']);
-
-        $query = "SELECT COUNT(host_id) as nb, state
-            FROM rt_hosts
-            WHERE state_type = 1
-                AND state IN (1, 2, 3)
-                AND acknowledged = 0
-                OR acknowledged is null
-            GROUP BY state";
-        $stmt = $db->query($query);
-        while ($row = $stmt->fetch()) {
-            if ($row['state'] == 1) {
-                $values['host']['warning'] = $row['nb'];
-            } elseif ($row['state'] == 2) {
-                $values['host']['down'] = $row['nb'];
-            } elseif ($row['state'] == 3) {
-                $values['host']['unknown'] = $row['nb'];
-            }
-        }
-        $event->addStatus('host', $values['hosts']);
-
-        $query = "SELECT last_alive, running
-            FROM rt_instances
-            WHERE deleted != 1";
-        $stmt = $db->query($query);
-        $now = time();
-        while ($row = $stmt->fetch()) {
-            if ($row['running'] == 0) {
-                $values['pollers']['stopped']++;
-            } elseif ($row['last_alive'] - $now > 60) {
-                $values['pollers']['activity']++;
-            }
-        }
-        $event->addStatus('poller', $values['pollers']);
-     */
+        $event->addStatus('pending', $pending);
+        $event->addStatus('unknown', $unknown);
+        $event->addStatus('totalHosts', $totalHosts);
+        $event->addStatus('totalServices', $totalServices);
+        
+        
+        
+        
     }
 }
