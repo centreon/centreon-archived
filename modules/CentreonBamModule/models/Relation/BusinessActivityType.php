@@ -44,7 +44,7 @@ use Centreon\Models\CentreonBaseModel;
  */
 class BusinessActivityType extends CentreonBaseModel
 {
-    protected static $table = "cfg_bam_ba_type";
+    protected static $table = "cfg_bam_ba_types";
     protected static $primaryKey = "ba_type_id";
     protected static $uniqueLabelField = "name";
 }
