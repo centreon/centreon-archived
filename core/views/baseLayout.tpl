@@ -281,17 +281,21 @@
                                 <span class="path1"></span><span class="path2"></span><span class="path3"></span>
                               </i>
                             </a>
+
                             <div class="indicWrapper">
-                                  <div class="titles">
-                                      <p>pending</p>
-                                      <p>unknown</p>
-                                  </div>
-                                  <div class="indices">
-                                      <span> 50</span>
-                                      <br>
-                                      <span> 236</span>
-                                  </div>
-                            </div>
+                                <div class="titles">
+                                    <p>pending</p>
+                                    <p>unknown</p>
+                                </div>
+                                <div class="indices">
+                                    <span class="icon-fill-host ico-16"></span> <span class="danger">26</span>
+                                    <span class="icon-fill-service ico-16"></span> <span class="danger"> 50</span>
+                                    <br>
+                                    <span> 236</span>
+                                </div>
+                             </div>
+
+                             
                             <span class="label label-default hide"></span>
                             <div class="dropdown-menu issuesPopover">
                                 <ul>
