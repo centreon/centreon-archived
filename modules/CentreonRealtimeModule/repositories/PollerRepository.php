@@ -60,7 +60,7 @@ class PollerRepository extends FormRepository
         $stmt->execute();
         $now = time();
         $pollers = array();
-        while ($row = $stmt->fetch()) {
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $row['latency'] = 0;
             if (is_null($row['last_alive']) || $row['last_alive'] - $now > 60) {
                 $row['disconnect'] = 1;

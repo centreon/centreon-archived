@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give CENTREON
+ * As a special exception, the copyright holders of this program give MERETHIS
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of CENTREON choice, provided that
- * CENTREON also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -33,18 +33,28 @@
  *
  */
 
-namespace CentreonEngine\Repository;
+namespace CentreonBroker\Repository;
 
 use Centreon\Internal\Di;
 use CentreonConfiguration\Internal\Poller\WriteConfigFile;
 
 /**
- * @author Sylvestre Ho <sho@centreon.com>
+ * @author kevin duret <kduret@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */
-class ConnectorRepository
+class TimePeriodRepository
 {
+    static $week = array (
+        '1' => 'sunday',
+        '2' => 'monday',
+        '3' => 'tuesday',
+        '4' => 'wednesday',
+        '5' => 'thrusday',
+        '6' => 'friday',
+        '7' => 'saturday'
+    );
+
     /**
      * 
      * @param array $filesList
@@ -59,27 +69,42 @@ class ConnectorRepository
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
 
+        $enableField = array("tp_id" => 1);
+        
         /* Init Content Array */
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT name AS connector_name, command_line AS connector_line "
-            . "FROM cfg_connectors WHERE enabled = 1 "
-            . "ORDER BY name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $tmp = array("type" => "connector");
-            $tmpData = array();
-            foreach ($row as $key => $value) {
-                $tmpData[$key] = $value;
+        $queryDowntimePeriods = 'SELECT dt_id, dtp_id, dtp_start_time, dtp_end_time, dtp_duration, dtp_day_of_week, dtp_day_of_month'
+            . ' FROM cfg_downtimes_periods'
+            . ' ORDER BY dt_id,dtp_id';
+        $stmtDowntimePeriods = $dbconn->prepare($queryDowntimePeriods);
+        $stmtDowntimePeriods->execute();
+        $result = $stmtDowntimePeriods->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_ASSOC);
+
+        foreach ($result as $key => $value) {
+            $tmp = array("type" => "timeperiod");
+
+            foreach ($value as $subvalue) {
+                $tmpData = array();
+                $tmpData['timeperiod_name'] = 'downtime_' . $key . '_' . $subvalue['dtp_id'];
+                if (isset($subvalue['dtp_day_of_week'])) {
+                    $dayOfWeek = explode(',', $subvalue['dtp_day_of_week']);
+                    foreach ($dayOfWeek as $day) {
+                        $tmpData[static::$week[$day]] = $subvalue['dtp_start_time'] . ',' . $subvalue['dtp_end_time'];
+                    }
+                }
+                if (isset($subvalue['dtp_day_of_month'])) {
+                    $tmpData['day'] = $subvalue['dtp_day_of_month'];
+                }
+                $tmp["content"] = $tmpData;
+                $content[] = $tmp;
             }
-            $tmp["content"] = $tmpData;
-            $content[] = $tmp;
+
         }
 
         /* Write Check-Command configuration file */
-        WriteConfigFile::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, $user = "API");
+        WriteConfigFile::writeObjectFile($content, $path . $poller_id . "/" . $filename, $filesList, $user = "API");
         unset($content);
     }
 }

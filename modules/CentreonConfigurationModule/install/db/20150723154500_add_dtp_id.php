@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 MERETHIS
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -19,11 +20,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU 
  * General Public License cover the whole combination.
  * 
- * As a special exception, the copyright holders of this program give MERETHIS 
+ * As a special exception, the copyright holders of this program give CENTREON 
  * permission to link this program with independent modules to produce an executable, 
  * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * distribute the resulting executable under terms of CENTREON choice, provided that 
+ * CENTREON also meet, for each linked independent module, the terms  and conditions 
  * of the license of that module. An independent module is a module which is not 
  * derived from this program. If you modify this program, you may extend this 
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -33,18 +34,34 @@
  * 
  */
 
-namespace CentreonBam\Models;
+use Phinx\Migration\AbstractMigration;
 
-use Centreon\Models\CentreonBaseModel;
 
 /**
- * Used for interacting with Business activities
+ * Description of AddDtpId
  *
- * @author Kevin Duret <kduret@centreon.com>
+ * @author kevin duret <kduret@centreon.com>
  */
-class BusinessActivityType extends CentreonBaseModel
+class AddDtpId extends AbstractMigration
 {
-    protected static $table = "cfg_bam_ba_types";
-    protected static $primaryKey = "ba_type_id";
-    protected static $uniqueLabelField = "name";
+    public function change()
+    {
+        $cfg_downtimes_periods = $this->table('cfg_downtimes_periods');
+        $cfg_downtimes_periods->addColumn('dtp_id','integer', array('signed' => false, 'null' => false))
+            ->save();
+
+        $rt_downtimes = $this->table('rt_downtimes');
+        $rt_downtimes->changeColumn('start_time','integer', array('null' => true))
+            ->changeColumn('end_time','integer', array('null' => true))
+            ->save();
+
+        $this->execute('ALTER TABLE cfg_downtimes_periods DROP PRIMARY KEY, ADD PRIMARY KEY (dtp_id)');
+
+        $cfg_downtimes_periods->changeColumn('dtp_id','integer', array('identity' => true, 'signed' => false, 'null' => false))
+            ->save();
+
+        $this->execute('SET FOREIGN_KEY_CHECKS = 0');
+        $this->execute('ALTER TABLE cfg_downtimes_periods DROP INDEX dt_id');
+        $this->execute('SET FOREIGN_KEY_CHECKS = 1');
+    }
 }

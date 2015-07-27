@@ -34,6 +34,7 @@
  */
 
 namespace CentreonEngine\Repository;
+use CentreonConfiguration\Internal\Poller\WriteConfigFile;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -46,7 +47,7 @@ class UserRepository
     {
         $content = '';
         /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, $user = "API");
+        WriteConfigFile::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, $user = "API");
         unset($content);
     }
 }

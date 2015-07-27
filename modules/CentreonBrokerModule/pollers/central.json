@@ -107,6 +107,14 @@
                     ],
                     "output": [
                       {
+                        "cfg_file": [
+                          "%global_broker_etc_directory%/timeperiods.cfg",
+                          "%global_broker_etc_directory%/downtimes.cfg"
+                        ],
+                        "type": "node_events",
+                        "name": "central-nodeevents"
+                      },
+                      {
                         "type": "node_events",
                         "name": "central-broker-nodeevents",
                         "cache": "yes"

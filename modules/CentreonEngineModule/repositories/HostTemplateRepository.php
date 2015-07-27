@@ -41,6 +41,7 @@ use CentreonConfiguration\Repository\TimePeriodRepository as TimeperiodConfigura
 use CentreonConfiguration\Repository\HostTemplateRepository as HostTemplateConfigurationRepository;
 use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonConfiguration\Internal\Poller\WriteConfigFile;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -162,7 +163,7 @@ class HostTemplateRepository
             $content[] = $tmp;
         }
         /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, "API");
+        WriteConfigFile::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, "API");
         unset($content);
     }
 

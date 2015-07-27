@@ -33,7 +33,7 @@
  *
  */
 
-namespace CentreonEngine\Repository;
+namespace CentreonConfiguration\Internal\Poller;
 
 use Centreon\Internal\Exception;
 
@@ -42,7 +42,7 @@ use Centreon\Internal\Exception;
  * @version 3.0.0
  */
 
-class WriteConfigFileRepository
+class WriteConfigFile
 {
     /**
      * 
@@ -132,7 +132,6 @@ class WriteConfigFileRepository
     {
         /* Check that the content is not empty */
         if ($content != "") {
-//var_dump($content);
             /* Init File */
             $handle = static::initFile($filename);
             
@@ -305,7 +304,7 @@ class WriteConfigFileRepository
     {
         /* Check if object typoe is empty */
         if ($objectType != "") {
-            $content = "define ".$objectType."{\n";
+            $content = "define ".$objectType." {\n";
             /* Write start object into the file */
             if (!fwrite($handle, $content)) {
                 throw new Exception('Cannot write start object.');
