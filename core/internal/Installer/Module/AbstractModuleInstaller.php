@@ -501,7 +501,7 @@ abstract class AbstractModuleInstaller
         foreach ($this->moduleInfo['dependencies'] as $module) {
             if (!Informations::checkDependency($module)) {
                 $dependenciesSatisfied = false;
-                $missingDependencies[] = $module['name'] . '' . $module['version'];
+                $missingDependencies[] = $module['name'] . ' ' . $module['version'];
             }
 
             if ($dependenciesSatisfied === false) {
