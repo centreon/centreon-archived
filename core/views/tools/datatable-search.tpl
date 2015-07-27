@@ -2,7 +2,7 @@
     <div class="col-md-3  col-lg-2">
         <h4>We/Are/Here</h4>
     </div>
-    <div class="col-md-6 col-lg-8">
+    <div class="col-md-6 col-lg-6">
         <div class="centreon-search-block form-group" id="accordion">
             {$clsOffset=""}
             {$searchAdv=true}
@@ -68,7 +68,7 @@
             </div>
         </div>
     </div>
-    <div class="form-group col-md-3  col-lg-2">
+    <div class="form-group col-md-3  col-lg-4">
         <div class="input-group">
             <input type="text" name="filters" class="form-control" placeholder="View's name">
             <!--<cite>Rename your view or select an existant one </cite>-->
