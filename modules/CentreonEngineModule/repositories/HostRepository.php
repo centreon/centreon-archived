@@ -43,6 +43,7 @@ use CentreonConfiguration\Repository\HostRepository as HostConfigurationReposito
 use CentreonConfiguration\Repository\CustomMacroRepository;
 use CentreonEngine\Events\AddHost as AddHostEvent;
 use CentreonEngine\Events\AddService as AddServiceEvent;
+use CentreonConfiguration\Internal\Poller\WriteConfigFile;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -183,7 +184,7 @@ class HostRepository extends HostTemplateRepository
                 $content[] = $contentService;
             }
             
-            WriteConfigFileRepository::writeObjectFile(
+            WriteConfigFile::writeObjectFile(
                 $content,
                 $path . $poller_id . "/objects.d/" . $filename . $host_name . "-" . $host_id . ".cfg",
                 $filesList,

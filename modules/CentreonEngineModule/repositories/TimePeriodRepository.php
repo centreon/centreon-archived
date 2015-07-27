@@ -36,6 +36,7 @@
 namespace CentreonEngine\Repository;
 
 use Centreon\Internal\Di;
+use CentreonConfiguration\Internal\Poller\WriteConfigFile;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -124,7 +125,7 @@ class TimePeriodRepository
         }
 
         /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, $user = "API");
+        WriteConfigFile::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, $user = "API");
         unset($content);
     }
 }

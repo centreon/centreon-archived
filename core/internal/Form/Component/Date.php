@@ -32,54 +32,49 @@
  * For more information : contact@centreon.com
  *
  */
-
-namespace CentreonEngine\Repository;
+namespace Centreon\Internal\Form\Component;
 
 use Centreon\Internal\Di;
-use CentreonConfiguration\Internal\Poller\WriteConfigFile;
 
 /**
- * @author Sylvestre Ho <sho@centreon.com>
+ * @author kevin duret <kduret@centreon.com>
  * @package Centreon
- * @subpackage Repository
+ * @subpackage Core
  */
-class ConnectorRepository
+class Date extends Component
 {
     /**
      * 
-     * @param array $filesList
-     * @param int $poller_id
-     * @param string $path
-     * @param string $filename
+     * @param array $element
+     * @return array
      */
-    public function generate(& $filesList, $poller_id, $path, $filename)
+    public static function renderHtmlInput(array $element)
     {
-        $di = Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-
-        /* Init Content Array */
-        $content = array();
-        
-        /* Get information into the database. */
-        $query = "SELECT name AS connector_name, command_line AS connector_line "
-            . "FROM cfg_connectors WHERE enabled = 1 "
-            . "ORDER BY name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $tmp = array("type" => "connector");
-            $tmpData = array();
-            foreach ($row as $key => $value) {
-                $tmpData[$key] = $value;
-            }
-            $tmp["content"] = $tmpData;
-            $content[] = $tmp;
+        if (!isset($element['html'])) {
+            $element['html'] = '';
         }
 
-        /* Write Check-Command configuration file */
-        WriteConfigFile::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, $user = "API");
-        unset($content);
+        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
+            $element['placeholder'] = $element['label_label'];
+        }        
+        
+        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
+            $element['id'] = $element['name'];
+        }
+
+        $tpl = Di::getDefault()->get('template');
+
+        $tpl->assign('element', $element);
+        
+        return array(
+            'html' => $tpl->fetch('file:[Core]/form/component/date.tpl'),
+            'js' => '$("input.date").daterangepicker({
+                singleDatePicker: true,
+                timePicker: true,
+                timePickerIncrement: 5,
+                timePicker12Hour: false,
+                format: \'YYYY-MM-DD HH:mm\'
+             });'
+        );
     }
 }

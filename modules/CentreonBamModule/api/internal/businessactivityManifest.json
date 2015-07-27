@@ -28,6 +28,14 @@
             "link": "simple",
             "objectClass": "\\CentreonBam\\Models\\BusinessActivityType",
             "group": false
+        },
+        {
+            "type": "ba_pollers",
+            "fields": "poller_id,slug",
+            "message": "The object poller not in database",
+            "link": "simple",
+            "objectClass": "\\CentreonConfiguration\\Models\\Poller",
+            "group": false
         }
     ],
     "options" : {
