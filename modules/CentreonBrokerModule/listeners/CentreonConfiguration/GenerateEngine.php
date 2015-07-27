@@ -38,16 +38,28 @@ namespace CentreonBroker\Listeners\CentreonConfiguration;
 use CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
 use CentreonBroker\Repository\ConfigCorrelationRepository;
 use CentreonBroker\Repository\ConfigGenerateRepository;
+use CentreonBroker\Repository\TimePeriodRepository;
+use CentreonBroker\Repository\DowntimeRepository;
 use Centreon\Internal\Di;
 
 class GenerateEngine
 {
+    private static $event;
+    private static $path;
+    private static $fileList;
+
     /**
      *
      * @param \CentreonConfiguration\Events\GenerateEngine $event
      */
     public static function execute(GenerateEngineEvent $event)
     {
+        static::$event = $event;
+        $config = Di::getDefault()->get('config');
+        static::$path = $config->get('global', 'centreon_generate_tmp_dir');
+        static::$path = rtrim(static::$path, '/') . '/broker/generate/';
+        static::$fileList = array();
+
         $config = Di::getDefault()->get('config');
         $path = $config->get('global', 'centreon_generate_tmp_dir');
         $path = rtrim($path, '/') . '/broker/generate/';
@@ -60,6 +72,35 @@ class GenerateEngine
 
         $configBroker = new ConfigGenerateRepository();
         $configBroker->generate($event->getPollerId());
-        ConfigCorrelationRepository::generate($event->getPollerId());        
+        ConfigCorrelationRepository::generate($event->getPollerId());
+
+        static::generateObjectsFiles();
+    }
+
+    /**
+     * Generate all object files (timeperiods, downtimes)
+     *
+     */
+    public static function generateObjectsFiles()
+    {
+        $event = static::$event;
+
+        /* Generate Configuration files */
+
+        TimePeriodRepository::generate(
+            static::$fileList,
+            $event->getPollerId(),
+            static::$path,
+            "timeperiods.cfg"
+        );
+        $event->setOutput('Centreon-Broker : timeperiods.cfg');
+
+        DowntimeRepository::generate(
+            static::$fileList,
+            $event->getPollerId(),
+            static::$path,
+            "downtimes.cfg"
+        );
+        $event->setOutput('Centreon-Broker : downtimes.cfg');
     }
 }
