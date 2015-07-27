@@ -37,6 +37,7 @@ namespace CentreonEngine\Repository;
 
 use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
+use CentreonConfiguration\Internal\Poller\WriteConfigFile;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -140,7 +141,7 @@ class CommandRepository
         }
 
         /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, $user = "API");
+        WriteConfigFile::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, $user = "API");
         unset($content);
     }
 
@@ -195,7 +196,7 @@ class CommandRepository
         }
         
         /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, $user = "API");
+        WriteConfigFile::writeObjectFile($content, $path . $poller_id . "/objects.d/" . $filename, $filesList, $user = "API");
         unset($content);
     }
 }

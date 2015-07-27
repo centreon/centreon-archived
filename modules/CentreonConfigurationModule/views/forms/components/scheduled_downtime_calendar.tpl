@@ -64,13 +64,12 @@
           <!-- Fixed/Flexible -->
           <div class="col-xs-6">
             <div class="form-group">
-              <label class="form-group">Type</label>
-              <div class="choiceGroup">
+              <div class="checkbox checkbox-styled">
                 <label class="label-controller">
-                  <input type="radio" name="fixed" value="fixed" checked> Fixed
-                </label>
-                <label class="label-controller">
-                  <input type="radio" name="fixed" value="flexibled"> Flexibled
+                  <input type="checkbox" name="fixed" value="1" checked="checked" style="padding: 16px 12px 6px;">
+                  <span>
+                    Fixed
+                  </span>
                 </label>
               </div>
             </div>
@@ -79,7 +78,7 @@
           <div class="col-xs-6">
             <div class="form-group">
               <label class="label-controller floatLabel" for="duration">Duration</label>
-              <input type="text" name="duration" id="duration" data-parentfield="fixed" data-parentvalue="flexibled" placeholder="Duration">
+              <input type="text" name="duration" id="duration" data-parentfield="fixed" data-parentvalue="0" placeholder="Duration">
             </div>
           </div>
           <!-- Button for validate -->

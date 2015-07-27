@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 MERETHIS
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -19,11 +20,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU 
  * General Public License cover the whole combination.
  * 
- * As a special exception, the copyright holders of this program give MERETHIS 
+ * As a special exception, the copyright holders of this program give CENTREON 
  * permission to link this program with independent modules to produce an executable, 
  * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * distribute the resulting executable under terms of CENTREON choice, provided that 
+ * CENTREON also meet, for each linked independent module, the terms  and conditions 
  * of the license of that module. An independent module is a module which is not 
  * derived from this program. If you modify this program, you may extend this 
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -33,18 +34,28 @@
  * 
  */
 
-namespace CentreonBam\Models;
-
-use Centreon\Models\CentreonBaseModel;
-
 /**
- * Used for interacting with Business activities
+ * Description of AddValidKpiFlag
  *
- * @author Kevin Duret <kduret@centreon.com>
+ * @author kevin duret <kduret@centreon.com>
  */
-class BusinessActivityType extends CentreonBaseModel
+use Phinx\Migration\AbstractMigration;
+
+class AddValidKpiFlag extends AbstractMigration
 {
-    protected static $table = "cfg_bam_ba_types";
-    protected static $primaryKey = "ba_type_id";
-    protected static $uniqueLabelField = "name";
+    /**
+     * Change Method.
+     *
+     * Write your reversible migrations using this method.
+     *
+     * More information on writing migrations is available here:
+     * http://docs.phinx.org/en/latest/migrations.html#the-abstractmigration-class
+     */
+    public function change()
+    {
+        $cfg_bam_kpi = $this->table('cfg_bam_kpi');
+        $cfg_bam_kpi->addColumn('valid','boolean', array('null' => true, 'default' => true))
+                ->save();
+    }
 }
+    

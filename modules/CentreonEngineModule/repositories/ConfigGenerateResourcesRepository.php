@@ -36,6 +36,7 @@
 namespace CentreonEngine\Repository;
 
 use Centreon\Internal\Di;
+use CentreonConfiguration\Internal\Poller\WriteConfigFile;
 
 /**
  * @author Julien Mathis <jmathis@centreon.com>
@@ -75,7 +76,7 @@ class ConfigGenerateResourcesRepository
         }
 
         /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeParamsFile($content, $path.$pollerId . "/conf.d/" . $filename, $filesList, $user = "API");
+        WriteConfigFile::writeParamsFile($content, $path.$pollerId . "/conf.d/" . $filename, $filesList, $user = "API");
         unset($content);
     }
 }

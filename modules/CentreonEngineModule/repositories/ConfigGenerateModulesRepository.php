@@ -38,6 +38,7 @@ namespace CentreonEngine\Repository;
 use Centreon\Internal\Di;
 use CentreonEngine\Models\Engine;
 use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
+use CentreonConfiguration\Internal\Poller\WriteConfigFile;
 
 /**
  * @author Julien Mathis <jmathis@centreon.com>
@@ -79,7 +80,7 @@ class ConfigGenerateModulesRepository
         foreach ($modules as $module) {
             $filename = preg_match('/\/?(\w+)\.so/', $module['broker_module'], $matches);
             if (!empty($matches[1])) {
-                WriteConfigFileRepository::writeParamsFile($module, $path . $pollerId . "/conf.d/" . $matches[1] . '.cfg', $filesList, $user = "API");
+                WriteConfigFile::writeParamsFile($module, $path . $pollerId . "/conf.d/" . $matches[1] . '.cfg', $filesList, $user = "API");
             }
         }
     }
