@@ -128,6 +128,10 @@
                         "name": "central-broker-storage"
                       },
                       {
+                        "type": "notification",
+                        "name": "central-broker-notification"
+                      },
+                      {
                         "type": "tcp",
                         "name": "central-broker-rrd",
                         "host": "localhost",

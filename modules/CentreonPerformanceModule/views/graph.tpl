@@ -437,7 +437,8 @@ startTime = moment(endTime).subtract(24, 'hours');
   /* Bookmark search action */
     $( "#bookmarkView" ).on( "click", function( e ) {
       alertClose();
-      var viewId = $("#view").val();
+      var viewId = $("#view").val().trim();
+      viewLabel = $("#view").select2('data').text.trim();
       $.ajax({
         url: "{url_for url='/bookmark'}",
         dataType: "json",
@@ -445,7 +446,7 @@ startTime = moment(endTime).subtract(24, 'hours');
         data: {
           route: "{url_for url="/centreon-performance/graph"}",
           type: "graph",
-          label: $("#view").val().trim(),
+          label: viewLabel,
           params: viewId
         },
         success: function( data, textStatus, jqXHR ) {
