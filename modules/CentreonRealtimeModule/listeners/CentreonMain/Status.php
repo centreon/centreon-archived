@@ -66,7 +66,6 @@ class Status
         
         $router = Di::getDefault()->get('router');
         $incidents = IncidentsRepository::getIncidents();
-        $childIncidents = array();
         $hosts = array();
         $services = array();
         $impactHosts = 0;
@@ -102,16 +101,13 @@ class Status
         }
         
         $pollers = PollerRepository::pollerStatus();
-        
         $event->addStatus('hosts', $hosts);
+        $event->addStatus('nb_incidents_hosts', count($hosts));
         $event->addStatus('services', $services);
+        $event->addStatus('nb_incidents_services', count($services));
         $event->addStatus('pollers', $pollers);
         $event->addStatus('impact_hosts', $impactHosts);
         $event->addStatus('impact_services', $impactServices);
-        //$returnJson['hosts'] = $hosts;
-        //$returnJson['nb_hosts'] = $nb_hosts;
-        //$returnJson['impacts'] = HostRepository::getImpactNbr();
-        //var_dump(HostRepository::getImpactNbr());
 
         /*
         $values = array(
