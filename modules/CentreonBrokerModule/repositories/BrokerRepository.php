@@ -615,7 +615,10 @@ class BrokerRepository
     {
         /* @todo get external command path dynamically */
         if (file_exists('/var/lib/centreon-broker/central-broker.cmd')) {
-            file_put_contents('/var/lib/centreon-broker/central-broker.cmd', $command, FILE_APPEND);
+            $nbWritten = file_put_contents('/var/lib/centreon-broker/central-broker.cmd', $command, FILE_APPEND);
+            if ($nbWritten == 0 || !$nbWritten) {
+                throw new \Exception ("The external command file of broker does not exist");
+            }
         } else {
             throw new \Exception ("The external command file of broker does not exist");
         }

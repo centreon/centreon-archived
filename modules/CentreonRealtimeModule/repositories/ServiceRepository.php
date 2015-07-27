@@ -147,11 +147,11 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
             AND rt_services.enabled = 1 
             GROUP BY rt_services.last_hard_state');
         $stmt->execute(array($host_id));
-        $arrayReturn = array('success' => 0,
-                            'warning' => 0,
-                            'danger' => 0,
-                            'default' => 0,
-                            'info' => 0
+        $arrayReturn = array('success' => "0",
+                            'warning' => "0",
+                            'danger' => "0",
+                            'default' => "0",
+                            'info' => "0"
                             );
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $arrayReturn[$arrayStatus[$row['state']]] = $row['nbr'];

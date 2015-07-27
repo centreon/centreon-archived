@@ -109,11 +109,15 @@ class ManageCommand extends AbstractCommand
     public function deployStaticAction($object, $params = null)
     {
         echo Colorize::colorizeMessage("Deployment of statics...", "info");
-        if ($params['removeOld'] == true) {
-            StaticFiles::remove($object['module']);
+        try {
+            if ($params['removeOld'] == true) {
+                StaticFiles::remove($object['module']);
+            }
+            StaticFiles::deploy($object['module']);
+            echo Colorize::colorizeMessage("     Done", "success");
+        } catch (FilesystemException $ex) {
+            throw new \Exception("     ".$ex->getMessage(), 1);
         }
-        StaticFiles::deploy($object['module']);
-        echo Colorize::colorizeMessage("     Done", "success");
     }
     
     /**
@@ -123,8 +127,9 @@ class ManageCommand extends AbstractCommand
      */
     public function deployFormsAction($object)
     {
+        echo Colorize::colorizeMessage("Deployment of Forms...", "info");
+        
         try {
-            echo Colorize::colorizeMessage("Deployment of Forms...", "info");
             $modulePath = Informations::getModulePath($object['module']);
             $moduleId = Informations::getModuleIdByName($object['module']);
             $formsFiles = $modulePath . '/install/forms/*.xml';
@@ -134,8 +139,8 @@ class ManageCommand extends AbstractCommand
 
             echo Colorize::colorizeMessage("     Done", "success");
 
-        } catch (FilesystemException $ex) {
-            
+        } catch (\Exception $ex) {
+            throw new \Exception("     ".$ex->getMessage(), 1);
         }
         
     }
