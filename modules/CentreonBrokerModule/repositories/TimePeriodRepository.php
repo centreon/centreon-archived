@@ -46,13 +46,13 @@ use CentreonConfiguration\Internal\Poller\WriteConfigFile;
 class TimePeriodRepository
 {
     static $week = array (
-        '1' => 'sunday',
-        '2' => 'monday',
-        '3' => 'tuesday',
-        '4' => 'wednesday',
-        '5' => 'thrusday',
-        '6' => 'friday',
-        '7' => 'saturday'
+        '1' => 'monday',
+        '2' => 'tuesday',
+        '3' => 'wednesday',
+        '4' => 'thrusday',
+        '5' => 'friday',
+        '6' => 'saturday',
+        '7' => 'sunday'
     );
 
     /**
@@ -88,15 +88,25 @@ class TimePeriodRepository
             foreach ($value as $subvalue) {
                 $tmpData = array();
                 $tmpData['timeperiod_name'] = 'downtime_' . $key . '_' . $subvalue['dtp_id'];
+                $subvalue['dtp_start_time'] = preg_replace('/(\d+:\d+):\d+/', '$1', $subvalue['dtp_start_time']);
+                $subvalue['dtp_end_time'] = preg_replace('/(\d+:\d+):\d+/', '$1', $subvalue['dtp_end_time']);
+
                 if (isset($subvalue['dtp_day_of_week'])) {
                     $dayOfWeek = explode(',', $subvalue['dtp_day_of_week']);
                     foreach ($dayOfWeek as $day) {
                         $tmpData[static::$week[$day]] = $subvalue['dtp_start_time'] . ',' . $subvalue['dtp_end_time'];
                     }
                 }
-                if (isset($subvalue['dtp_day_of_month'])) {
-                    $tmpData['day'] = $subvalue['dtp_day_of_month'];
+
+                if (isset($subvalue['dtp_day_of_month']) && preg_match('/\d$/', $subvalue['dtp_day_of_month'])) {
+                    $tmpData['day' . ' ' . $subvalue['dtp_day_of_month']] = $subvalue['dtp_start_time'] . ',' . $subvalue['dtp_end_time'];
+                } else if (isset($subvalue['dtp_day_of_month'])){
+                    $daysOfMonth = json_decode($subvalue['dtp_day_of_month'], true);
+                    foreach ($daysOfMonth as $dayOfMonth) {
+                        $tmpData[static::$week[$dayOfMonth['wday']] . ' ' . $dayOfMonth['nthDay']] = $subvalue['dtp_start_time'] . ',' . $subvalue['dtp_end_time'];
+                    }
                 }
+
                 $tmp["content"] = $tmpData;
                 $content[] = $tmp;
             }
