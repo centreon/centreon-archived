@@ -171,9 +171,14 @@ class HostRepository extends Repository
             $checkdata[_('icon')] = $data['configurationData']['icon'];
         }
 
+        $checkdata[_('status')] = "";
+        if(!empty($data['realtimeData']['status'])){
+            $checkdata[_('status')] = $data['realtimeData']['status'];
+        }
+
         $checkdata[_('state')] = "";
-        if(!empty($data['realtimeData']['state'])){
-            $checkdata[_('state')] = $data['realtimeData']['state'];
+        if(!empty($data['realtimeData']['state_type'])){
+            $checkdata[_('state')] = $data['realtimeData']['state_type'];
         }
 
         $checkdata[_('last_check')] = "";
