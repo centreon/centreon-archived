@@ -390,10 +390,10 @@ class HostController extends Controller
     {
         $params = $this->getParams();
 
-        $commandLine = HostRealtime::get($params['id'], 'command_line');
+        $command = HostRealtime::get($params['id'], 'command_line');
 
         $this->router->response()->json(array(
-            'command' => $commandLine,
+            'command' => $command['command_line'],
             'success' => true
          ));
     }
@@ -411,7 +411,7 @@ class HostController extends Controller
         $output = HostRealtime::get($params['id'], 'output');
 
         $this->router->response()->json(array(
-            'output' => $output,
+            'output' => $output['output'],
             'success' => true
          ));
     }
