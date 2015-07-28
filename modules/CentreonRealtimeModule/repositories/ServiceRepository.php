@@ -133,26 +133,26 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         /* Check data */
         $checkdata = array();
         $checkdata[_('id')] = $data['service_id'];
-        $checkdata[_('name')] = $data['service_desc'];
+        $checkdata[_('name')] = $data['service_description'];
         $checkdata[_('state')] = $data['state'];
       
         $checkdata[_('icon')] = "";
-        if(!empty($data['icon'])){
+        if (!empty($data['icon'])) {
             $checkdata[_('icon')] = $data['icon'];
         }
         
         $checkdata[_('url')] = "";
-        if(!empty($data['url'])){
+        if (!empty($data['url'])) {
             $checkdata[_('url')] = $data['url'];
         }
         
         $checkdata[_('issue_duration')] = "";
-        if(!empty($data['issue_duration'])){
+        if (!empty($data['issue_duration'])) {
             $checkdata[_('issue_duration')] = $data['issue_duration'];
         }
         
         $checkdata[_('states')] = "";
-        if(!empty($data['states'])){
+        if (!empty($data['states'])) {
             $checkdata[_('states')] = $data['states'];
         }
         
@@ -166,9 +166,8 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
      * @param int $host_id
      * @return array
      */
-    public static function countAllStatusForHost($host_id){
-        
-        
+    public static function countAllStatusForHost($host_id)
+    {
         $arrayStatus = array('success','warning','danger','default','info');
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
@@ -179,12 +178,13 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
             AND rt_services.enabled = 1 
             GROUP BY rt_services.last_hard_state');
         $stmt->execute(array($host_id));
-        $arrayReturn = array('success' => "0",
-                            'warning' => "0",
-                            'danger' => "0",
-                            'default' => "0",
-                            'info' => "0"
-                            );
+        $arrayReturn = array(
+            'success' => "0",
+            'warning' => "0",
+            'danger' => "0",
+            'default' => "0",
+            'info' => "0"
+        );
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $arrayReturn[$arrayStatus[$row['state']]] = $row['nbr'];
         }

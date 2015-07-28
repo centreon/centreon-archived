@@ -86,22 +86,22 @@ class HostRepository extends Repository
         $checkdata[_('state')] = $data['state'];
       
         $checkdata[_('icon')] = "";
-        if(!empty($data['icon'])){
+        if (!empty($data['icon'])) {
             $checkdata[_('icon')] = $data['icon'];
         }
         
         $checkdata[_('url')] = "";
-        if(!empty($data['url'])){
+        if (!empty($data['url'])) {
             $checkdata[_('url')] = $data['url'];
         }
         
         $checkdata[_('issue_duration')] = "";
-        if(!empty($data['issue_duration'])){
+        if (!empty($data['issue_duration'])) {
             $checkdata[_('issue_duration')] = $data['issue_duration'];
         }
         
         $checkdata[_('states')] = "";
-        if(!empty($data['states'])){
+        if (!empty($data['states'])) {
             $checkdata[_('states')] = $data['states'];
         }
         
