@@ -38,6 +38,8 @@ use strict;
 use POSIX qw(strftime);
 use File::stat;
 
+my $local_broker;
+
 sub init_modules {
     # logger => obj
     # htmlentities => (ref)
@@ -77,6 +79,24 @@ sub init_modules {
             $args{logger}->writeLogError("for system requirements.");
             die("Quit");
         }
+    }
+    
+    if (defined($args{config}->{local_broker})) {
+        eval 'require Monitoring::Livestatus;';
+        if ($@) {
+            $args{logger}->writeLogError($@);
+            $args{logger}->writeLogError("Could not load the Perl module Monitoring::Livestatus!  If local_broker");
+            $args{logger}->writeLogError("is set then the Monitoring::Livestatus module is required");
+            $args{logger}->writeLogError("for system requirements.");
+            die("Quit");
+        }
+        
+        $local_broker = Monitoring::Livestatus->new(
+            socket => $args{config}->{local_broker},
+            errors_are_fatal => 0,
+            query_timeout => 60,
+            connect_timeout => 5,
+        );
     }
     
     eval "require HTML::Entities";
@@ -237,52 +257,88 @@ sub get_services {
     return (0, $services_do);
 }
 
+sub check_downtimes_local_broker {
+    my (%options) = @_;
+    
+    my $request = "GET services\nColumns: description host_scheduled_downtime_depth scheduled_downtime_depth\n";
+    my $num = 0;
+    my %description = ();
+    foreach my $service_id (keys %{$options{ref_services}}) {
+        $request .= 'Filter: description = ' . $options{ref_services}->{$service_id}->{service_description} . "\n";
+        $description{$options{ref_services}->{$service_id}->{service_description}} = $service_id;
+        $num++;
+    }
+    if ($num > 1) {
+        $request .= 'Or: ' . $num . "\n";
+    }
+    $request .= "Filter: host_name = " . $options{host_name} . "\nAnd: 2";
+ 
+    my $result = $local_broker->selectall_arrayref($request);
+    if ($Monitoring::Livestatus::ErrorCode) {
+        $options{logger}->writeLogError("Cannot request local broker for downtimes: " . $Monitoring::Livestatus::ErrorMessage);
+        return -1;
+    }
+    
+    foreach (@{$result}) {
+        if ($$_[1] == 1 || $$_[2] == 1) {
+            $options{logger}->writeLogInfo("Skipping trap: host '$options{host_name}' [id: $options{host_id}] and service '$$_[0]' in downtime");
+            delete $options{ref_services}->{$description{$$_[0]}};
+        }
+    }
+ 
+    return 0;
+}
+
 sub check_downtimes {
-    my ($csdb, $downtime, $trap_time, $host_id, $ref_services, $logger) = @_;
+    my (%options) = @_;
     my $ref_result;
     
+    if (defined($options{local_broker})) {
+        return check_downtimes_local_broker(%options);
+    }
+    
     # Only one request is $downtime == 2
-    if ($downtime == 2) {
-        my ($dstatus, $sth) = $csdb->query("SELECT DISTINCT IFNULL(service_id, 'host') as service_id FROM downtimes WHERE host_id = $host_id AND start_time <= $trap_time AND end_time >= $trap_time");
+    if ($options{downtime} == 2) {
+        my ($dstatus, $sth) = $options{csdb}->query("SELECT DISTINCT IFNULL(service_id, 'host') as service_id FROM downtimes WHERE host_id = $options{host_id} AND start_time <= $options{trap_time} AND end_time >= $options{trap_time}");
         return -1 if ($dstatus == -1);
         $ref_result = $sth->fetchall_hashref('service_id');
     }
     
     # Check if host is in downtime - if yes: return 1
-    if ($downtime == 1) {
+    if ($options{downtime} == 1) {
         # Real-Time
-        my ($dstatus, $sth) = $csdb->query("SELECT host_id FROM hosts WHERE host_id = $host_id AND scheduled_downtime_depth = 1 LIMIT 1");
+        my ($dstatus, $sth) = $options{csdb}->query("SELECT host_id FROM hosts WHERE host_id = $options{host_id} AND scheduled_downtime_depth = 1 LIMIT 1");
         return -1 if ($dstatus == -1);
         my $data = $sth->fetchrow_hashref();
         if (defined($data)) {
             # Go out. Downtime on host.
-            $logger->writeLogInfo("Skipping trap: host '$host_id' in downtime");
+            $options{logger}->writeLogInfo("Skipping trap: host '$options{host_name}' [id: $options{host_id}] in downtime");
             return 1;
         }
     } else {
         # Check it
         if (defined($ref_result->{host})) {
-            $logger->writeLogInfo("Skipping trap: host '$host_id' in downtime");
+            $options{logger}->writeLogInfo("Skipping trap: host '$options{host_name}' [id: $options{host_id}] in downtime");
             return 1;
         }
     }
     
-    if (scalar(keys %{$ref_services}) == 0) {
+    if (scalar(keys %{$options{ref_services}}) == 0) {
         return 0;
     }
     
-    if ($downtime == 1) {
+    if ($options{downtime} == 1) {
         # Check some services only
-        my ($dstatus, $sth) = $csdb->query("SELECT service_id FROM services WHERE service_id IN (" . join(',', keys %{$ref_services}) . ") AND scheduled_downtime_depth = 1");
+        my ($dstatus, $sth) = $options{csdb}->query("SELECT service_id FROM services WHERE service_id IN (" . join(',', keys %{$options{ref_services}}) . ") AND scheduled_downtime_depth = 1");
         return -1 if ($dstatus == -1);
         $ref_result = $sth->fetchall_hashref('service_id');
     }
     
     # Parse services
-    foreach my $service_id (keys %{$ref_services}) {
+    foreach my $service_id (keys %{$options{ref_services}}) {
         if (defined($ref_result->{$service_id})) {
-            $logger->writeLogInfo("Skipping trap: host '$host_id' and service $service_id in downtime");
-            delete $ref_services->{$service_id};
+            $options{logger}->writeLogInfo("Skipping trap: host '$options{host_name}' [id: $options{host_id}] and service $service_id in downtime");
+            delete $options{ref_services}->{$service_id};
         }
     }
     
