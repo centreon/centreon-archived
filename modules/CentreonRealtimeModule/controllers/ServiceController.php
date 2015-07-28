@@ -41,6 +41,8 @@ use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Hook;
 use Centreon\Internal\Controller;
 use Centreon\Internal\Di;
+use CentreonConfiguration\Repository\ServiceRepository as ServiceRepositoryConfig;
+use CentreonRealtime\Repository\IncidentsRepository;
 
 /**
  * Display service monitoring states
@@ -187,7 +189,7 @@ class ServiceController extends Controller
     public function serviceTooltipAction()
     {
         $params = $this->getParams();
-        $rawdata = ServicedetailRepository::getRealtimeData($params['hid'], $params['sid']);
+        $rawdata = ServicedetailRepository::getRealtimeData($params['sid']);
         if (isset($rawdata[0])) {
             $data = $this->transformRawData($rawdata[0]);
             $this->tpl->assign('title', $rawdata[0]['host_name'] . ' - ' . $rawdata[0]['service_description']);
@@ -201,6 +203,172 @@ class ServiceController extends Controller
         $this->tpl->assign('params', array('host_id' => $params['hid'], 'svc_id' => $params['sid']));
         $this->tpl->display('file:[CentreonRealtimeModule]service_tooltip.tpl');
     }
+    
+    
+    /**
+     * Service slider default menu
+     *
+     * @method get
+     * @route /service/snapshotslide/[i:id]
+     */
+    public function snapshotslideAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $params = $this->getParams();
+        $return = array();
+        $service = ServicedetailRepository::getRealtimeData($params['id']);
+        $service = $service[0];
+        $serviceTemp['name'] = $service['host_name'] . ' ' . $service['service_description'];
+        if(!empty($service['acknowledged'])){
+            $serviceTemp['acknowledged'] = 1;
+        }else{
+            $serviceTemp['acknowledged'] = 0;
+        }
+        
+        if(isset($service['state_type']) && $service['state_type'] == "1"){
+            $serviceTemp['stateHardSoft'] = "Hard";
+        }else if(isset($service['state_type']) && $service['state_type'] == "0"){
+            $serviceTemp['stateHardSoft'] = "Soft";
+        }
+        
+        $serviceTemp['last_check'] = Datetime::humanReadable(
+                    time() - $service['last_check'],
+                    Datetime::PRECISION_FORMAT,
+                    2
+                );
+        $serviceTemp['next_check'] = Datetime::humanReadable(
+                    time() - $service['next_check'],
+                    Datetime::PRECISION_FORMAT,
+                    2
+                );
+        $serviceTemp['check_period'] = $service['check_period'];
+        $serviceTemp['retry_interval'] = $service['retry_interval'];
+        $serviceTemp['check_interval'] = $service['check_interval'];
+        $serviceTemp['max_check_attempts'] = $service['max_check_attempts'];
+        $serviceTemp['active_checks'] = $service['active_checks'];
+        $serviceTemp['passive_checks'] = $service['passive_checks'];
+        
+        
+        
+        
+        
+        
+        $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($params['id']);
+        $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/service/'.$params['id']);
+        $return['service'] = $serviceTemp;
+        $router->response()->json($return);
+    }
+    
+    /**
+     * Service slider default menu
+     *
+     * @method get
+     * @route /service/tagslide/[i:id]
+     */
+    public function slideTagsAction(){
+        $router = Di::getDefault()->get('router');
+        $params = $this->getParams();
+        $tags = \CentreonAdministration\Repository\TagsRepository::getList('service', $params['id']);
+        $inheritedTag = array();
+        $directTag = array();
+        foreach($tags as $tag){
+            if(!empty($tags['template_id'])){
+                $inheritedTag[] = $tag;
+            }else{
+                $directTag[] = $tag;
+            }
+        }
+        $return['directTags'] = $directTag;
+        $return['inheritedTags'] = $inheritedTag;
+        $router->response()->json($return);
+        
+    }
+    
+    
+    /**
+     * Service slider default menu
+     *
+     * @method get
+     * @route /service/incidentslide/[i:id]
+     */
+    public function slideIncidentsAction(){
+        $router = Di::getDefault()->get('router');
+        $params = $this->getParams();
+        $return = array();
+        $incidents = IncidentsRepository::getIncidents(null,'DESC',null,array('i.service_id'=>$params['id']));
+        foreach($incidents as $key=>$incident){
+            $childIncidents = IncidentsRepository::getChildren($incident['issue_id']);
+            foreach($childIncidents as $childIncident){
+                $incidents[$key]['child_incidents'][] = $childIncident;
+            }
+        }
+        $return['incidents'] = $incidents;
+        $router->response()->json($return);
+    }
+    
+    
+    /**
+     * Service slider default menu
+     *
+     * @method get
+     * @route /service/slidecommand/[i:id]
+     */
+    public function slideCommandAction(){
+        
+        $router = Di::getDefault()->get('router');
+        $params = $this->getParams();
+        $return = array();
+        $service = ServicedetailRepository::getRealtimeData($params['id']);
+        $serviceTemp = $service[0];
+        $return['command'] = $serviceTemp['command_line'];
+        $router->response()->json($return);
+    }
+    
+    
+    /**
+     * Service slider default menu
+     *
+     * @method get
+     * @route /service/slideoutput/[i:id]
+     */
+    public function slideOutputAction(){
+        
+        $router = Di::getDefault()->get('router');
+        $params = $this->getParams();
+        $return = array();
+        $service = ServicedetailRepository::getRealtimeData($params['id']);
+        $serviceTemp = $service[0];
+        $return['output'] = $serviceTemp['output'];
+        $router->response()->json($return);
+    }
+    
+    
+    
+    /**
+     * Service slider default menu
+     *
+     * @method get
+     * @route /service/slideschelduded/[i:id]
+     */
+    public function slideScheldudedInfosAction(){
+        
+        $router = Di::getDefault()->get('router');
+        $params = $this->getParams();
+        $return = array();
+        $service = ServicedetailRepository::getRealtimeData($params['id']);
+        $serviceTemp = $service[0];
+        $return['schelduded']['name'] = $serviceTemp['instance_name'];
+        $return['schelduded']['execution_time'] = Datetime::humanReadable(
+                    time() - $serviceTemp['last_command_check'],
+                    Datetime::PRECISION_FORMAT,
+                    2
+                );
+        $return['schelduded']['latency'] = $serviceTemp['latency'];
+        $router->response()->json($return);
+    }
+    
+    
+    
 
     /**
      * Display graph in a tooltip

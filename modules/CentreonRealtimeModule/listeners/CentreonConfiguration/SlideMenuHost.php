@@ -50,7 +50,7 @@ class SlideMenuHost
             $event->addMenu(
                 array(
                     'name' => 'incident',
-                    'url' => $router->getPathFor('/centreon-realtime/host/'.$event->getHostId().'/issues'),
+                    'url' => $router->getPathFor('/centreon-realtime/host/'.$event->getId().'/issues'),
                     'icon' => '',
                     'order' => 5,
                     'tpl' => "/viewtpl/CentreonRealtimeModule/incidents_slide"

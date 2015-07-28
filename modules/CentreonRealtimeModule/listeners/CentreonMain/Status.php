@@ -78,18 +78,20 @@ class Status
         $unreachable = 0;
         $totalHosts = 0;
         $totalServices = 0;
+        foreach($arrayStatusHost as $statusHost){
+            $status[$statusHost]['totalHostIncidents'] = 0;
+            $status[$statusHost]['totalImpact'] = 0;
+        }
+        foreach($arrayStatusService as $statusService){
+            $status[$statusService]['totalServiceIncidents'] = 0;
+            $status[$statusService]['totalImpact'] = 0;
+        }
+
         $hosts = \CentreonRealtime\Models\Host::getList();
         foreach($hosts as $host){
             $totalHosts++;
             if($host['state'] !== "0"){
                 $state = $arrayStatusHost[$host['state']];
-                if(empty($status[$state]['totalHostIncidents'])){
-                    $status[$state]['totalHostIncidents'] = 0;
-                }
-
-                if(empty($status[$state]['totalImpact'])){
-                    $status[$state]['totalImpact'] = 0;
-                }
                 $incidents = IncidentsRepository::getIncidents(null,'DESC',null,array('i.host_id'=>$host['host_id']));
                 foreach($incidents as $incident){
                     $childIncidentsHost = IncidentsRepository::getChildren($incident['issue_id']);
@@ -117,12 +119,6 @@ class Status
             $totalServices++;
             if($service['state'] !== "0"){
                 $state = $arrayStatusService[$service['state']];
-                if(empty($status[$state]['totalServiceIncidents'])){
-                    $status[$state]['totalServiceIncidents'] = 0;
-                }
-                if(empty($status[$state]['totalImpact'])){
-                    $status[$state]['totalImpact'] = 0;
-                }
                 $incidents = IncidentsRepository::getIncidents(null,'DESC',null,array('i.service_id'=>$service['service_id']));
                 
                 foreach($incidents as $incident){
