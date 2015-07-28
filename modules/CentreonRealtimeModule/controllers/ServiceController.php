@@ -85,7 +85,6 @@ class ServiceController extends Controller
             ->addCss('jquery.fileupload.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
-            ->addCss('centreon.tag.css', 'centreon-administration')
             ->addCss('select2.css')
             ->addCss('select2-bootstrap.css')
             ->addCss('centreon-wizard.css');

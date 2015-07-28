@@ -188,13 +188,12 @@ class Manager
         $di = Di::getDefault();
         $centreonPath = $di->get('config')->get('global', 'centreon_path');
         $bootstrapPath = $centreonPath . '/bootstrap.php';
-        $configPath = $centreonPath . '/config/';
         
         // Starting File
         $configurationFileContent = "<?php\n\n";
         
         // Add requirements
-        $configurationFileContent .= "    define('CENTREON_ETC', '$configPath');\n";
+        $configurationFileContent .= "    define('CENTREON_ETC', '" . CENTREON_ETC . "');\n";
         $configurationFileContent .= '    $bootstrap = "' . $bootstrapPath . '";' . "\n";
         $configurationFileContent .= '    require_once $bootstrap;' . "\n";
         $configurationFileContent .= "    use Centreon\Internal\Di;\n\n";

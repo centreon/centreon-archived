@@ -39,6 +39,9 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Utils\Status as UtilStatus;
 use CentreonRealtime\Repository\Repository;
+use Centreon\Internal\Utils\YesNoDefault;
+use CentreonConfiguration\Models\Command;
+use CentreonConfiguration\Models\Timeperiod;
 
 /**
  * @author Julien Mathis <jmathis@centreon.com>
@@ -116,7 +119,90 @@ class HostRepository extends Repository
         return $checkdata;
     }
     
-    
+    /**
+     * Format data so that it can be displayed in slider
+     *
+     * @param array $data
+     * @return array $checkdata
+     */
+    public static function formatDataForSlider($data)
+    {
+        /* Check data */
+        $checkdata = array();
+        $checkdata[_('id')] = $data['configurationData']['host_id'];
+        $checkdata[_('name')] = $data['configurationData']['host_name'];
+
+        $checkdata[_('command')] = "";
+        if (isset($data['configurationData']['command_command_id']) && !is_null($data['configurationData']['command_command_id'])) {
+            $checkdata[_('command')] = Command::getParameters($data['configurationData']['command_command_id'], 'command_name');
+        }
+
+        $checkdata[_('time_period')] = "";
+        if (isset($data['configurationData']['timeperiod_tp_id']) && !is_null($data['configurationData']['timeperiod_tp_id'])) {
+            $checkdata[_('time_period')] = Timeperiod::getParameters($data['configurationData']['timeperiod_tp_id'], 'tp_name');
+        }
+
+        $checkdata[_('max_check attempts')] = "";
+        if(isset($data['configurationData']['host_max_check_attempts'])){
+            $checkdata[_('max_check attempts')] = $data['configurationData']['host_max_check_attempts'];
+        }
+
+        $checkdata[_('check_interval')] = "";
+        if(isset($data['configurationData']['host_check_interval'])){
+            $checkdata[_('check_interval')] = $data['configurationData']['host_check_interval'];
+        }
+
+        $checkdata[_('retry_check_interval')] = "";
+        if(isset($data['configurationData']['host_retry_check_interval'])){
+            $checkdata[_('retry_check_interval')] = $data['configurationData']['host_retry_check_interval'];
+        }
+
+        $checkdata[_('active_checks_enabled')] = "";
+        if(isset($data['configurationData']['host_active_checks_enabled'])){
+            $checkdata[_('active_checks_enabled')] = YesNoDefault::toString($data['configurationData']['host_active_checks_enabled']);
+        }
+
+        $checkdata[_('passive_checks_enabled')] = "";
+        if(isset($data['configurationData']['host_passive_checks_enabled'])){
+            $checkdata[_('passive_checks_enabled')] = YesNoDefault::toString($data['configurationData']['host_passive_checks_enabled']);
+        }
+
+        if(!empty($data['configurationData']['icon'])){
+            $checkdata[_('icon')] = $data['configurationData']['icon'];
+        }
+
+        $checkdata[_('status')] = "";
+        if(!empty($data['realtimeData']['status'])){
+            $checkdata[_('status')] = $data['realtimeData']['status'];
+        }
+
+        $checkdata[_('state')] = "";
+        if(!empty($data['realtimeData']['state_type'])){
+            $checkdata[_('state')] = $data['realtimeData']['state_type'];
+        }
+
+        $checkdata[_('last_check')] = "";
+        if(!empty($data['realtimeData']['last_check'])){
+            $checkdata[_('last_check')] = $data['realtimeData']['last_check'];
+        }
+
+        $checkdata[_('next_check')] = "";
+        if(!empty($data['realtimeData']['next_check'])){
+            $checkdata[_('next_check')] = $data['realtimeData']['next_check'];
+        }
+
+        $checkdata[_('acknowledged')] = "";
+        if(!empty($data['realtimeData']['acknowledged'])){
+            $checkdata[_('acknowledged')] = $data['realtimeData']['acknowledged'];
+        }
+
+        $checkdata[_('downtime')] = "";
+        if(!empty($data['realtimeData']['scheduled_downtime_depth'])){
+            $checkdata[_('downtime')] = $data['realtimeData']['scheduled_downtime_depth'];
+        }
+
+        return $checkdata;
+    }
     
     
     
@@ -142,25 +228,6 @@ class HostRepository extends Repository
         return -1;
     }
     
-    /**
-     * Get host realtimeData
-     *
-     * @param int $hostId
-     * @return mixed
-     */
-    public static function getRealTimeData($hostId){
-        // Initializing connection
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-
-        $stmt = $dbconn->prepare('SELECT * FROM rt_hosts WHERE host_id = ? AND enabled = 1 LIMIT 1');
-        $stmt->execute(array($hostId));
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            return $row;
-        }
-        
-    }
-
     /**
      * Get host acknowledgement information
      *
