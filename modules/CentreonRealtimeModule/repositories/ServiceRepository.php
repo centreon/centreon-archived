@@ -133,7 +133,12 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         /* Check data */
         $checkdata = array();
         $checkdata[_('id')] = $data['service_id'];
-        $checkdata[_('name')] = $data['service_description'];
+        $host = \CentreonRealtime\Models\Host::get($data['host_id']);
+        $host_name = $host['name'];
+        if(!empty($data['description'])){
+            $checkdata[_('name')] = $host_name.' '.$data['description'];
+        }
+        
         $checkdata[_('state')] = $data['state'];
       
         $checkdata[_('icon')] = "";
