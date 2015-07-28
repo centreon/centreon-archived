@@ -80,9 +80,17 @@ class HostRepository extends Repository
     public static function formatDataForHeader($data)
     {
         /* Check data */
+        
+        
+        
         $checkdata = array();
         $checkdata[_('id')] = $data['host_id'];
-        $checkdata[_('name')] = $data['host_name'];
+        if(!empty($data['host_name'])){
+            $checkdata[_('name')] = $data['host_name'];
+        }else if(!empty($data['name'])){
+            $checkdata[_('name')] = $data['name'];
+        }
+        
         $checkdata[_('state')] = $data['state'];
       
         $checkdata[_('icon')] = "";

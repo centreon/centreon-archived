@@ -131,9 +131,15 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
     public static function formatDataForHeader($data)
     {
         /* Check data */
+        
         $checkdata = array();
         $checkdata[_('id')] = $data['service_id'];
-        $checkdata[_('name')] = $data['service_desc'];
+        if(!empty($data['service_desc'])){
+            $checkdata[_('name')] = $data['service_desc'];
+        }else if(!empty($data['description'])){
+            $checkdata[_('name')] = $data['description'];
+        }
+        
         $checkdata[_('state')] = $data['state'];
       
         $checkdata[_('icon')] = "";

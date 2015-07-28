@@ -65,7 +65,8 @@ class Status
     {
         
         $router = Di::getDefault()->get('router');
-        $arrayStatus = array('success','warning','critical','unknown','pending');
+        $arrayStatusService = array('success','warning','critical','unknown','pending');
+        $arrayStatusHost = array('success','critical','unreachable','pending');
         $status = array();
         $pending = array();
         $unknown = array();
@@ -75,6 +76,7 @@ class Status
         $pollerArray = array();
         $stopped = 0;
         $unreachable = 0;
+        
         //Get total number of hosts
         $tHosts = \CentreonRealtime\Models\Host::getList("host_id",
                                         1
@@ -86,6 +88,7 @@ class Status
                                             );
         $totalServices = $tServices[0]['service_id'];
         
+        
         // Get warning and critical incidents
         $incidents = IncidentsRepository::getIncidents();
         foreach($incidents as $incident){
@@ -95,21 +98,19 @@ class Status
                 Datetime::PRECISION_FORMAT,
                 2
             );
-            $state = $arrayStatus[$incident['state']];
-            if(empty($status[$state]['totalHostIncidents'])){
-                $status[$state]['totalHostIncidents'] = 0;
-            }
             
-            if(empty($status[$state]['totalServiceIncidents'])){
-                $status[$state]['totalServiceIncidents'] = 0;
-            }
-            
-            
-            if(empty($status[$state]['totalImpact'])){
-                $status[$state]['totalImpact'] = 0;
-            }
             
             if(!empty($incident['host_id']) || $incident['host_id'] == "0"){
+                $state = $arrayStatusHost[$incident['state']];
+                if(empty($status[$state]['totalHostIncidents'])){
+                    $status[$state]['totalHostIncidents'] = 0;
+                }
+                if(empty($status[$state]['totalServiceIncidents'])){
+                    $status[$state]['totalServiceIncidents'] = 0;
+                }
+                if(empty($status[$state]['totalImpact'])){
+                    $status[$state]['totalImpact'] = 0;
+                }
                 $hostsTemp = $incident;
                 $hostsTemp['icon'] = HostRepositoryConfig::getIconImagePath($incident['host_id']);
                 $hostsTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
@@ -123,11 +124,21 @@ class Status
             }
             
             if(!empty($incident['service_id']) || $incident['service_id'] == "0"){
+                $state = $arrayStatusService[$incident['state']];
+                if(empty($status[$state]['totalHostIncidents'])){
+                    $status[$state]['totalHostIncidents'] = 0;
+                }
+                if(empty($status[$state]['totalServiceIncidents'])){
+                    $status[$state]['totalServiceIncidents'] = 0;
+                }
+                if(empty($status[$state]['totalImpact'])){
+                    $status[$state]['totalImpact'] = 0;
+                }
                 $serviceTemp = $incident;
                 $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($incident['service_id']);
                 $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/service/'.$incident['service_id']);
                 $serviceTemp['issue_duration'] = $issue_duration;
-                $serviceTemp['states'] = ServiceRepository::getStatus($incident['host_id'],$incident['service_id']);
+                //$serviceTemp['states'] = ServiceRepository::getStatus($incident['host_id'],$incident['service_id']);
                 $serviceTemp['state'] = $state;
                 $childIncidentsService = IncidentsRepository::getChildren($incident['issue_id']);
                 $status[$state]['services'][] = ServiceRepository::formatDataForHeader($serviceTemp);
