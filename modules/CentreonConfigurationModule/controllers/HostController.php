@@ -221,10 +221,7 @@ class HostController extends FormController
     public function getHostTagsAction()
     {
         $requestParam = $this->getParams('named');
-        
-        
-        
-        
+                
         $globalTags = TagsRepository::getList('host', $requestParam['id'],1,1);
         $globalTagsValues = array();
         foreach($globalTags as $globalTag){
@@ -576,7 +573,6 @@ class HostController extends FormController
 
         $hostConfiguration = HostRepository::formatDataForSlider($data);
         
-        
         $aDataRealTime = HostRealtime::get($params['id']);
         $hostReal = HostRepository::formatDataForSlider($aDataRealTime);
         
@@ -693,5 +689,21 @@ class HostController extends FormController
         }
 
         $router->response()->json($snmpVersion);
+    }
+
+    /**
+     * Get command of a Host
+     *
+     *
+     * @method get
+     * @route /host/[i:id]/command
+     */
+    public function getHostCommandAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        $requestParam = $this->getParams('named');
+
+        parent::getSimpleRelation('command_command_id', '\CentreonConfiguration\Models\Command');
     }
 }

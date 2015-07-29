@@ -37,6 +37,7 @@
 namespace CentreonConfiguration\Internal;
 
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use CentreonMain\Events\SlideMenu;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
@@ -306,6 +307,14 @@ class ServiceDatatable extends Datatable
                 );
             }
             
+            $sideMenuCustom = new SlideMenu($myServiceSet['service_id']);
+
+            $events = Di::getDefault()->get('events');
+            $events->emit('centreon-configuration.slide.menu.service', array($sideMenuCustom));
+
+            $myServiceSet['DT_RowData']['right_side_menu_list'] = $sideMenuCustom->getMenu();
+            $myServiceSet['DT_RowData']['right_side_default_menu'] = $sideMenuCustom->getDefaultMenu();
+
             // Set Tpl Chain
             $tplStr = null;
             $tplArr = ServiceRepository::getMyServiceTemplateModels($myServiceSet["service_template_model_stm_id"]);
