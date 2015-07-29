@@ -88,14 +88,19 @@ class SlideMenuHost
                     'tpl' => "/viewtpl/CentreonConfigurationModule/services_slide"
                 )
             );
+            
+            $event->addMenu(
+                array(
+                    'name' => 'command',
+                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getId().'/command'),
+                    'icon' => '',
+                    'order' => 5,
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/command_slide"
+                )
+            );
 
         }  catch (Exception $e) {
 
         }
-        
-       
-        
     }
-    
-    
 }

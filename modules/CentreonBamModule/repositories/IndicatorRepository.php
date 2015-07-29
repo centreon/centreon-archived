@@ -503,11 +503,11 @@ class IndicatorRepository extends FormRepository
     }
 
     /**
-     *
+     * Get indicators name
      *
      * @return string
      */
-    public static function getIndicatorsName($filterName = "")
+    public static function getIndicatorsName($filterName = "", $baId = null)
     {
         // Get datatabases connections
         $di = Di::getDefault();
@@ -522,6 +522,11 @@ class IndicatorRepository extends FormRepository
             $stmtKpiService = $dbconn->prepare($sqlKpiService);
             $stmtKpiService->bindParam(':filter', $filterName, \PDO::PARAM_STR);
         }
+        if (isset($baId) && !is_null($baId)) {
+            $sqlKpiService .= ' AND k.id_ba = :id';
+            $stmtKpiService = $dbconn->prepare($sqlKpiService);
+            $stmtKpiService->bindParam(':id', $baId, \PDO::PARAM_INT);
+        }
         $stmtKpiService->execute();
         $resultKpiService = $stmtKpiService->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -533,6 +538,11 @@ class IndicatorRepository extends FormRepository
             $sqlKpiMetaservice .= ' AND ms.meta_name like :filter';
             $stmtKpiMetaservice = $dbconn->prepare($sqlKpiMetaservice);
             $stmtKpiMetaservice->bindParam(':filter', $filterName, \PDO::PARAM_STR);
+        }
+        if (isset($baId) && !is_null($baId)) {
+            $sqlKpiMetaservice .= ' AND k.id_ba = :id';
+            $stmtKpiMetaservice = $dbconn->prepare($sqlKpiMetaservice);
+            $stmtKpiMetaservice->bindParam(':id', $baId, \PDO::PARAM_INT);
         }
         $stmtKpiMetaservice->execute();
         $resultKpiMetaservice = $stmtKpiMetaservice->fetchAll(\PDO::FETCH_ASSOC);
@@ -546,6 +556,11 @@ class IndicatorRepository extends FormRepository
             $stmtKpiBa = $dbconn->prepare($sqlKpiBa);
             $stmtKpiBa->bindParam(':filter', $filterName, \PDO::PARAM_STR);
         }
+        if (isset($baId) && !is_null($baId)) {
+            $sqlKpiBa .= ' AND k.id_ba = :id';
+            $stmtKpiBa = $dbconn->prepare($sqlKpiBa);
+            $stmtKpiBa->bindParam(':id', $baId, \PDO::PARAM_INT);
+        }        
         $stmtKpiBa->execute();
         $resultKpiBa = $stmtKpiBa->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -558,6 +573,11 @@ class IndicatorRepository extends FormRepository
             $stmtKpiBoolean = $dbconn->prepare($sqlKpiBoolean);
             $stmtKpiBoolean->bindParam(':filter', $filterName, \PDO::PARAM_STR);
         }
+        if (isset($baId) && !is_null($baId)) {
+            $sqlKpiBoolean .= ' AND k.id_ba = :id';
+            $stmtKpiBoolean = $dbconn->prepare($sqlKpiBoolean);
+            $stmtKpiBoolean->bindParam(':id', $baId, \PDO::PARAM_INT);
+        }
         $stmtKpiBoolean->execute();
         $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -565,25 +585,29 @@ class IndicatorRepository extends FormRepository
         foreach ($resultKpiService as $kpiObject) {
             $resultPki[] = array(
                 "id" => $kpiObject['kpi_id'],
-                "text" => $kpiObject['host_name'].' '.$kpiObject['service_description']
+                "text" => $kpiObject['host_name'].' '.$kpiObject['service_description'],
+                "type" => 'service'
             );
         }
         foreach ($resultKpiMetaservice as $kpiObject) {
             $resultPki[] = array(
                 "id" => $kpiObject['kpi_id'],
-                "text" => $kpiObject['meta_id']
+                "text" => $kpiObject['meta_id'],
+                "type" => 'metaservice'
             );
         }
         foreach ($resultKpiBa as $kpiObject) {
             $resultPki[] = array(
                 "id" => $kpiObject['kpi_id'],
-                "text" => $kpiObject['name']
+                "text" => $kpiObject['name'],
+                "type" => 'ba'
             );
         }
         foreach ($resultKpiBoolean as $kpiObject) {
             $resultPki[] = array(
                 "id" => $kpiObject['kpi_id'],
-                "text" => $kpiObject['name']
+                "text" => $kpiObject['name'],
+                "type" => 'boolean'
             );
         }
 

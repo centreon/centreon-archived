@@ -340,6 +340,28 @@ class IncidentsRepository
         return $listStatus;
     }
     
+    public static function formatDataForHeader($data, $resource = 'host'){
+                /* Check data */
+        $checkdata = array();
+
+        if($resource == 'host'){
+            $checkdata[_('id')] = $data['host_id'];
+        }else if($resource == 'service'){
+            $checkdata[_('id')] = $data['service_id'];
+        }
+        
+        if(!empty($data['service_desc'])){
+            $checkdata[_('name')] = $data['host_name'].' '.$data['service_desc'];
+        }else{
+            $checkdata[_('name')] = $data['host_name'];
+        }
+
+        return $checkdata;
+    }
+    
+    
+    
+    
 
     
 }

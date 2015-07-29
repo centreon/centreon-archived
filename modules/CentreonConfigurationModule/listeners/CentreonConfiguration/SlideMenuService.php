@@ -34,80 +34,72 @@
  *
  */
 
-namespace CentreonRealtime\Listeners\CentreonRealtime;
+namespace CentreonConfiguration\Listeners\CentreonConfiguration;
 use Centreon\Internal\Di;
 use CentreonMain\Events\SlideMenu as SlideMenuEvent;
 
-class SlideMenuHost 
+class SlideMenuService 
 {
+    
     public static function execute(SlideMenuEvent $event)
-    {   
+    {
+        
         $router = Di::getDefault()->get('router');
-
-        try {            
+        try{
+            
             $event->setDefaultMenu(
                 array(
-                    'name' => 'host',
-                    'url' => $router->getPathFor('/centreon-realtime/host/snapshotslide/') . $event->getId(),
+                    'name' => 'service',
+                    'url' => $router->getPathFor('/centreon-configuration/service/snapshotslide/') . $event->getId(),
                     'icon' => '',
                     'order' => 0,
-                    'tpl' => "/viewtpl/CentreonRealtimeModule/host_slide"
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/service_slide"
 
                 )
             );
             
             $event->addMenu(
                 array(
-                    'name' => 'command',
-                    'url' => $router->getPathFor('/centreon-realtime/host/') . $event->getId() . '/command',
-                    'icon' => '',
-                    'order' => 1,
-                    'tpl' => "/viewtpl/CentreonRealtimeModule/command_slide"
-                )
-            );
-
-            $event->addMenu(
-                array(
-                    'name' => 'output',
-                    'url' => $router->getPathFor('/centreon-realtime/host/') . $event->getId() . '/output',
+                    'name' => 'template',
+                    'url' => $router->getPathFor('/centreon-configuration/servicetemplate/viewconfslide/') . $event->getId(),
                     'icon' => '',
                     'order' => 2,
-                    'tpl' => "/viewtpl/CentreonRealtimeModule/output_slide"
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/service_templates_slide"
                 )
             );
             
             $event->addMenu(
                 array(
                     'name' => 'tag',
-                    'url' => $router->getPathFor('/centreon-configuration/host/'.  $event->getId() . '/tags') ,
+                    'url' => $router->getPathFor('/centreon-configuration/service/'.$event->getId().'/tags') ,
                     'icon' => '',
-                    'order' => 3,
+                    'order' => 1,
                     'tpl' => "/viewtpl/CentreonConfigurationModule/tags_slide",
                     'default' => 1
+                )
+            );
+            /*
+            $event->addMenu(
+                array(
+                    'name' => 'service',
+                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getId().'/service'),
+                    'icon' => '',
+                    'order' => 4,
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/services_slide"
                 )
             );
             
             $event->addMenu(
                 array(
-                    'name' => 'real-time',
-                    'url' => $router->getPathFor('/centreon-realtime/host/' . $event->getId() . '/scheduling-infos'),
-                    'icon' => '',
-                    'order' => 4,
-                    'tpl' => "/viewtpl/CentreonRealtimeModule/schedulinginfos_slide"
-                )
-            );
-
-            $event->addMenu(
-                array(
-                    'name' => 'service',
-                    'url' => $router->getPathFor('/centreon-realtime/host/' . $event->getId() . '/service'),
+                    'name' => 'command',
+                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getId().'/command'),
                     'icon' => '',
                     'order' => 5,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/services_slide"
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/command_slide"
                 )
             );
-
-        } catch (Exception $e) {
+*/
+        }  catch (Exception $e) {
 
         }
     }

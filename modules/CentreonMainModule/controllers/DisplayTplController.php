@@ -47,8 +47,6 @@ use Centreon\Internal\Controller;
  */
 class DisplayTplController extends Controller
 {
-    
-    
     private function validate_alpha($str) 
     {
         return preg_match('/^[a-zA-Z0-9_]+$/',$str);
@@ -62,19 +60,17 @@ class DisplayTplController extends Controller
      */
     public function displayTplAction()
     {
-        
         $requestParam = $this->getParams('named');
         
-        
-        if(!$this::validate_alpha($requestParam['module']) || !$this::validate_alpha($requestParam['file'])){
+        if (!$this::validate_alpha($requestParam['module']) || !$this::validate_alpha($requestParam['file'])){
             return false;
         }
-        $tplName = 'modules/'.$requestParam['module'].'/views/slideMenu/'.$requestParam['file'].'.tpl';
+        $tplName = 'modules/' . $requestParam['module'] . '/views/slideMenu/' . $requestParam['file'] . '.tpl';
         $config = Di::getDefault()->get('config');
         $centreon_path = rtrim($config->get('global', 'centreon_path'), '/');
-        if(file_exists( $centreon_path.'/'.$tplName)){
-            echo file_get_contents($centreon_path.'/'.$tplName);
+
+        if (file_exists($centreon_path . '/' . $tplName)) {
+            echo file_get_contents($centreon_path . '/' . $tplName);
         }
-        die;
     }    
 }

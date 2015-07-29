@@ -34,11 +34,11 @@
  *
  */
 
-namespace CentreonRealtime\Listeners\CentreonRealtime;
+namespace CentreonBam\Listeners\CentreonBam;
 use Centreon\Internal\Di;
 use CentreonMain\Events\SlideMenu as SlideMenuEvent;
 
-class SlideMenuHost 
+class SlideMenuBusinessActivity 
 {
     public static function execute(SlideMenuEvent $event)
     {   
@@ -47,63 +47,32 @@ class SlideMenuHost
         try {            
             $event->setDefaultMenu(
                 array(
-                    'name' => 'host',
-                    'url' => $router->getPathFor('/centreon-realtime/host/snapshotslide/') . $event->getId(),
+                    'name' => 'business_activity',
+                    'url' => $router->getPathFor('/centreon-bam/business-activity/snapshotslide/') . $event->getId(),
                     'icon' => '',
                     'order' => 0,
-                    'tpl' => "/viewtpl/CentreonRealtimeModule/host_slide"
-
-                )
-            );
-            
-            $event->addMenu(
-                array(
-                    'name' => 'command',
-                    'url' => $router->getPathFor('/centreon-realtime/host/') . $event->getId() . '/command',
-                    'icon' => '',
-                    'order' => 1,
-                    'tpl' => "/viewtpl/CentreonRealtimeModule/command_slide"
-                )
-            );
-
-            $event->addMenu(
-                array(
-                    'name' => 'output',
-                    'url' => $router->getPathFor('/centreon-realtime/host/') . $event->getId() . '/output',
-                    'icon' => '',
-                    'order' => 2,
-                    'tpl' => "/viewtpl/CentreonRealtimeModule/output_slide"
+                    'tpl' => "/viewtpl/CentreonBamModule/ba_slide"
                 )
             );
             
             $event->addMenu(
                 array(
                     'name' => 'tag',
-                    'url' => $router->getPathFor('/centreon-configuration/host/'.  $event->getId() . '/tags') ,
+                    'url' => $router->getPathFor('/centreon-bam/business-activity/'.  $event->getId() . '/tags') ,
                     'icon' => '',
-                    'order' => 3,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/tags_slide",
+                    'order' => 1,
+                    'tpl' => "/viewtpl/CentreonBamModule/tags_slide",
                     'default' => 1
                 )
             );
             
             $event->addMenu(
                 array(
-                    'name' => 'real-time',
-                    'url' => $router->getPathFor('/centreon-realtime/host/' . $event->getId() . '/scheduling-infos'),
+                    'name' => 'kpi',
+                    'url' => $router->getPathFor('/centreon-bam/business-activity/' . $event->getId() . '/indicators'),
                     'icon' => '',
-                    'order' => 4,
-                    'tpl' => "/viewtpl/CentreonRealtimeModule/schedulinginfos_slide"
-                )
-            );
-
-            $event->addMenu(
-                array(
-                    'name' => 'service',
-                    'url' => $router->getPathFor('/centreon-realtime/host/' . $event->getId() . '/service'),
-                    'icon' => '',
-                    'order' => 5,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/services_slide"
+                    'order' => 2,
+                    'tpl' => "/viewtpl/CentreonBamModule/indicators_slide"
                 )
             );
 

@@ -332,11 +332,21 @@ class HostRepository extends Repository
     {
         /* Check data */
         $checkdata = array();
-        $checkdata[_('id')] = $data['host_id'];
-        $checkdata[_('name')] = $data['host_name'];
-        $checkdata[_('command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
-        $checkdata[_('time_period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
+        if (isset($data['host_id'])) {
+            $checkdata[_('id')] = $data['host_id'];
+        }
         
+        if (isset($data['host_name'])) {
+            $checkdata[_('name')] = $data['host_name'];
+        }
+        
+        if (isset($data['command_command_id'])) {
+            $checkdata[_('command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
+        }
+        
+        if (isset($data['timeperiod_tp_id'])) {
+            $checkdata[_('time_period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
+        }
         
         $checkdata[_('max_check attempts')] = "";
         if(isset($data['host_max_check_attempts'])){
@@ -362,27 +372,10 @@ class HostRepository extends Repository
         if(isset($data['host_passive_checks_enabled'])){
             $checkdata[_('passive_checks_enabled')] = $data['host_passive_checks_enabled'];
         }
+        
         if(!empty($data['icon'])){
             $checkdata[_('icon')] = $data['icon'];
-        }
-        
-        if(!empty($data['realTimeData'])){
-            $checkdata[_('state')] = "";
-            if(!empty($data['realTimeData']['state'])){
-                $checkdata[_('state')] = $data['realTimeData']['state'];
-            }
-            
-            $checkdata[_('last_check')] = "";
-            if(!empty($data['realTimeData']['last_check'])){
-                $checkdata[_('last_check')] = $data['realTimeData']['last_check'];
-            }
-            
-            $checkdata[_('next_check')] = "";
-            if(!empty($data['realTimeData']['next_check'])){
-                $checkdata[_('next_check')] = $data['realTimeData']['next_check'];
-            }
-        }
-        
+        } 
         
         return $checkdata;
     }
@@ -442,10 +435,15 @@ class HostRepository extends Repository
      * @param int $hostId The host template Id
      * @return array
      */
-    public static function getInheritanceValues($hostId)
+    public static function getInheritanceValues($hostId, $withHostValues = false)
     {
         $values = array();
         $templates = static::getTemplateChain($hostId, array(), -1);
+
+        if ($withHostValues) {
+            array_unshift($templates, $hostId);
+        }
+
         foreach ($templates as $template) {
             $inheritanceValues = HostTemplateRepository::getInheritanceValues($template['id']);
             $tmplValues = Host::getParameters($template['id'], self::$inheritanceColumns);
@@ -455,6 +453,7 @@ class HostRepository extends Repository
             $tmplValues = array_merge($inheritanceValues, $tmplValues);
             $values = array_merge($tmplValues, $values);
         }
+
         return $values;
     }
     

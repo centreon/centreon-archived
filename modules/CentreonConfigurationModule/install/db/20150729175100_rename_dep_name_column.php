@@ -34,56 +34,20 @@
  * 
  */
 
-namespace CentreonRealtime\Repository;
-use CentreonMain\Repository\FormRepository;
-use Centreon\Internal\Di;
+use Phinx\Migration\AbstractMigration;
+
+
 /**
- * Description of PollerRepository
+ * Description of RenameDepNameColumn
  *
- * @author bsauveton
+ * @author kevin duret <kduret@centreon.com>
  */
-class PollerRepository extends FormRepository
+class RenameDepNameColumn extends AbstractMigration
 {
-    
-    
-    public function pollerStatus(){
-        $router = Di::getDefault()->get('router');
-        $orgId = Di::getDefault()->get('organization');
-        $dbconn = Di::getDefault()->get('db_centreon');
-        $query = 'SELECT c.name, r.last_alive, r.running, r.instance_id
-            FROM cfg_pollers c
-            LEFT OUTER JOIN rt_instances r
-                ON r.instance_id = c.poller_id
-            WHERE c.organization_id = :org_id';
-        $stmt = $dbconn->prepare($query);
-        $stmt->bindParam(':org_id', $orgId, \PDO::PARAM_INT);
-        $stmt->execute();
-        $now = time();
-        $pollers = array();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $row['latency'] = 0;
-            if (is_null($row['last_alive']) || $row['last_alive'] - $now > 60) {
-                $row['disconnect'] = 1;
-            } else {
-                $row['disconnect'] = 0;
-            }
-            $pollers[] = $row;
-        }
-        return $pollers;
+    public function change()
+    {
+        $cfg_dependencies = $this->table('cfg_dependencies');
+        $cfg_dependencies->renameColumn('name', 'dep_name')
+            ->renameColumn('description', 'dep_description');
     }
-    
-    public static function formatDataForHeader($data){
-        
-                        /* Check data */
-        $checkdata = array();
-
-        $checkdata[_('id')] = $data['instance_id'];
-        $checkdata[_('name')] = $data['name'];
-
-        return $checkdata;
-        
-    }
-    
-    
-    //put your code here
 }

@@ -360,4 +360,9 @@ class BusinessActivityRepository extends FormRepository
 
         return $finalBaList;
     }
+    
+    public static function formatDataForHeader($data){
+        
+    }
+    
 }

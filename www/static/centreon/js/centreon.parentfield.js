@@ -77,6 +77,7 @@
             $elem.closest(".form-group").hide();
           });
         }
+        hideEmptyBlocks();
       });
     }
   };

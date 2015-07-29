@@ -176,7 +176,7 @@ class GraphController extends Controller
         foreach ($list as $infos) {
             $finalList[] = array(
                 'id' => $infos['service_id'],
-                'text' => $infos['name'] . ' ' . $infos['description']
+                'text' => $infos['name'] . ' - ' . $infos['description']
             );
         }
         $router->response()->json($finalList);

@@ -221,10 +221,7 @@ class HostController extends FormController
     public function getHostTagsAction()
     {
         $requestParam = $this->getParams('named');
-        
-        
-        
-        
+                
         $globalTags = TagsRepository::getList('host', $requestParam['id'],1,1);
         $globalTagsValues = array();
         foreach($globalTags as $globalTag){
@@ -563,14 +560,37 @@ class HostController extends FormController
      */
     public function snapshotslideAction()
     {
-
         $params = $this->getParams();
+        $hostNameField = Host::getUniqueLabelField();
+        
+        $aHostTpl = HostRepository::getTemplatesChainConfigurationData($params['id']);
         $data = HostRepository::getConfigurationData($params['id']);
-        $data['realTimeData'] = HostRealtime::get($params['id']);
+        $sName = $data[$hostNameField];
+        
+        //If host inherits a template
+        if (count($aHostTpl) > 0 && isset($aHostTpl[0]['id'])) {
+            $data = HostRepository::getConfigurationData($aHostTpl[0]['id']);   
+        }
+
+        $data[$hostNameField] = $sName;
+                
         $hostConfiguration = HostRepository::formatDataForSlider($data);
+        
+        $aDataRealTime = HostRealtime::get($params['id']);
+        $hostReal = HostRepository::formatDataForSlider($aDataRealTime);
+        
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
         $edit_url = $this->router->getPathFor("/centreon-configuration/host/".$params['id']);
-        $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus,'edit_url' => $edit_url,'success' => true));
+        
+        $this->router->response()->json(
+                array(
+                    'hostConfig' => $hostConfiguration,
+                    'hostReal'   => $hostReal, 
+                    'servicesStatus' => $servicesStatus, 
+                    'edit_url' => $edit_url,
+                    'success' => true
+                )
+        );
     }
 
     /**
@@ -672,5 +692,21 @@ class HostController extends FormController
         }
 
         $router->response()->json($snmpVersion);
+    }
+
+    /**
+     * Get command of a Host
+     *
+     *
+     * @method get
+     * @route /host/[i:id]/command
+     */
+    public function getHostCommandAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        $requestParam = $this->getParams('named');
+
+        parent::getSimpleRelation('command_command_id', '\CentreonConfiguration\Models\Command');
     }
 }

@@ -458,6 +458,14 @@ class ServiceController extends FormController
     {
         $params = $this->getParams();
         $data = ServiceRepository::getConfigurationData($params['id']);
+               
+        //If service inherits a template
+        if (isset($data['service_template_model_stm_id'])) {
+            $data = ServiceRepository::getConfigurationData($data['service_template_model_stm_id']);   
+        } else {
+            $data = ServiceRepository::getConfigurationData($params['id']);
+        }
+    
         $checkdata = ServiceRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
@@ -493,6 +501,85 @@ class ServiceController extends FormController
 
         $list = TagsRepository::getGlobalList('service');
 
+      
         $router->response()->json($list);
-    } 
+    }
+    /**
+     * Display the configuration snapshot of a service
+     * with template inheritance
+     *
+     * @method get
+     * @route /service/snapshotslide/[i:id]
+     */
+    public function snapshotslideAction()
+    {
+        $params = $this->getParams();
+        
+        $data = ServiceRepository::getConfigurationData($params['id']);
+        
+        $serviceId = Service::getPrimaryKey();
+        $serviceDescription = Service::getUniqueLabelField();
+        $hostId = Host::getPrimaryKey();
+        $hostName = Host::getUniqueLabelField();
+        $filters = array(
+            $serviceId => $params['id'],
+        );
+               
+        //If service inherits a template
+        if (isset($data['service_template_model_stm_id'])) {
+            $data = ServiceRepository::getConfigurationData($data['service_template_model_stm_id']);   
+        } else {
+            $data = ServiceRepository::getConfigurationData($params['id']);
+        }
+        
+        $list = HostService::getMergedParameters(
+            array($hostId, $hostName),
+            array($serviceId, $serviceDescription),
+            -1,
+            0,
+            null,
+            "ASC",
+            $filters,
+            "OR"
+        );
+        
+        foreach ($list as $obj) {
+            $data[$serviceDescription] = $obj[$hostName] . '|' . $obj[$serviceDescription];
+        }
+    
+        $serviceConfiguration = ServiceRepository::formatDataForSlider($data);
+        $edit_url = $this->router->getPathFor("/centreon-configuration/service/".$params['id']);
+        
+        $this->router->response()->json(
+                array(
+                    'serviceConfig' => $serviceConfiguration,
+                    'edit_url' => $edit_url,
+                    'success' => true
+                )
+        );
+    }
+    
+    /**
+     * Show all tags of a service
+     *
+     *
+     * @method get
+     * @route /service/[i:id]/tags
+     */
+    public function getServiceTagsAction()
+    {
+        $requestParam = $this->getParams('named');
+                
+        $globalTags = TagsRepository::getList('service', $requestParam['id'], 1, 1);
+        $globalTagsValues = array();
+        foreach($globalTags as $globalTag){
+            $globalTagsValues[] = $globalTag['text'];
+        }
+        $heritedTags = TagsRepository::getHeritedTags('service', $requestParam['id']);
+        $heritedTagsValues = $heritedTags['values'];
+        
+        $tags['tags'] = array('globals' => $globalTagsValues,'herited' => $heritedTagsValues);
+        $tags['success'] = true;
+        $this->router->response()->json($tags);
+    }
 }

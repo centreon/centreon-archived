@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -31,49 +31,22 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonMain\Events;
+namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
- * Parameters for events centreon-main.status
+ * Used for interacting with binaries
  *
- * @author Maximilien Bersoult <mbersoult@merehtis.com>
- * @version 3.0.0
- * @package Centreon
- * @subpackage CentreonMain
+ * @author kevin duret <kduret@centreon.com>
  */
-class Status
+class Command extends CentreonBaseModel
 {
-    /**
-     * The list of status
-     * @var array
-     */
-    private $status;
-
-    public function __construct(&$status)
-    {
-        $this->status = &$status;
-    }
-
-    /**
-     * Add a status to the list of status
-     *
-     * @param string $statusName The status name
-     * @param mixed $statusValue The value a the status
-     */
-    public function addStatus($statusName, $statusValue)
-    {
-        $this->status[$statusName] = $statusValue;
-    }
-    
-    public function getStatus($statusName)
-    {
-        if(isset($this->status[$statusName])){
-            return $this->status[$statusName];
-        }else{
-            return null;
-        }
-            
-    }
+    protected static $table = "cfg_binaries";
+    protected static $primaryKey = "binary_id";
+    protected static $uniqueLabelField = "binary_id";
+    protected static $slugField = "slug";
 }

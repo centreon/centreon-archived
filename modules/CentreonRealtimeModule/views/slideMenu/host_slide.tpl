@@ -30,37 +30,47 @@
             <table>
                 <tr>
                     <td>Command</td>
-                    <td>{{hostConfig.command}}</td>
+                    <td>{{hostInformations.command}}</td>
+                </tr>
+
+                <tr>
+                    <td>Last check</td>
+                    <td>{{hostInformations.last_check}}</td>
+                </tr>
+
+                <tr>
+                    <td>Next check</td>
+                    <td>{{hostInformations.next_check}}</td>
                 </tr>
 
                 <tr>
                     <td>Time period</td>
-                    <td>{{hostConfig.time_period}}</td>
+                    <td>{{hostInformations.time_period}}</td>
                 </tr>
 
                 <tr>
                     <td>Max check attempts</td>
-                    <td>{{hostConfig.max_check_attempts}}</td>
+                    <td>{{hostInformations.max_check_attempts}}</td>
                 </tr>
 
                 <tr>
                     <td>Check interval</td>
-                    <td>{{hostConfig.check_interval}}</td>
+                    <td>{{hostInformations.check_interval}}</td>
                 </tr>
 
                 <tr>
                     <td>Retry check interval</td>
-                    <td>{{hostConfig.retry_check_interval}}</td>
+                    <td>{{hostInformations.retry_check_interval}}</td>
                 </tr>
 
                 <tr>
                     <td>Active checks enabled</td>
-                    <td>{{hostConfig.active_checks_enabled}}</td>
+                    <td>{{hostInformations.active_checks_enabled}}</td>
                 </tr>
 
                  <tr>
                     <td>Passive checks enabled</td>
-                    <td>{{hostConfig.passive_checks_enabled}}</td>
+                    <td>{{hostInformations.passive_checks_enabled}}</td>
                 </tr>
 
             </table>
