@@ -576,7 +576,8 @@ class HostController extends FormController
 
         $hostConfiguration = HostRepository::formatDataForSlider($data);
         
-        $aDataRealTime = HostRealTimeRepository::getRealTimeData($params['id']);
+        
+        $aDataRealTime = HostRealtime::get($params['id']);
         $hostReal = HostRepository::formatDataForSlider($aDataRealTime);
         
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
