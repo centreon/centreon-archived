@@ -40,6 +40,8 @@ use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use Centreon\Internal\Datatable;
 use CentreonBam\Repository\BusinessActivityRepository;
 use CentreonAdministration\Repository\TagsRepository;
+use Centreon\Internal\Di;
+use CentreonMain\Events\SlideMenu;
 
 /**
  * Description of BaDatatable
@@ -203,6 +205,13 @@ class BusinessActivityDatatable extends Datatable
     {
         $previousType = '';
         foreach ($resultSet as &$myBaSet) {
+            $sideMenuCustom = new SlideMenu($myBaSet['ba_id']);
+            $events = Di::getDefault()->get('events');
+            $events->emit('centreon-bam.slide.menu.business.activity', array($sideMenuCustom));
+
+            $myBaSet['DT_RowData']['right_side_menu_list'] = $sideMenuCustom->getMenu();
+            $myBaSet['DT_RowData']['right_side_default_menu'] = $sideMenuCustom->getDefaultMenu();
+
             // Set business activity type
             $baType = \CentreonBam\Models\BusinessActivityType::getParameters($myBaSet['ba_type_id'], array('name'));
             $myBaSet['ba_type_id'] = $baType['name'];

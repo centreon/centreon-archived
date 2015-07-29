@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -35,42 +34,19 @@
  *
  */
 
-namespace CentreonMain\Controllers;
+namespace CentreonConfiguration\Models;
 
-use Centreon\Internal\Di;
-use Centreon\Internal\Controller;
+use Centreon\Models\CentreonBaseModel;
 
 /**
- * Description of DisplayTplControler
+ * Used for interacting with binaries
  *
- * @author bsauveton
+ * @author kevin duret <kduret@centreon.com>
  */
-class DisplayTplController extends Controller
+class Command extends CentreonBaseModel
 {
-    private function validate_alpha($str) 
-    {
-        return preg_match('/^[a-zA-Z0-9_]+$/',$str);
-    }
-    
-    
-    /**
-     * 
-     * @method get
-     * @route /viewtpl/[:module]/[:file]
-     */
-    public function displayTplAction()
-    {
-        $requestParam = $this->getParams('named');
-        
-        if (!$this::validate_alpha($requestParam['module']) || !$this::validate_alpha($requestParam['file'])){
-            return false;
-        }
-        $tplName = 'modules/' . $requestParam['module'] . '/views/slideMenu/' . $requestParam['file'] . '.tpl';
-        $config = Di::getDefault()->get('config');
-        $centreon_path = rtrim($config->get('global', 'centreon_path'), '/');
-
-        if (file_exists($centreon_path . '/' . $tplName)) {
-            echo file_get_contents($centreon_path . '/' . $tplName);
-        }
-    }    
+    protected static $table = "cfg_binaries";
+    protected static $primaryKey = "binary_id";
+    protected static $uniqueLabelField = "binary_id";
+    protected static $slugField = "slug";
 }

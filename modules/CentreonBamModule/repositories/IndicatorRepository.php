@@ -503,11 +503,11 @@ class IndicatorRepository extends FormRepository
     }
 
     /**
-     *
+     * Get indicators name
      *
      * @return string
      */
-    public static function getIndicatorsName($filterName = "")
+    public static function getIndicatorsName($filterName = "", $baId = null)
     {
         // Get datatabases connections
         $di = Di::getDefault();
@@ -522,6 +522,11 @@ class IndicatorRepository extends FormRepository
             $stmtKpiService = $dbconn->prepare($sqlKpiService);
             $stmtKpiService->bindParam(':filter', $filterName, \PDO::PARAM_STR);
         }
+        if (isset($baId) && !is_null($baId)) {
+            $sqlKpiService .= ' AND k.id_ba = :id';
+            $stmtKpiService = $dbconn->prepare($sqlKpiService);
+            $stmtKpiService->bindParam(':id', $baId, \PDO::PARAM_INT);
+        }
         $stmtKpiService->execute();
         $resultKpiService = $stmtKpiService->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -533,6 +538,11 @@ class IndicatorRepository extends FormRepository
             $sqlKpiMetaservice .= ' AND ms.meta_name like :filter';
             $stmtKpiMetaservice = $dbconn->prepare($sqlKpiMetaservice);
             $stmtKpiMetaservice->bindParam(':filter', $filterName, \PDO::PARAM_STR);
+        }
+        if (isset($baId) && !is_null($baId)) {
+            $sqlKpiMetaservice .= ' AND k.id_ba = :id';
+            $stmtKpiMetaservice = $dbconn->prepare($sqlKpiMetaservice);
+            $stmtKpiMetaservice->bindParam(':id', $baId, \PDO::PARAM_INT);
         }
         $stmtKpiMetaservice->execute();
         $resultKpiMetaservice = $stmtKpiMetaservice->fetchAll(\PDO::FETCH_ASSOC);
@@ -546,6 +556,11 @@ class IndicatorRepository extends FormRepository
             $stmtKpiBa = $dbconn->prepare($sqlKpiBa);
             $stmtKpiBa->bindParam(':filter', $filterName, \PDO::PARAM_STR);
         }
+        if (isset($baId) && !is_null($baId)) {
+            $sqlKpiBa .= ' AND k.id_ba = :id';
+            $stmtKpiBa = $dbconn->prepare($sqlKpiBa);
+            $stmtKpiBa->bindParam(':id', $baId, \PDO::PARAM_INT);
+        }        
         $stmtKpiBa->execute();
         $resultKpiBa = $stmtKpiBa->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -557,6 +572,11 @@ class IndicatorRepository extends FormRepository
             $sqlKpiBoolean .= ' AND b.name like :filter';
             $stmtKpiBoolean = $dbconn->prepare($sqlKpiBoolean);
             $stmtKpiBoolean->bindParam(':filter', $filterName, \PDO::PARAM_STR);
+        }
+        if (isset($baId) && !is_null($baId)) {
+            $sqlKpiBoolean .= ' AND k.id_ba = :id';
+            $stmtKpiBoolean = $dbconn->prepare($sqlKpiBoolean);
+            $stmtKpiBoolean->bindParam(':id', $baId, \PDO::PARAM_INT);
         }
         $stmtKpiBoolean->execute();
         $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
