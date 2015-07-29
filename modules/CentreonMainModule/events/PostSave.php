@@ -40,10 +40,30 @@ namespace CentreonMain\Events;
  */
 class PostSave
 {
+    /**
+     *
+     * @var type 
+     */
     private $action;
+    
+    /**
+     *
+     * @var type 
+     */
     private $parameters;
+    
+    /**
+     *
+     * @var type 
+     */
     private $extraParameters;
 
+    /**
+     * 
+     * @param type $action
+     * @param type $parameters
+     * @param type $extraParameters
+     */
     public function __construct($action, $parameters, $extraParameters)
     {
         $this->action = $action;
@@ -51,27 +71,47 @@ class PostSave
         $this->extraParameters= $extraParameters;
     }
 
+    /**
+     * 
+     * @return type
+     */
     public function getAction()
     {
         return $this->action;
     }
 
+    /**
+     * 
+     * @return type
+     */
     public function getParameters()
     {
         return $this->parameters;
     }
 
+    /**
+     * 
+     * @return type
+     */
     public function getExtraParameters()
     {
         return $this->extraParameters;
     }
 
+    /**
+     * 
+     * @return type
+     */
     public function getObjectId()
     {
         $parameters = $this->parameters;
         return $parameters['object_id'];
     }
 
+    /**
+     * 
+     * @return type
+     */
     public function getObjectName()
     {
         $parameters = $this->parameters;

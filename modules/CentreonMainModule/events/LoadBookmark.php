@@ -31,48 +31,16 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonMain\Controllers;
+namespace CentreonMain\Events;
 
-use Centreon\Internal\Di;
-use Centreon\Internal\Controller;
-use CentreonMain\Repository\BookmarkRepository;
-
-class BookmarkController extends Controller
+/**
+ * Description of LoadBookmark
+ *
+ * @author lionel
+ */
+class LoadBookmark
 {
-    /**
-     * 
-     * @route /bookmark/list
-     * @method get
-     */
-    public function listAction()
-    {
-        $bookmarkList = BookmarkRepository::getBookmarkList();
-        $result = array(
-            'success' => 1,
-            'bookmark' => $bookmarkList
-        );
-        $this->router->response()->json($result);
-    }
-    
-    /**
-     * 
-     * @route /bookmark
-     * @method post
-     */
-    public function saveAction()
-    {
-        $requestParams = $this->getParams();
-        
-        $resultSave = BookmarkRepository::saveBookmark(
-            $requestParams['label'],
-            $requestParams['route'],
-            $requestParams['type'],
-            $requestParams['params']
-        );
-        
-        $this->router->response()->json($resultSave);
-    }
+    private $targetModule;
 }

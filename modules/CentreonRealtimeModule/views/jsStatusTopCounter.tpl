@@ -1,106 +1,33 @@
 $(document).on('centreon.refresh_status', function(e) {
-  $('.top-counter .label').addClass('hide');
-  $('.top-counter-service ul').html('');
-  $('.top-counter-host ul').html('');
-  if (statusData.service.critical != 0) {
-    $('.top-counter-service .label-danger').removeClass('hide').text(statusData.service.critical);
-    $('.top-counter-service ul').append(
-      $('<li></li>').append(
-        $('<a></a>').attr('href', "{url_for url='/centreon-realtime/service'}?search=status:critical").text(
-          statusData.service.critical + " unhandled critical problem"
-        ).prepend(
-          $('<i></i>').addClass('fa fa-times-circle info')
-        )
-      )
-    );
-  }
-  if (statusData.service.warning != 0) {
-    $('.top-counter-service .label-warning').removeClass('hide').text(statusData.service.warning);
-    $('.top-counter-service ul').append(
-      $('<li></li>').append(
-        $('<a></a>').attr('href', "{url_for url='/centreon-realtime/service'}?search=status:warning").text(
-          statusData.service.warning + " unhandled warning alerts"
-        ).prepend(
-          $('<i></i>').addClass('fa fa-warning info')
-        )
-      )
-    );
-  }
-  if (statusData.host.critical != 0) {
-    $('.top-counter-host .label-danger').removeClass('hide').text(statusData.host.critical);
-    $('.top-counter-host ul').append(
-      $('<li></li>').append(
-        $('<a></a>').attr('href', "{url_for url='/centreon-realtime/host'}?search=state:down").text(
-          statusData.host.critical + " host down"
-        ).prepend(
-          $('<i></i>').addClass('fa fa-times-circle info')
-        )
-      )
-    );
-  }
-  if (statusData.host.warning != 0) {
-    $('.top-counter-host .label-warning').removeClass('hide').text(statusData.host.warning);
-    $('.top-counter-host ul').append(
-      $('<li></li>').append(
-        $('<a></a>').attr('href', "{url_for url='/centreon-realtime/host'}?search=state:warning").text(
-          statusData.host.warning + " unhandled warning alerts"
-        ).prepend(
-          $('<i></i>').addClass('fa fa-warning info')
-        )
-      )
-    );
-  }
-  if (statusData.poller.activity != 0 || statusData.poller.stopped != 0) {
-    $('.top-counter-poller .label-danger').removeClass('hide').text(
-      statusData.poller.activity + statusData.poller.stopped
-    );
-  }
-  if (statusData.poller.latency != 0) {
-    $('.top-counter-poller .label-warning').removeClass('hide').text(statusData.poller.latency);
-  }
-});
 
-$(function() {
-  $('.top-counter-poller').on('show.bs.dropdown', function(e) {
-    $.ajax({
-      url: "{url_for url='/centreon-realtime/poller/status'}",
-      type: 'get',
-      dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
-        $('.top-counter-poller ul').html('');
-        if (data.success) {
-          $.each(data.values, function(idx, poller) {
-            var $pollerLi = $('<li></li>'),
-                $pollerLine = $('<div></div>').addClass('row'),
-                $pollerStatus = $('<div></div>').addClass('col-xs-1'),
-                $pollerLatency = $('<div></div>').addClass('col-xs-4');
-            /* Add name */
-            $('<div></div>').addClass('col-xs-7').text(poller.name.escapeSecure()).appendTo($pollerLine);
-            /* Add status */
-            if (poller.running == null || poller.running == 0) {
-              $pollerStatus.addClass('mini danger').append(
-                $('<i></i>').addClass('fa fa-power-off')
-              );
-            } else if (poller.disconnect == 1) {
-              $pollerStatus.addClass('mini warning').append(
-                $('<i></i>').addClass('fa fa-unlink')
-              );
-              } else {
-                $pollerStatus.addClass('mini success').append($('<i></i>').addClass('fa fa-check')
-              );
-            }
-            $pollerStatus.appendTo($pollerLine);
-            /* Add latency */
-            /* @todo: color by level of latency */
-            $pollerLatency.text(poller.latency);
-            $pollerLatency.appendTo($pollerLine);
-            
-            $('<a></a>').append($pollerLine).appendTo($pollerLi);
-            
-            $('.top-counter-poller ul').append($pollerLi);
-          });
-        }
-      }
-    });
-  });
+    /* Issues */
+    if (statusData.issues > 0) {
+        
+    }
+    
+    /* Pending, Unknown and Unreachable states datas */
+    if (statusData.states.configurationObjects != undefined) {
+        /* Data for Configuration Object */
+        $('.top-counter-unknown').find('div.indices').empty()
+            .append($('<span></span>').addClass('icon-fill-host ico-16'))
+            .append($('<span></span>').text(statusData.states.configurationObjects.pending.nb_hosts).addClass('danger'))
+            .append($('<span></span>').addClass('icon-fill-service ico-16'))
+            .append($('<span></span>').text(statusData.states.configurationObjects.pending.nb_services).addClass('danger'))
+            .append($('<br></br>'))
+            .append($('<span></span>').addClass('icon-fill-host ico-16'))
+            .append($('<span></span>').text(statusData.states.configurationObjects.unreachable.nb_hosts))
+            .append($('<span></span>').addClass('icon-fill-service ico-16'))
+            .append($('<span></span>').text(statusData.states.configurationObjects.unknown.nb_services));
+    }
+    
+    /* Pollers data */
+    if (statusData.states.pollers != undefined) {
+        /* Data for Poller */
+        $('.top-counter-poller').find('div.indices').empty()
+            .append($('<span></span>').text(statusData.states.pollers.stopped.nb_pollers))
+            .append($('<br></br>'))
+            .append($('<span></span>').text(statusData.states.pollers.unreachable.nb_pollers));
+    }
+    
+    
 });

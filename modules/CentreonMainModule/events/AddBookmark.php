@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2015 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,48 +31,16 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonMain\Controllers;
+namespace CentreonMain\Events;
 
-use Centreon\Internal\Di;
-use Centreon\Internal\Controller;
-use CentreonMain\Repository\BookmarkRepository;
-
-class BookmarkController extends Controller
+/**
+ * Description of AddBookmark
+ *
+ * @author lionel
+ */
+class AddBookmark
 {
-    /**
-     * 
-     * @route /bookmark/list
-     * @method get
-     */
-    public function listAction()
-    {
-        $bookmarkList = BookmarkRepository::getBookmarkList();
-        $result = array(
-            'success' => 1,
-            'bookmark' => $bookmarkList
-        );
-        $this->router->response()->json($result);
-    }
-    
-    /**
-     * 
-     * @route /bookmark
-     * @method post
-     */
-    public function saveAction()
-    {
-        $requestParams = $this->getParams();
-        
-        $resultSave = BookmarkRepository::saveBookmark(
-            $requestParams['label'],
-            $requestParams['route'],
-            $requestParams['type'],
-            $requestParams['params']
-        );
-        
-        $this->router->response()->json($resultSave);
-    }
+    private $targetModule;
 }

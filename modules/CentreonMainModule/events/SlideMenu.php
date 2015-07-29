@@ -40,14 +40,35 @@ use Centreon\Internal\Exception;
 
 class SlideMenu 
 {
-    
+    /**
+     *
+     * @var type 
+     */
     private $menuList = array();
-    private $defaultMenu = array();
-    private $MendatorykeyList = array('name','url','icon','order','tpl');
-    private $id;
-    private $serviceId;
     
-    public function __construct($id = null)
+    /**
+     *
+     * @var type 
+     */
+    private $defaultMenu = array();
+    
+    /**
+     *
+     * @var type 
+     */
+    private $MendatorykeyList = array('name','url','icon','order','tpl');
+    
+    /**
+     *
+     * @var type 
+     */
+    private $hostId;
+    
+    /**
+     * 
+     * @param type $hostId
+     */
+    public function __construct($hostId)
     {
         $this->id = $id;
     }
@@ -81,6 +102,11 @@ class SlideMenu
         return $this->menuList;
     }
     
+    /**
+     * 
+     * @param type $menuList
+     * @return boolean
+     */
     private function testMenuArray($menuList)
     {
         foreach($this->MendatorykeyList as $key){
@@ -91,6 +117,9 @@ class SlideMenu
         return true;
     }
     
+    /**
+     * 
+     */
     private function orderMenu()
     {
         $temporaryArray = array();
@@ -116,19 +145,35 @@ class SlideMenu
         }
     }
 
-    public function setDefaultMenu($defaultMenu){
+    /**
+     * 
+     * @param type $defaultMenu
+     * @throws Exception
+     */
+    public function setDefaultMenu($defaultMenu)
+    {
 
-        if($this->testMenuArray($defaultMenu)){
+        if ($this->testMenuArray($defaultMenu)) {
             $this->defaultMenu = $defaultMenu;
-        }else{
-            throw new Exception("Invalid menu nomenclature, array(".implode(",",array_keys($menuList))." ) sended, should be : array(name,url,icon,order,tpl)",0);
+        } else {
+            throw new Exception(
+                "Invalid menu nomenclature, array("
+                    . implode(",",array_keys($menuList))
+                    ." ) sended, should be : array(name,url,icon,order,tpl)"
+                ,
+                0
+            );
         }
 
     }
 
-    public function getDefaultMenu(){
+    /**
+     * 
+     * @return type
+     */
+    public function getDefaultMenu()
+    {
         return $this->defaultMenu;
-
     }
 
 
