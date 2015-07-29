@@ -239,7 +239,7 @@ class Status
         if(empty($states)){
             $states = array();
         }
-        $states['configuration-objects'] = $configurationobjects;
+        $states['configurationObjects'] = $configurationobjects;
         $states['pollers'] = $pollers;
         $event->addStatus('states', $states);
         $event->addStatus('totalHosts', $totalHosts);
