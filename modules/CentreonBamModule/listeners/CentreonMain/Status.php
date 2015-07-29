@@ -57,7 +57,7 @@ class Status
      */
     public static function execute(StatusEvent $event)
     {
-        $bas = \CentreonBam\Repository\BusinessActivityRepository::getList(        
+        /*$bas = \CentreonBam\Repository\BusinessActivityRepository::getList(        
             '*',
             -1,
             0,
@@ -86,6 +86,6 @@ class Status
             $states = array();
         }
         $states['bam-objects'] = $baList;
-        $event->addStatus('states', $states);
+        $event->addStatus('states', $states);*/
     }
 }

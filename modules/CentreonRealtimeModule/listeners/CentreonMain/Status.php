@@ -97,7 +97,7 @@ class Status
                 $issues[$state]['nb_hosts'] = ($issues[$state]['nb_hosts']) + 1;
                 $issues[$state]['total_impacts'] = ($issues[$state]['total_impacts']) + count($childIncidents);
             }else{
-                $state = $arrayStatusHost[$incident['state']];
+                $state = $arrayStatusService[$incident['state']];
                 
                 if(empty($issues[$state]['nb_services'])){
                     $issues[$state]['nb_services'] = 0;
@@ -127,7 +127,7 @@ class Status
         $hosts = \CentreonRealtime\Models\Host::getList();
         $configurationobjects = array();
         $configurationobjects['pending']['nb_hosts'] = 0;
-        $configurationobjects['unreachable-host']['nb_hosts'] = 0;
+        $configurationobjects['unreachable']['nb_hosts'] = 0;
         foreach($hosts as $host){
             $totalHosts++;
             $state = $arrayStatusHost[$host['state']];
@@ -147,7 +147,7 @@ class Status
                 $configurationobjects['pending']['objects']['hosts'][] = HostRepository::formatDataForHeader($hostsTemp);
                 
             }else if($host['state'] == "3"){
-                $configurationobjects['unreachable-host']['nb_hosts']++;
+                $configurationobjects['unreachable']['nb_hosts']++;
                 $hostsTemp = $host;
                 $duration = Datetime::humanReadable(
                     time() - $host['last_update'],
@@ -158,12 +158,12 @@ class Status
                 $hostsTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$host['host_id']);
                 $hostsTemp['since'] = $duration;
                 $hostsTemp['state'] = $state;
-                $configurationobjects['unreachable-host']['objects']['hosts'][] = HostRepository::formatDataForHeader($hostsTemp);
+                $configurationobjects['unreachable']['objects']['hosts'][] = HostRepository::formatDataForHeader($hostsTemp);
             }
         }
         $services = \CentreonRealtime\Models\Service::getList();
         $configurationobjects['pending']['nb_services'] = 0;
-        $configurationobjects['unknown-services']['nb_services'] = 0;
+        $configurationobjects['unknown']['nb_services'] = 0;
         foreach($services as $service){
             $totalServices++;
             $state = $arrayStatusService[$service['state']];
@@ -183,7 +183,7 @@ class Status
                 $serviceTemp['state'] = $state;
                 $configurationobjects['pending']['objects']['services'][] = ServiceRepository::formatDataForHeader($serviceTemp);
             }else if($service['state'] == "3"){
-                $configurationobjects['unknown-services']['nb_services']++;
+                $configurationobjects['unknown']['nb_services']++;
                 $serviceTemp = $service;
                 
                 $duration = Datetime::humanReadable(
@@ -195,7 +195,7 @@ class Status
                 $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/service/'.$service['service_id']);
                 $serviceTemp['since'] = $duration;
                 $serviceTemp['state'] = $state;
-                $configurationobjects['unknown-services']['objects']['services'][] = ServiceRepository::formatDataForHeader($serviceTemp);
+                $configurationobjects['unknown']['objects']['services'][] = ServiceRepository::formatDataForHeader($serviceTemp);
             }
         }
 
