@@ -137,7 +137,7 @@
                     <ul class="timeZone nav navbar-right">
                         <li class="time">                                  
                             <a class="account dropdown-toggle" data-toggle="dropdown" href="#"><span class="clock"></span></a>
-                            <a href="#" id="undotimezone" onclick="changeTimezone()"><span class="fa fa-undo"></span></a>
+                            <a href="#" id="undotimezone" onclick="changeTimezone();"><span class="fa fa-undo"></span></a>
                             <ul class="dropdown-menu" id="list_timezone">
                                 <li ><a href="#" id="modalAdd_timezone">{t}Add horloge{/t}<i class="fa fa-clock-o"></i></a></li>
                             </ul>
@@ -291,6 +291,7 @@
                                     <span class="icon-fill-host ico-16"></span> <span class="danger">26</span>
                                     <span class="icon-fill-service ico-16"></span> <span class="danger"> 50</span>
                                     <br>
+                                    <span> 236</span>
                                     <span> 236</span>
                                 </div>
                              </div>
