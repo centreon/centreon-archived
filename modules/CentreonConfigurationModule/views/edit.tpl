@@ -57,13 +57,16 @@
                         $hidden += 1;
                     }
                 });
-                
-                if ($myFormGroupLength === $hidden) {
+              
+                if (tabContentList[myTab] === undefined) {
                     tabContentList[myTab] = 0;
-                    $(v).prev().css("display", "none");
+                }
+                if ($myFormGroupLength === $hidden) {
+                    tabContentList[myTab] = tabContentList[myTab] + 0;
+                    $(v).parents(".panel").css("display", "none");
                 } else {
-                    tabContentList[myTab] = 1;
-                    $(v).prev().css("display", "block");
+                    tabContentList[myTab] = tabContentList[myTab] +1;
+                    $(v).parents(".panel").css("display", "block");
                 }
             });
         }
