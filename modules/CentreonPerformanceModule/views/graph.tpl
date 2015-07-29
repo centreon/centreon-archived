@@ -126,7 +126,7 @@ var graphTmpl = Hogan.compile("<div class=\"col-xs-12 graph {{classCol}}\">" +
 {/literal}
 
 
-function createGraph(serviceId) {
+function createGraph(serviceId, title) {
   var graphId, graphEl, startTime, endTime,
       time = $("input[name='period']").val();
   
@@ -137,7 +137,7 @@ function createGraph(serviceId) {
   graphEl = graphTmpl.render(
     {
       graphId: graphId,
-      graphTitle: $("#service").select2("data").text,
+      graphTitle: title,
       classCol: "col-sm-6"
     }
   );
@@ -365,7 +365,7 @@ startTime = moment(endTime).subtract(24, 'hours');
       return;
     }
     
-    createGraph(serviceId);
+    createGraph(serviceId, $("#service").select2("data").text);
   });
 
   $("input[name='period']").on("apply.daterangepicker", function() {
@@ -428,7 +428,7 @@ startTime = moment(endTime).subtract(24, 'hours');
           $(element).remove();
         });
         $.each(data.graphs, function(idx, graph) {
-          createGraph(graph['id']);
+          createGraph(graph['id'], graph['title']);
         });
       }
     });
@@ -484,7 +484,7 @@ $( document ).ready(function() {
                 $(element).remove();
               });
               $.each(data.graphs, function(idx, graph) {
-                createGraph(graph['id']);
+                createGraph(graph['id'], graph['title']);
               });
             }
         });

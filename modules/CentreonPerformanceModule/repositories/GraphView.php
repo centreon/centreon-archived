@@ -174,16 +174,23 @@ class GraphView
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
-        $queryService = "SELECT service_id as id, 'service' as type
-            FROM cfg_graph_views_services
-            WHERE graph_view_id = :view_id
+        $queryService = "SELECT gs.service_id as id, h.host_name, s.service_description, 'service' as type
+            FROM cfg_graph_views_services gs, cfg_services s, cfg_hosts h, cfg_hosts_services_relations hs
+            WHERE gs.graph_view_id = :view_id
+                AND gs.service_id = s.service_id
+                AND gs.service_id = hs.service_service_id
+                AND h.host_id = hs.host_host_id
             ORDER BY `order`";
         $stmt = $dbconn->prepare($queryService);
         $stmt->bindParam(':view_id', $viewId, \PDO::PARAM_INT);
         $stmt->execute();
         $graphs = array();
         while ($row = $stmt->fetch()) {
-            $graphs[] = $row;
+            $graphs[] = array(
+                'id' => $row['id'],
+                'type' => $row['type'],
+                'title' => $row['host_name'] . ' - ' . $row['service_description']
+            );
         }
         return $graphs;
     }
