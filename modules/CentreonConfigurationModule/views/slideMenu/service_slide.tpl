@@ -1,7 +1,7 @@
 <div class="headerWrapper">
     <div class="row">
         <div class="iconWrapper col-md-2">
-            <i class="icon-host"></i>
+            <i class="icon-service"></i>
         </div>
         <h4 class="col-md-8">{{serviceConfig.name}}</h4>
         <div class="iconWrapper col-md-2">
