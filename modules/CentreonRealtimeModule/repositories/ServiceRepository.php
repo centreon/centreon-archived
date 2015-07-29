@@ -156,11 +156,6 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
             $checkdata[_('issue_duration')] = $data['issue_duration'];
         }
         
-        $checkdata[_('states')] = "";
-        if (!empty($data['states'])) {
-            $checkdata[_('states')] = $data['states'];
-        }
-        
         
         return $checkdata;
     }
