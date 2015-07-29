@@ -563,14 +563,34 @@ class HostController extends FormController
      */
     public function snapshotslideAction()
     {
-
         $params = $this->getParams();
-        $data = HostRepository::getConfigurationData($params['id']);
-        $data['realTimeData'] = HostRealtime::get($params['id']);
+
+        $aHostTpl = HostRepository::getTemplatesChainConfigurationData($params['id']);
+        
+        //If host inherits a template
+        if (count($aHostTpl) > 0 && isset($aHostTpl[0]['id'])) {
+            $data = HostRepository::getConfigurationData($aHostTpl[0]['id']);   
+        } else {
+            $data = HostRepository::getConfigurationData($params['id']);
+        }
+
         $hostConfiguration = HostRepository::formatDataForSlider($data);
+        
+        $aDataRealTime = HostRealTimeRepository::getRealTimeData($params['id']);
+        $hostReal = HostRepository::formatDataForSlider($aDataRealTime);
+        
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
         $edit_url = $this->router->getPathFor("/centreon-configuration/host/".$params['id']);
-        $this->router->response()->json(array('hostConfig'=>$hostConfiguration,'servicesStatus'=>$servicesStatus,'edit_url' => $edit_url,'success' => true));
+        
+        $this->router->response()->json(
+                array(
+                    'hostConfig' => $hostConfiguration,
+                    'hostReal'   => $hostReal, 
+                    'servicesStatus' => $servicesStatus, 
+                    'edit_url' => $edit_url,
+                    'success' => true
+                )
+        );
     }
 
     /**

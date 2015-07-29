@@ -458,6 +458,14 @@ class ServiceController extends FormController
     {
         $params = $this->getParams();
         $data = ServiceRepository::getConfigurationData($params['id']);
+               
+        //If service inherits a template
+        if (isset($data['service_template_model_stm_id'])) {
+            $data = ServiceRepository::getConfigurationData($data['service_template_model_stm_id']);   
+        } else {
+            $data = ServiceRepository::getConfigurationData($params['id']);
+        }
+    
         $checkdata = ServiceRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
