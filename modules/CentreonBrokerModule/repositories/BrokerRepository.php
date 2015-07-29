@@ -130,7 +130,26 @@ class BrokerRepository
                     /* @todo one peer retention */
                     if ($type == 'normal') {
                         /* module */
-                        foreach ($config as $module) {
+                        /* Sort for central in first install */
+                        $configSorted = array();
+                        if ($params['tmpl_name'] == 'Central') {
+                            $configTmp = array();
+                            foreach ($config as $module) {
+                                if ($module['general']['name'] == 'central-broker') {
+                                    $configTmp[0] = $module;
+                                } else if ($module['general']['name'] == 'central-rrd') {
+                                    $configTmp[1] = $module;
+                                } else if ($module['general']['name'] == 'poller-module') {
+                                    $configTmp[2] = $module;
+                                }
+                            }
+                            for ($i = 0; $i < count($configTmp); $i++) {
+                                $configSorted[] = $configTmp[$i];
+                            }
+                        } else {
+                            $configSorted = $config;
+                        }
+                        foreach ($configSorted as $module) {
                             $configId =  static::insertConfig($pollerId, $module['general']['name'], $arr);
                             foreach ($listType as $type) {
                                 if (isset($module[$type])) {
