@@ -49,18 +49,17 @@ class SlideMenuService
             
             $event->setDefaultMenu(
                 array(
-                    'name' => 'host',
+                    'name' => 'service',
                     'url' => $router->getPathFor('/centreon-realtime/service/snapshotslide/') . $event->getId(),
                     'icon' => '',
                     'order' => 0,
                     'tpl' => ""
-
                 )
             );
 
             $event->addMenu(
                 array(
-                    'name' => 'template',
+                    'name' => 'incidents',
                     'url' => $router->getPathFor('/centreon-realtime/service/incidentslide/') . $event->getId(),
                     'icon' => '',
                     'order' => 5,
@@ -70,7 +69,7 @@ class SlideMenuService
             
             $event->addMenu(
                 array(
-                    'name' => 'template',
+                    'name' => 'tags',
                     'url' => $router->getPathFor('/centreon-realtime/service/tagslide/') . $event->getId(),
                     'icon' => '',
                     'order' => 3,
@@ -81,7 +80,7 @@ class SlideMenuService
             
             $event->addMenu(
                 array(
-                    'name' => 'template',
+                    'name' => 'command',
                     'url' => $router->getPathFor('/centreon-realtime/service/slidecommand/') . $event->getId(),
                     'icon' => '',
                     'order' => 1,
@@ -90,7 +89,7 @@ class SlideMenuService
             );
             $event->addMenu(
                 array(
-                    'name' => 'template',
+                    'name' => 'output',
                     'url' => $router->getPathFor('/centreon-realtime/service/slideoutput/') . $event->getId(),
                     'icon' => '',
                     'order' => 2,
@@ -100,7 +99,7 @@ class SlideMenuService
             
             $event->addMenu(
                 array(
-                    'name' => 'template',
+                    'name' => 'schelduded',
                     'url' => $router->getPathFor('/centreon-realtime/service/slideschelduded/') . $event->getId(),
                     'icon' => '',
                     'order' => 4,

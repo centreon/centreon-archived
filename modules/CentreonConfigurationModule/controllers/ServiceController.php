@@ -501,6 +501,72 @@ class ServiceController extends FormController
 
         $list = TagsRepository::getGlobalList('service');
 
+      
         $router->response()->json($list);
-    } 
+    }
+    /**
+     * Display the configuration snapshot of a service
+     * with template inheritance
+     *
+     * @method get
+     * @route /service/snapshotslide/[i:id]
+     */
+    public function snapshotslideAction()
+    {
+        $params = $this->getParams();
+        
+        $data = ServiceRepository::getConfigurationData($params['id']);
+        
+        //If service inherits a template
+        if (isset($data['service_template_model_stm_id'])) {
+            $data = ServiceRepository::getConfigurationData($data['service_template_model_stm_id']);   
+        } else {
+            $data = ServiceRepository::getConfigurationData($params['id']);
+        }
+    
+
+        $serviceConfiguration = ServiceRepository::formatDataForSlider($data);
+        /*
+        
+        $aDataRealTime = HostRealtime::get($params['id']);
+        $hostReal = HostRepository::formatDataForSlider($aDataRealTime);
+        
+        $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
+        */
+        $edit_url = $this->router->getPathFor("/centreon-configuration/service/".$params['id']);
+        
+        $this->router->response()->json(
+                array(
+                    'serviceConfig' => $serviceConfiguration,
+                    //'hostReal'   => $hostReal, 
+                    //'servicesStatus' => $servicesStatus, 
+                    'edit_url' => $edit_url,
+                    'success' => true
+                )
+        );
+    }
+    
+    /**
+     * Show all tags of a service
+     *
+     *
+     * @method get
+     * @route /service/[i:id]/tags
+     */
+    public function getServiceTagsAction()
+    {
+        $requestParam = $this->getParams('named');
+                
+        $globalTags = TagsRepository::getList('service', $requestParam['id'], 1, 1);
+        $globalTagsValues = array();
+        foreach($globalTags as $globalTag){
+            $globalTagsValues[] = $globalTag['text'];
+        }
+        $heritedTags = TagsRepository::getHeritedTags('service', $requestParam['id']);
+        $heritedTagsValues = $heritedTags['values'];
+        
+        $tags['tags'] = array('globals' => $globalTagsValues,'herited' => $heritedTagsValues);
+        $tags['success'] = true;
+        $this->router->response()->json($tags);
+    }
 }

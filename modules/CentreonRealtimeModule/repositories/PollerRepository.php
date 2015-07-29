@@ -50,7 +50,7 @@ class PollerRepository extends FormRepository
         $router = Di::getDefault()->get('router');
         $orgId = Di::getDefault()->get('organization');
         $dbconn = Di::getDefault()->get('db_centreon');
-        $query = 'SELECT c.name, r.last_alive, r.running
+        $query = 'SELECT c.name, r.last_alive, r.running, r.instance_id
             FROM cfg_pollers c
             LEFT OUTER JOIN rt_instances r
                 ON r.instance_id = c.poller_id
@@ -71,5 +71,19 @@ class PollerRepository extends FormRepository
         }
         return $pollers;
     }
+    
+    public static function formatDataForHeader($data){
+        
+                        /* Check data */
+        $checkdata = array();
+
+        $checkdata[_('id')] = $data['instance_id'];
+        $checkdata[_('name')] = $data['name'];
+
+        return $checkdata;
+        
+    }
+    
+    
     //put your code here
 }
