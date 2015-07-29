@@ -446,6 +446,13 @@ abstract class CentreonBaseModel extends CentreonModel
         return $result[0];
     }
 
+    /**
+     * 
+     * @param type $value
+     * @param type $extraParams
+     * @return type
+     * @throws Exception
+     */
     public static function getSlugByUniqueField($value,$extraParams = array())
     {    
         $db = Di::getDefault()->get(static::$databaseName);

@@ -50,58 +50,6 @@ use Centreon\Internal\Installer\Migration\Manager;
  */
 class MigrateCommand extends AbstractCommand
 {
-    /*
-    public $options = array(
-        "statusAction" => array(
-            "module" => array(
-                "functionParams" => "module",
-                "help" => "",
-                "type" => "string",
-                "toTransform" => "",
-                "multiple" => false,
-                "required" => false
-            )
-        ),
-        "migrateAction" => array(
-            "module" => array(
-                "functionParams" => "module",
-                "help" => "",
-                "type" => "string",
-                "toTransform" => "",
-                "multiple" => false,
-                "required" => false
-            )
-        ),
-        "initAction" => array(
-            "module" => array(
-                "functionParams" => "module",
-                "help" => "",
-                "type" => "string",
-                "toTransform" => "",
-                "multiple" => false,
-                "required" => false
-            )
-        ),
-        "createAction" => array(
-            "module" => array(
-                "functionParams" => "module",
-                "help" => "",
-                "type" => "string",
-                "toTransform" => "",
-                "multiple" => false,
-                "required" => false
-            ),
-            "class" => array(
-                "functionParams" => "class",
-                "help" => "",
-                "type" => "string",
-                "toTransform" => "",
-                "multiple" => false,
-                "required" => false
-            )
-        )
-    );*/
-    
     /**
      * 
      * @cmdObject string module the module name
