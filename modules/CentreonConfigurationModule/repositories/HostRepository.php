@@ -332,11 +332,21 @@ class HostRepository extends Repository
     {
         /* Check data */
         $checkdata = array();
-        $checkdata[_('id')] = $data['host_id'];
-        $checkdata[_('name')] = $data['host_name'];
-        $checkdata[_('command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
-        $checkdata[_('time_period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
+        if (isset($data['host_id'])) {
+            $checkdata[_('id')] = $data['host_id'];
+        }
         
+        if (isset($data['host_name'])) {
+            $checkdata[_('name')] = $data['host_name'];
+        }
+        
+        if (isset($data['command_command_id'])) {
+            $checkdata[_('command')] = static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id']);
+        }
+        
+        if (isset($data['timeperiod_tp_id'])) {
+            $checkdata[_('time_period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
+        }
         
         $checkdata[_('max_check attempts')] = "";
         if(isset($data['host_max_check_attempts'])){
@@ -362,27 +372,10 @@ class HostRepository extends Repository
         if(isset($data['host_passive_checks_enabled'])){
             $checkdata[_('passive_checks_enabled')] = $data['host_passive_checks_enabled'];
         }
+        
         if(!empty($data['icon'])){
             $checkdata[_('icon')] = $data['icon'];
-        }
-        
-        if(!empty($data['realTimeData'])){
-            $checkdata[_('state')] = "";
-            if(!empty($data['realTimeData']['state'])){
-                $checkdata[_('state')] = $data['realTimeData']['state'];
-            }
-            
-            $checkdata[_('last_check')] = "";
-            if(!empty($data['realTimeData']['last_check'])){
-                $checkdata[_('last_check')] = $data['realTimeData']['last_check'];
-            }
-            
-            $checkdata[_('next_check')] = "";
-            if(!empty($data['realTimeData']['next_check'])){
-                $checkdata[_('next_check')] = $data['realTimeData']['next_check'];
-            }
-        }
-        
+        } 
         
         return $checkdata;
     }

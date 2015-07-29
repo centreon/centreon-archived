@@ -40,6 +40,11 @@ use Centreon\Controllers\FormController;
 use CentreonBam\Repository\BusinessActivityRepository;
 use CentreonBam\Repository\IndicatorRepository;
 use CentreonAdministration\Repository\TagsRepository;
+use CentreonBam\Models\BusinessActivity;
+use CentreonBam\Models\BusinessActivityRealtime;
+use CentreonBam\Models\Indicator;
+use CentreonConfiguration\Models\Timeperiod;
+use Centreon\Internal\Utils\YesNoDefault;
 
 class BusinessActivityController extends FormController
 {
@@ -255,5 +260,74 @@ class BusinessActivityController extends FormController
         $list = TagsRepository::getGlobalList('ba');
 
         $router->response()->json($list);
+    }
+
+    /**
+     * Show all tags of a business activity
+     *
+     *
+     * @method get
+     * @route /business-activity/[i:id]/tags
+     */
+    public function getBusinessActivityTagsAction()
+    {
+        $requestParam = $this->getParams('named');
+
+        $globalTags = TagsRepository::getList('ba', $requestParam['id'], 1, 1);
+        $globalTagsValues = array();
+        foreach($globalTags as $globalTag){
+            $globalTagsValues[] = $globalTag['text'];
+        }
+
+        $tags['tags'] = array('globals' => $globalTagsValues);
+        $tags['success'] = true;
+
+        $this->router->response()->json($tags);
+    }
+
+    /**
+     * Get indicators for a specific business activity
+     *
+     * @method get
+     * @route /business-activity/[i:id]/indicators
+     */
+    public function indicatorBaAction()
+    {
+        $params = $this->getParams();
+
+        $indicators = IndicatorRepository::getIndicatorsName("", $params['id']);
+
+        $this->router->response()->json(array(
+            'indicator' => $indicators,
+            'success' => true
+         ));
+    }
+
+    /**
+     * Display side bar information of a business activity
+     *
+     * @method get
+     * @route /business-activity/snapshotslide/[i:id]
+     */
+    public function snapshotslideAction()
+    {
+        $params = $this->getParams();
+
+        $data['configurationData'] = BusinessActivity::get($params['id'], array('ba_id', 'name', 'activate', 'icon_id', 'id_reporting_period'));
+        $data['configurationData']['icon'] = BusinessActivityRepository::getIconImage($data['configurationData']['name']);
+        $data['configurationData']['reporting_period'] = !empty($data['configurationData']['id_reporting_period']) ? Timeperiod::get($data['configurationData']['id_reporting_period'], 'tp_name') : "";
+        $data['configurationData']['activate'] = YesNoDefault::toString($data['configurationData']['activate']);
+
+        $data['realtimeData'] = BusinessActivityRealtime::get($params['id']);
+
+        $informations = array_merge($data['configurationData'], $data['realtimeData']);
+
+        $edit_url = $this->router->getPathFor("/centreon-bam/businessactivity/" . $params['id']);
+
+        $this->router->response()->json(array(
+            'informations' => $informations,
+            'edit_url' => $edit_url,
+            'success' => true
+         ));
     }
 }
