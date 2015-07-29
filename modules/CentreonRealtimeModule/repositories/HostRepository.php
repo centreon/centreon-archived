@@ -134,17 +134,19 @@ class HostRepository extends Repository
 
         $checkdata[_('command')] = "";
         if (isset($data['configurationData']['command_command_id']) && !is_null($data['configurationData']['command_command_id'])) {
-            $checkdata[_('command')] = Command::getParameters($data['configurationData']['command_command_id'], 'command_name');
+            $command = Command::getParameters($data['configurationData']['command_command_id'], 'command_name');
+            $checkdata[_('command')] = $command['command_name'];
         }
 
         $checkdata[_('time_period')] = "";
         if (isset($data['configurationData']['timeperiod_tp_id']) && !is_null($data['configurationData']['timeperiod_tp_id'])) {
-            $checkdata[_('time_period')] = Timeperiod::getParameters($data['configurationData']['timeperiod_tp_id'], 'tp_name');
+            $timeperiod = Timeperiod::getParameters($data['configurationData']['timeperiod_tp_id'], 'tp_name');
+            $checkdata[_('time_period')] = $timeperiod['tp_name'];
         }
 
         $checkdata[_('max_check attempts')] = "";
         if(isset($data['configurationData']['host_max_check_attempts'])){
-            $checkdata[_('max_check attempts')] = $data['configurationData']['host_max_check_attempts'];
+            $checkdata[_('max_check_attempts')] = $data['configurationData']['host_max_check_attempts'];
         }
 
         $checkdata[_('check_interval')] = "";
@@ -183,12 +185,20 @@ class HostRepository extends Repository
 
         $checkdata[_('last_check')] = "";
         if(!empty($data['realtimeData']['last_check'])){
-            $checkdata[_('last_check')] = $data['realtimeData']['last_check'];
+            $checkdata[_('last_check')] = Datetime::humanReadable(
+                time() - $data['realtimeData']['last_check'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
         }
 
         $checkdata[_('next_check')] = "";
         if(!empty($data['realtimeData']['next_check'])){
-            $checkdata[_('next_check')] = $data['realtimeData']['next_check'];
+            $checkdata[_('next_check')] = Datetime::humanReadable(
+                time() - $data['realtimeData']['next_check'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
         }
 
         $checkdata[_('acknowledged')] = "";
