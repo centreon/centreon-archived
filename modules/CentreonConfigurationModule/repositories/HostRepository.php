@@ -435,10 +435,15 @@ class HostRepository extends Repository
      * @param int $hostId The host template Id
      * @return array
      */
-    public static function getInheritanceValues($hostId)
+    public static function getInheritanceValues($hostId, $withHostValues = false)
     {
         $values = array();
         $templates = static::getTemplateChain($hostId, array(), -1);
+
+        if ($withHostValues) {
+            array_unshift($templates, $hostId);
+        }
+
         foreach ($templates as $template) {
             $inheritanceValues = HostTemplateRepository::getInheritanceValues($template['id']);
             $tmplValues = Host::getParameters($template['id'], self::$inheritanceColumns);
@@ -448,6 +453,7 @@ class HostRepository extends Repository
             $tmplValues = array_merge($inheritanceValues, $tmplValues);
             $values = array_merge($tmplValues, $values);
         }
+
         return $values;
     }
     

@@ -364,8 +364,13 @@ class HostController extends Controller
     {
         $params = $this->getParams();
 
-        $data['configurationData'] = HostConfRepository::getConfigurationData($params['id']);
+        $data['configurationData'] = HostConfRepository::getInheritanceValues($params['id'], true);
+        $data['configurationData']['host_id'] = $params['id'];
+        $host = HostConf::get($params['id'], 'host_name');
+        $data['configurationData']['host_name'] = $host['host_name'];
+
         $data['realtimeData'] = HostRealtime::get($params['id']);
+
         $hostInformations = HostRepository::formatDataForSlider($data);
 
         $servicesStatus = ServiceRepository::countAllStatusForHost($params['id']);
@@ -408,10 +413,11 @@ class HostController extends Controller
     {
         $params = $this->getParams();
 
-        $output = HostRealtime::get($params['id'], 'output');
+        $output = HostRealtime::get($params['id'], array('output', 'perfdata'));
 
         $this->router->response()->json(array(
             'output' => $output['output'],
+            'perfdata' => $output['perfdata'],
             'success' => true
          ));
     }

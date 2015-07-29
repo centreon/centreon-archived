@@ -78,7 +78,7 @@ class SlideMenuHost
             
             $event->addMenu(
                 array(
-                    'name' => 'tags',
+                    'name' => 'tag',
                     'url' => $router->getPathFor('/centreon-configuration/host/'.  $event->getId() . '/tags') ,
                     'icon' => '',
                     'order' => 3,
@@ -89,7 +89,7 @@ class SlideMenuHost
             
             $event->addMenu(
                 array(
-                    'name' => 'scheduling_infos',
+                    'name' => 'real-time',
                     'url' => $router->getPathFor('/centreon-realtime/host/' . $event->getId() . '/scheduling-infos'),
                     'icon' => '',
                     'order' => 4,
@@ -99,7 +99,7 @@ class SlideMenuHost
 
             $event->addMenu(
                 array(
-                    'name' => 'services',
+                    'name' => 'service',
                     'url' => $router->getPathFor('/centreon-realtime/host/' . $event->getId() . '/service'),
                     'icon' => '',
                     'order' => 5,
