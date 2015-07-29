@@ -937,6 +937,13 @@ sub executeCommand {
     my $datetime = time();
     my $traps_execution_command = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command};
     
+    if ($traps_execution_command =~ /\@TRAPFORWARD\((.*?)\)\@/) {
+        centreon::trapd::lib::trap_forward(trap_data => $self->{trap_data},
+                                           arguments => $1, 
+                                           logger => $self->{logger});
+        return ;
+    }
+    
     $traps_execution_command = $self->substitute_string($traps_execution_command);
     
     ##########################

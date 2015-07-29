@@ -394,6 +394,47 @@ sub get_macros_host {
 }
 
 ##############
+# Send trap
+##############
+
+sub trim {
+    my ($value) = $_[0];
+    
+    # Sometimes there is a null character
+    $value =~ s/\x00$//;
+    $value =~ s/^[ \t]+//;
+    $value =~ s/[ \t]+$//;
+    return $value;
+}
+
+sub trap_forward {
+    my (%options) = @_;
+    
+    my @arguments = split(',', $options{arguments});
+    if (scalar(@arguments) < 2) {
+        $options{logger}->writeLogError('At least 2 arguments for @TRAPFORWARD(oid, ip1, ...)@');
+        return ;
+    }
+    
+    my $oid = trim(shift @arguments);
+    my $agent_ip = ${$options{trap_data}->{var}}[4];
+    
+    my @bindings = ();
+    for (my $i = 0; $i <= $#{$options{trap_data}->{entvar}}; $i++) {
+        $options{trap_data}->{entvarname}->[$i] =~ /^(.*?)\.(\d+)$/;
+        push @bindings, new SNMP::Varbind([$1, $2, sprintf("%s", $options{trap_data}->{entvar}->[$i]), 'OCTETSTR']);
+    }
+    push @bindings, new SNMP::Varbind(['.1.3.6.1.6.3.18.1.3', 0, sprintf("%s", $agent_ip), 'OCTETSTR']);
+    my $vb = new SNMP::VarList(@bindings);
+    while ((my $dst_host = shift(@arguments))) {
+        my $session = new SNMP::TrapSession(DestHost => trim($dst_host), Community => 'centreon', Version => 2,
+                                            UseNumeric => 1);
+        $session->trap(oid => $oid, uptime => time(), $vb);
+        $options{logger}->writeLogInfo('trap forwarded to ' . $dst_host);
+    }
+}
+
+##############
 # Protocol with logdb
 ##############
 
