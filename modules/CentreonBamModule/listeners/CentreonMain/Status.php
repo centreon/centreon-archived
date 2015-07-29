@@ -33,12 +33,17 @@
  *
  */
 
-namespace CentreonMain\Events;
+namespace CentreonBam\Listeners\CentreonMain;
+
+use CentreonMain\Events\Status as StatusEvent;
+use Centreon\Internal\Di;
+use Centreon\Internal\Utils\Datetime;
+
 
 /**
- * Parameters for events centreon-main.status
+ * Event to top counter for host and service
  *
- * @author Maximilien Bersoult <mbersoult@merehtis.com>
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  * @version 3.0.0
  * @package Centreon
  * @subpackage CentreonMain
@@ -46,34 +51,41 @@ namespace CentreonMain\Events;
 class Status
 {
     /**
-     * The list of status
-     * @var array
-     */
-    private $status;
-
-    public function __construct(&$status)
-    {
-        $this->status = &$status;
-    }
-
-    /**
-     * Add a status to the list of status
+     * Execute the event
      *
-     * @param string $statusName The status name
-     * @param mixed $statusValue The value a the status
+     * @param \CentreonMain\Events\Status $event The event object
      */
-    public function addStatus($statusName, $statusValue)
+    public static function execute(StatusEvent $event)
     {
-        $this->status[$statusName] = $statusValue;
-    }
-    
-    public function getStatus($statusName)
-    {
-        if(isset($this->status[$statusName])){
-            return $this->status[$statusName];
-        }else{
-            return null;
+        $bas = \CentreonBam\Repository\BusinessActivityRepository::getList(        
+            '*',
+            -1,
+            0,
+            null,
+            'asc',
+            array('current_status' => '1', 'current_status' => '2'),
+            "OR"
+            );
+        $baList = array();
+        $baList['disrupted']['nb_ba'] = 0;
+        $baList['unavailable']['nb_ba'] = 0;
+        foreach($bas as $ba){
+            if($ba['current_status'] === '1'){
+                $baList['disrupted']['nb_ba']++;
+                $baTemp = $ba;
+                $baList['disrupted']['objects'][] = $baTemp;
+            }else if($ba['current_status'] === '2'){
+                $baList['unavailable']['nb_ba']++;
+                $baTemp = $ba;
+                $baList['unavailable']['objects'][] = $baTemp;
+            }
         }
-            
+        
+        $states = $event->getStatus('states');
+        if(empty($states)){
+            $states = array();
+        }
+        $states['bam-objects'] = $baList;
+        $event->addStatus('states', $states);
     }
 }
