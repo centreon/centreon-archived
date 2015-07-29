@@ -295,10 +295,20 @@ class BusinessActivityController extends FormController
     {
         $params = $this->getParams();
 
-        $indicators = IndicatorRepository::getIndicatorsName("", $params['id']);
+        $indicators = array(
+            'service' => array(),
+            'metaservice' => array(),
+            'ba' => array(),
+            'boolean' => array()
+        );
+
+        $listIndicator = IndicatorRepository::getIndicatorsName("", $params['id']);
+        foreach ($listIndicator as $indicator) {
+            $indicators[$indicator['type']][] = $indicator['text'];
+        }
 
         $this->router->response()->json(array(
-            'indicator' => $indicators,
+            'indicators' => $indicators,
             'success' => true
          ));
     }

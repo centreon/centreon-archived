@@ -585,25 +585,29 @@ class IndicatorRepository extends FormRepository
         foreach ($resultKpiService as $kpiObject) {
             $resultPki[] = array(
                 "id" => $kpiObject['kpi_id'],
-                "text" => $kpiObject['host_name'].' '.$kpiObject['service_description']
+                "text" => $kpiObject['host_name'].' '.$kpiObject['service_description'],
+                "type" => 'service'
             );
         }
         foreach ($resultKpiMetaservice as $kpiObject) {
             $resultPki[] = array(
                 "id" => $kpiObject['kpi_id'],
-                "text" => $kpiObject['meta_id']
+                "text" => $kpiObject['meta_id'],
+                "type" => 'metaservice'
             );
         }
         foreach ($resultKpiBa as $kpiObject) {
             $resultPki[] = array(
                 "id" => $kpiObject['kpi_id'],
-                "text" => $kpiObject['name']
+                "text" => $kpiObject['name'],
+                "type" => 'ba'
             );
         }
         foreach ($resultKpiBoolean as $kpiObject) {
             $resultPki[] = array(
                 "id" => $kpiObject['kpi_id'],
-                "text" => $kpiObject['name']
+                "text" => $kpiObject['name'],
+                "type" => 'boolean'
             );
         }
 

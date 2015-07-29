@@ -10,21 +10,6 @@
     </div>
     <div class="row">
         <div class="stateWrapper col-md-2">
-            <ul>
-                <li>
-                     <i class="icon-service success"></i>
-                     <strong>{{servicesStatus.success}}</strong>
-                </li>
-                 <li>
-                     <i class="icon-service warning"></i>
-                     <strong>{{servicesStatus.warning}}</strong>
-                </li>
-                 <li>
-                     <i class="icon-service danger"></i>
-                     <strong>{{servicesStatus.danger}}</strong>
-                </li>
-
-            </ul>
         </div>
         <div class="detailsWrapper col-md-10">
             <table>

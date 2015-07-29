@@ -517,29 +517,42 @@ class ServiceController extends FormController
         
         $data = ServiceRepository::getConfigurationData($params['id']);
         
+        $serviceId = Service::getPrimaryKey();
+        $serviceDescription = Service::getUniqueLabelField();
+        $hostId = Host::getPrimaryKey();
+        $hostName = Host::getUniqueLabelField();
+        $filters = array(
+            $serviceId => $params['id'],
+        );
+               
         //If service inherits a template
         if (isset($data['service_template_model_stm_id'])) {
             $data = ServiceRepository::getConfigurationData($data['service_template_model_stm_id']);   
         } else {
             $data = ServiceRepository::getConfigurationData($params['id']);
         }
+        
+        $list = HostService::getMergedParameters(
+            array($hostId, $hostName),
+            array($serviceId, $serviceDescription),
+            -1,
+            0,
+            null,
+            "ASC",
+            $filters,
+            "OR"
+        );
+        
+        foreach ($list as $obj) {
+            $data[$serviceDescription] = $obj[$hostName] . '|' . $obj[$serviceDescription];
+        }
     
-
         $serviceConfiguration = ServiceRepository::formatDataForSlider($data);
-        /*
-        
-        $aDataRealTime = HostRealtime::get($params['id']);
-        $hostReal = HostRepository::formatDataForSlider($aDataRealTime);
-        
-        $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
-        */
         $edit_url = $this->router->getPathFor("/centreon-configuration/service/".$params['id']);
         
         $this->router->response()->json(
                 array(
                     'serviceConfig' => $serviceConfiguration,
-                    //'hostReal'   => $hostReal, 
-                    //'servicesStatus' => $servicesStatus, 
                     'edit_url' => $edit_url,
                     'success' => true
                 )
