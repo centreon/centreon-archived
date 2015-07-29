@@ -64,7 +64,7 @@ class SlideMenuService
                     'url' => $router->getPathFor('/centreon-configuration/servicetemplate/viewconfslide/') . $event->getId(),
                     'icon' => '',
                     'order' => 2,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/templates_slide"
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/service_templates_slide"
                 )
             );
             

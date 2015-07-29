@@ -431,4 +431,20 @@ class ServiceTemplateController extends FormController
     {
         parent::getSimpleRelation('domain_id', '\CentreonAdministration\Models\Domain');
     }
+    
+    /**
+    * Display service template configuration in a popin window
+    *
+    * @method get
+    * @route /servicetemplate/viewconfslide/[i:id]
+    */
+    public function displayConfSlideAction()
+    {
+        $params = $this->getParams();
+        
+        $data['service_template'] = ServiceRepository::formatDataForSlider(ServiceRepository::getConfigurationData($params['id']));
+        $data['success'] = true;
+        $this->router->response()->json($data);
+   }
+    
 }
