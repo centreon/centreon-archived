@@ -57,11 +57,11 @@ class SlideMenuBusinessActivity
             
             $event->addMenu(
                 array(
-                    'name' => 'tags',
+                    'name' => 'tag',
                     'url' => $router->getPathFor('/centreon-bam/business-activity/'.  $event->getId() . '/tags') ,
                     'icon' => '',
                     'order' => 1,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/tags_slide",
+                    'tpl' => "/viewtpl/CentreonBamModule/tags_slide",
                     'default' => 1
                 )
             );
