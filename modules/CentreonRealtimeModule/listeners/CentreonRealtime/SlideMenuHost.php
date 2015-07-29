@@ -48,7 +48,7 @@ class SlideMenuHost
             $event->setDefaultMenu(
                 array(
                     'name' => 'host',
-                    'url' => $router->getPathFor('/centreon-realtime/host/snapshotslide/') . $event->getHostId(),
+                    'url' => $router->getPathFor('/centreon-realtime/host/snapshotslide/') . $event->getId(),
                     'icon' => '',
                     'order' => 0,
                     'tpl' => "/viewtpl/CentreonRealtimeModule/host_slide"
@@ -59,7 +59,7 @@ class SlideMenuHost
             $event->addMenu(
                 array(
                     'name' => 'command',
-                    'url' => $router->getPathFor('/centreon-realtime/host/') . $event->getHostId() . '/command',
+                    'url' => $router->getPathFor('/centreon-realtime/host/') . $event->getId() . '/command',
                     'icon' => '',
                     'order' => 1,
                     'tpl' => "/viewtpl/CentreonRealtimeModule/command_slide"
@@ -69,7 +69,7 @@ class SlideMenuHost
             $event->addMenu(
                 array(
                     'name' => 'output',
-                    'url' => $router->getPathFor('/centreon-realtime/host/') . $event->getHostId() . '/output',
+                    'url' => $router->getPathFor('/centreon-realtime/host/') . $event->getId() . '/output',
                     'icon' => '',
                     'order' => 2,
                     'tpl' => "/viewtpl/CentreonRealtimeModule/output_slide"
@@ -79,7 +79,7 @@ class SlideMenuHost
             $event->addMenu(
                 array(
                     'name' => 'tags',
-                    'url' => $router->getPathFor('/centreon-configuration/host/'.  $event->getHostId() . '/tags') ,
+                    'url' => $router->getPathFor('/centreon-configuration/host/'.  $event->getId() . '/tags') ,
                     'icon' => '',
                     'order' => 3,
                     'tpl' => "/viewtpl/CentreonConfigurationModule/tags_slide",
@@ -90,7 +90,7 @@ class SlideMenuHost
             $event->addMenu(
                 array(
                     'name' => 'scheduling_infos',
-                    'url' => $router->getPathFor('/centreon-realtime/host/' . $event->getHostId() . '/scheduling-infos'),
+                    'url' => $router->getPathFor('/centreon-realtime/host/' . $event->getId() . '/scheduling-infos'),
                     'icon' => '',
                     'order' => 4,
                     'tpl' => "/viewtpl/CentreonRealtimeModule/schedulinginfos_slide"
@@ -100,7 +100,7 @@ class SlideMenuHost
             $event->addMenu(
                 array(
                     'name' => 'services',
-                    'url' => $router->getPathFor('/centreon-realtime/host/' . $event->getHostId() . '/service'),
+                    'url' => $router->getPathFor('/centreon-realtime/host/' . $event->getId() . '/service'),
                     'icon' => '',
                     'order' => 5,
                     'tpl' => "/viewtpl/CentreonConfigurationModule/services_slide"
