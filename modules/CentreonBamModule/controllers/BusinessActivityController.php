@@ -279,10 +279,7 @@ class BusinessActivityController extends FormController
             $globalTagsValues[] = $globalTag['text'];
         }
 
-        $heritedTags = TagsRepository::getHeritedTags('ba', $requestParam['id']);
-        $heritedTagsValues = $heritedTags['values'];
-
-        $tags['tags'] = array('globals' => $globalTagsValues,'herited' => $heritedTagsValues);
+        $tags['tags'] = array('globals' => $globalTagsValues);
         $tags['success'] = true;
 
         $this->router->response()->json($tags);
