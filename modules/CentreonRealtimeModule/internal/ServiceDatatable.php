@@ -44,6 +44,8 @@ use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Datatable;
 use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Internal\Di;
+use CentreonMain\Events\SlideMenu;
+
 /**
  * Description of ServiceDatatable
  *
@@ -295,6 +297,15 @@ class ServiceDatatable extends Datatable
             $myHostName = Host::get($myServiceSet['host_id'], array('name'));
             $myServiceSet['name'] = $myHostName['name'];
 
+            
+            $sideMenuCustom = new SlideMenu($myServiceSet['service_id']);
+            $events = Di::getDefault()->get('events');
+            $events->emit('centreon-realtime.slide.menu.service', array($sideMenuCustom));
+            $myServiceSet['DT_RowData']['right_side_menu_list'] = $sideMenuCustom->getMenu();
+            $myServiceSet['DT_RowData']['right_side_default_menu'] = $sideMenuCustom->getDefaultMenu();
+            
+            
+            
             // @todo remove virtual hosts and virtual services
             if ($myServiceSet['name'] === '_Module_BAM') {
                 unset($resultSet[$key]);
@@ -309,11 +320,11 @@ class ServiceDatatable extends Datatable
             }
             
             $icon = '<span class="icoListing">'.ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']).'</span>';
-            $myServiceSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-realtime/service/')
+            /*$myServiceSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-realtime/service/')
                 . $myServiceSet['host_id']
                 . '/'.$myServiceSet['service_id']
                 . '/tooltip';
-            
+            */
             
             $myServiceSet['description'] = '<span>'
                 . $icon

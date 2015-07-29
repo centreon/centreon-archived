@@ -34,11 +34,11 @@
  *
  */
 
-namespace CentreonConfiguration\Listeners\CentreonConfiguration;
+namespace CentreonRealtime\Listeners\CentreonRealtime;
 use Centreon\Internal\Di;
 use CentreonMain\Events\SlideMenu as SlideMenuEvent;
 
-class SlideMenuHost 
+class SlideMenuService
 {
     
     public static function execute(SlideMenuEvent $event)
@@ -50,44 +50,71 @@ class SlideMenuHost
             $event->setDefaultMenu(
                 array(
                     'name' => 'host',
-                    'url' => $router->getPathFor('/centreon-configuration/host/snapshotslide/') . $event->getId(),
+                    'url' => $router->getPathFor('/centreon-realtime/service/snapshotslide/') . $event->getId(),
                     'icon' => '',
                     'order' => 0,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/host_slide"
+                    'tpl' => ""
 
+                )
+            );
+
+            $event->addMenu(
+                array(
+                    'name' => 'template',
+                    'url' => $router->getPathFor('/centreon-realtime/service/incidentslide/') . $event->getId(),
+                    'icon' => '',
+                    'order' => 5,
+                    'tpl' => ""
                 )
             );
             
             $event->addMenu(
                 array(
                     'name' => 'template',
-                    'url' => $router->getPathFor('/centreon-configuration/hosttemplate/viewconfslide/') . $event->getId(),
+                    'url' => $router->getPathFor('/centreon-realtime/service/tagslide/') . $event->getId(),
                     'icon' => '',
-                    'order' => 2,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/templates_slide"
+                    'order' => 3,
+                    'tpl' => ""
                 )
             );
             
+            
             $event->addMenu(
                 array(
-                    'name' => 'tag',
-                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getId().'/tags') ,
+                    'name' => 'template',
+                    'url' => $router->getPathFor('/centreon-realtime/service/slidecommand/') . $event->getId(),
                     'icon' => '',
                     'order' => 1,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/tags_slide",
-                    'default' => 1
+                    'tpl' => ""
+                )
+            );
+            $event->addMenu(
+                array(
+                    'name' => 'template',
+                    'url' => $router->getPathFor('/centreon-realtime/service/slideoutput/') . $event->getId(),
+                    'icon' => '',
+                    'order' => 2,
+                    'tpl' => ""
                 )
             );
             
             $event->addMenu(
                 array(
-                    'name' => 'service',
-                    'url' => $router->getPathFor('/centreon-configuration/host/'.$event->getId().'/service'),
+                    'name' => 'template',
+                    'url' => $router->getPathFor('/centreon-realtime/service/slideschelduded/') . $event->getId(),
                     'icon' => '',
                     'order' => 4,
-                    'tpl' => "/viewtpl/CentreonConfigurationModule/services_slide"
+                    'tpl' => ""
                 )
             );
+            
+            
+            
+            
+            
+            
+            
+            
 
         }  catch (Exception $e) {
 

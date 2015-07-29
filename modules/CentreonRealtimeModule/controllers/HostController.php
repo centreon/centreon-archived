@@ -34,11 +34,16 @@
  */
 namespace CentreonRealtime\Controllers;
 
+use CentreonConfiguration\Models\Host as HostConf;
+use CentreonRealtime\Models\Host as HostRealtime;
+use CentreonRealtime\Models\Service as ServiceRealtime;
+use CentreonConfiguration\Models\Poller;
 use CentreonRealtime\Repository\HostdetailRepository;
 use Centreon\Internal\Utils\Status;
 use Centreon\Internal\Utils\Datetime;
 use CentreonRealtime\Events\HostDetailData;
 use CentreonRealtime\Repository\HostRepository;
+use CentreonRealtime\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\HostRepository as HostConfRepository;
 use Centreon\Internal\Di;
 use Centreon\Internal\Controller;
@@ -347,5 +352,105 @@ class HostController extends Controller
         );
 
         return $data;
+    }
+
+    /**
+     * Display the realtime snapshot of a host
+     *
+     * @method get
+     * @route /host/snapshotslide/[i:id]
+     */
+    public function snapshotslideAction()
+    {
+        $params = $this->getParams();
+
+        $data['configurationData'] = HostConfRepository::getConfigurationData($params['id']);
+        $data['realtimeData'] = HostRealtime::get($params['id']);
+        $hostInformations = HostRepository::formatDataForSlider($data);
+
+        $servicesStatus = ServiceRepository::countAllStatusForHost($params['id']);
+
+        $view_url = $this->router->getPathFor("/centreon-realtime/host/" . $params['id']);
+
+        $this->router->response()->json(array(
+            'hostInformations' => $hostInformations,
+            'servicesStatus' => $servicesStatus,
+            'view_url' => $view_url,
+            'success' => true
+         ));
+    }
+
+    /**
+     * Get executed command for a specific host
+     *
+     * @method get
+     * @route /host/[i:id]/command
+     */
+    public function commandHostAction()
+    {
+        $params = $this->getParams();
+
+        $command = HostRealtime::get($params['id'], 'command_line');
+
+        $this->router->response()->json(array(
+            'command' => $command['command_line'],
+            'success' => true
+         ));
+    }
+
+    /**
+     * Get output for a specific host
+     *
+     * @method get
+     * @route /host/[i:id]/output
+     */
+    public function outputHostAction()
+    {
+        $params = $this->getParams();
+
+        $output = HostRealtime::get($params['id'], 'output');
+
+        $this->router->response()->json(array(
+            'output' => $output['output'],
+            'success' => true
+         ));
+    }
+
+    /**
+     * Get scheduling informations for a specific host
+     *
+     * @method get
+     * @route /host/[i:id]/scheduling-infos
+     */
+    public function schedulingInfosHostAction()
+    {
+        $params = $this->getParams();
+
+        $schedulingInfos = HostRealtime::get($params['id'], array('execution_time', 'latency'));
+
+        $poller = HostConf::get($params['id'], 'poller_id');
+        $schedulingInfos['poller_name'] = !is_null($poller['poller_id']) ? Poller::get($poller['poller_id'], 'name') : "";
+
+        unset($schedulingInfos['poller_id']);
+
+        $this->router->response()->json(array(
+            'scheduling_infos' => $schedulingInfos,
+            'success' => true
+         ));
+    }
+
+    /**
+     * Get service realtime informations for a specific host
+     *
+     * @method get
+     * @route /host/[i:id]/service
+     */
+    public function hostForServiceAction()
+    {
+        $requestParam = $this->getParams('named');
+
+        $services = ServiceRealtime::getList(array('description as name', 'state'), -1, 0, null, 'ASC', array('host_id' => $requestParam['id']));
+
+        $this->router->response()->json(array('service' => $services,'success' => true));
     }
 }

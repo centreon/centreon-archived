@@ -37,6 +37,7 @@ namespace CentreonConfiguration\Controllers;
 
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Host;
+use CentreonRealtime\Models\Host as HostRealtime;
 use CentreonConfiguration\Models\Relation\Host\Hostchildren;
 use CentreonConfiguration\Models\Relation\Host\Hostparents;
 use CentreonConfiguration\Models\Relation\Host\Poller;
@@ -565,7 +566,7 @@ class HostController extends FormController
 
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
-        $data['realTimeData'] = HostRealTimeRepository::getRealTimeData($params['id']);
+        $data['realTimeData'] = HostRealtime::get($params['id']);
         $hostConfiguration = HostRepository::formatDataForSlider($data);
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
         $edit_url = $this->router->getPathFor("/centreon-configuration/host/".$params['id']);

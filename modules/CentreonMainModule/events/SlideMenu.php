@@ -70,7 +70,7 @@ class SlideMenu
      */
     public function __construct($hostId)
     {
-        $this->hostId = $hostId;
+        $this->id = $id;
     }
     
     /**
@@ -78,9 +78,18 @@ class SlideMenu
      *
      * return long $hostId 
      */
-    public function getHostId()
+    public function getId()
     {
-        return $this->hostId;
+        return $this->id;
+    }
+    
+    /**
+     * Get service Id associated with this event
+     *
+     * return long $serviceId 
+     */
+    public function getServiceId(){
+        return $this->serviceId;
     }
 
     /**

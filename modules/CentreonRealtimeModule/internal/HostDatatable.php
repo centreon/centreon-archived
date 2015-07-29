@@ -39,7 +39,9 @@ use CentreonConfiguration\Repository\HostRepository as HostConfigurationReposito
 use CentreonRealtime\Repository\HostRepository as HostRealtimeRepository;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Datatable;
+use Centreon\Internal\Di;
 use CentreonAdministration\Repository\TagsRepository;
+use CentreonMain\Events\SlideMenu;
 
 /**
  * Description of HostDatatable
@@ -254,6 +256,13 @@ class HostDatatable extends Datatable
     protected function formatDatas(&$resultSet)
     {
         foreach ($resultSet as $key => &$myHostSet) {
+            $sideMenuCustom = new SlideMenu($myHostSet['host_id']);
+            $events = Di::getDefault()->get('events');
+            $events->emit('centreon-realtime.slide.menu.host', array($sideMenuCustom));
+
+            $myHostSet['DT_RowData']['right_side_menu_list'] = $sideMenuCustom->getMenu();
+            $myHostSet['DT_RowData']['right_side_default_menu'] = $sideMenuCustom->getDefaultMenu();
+
             $aTagUsed = array();
             // @todo remove virtual hosts and virtual services
             if ($myHostSet['name'] === '_Module_BAM') {
