@@ -539,12 +539,12 @@ class HostTemplateController extends FormController
     }
     
     
-        /**
-     * Display host template configuration in a popin window
-     *
-     * @method get
-     * @route /hosttemplate/viewconfslide/[i:id]
-     */
+    /**
+    * Display host template configuration in a popin window
+    *
+    * @method get
+    * @route /hosttemplate/viewconfslide/[i:id]
+    */
     public function displayConfSlideAction()
     {
         $params = $this->getParams();
