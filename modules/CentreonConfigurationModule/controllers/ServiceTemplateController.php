@@ -42,6 +42,7 @@ use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use Centreon\Controllers\FormController;
 use CentreonAdministration\Repository\TagsRepository;
+use CentreonConfiguration\Models\ServiceTemplate;
 
 
 /**
@@ -447,4 +448,54 @@ class ServiceTemplateController extends FormController
         $this->router->response()->json($data);
    }
     
+    /**
+     * Display the configuration snapshot of a service
+     * with template inheritance
+     *
+     * @method get
+     * @route /servicetemplate/snapshotslide/[i:id]
+     */
+    public function snapshotslideAction()
+    {
+        $params = $this->getParams();
+        
+        $data = ServiceTemplateRepository::getConfigurationData($params['id']);
+
+        //If service inherits a template
+        /*if (isset($data['service_template_model_stm_id'])) {
+            $data = ServiceTemplateRepository::getConfigurationData($data['service_template_model_stm_id']);   
+        } else {
+            $data = ServiceTemplateRepository::getConfigurationData($params['id']);
+        }*/
+
+        $serviceConfiguration = ServiceRepository::formatDataForSlider($data);
+        $edit_url = $this->router->getPathFor("/centreon-configuration/servicetemplate/".$params['id']);
+        
+        $this->router->response()->json(
+                array(
+                    'serviceConfig' => $serviceConfiguration,
+                    'edit_url' => $edit_url,
+                    'success' => true
+                )
+        );
+    }
+    
+    
+    /**
+     * Get command of a Host
+     *
+     *
+     * @method get
+     * @route /servicetemplate/[i:id]/command
+     */
+    public function getHostCommandAction()
+    {
+        parent::getSimpleRelation('command_command_id', '\CentreonConfiguration\Models\Command');
+    }
+   
+   
+   
+   
+   
+   
 }
