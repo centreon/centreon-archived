@@ -652,10 +652,10 @@ class BrokerRepository
      * @param string $command the command to execute
      * @return array
      */
-    private static function writeCommand($command)
+    private static function writeCommand($command, $commandFile)
     {
         /* @todo get the path */
-        //$socketPath = 'unix:///var/lib/centreon-broker/central-broker.cmd';
+        $socketPath = 'unix://' . $commandFile;
         ob_start();
         $stream = stream_socket_client($socketPath, $errno, $errstr, 10);
         ob_end_clean();
