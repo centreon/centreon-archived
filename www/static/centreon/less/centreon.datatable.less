@@ -1,5 +1,8 @@
 /* TABLES */
+table.table {
+  position: relative;
 
+}
 .table-bordered > thead > tr > th,
 .table-bordered > thead > tr > td {
   background-color: #F5F5F6;
@@ -123,10 +126,16 @@ table.dataTable thead .sorting:after {
       padding: @paddingElem @paddingElem*2;
       font-size: 12px;
       white-space: nowrap;
-      
+
+        i {
+          z-index: 1;
+          position: relative;
+        }
+
       a {
         color: @thirdBlue;
         font-weight: 600;
+        z-index: 1;
         .icoListing {
           margin: 0px 6px 0px 0px;
           /*padding: 4px;
@@ -146,17 +155,19 @@ table.dataTable thead .sorting:after {
 
     &.dataTable.no-footer {
 
-      tbody tr.selected {
+      tbody tr.selected td{
         //background-color: rgba(0,0,0,0,0.2);
+        position: relative;
         &:after {
           content: "";
           width: 100%;
           height: 32px;
           position: absolute;
           background-color: black;
-          opacity: .2;
+          opacity: .11;
           z-index: 0;
           left: 0;
+          top: 0;
         }
       }
     }
