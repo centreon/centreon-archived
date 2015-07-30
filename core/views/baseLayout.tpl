@@ -631,7 +631,7 @@
 
             statusInterval = setInterval(function() {
                 loadStatusData();
-            }, 5000);
+            }, 8640000000);
             loadStatusData();
 
         });

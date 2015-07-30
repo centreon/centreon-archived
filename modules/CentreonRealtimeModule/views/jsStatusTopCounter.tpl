@@ -13,11 +13,17 @@ $(document).on('centreon.refresh_status', function(e) {
                     )
                 );
                 $.each(subObjectList, function(subObjectKey, subObjectDatas) {
+                
+                    objectText = $('<span class="ico-16"></span>');
+                    if (subObjectDatas.icon.type == 'class') {
+                        objectText.addClass(subObjectDatas.icon.value);
+                    }
+                    
                     $currentSubObjectType.append(
-                        $('<li></li>').append($('<h6></h6>').append(
-                            $('<span></span>').addClass('icon-host').addClass('ico-16').text(subObjectDatas.name)).append(
-                                $('<p></p>').append($('<span></span>').addClass('duration').text(subObjectDatas.since))
-                            )
+                        $('<li></li>').append(
+                            $('<h6></h6>').append(objectText).append(subObjectDatas.name)
+                        ).append(
+                            $('<p></p>').append($('<span></span>').addClass('duration').text(subObjectDatas.since))
                         )
                     );
                 });
