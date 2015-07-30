@@ -499,8 +499,8 @@ startTime = moment(endTime).subtract(24, 'hours');
     }
   
     $("input[name='graphSize']").bootstrapSwitch({
-        onText: '<i class="icon-save"></i>',
-        offText: '<i class="icon-save"></i>',
+        onText: '<i class="icon-two-bars"></i>',
+        offText: '<i class="icon-full-bar"></i>',
         onSwitchChange: function (event, state) {
           var graphSize;
           if (state) {
