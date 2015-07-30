@@ -592,7 +592,7 @@ class ConfigGenerateRepository
      *
      * @return array
      */
-    private function getBrokerModules()
+    public function getBrokerModules()
     {
         $dbconn = Di::getDefault()->get('db_centreon');
 

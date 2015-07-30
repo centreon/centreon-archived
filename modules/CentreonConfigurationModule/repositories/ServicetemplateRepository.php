@@ -92,6 +92,19 @@ class ServicetemplateRepository extends Repository
     );
     
     /**
+     * Get configuration data of a service
+     * 
+     * @param int $serviceId
+     * @return array
+     */
+    public static function getConfigurationData($serviceId)
+    {
+        return ServiceTemplate::getParameters($serviceId, "*");
+    }
+    
+    
+    
+    /**
      *
      * @var type 
      */

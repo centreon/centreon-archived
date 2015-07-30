@@ -112,12 +112,7 @@
                           "%global_broker_etc_directory%/downtimes.cfg"
                         ],
                         "type": "node_events",
-                        "name": "central-nodeevents"
-                      },
-                      {
-                        "type": "node_events",
-                        "name": "central-broker-nodeevents",
-                        "cache": "yes"
+                        "name": "central-broker-nodeevents"
                       },
                       {
                         "type": "sql",

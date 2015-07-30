@@ -36,11 +36,13 @@
 namespace CentreonBroker\Repository;
 
 use Centreon\Internal\Di;
+use CentreonConfiguration\Models\Poller;
 use CentreonBroker\Models\Broker;
 use CentreonBroker\Models\BrokerPollerValues;
 use CentreonAdministration\Repository\OptionRepository;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
 use CentreonRealtime\Events\ExternalCommand;
+use CentreonBroker\Repository\ConfigGenerateRepository;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -163,22 +165,6 @@ class BrokerRepository
                                                 }
                                             } else {
                                                 /* @todo add user infos */
-                                                /* $finalKey = $module['general']['name']
-                                                    . '-'
-                                                    . $type
-                                                    . '-'
-                                                    . $typeInfo['type']
-                                                    . '-'
-                                                    . $typeInfo['name']
-                                                    . '-'
-                                                    . $key;
-                                                if (is_string($value)) {
-                                                    if (in_array($finalKey, array_keys($arr))) {
-                                                        static::insertUserInfo($configId, $type, $groupNb, $finalKey, $arr[$finalKey]);
-                                                    } else {
-                                                        static::insertUserInfo($configId, $type, $groupNb, $finalKey, $value);
-                                                    }
-                                                }*/
                                             }
                                         }
                                         $groupNb++;
@@ -630,17 +616,69 @@ class BrokerRepository
      *
      * @param int $cmdId
      */
-    public static function sendCommand($command)
+    public static function sendCommand($pollerId, $command)
     {
-        /* @todo get external command path dynamically */
-        if (file_exists('/var/lib/centreon-broker/central-broker.cmd')) {
-            $nbWritten = file_put_contents('/var/lib/centreon-broker/central-broker.cmd', $command, FILE_APPEND);
-            if ($nbWritten == 0 || !$nbWritten) {
-                throw new \Exception ("The external command file of broker does not exist");
-            }
-        } else {
-            throw new \Exception ("The external command file of broker does not exist");
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $query = 'SELECT config_id'
+            . ' FROM cfg_centreonbroker'
+            . ' WHERE poller_id = :poller_id'
+            . ' AND config_name = "central-broker"';
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+        if ($row === false) {
+            throw new \Exception ("Can't get config id");
         }
+        $brokerId = $row['config_id'];
+
+        $commandFile = self::getBrokerCommandFileFromBrokerId($brokerId);
+
+        $nodeEvents = self::getBrokerEndpointFromBrokerId($brokerId, 'node_events');
+        $nodeEvent = "";
+        if (isset($nodeEvents[0]) && isset($nodeEvents[0]['name'])) {
+            $nodeEvent = $nodeEvents[0]['name'];
+        }
+
+        $finalCommand = 'EXECUTE;' . $brokerId . ';' . $nodeEvent . ';' . $command;
+        self::writeCommand($finalCommand, $commandFile);
+    }
+    
+    /**
+     * Write the command to the Centreon Broker socket
+     *
+     * @param string $command the command to execute
+     * @return array
+     */
+    private static function writeCommand($command, $commandFile)
+    {
+        /* @todo get the path */
+        $socketPath = 'unix://' . $commandFile;
+        ob_start();
+        $stream = stream_socket_client($socketPath, $errno, $errstr, 10);
+        ob_end_clean();
+        if (false === $stream) {
+            throw new \Exception("Error to connect to the socket.");
+        }
+        fwrite($stream, $command . "\n");
+        $rStream = array($stream);
+        $nbStream = stream_select($rStream, $wStream = null, $eStream = null, 5);
+        if (false === $nbStream || 0 === $nbStream) {
+            fclose($stream);
+            throw new \Exception("Error to read the socket.");
+        }
+        $ret = explode(' ', fgets($stream), 3);
+        fclose($stream);
+        if ($ret[1] !== '0x1' && $ret[1] !== '0x0') {
+            throw new \Exception("Error when execute command : " . $ret[2]);
+        }
+        $running = true;
+        if ($ret[1] === '0x0') {
+            $running = false;
+        }
+        return array('id' => $ret[0], 'running' => $running);
     }
 
     /**
@@ -666,5 +704,137 @@ class BrokerRepository
         }
 
         return $endpoints;
+    }
+
+    /**
+     * Get broker config from poller id
+     *
+     * @param int $pollerId
+     */
+    public static function getBrokerConfigFromPollerId($pollerId)
+    {
+        $poller = Poller::getParameters($pollerId, 'tmpl_name');
+        $tmpl = $poller['tmpl_name'];
+        $listTpl = PollerTemplateManager::buildTemplatesList();
+
+        $fileTplList = $listTpl[$tmpl]->getBrokerPath();
+
+        $information = array();
+        foreach ($fileTplList as $fileTpl) {
+            $information = static::mergeBrokerConf($information, $fileTpl);
+        }
+
+        return $information;
+    }
+
+    /**
+     * Get broker config from broker id
+     *
+     * @param int $brokerId
+     */
+    public static function getBrokerConfigFromBrokerId($brokerId)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $poller = Broker::getParameters($brokerId, 'poller_id');
+        $pollerId = $poller['poller_id'];
+
+        $configuration = self::getBrokerConfigFromPollerId($pollerId);
+
+        $query = 'SELECT config_name'
+            . ' FROM cfg_centreonbroker'
+            . ' WHERE config_id = :config_id';
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':config_id', $brokerId, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+        if ($row === false) {
+            throw new \Exception ("Can't get config name");
+        }
+        $brokerName = $row['config_name'];
+
+        $brokerConfig = array();
+
+        if (isset($configuration['content']['broker']['setup'])) {
+            $setups = $configuration['content']['broker']['setup'];
+            foreach ($setups as $setup) {
+                if (isset($setup['params']['mode'])) {
+                    $modes = $setup['params']['mode'];
+                    foreach ($modes as $mode) {
+                        if (isset($mode['normal'])) {
+                            $normals = $mode['normal'];
+                            foreach ($normals as $normal) {
+                                if (isset($normal['general']['name']) && $normal['general']['name'] == $brokerName) {
+                                    $brokerConfig = $normal;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $brokerConfig;
+    }
+
+    /**
+     * Get broker endpoint from broker id
+     *
+     * @param int $brokerId
+     */
+    public static function getBrokerEndpointFromBrokerId($brokerId, $type)
+    {
+        $brokerConfig = self::getBrokerConfigFromBrokerId($brokerId);
+
+        $endpoints = array();
+        foreach ($brokerConfig as $configKey => $configValue) {
+            if ($configKey != 'general') {
+                foreach ($configValue as $value) {
+                    if (isset($value['type']) && $value['type'] == $type) {
+                        $endpoints[] = $value;
+                    }
+                }
+            }
+        }
+
+        return $endpoints;
+    }
+
+    /**
+     * Get broker command file from broker id
+     *
+     * @param int $brokerId
+     */
+    public static function getBrokerCommandFileFromBrokerId($brokerId)
+    {
+        $brokerConfig = self::getBrokerConfigFromBrokerId($brokerId);
+
+        $commandFile = "";
+        if (isset($brokerConfig['general']) && isset($brokerConfig['general']['command_file'])) {
+            $commandFile = $brokerConfig['general']['command_file'];
+        }
+        $commandFile = self::getBrokerFinalValue($commandFile);
+
+        return $commandFile;
+    }
+
+    /**
+     * Get broker final value
+     *
+     * @param int $brokerId
+     */
+    public static function getBrokerFinalValue($value)
+    {
+        if (is_string($value) && preg_match("/%([\w_]+|[\w-]+)%/", $value, $matches)) {
+            if (isset($matches[1]) && trim($matches[1]) !== "") {
+                $globalValues = self::getGlobalValues();
+                if (isset($globalValues[$matches[1]])) {
+                    $value = str_replace('%' . $matches[1] . '%', $globalValues[$matches[1]], $value);
+                }
+            }
+        }
+                
+        return $value;
     }
 }

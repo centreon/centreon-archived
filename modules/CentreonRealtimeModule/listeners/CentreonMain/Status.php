@@ -82,18 +82,21 @@ class Status
                 if(empty($issues[$state]['total_impacts'])){
                     $issues[$state]['total_impacts'] = 0;
                 }
+                if(count($issues[$state]['objects']['hosts']) < 5){
+                    $hostsTemp = IncidentsRepository::formatDataForHeader($incident,'host');
+                    $hostsTemp['icon'] = HostRepositoryConfig::getIconImagePath($incident['host_id']);
+                    $hostsTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
+                    $duration = Datetime::humanReadable(
+                        time() - $incident['stimestamp'],
+                        Datetime::PRECISION_FORMAT,
+                        2
+                    );
+                    $hostsTemp['since'] = $duration;
+                    $issues[$state]['objects']['hosts'][] = $hostsTemp;
+                }
 
-                $hostsTemp = IncidentsRepository::formatDataForHeader($incident,'host');
-                $hostsTemp['icon'] = HostRepositoryConfig::getIconImagePath($incident['host_id']);
-                $hostsTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
-                $duration = Datetime::humanReadable(
-                    time() - $incident['stimestamp'],
-                    Datetime::PRECISION_FORMAT,
-                    2
-                );
-                $hostsTemp['since'] = $duration;
                 $childIncidents = IncidentsRepository::getChildren($incident['issue_id']);
-                $issues[$state]['objects']['hosts'][] = $hostsTemp;
+                
                 $issues[$state]['nb_hosts'] = ($issues[$state]['nb_hosts']) + 1;
                 $issues[$state]['total_impacts'] = ($issues[$state]['total_impacts']) + count($childIncidents);
             }else{
@@ -107,17 +110,20 @@ class Status
                     $issues[$state]['total_impacts'] = 0;
                 }
 
-                $serviceTemp = IncidentsRepository::formatDataForHeader($incident,'service');
-                $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($incident['service_id']);
-                $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/service/'.$incident['service_id']);
-                $duration = Datetime::humanReadable(
-                    time() - $incident['stimestamp'],
-                    Datetime::PRECISION_FORMAT,
-                    2
-                );
-                $serviceTemp['since'] = $duration;
+                if(count($issues[$state]['objects']['services']) < 5){
+                    $serviceTemp = IncidentsRepository::formatDataForHeader($incident,'service');
+                    $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($incident['service_id']);
+                    $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/service/'.$incident['service_id']);
+                    $duration = Datetime::humanReadable(
+                        time() - $incident['stimestamp'],
+                        Datetime::PRECISION_FORMAT,
+                        2
+                    );
+                    $serviceTemp['since'] = $duration;
+                    $issues[$state]['objects']['services'][] = $serviceTemp;
+                }
                 $childIncidents = IncidentsRepository::getChildren($incident['issue_id']);
-                $issues[$state]['objects']['services'][] = $serviceTemp;
+                
                 $issues[$state]['nb_services'] = ($issues[$state]['nb_services']) + 1;
                 $issues[$state]['total_impacts'] = ($issues[$state]['total_impacts']) + count($childIncidents);
             }

@@ -55,7 +55,7 @@ class SynchronizeFiles
         $endpoints = BrokerRepository::getConfigEndpoints($event->getPollerId());
         foreach ($endpoints as $endpoint) {
             try {
-                BrokerRepository::sendCommand($command . $endpoint . "\n");
+                BrokerRepository::sendCommand($event->getPollerId(), $command . $endpoint . "\n");
             } catch (\Exception $e) {
                 $event->setOutput($e->getMessage());
             }

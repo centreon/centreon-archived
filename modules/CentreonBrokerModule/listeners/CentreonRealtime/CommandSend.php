@@ -53,8 +53,7 @@ class CommandSend
     {
         // @todo found poller where I am
         if ($command->getType() === 'broker') {
-            BrokerRepository::sendCommand($command->getCommand());
+            BrokerRepository::sendCommand($command->getPollerId(), $command->getCommand());
         }
-        
     }
 }

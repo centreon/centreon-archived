@@ -1,7 +1,7 @@
 <div class="headerWrapper">
     <div class="row">
         <div class="iconWrapper col-md-2">
-            <i class="icon-host"></i>
+            {{{hostConfig.icon}}}
         </div>
         <h4 class="col-md-8">{{hostConfig.name}}</h4>
         <div class="iconWrapper col-md-2">
@@ -28,13 +28,18 @@
         </div>
         <div class="detailsWrapper col-md-10">
             <table>
+
+                <tr>
+                    <td>Command</td>
+                    <td>{{hostConfig.command}}</td>
+                </tr>
                 <tr>
                     <td>Time period</td>
                     <td>{{hostConfig.time_period}}</td>
                 </tr>
 
                 <tr>
-                    <td>Max check attempts</td>
+                    <td>Max check attpt</td>
                     <td>{{hostConfig.max_check_attempts}}</td>
                 </tr>
 
