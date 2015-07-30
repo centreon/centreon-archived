@@ -43,6 +43,7 @@ use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\ServicetemplateRepository;
 use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Internal\Datatable;
+use CentreonMain\Events\SlideMenu;
 
 /**
  * Description of ServiceTemplateDatatable
@@ -257,6 +258,20 @@ class ServiceTemplateDatatable extends Datatable
                         '</a></span>';
                 }
             }
+            
+            
+            $sideMenuCustom = new SlideMenu($myServiceSet['service_id']);
+            
+            $events = Di::getDefault()->get('events');
+            $events->emit('centreon-configuration.slide.menu.service.template', array($sideMenuCustom));
+            
+            //$myHostSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-configuration/host/snapshot/').$myHostSet['host_id'];
+            $myServiceSet['DT_RowData']['right_side_menu_list'] = $sideMenuCustom->getMenu();
+            $myServiceSet['DT_RowData']['right_side_default_menu'] = $sideMenuCustom->getDefaultMenu();
+            
+            
+            
+            
             $myServiceSet['service_template_model_stm_id'] = $tplStr;
 
             /* Display human readable the check/retry interval */
