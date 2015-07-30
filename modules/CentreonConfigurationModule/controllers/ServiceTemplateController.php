@@ -462,11 +462,11 @@ class ServiceTemplateController extends FormController
         $data = ServiceTemplateRepository::getConfigurationData($params['id']);
 
         //If service inherits a template
-        if (isset($data['service_template_model_stm_id'])) {
+        /*if (isset($data['service_template_model_stm_id'])) {
             $data = ServiceTemplateRepository::getConfigurationData($data['service_template_model_stm_id']);   
         } else {
             $data = ServiceTemplateRepository::getConfigurationData($params['id']);
-        }
+        }*/
 
         $serviceConfiguration = ServiceRepository::formatDataForSlider($data);
         $edit_url = $this->router->getPathFor("/centreon-configuration/servicetemplate/".$params['id']);
