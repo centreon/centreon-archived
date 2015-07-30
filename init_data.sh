@@ -12,7 +12,7 @@ php external/bin/centreonConsole centreon-configuration:poller:create --name=cen
 #php external/bin/centreonConsole centreon-configuration:poller:create --name=poller6 --template=Poller --ip-address="127.0.0.1" --engine-init-script='/etc/init.d/centengine' --engine-binary='/usr/sbin/centengine' --engine-modules-dir='/usr/lib64/centreon-engine/' --engine-conf-dir='/etc/centreon-engine/' --engine-logs-dir='/var/log/centreon-engine/' --engine-var-lib-dir='/var/lib/centreon-engine/' --broker-conf-dir='/etc/centreon-broker/' --broker-modules-dir='/usr/share/centreon/lib/centreon-broker/' --broker-data-dir='/var/lib/centreon-broker' --broker-logs-dir='/var/log/centreon-broker/' --broker-cbmod-dir='/usr/lib64/nagios/' --broker-init-script='/etc/init.d/cbd' --broker-central-ip="10.30.2.34"
 
 echo " ==== Creating resource macro === "
-php /srv/centreon/external/bin/centreonConsole centreon-configuration:Resource:create --resource-name='$USER1$' --resource-line='/usr/lib/nagios/plugins' --resource-pollers='Central'
+php external/bin/centreonConsole centreon-configuration:Resource:create --resource-name='$USER1$' --resource-line='/usr/lib/nagios/plugins' --resource-pollers='Central'
 
 echo " ==== Creating timeperiods ==== "
 php external/bin/centreonConsole centreon-configuration:Timeperiod:create --tp-name='24x7' --tp-alias='24x7' --tp-sunday='00:00-24:00' --tp-monday='00:00-24:00' --tp-tuesday='00:00-24:00' --tp-wednesday='00:00-24:00' --tp-thursday='00:00-24:00' --tp-friday='00:00-24:00' --tp-saturday='00:00-24:00'

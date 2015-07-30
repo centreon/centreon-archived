@@ -50,10 +50,8 @@ class SynchronizeDatabase
      */
     public static function execute(SynchronizeDatabaseEvent $event)
     {
-        $command = sprintf("[%u] SYNC_CFG_DB;", time());
-        
         try {
-            BrokerRepository::sendCommand($event->getPollerId(), $command . $event->getPollerId(). "\n");
+            BrokerRepository::sendCommand($event->getPollerId(), 'SYNC_CFG_DB;' . $event->getPollerId());
         } catch (\Exception $e) {
             $event->setOutput($e->getMessage());
         }
