@@ -561,35 +561,27 @@ class HostController extends FormController
     public function snapshotslideAction()
     {
         $params = $this->getParams();
-        $hostNameField = Host::getUniqueLabelField();
-        
-        $aHostTpl = HostRepository::getTemplatesChainConfigurationData($params['id']);
-        $data = HostRepository::getConfigurationData($params['id']);
-        $sName = $data[$hostNameField];
-        
-        //If host inherits a template
-        if (count($aHostTpl) > 0 && isset($aHostTpl[0]['id'])) {
-            $data = HostRepository::getConfigurationData($aHostTpl[0]['id']);   
-        }
 
-        $data[$hostNameField] = $sName;
-                
+        $data = HostRepository::getInheritanceValues($params['id'], true);
+        $host = Host::get($params['id'], 'host_name');
+        $data['host_name'] = $host['host_name'];
         $hostConfiguration = HostRepository::formatDataForSlider($data);
         
         $aDataRealTime = HostRealtime::get($params['id']);
         $hostReal = HostRepository::formatDataForSlider($aDataRealTime);
         
         $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
-        $edit_url = $this->router->getPathFor("/centreon-configuration/host/".$params['id']);
+
+        $edit_url = $this->router->getPathFor("/centreon-configuration/host/" . $params['id']);
         
         $this->router->response()->json(
-                array(
-                    'hostConfig' => $hostConfiguration,
-                    'hostReal'   => $hostReal, 
-                    'servicesStatus' => $servicesStatus, 
-                    'edit_url' => $edit_url,
-                    'success' => true
-                )
+            array(
+                'hostConfig' => $hostConfiguration,
+                'hostReal'   => $hostReal, 
+                'servicesStatus' => $servicesStatus, 
+                'edit_url' => $edit_url,
+                'success' => true
+            )
         );
     }
 
