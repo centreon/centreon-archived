@@ -63,9 +63,17 @@
         width: 100%;
         vertical-align: middle;
 
-        td {
-          border-bottom: 1px solid @lightGray;
-          padding: @paddingElem/2 0;
+        tr{
+          td {
+            border-bottom: 1px solid @lightGray;
+            padding: @paddingElem/2 @paddingElem/2 @paddingElem/2 0;
+
+            &:first-child {
+              font-size: 10px;
+              font-weight: bold;
+              color: @darkGray2;
+            }
+          }
         }
       }
     }
