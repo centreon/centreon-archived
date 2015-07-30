@@ -70,7 +70,7 @@ class SlideMenu
      */
     public function __construct($hostId)
     {
-        $this->id = $id;
+        $this->id = $hostId;
     }
     
     /**
