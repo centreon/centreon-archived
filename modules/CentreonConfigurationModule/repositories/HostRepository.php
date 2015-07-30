@@ -370,7 +370,7 @@ class HostRepository extends Repository
         
         $checkdata[_('passive_checks_enabled')] = "";
         if(isset($data['host_passive_checks_enabled'])){
-            $checkdata[_('passive_checks_enabled')] = $data['host_passive_checks_enabled'];
+            $checkdata[_('passive_checks_enabled')] = YesNoDefault::toString($data['host_passive_checks_enabled']);
         }
         
         if(!empty($data['icon'])){
