@@ -172,12 +172,13 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $stmt = $dbconn->prepare('SELECT last_hard_state as state, count(service_id) as nbr
+        $stmt = $dbconn->prepare('SELECT state, count(service_id) as nbr
             FROM rt_services 
             WHERE rt_services.host_id = ? 
             AND rt_services.enabled = 1 
             GROUP BY rt_services.last_hard_state');
         $stmt->execute(array($host_id));
+
         $arrayReturn = array(
             'success' => "0",
             'warning' => "0",
@@ -185,6 +186,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
             'default' => "0",
             'info' => "0"
         );
+
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $arrayReturn[$arrayStatus[$row['state']]] = $row['nbr'];
         }

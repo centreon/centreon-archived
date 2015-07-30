@@ -565,6 +565,7 @@ class HostController extends FormController
         $data = HostRepository::getInheritanceValues($params['id'], true);
         $host = Host::get($params['id'], 'host_name');
         $data['host_name'] = $host['host_name'];
+        $data['icon'] = HostRepository::getIconImage($data['host_name']);
         $hostConfiguration = HostRepository::formatDataForSlider($data);
         
         $aDataRealTime = HostRealtime::get($params['id']);

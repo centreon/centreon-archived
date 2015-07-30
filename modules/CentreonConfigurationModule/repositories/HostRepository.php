@@ -441,7 +441,7 @@ class HostRepository extends Repository
         $templates = static::getTemplateChain($hostId, array(), -1);
 
         if ($withHostValues) {
-            array_unshift($templates, $hostId);
+            array_unshift($templates, array ('id' => $hostId));
         }
 
         foreach ($templates as $template) {
