@@ -30,8 +30,8 @@
             <table>
                 <tr>
                     <td>Time period</td>
-                    <td>{{hostConfig.time_period}}...dfgdfgdfgdfgdfgdfg</td>
-                    <td>{{hostConfig.time_period}}dgfdggdfgdgg</td>
+                    <td>{{hostConfig.time_period}}</td>
+                    <td>{{hostConfig.time_period}}</td>
                 </tr>
 
                 <tr>
