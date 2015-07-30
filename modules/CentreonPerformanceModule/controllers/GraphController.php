@@ -66,6 +66,7 @@ class GraphController extends Controller
         $tmpl->addJs('d3.min.js');
         $tmpl->addJs('c3.min.js');
         $tmpl->addJs('jquery.select2/select2.min.js');
+        $tmpl->addJs('bootstrap-switch.min.js');
         $tmpl->addJs('moment-with-locales.js')
              ->addJs('moment-timezone-with-data.min.js');
         
@@ -76,6 +77,7 @@ class GraphController extends Controller
         $tmpl->addCss('select2.css');
         $tmpl->addCss('select2-bootstrap.css');
         $tmpl->addCss('daterangepicker-bs3.css');
+        $tmpl->addCss('bootstrap-switch.min.css');
         
         $tmpl->append(
             'jsUrl',

@@ -33,15 +33,20 @@
             <div class="input-group">
               <input type="text" id="view" name="view" class="form-control">
               <span class="input-group-btn">
-                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{t}Load{/t}" id="loadView"><i class="fa fa-upload"></i></button>
-                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{t}Save{/t}" id="saveView"><i class="fa fa-floppy-o"></i></button>
-                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{t}Delete{/t}" id="deleteView"><i class="fa fa-trash-o"></i></button>
-                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="bookmarkView" data-original-title="Bookmark"><i id="bookmarkStatus" class="fa fa-star-o"></i></button>
+                <button class="btnC btnDefault" data-toggle="tooltip" data-placement="bottom" title="{t}Load{/t}" id="loadView"><i class="icon-arrow-down"></i></button>
+                <button class="btnC btnDefault" data-toggle="tooltip" data-placement="bottom" title="{t}Save{/t}" id="saveView"><i class="icon-save"></i></button>
+                <button class="btnC btnDefault" data-toggle="tooltip" data-placement="bottom" title="{t}Delete{/t}" id="deleteView"><i class="icon-delete"></i></button>
+                <button class="btnC btnDefault" data-toggle="tooltip" data-placement="bottom" title="" id="bookmarkView" data-original-title="Bookmark"><i id="bookmarkStatus" class="icon-fill-fav"></i></button>
               </span>
             </div>
           </div>
         </form>
       </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="pull-right">
+      <input name="graphSize" type="checkbox" value="2" data-size="small">
     </div>
   </div>
   <div id="graphs" class="row"></div>
@@ -128,17 +133,22 @@ var graphTmpl = Hogan.compile("<div class=\"col-xs-12 graph {{classCol}}\">" +
 
 function createGraph(serviceId, title) {
   var graphId, graphEl, startTime, endTime,
+      classCol = "col-sm-12",
       time = $("input[name='period']").val();
   
   ++nbGraph;
   graphId = "graph-" + nbGraph;
+  
+  if ($("input[name='graphSize']").is(":checked")) {
+    classCol = "col-sm-6";
+  }
   
   /* Add graph */
   graphEl = graphTmpl.render(
     {
       graphId: graphId,
       graphTitle: title,
-      classCol: "col-sm-6"
+      classCol: classCol
     }
   );
     
@@ -173,6 +183,18 @@ function saveView(viewId, graphs, viewName, viewPrivacy) {
     }
   });
 }
+  
+function switchGraphSize(nbGraphs) {
+  var i, $graphs = $("#graphs .graph");
+  if (nbGraphs === 1) {
+    $graphs.removeClass("col-sm-6").addClass("col-sm-12");
+  } else if (nbGraphs === 2) {
+    $graphs.removeClass("col-sm-12").addClass("col-sm-6");
+  }
+  for (i = 0; i < charts.length; i = i + 1) {
+    charts[i].resize();
+  }
+}
 
 $(function() {
   /* Iniialiaze period */
@@ -186,7 +208,8 @@ var endTime,
  timeMoinsHeight,
  timeMoinsDay,
  timeMoinsWeek,
- timeMoinsMonth;
+ timeMoinsMonth,
+ graphSize;
       
 if (sessionStorage.length > 0 &&  sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != '') {
     endTime = moment().tz(sessionStorage.getItem("sTimezone"));
@@ -464,6 +487,33 @@ startTime = moment(endTime).subtract(24, 'hours');
         }
       });
     });
+  
+    if (localStorage !== undefined) {
+      graphSize = localStorage.getItem("graphSize");
+    }
+    if (graphSize === undefined) {
+      graphSize = 1;
+    }
+    if (graphSize == 2) {
+      $("input[name='graphSize']").prop('checked', true);
+    }
+  
+    $("input[name='graphSize']").bootstrapSwitch({
+        onText: '<i class="icon-save"></i>',
+        offText: '<i class="icon-save"></i>',
+        onSwitchChange: function (event, state) {
+          var graphSize;
+          if (state) {
+            graphSize = 2;
+          } else {
+            graphSize = 1;
+          }
+          switchGraphSize(graphSize);
+          if (localStorage !== undefined) {
+            localStorage.setItem("graphSize", graphSize);
+          }
+        }
+      });
 });
 
 $( document ).ready(function() {
