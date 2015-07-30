@@ -34,7 +34,7 @@
                 </tr>
 
                 <tr>
-                    <td>Max check attempts</td>
+                    <td>Max check attpt/td>
                     <td>{{hostConfig.max_check_attempts}}</td>
                 </tr>
 
