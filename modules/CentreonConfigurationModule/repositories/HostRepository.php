@@ -348,7 +348,7 @@ class HostRepository extends Repository
             $checkdata[_('time_period')] = static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id']);
         }
         
-        $checkdata[_('max_check attempts')] = "";
+        $checkdata[_('max_check_attempts')] = "";
         if(isset($data['host_max_check_attempts'])){
             $checkdata[_('max_check attempts')] = $data['host_max_check_attempts'];
         }
