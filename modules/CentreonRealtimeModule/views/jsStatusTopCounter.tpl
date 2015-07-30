@@ -2,59 +2,114 @@ $(document).on('centreon.refresh_status', function(e) {
 
     jQuery.fn.extend({
         topbarTooltip: function (tooltipObjects) {
-            $(this).on('show.bs.dropdown', function(e) {
-                $.each(tooltipObjects, function(subObjectType, subObjectList) {
-                    $issuesPopover = $(this).find('issuesPopover');
-                    $issuesPopover.empty();
-                    
-                    $currentSubObjectType = $('<ul></ul>').append(
-                        $('<li></li>').append($('<h5></h5>').text(subObjectType)).append(
-                            $('<p></p>').append($('<span></span>').addClass('danger').text('0'))
+            $issuesPopover = $(this);
+            $issuesPopover.empty();
+            
+            $.each(tooltipObjects, function(subObjectType, subObjectList) {
+            
+                $currentSubObjectType = $('<ul></ul>').append(
+                    $('<li></li>').append($('<h5></h5>').text(subObjectType)).append(
+                        $('<p></p>').append($('<span></span>').addClass('danger').text('0'))
+                    )
+                );
+                $.each(subObjectList, function(subObjectKey, subObjectDatas) {
+                    $currentSubObjectType.append(
+                        $('<li></li>').append($('<h6></h6>').append(
+                            $('<span></span>').addClass('icon-host').addClass('ico-16').text(subObjectDatas.name)).append(
+                                $('<p></p>').append($('<span></span>').addClass('duration').text(subObjectDatas.since))
+                            )
                         )
                     );
-                    $.each(subObjectList, function(subObjectDatas) {
-                        $currentSubObjectType.append(
-                            $('<li></li>').append($('<h6></h6>').append(
-                                $('<span></span>').addClass('icon-host').addClass('ico-16').text(subObjectDatas.name)).append(
-                                    $('<p></p>').append($('<span></span>').addClass('duration').text(subObjectDatas.since))
-                                )
-                            )
-                        );
-                    });
-                    
-                    $issuesPopover.append($currentSubObjectType);
                 });
+
+                $issuesPopover.append($currentSubObjectType);
             });
+            
         }
     });
 
 
     /* Critical Issues */
-    if (statusData.issues != undefined && statusData.issues > 0) {
+    if (statusData.issues.critical != undefined) {
+        hostsInCritical = 0;
+        hostsInCriticalClass = 'success';
+        if (statusData.issues.critical.nb_hosts != undefined) {
+            hostsInCritical = statusData.issues.critical.nb_hosts;
+            if (statusData.issues.critical.nb_hosts > 0) {
+                hostsInCriticalClass = 'danger';
+            }
+        }
+        
+        servicesInCritical = 0;
+        servicesInCriticalClass = 'success';
+        if (statusData.issues.critical.nb_services != undefined) {
+            servicesInCritical = statusData.issues.critical.nb_services;
+            if (statusData.issues.critical.nb_services > 0) {
+                servicesInCriticalClass = 'danger';
+            }
+        }
+        
+        criticalImpacts = 0;
+        criticalImpactsClass = 'success';
+        if (statusData.issues.critical.total_impacts != undefined) {
+            criticalImpacts = statusData.issues.critical.total_impacts;
+            if (statusData.issues.critical.total_impacts > 0) {
+                criticalImpactsClass = 'danger';
+            }
+        }
+        
         $('.top-counter-critical').find('div.indices').empty()
             .append($('<span></span>').addClass('icon-fill-host ico-16'))
-            .append($('<span></span>').text(statusData.issues.critical.nb_hosts).addClass('danger'))
+            .append($('<span></span>').text(hostsInCritical).addClass(hostsInCriticalClass))
             .append($('<span></span>').addClass('icon-fill-service ico-16'))
-            .append($('<span></span>').text(statusData.issues.critical.nb_services).addClass('danger'))
+            .append($('<span></span>').text(servicesInCritical).addClass(servicesInCriticalClass))
             .append($('<br></br>'))
             .append($('<span></span>').addClass('icon-fill-host ico-16'))
-            .append($('<span></span>').text(statusData.issues.critical.total_impacts));
+            .append($('<span></span>').text(criticalImpacts).addClass(criticalImpactsClass));
             
-        $('.top-counter-critical').find('issuesPopover').topbarTooltip();
+        $('.top-counter-critical').find('.issuesPopover').topbarTooltip(statusData.issues.critical.objects);
     }
     
     /* Warning Issues */
-    if (statusData.issues != undefined && statusData.issues > 0) {
+    if (statusData.issues.warning) {
+        hostsInWarning = 0;
+        hostsInWarningClass = 'success';
+        if (statusData.issues.warning.nb_hosts != undefined) {
+            hostsInWarning = statusData.issues.warning.nb_hosts;
+            if (statusData.issues.warning.nb_hosts > 0) {
+                hostsInWarningClass = 'warning';
+            }
+        }
+        
+        servicesInWarning = 0;
+        servicesInWarningClass = 'success';
+        if (statusData.issues.warning.nb_services != undefined) {
+            servicesInWarning = statusData.issues.warning.nb_services;
+            if (statusData.issues.warning.nb_services > 0) {
+                servicesInWarningClass = 'warning';
+            }
+        }
+        
+        warningImpacts = 0;
+        warningImpactsClass = 'success';
+        if (statusData.issues.warning.total_impacts != undefined) {
+            warningImpacts = statusData.issues.warning.total_impacts;
+            if (statusData.issues.warning.total_impacts > 0) {
+                warningImpactsClass = 'warning';
+            }
+        }
+        
+    
         $('.top-counter-warning').find('div.indices').empty()
             .append($('<span></span>').addClass('icon-fill-host ico-16'))
-            .append($('<span></span>').text(statusData.issues.warning.nb_hosts).addClass('danger'))
+            .append($('<span></span>').text(hostsInWarning).addClass(hostsInWarningClass))
             .append($('<span></span>').addClass('icon-fill-service ico-16'))
-            .append($('<span></span>').text(statusData.issues.warning.nb_services).addClass('danger'))
+            .append($('<span></span>').text(servicesInWarning).addClass(servicesInWarningClass))
             .append($('<br></br>'))
             .append($('<span></span>').addClass('icon-fill-host ico-16'))
-            .append($('<span></span>').text(statusData.issues.warning.total_impacts));
+            .append($('<span></span>').text(warningImpacts).addClass(warningImpactsClass));
             
-        $('.top-counter-warning').find('issuesPopover').topbarTooltip();
+        $('.top-counter-warning').find('.issuesPopover').topbarTooltip(statusData.issues.warning.objects);
     }
     
     /* Pending, Unknown and Unreachable states datas */
@@ -71,7 +126,7 @@ $(document).on('centreon.refresh_status', function(e) {
             .append($('<span></span>').addClass('icon-fill-service ico-16'))
             .append($('<span></span>').text(statusData.states.configurationObjects.unknown.nb_services));
             
-        $('.top-counter-unknown').find('issuesPopover').topbarTooltip(statusData.states.configurationObjects);
+        //$('.top-counter-unknown').find('issuesPopover').topbarTooltip(statusData.states.configurationObjects);
     }
     
     /* Pollers data */
@@ -81,6 +136,8 @@ $(document).on('centreon.refresh_status', function(e) {
             .append($('<span></span>').text(statusData.states.pollers.stopped.nb_pollers))
             .append($('<br></br>'))
             .append($('<span></span>').text(statusData.states.pollers.unreachable.nb_pollers));
+            
+        //$('.top-counter-unknown').find('issuesPopover').topbarTooltip(statusData.states.pollers.stopped.objects);
     }
     
     
