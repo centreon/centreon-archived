@@ -4,7 +4,7 @@
 {{/indirect_issues}}
 <hr>
 
-<h4>Direct issuest</h4>
+<h4>Direct issues</h4>
 {{#direct_issues}}
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
       <div class="panel panel-default">
