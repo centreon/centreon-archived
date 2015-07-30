@@ -634,24 +634,16 @@ class BrokerRepository
         }
         $brokerId = $row['config_id'];
 
-        $endpoint = self::getBrokerEndpointFromBrokerId($brokerId, 'node_events');
+        $commandFile = self::getBrokerCommandFileFromBrokerId($brokerId);
 
-/*        $brokerModules = ConfigGenerateRepository::getBrokerModules();
-        foreach ($brokerModules as $brokerModule) {
-            if ($brokerModule['poller_id'] == $pollerId) {
-                $finalCommand = 'EXECUTE;' . $brokerModule['config_id'] . ';central-broker-nodeevents;' . $command;
-                file_put_contents('/var/lib/centreon-broker/central-broker.cmd', $finalCommand, FILE_APPEND);
-            }
-        }*/
-        /* @todo get external command path dynamically */
-        /*if (file_exists('/var/lib/centreon-broker/central-broker.cmd')) {
-            $nbWritten = file_put_contents('/var/lib/centreon-broker/central-broker.cmd', $command, FILE_APPEND);
-            if ($nbWritten == 0 || !$nbWritten) {
-                throw new \Exception ("The external command file of broker does not exist");
-            }
-        } else {
-            throw new \Exception ("The external command file of broker does not exist");
-        }*/
+        $nodeEvents = self::getBrokerEndpointFromBrokerId($brokerId, 'node_events');
+        $nodeEvent = "";
+        if (isset($nodeEvents[0]) && isset($nodeEvents[0]['name'])) {
+            $nodeEvent = $nodeEvents[0]['name'];
+        }
+
+        $finalCommand = 'EXECUTE;' . $brokerId . ';' . $nodeEvent . ';' . $command;
+        self::writeCommand($finalCommand, $commandFile);
     }
     
     /**
@@ -803,5 +795,42 @@ class BrokerRepository
         }
 
         return $endpoints;
+    }
+
+    /**
+     * Get broker command file from broker id
+     *
+     * @param int $brokerId
+     */
+    public static function getBrokerCommandFileFromBrokerId($brokerId)
+    {
+        $brokerConfig = self::getBrokerConfigFromBrokerId($brokerId);
+
+        $commandFile = "";
+        if (isset($brokerConfig['general']) && isset($brokerConfig['general']['command_file'])) {
+            $commandFile = $brokerConfig['general']['command_file'];
+        }
+        $commandFile = self::getBrokerFinalValue($commandFile);
+
+        return $commandFile;
+    }
+
+    /**
+     * Get broker final value
+     *
+     * @param int $brokerId
+     */
+    public static function getBrokerFinalValue($value)
+    {
+        if (is_string($value) && preg_match("/%([\w_]+|[\w-]+)%/", $value, $matches)) {
+            if (isset($matches[1]) && trim($matches[1]) !== "") {
+                $globalValues = self::getGlobalValues();
+                if (isset($globalValues[$matches[1]])) {
+                    $value = str_replace('%' . $matches[1] . '%', $globalValues[$matches[1]], $value);
+                }
+            }
+        }
+                
+        return $value;
     }
 }
