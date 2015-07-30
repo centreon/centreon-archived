@@ -299,9 +299,10 @@
                              
                             <span class="label label-default hide"></span>
                             <div class="dropdown-menu issuesPopover">
+
                                 <ul>
                                     <li>
-                                        <h5>Hosts</h5>
+                                        <h6><span class="icon-fill-host ico-16"></span>| Pending</h6>
                                         <p><span class="danger">N/A </span> / N/A</p>
                                     </li>
                                     <li>
@@ -317,10 +318,23 @@
                                         <p><span class="duration">1h50</span></p>
                                     </li>
                                     <li>
-                                        <h6><span class="icon-host ico-16"></span> Host 3</h6>
-                                        <p><span class="duration">1h50</span></p>
+                                        <p><a href="#" title="more"><span class="icon-plus ico-16"></span></a></p>
+                                    </li>
+                                </ul>
+                                <ul>
+                                    <li>
+                                        <h6><span class="icon-fill-host ico-16"></span>| Unrea.</h6>
+                                        <p><span class="danger">N/A </span> / N/A</p>
                                     </li>
                                     <li>
+                                        <h6><span class="icon-host ico-16"></span> Host 1</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                     <li>
+                                        <h6><span class="icon-host ico-16"></span> Host 2</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                     </li>
+                                     <li>
                                         <h6><span class="icon-host ico-16"></span> Host 3</h6>
                                         <p><span class="duration">1h50</span></p>
                                     </li>
@@ -330,7 +344,7 @@
                                 </ul>
                                 <ul>
                                     <li>
-                                        <h5>Services</h5>
+                                        <h6><span class="icon-fill-service ico-16"></span>| Pending</h6>
                                         <p><span class="danger">N/A </span> / N/A</p>
                                     </li>
                                     <li>
@@ -341,14 +355,27 @@
                                         <h6><span class="icon-service ico-16"></span> Service 2</h6>
                                         <p><span class="duration">1h50</span></p>
                                      </li>
-                                     <li>
-                                        <h6><span class="icon-service ico-16"></span> Service 3</h6>
-                                        <p><span class="duration">1h50</span></p>
-                                    </li>
                                     <li>
                                         <h6><span class="icon-service ico-16"></span> Service 3</h6>
                                         <p><span class="duration">1h50</span></p>
                                     </li>
+                                    <li>
+                                        <p><a href="#" title="more"><span class="icon-plus ico-16"></span></a></p>
+                                    </li>
+                                </ul>
+                                <ul>
+                                    <li>
+                                        <h6><span class="icon-fill-service ico-16"></span>| Uncknown</h6>
+                                        <p><span class="danger">N/A </span> / N/A</p>
+                                    </li>
+                                    <li>
+                                        <h6><span class="icon-service ico-16"></span> Service 1</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                    </li>
+                                     <li>
+                                        <h6><span class="icon-service ico-16"></span> Service 2</h6>
+                                        <p><span class="duration">1h50</span></p>
+                                     </li>
                                     <li>
                                         <h6><span class="icon-service ico-16"></span> Service 3</h6>
                                         <p><span class="duration">1h50</span></p>
@@ -361,6 +388,7 @@
                           </li>
 
                         <li class="top-counter top-counter-poller">
+
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <span class="icon-fill-poller ico-24"></span>
                             </a>
