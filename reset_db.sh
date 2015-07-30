@@ -20,16 +20,8 @@ php external/bin/centreonConsole core:module:manage:install --module=centreon-ba
 
 sed -i -e 's/<poller_id>.*<\/poller_id>/<poller_id>1<\/poller_id>/' /etc/centreon-broker/poller-module.xml
 sed -i -e 's/<poller_name>.*<\/poller_name>/<poller_name>Central<\/poller_name>/' /etc/centreon-broker/poller-module.xml
-sed -i -e 's/<broker_id>.*<\/broker_id>/<broker_id>2<\/broker_id>/' /etc/centreon-broker/poller-module.xml
-sed -i -e 's/<broker_name>.*<\/broker_name>/<broker_name>poller-module-2<\/broker_name>/' /etc/centreon-broker/poller-module.xml
-
-sed -i -e 's/<name>central-broker-extcommands-broker.*<\/name>/<name>central-broker-extcommands-broker-poller-module-1<\/name>/' /etc/centreon-broker/central-broker.xml
-
-sed -i -e 's/<name>central-broker-extcommands-engine.*<\/name>/<name>central-broker-extcommands-engine-poller-module-1<\/name>/' /etc/centreon-broker/central-broker.xml
-
-sed -i -e 's/<name>central-broker-cfg-engine.*<\/name>/<name>central-broker-cfg-engine-poller-module-1<\/name>/' /etc/centreon-broker/central-broker.xml
-
-sed -i -e 's/<name>central-broker-cfg-broker.*<\/name>/<name>central-broker-cfg-broker-poller-module-1<\/name>/' /etc/centreon-broker/central-broker.xml
+sed -i -e 's/<broker_id>.*<\/broker_id>/<broker_id>3<\/broker_id>/' /etc/centreon-broker/poller-module.xml
+sed -i -e 's/<broker_name>.*<\/broker_name>/<broker_name>poller-module-3<\/broker_name>/' /etc/centreon-broker/poller-module.xml
 
 /etc/init.d/cbd start
 /etc/init.d/centengine start
