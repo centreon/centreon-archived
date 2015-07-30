@@ -82,7 +82,7 @@ class Status
                 if(empty($issues[$state]['total_impacts'])){
                     $issues[$state]['total_impacts'] = 0;
                 }
-                if(count($issues[$state]['objects']['hosts']) < 5){
+                if(!isset($issues[$state]['objects']['hosts']) ||  count($issues[$state]['objects']['hosts']) < 5){
                     $hostsTemp = IncidentsRepository::formatDataForHeader($incident,'host');
                     $hostsTemp['icon'] = HostRepositoryConfig::getIconImagePath($incident['host_id']);
                     $hostsTemp['url'] = $router->getPathFor('/centreon-realtime/host/'.$incident['host_id']);
@@ -110,7 +110,7 @@ class Status
                     $issues[$state]['total_impacts'] = 0;
                 }
 
-                if(count($issues[$state]['objects']['services']) < 5){
+                if(!isset($issues[$state]['objects']['services']) || count($issues[$state]['objects']['services']) < 5){
                     $serviceTemp = IncidentsRepository::formatDataForHeader($incident,'service');
                     $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($incident['service_id']);
                     $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/service/'.$incident['service_id']);
