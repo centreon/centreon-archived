@@ -642,6 +642,37 @@ class BrokerRepository
             throw new \Exception ("The external command file of broker does not exist");
         }
     }
+    
+    /**
+     * Write the command to the Centreon Broker socket
+     *
+     * @param string $command the command to execute
+     * @return array
+     */
+    private static function writeCommand($command)
+    {
+        /* @todo get the path */
+        $stream = stream_socket_client($socketPath, $errno, $errstr, 10);
+        if (false === $stream) {
+            throw new \Exception("Error to connect to the socket.");
+        }
+        fwrite($stream, $command . "\n");
+        $nbStream = stream_select(array($stream), $wStream = null, $eStream = null, 5);
+        if (false === $nbStream || 0 === $nbStream) {
+            fclose($stream);
+            throw new \Exception("Error to read the socket.");
+        }
+        $ret = explode(' ', fgets($stream), 3);
+        fclose($stream);
+        if ($ret[1] !== '0x1' && $ret[1] !== '0x0') {
+            throw new \Exception("Error when execute command : " . $ret[2]);
+        }
+        $running = true;
+        if ($ret[1] === '0x0') {
+            $running = false;
+        }
+        return array('id' => $ret[0], 'running' => $running);
+    }
 
     /**
      * Send external command for poller
