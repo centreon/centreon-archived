@@ -655,12 +655,16 @@ class BrokerRepository
     private static function writeCommand($command)
     {
         /* @todo get the path */
+        //$socketPath = 'unix:///var/lib/centreon-broker/central-broker.cmd';
+        ob_start();
         $stream = stream_socket_client($socketPath, $errno, $errstr, 10);
+        ob_end_clean();
         if (false === $stream) {
             throw new \Exception("Error to connect to the socket.");
         }
         fwrite($stream, $command . "\n");
-        $nbStream = stream_select(array($stream), $wStream = null, $eStream = null, 5);
+        $rStream = array($stream);
+        $nbStream = stream_select($rStream, $wStream = null, $eStream = null, 5);
         if (false === $nbStream || 0 === $nbStream) {
             fclose($stream);
             throw new \Exception("Error to read the socket.");
