@@ -50,12 +50,10 @@ class SynchronizeFiles
      */
     public static function execute(SynchronizeFilesEvent $event)
     {
-        $command = sprintf("[%u] DUMP_DIR;", time());
-
         $endpoints = BrokerRepository::getConfigEndpoints($event->getPollerId());
         foreach ($endpoints as $endpoint) {
             try {
-                BrokerRepository::sendCommand($event->getPollerId(), $command . $endpoint . "\n");
+                BrokerRepository::sendCommand($event->getPollerId(), 'DUMP_DIR;' . $endpoint);
             } catch (\Exception $e) {
                 $event->setOutput($e->getMessage());
             }
