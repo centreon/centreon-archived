@@ -156,17 +156,17 @@
                                     <p>impacts</p>
                                 </div>
                                 <div class="indices">
-                                    <span class="icon-fill-host ico-16"></span> <span class="danger">N/A</span>
-                                    <span class="icon-fill-service ico-16"></span> <span class="danger"> N/A</span>
+                                    <span class="icon-fill-host ico-16"></span> <span class="danger">0</span>
+                                    <span class="icon-fill-service ico-16"></span> <span class="danger"> 0</span>
                                     <br>
-                                    <span> N/A</span>
+                                    <span> 0</span>
                                 </div>
                              </div>
                              <div class="dropdown-menu issuesPopover">
                                 <ul>
                                     <li>
                                         <h5>Hosts</h5>
-                                        <p><span class="danger">N/A </span> / N/A</p>
+                                        <p><span class="danger">0 </span> / 0</p>
                                     </li>
                                     <li>
                                         <h6><span class="icon-host ico-16"></span> Host 1</h6>
@@ -195,7 +195,7 @@
                                 <ul>
                                     <li>
                                         <h5>Services</h5>
-                                        <p><span class="danger">50 </span> / 256</p>
+                                        <p><span class="danger">0 </span> / 0</p>
                                     </li>
                                     <li>
                                         <h6><span class="icon-service ico-16"></span> Service 1</h6>
@@ -235,9 +235,9 @@
                                       <p>impacts</p>
                                   </div>
                                   <div class="indices">
-                                      <span class="warning">N/A</span>
+                                      <span class="success">0</span>
                                       <br>
-                                      <span> N/A</span>
+                                      <span> 0</span>
                                   </div>
                                </div>
                               <span class="label label-warning hide"></span>
@@ -246,7 +246,7 @@
                                   <ul>
                                        <li>
                                           <h5>Services</h5>
-                                          <p><span class="danger">N/A </span> / N/A</p>
+                                          <p><span class="danger">0 </span> / 0</p>
                                       </li>
                                       <li>
                                           <h6><span class="icon-service ico-16"></span> Service 1</h6>
@@ -288,11 +288,11 @@
                                     <p>unknown</p>
                                 </div>
                                 <div class="indices">
-                                    <span class="icon-fill-host ico-16"></span> <span class="danger">0</span>
-                                    <span class="icon-fill-service ico-16"></span> <span class="danger"> 0</span>
+                                    <span class="icon-fill-host ico-16"></span> <span class="success">0</span>
+                                    <span class="icon-fill-service ico-16"></span> <span class="success"> 0</span>
                                     <br>
-                                    <span> 0</span>
-                                    <span> 0</span>
+                                    <span class="success"> 0</span>
+                                    <span class="success"> 0</span>
                                 </div>
                              </div>
 
@@ -398,9 +398,9 @@
                                       <p>unreach.</p>
                                   </div>
                                   <div class="indices">
-                                      <span> N/A</span>
+                                      <span class="success"> 0</span>
                                       <br>
-                                      <span> N/A</span>
+                                      <span class="success"> 0</span>
                                   </div>
                             </div>
 
@@ -417,9 +417,9 @@
                                       <p>not avail.</p>
                                   </div>
                                   <div class="indices">
-                                      <span> N/A</span>
+                                      <span> 0</span>
                                       <br>
-                                      <span> N/A</span>
+                                      <span> 0</span>
                                   </div>
                             </div>
 
@@ -429,7 +429,7 @@
                               <ul>
                                    <li>
                                       <h5>Services</h5>
-                                      <p><span class="danger">50 </span> / 256</p>
+                                      <p><span class="danger">0 </span> / 0</p>
                                   </li>
                                   <li>
                                       <h6><span class="icon-service ico-16"></span> Service 1</h6>
@@ -659,7 +659,7 @@
 
             statusInterval = setInterval(function() {
                 loadStatusData();
-            }, 5000);
+            }, 8640000000);
             loadStatusData();
 
         });
