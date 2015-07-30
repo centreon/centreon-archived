@@ -53,7 +53,7 @@ class SynchronizeDatabase
         $command = sprintf("[%u] SYNC_CFG_DB;", time());
         
         try {
-            BrokerRepository::sendCommand($command . $event->getPollerId(). "\n");
+            BrokerRepository::sendCommand($event->getPollerId(), $command . $event->getPollerId(). "\n");
         } catch (\Exception $e) {
             $event->setOutput($e->getMessage());
         }
