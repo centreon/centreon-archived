@@ -77,7 +77,9 @@
             $elem.closest(".form-group").hide();
           });
         }
-        hideEmptyBlocks();
+        if (typeof hideEmptyBlocks === "function") {
+          hideEmptyBlocks();
+        }
       });
     }
   };
