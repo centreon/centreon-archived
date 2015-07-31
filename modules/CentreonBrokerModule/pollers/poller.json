@@ -48,12 +48,6 @@
                                             },
                                             {
                                                 "type": "dumper",
-                                                "tagname": "extcommands-broker-$POLLERID$",
-                                                "path": "%global_broker_data_directory%/poller-module.cmd",
-                                                "name": "poller-module-extcommands-broker"
-                                            },
-                                            {
-                                                "type": "dumper",
                                                 "tagname": "extcommands-engine-$POLLERID$",
                                                 "path": "%engine_var_lib_dir%/rw/centengine.cmd",
                                                 "name": "poller-module-extcommands-engine"

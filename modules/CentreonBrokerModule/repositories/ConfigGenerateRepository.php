@@ -285,9 +285,6 @@ class ConfigGenerateRepository
                             case 'pollerCommandLineCentreonEngine':
                                 $this->addEngineCommandLineBlock($file);
                                 break;
-                            case 'pollerCommandLineCentreonBroker':
-                                $this->addBrokerCommandLineBlock($file);
-                                break;
                             case 'pollerConfigCentreonEngine':
                                 $this->addConfigCentreonEngineBlock($file);
                                 break;
@@ -354,25 +351,6 @@ class ConfigGenerateRepository
             }
         }
         if (false === $isGeneral) {
-            $file->endElement();
-        }
-    }
-
-    /**
-     * Add block for external command line
-     *
-     * @param \XMLWriter $gile The xml file
-     */
-    private function addBrokerCommandLineBlock($file)
-    {
-        /* Get broker modules list */
-        $brokerModules = self::getBrokerModules();
-        foreach ($brokerModules as $brokerModule) {
-            $file->startElement("input");
-            $file->writeElement("name", "central-broker-extcommands-broker-poller-module-" . $brokerModule['poller_id']);
-            $file->writeElement("type", "dump_fifo");
-            $file->writeElement("path", $this->baseConfig['%global_broker_data_directory%'] . "/central-broker-extcommands-broker-poller-module-" . $brokerModule['poller_id'] . ".cmd");
-            $file->writeElement("tagname", "extcommands-broker-" . $brokerModule['poller_id']);
             $file->endElement();
         }
     }
