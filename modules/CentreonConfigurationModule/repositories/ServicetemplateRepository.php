@@ -193,30 +193,35 @@ class ServicetemplateRepository extends Repository
      * Get values for templates
      *
      * @param integer $svcId The service id
-     * @param bool $isBase If the service template id is the base for get values
+     * @param bool $withServiceValues If the service template id is the base for get values
      * @return array
      */
-    public static function getInheritanceValues($svcId, $isBase=false)
+    public static function getInheritanceValues($svcId, $withServiceValues = false)
     {
         $values = array();
-        $tmpl = Service::getParameters($svcId, array('service_template_model_stm_id'));
-        $tmpl = $tmpl['service_template_model_stm_id'];
-        if ($isBase) {
+
+        if ($withServiceValues) {
             $tmpl = $svcId;
+        } else {
+            $tmpl = Service::getParameters($svcId, array('service_template_model_stm_id'));
+            $tmpl = $tmpl['service_template_model_stm_id'];
         }
 
         if (is_null($tmpl)) {
             return $values;
         }
+
         /* Get template values */
         $values = Servicetemplate::getParameters($tmpl, self::$inheritanceColumns);
         $values = array_filter($values, function($value) {
             return !is_null($value);
         });
+
         $tmplNext = Servicetemplate::getParameters($tmpl, array('service_template_model_stm_id'));
         if (is_null($tmplNext['service_template_model_stm_id'])) {
             return $values;
         }
+
         $values = array_merge(static::getInheritanceValues($tmplNext['service_template_model_stm_id'], true), $values);
 
         return $values;
