@@ -53,7 +53,7 @@ class SynchronizeFiles
         $endpoints = BrokerRepository::getConfigEndpoints($event->getPollerId());
         foreach ($endpoints as $endpoint) {
             try {
-                BrokerRepository::sendCommand($event->getPollerId(), 'DUMP_DIR;' . $endpoint);
+                BrokerRepository::sendCommand($event->getPollerId(), $endpoint . ';DUMP_DIR');
             } catch (\Exception $e) {
                 $event->setOutput($e->getMessage());
             }
