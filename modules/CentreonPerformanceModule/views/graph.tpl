@@ -46,7 +46,7 @@
   </div>
   <div class="row">
     <div class="pull-right">
-      <input name="graphSize" type="checkbox" value="2" data-size="small">
+      <input name="graphSize" type="checkbox" value="2" >
     </div>
   </div>
   <div id="graphs" class="row"></div>
