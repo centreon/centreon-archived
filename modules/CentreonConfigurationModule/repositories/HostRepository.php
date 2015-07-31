@@ -282,47 +282,6 @@ class HostRepository extends Repository
     }
     
     /**
-     * Get configurated services of a host
-     * 
-     * @param string $relClass
-     * @param int $id
-     * @return array 
-     */
-    public static function getServicesForHost($relClass, $id){
-        $curObj = static::$objectClass;
-        if ($relClass::$firstObject == $curObj) {
-            $tmp = $relClass::$secondObject;
-            $fArr = array();
-            $sArr = array('*');
-        } else {
-            $tmp = $relClass::$firstObject;
-            $fArr = array($tmp::getPrimaryKey(), $tmp::getUniqueLabelField());
-            $sArr = array();
-        }
-        $cmp = $curObj::getTableName() . '.' . $curObj::getPrimaryKey();
-        $list = $relClass::getMergedParameters(
-            $fArr,
-            $sArr,
-            -1,
-            0,
-            null,
-            "ASC",
-            array($cmp => $id),
-            "AND"
-        );
-        /*
-        $finalList = array();
-        foreach ($list as $obj) {
-            $finalList[] = array(
-                "id" => $obj[$tmp::getPrimaryKey()],
-                "text" => $obj[$tmp::getUniqueLabelField()]
-            );
-        }*/
-        return $list;
-       
-    }
-    
-    /**
      * Format data so that it can be displayed in slider
      *
      * @param array $data
@@ -435,7 +394,7 @@ class HostRepository extends Repository
      * @param int $hostId The host template Id
      * @return array
      */
-    public static function getInheritanceValues($hostId, $withHostValues = false)
+    public static function getInheritanceValues($hostId, $withHostValues = false, $columns = array())
     {
         $values = array();
         $templates = static::getTemplateChain($hostId, array(), -1);
@@ -445,8 +404,13 @@ class HostRepository extends Repository
         }
 
         foreach ($templates as $template) {
-            $inheritanceValues = HostTemplateRepository::getInheritanceValues($template['id']);
-            $tmplValues = Host::getParameters($template['id'], self::$inheritanceColumns);
+            if (count($columns) > 0) {
+                $inheritanceValues = HostTemplateRepository::getInheritanceValues($template['id'], false, $columns);
+                $tmplValues = Host::getParameters($template['id'], $columns);
+            } else {
+                $inheritanceValues = HostTemplateRepository::getInheritanceValues($template['id']);
+                $tmplValues = Host::getParameters($template['id'], self::$inheritanceColumns);
+            }
             $tmplValues = array_filter($tmplValues, function($value) {
                 return !is_null($value);
             });

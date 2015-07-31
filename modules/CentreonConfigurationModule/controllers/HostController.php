@@ -50,6 +50,7 @@ use CentreonConfiguration\Repository\CustomMacroRepository;
 use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Controllers\FormController;
 use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Repository\ServicetemplateRepository;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
 use CentreonRealtime\Repository\HostRepository as HostRealTimeRepository;
 use Centreon\Internal\Utils\String;
@@ -223,24 +224,19 @@ class HostController extends FormController
         $requestParam = $this->getParams('named');
                 
         $globalTags = TagsRepository::getList('host', $requestParam['id'],1,1);
+
         $globalTagsValues = array();
         foreach($globalTags as $globalTag){
             $globalTagsValues[] = $globalTag['text'];
         }
+
         $heritedTags = TagsRepository::getHeritedTags('host', $requestParam['id']);
         $heritedTagsValues = $heritedTags['values'];
         
-        
         $tags['tags'] = array('globals' => $globalTagsValues,'herited' => $heritedTagsValues);
         $tags['success'] = true;
-        /*
-        echo '<pre>';
-        print_r($tags);
-        echo '</pre>';
-        die;*/
+
         $this->router->response()->json($tags);
-        /*$this->tpl->assign('tags', $tags);
-        $this->tpl->display('file:[CentreonConfigurationModule]tags_menu_slide.tpl');*/
     }
     
     
@@ -541,12 +537,28 @@ class HostController extends FormController
     public function hostForServiceAction()
     {
         $requestParam = $this->getParams('named');
-        $services = HostRepository::getServicesForHost(static::$relationMap['host_services'],$requestParam['id']);
+        $relationClass = static::$relationMap['host_services'];
+        $services = $relationClass::getMergedParameters(
+            array(),
+            array('service_id', 'service_description'),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('host_id' => $requestParam['id']),
+            "AND"
+        );
 
-        foreach($services as &$service){
-            $service = ServiceRepository::formatDataForSlider($service);
+        $finalServices = array();
+        foreach($services as $service){
+            $finalService = ServicetemplateRepository::getInheritanceValues($service['service_id'], true);
+            $finalService['service_id'] = $service['service_id'];
+            $finalService['service_description'] = $service['service_description'];
+            $finalService = ServiceRepository::formatDataForSlider($finalService);
+            $finalServices[] = $finalService;
         }
-        $this->router->response()->json(array('service' => $services,'success' => true));
+
+        $this->router->response()->json(array('service' => $finalServices, 'success' => true));
     }
 
     
@@ -696,10 +708,15 @@ class HostController extends FormController
      */
     public function getHostCommandAction()
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
         $requestParam = $this->getParams('named');
 
-        parent::getSimpleRelation('command_command_id', '\CentreonConfiguration\Models\Command');
+        $inerithedCommand = HostRepository::getInheritanceValues($requestParam['id'], true, array('command_command_id'));
+        $commandName = "";
+        if (isset($inerithedCommand['command_command_id']) && !is_null($inerithedCommand['command_command_id'])) {
+            $command = Command::getParameters($inerithedCommand['command_command_id'], 'command_name');
+            $commandName = $command['command_name'];
+        }
+
+        $this->router->response()->json($commandName);
     }
 }

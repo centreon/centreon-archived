@@ -43,6 +43,7 @@ use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Internal\Datatable;
+use CentreonMain\Events\SlideMenu;
 
 /**
  * Description of HostDatatable
@@ -260,6 +261,18 @@ class HostTemplateDatatable extends Datatable
             $myHostSet['host_check_interval'] = HumanReadable::convert($myHostSet['host_check_interval'], 's', $units, null, true);
             $myHostSet['host_retry_check_interval'] = HumanReadable::convert($myHostSet['host_retry_check_interval'], 's', $units, null, true);
 
+            
+            $sideMenuCustom = new SlideMenu($myHostSet['host_id']);
+            
+            $events = Di::getDefault()->get('events');
+            $events->emit('centreon-configuration.slide.menu.host.template', array($sideMenuCustom));
+            
+            //$myHostSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-configuration/host/snapshot/').$myHostSet['host_id'];
+            $myHostSet['DT_RowData']['right_side_menu_list'] = $sideMenuCustom->getMenu();
+            $myHostSet['DT_RowData']['right_side_default_menu'] = $sideMenuCustom->getDefaultMenu();
+            
+            
+            
             /* Get personal tags */
             $myHostSet['tagname'] = '';
             $aTagUsed = array();

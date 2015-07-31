@@ -278,13 +278,6 @@ class HostDatatable extends Datatable
         
         foreach ($resultSet as &$myHostSet) {
 
-            /* ------------
-
-            $router->getPathFor('/centreon-configuration/host/snapshot/')
-            $router->getPathFor('/centreon-realtime/host/')
-
-            ---------*/
-
             $myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'.
                 $myHostSet['host_name'];
 
@@ -293,24 +286,13 @@ class HostDatatable extends Datatable
             $events = Di::getDefault()->get('events');
             $events->emit('centreon-configuration.slide.menu.host', array($sideMenuCustom));
             
-            //$myHostSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-configuration/host/snapshot/').$myHostSet['host_id'];
             $myHostSet['DT_RowData']['right_side_menu_list'] = $sideMenuCustom->getMenu();
             $myHostSet['DT_RowData']['right_side_default_menu'] = $sideMenuCustom->getDefaultMenu();
 
-            /*$myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'
-                $myHostSet['host_name'];*/
-               
-                /* Host State */
-                $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
-                    RealTimeHostRepository::getStatus($myHostSet['host_id'])
-                );
-            //$servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($myHostSet['host_id']);
-            //$myHostSet['DT_RowData']['servicesStatus'] = $servicesStatus;
-
-            /*$services = HostRepository::getServicesForHost('\CentreonConfiguration\Models\Relation\Host\Service',$myHostSet['host_id']);
-            foreach ($services as $key=>&$service){
-                $service[$key]['service_status'] = ServiceRealTimeRepository::getStatus($myHostSet['host_id'], $service["service_id"]);
-            }*/
+            /* Host State */
+            $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
+                RealTimeHostRepository::getStatus($myHostSet['host_id'])
+            );
 
             /* Poller */
             if (isset($myHostSet["poller_id"]) && $myHostSet["poller_id"] != "") {
@@ -322,14 +304,12 @@ class HostDatatable extends Datatable
 
             /* Templates */
             $myHostSet['host_template']  = "";
-            //$myHostSet['DT_RowData']['host_template']  = array();
+
             $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), 1);
             foreach ($templates as $template) {
                 $myHostSet['host_template'] .= '<a href="'
                 . $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id']))
                 . '"><i class="icon-template ico-20"></i></a>';
-
-                //$myHostSet['DT_RowData']['host_template'][] = $router->getPathFor('/centreon-configuration/hosttemplate/viewconf/'). $template['id'];
             }
 
             /* Display human readable the check/retry interval */

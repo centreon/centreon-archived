@@ -57,6 +57,21 @@ class HumanReadable
             'divider' => 1000,
             'units' => array('b','kb','Mb','Gb','Tb','Pb','Eb','Zb','Yb')
         ),
+        'o/s' => array(
+            'smaller' => false,
+            'divider' => 1024,
+            'units' => array('o','ko','Mo','Go','To','Po','Eo','Zo','Yo')
+        ),
+        'B/s' => array(
+            'smaller' => false,
+            'divider' => 1024,
+            'units' => array('B','kB','MB','GB','TB','PB','EB','ZB','YB')
+        ),
+        'b/s' => array(
+            'smaller' => false,
+            'divider' => 1000,
+            'units' => array('b','kb','Mb','Gb','Tb','Pb','Eb','Zb','Yb')
+        ),
         's' => array(
             'smaller' => true,
             'function' => "seconds"

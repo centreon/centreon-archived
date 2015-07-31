@@ -248,7 +248,7 @@ class HostTemplateRepository extends Repository
      * @param bool $isBase If the host template id is the base for get values
      * @return array
      */
-    public static function getInheritanceValues($hostId, $isBase=false)
+    public static function getInheritanceValues($hostId, $isBase = false, $columns = array())
     {
         $values = array();
         $templates = HostRepository::getTemplateChain($hostId, array(), -1);
@@ -256,8 +256,13 @@ class HostTemplateRepository extends Repository
             array_unshift($templates, array('id' => $hostId));
         }
         foreach ($templates as $template) {
-            $inheritanceValues = static::getInheritanceValues($template['id']);
-            $tmplValues = Hosttemplate::getParameters($template['id'], self::$inheritanceColumns);
+            if (count($columns) > 0) {
+                $inheritanceValues = static::getInheritanceValues($template['id'], false, $columns);
+                $tmplValues = Hosttemplate::getParameters($template['id'], $columns);
+            } else {
+                $inheritanceValues = static::getInheritanceValues($template['id']);
+                $tmplValues = Hosttemplate::getParameters($template['id'], self::$inheritanceColumns);
+            }
             $tmplValues = array_filter($tmplValues, function($value) {
                 return !is_null($value);
             });

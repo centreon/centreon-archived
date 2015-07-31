@@ -42,6 +42,7 @@ use CentreonConfiguration\Repository\UserRepository;
 use Centreon\Controllers\FormController;
 use CentreonAdministration\Repository\TagsRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonConfiguration\Models\HostTemplate;
 
 class HostTemplateController extends FormController
 {
@@ -570,4 +571,59 @@ class HostTemplateController extends FormController
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }
+    
+    /**
+     * Display the configuration snapshot of a host
+     * with template inheritance
+     *
+     * @method get
+     * @route /hosttemplate/snapshotslide/[i:id]
+     */
+    public function snapshotslideAction()
+    {
+        $params = $this->getParams();
+
+        $data = HostTemplateRepository::getInheritanceValues($params['id'], true);
+        $host = HostTemplate::get($params['id'], 'host_name');
+        $data['host_name'] = $host['host_name'];
+        $data['icon'] = HostRepository::getIconImage($data['host_name']);
+        $hostConfiguration = HostRepository::formatDataForSlider($data);
+        /*
+        $aDataRealTime = HostRealtime::get($params['id']);
+        $hostReal = HostRepository::formatDataForSlider($aDataRealTime);
+        
+        $servicesStatus = ServiceRealTimeRepository::countAllStatusForHost($params['id']);
+        */
+        $edit_url = $this->router->getPathFor("/centreon-configuration/hosttemplate/" . $params['id']);
+        
+        $this->router->response()->json(
+            array(
+                'hostConfig' => $hostConfiguration,
+                //'hostReal'   => $hostReal, 
+                //'servicesStatus' => $servicesStatus, 
+                'edit_url' => $edit_url,
+                'success' => true
+            )
+        );
+    }
+    
+    
+        /**
+     * Get command of a Host
+     *
+     *
+     * @method get
+     * @route /hosttemplate/[i:id]/command
+     */
+    public function getHostCommandAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        $requestParam = $this->getParams('named');
+
+        parent::getSimpleRelation('command_command_id', '\CentreonConfiguration\Models\Command');
+    }
+    
+    
+    
 }
