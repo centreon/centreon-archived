@@ -66,7 +66,7 @@ class Status
         
         $router = Di::getDefault()->get('router');
         $arrayStatusService = array('success','warning','critical','unknown','pending');
-        $arrayStatusHost = array('success','critical','unreachable','pending');
+        $arrayStatusHost = array('success','critical','unreachable','','pending');
         $totalHosts = 0;
         $totalServices = 0;
         $incidents = IncidentsRepository::getIncidents();
