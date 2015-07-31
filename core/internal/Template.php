@@ -166,6 +166,8 @@ class Template extends \Smarty
     {
         /* Load css */
         $this->addCss('bootstrap.min.css');
+        $this->addCss('bootstrap-toggle.min.css');
+        $this->addCss('bootstrap2-toggle.min.css');
         $this->addCss('dataTables.bootstrap.css');
         $this->addCss('font-awesome.min.css');
         $this->addCss('jquery-ui.min.css');
@@ -183,6 +185,8 @@ class Template extends \Smarty
         $this->addJs('jquery.qtip.min.js');
         $this->addJs('centreon.help.tooltip.js');
         $this->addJs('bootstrap.min.js');
+        $this->addJs('bootstrap-toggle.min.js');
+        $this->addJs('bootstrap2-toggle.min.js');
         $this->addJs('jquery.ba-resize.js');
         $this->addJs('moment-with-langs.min.js');
         $this->addJs('centreon.functions.js');

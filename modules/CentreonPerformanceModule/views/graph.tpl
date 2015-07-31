@@ -19,7 +19,7 @@
           <div class="form-group col-md-3">
             <input type="text" name="period" class="form-control" placeholder="Period" >
           </div>
-          <div class="form-group col-md-5">
+          <div class="form-group col-md-4">
             <div class="inlineGroup">
               <div class="Elem1">
                 <input type="text" id="service" name="service" class="form-control" >
@@ -29,7 +29,7 @@
               </span>
             </div>
           </div>
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-5">
             <div class="input-group">
               <input type="text" id="view" name="view" class="form-control">
               <span class="input-group-btn">
