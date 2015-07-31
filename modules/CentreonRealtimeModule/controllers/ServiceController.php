@@ -246,7 +246,7 @@ class ServiceController extends Controller
         $serviceTemp['max_check_attempts'] = $service['max_check_attempts'];
         $serviceTemp['active_checks'] = $service['active_checks'];
         $serviceTemp['passive_checks'] = $service['passive_checks'];
-        
+                
         
         
         
@@ -254,7 +254,8 @@ class ServiceController extends Controller
         
         $serviceTemp['icon'] = ServiceRepositoryConfig::getIconImage($params['id']);
         $serviceTemp['url'] = $router->getPathFor('/centreon-realtime/service/'.$params['id']);
-        $return['service'] = $serviceTemp;
+        $return['serviceConfig'] = $serviceTemp;
+        $return['success'] = true;
         $router->response()->json($return);
     }
     
@@ -279,6 +280,7 @@ class ServiceController extends Controller
         }
         $return['directTags'] = $directTag;
         $return['inheritedTags'] = $inheritedTag;
+        $return['success'] = true;
         $router->response()->json($return);
         
     }
@@ -302,6 +304,7 @@ class ServiceController extends Controller
             }
         }
         $return['incidents'] = $incidents;
+        $return['success'] = true;
         $router->response()->json($return);
     }
     
@@ -320,6 +323,7 @@ class ServiceController extends Controller
         $service = ServicedetailRepository::getRealtimeData($params['id']);
         $serviceTemp = $service[0];
         $return['command'] = $serviceTemp['command_line'];
+        $return['success'] = true;
         $router->response()->json($return);
     }
     
@@ -338,6 +342,7 @@ class ServiceController extends Controller
         $service = ServicedetailRepository::getRealtimeData($params['id']);
         $serviceTemp = $service[0];
         $return['output'] = $serviceTemp['output'];
+        $return['success'] = true;
         $router->response()->json($return);
     }
     
@@ -363,6 +368,7 @@ class ServiceController extends Controller
                     2
                 );
         $return['schelduded']['latency'] = $serviceTemp['latency'];
+        $return['success'] = true;
         $router->response()->json($return);
     }
     
