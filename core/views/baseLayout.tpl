@@ -406,6 +406,7 @@
 
                         </li>
 
+                    <!--
                         <li class="top-counter top-counter-ba">
                             <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
                                 <span class="icon-fill-BA ico-24"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></span>
@@ -457,6 +458,7 @@
                               </ul>
                              </div>
                         </li>
+                    -->
                     </ul>
             </nav>
         </div>
