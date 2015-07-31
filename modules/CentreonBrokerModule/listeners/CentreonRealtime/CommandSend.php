@@ -52,8 +52,30 @@ class CommandSend
     public static function execute(ExternalCommand $command)
     {
         // @todo found poller where I am
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $query = 'SELECT config_id'
+            . ' FROM cfg_centreonbroker'
+            . ' WHERE poller_id = :poller_id'
+            . ' AND config_name = "central-broker"';
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':poller_id', $command->getPollerId(), \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+        if ($row === false) {
+            throw new \Exception ("Can't get config id");
+        }
+        $brokerId = $row['config_id'];
+
+        $nodeEvents = BrokerRepository::getBrokerEndpointFromBrokerId($brokerId, 'node_events');
+        $nodeEvent = "";
+        if (isset($nodeEvents[0]) && isset($nodeEvents[0]['name'])) {
+            $nodeEvent = $nodeEvents[0]['name'];
+        }
+
         if ($command->getType() === 'broker') {
-            BrokerRepository::sendCommand($command->getPollerId(), $command->getCommand());
+            BrokerRepository::sendCommand($command->getPollerId(), $nodeEvent . ';' . $command->getCommand());
         }
     }
 }

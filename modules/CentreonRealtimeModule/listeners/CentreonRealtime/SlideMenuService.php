@@ -53,27 +53,27 @@ class SlideMenuService
                     'url' => $router->getPathFor('/centreon-realtime/service/snapshotslide/') . $event->getId(),
                     'icon' => '',
                     'order' => 0,
-                    'tpl' => ""
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/service_slide"
                 )
             );
 
             $event->addMenu(
                 array(
-                    'name' => 'incidents',
+                    'name' => 'incident',
                     'url' => $router->getPathFor('/centreon-realtime/service/incidentslide/') . $event->getId(),
                     'icon' => '',
                     'order' => 5,
-                    'tpl' => ""
+                    'tpl' => "/viewtpl/CentreonRealtimeModule/incidents_slide"
                 )
             );
             
             $event->addMenu(
                 array(
-                    'name' => 'tags',
+                    'name' => 'tag',
                     'url' => $router->getPathFor('/centreon-realtime/service/tagslide/') . $event->getId(),
                     'icon' => '',
                     'order' => 3,
-                    'tpl' => ""
+                    'tpl' => "/viewtpl/CentreonConfigurationModule/tags_slide"
                 )
             );
             
@@ -84,7 +84,7 @@ class SlideMenuService
                     'url' => $router->getPathFor('/centreon-realtime/service/slidecommand/') . $event->getId(),
                     'icon' => '',
                     'order' => 1,
-                    'tpl' => ""
+                    'tpl' => "/viewtpl/CentreonRealtimeModule/command_slide"
                 )
             );
             $event->addMenu(
@@ -93,17 +93,17 @@ class SlideMenuService
                     'url' => $router->getPathFor('/centreon-realtime/service/slideoutput/') . $event->getId(),
                     'icon' => '',
                     'order' => 2,
-                    'tpl' => ""
+                    'tpl' => "/viewtpl/CentreonRealtimeModule/output_slide"
                 )
             );
             
             $event->addMenu(
                 array(
-                    'name' => 'schelduded',
+                    'name' => 'real-time',
                     'url' => $router->getPathFor('/centreon-realtime/service/slideschelduded/') . $event->getId(),
                     'icon' => '',
                     'order' => 4,
-                    'tpl' => ""
+                    'tpl' => "/viewtpl/CentreonRealtimeModule/schedulinginfos_slide"
                 )
             );
             

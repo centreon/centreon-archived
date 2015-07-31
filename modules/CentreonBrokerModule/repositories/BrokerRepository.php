@@ -636,13 +636,7 @@ class BrokerRepository
 
         $commandFile = self::getBrokerCommandFileFromBrokerId($brokerId);
 
-        $nodeEvents = self::getBrokerEndpointFromBrokerId($brokerId, 'node_events');
-        $nodeEvent = "";
-        if (isset($nodeEvents[0]) && isset($nodeEvents[0]['name'])) {
-            $nodeEvent = $nodeEvents[0]['name'];
-        }
-
-        $finalCommand = 'EXECUTE;' . $brokerId . ';' . $nodeEvent . ';' . $command;
+        $finalCommand = 'EXECUTE;' . $brokerId . ';' . $command;
         self::writeCommand($finalCommand, $commandFile);
     }
     
