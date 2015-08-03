@@ -15,7 +15,7 @@ if (isset($_SESSION['step'])) {
     <title><?php echo _('Centreon Installation');?></title>
     <link rel="shortcut icon" href="../img/favicon.ico">
     <link rel="stylesheet" href="./install.css" type="text/css">
-    <script type="text/javascript" src="../include/common/javascript/jquery/jquery.js"></script>
+    <script type="text/javascript" src="../include/common/javascript/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="../include/common/javascript/jquery/jquery-ui.js"></script>
     <script type="text/javascript">jQuery.noConflict();</script>
     <script type='text/javascript'>
