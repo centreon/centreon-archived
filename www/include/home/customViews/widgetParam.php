@@ -85,15 +85,34 @@ $form = new HTML_QuickForm('Form', 'post', "?p=103");
 $form->addElement('header', 'title', $title);
 $form->addElement('header', 'information', _("General Information"));
 
+/* Prepare list of installed modules and have widget connectors */
+$loadConnectorPaths = array();
+/* Add core path */
+$loadConnectorPaths[] = $centreon_path . "www/class/centreonWidget/Params/Connector";
+$query = 'SELECT name FROM modules_informations ORDER BY name';
+$res = $db->query($query);
+while ($module = $res->fetchRow()) {
+    $dirPath = $centreon_path . 'www/modules/' . $module['name'] . '/widgets/Params/Connector';
+    if (is_dir($dirPath)) {
+        $loadConnectorPaths[] = $dirPath;
+    }
+}
+
 try {
     $permission = $viewObj->checkPermission($viewId);
     $params = $widgetObj->getParamsFromWidgetId($widgetId, $permission);
     foreach ($params as $paramId => $param) {
         if ($param['is_connector']) {
-            $fileName = $centreon_path . "www/class/centreonWidget/Params/Connector/".ucfirst($param['ft_typename'].".class.php");
-            if (is_file($fileName)) {
-                require_once $fileName;
-            } else {
+            $paramClassFound = false;
+            foreach ($loadConnectorPaths as $path) {
+                $filename = $path . '/' . ucfirst($param['ft_typename'].".class.php");
+                if (is_file($filename)) {
+                    require_once $filename;
+                    $paramClassFound = true;
+                    break;
+                }
+            }
+            if (false === $paramClassFound) {
                 throw new Exception ('No connector found for ' . $param['ft_typename']);
             }
             $className = "CentreonWidgetParamsConnector".ucfirst($param['ft_typename']);
