@@ -38,6 +38,8 @@ use strict;
 use POSIX qw(strftime);
 use File::stat;
 
+my $local_broker;
+
 sub init_modules {
     # logger => obj
     # htmlentities => (ref)
@@ -77,6 +79,24 @@ sub init_modules {
             $args{logger}->writeLogError("for system requirements.");
             die("Quit");
         }
+    }
+    
+    if (defined($args{config}->{local_broker})) {
+        eval 'require Monitoring::Livestatus;';
+        if ($@) {
+            $args{logger}->writeLogError($@);
+            $args{logger}->writeLogError("Could not load the Perl module Monitoring::Livestatus!  If local_broker");
+            $args{logger}->writeLogError("is set then the Monitoring::Livestatus module is required");
+            $args{logger}->writeLogError("for system requirements.");
+            die("Quit");
+        }
+        
+        $local_broker = Monitoring::Livestatus->new(
+            socket => $args{config}->{local_broker},
+            errors_are_fatal => 0,
+            query_timeout => 60,
+            connect_timeout => 5,
+        );
     }
     
     eval "require HTML::Entities";
@@ -198,10 +218,10 @@ sub get_services {
     my $services_do = {};
     
     ### Get service List for the Host
-    my ($dstatus, $sth) = $cdb->query("SELECT s.service_id, s.service_description FROM host h, host_service_relation hsr, service s WHERE 
+    my ($dstatus, $sth) = $cdb->query("SELECT s.service_id, s.service_description, esi.esi_notes FROM host h, host_service_relation hsr, service s LEFT JOIN extended_service_information esi ON s.service_id = esi.service_service_id WHERE 
                                          h.host_id = " . $host_id . " AND h.host_activate = '1' AND h.host_id = hsr.host_host_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'
-                                     UNION ALL SELECT s.service_id, s.service_description FROM 
-                                   host h, host_service_relation hsr, hostgroup_relation hgr, service s WHERE h.host_id = " . $host_id . " AND h.host_activate = '1' AND 
+                                     UNION ALL SELECT s.service_id, s.service_description, esi.esi_notes  FROM 
+                                   host h, host_service_relation hsr, hostgroup_relation hgr, service s LEFT JOIN extended_service_information esi ON s.service_id = esi.service_service_id WHERE h.host_id = " . $host_id . " AND h.host_activate = '1' AND 
                                    h.host_id = hgr.host_host_id AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'");
     return -1 if ($dstatus == -1);
     $result = $sth->fetchall_hashref('service_id');
@@ -237,52 +257,88 @@ sub get_services {
     return (0, $services_do);
 }
 
+sub check_downtimes_local_broker {
+    my (%options) = @_;
+    
+    my $request = "GET services\nColumns: description host_scheduled_downtime_depth scheduled_downtime_depth\n";
+    my $num = 0;
+    my %description = ();
+    foreach my $service_id (keys %{$options{ref_services}}) {
+        $request .= 'Filter: description = ' . $options{ref_services}->{$service_id}->{service_description} . "\n";
+        $description{$options{ref_services}->{$service_id}->{service_description}} = $service_id;
+        $num++;
+    }
+    if ($num > 1) {
+        $request .= 'Or: ' . $num . "\n";
+    }
+    $request .= "Filter: host_name = " . $options{host_name} . "\nAnd: 2";
+ 
+    my $result = $local_broker->selectall_arrayref($request);
+    if ($Monitoring::Livestatus::ErrorCode) {
+        $options{logger}->writeLogError("Cannot request local broker for downtimes: " . $Monitoring::Livestatus::ErrorMessage);
+        return -1;
+    }
+    
+    foreach (@{$result}) {
+        if ($$_[1] == 1 || $$_[2] == 1) {
+            $options{logger}->writeLogInfo("Skipping trap: host '$options{host_name}' [id: $options{host_id}] and service '$$_[0]' in downtime");
+            delete $options{ref_services}->{$description{$$_[0]}};
+        }
+    }
+ 
+    return 0;
+}
+
 sub check_downtimes {
-    my ($csdb, $downtime, $trap_time, $host_id, $ref_services, $logger) = @_;
+    my (%options) = @_;
     my $ref_result;
     
+    if (defined($options{local_broker})) {
+        return check_downtimes_local_broker(%options);
+    }
+    
     # Only one request is $downtime == 2
-    if ($downtime == 2) {
-        my ($dstatus, $sth) = $csdb->query("SELECT DISTINCT IFNULL(service_id, 'host') as service_id FROM downtimes WHERE host_id = $host_id AND start_time <= $trap_time AND end_time >= $trap_time");
+    if ($options{downtime} == 2) {
+        my ($dstatus, $sth) = $options{csdb}->query("SELECT DISTINCT IFNULL(service_id, 'host') as service_id FROM downtimes WHERE host_id = $options{host_id} AND start_time <= $options{trap_time} AND end_time >= $options{trap_time}");
         return -1 if ($dstatus == -1);
         $ref_result = $sth->fetchall_hashref('service_id');
     }
     
     # Check if host is in downtime - if yes: return 1
-    if ($downtime == 1) {
+    if ($options{downtime} == 1) {
         # Real-Time
-        my ($dstatus, $sth) = $csdb->query("SELECT host_id FROM hosts WHERE host_id = $host_id AND scheduled_downtime_depth = 1 LIMIT 1");
+        my ($dstatus, $sth) = $options{csdb}->query("SELECT host_id FROM hosts WHERE host_id = $options{host_id} AND scheduled_downtime_depth = 1 LIMIT 1");
         return -1 if ($dstatus == -1);
         my $data = $sth->fetchrow_hashref();
         if (defined($data)) {
             # Go out. Downtime on host.
-            $logger->writeLogInfo("Skipping trap: host '$host_id' in downtime");
+            $options{logger}->writeLogInfo("Skipping trap: host '$options{host_name}' [id: $options{host_id}] in downtime");
             return 1;
         }
     } else {
         # Check it
         if (defined($ref_result->{host})) {
-            $logger->writeLogInfo("Skipping trap: host '$host_id' in downtime");
+            $options{logger}->writeLogInfo("Skipping trap: host '$options{host_name}' [id: $options{host_id}] in downtime");
             return 1;
         }
     }
     
-    if (scalar(keys %{$ref_services}) == 0) {
+    if (scalar(keys %{$options{ref_services}}) == 0) {
         return 0;
     }
     
-    if ($downtime == 1) {
+    if ($options{downtime} == 1) {
         # Check some services only
-        my ($dstatus, $sth) = $csdb->query("SELECT service_id FROM services WHERE service_id IN (" . join(',', keys %{$ref_services}) . ") AND scheduled_downtime_depth = 1");
+        my ($dstatus, $sth) = $options{csdb}->query("SELECT service_id FROM services WHERE service_id IN (" . join(',', keys %{$options{ref_services}}) . ") AND scheduled_downtime_depth = 1");
         return -1 if ($dstatus == -1);
         $ref_result = $sth->fetchall_hashref('service_id');
     }
     
     # Parse services
-    foreach my $service_id (keys %{$ref_services}) {
+    foreach my $service_id (keys %{$options{ref_services}}) {
         if (defined($ref_result->{$service_id})) {
-            $logger->writeLogInfo("Skipping trap: host '$host_id' and service $service_id in downtime");
-            delete $ref_services->{$service_id};
+            $options{logger}->writeLogInfo("Skipping trap: host '$options{host_name}' [id: $options{host_id}] and service $service_id in downtime");
+            delete $options{ref_services}->{$service_id};
         }
     }
     
@@ -335,6 +391,47 @@ sub get_macros_host {
     }
         
     return (0, \%macros);
+}
+
+##############
+# Send trap
+##############
+
+sub trim {
+    my ($value) = $_[0];
+    
+    # Sometimes there is a null character
+    $value =~ s/\x00$//;
+    $value =~ s/^[ \t]+//;
+    $value =~ s/[ \t]+$//;
+    return $value;
+}
+
+sub trap_forward {
+    my (%options) = @_;
+    
+    my @arguments = split(',', $options{arguments});
+    if (scalar(@arguments) < 2) {
+        $options{logger}->writeLogError('At least 2 arguments for @TRAPFORWARD(oid, ip1, ...)@');
+        return ;
+    }
+    
+    my $oid = trim(shift @arguments);
+    my $agent_ip = ${$options{trap_data}->{var}}[4];
+    
+    my @bindings = ();
+    for (my $i = 0; $i <= $#{$options{trap_data}->{entvar}}; $i++) {
+        $options{trap_data}->{entvarname}->[$i] =~ /^(.*?)\.(\d+)$/;
+        push @bindings, new SNMP::Varbind([$1, $2, sprintf("%s", $options{trap_data}->{entvar}->[$i]), 'OCTETSTR']);
+    }
+    push @bindings, new SNMP::Varbind(['.1.3.6.1.6.3.18.1.3', 0, sprintf("%s", $agent_ip), 'OCTETSTR']);
+    my $vb = new SNMP::VarList(@bindings);
+    while ((my $dst_host = shift(@arguments))) {
+        my $session = new SNMP::TrapSession(DestHost => trim($dst_host), Community => 'centreon', Version => 2,
+                                            UseNumeric => 1);
+        $session->trap(oid => $oid, uptime => time(), $vb);
+        $options{logger}->writeLogInfo('trap forwarded to ' . $dst_host);
+    }
 }
 
 ##############
