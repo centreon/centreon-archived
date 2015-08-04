@@ -157,16 +157,16 @@
 		$imgID = $form->getElement('img_id');
 		$imgPath = $form->getElement('directories')->getValue();
 		$imgComment = $form->getElement('img_comment')->getValue();
-		if ($form->getSubmitValue("submitA"))
-			handleUpload($file, $imgPath, $imgComment);
-		else if ($form->getSubmitValue("submitC")) {
+		if ($form->getSubmitValue("submitA")) {
+			$valid = handleUpload($file, $imgPath, $imgComment);
+        } else if ($form->getSubmitValue("submitC")) {
 			$imgName = $form->getElement('img_name')->getValue();
-			updateImg($imgID->getValue(), $file, $imgPath, $imgName, $imgComment);
+			$valid = updateImg($imgID->getValue(), $file, $imgPath, $imgName, $imgComment);
 		}
-		$o = NULL;
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ci&img_id=".$imgID->getValue()."'"));
 		$form->freeze();
-		$valid = true;
+        if (false === $valid) {
+            $form->setElementError('filename', "An image is not uploaded.");
+        }
 	}
 	$action = $form->getSubmitValue("action");
 	
