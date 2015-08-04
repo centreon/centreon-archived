@@ -218,10 +218,10 @@ sub get_services {
     my $services_do = {};
     
     ### Get service List for the Host
-    my ($dstatus, $sth) = $cdb->query("SELECT s.service_id, s.service_description FROM host h, host_service_relation hsr, service s WHERE 
+    my ($dstatus, $sth) = $cdb->query("SELECT s.service_id, s.service_description, esi.esi_notes FROM host h, host_service_relation hsr, service s LEFT JOIN extended_service_information esi ON s.service_id = esi.service_service_id WHERE 
                                          h.host_id = " . $host_id . " AND h.host_activate = '1' AND h.host_id = hsr.host_host_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'
-                                     UNION ALL SELECT s.service_id, s.service_description FROM 
-                                   host h, host_service_relation hsr, hostgroup_relation hgr, service s WHERE h.host_id = " . $host_id . " AND h.host_activate = '1' AND 
+                                     UNION ALL SELECT s.service_id, s.service_description, esi.esi_notes  FROM 
+                                   host h, host_service_relation hsr, hostgroup_relation hgr, service s LEFT JOIN extended_service_information esi ON s.service_id = esi.service_service_id WHERE h.host_id = " . $host_id . " AND h.host_activate = '1' AND 
                                    h.host_id = hgr.host_host_id AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'");
     return -1 if ($dstatus == -1);
     $result = $sth->fetchall_hashref('service_id');

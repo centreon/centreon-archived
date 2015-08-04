@@ -458,6 +458,8 @@ sub set_current_values {
     $self->{current_server_ip_address} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{ns_ip_address};
     $self->{current_hostname} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{host_name};
     $self->{current_service_desc} = $self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{service_description};
+    $self->{current_service_notes} = defined($self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{esi_notes}) ?
+        $self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{esi_notes} : '';
     $self->{current_user_arg1} = defined($self->{user_arg1}) ? $self->{user_arg1} : '';
     $self->{current_user_arg2} = defined($self->{user_arg2}) ? $self->{user_arg2} : '';
 }
@@ -824,6 +826,7 @@ sub substitute_centreon_var {
     $str =~ s/\@HOSTADDRESS\@/$self->{current_ip}/g;
     $str =~ s/\@HOSTADDRESS2\@/$self->{trap_data}->{agent_dns_name}/g;
     $str =~ s/\@SERVICEDESC\@/$self->{current_service_desc}/g;
+    $str =~ s/\@SERVICENOTES\@/$self->{current_service_notes}/g;
     $str =~ s/\@TRAPOUTPUT\@/$self->{traps_global_output}/g;
     $str =~ s/\@OUTPUT\@/$self->{traps_global_output}/g;
     $str =~ s/\@STATUS\@/$self->{traps_global_status}/g;
