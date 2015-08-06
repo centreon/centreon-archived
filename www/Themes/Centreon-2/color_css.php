@@ -59,10 +59,18 @@
 .list_lvl_1{	background-color:<?php print $color4; ?>;}
 .list_lvl_2{	background-color:<?php print $color5; ?>;}
 
-.ListHeader{	background-image:url(<?php print $bg_image_header; ?>);
+.ListHeader{	background: -moz-linear-gradient(top,  <?php print $lightGreen; ?> 0%, <?php print $darkGreen; ?> 100%); /* FF3.6+ */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, <?php print $lightGreen; ?>), color-stop(100%,<?php print $darkGreen; ?>))!important; /* Chrome,Safari4+ */
+                background: -webkit-linear-gradient(top,   <?php print $lightGreen; ?> 0%,<?php print $darkGreen; ?> 100%) !important; /* Chrome10+,Safari5.1+ */
+                background: -o-linear-gradient(top,   <?php print $lightGreen; ?> 0%,<?php print $darkGreen; ?> 100%) !important; /* Opera 11.10+ */
+                background: -ms-linear-gradient(top,   <?php print $lightGreen; ?> 0%,<?php print $darkGreen; ?> 100%) !important; /* IE10+ */
+                background: linear-gradient(to bottom,   <?php print $lightGreen; ?> 0%,<?php print $darkGreen; ?> 100%) !important; /* W3C */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=' <?php print $lightGreen; ?>', endColorstr='<?php print $darkGreen; ?>',GradientType=0 ) !important; /* IE6-8 */
+
+
 				background-position:top left;
 				background-repeat:repeat-x;
-				background-color:<?php print $color6; ?> ;
+				background:<?php print $lightGreen; ?> ;
 }
 
 .ListSubHeader{
