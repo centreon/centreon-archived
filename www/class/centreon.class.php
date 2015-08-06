@@ -158,9 +158,13 @@ class Centreon	{
 		$this->modules = array();
 		$DBRESULT = $pearDB->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
 		while ($result = $DBRESULT->fetchRow()){
-			$this->modules[$result["name"]] = array("name"=>$result["name"], "gen"=>false, "sql"=>$result["sql_files"], "lang"=>$result["lang_files"]);
+			$this->modules[$result["name"]] = array("name"=>$result["name"], "gen"=>false, "restart"=>false, "sql"=>$result["sql_files"], "lang"=>$result["lang_files"]);
 			if (is_dir("./modules/".$result["name"]."/generate_files/")) {
 				$this->modules[$result["name"]]["gen"] = true;
+			}
+            
+            if (is_dir("./modules/" . $result["name"] . "/restart_pollers/")) {
+				$this->modules[$result["name"]]["restart"] = true;
 			}
 		}
 		$DBRESULT->free();

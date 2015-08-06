@@ -14,6 +14,7 @@
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$genOpt_Correlation_script}</td></tr>		
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_start_script_for_correlator_engine">&nbsp;{$form.broker_correlator_script.label}</td><td class="FormRowValue">{$form.broker_correlator_script.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_broker_socket_path">&nbsp;{$form.broker_socket_path.label}</td><td class="FormRowValue">{$form.broker_socket_path.html}</td></tr>
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$genOpt_mailer_path}</td></tr>		
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_directory+mailer_binary">&nbsp;{$form.mailer_path_bin.label}</td><td class="FormRowValue">{$form.mailer_path_bin.html}</td></tr>

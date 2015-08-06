@@ -217,6 +217,24 @@ try {
     foreach ($msg_restart as $key => $str) {
         $msg_restart[$key] = str_replace("\n", "<br>", $str);
     }
+    
+    /* Find restart / reload action from modules */
+    foreach ($oreon->modules as $key => $value) {
+        $addModule = true;
+        if (function_exists('zend_loader_enabled') && (zend_loader_file_encoded() == true)) {
+            $module_license_validity = zend_loader_install_license ($centreon_path . "www/modules/".$key."license/merethis_lic.zl", true);
+            if ($module_license_validity == false)
+                $addModule = false;
+        }
+        
+        if ($addModule) {
+            if ($value["restart"] && $files = glob($centreon_path . "www/modules/".$key."/restart_pollers/*.php")) {
+                foreach ($files as $filename)
+                    include $filename;
+            }
+        }
+    }
+    
     $xml->startElement("response");
     $xml->writeElement("status", "<b><font color='green'>OK</font></b>");
     $xml->writeElement("statuscode", STATUS_OK);
