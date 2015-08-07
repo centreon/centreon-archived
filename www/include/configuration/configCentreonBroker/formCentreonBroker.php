@@ -98,6 +98,8 @@ $form->addElement('text', 'filename', _("Config file name"), $attrsText);
 $form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers);
 
 $form->addElement('text', 'event_queue_max_size', _('Event queue max size'), $attrsText);
+$command = $form->addElement('text', 'command_file', _('Command file'), $attrText);
+$command->freeze();
 
 $timestamp = array();
 $timestamp[] = HTML_QuickForm::createElement('radio', 'write_timestamp', null, _("Yes"), 1);

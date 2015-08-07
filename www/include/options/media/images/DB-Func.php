@@ -78,7 +78,7 @@
 			return false;
 		$imginfo = getimagesize($filename);
 
-		if (isset($imginfo)) {
+		if (isset($imginfo) && false !== $imginfo) {
 			return true;
 		} else {
 			return is_gd2($filename);
@@ -125,8 +125,9 @@
 				foreach ($filelist as $file) {
 				    if (is_dir($uploaddir.$file))
 						continue; // skip directories in list
-				    if (!isValidImage($uploaddir.$file))
-				    	continue;
+				    if (!isValidImage($uploaddir.$file)) {
+				    	return false;
+                    }
 				    if (is_gd2($uploaddir.$file)) {
 				    	$im = imagecreatefromgd2($uploaddir.$file);
 				    	if (preg_match('/gd2$/', $file)) {
@@ -229,7 +230,7 @@
 
 	function updateImg($img_id, $HTMLfile, $dir_alias, $img_name, $img_comment) {
 		if (!$img_id)
-			return;
+			return false;
 		global $pearDB;
 		$mediadir = "./img/media/";
 		$uploaddir = "../filesUpload/images/";
@@ -243,7 +244,7 @@
 		$rq .= " WHERE img_id = '".$img_id."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id";
 		$DBRESULT = $pearDB->query($rq);
 		if (!$DBRESULT)
-		    return;
+		    return false;
 		$img_info = $DBRESULT->fetchRow();
 
 		if ($dir_alias)

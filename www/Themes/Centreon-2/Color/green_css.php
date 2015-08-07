@@ -36,7 +36,7 @@
  * 
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once "/etc/centreon/centreon.conf.php";
 
 header("Content-type: text/css");
 
@@ -55,6 +55,9 @@ $color12 = "#242af6";
 
 $color13 = "#5e5e5e";
 $color14 = "#E8AB5C";
+
+$colorGradient_1 = "#e4ffcf";
+$colorGradient_2 = "#b3ff7b";
 
 $menu1_bgcolor = "#ADC7A1";
 $menu2_bgcolor = "#DFF9E0";
