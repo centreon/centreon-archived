@@ -29,5 +29,8 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 
 ALTER TABLE cfg_centreonbroker ADD COLUMN command_file VARCHAR(255);
 
+INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
+(6, 'Dumper', 'dumper');
+
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.6.2' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.1' LIMIT 1;
