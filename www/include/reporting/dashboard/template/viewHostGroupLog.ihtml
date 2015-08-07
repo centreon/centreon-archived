@@ -29,17 +29,12 @@
 			<table style='width:100%'>
 			<tr>
 				<td rowspan=3 style='width:300px; padding:5px'>
-					<!-- flash chart drawing -->
+					<!-- chart drawing -->
 					{if $name}	
 						<table class="ListTable" >
 							<tr>
 								<td class="ListColCenter">
-								{php}
-									global $pie_chart_get_str;
-									//global $service_name;
-									include_once 'lib/ofc-library/open_flash_chart_object.php';
-									open_flash_chart_object( 300, 250, 'include/reporting/dashboard/imagesGenerations/pie-charts.php?host_name='.$name.$pie_chart_get_str );
-								{/php}
+                                                                    <div id="chart"></div>
 								</td>					
 							</tr>
 						</table>
@@ -169,3 +164,34 @@
 		</td>
 	</tr>
 </table>
+
+<script>
+{literal}
+    jQuery(function () {
+        c3.generate({
+            bindto: d3.select('#chart'),
+            data: {
+                // iris data from R
+                columns: [
+                    ['Up', {/literal}{$hostgroup_up}{literal}],
+                    ['Down', {/literal}{$hostgroup_down}{literal}],
+                    ['Unreachable', {/literal}{$hostgroup_unreachable}{literal}],
+                    ['Downtime', {/literal}{$hostgroup_maintenance}{literal}],
+                    ['Undetermined', {/literal}{$hostgroup_undetermined}{literal}],
+                ],
+                type : 'pie',
+                colors : {
+                    'Up' : '#13EB3A',
+                    'Down' : '#F91D05',
+                    'Unreachable' : '#82CFD8',
+                    'Downtime' : '#CC99FF',
+                    'Undetermined' : '#F0F0F0'
+                }
+            },
+            size: {
+                height: 210
+            }
+        });
+    });
+{/literal}
+</script>

@@ -92,20 +92,19 @@
 		$servicesgroupStats = getLogInDbForServicesGroup($id, $start_date, $end_date, $reportingTimePeriod) ;
 
 		/*
-		 * Flash chart datas
+		 * Chart datas
 		 */
-		$pie_chart_get_str =  "&value[ok]=".$servicesgroupStats["average"]["OK_TP"].
-							"&value[warning]=".$servicesgroupStats["average"]["WARNING_TP"].
-							"&value[critical]=".$servicesgroupStats["average"]["CRITICAL_TP"].
-							"&value[unknown]=".$servicesgroupStats["average"]["UNKNOWN_TP"].
-							"&value[maintenance]=".$servicesgroupStats["average"]["MAINTENANCE_TP"].
-							"&value[undetermined]=".$servicesgroupStats["average"]["UNDETERMINED_TP"];
+                $tpl->assign('servicegroup_ok', $servicesgroupStats["average"]["OK_TP"]);
+                $tpl->assign('servicegroup_warning', $servicesgroupStats["average"]["WARNING_TP"]);
+                $tpl->assign('servicegroup_critical', $servicesgroupStats["average"]["CRITICAL_TP"]);
+                $tpl->assign('servicegroup_unknown', $servicesgroupStats["average"]["UNKNOWN_TP"]);
+                $tpl->assign('servicegroup_undetermined', $servicesgroupStats["average"]["UNDETERMINED_TP"]);
+                $tpl->assign('servicegroup_maintenance', $servicesgroupStats["average"]["MAINTENANCE_TP"]);
 
 		/*
 		 * Exporting variables for ihtml
 		 */
 		$tpl->assign('name', $items[$id]);
-		$tpl->assign('pie_chart_get_str', $pie_chart_get_str);
 		$tpl->assign('totalAlert', $servicesgroupStats["average"]["TOTAL_ALERTS"]);
 		$tpl->assign('summary',  $servicesgroupStats["average"]);
 
