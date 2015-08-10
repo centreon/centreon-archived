@@ -544,7 +544,7 @@ class CentreonLDAP {
         $dbresult = $this->_db->query("SELECT ari_name, ari_value
                                        FROM auth_ressource_info ari
                                        WHERE ari_name IN ('user_filter', 'user_base_search', 'alias', 'user_group', 'user_name', 'user_email', 'user_pager', 'user_firstname', 'user_lastname', 'group_filter', 'group_base_search', 'group_name', 'group_member')
-                                       AND ari.ar_id = " . $ldapHostId);
+                                       AND ari.ar_id = " . CentreonDB::escape($ldapHostId));
         $user = array();
         $group = array();
         while ($row = $dbresult->fetchRow()) {
@@ -619,7 +619,7 @@ class CentreonLDAP {
     private function _getInfoConnect($id) {
         $dbresult = $this->_db->query("SELECT use_ssl, use_tls, host_port as port
                                        FROM auth_ressource_host
-                                       WHERE ldap_host_id = " . $id);
+                                       WHERE ldap_host_id = " . CentreonDB::escape($id));
         $row = $dbresult->fetchRow();
         return $row;
     }
@@ -656,7 +656,7 @@ class CentreonLDAP {
         $query = "SELECT ari_name, ari_value 
                   FROM auth_ressource_info 
                   WHERE ari_name IN ('bind_dn', 'bind_pass', 'protocol_version') 
-                  AND ar_id = " . $id;
+                  AND ar_id = " . CentreonDB::escape($id);
         $dbresult = $this->_db->query($query);
         $infos = array();
         while ($row = $dbresult->fetchRow()) {
@@ -886,7 +886,7 @@ class CentreonLdapAdmin {
         }
         $id = $row['id'];
         foreach ($options as $key => $value) {
-            $sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", '" . $key . "', '" . $value . "')");
+            $sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . CentreonDB::escape($id) . ", '" . $this->_db->escape($key) . "', '" . $this->_db->escape($value) . "')");
             if (PEAR::isError($sth)) {
                 return false;
             }
@@ -909,9 +909,9 @@ class CentreonLdapAdmin {
 
         foreach ($options as $key => $value) {
             if (isset($config[$key])) {
-                $sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $value . "' WHERE ar_id = " . $id . " AND ari_name = '" . $key . "'");
+                $sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $this->_db->escape($value) . "' WHERE ar_id = " . CentreonDB::escape($id) . " AND ari_name = '" . $this->_db->escape($key) . "'");
             } else {
-                $sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", '" . $key . "', '" . $value . "')");
+                $sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . CentreonDB::escape($id) . ", '" . $this->_db->escape($key) . "', '" . $this->_db->escape($value) . "')");
             }
             if (PEAR::isError($sth)) {
                 return false;
@@ -937,7 +937,7 @@ class CentreonLdapAdmin {
         }
         $query = "SELECT ari_name, ari_value
 			FROM auth_ressource_info
-			WHERE ar_id = " . $id;
+			WHERE ar_id = " . CentreonDB::escape($id);
         $res = $this->_db->query($query);
         $list = array();
         while ($row = $res->fetchRow()) {
