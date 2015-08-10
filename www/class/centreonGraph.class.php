@@ -1272,7 +1272,7 @@ class CentreonGraph {
                 $return_value = proc_close($process);
 
                 /* Force no compress for image */
-                $this->setHeaders(false, strlen($str));
+                $this->setHeaders(false, mb_strlen($str, '8bit'));
                 print $str;
             }
         } else {
