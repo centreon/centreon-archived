@@ -101,19 +101,20 @@
 		$serviceStats = getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportingTimePeriod) ;
 
 		/*
-		 * Flash chart datas
+		 * Chart datas
 		 */
-		$pie_chart_get_str =  "&value[ok]=".$serviceStats["OK_TP"]."&value[warning]=".
-					$serviceStats["WARNING_TP"]."&value[critical]=".$serviceStats["CRITICAL_TP"].
-					"&value[unknown]=".$serviceStats["UNKNOWN_TP"]."&value[undetermined]=".$serviceStats["UNDETERMINED_TP"].
-					"&value[maintenance]=".$serviceStats["MAINTENANCE_TP"];
+                $tpl->assign('service_ok', $serviceStats["OK_TP"]);
+                $tpl->assign('service_warning', $serviceStats["WARNING_TP"]);
+                $tpl->assign('service_critical', $serviceStats["CRITICAL_TP"]);
+                $tpl->assign('service_unknown', $serviceStats["UNKNOWN_TP"]);
+                $tpl->assign('service_undetermined', $serviceStats["UNDETERMINED_TP"]);
+                $tpl->assign('service_maintenance', $serviceStats["MAINTENANCE_TP"]);
 
 		/*
 		 * Exporting variables for ihtml
 		 */
 		$tpl->assign('host_name', $host_name);
 		$tpl->assign('name', $itemsForUrl[$service_id]);
-		$tpl->assign('pie_chart_get_str', $pie_chart_get_str);
 		$tpl->assign('totalAlert', $serviceStats["TOTAL_ALERTS"]);
 		$tpl->assign('totalTime',  $serviceStats["TOTAL_TIME_F"]);
 		$tpl->assign('summary',  $serviceStats);

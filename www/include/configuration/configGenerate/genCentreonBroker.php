@@ -73,7 +73,7 @@
      */
     $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
-    $query = "SELECT cs.config_filename, cs.config_write_thread_id, cs.config_write_timestamp, cs.event_queue_max_size, csi.config_key, csi.config_value, csi.config_id, csi.config_group, csi.config_group_id, csi.grp_level, csi.subgrp_id , ns.name
+    $query = "SELECT cs.config_filename, cs.config_write_thread_id, cs.config_write_timestamp, cs.event_queue_max_size, cs.command_file, csi.config_key, csi.config_value, csi.config_id, csi.config_group, csi.config_group_id, csi.grp_level, csi.subgrp_id , ns.name
         FROM cfg_centreonbroker_info csi, cfg_centreonbroker cs, nagios_server ns
         WHERE csi.config_id = cs.config_id AND cs.config_activate = '1' AND cs.ns_nagios_server = ns.id AND csi.grp_level = 0 AND cs.ns_nagios_server = " . $ns_id;
 
@@ -111,6 +111,7 @@
             $eventQueueMaxSize[$filename] = $row['event_queue_max_size'];
             $logTimestamp[$filename] = $row['config_write_timestamp'];
             $logThreadId[$filename] = $row['config_write_thread_id'];
+            $commandFile[$filename] = $row['command_file'];
         }
 
     /*
@@ -167,6 +168,10 @@
             
             if (isset($logThreadId[$filename])) {
                 $fileXml->writeElement('log_thread_id', $logThreadId[$filename]);
+            }
+            
+            if (isset($commandFile[$filename]) && !is_null($commandFile[$filename]) && $commandFile[$filename] != '') {
+                $fileXml->writeElement('command_file', $commandFile[$filename]);
             }
             
             foreach ($groups as $group => $listInfos) {

@@ -47,11 +47,11 @@ $transcoKey = array(
 
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 while ($opt = $DBRESULT->fetchRow()) {
-    if (isset($transcoKey[$opt["key"]])) {
-        $gopt[$opt["key"]][$transcoKey[$opt["key"]]] = myDecode($opt["value"]);
-    } else {
-        $gopt[$opt["key"]] = myDecode($opt["value"]);
-    }
+  if (isset($transcoKey[$opt["key"]])) {
+    $gopt[$opt["key"]][$transcoKey[$opt["key"]]] = myDecode($opt["value"]);
+  } else {
+    $gopt[$opt["key"]] = myDecode($opt["value"]);
+  }
 }
 
 
@@ -136,7 +136,7 @@ $form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin sh
 /*
  * SSO
  */
-$sso_enable[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+$sso_enable[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '', array("onchange" => "javascript:confirm('Are you sure you want to change this parameter ? Please read the help before.')"));
 $form->addGroup($sso_enable, 'sso_enable', _("Enable SSO authentication"), '&nbsp;&nbsp;');
 
 $sso_mode = array();

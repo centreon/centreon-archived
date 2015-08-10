@@ -43,7 +43,7 @@ body {background-color:#FFF;}
 body,input,option,select,table,div,td,a,textarea,.link a {font-family:'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';}
 
 /* Defined Polices font and color*/
-body,input,option,select,tab,div,td,a,textarea {
+body,input,option,select,div,td,a,textarea {
 	color:#555;
 	font-size:11px;
 	margin:0;
@@ -61,7 +61,7 @@ img,hr {border:0;padding:0}
 table {border-collapse:collapse;empty-cells:show;border-spacing:0;}
 
 img 		{margin:0 0 -4px;padding:0;}
-checkbox 	{border:0px;margin:0;padding:0px;}
+input[type="checkbox"] 	{border:0px;margin:0;padding:0px;}
 select 		{border-style:none;padding-left:1px;padding-right:1px;}
 select[multiple="multiple"] 	{overflow:auto;}
 hr 			{background-color:#CCC;height:1px;margin-bottom:10px;margin-top:3px;}
@@ -241,16 +241,20 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .row_disabled {background-color:#BDBDBD;padding:1px 3px;}
 .row_disabled:hover {background-color: #D8D8D8;padding:1px 3px;}
 
-//.row_disabled {background-repeat: repeat !important;}
-//.row_disabled a:hover {color: #333333 !important;}
+/*.row_disabled {background-repeat: repeat !important;}
+.row_disabled a:hover {color: #333333 !important;}*/
 
 /*
 .limitPage 	{background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-left:4px;padding-top:1px;text-align:left;width:160px;}
 .pageNumber {background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-right:3px;padding-top:4px;text-align:right;width:80px;}
 */
 
-.ListHeader 			{font-weight:700;vertical-align:top;}
-.ListHeader td 			{border-left-style:solid;border-left-width:0.1px;border-top-style:solid;border-top-width:0.1px;font-weight:700;height:18px;padding:1px 3px;vertical-align:middle;}
+.ListHeader 			{
+    font-weight:700;vertical-align:top;
+
+
+}
+.ListHeader td 			{padding: 8px 0 !important;border-left-style:solid;border-left-width:0.1px;border-top-style:solid;border-top-width:0.1px;font-weight:700;height:18px;padding:1px 3px;vertical-align:middle;}
 .ListColHeaderPicker 		{padding:1px 3px;text-align:center;vertical-align:middle;width:10px;}
 .ListColHeaderCenter 		{padding:1px 3px;text-align:center;}
 .ListColHeaderLeft 		{padding:1px 3px;text-align:left;}
@@ -477,3 +481,40 @@ ul.no-deco-list {
     padding-top:1px;
     padding-bottom:3px;
 }
+
+/* reporting 2015 */
+
+form#FormPeriod input{
+    padding : 2px 0;
+}
+form#FormPeriod input[type="submit"] {
+    padding: 2px 6px;
+    color: white;
+    background: #50ce36;
+    border: 1px solid #40a52b;
+}
+form#FormPeriod select{
+    border : 1px solid #BBBBBB;
+}
+
+table#reportingStateTable tr.list_one td,
+table#reportingStateTable tr.list_two td,
+table#reportingStateTable tr.list_lvl_2 td{
+    padding : 5px;
+}
+
+table#reportingStateTable .ListColRight {
+    text-align: center;
+}
+
+td.ListColHeaderLeft select {
+    border : 1px solid #BBBBBB;
+}
+
+span.state_badge {
+    height: 7px;
+    display: inline-block;
+    width: 3px;
+    margin-right: 3px;
+}
+
