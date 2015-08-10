@@ -145,7 +145,7 @@
 		/*
 		 * CSV export
 		 */
-		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_HostLogs.php?sid=".$sid."&host=".$id."&start=".$start_date."&end=".$end_date);
+		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_HostLogs.php?host=".$id."&start=".$start_date."&end=".$end_date);
 		$tpl->assign("link_csv_name", _("Export in CSV format"));
 
 		/*
