@@ -82,7 +82,7 @@
 	 */
 	if ($centreon->broker->getBroker() == "broker") {
 		$nagiosInfo = array();
-		$DBRESULT = $pearDBO->query("SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, name AS instance_name , last_alive FROM instances");
+		$DBRESULT = $pearDBO->query("SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, name AS instance_name , last_alive FROM instances WHERE deleted = 0");
 		while ($info = $DBRESULT->fetchRow()) {
 			$nagiosInfo[$info["instance_name"]] = $info;
 		}
@@ -105,7 +105,7 @@
 		$pollerNumber = 1;
 	}
 	if ($centreon->broker->getBroker() == "broker") {
-		$DBRESULT = $pearDBO->query("SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances LIMIT $pollerNumber");
+		$DBRESULT = $pearDBO->query("SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances WHERE deleted = 0 LIMIT $pollerNumber");
 		while ($info = $DBRESULT->fetchRow()) {
 			$nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
 		}
@@ -190,8 +190,8 @@
 		$hasChanged = checkChangeState($config['id'], $nagios_restart[$config['id']]);
 
 		/*
-         * Manage flag for update time
-         */
+                 * Manage flag for update time
+                 */
 		$lastUpdateTimeFlag = 0;
 		if (!isset($nagiosInfo[$config["name"]]["last_alive"])) {
 		  $lastUpdateTimeFlag = 0;
