@@ -40,7 +40,7 @@
 
 	$debug = 0;
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 
 	require_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
     require_once $centreon_path . 'www/class/centreonLang.class.php';
@@ -216,7 +216,7 @@
 	if ($pollerList != "") {
 		$request = 	"SELECT `last_alive` AS last_update, `running`, name, instance_id " .
 					"FROM instances " .
-					"WHERE name IN ($pollerList)";
+					"WHERE deleted = 0 AND name IN ($pollerList)";
 		$DBRESULT = $obj->DBC->query($request);
 		$inactivInstance = "";
 		while ($ndo = $DBRESULT->fetchRow()) {
@@ -264,7 +264,8 @@
 						"WHERE ns.stat_label = 'Service Check Latency' " .
 						"	AND ns.stat_key LIKE 'Average' " .
 						"	AND ns.instance_id = i.instance_id" .
-						"	AND i.name IN ($pollerList)";
+						"	AND i.deleted = 0" . 
+                                                "       AND i.name IN ($pollerList)";
 		$DBRESULT = $obj->DBC->query($request);
 		while ($ndo = $DBRESULT->fetchRow()) {
 			if (!$latency && $ndo["stat_value"] >= 60) {
