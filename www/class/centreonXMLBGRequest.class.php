@@ -39,7 +39,7 @@
 /*
  * Need Centreon Configuration file
  */
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once "/etc/centreon/centreon.conf.php";
 require_once $centreon_path . '/www/autoloader.php';
 
 /** *****************************
@@ -214,7 +214,7 @@ class CentreonXMLBGRequest
 	 */
 	private function isUserAdmin()
 	{
-		$DBRESULT = $this->DB->query("SELECT contact_admin, contact_id FROM contact WHERE contact.contact_id = '".$this->user_id."' LIMIT 1");
+		$DBRESULT = $this->DB->query("SELECT contact_admin, contact_id FROM contact WHERE contact.contact_id = '".CentreonDB::escape($this->user_id)."' LIMIT 1");
 		$admin = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		if ($admin["contact_admin"])
@@ -228,7 +228,7 @@ class CentreonXMLBGRequest
 	 */
 	protected function getUserIdFromSID()
 	{
-		$DBRESULT = $this->DB->query("SELECT user_id FROM session WHERE session_id = '".$this->session_id."' LIMIT 1");
+		$DBRESULT = $this->DB->query("SELECT user_id FROM session WHERE session_id = '".CentreonDB::escape($this->session_id)."' LIMIT 1");
 		$admin = $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		if (isset($admin["user_id"])) {
