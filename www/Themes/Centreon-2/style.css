@@ -518,3 +518,30 @@ span.state_badge {
     margin-right: 3px;
 }
 
+.info_msg {
+    position: absolute;
+    width: auto;
+    height: auto;
+    background: #00bfb3;
+    top: 17em;
+    left: 24em;
+    padding: 3px 6px;
+    font-size: 11px;
+    color: white;
+    font-weight: bold;
+    z-index: 1;
+    border-radius: 2px;
+    border: 1px solid #fff;
+}
+
+.info_msg:before {
+    content: "";
+    position: absolute;
+    top : -5px;
+    left: 6px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #00bfb3;
+}
