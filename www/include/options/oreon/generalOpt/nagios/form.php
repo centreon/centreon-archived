@@ -80,7 +80,7 @@
     /*
      * Socket for communicate with Centreon Broker
      */
-    $form->addElement('text', 'broker_socket_path', _("Centroen Broker socket path"), $attrsText);
+    $form->addElement('text', 'broker_socket_path', _("Centreon Broker socket path"), $attrsText);
 
 	/*
 	 * Tactical Overview form
