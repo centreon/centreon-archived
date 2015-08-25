@@ -22,15 +22,15 @@ Features
 Security fixes
 ==============
 
-- #2979 : Secure the type of media file can be uploaded
+- #2979 : Secure the type of media which file can be uploaded
 - Fix some SAL injections
 
 Bug fixes
 =========
 
 - #3559 : Fix query with MariaDB / MySQL configure in STRICT_TRANS_TABLES
-- #3554 : Can send acknownlegment with multiline from monitoring page
-- #3397 : Fix display graph with unicode characters in metrics name
-- #2362 : Correct value when use index_data insered by Centreon Broker in configuration
+- #3554 : Can send acknowledgement with multiline from monitoring page
+- #3397 : Fix display graph with unicode characters in metric name
+- #2362 : Correct value when use index_data inserted by Centreon Broker in configuration
 - #1195 : Display correct number of pollers in status bar
-- #196 : Display all colunms when filter the Monitoring services unhandled view
+- #196 : Display all columns when filter is applied on Monitoring services unhandled view
