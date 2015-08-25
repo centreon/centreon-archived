@@ -131,18 +131,17 @@ function parseStatsFile($statfile)
                     $lineBlock = null;
                     $moduleName = null;
                 } elseif ($lineBlock == 'io') {
-					if (!is_null($acceptedEvents) && ((preg_match('/=/', $line) == 1) || (preg_match('/output/', $line) == 1))) {
-						$acceptedEvents = null;
-					}
+                    if (!is_null($acceptedEvents) && ((preg_match('/=/', $line) == 1) || (preg_match('/output/', $line) == 1))) {
+                        $acceptedEvents = null;
+                    }
                     if ($line == 'failover') {
                         $failover = $ioName;
                         $lineBlock = null;
-					} elseif (!is_null($acceptedEvents)) {
-						$result['io'][$ioName]['filters'][] = trim($line);
-					}
-					} elseif (preg_match('/accepted events/', $line) == 1) {
-						$acceptedEvents = 1;
-						$result['io'][$ioName]['filters'] = array();
+                    } elseif (!is_null($acceptedEvents)) {
+                        $result['io'][$ioName]['filters'][] = trim($line);
+                    } elseif (preg_match('/accepted events/', $line) == 1) {
+                        $acceptedEvents = 1;
+                        $result['io'][$ioName]['filters'] = array();
                     } else {
                         list($key, $value) = explode('=', $line);
                         if ($key != 'peers') {
