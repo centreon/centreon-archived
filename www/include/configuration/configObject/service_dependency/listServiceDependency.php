@@ -34,7 +34,7 @@
  */
 
 if (!isset($oreon)) {
-	exit());
+	exit();
 }
 		
 include("./include/common/autoNumLimit.php");
