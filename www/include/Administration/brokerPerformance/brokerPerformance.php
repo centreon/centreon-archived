@@ -78,6 +78,7 @@ function parseStatsFile($statfile)
     }
     $lineBlock = null;
     $failover = null;
+	$acceptedEvents = null;
     $result = array(
         'lastmodif' => $lastmodif,
         'modules' => array(),
@@ -130,9 +131,17 @@ function parseStatsFile($statfile)
                     $lineBlock = null;
                     $moduleName = null;
                 } elseif ($lineBlock == 'io') {
+                    if (!is_null($acceptedEvents) && ((preg_match('/=/', $line) == 1) || (preg_match('/output/', $line) == 1))) {
+                        $acceptedEvents = null;
+                    }
                     if ($line == 'failover') {
                         $failover = $ioName;
                         $lineBlock = null;
+                    } elseif (!is_null($acceptedEvents)) {
+                        $result['io'][$ioName]['filters'][] = trim($line);
+                    } elseif (preg_match('/accepted events/', $line) == 1) {
+                        $acceptedEvents = 1;
+                        $result['io'][$ioName]['filters'] = array();
                     } else {
                         list($key, $value) = explode('=', $line);
                         if ($key != 'peers') {
@@ -217,7 +226,8 @@ $lang['last connection success'] = _('Last connection success');
 $lang['input'] = _('Input');
 $lang['output'] = _('Output');
 $lang['failover'] = _('Failover');
-$lang['queued_events'] = _('Queued events');
+$lang['filters'] = _('Accepted events type');
+$lang['queued events'] = _('Queued events');
 $lang['file_read_path'] = _('File read path');
 $lang['file_read_offset'] = _('File read offset');
 $lang['file_write_path'] = _('File write path');
