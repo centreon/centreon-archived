@@ -470,3 +470,67 @@
 .accordionGroup {
 
 }
+
+/* ---- Popover -----*/
+.GlobalNavbar {
+    .popover {
+      top: 51px !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: 0px -3px 0px 0px @danger !important;
+      border-bottom: 1px solid @danger !important;
+      max-width: none !important;
+
+      .popover-content {
+        padding: 0;
+      }
+    }
+    .listObject {
+      float: left;
+      //width: 50%;
+      padding: @paddingElem;
+      color : @darkGray;
+      margin: 0 !important;
+
+      &:first-child {
+
+        border-right: 1px solid @lightGray2;
+      }
+
+      li {
+        float: none !important;
+        margin-left: 0 !important;
+        overflow: hidden;
+
+        &.listDetails {
+          h6 {
+              float: left;
+              margin-top: @paddingElem !important;
+          }
+          a {
+            text-decoration: none;
+            color: @thirdBlue;
+          }
+          span.duration {
+            text-align: right;
+            font-size: 10px;
+            padding-left: @paddingElem;
+          }
+        }
+
+        h5 {
+          text-transform: capitalize;
+          color: @danger !important;
+          margin: 0 !important;
+          span {
+            &:last-child {
+              color: @darkGray;
+            }
+          }
+        }
+        p {
+          float: right !important;
+        }
+      }
+    }
+}

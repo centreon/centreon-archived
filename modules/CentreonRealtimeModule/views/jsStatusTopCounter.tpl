@@ -2,38 +2,55 @@ $(document).on('centreon.refresh_status', function(e) {
 
     jQuery.fn.extend({
         topbarTooltip: function (tooltipObjects) {
-            $issuesPopover = $(this);
-            $issuesPopover.empty();
-            
+
+
+            $issuesPopover = $(this).empty();
             $.each(tooltipObjects, function(subObjectType, subObjectList) {
-            
-                $currentSubObjectType = $('<ul></ul>').append(
-                    $('<li></li>').append($('<h5></h5>').text(subObjectType)).append(
-                        $('<p></p>').append($('<span></span>').addClass('danger').text('0'))
-                    )
-                );
+
+                $totalObjects = eval('statusData.total'+subObjectType);
+                $currentSubObjectType = $('<ul class="listObject"></ul>');
+
+                $currentSubObjectType.append($('<li></li>')
+                    .append($('<h5></h5>').text(subObjectType)
+                    .append($('<div class="right"></div>')
+                    .append($('<span></span>').addClass('danger').text(subObjectList.length))
+                    .append($('<span></span>').text('/'+($totalObjects))))
+                ));
+
                 $.each(subObjectList, function(subObjectKey, subObjectDatas) {
                 
                     objectText = $('<span class="ico-16"></span>');
                     if (subObjectDatas.icon.type == 'class') {
                         objectText.addClass(subObjectDatas.icon.value);
                     }
-                    
-                    $currentSubObjectType.append(
-                        $('<li></li>').append(
-                            $('<h6></h6>').append(objectText).append(subObjectDatas.name)
-                        ).append(
-                            $('<p></p>').append($('<span></span>').addClass('duration').text(subObjectDatas.since))
-                        )
-                    );
+
+                    $currentSubObjectType.append($('<li class="listDetails"></li>')
+                            .append($('<h6></h6>')
+                            .append(objectText)
+                            .append($('<a href="'+subObjectDatas.url+'" alt="'+subObjectDatas.name+'"></a>')
+                            .append(subObjectDatas.name)
+                            .append($('<span></span>').addClass('duration').text(subObjectDatas.since))))
+                        );
                 });
 
                 $issuesPopover.append($currentSubObjectType);
             });
+
+            return $issuesPopover.html();
+
+                title='';
+             $('.bt-critical').popover({
+                content: $issuesPopover,
+                title: title,
+                html: true,
+                placement: "bottom",
+                template: '<div class="popover"><div class="popover-content"></div></div>'
+                //trigger: 'focus'
+
+                });
             
         }
     });
-
 
     /* Critical Issues */
     if (statusData.issues.critical != undefined) {
@@ -75,6 +92,7 @@ $(document).on('centreon.refresh_status', function(e) {
             
         $('.top-counter-critical').find('.issuesPopover').topbarTooltip(statusData.issues.critical.objects);
     }
+
     
     /* Warning Issues */
     if (statusData.issues.warning) {
@@ -104,8 +122,8 @@ $(document).on('centreon.refresh_status', function(e) {
                 warningImpactsClass = 'warning';
             }
         }
-        
-    
+
+
         $('.top-counter-warning').find('div.indices').empty()
             .append($('<span></span>').addClass('icon-fill-host ico-16'))
             .append($('<span></span>').text(hostsInWarning).addClass(hostsInWarningClass))
@@ -145,6 +163,22 @@ $(document).on('centreon.refresh_status', function(e) {
             
         //$('.top-counter-unknown').find('issuesPopover').topbarTooltip(statusData.states.pollers.stopped.objects);
     }
-    
-    
+
+       $(document).ready(function() {
+
+                        var content = $('<div class="listPopover">').topbarTooltip(statusData.issues.critical.objects);
+
+                        var title = "title";
+
+                             $('.bt-critical').popover({
+                                container : '.GlobalNavbar',
+                                content: content,
+                                title: title,
+                                html: true,
+                                placement: "bottom",
+                                template: '<div class="popover"><div class="popover-content"></div></div>'
+                                //trigger: 'focus'
+
+                                });
+                   });
 });
