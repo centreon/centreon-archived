@@ -13,4 +13,5 @@ tests/config/centreon.ini
 /.idea/
 .idea/d
 nbproject/project.properties
+doc/en/_build/
 nbproject/project.xml
