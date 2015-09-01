@@ -19,7 +19,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
-*/
+ * For more information : contact@centreon.com
+ * 
+ */
+
 namespace Centreon\Api\Internal;
 
 use Centreon\Api\Internal\BasicCrud;
