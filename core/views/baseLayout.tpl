@@ -144,12 +144,22 @@
                          </li>
                     </ul>
                     <ul class="indicators nav navbar-right">
+
                         <li class="top-counter top-counter-critical">
+
+
+                            <a class="bt-critical">
+                                <i class="icon-fill-critical-incident ico-24">
+                                <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                               </i>
+                            </a>
+
                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                <i class="icon-fill-critical-incident ico-24">
                                 <span class="path1"></span><span class="path2"></span><span class="path3"></span>
                                </i>
                              </a>
+
                              <div class="indicWrapper">
                                 <div class="titles">
                                     <p>incidents</p>
@@ -177,14 +187,6 @@
                                         <p><span class="duration">1h50</span></p>
                                      </li>
                                      <li>
-                                        <h6><span class="icon-host ico-16"></span> Host 3</h6>
-                                        <p><span class="duration">1h50</span></p>
-                                    </li>
-                                    <li>
-                                        <h6><span class="icon-host ico-16"></span> Host 3</h6>
-                                        <p><span class="duration">1h50</span></p>
-                                    </li>
-                                    <li>
                                         <h6><span class="icon-host ico-16"></span> Host 3</h6>
                                         <p><span class="duration">1h50</span></p>
                                     </li>
@@ -460,6 +462,7 @@
                         </li>
                     -->
                     </ul>
+
             </nav>
         </div>
 
@@ -494,8 +497,10 @@
     {/foreach}
     <script>
         var formValidRule = {};
+
         $(document).ready(function() {
-            var statusInterval, statusData,
+
+            var statusInterval, statusData,a
                 eStatus = new $.Event('centreon.refresh_status');
             $('.btn-light').on('click', function() {
                 switchTheme('light');

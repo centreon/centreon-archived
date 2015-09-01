@@ -59,12 +59,12 @@ class Datetime
     {
         /* List of format in Date interval */
         $listFormat = array(
-            'y' => array('year', 'years'),
-            'm' => array('month', 'months'),
-            'd' => array('day', 'days'),
-            'h' => array('hour', 'hours'),
-            'i' => array('min', 'min'),
-            's' => array('sec', 'sec')
+            'y' => array('y', 'y'),
+            'm' => array('mo', 'mo'),
+            'd' => array('d', 'd'),
+            'h' => array('h', 'h'),
+            'i' => array('m', 'm'),
+            's' => array('s', 's')
         );
         $dateInterval = new DateInterval($diff);
         $formatedStr = '';

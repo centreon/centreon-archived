@@ -248,7 +248,7 @@ class Status
         $states['configurationObjects'] = $configurationobjects;
         $states['pollers'] = $pollers;
         $event->addStatus('states', $states);
-        $event->addStatus('totalHosts', $totalHosts);
-        $event->addStatus('totalServices', $totalServices);
+        $event->addStatus('totalhosts', $totalHosts);
+        $event->addStatus('totalservices', $totalServices);
     }
 }
