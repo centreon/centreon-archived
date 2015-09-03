@@ -67,7 +67,7 @@
 	if (isset($_GET["sid"])) {
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
-		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
 		if (!$session = $res->fetchRow())
 			get_error('bad session id');
 	} else
@@ -85,14 +85,25 @@
 	(isset($_GET["instance"])) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
 	(isset($_GET["search"])) ? $search = CentreonDB::escape($_GET["search"]) : $search = "";
 	(isset($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "service_description";
-	(isset($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
+	(isset($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $order = "ASC";
 	(isset($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 	(isset($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 	(isset($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 	(isset($_GET["nc"])) ? $nc = htmlentities($_GET["nc"]) : $nc = "0";
-
+       
+        CentreonDb::check_injection($num);
+        CentreonDb::check_injection($limit);
+        CentreonDb::check_injection($instance);
+        CentreonDb::check_injection($search);
+        CentreonDb::check_injection($sort_type);
+        CentreonDb::check_injection($order);
+        CentreonDb::check_injection($date_time_format_status);
+        CentreonDb::check_injection($o);
+        CentreonDb::check_injection($p);
+        CentreonDb::check_injection($nc);
+        
 	if (!$is_admin)
-		$_POST["sid"] = $sid;
+            $_POST["sid"] = $sid;
 
 	$service = array();
 	$host_status = array();
