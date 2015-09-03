@@ -34,3 +34,5 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.6.2' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.1' LIMIT 1;
+
+ALTER TABLE `cron_operation` ALTER `last_execution_time` SET DEFAULT '0';

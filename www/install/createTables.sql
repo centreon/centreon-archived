@@ -1021,7 +1021,7 @@ CREATE TABLE `cron_operation` (
   `module` enum('0','1') DEFAULT NULL,
   `running` enum('0','1') DEFAULT NULL,
   `pid` int(11) DEFAULT NULL,
-  `last_execution_time` int(11) NOT NULL,
+  `last_execution_time` int(11) NOT NULL DEFAULT '0',
   `activate` enum('0','1') DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
