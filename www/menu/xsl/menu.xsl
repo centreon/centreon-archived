@@ -9,22 +9,22 @@
 		<xsl:attribute name="id">		
 			<xsl:value-of select="//Menu1Color"/>				
 		</xsl:attribute>
-	<xsl:for-each select="//Menu1">	
-	<ul>
+
+        <ul>
+	<xsl:for-each select="//Menu1">
 		<li>
 			<xsl:element name="div">
-				<xsl:attribute name="style">			
+				<xsl:attribute name="style">
 					<xsl:if test="Menu1ClassImg != ''">
-                                        background-image: url('<xsl:value-of select="Menu1ClassImg"/>');
-                                        </xsl:if>
-					background-position:top right;
-					background-repeat:repeat-x;
+                        background-color: <xsl:value-of select="Menu1ClassImg"/>;
+                    </xsl:if>
 				</xsl:attribute>
 				<xsl:element name="a">
 					<xsl:choose>
                                             <xsl:when test="Menu1UrlPopup = '1'">
                                                 <xsl:attribute name="target">_blank</xsl:attribute>
                                                 <xsl:attribute name="href"><xsl:value-of select="Menu1UrlPopupOpen"/></xsl:attribute>
+                                                <xsl:attribute name="style"><xsl:value-of select="Menu1UrlPopupOpen"/></xsl:attribute>
                                             </xsl:when>
                                             <xsl:otherwise>
                                                 <xsl:attribute name="onclick">
@@ -39,9 +39,10 @@
 				</xsl:element>		
 			</xsl:element>
 		</li>
-	</ul>	
 	</xsl:for-each>
-	</xsl:element>
+
+        </ul>
+    </xsl:element>
 </xsl:element>
 <xsl:element name="div">
 	<xsl:attribute name="id">		

@@ -36,7 +36,8 @@
  *
  */
 
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+	//require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once "/etc/centreon/centreon.conf.php";
 
 	require_once $centreon_path."/www/include/common/common-Func.php";
 
@@ -119,7 +120,7 @@
 	while ($elem = $DBRESULT->fetchRow()) {
 		$buffer->startElement("Menu1");
 		$buffer->writeElement("Menu1Page", $elem["topology_page"]);
-		$buffer->writeElement("Menu1ClassImg", $_GET["menu"] == $elem["topology_page"] ? "Themes/Centreon-2" . substr($menu1_bgimg, 2) : "");
+		$buffer->writeElement("Menu1ClassImg", $_GET["menu"] == $elem["topology_page"] ? $menu1_bgimg : "");
 		$buffer->writeElement("Menu1Url", "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"]);
 		$buffer->writeElement("Menu1UrlPopup", $elem["topology_popup"]);
 		$buffer->writeElement("Menu1UrlPopupOpen", $elem["topology_url"]);
