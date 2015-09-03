@@ -50,7 +50,7 @@ function isUserAdmin($sid = NULL) {
         return;
     }
 
-    $DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = ? AND contact.contact_id = session.user_id", $sid);
+    $DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = ? AND contact.contact_id = session.user_id", CentreonDB::escape($sid));
     $admin = $DBRESULT->fetchRow();
     $DBRESULT->free();
 
@@ -79,7 +79,7 @@ function getUserIdFromSID($sid = NULL) {
     if (!isset($sid))
         return;
     global $pearDB;
-    $DBRESULT = $pearDB->query("SELECT contact_id FROM session, contact WHERE session.session_id = ? AND contact.contact_id = session.user_id", $sid);
+    $DBRESULT = $pearDB->query("SELECT contact_id FROM session, contact WHERE session.session_id = ? AND contact.contact_id = session.user_id", CentreonDB::escape($sid));
     $admin = $DBRESULT->fetchRow();
     unset($DBRESULT);
     if (isset($admin["contact_id"]))
@@ -189,7 +189,7 @@ function getMyHostTemplateModel($host_id = NULL) {
     if (!$host_id)
         return;
 
-    $DBRESULT = $pearDB->query("SELECT host_template_model_htm_id FROM host WHERE host_id = '" . $host_id . "' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT host_template_model_htm_id FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
     $row = $DBRESULT->fetchRow();
     if ($row["host_template_model_htm_id"])
         return $row["host_template_model_htm_id"];
@@ -202,7 +202,7 @@ function getMyHostName($host_id = NULL) {
 
     if (!$host_id)
         return;
-    $DBRESULT = $pearDB->query("SELECT host_name FROM host WHERE host_id = '" . $host_id . "' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT host_name FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
     $row = $DBRESULT->fetchRow();
     if ($row["host_name"])
         return $row["host_name"];
@@ -213,7 +213,7 @@ function isAHostTpl($host_id = NULL) {
 
     if (!$host_id)
         return;
-    $DBRESULT = $pearDB->query("SELECT host_register FROM host WHERE host_id = '" . $host_id . "' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT host_register FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
     $row = $DBRESULT->fetchRow();
     if ($row["host_register"] == 1) {
         return true;
@@ -227,7 +227,7 @@ function getMyHostAddress($host_id = NULL) {
         return;
     global $pearDB;
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_id = '" . $host_id . "' LIMIT 1");
+        $DBRESULT = $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         if ($row["host_address"])
             return html_entity_decode($row["host_address"], ENT_QUOTES, "UTF-8");
@@ -243,7 +243,7 @@ function getMyHostAddressByName($host_name = NULL) {
         return;
     global $pearDB;
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_name = '" . $host_name . "' LIMIT 1");
+        $DBRESULT = $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_name = '" . CentreonDB::escape($host_name) . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         if ($row["host_address"])
             return html_entity_decode($row["host_address"], ENT_QUOTES, "UTF-8");
@@ -259,7 +259,7 @@ function getMyHostIDByAddress($host_address = NULL) {
         return;
     global $pearDB;
     while (1) {
-        $DBRESULT = & $pearDB->query("SELECT host_id, host_address, host_template_model_htm_id FROM host WHERE host_name = '" . $host_address . "' or host_address = '" . $host_address . "' LIMIT 1");
+        $DBRESULT = & $pearDB->query("SELECT host_id, host_address, host_template_model_htm_id FROM host WHERE host_name = '" . CentreonDB::escape($host_address) . "' or host_address = '" . CentreonDB::escape($host_address) . "' LIMIT 1");
         $row = & $DBRESULT->fetchRow();
         if ($row["host_id"])
             return html_entity_decode($row["host_id"], ENT_QUOTES, "UTF-8");
@@ -275,9 +275,9 @@ function getMyHostParents($host_id = NULL) {
         return;
     global $pearDB;
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT host_template_model_htm_id AS tpl FROM host WHERE host_id = '" . $host_id . "'");
+        $DBRESULT = $pearDB->query("SELECT host_template_model_htm_id AS tpl FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "'");
         $host = clone($DBRESULT->fetchRow());
-        $DBRESULT = $pearDB->query("SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr WHERE hpr.host_host_id = '" . $host_id . "'");
+        $DBRESULT = $pearDB->query("SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr WHERE hpr.host_host_id = '" . CentreonDB::escape($host_id) . "'");
         if ($DBRESULT->numRows())
             return $DBRESULT;
         else if (isset($host["tpl"]) && $host["tpl"])
@@ -339,7 +339,7 @@ function getMyHostFieldFromMultiTemplates($host_id, $field) {
 
     $rq = "SELECT host_tpl_id " .
             "FROM host_template_relation " .
-            "WHERE host_host_id = '" . $host_id . "' " .
+            "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
             "ORDER BY `order`";
     $DBRESULT = $pearDB->query($rq);
     while ($row = $DBRESULT->fetchRow()) {
@@ -437,7 +437,7 @@ function getMyHostMacro($host_id = NULL, $field) {
 
     if ($version < 3) {
         while (1) {
-            $DBRESULT = $pearDB->query("SELECT macro.host_macro_value, h.host_template_model_htm_id FROM host h, on_demand_macro_host macro WHERE macro.host_host_id = '" . CentreonDB::escape($host_id) . "' AND h.host_id = '" . $host_id . "' AND macro.host_macro_name = '\$_HOST" . $field . "\$' LIMIT 1");
+            $DBRESULT = $pearDB->query("SELECT macro.host_macro_value, h.host_template_model_htm_id FROM host h, on_demand_macro_host macro WHERE macro.host_host_id = '" . CentreonDB::escape($host_id) . "' AND h.host_id = '" . CentreonDB::escape($host_id) . "' AND macro.host_macro_name = '\$_HOST" . $field . "\$' LIMIT 1");
             $row = $DBRESULT->fetchRow();
             if (isset($row["host_macro_value"]) && $row["host_macro_value"])
                 return $row["host_macro_value"];
@@ -546,7 +546,7 @@ function getMyHostExtendedInfoField($host_id = NULL, $field) {
 
     if ($version < 3) {
         while (1) {
-            $DBRESULT = $pearDB->query("SELECT ehi.`" . $field . "`, h.host_template_model_htm_id FROM host h, extended_host_information ehi WHERE ehi.host_host_id = '" . CentreonDB::escape($host_id) . "' AND h.host_id = '" . $host_id . "' LIMIT 1");
+            $DBRESULT = $pearDB->query("SELECT ehi.`" . $field . "`, h.host_template_model_htm_id FROM host h, extended_host_information ehi WHERE ehi.host_host_id = '" . CentreonDB::escape($host_id) . "' AND h.host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
             $row = $DBRESULT->fetchRow();
             if (isset($row[$field]) && $row[$field])
                 return $row[$field];
@@ -912,7 +912,7 @@ function getMyServiceExtendedInfoField($service_id = NULL, $field) {
 
     $tab = array();
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT `extended_service_information`.`" . $field . "`, `service`.`service_template_model_stm_id` FROM `service`, `extended_service_information` WHERE `extended_service_information`.`service_service_id` = '" . $service_id . "' AND `service`.`service_id` = '" . $service_id . "' LIMIT 1");
+        $DBRESULT = $pearDB->query("SELECT `extended_service_information`.`" . $field . "`, `service`.`service_template_model_stm_id` FROM `service`, `extended_service_information` WHERE `extended_service_information`.`service_service_id` = '" . CentreonDb::escape($service_id) . "' AND `service`.`service_id` = '" . CentreonDb::escape($service_id) . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         $field_result = $row[$field];
         if ($row[$field]) {
@@ -1049,13 +1049,13 @@ function getMyServiceID($service_description = null, $host_id = null, $hg_id = n
         # The Service might be link with a HostGroup
         $DBRESULT = $pearDB->query("SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
                 " WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-                " AND service_id = hsr.service_service_id AND service_description = '" . $service_description . "'");
+                " AND service_id = hsr.service_service_id AND service_description = '" . CentreonDb::escape($service_description) . "'");
         $row = $DBRESULT->fetchRow();
         if ($row["service_id"])
             return $row["service_id"];
     }
     if ($hg_id) {
-        $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '" . CentreonDB::escape($hg_id) . "' AND hsr.service_service_id = service_id AND service_description = '" . $service_description . "' LIMIT 1");
+        $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '" . CentreonDB::escape($hg_id) . "' AND hsr.service_service_id = service_id AND service_description = '" . CentreonDb::escape($service_description) . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         if ($row["service_id"])
             return $row["service_id"];
@@ -1777,7 +1777,7 @@ function check_injection($sid) {
 function isHostLocalhost($pearDB, $host_name = NULL) {
     if (!isset($host_name))
         return 0;
-    $DBRESULT = $pearDB->query("SELECT `localhost` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '$host_name' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT `localhost` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '".CentreonDb::escape($host_name)."' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
     $nagios_server = $DBRESULT->fetchRow();
     $DBRESULT->free();
     if (isset($nagios_server['localhost']))
@@ -1788,7 +1788,7 @@ function isHostLocalhost($pearDB, $host_name = NULL) {
 function isPollerLocalhost($pearDB, $id = NULL) {
     if (!isset($id))
         return 0;
-    $DBRESULT = $pearDB->query("SELECT `localhost` FROM nagios_server WHERE nagios_server.id = '$id' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT `localhost` FROM nagios_server WHERE nagios_server.id = '".CentreonDb::escape($id)."' LIMIT 1");
     $nagios_server = $DBRESULT->fetchRow();
     $DBRESULT->free();
     if (isset($nagios_server['localhost']))
@@ -1799,7 +1799,7 @@ function isPollerLocalhost($pearDB, $id = NULL) {
 function GetMyHostPoller($pearDB, $host_name = NULL) {
     if (!isset($host_name))
         return 0;
-    $DBRESULT = $pearDB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '$host_name' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '".CentreonDb::escape($host_name)."' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
     $nagios_server = $DBRESULT->fetchRow();
     if (isset($nagios_server['id'])) {
         return $nagios_server['id'];
@@ -1816,7 +1816,7 @@ function GetMyHostPoller($pearDB, $host_name = NULL) {
 function check_session($sid, $pearDB) {
     if (isset($sid)) {
         $sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
-        $res = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $sid . "'");
+        $res = $pearDB->query("SELECT * FROM session WHERE session_id = '" . CentreonDb::escape($sid) . "'");
         if ($session = $res->fetchRow()) {
             return $session["user_id"];
         } else

@@ -251,7 +251,7 @@ if ($oreon->broker->getBroker() == 'broker') {
     	    	WHERE cb.config_id = cbi.config_id
     	    		AND cbi.config_group = "stats"
     	    		AND cbi.config_key = "fifo"
-    	    		AND cb.ns_nagios_server = ' . $selectedPoller;
+    	    		AND cb.ns_nagios_server = ' . CentreonDB::escape($selectedPoller);
     $res = $pearDB->query($queryStatName);
     if (PEAR::isError($res)) {
         $tpl->assign('msg_err', _('Error in getting stats filename'));

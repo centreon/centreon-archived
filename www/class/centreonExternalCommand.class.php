@@ -35,9 +35,7 @@
  * SVN : $Id$
  *
  */
-
 require_once "@CENTREON_ETC@/centreon.conf.php";
-//require_once "/etc/centreon/centreon.conf.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
 require_once $centreon_path . "/www/include/common/common-Func.php";
 
@@ -268,9 +266,9 @@ class CentreonExternalCommand {
 		 * Check if $host is an id or a name
 		 */
 		if (preg_match("/^[0-9]*$/", $host)) {
-			$DBRESULT = $this->DB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE ns_host_relation.host_host_id = '$host' AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+			$DBRESULT = $this->DB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE ns_host_relation.host_host_id = '".CentreonDB::escape($host)."' AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
 		} else {
-			$DBRESULT = $this->DB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '$host' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+			$DBRESULT = $this->DB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '".CentreonDB::escape($host)."' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
 		}
 		$nagios_server = $DBRESULT->fetchRow();
 		if (isset($nagios_server['id'])) {
