@@ -36,11 +36,41 @@
  *
  */
 
-    if (!isset($oreon) || !isset($_GET['object']) || !isset($_GET['action'])) {
-        return json_encode(array());
+    require_once "@CENTREON_ETC@/centreon.conf.php";
+    require_once $centreon_path . 'www/class/centreonSession.class.php';
+    require_once $centreon_path . 'www/class/centreon.class.php';
+
+    ini_set("session.gc_maxlifetime", "31536000");
+
+    CentreonSession::start();
+
+    /*
+     * Check autologin here
+     */
+    if (!isset($_SESSION["centreon"])) {
+        if (!isset($_GET['autologin'])) {
+            header("Location: index.php?disconnect=1");
+        } else {
+            $args = NULL;
+            foreach ($_GET as $key=>$value) { 
+                $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
+            }
+            header("Location: index.php?".$args."");
+        }
     }
 
-    include "@CENTREON_ETC@/centreon.conf.php";
+    /*
+     * Define Oreon var alias
+     */
+    if (isset($_SESSION["centreon"])) {
+        $centreon = $_SESSION["centreon"];
+        $oreon = $centreon;
+    }
+    if (!isset($centreon) || !is_object($centreon) || !isset($_GET['object']) || !isset($_GET['action'])) {
+        echo json_encode(array());
+        return;
+    }
+
     require_once $centreon_path . "/www/class/centreonDB.class.php";
     require_once "./webService.class.php";
 
@@ -50,7 +80,8 @@
     $webService = $webServices->getWebService($_GET['object'], $action);
 
     if (!count($webService)) {
-        return json_encode(array());
+        echo json_encode(array());
+        return;
     }
 
     require_once($webService['path']);
