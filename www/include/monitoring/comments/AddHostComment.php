@@ -115,7 +115,7 @@
 
 		  	$valid = false;
 			if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
-				if (!isset($_POST["persistant"]))
+				if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array(0, 1)))
 					$_POST["persistant"] = 0;
 				if (!isset($_POST["comment"]))
 					$_POST["comment"] = 0;
