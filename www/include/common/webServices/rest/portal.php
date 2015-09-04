@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -37,56 +36,66 @@
  *
  */
 
-if (!isset($centreon)) {
-    exit();
-}
+    require_once "@CENTREON_ETC@/centreon.conf.php";
+    require_once $centreon_path . 'www/class/centreonSession.class.php';
+    require_once $centreon_path . 'www/class/centreon.class.php';
 
-/*
- * External Command Object
- */
-$ecObj = new CentreonExternalCommand($centreon);
+    ini_set("session.gc_maxlifetime", "31536000");
 
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+    CentreonSession::start();
 
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
-
-/*
- * Path to the configuration dir
- */
-$path = "./include/monitoring/downtime/";
-
-/*
- * PHP functions
- */
-require_once "./include/common/common-Func.php";
-require_once "./include/monitoring/downtime/common-Func.php";
-require_once "./include/monitoring/external_cmd/functions.php";
-
-switch ($o) {
-    case "as" :
-        require_once($path . "AddSvcDowntime.php");
-        break;
-    case "ds" :
-        if (isset($_POST["select"])) {
-            $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
-            deleteDowntimeFromDb($oreon, $_POST['select']);
+    /*
+     * Check autologin here
+     */
+    if (!isset($_SESSION["centreon"])) {
+        if (!isset($_GET['autologin'])) {
+            header("Location: index.php?disconnect=1");
+        } else {
+            $args = NULL;
+            foreach ($_GET as $key=>$value) { 
+                $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
+            }
+            header("Location: index.php?".$args."");
         }
-        require_once($path . "viewServiceDowntime.php");
-        break;
-    case "cs" :
-        $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
-        require_once($path . "viewServiceDowntime.php");
-        break;
-    case "vs" :
-        require_once($path . "viewServiceDowntime.php");
-        break;
-    default :
-        require_once($path . "viewServiceDowntime.php");
-        break;
-}
+    }
+
+    /*
+     * Define Oreon var alias
+     */
+    if (isset($_SESSION["centreon"])) {
+        $centreon = $_SESSION["centreon"];
+        $oreon = $centreon;
+    }
+    if (!isset($centreon) || !is_object($centreon) || !isset($_GET['object']) || !isset($_GET['action'])) {
+        echo json_encode(array());
+        return;
+    }
+
+    require_once $centreon_path . "/www/class/centreonDB.class.php";
+    require_once "./webService.class.php";
+
+    $action = 'get' . ucfirst($_GET['action']);
+
+    $webServices = new CentreonWebService();
+    $webService = $webServices->getWebService($_GET['object'], $action);
+
+    if (!count($webService)) {
+        echo json_encode(array());
+        return;
+    }
+
+    require_once($webService['path']);
+
+    $object = new $webService['class']();
+
+    $q = "";
+    if (isset($_GET['q'])) {
+        $q = $_GET['q'];
+    }
+
+    if (method_exists($object, $action)) {
+        header('Content-Type: application/json');
+        $object->$action($q);
+    }
+
 ?>

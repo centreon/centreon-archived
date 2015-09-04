@@ -35,6 +35,10 @@
 	margin-left: 153px;
 }
 
+.broker_stats ul.filters {
+	margin-left: 153px;
+}
+
 .broker_stats ul li {
 	list-style: none;
 }
@@ -92,7 +96,7 @@
 	 		<div class="informations" id="{$io_name}">
 	 		<div class="info"><span class="info_name">{$lang.state}</span><span>{$io_infos.state}</span></div>
 	 		{foreach from=$io_infos key=info_key item=info_value}
-	 		{if $info_key != 'state' && $info_key != 'type' && $info_key != 'peers'}
+	 		{if $info_key != 'state' && $info_key != 'type' && $info_key != 'peers' && $info_key != 'filters'}
                         <div class="info">
                                 <span class="info_name">
                                         {if $lang[$info_key]}
@@ -113,6 +117,14 @@
 	 		<li>{$peer}</li>
 	 		{/foreach}</ul>
 	 		</span></div>
+			{/if}
+			</div>
+			{if count($io_infos.filters)}
+			<div class="info"><span class="info_name">{$lang.filters}</span><span>
+			<ul class="filters" id="filters_{$io_name}">{foreach from=$io_infos.filters item=filter}
+			<li>{$filter}</li>
+			{/foreach}</ul>
+			</span></div>
 	 		{/if}
 	 		</div>
 	 		</div>

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -37,56 +36,48 @@
  *
  */
 
-if (!isset($centreon)) {
-    exit();
-}
+global $centreon_path;
+require_once $centreon_path . "/www/class/centreonBroker.class.php";
 
-/*
- * External Command Object
- */
-$ecObj = new CentreonExternalCommand($centreon);
+class CentreonMetric {
+    protected $pearDB;
+    protected $pearDBMonitoring;
 
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
-
-/*
- * Path to the configuration dir
- */
-$path = "./include/monitoring/downtime/";
-
-/*
- * PHP functions
- */
-require_once "./include/common/common-Func.php";
-require_once "./include/monitoring/downtime/common-Func.php";
-require_once "./include/monitoring/external_cmd/functions.php";
-
-switch ($o) {
-    case "as" :
-        require_once($path . "AddSvcDowntime.php");
-        break;
-    case "ds" :
-        if (isset($_POST["select"])) {
-            $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
-            deleteDowntimeFromDb($oreon, $_POST['select']);
+    /**
+     * Constructor
+     *
+     * @param CentreonDB $db
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->pearDB = new CentreonDB();
+        $brk = new CentreonBroker($this->pearDB);
+        if ($brk->getBroker() == 'broker') {
+            $this->pearDBMonitoring = new CentreonDB('centstorage');
+        } else {
+            $this->pearDBMonitoring = new CentreonDB('ndo');
         }
-        require_once($path . "viewServiceDowntime.php");
-        break;
-    case "cs" :
-        $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
-        require_once($path . "viewServiceDowntime.php");
-        break;
-    case "vs" :
-        require_once($path . "viewServiceDowntime.php");
-        break;
-    default :
-        require_once($path . "viewServiceDowntime.php");
-        break;
+    }
+
+    /**
+     * Get metric list
+     *
+     * @return array
+     */
+    public function getList($q = "")
+    {
+        $query = "SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as \"metric_name\" FROM `metrics` WHERE metric_name LIKE '%$q%' ORDER BY `metric_name` COLLATE utf8_general_ci ";
+        $DBRESULT = $this->pearDBMonitoring->query($query);
+        $metrics = array();
+        while ($row = $DBRESULT->fetchRow()) {
+            $metrics[] = array(
+                'id' => $row['metric_name'],
+                'text' => $row['metric_name']
+            );
+        }
+
+        echo json_encode($metrics);
+    }
 }
 ?>
