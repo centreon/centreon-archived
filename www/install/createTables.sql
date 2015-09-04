@@ -1485,7 +1485,7 @@ CREATE TABLE `giv_graphs_template` (
   `base` int(11) DEFAULT '1000',
   `lower_limit` float DEFAULT NULL,
   `upper_limit` float DEFAULT NULL,
-  `size_to_max` tinyint(6) NOT NULL,
+  `size_to_max` tinyint(6) NOT NULL DEFAULT '0',
   `bg_grid_color` varchar(200) DEFAULT NULL,
   `bg_color` varchar(200) DEFAULT NULL,
   `police_color` varchar(200) DEFAULT NULL,
