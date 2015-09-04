@@ -62,7 +62,7 @@
 			
 		foreach ($sc as $key => $value)	{
 			
-			$DBRESULT = $pearDB->query("SELECT * FROM `command_categories` WHERE `cmd_category_id` = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM `command_categories` WHERE `cmd_category_id` = '".intval($key)."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["cmd_category_id"] = '';
 			
@@ -102,7 +102,7 @@
 		global $pearDB;
 		$select = $_POST["select"];
 		foreach ($select as $key => $value){
-			$DBRESULT = $pearDB->query("DELETE FROM `command_categories` WHERE `cmd_category_id` = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM `command_categories` WHERE `cmd_category_id` = '".intval($key)."'");
 		}
 	}
 
