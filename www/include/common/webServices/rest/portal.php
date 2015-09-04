@@ -91,6 +91,10 @@
     $q = "";
     if (isset($_GET['q'])) {
         $q = $_GET['q'];
+    } else {
+        $q = $_GET;
+        unset($q['action']);
+        unset($q['object']);
     }
 
     if (method_exists($object, $action)) {
