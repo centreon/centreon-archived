@@ -67,8 +67,13 @@ class CentreonMetric {
      *
      * @return array
      */
-    public function getList($q = "")
+    public function getList($args = array())
     {
+        if (false === isset($args['q'])) {
+            $q = '';
+        } else {
+            $q = $args['q'];
+        }
         $query = "SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as \"metric_name\" FROM `metrics` WHERE metric_name LIKE '%$q%' ORDER BY `metric_name` COLLATE utf8_general_ci ";
         $DBRESULT = $this->pearDBMonitoring->query($query);
         $metrics = array();
@@ -85,9 +90,9 @@ class CentreonMetric {
     /**
      * Get metrics datas for a service
      *
-     * @param string $q The host id and service id in format hostId_serviceId
+     * @param string $args The host id and service id in format hostId_serviceId
      */
-    public function getMetricsDataByService($q = array())
+    public function getMetricsDataByService($args = array())
     {
         global $centreon;
         
@@ -101,34 +106,34 @@ class CentreonMetric {
         }
         
         /* Validate options */
-        if (false === isset($q['start']) ||
-            false === is_numeric($q['start']) ||
-            false === isset($q['end']) ||
-            false === is_numeric($q['end'])) {
+        if (false === isset($args['start']) ||
+            false === is_numeric($args['start']) ||
+            false === isset($args['end']) ||
+            false === is_numeric($args['end'])) {
             $this->sendJson("Bad Request", 400);
         }
 
-        $start = $q['start'];
-        $end = $q['end'];
+        $start = $args['start'];
+        $end = $args['end'];
         
         /* Get the numbers of points */
         $rows = 200;
-        if (isset($q['rows'])) {
-            if (false === is_numeric($q['rows'])) {
+        if (isset($args['rows'])) {
+            if (false === is_numeric($args['rows'])) {
                 $this->sendJson("Bad Request", 400);
             }
-            $rows = $q['rows'];
+            $rows = $args['rows'];
         }
         if ($rows < 10) {
             $this->sendJson("The rows must be greater as 10", 400);
         }
         
-        if (false === isset($q['ids'])) {
+        if (false === isset($args['ids'])) {
             $this->sendJson(array());
         }
         
         /* Get the list of service ID */
-        $ids = explode(',', $q['ids']);
+        $ids = explode(',', $args['ids']);
         $result = array();
         
         foreach ($ids as $id) {

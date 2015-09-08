@@ -39,6 +39,7 @@
     require_once "@CENTREON_ETC@/centreon.conf.php";
     require_once $centreon_path . 'www/class/centreonSession.class.php';
     require_once $centreon_path . 'www/class/centreon.class.php';
+    require_once dirname(__FILE__) . '/exceptions.php';
 
     ini_set("session.gc_maxlifetime", "31536000");
 
@@ -88,18 +89,20 @@
 
     $object = new $webService['class']();
 
-    $q = "";
-    if (isset($_GET['q'])) {
-        $q = $_GET['q'];
-    } else {
-        $q = $_GET;
-        unset($q['action']);
-        unset($q['object']);
-    }
+    $args = $_GET;
+    unset($args['action']);
+    unset($args['object']);
 
     if (method_exists($object, $action)) {
         header('Content-Type: application/json');
-        $object->$action($q);
+        try {
+            $object->$action($args);
+        } catch (RestException $e) {
+            echo json_encode(array());
+            return;
+        } catch (RestExeption $e) {
+            echo json_encode(array());
+            return;
+        }
     }
-
 ?>
