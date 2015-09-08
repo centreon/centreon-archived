@@ -68,14 +68,13 @@ class CentreonWebService {
     {
         $webServiceClass = array();
         foreach ($this->webServicePaths as $webServicePath) {
-            if (preg_match('/\/rest\/(\w+)_' . $object . '\.class\.php$/i', $webServicePath, $matches)) {
+            if (false !== strpos($webServicePath, '/rest/' . $object . '.class.php')) {
                 require_once $webServicePath;
-                $explodedClassName = explode('_', $matches[1]);
+                $explodedClassName = explode('_', $object);
                 $className = "";
                 foreach ($explodedClassName as $partClassName) {
                     $className .= ucfirst(strtolower($partClassName));
                 }
-                $className .= ucfirst(strtolower($object));
                 if (class_exists($className)) {
                     $objectClass = new $className();
                     if (method_exists($objectClass, $action)) {
