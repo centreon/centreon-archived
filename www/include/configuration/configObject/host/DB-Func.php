@@ -395,7 +395,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array()) {
                         $ehi["host_host_id"] = $maxId["MAX(host_id)"];
                         $ehi["ehi_id"] = NULL;
                         foreach ($ehi as $key2 => $value2) {
-                            $val ? $val .= ($value2 != NULL ? (", '" . $value2 . "'") : ", NULL") : $val .= ($value2 != NULL ? ("'" . $value2 . "'") : "NULL");
+                            $val ? $val .= ($value2 != NULL ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL") : $val .= ($value2 != NULL ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
                             if ($key2 != "ehi_id")
                                 $fields[$key2] = $value2;
                         }
