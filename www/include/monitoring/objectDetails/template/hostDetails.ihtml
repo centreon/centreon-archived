@@ -386,6 +386,17 @@
 						{/foreach}
 						</td>
 					</tr>
+
+                                        <tr class='list_one'>
+						<td class="ListColLeft">
+						{$hostcategorie_label} :<br>
+						{foreach item=hc from=$hostcategorie}
+							&nbsp;&nbsp;&nbsp;-&nbsp;{$hc}<br>
+						{/foreach}
+						</td>
+					</tr>
+
+
 				</table>
 				<br />
                 <table class="ListTable">
