@@ -161,10 +161,10 @@ chmod u+s /usr/lib/nagios/plugins/check_icmp
 yum install -y php54-php-pecl-rrd
 
 # On to the PHP soft now, first let's install composer + update Centreon dependencies
-curl -sS https://getcomposer.org/installer | scl enable php54 "php -- --install-dir=/usr/local/bin"
-mv /usr/local/bin/composer.phar /usr/local/bin/composer
+curl -sS https://getcomposer.org/installer | scl enable php54 "php -- --install-dir=/tmp"
+mv /tmp/composer.phar /usr/local/bin/composer
 cd /srv/centreon
-scl enable php54 "composer update"
+scl enable php54 "/usr/local/bin/composer update"
 
 # Edit centreon.ini
 sed -i 's/^\(username.=.*\)/username=centreon/' /srv/centreon/config/centreon.ini
