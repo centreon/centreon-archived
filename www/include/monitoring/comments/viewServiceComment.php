@@ -128,6 +128,7 @@ if ($oreon->broker->getBroker() == "ndo") {
     $tab_comments_svc[$i]["is_persistent"] = $en[$tab_comments_svc[$i]["is_persistent"]];
     $tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
     $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
+    $tab_comments_svc[$i]['comment_data'] = htmlentities($tab_comments_svc[$i]['comment_data']);
   }
   unset($data);
 } else {
@@ -153,6 +154,7 @@ if ($oreon->broker->getBroker() == "ndo") {
     $tab_comments_svc[$i]["is_persistent"] = $en[$tab_comments_svc[$i]["is_persistent"]];
     $tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
     $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
+    $tab_comments_svc[$i]['comment_data'] = htmlentities($tab_comments_svc[$i]['comment_data']);
   }
   unset($data);
   $DBRESULT->free();

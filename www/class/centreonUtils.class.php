@@ -247,4 +247,18 @@ class CentreonUtils
             return 0;
         }
     }
+
+    /**
+     * Escape a string for present javascript injection
+     *
+     * @param string $string The string to escape
+     * @return string
+     */
+    public static function escapeSecure($string)
+    {
+        /* Remove script tags */
+        $string = preg_replace("/<script.*?\/script>/s", "", $string);
+
+        return $string;
+    }
 }
