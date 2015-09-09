@@ -297,7 +297,7 @@
             return $list;
         }
         
-        public function getServiceTemplateTree($serviceId,$getMacros = true){
+        /*public function getServiceTemplateTree($serviceId,$macros = null){
             $res = $this->db->query("SELECT s.service_id, s.service_template_model_stm_id 
                                         FROM service s
                                         WHERE s.service_id = ".$this->db->escape($serviceId)."
@@ -305,16 +305,30 @@
             $service = array();
             while ($row = $res->fetchRow()) {
                 $service['service_id'] = $row['service_id'];
-                if($getMacros){
-                    $service['macros'] = $this->getCustomMacro($row['service_id']);
-                }
+                $service['macros'] = $this->getCustomMacro($row['service_id']);
                 if(!is_null($row['service_template_model_stm_id'])){
                     $service['parentTpl'] = $this->getServiceTemplateTree($row['service_template_model_stm_id']);
                 }
             }
+            return $service;
         }
         
-        
+        public function getMacrosFromService($serviceId){
+            $res = $this->db->query("SELECT svc_macro_name, svc_macro_value, is_password
+                FROM on_demand_macro_service
+                WHERE svc_svc_id = " . 
+                $this->db->escape($serviceId));
+            $macroArray = array();
+            while ($row = $res->fetchRow()) {
+                $arr = array();
+                if (preg_match('/\$_SERVICE(.*)\$$/', $row['svc_macro_name'], $matches)) {
+                    $arr['name'] = $matches[1];
+                    $arr['value'] = $row['svc_macro_value'];
+                    $arr['password'] = $row['is_password'] ? 1 : NULL;
+                    $macroArray[] = $arr;
+                }
+            }
+        }*/
         
         
         
