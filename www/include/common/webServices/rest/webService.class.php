@@ -68,14 +68,13 @@ class CentreonWebService {
     {
         $webServiceClass = array();
         foreach ($this->webServicePaths as $webServicePath) {
-            if (preg_match('/\/rest\/(\w+)_' . $object . '\.class\.php$/i', $webServicePath, $matches)) {
+            if (false !== strpos($webServicePath, '/rest/' . $object . '.class.php')) {
                 require_once $webServicePath;
-                $explodedClassName = explode('_', $matches[1]);
+                $explodedClassName = explode('_', $object);
                 $className = "";
                 foreach ($explodedClassName as $partClassName) {
                     $className .= ucfirst(strtolower($partClassName));
                 }
-                $className .= ucfirst(strtolower($object));
                 if (class_exists($className)) {
                     $objectClass = new $className();
                     if (method_exists($objectClass, $action)) {
@@ -90,6 +89,38 @@ class CentreonWebService {
 
         return $webServiceClass;
     }
-
+    
+    /**
+     * Send json return
+     *
+     * @param mixed $data The values
+     * @param integer $code The HTTP code
+     */
+    public static function sendJson($data, $code = 200)
+    {
+        switch ($code) {
+            case 500:
+                header("HTTP/1.1 500 Internal Server Error");
+                break;
+            case 400:
+                header("HTTP/1.1 400 Bad Request");
+                break;
+            case 401:
+                header("HTTP/1.1 401 Unauthorized");
+                break;
+            case 403:
+                header("HTTP/1.1 403 Forbidden");
+                break;
+            case 404:
+                header("HTTP/1.1 404 Object not found");
+                break;
+            case 405:
+                header("HTTP/1.1 405 Method not allowed");
+                break;
+        }
+        header('Content-type: application/json');
+        print json_encode($data);
+        exit();
+    }
 }
 ?>

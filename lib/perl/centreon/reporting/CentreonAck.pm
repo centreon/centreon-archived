@@ -67,7 +67,7 @@ sub getServiceAckTime {
     my $query;
     
     if ($dbLayer eq "ndo") {
-        $query = "SELECT UNIX_TIMESTAMP(`entry_time`) as ack_time ".
+        $query = "SELECT UNIX_TIMESTAMP(`entry_time`) as ack_time, is_sticky as sticky ".
             " FROM `nagios_acknowledgements` a, `nagios_objects` o".
             " WHERE o.`object_id` = a.`object_id`".
             " AND `acknowledgement_type` = '1'".
@@ -78,7 +78,7 @@ sub getServiceAckTime {
             " AND o.`name2` = '".$serviceDescription. "'".    
             " ORDER BY `entry_time` asc";
     } elsif ($dbLayer eq "broker") {
-        $query = "SELECT `entry_time` as ack_time ".
+        $query = "SELECT `entry_time` as ack_time, sticky ".
             " FROM `acknowledgements` a, `services` s, `hosts` h ".
             " WHERE h.`name` = '".$hostName. "'".
             " AND h.`host_id` = s.`host_id`".   
@@ -93,11 +93,13 @@ sub getServiceAckTime {
 
     my ($status, $sth) = $centreon->query($query);
     my $ackTime = "NULL";
+    my $sticky = 0;
     if (my $row = $sth->fetchrow_hashref()) {
         $ackTime = $row->{ack_time};
+        $sticky = $row->{sticky};
     }
     $sth->finish();
-    return ($ackTime);
+    return ($ackTime, $sticky);
 }
 
 # returns first ack time for a service or a host event
@@ -111,7 +113,7 @@ sub getHostAckTime {
     my $query;
     
     if ($dbLayer eq "ndo") {
-        $query = "SELECT UNIX_TIMESTAMP(`entry_time`) as ack_time ".
+        $query = "SELECT UNIX_TIMESTAMP(`entry_time`) as ack_time, is_sticky as sticky ".
             " FROM `nagios_acknowledgements` a, `nagios_objects` o".
             " WHERE o.`object_id` = a.`object_id`".
             " AND `acknowledgement_type` = '0'".
@@ -120,7 +122,7 @@ sub getHostAckTime {
             " AND o.`name1` = '".$hostName. "'".
             " ORDER BY `entry_time` asc";
     } elsif ($dbLayer eq "broker") {
-        $query = "SELECT entry_time as ack_time ".
+        $query = "SELECT entry_time as ack_time, sticky ".
             " FROM `acknowledgements` a, `hosts` h".
             " WHERE h.`host_id` = a.`host_id`".
             " AND `type` = 0".
@@ -132,11 +134,13 @@ sub getHostAckTime {
 
     my ($status, $sth) = $centreon->query($query);
     my $ackTime = "NULL";
+    my $sticky = 0;
     if (my $row = $sth->fetchrow_hashref()) {
         $ackTime = $row->{ack_time};
+        $sticky = $row->{sticky};
     }
     $sth->finish();
-    return ($ackTime);
+    return ($ackTime, $sticky);
 }
 
 1;

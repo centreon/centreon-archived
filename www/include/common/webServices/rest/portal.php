@@ -50,13 +50,13 @@
      */
     if (!isset($_SESSION["centreon"])) {
         if (!isset($_GET['autologin'])) {
-            header("Location: index.php?disconnect=1");
+            CentreonWebService::sendJson("Unauthorized", 401);
         } else {
             $args = NULL;
             foreach ($_GET as $key=>$value) { 
                 $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
             }
-            header("Location: index.php?".$args."");
+            CentreonWebService::sendJson("Unauthorized", 401);
         }
     }
 
@@ -68,8 +68,7 @@
         $oreon = $centreon;
     }
     if (!isset($centreon) || !is_object($centreon) || !isset($_GET['object']) || !isset($_GET['action'])) {
-        echo json_encode(array());
-        return;
+        CentreonWebService::sendJson("Bad parameters", 400);
     }
 
     require_once $centreon_path . "/www/class/centreonDB.class.php";
@@ -81,8 +80,7 @@
     $webService = $webServices->getWebService($_GET['object'], $action);
 
     if (!count($webService)) {
-        echo json_encode(array());
-        return;
+        CentreonWebService::sendJson("Method not found", 404);
     }
 
     require_once($webService['path']);
@@ -94,15 +92,13 @@
     unset($args['object']);
 
     if (method_exists($object, $action)) {
-        header('Content-Type: application/json');
         try {
-            $object->$action($args);
+            $data = $object->$action($args);
+            CentreonWebService::sendJson($data);
         } catch (RestException $e) {
-            echo json_encode(array());
-            return;
-        } catch (RestExeption $e) {
-            echo json_encode(array());
-            return;
+            CentreonWebService::sendJson($e->getMessage(), $e->getCode());
+        } catch (Exeption $e) {
+            CentreonWebService::sendJson("Internal server error", 500);
         }
     }
 ?>

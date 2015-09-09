@@ -202,14 +202,13 @@ sub rebuildIncidents {
     my $time_period = shift;
     
     my ($start, $midnight) = $self->get_date(option_label => 'opt_stime', option => '--start-time');
+    my ($start2, $end2);
     my ($end) = $self->get_date(option_label => 'opt_etime', option => '--end-time');
     # Getting first log and last log times
     if (!defined($start) || !defined($end)) {
-        my ($start2, $end2) = $self->{nagiosLog}->getFirstLastLogTime();
-        $start = $start2 if (!defined($start));
-        $end = $end2 if (!defined($end));
+        ($start2, $end2) = $self->{nagiosLog}->getFirstLastLogTime();
     }
-    if ($start > $end) {
+    if (defined($start) && defined($end) && $start > $end) {
         $self->{logger}->writeLogError("start date couldn't be more recent than end date");
         $self->exit_pgr();
     }
@@ -217,6 +216,8 @@ sub rebuildIncidents {
     # Empty tables
     $self->{serviceEvents}->truncateStateEvents(start => $start, midnight => $midnight);
     $self->{hostEvents}->truncateStateEvents(start => $start, midnight => $midnight);    
+    $start = $start2 if (!defined($start));
+    $end = $end2 if (!defined($end));
     
     my $periods = $self->getDaysFromPeriod($start, $end);
     # archiving logs for each days

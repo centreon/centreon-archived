@@ -84,7 +84,7 @@ class CentreonMetric {
             );
         }
 
-        echo json_encode($metrics);
+        return $metrics;
     }
     
     /**
@@ -110,7 +110,7 @@ class CentreonMetric {
             false === is_numeric($args['start']) ||
             false === isset($args['end']) ||
             false === is_numeric($args['end'])) {
-            $this->sendJson("Bad Request", 400);
+            throw new RestBadRequestException("Bad parameters");
         }
 
         $start = $args['start'];
@@ -120,12 +120,12 @@ class CentreonMetric {
         $rows = 200;
         if (isset($args['rows'])) {
             if (false === is_numeric($args['rows'])) {
-                $this->sendJson("Bad Request", 400);
+                throw new RestBadRequestException("Bad parameters");
             }
             $rows = $args['rows'];
         }
         if ($rows < 10) {
-            $this->sendJson("The rows must be greater as 10", 400);
+            throw new RestBadRequestException("The rows must be greater as 10");
         }
         
         if (false === isset($args['ids'])) {
@@ -140,7 +140,7 @@ class CentreonMetric {
             list($hostId, $serviceId) = explode('_', $id);
             if (false === is_numeric($hostId) ||
                 false === is_numeric($serviceId)) {
-                $this->sendJson("Bad Request", 400);
+                throw new RestBadRequestException("Bad parameters");
             }
 
             /* Check ACL is not admin */
@@ -152,7 +152,7 @@ class CentreonMetric {
                         AND group_id IN (" . $aclGroups . ")";
                 $res = $pearDBD->query($query);
                 if (0 == $res->numRows()) {
-                    $this->sendJson("Access denied", 403);
+                    throw new RestForbiddenException("Access denied");
                 }
             }
 
@@ -164,7 +164,7 @@ class CentreonMetric {
                 $indexData = CentreonGraphService::getIndexId($hostId, $serviceId, $this->pearDBMonitoring);
                 $graph = new CentreonGraphService($indexData, session_id());
             } catch (Exception $e) {
-                $this->sendJson("Graph not found", 404);
+                throw new RestNotFoundException("Graph not found");
             }
             $graph->setRRDOption("start", $start);
             $graph->setRRDOption("end", $end);
@@ -196,35 +196,9 @@ class CentreonMetric {
             );
         }
         
-        $this->sendJson($result);
+        return $result;
     }
     
-    /**
-     * Send json return
-     *
-     * @param mixed $values The values
-     * @param integer $code The HTTP code
-     */
-    protected function sendJson($values, $code = 200)
-    {
-        switch ($code) {
-            case 500:
-                header("HTTP/1.1 500 Internal Server Error");
-                break;
-            case 403:
-                header("HTTP/1.1 403 Forbidden");
-                break;
-            case 404:
-                header("HTTP/1.1 404 Object not found");
-                break;
-            case 400:
-                header("HTTP/1.1 400 Bad Request");
-                break;
-        }
-        header('Content-type: application/json');
-        print json_encode($values);
-        exit();
-    }
     
     /**
      * Function for test is a value is NaN

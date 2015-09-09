@@ -84,8 +84,8 @@ try {
     $result_host_macros = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // get services
-    $stmt = $db_centreon->prepare("SELECT host.host_id, service.service_id, service.service_description, service.service_template_model_stm_id 
-        FROM host, host_service_relation, service, ns_host_relation 
+    $stmt = $db_centreon->prepare("SELECT host.host_id, service.service_id, service.service_description, service.service_template_model_stm_id, extended_service_information.esi_notes
+        FROM host, host_service_relation, ns_host_relation, service LEFT JOIN extended_service_information ON service.service_id = extended_service_information.service_service_id
         WHERE ns_host_relation.nagios_server_id = :server_id 
         AND ns_host_relation.host_host_id = host.host_id 
         AND host.host_id = host_service_relation.host_host_id 
@@ -96,8 +96,8 @@ try {
     $result_host_services = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // get services by hostgroup
-    $stmt = $db_centreon->prepare("SELECT host.host_id, service.service_id, service.service_description, service.service_template_model_stm_id, hostgroup_relation.hostgroup_hg_id 
-        FROM host, host_service_relation, hostgroup_relation, service, ns_host_relation 
+    $stmt = $db_centreon->prepare("SELECT host.host_id, service.service_id, service.service_description, service.service_template_model_stm_id, hostgroup_relation.hostgroup_hg_id, extended_service_information.esi_notes
+        FROM host, host_service_relation, hostgroup_relation, ns_host_relation, service LEFT JOIN extended_service_information ON service.service_id = extended_service_information.service_service_id
         WHERE ns_host_relation.nagios_server_id = :server_id 
         AND ns_host_relation.host_host_id = host.host_id 
         AND host.host_id = hostgroup_relation.host_host_id 
@@ -198,6 +198,13 @@ try {
                 );
                 
             CREATE INDEX IF NOT EXISTS idx_service_service_id ON service (service_id);
+            
+            CREATE TABLE IF NOT EXISTS `extended_service_information` (
+                `service_service_id` int(11) UNIQUE NOT NULL,
+                `esi_notes` text DEFAULT NULL
+                );
+            
+            CREATE INDEX IF NOT EXISTS idx_esi_service_service_id ON extended_service_information (service_service_id);
 
             CREATE TABLE IF NOT EXISTS `hostgroup_relation` (
                 `host_host_id` int(11) DEFAULT NULL,
@@ -388,6 +395,12 @@ try {
                 $stmt->bindParam(':service_service_id', $value['service_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':host_host_id', $value['host_id'], PDO::PARAM_INT);
                 $stmt->execute();
+                
+                $stmt = $dbh_sqlite->prepare("INSERT INTO extended_service_information (service_service_id, esi_notes) VALUES (
+                    :service_service_id, :esi_notes)");
+                $stmt->bindParam(':service_service_id', $value['service_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':esi_notes', $value['esi_notes'], PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // Insert services by hostgroup
@@ -412,6 +425,12 @@ try {
                     :service_service_id, :hostgroup_hg_id)");
                 $stmt->bindParam(':service_service_id', $value['service_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':hostgroup_hg_id', $value['hostgroup_hg_id'], PDO::PARAM_INT);
+                $stmt->execute();
+                
+                $stmt = $dbh_sqlite->prepare("INSERT INTO extended_service_information (service_service_id, esi_notes) VALUES (
+                    :service_service_id, :esi_notes)");
+                $stmt->bindParam(':service_service_id', $value['service_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':esi_notes', $value['esi_notes'], PDO::PARAM_STR);
                 $stmt->execute();
             }
 

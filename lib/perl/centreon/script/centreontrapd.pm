@@ -98,6 +98,8 @@ sub new {
        unknown_trap_mode => 0,
        unknown_trap_file => '/var/log/centreon/centreontrapd_unknown.log',
        unknown_trap_facility => undef,
+       # local_broker
+       local_broker => undef,
     );
    
     # save trap_data
@@ -456,6 +458,8 @@ sub set_current_values {
     $self->{current_server_ip_address} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{ns_ip_address};
     $self->{current_hostname} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{host_name};
     $self->{current_service_desc} = $self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{service_description};
+    $self->{current_service_notes} = defined($self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{esi_notes}) ?
+        $self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{esi_notes} : '';
     $self->{current_user_arg1} = defined($self->{user_arg1}) ? $self->{user_arg1} : '';
     $self->{current_user_arg2} = defined($self->{user_arg2}) ? $self->{user_arg2} : '';
 }
@@ -822,6 +826,7 @@ sub substitute_centreon_var {
     $str =~ s/\@HOSTADDRESS\@/$self->{current_ip}/g;
     $str =~ s/\@HOSTADDRESS2\@/$self->{trap_data}->{agent_dns_name}/g;
     $str =~ s/\@SERVICEDESC\@/$self->{current_service_desc}/g;
+    $str =~ s/\@SERVICENOTES\@/$self->{current_service_notes}/g;
     $str =~ s/\@TRAPOUTPUT\@/$self->{traps_global_output}/g;
     $str =~ s/\@OUTPUT\@/$self->{traps_global_output}/g;
     $str =~ s/\@STATUS\@/$self->{traps_global_status}/g;
@@ -833,6 +838,9 @@ sub substitute_centreon_var {
     $str =~ s/\@CMDFILE\@/$self->{cmdFile}/g;
     $str =~ s/\@USERARG1\@/$self->{current_user_arg1}/g;
     $str =~ s/\@USERARG2\@/$self->{current_user_arg2}/g;
+    my $date = strftime("%Y%m%d", localtime());
+    $str =~ s/\@DAY\@/$date/g;
+    
     $str = $self->substitute_host_macro($str);
     return $str;
 }
@@ -932,6 +940,13 @@ sub executeCommand {
     my $datetime = time();
     my $traps_execution_command = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command};
     
+    if ($traps_execution_command =~ /\@TRAPFORWARD\((.*?)\)\@/) {
+        centreon::trapd::lib::trap_forward(trap_data => $self->{trap_data},
+                                           arguments => $1, 
+                                           logger => $self->{logger});
+        return ;
+    }
+    
     $traps_execution_command = $self->substitute_string($traps_execution_command);
     
     ##########################
@@ -989,10 +1004,10 @@ sub getTrapsInfos {
                                                                  agent_dns_name => $self->{trap_data}->{agent_dns_name},
                                                                  ip_address => ${$self->{trap_data}->{var}}[1],
                                                                  centreontrapd => $self);
-        return 0 if ($fstatus == -1);
+        return 0 if ($fstatus == -1);        
         foreach my $host_id (keys %{$self->{trap_data}->{ref_hosts}}) {
             if (!defined($self->{trap_data}->{ref_hosts}->{$host_id}->{nagios_server_id})) {
-                $self->{logger}->writeLogError("Cant get server associated for host '" . $self->{ref_hosts}->{$host_id}->{host_name} . "'");
+                $self->{logger}->writeLogError("Cant get server associated for host '" . $self->{trap_data}->{ref_hosts}->{$host_id}->{host_name} . "'");
                 next;
             }
             $self->{trap_data}->{current_host_id} = $host_id;
@@ -1004,13 +1019,15 @@ sub getTrapsInfos {
             #### Check Host and Services downtimes ###
             if (defined($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime}) && 
                 $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime} ne '' && $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime} > 0 &&
-                $self->{centreontrapd_config}->{mode} == 0) {
-                ($fstatus) = centreon::trapd::lib::check_downtimes($self->{csdb}, 
-                                                                   $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime},
-                                                                   $self->{trap_data}->{trap_date_time_epoch},
-                                                                   $host_id,
-                                                                   $self->{trap_data}->{ref_services},
-                                                                   $self->{logger});
+                ($self->{centreontrapd_config}->{mode} == 0 || defined($self->{centreontrapd_config}->{local_broker}))) {
+                ($fstatus) = centreon::trapd::lib::check_downtimes(csdb => $self->{csdb}, 
+                                                                   downtime => $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime},
+                                                                   trap_time => $self->{trap_data}->{trap_date_time_epoch},
+                                                                   host_id => $host_id,
+                                                                   host_name => $self->{trap_data}->{ref_hosts}->{$host_id}->{host_name},
+                                                                   local_broker => $self->{centreontrapd_config}->{local_broker},
+                                                                   ref_services => $self->{trap_data}->{ref_services},
+                                                                   logger => $self->{logger});
                 return 0 if ($fstatus == -1);
                 # Host in downtime - If no services anymore, condition will match it.
                 next if ($fstatus == 1);
