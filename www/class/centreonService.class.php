@@ -297,6 +297,27 @@
             return $list;
         }
         
+        public function getServiceTemplateTree($serviceId,$getMacros = true){
+            $res = $this->db->query("SELECT s.service_id, s.service_template_model_stm_id 
+                                        FROM service s
+                                        WHERE s.service_id = ".$this->db->escape($serviceId)."
+                                    ");
+            $service = array();
+            while ($row = $res->fetchRow()) {
+                $service['service_id'] = $row['service_id'];
+                if($getMacros){
+                    $service['macros'] = $this->getCustomMacro($row['service_id']);
+                }
+                if(!is_null($row['service_template_model_stm_id'])){
+                    $service['parentTpl'] = $this->getServiceTemplateTree($row['service_template_model_stm_id']);
+                }
+            }
+        }
+        
+        
+        
+        
+        
         /**
          * Insert macro
          * 
