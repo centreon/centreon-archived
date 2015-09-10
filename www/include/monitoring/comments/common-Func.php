@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -35,31 +36,32 @@
  * SVN : $Id$
  *
  */
-	if (!isset($oreon))
-		exit();
+if (!isset($oreon))
+    exit();
 
-	function DeleteComment($type, $hosts = array()){
-		global $oreon, $_GET, $pearDB;
+function DeleteComment($type, $hosts = array()) {
+    global $oreon, $_GET, $pearDB;
 
-		foreach ($hosts as $key => $value)	{
-			$res = preg_split("/\;/", $key);
-			write_command(" DEL_".$type."_COMMENT;".$res[1], GetMyHostPoller($pearDB, $res[0]));
-		}
-	}
+    foreach ($hosts as $key => $value) {
+        $res = preg_split("/\;/", $key);
+        write_command(" DEL_" . $type . "_COMMENT;" . $res[1], GetMyHostPoller($pearDB, $res[0]));
+    }
+}
 
-	function AddHostComment($host, $comment, $persistant){
-		global $oreon, $pearDB;
+function AddHostComment($host, $comment, $persistant) {
+    global $oreon, $pearDB;
 
-		if (!isset($persistant))
-			$persistant = 0;
-		write_command(" ADD_HOST_COMMENT;".getMyHostName($host).";".$persistant.";".$oreon->user->get_alias().";".trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
-	}
+    if (!isset($persistant) || !in_array($persistant, array(0, 1)))
+        $persistant = 0;
+    write_command(" ADD_HOST_COMMENT;" . getMyHostName($host) . ";" . $persistant . ";" . $oreon->user->get_alias() . ";" . trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
+}
 
-	function AddSvcComment($host, $service, $comment, $persistant){
-		global $oreon, $pearDB;
+function AddSvcComment($host, $service, $comment, $persistant) {
+    global $oreon, $pearDB;
 
-		if (!isset($persistant))
-			$persistant = 0;
-		write_command(" ADD_SVC_COMMENT;".getMyHostName($host).";".getMyServiceName($service).";".$persistant.";".$oreon->user->get_alias().";".trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
-	}
+    if (!isset($persistant) || !in_array($persistant, array(0, 1)))
+        $persistant = 0;
+    write_command(" ADD_SVC_COMMENT;" . getMyHostName($host) . ";" . getMyServiceName($service) . ";" . $persistant . ";" . $oreon->user->get_alias() . ";" . trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
+}
+
 ?>

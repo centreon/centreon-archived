@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -74,7 +75,8 @@ if (isset($_SESSION['centreon'])) {
 $locale = $centreon->user->get_lang();
 putenv("LANG=$locale");
 setlocale(LC_ALL, $locale);
-bindtextdomain("messages",  $centreon_path . "www/locale/");;
+bindtextdomain("messages", $centreon_path . "www/locale/");
+;
 bind_textdomain_codeset("messages", "UTF-8");
 textdomain("messages");
 
@@ -82,7 +84,7 @@ $criticality = new CentreonCriticality($obj->DB);
 $instanceObj = new CentreonInstance($obj->DB);
 $media = new CentreonMedia($obj->DB);
 
-$criticality = new CentreonCriticality($obj->DB);	        
+$criticality = new CentreonCriticality($obj->DB);
 $instanceObj = new CentreonInstance($obj->DB);
 $media = new CentreonMedia($obj->DB);
 
@@ -98,32 +100,50 @@ if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $
  */
 $obj->getDefaultFilters();
 
-/** **************************************************
+/** * *************************************************
  * Check Arguments From GET tab
  */
-$o 			= $obj->checkArgument("o", $_GET, "h");
-$p 			= $obj->checkArgument("p", $_GET, "2");
-$nc 		= $obj->checkArgument("nc", $_GET, "0");
-$num 		= $obj->checkArgument("num", $_GET, 0);
-$limit 		= $obj->checkArgument("limit", $_GET, 20);
-$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
+$o = $obj->checkArgument("o", $_GET, "h");
+$p = $obj->checkArgument("p", $_GET, "2");
+$nc = $obj->checkArgument("nc", $_GET, "0");
+$num = $obj->checkArgument("num", $_GET, 0);
+$limit = $obj->checkArgument("limit", $_GET, 20);
+$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 $hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-$search 	= $obj->checkArgument("search", $_GET, "");
-$search_host	= $obj->checkArgument("search_host", $_GET, "");
-$search_output 	= $obj->checkArgument("search_output", $_GET, "");
-$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
-$order 		= $obj->checkArgument("order", $_GET, "ASC");
+$search = $obj->checkArgument("search", $_GET, "");
+$search_host = $obj->checkArgument("search_host", $_GET, "");
+$search_output = $obj->checkArgument("search_output", $_GET, "");
+$sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
+$order = $obj->checkArgument("order", $_GET, "ASC");
 $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 $search_type_host = $obj->checkArgument("search_type_host", $_GET, 1);
 $search_type_service = $obj->checkArgument("search_type_service", $_GET, 1);
 $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
-/** **************************************************
+CentreonDb::check_injection($o);
+CentreonDb::check_injection($p);
+CentreonDb::check_injection($nc);
+CentreonDb::check_injection($num);
+CentreonDb::check_injection($limit);
+CentreonDb::check_injection($instance);
+CentreonDb::check_injection($hostgroups);
+CentreonDb::check_injection($search);
+CentreonDb::check_injection($search_host);
+CentreonDb::check_injection($search_output);
+CentreonDb::check_injection($sort_type);
+CentreonDb::check_injection($order);
+CentreonDb::check_injection($dateFormat);
+CentreonDb::check_injection($search_type_host);
+CentreonDb::check_injection($search_type_service);
+CentreonDb::check_injection($criticality_id);
+
+
+/** * *************************************************
  * Backup poller selection
  */
 $obj->setInstanceHistory($instance);
 
-/** **************************************************
+/** * *************************************************
  * Backup criticality id
  */
 $obj->setCriticality($criticality_id);
@@ -133,13 +153,12 @@ $obj->setCriticality($criticality_id);
  */
 $graphs = array();
 
-/** **************************************************
+/** * *************************************************
  * Get Service status
  */
-
 $instance_filter = "";
 if ($instance != -1) {
-    $instance_filter = " AND h.instance_id = ".$instance." ";
+    $instance_filter = " AND h.instance_id = " . $instance . " ";
 }
 
 $searchHost = "";
@@ -158,16 +177,16 @@ if ($search_output) {
 }
 
 $tabOrder = array();
-$tabOrder["criticality_id"]             = " ORDER BY isnull $order, criticality $order, h.name, s.description ";
-$tabOrder["host_name"] 			= " ORDER BY h.name ". $order.", s.description ";
-$tabOrder["service_description"]= " ORDER BY s.description ". $order.", h.name";
-$tabOrder["current_state"] 		= " ORDER BY s.state ". $order.", h.name, s.description";
-$tabOrder["last_state_change"] 	= " ORDER BY s.last_state_change ". $order.", h.name, s.description";
-$tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change ". $order.", h.name, s.description";
-$tabOrder["last_check"] 		= " ORDER BY s.last_check ". $order.", h.name, s.description";
-$tabOrder["current_attempt"] 	= " ORDER BY s.check_attempt ". $order.", h.name, s.description";
-$tabOrder["output"] 			= " ORDER BY s.output ". $order.", h.name, s.description";
-$tabOrder["default"] 			= $tabOrder['criticality_id'];
+$tabOrder["criticality_id"] = " ORDER BY isnull $order, criticality $order, h.name, s.description ";
+$tabOrder["host_name"] = " ORDER BY h.name " . $order . ", s.description ";
+$tabOrder["service_description"] = " ORDER BY s.description " . $order . ", h.name";
+$tabOrder["current_state"] = " ORDER BY s.state " . $order . ", h.name, s.description";
+$tabOrder["last_state_change"] = " ORDER BY s.last_state_change " . $order . ", h.name, s.description";
+$tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change " . $order . ", h.name, s.description";
+$tabOrder["last_check"] = " ORDER BY s.last_check " . $order . ", h.name, s.description";
+$tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $order . ", h.name, s.description";
+$tabOrder["output"] = " ORDER BY s.output " . $order . ", h.name, s.description";
+$tabOrder["default"] = $tabOrder['criticality_id'];
 
 $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
 				s.icon_image, s.display_name, s.process_perfdata, s.state, s.output as plugin_output,
@@ -198,7 +217,7 @@ if ($criticality_id) {
     $request .= " AND s.service_id = cvs. service_id
                           AND cvs.host_id = h.host_id
                           AND cvs.name = 'CRITICALITY_ID'
-                          AND cvs.value = '" . $obj->DBC->escape($criticality_id)."' ";
+                          AND cvs.value = '" . $obj->DBC->escape($criticality_id) . "' ";
 }
 
 if ($searchHost) {
@@ -223,7 +242,7 @@ if (preg_match("/^svc_unhandled/", $o)) {
             $request .= " AND s.state = '3' ";
         } elseif (isset($matches[1]) && $matches[1] == "pending") {
             $request .= " AND s.state = '4' ";
-        }else {
+        } else {
             $request .= " AND s.state != '0' ";
         }
     } else {
@@ -252,20 +271,20 @@ $request .= " AND h.name NOT LIKE '_Module_%' ";
  * HostGroup Filter
  */
 if (isset($hostgroups) && $hostgroups != 0) {
-    $request .= " AND hg.hostgroup_id = hg2.hostgroup_id AND hg2.enabled = 1 AND hg.host_id = h.host_id AND hg.hostgroup_id IN (".$hostgroups. ") ";
+    $request .= " AND hg.hostgroup_id = hg2.hostgroup_id AND hg2.enabled = 1 AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $hostgroups . ") ";
 }
 
 /**
  * ACL activation
  */
 if (!$obj->is_admin) {
-    $request .= " AND h.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id AND group_id IN (".$obj->grouplistStr.") ";
+    $request .= " AND h.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id AND group_id IN (" . $obj->grouplistStr . ") ";
 }
 
 (isset($tabOrder[$sort_type])) ? $request .= $tabOrder[$sort_type] : $request .= $tabOrder["default"];
-$request .= " LIMIT ".($num * $limit).",".$limit;
+$request .= " LIMIT " . ($num * $limit) . "," . $limit;
 
-/** ***************************************************
+/** * **************************************************
  * Get Pagination Rows
  */
 $DBRESULT = $obj->DBC->query($request);
@@ -286,8 +305,8 @@ if ($critRes->numRows()) {
         $critCache[$critRow['service_id']] = $critRow['value'];
     }
 }
-        
-/* ***************************************************
+
+/* * **************************************************
  * Create Buffer
  */
 $obj->XML->startElement("reponse");
@@ -317,255 +336,248 @@ $host_prev = "";
 $ct = 0;
 $flag = 0;
 
-while ($data = $DBRESULT->fetchRow()) {
-    $passive = 0;
-    $active = 1;
-    $last_check = " ";
-    $duration = " ";
+if (!PEAR::isError($DBRESULT)) {
+    while ($data = $DBRESULT->fetchRow()) {
+        $passive = 0;
+        $active = 1;
+        $last_check = " ";
+        $duration = " ";
 
-    /* Split the plugin_output */
-    $outputLines = explode("\n", $data['plugin_output']);
-    $pluginShortOuput = $outputLines[0];
+        /* Split the plugin_output */
+        $outputLines = explode("\n", $data['plugin_output']);
+        $pluginShortOuput = $outputLines[0];
 
-    if ($data["last_state_change"] > 0 && time() > $data["last_state_change"]) {
-        $duration = CentreonDuration::toString(time() - $data["last_state_change"]);
-    } else if ($data["last_state_change"] > 0) {
-        $duration = " - ";
-    }
+        if ($data["last_state_change"] > 0 && time() > $data["last_state_change"]) {
+            $duration = CentreonDuration::toString(time() - $data["last_state_change"]);
+        } else if ($data["last_state_change"] > 0) {
+            $duration = " - ";
+        }
 
-    $hard_duration = " N/S ";
-    if (($data["last_hard_state_change"] > 0) && ($data["last_hard_state_change"] >= $data["last_state_change"])) {
-        $hard_duration = CentreonDuration::toString(time() - $data["last_hard_state_change"]);
-    }
+        $hard_duration = " N/S ";
+        if (($data["last_hard_state_change"] > 0) && ($data["last_hard_state_change"] >= $data["last_state_change"])) {
+            $hard_duration = CentreonDuration::toString(time() - $data["last_hard_state_change"]);
+        }
 
-    $class = null;
-    if ($data["scheduled_downtime_depth"] > 0) {
-        $class = "line_downtime";
-    } else if ($data["state"] == 2) {
-        $data["acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
-    } else {
-        if ($data["acknowledged"] == 1)
-            $class = "line_ack";
-    }
-
-    $obj->XML->startElement("l");
-    $trClass = $obj->getNextLineClass();
-    if (isset($class)) {
-        $trClass = $class;
-    }
-    $obj->XML->writeAttribute("class", $trClass);
-    $obj->XML->writeElement("o", $ct++);
-    
-    if ($host_prev == $data["name"]) {
-        $obj->XML->writeElement("hc", "transparent");
-        $obj->XML->startElement("hn");
-        $obj->XML->writeAttribute("none", "1");
-        $obj->XML->text($data["name"]);
-        $obj->XML->endElement();
-        $obj->XML->writeElement("hnl", urlencode($data["name"]));
-        $obj->XML->writeElement("hid", $data["host_id"]);
-    } else {
-        $host_prev = $data["name"];
-        if ($data["h_scheduled_downtime_depth"] == 0) {
-            $obj->XML->writeElement("hc", $obj->colorHostInService[$data["host_state"]]);
+        $class = null;
+        if ($data["scheduled_downtime_depth"] > 0) {
+            $class = "line_downtime";
+        } else if ($data["state"] == 2) {
+            $data["acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
         } else {
-            $obj->XML->writeElement("hc", $obj->general_opt['color_downtime']);
+            if ($data["acknowledged"] == 1)
+                $class = "line_ack";
         }
 
-        $obj->XML->writeElement("hnl", urlencode($data["name"]));
-        $obj->XML->startElement("hn");
-        $obj->XML->writeAttribute("none", "0");
-        $obj->XML->text($data["name"], true, false);
-        $obj->XML->endElement();
+        $obj->XML->startElement("l");
+        $trClass = $obj->getNextLineClass();
+        if (isset($class)) {
+            $trClass = $class;
+        }
+        $obj->XML->writeAttribute("class", $trClass);
+        $obj->XML->writeElement("o", $ct++);
 
-        $hostNotesUrl = "none";
-        if ($data["h_notes_url"]) {
-            $hostNotesUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_notes_url"]);
-            $hostNotesUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostNotesUrl);
-            $hostNotesUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostNotesUrl);
-            $hostNotesUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostNotesUrl);
-            $hostNotesUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostNotesUrl);
-            $hostNotesUrl = str_replace("\$INSTANCEADDRESS\$",
-                                        $instanceObj->getParam($data["instance_name"], "ns_ip_address"),
-                                        $hostNotesUrl);
-        }
-        $obj->XML->writeElement("hnu", $hostNotesUrl);
+        if ($host_prev == $data["name"]) {
+            $obj->XML->writeElement("hc", "transparent");
+            $obj->XML->startElement("hn");
+            $obj->XML->writeAttribute("none", "1");
+            $obj->XML->text($data["name"]);
+            $obj->XML->endElement();
+            $obj->XML->writeElement("hnl", urlencode($data["name"]));
+            $obj->XML->writeElement("hid", $data["host_id"]);
+        } else {
+            $host_prev = $data["name"];
+            if ($data["h_scheduled_downtime_depth"] == 0) {
+                $obj->XML->writeElement("hc", $obj->colorHostInService[$data["host_state"]]);
+            } else {
+                $obj->XML->writeElement("hc", $obj->general_opt['color_downtime']);
+            }
 
-        $hostActionUrl = "none";
-        if ($data["h_action_url"]) {
-            $hostActionUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_action_url"]);
-            $hostActionUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostActionUrl);
-            $hostActionUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostActionUrl);
-            $hostActionUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostActionUrl);
-            $hostActionUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostActionUrl);
-            $hostActionUrl = str_replace("\$INSTANCEADDRESS\$",
-                                         $instanceObj->getParam($data["instance_name"], "ns_ip_address"),
-                                         $hostActionUrl);
-        }
-        $obj->XML->writeElement("hau", $hostActionUrl);
+            $obj->XML->writeElement("hnl", urlencode($data["name"]));
+            $obj->XML->startElement("hn");
+            $obj->XML->writeAttribute("none", "0");
+            $obj->XML->text($data["name"], true, false);
+            $obj->XML->endElement();
 
-        $obj->XML->writeElement("hnn", 	$data["h_notes"]);
-        $obj->XML->writeElement("hico", $data["h_icon_images"]);
-        $obj->XML->writeElement("hip", 	$data["address"]);
-        $obj->XML->writeElement("hdtm", $data["h_scheduled_downtime_depth"]);
-        $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?sid=".$obj->session_id."&hid=".$data['host_id']);
-        $obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
-        $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?sid=".$obj->session_id."&hid=".$data['host_id']);
-        $obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
-        $obj->XML->writeElement("hid", 	$data["host_id"]);
-    }
-    $obj->XML->writeElement("ppd", 	$data["process_perfdata"]);
-    $obj->XML->writeElement("hs", 	$data["host_state"]);
+            $hostNotesUrl = "none";
+            if ($data["h_notes_url"]) {
+                $hostNotesUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_notes_url"]);
+                $hostNotesUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostNotesUrl);
+                $hostNotesUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostNotesUrl);
+                $hostNotesUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostNotesUrl);
+                $hostNotesUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostNotesUrl);
+                $hostNotesUrl = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data["instance_name"], "ns_ip_address"), $hostNotesUrl);
+            }
+            $obj->XML->writeElement("hnu", $hostNotesUrl);
 
-    /*
-     * Add possibility to use display name
-     */
-    if (isset($data["display_name"]) && $data["display_name"]) {
-        $obj->XML->writeElement("sd", 	$data["display_name"], false);
-    } else {
-        $obj->XML->writeElement("sd", 	$data["description"], false);
-    }
-    $obj->XML->writeElement("sico", $data["icon_image"]);
-    $obj->XML->writeElement("sdl", 	urlencode($data["description"]));
-    $obj->XML->writeElement("svc_id", $data["service_id"]);
-    $obj->XML->writeElement("sc", 	$obj->colorService[$data["state"]]);
-    $obj->XML->writeElement("cs", 	_($obj->statusService[$data["state"]]), false);
-    $obj->XML->writeElement("po", 	$pluginShortOuput);
-    $obj->XML->writeElement("ca", 	$data["current_attempt"]."/".$data["max_check_attempts"]." (".$obj->stateType[$data["state_type"]].")");
-    if (isset($data['criticality']) && $data['criticality'] != '' && isset($critCache[$data['service_id']])) {
-        $obj->XML->writeElement("hci", 1); // has criticality
-        $critData = $criticality->getData($critCache[$data['service_id']], true);
-        $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
-        $obj->XML->writeElement("cih", $critData['name']);
-    } else {
-        $obj->XML->writeElement("hci", 0); // has no criticality
-    }
-    $obj->XML->writeElement("ne", 	$data["notify"]);
-    $obj->XML->writeElement("pa", 	$data["acknowledged"]);
-    $obj->XML->writeElement("pc", 	$data["passive_checks"]);
-    $obj->XML->writeElement("ac", 	$data["active_checks"]);
-    $obj->XML->writeElement("eh", 	$data["event_handler_enabled"]);
-    $obj->XML->writeElement("is", 	$data["flapping"]);
-    $obj->XML->writeElement("dtm",	$data["scheduled_downtime_depth"]);
-    $obj->XML->writeElement("dtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?sid=".$obj->session_id."&hid=".$data['host_id']."&svc_id=".$data['service_id']);
-    $obj->XML->writeElement("dtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
-    $obj->XML->writeElement("ackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?sid=".$obj->session_id."&hid=".$data['host_id']."&svc_id=".$data['service_id']);
-    $obj->XML->writeElement("ackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
+            $hostActionUrl = "none";
+            if ($data["h_action_url"]) {
+                $hostActionUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_action_url"]);
+                $hostActionUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostActionUrl);
+                $hostActionUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostActionUrl);
+                $hostActionUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostActionUrl);
+                $hostActionUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostActionUrl);
+                $hostActionUrl = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data["instance_name"], "ns_ip_address"), $hostActionUrl);
+            }
+            $obj->XML->writeElement("hau", $hostActionUrl);
 
-    if ($data["notes"] != "") {
-        $data["notes"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes"]);
-        $data["notes"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes"]);
-        if (isset($data["alias"]) && $data["alias"]) {
-            $data["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
+            $obj->XML->writeElement("hnn", $data["h_notes"]);
+            $obj->XML->writeElement("hico", $data["h_icon_images"]);
+            $obj->XML->writeElement("hip", $data["address"]);
+            $obj->XML->writeElement("hdtm", $data["h_scheduled_downtime_depth"]);
+            $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?sid=" . $obj->session_id . "&hid=" . $data['host_id']);
+            $obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
+            $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?sid=" . $obj->session_id . "&hid=" . $data['host_id']);
+            $obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
+            $obj->XML->writeElement("hid", $data["host_id"]);
         }
-        if (isset($data['address']) && $data['address']) {
-            $data["notes"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes"]);
-        }
-        if (isset($data['instance_name']) && $data['instance_name']) {
-            $data["notes"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes']);
-            $data["notes"] = str_replace("\$INSTANCEADDRESS\$",
-                                         $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
-                                         $data["notes"]);
-        }
-        $obj->XML->writeElement("snn", $data["notes"]);
-    } else {
-        $obj->XML->writeElement("snn", 'none');
-    }
-        
-        
-    if ($data["notes_url"] != "") {
-        $data["notes_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes_url"]);
-        $data["notes_url"] = str_replace("\$SERVICESTATEID\$", $data["state"], $data["notes_url"]);
-        $data["notes_url"] = str_replace("\$SERVICESTATE\$", $obj->statusService[$data["state"]], $data["notes_url"]);
-        $data["notes_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes_url"]);
-        if (isset($data["alias"]) && $data["alias"]) {
-            $data["notes_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes_url"]);
-        }
-        if (isset($data['address']) && $data['address']) {
-            $data["notes_url"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes_url"]);
-        }
-        if (isset($data['instance_name']) && $data['instance_name']) {
-            $data["notes_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes_url']);
-            $data["notes_url"] = str_replace("\$INSTANCEADDRESS\$",
-                                             $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
-                                             $data["notes_url"]);
-        }
-        $obj->XML->writeElement("snu", $data["notes_url"]);
-    } else {
-        $obj->XML->writeElement("snu", 'none');
-    }
+        $obj->XML->writeElement("ppd", $data["process_perfdata"]);
+        $obj->XML->writeElement("hs", $data["host_state"]);
 
-    if ($data["action_url"] != "") {
-        $data["action_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["action_url"]);
-        $data["action_url"] = str_replace("\$SERVICESTATEID\$", $data["state"], $data["action_url"]);
-        $data["action_url"] = str_replace("\$SERVICESTATE\$", $obj->statusService[$data["state"]], $data["action_url"]);
-        $data["action_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["action_url"]);
-        if (isset($data["alias"]) && $data["alias"]) {
-            $data["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);
+        /*
+         * Add possibility to use display name
+         */
+        if (isset($data["display_name"]) && $data["display_name"]) {
+            $obj->XML->writeElement("sd", $data["display_name"], false);
+        } else {
+            $obj->XML->writeElement("sd", $data["description"], false);
         }
-        if (isset($data['address']) && $data['address']) {
-            $data["action_url"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["action_url"]);
+        $obj->XML->writeElement("sico", $data["icon_image"]);
+        $obj->XML->writeElement("sdl", urlencode($data["description"]));
+        $obj->XML->writeElement("svc_id", $data["service_id"]);
+        $obj->XML->writeElement("sc", $obj->colorService[$data["state"]]);
+        $obj->XML->writeElement("cs", _($obj->statusService[$data["state"]]), false);
+        $obj->XML->writeElement("po", $pluginShortOuput);
+        $obj->XML->writeElement("ca", $data["current_attempt"] . "/" . $data["max_check_attempts"] . " (" . $obj->stateType[$data["state_type"]] . ")");
+        if (isset($data['criticality']) && $data['criticality'] != '' && isset($critCache[$data['service_id']])) {
+            $obj->XML->writeElement("hci", 1); // has criticality
+            $critData = $criticality->getData($critCache[$data['service_id']], true);
+            $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
+            $obj->XML->writeElement("cih", $critData['name']);
+        } else {
+            $obj->XML->writeElement("hci", 0); // has no criticality
         }
-        if (isset($data['instance_name']) && $data['instance_name']) {
-            $data["action_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['action_url']);
-            $data["action_url"] = str_replace("\$INSTANCEADDRESS\$",
-                                              $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
-                                              $data["action_url"]);
-        }
-        $obj->XML->writeElement("sau", $data["action_url"]);
-    } else {
-        $obj->XML->writeElement("sau", 'none');
-    }
+        $obj->XML->writeElement("ne", $data["notify"]);
+        $obj->XML->writeElement("pa", $data["acknowledged"]);
+        $obj->XML->writeElement("pc", $data["passive_checks"]);
+        $obj->XML->writeElement("ac", $data["active_checks"]);
+        $obj->XML->writeElement("eh", $data["event_handler_enabled"]);
+        $obj->XML->writeElement("is", $data["flapping"]);
+        $obj->XML->writeElement("dtm", $data["scheduled_downtime_depth"]);
+        $obj->XML->writeElement("dtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?sid=" . $obj->session_id . "&hid=" . $data['host_id'] . "&svc_id=" . $data['service_id']);
+        $obj->XML->writeElement("dtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
+        $obj->XML->writeElement("ackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?sid=" . $obj->session_id . "&hid=" . $data['host_id'] . "&svc_id=" . $data['service_id']);
+        $obj->XML->writeElement("ackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
 
-    if ($data["notes"] != "") {
-        $data["notes"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes"]);
-        $data["notes"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes"]);
-        if (isset($data["alias"]) && $data["alias"]) {
-            $data["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
+        if ($data["notes"] != "") {
+            $data["notes"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes"]);
+            $data["notes"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes"]);
+            if (isset($data["alias"]) && $data["alias"]) {
+                $data["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
+            }
+            if (isset($data['address']) && $data['address']) {
+                $data["notes"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes"]);
+            }
+            if (isset($data['instance_name']) && $data['instance_name']) {
+                $data["notes"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes']);
+                $data["notes"] = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $data["notes"]);
+            }
+            $obj->XML->writeElement("snn", $data["notes"]);
+        } else {
+            $obj->XML->writeElement("snn", 'none');
         }
-        if (isset($data['address']) && $data['address']) {
-            $data["notes"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes"]);
+
+
+        if ($data["notes_url"] != "") {
+            $data["notes_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes_url"]);
+            $data["notes_url"] = str_replace("\$SERVICESTATEID\$", $data["state"], $data["notes_url"]);
+            $data["notes_url"] = str_replace("\$SERVICESTATE\$", $obj->statusService[$data["state"]], $data["notes_url"]);
+            $data["notes_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes_url"]);
+            if (isset($data["alias"]) && $data["alias"]) {
+                $data["notes_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes_url"]);
+            }
+            if (isset($data['address']) && $data['address']) {
+                $data["notes_url"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes_url"]);
+            }
+            if (isset($data['instance_name']) && $data['instance_name']) {
+                $data["notes_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes_url']);
+                $data["notes_url"] = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $data["notes_url"]);
+            }
+            $obj->XML->writeElement("snu", $data["notes_url"]);
+        } else {
+            $obj->XML->writeElement("snu", 'none');
         }
-        $obj->XML->writeElement("sn", $data["notes"]);
-    } else {
-        $obj->XML->writeElement("sn", 'none');
-    }
 
-    $obj->XML->writeElement("fd", $data["flap_detection"]);
-    $obj->XML->writeElement("ha", $data["h_acknowledged"]);
-    $obj->XML->writeElement("hae", $data["h_active_checks"]);
-    $obj->XML->writeElement("hpe", $data["h_passive_checks"]);
-    $obj->XML->writeElement("nc", $obj->GMT->getDate($dateFormat, $data["next_check"]));
-    if ($data["last_check"] != 0) {
-        $obj->XML->writeElement("lc", $obj->GMT->getDate($dateFormat, $data["last_check"]));
-    } else {
-        $obj->XML->writeElement("lc", "N/A");
-    }
-    $obj->XML->writeElement("d", $duration);
-    $obj->XML->writeElement("rd", (time() - $data["last_state_change"]));
-    $obj->XML->writeElement("last_hard_state_change", $hard_duration);
+        if ($data["action_url"] != "") {
+            $data["action_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["action_url"]);
+            $data["action_url"] = str_replace("\$SERVICESTATEID\$", $data["state"], $data["action_url"]);
+            $data["action_url"] = str_replace("\$SERVICESTATE\$", $obj->statusService[$data["state"]], $data["action_url"]);
+            $data["action_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["action_url"]);
+            if (isset($data["alias"]) && $data["alias"]) {
+                $data["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);
+            }
+            if (isset($data['address']) && $data['address']) {
+                $data["action_url"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["action_url"]);
+            }
+            if (isset($data['instance_name']) && $data['instance_name']) {
+                $data["action_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['action_url']);
+                $data["action_url"] = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $data["action_url"]);
+            }
+            $obj->XML->writeElement("sau", $data["action_url"]);
+        } else {
+            $obj->XML->writeElement("sau", 'none');
+        }
 
-    /**
-     * Get Service Graph index
-     */
-    if (!isset($graphs[$data["host_id"]]) || !isset($graphs[$data["host_id"]][$data["service_id"]])) {
-        $request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '".$data["host_id"]."' AND service_id = '".$data["service_id"]."' AND index_data.hidden = '0'";
-        $DBRESULT2 = $obj->DBC->query($request2);
-        while ($dataG = $DBRESULT2->fetchRow()) {
+        if ($data["notes"] != "") {
+            $data["notes"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes"]);
+            $data["notes"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes"]);
+            if (isset($data["alias"]) && $data["alias"]) {
+                $data["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
+            }
+            if (isset($data['address']) && $data['address']) {
+                $data["notes"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes"]);
+            }
+            $obj->XML->writeElement("sn", $data["notes"]);
+        } else {
+            $obj->XML->writeElement("sn", 'none');
+        }
+
+        $obj->XML->writeElement("fd", $data["flap_detection"]);
+        $obj->XML->writeElement("ha", $data["h_acknowledged"]);
+        $obj->XML->writeElement("hae", $data["h_active_checks"]);
+        $obj->XML->writeElement("hpe", $data["h_passive_checks"]);
+        $obj->XML->writeElement("nc", $obj->GMT->getDate($dateFormat, $data["next_check"]));
+        if ($data["last_check"] != 0) {
+            $obj->XML->writeElement("lc", $obj->GMT->getDate($dateFormat, $data["last_check"]));
+        } else {
+            $obj->XML->writeElement("lc", "N/A");
+        }
+        $obj->XML->writeElement("d", $duration);
+        $obj->XML->writeElement("rd", (time() - $data["last_state_change"]));
+        $obj->XML->writeElement("last_hard_state_change", $hard_duration);
+
+        /**
+         * Get Service Graph index
+         */
+        if (!isset($graphs[$data["host_id"]]) || !isset($graphs[$data["host_id"]][$data["service_id"]])) {
+            $request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '" . $data["host_id"] . "' AND service_id = '" . $data["service_id"] . "' AND index_data.hidden = '0'";
+            $DBRESULT2 = $obj->DBC->query($request2);
+            while ($dataG = $DBRESULT2->fetchRow()) {
+                if (!isset($graphs[$data["host_id"]])) {
+                    $graphs[$data["host_id"]] = array();
+                }
+                $graphs[$data["host_id"]][$dataG["service_id"]] = $dataG["id"];
+            }
             if (!isset($graphs[$data["host_id"]])) {
                 $graphs[$data["host_id"]] = array();
             }
-            $graphs[$data["host_id"]][$dataG["service_id"]] = $dataG["id"];
         }
-        if (!isset($graphs[$data["host_id"]])) {
-            $graphs[$data["host_id"]] = array();
-        }
-    }
-    $obj->XML->writeElement("svc_index", (isset($graphs[$data["host_id"]][$data["service_id"]]) ? $graphs[$data["host_id"]][$data["service_id"]] : 0));
+        $obj->XML->writeElement("svc_index", (isset($graphs[$data["host_id"]][$data["service_id"]]) ? $graphs[$data["host_id"]][$data["service_id"]] : 0));
 
-    $obj->XML->endElement();
+        $obj->XML->endElement();
+    }
+    $DBRESULT->free();
 }
-$DBRESULT->free();
+
 unset($data);
 unset($host_status);
 
@@ -585,5 +597,4 @@ $obj->header();
  * Send XML
  */
 $obj->XML->output();
-
 ?>

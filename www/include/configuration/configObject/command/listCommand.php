@@ -31,12 +31,10 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
+
 	if (!isset($oreon)) {
-		exit();
+	    exit();
 	}
 	
 	include_once "./include/common/autoNumLimit.php";
@@ -48,7 +46,7 @@
 	include_once "./include/common/quickSearch.php";
 	
 	if ($type) {
-		$type_str = " `command_type` = '".$type."'";
+		$type_str = " `command_type` = $type";
 	} else {
 		$type_str = "";
 	}
@@ -124,7 +122,7 @@
 	 * Define command Type table
 	 */
 	
-	$commandType = array("1" => _("Notification"), "2" => _("Check"), "3" => _("Miscellaneous"));
+	$commandType = array("1" => _("Notification"), "2" => _("Check"), "3" => _("Miscellaneous"), "4" => _("Discovery"));
 	
 	/*
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl

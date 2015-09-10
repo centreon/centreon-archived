@@ -76,3 +76,87 @@ Centreon storage database schema can be view here :
 
 .. image:: ../database/centreon-storage.png
 
+*********
+RRDCacheD
+*********
+
+RRDCacheD is a process to reduce disk I/O during the update of performance's graphs and status' graphs.
+The RRDCacheD process is loaded by the Centreon Broker module and mutualise I/O disques instead of recording 
+one by one the data from the collect.
+
+Installation
+============
+
+The RRDCacheD process is available in **rrdtool** package and already installed on your server.
+
+Configuration
+=============
+
+Main settings
+*************
+
+Edit the **/etc/sysconfig/rrdcached** file and complete informaiton::
+
+    # Settings for rrdcached
+    OPTIONS="-m 664 -l unix:/var/rrdtool/rrdcached/rrdcached.sock -s rrdcached -b   /var/rrdtool/rrdcached -w 3600 -z 3600 -f 7200"
+    RRDC_USER=rrdcach
+
+.. note::
+    The order of setting is pretty important. If **-m 664** is define before **-l unix:/var/rrdtool/rrdcached/rrdcached.sock** option then rights will be inccorrect on socket.
+
+Options are following one:
+
+
++--------+-----------------------------------------------------------------------------------+
+| Option | Description                                                                       |
++========+===================================================================================+
+| -w     | Data are written every x seconds on disk (3600s in example reopresent 1h)         |
++--------+-----------------------------------------------------------------------------------+
+| -z     | Should be less than **-w** option. RRDCacheD uses a range value from [0:-z] to do |
+|        | not write in RRDs in same time.                                                   |
++--------+-----------------------------------------------------------------------------------+
+| -f     | Timeout in cache before write data to disk.                                       |
++--------+-----------------------------------------------------------------------------------+
+
+.. note::
+    Please modify values with you needs.
+
+Groups configuration
+********************
+
+Create groups using commands::
+
+    # usermod -a -g rrdcached centreon-broker
+    # usermod -a -g rrdcached apache
+    # usermod -a -g centreon rrdcached
+    # usermod -a -g centreon-broker rrdcached
+
+Restart Apache process::
+
+    # /etc/init.d/httpd restart
+
+Start RRDCacheD processus::
+
+    # /etc/init.d/rrdcached start
+
+Centreon web configuration
+**************************
+
+Go to **Administration -> Options -> RRDTool** menu, enable processus and set unix socket path:
+
+.. image:: /images/faq/rrdcached_config.png
+    :align: center
+
+.. warning::
+    Instread of configuration was made into **Administration** you need to generate and export configuration of central server and restart cbd process to apply changes.
+
+.. image:: /images/faq/rrd_file_generator.png
+    :align: center
+
+Centreon web interface
+**********************
+
+RRDCacheD don't update performence's graphs in real time. If a blanc range aapear on right of performence's graphs it means that cache are not yet written to disk.
+
+.. warning::
+    If the **RRDCacheD process crash** (in theory because it's a stable process) data will be lost! It is not possible to get data unless rebuild all graphs from Centeron web.

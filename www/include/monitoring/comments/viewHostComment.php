@@ -121,17 +121,18 @@
                    $rows = $pearDBndo->numberRows();
                    for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
 			$tab_comments_host[$i] = $data;
-			$tab_comments_host[$i] = htmlentities($data['comment_data']);
+                        $tab_comments_host[$i]['host_name'] = htmlentities($data['host_name']);
 			$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
 			$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
 			$tab_comments_host[$i]["host_name_link"] = urlencode($tab_comments_host[$i]["host_name"]);
+                        $tab_comments_host[$i]['comment_data'] = htmlentities($tab_comments_host[$i]['comment_data']);
                    }
                    unset($data);
 	} else {
 		$rq2 = "SELECT SQL_CALC_FOUND_ROWS c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, h.name as host_name " .
                        "FROM comments c, hosts h ";
                 $rq2 .= ($hostgroup ? ", hosts_hostgroups hgm, hostgroups hg " : "");
-		$rq2 .=	"WHERE c.host_id = h.host_id AND c.service_id IS NULL  ";
+		$rq2 .=	"WHERE c.host_id = h.host_id AND c.service_id IS NULL AND h.enabled = 1";
 		if (!$is_admin) {
             $rq2 .= " AND EXISTS(SELECT 1 FROM centreon_acl WHERE c.host_id = centreon_acl.host_id AND group_id IN (" . $oreon->user->access->getAccessGroupsString() . ")) ";
 		}
@@ -150,11 +151,11 @@
 		$rows = $pearDBO->numberRows();
 		for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
 			$tab_comments_host[$i] = $data;
-			$tab_comments_host[$i]['comment_data'] = htmlentities($data['comment_data']);
 			$tab_comments_host[$i]['host_name'] = htmlentities($data['host_name']);
 			$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
 			$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
 			$tab_comments_host[$i]["host_name_link"] = urlencode($tab_comments_host[$i]["host_name"]);
+                        $tab_comments_host[$i]['comment_data'] = htmlentities($tab_comments_host[$i]['comment_data']);
 		}
 		unset($data);
 		$DBRESULT->free();

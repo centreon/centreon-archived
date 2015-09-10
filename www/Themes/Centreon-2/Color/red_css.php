@@ -56,6 +56,9 @@ $color12 = "#242af6";
 $color13 = "#5e5e5e";
 $color14 = "#E8AB5C";
 
+$colorGradient_1 = "#F9EDED";
+$colorGradient_2 = "#E3858C";
+
 $menu1_bgcolor = "#E3858C";
 $menu2_bgcolor = "#a5545b";
 

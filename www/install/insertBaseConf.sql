@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.6.1');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.6.2');
 
 --
 -- Contenu de la table `contact`
@@ -670,7 +670,8 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (12, 'Failover', NULL, NULL, 0, 1),
 (13, 'Correlation', 'correlation.so', 20, 0, 1),
 (14, 'Statistics', 'stats.so', 5, 0, 1),
-(15, 'Temporary', NULL, NULL, 0, 1);
+(15, 'Temporary', NULL, NULL, 0, 1),
+(17, 'Dumper', 'dumper.so', 20, 0, 1);
 
 
 --
@@ -692,7 +693,9 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (22, 'Correlation', 'correlation', 13),
 (23, 'Statistics', 'stats', 14),
 (24, 'Monitoring', 'monitoring', 9),
-(25, 'File', 'file', 15);
+(25, 'File', 'file', 15),
+(28, 'Database configuration reader', 'db_cfg_reader', 17),
+(29, 'Database configuration writer', 'db_cfg_writer', 17);
 
 --
 -- Contenu de la table `cb_field`
@@ -801,7 +804,8 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (5, 'Auto', 'auto'),
 (6, 'Neb', 'neb'),
 (6, 'Storage', 'storage'),
-(6, 'Correlation', 'correlation');
+(6, 'Correlation', 'correlation'),
+(6, 'Dumper', 'dumper');
 
 --
 -- Contenu de la table `cb_module_relation`
@@ -842,7 +846,9 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (4, 22, 1),
 (5, 23, 1),
 (3, 24, 0),
-(6, 25, 1);
+(6, 25, 1),
+(1, 28, 1),
+(1, 29, 1);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -947,7 +953,19 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (3, 48, 0, 16),
 (10, 48, 0, 16),
 (16, 49, 0, 18),
-(16, 50, 0, 19);
+(16, 50, 0, 19),
+(28, 15, 1, 1),
+(28, 7, 1, 2),
+(28, 18, 0, 3),
+(28, 8, 0, 4),
+(28, 9, 0, 5),
+(28, 10, 1, 6),
+(29, 15, 1, 1),
+(29, 7, 1, 2),
+(29, 18, 0, 3),
+(29, 8, 0, 4),
+(29, 9, 0, 5),
+(29, 10, 1, 6);
 
 --
 -- Contenu de la table `widget_parameters_field_type`

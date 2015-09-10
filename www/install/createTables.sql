@@ -442,6 +442,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
   `event_queue_max_size` int(11) DEFAULT '50000',
+  `command_file` varchar(255),
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1020,7 +1021,7 @@ CREATE TABLE `cron_operation` (
   `module` enum('0','1') DEFAULT NULL,
   `running` enum('0','1') DEFAULT NULL,
   `pid` int(11) DEFAULT NULL,
-  `last_execution_time` int(11) NOT NULL,
+  `last_execution_time` int(11) NOT NULL DEFAULT '0',
   `activate` enum('0','1') DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1032,7 +1033,7 @@ CREATE TABLE `css_color_menu` (
   `menu_nb` int(11) DEFAULT NULL,
   `css_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_css_color_menu`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -1484,7 +1485,7 @@ CREATE TABLE `giv_graphs_template` (
   `base` int(11) DEFAULT '1000',
   `lower_limit` float DEFAULT NULL,
   `upper_limit` float DEFAULT NULL,
-  `size_to_max` tinyint(6) NOT NULL,
+  `size_to_max` tinyint(6) NOT NULL DEFAULT '0',
   `bg_grid_color` varchar(200) DEFAULT NULL,
   `bg_color` varchar(200) DEFAULT NULL,
   `police_color` varchar(200) DEFAULT NULL,
@@ -1863,7 +1864,7 @@ CREATE TABLE `on_demand_macro_service` (
 CREATE TABLE `options` (
   `key` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

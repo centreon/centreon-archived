@@ -62,6 +62,9 @@ $menu2_bgcolor = "#009fdf";
 $colorGradient_1 = "#ebf5ff";
 $colorGradient_2 = "#02bbff";
 
+$colorGradient_1 = "#ebf5ff";
+$colorGradient_2 = "#02bbff";
+
 $footerline2 = "#dedede";
 
 $color_list_1 = "#F7FAFF";

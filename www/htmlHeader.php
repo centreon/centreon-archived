@@ -52,6 +52,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <link href="./include/common/javascript/modalbox.css" rel="stylesheet" type="text/css" media="screen"/>
 <link href="<?php echo $skin; ?>Modalbox/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css" media="screen"/>
 <link href="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.css" rel="stylesheet" type="text/css" media="screen"/>
+<link href="./include/common/javascript/jquery/plugins/select2/css/select2.css" rel="stylesheet" type="text/css" media="screen"/>
 <link href="<?php echo $skin; ?>jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?>jquery-ui/jquery-ui-centreon.css" rel="stylesheet" type="text/css"/>
 <link href="./include/common/javascript/jquery/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css"/>
@@ -69,7 +70,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <?php if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) { ?>
 <script type="text/javascript" src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects,dragdrop"></script>
 <script type="text/javascript" src="./include/common/javascript/modalbox.js"></script>
-<script type="text/javascript" src="./include/common/javascript/jquery/jquery.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui.js"></script>
 <script type="text/javascript">jQuery.noConflict();</script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js"></script>
