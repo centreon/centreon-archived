@@ -37,7 +37,6 @@
  */
 
  	require_once "@CENTREON_ETC@/centreon.conf.php";
- 	require_once $centreon_path . "www/class/centreonDB.class.php";
 
 	$pearDB = new CentreonDB();
 
