@@ -23,20 +23,13 @@ sed -i 's/^\(;date.timezone.*\)/\1\ndate.timezone = Europe\/Paris/' /opt/rh/php5
 
 rpm -Uvh http://yum.centreon.com/standard/3.0/stable/noarch/RPMS/ces-release-3.0-1.noarch.rpm
 
-cat << EOF > /etc/yum.repos.d/centreon3-dev.repo
-[centreon3-dev-noarch]
-name=Centreon 3 Devel noarch
-baseurl=http://srvi-ces-repository.merethis.net/repos/centreon3-dev/el\$releasever/noarch/
+cat << EOF > /etc/yum.repos.d/ces-standard.repo
+[ces-standard-unstable]
+name=Centreon Enterprise Server development RPM repository for ces $releasever
+baseurl=http://yum.centreon.com/standard/3.0/unstable/$basearch//
+enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CES
-enabled=1
-
-[centreon3-dev]
-name=Centreon 3 Devel
-baseurl=http://srvi-ces-repository.merethis.net/repos/centreon3-dev/el\$releasever/\$basearch/
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CES
-enabled=1
 EOF
 
 # Install mariadb server and client
