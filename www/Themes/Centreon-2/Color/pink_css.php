@@ -38,7 +38,6 @@
  
 require_once "@CENTREON_ETC@/centreon.conf.php";
 
-
 header("Content-type: text/css");
 
 $color1 = "#F2F2F2";

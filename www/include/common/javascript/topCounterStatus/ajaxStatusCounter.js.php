@@ -18,6 +18,7 @@
 
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 
+
     require_once $centreon_path . "www/class/centreonSession.class.php";
     require_once $centreon_path . "www/class/centreon.class.php";
 
@@ -191,11 +192,11 @@ function reloadStatusCounter(_reload_time, _sid) {
 					document.getElementById("img_activity").title = _error_activity;
 
 					if (_statistic_latency == 0) {
-						document.getElementById("latency").style.backgroundColor = "";
+						document.getElementById("latency").style.backgroundColor = "#88b917";
 					} else if (_statistic_latency == 1) {
 						document.getElementById("latency").style.backgroundColor = "orange";
 					} else if (_statistic_latency == 2) {
-						document.getElementById("latency").style.backgroundColor = "red";
+						document.getElementById("latency").style.backgroundColor = "#e00b3d";
 					}
 
 					if (_statistic_activity == 0) {
@@ -203,7 +204,7 @@ function reloadStatusCounter(_reload_time, _sid) {
 					} else if (_statistic_activity == 1) {
 						document.getElementById("activity").style.backgroundColor = "orange";
 					} else if (_statistic_activity == 2) {
-						document.getElementById("activity").style.backgroundColor = "red";
+						document.getElementById("activity").style.backgroundColor = "#e00b3d";
 					}
 
 					if (_statistic_pollingState == 0) {
@@ -211,7 +212,7 @@ function reloadStatusCounter(_reload_time, _sid) {
 					} else if (_statistic_pollingState == 1) {
 						document.getElementById("pollingState").style.backgroundColor = "orange";
 					} else if (_statistic_pollingState == 2) {
-						document.getElementById("pollingState").style.backgroundColor = "red";
+						document.getElementById("pollingState").style.backgroundColor = "#e00b3d";
 					}
 
 					//alert("Latence : "+_statistic_latency);

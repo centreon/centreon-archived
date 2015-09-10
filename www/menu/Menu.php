@@ -139,7 +139,7 @@
 	 * Display Login
 	 */
 	$tpl->assign("user_login", $oreon->user->get_alias());
-	$tpl->assign("loggedlabel", _("You are"));
+	$tpl->assign("loggedlabel", _("Welcome"));
 
 	/*
 	 * Fixe ACL

@@ -54,10 +54,6 @@
 		</xsl:attribute>
 		<xsl:for-each select="//Menu2">
 			<xsl:element name="span2">
-				<xsl:attribute name="class">separator_menu2</xsl:attribute>
-				<xsl:value-of select="Menu2Sep"/>
-			</xsl:element>
-			<xsl:element name="span2">
 				<xsl:attribute name="class">span2</xsl:attribute>                                
 				<xsl:element name="a">
 					<xsl:choose>
@@ -71,7 +67,7 @@
                                             </xsl:otherwise>
                                         </xsl:choose>
                                         <xsl:value-of select="Menu2Name"/>
-				</xsl:element>	
+				</xsl:element>
 			</xsl:element>
 		</xsl:for-each>
 	</xsl:element>

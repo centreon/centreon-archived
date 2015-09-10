@@ -36,8 +36,7 @@
  *
  */
 
-//require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once "/etc/centreon/centreon.conf.php";
+require_once "@CENTREON_ETC@/centreon.conf.php";
 
 header("Content-type: text/css");
 
@@ -82,7 +81,7 @@ $color_list_down_hover = "#dfbbbb";
 $bg_image_header = "../Images/bg_header.gif";
 $menu1_bgimg = "#009fdf";
 
-$menu2_color = "#b5e8fe";
+$menu2_color = "#c1ecff";
 
 require_once $centreon_path . "www/Themes/Centreon-2/color_css.php";
 ?>

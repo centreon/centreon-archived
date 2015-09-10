@@ -36,8 +36,7 @@
  *
  */
 
-	//require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once "/etc/centreon/centreon.conf.php";
+	require_once "@CENTREON_ETC@/centreon.conf.php";
 
 	require_once $centreon_path."/www/include/common/common-Func.php";
 
@@ -147,7 +146,7 @@
 		$buffer->writeElement("Menu2Name", $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]), 0);
 		$buffer->writeElement("Menu2Popup", $elem["topology_popup"] ? "true" : "false");
 		$buffer->endElement();
-		$sep = "&nbsp;&nbsp;|&nbsp;&nbsp;";
+		$sep = "";
 	}
 	$buffer->endElement();
 	$buffer->endElement();

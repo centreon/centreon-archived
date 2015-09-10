@@ -50,6 +50,7 @@ if (!$min) {
 			<table cellpadding='0' cellspacing='0' width='100%' border='0'>
 				<tr>
 					<td align='center' class='copyRight'>
+					    <a href='http://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a>
                         <a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
                         <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a> | 
                         Copyright &copy; 2005-2015 <a href="http://www.centreon.com">Centreon</a><br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
@@ -111,7 +112,7 @@ function initWholePage() {
 function setQuickSearchPosition() {
     if ($('QuickSearch')) {
         if ($('header').visible()) {
-            $('QuickSearch').setStyle({ top: '86px' });
+            $('QuickSearch').setStyle({ top: '139px' });
         } else {
             $('QuickSearch').setStyle({ top: '3px' });
         }
