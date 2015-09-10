@@ -26,7 +26,7 @@ rpm -Uvh http://yum.centreon.com/standard/3.0/stable/noarch/RPMS/ces-release-3.0
 cat << EOF > /etc/yum.repos.d/ces-standard.repo
 [ces-standard-unstable]
 name=Centreon Enterprise Server development RPM repository for ces $releasever
-baseurl=http://yum.centreon.com/standard/3.0/unstable/$basearch//
+baseurl=http://yum.centreon.com/standard/3.0/unstable/x86_64/
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CES
