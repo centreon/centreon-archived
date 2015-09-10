@@ -2341,6 +2341,16 @@ CREATE TABLE `widgets` (
   KEY `fk_wdg_model_id` (`widget_model_id`),
   CONSTRAINT `fk_wdg_model_id` FOREIGN KEY (`widget_model_id`) REFERENCES `widget_models` (`widget_model_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE ws_token (
+  contact_id INT NOT NULL,
+  token VARCHAR(100) NOT NULL,
+  generate_date DATETIME NOT NULL,
+  PRIMARY KEY(contact_id),
+  UNIQUE (token),
+  FOREIGN KEY (contact_id) REFERENCES contact (contact_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
