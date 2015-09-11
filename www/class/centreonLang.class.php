@@ -227,7 +227,6 @@ class CentreonLang
     public function bindLang($domain = "messages", $path = "www/locale/")
     {
         putenv("LANG=$this->_lang");
-        echo $this->_lang;
         setlocale(LC_ALL, $this->_lang);
         bindtextdomain($domain, $this->_path.$path);
         bind_textdomain_codeset($domain, $this->_charset);
