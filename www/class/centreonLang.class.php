@@ -74,17 +74,18 @@ class CentreonLang
      */
     public function __construct($centreon_path, $centreon = null)
     {
-        $this->_lang = $this->getBrowserDefaultLanguage();
+        $this->_charset = "UTF-8";
+        if (!is_null($centreon) && isset($centreon->user->charset)) {
+            $this->_charset = $centreon->user->charset;
+        }
+        
+        $this->_lang = $this->getBrowserDefaultLanguage() . '.' . $this->_charset;
         if (!is_null($centreon) && isset($centreon->user->lang)) {
             if ($centreon->user->lang !== 'browser') {
                 $this->_lang = $centreon->user->lang;
             }
         }
         
-        $this->_charset = "UTF-8";
-        if (!is_null($centreon) && isset($centreon->user->charset)) {
-            $this->_charset = $centreon->user->charset;
-        }
         $this->_path = $centreon_path;
         $this->setCharsetList();
     }
@@ -226,6 +227,7 @@ class CentreonLang
     public function bindLang($domain = "messages", $path = "www/locale/")
     {
         putenv("LANG=$this->_lang");
+        echo $this->_lang;
         setlocale(LC_ALL, $this->_lang);
         bindtextdomain($domain, $this->_path.$path);
         bind_textdomain_codeset($domain, $this->_charset);
