@@ -97,6 +97,21 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
         $DBRESULT->free();
         
+        
+        $DBRESULT = $pearDB->query("SELECT DISTINCT hc.* FROM hostcategories hc"
+            . " INNER JOIN hostcategories_relation hcr on hc.hc_id = hcr.hostcategories_hc_id AND hcr.host_host_id = '".$host_id."' ");
+        while ($hc = $DBRESULT->fetchRow()) {
+            $hostCategorie[] = $hc['hc_name'];
+        }
+        $DBRESULT->free();
+        
+        
+        
+        
+        
+        
+        
+        
         // Get notifications contacts
         $retrievedNotificationsInfos = get_notified_infos_for_host($host_id);
         $contacts = $retrievedNotificationsInfos['contacts'];
@@ -492,6 +507,13 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             $tpl->assign("hostgroups", $hostGroups);
         }
 
+        $tpl->assign("hostcategorie_label", _("Host Categories"));
+        if(isset($hostCategorie)){
+            $tpl->assign("hostcategorie", $hostCategorie);
+        }
+        
+        
+        
         /*
          * Contactgroups Display
          */

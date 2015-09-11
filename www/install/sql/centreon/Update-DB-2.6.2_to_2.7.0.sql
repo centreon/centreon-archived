@@ -40,4 +40,8 @@ ALTER TABLE `giv_graphs_template` ALTER `size_to_max` SET DEFAULT '0';
 
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.6.2' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.1' LIMIT 1;
+ALTER TABLE options ENGINE=InnoDB;
+ALTER TABLE css_color_menu ENGINE=InnoDB;
 
+-- Change version of Centreon
+UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.2' LIMIT 1;

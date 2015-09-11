@@ -469,10 +469,19 @@ sub check_sequential_can_exec {
 
     if (defined($self->{sequential_processes}->{trap_id}->{$self->{current_host_id} . "_" . $self->{current_trap_id}})) {
         # We save data
-        $self->{logger}->writeLogInfo("Put trap in queue...");
+        $self->{logger}->writeLogInfo("Put trap " . $self->{current_trap_id} . " in queue...");
         push @{$self->{trap_data_save}}, Storable::dclone($self->{trap_data});
         return 1;
     }
+    foreach (@{$self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_group}}) {
+        if (defined($self->{sequential_processes}->{trap_id}->{$self->{current_host_id} . "_" . $_})) {
+            # We save data
+            $self->{logger}->writeLogInfo("Put trap " . $self->{current_trap_id} . " in queue (trap_id $_ is in execution)...");
+            push @{$self->{trap_data_save}}, Storable::dclone($self->{trap_data});
+            return 1;
+        }
+    }
+        
     return 0;
 }
 
@@ -481,7 +490,17 @@ sub check_sequential_todo {
     
     for (my $i = 0; $i <= $#{$self->{trap_data_save}}; $i++) {
         if (!defined($self->{sequential_processes}->{trap_id}->{ ${$self->{trap_data_save}}[$i]->{current_host_id} . "_" . ${$self->{trap_data_save}}[$i]->{current_trap_id} })) {
-            $self->{logger}->writeLogInfo("Exec trap in queue...");
+            my $group = 0;
+            foreach (@{${$self->{trap_data_save}}[$i]->{ref_oids}->{ ${$self->{trap_data_save}}[$i]->{current_trap_id} }->{traps_group}}) {
+                if (defined($self->{sequential_processes}->{trap_id}->{${$self->{trap_data_save}}[$i]->{current_host_id} . "_" . $_})) {
+                    # still some running
+                    $group = 1;
+                    last;
+                }
+            }
+            next if ($group == 1);
+        
+            $self->{logger}->writeLogInfo("Exec trap in queue (trap_id " . ${$self->{trap_data_save}}[$i]->{current_trap_id} . ") ...");
             $self->{trap_data} = splice @{$self->{trap_data_save}}, $i, 1;
             $i--;
             $self->manage_exec();
@@ -608,8 +627,8 @@ sub manage_exec {
         }
         
         $self->{current_alarm_timeout} = $self->{centreontrapd_config}->{cmd_timeout};
-        if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout}) && $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout} != 0) {
-            $self->{current_alarm_timeout} = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout};
+        if (defined($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout}) && $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout} != 0) {
+            $self->{current_alarm_timeout} = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout};
         }
         $self->do_exec();
 
@@ -1165,7 +1184,7 @@ sub run {
                                                                           logger_unknown => $self->{logger_unknown},
                                                                           config => $self->{centreontrapd_config},
                                                                           trap_data => $self->{trap_data},
-                                                                          oid2verif => ${$self->{trap_data}->{var}}[3],      
+                                                                          oid2verif => ${$self->{trap_data}->{var}}[3],
                                                                           cdb => $self->{cdb},
                                                                           last_cache_time => \$self->{last_cache_time},
                                                                           oids_cache => \$self->{oids_cache});

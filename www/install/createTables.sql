@@ -1033,7 +1033,7 @@ CREATE TABLE `css_color_menu` (
   `menu_nb` int(11) DEFAULT NULL,
   `css_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_css_color_menu`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -1864,7 +1864,7 @@ CREATE TABLE `on_demand_macro_service` (
 CREATE TABLE `options` (
   `key` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -2175,6 +2175,16 @@ CREATE TABLE `traps_service_relation` (
   KEY `traps_index` (`traps_id`),
   CONSTRAINT `traps_service_relation_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   CONSTRAINT `traps_service_relation_ibfk_3` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `traps_group` (
+  `traps_group_id` int(11) DEFAULT NULL,
+  `traps_id` int(11) DEFAULT NULL,
+  KEY `traps_group_id` (`traps_group_id`),
+  KEY `traps_id` (`traps_id`),
+  CONSTRAINT `traps_group_ibfk_1` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
