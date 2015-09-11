@@ -2179,6 +2179,16 @@ CREATE TABLE `traps_service_relation` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `traps_group` (
+  `traps_group_id` int(11) DEFAULT NULL,
+  `traps_id` int(11) DEFAULT NULL,
+  KEY `traps_group_id` (`traps_group_id`),
+  KEY `traps_id` (`traps_id`),
+  CONSTRAINT `traps_group_ibfk_1` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `traps_vendor` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(254) DEFAULT NULL,

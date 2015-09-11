@@ -140,6 +140,11 @@ try {
     $stmt->execute();
     $result_traps_preexec = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
+    $stmt = $db_centreon->prepare("SELECT traps_group_id, traps_id
+        FROM traps_group");
+    $stmt->execute();
+    $result_traps_group = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
     // Get trap Vendor
     $stmt = $db_centreon->prepare("SELECT id, name
         FROM traps_vendor");
@@ -292,6 +297,14 @@ try {
                     );
                     
             CREATE INDEX IF NOT EXISTS idx_tprexec_trap_id ON traps_preexec (trap_id);
+            
+            CREATE TABLE IF NOT EXISTS `traps_group` (
+                    `traps_group_id` int(11) DEFAULT NULL,
+                    `traps_id` int(11) DEFAULT NULL
+                    );
+                    
+            CREATE INDEX IF NOT EXISTS idx_tg_traps_id ON traps_group (traps_id);
+            CREATE INDEX IF NOT EXISTS idx_tg_traps_group_id ON traps_group (traps_group_id);
 
             CREATE TABLE IF NOT EXISTS `traps_vendor` (
                 `id` int(11) DEFAULT NULL,
@@ -511,6 +524,14 @@ try {
                 $stmt->bindParam(':trap_id', $value['trap_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':tpe_string', $value['tpe_string'], PDO::PARAM_STR);
                 $stmt->bindParam(':tpe_order', $value['tpe_order'], PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps_group (traps_group_id, traps_id) VALUES (
+                    :traps_group_id, :traps_id)");
+            foreach ($result_traps_group as $value) {
+                $stmt->bindParam(':traps_group_id', $value['traps_group_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_id', $value['traps_id'], PDO::PARAM_INT);
                 $stmt->execute();
             }
             
