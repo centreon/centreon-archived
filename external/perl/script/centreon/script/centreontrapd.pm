@@ -1053,6 +1053,7 @@ sub run {
                     if (centreon::trapd::lib::check_known_trap(logger => $self->{logger},
                                                                config => $self->{centreontrapd_config},
                                                                oid2verif => ${$self->{trap_data}->{var}}[3],      
+                                                               agent_dns_name => $self->{trap_data}->{agent_dns_name},
                                                                cdb => $self->{cdb},
                                                                last_cache_time => \$self->{last_cache_time},
                                                                oids_cache => \$self->{oids_cache}) == 1) {

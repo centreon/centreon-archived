@@ -353,6 +353,7 @@ sub check_known_trap {
     # logger => obj
     # config => hash
     # oid2verif => val
+    # agent_dns_name => val
     # cdb => db connection
     # last_cache_time => ref
     # oids_cache => ref
@@ -369,7 +370,7 @@ sub check_known_trap {
         if (defined(${$args{oids_cache}}->{$oid2verif})) {
             return 1;
         } else {
-            $args{logger}->writeLogInfo("Unknown trap");
+            $args{logger}->writeLogInfo("Unknown trap $oid2verif from ".$args{agent_dns_name});
             return 0;
         }
     } else {
@@ -377,7 +378,7 @@ sub check_known_trap {
         my ($status, $sth) = $args{cdb}->query("SELECT traps_oid FROM traps WHERE traps_oid = " . $args{cdb}->quote($oid2verif));
         return 0 if ($status == -1);
         if (!$sth->fetchrow_hashref()) {
-            $args{logger}->writeLogInfo("Unknown trap");
+            $args{logger}->writeLogInfo("Unknown trap $oid2verif from ".$args{agent_dns_name});
             return 0;
         }
     }
