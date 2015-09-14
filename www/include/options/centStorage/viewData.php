@@ -89,13 +89,26 @@
 		$searchS = NULL;
 	}
 
+    /* Search for poller */
+    if (isset($_POST['searchP']) && is_numeric($_POST['searchP'])) {
+        $searchP = $_POST['searchP'];
+    } else {
+        $searchP = NULL;
+    }
+
+    /* Get broker type */
+    $brk = new CentreonBroker($pearDB);
+    if ($brk->getBroker() == 'ndo') {
+        /* Init NDO database connector */
+        $pearDBndo = new CentreonDB("ndo");
+    }
+
 	if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"])){
 		if ($_POST["o"] == "rg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
 			}
-            $brk = new CentreonBroker($pearDB);
             if ($brk->getBroker() == 'broker') {
                 $brk->reload();
             }
@@ -155,13 +168,32 @@
 	}
 
 	$search_string = "";
-	if ($searchH != "" || $searchS != "") {
+    $extTables = "";
+	if ($searchH != "" || $searchS != "" || $searchP != "") {
 		if ($searchH != ""){
 			$search_string .= " AND i.host_name LIKE '%".htmlentities($searchH, ENT_QUOTES, 'UTF-8')."%' ";
 		}
 		if ($searchS != "") {
 			$search_string .= " AND i.service_description LIKE '%".htmlentities($searchS, ENT_QUOTES, 'UTF-8')."%' ";
 		}
+        if ($searchP != "") {
+            if ($brk->getBroker() == 'broker') {
+                /* Centron Broker */
+                $extTables = ", hosts h";
+                $search_string .= " AND i.host_id = h.host_id AND h.instance_id = " . $searchP;
+            } else {
+                /* NDO */
+                $queryListHostByInstance = "SELECT display_name FROM nagios_hosts WHERE instance_id = " . $searchP;
+                $res = $pearDBndo->query($queryListHostByInstance);
+                if (false === PEAR::isError($res)) {
+                    $listHostInstance = array();
+                    while ($row = $res->fetchRow()) {
+                        $listHostInstance[] = $row['display_name'];
+                    }
+                    $search_string .= " AND i.host_name IN ('" . join("', '", $listHostInstance) ."')";
+                }
+            }
+        }
 	}
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
@@ -169,7 +201,7 @@
 	$yesOrNo = array(0 => "No", 1 => "Yes", 2 => "Rebuilding");
 
 	$data = array();
-	$DBRESULT = $pearDBO->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT i.* FROM index_data i, metrics m WHERE i.id = m.index_id $search_string ORDER BY host_name, service_description LIMIT ".$num * $limit.", $limit");
+	$DBRESULT = $pearDBO->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT i.* FROM index_data i, metrics m" . $extTables . " WHERE i.id = m.index_id $search_string ORDER BY host_name, service_description LIMIT ".$num * $limit.", $limit");
 	$rows = $pearDBO->numberRows();
 	
 	for ($i = 0; $index_data = $DBRESULT->fetchRow(); $i++) {
@@ -203,6 +235,23 @@
 		$data[$i] = $index_data;
 	}
 
+    /* Get the list of running poller */
+    if ($brk->getBroker() == 'broker') {
+        /* For Centreon Broker */
+        $queryPollers = "SELECT instance_id, name FROM instances ORDER BY name";
+        $res = $pearDBO->query($queryPollers);
+    } else {
+        /* For NDO */
+        $queryPollers = "SELECT instance_id, instance_name as name FROM nagios_instances ORDER BY instance_name";
+        $res = $pearDBndo->query($queryPollers);
+    }
+    $instances = array();
+    if (false === PEAR::isError($res)) {
+        while ($row = $res->fetchRow()) {
+            $instances[$row['instance_id']] = $row['name'];
+        }
+    }
+
 	include("./include/common/checkPagination.php");
 
 	/*
@@ -218,7 +267,7 @@
 	function setO(_i) {
 		document.forms['form'].elements['o'].value = _i;
 	}
-	</SCRIPT>
+	</script>
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
@@ -275,6 +324,7 @@
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
 	$tpl->assign("data", $data);
+    $tpl->assign("instances", $instances);
 	$tpl->assign("Host", _("Host"));
 	$tpl->assign("Service", _("Service"));
 	$tpl->assign("Metrics", _("Metrics"));
@@ -296,6 +346,11 @@
 	if (isset($searchS)) {
 		$tpl->assign('searchS', $searchS);
 	}
+    if (isset($searchP)) {
+        $tpl->assign('searchP', $searchP);
+    } else {
+        $tpl->assign('searchP', '');
+    }
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
