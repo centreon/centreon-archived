@@ -44,11 +44,11 @@ require_once dirname(__FILE__) . '/exceptions.php';
 
 $pearDB = new CentreonDB();
 /* Purge old token */
-$pearDB->query("DELETE FROM ws_token WHERE generate_date < DATE_SUB(NOW(), INTERVAL 1 HOUR");
+$pearDB->query("DELETE FROM ws_token WHERE generate_date < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
 
 /* Test if the call is for authenticate */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
-    isset($_POST['action']) && $_POST['action'] == 'authenticate') {
+    isset($_GET['action']) && $_GET['action'] == 'authenticate') {
     if (false === isset($_POST['username']) || false === isset($_POST['password'])) {
         CentreonWebService::sendJson("Bad parameters", 400);
     }
@@ -76,7 +76,8 @@ if (false === isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
     CentreonWebService::sendJson("Unauthorized", 401);
 }
 
-$res = $pearDB->query("SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = '" . $_SERVER['HTTP_CENTREON_AUTH_TOKEN'] . "'");
+/* Create the default object */
+$res = $pearDB->query("SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = '" . $pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) . "'");
 if (PEAR::isError($res)) {
     CentreonWebService::sendJson("Database error", 500);
 }
@@ -88,6 +89,4 @@ if (is_null($userInfos)) {
 $centreon = new Centreon($userInfos);
 $oreon = $centreon;
 
-define("WS_INIT", true);
-
-require dirname(__FILE__) . '/router.php';
+CentreonWebService::router();

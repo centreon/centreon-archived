@@ -36,31 +36,21 @@
  *
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path . 'www/class/centreonSession.class.php';
-require_once $centreon_path . 'www/class/centreon.class.php';
-require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . '/webService.class.php';
-require_once dirname(__FILE__) . '/exceptions.php';
+global $centreon_path;
+require_once dirname(__FILE__) . "/webService.class.php";
 
-ini_set("session.gc_maxlifetime", "31536000");
-
-CentreonSession::start();
-
-if (false === isset($_SESSION["centreon"])) {
-    CentreonWebService::sendJson("Unauthorized", 401);
+class CentreonWs extends CentreonWebService {
+    
+    public function __construct()
+    {
+        parent::__construct();
+    }
+    
+    /**
+     * Keep alive function
+     */
+    public function getKeepAlive()
+    {
+        self::sendJson(true);
+    }
 }
-
-/*
- * Define Oreon var alias
- */
-if (isset($_SESSION["centreon"])) {
-    $centreon = $_SESSION["centreon"];
-    $oreon = $centreon;
-}
-
-if (false === isset($centreon) || false === is_object($centreon)) {
-    CentreonWebService::sendJson("Unauthorized", 401);
-}
-
-CentreonWebService::router();

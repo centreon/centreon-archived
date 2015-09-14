@@ -40,9 +40,9 @@ global $centreon_path;
 require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
 require_once $centreon_path . "/www/class/centreonGraphService.class.php";
+require_once dirname(__FILE__) . "/webService.class.php";
 
-class CentreonMetric {
-    protected $pearDB;
+class CentreonMetric extends CentreonWebService {
     protected $pearDBMonitoring;
 
     /**
@@ -53,7 +53,7 @@ class CentreonMetric {
      */
     public function __construct()
     {
-        $this->pearDB = new CentreonDB();
+        parent::__construct();
         $brk = new CentreonBroker($this->pearDB);
         if ($brk->getBroker() == 'broker') {
             $this->pearDBMonitoring = new CentreonDB('centstorage');
@@ -67,12 +67,12 @@ class CentreonMetric {
      *
      * @return array
      */
-    public function getList($args = array())
+    public function getList()
     {
-        if (false === isset($args['q'])) {
+        if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
-            $q = $args['q'];
+            $q = $this->arguments['q'];
         }
         $query = "SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as \"metric_name\" FROM `metrics` WHERE metric_name LIKE '%$q%' ORDER BY `metric_name` COLLATE utf8_general_ci ";
         $DBRESULT = $this->pearDBMonitoring->query($query);
@@ -90,9 +90,9 @@ class CentreonMetric {
     /**
      * Get metrics datas for a service
      *
-     * @param string $args The host id and service id in format hostId_serviceId
+     * @return array
      */
-    public function getMetricsDataByService($args = array())
+    public function getMetricsDataByService()
     {
         global $centreon;
         
@@ -106,34 +106,34 @@ class CentreonMetric {
         }
         
         /* Validate options */
-        if (false === isset($args['start']) ||
-            false === is_numeric($args['start']) ||
-            false === isset($args['end']) ||
-            false === is_numeric($args['end'])) {
+        if (false === isset($this->arguments['start']) ||
+            false === is_numeric($this->arguments['start']) ||
+            false === isset($this->arguments['end']) ||
+            false === is_numeric($this->arguments['end'])) {
             throw new RestBadRequestException("Bad parameters");
         }
 
-        $start = $args['start'];
-        $end = $args['end'];
+        $start = $this->arguments['start'];
+        $end = $this->arguments['end'];
         
         /* Get the numbers of points */
         $rows = 200;
-        if (isset($args['rows'])) {
-            if (false === is_numeric($args['rows'])) {
+        if (isset($this->arguments['rows'])) {
+            if (false === is_numeric($this->arguments['rows'])) {
                 throw new RestBadRequestException("Bad parameters");
             }
-            $rows = $args['rows'];
+            $rows = $this->arguments['rows'];
         }
         if ($rows < 10) {
             throw new RestBadRequestException("The rows must be greater as 10");
         }
         
-        if (false === isset($args['ids'])) {
-            $this->sendJson(array());
+        if (false === isset($this->arguments['ids'])) {
+            self::sendJson(array());
         }
         
         /* Get the list of service ID */
-        $ids = explode(',', $args['ids']);
+        $ids = explode(',', $this->arguments['ids']);
         $result = array();
         
         foreach ($ids as $id) {
@@ -163,12 +163,20 @@ class CentreonMetric {
                 /* Get index data */
                 $indexData = CentreonGraphService::getIndexId($hostId, $serviceId, $this->pearDBMonitoring);
                 /* Create a virtual session for graph */
-                $token = $_SERVER['HTTP_CENTREON_AUTH_TOKEN'];
-                $this->pearDB->query("INSERT INTO session (session_id, user_id) VALUES ('" . $token . "', " . $centreon->user->user_id . ")");
-                $graph = new CentreonGraphService($indexData, $token);
-                $this->pearDB->query("DELETE FROM session WHERE session_id = '" . $token . "'");
+                if (false === is_null($this->token)) {
+                    $sessionId = $this->token;
+                    $this->pearDB->query("INSERT INTO session (session_id, user_id) VALUES ('" . $this->token . "', " . $centreon->user->user_id . ")");
+                } else {
+                    $sessionId = session_id();
+                }
+                $graph = new CentreonGraphService($indexData, $sessionId);
+                if (false === is_null($this->token)) {
+                    $this->pearDB->query("DELETE FROM session WHERE session_id = '" . $this->token . "'");
+                }
             } catch (Exception $e) {
-                $this->pearDB->query("DELETE FROM session WHERE session_id = '" . $token . "'");
+                if (false === is_null($this->token)) {
+                    $this->pearDB->query("DELETE FROM session WHERE session_id = '" . $this->token . "'");
+                }
                 throw new RestNotFoundException("Graph not found");
             }
             $graph->setRRDOption("start", $start);
