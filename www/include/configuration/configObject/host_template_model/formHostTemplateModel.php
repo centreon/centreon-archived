@@ -198,6 +198,14 @@
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 
+# Check commands comes from DB -> Store in $checkCmdEvent Array
+$checkCmdEvent = array(null => null);
+$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
+while ($checkCmd = $DBRESULT->fetchRow()) {
+   $checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
+}
+$DBRESULT->free();
+
 	# Contact Groups comes from DB -> Store in $notifCcts Array
 	$notifCgs = array();
 	$cg = new CentreonContactgroup($pearDB);
@@ -371,7 +379,7 @@
 	$form->addGroup($hostEHE, 'host_event_handler_enabled', _("Event Handler Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('host_event_handler_enabled' => '2'));
-	$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id2","example2")');
+	$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmdEvent, 'onchange=setArgument(this.form,"command_command_id2","example2")');
 	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 
 	# Nagios 2

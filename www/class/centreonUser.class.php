@@ -39,8 +39,8 @@
 require_once ("centreonACL.class.php");
 require_once ("centreonLog.class.php");
 
-class CentreonUser	{
-
+class CentreonUser
+{
 	var $user_id;
 	var $name;
 	var $alias;
@@ -60,7 +60,7 @@ class CentreonUser	{
 	var $access;
 	var $log;
 	var $userCrypted;
-        protected $token;
+    protected $token;
         
 	# User LCA
 	# Array with elements ID for loop test
@@ -69,62 +69,87 @@ class CentreonUser	{
 	# String with elements ID separated by commas for DB requests
 	var $lcaTStr;
 
-  	function CentreonUser($user = array())  {
-		global $pearDB;
+    /**
+     * 
+     * @global type $pearDB
+     * @param type $user
+     */
+    function CentreonUser($user = array())
+    {
+        global $pearDB;
 
-		$this->user_id = $user["contact_id"];
-		$this->name = html_entity_decode($user["contact_name"], ENT_QUOTES, "UTF-8");
-		$this->alias = html_entity_decode($user["contact_alias"], ENT_QUOTES, "UTF-8");
-		$this->email = html_entity_decode($user["contact_email"], ENT_QUOTES, "UTF-8");
-		$this->lang = $user["contact_lang"];
-		$this->charset = "UTF-8";
-		$this->passwd = $user["contact_passwd"];
-                $this->token = $user['contact_autologin_key'];
-		$this->admin = $user["contact_admin"];
-		$this->version = 3;
-	  	$this->gmt = $user["contact_location"];
+        $this->user_id = $user["contact_id"];
+        $this->name = html_entity_decode($user["contact_name"], ENT_QUOTES, "UTF-8");
+        $this->alias = html_entity_decode($user["contact_alias"], ENT_QUOTES, "UTF-8");
+        $this->email = html_entity_decode($user["contact_email"], ENT_QUOTES, "UTF-8");
+        $this->lang = $user["contact_lang"];
+        $this->charset = "UTF-8";
+        $this->passwd = $user["contact_passwd"];
+        $this->token = $user['contact_autologin_key'];
+        $this->admin = $user["contact_admin"];
+        $this->version = 3;
+        $this->gmt = $user["contact_location"];
         $this->js_effects = $user["contact_js_effects"];
-	  	$this->is_admin = NULL;
-	  	/*
-	  	 * Initiate ACL
-	  	 */
-	  	$this->access = new CentreonACL($this->user_id, $this->admin);
-	  	$this->lcaTopo = $this->access->topology;
-	  	$this->lcaTStr = $this->access->topologyStr;
-	  	/*
-	  	 * Initiate Log Class
-	  	 */
-	  	$this->log = new CentreonUserLog($this->user_id, $pearDB);
-  		$this->userCrypted = md5($this->alias);
-  	}
+        $this->is_admin = NULL;
+        /*
+         * Initiate ACL
+         */
+        $this->access = new CentreonACL($this->user_id, $this->admin);
+        $this->lcaTopo = $this->access->topology;
+        $this->lcaTStr = $this->access->topologyStr;
+        /*
+         * Initiate Log Class
+         */
+        $this->log = new CentreonUserLog($this->user_id, $pearDB);
+        $this->userCrypted = md5($this->alias);
+    }
 
-  	public function showDiv($div_name = NULL) {
-  		global $pearDB;
+    /**
+     * 
+     * @global type $pearDB
+     * @param type $div_name
+     * @return int
+     */
+    public function showDiv($div_name = NULL)
+    {
+        global $pearDB;
 
-  		if (!isset($div_name))
-  			return 0;
+        if (!isset($div_name)) {
+            return 0;
+        }
 
-  		if (isset($_SESSION['_Div_' . $div_name])) {
-  			return $_SESSION['_Div_' . $div_name];
-  		}
-  		return 1;
-  	}
+        if (isset($_SESSION['_Div_' . $div_name])) {
+            return $_SESSION['_Div_' . $div_name];
+        }
+        return 1;
+    }
 
-  	function getAllTopology($pearDB){
-	  	$DBRESULT = $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");
-		while ($topo = $DBRESULT->fetchRow())
-			if (isset($topo["topology_page"]))
-				$lcaTopo[$topo["topology_page"]] = 1;
-		unset($topo);
-		$DBRESULT->free();
-		return $lcaTopo;
-  	}
-
-  	/*
-  	 * Check if user is admin or had ACL
-  	 */
-
-  	function checkUserStatus($sid = NULL, $pearDB){
+    /**
+     * 
+     * @param type $pearDB
+     * @return int
+     */
+    function getAllTopology($pearDB)
+    {
+        $DBRESULT = $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");
+        while ($topo = $DBRESULT->fetchRow()) {
+            if (isset($topo["topology_page"])) {
+                $lcaTopo[$topo["topology_page"]] = 1;
+            }
+        }
+        unset($topo);
+        $DBRESULT->free();
+        return $lcaTopo;
+    }
+    
+    /**
+     * Check if user is admin or had ACL
+     * 
+     * @param type $sid
+     * @param type $pearDB
+     */
+  	function checkUserStatus($sid = NULL, $pearDB)
+    {
 		$DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id AND contact.contact_register = '1'");
 		$admin = $DBRESULT->fetchRow();
 		$DBRESULT->free();
@@ -133,7 +158,7 @@ class CentreonUser	{
 		$admin2 = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 
-		if ($admin["contact_admin"]){
+		if ($admin["contact_admin"]) {
 			unset($admin);
 			$this->is_admin = 1 ;
 		} else if (!$admin2["count(*)"]) {
@@ -145,111 +170,200 @@ class CentreonUser	{
 
   // Get
 
-  function get_id(){
-  	return $this->user_id;
-  }
-
-  function get_name(){
-  	return $this->name;
-  }
-
-  function get_email(){
-  	return $this->email;
-  }
-
-  function get_alias(){
-  	return $this->alias;
-  }
-
-  function get_version()	{
-  	return $this->version;
-  }
-
-  function get_lang(){
-  	return $this->lang;
-  }
-
-  function get_passwd(){
-  	return $this->passwd;
-  }
-
-  function get_admin(){
-  	return $this->admin;
-  }
-
-  function is_admin(){
-  	return $this->is_admin;
-  }
-
-  function get_js_effects(){
-    global $pearDB;
-    
-    $DBRESULT = $pearDB->query('SELECT contact_js_effects FROM contact WHERE contact_id = ' . $this->user_id);
-    if (($jsEffectsEnabled = $DBRESULT->fetchRow()) && isset($jsEffectsEnabled['contact_js_effects'])) {
-        $this->js_effects = $jsEffectsEnabled['contact_js_effects'];
-    } else {
-        $this->js_effects = 0;
+    function get_id()
+    {
+        return $this->user_id;
     }
-            
-    return $this->js_effects;
-  }
+
+    /**
+     * 
+     * @return type
+     */
+    function get_name()
+    {
+        return $this->name;
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    function get_email()
+    {
+        return $this->email;
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    function get_alias()
+    {
+        return $this->alias;
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    function get_version()
+    {
+        return $this->version;
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    function get_lang()
+    {
+        return $this->lang;
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    function get_passwd()
+    {
+        return $this->passwd;
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    function get_admin()
+    {
+        return $this->admin;
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    function is_admin()
+    {
+        return $this->is_admin;
+    }
+
+    /**
+     * 
+     * @global type $pearDB
+     * @return type
+     */
+    function get_js_effects()
+    {
+        global $pearDB;
+
+        $DBRESULT = $pearDB->query('SELECT contact_js_effects FROM contact WHERE contact_id = ' . $this->user_id);
+        if (($jsEffectsEnabled = $DBRESULT->fetchRow()) && isset($jsEffectsEnabled['contact_js_effects'])) {
+            $this->js_effects = $jsEffectsEnabled['contact_js_effects'];
+        } else {
+            $this->js_effects = 0;
+        }
+
+        return $this->js_effects;
+    }
   
   // Set
 
-  function set_id($id)	{
-  	$this->user_id = $id;
-  }
+    /**
+     * 
+     * @param type $id
+     */
+    function set_id($id)
+    {
+        $this->user_id = $id;
+    }
 
-  function set_name($name)	{
-  	$this->name = $name;
-  }
+    /**
+     * 
+     * @param type $name
+     */
+    function set_name($name)
+    {
+        $this->name = $name;
+    }
 
-  function set_email($email)	{
-  	$this->email = $email;
-  }
+    /**
+     * 
+     * @param type $email
+     */
+    function set_email($email)
+    {
+        $this->email = $email;
+    }
 
-  function set_lang($lang)	{
-  	$this->lang = $lang;
-  }
+    /**
+     * 
+     * @param type $lang
+     */
+    function set_lang($lang)
+    {
+        $this->lang = $lang;
+    }
 
-  function set_alias($alias)	{
-  	$this->alias = $alias;
-  }
+    /**
+     * 
+     * @param type $alias
+     */
+    function set_alias($alias)
+    {
+        $this->alias = $alias;
+    }
 
-  function set_version($version)	{
-  	$this->version = $version;
-  }
-  
-  function set_js_effects($js_effects){
-    $this->js_effects = $js_effects;
-  }
+    /**
+     * 
+     * @param type $version
+     */
+    function set_version($version)
+    {
+        $this->version = $version;
+    }
 
-  function getMyGMT(){
-  	return $this->gmt;
-  }
+    /**
+     * 
+     * @param type $js_effects
+     */
+    function set_js_effects($js_effects)
+    {
+        $this->js_effects = $js_effects;
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    function getMyGMT()
+    {
+        return $this->gmt;
+    }
 
   /**
    * Get User List
    *
    * @return array
    */
-  public function getUserList($db)
-  {
-      static $userList;
+    public function getUserList($db)
+    {
+        static $userList;
 
-      if (!isset($userList)) {
-        $userList = array();
-        $res = $db->query("SELECT contact_id, contact_name
-        				  FROM contact
-        				  WHERE contact_register = '1'
-        				  AND contact_activate = '1'
-        				  ORDER BY contact_name");
-        while ($row = $res->fetchRow()) {
-            $userList[$row['contact_id']] = $row['contact_name'];
+        if (!isset($userList)) {
+            $userList = array();
+            $res = $db->query(
+                "SELECT contact_id, contact_name
+                FROM contact
+                WHERE contact_register = '1'
+                AND contact_activate = '1'
+                ORDER BY contact_name"
+            );
+            while ($row = $res->fetchRow()) {
+                $userList[$row['contact_id']] = $row['contact_name'];
+            }
         }
-      }
-      return $userList;
-  }
+        return $userList;
+    }
 
   /**
    * Get Contact Name
@@ -258,31 +372,32 @@ class CentreonUser	{
    * @param CentreonDB $db
    * @return string
    */
-  public function getContactName($db, $userId)
-  {
-      static $userNames;
+    public function getContactName($db, $userId)
+    {
+        static $userNames;
 
-      if (!isset($userNames)) {
-          $userNames = array();
-          $res = $db->query("SELECT contact_name, contact_id FROM contact");
-          while ($row = $res->fetchRow()) {
-            $userNames[$row['contact_id']] = $row['contact_name'];
-          }
-      }
-      if (isset($userNames[$userId])) {
-        return $userNames[$userId];
-      }
-      return null;
-  }
+        if (!isset($userNames)) {
+            $userNames = array();
+            $res = $db->query("SELECT contact_name, contact_id FROM contact");
+            while ($row = $res->fetchRow()) {
+                $userNames[$row['contact_id']] = $row['contact_name'];
+            }
+        }
+        if (isset($userNames[$userId])) {
+            return $userNames[$userId];
+        }
+        return null;
+    }
   
   /**
    * Get token
    * 
    * @return string
    */
-  public function getToken() {
-      return $this->token;
-  }
+    public function getToken()
+    {
+        return $this->token;
+    }
   
   /**
    * Set token
@@ -290,8 +405,9 @@ class CentreonUser	{
    * @param string $token
    * @return void
    */
-  public function setToken($token) {
-      $this->token = $token;
-  }
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
 }
 ?>

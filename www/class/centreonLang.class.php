@@ -39,150 +39,248 @@
  /*
   *  Language management class
   */
- class CentreonLang
- {
- 	protected $_charset;
- 	protected $_lang;
- 	protected $_path;
- 	protected $_charsetList;
+class CentreonLang
+{
+    /**
+     *
+     * @var string 
+     */
+    protected $_charset;
+    
+    /**
+     *
+     * @var string 
+     */
+    protected $_lang;
+    
+    /**
+     *
+     * @var string 
+     */
+    protected $_path;
+    
+    /**
+     *
+     * @var array 
+     */
+    protected $_charsetList;
 
- 	/**
- 	 *  Constructor
- 	 *
- 	 * @param string $centreon_path
- 	 * @param Centreon $centreon
- 	 * @return void
- 	 */
- 	public function __construct($centreon_path, $centreon = null)
- 	{
-            $this->_lang = "en_US";
-            $this->_charset = "UTF-8";	
-            if (!is_null($centreon) && isset($centreon->user->lang)) {
+    /**
+     *  Constructor
+     *
+     * @param string $centreon_path
+     * @param Centreon $centreon
+     * @return void
+     */
+    public function __construct($centreon_path, $centreon = null)
+    {
+        $this->_charset = "UTF-8";
+        if (!is_null($centreon) && isset($centreon->user->charset)) {
+            $this->_charset = $centreon->user->charset;
+        }
+        
+        $this->_lang = $this->getBrowserDefaultLanguage() . '.' . $this->_charset;
+        if (!is_null($centreon) && isset($centreon->user->lang)) {
+            if ($centreon->user->lang !== 'browser') {
                 $this->_lang = $centreon->user->lang;
             }
-            if (!is_null($centreon) && isset($centreon->user->charset)) {
-                $this->_charset = $centreon->user->charset;
+        }
+        
+        $this->_path = $centreon_path;
+        $this->setCharsetList();
+    }
+    
+    private function parseHttpAcceptHeader()
+    {
+        $langs = array();
+
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            // break up string into pieces (languages and q factors)
+            preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $lang_parse);
+
+            if (count($lang_parse[1])) {
+                // create a list like "en" => 0.8
+                $langs = array_combine($lang_parse[1], $lang_parse[4]);
+
+                // set default to 1 for any without q factor
+                foreach ($langs as $lang => $val) {
+                    if ($val === '') $langs[$lang] = 1;
+                }
+
+                // sort list based on value	
+                arsort($langs, SORT_NUMERIC);
             }
-            $this->_path = $centreon_path;
-            $this->setCharsetList();
- 	}
+        }
+        
+        $languageLocales = array_keys($langs);
+        
+        $current = array_shift($languageLocales);
+        $favoriteLanguage = $current;
+        
+        return $favoriteLanguage;
+    }
 
- 	/**
- 	 *  Sets list of charsets
- 	 *
- 	 *  @return void
- 	 */
- 	private function setCharsetList()
- 	{
- 		$this->_charsetList = array(
- 									"ISO-8859-1",
-									"ISO-8859-2",
-									"ISO-8859-3",
-									"ISO-8859-4",
-									"ISO-8859-5",
-									"ISO-8859-6",
-									"ISO-8859-7",
-									"ISO-8859-8",
-									"ISO-8859-9",
-									"UTF-80",
-									"UTF-83",
-									"UTF-84",
-									"UTF-85",
-									"UTF-86",
-									"ISO-2022-JP",
-									"ISO-2022-KR",
-									"ISO-2022-CN",
-									"WINDOWS-1251",
-									"CP866",
-									"KOI8",
-									"KOI8-E",
-									"KOI8-R",
-									"KOI8-U",
-									"KOI8-RU",
-									"ISO-10646-UCS-2",
-									"ISO-10646-UCS-4",
-									"UTF-7",
-									"UTF-8",
-									"UTF-16",
-									"UTF-16BE",
-									"UTF-16LE",
-									"UTF-32",
-									"UTF-32BE",
-									"UTF-32LE",
-									"EUC-CN",
-									"EUC-GB",
-									"EUC-JP",
-									"EUC-KR",
-									"EUC-TW",
-									"GB2312",
-									"ISO-10646-UCS-2",
-									"ISO-10646-UCS-4",
-									"SHIFT_JIS");
-		sort($this->_charsetList);
- 	}
+    /**
+     * 
+     * @return type
+     */
+    private function getBrowserDefaultLanguage()
+    {
+        $currentLocale = '';
+        
+        if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
+            $browserLocale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+            $currentLocale .= Locale::acceptFromHttp($browserLocale);
+        } else {
+            $currentLocale .= $this->parseHttpAcceptHeader();
+        }
+        
+        return $this->getFullLocale($currentLocale);
+    }
 
- 	/**
- 	 *  Binds lang to the current Centreon page
- 	 *
- 	 *  @return void
- 	 */
- 	public function bindLang($domain = "messages", $path = "www/locale/")
- 	{
-		putenv("LANG=$this->_lang");
-		setlocale(LC_ALL, $this->_lang);
-		bindtextdomain($domain, $this->_path.$path);
-		bind_textdomain_codeset($domain, $this->_charset);
-		textdomain('messages');
- 	}
+    /**
+     * 
+     * @param type $shortLocale
+     * @return string
+     */
+    private function getFullLocale($shortLocale)
+    {
+        $fullLocale = '';
 
- 	/**
- 	 *  Lang setter
- 	 *
- 	 *  @param string $newLang
- 	 *  @return void
- 	 */
- 	public function setLang($newLang)
- 	{
- 		$this->_lang = $newLang;
- 	}
+        $as = array(
+            'fr' => 'fr_FR',
+            'fr_FR' => 'fr_FR',
+            'en' => 'en_US',
+            'en_US' => 'en_US'
+        );
 
- 	/**
- 	 *  Returns lang that is being used
- 	 *
- 	 *  @return string
- 	 */
- 	public function getLang()
- 	{
- 		return $this->_lang;
- 	}
+        if (isset($as[$shortLocale])) {
+            $fullLocale .= $as[$shortLocale];
+        } else {
+            $fullLocale = 'en_US';
+        }
 
- 	/**
- 	 *  Charset Setter
- 	 *  @param string $newCharset
- 	 *  @return void
- 	 */
- 	public function setCharset($newCharset)
- 	{
- 		$this->_charset = $newCharset;
- 	}
+        return $fullLocale;
+    }
 
- 	/**
- 	 *  Returns charset that is being used
- 	 *
- 	 *  @return string
- 	 */
- 	public function getCharset()
- 	{
- 		return $this->_charset;
- 	}
 
- 	/**
- 	 *  Returns an array with a list of charsets
- 	 *
- 	 *  @return array
- 	 */
- 	public function getCharsetList()
- 	{
- 		return $this->_charsetList;
- 	}
- }
+    /**
+     *  Sets list of charsets
+     *
+     *  @return void
+     */
+    private function setCharsetList()
+    {
+        $this->_charsetList = array(
+            "ISO-8859-1",
+            "ISO-8859-2",
+            "ISO-8859-3",
+            "ISO-8859-4",
+            "ISO-8859-5",
+            "ISO-8859-6",
+            "ISO-8859-7",
+            "ISO-8859-8",
+            "ISO-8859-9",
+            "UTF-80",
+            "UTF-83",
+            "UTF-84",
+            "UTF-85",
+            "UTF-86",
+            "ISO-2022-JP",
+            "ISO-2022-KR",
+            "ISO-2022-CN",
+            "WINDOWS-1251",
+            "CP866",
+            "KOI8",
+            "KOI8-E",
+            "KOI8-R",
+            "KOI8-U",
+            "KOI8-RU",
+            "ISO-10646-UCS-2",
+            "ISO-10646-UCS-4",
+            "UTF-7",
+            "UTF-8",
+            "UTF-16",
+            "UTF-16BE",
+            "UTF-16LE",
+            "UTF-32",
+            "UTF-32BE",
+            "UTF-32LE",
+            "EUC-CN",
+            "EUC-GB",
+            "EUC-JP",
+            "EUC-KR",
+            "EUC-TW",
+            "GB2312",
+            "ISO-10646-UCS-2",
+            "ISO-10646-UCS-4",
+            "SHIFT_JIS"
+        );
+        sort($this->_charsetList);
+    }
+
+    /**
+     *  Binds lang to the current Centreon page
+     *
+     *  @return void
+     */
+    public function bindLang($domain = "messages", $path = "www/locale/")
+    {
+        putenv("LANG=$this->_lang");
+        setlocale(LC_ALL, $this->_lang);
+        bindtextdomain($domain, $this->_path.$path);
+        bind_textdomain_codeset($domain, $this->_charset);
+        textdomain('messages');
+    }
+
+    /**
+     *  Lang setter
+     *
+     *  @param string $newLang
+     *  @return void
+     */
+    public function setLang($newLang)
+    {
+        $this->_lang = $newLang;
+    }
+
+    /**
+     *  Returns lang that is being used
+     *
+     *  @return string
+     */
+    public function getLang()
+    {
+        return $this->_lang;
+    }
+
+    /**
+     *  Charset Setter
+     *  @param string $newCharset
+     *  @return void
+     */
+    public function setCharset($newCharset)
+    {
+        $this->_charset = $newCharset;
+    }
+
+    /**
+     *  Returns charset that is being used
+     *
+     *  @return string
+     */
+    public function getCharset()
+    {
+        return $this->_charset;
+    }
+
+    /**
+     *  Returns an array with a list of charsets
+     *
+     *  @return array
+     */
+    public function getCharsetList()
+    {
+        return $this->_charsetList;
+    }
+}
