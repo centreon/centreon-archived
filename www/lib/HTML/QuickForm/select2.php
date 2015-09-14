@@ -48,55 +48,55 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
 {
     /**
      *
-     * @var type 
+     * @var string 
      */
     var $_elementHtmlName;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     var $_elementTemplate;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     var $_elementCSS;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     var $_availableDatasetRoute;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     var $_defaultDatasetRoute;
     
     /**
      *
-     * @var type 
+     * @var boolean 
      */
     var $_ajaxSource;
     
     /**
      *
-     * @var type 
+     * @var boolean 
      */
     var $_multiple;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     var $_multipleHtml;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     var $_defaultSelectedOptions;
     
@@ -119,6 +119,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_defaultSelectedOptions = '';
         $this->_multipleHtml = '';
         $this->HTML_QuickForm_select($elementName, $elementLabel, $options, $attributes);
+        $this->_elementHtmlName = $this->getName();
         $this->parseCustomAttributes($attributes);
     }
     
@@ -143,11 +144,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         }
         
         if (isset($attributes['multiple']) && $attributes['multiple'] === true) {
-            $this->_elementHtmlName = $this->getName() . '[]';
+            $this->_elementHtmlName .= '[]';
             $this->_multiple = true;
             $this->_multipleHtml = 'multiple="multiple"';
         } else {
-            $this->_elementHtmlName = $this->getName();
             $this->_multiple = false;
         }
     }
@@ -281,9 +281,6 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         
         // Set default values
         $strValues = is_array($this->_values)? array_map('strval', $this->_values): array();
-        /*if (count($strValues) > 0) {
-            $strValues = implode(',', $strValues);
-        }*/
         
         foreach ($this->_options as $option) {
             if (empty($option["attr"]["value"])) {
