@@ -77,6 +77,10 @@
 	 * Correlation engine
 	 */
 	$form->addElement('text', 'broker_correlator_script', _("Start script for broker daemon"), $attrsText);
+    /*
+     * Socket for communicate with Centreon Broker
+     */
+    $form->addElement('text', 'broker_socket_path', _("Centreon Broker socket path"), $attrsText);
 
 	/*
 	 * Tactical Overview form

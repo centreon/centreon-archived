@@ -158,7 +158,15 @@ function monitoringCallBack(t)
 
 function resetSelectedCheckboxes()
 {
-	$$('input[type="checkbox"]').each(function(el) {
+	$$('.ListColPicker,.ListColHeaderPicker input').each(function(el) {
+            if (typeof(savedChecked) != "undefined" && typeof(savedChecked[el.id]) != 'undefined') {
+                if (savedChecked[el.id] == 1) {
+                    el.checked = 1;
+                }
+            }
+        });
+        
+        $$('input[type="checkbox"]').each(function(el) {
 		if (typeof(_selectedElem) != "undefined" && _selectedElem[encodeURIComponent(el.id)]) {
 			el.checked = true;
 		}

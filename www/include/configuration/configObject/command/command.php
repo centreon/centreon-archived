@@ -47,8 +47,9 @@
 	isset($_POST["type"]) ? $typeP = $_POST["type"] : $typeP = NULL;
 	$typeG ? $type = $typeG : $type = $typeP;
 	
-	if (!isset($type) || !$type)
-		$type = 2;
+	if (!isset($type) || !$type) {
+	    $type = 2;
+	}
 	
 	isset($_POST["command_type"]) ? $type = $_POST["command_type"]["command_type"] : null;
 

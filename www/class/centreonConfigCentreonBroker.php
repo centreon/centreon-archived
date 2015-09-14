@@ -44,6 +44,7 @@ class CentreonConfigCentreonBroker
     private $db;
     private $attrText = array("size"=>"120");
     private $attrInt = array("size"=>"10", "class" => "v_number");
+    private $globalCommandFile = null;
 
     private $tagsCache = null;
     private $typesCache = null;
@@ -431,7 +432,8 @@ class CentreonConfigCentreonBroker
 	    }
 	    $row = $res->fetchRow();
 	    $id = $row['config_id'];
-	    return $this->updateCentreonBrokerInfos($id, $values);
+	    $this->updateCentreonBrokerInfos($id, $values);
+        $this->updateCommand($id);
     }
 
     /**
@@ -459,6 +461,7 @@ class CentreonConfigCentreonBroker
 	        return false;
 	    }
 	    $this->updateCentreonBrokerInfos($id, $values);
+        $this->updateCommand($id);
     }
 
     /**
@@ -967,6 +970,33 @@ class CentreonConfigCentreonBroker
 	   $elemStr = $this->getConfigFieldName($configId, $configGroup, $row) . '__' . $info['parent_grp_id'] . '__' . $elemStr;
        }
        return $elemStr;
+    }
+    
+    /**
+     * Update the command file field
+     *
+     * @param int $configId The configuration ID
+     */
+    public function updateCommand($configId)
+    {
+        global $oreon;
+        /* Test if need to add command file */
+        $query = "SELECT COUNT(config_id) as nb FROM cfg_centreonbroker_info WHERE config_key = 'type' AND config_value = 'db_cfg_reader' AND config_id = " . $configId;
+        $res = $this->db->query($query);
+        $row = $res->fetchRow();
+        if ($row['nb'] > 0) {
+            if (is_null($this->globalCommandFile)) {
+                if (isset($oreon->optGen['broker_socket_path'])) {
+                    $this->globalCommandFile = $oreon->optGen['broker_socket_path'];
+                } else {
+                    $this->globalCommandFile = '';
+                }
+            }
+            $query = "UPDATE cfg_centreonbroker SET command_file = '" . $this->globalCommandFile . "' WHERE config_id = " . $configId;
+        } else {
+            $query = "UPDATE cfg_centreonbroker SET command_file = NULL WHERE config_id = " . $configId;
+        }
+        $sth = $this->db->query($query);
     }
 }
 ?>

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -36,198 +37,195 @@
  *
  */
 
-class CentreonGMT{
+class CentreonGMT {
 
-	var $listGTM;
-	var $myGMT;
-	var $use;
+    var $listGTM;
+    var $myGMT;
+    var $use;
 
-	public function __construct($DB)
-	{
-		/*
-		 * Define Table of GMT line
-		 */
-		$this->listGTM = array(null => null);
+    public function __construct($DB) {
+        /*
+         * Define Table of GMT line
+         */
+        $this->listGTM = array(null => null);
 
-		$this->listGTM['-12'] = -12;
-		$this->listGTM['-11'] = -11;
-		$this->listGTM['-10'] = -10;
-		$this->listGTM['-9'] = -9;
-		$this->listGTM['-8'] = -8;
-		$this->listGTM['-7'] = -7;
-		$this->listGTM['-6'] = -6;
-		$this->listGTM['-5'] = -5;
-		$this->listGTM['-4'] = -4;
-		$this->listGTM['-3'] = -3;
-		$this->listGTM['-2'] = -2;
-		$this->listGTM['-1'] = -1;
-		$this->listGTM['0'] = 0;
-		$this->listGTM['1'] = 1;
-		$this->listGTM['2'] = 2;
-		$this->listGTM['3'] = 3;
-		$this->listGTM['4'] = 4;
-		$this->listGTM['5'] = 5;
-		$this->listGTM['6'] = 6;
-		$this->listGTM['7'] = 7;
-		$this->listGTM['8'] = 8;
-		$this->listGTM['9'] = 9;
-		$this->listGTM['10'] = 10;
-		$this->listGTM['11'] = 11;
-		$this->listGTM['12'] = 12;
+        $this->listGTM['-12'] = -12;
+        $this->listGTM['-11'] = -11;
+        $this->listGTM['-10'] = -10;
+        $this->listGTM['-9'] = -9;
+        $this->listGTM['-8'] = -8;
+        $this->listGTM['-7'] = -7;
+        $this->listGTM['-6'] = -6;
+        $this->listGTM['-5'] = -5;
+        $this->listGTM['-4'] = -4;
+        $this->listGTM['-3'] = -3;
+        $this->listGTM['-2'] = -2;
+        $this->listGTM['-1'] = -1;
+        $this->listGTM['0'] = 0;
+        $this->listGTM['1'] = 1;
+        $this->listGTM['2'] = 2;
+        $this->listGTM['3'] = 3;
+        $this->listGTM['4'] = 4;
+        $this->listGTM['5'] = 5;
+        $this->listGTM['6'] = 6;
+        $this->listGTM['7'] = 7;
+        $this->listGTM['8'] = 8;
+        $this->listGTM['9'] = 9;
+        $this->listGTM['10'] = 10;
+        $this->listGTM['11'] = 11;
+        $this->listGTM['12'] = 12;
 
-		/*
-		 * Flag activ / inactiv
-		 */
-		$this->use = $this->checkGMTStatus($DB);
-	}
+        /*
+         * Flag activ / inactiv
+         */
+        $this->use = $this->checkGMTStatus($DB);
+    }
 
-	function checkGMTStatus($DB) {
-		global $pearDB;
+    function checkGMTStatus($DB) {
+        global $pearDB;
 
-		if (!isset($pearDB) && isset($DB))
-			$pearDB = $DB;
+        if (!isset($pearDB) && isset($DB))
+            $pearDB = $DB;
 
-		$DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'enable_gmt'");
-		$result = $DBRESULT->fetchRow();
-		return ($result["value"]);
-	}
+        $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'enable_gmt'");
+        $result = $DBRESULT->fetchRow();
+        return ($result["value"]);
+    }
 
-	function used(){
-		return $this->use;
-	}
+    function used() {
+        return $this->use;
+    }
 
-	function setMyGMT($value){
-		if (!isset($value))
-			$this->myGMT = $value;
-	}
+    function setMyGMT($value) {
+        if (!isset($value))
+            $this->myGMT = $value;
+    }
 
-	function getGMTList() {
-		return $this->listGTM;
-	}
+    function getGMTList() {
+        return $this->listGTM;
+    }
 
-	function getMyGMT(){
-		return $this->myGMT;
-	}
+    function getMyGMT() {
+        return $this->myGMT;
+    }
 
-	function getMyGMTForRRD(){
-		$gmt = (-1 * $this->myGMT);
-		if ($gmt > 0)
-			$gmt = "+$gmt";
-		return $gmt;
-	}
+    function getMyGMTForRRD() {
+        $gmt = (-1 * $this->myGMT);
+        if ($gmt > 0)
+            $gmt = "+$gmt";
+        return $gmt;
+    }
 
-	function getDate($format, $date, $gmt = NULL) {
-            if (!$date) {
-                $date = "N/A";
+    function getDate($format, $date, $gmt = NULL) {
+        if (!$date) {
+            $date = "N/A";
+        }
+        if ($date == "N/A") {
+            return $date;
+        }
+        /*
+         * Specify special GMT
+         */
+        if (!isset($gmt)) {
+            $gmt = $this->myGMT;
+        }
+
+        if ($this->use) {
+            if (isset($date) && isset($gmt)) {
+                $date += $gmt * 60 * 60;
+                return date($format, $date);
+            } else {
+                return "";
             }
-            if ($date == "N/A") {
+        } else {
+            return date($format, $date);
+        }
+    }
+
+    function getUTCDate($date, $gmt = NULL) {
+        /*
+         * Specify special GMT
+         */
+        if (!isset($gmt))
+            $gmt = $this->myGMT;
+
+        if ($this->use) {
+            if (isset($date) && isset($gmt)) {
+                $date += -1 * ($gmt * 60 * 60);
                 return $date;
+            } else {
+                return "";
             }
-		/*
-		 * Specify special GMT
-		 */
-		if (!isset($gmt)) {
-			$gmt = $this->myGMT;
-		}
+        } else {
+            return $date;
+        }
+    }
 
-		if ($this->use) {
-			if (isset($date) && isset($gmt)) {
-				$date += $gmt * 60 * 60;
-				return date($format, $date);
-			} else {
-				return "";
-			}
-		} else {
-			return date($format, $date);
-		}
-	}
+    function getDelaySecondsForRRD($gmt) {
+        $str = "";
+        if ($gmt) {
+            if ($gmt > 0)
+                $str .= "+";
+        } else {
+            return "";
+        }
+    }
 
-	function getUTCDate($date, $gmt = NULL) {
-		/*
-		 * Specify special GMT
-		 */
-		if (!isset($gmt))
-			$gmt = $this->myGMT;
+    function getMyGMTFromSession($sid = NULL, $DB) {
+        global $pearDB;
 
-		if ($this->use) {
-			if (isset($date) && isset($gmt)) {
-				$date += -1 * ($gmt * 60 * 60);
-				return $date;
-			} else {
-				return "";
-			}
-		} else {
-			return $date;
-		}
-	}
+        if (!isset($pearDB) && isset($DB))
+            $pearDB = $DB;
 
-	function getDelaySecondsForRRD($gmt) {
-		$str = "";
-		if ($gmt) {
-			if ($gmt > 0)
-				$str .= "+";
-		} else {
-			return "";
-		}
-	}
+        if (!isset($sid))
+            return 0;
 
-	function getMyGMTFromSession($sid = NULL, $DB){
-		global $pearDB;
+        $DBRESULT = $pearDB->query("SELECT `contact_location` FROM `contact`, `session` " .
+                "WHERE `session`.`user_id` = `contact`.`contact_id` " .
+                "AND `session_id` = '" . CentreonDB::escape($sid) . "' LIMIT 1");
+        if (PEAR::isError($DBRESULT)) {
+            $this->myGMT = 0;
+        }
+        $info = $DBRESULT->fetchRow();
+        $DBRESULT->free();
+        $this->myGMT = $info["contact_location"];
+    }
 
-		if (!isset($pearDB) && isset($DB))
-			$pearDB = $DB;
-
-		if (!isset($sid))
-			return 0;
-
-		$DBRESULT = $pearDB->query("SELECT `contact_location` FROM `contact`, `session` " .
-									"WHERE `session`.`user_id` = `contact`.`contact_id` " .
-									"AND `session_id` = '$sid' LIMIT 1");
-		if (PEAR::isError($DBRESULT)) {
-			$this->myGMT = 0;
-		}
-		$info = $DBRESULT->fetchRow();
-		$DBRESULT->free();
-		$this->myGMT = $info["contact_location"];
-	}
-
-	function getHostCurrentDatetime($host_id, $date_format = 'c')
-	{
-		global $pearDB;
-		static $locations = null;
-
-		$date = time();
-		if ($this->use) {
-			if (is_null($locations)) {
-				$locations = array();
-
-				$query = "SELECT host_id, host_location FROM host WHERE host_id";
-				$res = $pearDB->query($query);
-				while ($row = $res->fetchRow()) {
-					$locations[$row['host_id']] = $row['host_location'];
-				}
-			}
-			if (isset($locations[$host_id]))  {
-				$date = $date + $locations[$host_id] * 3600;
-			}
-		}
-		return date($date_format, $date);
-	}
-
-    function getUTCDateBasedOnHostGMT($date, $hostId, $dateFormat = 'c')
-    {
-		global $pearDB;
+    function getHostCurrentDatetime($host_id, $date_format = 'c') {
+        global $pearDB;
         static $locations = null;
-        
+
+        $date = time();
+        if ($this->use) {
+            if (is_null($locations)) {
+                $locations = array();
+
+                $query = "SELECT host_id, host_location FROM host WHERE host_id";
+                $res = $pearDB->query($query);
+                while ($row = $res->fetchRow()) {
+                    $locations[$row['host_id']] = $row['host_location'];
+                }
+            }
+            if (isset($locations[$host_id])) {
+                $date = $date + $locations[$host_id] * 3600;
+            }
+        }
+        return date($date_format, $date);
+    }
+
+    function getUTCDateBasedOnHostGMT($date, $hostId, $dateFormat = 'c') {
+        global $pearDB;
+        static $locations = null;
+
         if ($this->use) {
             /* Load host location */
-			if (is_null($locations)) {
-				$locations = array();
-				$query = "SELECT host_id, host_location FROM host WHERE host_id";
-				$res = $pearDB->query($query);
-				while ($row = $res->fetchRow()) {
-					$locations[$row['host_id']] = $row['host_location'];
-				}
+            if (is_null($locations)) {
+                $locations = array();
+                $query = "SELECT host_id, host_location FROM host WHERE host_id";
+                $res = $pearDB->query($query);
+                while ($row = $res->fetchRow()) {
+                    $locations[$row['host_id']] = $row['host_location'];
+                }
             }
             if (isset($locations[$hostId])) {
                 $date = $this->getUTCDate($date, $locations[$hostId]);
@@ -235,4 +233,5 @@ class CentreonGMT{
         }
         return date($dateFormat, $date);
     }
+
 }

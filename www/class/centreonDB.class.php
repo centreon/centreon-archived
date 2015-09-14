@@ -56,6 +56,8 @@ class CentreonDB {
     protected $requestSuccessful;
     protected $lineRead;
     protected $debug;
+    
+    static $aForbiden = array('<', '>', 'UNION', 'DELETE', 'ORDER', 'SELECT', 'WHERE', 'UPDATE');
 
     /**
      * Constructor
@@ -262,6 +264,16 @@ class CentreonDB {
     public function disconnect() {
         $this->db->disconnect();
     }
+    
+    /**
+     *  Removes quotes from values
+     *
+     *  @return string
+     */
+    public function quote($str)
+    {
+        return $this->db->quote($str);
+    }
 
     /**
      * To string method
@@ -282,6 +294,8 @@ class CentreonDB {
      * @return string
      */
     static public function escape($str, $htmlSpecialChars = false) {
+        static::check_injection($str);
+        
         if ($htmlSpecialChars) {
             $str = htmlspecialchars($str);
         }
@@ -399,5 +413,21 @@ class CentreonDB {
         }
         return $number;
     }
+    
+    /*
+     * checks if there is malicious injection 
+     */
+    public static function check_injection($sString)
+    {
+        foreach (self::$aForbiden as $str) {
+            $pos = stripos($sString, $str);
+            if ($pos !== FALSE) {
+                get_error('sql injection detected in string "'.$sString.'"');
+                return 1;
+            }
+        }
+        
+        return 0;
+   }
 
 }

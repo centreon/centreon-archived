@@ -282,7 +282,7 @@ class CentreonGraph {
     */
     protected function cleanupDsNameForLegend($dsname, $reverse = false)
     {
-        $newDsName = str_replace(array("slash_", "bslash_", "pct_",  "#", "\\"), array("/", "\\", "%", "#", "\\\\"), $dsname);
+        $newDsName = str_replace(array("slash_", "bslash_", "pct_",  "'", "\\"), array("/", "\\", "%", " ", "\\\\"), $dsname);
         $newDsName = mb_convert_encoding($newDsName, "UTF-8");
         return $newDsName;
     }
@@ -1272,7 +1272,7 @@ class CentreonGraph {
                 $return_value = proc_close($process);
 
                 /* Force no compress for image */
-                $this->setHeaders(false, strlen($str));
+                $this->setHeaders(false, mb_strlen($str, '8bit'));
                 print $str;
             }
         } else {

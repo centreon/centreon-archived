@@ -42,6 +42,15 @@
  	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
+        /* Init connection to storage db */
+        require_once $centreon_path . "/www/class/centreonBroker.class.php";
+        $brk = new CentreonBroker($pearDB);
+        if ($brk->getBroker() == 'broker') {
+            $pearDBMonitoring = new CentreonDB('centstorage');
+        } else {
+            $pearDBMonitoring = new CentreonDB('ndo');
+        }
+
         /* hosts */
         $hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields'  => array('host.host_id', 'host.host_name'),
                                                                             'keys'    => array('host_id'),
@@ -117,9 +126,10 @@
 		$DBRESULT->free();
 
 		# Set Meta Service
+                $aclMetaService = $acl->getMetaServiceString();
 		$DBRESULT = $pearDB->query("SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = '".$esc_id."'");
 		for($i = 0; $metas = $DBRESULT->fetchRow(); $i++) {
-                    if (!$oreon->user->admin && false === strpos($acl->getMetaServiceString(), "'".$metas['meta_service_meta_id']."'")) {
+                    if (!$oreon->user->admin && false === strpos($aclMetaService, "'".$metas['meta_service_meta_id']."'")) {
                         $initialValues['esc_metas'][] = $metas['meta_service_meta_id'];
                     } else {
                         $esc["esc_metas"][$i] = $metas["meta_service_meta_id"];
@@ -127,27 +137,21 @@
                 }
 		$DBRESULT->free();
 
-		$query = "SELECT host_id, host_name, service_id, service_description
-        	FROM service s, escalation_service_relation esr, host h
-	        WHERE s.service_id = esr.service_service_id
-    	    AND esr.host_host_id = h.host_id
-        	AND h.host_register = '1'
-	        AND esr.escalation_esc_id = " . $esc_id;
-    	$res = $pearDB->query($query);
-	    while ($row = $res->fetchRow()) {
-    	    $k = $row['host_id']."-".$row['service_id'];
-        	if (!in_array($k, $initialValues['esc_hServices'])) {
-            	$hServices[$k] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
-	        }
-    	}	
-
 		# Set Host Service
-		$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM escalation_service_relation esr WHERE esr.escalation_esc_id = '".$esc_id."'");
+                $aclService = $acl->getServicesString('ID', $pearDBMonitoring);
+                $query = "SELECT distinct host_host_id, host_name, service_service_id, service_description
+                    FROM service s, escalation_service_relation esr, host h
+                    WHERE s.service_id = esr.service_service_id
+                    AND esr.host_host_id = h.host_id
+                    AND h.host_register = '1'
+                    AND esr.escalation_esc_id = " . $esc_id;
+                $DBRESULT = $pearDB->query($query);
 		for ($i = 0; $services = $DBRESULT->fetchRow(); $i++) {
                     $key = $services["host_host_id"]."-".$services["service_service_id"];
-                    if (!$oreon->user->admin && !isset($hServices[$key])) {
+                    if (!$oreon->user->admin && false === strpos($aclService, "'".$services['service_service_id']."'")) {
                         $initialValues['esc_hServices'][] = $key;
                     } else {
+                        $hServices[$key] = $services["host_name"]."&nbsp;-&nbsp;".$services['service_description'];
                         $esc["esc_hServices"][$i] = $key;
                     }
                 }
