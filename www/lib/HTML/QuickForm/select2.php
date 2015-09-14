@@ -224,8 +224,6 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 . '</select>';
             $strHtml .= $this->getJsInit();
             $strHtml = str_replace('%%DEFAULT_SELECTED_VALUES%%', $this->_defaultSelectedOptions, $strHtml);
-            
-            file_put_contents('/tmp/Select2.html', $strHtml, FILE_APPEND);
         }
         
         return $strHtml;
