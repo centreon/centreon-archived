@@ -419,12 +419,9 @@ class CentreonDB {
      */
     public static function check_injection($sString)
     {
-        foreach (self::$aForbiden as $str) {
-            $pos = stripos($sString, $str);
-            if ($pos !== FALSE) {
-                get_error('sql injection detected in string "'.$sString.'"');
-                return 1;
-            }
+        if (preg_match('/\s'.implode('|', self::$aForbiden) . '\s/i', $sString)) {
+            throw new Exception("sql injection detected in string QUERY : " . $sString);
+            return 1;
         }
         
         return 0;
