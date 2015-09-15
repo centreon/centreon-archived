@@ -5,7 +5,14 @@
 		<tr>
 			<td>{$Hosts} : <input type='text' name='searchH' value="{$searchH}" /></td>
 			<td>&nbsp;&nbsp;{$Services} : <input type='text' name='searchS' value="{$searchS}" /></td>
-			<!--<td>{$Pollers} : <input type='text' name='poller' value="{$poller}" /></td>-->
+			<td>{$Pollers} :
+              <select name="searchP">
+                <option value=""></option>
+              {foreach from=$instances key=instanceId item=instanceName}
+                <option value="{$instanceId}"{if $instanceId == $searchP} selected{/if}>{$instanceName}</option>
+              {/foreach}
+              </select>
+            </td>
             <td><input type='submit' name='Search' value='{$Search}' /></td>
 		</tr>
 	</table><br />
