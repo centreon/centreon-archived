@@ -57,7 +57,7 @@ class CentreonDB {
     protected $lineRead;
     protected $debug;
     
-    static $aForbiden = array('<', '>', 'UNION', 'DELETE', 'ORDER', 'SELECT', 'WHERE', 'UPDATE');
+    static $aForbiden = array('UNION', 'DELETE', 'ORDER', 'SELECT', 'WHERE', 'UPDATE');
 
     /**
      * Constructor
