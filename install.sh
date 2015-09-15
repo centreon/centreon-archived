@@ -357,10 +357,10 @@ fi
 
 ## resquest centreon_snmp_traps
 if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 2 ] ; then 
-	yes_no_default "$(gettext "Do you want to install") : Centreon Snmp Traps process"
+	yes_no_default "$(gettext "Do you want to install") : CentreonTrapd process"
 	if [ "$?" -eq 0 ] ; then
 		PROCESS_CENTREON_SNMP_TRAPS="1"
-		log "INFO" "$(gettext "You chose to install") : Centreon Snmp Traps process"
+		log "INFO" "$(gettext "You chose to install") : CentreonTrapd process"
 	fi
 fi
 
@@ -428,6 +428,23 @@ if [ "$PROCESS_CENTREON_PLUGINS" -eq 1 ] ; then
 		fi
 	fi
 	. $INSTALL_DIR/CentPlugins.sh
+fi
+
+## Start CentPluginsTraps install
+if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
+	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentPlugins.conf" ] ; then
+		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentPlugins.conf"
+
+		. $inst_upgrade_dir/instCentPlugins.conf
+		if [ -n "$NAGIOS_USER" ]; then
+			echo_info "$(gettext "Convert variables for upgrade:")"
+			MONITORINGENGINE_USER=$NAGIOS_USER
+			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
+			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
+			[ -n "$NAGIOS_PLUGIN" ] && PLUGIN_DIR=$NAGIOS_PLUGIN
+		fi
+	fi
+	. $INSTALL_DIR/CentPluginsTraps.sh
 fi
 
 ## Purge working directories
