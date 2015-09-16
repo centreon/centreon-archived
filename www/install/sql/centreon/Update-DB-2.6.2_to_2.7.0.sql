@@ -47,3 +47,5 @@ UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` 
 
 
 alter table custom_views add `public` tinyint(6) null default 0;
+
+delete from topology where topology_page = 10102;

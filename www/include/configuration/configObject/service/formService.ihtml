@@ -241,3 +241,14 @@
 {$form.hidden}	
 </form>
 {$helptext}
+
+<script>
+{literal}
+jQuery('input[name=service_normal_check_interval]').change(function(){
+    if(parseInt(jQuery(this).val()) >= 1440){
+        alert("Warning, unconventional use of interval check. You should prefer to use an interval lower than 24h, if needed, pair this configuration with the use of timeperiods");
+    }
+});
+
+{/literal}
+</script>
