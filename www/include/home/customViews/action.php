@@ -77,6 +77,8 @@ try {
         if (isset($_POST['widget_id'])) {
             $widgetObj->udpateViewWidgetRelations($customViewId, $_POST['widget_id']);
         }
+    } elseif ($action == "load") {
+        $viewObj->loadCustomView($_POST);
     } elseif ($action == "share") {
         $viewObj->shareCustomView($_POST);
     } elseif ($action == "remove") {

@@ -231,6 +231,10 @@ INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `t
 
 INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES ('Discovery','./img/icones/16x16/gear_view.gif',608,60807,21,1,'./include/configuration/configObject/command/command.php','&type=4','0','0','1',NULL,NULL,NULL,'0');
 
+
+insert into topology (topology_name,topology_parent,topology_page,topology_url,readonly,topology_show) VALUES ('Load',103,10307,'./include/home/customViews/formLoad.php','1',0 );
+
+
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
 

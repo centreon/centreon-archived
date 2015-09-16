@@ -24,50 +24,50 @@
 	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_display_poller_listing">{$form.poller_listing.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.poller_listing.html}</p></td></tr>
 
 		<!-- Global External Command -->
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.global_actions}</td></tr>
-	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_shutdown_nagios">{$form.global_shutdown.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_shutdown.html}</p></td></tr>
-	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_restart_nagios">{$form.global_restart.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_restart.html}</p></td></tr>
-	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications">{$form.global_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_notifications.html}</p></td></tr>
-	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_service_checks">{$form.global_service_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_service_checks.html}</p></td></tr>
-	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_passive_service_checks">{$form.global_service_passive_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_service_passive_checks.html}</p></td></tr>
-	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_host_checks">{$form.global_host_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_host_checks.html}</p></td></tr>
-	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_passive_host_checks">{$form.global_host_passive_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_host_passive_checks.html}</p></td></tr>
-	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_event_handlers">{$form.global_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_event_handler.html}</p></td></tr>
-	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_flap_detection">{$form.global_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_flap_detection.html}</p></td></tr>
-	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_obsessive_service_checks">{$form.global_service_obsess.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_service_obsess.html}</p></td></tr>
-	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_obsessive_host_checks">{$form.global_host_obsess.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_host_obsess.html}</p></td></tr>
-	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_performance_data">{$form.global_perf_data.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_perf_data.html}</p></td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="1"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.global_actions}</td><td class="FormRowValue" ><p class="oreonbutton">{$form.all_engine.html}</p></td></tr>
+	 	<tr class="list_one engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_shutdown_nagios">{$form.global_shutdown.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_shutdown.html}</p></td></tr>
+	 	<tr class="list_two engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_restart_nagios">{$form.global_restart.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_restart.html}</p></td></tr>
+	 	<tr class="list_one engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications">{$form.global_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_notifications.html}</p></td></tr>
+	 	<tr class="list_two engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_service_checks">{$form.global_service_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_service_checks.html}</p></td></tr>
+	 	<tr class="list_one engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_passive_service_checks">{$form.global_service_passive_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_service_passive_checks.html}</p></td></tr>
+	 	<tr class="list_two engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_host_checks">{$form.global_host_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_host_checks.html}</p></td></tr>
+	 	<tr class="list_one engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_passive_host_checks">{$form.global_host_passive_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_host_passive_checks.html}</p></td></tr>
+	 	<tr class="list_two engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_event_handlers">{$form.global_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_event_handler.html}</p></td></tr>
+	 	<tr class="list_one engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_flap_detection">{$form.global_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_flap_detection.html}</p></td></tr>
+	 	<tr class="list_two engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_obsessive_service_checks">{$form.global_service_obsess.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_service_obsess.html}</p></td></tr>
+	 	<tr class="list_one engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_obsessive_host_checks">{$form.global_host_obsess.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_host_obsess.html}</p></td></tr>
+	 	<tr class="list_two engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_performance_data">{$form.global_perf_data.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_perf_data.html}</p></td></tr>
 	 	
 	 	<!-- Services -->
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.service_actions}</td></tr>		 	
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_checks_for_a_service">{$form.service_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_checks.html}</p></td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications_for_a_service">{$form.service_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_notifications.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_acknowledge_a_service">{$form.service_acknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_acknowledgement.html}</p></td></tr>
-                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_disacknowledge_a_service">{$form.service_disacknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_disacknowledgement.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_re_schedule_the_next_check_for_a_service">{$form.service_schedule_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_check.html}</p></td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_re_schedule_the_next_check_for_a_service_forced">{$form.service_schedule_forced_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_forced_check.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_downtime_for_a_service">{$form.service_schedule_downtime.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_downtime.html}</p></td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_add_delete_a_comment_for_a_service">{$form.service_comment.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_comment.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_event_handler_for_a_service">{$form.service_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_event_handler.html}</p></td></tr>		
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_flap_detection_of_a_service">{$form.service_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_flap_detection.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_passive_checks_of_a_service">{$form.service_passive_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_passive_checks.html}</p></td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_submit_result_for_a_service">{$form.service_submit_result.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_submit_result.html}</p></td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="1"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.service_actions}</td><td class="FormRowValue" ><p class="oreonbutton">{$form.all_service.html}</p></td></tr>		 	
+		<tr class="list_one serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_checks_for_a_service">{$form.service_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_checks.html}</p></td></tr>
+		<tr class="list_two serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications_for_a_service">{$form.service_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_notifications.html}</p></td></tr>
+		<tr class="list_one serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_acknowledge_a_service">{$form.service_acknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_acknowledgement.html}</p></td></tr>
+                <tr class="list_two serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_disacknowledge_a_service">{$form.service_disacknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_disacknowledgement.html}</p></td></tr>
+		<tr class="list_one serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_re_schedule_the_next_check_for_a_service">{$form.service_schedule_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_check.html}</p></td></tr>
+		<tr class="list_two serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_re_schedule_the_next_check_for_a_service_forced">{$form.service_schedule_forced_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_forced_check.html}</p></td></tr>
+		<tr class="list_one serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_downtime_for_a_service">{$form.service_schedule_downtime.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_downtime.html}</p></td></tr>
+		<tr class="list_two serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_add_delete_a_comment_for_a_service">{$form.service_comment.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_comment.html}</p></td></tr>
+		<tr class="list_one serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_event_handler_for_a_service">{$form.service_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_event_handler.html}</p></td></tr>		
+		<tr class="list_two serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_flap_detection_of_a_service">{$form.service_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_flap_detection.html}</p></td></tr>
+		<tr class="list_one serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_passive_checks_of_a_service">{$form.service_passive_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_passive_checks.html}</p></td></tr>
+		<tr class="list_two serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_submit_result_for_a_service">{$form.service_submit_result.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_submit_result.html}</p></td></tr>
 		 
 		<!-- Hosts -->
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.host_actions}</td></tr>		
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_checks_for_a_host">{$form.host_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_checks.html}</p></td></tr>	
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications_for_a_host">{$form.host_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications.html}</p></td></tr>	
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_acknowledge_a_host">{$form.host_acknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_acknowledgement.html}</p></td></tr>
-                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_disaknowledge_a_host">{$form.host_disacknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_disacknowledgement.html}</p></td></tr>	
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_the_check_for_a_host">{$form.host_schedule_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_check.html}</p></td></tr>	
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_the_check_for_a_host_forced">{$form.host_schedule_forced_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_forced_check.html}</p></td></tr>	
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_downtime_for_a_host">{$form.host_schedule_downtime.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_downtime.html}</p></td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_add_delete_a_comment_for_a_host">{$form.host_comment.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_comment.html}</p></td></tr>	
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_event_handler_for_a_host">{$form.host_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_event_handler.html}</p></td></tr>				
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_flap_detection_for_a_host">{$form.host_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_flap_detection.html}</p></td></tr>	
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_checks_services_of_a_host">{$form.host_checks_for_services.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_checks_for_services.html}</p></td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications_services_of_a_host">{$form.host_notifications_for_services.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications_for_services.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_submit_result_for_a_host">{$form.host_submit_result.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_submit_result.html}</p></td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="1"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.host_actions}</td><td class="FormRowValue" ><p class="oreonbutton">{$form.all_host.html}</p></td></tr>		
+		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_checks_for_a_host">{$form.host_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_checks.html}</p></td></tr>	
+		<tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications_for_a_host">{$form.host_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications.html}</p></td></tr>	
+		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_acknowledge_a_host">{$form.host_acknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_acknowledgement.html}</p></td></tr>
+                <tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_disaknowledge_a_host">{$form.host_disacknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_disacknowledgement.html}</p></td></tr>	
+		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_the_check_for_a_host">{$form.host_schedule_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_check.html}</p></td></tr>	
+		<tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_the_check_for_a_host_forced">{$form.host_schedule_forced_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_forced_check.html}</p></td></tr>	
+		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_downtime_for_a_host">{$form.host_schedule_downtime.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_downtime.html}</p></td></tr>
+		<tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_add_delete_a_comment_for_a_host">{$form.host_comment.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_comment.html}</p></td></tr>	
+		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_event_handler_for_a_host">{$form.host_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_event_handler.html}</p></td></tr>				
+		<tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_flap_detection_for_a_host">{$form.host_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_flap_detection.html}</p></td></tr>	
+		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_checks_services_of_a_host">{$form.host_checks_for_services.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_checks_for_services.html}</p></td></tr>
+		<tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications_services_of_a_host">{$form.host_notifications_for_services.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications_for_services.html}</p></td></tr>
+		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_submit_result_for_a_host">{$form.host_submit_result.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_submit_result.html}</p></td></tr>
 										 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_status">{$form.acl_action_activate.label}</td><td class="FormRowValue">{$form.acl_action_activate.html}</td></tr>
@@ -86,4 +86,33 @@
 	</div>
 	{$form.hidden}
 </form>
+<script>
+
+    jQuery('input[name=all_service]').change(function(){
+        if(jQuery(this).attr('checked')){
+                jQuery('.serviceCheckbox input').attr('checked',true);
+        }else{
+                jQuery('.serviceCheckbox input').attr('checked',false);
+        }
+    });
+
+    jQuery('input[name=all_host]').change(function(){
+        if(jQuery(this).attr('checked')){
+                jQuery('.hostCheckbox input').attr('checked',true);
+        }else{
+                jQuery('.hostCheckbox input').attr('checked',false);
+        }
+    });
+
+    jQuery('input[name=all_engine]').change(function(){
+        if(jQuery(this).attr('checked')){
+                jQuery('.engineCheckbox input').attr('checked',true);
+        }else{
+                jQuery('.engineCheckbox input').attr('checked',false);
+        }
+    });
+
+</script>
+
+
 {$helptext}

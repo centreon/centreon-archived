@@ -14,7 +14,11 @@
 		<tr class="list_two">
 			<td class="FormRowField">{$form.layout.label}</td>
 			<td class="FormRowValue">{$form.layout.html}</td>
-		</tr>		
+		</tr>
+                <tr>
+                    <td class="FormRowField">{$form.public.label}</td>
+                    <td class="FormRowValue">{$form.public.html}</td>
+                </tr>
 	</table>
 	{$form.hidden}
 	<div id="validForm">

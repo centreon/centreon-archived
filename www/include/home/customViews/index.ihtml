@@ -1,6 +1,7 @@
 <div id='globalView'>
 	<div id='actionBar'>
 		<button class='addView'></button>
+                <button class='loadView'></button>
 		<button class='setDefault'></button>
 		<button class='editView'></button>
 		<button class='shareView'></button>
