@@ -38,7 +38,8 @@
 
 	ini_set("display_errors", "Off");
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
@@ -72,7 +73,8 @@
 	$limit 		= $obj->checkArgument("limit", $_GET, 20);
 	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-	$search 	= $obj->checkArgument("search", $_GET, "");
+	$hSearch 	= $obj->checkArgument("host_search", $_GET, "");
+	$sgSearch 	= $obj->checkArgument("sg_search", $_GET, "");
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
@@ -96,9 +98,14 @@
     }
 	$rq1 = "";
 	$rq1 .= " h.host_id = s.host_id AND s.host_id = sgm.host_id ";
-	if ($search != ""){
-		$rq1 .= " AND h.name like '%" . $search . "%' ";
+	if ($hSearch != ""){
+		$rq1 .= " AND h.name like '%" . $hSearch . "%' ";
 	}
+    
+    if ($sgSearch != ""){
+		$rq1 .= " AND sg.name like '=" . $sgSearch . "' ";
+	}
+    
         $rq1 .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
 
 	$rq1 .= " AND s.enabled = 1 AND s.service_id = sgm.service_id AND sgm.servicegroup_id = sg.servicegroup_id";

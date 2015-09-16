@@ -80,14 +80,30 @@
 	$tpl->assign('pollerStr', _('Poller'));
 	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 	$tpl->assign("mon_status_information", _("Status information"));
-
-
+    
+    /*
+    * Get servicegroups list
+    */
+    $query = "SELECT DISTINCT sg.sg_name FROM servicegroup sg";
+    $DBRESULT = $pearDB->query($query);
+    $sgSearchSelect = '<select id="sg_search" name="sg_search">';
+    while ($row = $DBRESULT->fetchRow()) {
+        $sgSearchSelect .= '<option value="' . $row['sg_name'] . '">' . $row['sg_name'] .'</option>';
+        //$serviceGroups[] = $row['sg_name'];
+    }
+    $DBRESULT->free();
+    $sgSearchSelect .= '</select>';
+    $tpl->assign("sgSearchSelect", $sgSearchSelect);
+    
+   
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-
-
 	$tpl->assign("order", strtolower($order));
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 	$tpl->assign("tab_order", $tab_order);
+    
+    
+    
+    
 
 
 	##Toolbar select $lang["lgd_more_actions"]
