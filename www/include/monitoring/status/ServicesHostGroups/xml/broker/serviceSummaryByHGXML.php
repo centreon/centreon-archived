@@ -81,7 +81,7 @@
 	 * Get Host status
 	 *
 	 */
-	$rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name as host_name, hg.alias, hg.name as hgname, hgm.hostgroup_id, h.host_id, h.state, h.icon_image ".
+	$rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name as host_name, hg.alias, hg.notes_url, hg.action_url, hg.name as hgname, hgm.hostgroup_id, h.host_id, h.state, h.icon_image ".
 			" FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
@@ -128,6 +128,7 @@
 	$ct = 0;
 
 	$tab_final = array();
+    $tabHGUrl = array();
 	$DBRESULT = $obj->DBC->query($rq1);
 	$numRows = $obj->DBC->numberRows();
 
@@ -156,6 +157,10 @@
 		$tab_final[$ndo["hgname"]][$ndo["host_name"]]["cs"] = $ndo["state"];
 		$tab_final[$ndo["hgname"]][$ndo["host_name"]]["hid"] = $ndo["host_id"];
 		$tab_final[$ndo["hgname"]][$ndo["host_name"]]["icon"] = $ndo["icon_image"];
+        $tabHGUrl[$ndo["hgname"]] = array(
+            'action_url' => $ndo['action_url'],
+            'notes_url' => $ndo['notes_url']
+        );
 	}
 	$DBRESULT->free();
 
@@ -171,6 +176,8 @@
 					$hg = $hg_name;
 					$obj->XML->startElement("hg");
 					$obj->XML->writeElement("hgn", $hg_name);
+                    $obj->XML->writeElement("action_url", $tabHGUrl[$hg_name]['action_url']);
+                    $obj->XML->writeElement("notes_url", $tabHGUrl[$hg_name]['notes_url']);
 				}
 				$obj->XML->startElement("l");
 				$obj->XML->writeAttribute("class", $obj->getNextLineClass());
