@@ -94,7 +94,7 @@
 
 		foreach ($nagios as $key => $value)	{
 			$DBRESULT = $pearDB->query("DELETE FROM cfg_nagios WHERE nagios_id = '".$key."'");
-			$DBRESULT = $pearDB->query("DELETE FROM cfg_nagios_broker_module WHERE nagios_id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM cfg_nagios_broker_module WHERE cfg_nagios_id = '".$key."'");
 		}
 		$DBRESULT = $pearDB->query("SELECT nagios_id FROM cfg_nagios WHERE nagios_activate = '1'");
 		if (!$DBRESULT->numRows())	{

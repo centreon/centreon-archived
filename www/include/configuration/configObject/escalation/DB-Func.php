@@ -280,8 +280,11 @@
 		$oreon->CentreonLogAction->insertLog("escalation", $esc_id["MAX(esc_id)"], htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 	}
 
-	function updateEscalationContactGroups($esc_id = null)	{
-		if (!$esc_id) exit();
+	function updateEscalationContactGroups($esc_id = null)
+    {
+		if (!$esc_id) {
+            exit();
+        }
 		global $form;
 		global $pearDB;
 		$rq = "DELETE FROM escalation_contactgroup_relation ";
@@ -307,8 +310,11 @@
 		}
 	}
 
-	function updateEscalationHosts($esc_id = null)	{
-		if (!$esc_id) exit();
+	function updateEscalationHosts($esc_id = null)
+    {
+		if (!$esc_id){
+            exit();
+        }
 		global $form;
 		global $pearDB;
 		$rq = "DELETE FROM escalation_host_relation ";

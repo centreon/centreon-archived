@@ -67,6 +67,11 @@
 	!isset($_GET["host_search"]) ? $search_host = "" : $search_host = $_GET["host_search"];
 	!isset($_GET["sort_type"]) ? $sort_type = "" : $sort_type = $_GET["sort_type"];
     
+    if(isset($_GET["hostgroups"]) && is_numeric($_GET["hostgroups"])){
+        $_SESSION['monitoring_default_hostgroups'] = $_GET["hostgroups"];
+    }
+    
+    
     
     if ($o == "hpb" || $o == "h_unhandled") {
         if (!isset($_GET["sort_type"])) {
