@@ -1068,6 +1068,7 @@ CREATE TABLE `custom_views` (
   `custom_view_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `layout` varchar(255) NOT NULL,
+  `public` tinyint(6) null default 0,
   PRIMARY KEY (`custom_view_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

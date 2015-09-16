@@ -90,10 +90,6 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTPLUGINS_TMP >> $LOG_FILE 2>&1
 echo_success "$(gettext "CentPlugins is installed")"
 
-if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
-	. $INSTALL_DIR/CentPluginsTraps.sh
-fi
-
 ###### Post Install
 #################################
 createCentPluginsInstallConf

@@ -181,6 +181,7 @@ jQuery(function() {
 	}
 
 	initColorbox(".editView", "./main.php?p=10301&min=1&action=edit&view_id="+viewId, "70%", "25%");
+    //initColorbox(".loadView", "./main.php?p=10307&min=1&action=load&view_id="+viewId, "70%", "25%");
 	initColorbox(".shareView", "./main.php?p=10302&min=1&view_id="+viewId, "70%", "70%");
 	initColorbox(".addWidget", "./main.php?p=10304&min=1&action=addWidget&view_id="+viewId, "70%", "70%");
 	initColorbox(".setRotate", "./main.php?p=10305&min=1&view_id="+viewId, "30%", "20%");

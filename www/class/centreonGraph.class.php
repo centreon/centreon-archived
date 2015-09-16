@@ -555,10 +555,12 @@ class CentreonGraph {
                     $ds_data_associated = null;
                     $ds_data_regular = null;
                     foreach ($components_ds_cache as $ds_val) {
+                        /* Prepare pattern for metrics */
+                        $metricPattern = '/' . str_replace('*', '.*', $ds_val['ds_name']) . '/';
                         # Check associated
                         if (($ds_val['host_id'] == $metric['host_id'] || $ds_val['host_id'] == '') &&
                             ($ds_val['service_id'] == $metric['service_id'] || $ds_val['service_id'] == '') &&
-                            $ds_val['ds_name'] == $metric['metric_name']) {
+                            preg_match($metricPattern, $metric['metric_name'])) {
                             $ds_data_associated = $ds_val;
                             break;
                         }
