@@ -116,11 +116,6 @@ function mainLoopLocal() {
 		}
 	}
 	_oldInputFieldValue = _currentInputFieldValue;
-    
-    jQuery("#sg_search").on('change', function(){
-        monitoring_refresh();
-    });
-
 	setTimeout("mainLoopLocal()", 250);
 }
 

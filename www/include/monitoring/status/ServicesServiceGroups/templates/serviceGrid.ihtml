@@ -45,3 +45,10 @@
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>
+<script type="text/javascript">
+    {literal}
+    jQuery("#sg_search").on('change', function(){
+        monitoring_refresh();
+    });
+    {/literal}
+</script>
