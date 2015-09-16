@@ -160,12 +160,14 @@
 		    return;
 		}
 		updateMetaService($meta_id);
+        updateMetaServiceContact($meta_id);
 		updateMetaServiceContactGroup($meta_id);
 	}
 
 	function insertMetaServiceInDB ()
 	{
 		$meta_id = insertMetaService();
+        updateMetaServiceContact($meta_id);
 		updateMetaServiceContactGroup($meta_id);
 		return ($meta_id);
 	}
@@ -285,6 +287,28 @@
 		$rq .= " WHERE meta_id = '".$meta_id."'";
 		$DBRESULT = $pearDB->query($rq);
 	}
+
+
+    function updateMetaServiceContact($meta_id)
+    {
+        if (!$meta_id || false === is_numeric($meta_id)) {
+            return;
+        }
+        global $form;
+        global $pearDB;
+        /* Purge old relation */
+        $queryPurge = "DELETE FROM meta_contact WHERE meta_id = " . $meta_id;
+        $pearDB->query($queryPurge);
+        
+        /* Add relation between metaservice and contact */
+        $ret = array();
+        $ret = CentreonUtils::mergeWithInitialValues($form, 'ms_cs');
+        $queryAddRelation = "INSERT INTO meta_contact (meta_id, contact_id) VALUES ";
+        for ($i = 0; $i < count($ret); $i++) {
+            $queryAddRelation .= "(" . $meta_id . ", " . $ret[$i] . ")";
+        }
+        $pearDB->query($queryAddRelation);
+    }
 
 	function updateMetaServiceContactGroup($meta_id = null)
 	{
