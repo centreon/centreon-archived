@@ -304,10 +304,11 @@
          * @param array $macroInput
          * @param array $macroValue
          * @param array $macroPassword
+         * @param array $macroDescription
          * @param bool $isMassiveChange
          * @return void
          */
-        public function insertMacro($serviceId, $macroInput = array(), $macroValue = array(), $macroPassword = array(), $isMassiveChange = false) {
+        public function insertMacro($serviceId, $macroInput = array(), $macroValue = array(), $macroPassword = array(), $macroDescription = array(), $isMassiveChange = false) {
             if (false === $isMassiveChange) {
                  $this->db->query("DELETE FROM on_demand_macro_service
                     WHERE svc_svc_id = ".$this->db->escape($serviceId)
@@ -332,8 +333,8 @@
             foreach ($macros as $key => $value) {
                 if ($value != "" && 
                     !isset($stored[strtolower($value)])) {
-                        $this->db->query("INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `is_password`, `svc_svc_id`) 
-                                VALUES ('\$_SERVICE".strtoupper($this->db->escape($value))."\$', '".$this->db->escape($macrovalues[$key])."', ".(isset($macroPassword[$key]) ? 1 : 'NULL').", ".$this->db->escape($serviceId) .")");
+                        $this->db->query("INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `is_password`, `description`, `svc_svc_id`) 
+                                VALUES ('\$_SERVICE".strtoupper($this->db->escape($value))."\$', '".$this->db->escape($macrovalues[$key])."', ".(isset($macroPassword[$key]) ? 1 : 'NULL').", '".$this->db->escape($macroDescription[$key])."', ".$this->db->escape($serviceId) .")");
                         $stored[strtolower($value)] = true;
                 }
             }
@@ -349,7 +350,7 @@
             $arr = array();
             $i = 0;
             if (!isset($_REQUEST['macroInput']) && $serviceId) {
-                $res = $this->db->query("SELECT svc_macro_name, svc_macro_value, is_password
+                $res = $this->db->query("SELECT svc_macro_name, svc_macro_value, is_password, description
                                 FROM on_demand_macro_service
                                 WHERE svc_svc_id = " . 
                                 $this->db->escape($serviceId) . "
@@ -359,6 +360,8 @@
                         $arr[$i]['macroInput_#index#'] = $matches[1];
                         $arr[$i]['macroValue_#index#'] = $row['svc_macro_value'];
                         $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : NULL;
+                        $arr[$i]['macroDescription_#index#'] = $row['description'];
+                        $arr[$i]['macroDescription'] = $row['description'];
                         $i++;
                     }
                 }
@@ -367,6 +370,8 @@
                     $arr[$i]['macroInput_#index#'] = $val;
                     $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
                     $arr[$i]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;
+                    $arr[$i]['macroDescription_#index#'] = $row['description'];
+                    $arr[$i]['macroDescription'] = $row['description'];
                     $i++;
                 }
             }

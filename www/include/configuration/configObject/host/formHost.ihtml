@@ -90,13 +90,13 @@
  		<td class="ListColLvl1_name" colspan="2">
  			<img src='./img/icones/16x16/gear_new.gif'>&nbsp;&nbsp;{$form.header.macro}
  		</td>
- 	</tr>		
+ 	</tr>
 	<tr class="list_one">
 		<td class="FormRowField">
 			<img class="helpTooltip" name="macro"> {$custom_macro_label}
 		</td>
 		<td class="FormRowValue">
-                    {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="macro" cloneSet=$cloneSetMacro}
+                    {include file="file:$centreon_path/www/include/common/templates/cloneMacro.ihtml" cloneId="macro" cloneSet=$cloneSetMacro}
                 </td>
 	</tr>
  	
