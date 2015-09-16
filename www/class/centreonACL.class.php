@@ -1572,29 +1572,9 @@ class CentreonACL {
             if ($search != "") {
                 $searchSTR = "(host.host_name LIKE '%".CentreonDB::escape($search)."%' OR host.host_alias LIKE '%".CentreonDB::escape($search)."%') AND";
             }
-/*            
-can achieve the same with left join and without ugly sub-query : 
-SELECT host.host_id, host.host_name 
-FROM host  
-LEFT JOIN host_service_relation on host_service_relation.host_host_id = host.host_id AND host_service_relation.service_service_id IS NOT NULL
-LEFT JOIN hostgroup_relation on host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id
-WHERE  host_activate = '1' 
-AND host_register = '1' 
-AND (host_service_relation.hsr_id IS NOT NULL OR hostgroup_relation.hgr_id IS NOT NULL)
-GROUP BY host.host_id
-ORDER BY host.host_name;
-*/            
+         
             
-            if ($host_empty) {/*
-                $empty_exists = 'AND EXISTS (SELECT * 
-    FROM host_service_relation
-    WHERE host_service_relation.host_host_id = host.host_id 
-    AND host_service_relation.service_service_id IS NOT NULL)
-OR EXISTS (SELECT * 
-        FROM host_service_relation, hostgroup_relation 
-        WHERE host.host_id = hostgroup_relation.host_host_id 
-        AND hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id 
-        AND host_service_relation.service_service_id IS NOT NULL)';*/
+            if ($host_empty) {
                 
             $emptyJoin = " LEFT JOIN host_service_relation on host_service_relation.host_host_id = host.host_id AND host_service_relation.service_service_id IS NOT NULL 
                            LEFT JOIN hostgroup_relation on host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id ";    
