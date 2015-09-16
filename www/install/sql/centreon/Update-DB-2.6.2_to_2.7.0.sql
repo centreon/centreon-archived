@@ -47,5 +47,4 @@ ALTER TABLE css_color_menu ENGINE=InnoDB;
 UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.2' LIMIT 1;
 
 
-alter table custom_views add `public` tinyint(6) null default 0; 
-insert into topology (topology_name,topology_parent,topology_page,topology_url,readonly,topology_show) VALUES ('Load',103,10307,'./include/home/customViews/formLoad.php','1',0 );
+alter table custom_views add `public` tinyint(6) null default 0;

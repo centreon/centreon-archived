@@ -66,10 +66,15 @@ if ($_REQUEST['action'] == "add") {
     }
 }
 
+
+
+
 if (!isset($action)) {
     echo _("No action");
     exit;
 }
+
+
 
 /**
  * Smarty
@@ -96,10 +101,32 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 $form = new HTML_QuickForm('Form', 'post', "?p=103");
 $form->addElement('header', 'title', $title);
 $form->addElement('header', 'information', _("General Information"));
+
+
+$query = "select * from custom_views where public = 1";
+$DBRES = $db->query($query);
+$arrayView = array();
+$arrayView[-1] = "";
+while($row = $DBRES->fetchRow()) {
+    $arrayView[$row['custom_view_id']] = $row['name'];
+}
+
+$form->addElement('select', 'wiewLoad', _("Public views list"),$arrayView );
+
+
 /**
  * Name
  */
 $form->addElement('text', 'name', _("View name"), $attrsText);
+
+$createLoad = array();
+$createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Create"), 'create');
+$createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Load from existing view"), 'load');
+$form->addGroup($createLoad, 'create_load', _("create or load"), '&nbsp;');
+$form->setDefaults(array('create_load[create_load]' => 'create'));
+
+
+
 
 /**
  * Layout
