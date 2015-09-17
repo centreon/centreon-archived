@@ -64,6 +64,9 @@
 	$strArgDesc = "";
 
 	if (($o == "c" || $o == "w") && $command_id)	{
+            if (isset($lockedElements[$command_id])) {
+                $o = "w";
+            }
 		$DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
 
 		# Set base value
@@ -234,7 +237,7 @@
 	 * Just watch a Command information
 	 */
 	if ($o == "w")	{
-		if ($centreon->user->access->page($p) != 2)
+		if ($centreon->user->access->page($p) != 2 && !isset($lockedElements[$command_id]))
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$command_id."&type=".$type."'"));
 	    $form->setDefaults($cmd);
 		$form->freeze();

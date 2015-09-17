@@ -766,6 +766,7 @@ CREATE TABLE `command` (
   `command_comment` text,
   `graph_id` int(11) DEFAULT NULL,
   `cmd_cat_id` int(11) DEFAULT NULL,
+  `command_locked` BOOLEAN DEFAULT 0,
   PRIMARY KEY (`command_id`),
   KEY `connector_id` (`connector_id`),
   CONSTRAINT `command_ibfk_1` FOREIGN KEY (`connector_id`) REFERENCES `connector` (`id`) ON DELETE SET NULL ON UPDATE CASCADE

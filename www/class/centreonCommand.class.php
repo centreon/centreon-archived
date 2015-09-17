@@ -91,6 +91,26 @@ class CentreonCommand
     public function getMiscCommands() {
         return $this->getCommandList(3);
     }
+
+    /**
+     * Returns array of locked commands
+     *
+     * @return array
+     */
+    public function getLockedCommands() {
+        static $arr = null;
+
+        if (is_null($arr)) {
+            $arr = array();
+            $res = $this->_db->query("SELECT command_id
+               FROM command
+               WHERE command_locked = 1");
+            while ($row = $res->fetchRow()) {
+                $arr[$row['command_id']] = true;
+            }
+        }
+        return $arr;
+    }
     
     /**
      * This method gat the list of command containt a specific macro 
