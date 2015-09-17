@@ -90,6 +90,7 @@ var rotationTimer = <?php echo $rotationTimer;?>;
 
 jQuery(function() {
 	jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}, label : '<?php echo _("Add view");?>' });
+    jQuery('.loadView').button({ icons : { primary: 'ui-icon-plus'}, label : '<?php echo _("Load a public view");?>' });
 	jQuery('.setDefault').button({ icons : { primary: 'ui-icon-star'}, label : '<?php echo _("Set default");?>' });
 	jQuery('.addWidget').button({ icons : { primary: 'ui-icon-plus'}, label : '<?php echo _("Add widget");?>' });
 	jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}, label : '<?php echo _("Edit view");?>'  });

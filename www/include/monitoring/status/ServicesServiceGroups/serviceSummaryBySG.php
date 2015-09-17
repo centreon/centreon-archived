@@ -48,12 +48,20 @@
 	!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
 	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
 	!isset($_GET["host_search"]) ? $host_search = 0 : $host_search = $_GET["host_search"];
+	!isset($_GET["sg_search"]) ? $sg_search = 0 : $sg_search = $_GET["sg_search"];
 
 	/*
 	 * Check search value in Host search field
 	 */
 	if (isset($_GET["host_search"])) {
 		$centreon->historySearch[$url] = $_GET["host_search"];
+	}
+    
+    /*
+	 * Check search value in Service Group search field
+	 */
+	if (isset($_GET["sg_search"])) {
+		$centreon->historySearch[$url] = $_GET["sg_search"];
 	}
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
@@ -75,10 +83,25 @@
 	$tpl->assign("mon_ip", _("IP"));
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
-	$tpl->assign('search', _('Search'));
+        $tpl->assign('search', _('Host'));
+        $tpl->assign('sgStr', _('Servicegroup'));
 	$tpl->assign('pollerStr', _('Poller'));
 	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 	$tpl->assign("mon_status_information", _("Status information"));
+    
+    
+    /*
+    * Get servicegroups list
+    */
+    $query = "SELECT DISTINCT sg.sg_name FROM servicegroup sg";
+    $DBRESULT = $pearDB->query($query);
+    $sgSearchSelect = '<select id="sg_search" name="sg_search"><option value=""></option>';
+    while ($row = $DBRESULT->fetchRow()) {
+        $sgSearchSelect .= '<option value="' . $row['sg_name'] . '">' . $row['sg_name'] .'</option>';
+    }
+    $DBRESULT->free();
+    $sgSearchSelect .= '</select>';
+    $tpl->assign("sgSearchSelect", $sgSearchSelect);
 
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);

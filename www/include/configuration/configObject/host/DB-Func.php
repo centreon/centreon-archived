@@ -766,6 +766,7 @@ function insertHost($ret, $macro_on_demand = NULL) {
      * Insert on demand macros
      * Keeping it just in case it could used somewhere else
      */
+  
     if (isset($macro_on_demand)) {
         $my_tab = $macro_on_demand;
         if (isset($my_tab['nbOfMacro'])) {
@@ -778,7 +779,7 @@ function insertHost($ret, $macro_on_demand = NULL) {
                     $my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
                     $macName = $my_tab[$macInput];
                     $macVal = $my_tab[$macValue];
-                    $rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST" . strtoupper($macName) . "\$', '" . CentreonDB::escape($macVal) . "', " . $host_id['MAX(host_id)'] . ")";
+                    $rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `description`, `host_host_id`) VALUES ('\$_HOST" . strtoupper($macName) . "\$', '" . CentreonDB::escape($macVal) . "', " . $host_id['MAX(host_id)'] . ")";
                     $DBRESULT = $pearDB->query($rq);
                     $fields["_" . strtoupper($my_tab[$macInput]) . "_"] = $my_tab[$macValue];
                     $already_stored[strtolower($my_tab[$macInput])] = 1;
@@ -787,8 +788,16 @@ function insertHost($ret, $macro_on_demand = NULL) {
         }
     } elseif (isset($_REQUEST['macroInput']) &&
             isset($_REQUEST['macroValue'])) {
+            $macroDescription = array();
+            foreach ($_REQUEST as $nam => $ele ) {
+                if (preg_match_all("/macroDescription_(\w+)$/", $nam, $matches, PREG_SET_ORDER)) {
+                    foreach ($matches as $match) {
+                        $macroDescription[$match[1]] = $ele;
+                    }
+                }
+            }
         $hostObj->insertMacro(
-                $host_id['MAX(host_id)'], $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword']
+                $host_id['MAX(host_id)'], $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, false
         );
     }
 
@@ -1246,7 +1255,15 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
      */
     if (isset($_REQUEST['macroInput']) &&
             isset($_REQUEST['macroValue'])) {
-        $hostObj->insertMacro($host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword']);
+            $macroDescription = array();
+            foreach ($_REQUEST as $nam => $ele ) {
+                if (preg_match_all("/^macroDescription_(\w+)$/", $nam, $matches, PREG_SET_ORDER)) {
+                    foreach ($matches as $match) {
+                        $macroDescription[$match[1]] = $ele;
+                    }
+                }
+            }
+        $hostObj->insertMacro($host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, false);
     } else {
         $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '" . CentreonDB::escape($host_id) . "'");
     }
@@ -1553,10 +1570,18 @@ function updateHost_MC($host_id = null) {
     /*
      *  Update on demand macros
      */
+    $macroDescription = array();
+    foreach ($_REQUEST as $nam => $ele ) {
+        if (preg_match_all("/^macroDescription_(\w+)$/", $nam, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $macroDescription[$match[1]] = $ele;
+            }
+        }
+    }
     if (isset($_REQUEST['macroInput']) &&
             isset($_REQUEST['macroValue'])) {
         $hostObj->insertMacro(
-                $host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], true
+                $host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, true
         );
     }
 

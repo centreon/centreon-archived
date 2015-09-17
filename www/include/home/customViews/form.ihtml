@@ -6,19 +6,47 @@
 	 		    <h3>{$form.header.title}</h3>
 	 		</td>
 	 	</tr>
-		<tr>
+	 	<tr class="list_lvl_1">
+	 		<td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td>
+	 	</tr>
+                <tr class="list_two">
+			<td class="FormRowField">{$form.create_load.label}</td>
+			<td class="FormRowValue">{$form.create_load.html}</td>
+		</tr>
+		<tr class="create_field">
 			<td class="FormRowField">{$form.name.label}</td>
 			<td class="FormRowValue">{$form.name.html}</td>
-		</tr>		
-		<tr>
+		</tr>
+                <tr class="load_field" style="display:none;">
+                    <td class="FormRowField">{$form.wiewLoad.label}</td>
+                    <td class="FormRowValue">{$form.wiewLoad.html}</td>
+                </tr>
+		<tr class="create_field">
 			<td class="FormRowField">{$form.layout.label}</td>
 			<td class="FormRowValue">{$form.layout.html}</td>
 		</tr>
-	    <tr>
-	        {$form.hidden}
-	        <td colspan="2" class="button_group">
-	            {$form.submit.html} {$form.reset.html}
-	        </td>
-	    </tr>
-	</table>
+                <tr class="create_field">
+                    <td class="FormRowField">{$form.public.label}</td>
+                    <td class="FormRowValue">{$form.public.html}</td>
+                </tr>
+	<tr>
+	{$form.hidden}
+	 <td colspan="2" class="button_group">
+    	            {$form.submit.html} {$form.reset.html}
+    	        </td>
+    	        </tr>
+    	    </table>
 </form>
+<script>
+{literal}
+    jQuery('input[name="create_load[create_load]"]').change(function(){
+        if(jQuery(this).val() == 'load'){
+            jQuery('.load_field').css('display','table-row');
+            jQuery('.create_field').css('display','none');
+        }else if (jQuery(this).val() == 'create'){
+            jQuery('.load_field').css('display','none');
+            jQuery('.create_field').css('display','table-row');
+        }
+    });
+{/literal}
+</script>

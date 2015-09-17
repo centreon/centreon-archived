@@ -46,34 +46,23 @@ $widgetObj = new CentreonWidget($centreon, $db);
 $title = "";
 $action = null;
 $defaultTab = array();
-if ($_REQUEST['action'] == "add") {
-    $title = _("Add new view");
-    $action = "add";
-} elseif ($_REQUEST['action'] == "edit" && isset($_REQUEST['view_id']) && $_REQUEST['view_id']) {
-    $viewId = $_REQUEST['view_id'];
-    $title = _("Edit view");
-    $action = "edit";
-    $defaultTab['custom_view_id'] = $viewId;
-    $views = $viewObj->getCustomViews();
-    if (isset($views[$viewId])) {
-        $defaultTab['name'] = $views[$viewId]['name'];
-        $defaultTab['layout']['layout'] = $views[$viewId]['layout'];
-        $defWidgets = $widgetObj->getWidgetsFromViewId($viewId);
-        $tmp = array();
-        foreach ($defWidgets as $widgetId => $tmpTab) {
-            $defaultTab['widget_id'][] = $widgetId;
-        }
-    }
+if ($_REQUEST['action'] == "load") {
+    $title = _("Load a public view");
+    $action = "load";
 }
-
-
-
 
 if (!isset($action)) {
     echo _("No action");
     exit;
 }
 
+$query = "select * from custom_views where public = 1";
+$DBRES = $db->query($query);
+$arrayView = array();
+$arrayView[-1] = "";
+while($row = $DBRES->fetchRow()) {
+    $arrayView[$row['custom_view_id']] = $row['name'];
+}
 
 
 /**
@@ -103,57 +92,17 @@ $form->addElement('header', 'title', $title);
 $form->addElement('header', 'information', _("General Information"));
 
 
-$query = "select * from custom_views where public = 1";
-$DBRES = $db->query($query);
-$arrayView = array();
-$arrayView[-1] = "";
-while($row = $DBRES->fetchRow()) {
-    $arrayView[$row['custom_view_id']] = $row['name'];
-}
-
 $form->addElement('select', 'wiewLoad', _("Public views list"),$arrayView );
 
 
 /**
- * Name
- */
-$form->addElement('text', 'name', _("View name"), $attrsText);
-
-$createLoad = array();
-$createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Create"), 'create');
-$createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Load from existing view"), 'load');
-$form->addGroup($createLoad, 'create_load', _("create or load"), '&nbsp;');
-$form->setDefaults(array('create_load[create_load]' => 'create'));
-
-
-
-
-/**
- * Layout
- */
-$layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("1 Column"), 'column_1');
-$layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("2 Columns"), 'column_2');
-$layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("3 Columns"), 'column_3');
-$form->addGroup($layouts, 'layout', _("Layout"), '&nbsp;');
-if ($action == "add") {
-    $form->setDefaults(array('layout[layout]' => 'column_1'));
-}
-
-
-$form->addElement('checkbox', 'public', _("Public"), $attrsText);
-
-/**
  * Submit button
  */
-$form->addElement('button', 'submit', _("Submit"), array("onClick" => "submitData();","class" => "btc bt_success"));
-$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+$form->addElement('button', 'submit', _("Submit"), array("onClick" => "submitData();"));
+$form->addElement('reset', 'reset', _("Reset"));
 $form->addElement('hidden', 'action');
 $form->setDefaults(array('action' => $action));
 
-if ($action == "edit") {
-    $form->addElement('hidden', 'custom_view_id');
-    $form->setDefaults($defaultTab);
-}
 
 /**
  * Renderer
@@ -163,7 +112,7 @@ $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $template->assign('form', $renderer->toArray());
-$template->display("form.ihtml");
+$template->display("formLoad.ihtml");
 ?>
 <script type="text/javascript">
 jQuery(function()

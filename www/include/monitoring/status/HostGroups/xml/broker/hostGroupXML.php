@@ -36,7 +36,7 @@
  *
  */
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
@@ -231,6 +231,7 @@
 				$obj->XML->writeElement("sp", $stat["s"][4]);
 				$obj->XML->writeElement("spc", $obj->colorService[4]);
 				$obj->XML->writeElement("hgurl", "main.php?p=20201&o=svc&hg=".$convertID[$convertTable[$name]]);
+                $obj->XML->writeElement("hgurlhost", "main.php?p=20102&o=h&hostgroups=".$convertID[$convertTable[$name]]);
 				$obj->XML->endElement();
 			}
 		}

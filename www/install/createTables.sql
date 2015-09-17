@@ -1068,6 +1068,7 @@ CREATE TABLE `custom_views` (
   `custom_view_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `layout` varchar(255) NOT NULL,
+  `public` tinyint(6) null default 0,
   PRIMARY KEY (`custom_view_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1840,6 +1841,7 @@ CREATE TABLE `on_demand_macro_host` (
   `host_macro_name` varchar(255) NOT NULL,
   `host_macro_value` varchar(255) NOT NULL,
   `is_password` tinyint(2) DEFAULT NULL,
+  `desciption` text DEFAULT NULL,
   `host_host_id` int(11) NOT NULL,
   PRIMARY KEY (`host_macro_id`),
   KEY `host_host_id` (`host_host_id`),
@@ -1853,6 +1855,7 @@ CREATE TABLE `on_demand_macro_service` (
   `svc_macro_name` varchar(255) NOT NULL,
   `svc_macro_value` varchar(255) NOT NULL,
   `is_password` tinyint(2) DEFAULT NULL,
+  `desciption` text DEFAULT NULL,
   `svc_svc_id` int(11) NOT NULL,
   PRIMARY KEY (`svc_macro_id`),
   KEY `svc_svc_id` (`svc_svc_id`),
@@ -2179,6 +2182,16 @@ CREATE TABLE `traps_service_relation` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `traps_group` (
+  `traps_group_id` int(11) DEFAULT NULL,
+  `traps_id` int(11) DEFAULT NULL,
+  KEY `traps_group_id` (`traps_group_id`),
+  KEY `traps_id` (`traps_id`),
+  CONSTRAINT `traps_group_ibfk_1` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `traps_vendor` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(254) DEFAULT NULL,
@@ -2341,8 +2354,27 @@ CREATE TABLE `widgets` (
   KEY `fk_wdg_model_id` (`widget_model_id`),
   CONSTRAINT `fk_wdg_model_id` FOREIGN KEY (`widget_model_id`) REFERENCES `widget_models` (`widget_model_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE ws_token (
+  contact_id INT NOT NULL,
+  token VARCHAR(100) NOT NULL,
+  generate_date DATETIME NOT NULL,
+  PRIMARY KEY(contact_id),
+  UNIQUE (token),
+  FOREIGN KEY (contact_id) REFERENCES contact (contact_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+-- Create table for relation between metaservice and contact
+CREATE TABLE `meta_contact` (
+  `meta_id` INT NOT NULL,
+  `contact_id` INT NOT NULL,
+  PRIMARY KEY (`meta_id`, `contact_id`),
+  FOREIGN KEY (`meta_id`) REFERENCES `meta_service` (`meta_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`contact_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

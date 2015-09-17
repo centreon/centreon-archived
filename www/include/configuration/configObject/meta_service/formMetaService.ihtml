@@ -30,10 +30,11 @@
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mail_write.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notifications_enabled"> {$form.notifications_enabled.label}</td><td class="FormRowValue">{$form.notifications_enabled.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.ms_cgs.label}</td><td class="FormRowValue">{$form.ms_cgs.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_interval"> {$form.notification_interval.label}</td><td class="FormRowValue">{$form.notification_interval.html}{$time_unit}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notification_period"> {$form.notification_period.label}</td><td class="FormRowValue">{$form.notification_period.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_options"> {$form.ms_notifOpts.label}</td><td class="FormRowValue">{$form.ms_notifOpts.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.ms_cs.label}</td><td class="FormRowValue">{$form.ms_cs.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.ms_cgs.label}</td><td class="FormRowValue">{$form.ms_cgs.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notification_interval"> {$form.notification_interval.label}</td><td class="FormRowValue">{$form.notification_interval.html}{$time_unit}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_period"> {$form.notification_period.label}</td><td class="FormRowValue">{$form.notification_period.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notification_options"> {$form.ms_notifOpts.label}</td><td class="FormRowValue">{$form.ms_notifOpts.html}</td></tr>
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="graph_template"> {$form.graph_id.label}</td><td class="FormRowValue">{$form.graph_id.html}</td></tr>

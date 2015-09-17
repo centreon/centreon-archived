@@ -256,4 +256,8 @@ check_result $? "$(gettext "Install Centreon Trapd logrotate.d file")"
 ## TODO : comment ^^ , log and echo_*
 #	: copy centreon.pm and centreon.conf if not exist
 
+###### Post Install
+#################################
+createCentPluginsForTrapdInstallConf
+
 

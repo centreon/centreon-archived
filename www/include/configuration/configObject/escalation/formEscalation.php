@@ -36,11 +36,11 @@
  *
  */
 
- 	if (!isset($oreon))
+    if (!isset($oreon))
  		exit();
  		
- 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
- 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+    require_once $centreon_path . 'www/class/centreonLDAP.class.php';
+    require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
         /* Init connection to storage db */
         require_once $centreon_path . "/www/class/centreonBroker.class.php";
@@ -262,11 +262,12 @@
 	#
 	$form->addElement('header', 'hosts', _("Implied Hosts"));
 
-	$ams1 = $form->addElement('advmultiselect', 'esc_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect2, SORT_ASC);
+	/*$ams1 = $form->addElement('advmultiselect', 'esc_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect2, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+	$ams1->setElementTemplate($eTemplate);*/
+    //echo $ams1->getElementJs(false);
+    $ams2 = $form->addElement('select2', 'esc_hosts', _("Hosts"), $hosts, array('multiple' => true));
 
 	#
 	## Sort 3
@@ -309,33 +310,40 @@
 	#
 	$form->addElement('header', 'hgs', _("Implied Host Groups"));
 
-	$ams1 = $form->addElement('advmultiselect', 'esc_hgs', array(_("Host Group"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect2, SORT_ASC);
+	/*$ams1 = $form->addElement('advmultiselect', 'esc_hgs', array(_("Host Group"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect2, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+    echo $ams1->getElementJs(false);
+    */
+    $ams3 = $form->addElement('select2', 'esc_hgs', _("Host Group"), $hgs, array('multiple' => true));
 
 	#
 	## Sort 5
 	#
 	$form->addElement('header', 'metas', _("Implied Meta Services"));
 
-	$ams1 = $form->addElement('advmultiselect', 'esc_metas', array(_("Meta Service"), _("Available"), _("Selected")), $metas, $attrsAdvSelect2, SORT_ASC);
+	/*$ams1 = $form->addElement('advmultiselect', 'esc_metas', array(_("Meta Service"), _("Available"), _("Selected")), $metas, $attrsAdvSelect2, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+    echo $ams1->getElementJs(false);
+    */
+    $ams4 = $form->addElement('select2', 'esc_metas', _("Meta Service"), $metas, array('multiple' => true));
+	
 
 	#
 	## Sort 6
 	#
 	$form->addElement('header', 'sgs', _("Implied Service Groups"));
 
-	$ams1 = $form->addElement('advmultiselect', 'esc_sgs', array(_("Service Group"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect2, SORT_ASC);
+	/*$ams1 = $form->addElement('advmultiselect', 'esc_sgs', array(_("Service Group"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect2, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+    echo $ams1->getElementJs(false);
+    */
+    $ams5 = $form->addElement('select2', 'esc_sgs', _("Service Group"), $sgs, array('multiple' => true));
 
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
