@@ -29,5 +29,24 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 
 ALTER TABLE cfg_centreonbroker ADD COLUMN command_file VARCHAR(255);
 
+INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
+(6, 'Dumper', 'dumper');
+
+INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES ('Discovery','./img/icones/16x16/gear_view.gif',608,60807,21,1,'./include/configuration/configObject/command/command.php','&type=4','0','0','1',NULL,NULL,NULL,'0');
+
+ALTER TABLE `cron_operation` ALTER `last_execution_time` SET DEFAULT '0';
+
+ALTER TABLE `giv_graphs_template` ALTER `size_to_max` SET DEFAULT '0';
+
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.6.2' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.1' LIMIT 1;
+
+-- Table for WebService token
+CREATE TABLE ws_token (
+  contact_id INT NOT NULL,
+  token VARCHAR(100) NOT NULL,
+  generate_date DATETIME NOT NULL,
+  PRIMARY KEY(contact_id),
+  UNIQUE (token),
+  FOREIGN KEY (contact_id) REFERENCES contact (contact_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

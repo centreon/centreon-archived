@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.6.1');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.6.2');
 
 --
 -- Contenu de la table `contact`
@@ -804,7 +804,8 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (5, 'Auto', 'auto'),
 (6, 'Neb', 'neb'),
 (6, 'Storage', 'storage'),
-(6, 'Correlation', 'correlation');
+(6, 'Correlation', 'correlation'),
+(6, 'Dumper', 'dumper');
 
 --
 -- Contenu de la table `cb_module_relation`

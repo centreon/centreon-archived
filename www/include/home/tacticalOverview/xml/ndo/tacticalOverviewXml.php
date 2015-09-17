@@ -124,7 +124,7 @@
 			" ORDER by hs.current_state LIMIT " . $hostLimit;
 	$resNdoHosts = $dbb->query($rq1);
     
-	$nbhostpb = 0;
+    $nbhostpb = 0;
     $tab_hostprobname[$nbhostpb] = "";
     $tab_hostcriticality[$nbhostpb] = "";
     $availableHostCriticalities = 0;
@@ -179,18 +179,18 @@
                          "AND cvs.varname='CRITICALITY_ID'";
         
         $resCriticality = $dbb->query($rqCriticality);
-        
+
+        $tab_hostcriticality[$nbhostpb] = '';
         while ($crit = $resCriticality->fetchRow()){
             $infoC = $criticality->getData($crit["criticality"]);
-            if (isset($infoC))
-            {
+            if (isset($infoC)) {
                 $availableHostCriticalities = 1;
                 $tab_hostcriticality[$nbhostpb] = './img/media/'.$media->getFilename($infoC["icon_id"]);
             }
         }
-		$nbhostpb++;
-	}
-	$resNdoHosts->free();
+        $nbhostpb++;
+    }
+    $resNdoHosts->free();
     
     $hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2], 3=>$hostStatus[3], 4=>$hostStatus[4]);
 	/*

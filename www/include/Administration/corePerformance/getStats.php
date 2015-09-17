@@ -97,7 +97,9 @@
 	/*
 	 * Check Session activity
 	 */
-    $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$pearDB->escape($_GET["session_id"])."'");
+    session_start();
+    $sid = session_id();
+    $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$pearDB->escape($sid)."'");
 	if (!$session->numRows()){
 		;
 	} else {
@@ -105,7 +107,7 @@
 	 	/*
 	 	 * Get GMT for current user
 	 	 */
-	 	$gmt = $CentreonGMT->getMyGMTFromSession($_GET["session_id"], $pearDB);
+	 	$gmt = $CentreonGMT->getMyGMTFromSession($sid, $pearDB);
 
 		/*
 		 * Get RRDTool binary Path

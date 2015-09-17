@@ -142,13 +142,13 @@ class CentreonContactgroup
         $query = "INSERT INTO contactgroup
         	(cg_name, cg_alias, cg_activate, cg_type, cg_ldap_dn, ar_id)
         	VALUES
-        	('" . $cg_name . "', '" . $cg_name . "', '1', 'ldap', '" . $ldap_dn . "', " . $ar_id . ")";
+        	('" . $this->db->escape($cg_name) . "', '" . $this->db->escape($cg_name) . "', '1', 'ldap', '" . $this->db->escape($ldap_dn) . "', " . CentreonDB::escape($ar_id) . ")";
         $res = $this->db->query($query);
         if (PEAR::isError($res)) {
             return 0;
         }
         $query = "SELECT cg_id FROM contactgroup
-            WHERE cg_ldap_dn = '" . $ldap_dn . "' AND ar_id = " . $ar_id;
+            WHERE cg_ldap_dn = '" . $this->db->escape($ldap_dn) . "' AND ar_id = " . CentreonDB::escape($ar_id);
         $res = $this->db->query($query);
         if (PEAR::isError($res)) {
             return 0;
@@ -251,7 +251,7 @@ class CentreonContactgroup
      */
     public function getNameFromCgId($cgId)
     {
-        $query = "SELECT cg_name FROM contactgroup WHERE cg_id = " . $this->db->escape($cgId) . " LIMIT 1";
+        $query = "SELECT cg_name FROM contactgroup WHERE cg_id = " . CentreonDB::escape($cgId) . " LIMIT 1";
         $res = $this->db->query($query);
         if ($res->numRows()) {
             $row = $res->fetchRow();

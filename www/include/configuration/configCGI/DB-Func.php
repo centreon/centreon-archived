@@ -48,8 +48,8 @@
         }
         $query = "SELECT COUNT(*) as nb
         		  FROM cfg_cgi
-        		  WHERE instance_id = " . $instanceId . "
-        		  AND cgi_id != " . $cgiId . "
+        		  WHERE instance_id = " . CentreonDB::escape($instanceId) . "
+        		  AND cgi_id != " . CentreonDB::escape($cgiId) . "
         		  AND cgi_activate = '1'";
         $res = $pearDB->query($query);
         $row = $res->fetchRow();
@@ -81,15 +81,15 @@
 		if (!$cgi_id) return;
 		global $pearDB;
 		global $oreon;
-		$DBRESULT = $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$cgi_id."'");
+		$DBRESULT = $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".CentreonDB::escape($cgi_id)."'");
 	}
 
 	function disableCGIInDB ($cgi_id = null)	{
 		if (!$cgi_id) return;
 		global $pearDB;
 		global $oreon;
-		$DBRESULT = $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '0' WHERE cgi_id = '".$cgi_id."'");
-		$DBRESULT = $pearDB->query("SELECT MAX(cgi_id) FROM cfg_cgi WHERE cgi_id != '".$cgi_id."'");
+		$DBRESULT = $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '0' WHERE cgi_id = '".CentreonDB::escape($cgi_id)."'");
+		$DBRESULT = $pearDB->query("SELECT MAX(cgi_id) FROM cfg_cgi WHERE cgi_id != '".CentreonDB::escape($cgi_id)."'");
 		$maxId = $DBRESULT->fetchRow();
 		if (isset($maxId["MAX(cgi_id)"]))	{
 			$DBRESULT = $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$maxId["MAX(cgi_id)"]."'");

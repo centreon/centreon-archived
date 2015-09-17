@@ -101,19 +101,18 @@
 		$hostgroupStats = getLogInDbForHostGroup($id, $start_date, $end_date, $reportingTimePeriod) ;
 
 		/*
-		 * Flash chart datas
+		 * Chart datas
 		 */
-		$pie_chart_get_str =  "&value[down]=".$hostgroupStats["average"]["DOWN_TP"].
-							"&value[up]=".$hostgroupStats["average"]["UP_TP"].
-							"&value[unreachable]=".$hostgroupStats["average"]["UNREACHABLE_TP"].
-							"&value[maintenance]=".$hostgroupStats["average"]["MAINTENANCE_TP"].
-							"&value[undetermined]=".$hostgroupStats["average"]["UNDETERMINED_TP"];
+                $tpl->assign('hostgroup_up', $hostgroupStats["average"]["UP_TP"]);
+                $tpl->assign('hostgroup_down', $hostgroupStats["average"]["DOWN_TP"]);
+                $tpl->assign('hostgroup_unreachable', $hostgroupStats["average"]["UNREACHABLE_TP"]);
+                $tpl->assign('hostgroup_undetermined', $hostgroupStats["average"]["UNDETERMINED_TP"]);
+                $tpl->assign('hostgroup_maintenance', $hostgroupStats["average"]["MAINTENANCE_TP"]);
 
 		/*
 		 * Exporting variables for ihtml
 		 */
 		$tpl->assign('name', $items[$id]);
-		$tpl->assign('pie_chart_get_str', $pie_chart_get_str);
 		$tpl->assign('totalAlert', $hostgroupStats["average"]["TOTAL_ALERTS"]);
 		$tpl->assign('summary',  $hostgroupStats["average"]);
 
@@ -157,7 +156,7 @@
 		/*
 		 * CSV export
 		 */
-		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_HostGroupLogs.php?sid=".$sid."&hostgroup=".$id."&start=".$start_date."&end=".$end_date);
+		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_HostGroupLogs.php?hostgroup=".$id."&start=".$start_date."&end=".$end_date);
 		$tpl->assign("link_csv_name", _("Export in CSV format"));
 
 		/*

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -36,56 +37,56 @@
  *
  */
 
-	if (!isset($centreon)) {
-		exit();
-	}
+if (!isset($centreon)) {
+    exit();
+}
 
-	/*
-	 * External Command Object
-	 */
-	$ecObj =  new CentreonExternalCommand($centreon);
+/*
+ * External Command Object
+ */
+$ecObj = new CentreonExternalCommand($centreon);
 
-	/*
-	 * Pear library
-	 */
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/advmultiselect.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/advmultiselect.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 
-	/*
-	 * Path to the configuration dir
-	 */
-	$path = "./include/monitoring/downtime/";
+/*
+ * Path to the configuration dir
+ */
+$path = "./include/monitoring/downtime/";
 
-	/*
-	 * PHP functions
-	 */
-	require_once "./include/common/common-Func.php";
-	require_once "./include/monitoring/downtime/common-Func.php";
-	require_once "./include/monitoring/external_cmd/functions.php";
+/*
+ * PHP functions
+ */
+require_once "./include/common/common-Func.php";
+require_once "./include/monitoring/downtime/common-Func.php";
+require_once "./include/monitoring/external_cmd/functions.php";
 
-	switch ($o)	{
-		case "as" :
-			require_once($path."AddSvcDowntime.php");
-			break;
-		case "ds" :
-		    if (isset($_POST["select"])) {
-		        $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
-                deleteDowntimeFromDb($oreon, $_POST['select']);
-		    }
-		    require_once($path."viewServiceDowntime.php");
-		    break;
-		case "cs" :
-			$ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
-			require_once($path."viewServiceDowntime.php");
-			break;
-		case "vs" :
-			require_once($path."viewServiceDowntime.php");
-			break;
-		default :
-			require_once($path."viewServiceDowntime.php");
-			break;
-	}
+switch ($o) {
+    case "as" :
+        require_once($path . "AddSvcDowntime.php");
+        break;
+    case "ds" :
+        if (isset($_POST["select"])) {
+            $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
+            deleteDowntimeFromDb($oreon, $_POST['select']);
+        }
+        require_once($path . "viewServiceDowntime.php");
+        break;
+    case "cs" :
+        $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
+        require_once($path . "viewServiceDowntime.php");
+        break;
+    case "vs" :
+        require_once($path . "viewServiceDowntime.php");
+        break;
+    default :
+        require_once($path . "viewServiceDowntime.php");
+        break;
+}
 ?>

@@ -1,0 +1,9 @@
+@CENTREON_LOG@/centreontrapd.log {
+    copytruncate
+    weekly
+    rotate 52
+    compress
+    delaycompress
+    notifempty
+    missingok
+}

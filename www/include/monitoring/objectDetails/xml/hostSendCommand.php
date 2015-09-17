@@ -36,7 +36,7 @@
  *
  */
 
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once "/etc/centreon/centreon.conf.php";
 	require_once $centreon_path . "/www/class/centreonExternalCommand.class.php";
 	require_once $centreon_path . "/www/class/centreonDB.class.php";
 	require_once $centreon_path . "/www/class/centreonHost.class.php";
@@ -60,7 +60,7 @@
 
 	$pearDB = new CentreonDB();
 
-	$DBRESULT = $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".$sid."'");
+	$DBRESULT = $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".CentreonDB::escape($sid)."'");
 	if (!$DBRESULT->numRows())
 		exit();
 	if (!$oreon->user->access->checkAction($cmd))

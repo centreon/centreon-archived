@@ -36,7 +36,7 @@
 if (!isset($centreon)) {
     exit();
 }
-
+	
 if (!$centreon->user->admin) {
     if ($sg_id && false === strpos($sgString, "'".$sg_id."'")) {
         $msg = new CentreonMsg();
@@ -141,7 +141,7 @@ if (($o == "c" || $o == "w") && $sg_id)	{
     }
     $DBRESULT->free();
     
-    $DBRESULT = $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation, host WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL AND host_host_id = host_id AND host_register = '0' ORDER BY service_service_id");
+    $DBRESULT = $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation, host WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL AND host_host_id = host_id AND host_register = '0' ORDER BY host_name");
     for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         $sg["sg_tServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
     }
@@ -167,7 +167,7 @@ $query = "SELECT host_id, host_name, service_id, service_description
              FROM host, service, host_service_relation
              WHERE host_id = host_host_id
              AND service_id = service_service_id
-             AND host_register = '0'";
+             AND host_register = '0' ORDER BY host_name";
 $res = $pearDB->query($query);
 while ($row = $res->fetchRow()) {
     $row['service_description'] = str_replace("#S#", "/", $row['service_description']);

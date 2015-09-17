@@ -77,7 +77,7 @@
 		$hosts = array();
 		$DBRESULT = $this->DB->query("SELECT hgr.host_host_id " .
 									"FROM hostgroup_relation hgr, host h " .
-									"WHERE hgr.hostgroup_hg_id = '".$hg_id."' " .
+									"WHERE hgr.hostgroup_hg_id = '".$this->DB->escape($hg_id)."' " .
 									"AND h.host_id = hgr.host_host_id " .
 									"ORDER by h.host_name");
 		while ($elem = $DBRESULT->fetchRow()) {
@@ -162,7 +162,7 @@
 		$hosts = array();
 		$DBRESULT = $this->DB->query("SELECT hg_child_id " .
 									"FROM hostgroup_hg_relation, hostgroup " .
-									"WHERE hostgroup_hg_relation.hg_parent_id = '".$hg_id."' " .
+									"WHERE hostgroup_hg_relation.hg_parent_id = '".$this->DB->escape($hg_id)."' " .
 									"AND hostgroup.hg_id = hostgroup_hg_relation.hg_child_id " .
 									"ORDER BY hostgroup.hg_name");
 		while ($elem = $DBRESULT->fetchRow()) {

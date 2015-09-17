@@ -420,4 +420,3 @@ function updateReportingTimePeriodInDB() {
     $DBRESULT = $pearDB->query($query);
 }
 
-?>

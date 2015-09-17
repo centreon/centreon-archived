@@ -100,19 +100,18 @@
 		$hostServicesStats =  getLogInDbForHostSVC($id, $start_date, $end_date, $reportingTimePeriod);
 
 		/*
-		 * Flash chart datas
+		 * Chart datas
 		 */
-		$pie_chart_get_str =  "&value[down]=".$hostStats["DOWN_TP"].
-							"&value[up]=".$hostStats["UP_TP"].
-							"&value[unreachable]=".$hostStats["UNREACHABLE_TP"].
-							"&value[undetermined]=".$hostStats["UNDETERMINED_TP"].
-							"&value[maintenance]=".$hostStats["MAINTENANCE_TP"];
+                $tpl->assign('host_up', $hostStats["UP_TP"]);
+                $tpl->assign('host_down', $hostStats["DOWN_TP"]);
+                $tpl->assign('host_unreachable', $hostStats["UNREACHABLE_TP"]);
+                $tpl->assign('host_undetermined', $hostStats["UNDETERMINED_TP"]);
+                $tpl->assign('host_maintenance', $hostStats["MAINTENANCE_TP"]);
 
 		/*
 		 * Exporting variables for ihtml
 		 */
 		$tpl->assign("name", $hosts[$id]);
-		$tpl->assign("pie_chart_get_str", $pie_chart_get_str);
 		$tpl->assign("totalAlert", $hostStats["TOTAL_ALERTS"]);
 		$tpl->assign("totalTime",  $hostStats["TOTAL_TIME_F"]);
 		$tpl->assign("summary",  $hostStats);
@@ -146,7 +145,7 @@
 		/*
 		 * CSV export
 		 */
-		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_HostLogs.php?sid=".$sid."&host=".$id."&start=".$start_date."&end=".$end_date);
+		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_HostLogs.php?host=".$id."&start=".$start_date."&end=".$end_date);
 		$tpl->assign("link_csv_name", _("Export in CSV format"));
 
 		/*

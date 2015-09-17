@@ -267,7 +267,7 @@
 		$rq .= "ds_average = ";
 		isset($ret["ds_average"]) && $ret["ds_average"] != NULL ? $rq .= "'".$ret["ds_average"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_last = ";
-		isset($ret["ds_last"]["ds_last"]) && $ret["ds_last"] != NULL ? $rq .= "'".$ret["ds_last"]."', ": $rq .= "NULL, ";
+		isset($ret["ds_last"]) && $ret["ds_last"] != NULL ? $rq .= "'".$ret["ds_last"]."', ": $rq .= "NULL, ";
                 $rq .= "ds_total = ";
 		isset($ret["ds_total"]["ds_total"]) && $ret["ds_total"] != NULL ? $rq .= "'".$ret["ds_total"]."', ": $rq .= "NULL, ";
 		$rq .= 	"ds_tickness = ";
