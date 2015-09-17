@@ -46,6 +46,9 @@
 	#
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
+            if (isset($lockedElements[$host_id])) {
+                $o = "w";
+            }
 		$DBRESULT = $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
 
 		# Set base value
@@ -720,7 +723,7 @@ $DBRESULT->free();
 
 	# Just watch a host information
 	if ($o == "w")	{
-		if (!$min && $centreon->user->access->page($p) != 2)
+		if (!$min && $centreon->user->access->page($p) != 2 && !isset($lockedElements[$host_id]))
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$host_id."'"));
 	    $form->setDefaults($host);
 		$form->freeze();
