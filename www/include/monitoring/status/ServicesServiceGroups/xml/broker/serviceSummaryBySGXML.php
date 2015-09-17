@@ -113,16 +113,18 @@
     /* Service ACL */
     $query .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
 
-    /* Host search */
-    if ($hSearch != ""){
-        $query .= "AND h.name like '%" . $hSearch . "%' ";
-    }
-    
     /* Servicegroup search */
     if ($sgSearch != ""){
         $query .= "AND sg.name = '" . $sgSearch . "' ";
     }
 
+    /* Host search */
+    $h_search = '';
+    if ($hSearch != ""){
+        $h_search .= "AND h.name like '%" . $hSearch . "%' ";
+    }
+    $query .= $h_search;
+    
     /* Service search */
     $query .= $s_search;
 
@@ -130,14 +132,38 @@
     if ($instance != -1) {
         $query .= " AND h.instance_id = " . $instance . " ";
     }
-
+    
     $query .= "ORDER BY sg.name " . $order . " "
         . "LIMIT " . ($num * $limit) . "," . $limit;
     
-    //echo $query;
     $DBRESULT = $obj->DBC->query($query);
 
     $numRows = $obj->DBC->numberRows();
+    
+    
+    /** ***************************************************
+     * Create XML Flow
+     */
+    $obj->XML = new CentreonXML();
+    $obj->XML->startElement("reponse");
+    $obj->XML->startElement("i");
+    $obj->XML->writeElement("numrows", $numRows);
+    $obj->XML->writeElement("num", $num);
+    $obj->XML->writeElement("limit", $limit);
+    $obj->XML->writeElement("host_name", _("Hosts"), 0);
+    $obj->XML->writeElement("services", _("Services"), 0);
+    $obj->XML->writeElement("p", $p);
+    $obj->XML->writeElement("sk", $obj->colorService[0]);
+    $obj->XML->writeElement("sw", $obj->colorService[1]);
+    $obj->XML->writeElement("sc", $obj->colorService[2]);
+    $obj->XML->writeElement("su", $obj->colorService[3]);
+    $obj->XML->writeElement("sp", $obj->colorService[4]);
+    ($o == "svcOVSG") ? $obj->XML->writeElement("s", "1")  : $obj->XML->writeElement("s", "0");
+    $obj->XML->endElement();
+    
+    
+    
+    
 
     /* Construct query for servigroups search */
     $sg_search = "";
@@ -160,85 +186,67 @@
         if ($sgSearch != ""){
             $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
         }
-    }
 
-    /** ***************************************************
-     * Create XML Flow
-     */
-    $obj->XML = new CentreonXML();
-    $obj->XML->startElement("reponse");
-    $obj->XML->startElement("i");
-    $obj->XML->writeElement("numrows", $numRows);
-    $obj->XML->writeElement("num", $num);
-    $obj->XML->writeElement("limit", $limit);
-    $obj->XML->writeElement("host_name", _("Hosts"), 0);
-    $obj->XML->writeElement("services", _("Services"), 0);
-    $obj->XML->writeElement("p", $p);
-    $obj->XML->writeElement("sk", $obj->colorService[0]);
-    $obj->XML->writeElement("sw", $obj->colorService[1]);
-    $obj->XML->writeElement("sc", $obj->colorService[2]);
-    $obj->XML->writeElement("su", $obj->colorService[3]);
-    $obj->XML->writeElement("sp", $obj->colorService[4]);
-    ($o == "svcOVSG") ? $obj->XML->writeElement("s", "1")  : $obj->XML->writeElement("s", "0");
-    $obj->XML->endElement();
+        $query2 = "SELECT SQL_CALC_FOUND_ROWS count(s.state) as count_state, sg.name AS sg_name, h.name as host_name, h.state as host_state, h.icon_image, h.host_id, s.state "
+            . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
+            . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id "
+            . $s_search
+            . $sg_search
+            . $h_search
+            . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
+            . "GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state ";
+        $DBRESULT = $obj->DBC->query($query2);
 
-    $query2 = "SELECT SQL_CALC_FOUND_ROWS count(s.state) as count_state, sg.name AS sg_name, h.name as host_name, h.state as host_state, h.icon_image, h.host_id, s.state "
-        . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
-        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id "
-        . $s_search
-        . $sg_search
-        . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
-        . "GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state ";
-    $DBRESULT = $obj->DBC->query($query2);
+        $states = array(
+            0 => 'sk',
+            1 => 'sw',
+            2 => 'sc',
+            3 => 'su',
+            4 => 'sp'
+        );
 
-    $states = array(
-        0 => 'sk',
-        1 => 'sw',
-        2 => 'sc',
-        3 => 'su',
-        4 => 'sp'
-    );
+        $sg_list = array();
+        while ($tab = $DBRESULT->fetchRow()){
+            $sg_list[$tab["sg_name"]][$tab["host_name"]]['host_id'] = $tab['host_id'];
+            $sg_list[$tab["sg_name"]][$tab["host_name"]]['icon_image'] = $tab['icon_image'];
+            $sg_list[$tab["sg_name"]][$tab["host_name"]]['host_state'] = $tab['host_state'];
+            $sg_list[$tab["sg_name"]][$tab["host_name"]]['states'][$states[$tab['state']]] = $tab['count_state'];
+        }
 
-    $sg_list = array();
-    while ($tab = $DBRESULT->fetchRow()){
-        $sg_list[$tab["sg_name"]][$tab["host_name"]]['host_id'] = $tab['host_id'];
-        $sg_list[$tab["sg_name"]][$tab["host_name"]]['icon_image'] = $tab['icon_image'];
-        $sg_list[$tab["sg_name"]][$tab["host_name"]]['host_state'] = $tab['host_state'];
-        $sg_list[$tab["sg_name"]][$tab["host_name"]]['states'][$states[$tab['state']]] = $tab['count_state'];
-    }
+        $ct = 0;
+        foreach ($sg_list as $sg => $h) {
+            $count = 0;
+            $ct++;
+            $obj->XML->startElement("sg");
+            $obj->XML->writeElement("sgn", $sg);
+            $obj->XML->writeElement("o", $ct);
 
-    $ct = 0;
-    foreach ($sg_list as $sg => $h) {
-        $count = 0;
-        $ct++;
-        $obj->XML->startElement("sg");
-        $obj->XML->writeElement("sgn", $sg);
-        $obj->XML->writeElement("o", $ct);
+            foreach ($h as $hostName => $hostInfos) {
+                $count++;
+                $obj->XML->startElement("h");
+                $obj->XML->writeAttribute("class", $obj->getNextLineClass());
+                $obj->XML->writeElement("hn", $hostName, false);
+                if ($hostInfos['icon_image']) {
+                    $obj->XML->writeElement("hico", $hostInfos['icon_image']);
+                } else {
+                    $obj->XML->writeElement("hico", "none");
+                }
+                $obj->XML->writeElement("hnl", urlencode($hostName));
+                $obj->XML->writeElement("hcount", $count);
+                $obj->XML->writeElement("hid", $hostInfos['host_id']);
+                $obj->XML->writeElement("hs", _($obj->statusHost[$hostInfos['host_state']]));
+                $obj->XML->writeElement("hc", $obj->colorHost[$hostInfos['host_state']]);
 
-        foreach ($h as $hostName => $hostInfos) {
-            $count++;
-            $obj->XML->startElement("h");
-            $obj->XML->writeAttribute("class", $obj->getNextLineClass());
-            $obj->XML->writeElement("hn", $hostName, false);
-            if ($hostInfos['icon_image']) {
-                $obj->XML->writeElement("hico", $hostInfos['icon_image']);
-            } else {
-                $obj->XML->writeElement("hico", "none");
-            }
-            $obj->XML->writeElement("hnl", urlencode($hostName));
-            $obj->XML->writeElement("hcount", $count);
-            $obj->XML->writeElement("hid", $hostInfos['host_id']);
-            $obj->XML->writeElement("hs", _($obj->statusHost[$hostInfos['host_state']]));
-            $obj->XML->writeElement("hc", $obj->colorHost[$hostInfos['host_state']]);
+                foreach ($hostInfos['states'] as $state => $count) {
+                    $obj->XML->writeElement($state, $count);
+                }
 
-            foreach ($hostInfos['states'] as $state => $count) {
-                $obj->XML->writeElement($state, $count);
+                $obj->XML->endElement();
             }
 
             $obj->XML->endElement();
         }
-
-        $obj->XML->endElement();
+        
     }
 
     $obj->XML->endElement();

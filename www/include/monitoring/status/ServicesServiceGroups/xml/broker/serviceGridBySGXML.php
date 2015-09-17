@@ -113,15 +113,17 @@
     /* Service ACL */
     $query .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
 
-    /* Host search */
-    if ($hSearch != ""){
-        $query .= "AND h.name like '%" . $hSearch . "%' ";
-    }
-
     /* Servicegroup search */    
     if ($sgSearch != ""){
         $query .= "AND sg.name = '" . $sgSearch . "' ";
     }
+    
+    /* Host search */
+    $h_search = '';
+    if ($hSearch != ""){
+        $h_search .= "AND h.name like '%" . $hSearch . "%' ";
+    }
+    $query .= $h_search;
 
     /* Service search */
     $query .= $s_search;
@@ -137,6 +139,21 @@
     $DBRESULT = $obj->DBC->query($query);
 
     $numRows = $obj->DBC->numberRows();
+    
+    /** ***************************************************
+     * Create XML Flow
+     */
+    $obj->XML = new CentreonXML();
+    $obj->XML->startElement("reponse");
+    $obj->XML->startElement("i");
+    $obj->XML->writeElement("numrows", $numRows);
+    $obj->XML->writeElement("num", $num);
+    $obj->XML->writeElement("limit", $limit);
+    $obj->XML->writeElement("host_name", _("Hosts"), 0);
+    $obj->XML->writeElement("services", _("Services"), 0);
+    $obj->XML->writeElement("p", $p);
+    ($o == "svcOVSG") ? $obj->XML->writeElement("s", "1")  : $obj->XML->writeElement("s", "0");
+    $obj->XML->endElement();
 
     /* Construct query for servigroups search */
     $sg_search = "";
@@ -159,87 +176,74 @@
         if ($sgSearch != ""){
             $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
         }
-    }
-
-    /** ***************************************************
-     * Create XML Flow
-     */
-    $obj->XML = new CentreonXML();
-    $obj->XML->startElement("reponse");
-    $obj->XML->startElement("i");
-    $obj->XML->writeElement("numrows", $numRows);
-    $obj->XML->writeElement("num", $num);
-    $obj->XML->writeElement("limit", $limit);
-    $obj->XML->writeElement("host_name", _("Hosts"), 0);
-    $obj->XML->writeElement("services", _("Services"), 0);
-    $obj->XML->writeElement("p", $p);
-    ($o == "svcOVSG") ? $obj->XML->writeElement("s", "1")  : $obj->XML->writeElement("s", "0");
-    $obj->XML->endElement();
     
-    $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.alias, h.name as host_name, h.state as host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id "
-        . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
-        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id ";
+        $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.alias, h.name as host_name, h.state as host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id "
+            . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
+            . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id "
+            . $s_search
+            . $sg_search
+            . $h_search
+            . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
+        $DBRESULT = $obj->DBC->query($query2);
+
+        $ct = 0;
+        $sg = "";
+        $h = "";
+        $flag = 0;
+        $count = 0;
+        while ($tab = $DBRESULT->fetchRow()) {
+            if ($sg != $tab["sg_name"]) {
+                $flag = 0;
+                if ($sg != "") {
+                    $obj->XML->endElement();
+                    $obj->XML->endElement();
+                }
+                $sg = $tab["sg_name"];
+                $h = "";
+                $obj->XML->startElement("sg");
+                $obj->XML->writeElement("sgn", $tab["sg_name"]);
+                $obj->XML->writeElement("o", $ct);
+            }
+            $ct++;
+
+            if ($h != $tab["host_name"]) {
+                if ($h != "" && $flag) {
+                    $obj->XML->endElement();
+                }
+                $flag = 1;
+                $h = $tab["host_name"];
+                $hs = $tab["host_state"];
+                $obj->XML->startElement("h");
+                $obj->XML->writeAttribute("class", $obj->getNextLineClass());
+                $obj->XML->writeElement("hn", $tab["host_name"], false);
+                if ($tab["icon_image"]) {
+                    $obj->XML->writeElement("hico", $tab["icon_image"]);
+                } else {
+                    $obj->XML->writeElement("hico", "none");
+                }
+                $obj->XML->writeElement("hnl", urlencode($tab["host_name"]));
+                $obj->XML->writeElement("hid", $tab["host_id"]);
+                $obj->XML->writeElement("hcount", $count);
+                $obj->XML->writeElement("hs", _($obj->statusHost[$tab["host_state"]]));
+                $obj->XML->writeElement("hc", $obj->colorHost[$tab["host_state"]]);
+                $count++;
+            }
+            $obj->XML->startElement("svc");
+            $obj->XML->writeElement("sn", $tab['description']);
+            $obj->XML->writeElement("snl", urlencode($tab['description']));
+            $obj->XML->writeElement("sc", $obj->colorService[$tab['state']]);
+            $obj->XML->writeElement("svc_id", $tab['service_id']);
+            $obj->XML->endElement();
+        }
+        $DBRESULT->free();
+
+        if ($sg != "") {
+            $obj->XML->endElement();
+            $obj->XML->endElement();
+        }
+        
+    }
     
-    $query2 .= $s_search
-        . $sg_search
-        . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
-    $DBRESULT = $obj->DBC->query($query2);
-
-    $ct = 0;
-    $sg = "";
-    $h = "";
-    $flag = 0;
-    $count = 0;
-    while ($tab = $DBRESULT->fetchRow()) {
-        if ($sg != $tab["sg_name"]) {
-            $flag = 0;
-            if ($sg != "") {
-                $obj->XML->endElement();
-                $obj->XML->endElement();
-            }
-            $sg = $tab["sg_name"];
-            $h = "";
-            $obj->XML->startElement("sg");
-            $obj->XML->writeElement("sgn", $tab["sg_name"]);
-            $obj->XML->writeElement("o", $ct);
-        }
-        $ct++;
-
-        if ($h != $tab["host_name"]) {
-            if ($h != "" && $flag) {
-                $obj->XML->endElement();
-            }
-            $flag = 1;
-            $h = $tab["host_name"];
-            $hs = $tab["host_state"];
-            $obj->XML->startElement("h");
-            $obj->XML->writeAttribute("class", $obj->getNextLineClass());
-            $obj->XML->writeElement("hn", $tab["host_name"], false);
-            if ($tab["icon_image"]) {
-                $obj->XML->writeElement("hico", $tab["icon_image"]);
-            } else {
-                $obj->XML->writeElement("hico", "none");
-            }
-            $obj->XML->writeElement("hnl", urlencode($tab["host_name"]));
-            $obj->XML->writeElement("hid", $tab["host_id"]);
-            $obj->XML->writeElement("hcount", $count);
-            $obj->XML->writeElement("hs", _($obj->statusHost[$tab["host_state"]]));
-            $obj->XML->writeElement("hc", $obj->colorHost[$tab["host_state"]]);
-            $count++;
-        }
-        $obj->XML->startElement("svc");
-        $obj->XML->writeElement("sn", $tab['description']);
-        $obj->XML->writeElement("snl", urlencode($tab['description']));
-        $obj->XML->writeElement("sc", $obj->colorService[$tab['state']]);
-        $obj->XML->writeElement("svc_id", $tab['service_id']);
-        $obj->XML->endElement();
-    }
-    $DBRESULT->free();
-
-    if ($sg != "") {
-        $obj->XML->endElement();
-        $obj->XML->endElement();
-    }
     $obj->XML->endElement();
 
     /*
