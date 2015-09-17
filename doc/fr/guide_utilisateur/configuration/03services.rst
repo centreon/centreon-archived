@@ -43,6 +43,7 @@ La case **Mot de passe** permet de cacher la valeur de la macro.
 
 Pour supprimer la macro, cliquez sur |delete|.
 Pour déplacer l'ordre des macros, cliquez sur |move|.
+* Pour ajouter une description à votre macro, cliquez sur |description|.
 
 Notification
 ============
@@ -128,3 +129,4 @@ Il existe maintenant un service unique par hôte.
 
 .. |delete|    image:: /images/delete.png
 .. |move|    image:: /images/move.png
+.. |description| image:: /images/text_view.gif
