@@ -1890,5 +1890,32 @@ function str2db($string) {
         }
         return $running;
     }
+    
+    /**
+     * Return the list of template
+     *
+     * @param int $svcId The service ID
+     * @return array
+     */
+    function getListTemplates($pearDB, $svcId, $alreadyProcessed = array())
+    {
+        $svcTmpl = array();
+        if (in_array($svcId, $alreadyProcessed)) {
+            return $svcTmpl;
+        } else {
+            $alreadyProcessed[] = $svcId;
+
+            $query = "SELECT service_template_model_stm_id FROM service WHERE service_id = ".  intval($svcId);
+            $stmt = $pearDB->query($query);
+            if ($stmt->numRows()) {
+                $row = $stmt->fetchRow();
+                if ($row['service_template_model_stm_id'] !== NULL) {
+                    $svcTmpl = array_merge($svcTmpl, getListTemplates($pearDB, $row['service_template_model_stm_id'], $alreadyProcessed));
+                    $svcTmpl[] = $row['service_template_model_stm_id'];
+                }
+            }
+            return $svcTmpl;
+        }
+    }
 
 ?>
