@@ -87,7 +87,7 @@
     */
     $query = "SELECT DISTINCT sg.sg_name FROM servicegroup sg";
     $DBRESULT = $pearDB->query($query);
-    $sgSearchSelect = '<select id="sg_search" name="sg_search"><option value="">'. _("Select a servicegroup") . '</option>';
+    $sgSearchSelect = '<select id="sg_search" name="sg_search"><option value=""></option>';
     while ($row = $DBRESULT->fetchRow()) {
         $sgSearchSelect .= '<option value="' . $row['sg_name'] . '">' . $row['sg_name'] .'</option>';
     }
