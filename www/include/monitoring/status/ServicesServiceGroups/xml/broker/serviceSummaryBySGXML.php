@@ -38,7 +38,8 @@
 
     ini_set("display_errors", "Off");
 
-    include_once "@CENTREON_ETC@/centreon.conf.php";
+    //include_once "@CENTREON_ETC@/centreon.conf.php";
+    include_once "/etc/centreon/centreon.conf.php";
 
     include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
     include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
@@ -120,7 +121,7 @@
     
     /* Servicegroup search */
     if ($sgSearch != ""){
-        $query .= "AND sg.name like '" . $sgSearch . "' ";
+        $query .= "AND sg.name = '" . $sgSearch . "' ";
     }
 
     /* Service search */
@@ -158,7 +159,7 @@
         $sg_search .= implode(" OR ", $servicegroupsSql1);
         $sg_search .= ") ";
         if ($sgSearch != ""){
-            $sg_search .= "AND sg.name like '" . $sgSearch . "' ";
+            $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
         }
     }
 
