@@ -312,8 +312,10 @@ class CentreonDB {
     public function query($query_string = null, $placeHolders = array()) {
         $this->requestExecuted++;
         if (count($placeHolders)) {
+            mysql_set_charset('utf8');
             $DBRES = $this->db->query($query_string, $placeHolders);
         } else {
+            mysql_set_charset('utf8');
             $DBRES = $this->db->query($query_string);
         }
         if (PEAR::isError($DBRES)) {
