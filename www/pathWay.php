@@ -122,11 +122,14 @@
         }
 
 	if ($centreon->user->access->page($p)){	
-		$flag = '<img src="./img/icones/8x14/pathWayBlueStart.gif" class="imgPathWay">&nbsp;';
+		$flag = '';
 		foreach ($tabPath as $cle => $valeur){
 			echo $flag;
-			?><a href="main.php?p=<?php echo $cle.$valeur["opt"]; ?>" class="pathWay" ><?php print $valeur["name"]; ?></a><?php
-			$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" class="imgPathWay">&nbsp;';
+			?>
+			<a href="main.php?p=<?php echo $cle.$valeur["opt"]; ?>" class="pathWay" >
+			   <?php print $valeur["name"]; ?></a>
+			<?php
+			$flag = '&nbsp;>&nbsp;';
 		}
 	
 		if (isset($_GET["host_id"]))	{

@@ -97,7 +97,8 @@ jQuery(function() {
 	jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}, label : '<?php echo _("Delete view");?>'  }).click(function() { deleteView(); });
 	jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}, label : '<?php echo _("Rotation");?>' });
 
-	initColorbox(".addView", "./main.php?p=10301&min=1&action=add", "70%", "30%");
+	//initColorbox(".addView", "./main.php?p=10301&min=1&action=add", "70%", "30%");
+
 
 	jQuery("#tabs").tabs({
 							ajaxOptions: { async: true },
@@ -121,6 +122,26 @@ jQuery(function() {
 
 });
 
+initToggle(".addView", "./main.php?p=10301&min=1&action=add",".addCntr");
+
+/**
+ * Initializes toggle
+ */
+
+function initToggle(selector,page,target) {
+
+    jQuery(selector).each(function(){
+
+    jQuery(this).on('click',function(e){
+        e.preventDefault();
+        jQuery(target).attr("src",page).parent().toggle("slow");
+
+         });
+
+
+    });
+}
+
 /**
  * Initializes Colorbox
  */
@@ -129,7 +150,7 @@ function initColorbox(selector, url, w, h)
 	jQuery(selector).colorbox({
 		href: 			url,
 		iframe:			true,
-		overlayClose:	false,
+		overlayClose:	true,
 		width:			w,
 		height:			h,
 		opacity:		0.7

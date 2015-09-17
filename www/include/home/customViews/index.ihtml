@@ -1,27 +1,44 @@
 <div id='globalView'>
-	<div id='actionBar'>
-		<button class='addView'></button>
-		<button class='setDefault'></button>
-		<button class='editView'></button>
-		<button class='shareView'></button>
-		<button class='deleteView'></button>
-		<button class='addWidget'></button>
-		<button class='setRotate'></button>			
-	</div>
 	<img id='toggleActionBar' src='./img/icones/7x7/sort_asc.gif' style='bottom: 10px; position: relative; float: right; right: 3px;'>
+	<div class="toggle_wrapper">
+	    <iframe class="addCntr"></iframe>
+	</div>
 	{if $empty == 1}
-	<div id="tabs" style='margin-top:5px;padding-right:5px;'>
-		<div>	
-			<center><div style='padding:100px;'><img src='./img/icones/16x16/help_button.png' style='padding-right:5px;'><b>{$msg}</b></div></center>
+
+	<div id='actionBar'>
+    	<button class='addView btc bt_success'></button>
+    </div>
+	<div id="tabs">
+	    <div class="info_box">
+		    <h4><img src='./img/icones/16x16/help_button.png' style='padding-right:5px;'> {$msg}</h4>
 		</div>
 	</div>
+
 	{else}
-	<div id="tabs" style='margin-top:5px;'>
-		<ul>
+		<div id='actionBar'>
+    		<button class='addView btc bt_success'></button>
+    		<button class='editView btc bt_info'></button>
+    		<div class="toggle_wrapper">
+            	 <iframe class="editCntr"></iframe>
+            </div>
+    		<button class='deleteView btc bt_danger'></button>
+    		<button class='setDefault btc bt_default'></button>
+    		<button class='shareView btc bt_info'></button>
+    		<button class='addWidget btc bt_success'></button>
+    		<button class='setRotate btc bt_info'></button>
+    	</div>
+
+	{/if}
+	<div id="tabs">
+		<ul class="tabs_header">
 			{foreach name=viewId item=view from=$views}
-				<li>{$view.default}<span class="ui-icon ui-icon-{$view.icon}" style="float:left;"></span><a href="./include/home/customViews/views.php?currentView={$view.custom_view_id}">{$view.name}</a></li>
+				<li>{$view.default}
+				    <a href="./include/home/customViews/views.php?currentView={$view.custom_view_id}">
+                        {$view.name} <span class="ui-icon ui-icon-{$view.icon}" style="float:right;"></span>
+				    </a>
+				</li>
 			{/foreach}
 		</ul>
 	</div>
-	{/if}
+
 </div>

@@ -47,7 +47,7 @@ $title = "";
 $action = null;
 $defaultTab = array();
 if ($_REQUEST['action'] == "add") {
-    $title = _("Add a new view");
+    $title = _("Add new view");
     $action = "add";
 } elseif ($_REQUEST['action'] == "edit" && isset($_REQUEST['view_id']) && $_REQUEST['view_id']) {
     $viewId = $_REQUEST['view_id'];
@@ -115,8 +115,8 @@ if ($action == "add") {
 /**
  * Submit button
  */
-$form->addElement('button', 'submit', _("Submit"), array("onClick" => "submitData();"));
-$form->addElement('reset', 'reset', _("Reset"));
+$form->addElement('button', 'submit', _("Submit"), array("onClick" => "submitData();","class" => "btc bt_success"));
+$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 $form->addElement('hidden', 'action');
 $form->setDefaults(array('action' => $action));
 

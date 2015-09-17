@@ -33,6 +33,7 @@
  *
  */
 
+//require_once "@CENTREON_ETC@/centreon.conf.php";
 require_once "@CENTREON_ETC@/centreon.conf.php";
 require_once $centreon_path . 'www/class/centreon.class.php';
 require_once $centreon_path . 'www/class/centreonSession.class.php';
@@ -180,7 +181,10 @@ jQuery(function() {
     	<?php } ?>
 	}
 
-	initColorbox(".editView", "./main.php?p=10301&min=1&action=edit&view_id="+viewId, "70%", "25%");
+	//initColorbox(".editView", "./main.php?p=10301&min=1&action=edit&view_id="+viewId, "70%", "25%");
+
+	initToggle('.editView', './main.php?p=10301&min=1&action=edit&view_id="+viewId"','.editCntr');
+
 	initColorbox(".shareView", "./main.php?p=10302&min=1&view_id="+viewId, "70%", "70%");
 	initColorbox(".addWidget", "./main.php?p=10304&min=1&action=addWidget&view_id="+viewId, "70%", "70%");
 	initColorbox(".setRotate", "./main.php?p=10305&min=1&view_id="+viewId, "30%", "20%");
