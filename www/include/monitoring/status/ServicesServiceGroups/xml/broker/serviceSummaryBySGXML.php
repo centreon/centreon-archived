@@ -118,8 +118,9 @@
         $query .= "AND h.name like '%" . $hSearch . "%' ";
     }
     
+    /* Servicegroup search */
     if ($sgSearch != ""){
-        $query .= "OR sg.name like '%" . $sgSearch . "%' ";
+        $query .= "AND sg.name like '" . $sgSearch . "' ";
     }
 
     /* Service search */
@@ -156,6 +157,9 @@
         }
         $sg_search .= implode(" OR ", $servicegroupsSql1);
         $sg_search .= ") ";
+        if ($sgSearch != ""){
+            $sg_search .= "AND sg.name like '" . $sgSearch . "' ";
+        }
     }
 
     /** ***************************************************
