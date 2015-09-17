@@ -19,5 +19,6 @@ CREATE TABLE `meta_contact` (
 ALTER TABLE `on_demand_macro_host` ADD COLUMN `description` text DEFAULT NULL AFTER `is_password`;
 ALTER TABLE `on_demand_macro_service` ADD COLUMN `description` text DEFAULT NULL AFTER `is_password`;
 
-ALTER TABLE `command` ADD `command_locked` BOOLEAN DEFAULT 0
+ALTER TABLE `command` ADD `command_locked` BOOLEAN DEFAULT 0;
+ALTER TABLE `host` ADD `host_locked` BOOLEAN DEFAULT 0 AFTER `host_comment`;
 

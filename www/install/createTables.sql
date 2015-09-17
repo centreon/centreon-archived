@@ -1549,6 +1549,7 @@ CREATE TABLE `host` (
   `host_snmp_version` varchar(255) DEFAULT NULL,
   `host_location` int(11) DEFAULT '0',
   `host_comment` text,
+  `host_locked` BOOLEAN DEFAULT 0,
   `host_register` enum('0','1','2','3') DEFAULT NULL,
   `host_activate` enum('0','1','2') DEFAULT '1',
   PRIMARY KEY (`host_id`),

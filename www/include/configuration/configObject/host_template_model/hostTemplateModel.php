@@ -63,6 +63,9 @@
 	#PHP functions
 	require_once $path2."DB-Func.php";
 	require_once "./include/common/common-Func.php";
+
+        $hostObj = new CentreonHost($pearDB);
+        $lockedElements = $hostObj->getLockedHostTemplates();
 	
 	/* Set the real page */
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
