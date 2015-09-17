@@ -891,11 +891,21 @@ function insertService($ret = array(), $macro_on_demand = null)
         }
     } elseif (isset($_REQUEST['macroInput']) &&
               isset($_REQUEST['macroValue'])) {
+        $macroDescription = array();
+        foreach ($_REQUEST as $nam => $ele ) {
+            if (preg_match_all("/^macroDescription_(\w+)$/", $nam, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $match) {
+                    $macroDescription[$match[1]] = $ele;
+                }
+            }
+        }
         $service->insertMacro(
                               $service_id["MAX(service_id)"],
                               $_REQUEST['macroInput'],
                               $_REQUEST['macroValue'],
-                              $_REQUEST['macroPassword']
+                              $_REQUEST['macroPassword'],
+                              $macroDescription,
+                              false
                               );
     }
 
@@ -1211,12 +1221,21 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."' " : $rq .= "NULL ";
     $rq .= "WHERE service_id = '".$service_id."'";
     $DBRESULT = $pearDB->query($rq);
-                
+
     /*
      * Update demand macros
      */
+    $macroDescription = array();
+    foreach ($_REQUEST as $nam => $ele ) {
+        if (preg_match_all("/^macroDescription_(\w+)$/", $nam, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $macroDescription[$match[1]] = $ele;
+            }
+        }
+    }
+ 
     if (isset($_REQUEST['macroInput']) && isset($_REQUEST['macroValue'])) {
-        $service->insertMacro($service_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], (!isset($_REQUEST['macroPassword']) ? 0 : $_REQUEST['macroPassword']));
+        $service->insertMacro($service_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], (!isset($_REQUEST['macroPassword']) ? 0 : $_REQUEST['macroPassword']), $macroDescription, false);
     } else {
         $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".CentreonDB::escape($service_id)."'");
     }
@@ -1492,12 +1511,21 @@ function updateService_MC($service_id = null, $params = array())
     /*
      *  Update on demand macros
      */
+    $macroDescription = array();
+    foreach ($_REQUEST as $nam => $ele ) {
+        if (preg_match_all("/^macroDescription_(\w+)$/", $nam, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $macroDescription[$match[1]] = $ele;
+            }
+        }
+    }
     if (isset($_REQUEST['macroInput']) && isset($_REQUEST['macroValue'])) {
         $service->insertMacro(
                               $service_id,
                               $_REQUEST['macroInput'],
                               $_REQUEST['macroValue'],
                               $_REQUEST['macroPassword'],
+                              $macroDescription,
                               true
                               );
     }

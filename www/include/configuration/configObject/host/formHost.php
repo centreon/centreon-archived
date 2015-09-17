@@ -1032,6 +1032,7 @@
 	$tpl->assign('javascript', '
             <script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>
             <script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>
+            <script type="text/javascript" src="./include/common/javascript/centreon/macroLoadDescription.js"></script>
         ');
         $tpl->assign('accessgroups', _('Access groups'));
 
@@ -1046,32 +1047,32 @@
 	if ($o != "a" && $o != "c") {
 		$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
 	} else {
-		/*
-		 * Get interval for the good poller.
-		 */
-		$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
+            /*
+             * Get interval for the good poller.
+             */
+            $tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
 	}
 
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
-		$hostObj = $form->getElement('host_id');
-		if ($form->getSubmitValue("submitA")) {
-			$hostObj->setValue(insertHostInDB());
-		} elseif ($form->getSubmitValue("submitC")) {
-			updateHostInDB($hostObj->getValue());
-		} elseif ($form->getSubmitValue("submitMC")) {
-			$select = explode(",", $select);
-			foreach ($select as $key=>$value) {
-				if ($value) {
-                    updateHostInDB($value, true);
-				}
-			}
-		}
-		$o = "w";
-		if ($centreon->user->access->page($p) != 2)
-			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
-		$form->freeze();
-		$valid = true;
+            $hostObj = $form->getElement('host_id');
+            if ($form->getSubmitValue("submitA")) {
+                $hostObj->setValue(insertHostInDB());
+            } elseif ($form->getSubmitValue("submitC")) {
+                updateHostInDB($hostObj->getValue());
+            } elseif ($form->getSubmitValue("submitMC")) {
+                $select = explode(",", $select);
+                foreach ($select as $key=>$value) {
+                    if ($value) {
+                        updateHostInDB($value, true);
+                    }
+                }
+            }
+            $o = "w";
+            if ($centreon->user->access->page($p) != 2)
+                    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
+            $form->freeze();
+            $valid = true;
 	} elseif ($form->isSubmitted()) {
 	    $tpl->assign("macChecker", "<font color='red'>". $form->getElementError("macChecker") . "</font>");
 	}

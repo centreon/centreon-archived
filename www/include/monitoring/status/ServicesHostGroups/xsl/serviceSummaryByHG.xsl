@@ -13,12 +13,48 @@
 		<tr class='list_lvl_1'>
 			<xsl:if test="//i/s = 1">
 			<td colspan="4">
-				<xsl:value-of select="hgn"/>
+              <xsl:value-of select="hgn"/>
+              <xsl:if test="notes_url != ''">
+                <xsl:element name="a">
+                  <xsl:attribute name="href"><xsl:value-of select="notes_url"/></xsl:attribute>
+                  <xsl:attribute name="target">_blank</xsl:attribute>
+                  <xsl:element name="img">
+                    <xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+                  </xsl:element>
+                </xsl:element>
+              </xsl:if>
+              <xsl:if test="action_url != ''">
+                <xsl:element name="a">
+                  <xsl:attribute name="href"><xsl:value-of select="action_url"/></xsl:attribute>
+                  <xsl:attribute name="target">_blank</xsl:attribute>
+                  <xsl:element name="img">
+                    <xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+                  </xsl:element>
+                </xsl:element>
+              </xsl:if>
 			</td>
 			</xsl:if>
 			<xsl:if test="//i/s = 0">
 			<td colspan="3">
-				<xsl:value-of select="hgn"/>
+		      <xsl:value-of select="hgn"/>
+              <xsl:if test="notes_url != ''">
+                <xsl:element name="a">
+                  <xsl:attribute name="href"><xsl:value-of select="notes_url"/></xsl:attribute>
+                  <xsl:attribute name="target">_blank</xsl:attribute>
+                  <xsl:element name="img">
+                    <xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+                  </xsl:element>
+                </xsl:element>
+              </xsl:if>
+              <xsl:if test="action_url != ''">
+                <xsl:element name="a">
+                  <xsl:attribute name="href"><xsl:value-of select="action_url"/></xsl:attribute>
+                  <xsl:attribute name="target">_blank</xsl:attribute>
+                  <xsl:element name="img">
+                    <xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+                  </xsl:element>
+                </xsl:element>
+              </xsl:if>
 			</td>
 			</xsl:if>
 		</tr>	

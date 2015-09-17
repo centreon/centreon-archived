@@ -84,6 +84,9 @@
 		if ($_POST["o2"] != "")
 			$o = $_POST["o2"];
 	}
+
+        $commandObj = new CentreonCommand($pearDB);
+        $lockedElements = $commandObj->getLockedCommands();
 	
 	/* Set the real page */
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])

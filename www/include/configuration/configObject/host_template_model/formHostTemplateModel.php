@@ -46,6 +46,9 @@
 	#
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
+            if (isset($lockedElements[$host_id])) {
+                $o = "w";
+            }
 		$DBRESULT = $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
 
 		# Set base value
@@ -720,7 +723,7 @@ $DBRESULT->free();
 
 	# Just watch a host information
 	if ($o == "w")	{
-		if (!$min && $centreon->user->access->page($p) != 2)
+		if (!$min && $centreon->user->access->page($p) != 2 && !isset($lockedElements[$host_id]))
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$host_id."'"));
 	    $form->setDefaults($host);
 		$form->freeze();
@@ -758,6 +761,7 @@ $DBRESULT->free();
 	$tpl->assign('javascript', '
             <script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>
             <script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>
+            <script type="text/javascript" src="./include/common/javascript/centreon/macroLoadDescription.js"></script>
         ');
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 

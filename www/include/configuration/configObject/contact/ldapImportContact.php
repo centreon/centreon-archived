@@ -89,7 +89,7 @@
 	$query = "SELECT ar.ar_id, ar_name, REPLACE(ari_value, '%s', '*') as filter
                   FROM auth_ressource ar
                   LEFT JOIN auth_ressource_info ari ON ari.ar_id = ar.ar_id
-                  WHERE ari.ari_name = 'user_filter'
+                  WHERE ari.ari_name = 'user_filter' AND ar.ar_enable = '1'
                   ORDER BY ar_name";
 	$res = $pearDB->query($query);
 	$ldapConfList = "";

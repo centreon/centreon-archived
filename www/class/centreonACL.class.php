@@ -1567,22 +1567,23 @@ class CentreonACL {
         $request = $this->constructRequest($options);
         $searchSTR = "";
         $empty_exists = "";
+        $emptyJoin = "";
         if ($this->admin) {
             if ($search != "") {
                 $searchSTR = "(host.host_name LIKE '%".CentreonDB::escape($search)."%' OR host.host_alias LIKE '%".CentreonDB::escape($search)."%') AND";
             }
+         
+            
             if ($host_empty) {
-                $empty_exists = 'AND EXISTS (SELECT * 
-    FROM host_service_relation
-    WHERE host_service_relation.host_host_id = host.host_id 
-    AND host_service_relation.service_service_id IS NOT NULL)
-OR EXISTS (SELECT * 
-        FROM host_service_relation, hostgroup_relation 
-        WHERE host.host_id = hostgroup_relation.host_host_id 
-        AND hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id 
-        AND host_service_relation.service_service_id IS NOT NULL)';
+                
+            $emptyJoin = " LEFT JOIN host_service_relation on host_service_relation.host_host_id = host.host_id AND host_service_relation.service_service_id IS NOT NULL 
+                           LEFT JOIN hostgroup_relation on host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id ";    
+                
+            $empty_exists = " AND (host_service_relation.hsr_id IS NOT NULL OR hostgroup_relation.hgr_id IS NOT NULL) ";
+                
+                
             }
-            $query = "SELECT " . $request['fields'] . " FROM host " .
+            $query = "SELECT " . $request['fields'] . " FROM host " .$emptyJoin.
                     " WHERE $searchSTR host_activate = '1' AND host_register = '1' $empty_exists" .
                     $request['order'];
         } else {

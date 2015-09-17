@@ -163,8 +163,17 @@ sub get_oids {
             push @{$ref_result->{$_}->{traps_preexec}}, $row;
         }
         
-        # Get Associated Host
-        # TODO
+        # Get Trap PREEXEC Commands
+        ($dstatus, $sth) = $cdb->query("SELECT tg2.traps_id FROM traps_group as tg1, traps_group as tg2 WHERE tg1.traps_id = " . $_ . " AND tg1.traps_group_id = tg2.traps_group_id");
+        return -1 if ($dstatus == -1);
+        $ref_result->{$_}->{traps_group} = [];
+        while (my $row = $sth->fetchrow_hashref()) {
+            push @{$ref_result->{$_}->{traps_group}}, $row->{traps_id};
+        }
+        # We force sequential (grouping)
+        if (scalar(@{$ref_result->{$_}->{traps_group}}) > 0) {
+            $ref_result->{$_}->{traps_exec_method} = 1;
+        }
     }
     return (0, $ref_result);
 }

@@ -228,6 +228,8 @@
 						$obj->XML->startElement("hg");
 						$obj->XML->writeElement("hgn", $hg_name);
 						$obj->XML->writeElement("hgid", $tabHG[$hg_name]);
+                        $obj->XML->writeElement("action_url", '');
+                        $obj->XML->writeElement("notes_url", '');
 					}
 					$obj->XML->startElement("l");
 					$obj->XML->writeAttribute("class", $obj->getNextLineClass());

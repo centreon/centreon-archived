@@ -71,6 +71,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <script type="text/javascript" src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects,dragdrop"></script>
 <script type="text/javascript" src="./include/common/javascript/modalbox.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/select2/js/select2.min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui.js"></script>
 <script type="text/javascript">jQuery.noConflict();</script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js"></script>
