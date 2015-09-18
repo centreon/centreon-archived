@@ -58,8 +58,8 @@
 		if (isset($data['value']) && $data['key'] == "centstorage") {
 			$gopt["enable_centstorage"] = $data['value'];
 		} else {
-                    $gopt[$data['key']] = $data['value'];
-                }
+            $gopt[$data['key']] = $data['value'];
+        }
 	}
     
     
@@ -169,9 +169,7 @@
 		 */
 		updateODSConfigData();
 
-		$oreon->optGen = array();
-		$DBRESULT2 = $pearDBO->query("SELECT * FROM `config` LIMIT 1");
-		$oreon->optGen = $DBRESULT2->fetchRow();
+		$centreon->initOptGen($pearDB);
 
 		$o = NULL;
    		$valid = true;
