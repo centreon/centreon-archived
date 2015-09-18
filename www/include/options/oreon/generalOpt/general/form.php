@@ -54,7 +54,6 @@ while ($opt = $DBRESULT->fetchRow()) {
   }
 }
 
-
 /*
  * Style
  */
@@ -169,6 +168,7 @@ function slash($elem = NULL)	{
         return rtrim($elem, "/")."/";
     }
 }
+
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('nagios_path', 'slash');
 $form->applyFilter('nagios_path_img', 'slash');
@@ -208,22 +208,22 @@ if ($form->validate()) {
     /*
      * Update in Oreon Object
      */
-    $oreon->initOptGen($pearDB);
+    $centreon->initOptGen($pearDB);
     
     $o = NULL;
     $valid = true;
     $form->freeze();
- }
+}
+
 if (!$form->validate() && isset($_POST["gopt_id"]))	{
     print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
- }
+}
 
 $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
 
 /*
  * Send variable to template
  */
-
 $tpl->assign('o', $o);
 $tpl->assign("sorting", _("Sorting"));
 $tpl->assign("genOpt_max_page_size", _("Maximum page size"));
@@ -240,7 +240,9 @@ $tpl->assign("configBehavior", _("Configuration UI behavior"));
 $tpl->assign("support", _("Support Information"));
 $tpl->assign('valid', $valid);
 
-// prepare help texts
+/*
+ * prepare help texts
+ */
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
@@ -258,5 +260,3 @@ $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 
 $tpl->display("form.ihtml");
-
-?>

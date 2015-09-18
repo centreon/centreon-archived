@@ -86,8 +86,9 @@ while (list($nameColor, $val) = each($TabColorNameAndLang))	{
     $attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang');");
 
     $form->addElement('button', $nameColor.'_color', "", $attrsText4);
-    if (!$form->validate())
-        $form->addElement('button', $nameColor.'_modify', _("Modify"), $attrsText5);
+    if (!$form->validate()) {
+        $form->addElement('button', $nameColor.'_modify', _("Modify"), $attrsText5);        
+    }
 }
 
 $form->addElement('hidden', 'gopt_id');
@@ -152,7 +153,7 @@ if ($form->validate())	{
     /*
      * Update in Oreon Object
      */
-    $oreon->initOptGen($pearDB);
+    $centreon->initOptGen($pearDB);
     $o = NULL;
     $valid = true;
     $form->freeze();
@@ -181,6 +182,6 @@ foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
-
 $tpl->assign('valid', $valid);
+
 $tpl->display("form.ihtml");
