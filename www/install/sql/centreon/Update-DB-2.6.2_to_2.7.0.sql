@@ -67,3 +67,8 @@ REFERENCES timeperiod(tp_id) ON DELETE CASCADE;
 
 ALTER TABLE on_demand_macro_host MODIFY COLUMN host_macro_value VARCHAR(4096);
 ALTER TABLE on_demand_macro_service MODIFY COLUMN svc_macro_value VARCHAR(4096);
+delete from topology where topology_page = 10102;
+
+
+ALTER TABLE `on_demand_macro_host` ADD COLUMN `description` text DEFAULT NULL AFTER `is_password`;
+ALTER TABLE `on_demand_macro_service` ADD COLUMN `description` text DEFAULT NULL AFTER `is_password`;

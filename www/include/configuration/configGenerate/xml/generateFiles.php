@@ -225,10 +225,6 @@ try {
             if (isset($poller) && ($tab['id'] == $poller || $poller == 0)) {
                 $pollerID = $tab['id'];
                 unset($DBRESULT2);
-                if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "SHINKEN" &&
-                $tab['localhost']) {
-                    require $path . "genShinkenBroker.php";
-                }
                 require $path."genCGICFG.php";
                 require $path."genNagiosCFG.php";
                 require $path."genNdomod.php";
@@ -268,7 +264,7 @@ try {
                 /*
                  * Module Generation
                  */
-                foreach ($oreon->modules as $key => $value) {
+                foreach ($centreon->modules as $key => $value) {
                     $addModule = true;
                     if (function_exists('zend_loader_enabled') && (zend_loader_file_encoded() == true)) {
                         $module_license_validity = zend_loader_install_license ($centreon_path . "www/modules/".$key."license/merethis_lic.zl", true);
@@ -283,13 +279,11 @@ try {
                         }
                     }
                 }
-
                 unset($generatedHG);
                 unset($generatedSG);
                 unset($generatedS);
             }
         }
-
         require_once $path."genIndexData.php";
 
         /*
@@ -300,14 +294,14 @@ try {
         $localId = getLocalhostId();
         if (false !== $correlationPath && false !== $localId) {
             $tmpFilename = $centreonBrokerPath . '/' . $localId . '/';
-	    $query = "SELECT id FROM nagios_server";
-	    $res = $pearDB->query($query);
-        $pollers = array();
-	    while ($row = $res->fetchRow()) {
+    	    $query = "SELECT id FROM nagios_server";
+    	    $res = $pearDB->query($query);
+            $pollers = array();
+    	    while ($row = $res->fetchRow()) {
                 generateCentreonBrokerCorrelation($brokerObj, $tmpFilename, $row['id'], $pearDB);
                 $pollers[] = $row['id'];
-	    }
-        generateCentreonBrokerCorrelationMain($tmpFilename, $correlationPath, $pollers);
+    	    }
+            generateCentreonBrokerCorrelationMain($tmpFilename, $correlationPath, $pollers);
         }
     }
 
@@ -337,10 +331,7 @@ foreach ($generatePhpErrors as $error) {
     if ($error[0] == 'error') {
         $errmsg = '<p><span style="color: red;">Error</span><span style="margin-left: 5px;">' . $error[1] . '</span></p>';
         $xml->writeElement('errorPhp', $errmsg);
-    }/* else {
-        $errmsg = '<p><span style="color: orange;">Warning</span><span style="margin-left: 5px;">' . $error[1] . '</span></p>';
-    }*/
-
+    }
 }
 $xml->endElement();
 
@@ -349,5 +340,5 @@ header('Content-Type: application/xml');
 header('Cache-Control: no-cache');
 header('Expires: 0');
 header('Cache-Control: no-cache, must-revalidate');
+
 $xml->output();
-?>

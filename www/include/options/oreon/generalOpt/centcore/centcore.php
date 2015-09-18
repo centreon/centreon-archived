@@ -31,13 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon))
-    exit();
+if (!isset($oreon)) {
+    exit();    
+}
 
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 while ($opt = $DBRESULT->fetchRow()) {
@@ -118,5 +116,5 @@ $tpl->assign('o', $o);
 $tpl->assign("centcore_properties", _("Centcore properties"));
 $tpl->assign("centcore_options", _("Centcore Options"));
 $tpl->assign('valid', $valid);
+
 $tpl->display("centcore.ihtml");
-?>
