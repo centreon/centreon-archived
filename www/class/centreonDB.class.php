@@ -57,7 +57,7 @@ class CentreonDB {
     protected $lineRead;
     protected $debug;
     
-    static $aForbiden = array('<', '>', 'UNION', 'DELETE', 'ORDER', 'SELECT', 'WHERE', 'UPDATE');
+    static $aForbiden = array('UNION', 'DELETE', 'ORDER', 'SELECT', 'WHERE', 'UPDATE');
 
     /**
      * Constructor
@@ -294,7 +294,7 @@ class CentreonDB {
      * @return string
      */
     static public function escape($str, $htmlSpecialChars = false) {
-        static::check_injection($str);
+        //static::check_injection($str);
         
         if ($htmlSpecialChars) {
             $str = htmlspecialchars($str);
@@ -337,7 +337,8 @@ class CentreonDB {
      * @param	string	$query_string	query
      * @return	object	getAll result
      */
-    public function getAll($query_string = null, $placeHolders = array()) {
+    public function getAll($query_string = null, $placeHolders = array())
+    {
         $this->requestExecuted++;
         if (count($placeHolders)) {
             $DBRES = $this->db->getAll($query_string, $placeHolders);
@@ -421,6 +422,7 @@ class CentreonDB {
      */
     public static function check_injection($sString)
     {
+        /*
         foreach (self::$aForbiden as $str) {
             $pos = stripos($sString, $str);
             if ($pos !== FALSE) {
@@ -428,7 +430,7 @@ class CentreonDB {
                 return 1;
             }
         }
-        
+        */
         return 0;
    }
 
