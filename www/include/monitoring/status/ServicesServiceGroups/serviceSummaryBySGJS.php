@@ -104,6 +104,7 @@ function mainLoopLocal() {
     	if (!_lock) {
     		set_search_host(escapeURI(_currentInputFieldValue));
 			_host_search = _currentInputFieldValue;
+			_sg_search = _currentInputFieldValue;
 
 			monitoring_refresh();
 
@@ -115,7 +116,6 @@ function mainLoopLocal() {
 		}
 	}
 	_oldInputFieldValue = _currentInputFieldValue;
-
 	setTimeout("mainLoopLocal()", 250);
 }
 
@@ -128,10 +128,17 @@ function initM(_time_reload, _sid, _o ){
 	if (document.getElementById("host_search") && document.getElementById("host_search").value) {
 		_host_search = document.getElementById("host_search").value;
 		viewDebugInfo('search: '+document.getElementById("host_search").value);
-	} else if (document.getElementById("host_search").lenght == 0) {
+	} else if (document.getElementById("host_search").value.length === 0) {
 		_host_search = "";
 	}
-
+    
+    if (document.getElementById("sg_search") && document.getElementById("sg_search").value) {
+		_sg_search = document.getElementById("sg_search").value;
+		viewDebugInfo('search: '+document.getElementById("sg_search").value);
+	} else if (document.getElementById("sg_search").value.length == 0) {
+		_sg_search = "";
+	}
+    
 	if (_first){
 		mainLoopLocal();
 		_first = 0;
@@ -147,12 +154,13 @@ function goM(_time_reload, _sid, _o) {
 	_lock = 1;
 	var proc = new Transformation();
 	proc.setCallback(monitoringCallBack);
-	proc.setXml(_addrXML+"?"+'sid='+_sid+'&search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>');
+	proc.setXml(_addrXML+"?"+'sid='+_sid+'&host_search='+_host_search+'&sg_search='+_sg_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>');
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
 
 	if (_counter == 0) {
 		document.getElementById("host_search").value = _host_search;
+		document.getElementById("sg_search").value = _sg_search;
 		_counter += 1;
 	}
 
