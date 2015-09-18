@@ -58,6 +58,7 @@ var _search_type_service='<?php echo $search_type_service?>';
 
 var _search = '<?php global $url ; echo ($search ? $search : (isset($centreon->historySearchService[$url]) ? $centreon->historySearchService[$url] : ""));?>';
 var _host_search = '<?php global $url ; echo (isset($search_host) && $search_host != "" ? $search_host : (isset($centreon->historySearch[$url]) ? $centreon->historySearch[$url] : "")); ?>';
+var _sg_search = '<?php global $url ; echo (isset($search_sg) && $search_sg != "" ? $search_sg : (isset($centreon->historySearch[$url]) ? $centreon->historySearch[$url] : "")); ?>';
 var _output_search = '<?php global $url ; echo (isset($search_output) && $search_output != "" ? $search_output : (isset($centreon->historySearchOutput[$url]) ? $centreon->historySearchOutput[$url] : "")); ?>';
 
 var _num='<?php echo $num?>';

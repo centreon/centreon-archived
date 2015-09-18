@@ -76,18 +76,34 @@
 	$tpl->assign("mon_ip", _("IP"));
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
-	$tpl->assign('search', _('Search'));
+	$tpl->assign('search', _('Host'));
+    $tpl->assign('sgStr', _('Servicegroup'));
 	$tpl->assign('pollerStr', _('Poller'));
 	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 	$tpl->assign("mon_status_information", _("Status information"));
-
-
+    
+    /*
+    * Get servicegroups list
+    */
+    $query = "SELECT DISTINCT sg.sg_name FROM servicegroup sg";
+    $DBRESULT = $pearDB->query($query);
+    $sgSearchSelect = '<select id="sg_search" name="sg_search"><option value=""></option>';
+    while ($row = $DBRESULT->fetchRow()) {
+        $sgSearchSelect .= '<option value="' . $row['sg_name'] . '">' . $row['sg_name'] .'</option>';
+    }
+    $DBRESULT->free();
+    $sgSearchSelect .= '</select>';
+    $tpl->assign("sgSearchSelect", $sgSearchSelect);
+    
+   
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-
-
 	$tpl->assign("order", strtolower($order));
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 	$tpl->assign("tab_order", $tab_order);
+    
+    
+    
+    
 
 
 	##Toolbar select $lang["lgd_more_actions"]
