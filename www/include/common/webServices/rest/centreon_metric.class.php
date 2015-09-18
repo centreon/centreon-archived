@@ -150,7 +150,7 @@ class CentreonMetric {
                     WHERE host_id = " . $hostId . "
                         AND service_id = " . $serviceId . "
                         AND group_id IN (" . $aclGroups . ")";
-                $res = $pearDBD->query($query);
+                $res = $this->pearDBMonitoring->query($query);
                 if (0 == $res->numRows()) {
                     throw new RestForbiddenException("Access denied");
                 }
@@ -162,8 +162,13 @@ class CentreonMetric {
             try {
                 /* Get index data */
                 $indexData = CentreonGraphService::getIndexId($hostId, $serviceId, $this->pearDBMonitoring);
-                $graph = new CentreonGraphService($indexData, session_id());
+                /* Create a virtual session for graph */
+                $token = $_SERVER['HTTP_CENTREON_AUTH_TOKEN'];
+                $this->pearDB->query("INSERT INTO session (session_id, user_id) VALUES ('" . $token . "', " . $centreon->user->user_id . ")");
+                $graph = new CentreonGraphService($indexData, $token);
+                $this->pearDB->query("DELETE FROM session WHERE session_id = '" . $token . "'");
             } catch (Exception $e) {
+                $this->pearDB->query("DELETE FROM session WHERE session_id = '" . $token . "'");
                 throw new RestNotFoundException("Graph not found");
             }
             $graph->setRRDOption("start", $start);

@@ -83,7 +83,8 @@
 	$tpl->assign("mon_ip", _("IP"));
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
-	$tpl->assign('search', _('Search'));
+        $tpl->assign('search', _('Host'));
+        $tpl->assign('sgStr', _('Servicegroup'));
 	$tpl->assign('pollerStr', _('Poller'));
 	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 	$tpl->assign("mon_status_information", _("Status information"));
@@ -94,10 +95,9 @@
     */
     $query = "SELECT DISTINCT sg.sg_name FROM servicegroup sg";
     $DBRESULT = $pearDB->query($query);
-    $sgSearchSelect = '<select id="sg_search" name="sg_search"><option value="">Choose a service group</option>';
+    $sgSearchSelect = '<select id="sg_search" name="sg_search"><option value=""></option>';
     while ($row = $DBRESULT->fetchRow()) {
         $sgSearchSelect .= '<option value="' . $row['sg_name'] . '">' . $row['sg_name'] .'</option>';
-        //$serviceGroups[] = $row['sg_name'];
     }
     $DBRESULT->free();
     $sgSearchSelect .= '</select>';

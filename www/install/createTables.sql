@@ -766,6 +766,7 @@ CREATE TABLE `command` (
   `command_comment` text,
   `graph_id` int(11) DEFAULT NULL,
   `cmd_cat_id` int(11) DEFAULT NULL,
+  `command_locked` BOOLEAN DEFAULT 0,
   PRIMARY KEY (`command_id`),
   KEY `connector_id` (`connector_id`),
   CONSTRAINT `command_ibfk_1` FOREIGN KEY (`connector_id`) REFERENCES `connector` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
@@ -1548,6 +1549,7 @@ CREATE TABLE `host` (
   `host_snmp_version` varchar(255) DEFAULT NULL,
   `host_location` int(11) DEFAULT '0',
   `host_comment` text,
+  `host_locked` BOOLEAN DEFAULT 0,
   `host_register` enum('0','1','2','3') DEFAULT NULL,
   `host_activate` enum('0','1','2') DEFAULT '1',
   PRIMARY KEY (`host_id`),
@@ -1841,6 +1843,7 @@ CREATE TABLE `on_demand_macro_host` (
   `host_macro_name` varchar(255) NOT NULL,
   `host_macro_value` varchar(255) NOT NULL,
   `is_password` tinyint(2) DEFAULT NULL,
+  `desciption` text DEFAULT NULL,
   `host_host_id` int(11) NOT NULL,
   PRIMARY KEY (`host_macro_id`),
   KEY `host_host_id` (`host_host_id`),
@@ -1854,6 +1857,7 @@ CREATE TABLE `on_demand_macro_service` (
   `svc_macro_name` varchar(255) NOT NULL,
   `svc_macro_value` varchar(255) NOT NULL,
   `is_password` tinyint(2) DEFAULT NULL,
+  `desciption` text DEFAULT NULL,
   `svc_svc_id` int(11) NOT NULL,
   PRIMARY KEY (`svc_macro_id`),
   KEY `svc_svc_id` (`svc_svc_id`),
@@ -2352,8 +2356,27 @@ CREATE TABLE `widgets` (
   KEY `fk_wdg_model_id` (`widget_model_id`),
   CONSTRAINT `fk_wdg_model_id` FOREIGN KEY (`widget_model_id`) REFERENCES `widget_models` (`widget_model_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE ws_token (
+  contact_id INT NOT NULL,
+  token VARCHAR(100) NOT NULL,
+  generate_date DATETIME NOT NULL,
+  PRIMARY KEY(contact_id),
+  UNIQUE (token),
+  FOREIGN KEY (contact_id) REFERENCES contact (contact_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+-- Create table for relation between metaservice and contact
+CREATE TABLE `meta_contact` (
+  `meta_id` INT NOT NULL,
+  `contact_id` INT NOT NULL,
+  PRIMARY KEY (`meta_id`, `contact_id`),
+  FOREIGN KEY (`meta_id`) REFERENCES `meta_service` (`meta_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`contact_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

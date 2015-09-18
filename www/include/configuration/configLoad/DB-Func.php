@@ -813,7 +813,7 @@
 				case "retain_status_information" : $tmpConf["host_retain_status_information"]["host_retain_status_information"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "retain_nonstatus_information" : $tmpConf["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "notifications_enabled" : $tmpConf["host_notifications_enabled"]["host_notifications_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-				case "register" : $tmpConf["host_register"]["host_register"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "register" : $tmpConf["host_register"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "notification_options" : $tmpConf["host_notifOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "stalking_options" : $tmpConf["host_stalOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "check_command" :
@@ -926,13 +926,13 @@
 					break;
 			}
 		}
-		if (isset($tmpConf["host_register"]["host_register"]))	{
-			if ($tmpConf["host_register"]["host_register"] == '1')
-				$tmpConf["host_register"]["host_register"] = '1';
+		if (isset($tmpConf["host_register"]))	{
+			if ($tmpConf["host_register"] == '1')
+				$tmpConf["host_register"] = '1';
 			else
-				$tmpConf["host_register"]["host_register"] = '0';
+				$tmpConf["host_register"] = '0';
 		} else
-			$tmpConf["host_register"]["host_register"] = '1';
+			$tmpConf["host_register"] = '1';
 
 		$tmpConf["host_activate"]["host_activate"] = "1";
 		$tmpConf["host_comment"] = date("d/m/Y - H:i:s", time());
@@ -942,7 +942,7 @@
 		 */
 		$tmpConf["dupSvTplAssoc"] = array("dupSvTplAssoc" => 1);
 
-		if ($tmpConf["host_register"]["host_register"] == 1) {
+		if ($tmpConf["host_register"] == 1) {
 		    if (!hostExists($tmpConf['host_name'])) {
 		        $useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
                         if ($useTpl[0]) {
@@ -979,7 +979,7 @@
 		/*
 		 * Create all sevices
 		 */
-                if ($tmpConf["host_register"]["host_register"] == 1) {
+                if ($tmpConf["host_register"] == 1) {
                     generateHostServiceMultiTemplate($useTpl[0], $useTpl[0]);
                 }
 
@@ -1429,7 +1429,7 @@
 				case "retain_status_information" : $tmpConf["service_retain_status_information"]["service_retain_status_information"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "retain_nonstatus_information" : $tmpConf["service_retain_nonstatus_information"]["service_retain_nonstatus_information"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "notifications_enabled" : $tmpConf["service_notifications_enabled"]["service_notifications_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-				case "register" : $tmpConf["service_register"]["service_register"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "register" : $tmpConf["service_register"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "notification_options" : $tmpConf["service_notifOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "stalking_options" : $tmpConf["service_stalOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "check_command" :
@@ -1535,13 +1535,13 @@
 					break;
 			}
 		}
-		if (isset($tmpConf["service_register"]["service_register"]))	{
-			if ($tmpConf["service_register"]["service_register"] == '1')
-				$tmpConf["service_register"]["service_register"] = '1';
+		if (isset($tmpConf["service_register"]))	{
+			if ($tmpConf["service_register"] == '1')
+				$tmpConf["service_register"] = '1';
 			else
-				$tmpConf["service_register"]["service_register"] = '0';
+				$tmpConf["service_register"] = '0';
 		}  else
-			$tmpConf["service_register"]["service_register"] = '1';
+			$tmpConf["service_register"] = '1';
 
 		$tmpConf["service_activate"]["service_activate"] = "1";
 		$tmpConf["service_comment"] = date("d/m/Y - H:i:s", time());
@@ -1549,7 +1549,7 @@
 			$tmpConf["service_description"] = $tmpConf["name"];
 		}
 		if (isset($tmpConf["service_description"]) && testServiceTemplateExistence($tmpConf["service_description"]) && testServiceExistence($tmpConf["service_description"], $tmpConf["service_hPars"], $tmpConf["service_hgPars"]))	{
-			if ((count($tmpConf["service_hgPars"]) || count($tmpConf["service_hPars"])) || !$tmpConf["service_register"]["service_register"])	{
+			if ((count($tmpConf["service_hgPars"]) || count($tmpConf["service_hPars"])) || !$tmpConf["service_register"])	{
 				if ($debug_nagios_import == 1)
 					error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceCFG : ". $tmpConf["service_description"] ." \n", 3, $debug_path."cfgimport.log");
 				$useTpl[0] = insertServiceInDB($tmpConf, $macro_on_demand);

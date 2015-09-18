@@ -42,6 +42,14 @@
  	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
+    /* Get the list of contact */
+    /* notification contacts */
+    $notifCs = $acl->getContactAclConf(array('fields'     => array('contact_id', 'contact_name'),
+                                             'get_row'    => 'contact_name',
+                                             'keys'       => array('contact_id'),
+                                             'conditions' => array('contact_register' => '1'),
+                                             'order'      => array('contact_name')));
+
     /* notification contact groups */
     $notifCgs = array();
     $cg = new CentreonContactgroup($pearDB);
@@ -66,6 +74,19 @@
 		$tmp = explode(',', $ms["notification_options"]);
 		foreach ($tmp as $key => $value)
 			$ms["ms_notifOpts"][trim($value)] = 1;
+        
+        /*
+		 * Set Contacts
+		 */
+		$DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = " . $meta_id);
+		for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
+            if (!isset($notifCs[$notifC['contact_id']])) {
+                $initialValues['ms_cs'][] = $notifC['contact_id'];
+            } else {
+    			$ms["ms_cs"][$i] = $notifC["contact_id"];
+            }
+		}
+		$DBRESULT->free();
 
 		/*
 		 * Set Contact Group
@@ -204,6 +225,15 @@
 	$tab[] = HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("Default"), '2');
 	$form->addGroup($tab, 'notifications_enabled', _("Notification Enabled"), '&nbsp;');
 	$form->setDefaults(array('notifications_enabled' => '2'));
+
+    /*
+	 *  Contacts
+	 */
+	$ams2 = $form->addElement('advmultiselect', 'ms_cs', array(_("Implied Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams2->setElementTemplate($eTemplate);
+	echo $ams2->getElementJs(false);
 
 	$ams3 = $form->addElement('advmultiselect', 'ms_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));

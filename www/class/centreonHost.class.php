@@ -463,18 +463,20 @@ class CentreonHost {
         }
         return $string;
     }
-
+    
     /**
      * Insert macro
      * 
      * @param int $hostId
      * @param array $macroInput
      * @param array $macroValue
-     *  @param array $macroPassword
+     * @param array $macroPassword
+     * @param array $macroDescription
      * @param bool $isMassiveChange
+     * 
      * @return void
      */
-    public function insertMacro($hostId, $macroInput = array(), $macroValue = array(), $macroPassword = array(), $isMassiveChange = false) {
+    public function insertMacro($hostId, $macroInput = array(), $macroValue = array(), $macroPassword = array(), $macroDescription = array(), $isMassiveChange = false) {
         if (false === $isMassiveChange) {
             $this->db->query("DELETE FROM on_demand_macro_host 
                 WHERE host_host_id = " . $this->db->escape($hostId));
@@ -498,8 +500,8 @@ class CentreonHost {
         foreach ($macros as $key => $value) {
             if ($value != "" &&
                     !isset($stored[strtolower($value)])) {
-                $this->db->query("INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `is_password`, `host_host_id`) 
-                                VALUES ('\$_HOST" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') . ", " . $this->db->escape($hostId) . ")");
+                $this->db->query("INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `is_password`, `description`, `host_host_id`) 
+                                VALUES ('\$_HOST" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') . ", '".$this->db->escape($macroDescription[$key])."', ". $this->db->escape($hostId) . ")");
                 $stored[strtolower($value)] = true;
             }
         }
@@ -515,7 +517,12 @@ class CentreonHost {
         $arr = array();
         $i = 0;
         if (!isset($_REQUEST['macroInput']) && $hostId) {
-            $res = $this->db->query("SELECT host_macro_name, host_macro_value, is_password
+            $res = $this->db->query("SELECT host_macro_name, host_macro_value, is_password, description
+                                FROM on_demand_macro_host
+                                WHERE host_host_id = " .
+                    $this->db->escape($hostId) . "
+                                ORDER BY host_macro_name");
+file_put_contents('/tmp/toto',"SELECT host_macro_name, host_macro_value, is_password, description
                                 FROM on_demand_macro_host
                                 WHERE host_host_id = " .
                     $this->db->escape($hostId) . "
@@ -525,6 +532,8 @@ class CentreonHost {
                     $arr[$i]['macroInput_#index#'] = $matches[1];
                     $arr[$i]['macroValue_#index#'] = $row['host_macro_value'];
                     $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : NULL;
+                    $arr[$i]['macroDescription_#index#'] = $row['description'];
+                    $arr[$i]['macroDescription'] = $row['description'];
                     $i++;
                 }
             }
@@ -533,6 +542,8 @@ class CentreonHost {
                 $arr[$i]['macroInput_#index#'] = $val;
                 $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
                 $arr[$i]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;
+                $arr[$i]['macroDescription_#index#'] = $row['description'];
+                $arr[$i]['macroDescription'] = $row['description'];
                 $i++;
             }
         }
@@ -638,6 +649,25 @@ class CentreonHost {
         }
     }
 
+    /**
+     * Returns array of locked host templates
+     *
+     * @return array
+     */
+    public function getLockedHostTemplates() {
+        static $arr = null;
+
+        if (is_null($arr)) {
+            $arr = array();
+            $res = $this->db->query("SELECT host_id
+               FROM host
+               WHERE host_locked = 1");
+            while ($row = $res->fetchRow()) {
+                $arr[$row['host_id']] = true;
+            }
+        }
+        return $arr;
+    }
 }
 
 ?>
