@@ -40,11 +40,6 @@ if (!isset($oreon)) {
 include_once "./class/centreonDB.class.php";
 include_once "./class/centreonHost.class.php";
 
-if ($oreon->broker->getBroker() == "ndo") {
-    $pearDBndo = new CentreonDB("ndo");
-    $ndo_base_prefix = getNDOPrefix();
-}
-
 /*
  * Create Object env
  */
@@ -77,7 +72,7 @@ if (isset($_GET["host_name"]) && $_GET["host_name"]) {
  * ACL
  */
 if (!$is_admin) {
-    $lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName(($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO);
+    $lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName($pearDBO);
 }
 
 $tab_status = array();
@@ -105,13 +100,6 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
         $DBRESULT->free();
         
-        
-        
-        
-        
-        
-        
-        
         // Get notifications contacts
         $retrievedNotificationsInfos = get_notified_infos_for_host($host_id);
         $contacts = $retrievedNotificationsInfos['contacts'];
@@ -131,55 +119,30 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 
         /*
          * start ndo svc info
-         */
-        if ($oreon->broker->getBroker() == "ndo") {
-            $rq = "SELECT nss.current_state," .
-                " nss.output as plugin_output," .
-                " nss.current_check_attempt as current_attempt," .
-                " nss.status_update_time as status_update_time," .
-                " unix_timestamp(nss.last_state_change) as last_state_change," .
-                " unix_timestamp(nss.last_check) as last_check," .
-                " nss.notifications_enabled," .
-                " unix_timestamp(nss.next_check) as next_check," .
-                " nss.problem_has_been_acknowledged," .
-                " nss.passive_checks_enabled," .
-                " nss.active_checks_enabled," .
-                " nss.event_handler_enabled," .
-                " nss.is_flapping," .
-                " nss.latency as check_latency," .
-                " nss.execution_time as check_execution_time," .
-                " nss.flap_detection_enabled," .
-                " unix_timestamp(nss.last_notification) as last_notification," .
-                " no.name1 as host_name," .
-                " no.name2 as service_description" .
-                " FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
-                " WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
-            $DBRESULT = $pearDBndo->query($rq);
-        } else {
-            $rq = "SELECT s.state AS current_state," .
-                " s.output as plugin_output," .
-                " s.check_attempt as current_attempt," .
-                " s.last_update as status_update_time," .
-                " s.last_state_change as last_state_change," .
-                " s.last_check," .
-                " s.notify AS notifications_enabled," .
-                " s.next_check," .
-                " s.acknowledged AS problem_has_been_acknowledged," .
-                " s.passive_checks AS passive_checks_enabled," .
-                " s.active_checks AS active_checks_enabled," .
-                " s.event_handler_enabled," .
-                " s.flapping AS is_flapping," .
-                " s.latency as check_latency," .
-                " s.execution_time as check_execution_time," .
-                " s.last_notification as last_notification," .
-                " h.name AS host_name," .
-                " s.description as service_description" .
-                " FROM services s, hosts h" .
-                " WHERE s.host_id = h.host_id AND h.name LIKE '".$host_name."' " .
-                " AND h.enabled = 1 " .
-                " AND s.enabled = 1 ";
-            $DBRESULT = $pearDBO->query($rq);
-        }
+         */    
+        $rq = "SELECT s.state AS current_state," .
+            " s.output as plugin_output," .
+            " s.check_attempt as current_attempt," .
+            " s.last_update as status_update_time," .
+            " s.last_state_change as last_state_change," .
+            " s.last_check," .
+            " s.notify AS notifications_enabled," .
+            " s.next_check," .
+            " s.acknowledged AS problem_has_been_acknowledged," .
+            " s.passive_checks AS passive_checks_enabled," .
+            " s.active_checks AS active_checks_enabled," .
+            " s.event_handler_enabled," .
+            " s.flapping AS is_flapping," .
+            " s.latency as check_latency," .
+            " s.execution_time as check_execution_time," .
+            " s.last_notification as last_notification," .
+            " h.name AS host_name," .
+            " s.description as service_description" .
+            " FROM services s, hosts h" .
+            " WHERE s.host_id = h.host_id AND h.name LIKE '".$host_name."' " .
+            " AND h.enabled = 1 " .
+            " AND s.enabled = 1 ";
+        $DBRESULT = $pearDBO->query($rq);
         while ($ndo = $DBRESULT->fetchRow()){
             if (!isset($tab_status[$ndo["current_state"]])) {
                 $tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
@@ -191,80 +154,42 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         /*
          * start ndo host detail
          */
-        if ($oreon->broker->getBroker() == "ndo") {
-            $rq2 = "SELECT nhs.current_state," .
-                " nhs.problem_has_been_acknowledged, " .
-                " nhs.passive_checks_enabled," .
-                " nhs.active_checks_enabled," .
-                " nhs.notifications_enabled," .
-                " nhs.execution_time as check_execution_time," .
-                " nhs.latency as check_latency," .
-                " nhs.perfdata as performance_data," .
-                " nhs.current_check_attempt as current_attempt," .
-                " nhs.state_type," .
-                " nhs.check_type," .
-                " unix_timestamp(nhs.last_notification) as last_notification," .
-                " unix_timestamp(nhs.next_notification) as next_notification," .
-                " nhs.is_flapping," .
-                " nhs.flap_detection_enabled," .
-                " nhs.event_handler_enabled," .
-                " nhs.obsess_over_host,".
-                " nhs.current_notification_number," .
-                " nhs.percent_state_change," .
-                " nhs.scheduled_downtime_depth," .
-                " unix_timestamp(nhs.last_state_change) as last_state_change," .
-                " nhs.output as plugin_output," .
-                " unix_timestamp(nhs.last_check) as last_check," .
-                " unix_timestamp(nhs.last_notification) as last_notification," .
-                " unix_timestamp(nhs.next_check) as next_check," .
-                " nh.address," .
-                " no.name1 as host_name, " .
-                " nh.notes_url, " .
-                " nh.notes, " .
-                " nh.alias, " .
-                " nh.action_url, " .
-                " i.instance_name " .
-                " FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh, ".$ndo_base_prefix."instances i " .
-                " WHERE no.object_id = nhs.host_object_id AND no.object_id = nh.host_object_id AND no.name1 LIKE '".$host_name."' AND no.instance_id = i.instance_id ";
-            $DBRESULT = $pearDBndo->query($rq2);
-        } else {
-            $rq2 = "SELECT state AS current_state," .
-                " acknowledged AS problem_has_been_acknowledged, " .
-                " passive_checks AS passive_checks_enabled," .
-                " active_checks AS active_checks_enabled," .
-                " notify AS notifications_enabled," .
-                " execution_time as check_execution_time," .
-                " latency as check_latency," .
-                " perfdata as performance_data," .
-                " check_attempt as current_attempt," .
-                " state_type," .
-                " check_type," .
-                " last_notification," .
-                " next_host_notification AS next_notification," .
-                " flapping AS is_flapping," .
-                " h.flap_detection AS flap_detection_enabled," .
-                " event_handler_enabled," .
-                " obsess_over_host,".
-                " notification_number AS current_notification_number," .
-                " percent_state_change," .
-                " scheduled_downtime_depth," .
-                " last_state_change," .
-                " output as plugin_output," .
-                " last_check," .
-                " last_notification," .
-                " next_check," .
-                " h.address," .
-                " h.name AS host_name, " .
-                " notes_url, " .
-                " notes, " .
-                " alias, " .
-                " action_url, " .
-                " i.name as instance_name " .
-                " FROM hosts h, instances i " .
-                " WHERE h.name LIKE '".$host_name."' AND h.instance_id = i.instance_id " .
-                " AND h.enabled = 1 ";
-            $DBRESULT = $pearDBO->query($rq2);
-        }
+    $rq2 = "SELECT state AS current_state," .
+            " acknowledged AS problem_has_been_acknowledged, " .
+            " passive_checks AS passive_checks_enabled," .
+            " active_checks AS active_checks_enabled," .
+            " notify AS notifications_enabled," .
+            " execution_time as check_execution_time," .
+            " latency as check_latency," .
+            " perfdata as performance_data," .
+            " check_attempt as current_attempt," .
+            " state_type," .
+            " check_type," .
+            " last_notification," .
+            " next_host_notification AS next_notification," .
+            " flapping AS is_flapping," .
+            " h.flap_detection AS flap_detection_enabled," .
+            " event_handler_enabled," .
+            " obsess_over_host,".
+            " notification_number AS current_notification_number," .
+            " percent_state_change," .
+            " scheduled_downtime_depth," .
+            " last_state_change," .
+            " output as plugin_output," .
+            " last_check," .
+            " last_notification," .
+            " next_check," .
+            " h.address," .
+            " h.name AS host_name, " .
+            " notes_url, " .
+            " notes, " .
+            " alias, " .
+            " action_url, " .
+            " i.name as instance_name " .
+            " FROM hosts h, instances i " .
+            " WHERE h.name LIKE '".$host_name."' AND h.instance_id = i.instance_id " .
+            " AND h.enabled = 1 ";
+        $DBRESULT = $pearDBO->query($rq2);
         $data = $DBRESULT->fetchRow();
 
         $host_status[$host_name] = $data;
@@ -308,19 +233,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
          * Get comments for hosts
          */
         $tabCommentHosts = array();
-        if ($oreon->broker->getBroker() == 'ndo') {
-            $rq2 =	" SELECT cmt.comment_id, cmt.comment_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name" .
-                " FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
-                " WHERE obj.name1 = '".$pearDBndo->escape($host_name)."' AND obj.name2 IS NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
-            $DBRESULT = $pearDBndo->query($rq2);
-            for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
-                $tabCommentHosts[$i] = $data;
-                $tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];
-            }
-            $DBRESULT->free();
-            unset($data);
-        } else {
-            $rq2 =	" SELECT FROM_UNIXTIME(cmt.entry_time) as comment_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name " .
+        $rq2 =	" SELECT FROM_UNIXTIME(cmt.entry_time) as comment_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name " .
                 " FROM comments cmt, hosts h " .
                 " WHERE h.name = '".$pearDBO->escape($host_name)."' 
                                       AND h.host_id = cmt.host_id 
@@ -328,15 +241,14 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
                                       AND cmt.expires = 0 
                                       AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
                                       ORDER BY cmt.entry_time DESC";
-            $DBRESULT = $pearDBO->query($rq2);
-            for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
-                $tabCommentHosts[$i] = $data;
-                $tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];
-            }
-            $DBRESULT->free();
-            unset($data);
+        $DBRESULT = $pearDBO->query($rq2);
+        for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+            $tabCommentHosts[$i] = $data;
+            $tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];
         }
-
+        $DBRESULT->free();
+        unset($data);
+        
         $en_acknowledge_text 	= array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Host Problem"));
         $en_acknowledge 		= array("1" => "0", "0" => "1");
         $en_inv 				= array("1" => "1", "0" => "0");
@@ -512,8 +424,6 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             $tpl->assign("hostcategorie", $hostCategorie);
         }
         
-        
-        
         /*
          * Contactgroups Display
          */
@@ -522,13 +432,13 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             $tpl->assign("contactgroups", $contactGroups);
         }
 
-       /*
-        * Contacts Display
-        */
-       $tpl->assign("contacts_label", _("Contacts notified for this host"));
-       if (isset($contacts)) {
-           $tpl->assign("contacts", $contacts);
-       }
+        /*
+         * Contacts Display
+         */
+        $tpl->assign("contacts_label", _("Contacts notified for this host"));
+        if (isset($contacts)) {
+            $tpl->assign("contacts", $contacts);
+        }
 
         /*
          * Macros
@@ -602,8 +512,6 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 }
     
 ?>
-
-
 <?php if (!is_null($host_id)) { ?>
 <script type="text/javascript">
 	var _sid = '<?php echo session_id();?>';

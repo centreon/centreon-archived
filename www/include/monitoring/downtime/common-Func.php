@@ -41,11 +41,7 @@
 
     function deleteDowntimeFromDb($centreon, $select = array()) {
         if (isset($select)) {
-            if ($centreon->broker->getBroker() == "ndo") {
-                $pearDBndo = new CentreonDB("ndo");
-            } else {
-                $pearDBndo = new CentreonDB("centstorage");
-            }
+            $pearDBO = new CentreonDB("centstorage");
 		    $ndo_base_prefix = getNDOPrefix();
             $dIds =  array();
             foreach ($select as $key => $val) {
@@ -55,12 +51,8 @@
                 }
             }
             if (count($dIds)) {
-                if ($centreon->broker->getBroker() == "ndo") {
-                    $request = "DELETE FROM ".$ndo_base_prefix."downtimehistory WHERE internal_downtime_id IN (".implode(', ',$dIds).")";
-                } else {
-                    $request = "DELETE FROM downtimes WHERE internal_id IN (".implode(', ',$dIds).")";
-                }
-                $pearDBndo->query($request);
+                $request = "DELETE FROM downtimes WHERE internal_id IN (".implode(', ',$dIds).")";
+                $pearDBO->query($request);
             }
 		}
     }
