@@ -643,6 +643,115 @@ class CentreonHost {
             }
         }
     }
+    
+    /**
+     * This method get the maccro attached to the host
+     * 
+     * @param int $iHostId
+     * @param array $aListTemplate
+     * @param int $iIdCommande
+     * 
+     * @return array
+     */
+    public function getMacros($iHostId, $aListTemplate, $iIdCommande)
+    {
+        
+        $aMacro = array();
+        $macroArray = array();
+        $aMacroInHost = array();
+        
+        //Get macro attached to the host
+        $macroArray = $this->getCustomMacro($iHostId);
+        $iNb = count($macroArray);
+
+        //Get macro attached to the template
+        $aMacroTemplate = array();
+        foreach ($aListTemplate as $template) {
+            if (!empty($template)) {
+                $aMacroTemplate[] = $this->getCustomMacro($template);
+            }
+        }
+
+        //Get macro attached to the command        
+        if (!empty($iIdCommande)) {
+            $oCommand = new CentreonCommand($this->db);
+            $aMacroInHost[] = $oCommand->getMacroByIdAndType($iIdCommande, 'host');
+        }
+
+        $aTempMacro = array();
+        if (count($macroArray) > 0) {
+            $aTempMacro[] = current($macroArray);
+        }
+        $iNb = count($aTempMacro);
+        
+        if (count($aMacroTemplate) > 0) {
+            foreach ($aMacroTemplate as $key => $value) {
+                $aTempMacro[$iNb++] = $value;
+            }
+        }
+        if (count($aMacroInHost) > 0) {
+            $machost = current($aMacroInHost);
+            for ($i = 0; $i < count($machost); $i++) {
+                $aTempMacro[$iNb++] = $machost[$i];
+            }
+        }
+
+        $aFinalMacro = macro_unique($aTempMacro);
+        
+        return $aFinalMacro;
+    }
+    
+    /**
+     * Get template chain (id, text)
+     *
+     * @param int $hostId The host or host template Id
+     * @param array $alreadyProcessed The host templates already processed
+     * @param int $depth The depth to search
+     * @return array
+     */
+    public function getTemplateChain($hostId, $alreadyProcessed = array(), $depth = -1, $allFields = false)
+    {
+        $templates = array();
+        
+        if (($depth == -1) || ($depth > 0)) {
+            if ($depth > 0) {
+                $depth--;
+            }
+            if (in_array($hostId, $alreadyProcessed)) {
+                return $templates;
+            } else {
+                $alreadyProcessed[] = $hostId;
+
+                if(!$allFields){
+                    $fields = "h.host_id, h.host_name";
+                }else{
+                    $fields = " * ";
+                }
+                $sql = "SELECT " . $fields . " " 
+                    . " FROM host h, host_template_relation htr"
+                    . " WHERE h.host_id = htr.host_tpl_id"
+                    . " AND htr.host_host_id = ". $this->db->escape($hostId)
+                    . " AND host_activate = '1'"
+                    . " AND host_register = '0'"
+                    . " ORDER BY `order` ASC";
+                $DBRESULT = $this->db->query($sql);
+
+                while ($row = $DBRESULT->fetchRow()) {
+                    if(!$allFields){
+                        $templates[] = array(
+                            "id" => $row['host_id']
+                        );
+                    } else{
+                        $templates[] = $row;
+                    }
+                    
+                    $templates = array_merge($templates, $this->getTemplateChain($row['host_id'], $alreadyProcessed, $depth, $allFields));
+                }
+                return $templates;
+            }
+        }
+        return $templates;
+    }
 
 }
 
