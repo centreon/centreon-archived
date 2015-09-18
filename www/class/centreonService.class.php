@@ -484,7 +484,7 @@ class CentreonService {
     }
     
     /**
-     * This method get the maccro attached to the service
+     * This method get the macro attached to the service
      * 
      * @param int $iServiceId
      * @param array $aListTemplate
@@ -524,14 +524,17 @@ class CentreonService {
         }
         $iNb = count($aTempMacro);
         $tpl = current($aMacroTemplate);
-        for ($i = 0; $i < count($tpl); $i++) {
-            $aTempMacro[$iNb++] = $tpl[$i];
+        if (count($aMacroTemplate) > 0) {
+            for ($i = 0; $i < count($tpl); $i++) {
+                $aTempMacro[$iNb++] = $tpl[$i];
+            }
         }
         $serv = current($aMacroInService);
-        for ($i = 0; $i < count($serv); $i++) {
-            $aTempMacro[$iNb++] = $serv[$i];
+        if (count($aMacroInService) > 0) {
+            for ($i = 0; $i < count($serv); $i++) {
+                $aTempMacro[$iNb++] = $serv[$i];
+            }
         }
-        
         $aFinalMacro = macro_unique($aTempMacro);
         
         return $aFinalMacro;

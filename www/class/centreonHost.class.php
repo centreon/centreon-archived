@@ -516,17 +516,14 @@ class CentreonHost {
     public function getCustomMacro($hostId = null) {
         $arr = array();
         $i = 0;
+       
         if (!isset($_REQUEST['macroInput']) && $hostId) {
-            $res = $this->db->query("SELECT host_macro_name, host_macro_value, is_password, description
+            $sSql = "SELECT host_macro_name, host_macro_value, is_password, description
                                 FROM on_demand_macro_host
-                                WHERE host_host_id = " .
-                    $this->db->escape($hostId) . "
-                                ORDER BY host_macro_name");
-file_put_contents('/tmp/toto',"SELECT host_macro_name, host_macro_value, is_password, description
-                                FROM on_demand_macro_host
-                                WHERE host_host_id = " .
-                    $this->db->escape($hostId) . "
-                                ORDER BY host_macro_name");
+                                WHERE host_host_id = " . intval($hostId) . " ORDER BY host_macro_name";
+
+            $res = $this->db->query($sSql);
+            
             while ($row = $res->fetchRow()) {
                 if (preg_match('/\$_HOST(.*)\$$/', $row['host_macro_name'], $matches)) {
                     $arr[$i]['macroInput_#index#'] = $matches[1];
@@ -647,23 +644,23 @@ file_put_contents('/tmp/toto',"SELECT host_macro_name, host_macro_value, is_pass
                 }
             }
         }
-    }
+    }   
     
     /**
-     * This method get the maccro attached to the host
+     * This method get the macro attached to the host
      * 
      * @param int $iHostId
+     * @param int $bIsTemplate
      * @param array $aListTemplate
      * @param int $iIdCommande
-     * 
      * @return array
      */
-    public function getMacros($iHostId, $aListTemplate, $iIdCommande)
+    public function getMacros($iHostId, $bIsTemplate, $aListTemplate, $iIdCommande)
     {
-        
         $aMacro = array();
         $macroArray = array();
-        $aMacroInHost = array();
+        $aMacroInCommande = array();
+        $aMacroInService = array();
         
         //Get macro attached to the host
         $macroArray = $this->getCustomMacro($iHostId);
@@ -672,37 +669,61 @@ file_put_contents('/tmp/toto',"SELECT host_macro_name, host_macro_value, is_pass
         //Get macro attached to the template
         $aMacroTemplate = array();
         foreach ($aListTemplate as $template) {
-            if (!empty($template)) {
-                $aMacroTemplate[] = $this->getCustomMacro($template);
+            if (!empty($template['id'])) {
+                $aMacroTemplate[] = $this->getCustomMacro($template['id']);
             }
         }
 
         //Get macro attached to the command        
         if (!empty($iIdCommande)) {
             $oCommand = new CentreonCommand($this->db);
-            $aMacroInHost[] = $oCommand->getMacroByIdAndType($iIdCommande, 'host');
+            $aMacroInCommande[] = $oCommand->getMacroByIdAndType($iIdCommande, 'host');
+        }
+        
+        if (!$bIsTemplate) {
+            $aServices = $this->getServices($iHostId);
+            if (count($aServices) > 0) {
+                $oService = new CentreonService($this->db);
+                foreach ($aServices as $service) {
+                    $aMacroInService = $oService->getCustomMacro($service['service_id']);
+                }
+            }
         }
 
+        //filter a macro
         $aTempMacro = array();
         if (count($macroArray) > 0) {
             $aTempMacro[] = current($macroArray);
         }
+        
         $iNb = count($aTempMacro);
         
-        if (count($aMacroTemplate) > 0) {
-            foreach ($aMacroTemplate as $key => $value) {
-                $aTempMacro[$iNb++] = $value;
+        if (count($aMacroTemplate) > 0) {  
+            foreach ($aMacroTemplate as $key => $macr) {
+                foreach ($macr as $mm) {
+                    $aTempMacro[$iNb++] = $mm;
+                }
             }
         }
-        if (count($aMacroInHost) > 0) {
-            $machost = current($aMacroInHost);
-            for ($i = 0; $i < count($machost); $i++) {
-                $aTempMacro[$iNb++] = $machost[$i];
+        
+        
+        if (count($aMacroInCommande) > 0) {
+            $macroCommande = current($aMacroInCommande);
+            for ($i = 0; $i < count($macroCommande); $i++) {
+                $aTempMacro[$iNb++] = $macroCommande[$i];
             }
         }
 
+        if (count($aMacroInService) > 0) {
+            foreach ($aMacroInService as $key => $macr) {
+                foreach ($macr as $mm) {
+                    $aTempMacro[$iNb++] = $mm;
+                }
+            }
+        }
+       
         $aFinalMacro = macro_unique($aTempMacro);
-        
+
         return $aFinalMacro;
     }
     
@@ -768,9 +789,7 @@ file_put_contents('/tmp/toto',"SELECT host_macro_name, host_macro_value, is_pass
 
         if (is_null($arr)) {
             $arr = array();
-            $res = $this->db->query("SELECT host_id
-               FROM host
-               WHERE host_locked = 1");
+            $res = $this->db->query("SELECT host_id FROM host WHERE host_locked = 1");
             while ($row = $res->fetchRow()) {
                 $arr[$row['host_id']] = true;
             }
