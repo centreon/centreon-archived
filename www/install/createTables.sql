@@ -1841,7 +1841,7 @@ CREATE TABLE `ods_view_details` (
 CREATE TABLE `on_demand_macro_host` (
   `host_macro_id` int(11) NOT NULL AUTO_INCREMENT,
   `host_macro_name` varchar(255) NOT NULL,
-  `host_macro_value` varchar(255) NOT NULL,
+  `host_macro_value` varchar(4096) NOT NULL,
   `is_password` tinyint(2) DEFAULT NULL,
   `desciption` text DEFAULT NULL,
   `host_host_id` int(11) NOT NULL,
@@ -1855,7 +1855,7 @@ CREATE TABLE `on_demand_macro_host` (
 CREATE TABLE `on_demand_macro_service` (
   `svc_macro_id` int(11) NOT NULL AUTO_INCREMENT,
   `svc_macro_name` varchar(255) NOT NULL,
-  `svc_macro_value` varchar(255) NOT NULL,
+  `svc_macro_value` varchar(4096) NOT NULL,
   `is_password` tinyint(2) DEFAULT NULL,
   `desciption` text DEFAULT NULL,
   `svc_svc_id` int(11) NOT NULL,
@@ -2055,6 +2055,8 @@ CREATE TABLE `timeperiod_exclude_relations` (
   `exclude_id` int(11) NOT NULL AUTO_INCREMENT,
   `timeperiod_id` int(11) NOT NULL,
   `timeperiod_exclude_id` int(11) NOT NULL,
+  FOREIGN KEY (`timeperiod_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`timeperiod_exclude_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE CASCADE,
   PRIMARY KEY (`exclude_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2064,6 +2066,8 @@ CREATE TABLE `timeperiod_include_relations` (
   `include_id` int(11) NOT NULL AUTO_INCREMENT,
   `timeperiod_id` int(11) NOT NULL,
   `timeperiod_include_id` int(11) NOT NULL,
+  FOREIGN KEY (`timeperiod_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`timeperiod_include_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE CASCADE,
   PRIMARY KEY (`include_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2377,6 +2381,8 @@ CREATE TABLE `meta_contact` (
   FOREIGN KEY (`meta_id`) REFERENCES `meta_service` (`meta_id`) ON DELETE CASCADE,
   FOREIGN KEY (`contact_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

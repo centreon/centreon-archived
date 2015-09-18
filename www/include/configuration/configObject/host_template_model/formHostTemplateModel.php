@@ -128,7 +128,15 @@
          * Preset values of macros
          */
         $cdata = CentreonData::getInstance();
-        $macroArray = $hostObj->getCustomMacro(isset($host_id) ? $host_id : null);
+        
+        $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1);
+
+        if (!isset($cmdId)) {
+            $cmdId = "";
+        }
+
+        $macroArray = $hostObj->getMacros($host_id, true, $aTemplates, $cmdId);
+
         $cdata->addJsData('clone-values-macro', htmlspecialchars(
                           json_encode($macroArray), 
                           ENT_QUOTES

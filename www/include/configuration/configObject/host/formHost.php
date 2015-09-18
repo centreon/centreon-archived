@@ -273,13 +273,8 @@ $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1);
 if (!isset($cmdId)) {
     $cmdId = "";
 }
-$aMacros = $hostObj->getMacros($host_id, $aTemplates, $cmdId);
+$aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId);
 
-/*
-echo "<pre>";
-print_r($aMacros);
-die;
-*/
 $cdata->addJsData('clone-values-macro', htmlspecialchars(
                 json_encode($aMacros), ENT_QUOTES
         )
