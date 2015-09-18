@@ -522,6 +522,11 @@ class CentreonHost {
                                 WHERE host_host_id = " .
                     $this->db->escape($hostId) . "
                                 ORDER BY host_macro_name");
+file_put_contents('/tmp/toto',"SELECT host_macro_name, host_macro_value, is_password, description
+                                FROM on_demand_macro_host
+                                WHERE host_host_id = " .
+                    $this->db->escape($hostId) . "
+                                ORDER BY host_macro_name");
             while ($row = $res->fetchRow()) {
                 if (preg_match('/\$_HOST(.*)\$$/', $row['host_macro_name'], $matches)) {
                     $arr[$i]['macroInput_#index#'] = $matches[1];
@@ -753,6 +758,25 @@ class CentreonHost {
         return $templates;
     }
 
+    /**
+     * Returns array of locked host templates
+     *
+     * @return array
+     */
+    public function getLockedHostTemplates() {
+        static $arr = null;
+
+        if (is_null($arr)) {
+            $arr = array();
+            $res = $this->db->query("SELECT host_id
+               FROM host
+               WHERE host_locked = 1");
+            while ($row = $res->fetchRow()) {
+                $arr[$row['host_id']] = true;
+            }
+        }
+        return $arr;
+    }
 }
 
 ?>

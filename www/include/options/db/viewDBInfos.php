@@ -31,81 +31,77 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($oreon)) {
+	exit();
+}
 
-	require_once './class/centreonDB.class.php';
+require_once './class/centreonDB.class.php';
 
-	if ($oreon->broker->getBroker() == "ndo") {
-		$pearDBndo = new CentreonDB("ndo");
-	}
+if ($centreon->broker->getBroker() == "ndo") {
+	$pearDBndo = new CentreonDB("ndo");
+}
 
+/*
+ * return database Properties
+ *
+ * <code>
+ * $dataCentreon 		= returnProperties($pearDB, $conf_centreon["db"]);
+ * </code>
+ *
+ * @param{TAB}int{TAB}$pearDB{TAB}Database connexion
+ * @param{TAB}string{TAB}$base{TAB}db name
+ * @return{TAB}array{TAB}dbsize, numberOfRow, freeSize
+ */
+
+function returnProperties($pearDB, $base){
 	/*
-	 * return database Properties
-	 *
-	 * <code>
-	 * $dataCentreon 		= returnProperties($pearDB, $conf_centreon["db"]);
-	 * </code>
-	 *
-	 * @param{TAB}int{TAB}$pearDB{TAB}Database connexion
-	 * @param{TAB}string{TAB}$base{TAB}db name
-	 * @return{TAB}array{TAB}dbsize, numberOfRow, freeSize
+	 * Get Version
 	 */
-
-	function returnProperties($pearDB, $base){
-		/*
-		 * Get Version
-		 */
-		if ($res = $pearDB->query("SELECT VERSION() AS mysql_version")){
-			$row = $res->fetchRow();
-			$version = $row['mysql_version'];
-			if (preg_match("/^(3\.23|4\.|5\.)/", $version)){
-				$db_name = (preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)/", $version) ) ? "`$base`" : $base;
-				if ($DBRESULT = $pearDB->query("SHOW TABLE STATUS FROM `$base`")){
-					$dbsize = 0;
-					$rows = 0;
-					$datafree = 0;
-					while ($tabledata_ary = $DBRESULT->fetchRow()) {
-						$dbsize 	+= $tabledata_ary['Data_length'] + $tabledata_ary['Index_length'];
-						$rows 		+= $tabledata_ary['Rows'];
-						$datafree	+= $tabledata_ary['Data_free'];
-					}
-					$DBRESULT->free();
+	if ($res = $pearDB->query("SELECT VERSION() AS mysql_version")){
+		$row = $res->fetchRow();
+		$version = $row['mysql_version'];
+		if (preg_match("/^(3\.23|4\.|5\.)/", $version)){
+			$db_name = (preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)/", $version) ) ? "`$base`" : $base;
+			if ($DBRESULT = $pearDB->query("SHOW TABLE STATUS FROM `$base`")){
+				$dbsize = 0;
+				$rows = 0;
+				$datafree = 0;
+				while ($tabledata_ary = $DBRESULT->fetchRow()) {
+					$dbsize 	+= $tabledata_ary['Data_length'] + $tabledata_ary['Index_length'];
+					$rows 		+= $tabledata_ary['Rows'];
+					$datafree	+= $tabledata_ary['Data_free'];
 				}
-			} else {
-				$dbsize = NULL;
-				$rows = NULL;
-				$datafree = NULL;
+				$DBRESULT->free();
 			}
-		}
-		return array($dbsize / 1024 / 1024 , $rows, $datafree);
-	}
-
-	/*
-	 * Get NDO Properties
-	 */
-
-	$ndoInformations = getNDOInformations();
-
-	/*
-	 * Get Properties
-	 */
-
-	$dataCentreon 		= returnProperties($pearDB, $conf_centreon["db"]);
-	$dataCentstorage 	= returnProperties($pearDBO, $conf_centreon["dbcstg"]);
-	if ($oreon->broker->getBroker() == "ndo") {
-		if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
-			$dataNDOutils = array(0 => '-', 1 => '-');
 		} else {
-			$dataNDOutils 		= returnProperties($pearDBndo, $ndoInformations["db_name"]);
+			$dbsize = NULL;
+			$rows = NULL;
+			$datafree = NULL;
 		}
 	}
+	return array($dbsize / 1024 / 1024 , $rows, $datafree);
+}
+
+/*
+ * Get NDO Properties
+ */
+$ndoInformations = getNDOInformations();
+
+/*
+ * Get Properties
+ */
+
+$dataCentreon 		= returnProperties($pearDB, $conf_centreon["db"]);
+$dataCentstorage 	= returnProperties($pearDBO, $conf_centreon["dbcstg"]);
+if ($oreon->broker->getBroker() == "ndo") {
+	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
+		$dataNDOutils = array(0 => '-', 1 => '-');
+	} else {
+		$dataNDOutils 		= returnProperties($pearDBndo, $ndoInformations["db_name"]);
+	}
+}
 ?>
 <table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="<?php print $oreon->broker->getBroker() == "ndo" ? "4" : "3"; ?>"><img src='./img/icones/16x16/server_network.gif'>&nbsp;<?php print _("Centreon DataBase Statistics"); ?></td></tr>

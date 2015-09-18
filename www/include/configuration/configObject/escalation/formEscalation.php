@@ -36,47 +36,58 @@
  *
  */
 
-    if (!isset($oreon))
- 		exit();
+    if (!isset($oreon)) {
+        exit();
+    }
  		
     require_once $centreon_path . 'www/class/centreonLDAP.class.php';
     require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
-        /* Init connection to storage db */
-        require_once $centreon_path . "/www/class/centreonBroker.class.php";
-        $brk = new CentreonBroker($pearDB);
-        if ($brk->getBroker() == 'broker') {
-            $pearDBMonitoring = new CentreonDB('centstorage');
-        } else {
-            $pearDBMonitoring = new CentreonDB('ndo');
-        }
+    /* Init connection to storage db */
+    require_once $centreon_path . "/www/class/centreonBroker.class.php";
+    $brk = new CentreonBroker($pearDB);
+    if ($brk->getBroker() == 'broker') {
+        $pearDBMonitoring = new CentreonDB('centstorage');
+    } else {
+        $pearDBMonitoring = new CentreonDB('ndo');
+    }
 
-        /* hosts */
-        $hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields'  => array('host.host_id', 'host.host_name'),
-                                                                            'keys'    => array('host_id'),
-                                                                            'get_row' => 'host_name',
-                                                                            'order'   => array('host.host_name')));
-        
-        /* notification contact groups */
-        $notifCgs = array();
-        $cg = new CentreonContactgroup($pearDB);
-        if ($oreon->user->admin) {
-            $notifCgs = $cg->getListContactgroup(true);
-        } else {
-            $cgAcl = $acl->getContactGroupAclConf(array('fields'  => array('cg_id', 'cg_name'),
-                                                        'get_row' => 'cg_name',
-                                                        'keys'    => array('cg_id'),
-                                                        'order'   => array('cg_name')));
-            $cgLdap = $cg->getListContactgroup(true, true);
-            $notifCgs = array_intersect_key($cgLdap, $cgAcl);
-        }
+    /* hosts */
+    $hosts = $acl->getHostAclConf(
+        null,
+        $oreon->broker->getBroker(),
+        array(
+            'fields'  => array('host.host_id', 'host.host_name'),
+            'keys'    => array('host_id'),
+            'get_row' => 'host_name',
+            'order'   => array('host.host_name')
+        )
+    );
+
+    /* notification contact groups */
+    $notifCgs = array();
+    $cg = new CentreonContactgroup($pearDB);
+    if ($oreon->user->admin) {
+        $notifCgs = $cg->getListContactgroup(true);
+    } else {
+        $cgAcl = $acl->getContactGroupAclConf(
+            array(
+                'fields'  => array('cg_id', 'cg_name'),
+                'get_row' => 'cg_name',
+                'keys'    => array('cg_id'),
+                'order'   => array('cg_name')
+            )
+        );
+        $cgLdap = $cg->getListContactgroup(true, true);
+        $notifCgs = array_intersect_key($cgLdap, $cgAcl);
+    }
         
 	/*
 	 * Database retrieve information for Escalation
 	 */
-        $initialValues = array();
+    $initialValues = array();
 	$esc = array();
-	if (($o == "c" || $o == "w") && $esc_id)	{
+	if (($o == "c" || $o == "w") && $esc_id) {
 		$DBRESULT = $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1");
 
 		# Set base value
@@ -84,88 +95,90 @@
 
 		# Set Host Options
 		$esc["escalation_options1"] = explode(',', $esc["escalation_options1"]);
-		foreach ($esc["escalation_options1"] as $key => $value)
+		foreach ($esc["escalation_options1"] as $key => $value) {
 			$esc["escalation_options1"][trim($value)] = 1;
+        }
 
 		# Set Service Options
 		$esc["escalation_options2"] = explode(',', $esc["escalation_options2"]);
-		foreach ($esc["escalation_options2"] as $key => $value)
+		foreach ($esc["escalation_options2"] as $key => $value) {
 			$esc["escalation_options2"][trim($value)] = 1;
+        }
 
 		# Set Host Groups relations
 		$DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
 		for($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
-                    if (!$oreon->user->admin && false === strpos($hgString, "'".$hg['hostgroup_hg_id']."'")) {
-                        $initialValues['esc_hgs'][] = $hg["hostgroup_hg_id"];
-                    } else {
-                        $esc["esc_hgs"][$i] = $hg["hostgroup_hg_id"];
-                    }
-                }
+            if (!$oreon->user->admin && false === strpos($hgString, "'".$hg['hostgroup_hg_id']."'")) {
+                $initialValues['esc_hgs'][] = $hg["hostgroup_hg_id"];
+            } else {
+                $esc["esc_hgs"][$i] = $hg["hostgroup_hg_id"];
+            }
+        }
 		$DBRESULT->free();
 
 		# Set Service Groups relations
 		$DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM escalation_servicegroup_relation WHERE escalation_esc_id = '".$esc_id."'");
 		for($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
-                    if (!$oreon->user->admin && false === strpos($sgString, "'".$sg['servicegroup_sg_id']."'")) {
-                        $initialValues['esc_sgs'][] = $sg["servicegroup_sg_id"];
-                    } else {
-                        $esc["esc_sgs"][$i] = $sg["servicegroup_sg_id"];
-                    }
-                }
+            if (!$oreon->user->admin && false === strpos($sgString, "'".$sg['servicegroup_sg_id']."'")) {
+                $initialValues['esc_sgs'][] = $sg["servicegroup_sg_id"];
+            } else {
+                $esc["esc_sgs"][$i] = $sg["servicegroup_sg_id"];
+            }
+        }
 		$DBRESULT->free();
 
 		# Set Host relations
 		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."'");
 		for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
-                    if (!$oreon->user->admin && !isset($hosts[$host['host_host_id']])) {
-                        $initialValues['esc_hosts'][] = $host['host_host_id'];
-                    } else {
-                        $esc["esc_hosts"][$i] = $host["host_host_id"];
-                    }
-                }
+            if (!$oreon->user->admin && !isset($hosts[$host['host_host_id']])) {
+                $initialValues['esc_hosts'][] = $host['host_host_id'];
+            } else {
+                $esc["esc_hosts"][$i] = $host["host_host_id"];
+            }
+        }
 		$DBRESULT->free();
 
 		# Set Meta Service
-                $aclMetaService = $acl->getMetaServiceString();
+        $aclMetaService = $acl->getMetaServiceString();
 		$DBRESULT = $pearDB->query("SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = '".$esc_id."'");
 		for($i = 0; $metas = $DBRESULT->fetchRow(); $i++) {
-                    if (!$oreon->user->admin && false === strpos($aclMetaService, "'".$metas['meta_service_meta_id']."'")) {
-                        $initialValues['esc_metas'][] = $metas['meta_service_meta_id'];
-                    } else {
-                        $esc["esc_metas"][$i] = $metas["meta_service_meta_id"];
-                    }
-                }
+            if (!$oreon->user->admin && false === strpos($aclMetaService, "'".$metas['meta_service_meta_id']."'")) {
+                $initialValues['esc_metas'][] = $metas['meta_service_meta_id'];
+            } else {
+                $esc["esc_metas"][$i] = $metas["meta_service_meta_id"];
+            }
+        }
 		$DBRESULT->free();
 
 		# Set Host Service
-                $aclService = $acl->getServicesString('ID', $pearDBMonitoring);
-                $query = "SELECT distinct host_host_id, host_name, service_service_id, service_description
-                    FROM service s, escalation_service_relation esr, host h
-                    WHERE s.service_id = esr.service_service_id
-                    AND esr.host_host_id = h.host_id
-                    AND h.host_register = '1'
-                    AND esr.escalation_esc_id = " . $esc_id;
-                $DBRESULT = $pearDB->query($query);
+        $aclService = $acl->getServicesString('ID', $pearDBMonitoring);
+        $query = "SELECT distinct host_host_id, host_name, service_service_id, service_description
+            FROM service s, escalation_service_relation esr, host h
+            WHERE s.service_id = esr.service_service_id
+            AND esr.host_host_id = h.host_id
+            AND h.host_register = '1'
+            AND esr.escalation_esc_id = " . $esc_id;
+        $DBRESULT = $pearDB->query($query);
 		for ($i = 0; $services = $DBRESULT->fetchRow(); $i++) {
-                    $key = $services["host_host_id"]."-".$services["service_service_id"];
-                    if (!$oreon->user->admin && false === strpos($aclService, "'".$services['service_service_id']."'")) {
-                        $initialValues['esc_hServices'][] = $key;
-                    } else {
-                        $hServices[$key] = $services["host_name"]."&nbsp;-&nbsp;".$services['service_description'];
-                        $esc["esc_hServices"][$i] = $key;
-                    }
-                }
+            $key = $services["host_host_id"]."-".$services["service_service_id"];
+            if (!$oreon->user->admin && false === strpos($aclService, "'".$services['service_service_id']."'")) {
+                $initialValues['esc_hServices'][] = $key;
+            } else {
+                $hServices[$key] = $services["host_name"]."&nbsp;-&nbsp;".$services['service_description'];
+                $esc["esc_hServices"][$i] = $key;
+            }
+        }
 		$DBRESULT->free();
 
 		# Set Contact Groups relations
 		$DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
-		for($i = 0; $cg = $DBRESULT->fetchRow(); $i++) {
-                    if (!isset($oreon->user->admin) && !isset($notifCgs[$cg['contactgroup_cg_id']])) {
-                        $initialValues["esc_cgs"][] = $cg["contactgroup_cg_id"];
-                    } else {
-                        $esc["esc_cgs"][$i] = $cg["contactgroup_cg_id"];
-                    }
-                }
+		for ($i = 0; $cg = $DBRESULT->fetchRow(); $i++) {
+            if (!isset($oreon->user->admin) && !isset($notifCgs[$cg['contactgroup_cg_id']])) {
+                $initialValues["esc_cgs"][] = $cg["contactgroup_cg_id"];
+            } else {
+                $esc["esc_cgs"][$i] = $cg["contactgroup_cg_id"];
+            }
+        }
 		$DBRESULT->free();
 	}
 
@@ -178,18 +191,22 @@
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array();
 	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while($host = $DBRESULT->fetchRow())
+	while($host = $DBRESULT->fetchRow()) {
 		$hosts[$host["host_id"]] = $host["host_name"];
+    }
 	$DBRESULT->free();
 
 	# Meta Services comes from DB -> Store in $metas Array
 	$metas = array();
-	$DBRESULT = $pearDB->query("SELECT meta_id, meta_name 
-                                    FROM meta_service ".
-                                    $acl->queryBuilder("WHERE", "meta_id", $acl->getMetaServiceString()).
-                                   " ORDER BY meta_name");
-	while ($meta = $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query(
+        "SELECT meta_id, meta_name 
+        FROM meta_service ".
+        $acl->queryBuilder("WHERE", "meta_id", $acl->getMetaServiceString()).
+        " ORDER BY meta_name"
+    );
+	while ($meta = $DBRESULT->fetchRow()) {
 		$metas[$meta["meta_id"]] = $meta["meta_name"];
+    }
 	$DBRESULT->free();
 
 	# Contact Groups comes from DB -> Store in $cgs Array
@@ -200,8 +217,9 @@
 	# TimePeriods comes from DB -> Store in $tps Array
 	$tps = array();
 	$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-	while ($tp = $DBRESULT->fetchRow())
+	while ($tp = $DBRESULT->fetchRow()) {
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
+    }
 	$DBRESULT->free();
 
 	#
@@ -221,12 +239,13 @@
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	if ($o == "a")
+	if ($o == "a") {
 		$form->addElement('header', 'title', _("Add an Escalation"));
-	else if ($o == "c")
+    } elseif ($o == "c") {
 		$form->addElement('header', 'title', _("Modify an Escalation"));
-	else if ($o == "w")
+    } elseif ($o == "w") {
 		$form->addElement('header', 'title', _("View an Escalation"));
+    }
 
 	#
 	## Escalation basic information
@@ -237,7 +256,7 @@
 	$form->addElement('text', 'first_notification', _("First Notification"), $attrsText2);
 	$form->addElement('text', 'last_notification', _("Last Notification"), $attrsText2);
 	$form->addElement('text', 'notification_interval', _("Notification Interval"), $attrsText2);
-	$form->addElement('select', 'escalation_period', _("Escalation Period"), $tps);
+	$form->addElement('select2', 'escalation_period', _("Escalation Period"), $tps);
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
 	$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
@@ -250,100 +269,39 @@
 	$tab[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
 	$form->addGroup($tab, 'escalation_options2', _("Services Escalation Options"), '&nbsp;&nbsp;');
 	$form->addElement('textarea', 'esc_comment', _("Comments"), $attrsTextarea);
-
-	$ams1 = $form->addElement('advmultiselect', 'esc_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+    
+    $form->addElement('select2', 'esc_cgs', _("Linked Contact Groups"), $cgs, array('multiple' => true));
 
 	#
 	## Sort 2
 	#
 	$form->addElement('header', 'hosts', _("Implied Hosts"));
-
-	/*$ams1 = $form->addElement('advmultiselect', 'esc_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect2, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);*/
-    //echo $ams1->getElementJs(false);
-    $ams2 = $form->addElement('select2', 'esc_hosts', _("Hosts"), $hosts, array('multiple' => true));
+    $form->addElement('select2', 'esc_hosts', _("Hosts"), $hosts, array('multiple' => true));
 
 	#
 	## Sort 3
 	#
 	$form->addElement('header', 'services', _("Implied Services"));
-	$hostFilter = array(
-		null => null,
-		0    => sprintf('__%s__', _('ALL'))
-	);
-	$hostFilter = ($hostFilter + $acl->getHostAclConf(null,
-                                                 $oreon->broker->getBroker(),
-                                                 array('fields'  => array('host.host_id', 'host.host_name'),
-                                                       'keys'    => array('host_id'),
-                                                       'get_row' => 'host_name',
-                                                       'order'   => array('host.host_name')),
-                                                 false));
-	$form->addElement('select', 'host_filter', _('Host'), $hostFilter, array('onChange' => 'hostFilterSelect(this);'));
-
-
-	if (isset($_REQUEST['esc_hServices']) && count($_REQUEST['esc_hServices'])) {
-   		$sql = "SELECT host_id, service_id, host_name, service_description FROM host h, service s, host_service_relation hsr
-           WHERE h.host_id = hsr.host_host_id
-           AND hsr.service_service_id = s.service_id
-           AND CONCAT_WS('-', h.host_id, s.service_id) IN ('".implode("','", $_REQUEST['esc_hServices'])."')";
-	   	$res = $pearDB->query($sql);
-		while ($row = $res->fetchRow()) {
-        	$k = $row['host_id'] . '-' . $row['service_id'];
-	        $hServices[$k] = $row['host_name'] . ' - ' . $row['service_description'];
-   		}
-	}
-
-	$ams1 = $form->addElement('advmultiselect', 'esc_hServices', array(_("Services by Host"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect2, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+    $form->addElement('select2', 'esc_hServices', _("Services by Host"), array(), array('multiple' => true));
 
 	#
 	## Sort 4
 	#
 	$form->addElement('header', 'hgs', _("Implied Host Groups"));
-
-	/*$ams1 = $form->addElement('advmultiselect', 'esc_hgs', array(_("Host Group"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect2, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-    echo $ams1->getElementJs(false);
-    */
-    $ams3 = $form->addElement('select2', 'esc_hgs', _("Host Group"), $hgs, array('multiple' => true));
+    $form->addElement('select2', 'esc_hgs', _("Host Group"), $hgs, array('multiple' => true));
 
 	#
 	## Sort 5
 	#
 	$form->addElement('header', 'metas', _("Implied Meta Services"));
-
-	/*$ams1 = $form->addElement('advmultiselect', 'esc_metas', array(_("Meta Service"), _("Available"), _("Selected")), $metas, $attrsAdvSelect2, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-    echo $ams1->getElementJs(false);
-    */
-    $ams4 = $form->addElement('select2', 'esc_metas', _("Meta Service"), $metas, array('multiple' => true));
+    $form->addElement('select2', 'esc_metas', _("Meta Service"), $metas, array('multiple' => true));
 	
 
 	#
 	## Sort 6
 	#
 	$form->addElement('header', 'sgs', _("Implied Service Groups"));
-
-	/*$ams1 = $form->addElement('advmultiselect', 'esc_sgs', array(_("Service Group"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect2, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-    echo $ams1->getElementJs(false);
-    */
-    $ams5 = $form->addElement('select2', 'esc_sgs', _("Service Group"), $sgs, array('multiple' => true));
+    $form->addElement('select2', 'esc_sgs', _("Service Group"), $sgs, array('multiple' => true));
 
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
@@ -355,8 +313,8 @@
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
         
-        $init = $form->addElement('hidden', 'initialValues');
-        $init->setValue(serialize($initialValues));
+    $init = $form->addElement('hidden', 'initialValues');
+    $init->setValue(serialize($initialValues));
         
 	#
 	## Form Rules
@@ -380,21 +338,23 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Just watch a Escalation information
+	# Just watch an Escalation information
 	if ($o == "w")	{
-		if ($centreon->user->access->page($p) != 2)
-			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&esc_id=".$esc_id."'"));
+		if ($centreon->user->access->page($p) != 2) {
+			$form->addElement(
+                "button",
+                "change",
+                _("Modify"),
+                array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&esc_id=".$esc_id."'")
+            );
+        }
 	    $form->setDefaults($esc);
 		$form->freeze();
-	}
-	# Modify a Escalation information
-	else if ($o == "c")	{
+	} elseif ($o == "c") { # Modify an Escalation information
 		$subC = $form->addElement('submit', 'submitC', _("Save"));
 		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($esc);
-	}
-	# Add a Escalation information
-	else if ($o == "a")	{
+	} elseif ($o == "a") { # Add an Escalation information
 		$subA = $form->addElement('submit', 'submitA', _("Save"));
 		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -408,7 +368,12 @@
 
 	$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
 
-	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+	$tpl->assign(
+        "helpattr",
+        'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange",'
+        . ' TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300,'
+        . ' SHADOW, true, TEXTALIGN, "justify"'
+    );
 	# prepare help texts
 	$helptext = "";
 	include_once("help.php");
@@ -420,19 +385,25 @@
 	$valid = false;
 	if ($form->validate())	{
 		$escObj = $form->getElement('esc_id');
-		if ($form->getSubmitValue("submitA"))
+		if ($form->getSubmitValue("submitA")) {
 			$escObj->setValue(insertEscalationInDB());
-		else if ($form->getSubmitValue("submitC"))
+        } elseif ($form->getSubmitValue("submitC")) {
 			updateEscalationInDB($escObj->getValue("esc_id"));
+        }
 		$o = NULL;
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&esc_id=".$escObj->getValue()."'"));
+		$form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&esc_id=".$escObj->getValue()."'")
+        );
 		$form->freeze();
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"])
+	if ($valid && $action["action"]) {
 		require_once("listEscalation.php");
-	else	{
+    } else {
 		#Apply a template definition
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -443,70 +414,3 @@
 		$tpl->display("formEscalation.ihtml");
 	}
 ?>
-<script type='text/javascript'>
-function hostFilterSelect(elem)
-{
-    var arg = 'host_id='+elem.value;
-
-    if (window.XMLHttpRequest) {
-        var xhr = new XMLHttpRequest();
-    } else if(window.ActiveXObject){
-        try {
-            var xhr = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-    } else {
-        var xhr = false;
-    }
-
-    xhr.open("POST","./include/configuration/configObject/escalation/getServiceXml.php", true);
-    xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    xhr.send(arg);
-
-    xhr.onreadystatechange = function()
-    {
-        if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML){
-            var response = xhr.responseXML.documentElement;
-            var _services = response.getElementsByTagName("services");
-            var _selbox;
-
-            if (document.getElementById("esc_hServices-f")) {
-                _selbox = document.getElementById("esc_hServices-f");
-                _selected = document.getElementById("esc_hServices-t");
-            } else if (document.getElementById("__esc_hServices")) {
-                _selbox = document.getElementById("__esc_hServices");
-                _selected = document.getElementById("_esc_hServices");
-            }
-
-            while ( _selbox.options.length > 0 ){
-                _selbox.options[0] = null;
-            }
-
-            if (_services.length == 0) {
-                _selbox.setAttribute('disabled', 'disabled');
-            } else {
-                _selbox.removeAttribute('disabled');
-            }
-
-            for (var i = 0 ; i < _services.length ; i++) {
-                var _svc 		 = _services[i];
-                var _id 		 = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
-                var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
-                var validFlag = true;
-
-                for (var j = 0; j < _selected.length; j++) {
-                    if (_id == _selected.options[j].value) {
-                        validFlag = false;
-                    }
-                }
-
-                if (validFlag == true) {
-                    new_elem = new Option(_description,_id);
-                    _selbox.options[_selbox.length] = new_elem;
-                }
-            }
-        }
-    }
-}
-</script>

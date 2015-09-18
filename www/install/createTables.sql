@@ -766,6 +766,7 @@ CREATE TABLE `command` (
   `command_comment` text,
   `graph_id` int(11) DEFAULT NULL,
   `cmd_cat_id` int(11) DEFAULT NULL,
+  `command_locked` BOOLEAN DEFAULT 0,
   PRIMARY KEY (`command_id`),
   KEY `connector_id` (`connector_id`),
   CONSTRAINT `command_ibfk_1` FOREIGN KEY (`connector_id`) REFERENCES `connector` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
@@ -1548,6 +1549,7 @@ CREATE TABLE `host` (
   `host_snmp_version` varchar(255) DEFAULT NULL,
   `host_location` int(11) DEFAULT '0',
   `host_comment` text,
+  `host_locked` BOOLEAN DEFAULT 0,
   `host_register` enum('0','1','2','3') DEFAULT NULL,
   `host_activate` enum('0','1','2') DEFAULT '1',
   PRIMARY KEY (`host_id`),

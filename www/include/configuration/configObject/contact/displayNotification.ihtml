@@ -29,7 +29,7 @@
 		{section name=elem loop=$elemArrHostEsc}
 		{assign var=host value=$elemArrHostEsc[elem].RowMenu_host}
 		<tr class={$elemArrHostEsc[elem].MenuClass}>
-			<td class="ListColLeft">{if $host != $hostOld}<img src='{$elemArrHostEsc[elem].RowMenu_hico}'>&nbsp;&nbsp;{$elemArrHostEsc[elem].RowMenu_host}{else}&nbsp;{/if}</td>			
+			<td class="ListColLeft">{if $host != $hostOld}<img style="width:20px;height:20px;" src='{$elemArrHostEsc[elem].RowMenu_hico}'>&nbsp;&nbsp;{$elemArrHostEsc[elem].RowMenu_host}{else}&nbsp;{/if}</td>			
 		</tr>		
 		{/section}
 	</table>
@@ -45,7 +45,7 @@
 		<tr class={$elemArrSvcEsc[elem].MenuClass}>
 			<td class="ListColLeft">
 				{if $host != $hostOld}
-					<img src='{$elemArrSvcEsc[elem].RowMenu_hico}'>&nbsp;&nbsp;{$elemArrSvcEsc[elem].RowMenu_host}
+					<img style="width:20px;height:20px;" src='{$elemArrSvcEsc[elem].RowMenu_hico}'>&nbsp;&nbsp;{$elemArrSvcEsc[elem].RowMenu_host}
 				{else}
 					&nbsp;
 				{/if}
@@ -66,7 +66,7 @@
 		{section name=elem loop=$elemArrHost}
 		{assign var=host value=$elemArrHost[elem].RowMenu_host}
 		<tr class={$elemArrHost[elem].MenuClass}>
-			<td class="ListColLeft">{if $host != $hostOld}<img src='{$elemArrHost[elem].RowMenu_hico}'>&nbsp;&nbsp;{$elemArrHost[elem].RowMenu_host}{else}&nbsp;{/if}</td>			
+			<td class="ListColLeft">{if $host != $hostOld}<img style="width:20px;height:20px;" src='{$elemArrHost[elem].RowMenu_hico}'>&nbsp;&nbsp;{$elemArrHost[elem].RowMenu_host}{else}&nbsp;{/if}</td>			
 		</tr>		
 		{/section}
 	</table>
@@ -82,7 +82,7 @@
 		<tr class={$elemArrSvc[elem].MenuClass}>
 			<td class="ListColLeft">
 				{if $host != $hostOld}
-					<img src='{$elemArrSvc[elem].RowMenu_hico}'>&nbsp;&nbsp;{$elemArrSvc[elem].RowMenu_host}
+					<img style="width:20px;height:20px;" src='{$elemArrSvc[elem].RowMenu_hico}'>&nbsp;&nbsp;{$elemArrSvc[elem].RowMenu_host}
 				{else}
 					&nbsp;
 				{/if}
