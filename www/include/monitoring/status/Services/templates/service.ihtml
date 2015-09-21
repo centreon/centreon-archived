@@ -2,40 +2,70 @@
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
-<table class="ajaxOption">
+<table class="ajaxOption table">
+    <tr>
+        <th colspan="6"><h5>{$filters}</h5></th>
+    </tr>
 	<tr>
-		<td>{$hostStr}:</td>
-		<td><input type='text' name='host_search' id='host_search'></td>
-                <td>{$serviceStr}:</td>
-		<td><input type='text' name='search' id='input_search'></td>
-		<td>{$form.statusFilter.label}:</td>
+		<td><h4>{$hostStr}</h4></td>
+		<td>
+		    <input type='text' name='host_search' id='host_search'>
+		</td>
+
+		<td><h4>{$hgStr}</h4></td>
+        <td id="hostgroups_selected"></td>
+
+        <td><h4>{$serviceStr}</h4></td>
+		<td>
+		    <input type='text' name='search' id='input_search'>
+		</td>
+    </tr>
+    <tr>
+		<td><h4>{$form.statusFilter.label}</h4></td>
 		<td>{$form.statusFilter.html}</td>
-                {if $criticalityUsed}
-                    <td>{$form.criticality.label}:</td>
-                    <td>{$form.criticality.html}</td>
-                {/if}
-                <td>{$outputStr}:</td>
+        {if $criticalityUsed}
+            <td><h4>{$form.criticality.label}</h4></td>
+            <td>{$form.criticality.html}</td>
+        {/if}
+
+        <td><h4>{$outputStr}</h4></td>
 		<td><input type='text' name='output_search' id='output_search'></td>	    
-                {if $poller_listing}
-                    <td>{$pollerStr}:</td>
-                    <td><span id="instance_selected"></span></td>
-                {/if}		
-                <td>{$hgStr}:</td>
-                <td><span id="hostgroups_selected"></span></td>
+            {if $poller_listing}
+                <td><h4>{$pollerStr}</h4></td>
+                <td><span id="instance_selected"></span></td>
+            {/if}
 	</tr>
 </table>
-<br/>
-<table class="ToolbarTable">
+
+<table class="ToolbarTable table">
 	<tr class="ToolbarTR">
-		<td class="Toolbar_TDSelectAction_Top" width="550">
-			<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' title='Refresh'></a></span>
-			<span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' title='Play'></a></span>
-			<span class="consol_button"><img id="JS_monitoring_play_gray" src='./img/icones/16x16/media_play_gray.gif' title='Play'></span>
-			<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' title='Pause'></a></span>
-			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' title='Pause'></span>
-			<span class="consol_button">{$form.o1.html}</span>
-			<input name="p" value="{$p}" type="hidden">
-		</td>
+
+	    <td>
+            <span class="consol_button">{$form.o1.html}</span>
+            <input name="p" value="{$p}" type="hidden">
+
+            <div class="Toolbar_TDSelectAction_Top">
+                <span class="consol_button">
+                    <a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');">
+                        <img src='./img/icons/refresh.png' title='Refresh'>
+                    </a>
+                </span>
+                <span class="consol_button">
+                    <a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');">
+                        <img src='./img/icons/media_play.png' title='Play'>
+                    </a>
+                </span>
+
+                <span class="consol_button"><img id="JS_monitoring_play_gray" src='./img/icons/media_play_gray.png' class="ico-20" title='Play'></span>
+                <span class="consol_button">
+                    <a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');">
+                        <img src='./img/icons/media_pause.png' title='Pause'>
+                    </a>
+                </span>
+                <span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icons/media_pause_gray.png' title='Pause'></span>
+            </div>
+        </td>
+
 		<td id="pagination1" class="ToolbarPagination"></td>
 		<td id="sel1" class="Toolbar_pagelimit"></td>
 	</tr>

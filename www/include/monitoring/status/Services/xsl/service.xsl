@@ -258,7 +258,8 @@
 			</xsl:if>
 			<xsl:if test="ne = 0">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
+                        <xsl:attribute name="class">ico-18</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/notifications_off.png</xsl:attribute>
 					  	<xsl:attribute name="title">					  		
 					  		<xsl:value-of select='//i/notif_disabled'/>
 					  	</xsl:attribute>
@@ -272,8 +273,8 @@
 				  		<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>					
 							<xsl:element name="img">
 					  			<xsl:attribute name="id"><xsl:value-of select="svc_index"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
-                                <xsl:attribute name="class">graph-volant</xsl:attribute>
-                                <xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>					
+                                <xsl:attribute name="class">graph-volant ico-18</xsl:attribute>
+                                <xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
 							</xsl:element>					
 					</xsl:element>
 				</xsl:if>
