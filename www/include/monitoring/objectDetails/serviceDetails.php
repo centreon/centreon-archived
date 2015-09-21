@@ -41,6 +41,11 @@ include_once("./class/centreonDB.class.php");
 include_once("./class/centreonHost.class.php");
 include_once("./class/centreonService.class.php");
 
+if ($centreon->broker->getBroker() == "ndo") {
+    $pearDBndo 	= new CentreonDB("ndo");
+    $ndo_base_prefix = getNDOPrefix();
+}
+
 /*
  * Create Object env
  */
@@ -86,6 +91,9 @@ $host_id = getMyHostID($host_name);
 if (!is_null($host_id)) {
     $can_display = 1;
     $service_id = getMyServiceID($svc_description, $host_id);
+    if(!isset($service_id)){
+        $service_id = getMyServiceIDStorage($svc_description, $host_id);
+    }
     if (!$is_admin) {
         $lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName((($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO), $host_name);
         if (!isset($lcaHost["LcaHost"][$service_id])) {
@@ -115,16 +123,18 @@ if (!is_null($host_id)) {
         /*
          * Get servicegroups list
          */
-        $query = "SELECT DISTINCT sg.sg_name
-                FROM servicegroup sg, servicegroup_relation sgr
-                WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id . " AND sgr.service_service_id = " . $service_id  . " " .
-                $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO)));
-        $DBRESULT = $pearDB->query($query);
-        while ($row = $DBRESULT->fetchRow()) {
-            $serviceGroups[] = $row['sg_name'];
-        }
-        $DBRESULT->free();
+        if(isset($service_id) && isset($host_id)){
+            $query = "SELECT DISTINCT sg.sg_name
+                    FROM servicegroup sg, servicegroup_relation sgr
+                    WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id . " AND sgr.service_service_id = " . $service_id  . " " .
+                    $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO)));
 
+            $DBRESULT = $pearDB->query($query);
+            while ($row = $DBRESULT->fetchRow()) {
+                $serviceGroups[] = $row['sg_name'];
+            }
+            $DBRESULT->free();
+        }
 
         /*
          * Get service category
@@ -134,51 +144,95 @@ if (!is_null($host_id)) {
             foreach ($tab_sc as $sc_id) {
                 $serviceCategories[] = getMyCategorieName($sc_id);
             }
-        } 
+        }
+
+        /**
+         * 
+         */
+            
             
         $tab_status = array();
 
         /*
          * start ndo service info
          */
-        $rq =	"SELECT " .
-            " s.state AS current_state," .
-            " s.output as plugin_output, " .
-            " s.output as plugin_output2," .
-            " s.check_attempt as current_attempt," .
-            " s.last_update as status_update_time," .
-            " s.last_state_change," .
-            " s.last_check," .
-            " s.notify AS notifications_enabled," .
-            " s.next_check," .
-            " s.acknowledged AS problem_has_been_acknowledged," .
-            " s.passive_checks AS passive_checks_enabled," .
-            " s.active_checks AS active_checks_enabled," .
-            " s.event_handler_enabled," .
-            " s.perfdata as performance_data," .
-            " s.flapping AS is_flapping," .
-            " s.scheduled_downtime_depth," .
-            " s.percent_state_change," .
-            " s.notification_number AS current_notification_number," .
-            " s.obsess_over_service," .
-            " s.check_type," .
-            " s.state_type," .
-            " s.latency as check_latency," .
-            " s.execution_time as check_execution_time," .
-            " s.flap_detection AS flap_detection_enabled," .
-            " s.last_notification as last_notification," .
-            " h.name AS host_name," .
-            " s.description as service_description, " .
-            " s.notes_url, " .
-            " s.notes, " .
-            " s.action_url, " .
-            " i.name as instance_name " .
-            " FROM services s, hosts h, instances i " .
-            " WHERE h.host_id = s.host_id AND h.name LIKE '".$pearDB->escape($host_name)."' AND s.description LIKE '".$pearDB->escape($svc_description)."' AND h.instance_id = i.instance_id " .
-            " AND h.enabled = 1 " .
-            " AND s.enabled = 1 ";
-        $DBRESULT = $pearDBO->query($rq);
-       
+        if ($oreon->broker->getBroker() == "ndo") {
+            $rq =	"SELECT " .
+                " nss.current_state," .
+                " nss.output as plugin_output, " .
+                " nss.long_output as long_plugin_output, " .
+                " CONCAT( '<b>', nss.output, '</b><br>', nss.long_output ) as plugin_output2," .
+                " nss.current_check_attempt as current_attempt," .
+                " nss.status_update_time as status_update_time," .
+                " unix_timestamp(nss.last_state_change) as last_state_change," .
+                " unix_timestamp(nss.last_check) as last_check," .
+                " nss.notifications_enabled," .
+                " unix_timestamp(nss.next_check) as next_check," .
+                " nss.problem_has_been_acknowledged," .
+                " nss.passive_checks_enabled," .
+                " nss.active_checks_enabled," .
+                " nss.event_handler_enabled," .
+                " nss.perfdata as performance_data," .
+                " nss.is_flapping," .
+                " nss.scheduled_downtime_depth," .
+                " nss.percent_state_change," .
+                " nss.current_notification_number," .
+                " nss.obsess_over_service," .
+                " nss.check_type," .
+                " nss.state_type," .
+                " nss.latency as check_latency," .
+                " nss.execution_time as check_execution_time," .
+                " nss.flap_detection_enabled," .
+                " unix_timestamp(nss.last_notification) as last_notification," .
+                " no.name1 as host_name," .
+                " no.name2 as service_description, " .
+                " ns.notes_url, " .
+                " ns.notes, " .
+                " ns.action_url, " .
+                " i.instance_name " .
+                " FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns, ".$ndo_base_prefix."instances i " .
+                " WHERE no.object_id = nss.service_object_id AND no.name1 like '".$pearDBndo->escape($host_name)."' AND no.object_id = ns.service_object_id AND no.instance_id = i.instance_id ";
+            $DBRESULT = $pearDBndo->query($rq);
+        } else {
+            $rq =	"SELECT " .
+                " s.state AS current_state," .
+                " s.output as plugin_output, " .
+                " s.output as plugin_output2," .
+                " s.check_attempt as current_attempt," .
+                " s.last_update as status_update_time," .
+                " s.last_state_change," .
+                " s.last_check," .
+                " s.notify AS notifications_enabled," .
+                " s.next_check," .
+                " s.acknowledged AS problem_has_been_acknowledged," .
+                " s.passive_checks AS passive_checks_enabled," .
+                " s.active_checks AS active_checks_enabled," .
+                " s.event_handler_enabled," .
+                " s.perfdata as performance_data," .
+                " s.flapping AS is_flapping," .
+                " s.scheduled_downtime_depth," .
+                " s.percent_state_change," .
+                " s.notification_number AS current_notification_number," .
+                " s.obsess_over_service," .
+                " s.check_type," .
+                " s.state_type," .
+                " s.latency as check_latency," .
+                " s.execution_time as check_execution_time," .
+                " s.flap_detection AS flap_detection_enabled," .
+                " s.last_notification as last_notification," .
+                " h.name AS host_name," .
+                " s.description as service_description, " .
+                " s.notes_url, " .
+                " s.notes, " .
+                " s.action_url, " .
+                " i.name as instance_name " .
+                " FROM services s, hosts h, instances i " .
+                " WHERE h.host_id = s.host_id AND h.name LIKE '".$pearDB->escape($host_name)."' AND s.description LIKE '".$pearDB->escape($svc_description)."' AND h.instance_id = i.instance_id " .
+                " AND h.enabled = 1 " .
+                " AND s.enabled = 1 ";
+            $DBRESULT = $pearDBO->query($rq);
+        }
+
         $tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
         while ($ndo = $DBRESULT->fetchRow()) {
             if (isset($ndo['performance_data'])) {
@@ -204,10 +258,17 @@ if (!is_null($host_id)) {
         $tab_host_status[1] = "DOWN";
         $tab_host_status[2] = "UNREACHABLE";
 
-        $rq2 =	"SELECT state AS current_state" .
+        if ($oreon->broker->getBroker() == "ndo") {
+            $rq2 =	"SELECT nhs.current_state" .
+                " FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no" .
+                " WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$pearDBndo->escape($host_name)."'";
+            $DBRESULT = $pearDBndo->query($rq2);
+        } else {
+            $rq2 =	"SELECT state AS current_state" .
                 " FROM hosts " .
                 " WHERE name LIKE '".$pearDBO->escape($host_name)."'";
-        $DBRESULT = $pearDBO->query($rq2);
+            $DBRESULT = $pearDBO->query($rq2);
+        }
         $ndo2 = $DBRESULT->fetchRow();
         $host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
 
@@ -233,26 +294,41 @@ if (!is_null($host_id)) {
          * Get comments for service
          */
         $tabCommentServices = array();
-        $rq2 =	" SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
-                " FROM comments cmt, hosts h, services s " .
-                " WHERE h.host_id = ".$pearDBO->escape($host_id)." 
-                                      AND s.service_id = ".$pearDBO->escape($service_id)." 
-                                      AND h.host_id = cmt.host_id 
-                                      AND s.service_id = cmt.service_id 
-                                      AND cmt.expires = 0 
-                                      AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
-                                      ORDER BY cmt.entry_time DESC";
-        $DBRESULT = $pearDBO->query($rq2);
-        for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
-            $tabCommentServices[$i] = $data;
-            $tabCommentServices[$i]['host_name'] = utf8_encode($data['host_name']);
-            $tabCommentServices[$i]['service_description'] = utf8_encode($data['service_description']);
-            $tabCommentServices[$i]['comment_data'] = utf8_encode($data['comment_data']);
-            $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
+        if ($oreon->broker->getBroker() == "ndo") {
+            $rq2 =	" SELECT DISTINCT cmt.comment_time as entry_time, cmt.comment_id, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+                " FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
+                " WHERE obj.name1 = '".$pearDBndo->escape($host_name)."' AND obj.name2 = '".$pearDBndo->escape($svc_description)."' AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
+            $DBRESULT = $pearDBndo->query($rq2);
+            for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+                $tabCommentServices[$i] = $data;
+                $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
+            }
+            $DBRESULT->free();
+            unset($data);
+        } else {
+            if(isset($host_id) && isset($service_id)){
+                $rq2 =	" SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
+                    " FROM comments cmt, hosts h, services s " .
+                    " WHERE h.host_id = ".$pearDBO->escape($host_id)." 
+                                          AND s.service_id = ".$pearDBO->escape($service_id)." 
+                                          AND h.host_id = cmt.host_id 
+                                          AND s.service_id = cmt.service_id 
+                                          AND cmt.expires = 0 
+                                          AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
+                                          ORDER BY cmt.entry_time DESC";
+                $DBRESULT = $pearDBO->query($rq2);
+                for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+                    $tabCommentServices[$i] = $data;
+                    $tabCommentServices[$i]['host_name'] = utf8_encode($data['host_name']);
+                    $tabCommentServices[$i]['service_description'] = utf8_encode($data['service_description']);
+                    $tabCommentServices[$i]['comment_data'] = utf8_encode($data['comment_data']);
+                    $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
+                }
+                $DBRESULT->free();
+                unset($data);
+            }
         }
-        $DBRESULT->free();
-        unset($data);
-    
+
         $en_acknowledge_text= array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Service Problem"));
         $en_acknowledge 	= array("1" => "0", "0" => "1");
         $en_disable 		= array("1" => _("Enabled"), "0" => _("Disabled"));
@@ -513,8 +589,10 @@ if (!is_null($host_id)) {
         $tpl->assign("count_comments_svc", count($tabCommentServices));
         $tpl->assign("tab_comments_svc", $tabCommentServices);
         $centreonGraph = new CentreonGraph(session_id(), null, 0, null);
-        $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
-        $tpl->assign("service_id", $service_id);
+        if(isset($host_id) && isset($service_id)){
+            $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
+            $tpl->assign("service_id", $service_id);
+        }
         $tpl->assign("host_data", $host_status[$host_name]);
         $tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
         $tpl->assign("host_name", utf8_encode($host_name));

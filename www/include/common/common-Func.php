@@ -1031,6 +1031,19 @@ function getMyServiceGraphID($service_id = NULL) {
     return NULL;
 }
 
+function getMyServiceIDStorage($service_description, $host_id){
+    $dbb = new CentreonDB("centstorage");
+    $query = "SELECT s.service_id FROM services s " .
+        " WHERE (s.description = '" . $dbb->escape($service_description) . "'
+                        OR s.description = '" . $dbb->escape(utf8_encode($service_description)) . "') "
+        . " AND s.host_id = " . $dbb->escape($host_id) . " LIMIT 1";
+    $DBRESULT = $dbb->query($query);
+    $row = $DBRESULT->fetchRow();
+    if ($row["service_id"])
+            return $row["service_id"];
+}
+
+
 function getMyServiceID($service_description = null, $host_id = null, $hg_id = null) {
     if (!$service_description && (!$host_id || !$hg_id))
         return;
