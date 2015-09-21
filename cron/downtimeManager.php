@@ -308,7 +308,7 @@
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $host_name, $service_name, $gmt->getUTCDateBasedOnHostGMT($dt[0], $service[0], 'U'), $gmt->getUTCDateBasedOnHostGMT($dt[1], $service[0], 'U'), $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
-                                            $downtime->setCommand($period['obj_id'], $cmd);
+                                            $downtime->setCommand($service[0], $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -320,7 +320,7 @@
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 										}
                                         if (!in_array($cmd, $existingDowntime)) {
-                                            $downtime->setCommand($period['obj_id'], $cmd);
+                                            $downtime->setCommand($service[0], $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
