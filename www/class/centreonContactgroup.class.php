@@ -260,4 +260,37 @@ class CentreonContactgroup
             throw Exception('No contact group name found');
         }
     }
+    
+    /**
+     * Verified if ldap contactgroup as not the same name of a Centreon contactgroup
+     *
+     * @param array $listCgs The list of contactgroups to validate
+     * @return boolean
+     */
+    public static function verifiedExists($listCgs)
+    {
+        global $pearDB;
+        foreach ($listCgs as $cg) {
+            if (false === is_numeric($cg)) {
+                /* Parse the name */
+                if (false === preg_match('/\[(\d+)\](.*)/', $cg_name, $matches)) {
+                    return false;
+                }
+                $ar_id = $matches[1];
+                $cg_name = $matches[2];
+                
+                /* Query test if exists */
+                $query = "SELECT COUNT(*) as nb FROM contactgroup WHERE cg_name = '" . $pearDB->escape($cg_name) ."'";
+                $res = $pearDB->query($query);
+                if (PEAR::isError($res)) {
+                    return false;
+                }
+                $row = $res->fetchRow();
+                if ($row['nb'] !== 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

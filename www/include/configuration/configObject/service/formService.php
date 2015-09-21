@@ -881,6 +881,9 @@ if ($o != "mc") {
     $macChecker->setValue(1);
     $form->registerRule("macHandler", "callback", "serviceMacHandler");
     $form->addRule("macChecker", _("You cannot override reserved macros"), "macHandler");
+    
+    $form->registerRule('cg_group_exists', 'callback', 'testCg');
+    $form->addRule('service_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
 
     $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 } elseif ($o == "mc") {

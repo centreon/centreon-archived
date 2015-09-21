@@ -713,6 +713,8 @@ $DBRESULT->free();
 	$form->addRule('host_name', _("Host name is already in use"), 'exist');
 	$form->addRule('host_name', _("Compulsory Name"), 'required');
 	$form->addRule('host_alias', _("Compulsory Alias"), 'required');
+    $form->registerRule('cg_group_exists', 'callback', 'testCg');
+    $form->addRule('host_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
 	$from_list_menu = false;
 	if ($o == "mc")	{
 		if ($form->getSubmitValue("submitMC"))

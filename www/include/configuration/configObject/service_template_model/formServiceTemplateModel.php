@@ -791,6 +791,8 @@ if ($o != "mc")	{
     $form->addRule('service_alias', _("Compulsory Name"), 'required');
     $form->registerRule('exist', 'callback', 'testServiceTemplateExistence');
     $form->addRule('service_description', _("Name is already in use"), 'exist');
+    $form->registerRule('cg_group_exists', 'callback', 'testCg');
+    $form->addRule('service_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
  } elseif ($o == "mc")	{
      if ($form->getSubmitValue("submitMC")) {
          $from_list_menu = false;

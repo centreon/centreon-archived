@@ -2481,3 +2481,14 @@ function setHostCriticality($hostId, $criticalityId) {
                                 VALUES (" . $pearDB->escape($criticalityId) . ", " . $pearDB->escape($hostId) . ")");
     }
 }
+
+/**
+ * Rule for test if a ldap contactgroup name already exists
+ *
+ * @param array $listCgs The list of contactgroups to validate
+ * @return boolean
+ */
+function testCg($list)
+{
+    return CentreonContactgroup::verifiedExists($list);
+}
