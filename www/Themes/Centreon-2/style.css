@@ -67,15 +67,20 @@ table {border-collapse:collapse;empty-cells:show;border-spacing:0;}
 
 img 		{margin:0 0 -4px;padding:0;}
 
-input {
+input, select {
     padding: 4px;
     font-size: 11px !important;
     border: 1px solid #bcbdc0 !important;
+    line-height: 14px;
 }
 
 input[type="checkbox"] 	{border:0px;margin:0;padding:0px;}
-select 		{border-style:none;padding-left:1px;padding-right:1px;}
-select[multiple="multiple"] 	{overflow:auto;}
+select {
+}
+
+select[multiple="multiple"] {
+    overflow:auto;
+}
 hr 			{background-color:#CCC;height:1px;margin-bottom:10px;margin-top:3px;}
 form		{padding-bottom:10px;}
 
@@ -86,6 +91,8 @@ iframe {
 }
 .table{
     width: 100%;
+    //white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 /* ------ START : Colors -----*/
@@ -94,6 +101,21 @@ iframe {
 }
 /* ------ END : Colors -----*/
 
+/*------- START : Size icons --------*/
+.ico-16 {
+    width: 16px;
+    height: 16px;
+}
+
+.ico-18 {
+    width: 18px;
+    height: 18px;
+}
+.ico-20 {
+    width: 20px;
+    height: 20px;
+}
+/* ------ END : Size icons
 /* ------ START : Buttons -----*/
 .btc {
     border-radius: 4px !important;
@@ -219,10 +241,17 @@ form#AjaxBankBasic {
     position: relative;
 }
 
-#Tcontener tr {
+.GlobalContainer tr {
     vertical-align: top;
 }
 
+/* ------- START : Table ------- */
+
+.ListTable tr{
+vertical-align: middle;
+}
+
+/* ------- END : Table -----------*/
 /* ------ START : Indicators -----*/
 
 #resume_light {
@@ -419,9 +448,16 @@ div.menuLeft {
 
 /* ------ START : Popover-----*/
 
-.toggle_wrapper {
+.inactive {
     display: none;
+}
+
+.cntn {
+    display: inline-block;
+}
+.toggle_wrapper {
     position: absolute;
+    background-color: #fff;
     top: 6em;
     z-index: 1;
     //width: 40%;
@@ -433,8 +469,17 @@ div.menuLeft {
     width: 100%;
 }
 
-iframe.addCntr {
+.toggle_wrapper iframe {
     width: 100%;
+    overflow: hidden;
+}
+
+#addView iframe,#editView iframe, #addwdgt iframe{
+    height: 198px;
+}
+
+#addwdgt {
+    width: 486px;
 }
 
 .table .FormHeader {
@@ -484,6 +529,7 @@ iframe.addCntr {
     border: 1px solid #00ccbf;
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
+    white-space: normal;
 }
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
@@ -506,6 +552,20 @@ iframe.addCntr {
     text-decoration: none;
 }
 
+.viewBody .widgetBody .portlet {
+    border: 1px solid #e7e7e8 !important;
+    border-radius: 4px;
+}
+
+.viewBody .widgetBody .ui-widget-header {
+    color: #433f38;
+    font-weight: bold;
+    background: #e7e7e8;
+    border: 0;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    padding: 6px 6px !important;
+}
 
 
 /* ------ END : Tabs -----*/
@@ -515,7 +575,7 @@ iframe.addCntr {
     float:left;
     width:100%;
     background-color: #e7e7e8;
-    position: relative;
+    position: fixed;
 }
 
 #footer table tr td{
@@ -548,7 +608,7 @@ iframe.addCntr {
     position: absolute;
     right: 0;
     text-align: right;
-    top: 106px;
+    top: 110px;
     width: 150px;
 }
 #linkBar img 	{margin-left:4px;}
@@ -615,9 +675,38 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .search_input_host, .search_input_active_host, .search_input_service, .search_input_active_service, .search_input_active, .search_input_found {height:14px;}
 
 /* Log Options */
-.ajaxOption             {margin:0px 0px -5px 0px;border-collapse:separate;empty-cells:show;background-image:url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x;background-color: #d7d6dc;color:#666;border: 2px #cccccc solid;border-radius:2px;}
-.ajaxOption td          {padding:2px 4px 2px 4px;}
-.ajaxOption input       {margin-right:5px;}
+.ajaxOption {
+    border-collapse:separate;
+    empty-cells:show;
+    background-color: #f9f9f9;
+    color:#666;
+    border-bottom: 1px #e7e7e8 solid;
+    border-top: 1px #e7e7e8 solid;
+    padding: 10px;
+    position: relative;
+    margin-bottom: 14px;
+}
+.ajaxOption tr:first-child {
+    text-align: right;
+    position: relative;
+}
+
+.ajaxOption tr:first-child h5 {
+    background-color: #fff;
+    padding: 3px 6px;
+    position: absolute;
+    right: 6px;
+    bottom : 0;
+    color: #a7a9ac;
+}
+
+.ajaxOption td  {
+    vertical-align: middle;
+    padding: 2px 0px;
+}
+.ajaxOption h4 {
+    color: #007f77;
+}
 
 
 /* Taktical Overview */
@@ -799,13 +888,29 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 
 /* ToolBar */
 .cachediv 			{display:none;}
-.consol_button 		{float:left;height:20px;}
-.ToolbarTable 		{margin:2px 0px;width:100%;padding:0;}
+.consol_button {
+    float:left;
+}
+.consol_button img {
+    width: 20px;
+    height: 20px;
+}
+.ToolbarTable {
+    margin: 6px 0px;
+}
 .ToolbarTR 			{padding-left:10px;}
 .ToolbarTR select {border: 1px solid #BBBBBB;}
 .ToolbarPagination	{text-align:center;}
 
-input,select,option,input,textarea,checkbox,.list_one a,.list_two a, .row_disabled a {font-weight:400;}
+.Toolbar_TDSelectAction_Top {
+    border: 1px solid #bcbdc0;
+    border-radius: 4px;
+    padding: 2px;
+    margin-left: 6px;
+    overflow: hidden;
+    float: left;
+}
+
 input,checkbox,a.infobulle:hover table 								{border:1px gray solid;}
 
 td,a.infobulle:hover td {padding:0px;}
