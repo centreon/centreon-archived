@@ -942,6 +942,8 @@ if ($o != "mc") {
     $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
     $form->addRule('host_name', _("Host name is already in use"), 'exist');
     $form->addRule('host_address', _("Compulsory Address"), 'required');
+    $form->registerRule('cg_group_exists', 'callback', 'testCg');
+    $form->addRule('host_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
 
     /*
      * If we are using a Template, no need to check the value, we hope there are in the Template
