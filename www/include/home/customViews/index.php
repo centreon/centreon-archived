@@ -34,6 +34,15 @@
  */
 
 require_once $centreon_path . 'www/class/centreonCustomView.class.php';
+require_once $centreon_path . "www/class/centreonWidget.class.php";
+require_once $centreon_path . "www/class/centreonContactgroup.class.php";
+
+/**
+ * Quickform
+ */
+require_once 'HTML/QuickForm.php';
+require_once 'HTML/QuickForm/advmultiselect.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 try {
     $db = new CentreonDB();
@@ -78,6 +87,162 @@ try {
     $template->assign('views', $views);
     $template->assign('empty', $i);
     $template->assign('msg', _("No view available. To create a new view, please click \"Add view\" button."));
+
+    $formAddView = new HTML_QuickForm('formAddView', 'post', "?p=103");
+    $formAddView->addElement('header', 'title', $title);
+    $formAddView->addElement('header', 'information', _("General Information"));
+
+
+    $query = "select * from custom_views where public = 1";
+    $DBRES = $db->query($query);
+    $arrayView = array();
+    $arrayView[-1] = "";
+    while($row = $DBRES->fetchRow()) {
+        $arrayView[$row['custom_view_id']] = $row['name'];
+    }
+
+    $formAddView->addElement('select', 'wiewLoad', _("Public views list"),$arrayView );
+
+
+    /**
+     * Name
+     */
+    $formAddView->addElement('text', 'name', _("Name"), $attrsText);
+
+    $createLoad = array();
+    $createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Create new view "), 'create');
+    $createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Load from existing view"), 'load');
+    $formAddView->addGroup($createLoad, 'create_load', _("create or load"), '&nbsp;');
+    $formAddView->setDefaults(array('create_load[create_load]' => 'create'));
+
+    /**
+     * Layout
+     */
+    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("1 Column"), 'column_1');
+    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("2 Columns"), 'column_2');
+    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("3 Columns"), 'column_3');
+    $formAddView->addGroup($layouts, 'layout', _("Layout"), '&nbsp;');
+    if ($action == "add") {
+        $formAddView->setDefaults(array('layout[layout]' => 'column_1'));
+    }
+
+    $formAddView->addElement('checkbox', 'public', _("Public"), $attrsText);
+
+    /**
+     * Submit button
+     */
+    $formAddView->addElement('button', 'submit', _("Submit"), array("onClick" => "submitAddView();","class" => "btc bt_success"));
+    $formAddView->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $formAddView->addElement('hidden', 'action');
+    $formAddView->setDefaults(array('action' => 'add'));
+
+    /**
+     * Renderer
+     */
+    $rendererAddView = new HTML_QuickForm_Renderer_ArraySmarty($template, true);
+    $rendererAddView->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $rendererAddView->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $formAddView->accept($rendererAddView);
+    $template->assign('formAddView', $rendererAddView->toArray());
+
+    /**
+     * Form share view
+     */
+    $cgObj = new CentreonContactgroup($db);
+    $formShareView = new HTML_QuickForm('formShareView', 'post', "?p=103");
+    $formShareView->addElement('header', 'title', $title);
+    $formShareView->addElement('header', 'information', _("General Information"));
+
+    /**
+     * Locked
+     */
+    $locked[] = HTML_QuickForm::createElement('radio', 'locked', null, _("Yes"), '1');
+    $locked[] = HTML_QuickForm::createElement('radio', 'locked', null, _("No"), '0');
+    $formShareView->addGroup($locked, 'locked', _("Locked?"), '&nbsp;');
+    $formShareView->setDefaults(array('locked' => '1'));
+
+    /**
+     * Get viewers
+     */
+    /*$viewers = $viewObj->getUsersFromViewId($viewId);
+    $viewerGroups = $viewObj->getUsergroupsFromViewId($viewId); */
+
+    /**
+     * Users
+     */
+    //$userList = array_diff_key($centreon->user->getUserList($db), $viewers);
+    $ams1 = $formShareView->addElement('advmultiselect', 'user_id', array(_("User List"), _("Available"), _("Selected")), $centreon->user->getUserList($db), $attrsAdvSelect);
+    $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+    $ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+    $ams1->setElementTemplate($eTemplate);
+    echo $ams1->getElementJs(false);
+
+    /**
+     * User groups
+     */
+    //$userGroupList = array_diff_key($cgObj->getListContactgroup(true), $viewerGroups);
+    $ams1 = $formShareView->addElement('advmultiselect', 'usergroup_id', array(_("User Group List"), _("Available"), _("Selected")), $cgObj->getListContactgroup(true), $attrsAdvSelect);
+    $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+    $ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+    $ams1->setElementTemplate($eTemplate);
+    echo $ams1->getElementJs(false);
+
+
+    /**
+     * Submit button
+     */
+    $formShareView->addElement('button', 'submit', _("Share"), array("onClick" => "submitData();"));
+    $formShareView->addElement('reset', 'reset', _("Reset"));
+    $formShareView->addElement('hidden', 'action');
+    $formShareView->setDefaults(array('action' => 'share'));
+    $formShareView->addElement('hidden', 'custom_view_id');
+    $rendererShareView = new HTML_QuickForm_Renderer_ArraySmarty($template, true);
+    $rendererShareView->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $rendererShareView->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $formShareView->accept($rendererShareView);
+    $template->assign('formShareView', $rendererShareView->toArray());
+
+    /**
+     * Form add widget
+     */
+    $widgetObj = new CentreonWidget($centreon, $db);
+    $formAddWidget = new HTML_QuickForm('formAddWidget', 'post', "?p=103");
+    $formAddWidget->addElement('header', 'w_title', $title);
+    $formAddWidget->addElement('header', 'title', $title);
+    $formAddWidget->addElement('header', 'information', _("Widget Information"));
+
+    /**
+     * Name
+     */
+    $formAddWidget->addElement('text', 'widget_title', _("Widget Title"), $attrsText);
+
+    /**
+     * Widgets
+     */
+    $widgetList = $widgetObj->getWidgetModels();
+    $widgetModels = array();
+    foreach ($widgetList as $widgetModelId => $widgetModelName) {
+        $widgetModels[$widgetModelId] = $widgetObj->getWidgetInfoById($widgetModelId);
+    }
+
+    /**
+     * Submit button
+     */
+    $formAddWidget->addElement('button', 'submit', _("Submit"), array("onClick" => "submitAddWidget();","class" => "btc bt_success"));
+    $formAddWidget->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $formAddWidget->addElement('hidden', 'action');
+    $formAddWidget->addElement('hidden', 'custom_view_id');
+    $formAddWidget->setDefaults(array('action' => 'addWidget'));
+
+    /**
+     * Renderer
+     */
+    $rendererAddWidget = new HTML_QuickForm_Renderer_ArraySmarty($template, true);
+    $rendererAddWidget->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $rendererAddWidget->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $formAddWidget->accept($rendererAddWidget);
+    $template->assign('widgetModels', $widgetModels);
+    $template->assign('formAddWidget', $rendererAddWidget->toArray());
     
     $template->display("index.ihtml");
 } catch (CentreonCustomViewException $e) {
@@ -123,7 +288,7 @@ jQuery(function() {
 
 });
 
-initToggle(".addView", "./main.php?p=10301&min=1&action=add",".addCntr");
+initToggle(".addView", "./main.php?p=10301&min=1&action=add","#addView");
 
 /**
  * Initializes toggle
@@ -132,17 +297,13 @@ initToggle(".addView", "./main.php?p=10301&min=1&action=add",".addCntr");
 function initToggle(selector,page,target) {
 
     jQuery(selector).each(function(){
+    //$iframe = jQuery(target+" iframe").attr("src",page);
 
     jQuery(this).on('click',function(e){
-        e.preventDefault();
-        jQuery(target).attr("src",page).parent().toggle("slow");
-
+        jQuery(target).toggle();
          });
-
-
     });
 }
-
 /**
  * Initializes Colorbox
  */

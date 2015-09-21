@@ -1,8 +1,5 @@
 <div id='globalView'>
 	<img id='toggleActionBar' src='./img/icones/7x7/sort_asc.gif' style='bottom: 10px; position: relative; float: right; right: 3px;'>
-	<div class="toggle_wrapper">
-	    <iframe class="addCntr"></iframe>
-	</div>
 	{if $empty == 1}
 
 	<div id='actionBar'>
@@ -16,16 +13,194 @@
 
 	{else}
 		<div id='actionBar'>
-    		<button class='addView btc bt_success'></button>
-    		<button class='editView btc bt_info'></button>
-    		<div class="toggle_wrapper">
-            	 <iframe class="editCntr"></iframe>
+		    <div class="cntn">
+                <button class='addView btc bt_success'></button>
+                <div class="toggle_wrapper inactive" id="addView">
+                   <div>
+                   <form {$formAddView.attributes}>
+                   	 <table class="table">
+                   	 	<tr>
+                   	 		<td class="FormHeader" colspan="2">
+                   	 		    <h3>{$formAddView.header.title}</h3>
+                   	 		</td>
+                   	 	</tr>
+                           <tr class="list_two">
+                   			<td class="FormRowValue" colspan="2">{$formAddView.create_load.html}</td>
+                   		</tr>
+                   		<tr class="create_field">
+                   			<td class="FormRowField">{$formAddView.name.label}</td>
+                   			<td class="FormRowValue">{$formAddView.name.html}</td>
+                   		</tr>
+                                   <tr class="load_field" style="display:none;">
+                                       <td class="FormRowField">{$formAddView.wiewLoad.label}</td>
+                                       <td class="FormRowValue">{$formAddView.wiewLoad.html}</td>
+                                   </tr>
+                   		<tr class="create_field">
+                   			<td class="FormRowField">{$formAddView.layout.label}</td>
+                   			<td class="FormRowValue">{$formAddView.layout.html}</td>
+                   		</tr>
+                                   <tr class="create_field">
+                                       <td class="FormRowField">{$formAddView.public.label}</td>
+                                       <td class="FormRowValue">{$formAddView.public.html}</td>
+                                   </tr>
+                   	<tr>
+                   	 <td colspan="2" class="button_group">
+                       	            {$formAddView.submit.html} {$formAddView.reset.html}
+                       	        </td>
+                       	        </tr>
+                       	    </table>
+                       	    {$formAddView.hidden}
+                   </form>
+                   </div>
+                </div>
             </div>
+
+            <div class="cntn">
+                <button class='editView btc bt_info'></button>
+                <div class="toggle_wrapper inactive" id="editView">
+                     <iframe scrolling="no" frameborder="0" style="height: 100%; width: 100%"></iframe>
+                </div>
+            </div>
+
     		<button class='deleteView btc bt_danger'></button>
     		<button class='setDefault btc bt_default'></button>
-    		<button class='shareView btc bt_info'></button>
-    		<button class='addWidget btc bt_success'></button>
-    		<button class='setRotate btc bt_info'></button>
+
+    		<div class="cntn">
+                <button class='shareView btc bt_info'></button>
+                <div class="toggle_wrapper inactive" id="shareView">
+                     <form {$formShareView.attributes}>
+                     	 <table class="ListTable">
+                     	 	<tr class="ListHeader">
+                     	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/branch_element.gif'>&nbsp;&nbsp;{$formShareView.header.title}</td>
+                     	 	</tr>
+                     	 	<tr class="list_lvl_1">
+                     	 		<td class="ListColLvl1_name" colspan="2">{$viewerLabel}</td>
+                     	 	</tr>
+                     	 	<tr class='list_one'>
+                     	 		<td class="FormRowValue" colspan="2">
+                     	 		{foreach name=viewerId item=viewer from=$viewers}
+                     	 			<div id='viewer_{$viewer.user_id}'>
+                     	 				{if $viewer.locked == 1}
+                     	 					{assign var='contactColor' value='red'}
+                     	 				{else}
+                     	 					{assign var='contactColor' value='green'}
+                     	 				{/if}
+                     		 			<span style='float:left;'><font color='{$contactColor}'>{$viewer.contact_name}</font></span>
+                     		 			<span style='float:left;' class='removeUser ui-icon ui-icon-close' id='rmUser_{$viewer.user_id}'></span>
+                     	 			</div>
+                     	 		{/foreach}
+                     	 		</td>
+                     	 	</tr>
+                     	 	<tr class="list_lvl_1">
+                     	 		<td class="ListColLvl1_name" colspan="2">{$viewergroupLabel}</td>
+                     	 	</tr>
+                     	 	<tr class='list_one'>
+                     	 		<td class="FormRowValue" colspan="2">
+                     	 		{foreach name=viewergroupId item=viewergroup from=$viewerGroups}
+                     	 			<div id='viewergroup_{$viewergroup.usergroup_id}'>
+                     	 				{if $viewergroup.locked == 1}
+                     	 					{assign var='contactColor' value='red'}
+                     	 				{else}
+                     	 					{assign var='contactColor' value='green'}
+                     	 				{/if}
+                     		 			<span style='float:left;'><font color='{$contactColor}'>{$viewergroup.cg_name}</font></span>
+                     		 			<span style='float:left;' class='removeUsergroup ui-icon ui-icon-close' id='rmUsergroup_{$viewergroup.usergroup_id}'></span>
+                     	 			</div>
+                     	 		{/foreach}
+                     	 		</td>
+                     	 	</tr>
+                     	 	<tr class="list_lvl_1">
+                     	 		<td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$formShareView.header.information}</td>
+                     	 	</tr>
+                     		<tr class="list_one">
+                     			<td class="FormRowField">{$formShareView.locked.label}</td>
+                     			<td class="FormRowValue">{$formShareView.locked.html}</td>
+                     		</tr>
+                     		<tr class="list_two">
+                     			<td class="FormRowField">{$formShareView.user_id.label}</td>
+                     			<td class="FormRowValue">{$formShareView.user_id.html}</td>
+                     		</tr>
+                     		<tr class="list_one">
+                     			<td class="FormRowField">{$formShareView.usergroup_id.label}</td>
+                     			<td class="FormRowValue">{$formShareView.usergroup_id.html}</td>
+                     		</tr>
+                     	</table>
+                     	{$formShareView.hidden}
+                     	<div id="validForm">
+                     		<p class="oreonbutton">{$formShareView.submit.html}&nbsp;{$formShareView.reset.html}</p>
+                     	</div>
+                     </form>
+                </div>
+            </div>
+
+    		<div class="cntn">
+                <button class='addWidget btc bt_success'></button>
+                <div class="toggle_wrapper inactive" id="addwdgt">
+                    <form {$formAddWidget.attributes}>
+                    	 <table  class="table">
+                    	 	<tr>
+                    	 		<td class="FormHeader" colspan="2">
+                                    <h3>{$formAddWidget.header.title}</h3>
+                                </td>
+                    	 	</tr>
+                    		<tr>
+                    			<td class="FormRowField">{$formAddWidget.widget_title.label}</td>
+                    			<td class="FormRowValue">{$formAddWidget.widget_title.html}</td>
+                    		</tr>
+                    		<tr>
+                    		    <td colspan="2">
+                    		        <table class="table">
+                                    		<tr>
+                                    			<td class="ListColHeaderPicker"></td>
+                                    			<td class="ListColHeaderLeft">{t}Title{/t}</td>
+                                    			<td class="ListColHeaderLeft">{t}Version{/t}</td>
+                                    			<td class="ListColHeaderLeft">{t}Description{/t}</td>
+                                    			<td class="ListColHeaderLeft">{t}Author{/t}</td>
+                                    		</tr>
+                                    		{foreach item=elem from=$widgetModels}
+                                    		{cycle values='list_one,list_two' assign=rowStyle}
+                                    		<tr class={$rowStyle}>
+                                    			<td class="ListColPicker"><input type='radio' name='widget_model_id' value='{$elem.widget_model_id}'/></td>
+
+                                    			<!--<td clss="ListColLeft">
+                                    				{if $elem.thumbnail}
+                                    					<img src='{$elem.thumbnail}'/>
+                                    				{/if}
+                                    			</td>-->
+
+                                    			<td class="ListColLeft">{$elem.title}</td>
+                                    			<td class="ListColLeft">{$elem.version}</td>
+                                    			<td class="ListColLeft">{$elem.description}</td>
+                                    			<td class="ListColLeft">{$elem.author}</td>
+                                    		</tr>
+                                    		{/foreach}
+
+                                        </table>
+                    		    </td>
+                    		</tr>
+                    		<tr>
+                                 <td colspan="2" class="button_group">
+                                         {$formAddWidget.submit.html} {$formAddWidget.reset.html}
+                                </td>
+                            </tr>
+                    	</table>
+                    	{$formAddWidget.hidden}
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="cntn">
+                <button class='setRotate btc bt_info'></button>
+                <div class="toggle_wrapper inactive" id="rotationTabs">
+                      <center>
+                        <div id='rotation_timer' style="width: 300px;"></div>
+                        <div id='timer_value'></div>
+                        <br/>
+                        <input type='button' value='Apply' onClick='submitRotation();'/>
+                      </center>
+                 </div>
+          </div>
     	</div>
 
 	{/if}
@@ -42,3 +217,95 @@
 	</div>
 
 </div>
+<script>
+{literal}
+function submitAddView()
+{
+	jQuery.ajax({
+			type	:	"POST",
+			dataType:	"xml",
+			url 	:	"./include/home/customViews/action.php",
+			data	:   jQuery("#formAddView").serialize(),
+			success :	function(response) {
+							var view = response.getElementsByTagName('custom_view_id');
+							var error = response.getElementsByTagName('error');
+							if (typeof(view) != 'undefined') {
+								var viewId = view.item(0).firstChild.data;
+								window.top.location = './main.php?p=103&currentView='+viewId;
+							} else if (typeof(error) != 'undefined') {
+								var errorMsg = error.item(0).firstChild.data;
+							}
+						}
+	});
+}
+
+function submitAddWidget()
+{
+    jQuery("#formAddWidget input[name='custom_view_id']").val(viewId);
+	jQuery.ajax({
+			type	:	"POST",
+			dataType:	"xml",
+			url 	:	"./include/home/customViews/action.php",
+			data	:   jQuery("#formAddWidget").serialize(),
+			success :	function(response) {
+							var view = response.getElementsByTagName('custom_view_id');
+							var error = response.getElementsByTagName('error');
+							if (view !== undefined) {
+								var viewId = view.item(0).firstChild.data;
+								window.top.location = './main.php?p=103&currentView='+viewId;
+							} else if (err !== undefined) {
+								var errorMsg = err.item(0).firstChild.data;
+								console.log(errorMsg);
+							}
+						}
+	});
+}
+
+jQuery(function()
+{
+	jQuery("#rotation_timer").slider({
+										value	: rotationTimer,
+										min		: 0,
+										max		: 300,
+										step	: 5,
+										slide	: function(event, ui) {
+													jQuery("#timer_value").html(ui.value + " seconds");
+										},
+										stop	: function(event, ui) {
+													setTimerLabel();
+												}
+									 });
+	jQuery("input[type=button]").button();
+	setTimerLabel();
+});
+
+function setTimerLabel()
+{
+	var val = jQuery("#rotation_timer").slider("value");
+	jQuery("#timer_value").html(val + " seconds");
+}
+
+function submitRotation()
+{
+	jQuery.ajax({
+			type	:	"POST",
+			dataType:	"xml",
+			url 	:	"./include/home/customViews/action.php",
+			data	:   {
+							action:	"setRotate",
+							timer:	jQuery("#rotation_timer").slider("value")
+						},
+			success :	function(response) {
+							var view = response.getElementsByTagName('custom_view_id');
+							var error = response.getElementsByTagName('error');
+							if (typeof(view) != 'undefined') {
+								window.top.location = './main.php?p=103&currentView='+viewId;
+							} else if (typeof(err) != 'undefined') {
+								var errorMsg = err.item(0).firstChild.data;
+								console.log(errorMsg);
+							}
+						}
+	});
+}
+{/literal}
+</script>

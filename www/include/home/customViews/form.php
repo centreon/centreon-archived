@@ -117,10 +117,10 @@ $form->addElement('select', 'wiewLoad', _("Public views list"),$arrayView );
 /**
  * Name
  */
-$form->addElement('text', 'name', _("View name"), $attrsText);
+$form->addElement('text', 'name', _("Name"), $attrsText);
 
 $createLoad = array();
-$createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Create"), 'create');
+$createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Create new view "), 'create');
 $createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Load from existing view"), 'load');
 $form->addGroup($createLoad, 'create_load', _("create or load"), '&nbsp;');
 $form->setDefaults(array('create_load[create_load]' => 'create'));

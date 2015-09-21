@@ -6,12 +6,8 @@
 	 		    <h3>{$form.header.title}</h3>
 	 		</td>
 	 	</tr>
-	 	<tr class="list_lvl_1">
-	 		<td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td>
-	 	</tr>
-                <tr class="list_two">
-			<td class="FormRowField">{$form.create_load.label}</td>
-			<td class="FormRowValue">{$form.create_load.html}</td>
+        <tr class="list_two">
+			<td class="FormRowValue" colspan="2">{$form.create_load.html}</td>
 		</tr>
 		<tr class="create_field">
 			<td class="FormRowField">{$form.name.label}</td>
