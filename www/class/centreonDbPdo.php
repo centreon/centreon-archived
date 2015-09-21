@@ -165,6 +165,7 @@ class CentreonDbPdo extends CentreonDB
     	 * Launch request
     	 */
     	try {
+            $this->db->query("SET NAMES 'utf8'");
     	    $dbres = $this->db->query($queryString);
     	    $this->queryNumber++;
     	    $this->successQueryNumber++;

@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 	ini_set("display_errors", "Off");
@@ -284,6 +281,9 @@
 		$pollerListInError = "";
 		$inactivInstance = "";
 	}
+	$DBRESULT->free();
+
+	$error = "Pollers $pollerListInError not running.";
 	
 	/* ********************************************
 	 * Error Messages
@@ -293,6 +293,13 @@
 	} else {
 		$errorPstt = _("OK: all pollers are running");
 	}
+	$DBRESULT->free();
+	unset($ndo);
+	
+} else {
+	$pollerListInError = "";
+	$inactivInstance = "";
+}
 
 	if ($latency && count($pollersWithLatency)) {
             $errorLtc = sprintf(_("Latency detected on %s; check configuration for better optimisation"), implode(',', $pollersWithLatency));

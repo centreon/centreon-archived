@@ -96,69 +96,33 @@ $en = array("0" => _("No"), "1" => _("Yes"));
 /*
  * Service Comments
  */
-if ($oreon->broker->getBroker() == "ndo") {
-  if ($is_admin) {
-    $rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-      "FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
-      "WHERE obj.name1 IS NOT NULL " .
-      "AND obj.name2 IS NOT NULL " .
-      (isset($search_service) && $search_service != "" ? " AND obj.name2 LIKE '%$search_service%'" : "") .
-      (isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
-      (isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
-      "AND obj.object_id = cmt.object_id " .
-      "AND cmt.expires = 0 ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
-  } else {
-    $rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 as host_name, obj.name2 as service_description " .
-      "FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj, centreon_acl " .
-      "WHERE obj.name1 IS NOT NULL " .
-      "AND obj.name2 IS NOT NULL " .
-      "AND obj.object_id = cmt.object_id " .
-      "AND obj.name1 = centreon_acl.host_name " .
-      (isset($search_service) && $search_service != "" ? " AND obj.name2 LIKE '%$search_service%'" : "") .
-      (isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
-      (isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
-      "AND obj.name2 = centreon_acl.service_description " .
-      "AND centreon_acl.group_id IN (".$oreon->user->access->getAccessGroupsString().") " .
-      "AND cmt.expires = 0 ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
-  }
-  $DBRESULT_NDO = $pearDBndo->query($rq2);
-  $rows = $pearDBndo->numberRows();
-  for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
-    $tab_comments_svc[$i] = $data;
-    $tab_comments_svc[$i]["is_persistent"] = $en[$tab_comments_svc[$i]["is_persistent"]];
-    $tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
-    $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
-    $tab_comments_svc[$i]['comment_data'] = htmlentities($tab_comments_svc[$i]['comment_data']);
-  }
-  unset($data);
-} else {
-  $rq2 = "SELECT SQL_CALC_FOUND_ROWS c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, c.service_id, h.name AS host_name, s.description AS service_description " .
-    "FROM comments c, hosts h, services s ";
-  $rq2 .= "WHERE c.host_id = h.host_id AND c.service_id = s.service_id AND h.host_id = s.host_id ";
-  $rq2 .= " AND c.expires = '0' AND h.enabled = 1 AND s.enabled = 1 ";
-  $rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
-  if (!$is_admin) {
-    $rq2 .= " AND EXISTS(SELECT 1 FROM centreon_acl WHERE s.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id AND group_id IN (" . $oreon->user->access->getAccessGroupsString() . ")) ";
-  }
-  
-  $rq2 .= (isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "") .
-    (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "") .
-    (isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
-  
-  $rq2 .= " ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
-  
-  $DBRESULT = $pearDBO->query($rq2);
-  $rows = $pearDBO->numberRows();
-  for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
-    $tab_comments_svc[$i] = $data;
-    $tab_comments_svc[$i]["is_persistent"] = $en[$tab_comments_svc[$i]["is_persistent"]];
-    $tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
-    $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
-    $tab_comments_svc[$i]['comment_data'] = htmlentities($tab_comments_svc[$i]['comment_data']);
-  }
-  unset($data);
-  $DBRESULT->free();
+$rq2 = "SELECT SQL_CALC_FOUND_ROWS c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, c.service_id, h.name AS host_name, s.description AS service_description " .
+  "FROM comments c, hosts h, services s ";
+$rq2 .= "WHERE c.host_id = h.host_id AND c.service_id = s.service_id AND h.host_id = s.host_id ";
+$rq2 .= " AND c.expires = '0' AND h.enabled = 1 AND s.enabled = 1 ";
+$rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
+if (!$is_admin) {
+  $rq2 .= " AND EXISTS(SELECT 1 FROM centreon_acl WHERE s.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id AND group_id IN (" . $oreon->user->access->getAccessGroupsString() . ")) ";
 }
+
+$rq2 .= (isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "") .
+  (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "") .
+  (isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
+
+$rq2 .= " ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+
+$DBRESULT = $pearDBO->query($rq2);
+$rows = $pearDBO->numberRows();
+for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+  $tab_comments_svc[$i] = $data;
+  $tab_comments_svc[$i]["is_persistent"] = $en[$tab_comments_svc[$i]["is_persistent"]];
+  $tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
+  $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
+  $tab_comments_svc[$i]['comment_data'] = htmlentities($tab_comments_svc[$i]['comment_data']);
+}
+unset($data);
+$DBRESULT->free();
+
 
 include("./include/common/checkPagination.php");
 
@@ -207,5 +171,5 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('limit', $limit);
 $tpl->assign('form', $renderer->toArray());
-$tpl->display("serviceComments.ihtml");
 
+$tpl->display("serviceComments.ihtml");

@@ -269,66 +269,15 @@ if (($o == "c" || $o == "w") && $service_id) {
 }
 $aListTemplate = getListTemplates($pearDB, $service_id);
 
-
-/*
- * Preset values of macros
- */
 $cdata = CentreonData::getInstance();
-$macroArray = $serviceObj->getCustomMacro(isset($service_id) ? $service_id : null);
 
-$iNb = count($macroArray);
-
-$aMacroTemplate = array();
-foreach ($aListTemplate as $template) {
-    if (!empty($template)) {
-        $aMacroTemplate[] = $serviceObj->getCustomMacro($template);
-    }
+if (!isset($cmdId)) {
+    $cmdId = "";
 }
+$aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId);
 
-/*
- * Get macro attached to the command
- */
-/*
-$aMacroInService = array();
-if (isset($cmdId)) {
-    $oCommand = new CentreonCommand($pearDB);
-    $aMacroInService[] = $oCommand->getMacroByIdAndType($cmdId, 'service');
-}
-
- echo __LINE__."DD".$iNb."<br />";
-echo "<pre>";
-print_r($macroArray);
-echo "</pre>";
-
-echo "<pre>";
-print_r(current($aMacroTemplate));
-echo "</pre>";
-
-echo "<pre>";
-print_r($aMacroInService);
-echo "</pre>";
-echo "<pre>";
-print_r(current($aMacroInService));
-echo "</pre>";
-die;
-
-
-$aFinalMacro = array();
-if (count($macroArray) > 0) {
-    $aFinalMacro[] = current($macroArray);
-}
-$iNb = count($aFinalMacro);
-$tpl = current($aMacroTemplate);
-for ($i = 0; $i < count($tpl); $i++) {
-    $aFinalMacro[$iNb++] = $tpl[$i];
-}
-$serv = current($aMacroInService);
-for ($i = 0; $i < count($serv); $i++) {
-    $aFinalMacro[$iNb++] = $serv[$i];
-}
-*/
 $cdata->addJsData('clone-values-macro', htmlspecialchars(
-                json_encode($macroArray), ENT_QUOTES
+                json_encode($aMacros), ENT_QUOTES
         )
 );
 
@@ -398,7 +347,7 @@ $extImg = return_image_list(1);
 ##########################################################
 # Var information to format the element
 #
-	$attrsText = array("size" => "30");
+$attrsText = array("size" => "30");
 $attrsText2 = array("size" => "6");
 $attrsTextURL = array("size" => "50");
 $attrsAdvSelect_small = array("style" => "width: 270px; height: 70px;");
@@ -410,7 +359,7 @@ $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 #
 ## Form begin
 #
-	$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Service"));
 } elseif ($o == "c") {
@@ -423,9 +372,9 @@ if ($o == "a") {
 
 # Sort 1
 #
-	## Service basic information
+## Service basic information
 #
-	$form->addElement('header', 'information', _("General Information"));
+$form->addElement('header', 'information', _("General Information"));
 
 /*
  * - No possibility to change name and alias, because there's no interest
@@ -442,7 +391,7 @@ $form->addElement('static', 'tplText', _("Using a Template exempts you to fill r
 #
 ## Check information
 #
-	$form->addElement('header', 'check', _("Service State"));
+$form->addElement('header', 'check', _("Service State"));
 
 $serviceIV[] = HTML_QuickForm::createElement('radio', 'service_is_volatile', null, _("Yes"), '1');
 $serviceIV[] = HTML_QuickForm::createElement('radio', 'service_is_volatile', null, _("No"), '0');
@@ -492,22 +441,22 @@ $form->addElement('select', 'timeperiod_tp_id', _("Check Period"), $tps);
 
 $cloneSetMacro = array();
 $cloneSetMacro[] = $form->addElement(
-    'text', 'macroInput[#index#]', _('Macro name'), array(
-        'id' => 'macroInput_#index#',
-        'size' => 25
+        'text', 'macroInput[#index#]', _('Macro name'), array(
+    'id' => 'macroInput_#index#',
+    'size' => 25
         )
 );
 $cloneSetMacro[] = $form->addElement(
-    'text', 'macroValue[#index#]', _('Macro value'), array(
-        'id' => 'macroValue_#index#',
-        'size' => 25
-    )
+        'text', 'macroValue[#index#]', _('Macro value'), array(
+    'id' => 'macroValue_#index#',
+    'size' => 25
+        )
 );
 $cloneSetMacro[] = $form->addElement(
-    'checkbox', 'macroPassword[#index#]', _('Password'), null, array(
-        'id' => 'macroPassword_#index#',
-        'onClick' => 'javascript:change_macro_input_type(this, false)'
-    )
+        'checkbox', 'macroPassword[#index#]', _('Password'), null, array(
+    'id' => 'macroPassword_#index#',
+    'onClick' => 'javascript:change_macro_input_type(this, false)'
+        )
 );
 
 ##
@@ -932,6 +881,9 @@ if ($o != "mc") {
     $macChecker->setValue(1);
     $form->registerRule("macHandler", "callback", "serviceMacHandler");
     $form->addRule("macChecker", _("You cannot override reserved macros"), "macHandler");
+    
+    $form->registerRule('cg_group_exists', 'callback', 'testCg');
+    $form->addRule('service_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
 
     $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 } elseif ($o == "mc") {
@@ -945,8 +897,7 @@ if ($o != "mc") {
 #
 ##End of form definition
 #
-
-	// Smarty template Init
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
@@ -1030,11 +981,6 @@ if ($valid && $action["action"]) {
         require_once($path . "listServiceByHost.php");
     }
 } else {
-    /*
-    echo "<pre>";
-    print_r($macroArray);
-    die;
-    */
     // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -1045,7 +991,7 @@ if ($valid && $action["action"]) {
     $tpl->assign('o', $o);
     $tpl->assign('custom_macro_label', _('Custom macros'));
     $tpl->assign('cloneSetMacro', $cloneSetMacro);
-    $tpl->assign('macros', $macroArray);
+    $tpl->assign('macros', $aMacros);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
     $tpl->assign("Freshness_Control_options", _("Freshness Control options"));
     $tpl->assign("Flapping_Options", _("Flapping options"));

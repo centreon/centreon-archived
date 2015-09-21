@@ -48,4 +48,25 @@ UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` 
 
 alter table custom_views add `public` tinyint(6) null default 0;
 
-delete from topology where topology_page = 10102;
+ALTER TABLE timeperiod_exclude_relations
+ADD FOREIGN KEY (timeperiod_id)
+REFERENCES timeperiod(tp_id) ON DELETE CASCADE;
+
+ALTER TABLE timeperiod_exclude_relations
+ADD FOREIGN KEY (timeperiod_exclude_id)
+REFERENCES timeperiod(tp_id) ON DELETE CASCADE;
+
+
+ALTER TABLE timeperiod_include_relations
+ADD FOREIGN KEY (timeperiod_id)
+REFERENCES timeperiod(tp_id) ON DELETE CASCADE;
+
+ALTER TABLE timeperiod_include_relations
+ADD FOREIGN KEY (timeperiod_include_id)
+REFERENCES timeperiod(tp_id) ON DELETE CASCADE;
+
+ALTER TABLE on_demand_macro_host MODIFY COLUMN host_macro_value VARCHAR(4096);
+ALTER TABLE on_demand_macro_service MODIFY COLUMN svc_macro_value VARCHAR(4096);
+
+ALTER TABLE `on_demand_macro_host` ADD COLUMN `description` text DEFAULT NULL AFTER `is_password`;
+ALTER TABLE `on_demand_macro_service` ADD COLUMN `description` text DEFAULT NULL AFTER `is_password`;

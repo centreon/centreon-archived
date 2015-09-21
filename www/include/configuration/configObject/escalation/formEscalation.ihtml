@@ -51,7 +51,6 @@
 				{$form.esc_hServices.label}
 			</td>
 			<td class="FormRowValue">
-				{$form.host_filter.html}
 				{$form.esc_hServices.html}
 			</td>
 		</tr>

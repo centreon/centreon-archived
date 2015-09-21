@@ -219,7 +219,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $strHtml = '<select id="' . $this->getName()
                 . '" name="' . $this->getElementHtmlName()
                 . '" ' . $this->_multipleHtml . ' '
-                . ' style="width: 300px;">'
+                . ' style="width: 300px;"><option></option>'
                 . '%%DEFAULT_SELECTED_VALUES%%'
                 . '</select>';
             $strHtml .= $this->getJsInit();
@@ -242,7 +242,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $mainJsInit = 'allowClear: true,';
         
         $label = $this->getLabel();
-        if (empty($label)) {
+        if (!empty($label)) {
             $mainJsInit .= 'placeholder: "' . $this->getLabel() . '",';
         }
         
@@ -264,11 +264,6 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $jsPost;
         
         return $finalJs;
-    }
-    
-    public function AddDefaultValues()
-    {
-        
     }
     
     /**

@@ -46,6 +46,9 @@
 	#
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
+            if (isset($lockedElements[$host_id])) {
+                $o = "w";
+            }
 		$DBRESULT = $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
 
 		# Set base value
@@ -125,7 +128,15 @@
          * Preset values of macros
          */
         $cdata = CentreonData::getInstance();
-        $macroArray = $hostObj->getCustomMacro(isset($host_id) ? $host_id : null);
+        
+        $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1);
+
+        if (!isset($cmdId)) {
+            $cmdId = "";
+        }
+
+        $macroArray = $hostObj->getMacros($host_id, true, $aTemplates, $cmdId);
+
         $cdata->addJsData('clone-values-macro', htmlspecialchars(
                           json_encode($macroArray), 
                           ENT_QUOTES
@@ -702,6 +713,8 @@ $DBRESULT->free();
 	$form->addRule('host_name', _("Host name is already in use"), 'exist');
 	$form->addRule('host_name', _("Compulsory Name"), 'required');
 	$form->addRule('host_alias', _("Compulsory Alias"), 'required');
+    $form->registerRule('cg_group_exists', 'callback', 'testCg');
+    $form->addRule('host_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
 	$from_list_menu = false;
 	if ($o == "mc")	{
 		if ($form->getSubmitValue("submitMC"))
@@ -720,7 +733,7 @@ $DBRESULT->free();
 
 	# Just watch a host information
 	if ($o == "w")	{
-		if (!$min && $centreon->user->access->page($p) != 2)
+		if (!$min && $centreon->user->access->page($p) != 2 && !isset($lockedElements[$host_id]))
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$host_id."'"));
 	    $form->setDefaults($host);
 		$form->freeze();

@@ -32,12 +32,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -107,26 +104,6 @@ $hg_path = $path . "ServicesHostGroups/";
 $sg_path = $path . "ServicesServiceGroups/";
 $meta_path = $path . "Meta/";
 $path_sch = $path . "Scheduling/";
-
-if ($centreon->broker->getBroker() != "broker") {
-    $pearDBndo = new CentreonDB("ndo");
-
-    /*
-     * Check NDO connection
-     */
-    if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
-        print "<div class='msg'>" . _("Connection Error to NDO DataBase ! \n") . "</div>";
-        $continue = false;
-    }
-
-    /*
-     * Check table ACL exists
-     */
-    if ($err_msg = table_not_exists("centreon_acl")) {
-        print "<div class='msg'>" . _("Warning: ") . $err_msg . "</div>";
-        $continue = false;
-    }
-}
 
 if ($continue) {
     switch ($o) {
@@ -221,4 +198,3 @@ if ($continue) {
             break;
     }
 }
-?>

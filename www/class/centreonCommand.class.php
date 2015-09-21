@@ -91,6 +91,26 @@ class CentreonCommand
     public function getMiscCommands() {
         return $this->getCommandList(3);
     }
+
+    /**
+     * Returns array of locked commands
+     *
+     * @return array
+     */
+    public function getLockedCommands() {
+        static $arr = null;
+
+        if (is_null($arr)) {
+            $arr = array();
+            $res = $this->_db->query("SELECT command_id
+               FROM command
+               WHERE command_locked = 1");
+            while ($row = $res->fetchRow()) {
+                $arr[$row['command_id']] = true;
+            }
+        }
+        return $arr;
+    }
     
     /**
      * This method gat the list of command containt a specific macro 
@@ -105,7 +125,7 @@ class CentreonCommand
         $aTypeCommand = array(
             'host'    => array(
                 'key' => '$_HOST', 
-                'preg' => '/\$_HOS(\w+)\$/'
+                'preg' => '/\$_HOST(\w+)\$/'
             ),
             'service' => array(
                 'key' => '$_SERVICE', 
@@ -127,19 +147,18 @@ class CentreonCommand
         $res = $this->_db->query($sql, array($iIdCommand));
         $arr = array();
         $i = 0;
+        
         if ($iWithFormatData == 1) {
              while ($row = $res->fetchRow()) {
-                 if ($sType ==  'service') {
-                    preg_match_all('$_SERVICE(\w+)$/', $row['command_line'], $matches, PREG_SET_ORDER);
-                    var_dump($matches);
-                 } else {
-                     preg_match_all('/\$_HOS(\w+)\$/', $row['command_line'], $matches, PREG_SET_ORDER);
-                 }
+                 
+                preg_match_all($aTypeCommand[$sType]['preg'], $row['command_line'], $matches, PREG_SET_ORDER);
                 
                 foreach ($matches as $match) {
                     $arr[$i]['macroInput_#index#'] = $match[1];
                     $arr[$i]['macroValue_#index#'] = "";
                     $arr[$i]['macroPassword_#index#'] = NULL;
+                    $arr[$i]['macroDescription_#index#'] = "";
+                    $arr[$i]['macroDescription'] = "";
                     $i++;
                 }
             }
@@ -148,6 +167,7 @@ class CentreonCommand
                 $arr[$row['command_id']] = $row['command_name'];
             }
         }
+
         return $arr;
         
     }

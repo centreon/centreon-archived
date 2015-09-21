@@ -230,6 +230,8 @@ $form->addRule('acl_group_alias', _("Compulsory Alias"), 'required');
 $form->registerRule('exist', 'callback', 'testGroupExistence');
 $form->addRule('acl_group_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->registerRule('cg_group_exists', 'callback', 'testCg');
+$form->addRule('cg_contactGroups', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
 
 /*
  * Smarty template Init

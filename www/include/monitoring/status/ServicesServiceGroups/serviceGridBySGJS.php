@@ -137,17 +137,17 @@ function initM(_time_reload, _sid, _o ){
 	if (document.getElementById("host_search") && document.getElementById("host_search").value) {
 		_host_search = document.getElementById("host_search").value;
 		viewDebugInfo('search: '+document.getElementById("host_search").value);
-	} else if (document.getElementById("host_search").lenght === 0) {
+	} else if (document.getElementById("host_search").value.length === 0) {
 		_host_search = "";
 	}
     
     if (document.getElementById("sg_search") && document.getElementById("sg_search").value) {
 		_sg_search = document.getElementById("sg_search").value;
 		viewDebugInfo('search: '+document.getElementById("sg_search").value);
-	} else if (document.getElementById("sg_search").lenght == 0) {
+	} else if (document.getElementById("sg_search").value.length === 0) {
 		_sg_search = "";
 	}
-
+    
 	if (_first){
 		mainLoopLocal();
 		_first = 0;

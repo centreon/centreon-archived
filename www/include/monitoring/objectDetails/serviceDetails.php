@@ -91,6 +91,9 @@ $host_id = getMyHostID($host_name);
 if (!is_null($host_id)) {
     $can_display = 1;
     $service_id = getMyServiceID($svc_description, $host_id);
+    if(!isset($service_id)){
+        $service_id = getMyServiceIDStorage($svc_description, $host_id);
+    }
     if (!$is_admin) {
         $lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName((($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO), $host_name);
         if (!isset($lcaHost["LcaHost"][$service_id])) {
@@ -120,16 +123,18 @@ if (!is_null($host_id)) {
         /*
          * Get servicegroups list
          */
-        $query = "SELECT DISTINCT sg.sg_name
-                FROM servicegroup sg, servicegroup_relation sgr
-                WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id . " AND sgr.service_service_id = " . $service_id  . " " .
-                $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO)));
-        $DBRESULT = $pearDB->query($query);
-        while ($row = $DBRESULT->fetchRow()) {
-            $serviceGroups[] = $row['sg_name'];
-        }
-        $DBRESULT->free();
+        if(isset($service_id) && isset($host_id)){
+            $query = "SELECT DISTINCT sg.sg_name
+                    FROM servicegroup sg, servicegroup_relation sgr
+                    WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id . " AND sgr.service_service_id = " . $service_id  . " " .
+                    $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO)));
 
+            $DBRESULT = $pearDB->query($query);
+            while ($row = $DBRESULT->fetchRow()) {
+                $serviceGroups[] = $row['sg_name'];
+            }
+            $DBRESULT->free();
+        }
 
         /*
          * Get service category
@@ -301,25 +306,27 @@ if (!is_null($host_id)) {
             $DBRESULT->free();
             unset($data);
         } else {
-            $rq2 =	" SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
-                " FROM comments cmt, hosts h, services s " .
-                " WHERE h.host_id = ".$pearDBO->escape($host_id)." 
-                                      AND s.service_id = ".$pearDBO->escape($service_id)." 
-                                      AND h.host_id = cmt.host_id 
-                                      AND s.service_id = cmt.service_id 
-                                      AND cmt.expires = 0 
-                                      AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
-                                      ORDER BY cmt.entry_time DESC";
-            $DBRESULT = $pearDBO->query($rq2);
-            for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
-                $tabCommentServices[$i] = $data;
-                $tabCommentServices[$i]['host_name'] = utf8_encode($data['host_name']);
-                $tabCommentServices[$i]['service_description'] = utf8_encode($data['service_description']);
-                $tabCommentServices[$i]['comment_data'] = utf8_encode($data['comment_data']);
-                $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
+            if(isset($host_id) && isset($service_id)){
+                $rq2 =	" SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
+                    " FROM comments cmt, hosts h, services s " .
+                    " WHERE h.host_id = ".$pearDBO->escape($host_id)." 
+                                          AND s.service_id = ".$pearDBO->escape($service_id)." 
+                                          AND h.host_id = cmt.host_id 
+                                          AND s.service_id = cmt.service_id 
+                                          AND cmt.expires = 0 
+                                          AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
+                                          ORDER BY cmt.entry_time DESC";
+                $DBRESULT = $pearDBO->query($rq2);
+                for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+                    $tabCommentServices[$i] = $data;
+                    $tabCommentServices[$i]['host_name'] = utf8_encode($data['host_name']);
+                    $tabCommentServices[$i]['service_description'] = utf8_encode($data['service_description']);
+                    $tabCommentServices[$i]['comment_data'] = utf8_encode($data['comment_data']);
+                    $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
+                }
+                $DBRESULT->free();
+                unset($data);
             }
-            $DBRESULT->free();
-            unset($data);
         }
 
         $en_acknowledge_text= array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Service Problem"));
@@ -582,8 +589,10 @@ if (!is_null($host_id)) {
         $tpl->assign("count_comments_svc", count($tabCommentServices));
         $tpl->assign("tab_comments_svc", $tabCommentServices);
         $centreonGraph = new CentreonGraph(session_id(), null, 0, null);
-        $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
-        $tpl->assign("service_id", $service_id);
+        if(isset($host_id) && isset($service_id)){
+            $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
+            $tpl->assign("service_id", $service_id);
+        }
         $tpl->assign("host_data", $host_status[$host_name]);
         $tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
         $tpl->assign("host_name", utf8_encode($host_name));

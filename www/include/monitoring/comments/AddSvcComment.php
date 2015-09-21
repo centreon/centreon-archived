@@ -31,131 +31,122 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon))
-		exit();
+if (!isset($centreon)) {
+	exit();
+}
+	
+include_once $centreon_path."www/class/centreonGMT.class.php";
+include_once $centreon_path."www/class/centreonDB.class.php";
 
-	include_once $centreon_path."www/class/centreonGMT.class.php";
-	include_once $centreon_path."www/class/centreonDB.class.php";
+/*
+ * Init GMT class
+ */
+$centreonGMT = new CentreonGMT($pearDB);
+$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-	if ($oreon->broker->getBroker() == "ndo") {
-		$pearDBndo = new CentreonDB("ndo");
+$hostStr = $oreon->user->access->getHostsString("ID", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
+
+
+if ($oreon->user->access->checkAction("service_comment")) {
+	$LCA_error = 0;
+
+	isset($_GET["host_id"]) ? $cG = $_GET["host_id"] : $cG = NULL;
+	isset($_POST["host_id"]) ? $cP = $_POST["host_id"] : $cP = NULL;
+	$cG ? $host_id = $cG : $host_id = $cP;
+
+	if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
+		$host_id = getMyHostID($_GET["host_name"]);
+		$service_id = getMyServiceID($_GET["service_description"], $host_id);
+		$host_name = $_GET["host_name"];
+		$svc_description = $_GET["service_description"];
+	} else	{
+		$host_name = NULL;
+		$svc_description = NULL;
 	}
 
+	$data = array();
+	if (isset($host_id) && isset($service_id))
+		$data = array("host_id" => $host_id, "service_id" => $service_id);
+
 	/*
-	 * Init GMT class
+	 * Database retrieve information for differents
+	 * elements list we need on the page
 	 */
 
-	$centreonGMT = new CentreonGMT($pearDB);
-	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
+	$query = "SELECT host_id, host_name " .
+			"FROM `host` " .
+			"WHERE host_register = '1' " .
+			$oreon->user->access->queryBuilder("AND", "host_id", $hostStr) .
+			"ORDER BY host_name";
+	$DBRESULT = $pearDB->query($query);
+	$hosts = array(NULL => NULL);
+	while ($row = $DBRESULT->fetchRow())
+		$hosts[$row['host_id']] = $row['host_name'];
+	$DBRESULT->free();
 
-	$hostStr = $oreon->user->access->getHostsString("ID", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
+	$services = array();
+	if (isset($host_id))
+		$services = $oreon->user->access->getHostServices(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO), $host_id);
 
+	$debug = 0;
+	$attrsTextI		= array("size"=>"3");
+	$attrsText 		= array("size"=>"30");
+	$attrsTextarea 	= array("rows"=>"7", "cols"=>"100");
 
-	if ($oreon->user->access->checkAction("service_comment")) {
-		$LCA_error = 0;
+	/*
+	 * Form begin
+	 */
+	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+	$form->addElement('header', 'title', _("Add a comment for Service"));
 
-		isset($_GET["host_id"]) ? $cG = $_GET["host_id"] : $cG = NULL;
-		isset($_POST["host_id"]) ? $cP = $_POST["host_id"] : $cP = NULL;
-		$cG ? $host_id = $cG : $host_id = $cP;
+	#
+	## Indicator basic information
+	#
 
-		if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
-			$host_id = getMyHostID($_GET["host_name"]);
-			$service_id = getMyServiceID($_GET["service_description"], $host_id);
-			$host_name = $_GET["host_name"];
-			$svc_description = $_GET["service_description"];
-		} else	{
-			$host_name = NULL;
-			$svc_description = NULL;
-		}
+	$redirect = $form->addElement('hidden', 'o');
+	$redirect->setValue($o);
 
-		$data = array();
-		if (isset($host_id) && isset($service_id))
-			$data = array("host_id" => $host_id, "service_id" => $service_id);
+	$selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
+	$selSv = $form->addElement('select', 'service_id', _("Service"), $services);
+	$form->addElement('checkbox', 'persistant', _("Persistent"));
+	$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
-			/*
-			 * Database retrieve information for differents
-			 * elements list we need on the page
-			 */
+	/*
+	 * Add Rules
+	 */
+	$form->addRule('host_id', _("Required Field"), 'required');
+	$form->addRule('service_id', _("Required Field"), 'required');
+	$form->addRule('comment', _("Required Field"), 'required');
 
-			$query = "SELECT host_id, host_name " .
-					"FROM `host` " .
-					"WHERE host_register = '1' " .
-					$oreon->user->access->queryBuilder("AND", "host_id", $hostStr) .
-					"ORDER BY host_name";
-			$DBRESULT = $pearDB->query($query);
-			$hosts = array(NULL => NULL);
-			while ($row = $DBRESULT->fetchRow())
-				$hosts[$row['host_id']] = $row['host_name'];
-			$DBRESULT->free();
+	$subA = $form->addElement('submit', 'submitA', _("Save"));
+	$res = $form->addElement('reset', 'reset', _("Reset"));
 
-			$services = array();
-			if (isset($host_id))
-				$services = $oreon->user->access->getHostServices(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO), $host_id);
+  	$form->setDefaults($data);
 
-			$debug = 0;
-			$attrsTextI		= array("size"=>"3");
-			$attrsText 		= array("size"=>"30");
-			$attrsTextarea 	= array("rows"=>"7", "cols"=>"100");
+  	$valid = false;
+	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
+		if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array(0, 1)))
+			$_POST["persistant"] = 0;
+		if (!isset($_POST["comment"]))
+			$_POST["comment"] = 0;
+		AddSvcComment($_POST["host_id"], $_POST["service_id"], $_POST["comment"], $_POST["persistant"]);
+		$valid = true;
+		require_once($path."viewServiceComment.php");
+	} else {
+		# Smarty template Init
+		$tpl = new Smarty();
+		$tpl = initSmartyTpl($path, $tpl, "template/");
 
-			#
-			## Form begin
-			#
+		#Apply a template definition
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+		$form->accept($renderer);
 
-			$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-			$form->addElement('header', 'title', _("Add a comment for Service"));
-
-			#
-			## Indicator basic information
-			#
-
-			$redirect = $form->addElement('hidden', 'o');
-			$redirect->setValue($o);
-
-			$selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
-			$selSv = $form->addElement('select', 'service_id', _("Service"), $services);
-			$form->addElement('checkbox', 'persistant', _("Persistent"));
-			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
-
-			/*
-			 * Add Rules
-			 */
-			$form->addRule('host_id', _("Required Field"), 'required');
-			$form->addRule('service_id', _("Required Field"), 'required');
-			$form->addRule('comment', _("Required Field"), 'required');
-
-			$subA = $form->addElement('submit', 'submitA', _("Save"));
-			$res = $form->addElement('reset', 'reset', _("Reset"));
-
-		  	$form->setDefaults($data);
-
-		  	$valid = false;
-			if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
-				if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array(0, 1)))
-					$_POST["persistant"] = 0;
-				if (!isset($_POST["comment"]))
-					$_POST["comment"] = 0;
-				AddSvcComment($_POST["host_id"], $_POST["service_id"], $_POST["comment"], $_POST["persistant"]);
-				$valid = true;
-				require_once($path."viewServiceComment.php");
-			} else {
-				# Smarty template Init
-				$tpl = new Smarty();
-				$tpl = initSmartyTpl($path, $tpl, "template/");
-
-				#Apply a template definition
-				$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-				$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-				$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-				$form->accept($renderer);
-
-				$tpl->assign('form', $renderer->toArray());
-				$tpl->assign('o', $o);
-				$tpl->display("AddSvcComment.ihtml");
-		    }
-		}
-?>
+		$tpl->assign('form', $renderer->toArray());
+		$tpl->assign('o', $o);
+		$tpl->display("AddSvcComment.ihtml");
+    }
+}

@@ -159,13 +159,22 @@ if (($o == "c" || $o == "w") && $service_id) {
  * Preset values of macros
  */
 $cdata = CentreonData::getInstance();
-$macroArray = $serviceObj->getCustomMacro(isset($service_id) ? $service_id : null);
+//$macroArray = $serviceObj->getCustomMacro(isset($service_id) ? $service_id : null);
+
+$aListTemplate = getListTemplates($pearDB, $service_id);
+
+if (!isset($cmdId)) {
+    $cmdId = "";
+}
+$aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId);
+
+
 $cdata->addJsData('clone-values-macro', htmlspecialchars(
-                                                         json_encode($macroArray), 
+                                                         json_encode($aMacros), 
                                                          ENT_QUOTES
                                                          )
                   );
-$cdata->addJsData('clone-count-macro', count($macroArray));
+$cdata->addJsData('clone-count-macro', count($aMacros));
 
 /*
  * 	Database retrieve information for differents elements list we need on the page
@@ -782,6 +791,8 @@ if ($o != "mc")	{
     $form->addRule('service_alias', _("Compulsory Name"), 'required');
     $form->registerRule('exist', 'callback', 'testServiceTemplateExistence');
     $form->addRule('service_description', _("Name is already in use"), 'exist');
+    $form->registerRule('cg_group_exists', 'callback', 'testCg');
+    $form->addRule('service_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
  } elseif ($o == "mc")	{
      if ($form->getSubmitValue("submitMC")) {
          $from_list_menu = false;
