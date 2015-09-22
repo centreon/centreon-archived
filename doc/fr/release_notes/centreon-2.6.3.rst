@@ -22,4 +22,3 @@ Bug fixes
 - #3782: SQL Keyswords
 - #3783: index_data switch in option form
 - #3788: Problem with static keywords
-- 
