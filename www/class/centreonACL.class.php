@@ -1618,7 +1618,7 @@ class CentreonACL {
 
         if (is_null($options)) {
             $options = array('order' => array('LOWER(service_description)'),
-                'fields' => array('service_id', 'service_description'),
+                'fields' => array('s.service_id', 's.service_description'),
                 'keys' => array('service_id'),
                 'keys_separator' => '',
                 'get_row' => 'service_description');
@@ -1631,14 +1631,27 @@ class CentreonACL {
                     " AND hsr.service_service_id = s.service_id " .
                     " AND s.service_activate = '1' " .
                     ") UNION ALL (" .
-                    "SELECT " . $request['fields'] . " FROM host h, hostgroup_relation hgr, service, host_service_relation hsr" .
+                    "SELECT " . $request['fields'] . " FROM host h, hostgroup_relation hgr, service s, host_service_relation hsr" .
                     " WHERE h.host_id = '" . CentreonDB::escape($host_id) . "' AND h.host_activate = '1' AND h.host_register = '1' " .
                     " AND h.host_id = hgr.host_host_id " .
                     " AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id" .
-                    " AND hsr.service_service_id = service.service_id" .
+                    " AND hsr.service_service_id = s.service_id" .
                     ") " . $request['order'];
         } else {
-            $query = "SELECT " . $request['fields'] . " FROM $db_name_acl.centreon_acl WHERE $db_name_acl.centreon_acl.host_id = '" . CentreonDB::escape($host_id) . "' AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") " . $request['order'];
+            $query = "(SELECT " . $request['fields'] . " FROM host_service_relation hsr, host h, service s, $db_name_acl.centreon_acl " .
+            " WHERE h.host_id = '" . CentreonDB::escape($host_id) . "' AND h.host_activate = '1' AND h.host_register = '1' " .
+            " AND h.host_id = hsr.host_host_id " .
+            " AND hsr.service_service_id = s.service_id " .
+            " AND s.service_activate = '1' " .
+            " AND $db_name_acl.centreon_acl.host_id = h.host_id AND $db_name_acl.centreon_acl.host_id = '" . CentreonDB::escape($host_id) . "' AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") " .
+            ") UNION ALL (" .
+            "SELECT " . $request['fields'] . " FROM host h, hostgroup_relation hgr, service s, host_service_relation hsr, $db_name_acl.centreon_acl " .
+            " WHERE h.host_id = '" . CentreonDB::escape($host_id) . "' AND h.host_activate = '1' AND h.host_register = '1' " .
+            " AND h.host_id = hgr.host_host_id " .
+            " AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id" .
+            " AND hsr.service_service_id = s.service_id" .
+            " AND $db_name_acl.centreon_acl.host_id = h.host_id AND $db_name_acl.centreon_acl.host_id = '" . CentreonDB::escape($host_id) . "' AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") " .
+            ") " . $request['order'];
         }
         $res = $pearDB->query($query);
         if (PEAR::isError($res)) {
