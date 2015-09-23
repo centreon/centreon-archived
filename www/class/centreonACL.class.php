@@ -306,7 +306,7 @@ class CentreonACL {
                 "AND arhr.acl_res_id IN (" . $this->getResourceGroupsString() . ") " .
                 "AND hc.hc_activate = '1' " .
                 "ORDER BY hc.hc_name ASC";
-        
+
         $res = $pearDB->query($query);
         while ($row = $res->fetchRow()) {
             $this->hostCategories[$row['hc_id']] = $row['hc_name'];
