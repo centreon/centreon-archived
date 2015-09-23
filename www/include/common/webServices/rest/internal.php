@@ -52,6 +52,8 @@ if (false === isset($_SESSION["centreon"])) {
     CentreonWebService::sendJson("Unauthorized", 401);
 }
 
+$pearDB = new CentreonDB();
+
 /*
  * Define Oreon var alias
  */
