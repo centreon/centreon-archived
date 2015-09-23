@@ -218,8 +218,11 @@ if (($o == "c" || $o == "w") && $host_id) {
      * Set Host Group Parents
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '" . $host_id . "'");
-    for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
-        $host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
+    for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++){
+        if(in_array($hg["hostgroup_hg_id"], array_keys($hgs))){
+            $host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
+        }
+    }
     $DBRESULT->free();
 
     /*
@@ -233,6 +236,7 @@ if (($o == "c" || $o == "w") && $host_id) {
     for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
         if (!$oreon->user->admin && false === strpos($hcString, "'" . $hc['hostcategories_hc_id'] . "'")) {
             $initialValues['host_hcs'][] = $hc['hostcategories_hc_id'];
+            $host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
         } else {
             $host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
         }
