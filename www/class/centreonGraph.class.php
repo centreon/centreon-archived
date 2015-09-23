@@ -1552,7 +1552,7 @@ class CentreonGraph {
      * @param array $metricsId The list of metrics
      * @return bool
      */
-    private function flushRrdcached($metricsId) {
+    protected function flushRrdcached($metricsId) {
         if (!isset($this->general_opt['rrdcached_enable'])
             || $this->general_opt['rrdcached_enable'] == 0) {
             return true;

@@ -23,7 +23,7 @@ Security fixes
 ==============
 
 - #2979 : Secure the type of media which file can be uploaded
-- Fix some SAL injections
+- Fix some SQL injections
 
 Bug fixes
 =========

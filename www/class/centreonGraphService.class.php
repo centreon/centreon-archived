@@ -63,7 +63,7 @@ class CentreonGraphService extends CentreonGraph
     public function getData($rows = 200)
     {
         /* Flush RRDCached for have the last values */
-        //$this->flushRrdCached($this->listMetricsId);
+        $this->flushRrdCached($this->listMetricsId);
         
         $commandLine = "";
 
