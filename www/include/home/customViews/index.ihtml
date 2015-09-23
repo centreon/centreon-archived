@@ -51,7 +51,35 @@
     <div class="cntn">
       <button class='editView btnAction btnExtraAction btc bt_info'>{t}Edit view{/t}</button>
       <div class="toggle_wrapper inactive" id="editView">
-         
+        <div>
+          <form {$formEditView.attributes}>
+            <table class="table">
+              <tr>
+                <td class="FormHeader" colspan="2">
+                  <h3>{$formEditView.header.title}</h3>
+                </td>
+              </tr>
+              <tr class="create_field">
+                <td class="FormRowField">{$formEditView.name.label}</td>
+                <td class="FormRowValue">{$formEditView.name.html}</td>
+              </tr>
+              <tr class="create_field">
+                <td class="FormRowField">{$formEditView.layout.label}</td>
+                <td class="FormRowValue">{$formEditView.layout.html}</td>
+              </tr>
+              <tr class="create_field">
+                <td class="FormRowField">{$formEditView.public.label}</td>
+                <td class="FormRowValue">{$formEditView.public.html}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="button_group">
+                  {$formEditView.submit.html} {$formEditView.reset.html}
+                </td>
+              </tr>
+            </table>
+            {$formEditView.hidden}
+          </form>
+        </div>
       </div>
     </div>
     
@@ -210,6 +238,11 @@
   </div>
 </div>
 <script>
+/* Define locale */
+{literal}var lang = { {/literal}
+  'deleteViewMessage': '{t}Deleting this view might impact other users. Are you sure you want to do it?{/t}'
+{literal}}; {/literal}
+  
 {literal}
 /* Display or hide the information for add a new view */
 function infoEmptyTab() {
@@ -223,7 +256,6 @@ function infoEmptyTab() {
 }
   
 function addTab(info, init) {
-  console.log(info);
   var init = init || false;
   var $tabEl = jQuery('<li></li>');
   if (info.default) {
@@ -232,12 +264,13 @@ function addTab(info, init) {
   jQuery('<a></a>')
     .attr('href', './include/home/customViews/views.php?currentView=' + info.custom_view_id)
     .text(info.name).appendTo($tabEl);
+  $tabEl.data('name', info.name);
   $tabEl.data('cvId', info.custom_view_id);
   $tabEl.data('public', info.public);
   $tabEl.data('nbCols', info.nbCols);
   jQuery('#tabs .tabs_header').append($tabEl);
   if (false === init) {
-    jQuery('#tabs .tabs_header').tabs("destroy");
+    jQuery('#tabs').tabs("destroy");
     jQuery("#tabs").tabs({
       ajaxOptions: { async: true },
       select: function(event, ui) {
@@ -249,10 +282,32 @@ function addTab(info, init) {
   }
 }
   
+function deleteTab(viewId) {
+  jQuery('#tabs .tabs_header > li').each(function (idx, elem) {
+    if (jQuery(elem).data('cvId') == viewId) {
+      jQuery(elem).remove();
+    }
+  });
+  jQuery('#tabs').tabs("destroy");
+  jQuery("#tabs").tabs({
+    ajaxOptions: { async: true },
+    select: function(event, ui) {
+      jQuery('.viewBody').empty();
+    },
+    selected: -1
+  });
+  
+  if (jQuery('#tabs .tabs_header > li').length > 0) {
+    jQuery('#tabs').tabs('select', 1);
+  }
+  
+  infoEmptyTab();
+}
+  
 function getTabPos(id) {
   var index = -1;
   jQuery('#tabs .tabs_header > li').each(function (idx, elem) {
-    if (jQuery(elem).data('cvId') === id) {
+    if (jQuery(elem).data('cvId') == id) {
       index = idx;
     }
   });
@@ -292,6 +347,34 @@ function submitAddView() {
     }
   });
 }
+             
+/* Submit action for edit a view */
+function submitEditView() {
+  jQuery.ajax({
+    type: "post",
+    dataType: "xml",
+    url: "./include/home/customViews/action.php",
+    data: jQuery("#formEditView").serialize(),
+    success: function (response) {
+      var view = response.getElementsByTagName('custom_view_id');
+      var error = response.getElementsByTagName('error');
+      if (typeof(view) != 'undefined') {
+        var viewId = view.item(0).firstChild.data;
+        jQuery('#tabs .tabs_header > li').each(function (idx, elem) {
+          if (jQuery(elem).data('cvId') == viewId) {
+            jQuery(elem).data('name', jQuery("#formEditView input[name='name']").val());
+            jQuery(elem).data('nbCols', jQuery('#formEditView input[name="layout[layout]"]:checked').val());
+            jQuery(elem).data('public', (jQuery('#formAddView input[name="public"]:checked').length ? true : false));
+            jQuery(elem).find('a').text(jQuery("#formEditView input[name='name']").val());
+          }
+        });
+        jQuery('#formEditView').parents('.toggle_wrapper').hide();
+      } else if (typeof(error) != 'undefined') {
+        var errorMsg = error.item(0).firstChild.data;
+      }
+    }
+  });
+}
  
 /* Submit action for add a widget */
 function submitAddWidget() {
@@ -313,6 +396,33 @@ function submitAddWidget() {
       }
     }
   });
+}
+
+/* Delete action */
+function submitDeleteView() {
+  var viewId = jQuery(
+    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+  ).data('cvId');
+  if (confirm(lang.deleteViewMessage)) {
+    jQuery.ajax({
+      type: "POST",
+      dataType: "xml",
+      url: "./include/home/customViews/action.php",
+      data: {
+        action: "deleteView",
+        custom_view_id: viewId
+      },
+      success :	function(response) {
+        var view = response.getElementsByTagName('custom_view_id');
+        if (typeof(view) != 'undefined') {
+          deleteTab(viewId);
+          //window.top.location = './main.php?p=103';
+        } else if (typeof(error) != 'undefined') {
+          var errorMsg = error.item(0).firstChild.data;
+        }
+      }
+    });
+  }
 }
  
 /* Submit action for set rotation */
@@ -344,7 +454,7 @@ jQuery(function () {
   /* Initialize buttons */
   jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}});
   jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}});
-  jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}});
+  jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', submitDeleteView);
   jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}});
   jQuery('.addWidget').button({ icons : { primary: 'ui-icon-plus'}});
   jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
@@ -375,6 +485,16 @@ jQuery(function () {
     }
   });
   
+  jQuery('.editView').on('click', function () {
+    var tabActive = jQuery(
+      jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+    );
+    jQuery('#formEditView input[name="custom_view_id"]').val(tabActive.data('cvId'));
+    jQuery('#formEditView input[name="name"]').val(tabActive.data('name'));
+    jQuery('#formEditView input[name="layout[layout]"][value="' + tabActive.data('nbCols') + '"]').prop('checked', true);
+    jQuery('#formEditView input[name="public"]').prop('checked', true);
+  });
+  
   /* Add event action for display form */
   jQuery('.btnAction').on('click', function (e) {
     e.stopPropagation();
@@ -386,7 +506,7 @@ jQuery(function () {
   
   /* Load custom views */
   jQuery.ajax({
-    url: './include/common/webServices/rest/internal.php?object=centreon_customview&action=listViews',
+    url: './include/common/webServices/rest/internal.php?object=centreon_wscustomview&action=listViews',
     method: 'get',
     methodType: 'json',
     success: function (data) {
@@ -402,6 +522,7 @@ jQuery(function () {
           selected: -1
         });
       }
+      jQuery("#tabs").tabs('select', getTabPos(data.current));
       infoEmptyTab();
     }
   });

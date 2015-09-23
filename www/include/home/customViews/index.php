@@ -101,9 +101,7 @@ try {
         $arrayView[$row['custom_view_id']] = $row['name'];
     }
 
-    $formAddView->addElement('select', 'wiewLoad', _("Public views list"),$arrayView );
-
-
+    $formAddView->addElement('select', 'viewLoad', _("Public views list"),$arrayView );
     /**
      * Name
      */
@@ -144,6 +142,48 @@ try {
     $rendererAddView->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
     $formAddView->accept($rendererAddView);
     $template->assign('formAddView', $rendererAddView->toArray());
+    
+    /**
+     * Form for edit view
+     */
+    $formEditView = new HTML_QuickForm('formEditView', 'post', "?p=103");
+    $formEditView->addElement('header', 'title', _('Edit a view'));
+    $formEditView->addElement('header', 'information', _("General Information"));
+
+    /**
+     * Name
+     */
+    $formEditView->addElement('text', 'name', _("Name"), $attrsText);
+    
+    /**
+     * Layout
+     */
+    $layouts = array();
+    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("1 Column"), 'column_1');
+    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("2 Columns"), 'column_2');
+    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("3 Columns"), 'column_3');
+    $formEditView->addGroup($layouts, 'layout', _("Layout"), '&nbsp;');
+    $formEditView->setDefaults(array('layout[layout]' => 'column_1'));
+
+    $formEditView->addElement('checkbox', 'public', _("Public"), $attrsText);
+
+    /**
+     * Submit button
+     */
+    $formEditView->addElement('button', 'submit', _("Submit"), array("onClick" => "submitEditView();","class" => "btc bt_success"));
+    $formEditView->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $formEditView->addElement('hidden', 'action');
+    $formEditView->addElement('hidden', 'custom_view_id');
+    $formEditView->setDefaults(array('action' => 'edit'));
+
+    /**
+     * Renderer
+     */
+    $rendererEditView = new HTML_QuickForm_Renderer_ArraySmarty($template, true);
+    $rendererEditView->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $rendererEditView->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $formEditView->accept($rendererEditView);
+    $template->assign('formEditView', $rendererEditView->toArray());
 
     /**
      * Form share view
