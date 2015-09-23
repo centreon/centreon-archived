@@ -73,11 +73,11 @@ if ($obj->is_admin) {
     $sql = sprintf($sql, "", "", "", "");
 } else {
     $sql = sprintf(
-               $sql, 
-               ", centreon_acl acl", 
-               "AND acl.service_id = s.service_id AND acl.host_id = h.host_id ",
+               $sql,
                ", centreon_acl acl",
-               "AND acl.host_id = h.host_id"
+               "AND acl.service_id = s.service_id AND acl.host_id = h.host_id " . $obj->access->queryBuilder("AND", "acl.group_id", $obj->grouplistStr),
+               ", centreon_acl acl",
+               "AND acl.host_id = h.host_id" . $obj->access->queryBuilder("AND", "acl.group_id", $obj->grouplistStr)
            );
 }
 $res = $obj->DBC->query($sql);
