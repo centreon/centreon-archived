@@ -36,24 +36,45 @@
  *
  */
 
+global $centreon_path;
 require_once $centreon_path . "/www/class/centreonDB.class.php";
 
-class CentreonWebService {
+class CentreonWebService
+{
+    /**
+     *
+     * @var type 
+     */
     protected $pearDB = null;
+    
+    /**
+     *
+     * @var array 
+     */
     protected $arguments= array();
+    
+    /**
+     *
+     * @var string 
+     */
     protected $token = null;
+    
+    /**
+     *
+     * @var type 
+     */
     protected static $webServicePaths;
 
     /**
      * Constructor
+     * @global type $pearDB
      */
     public function __construct()
     {
-        global $pearDB;
-        if (isset($pearDB)) {
-            $this->pearDB = $pearDB;
+        if (isset($this->pearDB)) {
+            $this->pearDB = $this->pearDB;
         } else {
-            $this->pearDB = CentreonDB();
+            $this->pearDB = new CentreonDB();
         }
         $this->loadArguments();
         $this->loadToken();
@@ -87,6 +108,7 @@ class CentreonWebService {
     /**
      * Parse the body for get arguments
      * The body must be JSON format
+     * @return array
      */
     protected function parseBody()
     {
@@ -110,8 +132,9 @@ class CentreonWebService {
 
     /**
      * Get webservice
-     *
-     * @return array
+     * 
+     * @param string $object
+     * @return type
      */
     protected static function webservicePath($object = "")
     {
@@ -178,12 +201,11 @@ class CentreonWebService {
      */
     protected static function updateTokenTtl()
     {
-        global $pearDB;
         if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
             $query = "UPDATE ws_token SET generate_date = NOW() WHERE token = '" .
-                $pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) ."'";
+                $this->pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) ."'";
             try {
-                $pearDB->query($query);
+                $this->pearDB->query($query);
             } catch (Exception $e) {
                 self::sendJson("Internal error", 500);
             }
@@ -192,10 +214,13 @@ class CentreonWebService {
 
     /**
      * Route the webservice to the good method
+     * @global string $centreon_path
+     * @global type $pearDB3
      */
     public static function router()
     {
-        global $centreon_path, $pearDB;
+        global $centreon_path;
+        global $pearDB;
         
         /* Test if route is defined */
         if (false === isset($_GET['object']) || false === isset($_GET['action'])) {

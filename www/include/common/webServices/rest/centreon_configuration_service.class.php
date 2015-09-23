@@ -36,13 +36,13 @@
  *
  */
 
-class CentreonConfigurationService
+global $centreon_path;
+require_once $centreon_path . "/www/class/centreonBroker.class.php";
+require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once dirname(__FILE__) . "/webService.class.php";
+
+class CentreonConfigurationService extends CentreonWebService
 {
-    /**
-     *
-     * @var type 
-     */
-    protected $pearDB;
     
     /**
      *
@@ -50,13 +50,12 @@ class CentreonConfigurationService
      */
     protected $pearDBMonitoring;
 
-
     /**
      * 
      */
     public function __construct()
     {
-        $this->pearDB = new CentreonDB();
+        parent::__construct();
         $brk = new CentreonBroker($this->pearDB);
         if ($brk->getBroker() == 'broker') {
             $this->pearDBMonitoring = new CentreonDB('centstorage');
@@ -70,7 +69,7 @@ class CentreonConfigurationService
      * @param array $args
      * @return array
      */
-    public function getList($args = array())
+    public function getList()
     {
         global $centreon;
         
@@ -85,10 +84,10 @@ class CentreonConfigurationService
         }
         
         // Check for select2 'q' argument
-        if (false === isset($args['q'])) {
+        if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
-            $q = $args['q'];
+            $q = $this->arguments['q'];
         }
         
         $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
@@ -118,15 +117,15 @@ class CentreonConfigurationService
      * @param type $args
      * @return array
      */
-    public function getDefaultEscalationValues($args = array())
+    public function getDefaultEscalationValues()
     {
         $defaultValues = array();
         
         // Check for select2 'q' argument
-        if (false === isset($args['q'])) {
+        if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
-            $q = $args['q'];
+            $q = $this->arguments['q'];
         }
         
         $queryService = "SELECT distinct host_host_id, host_name, service_service_id, service_description

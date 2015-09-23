@@ -36,14 +36,15 @@
  *
  */
 
-//require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once "/etc/centreon/centreon.conf.php";
+require_once "@CENTREON_ETC@/centreon.conf.php";
 require_once $centreon_path . 'www/class/centreonSession.class.php';
 require_once $centreon_path . 'www/class/centreon.class.php';
 require_once $centreon_path . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . '/webService.class.php';
 require_once dirname(__FILE__) . '/exceptions.php';
 
+
+$pearDB = new CentreonDB();
 ini_set("session.gc_maxlifetime", "31536000");
 
 CentreonSession::start();
