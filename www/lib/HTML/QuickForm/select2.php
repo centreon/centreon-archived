@@ -236,8 +236,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     function getJsInit()
     {
         $jsPre = '<script type="text/javascript">';
+        $additionnalJs = '';
         $jsPost = '</script>';
-        $strJsInitBegining = 'jQuery("#' . $this->getName() . '").select2({';
+        $strJsInitBegining = '$currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").select2({';
         
         $mainJsInit = 'allowClear: true,';
         
@@ -248,6 +249,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         
         if ($this->_ajaxSource) {
             $mainJsInit .= $this->setAjaxSource() . ',';
+            $additionnalJs .= $this->setDefaultAjaxDatas();
         } else {
             $mainJsInit .= $this->setFixedDatas() . ',';
         }
@@ -261,7 +263,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         
         $strJsInitEnding = '});';
         
-        $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $jsPost;
+        $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $additionnalJs . $jsPost;
         
         return $finalJs;
     }
@@ -301,9 +303,54 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     public function setAjaxSource()
     {
         $ajaxInit = 'ajax: { ';
-        $ajaxInit .= 'url: "' . $this->_availableDatasetRoute . '",';
+        $ajaxInit .= 'url: "' . $this->_availableDatasetRoute . '",'
+            . 'data: function (params) {
+                    var queryParameters = {
+                        q: params.term
+                    };
+                    
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }';
         $ajaxInit .= '} ';
         return $ajaxInit;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function setDefaultAjaxDatas()
+    {
+        $ajaxDefaultDatas = '$request = jQuery.ajax({
+            url: "'. $this->_defaultDatasetRoute .'",
+        });
+
+        $request.success(function (data) {
+            for (var d = 0; d < data.length; d++) {
+                var item = data[d];
+                
+                // Create the DOM option that is pre-selected by default
+                var option = new Option(item.text, item.id, true, true);
+              
+                // Append it to the select
+                $currentSelect2Object'.$this->getName().'.append(option);
+            }
+ 
+            // Update the selected options that are displayed
+            $currentSelect2Object'.$this->getName().'.trigger("change");
+        });
+        
+        $request.error(function(data) {
+            
+        });
+        ';
+        
+        return $ajaxDefaultDatas;
     }
     
     /**

@@ -282,7 +282,13 @@
 	## Sort 3
 	#
 	$form->addElement('header', 'services', _("Implied Services"));
-    $form->addElement('select2', 'esc_hServices', _("Services by Host"), array(), array('multiple' => true));
+    $attrServices = array(
+        'datasourceOrigin' => 'ajax',
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultEscalationValues&q=' . $esc_id,
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+        'multiple' => true
+    );
+    $form->addElement('select2', 'esc_hServices', _("Services by Host"), array(), $attrServices);
 
 	#
 	## Sort 4
