@@ -153,6 +153,7 @@ $form->applyFilter('RRDdatabase_nagios_stats_path', 'slash');
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path.'centstorage/', $tpl);
 $form->setDefaults($gopt);
+		$centreon->initOptGen($pearDB);
 
 $subC = $form->addElement('submit', 'submitC', _("Save"));
 $form->addElement('reset', 'reset', _("Reset"));

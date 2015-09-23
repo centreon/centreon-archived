@@ -45,11 +45,24 @@ class CentreonConfigurationService
     protected $pearDB;
     
     /**
+     *
+     * @var type 
+     */
+    protected $pearDBMonitoring;
+
+
+    /**
      * 
      */
     public function __construct()
     {
         $this->pearDB = new CentreonDB();
+        $brk = new CentreonBroker($this->pearDB);
+        if ($brk->getBroker() == 'broker') {
+            $this->pearDBMonitoring = new CentreonDB('centstorage');
+        } else {
+            $this->pearDBMonitoring = new CentreonDB('ndo');
+        }
     }
     
     /**
@@ -63,11 +76,12 @@ class CentreonConfigurationService
         
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
+        $aclServices = '';
         
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
-            $aclGroups = $acl->getAccessGroupsString();
+            $aclServices .= 'AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
         }
         
         // Check for select2 'q' argument
@@ -82,6 +96,8 @@ class CentreonConfigurationService
             . 'WHERE hsr.host_host_id = h.host_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND h.host_register = '1' AND s.service_register = '1' "
+            . "AND s.service_description LIKE '%$q%' "
+            . $aclServices
             . "ORDER BY h.host_name";
         
         $DBRESULT = $this->pearDB->query($queryService);
