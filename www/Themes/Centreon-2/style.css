@@ -46,8 +46,8 @@ html {
 }
 body {
     background-color:#FFF;
-    //font-family:'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
-    font-family: 'Open Sans';
+    /*font-family:'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';*/
+    font-family: 'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif;
     color:#555;
     font-size:11px;
     height: 100%;
@@ -102,6 +102,12 @@ iframe {
 /* ------ END : Colors -----*/
 
 /*------- START : Size icons --------*/
+
+.ico-14 {
+    width: 14px;
+    height: 14px;
+}
+
 .ico-16 {
     width: 16px;
     height: 16px;
@@ -119,11 +125,15 @@ iframe {
 /* ------ START : Buttons -----*/
 .btc {
     border-radius: 4px !important;
-    padding: 2px 2px !important;
+    padding: 4px;
     border: none !important;
     outline: none !important;
 }
-
+a.btc {
+    color: #fff !important;
+    padding: 4px 6px;
+    margin : 0px 4px;
+}
 .bt_default {
     background: #a7a9ac !important;
 }
@@ -194,6 +204,13 @@ iframe {
     vertical-align: bottom;
 }
 /* ------ END : Buttons -----*/
+
+/* -------- START: Form ---------*/
+input[type="submit"] {
+    padding : 4px 6px;
+    color: #fff;
+}
+/*--------- END : Form ---------*/
 
 /* ------ END : Global -----*/
 /* ------ START : Header -----*/
@@ -428,6 +445,16 @@ div.menuLeft {
 
 /* ------ END : Menu -----*/
 
+/* ------ START : Details Page ------*/
+
+.globalTitle {
+
+}
+
+.globalTitle td {
+    padding: 10px 0;
+}
+
 /* ------ START : info box -----*/
 
 .info_box {
@@ -622,8 +649,12 @@ a.infobulle:hover 	{z-index:25;}
 
 /* Pagination */
 div.pagination 		{margin-left:40%;}
-.otherPageNumber 	{color:#5050FF;}
-.currentPageNumber 	{color:#ff0a0a;}
+.otherPageNumber 	{
+    color:#005a7f;
+}
+.currentPageNumber {
+    color:#4ccaff;
+}
 .page_limit 		{background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-left:25px;width:80px;}
 .mini_checkbox 		{height:12px;width:12px;top:-5px;}
 #QuickSearch {
@@ -738,8 +769,12 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .list_unreachable td,.tab .list_unreachable td,
 .row_disabled td, .tab .row_disabled td {border-left-style:solid;border-top-style:solid;border-width:0.1px 0 0 0.1px;}
 
-.row_disabled {background-color:#BDBDBD;padding:1px 3px;}
-.row_disabled:hover {background-color: #D8D8D8;padding:1px 3px;}
+.row_disabled {
+    background-color:#f0f0f1;
+    padding:1px 3px;
+}
+
+/*.row_disabled:hover {background-color: #D8D8D8;padding:1px 3px;}*/
 
 /*.row_disabled {background-repeat: repeat !important;}
 .row_disabled a:hover {color: #333333 !important;}*/
@@ -772,6 +807,9 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 
 * html #ListTable td,#ListTableMedium td,#ListTableSmall td,.ListTable td,.ListTableMedium td,.ListTableSmall td {margin:0;padding:0 4px;}
 .ListTableSmall a,.ListTable a,.ListTableMedium a,.ListTableSmall a, .ListTableSmallArg a {color:#666;z-index:5;}
+.ListTable td a {
+    margin: 0px 6px;
+}
 .ListTableMedium 		{width:60%;}
 .ListTableSmall 		{width:40%;}
 .ListTableSmallArg 		{width:60%;}
@@ -899,6 +937,9 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
     margin: 6px 0px;
 }
 .ToolbarTR 			{padding-left:10px;}
+.ToolbarTR td:first-child {
+    width: 32%;
+}
 .ToolbarTR select {border: 1px solid #BBBBBB;}
 .ToolbarPagination	{text-align:center;}
 

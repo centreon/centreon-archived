@@ -59,18 +59,8 @@
 .list_lvl_1{	background-color:<?php print $color4; ?>;}
 .list_lvl_2{	background-color:<?php print $color5; ?>;}
 
-.ListHeader{	background: -moz-linear-gradient(top,  <?php print $colorGradient_1; ?> 0%, <?php print $colorGradient_2; ?> 100%); /* FF3.6+ */
-                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, <?php print $colorGradient_1; ?>), color-stop(100%,<?php print $colorGradient_2; ?>))!important; /* Chrome,Safari4+ */
-                background: -webkit-linear-gradient(top,   <?php print $colorGradient_1; ?> 0%,<?php print $colorGradient_2; ?> 100%) !important; /* Chrome10+,Safari5.1+ */
-                background: -o-linear-gradient(top,   <?php print $colorGradient_1; ?> 0%,<?php print $colorGradient_2; ?> 100%) !important; /* Opera 11.10+ */
-                background: -ms-linear-gradient(top,   <?php print $colorGradient_1; ?> 0%,<?php print $colorGradient_2; ?> 100%) !important; /* IE10+ */
-                background: linear-gradient(to bottom,   <?php print $colorGradient_1; ?> 0%,<?php print $colorGradient_2; ?> 100%) !important; /* W3C */
-                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=' <?php print $colorGradient_1; ?>', endColorstr='<?php print $colorGradient_2; ?>',GradientType=0 ) !important; /* IE6-8 */
-
-
-				background-position:top left;
-				background-repeat:repeat-x;
-				background:<?php print $colorGradient_1; ?> ;
+.ListHeader{
+				background:<?php print $colorHeader_1; ?> ;
 }
 
 .ListSubHeader{
@@ -174,12 +164,12 @@
 
 input, textarea {	font-size: 10px; border:1px solid #BBBBBB;}
 
-input[type="submit"],input[type="button"],input[type="reset"]{
+/*input[type="submit"],input[type="button"],input[type="reset"]{
 	background : white;
 	color : <?php print $menu1_bgcolor; ?>;
 	border-color : <?php print $menu1_bgcolor; ?>;
 	cursor: pointer;
-	}
+	}*/
 
 input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 	background : <?php print $menu1_bgcolor; ?>;
@@ -231,8 +221,8 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 .Toolbar_TDSelectAction_Top a {	font-family:Arial, Helvetica, Sans-Serif;font-size:11px;color:<?php print $color13; ?>;}
 .Toolbar_TDSelectAction_Top a:hover {color:<?php print $color14; ?>;}
 
-.Toolbar_TDSelectAction_Bottom a {font-family:Arial, Helvetica, Sans-Serif;font-size:11px;color:<?php print $color13; ?>;}
-.Toolbar_TDSelectAction_Bottom a:hover {color:<?php print $color14; ?>;}
+/*.Toolbar_TDSelectAction_Bottom a {font-family:Arial, Helvetica, Sans-Serif;font-size:11px;color:<?php print $color13; ?>;}
+.Toolbar_TDSelectAction_Bottom a:hover {color:<?php print $color14; ?>;}*/
 
 .Toolbar_TableBottom {border-color:<?php print $menu1_bgcolor; ?>;}
 

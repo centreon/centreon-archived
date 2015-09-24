@@ -59,16 +59,16 @@ $color14 = "#E8AB5C";
 $menu1_bgcolor = "#6056e8";
 $menu2_bgcolor = "#009fdf";
 
-$colorGradient_1 = "#ebf5ff";
+$colorHeader_1 = "#cfedf9";
 $colorGradient_2 = "#02bbff";
 
 $footerline2 = "#dedede";
 
-$color_list_1 = "#F7FAFF";
-$color_list_1_hover = "#FDF0D5";
+$color_list_1 = "#f8fdff";
+$color_list_1_hover = "#FFF";
 
-$color_list_2 = "#EDF4FF";
-$color_list_2_hover = "#FDF0D5";
+$color_list_2 = "#f0fbff";
+$color_list_2_hover = "#FFF";
 $color_list_3 = "#fada83";
 $color_list_3_hover = "#bada83";
 $color_list_4 = "#fdc11e";

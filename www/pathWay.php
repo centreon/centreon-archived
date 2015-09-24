@@ -133,7 +133,7 @@
 		}
 	
 		if (isset($_GET["host_id"]))	{
-			echo '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" class="imgPathWay">&nbsp;';
+			echo '&nbsp;>&nbsp;';
 			echo getMyHostName(htmlentities($_GET["host_id"], ENT_QUOTES, "UTF-8"));
 		}
 	}
