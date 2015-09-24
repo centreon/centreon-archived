@@ -4,7 +4,7 @@ ALTER TABLE `servicestateevents` ADD COLUMN `in_ack` tinyint(4) DEFAULT '0';
 -- Ticket #2276
 ALTER TABLE config ENGINE=InnoDB;
 ALTER TABLE data_stats_daily ENGINE=InnoDB;
-ALTER TABLE data_stats_monthy ENGINE=InnoDB;
+ALTER TABLE data_stats_monthly ENGINE=InnoDB;
 ALTER TABLE data_stats_yearly ENGINE=InnoDB;
 ALTER TABLE index_data ENGINE=InnoDB;
 ALTER TABLE instance ENGINE=InnoDB;
