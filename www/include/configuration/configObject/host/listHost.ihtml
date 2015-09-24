@@ -3,20 +3,17 @@
 <table class="ajaxOption table">
 	<tr>
 		<td><h4>{$Hosts}</h4></td>
-		<td><input type='text' name='searchH' value="{$search}" /></td>
-
 		<td><h4>{$Hostgroup}</h4></td>
+		<td><h4>{$Poller}</h4></td>
+		<td><h4>{$Template}</h4></td>
+		<td><h4>{$headerMenu_status}</h4></td>
+    </tr>
+    <tr>
+		<td><input type='text' name='searchH' value="{$search}" /></td>
 		<td><select name='hostgroup'>{$hostgroup}</select></td>
-
-        <td><h4>{$Poller}</h4></td>
         <td><select name='poller'>{$poller}</select></td>
-
-        <td><h4>{$Template}</h4></td>
         <td><select name='template'>{$template}</select></td>
-
-        <td><h4>{$headerMenu_status}</h4></td>
         <td><select name='status' >{$StatusFilter}</select></td>
-
         <td><input type='submit' name='SearchB' value='{$Search}' class="btc bt_success"/></td>
     </tr>
 </table>
@@ -46,7 +43,7 @@
 		<td class="ListColHeaderCenter">{$headerMenu_poller}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_parent}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_status}</td>
-		<td class="ListColHeaderRight">{$headerMenu_options}</td>
+		<td class="ListColHeaderCenter">{$headerMenu_options}</td>
 	</tr>
 	{assign var=pattern_mode value=0}
 	{section name=elem loop=$elemArr}
@@ -72,7 +69,7 @@
 		<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_address}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_poller}</td>
-		<td class="ListColRight">{$elemArr[elem].RowMenu_parent}</td>
+		<td class="ListColCenter">{$elemArr[elem].RowMenu_parent}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 		<td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 	</tr>

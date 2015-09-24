@@ -130,7 +130,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('debug_ldap_import','0'),
 ('debug_inventory','0'),
 ('color_ack','#FAED60'),
-('color_host_down','#FCC22A'),
+('color_host_down','#'),
 ('color_host_unreachable','#9CD9F1'),
 ('color_line_critical','#F96461'),
 ('color_downtime','#FBC5E8'),

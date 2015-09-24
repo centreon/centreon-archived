@@ -115,7 +115,7 @@ function initWholePage() {
 function setQuickSearchPosition() {
     if ($('QuickSearch')) {
         if ($('header').visible()) {
-            $('QuickSearch').setStyle({ top: '139px' });
+            $('QuickSearch').setStyle({ top: '-25px' });
         } else {
             $('QuickSearch').setStyle({ top: '3px' });
         }

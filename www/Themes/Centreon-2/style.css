@@ -256,6 +256,7 @@ form#AjaxBankBasic {
 #Tcontener {
     height: 100%;
     position: relative;
+    margin-bottom: 16px;
 }
 
 .GlobalContainer tr {
@@ -603,6 +604,7 @@ div.menuLeft {
     width:100%;
     background-color: #e7e7e8;
     position: fixed;
+    bottom: 0;
 }
 
 #footer table tr td{
@@ -659,8 +661,8 @@ div.pagination 		{margin-left:40%;}
 .mini_checkbox 		{height:12px;width:12px;top:-5px;}
 #QuickSearch {
     position: absolute;
-    right: 75px;
-    top: 139px;
+    right: 30px;
+    //top: 139px;
 }
 
 /* Warning */
@@ -717,10 +719,10 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
     position: relative;
     margin-bottom: 14px;
 }
-.ajaxOption tr:first-child {
+/*.ajaxOption tr:first-child {
     text-align: right;
     position: relative;
-}
+}*/
 
 .ajaxOption tr:first-child h5 {
     background-color: #fff;
