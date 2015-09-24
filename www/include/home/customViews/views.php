@@ -180,18 +180,6 @@ jQuery(function() {
     	<?php } ?>
 	}
 
-	//initColorbox(".editView", "./main.php?p=10301&min=1&action=edit&view_id="+viewId, "70%", "25%");
-	initToggle('.editView', './main.php?p=10301&min=1&action=edit&view_id="+viewId"','#editView');
-
-	//initColorbox(".shareView", "./main.php?p=10302&min=1&view_id="+viewId, "70%", "70%");
-	initToggle('.shareView', './main.php?p=10302&min=1&view_id="+viewId"','#shareView');
-
-	//initColorbox(".addWidget", "./main.php?p=10304&min=1&action=addWidget&view_id="+viewId, "70%", "70%");
-	initToggle('.addWidget', './main.php?p=10304&min=1&action=addWidget&view_id="+viewId"','#addwdgt');
-
-	//initColorbox(".setRotate", "./main.php?p=10305&min=1&view_id="+viewId, "30%", "20%");
-	initToggle(".setRotate", "./main.php?p=10305&min=1&view_id="+viewId, '#rotationTabs');
-
 	jQuery(".ui-icon-wrench").each(function(index, element) {
 										var tmp = jQuery(element).parents('.portlet').attr('name')
 										var widgetIndex = tmp.split("portlet_");

@@ -101,9 +101,7 @@ try {
         $arrayView[$row['custom_view_id']] = $row['name'];
     }
 
-    $formAddView->addElement('select', 'wiewLoad', _("Public views list"),$arrayView );
-
-
+    $formAddView->addElement('select', 'viewLoad', _("Public views list"),$arrayView );
     /**
      * Name
      */
@@ -144,6 +142,48 @@ try {
     $rendererAddView->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
     $formAddView->accept($rendererAddView);
     $template->assign('formAddView', $rendererAddView->toArray());
+    
+    /**
+     * Form for edit view
+     */
+    $formEditView = new HTML_QuickForm('formEditView', 'post', "?p=103");
+    $formEditView->addElement('header', 'title', _('Edit a view'));
+    $formEditView->addElement('header', 'information', _("General Information"));
+
+    /**
+     * Name
+     */
+    $formEditView->addElement('text', 'name', _("Name"), $attrsText);
+    
+    /**
+     * Layout
+     */
+    $layouts = array();
+    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("1 Column"), 'column_1');
+    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("2 Columns"), 'column_2');
+    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("3 Columns"), 'column_3');
+    $formEditView->addGroup($layouts, 'layout', _("Layout"), '&nbsp;');
+    $formEditView->setDefaults(array('layout[layout]' => 'column_1'));
+
+    $formEditView->addElement('checkbox', 'public', _("Public"), $attrsText);
+
+    /**
+     * Submit button
+     */
+    $formEditView->addElement('button', 'submit', _("Submit"), array("onClick" => "submitEditView();","class" => "btc bt_success"));
+    $formEditView->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $formEditView->addElement('hidden', 'action');
+    $formEditView->addElement('hidden', 'custom_view_id');
+    $formEditView->setDefaults(array('action' => 'edit'));
+
+    /**
+     * Renderer
+     */
+    $rendererEditView = new HTML_QuickForm_Renderer_ArraySmarty($template, true);
+    $rendererEditView->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $rendererEditView->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $formEditView->accept($rendererEditView);
+    $template->assign('formEditView', $rendererEditView->toArray());
 
     /**
      * Form share view
@@ -250,75 +290,6 @@ try {
 }
 ?>
 <script type="text/javascript">
-var viewIndex = "<?php echo $indexTab[$viewId];?>";
-var rotationTimer = <?php echo $rotationTimer;?>;
-
-jQuery(function() {
-	jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}, label : '<?php echo _("Add view");?>' });
-    jQuery('.loadView').button({ icons : { primary: 'ui-icon-plus'}, label : '<?php echo _("Load a public view");?>' });
-	jQuery('.setDefault').button({ icons : { primary: 'ui-icon-star'}, label : '<?php echo _("Set default");?>' });
-	jQuery('.addWidget').button({ icons : { primary: 'ui-icon-plus'}, label : '<?php echo _("Add widget");?>' });
-	jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}, label : '<?php echo _("Edit view");?>'  });
-	jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}, label : '<?php echo _("Share view");?>'  });
-	jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}, label : '<?php echo _("Delete view");?>'  }).click(function() { deleteView(); });
-	jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}, label : '<?php echo _("Rotation");?>' });
-
-	//initColorbox(".addView", "./main.php?p=10301&min=1&action=add", "70%", "30%");
-
-
-	jQuery("#tabs").tabs({
-							ajaxOptions: { async: true },
-							select: function(event, ui) {
-										jQuery('.viewBody').empty();
-									},
-							selected: -1
-						});
-	jQuery("#tabs").tabs('select', viewIndex);
-	jQuery("#tabs").tabs('rotate', (rotationTimer * 1000));
-	jQuery(".ui-tabs-panel").css('overflow', 'auto');
-	jQuery(".setDefault").click(function() {
-		setDefault();
-	});
-	jQuery("#toggleActionBar").live('click', function() {
-		jQuery("#actionBar, .imgPathWay, .pathWay, hr").toggle();
-	});
-	jQuery(document).keydown(function(event) {
-		jQuery("#tabs").tabs('rotate', 0);
-	});
-
-});
-
-initToggle(".addView", "./main.php?p=10301&min=1&action=add","#addView");
-
-/**
- * Initializes toggle
- */
-
-function initToggle(selector,page,target) {
-
-    jQuery(selector).each(function(){
-    //$iframe = jQuery(target+" iframe").attr("src",page);
-
-    jQuery(this).on('click',function(e){
-        jQuery(target).toggle();
-         });
-    });
-}
-/**
- * Initializes Colorbox
- */
-function initColorbox(selector, url, w, h)
-{
-	jQuery(selector).colorbox({
-		href: 			url,
-		iframe:			true,
-		overlayClose:	true,
-		width:			w,
-		height:			h,
-		opacity:		0.7
-	});
-}
-
 /**
  * Resize widget iframe
  */
