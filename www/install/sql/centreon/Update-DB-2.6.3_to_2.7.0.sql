@@ -22,3 +22,4 @@ ALTER TABLE `on_demand_macro_service` ADD COLUMN `description` text DEFAULT NULL
 ALTER TABLE `command` ADD `command_locked` BOOLEAN DEFAULT 0;
 ALTER TABLE `host` ADD `host_locked` BOOLEAN DEFAULT 0 AFTER `host_comment`;
 
+UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.3' LIMIT 1;
