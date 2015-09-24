@@ -59,6 +59,7 @@
 	 * Pear library
 	 */
 	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm/select2.php';
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 

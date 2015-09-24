@@ -540,6 +540,32 @@ class CentreonService {
         return $aFinalMacro;
     }
 
+    /**
+     * 
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'service';
+        $parameters['currentObject']['id'] = 'service_id';
+        $parameters['currentObject']['name'] = 'service_description';
+        $parameters['currentObject']['comparator'] = 'service_id';
+
+        switch ($field) {
+            case 'timeperiod_tp_id':
+            case 'timeperiod_tp_id2':
+                $parameters['type'] = 'simple';
+                $parameters['externalObject']['table'] = 'timeperiod';
+                $parameters['externalObject']['id'] = 'tp_id';
+                $parameters['externalObject']['name'] = 'tp_name';
+                $parameters['externalObject']['comparator'] = 'tp_id';
+                break;
+        }
+        
+        return $parameters;
+    }
 }
 
 ?>

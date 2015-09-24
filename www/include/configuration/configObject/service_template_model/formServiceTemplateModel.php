@@ -307,6 +307,11 @@ $attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
 $attrsAdvSelect_big = array("style" => "width: 300px; height: 200px;");
 $attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrTimeperiods = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+    'multiple' => false
+);
 
 #
 ## Form begin
@@ -390,7 +395,11 @@ if ($o != "mc") {
     $form->setDefaults(array('service_passive_checks_enabled' => '2'));
  }
 
-$form->addElement('select', 'timeperiod_tp_id', _("Check Period"), $tps);
+$attrTimeperiod1 = array_merge(
+        $attrTimeperiods,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=service&field=timeperiod_tp_id&id=' . $service_id)
+    );
+$form->addElement('select2', 'timeperiod_tp_id', _("Check Period"), array(), $attrTimeperiod1);
 
 $cloneSetMacro = array();
 $cloneSetMacro[] = $form->addElement(
@@ -505,7 +514,11 @@ if ($o == "mc")	{
     $form->setDefaults(array('mc_mod_notifopt_timeperiod'=>'0'));
  }
 
-$form->addElement('select', 'timeperiod_tp_id2', _("Notification Period"), $tps);
+$attrTimeperiod2 = array_merge(
+    $attrTimeperiods,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=service&field=timeperiod_tp_id2&id=' . $service_id)
+);
+$form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), array(), $attrTimeperiod2);
 
 if ($o == "mc")	{
     $mc_mod_notifopts = array();

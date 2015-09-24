@@ -148,6 +148,12 @@ $attrsTextMail = array("size" => "90");
 $attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
 $attrsTextarea = array("rows" => "15", "cols" => "100");
 $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrTimeperiods = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+    'multiple' => false
+);
+
 
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
@@ -214,7 +220,13 @@ $hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Fl
 $hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'hScheduled', 'onClick' => 'uncheckAllH(this);'));
 $hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);'));
 $form->addGroup($hostNotifOpt, 'contact_hostNotifOpts', _("Host Notification Options"), '&nbsp;&nbsp;');
-$form->addElement('select', 'timeperiod_tp_id', _("Host Notification Period"), $notifTps);
+
+$attrTimeperiod1 = array_merge(
+    $attrTimeperiods,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=contact&field=timeperiod_tp_id&id=' . $contact_id)
+);
+$form->addElement('select2', 'timeperiod_tp_id', _("Host Notification Period"), array(), $attrTimeperiod1);
+
 unset($hostNotifOpt);
 
 if ($o == "mc") {
@@ -243,7 +255,13 @@ $svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flap
 $svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'sScheduled', 'onClick' => 'uncheckAllS(this);'));
 $svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);'));
 $form->addGroup($svNotifOpt, 'contact_svNotifOpts', _("Service Notification Options"), '&nbsp;&nbsp;');
-$form->addElement('select', 'timeperiod_tp_id2', _("Service Notification Period"), $notifTps);
+
+$attrTimeperiod2 = array_merge(
+    $attrTimeperiods,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=contact&field=timeperiod_tp_id2&id=' . $contact_id)
+);
+$form->addElement('select2', 'timeperiod_tp_id2', _("Service Notification Period"), array(), $attrTimeperiod2);
+
 if ($o == "mc") {
     $mc_mod_svcmds = array();
     $mc_mod_svcmds[] = HTML_QuickForm::createElement('radio', 'mc_mod_svcmds', null, _("Incremental"), '0');
