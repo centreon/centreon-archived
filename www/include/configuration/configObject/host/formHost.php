@@ -266,18 +266,38 @@ if (($o == "c" || $o == "w") && $host_id) {
         $cr = $res->fetchRow();
         $host['criticality_id'] = $cr['hc_id'];
     }
+    
+    $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1, true);
+    if (!isset($cmdId)) {
+        $cmdId = "";
+    }
+
+    $aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId);
+    foreach($aMacros as $key=>$macro){
+        switch($macro['source']){
+            case 'direct' : 
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'red');
+                break;
+            case 'fromTpl' :
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'blue');
+                break;
+            case 'fromCommand' :
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'green');
+                break;
+            case 'fromService' :
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'orange');
+                break;
+            default :
+                break;
+        }
+    }
 }
 /*
  * Preset values of macros
  */
 $cdata = CentreonData::getInstance();
 
-$aTemplates = $hostObj->getTemplateChain($host_id, array(), -1);
 
-if (!isset($cmdId)) {
-    $cmdId = "";
-}
-$aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId);
 
 $cdata->addJsData('clone-values-macro', htmlspecialchars(
                 json_encode($aMacros), ENT_QUOTES
@@ -518,6 +538,12 @@ $cloneSetMacro[] = $form->addElement(
     'onClick' => 'javascript:change_macro_input_type(this, false)'
         )
 );
+
+$cloneSetMacro[] = $form->addElement(
+        'button', 'reset[#index#]', _('Reset'), array('id' => 'resetMacro_#index#')
+);
+
+
 
 $cloneSetTemplate = array();
 $cloneSetTemplate[] = $form->addElement(

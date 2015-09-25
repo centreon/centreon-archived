@@ -22,12 +22,13 @@
 		{if $v->isFrozen()}
 	   		<span style="padding-right: 10px;">{$v->getLabel()} : {$v->unfreeze()}{$v->setAttribute('disabled', 'disabled')}{$v->toHtml()}   </span>
 		{else}
-                    <span style="padding-right: 10px;">{$v->getLabel()} : {$v->toHtml()}</span>
+                    <span style="padding-right: 10px;"> {if $v->getLabel() != ""}  {$v->getLabel()} : {/if}  {$v->toHtml()}</span>
 		{/if}
                 
             {/foreach}
             <img src="./img/icones/16x16/text_view.gif" onclick='javascript:loadDescription(#index#)' />
             <input type='hidden' id='macroDescription_#index#' name='macroDescription_#index#' value="" />
+            <input type='hidden' id='macroTpl_#index#' name='macroTpl_#index#' value="" />
         {if $isFrozen == 0}
             <span class="clonehandle">
                 <img src="./img/icones/16x16/move.png">

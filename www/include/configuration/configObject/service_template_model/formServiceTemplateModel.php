@@ -153,6 +153,36 @@ if (($o == "c" || $o == "w") && $service_id) {
         $cr = $res->fetchRow();
         $service['criticality_id'] = $cr['sc_id'];
     }
+    
+    
+    $aListTemplate = getListTemplates($pearDB, $service_id);
+
+    if (!isset($cmdId)) {
+        $cmdId = "";
+    }
+    $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId);
+
+    foreach($aMacros as $key=>$macro){
+        switch($macro['source']){
+            case 'direct' : 
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'red');
+                break;
+            case 'fromTpl' :
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'blue');
+                break;
+            case 'fromCommand' :
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'green');
+                break;
+            case 'fromService' :
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'orange');
+                break;
+            default :
+                break;
+        }
+    }
+    
+    
+    
  }
 
 /*
@@ -160,13 +190,6 @@ if (($o == "c" || $o == "w") && $service_id) {
  */
 $cdata = CentreonData::getInstance();
 //$macroArray = $serviceObj->getCustomMacro(isset($service_id) ? $service_id : null);
-
-$aListTemplate = getListTemplates($pearDB, $service_id);
-
-if (!isset($cmdId)) {
-    $cmdId = "";
-}
-$aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId);
 
 
 $cdata->addJsData('clone-values-macro', htmlspecialchars(
@@ -791,7 +814,7 @@ if ($o != "mc")	{
     $form->addRule('service_alias', _("Compulsory Name"), 'required');
     $form->registerRule('exist', 'callback', 'testServiceTemplateExistence');
     $form->addRule('service_description', _("Name is already in use"), 'exist');
-    $form->registerRule('cg_group_exists', 'callback', 'testCg');
+    $form->registerRule('cg_group_exists', 'callback', 'testCg2');
     $form->addRule('service_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
  } elseif ($o == "mc")	{
      if ($form->getSubmitValue("submitMC")) {

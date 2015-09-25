@@ -123,7 +123,7 @@
                             $host['criticality_id'] = $cr['hc_id'];
                         }
 		}
-	}
+        
         /*
          * Preset values of macros
          */
@@ -136,7 +136,33 @@
         }
 
         $macroArray = $hostObj->getMacros($host_id, true, $aTemplates, $cmdId);
+        foreach($macroArray as $key=>$macro){
+            switch($macro['source']){
+                case 'direct' : 
+                    $macroArray[$key]['style'][] = array('prop' => 'background-color', 'value' => 'red');
+                    break;
+                case 'fromTpl' :
+                    $macroArray[$key]['style'][] = array('prop' => 'background-color', 'value' => 'blue');
+                    break;
+                case 'fromCommand' :
+                    $macroArray[$key]['style'][] = array('prop' => 'background-color', 'value' => 'green');
+                    break;
+                case 'fromService' :
+                    $macroArray[$key]['style'][] = array('prop' => 'background-color', 'value' => 'orange');
+                    break;
+                default :
+                    break;
+            }
+        }
+	}
 
+
+
+        
+        
+        
+        
+        
         $cdata->addJsData('clone-values-macro', htmlspecialchars(
                           json_encode($macroArray), 
                           ENT_QUOTES

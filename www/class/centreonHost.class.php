@@ -165,7 +165,7 @@ class CentreonHost {
         }
         $listServices = array();
         while ($row = $res->fetchRow()) {
-            $listServices[$row['service_id']] = $row['service_alias'];
+            $listServices[$row['service_id']] = $row['service_description'];
         }
         /*
          * With hostgroup
@@ -188,7 +188,7 @@ class CentreonHost {
                 return array();
             }
             while ($row = $res->fetchRow()) {
-                $listServices[$row['service_id']] = $row['service_alias'];
+                $listServices[$row['service_id']] = $row['service_description'];
             }
         }
         return $listServices;
@@ -481,7 +481,8 @@ class CentreonHost {
      * 
      * @return void
      */
-    public function insertMacro($hostId, $macroInput = array(), $macroValue = array(), $macroPassword = array(), $macroDescription = array(), $isMassiveChange = false) {
+    public function insertMacro($hostId, $macroInput = array(), $macroValue = array(), $macroPassword = array(), $macroDescription = array(), $isMassiveChange = false, $cmdId = false) {
+        
         if (false === $isMassiveChange) {
             $this->db->query("DELETE FROM on_demand_macro_host 
                 WHERE host_host_id = " . $this->db->escape($hostId));
@@ -499,19 +500,54 @@ class CentreonHost {
             }
         }
 
+
+        $stored = array();
+        $cnt = 0;
         $macros = $macroInput;
         $macrovalues = $macroValue;
-        $stored = array();
+        $this->hasMacroFromHostChanged($hostId,$macros,$macrovalues,$cmdId);
         foreach ($macros as $key => $value) {
             if ($value != "" &&
                     !isset($stored[strtolower($value)])) {
-                $this->db->query("INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `is_password`, `description`, `host_host_id`) 
-                                VALUES ('\$_HOST" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') . ", '".$this->db->escape($macroDescription[$key])."', ". $this->db->escape($hostId) . ")");
+                $this->db->query("INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `is_password`, `description`, `host_host_id`, `macro_order`) 
+                                VALUES ('\$_HOST" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') . ", '".$this->db->escape($macroDescription[$key])."', ". $this->db->escape($hostId) . ", " . $cnt. ")");
+                $cnt ++;
                 $stored[strtolower($value)] = true;
             }
         }
     }
 
+    public function getCustomMacroInDb($hostId = null, $template = null) {
+        $arr = array();
+        $i = 0;
+       
+        if ($hostId) {
+            $sSql = "SELECT host_macro_name, host_macro_value, is_password, description
+                                FROM on_demand_macro_host
+                                WHERE host_host_id = " . intval($hostId) . " ORDER BY macro_order ASC";
+
+            $res = $this->db->query($sSql);
+            
+            while ($row = $res->fetchRow()) {
+                if (preg_match('/\$_HOST(.*)\$$/', $row['host_macro_name'], $matches)) {
+                    $arr[$i]['macroInput_#index#'] = $matches[1];
+                    $arr[$i]['macroValue_#index#'] = $row['host_macro_value'];
+                    $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : NULL;
+                    $arr[$i]['macroDescription_#index#'] = $row['description'];
+                    $arr[$i]['macroDescription'] = $row['description'];
+                    if(!is_null($template)){
+                        $arr[$i]['macroTpl_#index#'] = $template['host_name'];
+                    }
+                    
+                    
+                    $i++;
+                }
+            }
+        }
+        return $arr;
+    }
+    
+    
     /**
      * Get host custom macro
      * 
@@ -525,7 +561,7 @@ class CentreonHost {
         if (!isset($_REQUEST['macroInput']) && $hostId) {
             $sSql = "SELECT host_macro_name, host_macro_value, is_password, description
                                 FROM on_demand_macro_host
-                                WHERE host_host_id = " . intval($hostId) . " ORDER BY host_macro_name";
+                                WHERE host_host_id = " . intval($hostId) . " ORDER BY macro_order ASC";
 
             $res = $this->db->query($sSql);
             
@@ -651,6 +687,25 @@ class CentreonHost {
         }
     }   
     
+    public function hasMacroFromHostChanged($host_id,&$macroInput,&$macroValue,$cmdId = false){
+        
+        $aTemplates = $this->getTemplateChain($host_id, array(), -1);
+
+        if (!isset($cmdId)) {
+            $cmdId = "";
+        }
+        $aMacros = $this->getMacros($host_id, false, $aTemplates, $cmdId);
+        foreach($aMacros as $macro){
+            foreach($macroInput as $ind=>$input){
+                
+                if($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"]){
+                    unset($macroInput[$ind]);
+                    unset($macroValue[$ind]);
+                }
+            }
+        }
+    }
+    
     /**
      * This method get the macro attached to the host
      * 
@@ -668,14 +723,14 @@ class CentreonHost {
         $aMacroInService = array();
         
         //Get macro attached to the host
-        $macroArray = $this->getCustomMacro($iHostId);
+        $macroArray = $this->getCustomMacroInDb($iHostId);
         $iNb = count($macroArray);
 
         //Get macro attached to the template
         $aMacroTemplate = array();
         foreach ($aListTemplate as $template) {
-            if (!empty($template['id'])) {
-                $aMacroTemplate[] = $this->getCustomMacro($template['id']);
+            if (!empty($template['host_id'])) {
+                $aMacroTemplate[] = $this->getCustomMacroInDb($template['host_id'],$template);
             }
         }
 
@@ -685,20 +740,24 @@ class CentreonHost {
             $aMacroInCommande[] = $oCommand->getMacroByIdAndType($iIdCommande, 'host');
         }
         
-        if (!$bIsTemplate) {
+        // finaly we don't want macro from service attached to the host.
+        /*if (!$bIsTemplate) {
             $aServices = $this->getServices($iHostId);
             if (count($aServices) > 0) {
                 $oService = new CentreonService($this->db);
-                foreach ($aServices as $service) {
-                    $aMacroInService = $oService->getCustomMacro($service['service_id']);
+                foreach ($aServices as $serviceId=>$service) {
+                    $aMacroInService[] = $oService->getCustomMacroInDb($serviceId);
                 }
             }
-        }
+        }*/
 
         //filter a macro
         $aTempMacro = array();
         if (count($macroArray) > 0) {
-            $aTempMacro[] = current($macroArray);
+            foreach($macroArray as $directMacro){
+                $directMacro['source'] = 'direct';
+                $aTempMacro[] = $directMacro;
+            }
         }
         
         $iNb = count($aTempMacro);
@@ -706,6 +765,7 @@ class CentreonHost {
         if (count($aMacroTemplate) > 0) {  
             foreach ($aMacroTemplate as $key => $macr) {
                 foreach ($macr as $mm) {
+                    $mm['source'] = 'fromTpl';
                     $aTempMacro[$iNb++] = $mm;
                 }
             }
@@ -715,17 +775,19 @@ class CentreonHost {
         if (count($aMacroInCommande) > 0) {
             $macroCommande = current($aMacroInCommande);
             for ($i = 0; $i < count($macroCommande); $i++) {
+                $macroCommande[$i]['source'] = 'fromCommand';
                 $aTempMacro[$iNb++] = $macroCommande[$i];
             }
         }
 
-        if (count($aMacroInService) > 0) {
+        /*if (count($aMacroInService) > 0) {
             foreach ($aMacroInService as $key => $macr) {
                 foreach ($macr as $mm) {
+                    $mm['source'] = 'fromService';
                     $aTempMacro[$iNb++] = $mm;
                 }
             }
-        }
+        }*/
        
         $aFinalMacro = macro_unique($aTempMacro);
 

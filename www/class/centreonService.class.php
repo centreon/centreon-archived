@@ -330,7 +330,7 @@ class CentreonService {
      * @param bool $isMassiveChange
      * @return void
      */
-    public function insertMacro($serviceId, $macroInput = array(), $macroValue = array(), $macroPassword = array(), $macroDescription = array(), $isMassiveChange = false) {
+    public function insertMacro($serviceId, $macroInput = array(), $macroValue = array(), $macroPassword = array(), $macroDescription = array(), $isMassiveChange = false, $cmdId = false) {
         if (false === $isMassiveChange) {
             $this->db->query("DELETE FROM on_demand_macro_service
                     WHERE svc_svc_id = " . $this->db->escape($serviceId)
@@ -351,17 +351,49 @@ class CentreonService {
 
         $macros = $macroInput;
         $macrovalues = $macroValue;
+        
+        $this->hasMacroFromServiceChanged($this->db,$serviceId,$macros,$macrovalues,$cmdId);
+        
         $stored = array();
+        $cnt = 0;
         foreach ($macros as $key => $value) {
             if ($value != "" &&
                     !isset($stored[strtolower($value)])) {
-                $this->db->query("INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `is_password`, `description`, `svc_svc_id`) 
-                                VALUES ('\$_SERVICE" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') . ", '" . $this->db->escape($macroDescription[$key]) . "', " . $this->db->escape($serviceId) . ")");
+                $this->db->query("INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `is_password`, `description`, `svc_svc_id`, `macro_order`) 
+                                VALUES ('\$_SERVICE" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') . ", '" . $this->db->escape($macroDescription[$key]) . "', " . $this->db->escape($serviceId) . ", " . $cnt . " )");
                 $stored[strtolower($value)] = true;
+                $cnt ++;
             }
         }
     }
 
+    public function getCustomMacroInDb($serviceId = null, $template = null) {
+        $arr = array();
+        $i = 0;
+        if ($serviceId) {
+            $res = $this->db->query("SELECT svc_macro_name, svc_macro_value, is_password, description
+                                FROM on_demand_macro_service
+                                WHERE svc_svc_id = " .
+                    $this->db->escape($serviceId) . "
+                                ORDER BY macro_order ASC");
+            while ($row = $res->fetchRow()) {
+                if (preg_match('/\$_SERVICE(.*)\$$/', $row['svc_macro_name'], $matches)) {
+                    $arr[$i]['macroInput_#index#'] = $matches[1];
+                    $arr[$i]['macroValue_#index#'] = $row['svc_macro_value'];
+                    $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : NULL;
+                    $arr[$i]['macroDescription_#index#'] = $row['description'];
+                    $arr[$i]['macroDescription'] = $row['description'];
+                    if(!is_null($template)){
+                        $arr[$i]['macroTpl_#index#'] = $template['service_description'];
+                    }
+                    $i++;
+                }
+            }
+        }
+        return $arr;
+    }
+    
+    
     /**
      * Get service custom macro
      * 
@@ -376,7 +408,7 @@ class CentreonService {
                                 FROM on_demand_macro_service
                                 WHERE svc_svc_id = " .
                     $this->db->escape($serviceId) . "
-                                ORDER BY svc_macro_name");
+                                ORDER BY macro_order ASC");
             while ($row = $res->fetchRow()) {
                 if (preg_match('/\$_SERVICE(.*)\$$/', $row['svc_macro_name'], $matches)) {
                     $arr[$i]['macroInput_#index#'] = $matches[1];
@@ -483,6 +515,26 @@ class CentreonService {
         return false;
     }
     
+    
+    public function hasMacroFromServiceChanged($pearDB, $service_id,&$macroInput,&$macroValue, $cmdId = false){
+        
+        $aListTemplate = getListTemplates($pearDB, $service_id);
+        
+        if (!isset($cmdId)) {
+            $cmdId = "";
+        }
+        $aMacros = $this->getMacros($service_id, $aListTemplate, $cmdId);
+        foreach($aMacros as $macro){
+            foreach($macroInput as $ind=>$input){
+                if($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"]){
+                    unset($macroInput[$ind]);
+                    unset($macroValue[$ind]);
+                }
+            }
+        }
+    }
+    
+    
     /**
      * This method get the macro attached to the service
      * 
@@ -500,38 +552,45 @@ class CentreonService {
         $aMacroInService = array();
         
         //Get macro attached to the service
-        $macroArray = $this->getCustomMacro($iServiceId);
+        $macroArray = $this->getCustomMacroInDb($iServiceId);
         $iNb = count($macroArray);
 
         //Get macro attached to the template
         $aMacroTemplate = array();
+        
         foreach ($aListTemplate as $template) {
             if (!empty($template)) {
-                $aMacroTemplate[] = $this->getCustomMacro($template);
+                $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_template_model_stm_id'],$template);
             }
         }
-
         //Get macro attached to the command        
         if (!empty($iIdCommande)) {
             $oCommand = new CentreonCommand($this->db);
             $aMacroInService[] = $oCommand->getMacroByIdAndType($iIdCommande, 'service');
         }
 
-        
+        //filter a macro
         $aTempMacro = array();
         if (count($macroArray) > 0) {
-            $aTempMacro[] = current($macroArray);
+            foreach($macroArray as $directMacro){
+                $directMacro['source'] = 'direct';
+                $aTempMacro[] = $directMacro;
+            }
         }
+        
         $iNb = count($aTempMacro);
-        $tpl = current($aMacroTemplate);
-        if (count($aMacroTemplate) > 0) {
-            for ($i = 0; $i < count($tpl); $i++) {
-                $aTempMacro[$iNb++] = $tpl[$i];
+        if (count($aMacroTemplate) > 0) {  
+            foreach ($aMacroTemplate as $key => $macr) {
+                foreach ($macr as $mm) {
+                    $mm['source'] = 'fromTpl';
+                    $aTempMacro[$iNb++] = $mm;
+                }
             }
         }
         $serv = current($aMacroInService);
         if (count($aMacroInService) > 0) {
             for ($i = 0; $i < count($serv); $i++) {
+                $serv[$i]['source'] = 'fromService';
                 $aTempMacro[$iNb++] = $serv[$i];
             }
         }
