@@ -1845,6 +1845,7 @@ CREATE TABLE `on_demand_macro_host` (
   `is_password` tinyint(2) DEFAULT NULL,
   `desciption` text DEFAULT NULL,
   `host_host_id` int(11) NOT NULL,
+  `macro_order` int(11) NULL DEFAULT 0,
   PRIMARY KEY (`host_macro_id`),
   KEY `host_host_id` (`host_host_id`),
   CONSTRAINT `on_demand_macro_host_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE
@@ -1859,6 +1860,7 @@ CREATE TABLE `on_demand_macro_service` (
   `is_password` tinyint(2) DEFAULT NULL,
   `desciption` text DEFAULT NULL,
   `svc_svc_id` int(11) NOT NULL,
+  `macro_order` int(11) NULL DEFAULT 0,
   PRIMARY KEY (`svc_macro_id`),
   KEY `svc_svc_id` (`svc_svc_id`),
   CONSTRAINT `on_demand_macro_service_ibfk_1` FOREIGN KEY (`svc_svc_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE

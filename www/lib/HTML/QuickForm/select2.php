@@ -326,11 +326,11 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      */
     public function setDefaultAjaxDatas()
     {
-        $ajaxDefaultDatas = '$request = jQuery.ajax({
+        $ajaxDefaultDatas = '$request' . $this->getName() . ' = jQuery.ajax({
             url: "'. $this->_defaultDatasetRoute .'",
         });
 
-        $request.success(function (data) {
+        $request' . $this->getName() . '.success(function (data) {
             for (var d = 0; d < data.length; d++) {
                 var item = data[d];
                 
@@ -345,7 +345,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $currentSelect2Object'.$this->getName().'.trigger("change");
         });
         
-        $request.error(function(data) {
+        $request' . $this->getName() . '.error(function(data) {
             
         });
         ';

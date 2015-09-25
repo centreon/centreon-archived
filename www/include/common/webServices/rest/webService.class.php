@@ -36,38 +36,110 @@
  *
  */
 
-class CentreonWebService {
-    protected $pearDB;
-    protected $webServicePaths;
+global $centreon_path;
+require_once $centreon_path . "/www/class/centreonDB.class.php";
+
+class CentreonWebService
+{
+    /**
+     *
+     * @var type 
+     */
+    protected $pearDB = null;
+    
+    /**
+     *
+     * @var array 
+     */
+    protected $arguments= array();
+    
+    /**
+     *
+     * @var string 
+     */
+    protected $token = null;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected static $webServicePaths;
 
     /**
      * Constructor
-     *
-     * @param CentreonDB $db
-     * @return void
+     * @global type $pearDB
      */
     public function __construct()
     {
-        global $centreon_path;
-        $this->pearDB = new CentreonDB();
-
-        $this->webServicePaths = glob($centreon_path . '/www/include/common/webServices/rest/*.class.php');
-
-        $DBRESULT = $this->pearDB->query("SELECT name FROM modules_informations");
-        while ($row = $DBRESULT->fetchRow()) {
-            $this->webServicePaths = array_merge($this->webServicePaths, glob($centreon_path . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php'));
+        if (isset($this->pearDB)) {
+            $this->pearDB = $this->pearDB;
+        } else {
+            $this->pearDB = new CentreonDB();
+        }
+        $this->loadArguments();
+        $this->loadToken();
+    }
+    
+    /**
+     * Load arguments compared http method
+     */
+    protected function loadArguments()
+    {
+        switch ($_SERVER['REQUEST_METHOD']) {
+            case 'GET':
+                $httpParams = $_GET;
+                unset($httpParams['action']);
+                unset($httpParams['object']);
+                $this->arguments = $httpParams;
+                break;
+            case 'POST':
+            case 'PUT':
+            case 'PATCH':
+                $this->arguments = $this->parseBody();
+                break;
+            case 'DELETE':
+                break;
+            default:
+                self::sendJson("Bad request", 400);
+                break;
+        }
+    }
+    
+    /**
+     * Parse the body for get arguments
+     * The body must be JSON format
+     * @return array
+     */
+    protected function parseBody()
+    {
+        try {
+            $httpParams = json_decode(file_get_contents('php://input'));
+        } catch (Exception $e) {
+            self::sendJson("Bad parameters", 400);
+        }
+        return $httpParams;
+    }
+    
+    /**
+     * Load the token for class if exists
+     */
+    protected function loadToken()
+    {
+        if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
+            $this->token = $_SERVER['HTTP_CENTREON_AUTH_TOKEN'];
         }
     }
 
     /**
      * Get webservice
-     *
-     * @return array
+     * 
+     * @param string $object
+     * @return type
      */
-    public function getWebService($object = "", $action = "")
+    protected static function webservicePath($object = "")
     {
         $webServiceClass = array();
-        foreach ($this->webServicePaths as $webServicePath) {
+        foreach (self::$webServicePaths as $webServicePath) {
             if (false !== strpos($webServicePath, '/rest/' . $object . '.class.php')) {
                 require_once $webServicePath;
                 $explodedClassName = explode('_', $object);
@@ -76,15 +148,16 @@ class CentreonWebService {
                     $className .= ucfirst(strtolower($partClassName));
                 }
                 if (class_exists($className)) {
-                    $objectClass = new $className();
-                    if (method_exists($objectClass, $action)) {
-                        $webServiceClass = array(
-                            'path' => $webServicePath,
-                            'class' => $className
-                        );
-                    }
+                    $webServiceClass = array(
+                        'path' => $webServicePath,
+                        'class' => $className
+                    );
                 }
             }
+        }
+        
+        if (count($webServiceClass) === 0) {
+            self::sendJson("Method not found", 404);
         }
 
         return $webServiceClass;
@@ -121,6 +194,71 @@ class CentreonWebService {
         header('Content-type: application/json');
         print json_encode($data);
         exit();
+    }
+    
+    /**
+     * Update the ttl for a token if the authentication is by token
+     */
+    protected static function updateTokenTtl()
+    {
+        if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
+            $query = "UPDATE ws_token SET generate_date = NOW() WHERE token = '" .
+                $this->pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) ."'";
+            try {
+                $this->pearDB->query($query);
+            } catch (Exception $e) {
+                self::sendJson("Internal error", 500);
+            }
+        }
+    }
+
+    /**
+     * Route the webservice to the good method
+     * @global string $centreon_path
+     * @global type $pearDB3
+     */
+    public static function router()
+    {
+        global $centreon_path;
+        global $pearDB;
+        
+        /* Test if route is defined */
+        if (false === isset($_GET['object']) || false === isset($_GET['action'])) {
+            self::sendJson("Bad parameters", 400);
+        }
+        
+        $methodPrefix = strtolower($_SERVER['REQUEST_METHOD']);
+        $object = $_GET['object'];
+        $action = $methodPrefix . ucfirst($_GET['action']);
+        
+        /* Generate path for WebService */
+        self::$webServicePaths = glob($centreon_path . '/www/include/common/webServices/rest/*.class.php');
+        $res = $pearDB->query("SELECT name FROM modules_informations");
+        while ($row = $res->fetchRow()) {
+            self::$webServicePaths = array_merge(self::$webServicePaths, glob($centreon_path . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php'));
+        }
+        
+        $webService = self::webservicePath($object);
+        
+        /* Initialize the webservice */
+        require_once($webService['path']);
+
+        $wsObj = new $webService['class']();
+        
+        if (false === method_exists($wsObj, $action)) {
+            self::sendJson("Method not found", 404);
+        }
+        
+        /* Execute the action */
+        try {
+            self::updateTokenTtl();
+            $data = $wsObj->$action();
+            self::sendJson($data);
+        } catch (RestException $e) {
+            self::sendJson($e->getMessage(), $e->getCode());
+        } catch (Exeption $e) {
+            self::sendJson("Internal server error", 500);
+        }
     }
 }
 ?>

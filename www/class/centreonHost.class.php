@@ -40,7 +40,8 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
  *  Class that contains various methods for managing hosts
  */
 
-class CentreonHost {
+class CentreonHost
+{
 
     protected $db;
     protected $instanceObj;
@@ -554,7 +555,8 @@ class CentreonHost {
      * @param int $hostId
      * @return array
      */
-    public function getCustomMacro($hostId = null) {
+    public function getCustomMacro($hostId = null)
+    {
         $arr = array();
         $i = 0;
        
@@ -594,7 +596,8 @@ class CentreonHost {
      * @param int $hostId
      * @return array
      */
-    public function getTemplates($hostId = null) {
+    public function getTemplates($hostId = null)
+    {
         $arr = array();
         $i = 0;
         if (!isset($_REQUEST['tpSelect']) && $hostId) {
@@ -623,7 +626,8 @@ class CentreonHost {
      * @param array $templates
      * @return void
      */
-    public function setTemplates($hostId, $templates = array(), $remaining = array()) {
+    public function setTemplates($hostId, $templates = array(), $remaining = array())
+    {
         $sql = "DELETE FROM host_template_relation 
                 WHERE host_host_id = " . $this->db->escape($hostId);
         $stored = array();
@@ -658,7 +662,8 @@ class CentreonHost {
      * @param array $cg
      * @return void
      */
-    public function getContactGroupList($host_id, $cg) {
+    public function getContactGroupList($host_id, $cg)
+    {
         $request = "SELECT * FROM host";
         $res = $this->db->query($sql);
         while ($data = $res->fetchRow()) {
@@ -820,13 +825,15 @@ class CentreonHost {
                 }else{
                     $fields = " * ";
                 }
+                
                 $sql = "SELECT " . $fields . " " 
                     . " FROM host h, host_template_relation htr"
                     . " WHERE h.host_id = htr.host_tpl_id"
-                    . " AND htr.host_host_id = ". $this->db->escape($hostId)
+                    . " AND htr.host_host_id = '". CentreonDB::escape($hostId) ."'"
                     . " AND host_activate = '1'"
                     . " AND host_register = '0'"
                     . " ORDER BY `order` ASC";
+                
                 $DBRESULT = $this->db->query($sql);
 
                 while ($row = $DBRESULT->fetchRow()) {
@@ -851,7 +858,8 @@ class CentreonHost {
      *
      * @return array
      */
-    public function getLockedHostTemplates() {
+    public function getLockedHostTemplates()
+    {
         static $arr = null;
 
         if (is_null($arr)) {
@@ -862,6 +870,43 @@ class CentreonHost {
             }
         }
         return $arr;
+    }
+    
+    /**
+     * 
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'host';
+        $parameters['currentObject']['id'] = 'host_id';
+        $parameters['currentObject']['name'] = 'host_name';
+        $parameters['currentObject']['comparator'] = 'host_id';
+
+        switch ($field) {
+            case 'timeperiod_tp_id':
+            case 'timeperiod_tp_id2':
+                $parameters['type'] = 'simple';
+                $parameters['externalObject']['table'] = 'timeperiod';
+                $parameters['externalObject']['id'] = 'tp_id';
+                $parameters['externalObject']['name'] = 'tp_name';
+                $parameters['externalObject']['comparator'] = 'tp_id';
+                break;
+            case 'host_cs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'contact';
+                $parameters['externalObject']['id'] = 'contact_id';
+                $parameters['externalObject']['name'] = 'contact_name';
+                $parameters['externalObject']['comparator'] = 'contact_id';
+                $parameters['relationObject']['table'] = 'contact_host_relation';
+                $parameters['relationObject']['field'] = 'contact_id';
+                $parameters['relationObject']['comparator'] = 'host_host_id';
+                break;
+        }
+        
+        return $parameters;
     }
 }
 

@@ -102,4 +102,31 @@ class CentreonMeta
         }
         return 0;
     }
+    
+    /**
+     * 
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'meta_service';
+        $parameters['currentObject']['id'] = 'meta_id';
+        $parameters['currentObject']['name'] = 'meta_name';
+        $parameters['currentObject']['comparator'] = 'meta_id';
+
+        switch ($field) {
+            case 'check_period':
+            case 'notification_period':
+                $parameters['type'] = 'simple';
+                $parameters['externalObject']['table'] = 'timeperiod';
+                $parameters['externalObject']['id'] = 'tp_id';
+                $parameters['externalObject']['name'] = 'tp_name';
+                $parameters['externalObject']['comparator'] = 'tp_id';
+                break;
+        }
+        
+        return $parameters;
+    }
 }

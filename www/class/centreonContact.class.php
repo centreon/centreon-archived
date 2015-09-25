@@ -102,4 +102,31 @@ class CentreonContact
         }
         return $cgs;
     }
+    
+    /**
+     * 
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'contact';
+        $parameters['currentObject']['id'] = 'contact_id';
+        $parameters['currentObject']['name'] = 'contact_name';
+        $parameters['currentObject']['comparator'] = 'contact_id';
+
+        switch ($field) {
+            case 'timeperiod_tp_id':
+            case 'timeperiod_tp_id2':
+                $parameters['type'] = 'simple';
+                $parameters['externalObject']['table'] = 'timeperiod';
+                $parameters['externalObject']['id'] = 'tp_id';
+                $parameters['externalObject']['name'] = 'tp_name';
+                $parameters['externalObject']['comparator'] = 'tp_id';
+                break;
+        }
+        
+        return $parameters;
+    }
 }

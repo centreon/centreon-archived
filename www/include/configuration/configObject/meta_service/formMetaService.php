@@ -151,18 +151,19 @@
 	 */
 	$calType = array("AVE"=>_("Average"), "SOM"=>_("Sum"), "MIN"=>_("Min"), "MAX"=>_("Max"));
 
-        /*
-         * Data source type
-         */
-        $dsType = array(0 => "GAUGE", 1 => "COUNTER", 2 => "DERIVE", 3 => "ABSOLUTE");
+    /*
+     * Data source type
+     */
+    $dsType = array(0 => "GAUGE", 1 => "COUNTER", 2 => "DERIVE", 3 => "ABSOLUTE");
 
 	/*
 	 * Graphs Template comes from DB -> Store in $graphTpls Array
 	 */
 	$graphTpls = array(NULL=>NULL);
 	$DBRESULT = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-	while($graphTpl = $DBRESULT->fetchRow())
+	while($graphTpl = $DBRESULT->fetchRow()) {
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
+    }
 	$DBRESULT->free();
 
 	/*
@@ -173,18 +174,24 @@
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
-
+    $attrTimeperiods = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+        'multiple' => false
+    );
+    
 	#
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	if ($o == "a")
+	if ($o == "a") {
 		$form->addElement('header', 'title', _("Add a Meta Service"));
-	else if ($o == "c")
+    } elseif ($o == "c") {
 		$form->addElement('header', 'title', _("Modify a Meta Service"));
-	else if ($o == "w")
+    } elseif ($o == "w") {
 		$form->addElement('header', 'title', _("View a Meta Service"));
-
+    }
+    
 	/*
 	 * Service basic information
 	 */
@@ -210,7 +217,13 @@
 	 * Check information
 	 */
 	$form->addElement('header', 'check', _("Meta Service State"));
-	$form->addElement('select', 'check_period', _("Check Period"), $tps);
+    
+    $attrTimeperiod1 = array_merge(
+        $attrTimeperiods,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=meta&field=check_period&id=' . $meta_id)
+    );
+    $form->addElement('select2', 'check_period', _("Check Period"), array(), $attrTimeperiod1);
+    
 	$form->addElement('text', 'max_check_attempts', _("Max Check Attempts"), $attrsText2);
 	$form->addElement('text', 'normal_check_interval', _("Normal Check Interval"), $attrsText2);
 	$form->addElement('text', 'retry_check_interval', _("Retry Check Interval"), $attrsText2);
@@ -242,7 +255,12 @@
 	echo $ams3->getElementJs(false);
 
 	$form->addElement('text', 'notification_interval', _("Notification Interval"), $attrsText2);
-	$form->addElement('select', 'notification_period', _("Notification Period"), $tps);
+    
+    $attrTimeperiod2 = array_merge(
+        $attrTimeperiods,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=meta&field=notification_period&id=' . $meta_id)
+    );
+    $form->addElement('select2', 'notification_period', _("Notification Period"), array(), $attrTimeperiod2);
 
  	$msNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
 	$msNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
