@@ -791,7 +791,12 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 
 
 }
-.ListHeader td 			{padding: 8px 0 !important;border-left-style:solid;border-left-width:0.1px;border-top-style:solid;border-top-width:0.1px;font-weight:700;height:18px;padding:1px 3px;vertical-align:middle;}
+.ListHeader td 	{
+    padding: 8px 4px !important;
+    font-weight:700;
+    height:18px;
+    vertical-align:middle;
+}
 .ListColHeaderPicker 		{padding:1px 3px;text-align:center;vertical-align:middle;width:10px;}
 .ListColHeaderCenter 		{padding:1px 3px;text-align:center;}
 .ListColHeaderLeft 		{padding:1px 3px;text-align:left;}
@@ -940,7 +945,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 }
 .ToolbarTR 			{padding-left:10px;}
 .ToolbarTR td:first-child {
-    width: 32%;
+    width: 40%;
 }
 .ToolbarTR select {border: 1px solid #BBBBBB;}
 .ToolbarPagination	{text-align:center;}

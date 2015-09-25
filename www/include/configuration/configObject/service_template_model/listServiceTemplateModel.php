@@ -183,7 +183,7 @@
 			} elseif ($icone = $mediaObj->getFilename(getMyServiceExtendedInfoField($service["service_id"], "esi_icon_image"))) {
 				$svc_icon = "./img/media/" . $icone;
 			} else {
-				$svc_icon = "./img/icones/16x16/gear.gif";
+				$svc_icon = "./img/icons/service.png";
 			}
 
 			$elemArr[$i] = array("MenuClass" => "list_".$style,

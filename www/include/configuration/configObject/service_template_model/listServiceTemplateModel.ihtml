@@ -42,9 +42,8 @@
 				<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 				<td class="ListColLeft">
 					{if $elemArr[elem].pattern}
-					&nbsp;&nbsp;&nbsp;&nbsp;
 					{/if}
-					{if $elemArr[elem].RowMenu_icon != ""}<img src="{$elemArr[elem].RowMenu_icon}" />&nbsp;{/if}<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a>
+					{if $elemArr[elem].RowMenu_icon != ""}<img src="{$elemArr[elem].RowMenu_icon}" class="ico-14" />{/if}<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a>
 				</td>
 				<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_alias}</a></td>
 				<td class="ListColCenter">{$elemArr[elem].RowMenu_retry}</td>
