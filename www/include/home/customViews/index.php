@@ -89,7 +89,7 @@ try {
     $template->assign('msg', _("No view available. To create a new view, please click \"Add view\" button."));
 
     $formAddView = new HTML_QuickForm('formAddView', 'post', "?p=103");
-    $formAddView->addElement('header', 'title', $title);
+    $formAddView->addElement('header', 'title', _("Create a view"));
     $formAddView->addElement('header', 'information', _("General Information"));
 
 
@@ -247,8 +247,8 @@ try {
      */
     $widgetObj = new CentreonWidget($centreon, $db);
     $formAddWidget = new HTML_QuickForm('formAddWidget', 'post', "?p=103");
-    $formAddWidget->addElement('header', 'w_title', $title);
-    $formAddWidget->addElement('header', 'title', $title);
+    $formAddWidget->addElement('header', 'w_title', _('Add a widget'));
+    $formAddWidget->addElement('header', 'title', _('Add a widget'));
     $formAddWidget->addElement('header', 'information', _("Widget Information"));
 
     /**
