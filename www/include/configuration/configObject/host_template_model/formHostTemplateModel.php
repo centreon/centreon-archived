@@ -123,7 +123,7 @@
                             $host['criticality_id'] = $cr['hc_id'];
                         }
 		}
-	}
+        
         /*
          * Preset values of macros
          */
@@ -136,7 +136,33 @@
         }
 
         $macroArray = $hostObj->getMacros($host_id, true, $aTemplates, $cmdId);
+        foreach($macroArray as $key=>$macro){
+            switch($macro['source']){
+                case 'direct' : 
+                    $macroArray[$key]['style'][] = array('prop' => 'background-color', 'value' => 'red');
+                    break;
+                case 'fromTpl' :
+                    $macroArray[$key]['style'][] = array('prop' => 'background-color', 'value' => 'blue');
+                    break;
+                case 'fromCommand' :
+                    $macroArray[$key]['style'][] = array('prop' => 'background-color', 'value' => 'green');
+                    break;
+                case 'fromService' :
+                    $macroArray[$key]['style'][] = array('prop' => 'background-color', 'value' => 'orange');
+                    break;
+                default :
+                    break;
+            }
+        }
+	}
 
+
+
+        
+        
+        
+        
+        
         $cdata->addJsData('clone-values-macro', htmlspecialchars(
                           json_encode($macroArray), 
                           ENT_QUOTES
@@ -287,6 +313,11 @@ $DBRESULT->free();
 	$attrsAdvSelect2 = array("style" => "width: 300px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$advancedSelectTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+    $attrTimeperiods = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+        'multiple' => false
+    );
 
 	#
 	## Form begin
@@ -412,7 +443,11 @@ $DBRESULT->free();
 	if ($o != "mc")
 		$form->setDefaults(array('host_passive_checks_enabled' => '2'));
 
-	$form->addElement('select', 'timeperiod_tp_id', _("Check Period"), $tps);
+    $attrTimeperiod1 = array_merge(
+        $attrTimeperiods,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=timeperiod_tp_id&id=' . $host_id)
+    );
+	$form->addElement('select2', 'timeperiod_tp_id', _("Check Period"), array(), $attrTimeperiod1);
 
 	##
 	## Notification informations
@@ -503,7 +538,11 @@ $DBRESULT->free();
 		$form->setDefaults(array('mc_mod_notifopt_timeperiod'=>'0'));
 	}
 
-	$form->addElement('select', 'timeperiod_tp_id2', _("Notification Period"), $tps);
+    $attrTimeperiod2 = array_merge(
+        $attrTimeperiods,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=timeperiod_tp_id2&id=' . $host_id)
+    );
+    $form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), array(), $attrTimeperiod2);
 
 	if ($o == "mc")	{
 		$mc_mod_notifopts = array();

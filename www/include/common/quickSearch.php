@@ -113,7 +113,7 @@
 	/*
 	 * Add specific options for search in commands
 	 */
-	if ($p == '608' || $p == '60801' || $p == '60802' || $p == '60803') {
+	if ($p == '608' || $p == '60801' || $p == '60802' || $p == '60803' || $p == '60106') {
 	    $form_search->addElement('hidden', 'type');
 	    $tab['type'] = 2;
 	    if (isset($type)) {

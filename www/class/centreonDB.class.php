@@ -38,7 +38,8 @@
 
 require_once ("DB.php");
 
-class CentreonDB {
+class CentreonDB
+{
 
     private static $instance = array();
     protected $db_type = "mysql";
@@ -67,7 +68,8 @@ class CentreonDB {
      * @param bool $silent | when silent is set to false, it will display an HTML error msg, otherwise it will throw an Exception
      * @return void
      */
-    public function __construct($db = "centreon", $retry = 3, $silent = false) {
+    public function __construct($db = "centreon", $retry = 3, $silent = false)
+    {
         try {
             include("@CENTREON_ETC@/centreon.conf.php");
 
@@ -131,7 +133,8 @@ class CentreonDB {
      * @access protected
      * @return	void
      */
-    protected function displayConnectionErrorPage($msg = null) {
+    protected function displayConnectionErrorPage($msg = null)
+    {
         if (!$msg) {
             $msg = _("Connection failed, please contact your administrator");
         }
@@ -166,7 +169,8 @@ class CentreonDB {
      * @access protected
      * @return	void
      */
-    protected function connectToCentreon($conf_centreon) {
+    protected function connectToCentreon($conf_centreon)
+    {
         if (!isset($conf_centreon["port"])) {
             $conf_centreon["port"] = "3306";
         }
@@ -186,7 +190,8 @@ class CentreonDB {
      * @access protected
      * @return	void
      */
-    protected function connectToCentstorage($conf_centreon) {
+    protected function connectToCentstorage($conf_centreon)
+    {
         if (!isset($conf_centreon["port"])) {
             $conf_centreon["port"] = "3306";
         }
@@ -206,7 +211,8 @@ class CentreonDB {
      * @access protected
      * @return	void
      */
-    protected function connectToNDO($conf_centreon) {
+    protected function connectToNDO($conf_centreon)
+    {
         $DBRESULT = $this->db->query("SELECT db_name, db_prefix, db_user, db_pass, db_host, db_port FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
         if (PEAR::isError($DBRESULT)) {
             print "DB Error : " . $DBRESULT->getDebugInfo() . "<br />";
@@ -238,7 +244,8 @@ class CentreonDB {
      * @access protected
      * @return void
      */
-    protected function connect() {
+    protected function connect()
+    {
         $this->db = DB::connect($this->dsn, $this->options);
         $i = 0;
         while (PEAR::isError($this->db) && ($i < $this->retry)) {
@@ -261,7 +268,8 @@ class CentreonDB {
      * @access public
      * @return	void
      */
-    public function disconnect() {
+    public function disconnect()
+    {
         $this->db->disconnect();
     }
     
@@ -281,7 +289,8 @@ class CentreonDB {
      * @access public
      * @return string
      */
-    public function toString() {
+    public function toString()
+    {
         return $this->db->toString();
     }
 
@@ -293,13 +302,17 @@ class CentreonDB {
      * @param bool $htmlSpecialChars | htmlspecialchars() is used when true
      * @return string
      */
-    static public function escape($str, $htmlSpecialChars = false) {
-        self::check_injection($str);
+    static public function escape($str, $htmlSpecialChars = false)
+    {
+        //self::check_injection($str);
         
         if ($htmlSpecialChars) {
             $str = htmlspecialchars($str);
         }
-        return mysql_real_escape_string($str);
+        
+        $escapedStr = mysql_real_escape_string($str);
+        
+        return $escapedStr;
     }
 
     /**
@@ -309,7 +322,8 @@ class CentreonDB {
      * @param	string	$query_string	query
      * @return	object	query result
      */
-    public function query($query_string = null, $placeHolders = array()) {
+    public function query($query_string = null, $placeHolders = array())
+    {
         $this->requestExecuted++;
         if (count($placeHolders)) {
             $this->db->query("SET NAMES 'utf8'");
@@ -393,7 +407,8 @@ class CentreonDB {
      * @throws Exception
      * @return CentreonDB
      */
-    public static function factory($name = "centreon") {
+    public static function factory($name = "centreon")
+    {
         if (!in_array($name, array('centreon', 'centstorage', 'ndo'))) {
             throw new Exception("The datasource isn't defined in configuration file.");
         }
@@ -407,7 +422,8 @@ class CentreonDB {
      * return number of rows
      *
      */
-    public function numberRows() {
+    public function numberRows()
+    {
         $number = 0;
         $DBRESULT = $this->query("SELECT FOUND_ROWS() AS number");
         $data = $DBRESULT->fetchRow();

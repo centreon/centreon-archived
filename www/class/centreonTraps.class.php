@@ -326,16 +326,16 @@ class Centreon_Traps {
             $first = true;
             $already = array();
             foreach ($services as $id) {
-                if (!$first) {
-                    $insertStr .= ",";
-                } else {
-                    $first = false;
-                }
                 $t = preg_split("/\-/", $id);
                 if (!isset($already[$t[1]])) {
+                    if (!$first) {
+                        $insertStr .= ",";
+                    } else {
+                        $first = false;
+                    }
                     $insertStr .= "($trapId, $t[1])";
+                    $already[$t[1]] = true;
                 }
-                $already[$t[1]] = true;
             }
             if ($insertStr) {
                 $this->_db->query("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");

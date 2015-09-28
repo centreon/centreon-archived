@@ -13,7 +13,7 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <http://www.gnu.org/licenses>.
+ * this program; if not, see <htcontact://www.gnu.org/licenses>.
  *
  * Linking this program statically or dynamically with other modules is making a
  * combined work based on this program. Thus, the terms and conditions of the GNU
@@ -36,35 +36,46 @@
  *
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path . 'www/class/centreonSession.class.php';
-require_once $centreon_path . 'www/class/centreon.class.php';
+global $centreon_path;
+require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . '/webService.class.php';
-require_once dirname(__FILE__) . '/exceptions.php';
+require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
-
-$pearDB = new CentreonDB();
-ini_set("session.gc_maxlifetime", "31536000");
-
-CentreonSession::start();
-
-if (false === isset($_SESSION["centreon"])) {
-    CentreonWebService::sendJson("Unauthorized", 401);
+class CentreonConfigurationContact extends CentreonConfigurationObjects
+{
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getList()
+    {
+        // Check for select2 'q' argument
+        if (false === isset($this->arguments['q'])) {
+            $q = '';
+        } else {
+            $q = $this->arguments['q'];
+        }
+        
+        $queryContact = "SELECT contact_id, contact_name "
+            . "FROM contact "
+            . "WHERE contact_name LIKE '%$q%' "
+            . "ORDER BY contact_name";
+        
+        $DBRESULT = $this->pearDB->query($queryContact);
+        
+        $timeperiodList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $timeperiodList[] = array('id' => $data['contact_id'], 'text' => $data['contact_name']);
+        }
+        
+        return $timeperiodList;
+    }
 }
-
-$pearDB = new CentreonDB();
-
-/*
- * Define Oreon var alias
- */
-if (isset($_SESSION["centreon"])) {
-    $centreon = $_SESSION["centreon"];
-    $oreon = $centreon;
-}
-
-if (false === isset($centreon) || false === is_object($centreon)) {
-    CentreonWebService::sendJson("Unauthorized", 401);
-}
-
-CentreonWebService::router();

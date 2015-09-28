@@ -882,7 +882,7 @@ function insertService($ret = array(), $macro_on_demand = null)
 		 			$my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
 		 			$macName = $my_tab[$macInput];
 		 			$macVal = $my_tab[$macValue];
-		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". CentreonDB::escape(strtoupper($macName)) ."\$', '". CentreonDB::escape($macVal) ."', ". $service_id["MAX(service_id)"] .")";
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`, `macro_order` ) VALUES ('\$_SERVICE". CentreonDB::escape(strtoupper($macName)) ."\$', '". CentreonDB::escape($macVal) ."', ". $service_id["MAX(service_id)"] .", " . $i . ")";
 			 		$DBRESULT = $pearDB->query($rq);
 					$fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];
 					$already_stored[strtolower($my_tab[$macInput])] = 1;
@@ -905,7 +905,8 @@ function insertService($ret = array(), $macro_on_demand = null)
                               $_REQUEST['macroValue'],
                               $_REQUEST['macroPassword'],
                               $macroDescription,
-                              false
+                              false,
+                              $ret["command_command_id"]
                               );
     }
 
@@ -2217,7 +2218,7 @@ function setServiceCriticality($serviceId, $criticalityId) {
  * @param array $listCgs The list of contactgroups to validate
  * @return boolean
  */
-function testCg($list)
+function testCg2($list)
 {
     return CentreonContactgroup::verifiedExists($list);
 }

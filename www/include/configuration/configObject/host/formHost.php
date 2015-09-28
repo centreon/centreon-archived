@@ -266,18 +266,38 @@ if (($o == "c" || $o == "w") && $host_id) {
         $cr = $res->fetchRow();
         $host['criticality_id'] = $cr['hc_id'];
     }
+    
+    $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1, true);
+    if (!isset($cmdId)) {
+        $cmdId = "";
+    }
+
+    $aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId);
+    foreach($aMacros as $key=>$macro){
+        switch($macro['source']){
+            case 'direct' : 
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'red');
+                break;
+            case 'fromTpl' :
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'blue');
+                break;
+            case 'fromCommand' :
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'green');
+                break;
+            case 'fromService' :
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'orange');
+                break;
+            default :
+                break;
+        }
+    }
 }
 /*
  * Preset values of macros
  */
 $cdata = CentreonData::getInstance();
 
-$aTemplates = $hostObj->getTemplateChain($host_id, array(), -1);
 
-if (!isset($cmdId)) {
-    $cmdId = "";
-}
-$aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId);
 
 $cdata->addJsData('clone-values-macro', htmlspecialchars(
                 json_encode($aMacros), ENT_QUOTES
@@ -421,7 +441,17 @@ $attrsAdvSelectsmall = array("style" => "width: 270px; height: 50px;");
 $attrsAdvSelectbig = array("style" => "width: 270px; height: 130px;");
 $attrsTextarea = array("rows" => "4", "cols" => "80");
 $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrTimeperiods = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+    'multiple' => false
+);
 
+$attrContacts = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+    'multiple' => true
+);
 
 #
 ## Form begin
@@ -519,6 +549,12 @@ $cloneSetMacro[] = $form->addElement(
         )
 );
 
+$cloneSetMacro[] = $form->addElement(
+        'button', 'reset[#index#]', _('Reset'), array('id' => 'resetMacro_#index#')
+);
+
+
+
 $cloneSetTemplate = array();
 $cloneSetTemplate[] = $form->addElement(
         'select', 'tpSelect[#index#]', _("Template"), (array(null => null) + $hostObj->getList(false, true))
@@ -578,7 +614,11 @@ if ($o != "mc") {
     $form->setDefaults(array('host_passive_checks_enabled' => '2'));
 }
 
-$form->addElement('select', 'timeperiod_tp_id', _("Check Period"), $tps);
+$attrTimeperiod1 = array_merge(
+        $attrTimeperiods,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=timeperiod_tp_id&id=' . $host_id)
+    );
+$form->addElement('select2', 'timeperiod_tp_id', _("Check Period"), array(), $attrTimeperiod1);
 
 ##
 ## Notification informations
@@ -619,11 +659,17 @@ $form->addElement('checkbox', 'cg_additive_inheritance', _('Contact group additi
 /*
  *  Contacts
  */
-$ams3 = $form->addElement('advmultiselect', 'host_cs', array(_("Linked Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
+/*$ams3 = $form->addElement('advmultiselect', 'host_cs', array(_("Linked Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
 $ams3->setButtonAttributes('add', array('value' => _("Add")));
 $ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 $ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+echo $ams3->getElementJs(false);*/
+
+$attrContact1 = array_merge(
+    $attrContacts,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=host&field=host_cs&id=' . $host_id)
+);
+$form->addElement('select2', 'host_cs', _("Linked Contacts"), array(), $attrContact1);
 
 /*
  *  Contact groups
@@ -652,7 +698,11 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_notifopt_timeperiod' => '0'));
 }
 
-$form->addElement('select', 'timeperiod_tp_id2', _("Notification Period"), $tps);
+$attrContact = array_merge(
+    $attrTimeperiods,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=timeperiod_tp_id2&id=' . $host_id)
+);
+$form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), array(), $attrContact);
 
 if ($o == "mc") {
     $mc_mod_notifopts = array();

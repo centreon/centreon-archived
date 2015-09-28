@@ -1,7 +1,16 @@
 function loadDescription(id)
 {  
     var text = jQuery("#macroDescription_"+id).val();
+
+
     var popDescription = '<div class="MB_alert"><p><textarea rows="4" cols="80">'+text+'</textarea></p><input type="button" onclick="closePop('+id+')" value="OK" /></div>';
+    if(typeof jQuery("#macroTpl_"+id) != 'undefined'){
+        var fromTpl  = jQuery("#macroTpl_"+id).val();
+        popDescription += '<div>'+ fromTpl +'</div>';
+    }
+    
+    
+    
     Modalbox.show(popDescription, {title: 'Description: ' + document.title, width: 800});
 }
 

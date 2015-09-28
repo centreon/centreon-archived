@@ -1918,13 +1918,13 @@ function str2db($string) {
         } else {
             $alreadyProcessed[] = $svcId;
 
-            $query = "SELECT service_template_model_stm_id FROM service WHERE service_id = ".  intval($svcId);
+            $query = "SELECT * FROM service WHERE service_id = ".  intval($svcId);
             $stmt = $pearDB->query($query);
             if ($stmt->numRows()) {
                 $row = $stmt->fetchRow();
                 if ($row['service_template_model_stm_id'] !== NULL) {
                     $svcTmpl = array_merge($svcTmpl, getListTemplates($pearDB, $row['service_template_model_stm_id'], $alreadyProcessed));
-                    $svcTmpl[] = $row['service_template_model_stm_id'];
+                    $svcTmpl[] = $row;
                 }
             }
             return $svcTmpl;
@@ -1948,6 +1948,7 @@ function str2db($string) {
                 for ($j = 0; $j < count($aFinalMacro); $j++ ) {
                     if ($aFinalMacro[$j]['macroInput_#index#'] == $sInput) {
                         $existe = $j;
+                        break;
                     } else {
                         $existe = null;
                     }
@@ -1955,7 +1956,7 @@ function str2db($string) {
                 if (is_null($existe)) {
                     $aFinalMacro[$x++] = $aTempMacro[$i];
                 } else {
-                    $aFinalMacro[$existe] = $aTempMacro[$i];
+                    //$aFinalMacro[$existe] = $aTempMacro[$i];
                 }
             } else {
                 $aFinalMacro[$x++] = $aTempMacro[$i];

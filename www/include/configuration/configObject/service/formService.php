@@ -267,15 +267,40 @@ if (($o == "c" || $o == "w") && $service_id) {
         $service['criticality_id'] = $cr['sc_id'];
     }
 }
-$aListTemplate = getListTemplates($pearDB, $service_id);
+
+if (($o == "c" || $o == "w") && $service_id) {
+    $aListTemplate = getListTemplates($pearDB, $service_id);
+
+
+
+    if (!isset($cmdId)) {
+        $cmdId = "";
+    }
+    
+    $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId);
+
+
+    foreach($aMacros as $key=>$macro){
+        switch($macro['source']){
+            case 'direct' : 
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'red');
+                break;
+            case 'fromTpl' :
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'blue');
+                break;
+            case 'fromCommand' :
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'green');
+                break;
+            case 'fromService' :
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'orange');
+                break;
+            default :
+                break;
+        }
+    }
+}
 
 $cdata = CentreonData::getInstance();
-
-if (!isset($cmdId)) {
-    $cmdId = "";
-}
-$aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId);
-
 $cdata->addJsData('clone-values-macro', htmlspecialchars(
                 json_encode($aMacros), ENT_QUOTES
         )
@@ -355,6 +380,11 @@ $attrsAdvSelect = array("style" => "width: 270px; height: 100px;");
 $attrsAdvSelect_big = array("style" => "width: 270px; height: 200px;");
 $attrsTextarea = array("rows" => "5", "cols" => "40");
 $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrTimeperiods = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+    'multiple' => false
+);
 
 #
 ## Form begin
@@ -437,7 +467,11 @@ if ($o != "mc") {
     $form->setDefaults(array('service_passive_checks_enabled' => '2'));
 }
 
-$form->addElement('select', 'timeperiod_tp_id', _("Check Period"), $tps);
+$attrTimeperiod1 = array_merge(
+        $attrTimeperiods,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=service&field=timeperiod_tp_id&id=' . $service_id)
+    );
+$form->addElement('select2', 'timeperiod_tp_id', _("Check Period"), array(), $attrTimeperiod1);
 
 $cloneSetMacro = array();
 $cloneSetMacro[] = $form->addElement(
@@ -458,6 +492,12 @@ $cloneSetMacro[] = $form->addElement(
     'onClick' => 'javascript:change_macro_input_type(this, false)'
         )
 );
+
+
+$cloneSetMacro[] = $form->addElement(
+        'button', 'reset[#index#]', _('Reset'), array('id' => 'resetMacro_#index#')
+);
+
 
 ##
 ## Notification informations
@@ -543,7 +583,12 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_notifopt_timeperiod' => '0'));
 }
 
-$form->addElement('select', 'timeperiod_tp_id2', _("Notification Period"), $tps);
+
+$attrTimeperiod2 = array_merge(
+    $attrTimeperiods,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=service&field=timeperiod_tp_id2&id=' . $service_id)
+);
+$form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), array(), $attrTimeperiod2);
 
 if ($o == "mc") {
     $mc_mod_notifopts = array();
@@ -882,7 +927,7 @@ if ($o != "mc") {
     $form->registerRule("macHandler", "callback", "serviceMacHandler");
     $form->addRule("macChecker", _("You cannot override reserved macros"), "macHandler");
     
-    $form->registerRule('cg_group_exists', 'callback', 'testCg');
+    $form->registerRule('cg_group_exists', 'callback', 'testCg2');
     $form->addRule('service_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
 
     $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
