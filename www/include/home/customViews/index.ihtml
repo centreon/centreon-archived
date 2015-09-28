@@ -531,8 +531,15 @@ jQuery(function () {
   
   /* Add event action for display form */
   jQuery('.btnAction').on('click', function (e) {
+    var self = this;
     e.stopPropagation();
     e.preventDefault();
+    jQuery('.toggle_wrapper').filter(function () {
+      if (jQuery(this).parents('.cntn').find(self).length === 0) {
+        return true;
+      }
+      return false;
+    }).hide();
     jQuery(this).parents('.cntn').find('.toggle_wrapper').toggle();
   });
   
