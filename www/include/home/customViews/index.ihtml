@@ -237,13 +237,21 @@
     </ul>
   </div>
 </div>
-<script>
-/* Define locale */
-{literal}var lang = { {/literal}
-  'deleteViewMessage': '{t}Deleting this view might impact other users. Are you sure you want to do it?{/t}',
-  'setDefaultMessage': '{t}Set this view as your default view{/t}'
-{literal}}; {/literal}
-  
+<div id="deleteViewConfirm">
+  <div>{t}Deleting this view might impact other users. Are you sure you want to do it?{/t}</div>
+  <div style="text-align: center">
+    <button type="button" class="btc bt_danger">{t}Delete{/t}</button>
+    <button type="button" class="btc">{t}Cancel{/t}</button>
+  </div>
+</div>
+<div id="setDefaultConfirm">
+  <div>{t}Set this view as your default view{/t}</div>
+  <div style="text-align: center">
+    <button type="button" class="btc bt_info">{t}Save{/t}</button>
+    <button type="button" class="btc">{t}Cancel{/t}</button>
+  </div>
+</div>
+<script>  
 {literal}
 /* Display or hide the information for add a new view */
 function infoEmptyTab() {
@@ -404,26 +412,24 @@ function submitDeleteView() {
   var viewId = jQuery(
     jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
   ).data('cvId');
-  if (confirm(lang.deleteViewMessage)) {
-    jQuery.ajax({
-      type: "POST",
-      dataType: "xml",
-      url: "./include/home/customViews/action.php",
-      data: {
-        action: "deleteView",
-        custom_view_id: viewId
-      },
-      success :	function(response) {
-        var view = response.getElementsByTagName('custom_view_id');
-        if (typeof(view) != 'undefined') {
-          deleteTab(viewId);
-          //window.top.location = './main.php?p=103';
-        } else if (typeof(error) != 'undefined') {
-          var errorMsg = error.item(0).firstChild.data;
-        }
+  jQuery.ajax({
+    type: "POST",
+    dataType: "xml",
+    url: "./include/home/customViews/action.php",
+    data: {
+      action: "deleteView",
+      custom_view_id: viewId
+    },
+    success :	function(response) {
+      var view = response.getElementsByTagName('custom_view_id');
+      if (typeof(view) != 'undefined') {
+        deleteTab(viewId);
+        //window.top.location = './main.php?p=103';
+      } else if (typeof(error) != 'undefined') {
+        var errorMsg = error.item(0).firstChild.data;
       }
-    });
-  }
+    }
+  });
 }
  
 /* Set default action */
@@ -431,17 +437,15 @@ function submitSetDefaultView() {
   var viewId = jQuery(
     jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
   ).data('cvId');
-  if (confirm(setDefaultMessage)) {
-    jQuery.ajax({
-      type: "POST",
-      dataType: "xml",
-      url: "./include/home/customViews/action.php",
-      data: {
-        action: "setDefault",
-        custom_view_id: viewId
-      }
-    });
-  }
+  jQuery.ajax({
+    type: "POST",
+    dataType: "xml",
+    url: "./include/home/customViews/action.php",
+    data: {
+      action: "setDefault",
+      custom_view_id: viewId
+    }
+  });
 }
  
 /* Submit action for set rotation */
@@ -488,11 +492,15 @@ jQuery(function () {
   /* Initialize buttons */
   jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}});
   jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}});
-  jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', submitDeleteView);
+  jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
+    jQuery("#deleteViewConfirm").centreonPopin("open");
+  });
   jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}});
   jQuery('.addWidget').button({ icons : { primary: 'ui-icon-plus'}});
   jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
-  jQuery('.setDefault').button({ icons : { primary: 'ui-icon-star'}}).on('click', submitSetDefaultView);
+  jQuery('.setDefault').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
+    jQuery("#setDefaultConfirm").centreonPopin("open");
+  });
   
   /* Initialize tabs */
   jQuery(".ui-tabs-panel").css('overflow', 'auto');
@@ -527,6 +535,23 @@ jQuery(function () {
     jQuery('#formEditView input[name="name"]').val(tabActive.data('name'));
     jQuery('#formEditView input[name="layout[layout]"][value="' + tabActive.data('nbCols') + '"]').prop('checked', true);
     jQuery('#formEditView input[name="public"]').prop('checked', true);
+  });
+  
+  /* Initialize popin */
+  jQuery('#deleteViewConfirm').centreonPopin();
+  jQuery('#deleteViewConfirm button.btc').on('click', function () {
+    jQuery('#deleteViewConfirm').centreonPopin("close");
+  });
+  jQuery('#deleteViewConfirm button.bt_danger').on('click', function () {
+    submitDeleteView();
+  });
+  
+  jQuery('#setDefaultConfirm').centreonPopin();
+  jQuery('#setDefaultConfirm button.btc').on('click', function () {
+    jQuery('#setDefaultConfirm').centreonPopin("close");
+  });
+  jQuery('#setDefaultConfirm button.bt_info').on('click', function () {
+    submitSetDefaultView();
   });
   
   /* Add event action for display form */
