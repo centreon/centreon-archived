@@ -335,6 +335,15 @@ $attrTimeperiods = array(
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
     'multiple' => false
 );
+$attrContacts = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+    'multiple' => true
+);
+$attrCommands = array(
+    'datasourceOrigin' => 'ajax',
+    'multiple' => false
+);
 
 #
 ## Form begin
@@ -380,13 +389,22 @@ $serviceIV[] = HTML_QuickForm::createElement('radio', 'service_is_volatile', nul
 $form->addGroup($serviceIV, 'service_is_volatile', _("Is volatile"), '&nbsp;');
 if ($o != "mc") {
     $form->setDefaults(array('service_is_volatile' => '2'));
- }
+}
 
+$attrCommand1 = array_merge(
+    $attrCommands,
+    array(
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=service&field=command_command_id&id=' . $service_id,
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list&t=2'
+    )
+);
+$checkCommandSelect = $form->addElement('select2', 'command_command_id', _("Check Command"), array(), $attrCommand1);
 if ($o == "mc") {
-    $form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
- } else {
-    $form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, array('id' => "checkCommand", 'onChange' => "changeCommand(this.value);"));
- }
+    $checkCommandSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id","example1");');
+} else {
+    $checkCommandSelect->addJsCallback('change', 'changeCommand(this.value);');
+}
+
 $form->addElement('text', 'command_command_id_arg', _("Args"), $attrsTextLong);
 $form->addElement('text', 'service_max_check_attempts', _("Max Check Attempts"), $attrsText2);
 $form->addElement('text', 'service_normal_check_interval', _("Normal Check Interval"), $attrsText2);
@@ -399,7 +417,15 @@ $form->addGroup($serviceEHE, 'service_event_handler_enabled', _("Event Handler E
 if ($o != "mc") {
     $form->setDefaults(array('service_event_handler_enabled' => '2'));
  }
-$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmdEvent, 'onchange=setArgument(this.form,"command_command_id2","example2")');
+$attrCommand2 = array_merge(
+        $attrCommands,
+        array(
+            'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list',
+            'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=service&field=command_command_id2&id=' . $service_id
+        )
+    );
+$eventHandlerSelect = $form->addElement('select2', 'command_command_id2', _("Event Handler"), array(), $attrCommand2);
+$eventHandlerSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id2","example2");');
 $form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsTextLong);
 
 $serviceACE[] = HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("Yes"), '1');
@@ -419,40 +445,40 @@ if ($o != "mc") {
  }
 
 $attrTimeperiod1 = array_merge(
-        $attrTimeperiods,
-        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=service&field=timeperiod_tp_id&id=' . $service_id)
-    );
+    $attrTimeperiods,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=service&field=timeperiod_tp_id&id=' . $service_id)
+);
 $form->addElement('select2', 'timeperiod_tp_id', _("Check Period"), array(), $attrTimeperiod1);
 
 $cloneSetMacro = array();
 $cloneSetMacro[] = $form->addElement(
-                                     'text', 
-                                     'macroInput[#index#]',
-                                     _('Macro name'),
-                                     array(
-                                           'id' => 'macroInput_#index#',
-                                           'size' => 25
-                                           )
-                                     );
+    'text', 
+    'macroInput[#index#]',
+    _('Macro name'),
+    array(
+        'id' => 'macroInput_#index#',
+        'size' => 25
+    )
+);
 $cloneSetMacro[] = $form->addElement(
-                                     'text', 
-                                     'macroValue[#index#]',
-                                     _('Macro value'),
-                                     array(
-                                           'id' => 'macroValue_#index#',
-                                           'size' => 25
-                                           )
-                                     );
+    'text', 
+    'macroValue[#index#]',
+    _('Macro value'),
+    array(
+        'id' => 'macroValue_#index#',
+        'size' => 25
+    )
+);
 $cloneSetMacro[] = $form->addElement(
-                'checkbox',
-                'macroPassword[#index#]',
-                _('Password'),
-                null,
-                array(
-                    'id' => 'macroPassword_#index#',
-                    'onClick' => 'javascript:change_macro_input_type(this, false)'
-                )
-        );
+    'checkbox',
+    'macroPassword[#index#]',
+    _('Password'),
+    null,
+    array(
+        'id' => 'macroPassword_#index#',
+        'onClick' => 'javascript:change_macro_input_type(this, false)'
+    )
+);
 
 ##
 ## Notification informations
@@ -494,11 +520,11 @@ $form->addElement('checkbox', 'cg_additive_inheritance', _('Contact group additi
 /*
  *  Contacts
  */
-$ams3 = $form->addElement('advmultiselect', 'service_cs', array(_("Implied Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+$attrContact1 = array_merge(
+    $attrContacts,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=service&field=service_cs&id=' . $service_id)
+);
+$form->addElement('select2', 'service_cs', _("Implied Contacts"), array(), $attrContact1);
 
 /*
  *  Contact groups

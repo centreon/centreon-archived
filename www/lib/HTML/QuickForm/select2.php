@@ -101,6 +101,12 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     var $_defaultSelectedOptions;
     
     /**
+     *
+     * @var string 
+     */
+    var $_jsCallback;
+    
+    /**
      * 
      * @param string $elementName
      * @param string $elementLabel
@@ -121,6 +127,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->HTML_QuickForm_select($elementName, $elementLabel, $options, $attributes);
         $this->_elementHtmlName = $this->getName();
         $this->parseCustomAttributes($attributes);
+        $this->_jsCallback = '';
     }
     
     /**
@@ -263,7 +270,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         
         $strJsInitEnding = '});';
         
-        $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $additionnalJs . $jsPost;
+        $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $additionnalJs . $this->_jsCallback . $jsPost;
         
         return $finalJs;
     }
@@ -318,6 +325,18 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 }';
         $ajaxInit .= '} ';
         return $ajaxInit;
+    }
+    
+    /**
+     * 
+     * @param string $event
+     * @param string $callback
+     */
+    public function addJsCallback($event, $callback)
+    {
+        $this->_jsCallback .= ' jQuery("#' . $this->getName() . '").on("' . $event . '", function(){ '
+            . $callback
+            . ' }); ';
     }
     
     /**

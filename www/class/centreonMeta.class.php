@@ -41,12 +41,18 @@
  */
 class CentreonMeta
 {
+    /**
+     *
+     * @var type 
+     */
     protected $db;
     
     /**
      * Constructor
+     * @param type $db
      */
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->db = $db;
     }
     
@@ -55,7 +61,8 @@ class CentreonMeta
      * 
      * @return int
      */
-    public function getRealHostId() {
+    public function getRealHostId()
+    {
         static $hostId = null;
         
         if (is_null($hostId)) {
@@ -80,7 +87,8 @@ class CentreonMeta
      * @param int $metaId
      * @return int
      */
-    public function getRealServiceId($metaId) {
+    public function getRealServiceId($metaId)
+    {
         static $services = null;
         
         if (is_null($services)) {
@@ -124,6 +132,16 @@ class CentreonMeta
                 $parameters['externalObject']['id'] = 'tp_id';
                 $parameters['externalObject']['name'] = 'tp_name';
                 $parameters['externalObject']['comparator'] = 'tp_id';
+                break;
+            case 'ms_cs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'contact';
+                $parameters['externalObject']['id'] = 'contact_id';
+                $parameters['externalObject']['name'] = 'contact_name';
+                $parameters['externalObject']['comparator'] = 'contact_id';
+                $parameters['relationObject']['table'] = 'meta_contact';
+                $parameters['relationObject']['field'] = 'contact_id';
+                $parameters['relationObject']['comparator'] = 'meta_id';
                 break;
         }
         
