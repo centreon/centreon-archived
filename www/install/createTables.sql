@@ -2367,9 +2367,8 @@ CREATE TABLE ws_token (
   contact_id INT NOT NULL,
   token VARCHAR(100) NOT NULL,
   generate_date DATETIME NOT NULL,
-  PRIMARY KEY(contact_id),
   UNIQUE (token),
-  FOREIGN KEY (contact_id) REFERENCES contact (contact_id)
+  FOREIGN KEY (contact_id) REFERENCES contact (contact_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET character_set_client = @saved_cs_client */;

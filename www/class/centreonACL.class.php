@@ -1746,10 +1746,11 @@ class CentreonACL {
             $searchSTR = " hg_id = '".CentreonDB::escape($hg_id)."' AND ";
 # Cant manage empty hostgroup with ACLs. We'll have a problem with acl for conf...
             $groupIds = array_keys($this->accessGroups);
-            $query = " SELECT " . $request['fields'] . " FROM hostgroup, hostgroup_relation, $db_name_acl.centreon_acl" .
-                    " WHERE $searchSTR hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
-                    " AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") " .
-                    " AND $db_name_acl.centreon_acl.host_id = hostgroup_relation.host_host_id " .
+            $query = " SELECT " . $request['fields'] . " FROM hostgroup, acl_res_group_relations, " .
+                    " acl_resources_hg_relations " . 
+                    " WHERE $searchSTR acl_res_group_relations.acl_group_id  IN (" . implode(',', $groupIds) . ") " .
+                    " AND acl_res_group_relations.acl_res_id = acl_resources_hg_relations.acl_res_id " .
+                    " AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id " .
                     $request['order'];
         }
         $res = $pearDB->query($query);
