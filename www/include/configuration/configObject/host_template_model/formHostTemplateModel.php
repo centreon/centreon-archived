@@ -330,7 +330,7 @@ $DBRESULT->free();
     );
     $attrServices = array(
         'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
         'multiple' => true
     );
     $attrHostcategories = array(
@@ -641,15 +641,10 @@ $DBRESULT->free();
 		$form->addGroup($mc_mod_htpl, 'mc_mod_htpl', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_htpl'=>'0'));
 	}
-	/*$ams3 = $form->addElement('advmultiselect', 'host_svTpls', array(_("Linked Service Templates"), _("Available"), _("Selected")), $svTpls, $attrsAdvSelect2, SORT_ASC);
-	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($advancedSelectTemplate);
-	echo $ams3->getElementJs(false);*/
-    
+
     $attrService1 = array_merge(
         $attrServices,
-        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=host&field=host_svTpls&id=' . $host_id)
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=host&field=host_svTpls&id=' . $host_id)
     );
     $form->addElement('select2', 'host_svTpls', _("Linked Service Templates"), array(), $attrService1);
 
