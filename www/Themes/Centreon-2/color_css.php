@@ -158,7 +158,7 @@
 .Tmenu3 .bottom .left 	{	background-color:  <?php print $color1; ?>;}
 .Tmenu3 .bottom .right 	{	background-color:  <?php print $color1; ?>;}
 
-#Tmenu	{	border-right: 1px solid <?php print $menu1_bgcolor; ?>;}
+#Tmenu	{	border-right: 0px solid <?php print $menu1_bgcolor; ?>;}
 #footerline1	{	background-color:<?php print $menu1_bgcolor; ?>;}
 #footerline2	{	background-color:<?php print $footerline2; ?>;}
 
@@ -226,4 +226,6 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 
 .Toolbar_TableBottom {border-color:<?php print $menu1_bgcolor; ?>;}
 
-#mainnav li{	background-image: url("<?php print $bg_image_header; ?>");}
+#mainnav li{	background-color: <?php print $bg_image_header ?>;border: 1px solid <?php print $bg_image_header ?>;}
+#mainnav li.a a{	color: <?php print $bg_image_header ?>; }
+#mainnav li.b a{	color: <?php print $menu2_color ?>;}

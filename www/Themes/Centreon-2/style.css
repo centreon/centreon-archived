@@ -63,6 +63,10 @@ a:hover {text-decoration:underline;}
 
 img,hr {border:0;padding:0}
 
+ul {
+    list-style-type:none;
+}
+
 table {border-collapse:collapse;empty-cells:show;border-spacing:0;}
 
 img 		{margin:0 0 -4px;padding:0;}
@@ -128,6 +132,7 @@ iframe {
     padding: 4px;
     border: none !important;
     outline: none !important;
+    color: #fff;
 }
 a.btc {
     color: #fff !important;
@@ -327,8 +332,47 @@ vertical-align: middle;
 /* ------ END : Header -----*/
 /* ------ START : Menu -----*/
 
-#mainnav 			{list-style-type:none;position:absolute;z-index:2;}
-#mainnav li 		{float:left;padding:3px;}
+#mainnav {
+    float: left;
+}
+#mainnav li {
+    float:left;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    margin-bottom: -1px;
+}
+
+#mainnav li.a {
+    border-bottom: 1px solid #fff;
+}
+
+#mainnav li a {
+    padding: .4em .8em .4em .8em;
+    display: inline-block;
+}
+
+.a {
+    margin-left:2px;
+    margin-top:1px;
+    background-color: #fff !important;
+}
+
+.b {
+    margin-left:3px;
+}
+.c {
+    border-width:1px;
+    float:right;
+    margin-left:5px;
+    margin-top:0;
+}
+
+.headerTabContainer {
+    width: 100%;
+    border-bottom: 1px solid #009fdf;
+    float: left;
+    margin-bottom: 8px;
+}
 
 /* Menu 1 */
 
@@ -597,6 +641,42 @@ div.menuLeft {
 
 
 /* ------ END : Tabs -----*/
+
+/* ------ START : Forms ------ */
+.formTable {
+
+}
+
+.formTable .ListHeader {
+    background: #fff;
+    border-bottom: none;
+}
+.formTable .ListHeader td {
+    border-bottom: none;
+    padding: 0px 4px !important;
+}
+
+.formTable .ListHeader h3 {
+    font-weight: normal;
+    color: #597f00;
+}
+
+.formTable .list_lvl_1 {
+    background-color: #fff;
+}
+
+.formTable .list_lvl_1 .ListColLvl1_name {
+    padding-bottom: 12px;
+}
+
+.formTable .list_lvl_1 h4 {
+    font-weight: normal;
+    color: #818285;
+    margin-left: 12px;
+    padding: 4px;
+}
+/* ------ END : Forms -------- */
+
 /* ------ START : Footer -----*/
 
 #footer {
@@ -825,15 +905,17 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .ListTable,.ListTableMedium,.ListTableSmall,.ListTableSmallArg {border-width:1px;}
 .ListTable td,.ListTableMedium td,.ListTableSmall td,.ListTableSmallArg {padding-bottom:2px;padding-top:2px;}
 
-.tab .ListTable,.tab .ListTableMedium{margin-top:21px;}
+.tab .ListTableMedium {
+    margin-top:21px;
+}
 
 .TableFooter {margin-bottom:4px;margin-top:8px;width:100%;z-index:1;}
 
-.list_lvl_1, .list_lvl_2 {font-size:12px;font-weight:700;vertical-align:middle;}
+.list_lvl_1, .list_lvl_2 {
+    vertical-align:middle;
+}
 
 .ListColLvl2_name {padding-left:15px;}
-
-
 
 /* End Valide */
 
@@ -895,40 +977,12 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .tab 	{display:none;float:left;z-index:1;}
 #tab1 	{display:block;float:left;z-index:1;}
 
-.a a,.b a {
-    color:#636363;
-    font-size:11px;
-    font-weight:700;
-    text-align:left;
-}
-
-.a {
-    border-bottom:none;
-    border-style:solid;
-    border-width:1px;
-    margin-left:5px;
-    margin-top:1px;
-}
-
-.b {
-    border-style:solid;
-    border-width:1px;
-    margin-bottom:1px;
-    margin-left:5px;
-}
-
-.c {
-    border-bottom:none;
-    border-style:solid;
-    border-width:1px;
-    float:right;
-    margin-left:5px;
-    margin-top:0;
-}
 
 #validForm input 	{font-size:11px;font-weight:400;margin-top:5px;}
 #validForm 			{float:right;padding:10px;text-align:center;width:98%;}
-#validFormTop 		{position:absolute;right:6px;top:155px;z-index:10;}
+#validFormTop {
+   float: right;
+}
 
 
 /* ToolBar */

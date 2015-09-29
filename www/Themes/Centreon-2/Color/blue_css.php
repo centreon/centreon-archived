@@ -56,7 +56,7 @@ $color12 = "#242af6";
 $color13 = "#5e5e5e";
 $color14 = "#E8AB5C";
 
-$menu1_bgcolor = "#6056e8";
+$menu1_bgcolor = "#009fdf";
 $menu2_bgcolor = "#009fdf";
 
 $colorHeader_1 = "#cfedf9";
@@ -78,7 +78,9 @@ $color_list_up_hover = "#B2A867";
 $color_list_down = "#ffbbbb";
 $color_list_down_hover = "#dfbbbb";
 
-$bg_image_header = "../Images/bg_header.gif";
+/* Tabs */
+$bg_image_header = "#009fdf";
+
 $menu1_bgimg = "#009fdf";
 
 $menu2_color = "#c1ecff";
