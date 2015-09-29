@@ -125,6 +125,26 @@ class CentreonContact
                 $parameters['externalObject']['name'] = 'tp_name';
                 $parameters['externalObject']['comparator'] = 'tp_id';
                 break;
+            case 'contact_hostNotifCmds':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'command';
+                $parameters['externalObject']['id'] = 'command_id';
+                $parameters['externalObject']['name'] = 'command_name';
+                $parameters['externalObject']['comparator'] = 'command_id';
+                $parameters['relationObject']['table'] = 'contact_hostcommands_relation';
+                $parameters['relationObject']['field'] = 'command_command_id';
+                $parameters['relationObject']['comparator'] = 'contact_contact_id';
+                break;
+            case 'contact_svNotifCmds':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'command';
+                $parameters['externalObject']['id'] = 'command_id';
+                $parameters['externalObject']['name'] = 'command_name';
+                $parameters['externalObject']['comparator'] = 'command_id';
+                $parameters['relationObject']['table'] = 'contact_servicecommands_relation';
+                $parameters['relationObject']['field'] = 'command_command_id';
+                $parameters['relationObject']['comparator'] = 'contact_contact_id';
+                break;
         }
         
         return $parameters;

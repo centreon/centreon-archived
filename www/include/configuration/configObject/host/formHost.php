@@ -455,6 +455,11 @@ $attrCommands = array(
     'datasourceOrigin' => 'ajax',
     'multiple' => false
 );
+$attrHosts = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'multiple' => true
+);
 
 #
 ## Form begin
@@ -774,11 +779,19 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_hpar, 'mc_mod_hpar', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_hpar' => '0'));
 }
-$ams3 = $form->addElement('advmultiselect', 'host_parents', array(_("Parent Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect, SORT_ASC);
+
+/*$ams3 = $form->addElement('advmultiselect', 'host_parents', array(_("Parent Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect, SORT_ASC);
 $ams3->setButtonAttributes('add', array('value' => _("Add")));
 $ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 $ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+echo $ams3->getElementJs(false);*/
+
+/* Host Parents */
+$attrHost1 = array_merge(
+    $attrHosts,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=host_parents&id=' . $host_id)
+);
+$form->addElement('select2', 'host_parents', _("Parent Hosts"), array(), $attrHost1);
 
 if ($o == "mc") {
     $mc_mod_hch = array();
@@ -787,11 +800,17 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_hch, 'mc_mod_hch', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_hch' => '0'));
 }
-$ams3 = $form->addElement('advmultiselect', 'host_childs', array(_("Child Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect, SORT_ASC);
+/*$ams3 = $form->addElement('advmultiselect', 'host_childs', array(_("Child Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect, SORT_ASC);
 $ams3->setButtonAttributes('add', array('value' => _("Add")));
 $ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 $ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+echo $ams3->getElementJs(false);*/
+
+$attrHost2 = array_merge(
+    $attrHosts,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=host_childs&id=' . $host_id)
+);
+$form->addElement('select2', 'host_childs', _("Child Hosts"), array(), $attrHost2);
 
 if ($o == "mc") {
     $mc_mod_hhg = array();

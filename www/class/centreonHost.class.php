@@ -941,6 +941,26 @@ class CentreonHost
                 $parameters['relationObject']['field'] = 'contact_id';
                 $parameters['relationObject']['comparator'] = 'host_host_id';
                 break;
+            case 'host_parents':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'host_hostparent_relation';
+                $parameters['relationObject']['field'] = 'host_parent_hp_id';
+                $parameters['relationObject']['comparator'] = 'host_host_id';
+                break;
+            case 'host_childs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'host_hostparent_relation';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'host_parent_hp_id';
+                break;
         }
         
         return $parameters;
