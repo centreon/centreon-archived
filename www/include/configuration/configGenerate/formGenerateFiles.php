@@ -93,7 +93,7 @@ $form->addElement('checkbox', 'postcmd', _('Post generation command'), null, arr
 
 $tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 4 => _("Force Reload"), 3 => _("External Command"));
 $form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
-$form->setDefaults(array('restart_mode' => '2'));
+$form->setDefaults(array('restart_mode' => '1'));
 
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
