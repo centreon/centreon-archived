@@ -136,18 +136,17 @@ if (!$isAdmin) {
     }
 }
 
+/* Check security session */
+if (!CentreonSession::checkSession($mySessionId, $pearDB)) {
+    CentreonGraph::displayError();
+}
+
+require_once $centreon_path."www/include/common/common-Func.php";
+
 /**
  * Create XML Request Objects
  */
 $obj = new CentreonGraph($mySessionId, $index, 0, 1);
-
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
-    $obj->displayError();
-}
-
-require_once $centreon_path."www/include/common/common-Func.php";
 
 /**
  * Set arguments from GET

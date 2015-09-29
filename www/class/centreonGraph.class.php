@@ -152,11 +152,6 @@ class CentreonGraph {
         $this->serviceObj   = new CentreonService($this->DB);
 
         /*
-         * User ID / Contact ID
-         */
-        $this->user_id = check_session($this->session_id, $this->DB);
-
-        /*
          * Timezone management
          */
         $this->GMT = new CentreonGMT($this->DB);
@@ -1061,7 +1056,7 @@ class CentreonGraph {
     /**
      * Geneate image...
      */
-    public function displayError()
+    public static function displayError()
     {
         $image  = imagecreate(250,100);
         $fond   = imagecolorallocate($image,0xEF,0xF2,0xFB);

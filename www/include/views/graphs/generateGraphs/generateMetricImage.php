@@ -41,20 +41,21 @@
 	 */
 	include "@CENTREON_ETC@/centreon.conf.php";
 
+    require_once "$centreon_path/www/class/centreonDb.class.php";
 	require_once "$centreon_path/www/class/centreonGraph.class.php";
 
-	/**
-	 * Create XML Request Objects
-	 */
-	$obj = new CentreonGraph($_GET["session_id"], $_GET["index"], 0, 1);
+    $pearDB = new CentreonDB();
 
-	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-		;
-	} else {
-		$obj->displayError();
+	if (!CentreonSession::checkSession($_GET['session_id'], $obj->DB)) {
+		CentreonGraph::displayError();
 	}
 
 	require_once $centreon_path."www/include/common/common-Func.php";
+
+    /**
+	 * Create XML Request Objects
+	 */
+	$obj = new CentreonGraph($_GET["session_id"], $_GET["index"], 0, 1);
 
 	/**
 	 * Set One curve
