@@ -323,6 +323,21 @@ $DBRESULT->free();
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
         'multiple' => true
     );
+    $attrContactgroups = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+        'multiple' => true
+    );
+    $attrServices = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
+        'multiple' => true
+    );
+    $attrHostcategories = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=list',
+        'multiple' => true
+    );
     $attrCommands = array(
         'datasourceOrigin' => 'ajax',
         'multiple' => false
@@ -527,11 +542,11 @@ $DBRESULT->free();
 	/*
 	 *  Contact groups
 	 */
-	$ams3 = $form->addElement('advmultiselect', 'host_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
-	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($advancedSelectTemplate);
-	echo $ams3->getElementJs(false);
+    $attrContactgroup1 = array_merge(
+        $attrContactgroups,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=defaultValues&target=host&field=host_cgs&id=' . $host_id)
+    );
+    $form->addElement('select2', 'host_cgs', _("Linked Contact Groups"), array(), $attrContactgroup1);
     
     /*
 	 * Categories
@@ -543,13 +558,13 @@ $DBRESULT->free();
 		$form->addGroup($mc_mod_hhc, 'mc_mod_hhc', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hhc'=>'0'));
 	}
-    $form->addElement('header', 'HClinks', _("Host Categories Relations"));
-    $ams3 = $form->addElement('advmultiselect', 'host_hcs', array(_("Parent Host Categories"), _("Available"), _("Selected")), $hcs, $attrsAdvSelect, SORT_ASC);
-	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($advancedSelectTemplate);
-	echo $ams3->getElementJs(false);
-
+    
+    $attrHostcategory1 = array_merge(
+        $attrHostcategories,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=defaultValues&target=host&field=host_hcs&id=' . $host_id)
+    );
+    $form->addElement('select2', 'host_hcs', _("Parent Host Categories"), array(), $attrHostcategory1);
+    
 	if ($o == "mc")	{
 		$mc_mod_notifopt_notification_interval = array();
 		$mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Incremental"), '0');
@@ -626,11 +641,12 @@ $DBRESULT->free();
 		$form->addGroup($mc_mod_htpl, 'mc_mod_htpl', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_htpl'=>'0'));
 	}
-	$ams3 = $form->addElement('advmultiselect', 'host_svTpls', array(_("Linked Service Templates"), _("Available"), _("Selected")), $svTpls, $attrsAdvSelect2, SORT_ASC);
-	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($advancedSelectTemplate);
-	echo $ams3->getElementJs(false);
+
+    $attrService1 = array_merge(
+        $attrServices,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=host&field=host_svTpls&id=' . $host_id)
+    );
+    $form->addElement('select2', 'host_svTpls', _("Linked Service Templates"), array(), $attrService1);
 
 	#
 	## Sort 3 - Data treatment

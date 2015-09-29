@@ -13,7 +13,7 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <http://www.gnu.org/licenses>.
+ * this program; if not, see <htcontact://www.gnu.org/licenses>.
  *
  * Linking this program statically or dynamically with other modules is making a
  * combined work based on this program. Thus, the terms and conditions of the GNU
@@ -41,48 +41,22 @@ require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
-class CentreonConfigurationHost extends CentreonConfigurationObjects
+class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
 {
-    
     /**
-     *
-     * @var type 
-     */
-    protected $pearDBMonitoring;
-
-    /**
-     * 
+     * Constructor
      */
     public function __construct()
     {
         parent::__construct();
-        $brk = new CentreonBroker($this->pearDB);
-        if ($brk->getBroker() == 'broker') {
-            $this->pearDBMonitoring = new CentreonDB('centstorage');
-        } else {
-            $this->pearDBMonitoring = new CentreonDB('ndo');
-        }
     }
     
     /**
      * 
-     * @param array $args
      * @return array
      */
     public function getList()
     {
-        global $centreon;
-        
-        $userId = $centreon->user->user_id;
-        $isAdmin = $centreon->user->admin;
-        $aclHosts = '';
-        
-        /* Get ACL if user is not admin */
-        if (!$isAdmin) {
-            $acl = new CentreonACL($userId, $isAdmin);
-            $aclHosts .= 'AND h.host_id IN (' . $acl->getHostsString('ID', $this->pearDBMonitoring) . ') ';
-        }
-        
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -90,20 +64,18 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
         
-        $queryHost = "SELECT DISTINCT h.host_name, h.host_id "
-            . "FROM host h "
-            . "WHERE h.host_register = '1' "
-            . "AND h.host_name LIKE '%$q%' "
-            . $aclHosts
-            . "ORDER BY h.host_name";
+        $queryContactgroup = "SELECT cg_id, cg_name "
+            . "FROM contactgroup "
+            . "WHERE cg_name LIKE '%$q%' "
+            . "ORDER BY cg_name";
         
-        $DBRESULT = $this->pearDB->query($queryHost);
+        $DBRESULT = $this->pearDB->query($queryContactgroup);
         
-        $hostList = array();
+        $contactgroupList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $hostList[] = array('id' => htmlentities($data['host_id']), 'text' => htmlentities($data['host_name']));
+            $contactgroupList[] = array('id' => $data['cg_id'], 'text' => $data['cg_name']);
         }
         
-        return $hostList;
+        return $contactgroupList;
     }
 }
