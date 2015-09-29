@@ -42,8 +42,16 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
 
 class CentreonHost
 {
-
+    /**
+     *
+     * @var type 
+     */
     protected $db;
+    
+    /**
+     *
+     * @var type 
+     */
     protected $instanceObj;
 
     /**
@@ -52,7 +60,8 @@ class CentreonHost
      * @param CentreonDB $db
      * @return void
      */
-    function __construct($db) {
+    function __construct($db)
+    {
         $this->db = $db;
         $this->instanceObj = new CentreonInstance($db);
     }
@@ -63,7 +72,8 @@ class CentreonHost
      * @param bool $enable If get only host enable
      * @return array
      */
-    public function getList($enable = false, $template = false) {
+    public function getList($enable = false, $template = false)
+    {
         $hostType = 1;
         if ($template) {
             $hostType = 0;
@@ -93,7 +103,8 @@ class CentreonHost
      * @param bool $withHg If use hostgroup relation (not use yet)
      * @return array
      */
-    public function getHostChild($hostId, $withHg = False) {
+    public function getHostChild($hostId, $withHg = False)
+    {
         if (!is_numeric($hostId)) {
             return array();
         }
@@ -120,7 +131,8 @@ class CentreonHost
      * @param bool $withHg If use hostgroup relation (not use yet)
      * @return array
      */
-    public function getHostRelationTree($withHg = False) {
+    public function getHostRelationTree($withHg = False)
+    {
         $queryGetRelationTree = 'SELECT hp.host_parent_hp_id, h.host_id, h.host_name
  	    	FROM host h, host_hostparent_relation hp
  	    	WHERE hp.host_host_id = h.host_id
@@ -147,7 +159,8 @@ class CentreonHost
      * @param bool $withHg If use hostgroup relation
      * @return array
      */
-    public function getServices($hostId, $withHg = False) {
+    public function getServices($hostId, $withHg = False)
+    {
         /*
          * Get service for a host
          */
@@ -201,7 +214,8 @@ class CentreonHost
      * @param bool $withHg With Hostgroup
      * @return array
      */
-    public function getHostServiceRelationTree($withHg = False) {
+    public function getHostServiceRelationTree($withHg = False)
+    {
         /*
          * Get service for a host
          */
@@ -245,7 +259,8 @@ class CentreonHost
      * @param int $host_id
      * @return string
      */
-    public function getHostName($host_id) {
+    public function getHostName($host_id)
+    {
         static $hosts = null;
 
         if (!isset($host_id) || !$host_id) {
@@ -274,7 +289,8 @@ class CentreonHost
      * @param int $host_id
      * @return string
      */
-    public function getHostAlias($host_id) {
+    public function getHostAlias($host_id)
+    {
         static $aliasTab = array();
 
         if (!isset($host_id) || !$host_id) {
@@ -303,7 +319,8 @@ class CentreonHost
      * @param int $host_id
      * @return string
      */
-    public function getHostAddress($host_id) {
+    public function getHostAddress($host_id)
+    {
         static $addrTab = array();
 
         if (!isset($host_id) || !$host_id) {
@@ -332,7 +349,8 @@ class CentreonHost
      * @param string $host_name
      * @return int
      */
-    public function getHostId($host_name) {
+    public function getHostId($host_name)
+    {
         static $ids = array();
 
         if (!isset($host_name) || !$host_name) {
@@ -362,7 +380,8 @@ class CentreonHost
      * @param int $poller_id
      * @return string
      */
-    public function checkIllegalChar($host_name, $poller_id = null) {
+    public function checkIllegalChar($host_name, $poller_id = null)
+    {
         if($poller_id){
             $res = $this->db->query("SELECT illegal_object_name_chars FROM cfg_nagios where nagios_server_id = " . $this->db->escape($poller_id));
         }else{
@@ -385,7 +404,8 @@ class CentreonHost
      * @param int $host_id
      * @return int
      */
-    public function getHostPollerId($host_id) {
+    public function getHostPollerId($host_id)
+    {
         $rq = "SELECT nagios_server_id
  		       FROM ns_host_relation
  		       WHERE host_host_id = " . $this->db->escape($host_id) . "
@@ -482,7 +502,15 @@ class CentreonHost
      * 
      * @return void
      */
-    public function insertMacro($hostId, $macroInput = array(), $macroValue = array(), $macroPassword = array(), $macroDescription = array(), $isMassiveChange = false, $cmdId = false) {
+    public function insertMacro(
+        $hostId,
+        $macroInput = array(),
+        $macroValue = array(),
+        $macroPassword = array(),
+        $macroDescription = array(),
+        $isMassiveChange = false,
+        $cmdId = false
+    ) {
         
         if (false === $isMassiveChange) {
             $this->db->query("DELETE FROM on_demand_macro_host 
@@ -518,7 +546,8 @@ class CentreonHost
         }
     }
 
-    public function getCustomMacroInDb($hostId = null, $template = null) {
+    public function getCustomMacroInDb($hostId = null, $template = null)
+    {
         $arr = array();
         $i = 0;
        
@@ -692,8 +721,8 @@ class CentreonHost
         }
     }   
     
-    public function hasMacroFromHostChanged($host_id,&$macroInput,&$macroValue,$cmdId = false){
-        
+    public function hasMacroFromHostChanged($host_id,&$macroInput,&$macroValue,$cmdId = false)
+    {
         $aTemplates = $this->getTemplateChain($host_id, array(), -1);
 
         if (!isset($cmdId)) {
@@ -893,6 +922,14 @@ class CentreonHost
                 $parameters['externalObject']['id'] = 'tp_id';
                 $parameters['externalObject']['name'] = 'tp_name';
                 $parameters['externalObject']['comparator'] = 'tp_id';
+                break;
+            case 'command_command_id':
+            case 'command_command_id2':
+                $parameters['type'] = 'simple';
+                $parameters['externalObject']['table'] = 'command';
+                $parameters['externalObject']['id'] = 'command_id';
+                $parameters['externalObject']['name'] = 'command_name';
+                $parameters['externalObject']['comparator'] = 'command_id';
                 break;
             case 'host_cs':
                 $parameters['type'] = 'relation';

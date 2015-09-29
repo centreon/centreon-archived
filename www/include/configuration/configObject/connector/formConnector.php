@@ -98,18 +98,6 @@ try {
 	unset($row);
 	$DBRESULT->free();
 
-
-    /*                                                                                                                                                                                                            
-     * Commands                                                                                                                                                                                                   
-     */
-    $command = array();
-    $DBRESULT = $pearDB->query("SELECT command_id, command_name FROM `command` ORDER BY `command_name`");
-    while ($row = $DBRESULT->fetchRow()) {
-        $command[$row["command_id"]] = $row["command_name"];
-    }
-    unset($row);
-    $DBRESULT->free();
-
     /*
 	 * Nagios Macro
 	 */
@@ -135,7 +123,12 @@ try {
     $attrsText 		= array("size"=>"35");
 	$attrsTextarea 	= array("rows"=>"9", "cols"=>"65", "id"=>"command_line");
     $attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
-
+    $attrCommands = array(
+        'datasourceOrigin' => 'ajax',
+        'multiple' => true,
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=connector&field=command_id&id=' . $connector_id,
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list'
+    );
 
     $form->addElement('text', 'connector_name', _("Connector Name"), $attrsText);
     $form->addElement('text', 'connector_description', _("Connector Description"), $attrsText);
@@ -146,11 +139,7 @@ try {
 	ksort($availableConnectors_list);
 	$form->addElement('select', 'plugins', null, $availableConnectors_list);
 
-    $ams3 = $form->addElement('advmultiselect', 'command_id', array(_("Used by commands"), _("Available"), _("Selected")), $command, $attrsAdvSelect, SORT_ASC);
-    $ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-    $ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-    $ams3->setElementTemplate($eTemplate);
-    echo $ams3->getElementJs(false);
+    $form->addElement('select2', 'command_id', _("Used by command"), array(), $attrCommands);
 
     $cntStatus = array();
     $cntStatus[] = HTML_QuickForm::createElement('radio', 'connector_status', null, _("Enabled"), '1');

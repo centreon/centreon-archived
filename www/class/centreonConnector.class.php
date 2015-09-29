@@ -483,5 +483,32 @@ class CentreonConnector
         }
         return !((boolean) $existsResult->fetchRow());
     }
+    
+    /**
+     * 
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'connector';
+        $parameters['currentObject']['id'] = 'connector_id';
+        $parameters['currentObject']['name'] = 'connector_name';
+        $parameters['currentObject']['comparator'] = 'connector_id';
 
+        switch ($field) {
+            case 'command_id':
+                $parameters['type'] = 'simple';
+                $parameters['reverse'] = true;
+                $parameters['externalObject']['table'] = 'command';
+                $parameters['externalObject']['id'] = 'command_id';
+                $parameters['externalObject']['name'] = 'command_name';
+                $parameters['externalObject']['comparator'] = 'command_id';
+                break;
+  
+        }
+        
+        return $parameters;
+    }
 }

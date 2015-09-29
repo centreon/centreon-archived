@@ -40,9 +40,18 @@
 /**
  *  Class that contains various methods for managing services
  */
-class CentreonService {
-
+class CentreonService
+{
+    /**
+     *
+     * @var type 
+     */
     protected $db;
+    
+    /**
+     *
+     * @var type 
+     */
     protected $instanceObj;
 
     /**
@@ -50,7 +59,8 @@ class CentreonService {
      *
      *  @param CentreonDB $db
      */
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->db = $db;
         $this->instanceObj = new CentreonInstance($db);
     }
@@ -61,7 +71,8 @@ class CentreonService {
      *  @param int $svc_id
      *  @return string
      */
-    public function getServiceDesc($svc_id) {
+    public function getServiceDesc($svc_id)
+    {
         static $svcTab = null;
 
         if (is_null($svcTab)) {
@@ -86,7 +97,8 @@ class CentreonService {
      * @param string $templateName
      * @return int
      */
-    public function getServiceTemplateId($templateName = null) {
+    public function getServiceTemplateId($templateName = null)
+    {
         if (is_null($templateName)) {
             return null;
         }
@@ -110,7 +122,8 @@ class CentreonService {
      *  @param string $host_name
      *  @return int
      */
-    public function getServiceId($svc_desc = null, $host_name) {
+    public function getServiceId($svc_desc = null, $host_name)
+    {
         static $hostSvcTab = array();
 
         if (!isset($hostSvcTab[$host_name])) {
@@ -150,7 +163,8 @@ class CentreonService {
      * @param string $hgName
      * @return int
      */
-    public function getServiceIdFromHgName($service_desc, $hgName) {
+    public function getServiceIdFromHgName($service_desc, $hgName)
+    {
         static $hgSvcTab = array();
 
         if (!isset($hgSvcTab[$hgName])) {
@@ -176,7 +190,8 @@ class CentreonService {
      * @param int $sid
      * @return string
      */
-    public function getServiceName($sid) {
+    public function getServiceName($sid)
+    {
         static $svcTab = array();
 
         if (!isset($svcTab[$sid])) {
@@ -201,7 +216,8 @@ class CentreonService {
      * @param string $name
      * @return string
      */
-    public function checkIllegalChar($name) {
+    public function checkIllegalChar($name)
+    {
         $DBRESULT = $this->db->query("SELECT illegal_object_name_chars FROM cfg_nagios");
         while ($data = $DBRESULT->fetchRow()) {
             $tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
@@ -222,7 +238,8 @@ class CentreonService {
      *  @param int $instanceId
      *  @return string
      */
-    public function replaceMacroInString($svc_id, $string, $antiLoop = null, $instanceId = null) {
+    public function replaceMacroInString($svc_id, $string, $antiLoop = null, $instanceId = null)
+    {
         $rq = "SELECT service_register FROM service WHERE service_id = '" . $svc_id . "' LIMIT 1";
         $DBRES = $this->db->query($rq);
         if (!$DBRES->numRows())
@@ -274,7 +291,8 @@ class CentreonService {
      * 
      * @return array 
      */
-    public function getServiceTemplateList() {
+    public function getServiceTemplateList()
+    {
         $res = $this->db->query("SELECT service_id, service_description 
                             FROM service
                             WHERE service_register = '0'
@@ -330,7 +348,15 @@ class CentreonService {
      * @param bool $isMassiveChange
      * @return void
      */
-    public function insertMacro($serviceId, $macroInput = array(), $macroValue = array(), $macroPassword = array(), $macroDescription = array(), $isMassiveChange = false, $cmdId = false) {
+    public function insertMacro(
+        $serviceId,
+        $macroInput = array(),
+        $macroValue = array(),
+        $macroPassword = array(),
+        $macroDescription = array(),
+        $isMassiveChange = false,
+        $cmdId = false
+    ) {
         if (false === $isMassiveChange) {
             $this->db->query("DELETE FROM on_demand_macro_service
                     WHERE svc_svc_id = " . $this->db->escape($serviceId)
@@ -367,7 +393,14 @@ class CentreonService {
         }
     }
 
-    public function getCustomMacroInDb($serviceId = null, $template = null) {
+    /**
+     * 
+     * @param integer $serviceId
+     * @param array $template
+     * @return array
+     */
+    public function getCustomMacroInDb($serviceId = null, $template = null)
+    {
         $arr = array();
         $i = 0;
         if ($serviceId) {
@@ -400,7 +433,8 @@ class CentreonService {
      * @param int $serviceId
      * @return array
      */
-    public function getCustomMacro($serviceId = null) {
+    public function getCustomMacro($serviceId = null)
+    {
         $arr = array();
         $i = 0;
         if (!isset($_REQUEST['macroInput']) && $serviceId) {
@@ -437,7 +471,8 @@ class CentreonService {
      * 
      * @return array
      */
-    public function getLockedServiceTemplates() {
+    public function getLockedServiceTemplates()
+    {
         static $arr = null;
 
         if (is_null($arr)) {
@@ -460,7 +495,8 @@ class CentreonService {
      * @param string $service_id_field
      * @return void
      */
-    public function cleanServiceRelations($table = "", $host_id_field = "", $service_id_field = "") {
+    public function cleanServiceRelations($table = "", $host_id_field = "", $service_id_field = "")
+    {
         $sql = "DELETE FROM {$table}
                     WHERE NOT EXISTS ( 
                         SELECT hsr1.host_host_id 
@@ -485,7 +521,8 @@ class CentreonService {
      * @param array $cctSCache
      * @return bool
      */
-    public function serviceHasContact($service, $type = 0, $cgSCache, $cctSCache) {
+    public function serviceHasContact($service, $type = 0, $cgSCache, $cctSCache)
+    {
         static $serviceTemplateHasContactGroup = array();
         static $serviceTemplateHasContact = array();
 
@@ -515,9 +552,16 @@ class CentreonService {
         return false;
     }
     
-    
-    public function hasMacroFromServiceChanged($pearDB, $service_id,&$macroInput,&$macroValue, $cmdId = false){
-        
+    /**
+     * 
+     * @param type $pearDB
+     * @param integer $service_id
+     * @param string $macroInput
+     * @param string $macroValue
+     * @param boolean $cmdId
+     */
+    public function hasMacroFromServiceChanged($pearDB, $service_id, &$macroInput, &$macroValue, $cmdId = false)
+    {
         $aListTemplate = getListTemplates($pearDB, $service_id);
         
         if (!isset($cmdId)) {
@@ -620,6 +664,24 @@ class CentreonService {
                 $parameters['externalObject']['id'] = 'tp_id';
                 $parameters['externalObject']['name'] = 'tp_name';
                 $parameters['externalObject']['comparator'] = 'tp_id';
+                break;
+            case 'command_command_id':
+            case 'command_command_id2':
+                $parameters['type'] = 'simple';
+                $parameters['externalObject']['table'] = 'command';
+                $parameters['externalObject']['id'] = 'command_id';
+                $parameters['externalObject']['name'] = 'command_name';
+                $parameters['externalObject']['comparator'] = 'command_id';
+                break;
+            case 'service_cs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'contact';
+                $parameters['externalObject']['id'] = 'contact_id';
+                $parameters['externalObject']['name'] = 'contact_name';
+                $parameters['externalObject']['comparator'] = 'contact_id';
+                $parameters['relationObject']['table'] = 'contact_service_relation';
+                $parameters['relationObject']['field'] = 'contact_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
                 break;
         }
         

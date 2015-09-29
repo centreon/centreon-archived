@@ -13,7 +13,7 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <htcontact://www.gnu.org/licenses>.
+ * this program; if not, see <htcommand://www.gnu.org/licenses>.
  *
  * Linking this program statically or dynamically with other modules is making a
  * combined work based on this program. Thus, the terms and conditions of the GNU
@@ -29,7 +29,7 @@
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
  *
- * For more information : contact@centreon.com
+ * For more information : command@centreon.com
  *
  * SVN : $URL$
  * SVN : $Id$
@@ -41,7 +41,7 @@ require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
-class CentreonConfigurationContact extends CentreonConfigurationObjects
+class CentreonConfigurationCommand extends CentreonConfigurationObjects
 {
     /**
      * Constructor
@@ -64,18 +64,29 @@ class CentreonConfigurationContact extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
         
-        $queryContact = "SELECT contact_id, contact_name "
-            . "FROM contact "
-            . "WHERE contact_name LIKE '%$q%' "
-            . "ORDER BY contact_name";
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
-        
-        $contactList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $contactList[] = array('id' => $data['contact_id'], 'text' => $data['contact_name']);
+        if (false === isset($this->arguments['t'])) {
+            $t = '';
+        } else {
+            $t = $this->arguments['t'];
         }
         
-        return $contactList;
+        $queryCommand = "SELECT command_id, command_name "
+            . "FROM command "
+            . "WHERE command_name LIKE '%$q%' ";
+        
+        if (!empty($t)) {
+            $queryCommand .= "AND command_type = '$t' ";
+        }
+            
+        $queryCommand .= "ORDER BY command_name";
+        
+        $DBRESULT = $this->pearDB->query($queryCommand);
+        
+        $commandList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $commandList[] = array('id' => $data['command_id'], 'text' => $data['command_name']);
+        }
+        
+        return $commandList;
     }
 }

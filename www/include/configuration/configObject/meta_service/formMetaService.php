@@ -179,6 +179,11 @@
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
         'multiple' => false
     );
+    $attrContacts = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+        'multiple' => true
+    );
     
 	#
 	## Form begin
@@ -242,11 +247,12 @@
     /*
 	 *  Contacts
 	 */
-	$ams2 = $form->addElement('advmultiselect', 'ms_cs', array(_("Implied Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
-	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams2->setElementTemplate($eTemplate);
-	echo $ams2->getElementJs(false);
+    $attrContact1 = array_merge(
+        $attrContacts,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=meta&field=ms_cs&id=' . $meta_id)
+    );
+    $form->addElement('select2', 'ms_cs', _("Implied Contacts"), array(), $attrContact1);
+    
 
 	$ams3 = $form->addElement('advmultiselect', 'ms_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));

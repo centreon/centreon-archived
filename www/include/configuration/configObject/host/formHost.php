@@ -446,11 +446,14 @@ $attrTimeperiods = array(
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
     'multiple' => false
 );
-
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
     'multiple' => true
+);
+$attrCommands = array(
+    'datasourceOrigin' => 'ajax',
+    'multiple' => false
 );
 
 #
@@ -581,7 +584,16 @@ $form->addElement('static', 'dupSvTplAssocText', _("Create Services linked to th
 #
 $form->addElement('header', 'check', _("Host Check Properties"));
 
-$form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
+$attrCommand1 = array_merge(
+    $attrCommands,
+    array(
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=host&field=command_command_id&id=' . $host_id,
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list&t=2'
+    )
+);
+$checkCommandSelect = $form->addElement('select2', 'command_command_id', _("Check Command"), array(), $attrCommand1);
+$checkCommandSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id","example1");');
+
 $form->addElement('text', 'command_command_id_arg1', _("Args"), $attrsText);
 
 $form->addElement('text', 'host_max_check_attempts', _("Max Check Attempts"), $attrsText2);
@@ -595,7 +607,16 @@ $form->addGroup($hostEHE, 'host_event_handler_enabled', _("Event Handler Enabled
 if ($o != "mc") {
     $form->setDefaults(array('host_event_handler_enabled' => '2'));
 }
-$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmdEvent, 'onchange=setArgument(this.form,"command_command_id2","example2")');
+
+$attrCommand2 = array_merge(
+        $attrCommands,
+        array(
+            'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list',
+            'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=host&field=command_command_id2&id=' . $host_id
+        )
+    );
+$eventHandlerSelect = $form->addElement('select2', 'command_command_id2', _("Event Handler"), array(), $attrCommand2);
+$eventHandlerSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id2","example2");');
 $form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 
 $hostACE[] = HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Yes"), '1');
@@ -659,12 +680,6 @@ $form->addElement('checkbox', 'cg_additive_inheritance', _('Contact group additi
 /*
  *  Contacts
  */
-/*$ams3 = $form->addElement('advmultiselect', 'host_cs', array(_("Linked Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);*/
-
 $attrContact1 = array_merge(
     $attrContacts,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=host&field=host_cs&id=' . $host_id)
@@ -698,11 +713,11 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_notifopt_timeperiod' => '0'));
 }
 
-$attrContact = array_merge(
+$attrTimeperiod2 = array_merge(
     $attrTimeperiods,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=timeperiod_tp_id2&id=' . $host_id)
 );
-$form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), array(), $attrContact);
+$form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), array(), $attrTimeperiod2);
 
 if ($o == "mc") {
     $mc_mod_notifopts = array();

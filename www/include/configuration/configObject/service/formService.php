@@ -380,9 +380,19 @@ $attrsAdvSelect = array("style" => "width: 270px; height: 100px;");
 $attrsAdvSelect_big = array("style" => "width: 270px; height: 200px;");
 $attrsTextarea = array("rows" => "5", "cols" => "40");
 $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+    'multiple' => false
+);
+$attrContacts = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+    'multiple' => true
+);
+$attrCommands = array(
+    'datasourceOrigin' => 'ajax',
     'multiple' => false
 );
 
@@ -431,11 +441,20 @@ if ($o != "mc") {
     $form->setDefaults(array('service_is_volatile' => '2'));
 }
 
+$attrCommand1 = array_merge(
+    $attrCommands,
+    array(
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=service&field=command_command_id&id=' . $service_id,
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list&t=2'
+    )
+);
+$checkCommandSelect = $form->addElement('select2', 'command_command_id', _("Check Command"), array(), $attrCommand1);
 if ($o == "mc") {
-    $form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
+    $checkCommandSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id","example1");');
 } else {
-    $form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, array('id' => "checkCommand", 'onChange' => "changeCommand(this.value);"));
+    $checkCommandSelect->addJsCallback('change', 'changeCommand(this.value);');
 }
+
 $form->addElement('text', 'command_command_id_arg', _("Args"), $attrsText);
 $form->addElement('text', 'service_max_check_attempts', _("Max Check Attempts"), $attrsText2);
 $form->addElement('text', 'service_normal_check_interval', _("Normal Check Interval"), $attrsText2);
@@ -448,7 +467,17 @@ $form->addGroup($serviceEHE, 'service_event_handler_enabled', _("Event Handler E
 if ($o != "mc") {
     $form->setDefaults(array('service_event_handler_enabled' => '2'));
 }
-$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmdEvent, 'onchange=setArgument(this.form,"command_command_id2","example2")');
+
+$attrCommand2 = array_merge(
+        $attrCommands,
+        array(
+            'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list',
+            'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=service&field=command_command_id2&id=' . $service_id
+        )
+    );
+$eventHandlerSelect = $form->addElement('select2', 'command_command_id2', _("Event Handler"), array(), $attrCommand2);
+$eventHandlerSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id2","example2");');
+
 $form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 
 $serviceACE[] = HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("Yes"), '1');
@@ -480,22 +509,33 @@ $cloneSetMacro[] = $form->addElement(
     'size' => 25
         )
 );
-$cloneSetMacro[] = $form->addElement(
-        'text', 'macroValue[#index#]', _('Macro value'), array(
-    'id' => 'macroValue_#index#',
-    'size' => 25
-        )
-);
-$cloneSetMacro[] = $form->addElement(
-        'checkbox', 'macroPassword[#index#]', _('Password'), null, array(
-    'id' => 'macroPassword_#index#',
-    'onClick' => 'javascript:change_macro_input_type(this, false)'
-        )
-);
-
 
 $cloneSetMacro[] = $form->addElement(
-        'button', 'reset[#index#]', _('Reset'), array('id' => 'resetMacro_#index#')
+    'text',
+    'macroValue[#index#]',
+    _('Macro value'),
+    array(
+        'id' => 'macroValue_#index#',
+        'size' => 25
+    )
+);
+
+$cloneSetMacro[] = $form->addElement(
+    'checkbox',
+    'macroPassword[#index#]',
+    _('Password'),
+    null,
+    array(
+        'id' => 'macroPassword_#index#',
+        'onClick' => 'javascript:change_macro_input_type(this, false)'
+    )
+);
+
+$cloneSetMacro[] = $form->addElement(
+    'button',
+    'reset[#index#]',
+    _('Reset'),
+    array('id' => 'resetMacro_#index#')
 );
 
 
@@ -540,11 +580,13 @@ $form->addElement('checkbox', 'cg_additive_inheritance', _('Contact group additi
 /*
  *  Contacts
  */
-$ams3 = $form->addElement('advmultiselect', 'service_cs', array(_("Implied Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+$attrContact1 = array_merge(
+    $attrContacts,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=service&field=service_cs&id=' . $service_id)
+);
+$form->addElement('select2', 'service_cs', _("Implied Contacts"), array(), $attrContact1);
+
+
 
 /*
  *  Contact groups
@@ -712,7 +754,6 @@ while ($rmnftr = $DBRESULT->fetchRow()) {
 $DBRESULT->free();
 $attrs2 = array('onchange' => "javascript:getTrap(this.form.elements['mnftr'].value); return false;");
 $form->addElement('select', 'mnftr', _("Vendor Name"), $mnftr, $attrs2);
-
 
 include("./include/configuration/configObject/traps/ajaxTrap_js.php");
 
@@ -974,14 +1015,17 @@ $tpl->assign("sort2", _("Relations"));
 $tpl->assign("sort3", _("Data Processing"));
 $tpl->assign("sort4", _("Service Extended Info"));
 $tpl->assign("sort5", _("Macros"));
-$tpl->assign('javascript', '
-            <script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>
-            <script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>
-            <script type="text/javascript" src="./include/common/javascript/centreon/macroLoadDescription.js"></script>
-        ');
+$tpl->assign('javascript',
+    '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>'
+    . '<script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>'
+    . '<script type="text/javascript" src="./include/common/javascript/centreon/macroLoadDescription.js"></script>'
+);
 $tpl->assign('time_unit', " * " . $oreon->optGen["interval_length"] . " " . _("seconds"));
 $tpl->assign("p", $p);
-$tpl->assign("helpattr", 'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
+);
 
 // prepare help texts
 $helptext = "";
@@ -1007,7 +1051,12 @@ if ($form->validate() && $from_list_menu == false) {
         }
     }
     $o = "w";
-    $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&service_id=" . $serviceObj->getValue() . "'"));
+    $form->addElement(
+        "button",
+        "change",
+        _("Modify"),
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&service_id=" . $serviceObj->getValue() . "'")
+    );
     $form->freeze();
     $valid = true;
 } elseif ($form->isSubmitted()) {

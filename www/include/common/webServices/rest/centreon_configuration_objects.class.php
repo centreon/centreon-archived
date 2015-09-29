@@ -100,7 +100,18 @@ class CentreonConfigurationObjects extends CentreonWebService
          * 
          */
         if ($defaultValuesParameters['type'] === 'simple') {
-            $selectedValues = $this->retrieveSimpleValues($defaultValuesParameters['currentObject'], $id, $field);
+            if (isset($defaultValuesParameters['reverse']) && $defaultValuesParameters['reverse']) {
+                $selectedValues = $this->retrieveSimpleValues(
+                    array(
+                        'table' => $defaultValuesParameters['externalObject']['table'],
+                        'id' => $defaultValuesParameters['currentObject']['id']
+                    ),
+                    $id,
+                    $defaultValuesParameters['externalObject']['id']
+                );
+            } else {
+                $selectedValues = $this->retrieveSimpleValues($defaultValuesParameters['currentObject'], $id, $field);
+            }
         } elseif ($defaultValuesParameters['type'] === 'relation') {
             $selectedValues = $this->retrieveRelatedValues($defaultValuesParameters['relationObject'], $id);
         } else {
@@ -120,8 +131,8 @@ class CentreonConfigurationObjects extends CentreonWebService
     
     /**
      * 
-     * @param type $externalObject
-     * @param type $values
+     * @param array $externalObject
+     * @param array $values
      */
     private function retrieveExternalObjectDatas($externalObject, $values)
     {
