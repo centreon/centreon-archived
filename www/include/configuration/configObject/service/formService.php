@@ -395,6 +395,11 @@ $attrCommands = array(
     'datasourceOrigin' => 'ajax',
     'multiple' => false
 );
+$attrHosts = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'multiple' => true
+);
 
 #
 ## Form begin
@@ -689,14 +694,22 @@ if ($o == "mc") {
 
 $sgReadOnly = false;
 if ($form_service_type == "BYHOST") {
-    $ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked with Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
+    /*$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked with Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
     $ams3->setButtonAttributes('add', array('value' => _("Add")));
     $ams3->setButtonAttributes('remove', array('value' => _("Remove")));
     $ams3->setElementTemplate($eTemplate);
-    echo $ams3->getElementJs(false);
+    echo $ams3->getElementJs(false);*/
     if (isset($service['service_hPars']) && count($service['service_hPars']) > 1) {
         $sgReadOnly = true;
     }
+    
+    
+    $attrHost1 = array_merge(
+        $attrHosts,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=service&field=service_hPars&id=' . $service_id)
+    );
+    $form->addElement('select2', 'service_hPars', _("Linked with Hosts"), array(), $attrHost1);
+    
 }
 
 if ($form_service_type == "BYHOSTGROUP") {

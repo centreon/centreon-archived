@@ -683,6 +683,16 @@ class CentreonService
                 $parameters['relationObject']['field'] = 'contact_id';
                 $parameters['relationObject']['comparator'] = 'service_service_id';
                 break;
+            case 'service_hPars':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'host_service_relation';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
         }
         
         return $parameters;

@@ -41,8 +41,9 @@ require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
-class CentreonConfigurationService extends CentreonConfigurationObjects
+class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
 {
+    
     /**
      *
      * @var type 
@@ -74,12 +75,12 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
-        $aclServices = '';
+        $aclHostcategories = '';
         
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
-            $aclServices .= 'AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
+            $aclHostcategories .= 'AND hg.hg_id IN (' . $acl->getHostCategoriesString('ID') . ') ';
         }
         
         // Check for select2 'q' argument
@@ -89,59 +90,19 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
         
-        $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
-            . "FROM host h, service s, host_service_relation hsr "
-            . 'WHERE hsr.host_host_id = h.host_id '
-            . "AND hsr.service_service_id = s.service_id "
-            . "AND h.host_register = '1' AND s.service_register = '1' "
-            . "AND s.service_description LIKE '%$q%' "
-            . $aclServices
-            . "ORDER BY h.host_name";
+        $queryHostcategory = "SELECT DISTINCT hc.hc_name, hc.hc_id "
+            . "FROM hostcategories hc "
+            . "WHERE hc.hc_name LIKE '%$q%' "
+            . $aclHostcategories
+            . "ORDER BY hc.hc_name";
         
-        $DBRESULT = $this->pearDB->query($queryService);
+        $DBRESULT = $this->pearDB->query($queryHostcategory);
         
-        $serviceList = array();
+        $hostcategoryList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
-            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
-            
-            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
+            $hostcategoryList[] = array('id' => htmlentities($data['hc_id']), 'text' => htmlentities($data['hc_name']));
         }
         
-        return $serviceList;
-    }
-    
-    /**
-     * 
-     * @param type $args
-     * @return array
-     */
-    public function getDefaultEscalationValues()
-    {
-        $defaultValues = array();
-        
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
-            $q = $this->arguments['q'];
-        }
-        
-        $queryService = "SELECT distinct host_host_id, host_name, service_service_id, service_description
-            FROM service s, escalation_service_relation esr, host h
-            WHERE s.service_id = esr.service_service_id
-            AND esr.host_host_id = h.host_id
-            AND h.host_register = '1'
-            AND esr.escalation_esc_id = " . $q;
-        $DBRESULT = $this->pearDB->query($queryService);
-        
-        while ($data = $DBRESULT->fetchRow()) {
-            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
-            $serviceCompleteId = $data['host_host_id'] . '-' . $data['service_service_id'];
-            
-            $defaultValues[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
-        }
-        
-        return $defaultValues;
+        return $hostcategoryList;
     }
 }

@@ -451,6 +451,11 @@ $attrContacts = array(
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
     'multiple' => true
 );
+$attrContactgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+    'multiple' => true
+);
 $attrCommands = array(
     'datasourceOrigin' => 'ajax',
     'multiple' => false
@@ -458,6 +463,16 @@ $attrCommands = array(
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'multiple' => true
+);
+$attrHostgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+    'multiple' => true
+);
+$attrHostcategories = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=list',
     'multiple' => true
 );
 
@@ -614,12 +629,12 @@ if ($o != "mc") {
 }
 
 $attrCommand2 = array_merge(
-        $attrCommands,
-        array(
-            'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list',
-            'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=host&field=command_command_id2&id=' . $host_id
-        )
-    );
+    $attrCommands,
+    array(
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list',
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=host&field=command_command_id2&id=' . $host_id
+    )
+);
 $eventHandlerSelect = $form->addElement('select2', 'command_command_id2', _("Event Handler"), array(), $attrCommand2);
 $eventHandlerSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id2","example2");');
 $form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
@@ -641,9 +656,9 @@ if ($o != "mc") {
 }
 
 $attrTimeperiod1 = array_merge(
-        $attrTimeperiods,
-        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=timeperiod_tp_id&id=' . $host_id)
-    );
+    $attrTimeperiods,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=timeperiod_tp_id&id=' . $host_id)
+);
 $form->addElement('select2', 'timeperiod_tp_id', _("Check Period"), array(), $attrTimeperiod1);
 
 ##
@@ -694,11 +709,12 @@ $form->addElement('select2', 'host_cs', _("Linked Contacts"), array(), $attrCont
 /*
  *  Contact groups
  */
-$ams3 = $form->addElement('advmultiselect', 'host_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+$attrContactgroup1 = array_merge(
+    $attrContactgroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=defaultValues&target=host&field=host_cgs&id=' . $host_id)
+);
+$form->addElement('select2', 'host_cgs', _("Linked Contact Groups"), array(), $attrContactgroup1);
+
 
 if ($o == "mc") {
     $mc_mod_notifopt_notification_interval = array();
@@ -780,16 +796,10 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_hpar' => '0'));
 }
 
-/*$ams3 = $form->addElement('advmultiselect', 'host_parents', array(_("Parent Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);*/
-
 /* Host Parents */
 $attrHost1 = array_merge(
     $attrHosts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=host_parents&id=' . $host_id)
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=host&field=host_parents&id=' . $host_id)
 );
 $form->addElement('select2', 'host_parents', _("Parent Hosts"), array(), $attrHost1);
 
@@ -800,15 +810,10 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_hch, 'mc_mod_hch', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_hch' => '0'));
 }
-/*$ams3 = $form->addElement('advmultiselect', 'host_childs', array(_("Child Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);*/
 
 $attrHost2 = array_merge(
     $attrHosts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=host_childs&id=' . $host_id)
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=host&field=host_childs&id=' . $host_id)
 );
 $form->addElement('select2', 'host_childs', _("Child Hosts"), array(), $attrHost2);
 
@@ -819,11 +824,12 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_hhg, 'mc_mod_hhg', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_hhg' => '0'));
 }
-$ams3 = $form->addElement('advmultiselect', 'host_hgs', array(_("Parent Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+
+$attrHostgroup1 = array_merge(
+    $attrHostgroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=host&field=host_hgs&id=' . $host_id)
+);
+$form->addElement('select2', 'host_hgs', _("Parent Host Groups"), array(), $attrHostgroup1);
 
 if ($o == "mc") {
     $mc_mod_hhc = array();
@@ -832,11 +838,12 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_hhc, 'mc_mod_hhc', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_hhc' => '0'));
 }
-$ams3 = $form->addElement('advmultiselect', 'host_hcs', array(_("Parent Host Categories"), _("Available"), _("Selected")), $hcs, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+
+$attrHostcategory1 = array_merge(
+    $attrHostcategories,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=defaultValues&target=host&field=host_hcs&id=' . $host_id)
+);
+$form->addElement('select2', 'host_hcs', _("Parent Host Categories"), array(), $attrHostcategory1);
 
 if ($o == "mc") {
     $mc_mod_nsid = array();

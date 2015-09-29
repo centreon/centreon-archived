@@ -157,6 +157,16 @@ $attrsTextLong 	= array("size"=>"50");
 $attrsAdvSelect = array("style" => "width: 300px; height: 220px;");
 $attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
 $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrHosts = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'multiple' => true
+);
+$attrHostgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+    'multiple' => true
+);
 
 /*
  * Create formulary
@@ -179,18 +189,19 @@ $form->addElement('text', 		'hg_alias', _("Alias"), $attrsText);
 /*
  * Hosts Selection
  */
-$form->addElement('header', 'relation', _("Relations"));
-$ams1 = $form->addElement('advmultiselect', 'hg_hosts', array(_("Linked Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);
 
-$ams1 = $form->addElement('advmultiselect', 'hg_hg', array(_("Linked Host Groups"), _("Available"), _("Selected")), $hostGroups, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);
+
+$attrHost1 = array_merge(
+    $attrHosts,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=hostgroups&field=hg_hosts&id=' . $hg_id)
+);
+$form->addElement('select2', 'hg_hosts', _("Linked Hosts"), array(), $attrHost1);
+
+$attrHostgroup1 = array_merge(
+    $attrHostgroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=hostgroups&field=hg_hg&id=' . $hg_id)
+);
+$form->addElement('select2', 'hg_hg', _("Linked Host Groups"), array(), $attrHostgroup1);
 
 /*
  * Extended information
