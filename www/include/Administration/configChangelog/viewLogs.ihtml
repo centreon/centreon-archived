@@ -1,16 +1,22 @@
 <form name='form' method='POST'>
-<table class="ajaxOption">
+<table class="ajaxOption table">
 	<tr>
-		<td>{$search_object_str} : <input type='text' name='searchO' value='{$searchO}' /></td>
-		<td>{$search_user_str} : <input type='text' name='searchU' value='{$searchU}' /></td>
-		<td>&nbsp;&nbsp;&nbsp;{$obj_str} : <select name='otype' />{$obj_type}</select></td>
-		<td><input type='submit' name='SearchB' value='{$Search}' /></td>
+        <td><h4>{$search_object_str}</h4></td>
+		<td><h4>{$search_user_str}</h4></td>
+        <td><h4>{$obj_str}</h4></td>
+		<td></td>
 	</tr>
+    <tr>
+      <td><input type='text' name='searchO' value='{$searchO}' /></td>
+      <td><input type='text' name='searchU' value='{$searchU}' /></td>
+      <td><select name='otype'>{$obj_type}</select></td>
+      <td><input type='submit' class="btc bt_success" name='SearchB' value='{$Search}' /></td>
+    </tr>
 </table>
 <br />
-<table class="ToolbarTable">
+<table class="ToolbarTable table">
         <tr class="ToolbarTR">
-                <td style='width:30%;' class='Toolbar_TDSelectAction_Top'><input name="p" value="{$p}" type="hidden">&nbsp;</td>
+                <td style='width:30%;'><input name="p" value="{$p}" type="hidden">&nbsp;</td>
                 {php}
                    include('./include/common/pagination.php');
                 {/php}
@@ -59,9 +65,9 @@
 		</tr>
 	{/foreach}
 </table>
-<table class="ToolbarTable">
+<table class="ToolbarTable table">
         <tr class="ToolbarTR">
-                <td style='width:30%;' class='Toolbar_TDSelectAction_Bottom'><input name="p" value="{$p}" type="hidden">&nbsp;</td>
+                <td style='width:30%;'><input name="p" value="{$p}" type="hidden">&nbsp;</td>
                 {php}
                    include('./include/common/pagination.php');
                 {/php}
