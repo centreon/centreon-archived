@@ -50,12 +50,14 @@
 		CentreonGraph::displayError();
 	}
 
+    $contactId = CentreonSession::getUser($_GET["session_id"]);
+
 	require_once $centreon_path."www/include/common/common-Func.php";
 
     /**
 	 * Create XML Request Objects
 	 */
-	$obj = new CentreonGraph($_GET["session_id"], $_GET["index"], 0, 1);
+	$obj = new CentreonGraph($contactId, $_GET["index"], 0, 1);
 
 	/**
 	 * Set One curve
@@ -74,8 +76,6 @@
 	 */
 	$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );
 	$obj->setRRDOption("end",   $obj->checkArgument("end", $_GET, time()) );
-
- 	$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
 
 	/**
 	 * Template Management

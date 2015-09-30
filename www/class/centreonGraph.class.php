@@ -68,8 +68,6 @@ class CentreonGraph {
     var $hostObj;
     var $serviceObj;
 
-    var $session_id;
-
     /*
      * private vars
      */
@@ -117,25 +115,23 @@ class CentreonGraph {
      * $obj = new CentreonBGRequest($_GET["session_id"], 1, 1, 0, 1);
      * </code>
      *
-     * $session_id  char    session id
+     * $user_id     char    The user id
      * $dbneeds     bool    flag for enable ndo connexion
      * $headType    bool    send XML header
      * $debug       bool    debug flag.
      */
-    public function __construct($session_id, $index = null, $debug, $compress = null)
+    public function __construct($user_id, $index = null, $debug, $compress = null)
     {
         if (!isset($debug)) {
             $this->debug = 0;
         }
 
         (!isset($compress)) ? $this->compress = 1 : $this->compress = $compress;
-
-        if (!isset($session_id)) {
-            print "Your might check your session id";
-            exit(1);
-        } else {
-            $this->session_id = htmlentities($session_id, ENT_QUOTES, "UTF-8");
-        }
+        
+        /*
+         * User ID / Contact ID
+         */
+        $this->user_id = $user_id;
 
         $this->index = htmlentities($index, ENT_QUOTES, "UTF-8");
 
@@ -149,13 +145,13 @@ class CentreonGraph {
          * Init Objects
          */
         $this->hostObj      = new CentreonHost($this->DB);
-        $this->serviceObj   = new CentreonService($this->DB);
+        $this->serviceObj   = new CentreonService($this->DB);       
 
         /*
          * Timezone management
          */
         $this->GMT = new CentreonGMT($this->DB);
-        $this->GMT->getMyGMTFromSession($this->session_id, $this->DB);
+        $this->GMT->getMyGTMFromUser($this->user_id, $this->DB);
 
         $this->_RRDoptions = array();
         $this->_arguments = array();

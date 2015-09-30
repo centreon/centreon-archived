@@ -146,15 +146,13 @@ require_once $centreon_path."www/include/common/common-Func.php";
 /**
  * Create XML Request Objects
  */
-$obj = new CentreonGraph($mySessionId, $index, 0, 1);
+$obj = new CentreonGraph($contactId, $index, 0, 1);
 
 /**
  * Set arguments from GET
  */
 $obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );
 $obj->setRRDOption("end",   $obj->checkArgument("end", $_GET, time()) );
-
-$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
 
 /**
  * Template Management
