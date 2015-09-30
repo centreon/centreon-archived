@@ -71,7 +71,7 @@ class CentreonBroker
 	 */
 	public function getBroker()
 	{
-		return $this->name;
+		return "broker";
 	}
         
     /**
