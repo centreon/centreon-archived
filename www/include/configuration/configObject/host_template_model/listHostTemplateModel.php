@@ -119,9 +119,9 @@
                 $selectedElements->setAttribute('disabled', 'disabled');
             } else {
                 if ($host["host_activate"]) {
-                    $moptions .= "<a href='main.php?p=".$p."&host_id=".$host['host_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+                    $moptions .= "<a href='main.php?p=".$p."&host_id=".$host['host_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_inactive.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
                 } else {
-                    $moptions .= "<a href='main.php?p=".$p."&host_id=".$host['host_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+                    $moptions .= "<a href='main.php?p=".$p."&host_id=".$host['host_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_active.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
                 }
                 $moptions .= "&nbsp;";
                 $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$host['host_id']."]'></input>";
@@ -156,7 +156,7 @@
 		} else if ($icone = $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1))) {
 			$host_icone = "./img/media/" . $icone;
 		} else {
-			$host_icone = "./img/icones/16x16/server_network.gif";
+			$host_icone = "./img/icons/host.png";
 		}
 
 		/*
