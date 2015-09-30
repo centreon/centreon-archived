@@ -123,9 +123,9 @@
 			$moptions = "";
 
 		if ($ms["meta_activate"])
-			$moptions .= "<a href='main.php?p=".$p."&meta_id=".$ms['meta_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+			$moptions .= "<a href='main.php?p=".$p."&meta_id=".$ms['meta_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_inactive.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
-			$moptions .= "<a href='main.php?p=".$p."&meta_id=".$ms['meta_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+			$moptions .= "<a href='main.php?p=".$p."&meta_id=".$ms['meta_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_active.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;";
 
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$ms['meta_id']."]'></input>";
@@ -156,7 +156,7 @@
 	function setO(_i) {
 		document.forms['form'].elements['o'].value = _i;
 	}
-	</SCRIPT>
+	</script>
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
@@ -167,7 +167,7 @@
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions"), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 
 	$attrs2 = array(
