@@ -13,13 +13,8 @@
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `centreon_acl` (
   `host_id` int(11) DEFAULT NULL,
-  `host_name` varchar(255) DEFAULT NULL,
   `service_id` int(11) DEFAULT NULL,
-  `service_description` varchar(255) DEFAULT NULL,
   `group_id` int(11) DEFAULT NULL,
-  KEY `host_name` (`host_name`),
-  KEY `service_description` (`service_description`),
-  KEY `group_id_by_name` (`host_name`(70),`service_description`(120),`group_id`),
   KEY `group_id_by_id` (`host_id`,`service_id`,`group_id`),
   KEY `group_id_for_host` (`host_name`,`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
