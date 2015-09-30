@@ -673,6 +673,13 @@ class CentreonService
                 $parameters['externalObject']['name'] = 'command_name';
                 $parameters['externalObject']['comparator'] = 'command_id';
                 break;
+            case 'service_template_model_stm_id':
+                $parameters['type'] = 'simple';
+                $parameters['externalObject']['table'] = 'service';
+                $parameters['externalObject']['id'] = 'service_id';
+                $parameters['externalObject']['name'] = 'service_description';
+                $parameters['externalObject']['comparator'] = 'service_id';
+                break;
             case 'service_cs':
                 $parameters['type'] = 'relation';
                 $parameters['externalObject']['table'] = 'contact';
@@ -683,6 +690,16 @@ class CentreonService
                 $parameters['relationObject']['field'] = 'contact_id';
                 $parameters['relationObject']['comparator'] = 'service_service_id';
                 break;
+            case 'service_cgs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'contactgroup';
+                $parameters['externalObject']['id'] = 'cg_id';
+                $parameters['externalObject']['name'] = 'cg_name';
+                $parameters['externalObject']['comparator'] = 'cg_id';
+                $parameters['relationObject']['table'] = 'contactgroup_service_relation';
+                $parameters['relationObject']['field'] = 'contactgroup_cg_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
             case 'service_hPars':
                 $parameters['type'] = 'relation';
                 $parameters['externalObject']['table'] = 'host';
@@ -691,6 +708,46 @@ class CentreonService
                 $parameters['externalObject']['comparator'] = 'host_id';
                 $parameters['relationObject']['table'] = 'host_service_relation';
                 $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            case 'service_sgs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'servicegroup';
+                $parameters['externalObject']['id'] = 'sg_id';
+                $parameters['externalObject']['name'] = 'sg_name';
+                $parameters['externalObject']['comparator'] = 'sg_id';
+                $parameters['relationObject']['table'] = 'servicegroup_relation';
+                $parameters['relationObject']['field'] = 'servicegroup_sg_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            case 'service_traps':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'traps';
+                $parameters['externalObject']['id'] = 'traps_id';
+                $parameters['externalObject']['name'] = 'traps_name';
+                $parameters['externalObject']['comparator'] = 'traps_id';
+                $parameters['relationObject']['table'] = 'traps_service_relation';
+                $parameters['relationObject']['field'] = 'traps_id';
+                $parameters['relationObject']['comparator'] = 'service_id';
+                break;
+            case 'graph_id':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'giv_graphs_template';
+                $parameters['externalObject']['id'] = 'graph_id';
+                $parameters['externalObject']['name'] = 'name';
+                $parameters['externalObject']['comparator'] = 'graph_id';
+                $parameters['relationObject']['table'] = 'extended_service_information';
+                $parameters['relationObject']['field'] = 'graph_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            case 'service_categories':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'service_categories';
+                $parameters['externalObject']['id'] = 'sc_id';
+                $parameters['externalObject']['name'] = 'sc_name';
+                $parameters['externalObject']['comparator'] = 'sc_id';
+                $parameters['relationObject']['table'] = 'service_categories_relation';
+                $parameters['relationObject']['field'] = 'sc_id';
                 $parameters['relationObject']['comparator'] = 'service_service_id';
                 break;
         }

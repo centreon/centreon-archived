@@ -391,6 +391,11 @@ $attrContacts = array(
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
     'multiple' => true
 );
+$attrContactgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+    'multiple' => true
+);
 $attrCommands = array(
     'datasourceOrigin' => 'ajax',
     'multiple' => false
@@ -399,6 +404,31 @@ $attrHosts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
     'multiple' => true
+);
+$attrServicetemplates = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
+    'multiple' => false
+);
+$attrServicegroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list',
+    'multiple' => true
+);
+$attrServicecategories = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory&action=list',
+    'multiple' => true
+);
+$attrTraps = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_trap&action=list',
+    'multiple' => true
+);
+$attrGraphtemplates= array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_graphtemplate&action=list',
+    'multiple' => false
 );
 
 #
@@ -430,7 +460,12 @@ if ($o != "mc") {
 }
 $form->addElement('text', 'service_alias', _("Alias"), $attrsText);
 
-$form->addElement('select', 'service_template_model_stm_id', _("Service Template"), $svTpls, array('id' => 'svcTemplate', 'onChange' => 'changeServiceTemplate(this.value)'));
+$attrServicetemplate1 = array_merge(
+    $attrServicetemplates,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=service&field=service_template_model_stm_id&id=' . $service_id)
+);
+$form->addElement('select2', 'service_template_model_stm_id', _("Service Template"), array(), $attrServicetemplate1);
+
 $form->addElement('static', 'tplText', _("Using a Template exempts you to fill required fields"));
 
 #
@@ -592,15 +627,15 @@ $attrContact1 = array_merge(
 $form->addElement('select2', 'service_cs', _("Implied Contacts"), array(), $attrContact1);
 
 
-
 /*
  *  Contact groups
  */
-$ams3 = $form->addElement('advmultiselect', 'service_cgs', array(_("Implied Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+$attrContactgroup1 = array_merge(
+    $attrContactgroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=defaultValues&target=service&field=service_cgs&id=' . $service_id)
+);
+$form->addElement('select2', 'service_cgs', _("Implied Contact Groups"), array(), $attrContactgroup1);
+
 
 if ($o == "mc") {
     $mc_mod_notifopt_first_notification_delay = array();
@@ -694,15 +729,9 @@ if ($o == "mc") {
 
 $sgReadOnly = false;
 if ($form_service_type == "BYHOST") {
-    /*$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked with Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
-    $ams3->setButtonAttributes('add', array('value' => _("Add")));
-    $ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-    $ams3->setElementTemplate($eTemplate);
-    echo $ams3->getElementJs(false);*/
     if (isset($service['service_hPars']) && count($service['service_hPars']) > 1) {
         $sgReadOnly = true;
     }
-    
     
     $attrHost1 = array_merge(
         $attrHosts,
@@ -732,14 +761,16 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_sgs, 'mc_mod_sgs', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_sgs' => '0'));
 }
-$ams3 = $form->addElement('advmultiselect', 'service_sgs', array(_("Parent Service Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
+
+$attrServicegroup1 = array_merge(
+    $attrServicegroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=service&field=service_sgs&id=' . $service_id)
+);
+$ams3 = $form->addElement('select2', 'service_sgs', _("Linked with Servicegroups"), array(), $attrServicegroup1);
 if ($sgReadOnly === true) {
     $ams3->freeze();
 }
-echo $ams3->getElementJs(false);
+
 
 $form->addElement('header', 'traps', _("SNMP Traps"));
 if ($o == "mc") {
@@ -749,26 +780,12 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_traps, 'mc_mod_traps', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_traps' => '0'));
 }
-$ams3 = $form->addElement('advmultiselect', 'service_traps', array(_("Service Trap Relation"), _("Available"), _("Selected")), $traps, $attrsAdvSelect_big, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
 
-
-/**
- * Traps vendor form
- */
-$mnftr = array(-2 => "_" . _("None") . "_", -1 => "_" . _("ALL") . "_");
-$DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
-while ($rmnftr = $DBRESULT->fetchRow()) {
-    $mnftr[$rmnftr["id"]] = html_entity_decode($rmnftr["alias"], ENT_QUOTES);
-}
-$DBRESULT->free();
-$attrs2 = array('onchange' => "javascript:getTrap(this.form.elements['mnftr'].value); return false;");
-$form->addElement('select', 'mnftr', _("Vendor Name"), $mnftr, $attrs2);
-
-include("./include/configuration/configObject/traps/ajaxTrap_js.php");
+$attrTrap1 = array_merge(
+    $attrTraps,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_trap&action=defaultValues&target=service&field=service_traps&id=' . $service_id)
+);
+$form->addElement('select2', 'service_traps', _("Service Trap Relation"), array(), $attrTrap1);
 
 #
 ## Sort 3 - Data treatment
@@ -870,7 +887,14 @@ foreach ($critList as $critId => $critData) {
 $form->addElement('select', 'criticality_id', _('Severity level'), $criticalityIds);
 
 $form->addElement('header', 'oreon', _("Centreon"));
-$form->addElement('select', 'graph_id', _("Graph Template"), $graphTpls);
+
+$attrGraphtemplate1 = array_merge(
+    $attrGraphtemplates,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_graphtemplate&action=defaultValues&target=service&field=graph_id&id=' . $service_id)
+);
+$form->addElement('select2', 'graph_id', _("Graph Template"), array(), $attrGraphtemplate1);
+
+
 
 if ($o == "mc") {
     $mc_mod_sc = array();
@@ -879,11 +903,12 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_sc, 'mc_mod_sc', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_sc' => '0'));
 }
-$ams3 = $form->addElement('advmultiselect', 'service_categories', array(_("Categories"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect_small, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+
+$attrServicecategory1 = array_merge(
+    $attrServicecategories,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory&action=defaultValues&target=service&field=service_categories&id=' . $service_id)
+);
+$form->addElement('select2', 'service_categories', _("Categories"), array(), $attrServicecategory1);
 
 /*
  * Sort 5 - Macros - Nagios 3
