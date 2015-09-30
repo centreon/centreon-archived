@@ -59,20 +59,36 @@ if (!$min) {
                 </tr>
 			</table>
 		</div>
-		<img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('footer'); xhr = new XMLHttpRequest(); xhr.open('GET','./menu/userMenuPreferences.php?uid=<?php echo $centreon->user->user_id; ?>&div=footer', true);xhr.send(null);" style="position:absolute;left:5px;" title="<?php echo _("Hide Footer"); ?>" />
+        <div style="float: right;" onclick="myToggleAll(400);saveFullScreenSetting();" > FullScreen</div>
 	</div>
 <?php
 }
+?>
+<script type="text/javascript">
+    function myToggleAll(duration){
+        jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").toggle({duration : duration});
+    }
+    
+    function saveFullScreenSetting(){
+        var d = new Date();
+        var n = d.getTime();
+        jQuery.ajax({
+           url: "./menu/userFullScreenPreferences.php",
+           type: "POST",
+           data: { timestamp: n }
+        });
+    }
+    
 
-if (isset($_GET["mini"]) && $_GET["mini"] == 1) {
+</script>
+
+
+<?php
+if ((isset($_GET["mini"]) && $_GET["mini"] == 1) || 
+    (isset($_SESSION['fullScreen']) && isset($_SESSION['fullScreen']['value']) && $_SESSION['fullScreen']['value'])) {
 ?>
 	<script type="text/javascript">
-		new Effect.toggle('header');
-		new Effect.toggle('menu_3');
-		new Effect.toggle('menu_2');
-		new Effect.toggle('footer');
-		Effect.toggle('menu1_bgcolor');
-		Effect.toggle('QuickSearch');
+        myToggleAll(0);
 	</script>
 <?php } else {
 	if (!$centreon->user->showDiv("footer")) { ?> <script type="text/javascript">new Effect.toggle('footer', 'blind', { duration : 0 });</script> <?php }

@@ -8,7 +8,6 @@
 		<button class='addWidget'></button>
 		<button class='setRotate'></button>			
 	</div>
-	<img id='toggleActionBar' src='./img/icones/7x7/sort_asc.gif' style='bottom: 10px; position: relative; float: right; right: 3px;'>
 	{if $empty == 1}
 	<div id="tabs" style='margin-top:5px;padding-right:5px;'>
 		<div>	
