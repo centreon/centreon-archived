@@ -941,6 +941,76 @@ class CentreonHost
                 $parameters['relationObject']['field'] = 'contact_id';
                 $parameters['relationObject']['comparator'] = 'host_host_id';
                 break;
+            case 'host_parents':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'host_hostparent_relation';
+                $parameters['relationObject']['field'] = 'host_parent_hp_id';
+                $parameters['relationObject']['comparator'] = 'host_host_id';
+                break;
+            case 'host_childs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'host_hostparent_relation';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'host_parent_hp_id';
+                break;
+            case 'host_hgs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'hostgroup';
+                $parameters['externalObject']['id'] = 'hg_id';
+                $parameters['externalObject']['name'] = 'hg_name';
+                $parameters['externalObject']['comparator'] = 'hg_id';
+                $parameters['relationObject']['table'] = 'hostgroup_relation';
+                $parameters['relationObject']['field'] = 'hostgroup_hg_id';
+                $parameters['relationObject']['comparator'] = 'host_host_id';
+                break;
+            case 'host_hcs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'hostcategories';
+                $parameters['externalObject']['id'] = 'hc_id';
+                $parameters['externalObject']['name'] = 'hc_name';
+                $parameters['externalObject']['comparator'] = 'hc_id';
+                $parameters['relationObject']['table'] = 'hostcategories_relation';
+                $parameters['relationObject']['field'] = 'hostcategories_hc_id';
+                $parameters['relationObject']['comparator'] = 'host_host_id';
+                break;
+            case 'host_hcs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'hostcategories';
+                $parameters['externalObject']['id'] = 'hc_id';
+                $parameters['externalObject']['name'] = 'hc_name';
+                $parameters['externalObject']['comparator'] = 'hc_id';
+                $parameters['relationObject']['table'] = 'hostcategories_relation';
+                $parameters['relationObject']['field'] = 'hostcategories_hc_id';
+                $parameters['relationObject']['comparator'] = 'host_host_id';
+                break;
+           case 'host_cgs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'contactgroup';
+                $parameters['externalObject']['id'] = 'cg_id';
+                $parameters['externalObject']['name'] = 'cg_name';
+                $parameters['externalObject']['comparator'] = 'cg_id';
+                $parameters['relationObject']['table'] = 'contactgroup_host_relation';
+                $parameters['relationObject']['field'] = 'contactgroup_cg_id';
+                $parameters['relationObject']['comparator'] = 'host_host_id';
+                break;
+            case 'host_svTpls':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'service';
+                $parameters['externalObject']['id'] = 'service_id';
+                $parameters['externalObject']['name'] = 'service_description';
+                $parameters['externalObject']['comparator'] = 'service_id';
+                $parameters['relationObject']['table'] = 'host_service_relation';
+                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['comparator'] = 'host_host_id';
+                break;
         }
         
         return $parameters;

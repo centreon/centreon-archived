@@ -42,9 +42,24 @@
   * @author jmathis
   *
   */
- class CentreonHostgroups {
+ class CentreonHostgroups
+{
+    /**
+      *
+      * @var type 
+      */
  	private $DB;
+    
+    /**
+     *
+     * @var type 
+     */
  	private $relationCache;
+    
+    /**
+     *
+     * @var type 
+     */
  	private $dataTree;
 
  	/**
@@ -205,10 +220,42 @@
 		return $hostgroups;
 	}
 
+    /**
+     * 
+     */
 	private function unsetCache()
 	{
 		$this->dataTree = array();
 	}
+    
+    /**
+     * 
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'hostgroup';
+        $parameters['currentObject']['id'] = 'hg_id';
+        $parameters['currentObject']['name'] = 'hg_name';
+        $parameters['currentObject']['comparator'] = 'hg_id';
+
+        switch ($field) {
+            case 'hg_hosts':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'hostgroup_relation';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'hostgroup_hg_id';
+                break;
+        }
+        
+        return $parameters;
+    }
 }
 
 ?>

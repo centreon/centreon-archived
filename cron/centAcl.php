@@ -31,10 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
- *
  */
 
 /**
@@ -90,12 +86,6 @@ try {
     }
     $row = $DBRESULT->fetchRow();
     $dbLayer = $row["value"];
-
-    if ($dbLayer == 'ndo') {
-        $pearDBndo = new CentreonDB("ndo");
-    } else {
-        $pearDBndo = $pearDBO;
-    }
 
     /*
      * Lock in MySQL
@@ -165,13 +155,8 @@ try {
      */
     $aclGroupToDelete = "SELECT DISTINCT acl_group_id FROM $centreonDbName.acl_groups WHERE acl_group_activate = '1'";
     $aclGroupToDelete2 = "SELECT DISTINCT acl_group_id FROM $centreonDbName.acl_res_group_relations";
-    if ($dbLayer != 'broker') {
-        $pearDBndo->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete)");
-        $pearDBndo->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete2)");
-    } else {
-        $pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete)");
-        $pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete2)");
-    }
+    $pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete)");
+    $pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete2)");
 
     /** ***********************************************
      * Check if some ACL have global options for
@@ -450,6 +435,11 @@ try {
         $cpt = 0;
         foreach ($tabGroups as $acl_group_id => $acl_res_id) {
             $tabElem = array();
+
+            /*
+             * Delete old data for this group
+             */
+            $DBRESULT = $pearDBO->query("DELETE FROM `centreon_acl` WHERE `group_id` = '" . $acl_group_id . "'");
             
             /** ***********************************************
              * Select
@@ -582,6 +572,41 @@ try {
                 if (count($metaServices)) {
                     $tabElem += $metaServices;
                 }
+
+                $str = "";
+                if (count($tabElem)) {
+                    $i = 0;
+                    foreach ($tabElem as $host => $svc_list) {
+                        $singleId = array_search($host, $hostCache);
+                        if ($singleId) {
+                            if ($str != "") {
+                                $str .= ", ";
+                            }
+                            $str .= " ('".$pearDBO->escape($host)."', NULL, {$singleId}, NULL, {$acl_group_id}) ";
+                        }
+                        foreach ($svc_list as $desc => $t) {
+                            if ($str != "") {
+                                $str .= ', ';
+                            }
+                            $id_tmp = preg_split("/\,/", $t);
+                            $str .= "('" . $host . "', '" . addslashes($desc) . "', '" . $id_tmp[0] . "' , '" . $id_tmp[1] . "' , " . $acl_group_id . ") ";
+                            $i++;
+                            if ($i >= 1000) {
+                                $pearDBO->query($strBegin . $str);
+                                $str = "";
+                                $i = 0;
+                            }
+                        }
+                    }
+                    
+                    /*
+                     * Insert datas
+                     */
+                    if ($str != "") {
+                        $pearDBO->query($strBegin . $str);
+                        $str = "";
+                    }
+                }
                 
                 /* ------------------------------------------------------------------
                  * reset Flags
@@ -596,45 +621,6 @@ try {
                 print round($now, 3) . " " . _("seconds") . "\n";
             }
             
-            /*
-             * Delete old data for this group
-             */
-            $DBRESULT = $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '" . $acl_group_id . "'");
-            
-            $str = "";
-            if (count($tabElem)) {
-                $i = 0;
-                foreach ($tabElem as $host => $svc_list) {
-                    $singleId = array_search($host, $hostCache);
-                    if ($singleId) {
-                        if ($str != "") {
-                            $str .= ", ";
-                        }
-                        $str .= " ('".$pearDBndo->escape($host)."', NULL, {$singleId}, NULL, {$acl_group_id}) ";
-                    }
-                    foreach ($svc_list as $desc => $t) {
-                        if ($str != "") {
-                            $str .= ', ';
-                        }
-                        $id_tmp = preg_split("/\,/", $t);
-                        $str .= "('" . $host . "', '" . addslashes($desc) . "', '" . $id_tmp[0] . "' , '" . $id_tmp[1] . "' , " . $acl_group_id . ") ";
-                        $i++;
-                        if ($i >= 1000) {
-                            $DBRESULTNDO = $pearDBndo->query($strBegin . $str);
-                            $str = "";
-                            $i = 0;
-                        }
-                    }
-                }
-                
-                /*
-                 * Insert datas
-                 */
-                if ($str != "") {
-                    $DBRESULTNDO = $pearDBndo->query($strBegin . $str);
-                    $str = "";
-                }
-            }
             $cpt++;
             $pearDB->query("UPDATE acl_groups SET acl_group_changed = '0' WHERE acl_group_id = " . $pearDB->escape($acl_group_id));
         }   
@@ -650,9 +636,7 @@ try {
      */
     $pearDB->disconnect();
     $pearDBO->disconnect();
-    if ($dbLayer == 'ndo') {
-        $pearDBndo->disconnect();
-    }
+
 } catch (Exception $e) {
     programExit($e->getMessage());
 }
