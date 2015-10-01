@@ -1,6 +1,8 @@
-<div><img src="./img/icones/7x7/sort_asc.gif" onclick="toggleHeader(); xhr = new XMLHttpRequest(); xhr.open('GET','{$user_update_pref_header}', true);xhr.send(null);" style="position:absolute;top:1px;right:7px;" alt="hide_or_show_menu" /></div>
+<div></div>
 <div id="header">
-	<img src='{$urlLogo}' title='Centreon Logo' id="logo" />	
+    <div id="centreon_logo">
+	    <img src='{$urlLogo}' title='Centreon Logo' id="logo" />
+	</div>
 	<!-- informations bank for ajax -->
 	<form id="AjaxBankBasic" action="#" method="post">
 		<div>
@@ -26,78 +28,153 @@
 			<input type="hidden" name="version" value="{$version}"/>
 			<input type="hidden" name="date_time_format_status" value="{$date_time_format_status}"/>			
 		</div>
-	</form>	
-	<!-- stat -->
-	<div id="resume_light">
-		{if $displayTopCounter == 1 || $displayPollerStats == 1}
-		<table cellpadding="0" cellspacing="0" border="0">
-		<tr>
-			{if $displayPollerStats == 1}
-			<td>
-				<table class='Resume_light_table'>
-					<tr class='Resume_light_header' style="white-space:nowrap;">
-						<td colspan="3">{$ndoState}</td>
-					</tr>
-					<tr>
-						<td id='latency'><div style='text-align:center'><img src='./img/icones/16x16/clock.gif' width=14 id="img_latency" /></div></td>
-						<td id="pollingState"><div style='text-align:center;'><img src='./img/icones/16x16/gear.gif' width=14 id="img_pollingState"/></div></td>
-						<td id="activity"><div style='text-align:center'><img src='./img/icones/16x16/data_into.gif' width=14 id="img_activity" /></div></td>
-					</tr>
-				</table>
-			</td>
-			<td>&nbsp;</td>
-			{/if}
-			{if $displayTopCounter == 1}
-			<td>
-				<table class='Resume_light_table'>
-					<tr class='Resume_light_header' style="white-space:nowrap;">
-						<td>{$Hosts}</td>
-						<td>{$Up}</td>
-						<td>{$Down}</td>
-						<td>{$Unreachable}</td>
-						<td>{$Pending}</td>
-					</tr>
-					<tr>
-						<td><div id="hosts" style='background:white;text-align:center'>?</div></td>
-						<td	style='background:{$color.UP}'><div id="host_up" style='background:white;text-align:center'>?</div></td>
-						<td	style='background:{$color.DOWN}'><div id="host_down" style='background:white;text-align:center'>?</div></td>
-						<td	style='background:{$color.UNREACHABLE}'><div id="host_unreachable" style='background:white;text-align:center'>?</div></td>
-						<td	style='background:{$color.PENDING}'><div id="host_pending" style='background:white;text-align:center'>?</div></td>
-					</tr>
-				</table>
-			</td>
-			<td>&nbsp;</td>
-			<td>
-				<table class='Resume_light_table'>
-					<tr class='Resume_light_header' style="white-space:nowrap;">
-						<td>{$Services}</td>
-						<td>{$Ok}</td>
-						<td>{$Warning}</td>
-						<td>{$Critical}</td>
-						<td>{$Unknown}</td>		
-						<td>{$Pending}</td>
-					</tr>
-					<tr>
-						<td><div id="service_total" style='background:white;text-align:center'>?</div></td>
-						<td style='background:{$color.OK}'><div id="service_ok" style='background:white;text-align:center'>?</div></td>
-						<td	style='background:{$color.WARNING}'><div id="service_warning" style='background:white;text-align:center'>?</div></td>
-						<td	style='background:{$color.CRITICAL}'><div id="service_critical" style='background:white;text-align:center'>?</div></td>
-						<td	style='background:{$color.UNKNOWN}'><div id="service_unknown" style='background:white;text-align:center'>?</div></td>
-						<td	style='background:{$color.PENDING}'><div id="service_pending" style='background:white;text-align:center'>?</div></td>
-					</tr>
-				</table>
-			</td>
-			{/if}
-		</tr>
-		</table>
-		{/if}
-	</div>	
-	<span id="linkBar"></span>
-	<span id="logli">
+	</form>
+
+    <!-- stat -->
+    	<div id="resume_light">
+    		{if $displayTopCounter == 1 || $displayPollerStats == 1}
+    		<table cellpadding="0" cellspacing="0" border="0">
+    		<tr>
+    			{if $displayPollerStats == 1}
+    			<td>
+    				<table class='Resume_light_table'>
+    					<tr>
+    					    <th>{$ndoState}</th>
+
+    						<td>
+    						    <span id='latency'>
+    						        <img src='./img/icones/16x16/clock.gif' width=14 id="img_latency" />
+    						    </span>
+    						</td>
+    						<td>
+    						    <span id="pollingState">
+    						        <img src='./img/icones/16x16/gear.gif' width=14 id="img_pollingState"/>
+    						    </span>
+    						</td>
+    						<td>
+    						    <span id="activity">
+    						        <img src='./img/icones/16x16/data_into.gif'  width=14 id="img_activity" />
+    						    </span>
+    						</td>
+    					</tr>
+    				</table>
+    			</td>
+    			{/if}
+    			{if $displayTopCounter == 1}
+    			<td>
+    				<table class='Resume_light_table'>
+
+    					<tr>
+    					    <th>
+    					        <span id="hosts">?</span>
+    					        {$Hosts}
+
+    					    </th>
+
+                            <!--<th>{$Up}</th>-->
+
+                            <td>
+                                <span>&#8593;</span><span id="host_up" style='background:{$color.UP}'>?</span>
+                            </td>
+
+                            <!--<th>{$Down}</th>-->
+                            <td>
+                                <span id="host_down" style='background:{$color.DOWN}'>?</span>
+                            </td>
+
+                            <!--<th>{$Unreachable}</th>-->
+                            <td>
+                                <span id="host_unreachable" style='background:{$color.UNREACHABLE}'>?</span>
+                            </td>
+
+                            <!--<th>{$Pending}</th>-->
+                            <td>
+                                <span id="host_pending" style='background:{$color.PENDING}'>?</span>
+                            </td>
+
+    					</tr>
+    				</table>
+    			</td>
+    			<td>
+    				<table class='Resume_light_table'>
+    					<tr>
+
+    					    <th>
+    					        <span id="service_total">?</span>
+    					        {$Services}
+    					    </th>
+
+                            <!--<th>{$Ok}</th>-->
+                            <td>
+                                <span id="service_ok" style='background:{$color.OK}'>?</span>
+                            </td>
+
+                            <!--<th>{$Warning}</th>-->
+                            <td>
+                                <span id="service_warning" style='background:{$color.WARNING}'>?</span>
+                            </td>
+
+                            <!--<th>{$Critical}</th>-->
+                            <td>
+                                <span id="service_critical" style='background:{$color.CRITICAL}'>?</span>
+                            </td>
+
+                            <!--<th>{$Unknown}</th>-->
+                            <td>
+                                <span id="service_unknown" style='background:{$color.UNKNOWN}'>?</span>
+                            </td>
+
+                            <!--<th>{$Pending}</th>-->
+                            <td>
+                                <span id="service_pending" style='background:{$color.PENDING}'>?</span>
+                            </td>
+
+    					</tr>
+    				</table>
+    			</td>
+    			{/if}
+    		</tr>
+    		</table>
+    		{/if}
+    	</div>
+
+	<div id="logli">
+
+        <!--<img src='./img/icones/16x16/help.gif' alt="{$Documentation}" />-->
+
+        {$loggedlabel}
+
+        {if $topology[50104]}
+            <a href="./main.php?p=50104&o=c">
+                {/if}
+                 {$user_login}
+                {if $topology[50104]}
+            </a>
+                {/if}
+
+            {if $autoLoginEnable }
+                <a onClick='return false;' href='{$autoLoginUrl}' title='Centreon - IT and Network Monitoring'>
+                    <img src='./img/icones/16x16/lock_preferences.gif' title='{$CentreonAutologin}'>
+                </a>
+                {/if}
+                | <a href="{$LogOutUrl}">
+                    <!--<img src="./img/icones/16x16/logout.gif" alt="{$Logout}"/>-->
+
+                </a>
+
+                <a href="{$LogOutUrl}" class="red">{$Logout}</a>
+    </div>
+
+    <div class="container">
+
+        <span id="date">{$Date}</span>
         <img id="sound_status" src="./img/icones/24x24/speaker_{$sound_status}.png" style="cursor:pointer;" onClick="{$sound_action}">
-		<img src='./img/icones/16x16/help.gif' alt="{$Documentation}" />&nbsp;<a href='http://documentation.centreon.com' title='{$Documentation}' target='_blank'>{$Documentation}</a>&nbsp;-&nbsp;{$loggedlabel}&nbsp;{if $topology[50104]}<a href="./main.php?p=50104&o=c">{/if}{$user_login}{if $topology[50104]}</a>{/if}&nbsp;{if $autoLoginEnable }<a onClick='return false;' href='{$autoLoginUrl}' title='Centreon - IT and Network Monitoring'><img src='./img/icones/16x16/lock_preferences.gif' title='{$CentreonAutologin}'></a>&nbsp;{/if}<a href="{$LogOutUrl}"><img src="./img/icones/16x16/logout.gif" alt="{$Logout}"/></a>&nbsp;<a href="{$LogOutUrl}">{$Logout}</a>&nbsp;
-	</span>	
-	<div id="date">{$Date}</div>
+
+    </div>
+
+
+
+	<span id="linkBar"></span>
 	<div id="centreonMsg"></div>
 </div>
 {literal}

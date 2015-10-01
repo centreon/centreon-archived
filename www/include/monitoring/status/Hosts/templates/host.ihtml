@@ -4,7 +4,7 @@
 <input name="o" value="svc" type="hidden">
 <table class="ajaxOption">
 	<tr>
-		<td>{$hostStr}:</td>
+		<td>{$hostStr} </td>
 		<td><input type='text' name='host_search' id='host_search'></td>
 		<td>{$form.statusFilter.label}:</td>
 		<td>{$form.statusFilter.html}</td>

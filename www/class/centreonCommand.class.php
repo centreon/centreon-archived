@@ -122,6 +122,9 @@ class CentreonCommand
      */
     public function getMacroByIdAndType($iIdCommand, $sType, $iWithFormatData = 1)
     {
+        
+        $macroToFilter = array("SNMPVERSION","SNMPCOMMUNITY");
+        
         $aTypeCommand = array(
             'host'    => array(
                 'key' => '$_HOST', 
@@ -154,12 +157,14 @@ class CentreonCommand
                 preg_match_all($aTypeCommand[$sType]['preg'], $row['command_line'], $matches, PREG_SET_ORDER);
                 
                 foreach ($matches as $match) {
-                    $arr[$i]['macroInput_#index#'] = $match[1];
-                    $arr[$i]['macroValue_#index#'] = "";
-                    $arr[$i]['macroPassword_#index#'] = NULL;
-                    $arr[$i]['macroDescription_#index#'] = "";
-                    $arr[$i]['macroDescription'] = "";
-                    $i++;
+                    if(!in_array($match[1], $macroToFilter)){
+                        $arr[$i]['macroInput_#index#'] = $match[1];
+                        $arr[$i]['macroValue_#index#'] = "";
+                        $arr[$i]['macroPassword_#index#'] = NULL;
+                        $arr[$i]['macroDescription_#index#'] = "";
+                        $arr[$i]['macroDescription'] = "";
+                        $i++;
+                    }
                 }
             }
         } else {

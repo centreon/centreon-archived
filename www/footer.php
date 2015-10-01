@@ -41,41 +41,72 @@ require_once("./class/centreonData.class.php");
 
 if (!$min) {
 
-?><div>
-		<table cellpadding="0" cellspacing="0" style="height:1px; width:100%;">
-			<tr><td id="footerline1"></td></tr>
-			<tr><td id="footerline2"></td></tr>
-		</table>
-		<div id="footer">
-			<table cellpadding='0' cellspacing='0' width='100%' border='0'>
+?>    <div id="footer">
+			<table cellpadding='0' cellspacing='0' width='100%' border='0' id="tfooter">
 				<tr>
+				    <td>
+				        <?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
+				    </td>
 					<td align='center' class='copyRight'>
+					    <a href='http://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> -
                         <a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
-                        <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a> | 
-                        Copyright &copy; 2005-2015 <a href="http://www.centreon.com">Centreon</a><br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
+                        <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a>
+                        <br />
                         <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
-                        | <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a></td>
+                        <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
                         <?php } ?>
+                        <!-- - <a href="http://www.centreon.com">Centreon Web</a>-->
+                    </td>
+
+                      <td>
+                         Copyright &copy; 2005-2015
+                     </td>
                 </tr>
 			</table>
+			<img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('tfooter'); xhr = new XMLHttpRequest(); xhr.open('GET','./menu/userMenuPreferences.php?uid=<?php echo $centreon->user->user_id; ?>&div=footer', true);xhr.send(null);" style="position:absolute;right:10px;bottom:17px;" title="<?php echo _("Hide Footer"); ?>" />
 		</div>
-		<img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('footer'); xhr = new XMLHttpRequest(); xhr.open('GET','./menu/userMenuPreferences.php?uid=<?php echo $centreon->user->user_id; ?>&div=footer', true);xhr.send(null);" style="position:absolute;left:5px;" title="<?php echo _("Hide Footer"); ?>" />
+        <div style="float: right;" onclick="myToggleAll(400);saveFullScreenSetting();" > FullScreen</div>
 	</div>
 <?php
 }
+?>
+<script type="text/javascript">
+    function myToggleAll(duration){
+        jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").toggle({duration : duration});
+    }
+    
+    function saveFullScreenSetting(){
+        var d = new Date();
+        var n = d.getTime();
+        jQuery.ajax({
+           url: "./menu/userFullScreenPreferences.php",
+           type: "POST",
+           data: { timestamp: n }
+        });
+    }
+    
 
-if (isset($_GET["mini"]) && $_GET["mini"] == 1) {
+</script>
+
+
+<?php
+if ((isset($_GET["mini"]) && $_GET["mini"] == 1) || 
+    (isset($_SESSION['fullScreen']) && isset($_SESSION['fullScreen']['value']) && $_SESSION['fullScreen']['value'])) {
 ?>
 	<script type="text/javascript">
+<<<<<<< HEAD
 		new Effect.toggle('header');
 		new Effect.toggle('menu_3');
 		new Effect.toggle('menu_2');
-		new Effect.toggle('footer');
+		new Effect.toggle('tfooter');
 		Effect.toggle('menu1_bgcolor');
 		Effect.toggle('QuickSearch');
+=======
+        myToggleAll(0);
+>>>>>>> 2.7.x
 	</script>
 <?php } else {
-	if (!$centreon->user->showDiv("footer")) { ?> <script type="text/javascript">new Effect.toggle('footer', 'blind', { duration : 0 });</script> <?php }
+	if (!$centreon->user->showDiv("footer")) { ?> <script type="text/javascript">new Effect.toggle('tfooter', 'blind', { duration : 0 });</script> <?php }
 }
 
 /*
@@ -111,7 +142,7 @@ function initWholePage() {
 function setQuickSearchPosition() {
     if ($('QuickSearch')) {
         if ($('header').visible()) {
-            $('QuickSearch').setStyle({ top: '86px' });
+            $('QuickSearch').setStyle({ top: '-25px' });
         } else {
             $('QuickSearch').setStyle({ top: '3px' });
         }

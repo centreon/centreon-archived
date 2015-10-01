@@ -56,11 +56,8 @@ $color12 = "#242af6";
 $color13 = "#5e5e5e";
 $color14 = "#E8AB5C";
 
-$colorGradient_1 = "#e4ffcf";
-$colorGradient_2 = "#b3ff7b";
-
 $menu1_bgcolor = "#ADC7A1";
-$menu2_bgcolor = "#DFF9E0";
+$menu2_bgcolor = "#84bd00";
 
 $footerline2 = "#dedede";
 
@@ -79,7 +76,9 @@ $color_list_down = "#ffbbbb";
 $color_list_down_hover = "#dfbbbb";
 
 $bg_image_header = "../Images/bg_header_green.gif";
-$menu1_bgimg = "../Images/menu_bg_green.gif";
+$menu1_bgimg = "#84bd00";
+
+$menu2_color = "#e7ffb4";
 
 require_once $centreon_path . "www/Themes/Centreon-2/color_css.php";
 ?>
