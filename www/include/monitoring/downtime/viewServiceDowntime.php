@@ -146,7 +146,7 @@ $request .= (isset($search_service) && $search_service != "" ? "AND s.descriptio
             "ORDER BY d.start_time DESC " .
             "LIMIT ".$num * $limit.", ".$limit;
 $DBRESULT_NDO = $pearDBO->query($request);
-$rows = $pearDBndo->numberRows();
+$rows = $pearDBO->numberRows();
 for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
 	$tab_downtime_svc[$i] = $data;
     $tab_downtime_svc[$i]['comment_data'] = htmlentities(trim($data['comment_data']));
