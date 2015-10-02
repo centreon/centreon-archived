@@ -329,6 +329,7 @@ $tpl->assign("mon_status_information", _("Status information"));
 	$form->accept($renderer);
 	$tpl->assign('hostStr', _('Host'));
 	$tpl->assign('serviceStr', _('Service'));
+    $tpl->assign("filters", _("Filters"));
 	$tpl->assign('outputStr', _('Output'));
 	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
         $tpl->assign('pollerStr', _('Poller'));

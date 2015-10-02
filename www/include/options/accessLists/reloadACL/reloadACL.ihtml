@@ -1,9 +1,9 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <div align="center">
 <form id="form" method="POST">
-	<table class="ToolbarTable">
+	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			<td class="Toolbar_TDSelectAction_Top">{$form.o1.html}</td>
+			<td>{$form.o1.html}</td>
 			<input name="p" value="{$p}" type="hidden">
 		</tr>
 	</table>
@@ -25,9 +25,9 @@
 		</tr>
 		{/foreach}
 	</table>
-	<table class="ToolbarTable">
+	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			<td class="Toolbar_TDSelectAction_Top">{$form.o2.html}</td>
+			<td>{$form.o2.html}</td>
 			<input name="p" value="{$p}" type="hidden">
 		</tr>
 	</table>

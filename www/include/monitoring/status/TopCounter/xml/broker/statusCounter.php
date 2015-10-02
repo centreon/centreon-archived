@@ -37,7 +37,7 @@ ini_set("display_errors", "Off");
 
 $debug = 0;
 
-include_once "/etc/centreon/centreon.conf.php";
+include_once "@CENTREON_ETC@/centreon.conf.php";
 
 require_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 require_once $centreon_path . 'www/class/centreonLang.class.php';
@@ -229,13 +229,13 @@ if ($pollerList != "") {
 	$DBRESULT->free();
 
 	$error = "Pollers $pollerListInError not running.";
-	
+
 	$request = 	"SELECT stat_value, i.instance_id, name " .
 					"FROM `nagios_stats` ns, instances i " .
 					"WHERE ns.stat_label = 'Service Check Latency' " .
 					"	AND ns.stat_key LIKE 'Average' " .
 					"	AND ns.instance_id = i.instance_id" .
-					"	AND i.deleted = 0" . 
+					"	AND i.deleted = 0" .
                                             "       AND i.name IN ($pollerList)";
 	$DBRESULT = $obj->DBC->query($request);
 	while ($ndo = $DBRESULT->fetchRow()) {
@@ -250,7 +250,7 @@ if ($pollerList != "") {
 	}
 	$DBRESULT->free();
 	unset($ndo);
-	
+
 } else {
 	$pollerListInError = "";
 	$inactivInstance = "";

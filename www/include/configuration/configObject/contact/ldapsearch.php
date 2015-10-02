@@ -37,7 +37,7 @@
  *
  */
 
-//require_once("/etc/centreon/centreon.conf.php");
+//require_once("@CENTREON_ETC@/centreon.conf.php");
 require_once("@CENTREON_ETC@/centreon.conf.php");
 require_once($centreon_path . "www/include/common/common-Func.php");
 require_once($centreon_path . "www/class/centreonSession.class.php");

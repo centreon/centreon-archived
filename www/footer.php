@@ -136,7 +136,18 @@ if (!$min) {
                 }
             }
         }else{
+            /*var i = document.getElementsByTagName("html")[0];
             jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").hide({duration : duration});
+            // go full-screen
+            if (i.requestFullscreen) {
+                i.requestFullscreen();
+            } else if (i.webkitRequestFullscreen) {
+                i.webkitRequestFullscreen();
+            } else if (i.mozRequestFullScreen) {
+                i.mozRequestFullScreen();
+            } else if (i.msRequestFullscreen) {
+                i.msRequestFullscreen();
+            }*/
         }
     }
     
@@ -157,7 +168,12 @@ if (!$min) {
         
 
     }
-
+    
+    
+    
+    
+    
+    
     function saveFullScreenSetting(){
         var d = new Date();
         var n = d.getTime();
@@ -173,7 +189,8 @@ if (!$min) {
 
 
 <?php
-if (isset($_GET["mini"]) && $_GET["mini"] == 1) {
+if ((isset($_GET["mini"]) && $_GET["mini"] == 1) || 
+    (isset($_SESSION['fullScreen']) && isset($_SESSION['fullScreen']['value']) && $_SESSION['fullScreen']['value'])) {
 ?>
 	<script type="text/javascript">
         myToggleAll(0,false);

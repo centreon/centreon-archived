@@ -2,18 +2,23 @@
 <form name='form' method='GET'>
 <hidden name="p" value='{$p}'>
 <hidden name="o" value='{$o}'>
-<table class="ajaxOption">
+<table class="ajaxOption table">
 	<tr>
-		<td>{$Host}: <input type='text' name='search_host' value="{$search_host}" /></td>
-		<td>&nbsp;&nbsp;{$Hostgroup}: <select name='hostgroup'>{$hostgroup}</select></td>
-		<td>&nbsp;&nbsp;{$Output}: <input type='text' name='search_output' value="{$search_output}" /></td>
-	    <td><input type='submit' name='SearchB' value='{$Search}' /></td>
+      <td><h4>{$Host}</h4></td>
+      <td><h4>{$Hostgroup}</h4></td>
+      <td><h4>{$Output}</h4></td>
 	</tr>
+    <tr>
+      <td><input type='text' name='search_host' value="{$search_host}" /></td>
+      <td><select name='hostgroup'>{$hostgroup}</select></td>
+      <td><input type='text' name='search_output' value="{$search_output}" /></td>
+      <td><input type='submit' name='SearchB' value='{$Search}' class="bt bt_success" /></td>
+    </tr>
 </table>
 <br/>
-<table class="ToolbarTable">
+<table class="ToolbarTable table">
 	<tr class="ToolbarTR">
-	<td width='450'>{if $msgh}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgh.addL}">{$msgh.addT}</a>{/if}</td>
+	<td>{if $msgh}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgh.addL}">{$msgh.addT}</a>{/if}</td>
 	{php}
 	   include('./include/common/pagination.php');
 	{/php}
@@ -54,9 +59,9 @@
 {else}
 <center><b>{$no_host_comments}</b></center>
 {/if}
-<table class="ToolbarTable">
+<table class="ToolbarTable table">
 	<tr class="ToolbarTR">
-		<td width='450'>&nbsp;</td>
+		<td>&nbsp;</td>
 	{php}
 	   include('./include/common/pagination.php');
 	{/php}

@@ -173,9 +173,9 @@ function setDisabledRowStyle(img)
 {
 	document.observe("dom:loaded", function() {
 		if (!img) {
-			var img = "element_next.gif";
+			var img = "eye_active.png";
 		}
-		$$('img[src$="element_next.gif"]').each(function(el) {
+		$$('img[src$="eye_active.png"]').each(function(el) {
 			el.up(2).setAttribute('class', 'row_disabled');
 		});
 	});

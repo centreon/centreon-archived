@@ -116,9 +116,9 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[".$hg['hg_id']."]");
     $moptions = "";
     if ($hg["hg_activate"]) {
-        $moptions .= "<a href='main.php?p=".$p."&hg_id=".$hg['hg_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+        $moptions .= "<a href='main.php?p=".$p."&hg_id=".$hg['hg_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_inactive.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
     } else {
-        $moptions .= "<a href='main.php?p=".$p."&hg_id=".$hg['hg_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+        $moptions .= "<a href='main.php?p=".$p."&hg_id=".$hg['hg_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_active.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
     }
     $moptions .= "&nbsp;";
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$hg['hg_id']."]'></input>";
@@ -167,7 +167,7 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
     if ($hg['hg_icon_image'] != "") {
         $hgIcone = "./img/media/" . $mediaObj->getFilename($hg['hg_icon_image']);
     } else {
-        $hgIcone = "./img/icones/16x16/clients.gif";
+        $hgIcone = "./img/icons/host_group.png";
     }
     $elemArr[$i] = array("MenuClass"=>"list_".$style,
                          "RowMenu_select"=>$selectedElements->toHtml(),
