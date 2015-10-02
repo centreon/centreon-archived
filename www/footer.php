@@ -46,53 +46,11 @@ if (!$min) {
 			<tr><td id="footerline1"></td></tr>
 			<tr><td id="footerline2"></td></tr>
 		</table>
-    <style>
-    :-webkit-full-screen {
-      width: 100%;
-      position: fixed;
-      top: 0;
-
-      /* webkit keeps the original background color, so reset */
-      background: none;
-    }
-    :fullscreen {
-      /* not currently needed, but just in case */
-      width: 100%;
-      height: 100%;
-      position: fixed;
-      top: 0;
-
-      /* keeps correct aspect ratio and full image visible */
-      -o-object-fit: contain; /* Opera 12.1 */
-      object-fit: contain;
-    }
-    html:-moz-full-screen {
-        background: white;
-    }
-
-    html:-webkit-full-screen {
-        background: white;
-    }
-
-    html:-ms-fullscreen {
-        background: white;
-        width: 100%; /* needed to center contents in IE */
-    }
-
-    html:fullscreen {
-        background: white;
-    }
-    #contener{
-            background-color: inherit;
-    }
-
-
-
-    </style>
 		<div id="footer">
 			<table cellpadding='0' cellspacing='0' width='100%' border='0'>
 				<tr>
 					<td align='center' class='copyRight'>
+                        <div style="float: right;" onclick="myToggleAll(0,true);saveFullScreenSetting();" > FullScreen</div>
                         <a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
                         <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a> | 
                         Copyright &copy; 2005-2015 <a href="http://www.centreon.com">Centreon</a><br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
@@ -102,7 +60,7 @@ if (!$min) {
                 </tr>
 			</table>
 		</div>
-        <div style="float: right;" onclick="myToggleAll(0,true);saveFullScreenSetting();" > FullScreen</div>
+        
 	</div>
 <?php
 }
@@ -110,7 +68,8 @@ if (!$min) {
 <script type="text/javascript">
     function myToggleAll(duration,toggle){
         if(toggle){
-            var i = document.getElementsByTagName("html")[0];
+            //var i = document.getElementsByTagName("html")[0];
+            var i = document.documentElement;
             if(jQuery("#footer").css('display') == 'none'){
                 jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").show({duration : duration});
                 if (document.exitFullscreen) {
