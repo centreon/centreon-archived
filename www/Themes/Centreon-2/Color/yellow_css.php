@@ -59,6 +59,8 @@ $color14 = "#E8AB5C";
 $menu1_bgcolor = "#fdc11e";
 $menu2_bgcolor = "#df9403";
 
+$colorHeader_1 = "#cfedf9";
+
 $footerline2 = "#dedede";
 
 $color_list_1 = "#F7FAFF";
