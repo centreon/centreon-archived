@@ -46,6 +46,49 @@ if (!$min) {
 			<tr><td id="footerline1"></td></tr>
 			<tr><td id="footerline2"></td></tr>
 		</table>
+    <style>
+    :-webkit-full-screen {
+      width: 100%;
+      position: fixed;
+      top: 0;
+
+      /* webkit keeps the original background color, so reset */
+      background: none;
+    }
+    :fullscreen {
+      /* not currently needed, but just in case */
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+
+      /* keeps correct aspect ratio and full image visible */
+      -o-object-fit: contain; /* Opera 12.1 */
+      object-fit: contain;
+    }
+    html:-moz-full-screen {
+        background: white;
+    }
+
+    html:-webkit-full-screen {
+        background: white;
+    }
+
+    html:-ms-fullscreen {
+        background: white;
+        width: 100%; /* needed to center contents in IE */
+    }
+
+    html:fullscreen {
+        background: white;
+    }
+    #contener{
+            background-color: inherit;
+    }
+
+
+
+    </style>
 		<div id="footer">
 			<table cellpadding='0' cellspacing='0' width='100%' border='0'>
 				<tr>
@@ -59,16 +102,62 @@ if (!$min) {
                 </tr>
 			</table>
 		</div>
-        <div style="float: right;" onclick="myToggleAll(400);saveFullScreenSetting();" > FullScreen</div>
+        <div style="float: right;" onclick="myToggleAll(0,true);saveFullScreenSetting();" > FullScreen</div>
 	</div>
 <?php
 }
 ?>
 <script type="text/javascript">
-    function myToggleAll(duration){
-        jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").toggle({duration : duration});
+    function myToggleAll(duration,toggle){
+        if(toggle){
+            var i = document.getElementsByTagName("html")[0];
+            if(jQuery("#footer").css('display') == 'none'){
+                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").show({duration : duration});
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.msExitFullscreen) {
+                   document.msExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                   document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                   document.webkitExitFullscreen();
+                }
+            }else{
+                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").hide({duration : duration});
+                // go full-screen
+                if (i.requestFullscreen) {
+                    i.requestFullscreen();
+                } else if (i.webkitRequestFullscreen) {
+                    i.webkitRequestFullscreen();
+                } else if (i.mozRequestFullScreen) {
+                    i.mozRequestFullScreen();
+                } else if (i.msRequestFullscreen) {
+                    i.msRequestFullscreen();
+                }
+            }
+        }else{
+            jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").hide({duration : duration});
+        }
     }
     
+    document.addEventListener('webkitfullscreenchange', exitHandler, false);
+    document.addEventListener('mozfullscreenchange', exitHandler, false);
+    document.addEventListener('fullscreenchange', exitHandler, false);
+    document.addEventListener('MSFullscreenChange', exitHandler, false);
+    
+    function exitHandler(){
+        
+        var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
+        var event = state ? 'FullscreenOn' : 'FullscreenOff';
+        console.log(event);
+        if (event === 'FullscreenOff')
+        {
+            jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").show({duration : 0});
+        }
+        
+
+    }
+
     function saveFullScreenSetting(){
         var d = new Date();
         var n = d.getTime();
@@ -84,11 +173,10 @@ if (!$min) {
 
 
 <?php
-if ((isset($_GET["mini"]) && $_GET["mini"] == 1) || 
-    (isset($_SESSION['fullScreen']) && isset($_SESSION['fullScreen']['value']) && $_SESSION['fullScreen']['value'])) {
+if (isset($_GET["mini"]) && $_GET["mini"] == 1) {
 ?>
 	<script type="text/javascript">
-        myToggleAll(0);
+        myToggleAll(0,false);
 	</script>
 <?php } else {
 	if (!$centreon->user->showDiv("footer")) { ?> <script type="text/javascript">new Effect.toggle('footer', 'blind', { duration : 0 });</script> <?php }
