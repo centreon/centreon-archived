@@ -1021,6 +1021,10 @@ td,a.infobulle:hover td {padding:0px;}
 
 #Tcontener,#Tmainpage,#tabLegend,div.tab,.Tmenu3 .center,.ListTable {width:100%;}
 
+#Tmainpage {
+    vertical-align: top;
+}
+
 .Small,.pagination,.ListColPicker,.ListColFooterCenter,.ListColCenter,.ListCol1,#page a,#page {text-align:center;}
 
 .img_volante {
