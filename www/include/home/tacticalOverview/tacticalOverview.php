@@ -115,10 +115,10 @@ var func_displayPOPUP = function(event) {
         var proc_popup = new Transformation();
         proc_popup.setCallback(func_popupXsltCallback);
         if (elements[0] == "host") {
-                proc_popup.setXml("./include/monitoring/status/Services/xml/" + broker + "/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+elements[1]);
+                proc_popup.setXml("./include/monitoring/status/Services/xml/" + broker + "/makeXMLForOneHost.php?"+'&host_id='+elements[1]);
                 proc_popup.setXslt("./include/monitoring/status/Services/xsl/popupForHost.xsl");
         } else {
-                proc_popup.setXml("./include/monitoring/status/Services/xml/" + broker + "/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+ elements[1]);
+                proc_popup.setXml("./include/monitoring/status/Services/xml/" + broker + "/makeXMLForOneService.php?"+'&svc_id='+ elements[1]);
                 proc_popup.setXslt("./include/monitoring/status/Services/xsl/popupForService.xsl");
         }
         proc_popup.transform('popup-container-display-' + $(this).id);

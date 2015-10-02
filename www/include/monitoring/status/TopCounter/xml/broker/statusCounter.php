@@ -55,7 +55,7 @@ $centreonLang->bindLang();
 /*
  * Create XML Request Objects
  */
-$obj = new CentreonXMLBGRequest((isset($_POST["sid"]) ? $_POST["sid"] : $_GET["sid"]), 1, 1, 0, $debug);
+$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, $debug);
 
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 	$obj->reloadSession();

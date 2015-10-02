@@ -46,9 +46,10 @@
 
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
-
-	if (isset($_GET["sid"])){
-		$sid = CentreonDB::escape($_GET["sid"]);
+    session_start();
+    $sid = session_id();
+	if (isset($sid)){
+		//$sid = CentreonDB::escape($_GET["sid"]);
 		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if (!$session = $res->fetchRow())
 			get_error('bad session id');

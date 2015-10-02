@@ -85,10 +85,11 @@
 	 */
 
 	global $is_admin, $user_id;
-
-	$is_admin = isUserAdmin($_GET["sid"]);
-	if (isset($_GET["sid"]) && $_GET["sid"]){
-		$DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '".$pearDB->escape($_GET["sid"])."'");
+    session_start();
+    $sid = session_id();
+	$is_admin = isUserAdmin($sid);
+	if (isset($sid) && $sid){
+		$DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '".$pearDB->escape($sid)."'");
 		$session = $DBRESULT->fetchRow();
 		$access = new CentreonAcl($session["user_id"], $is_admin);
 		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());

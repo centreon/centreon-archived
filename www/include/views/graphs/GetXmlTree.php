@@ -95,11 +95,13 @@ if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml")) {
 
 global $is_admin, $user_id;
 
-if (false === isset($_GET['sid']) || !$_GET['sid']) {
+
+$sid = session_id();
+if (false === isset($sid) || !$sid) {
     exit();
 }
 
-$sid = $pearDB->escape($_GET['sid']);
+$sid = $pearDB->escape($sid);
 
 $is_admin = isUserAdmin($sid);
 $DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '" . $sid . "'");

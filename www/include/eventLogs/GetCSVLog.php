@@ -55,21 +55,23 @@ $pearDBO 	= new CentreonDB("centstorage");
 /**
  * Security check
  */
-(isset($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8") : $sid = "-1";
-
-/**
- * Check Session ID
- */
-if (isset($sid)){
-    $sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
-    $res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-    if ($session = $res->fetchRow()) {
-        $_POST["sid"] = $sid;
-    } else
-        get_error('bad session id');
-} else {
-    get_error('need session identifiant !');
-}
+//session_start();
+//$sid = session_id();
+//(isset($sid)) ? $sid = $sid : $sid = "-1";
+//
+///**
+// * Check Session ID
+// */
+//if (isset($sid)){
+//    $sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
+//    $res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+//    if ($session = $res->fetchRow()) {
+//        $_POST["sid"] = $sid;
+//    } else
+//        get_error('bad session id');
+//} else {
+//    get_error('need session identifiant !');
+//}
 
 /**
  * save of the XML flow in $flow

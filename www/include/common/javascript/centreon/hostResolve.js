@@ -27,6 +27,6 @@ function resolveHostNameToAddress(hostName, callback) {
             }
         }
     }
-    xhr.open("GET", "./include/configuration/configObject/host/resolveHostName.php?hostName=" + encodeURIComponent(hostName) + "&sid=" + encodeURIComponent(sid));
+    xhr.open("GET", "./include/configuration/configObject/host/resolveHostName.php?hostName=" + encodeURIComponent(hostName));
     xhr.send(null);
 }

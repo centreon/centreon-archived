@@ -514,7 +514,6 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 ?>
 <?php if (!is_null($host_id)) { ?>
 <script type="text/javascript">
-	var _sid = '<?php echo session_id();?>';
 	var glb_confirm = '<?php  echo _("Submit command?"); ?>';
 	var command_sent = '<?php echo _("Command sent"); ?>';
 	var command_failure = "<?php echo _("Failed to execute command");?>";
@@ -568,7 +567,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 		    xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 		}
 	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, cmd); };
-	    xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/hostSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&sid=" + _sid + "&actiontype=" + actiontype, true);
+	    xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/hostSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&actiontype=" + actiontype, true);
     	    xhr_cmd.send(null);
 	}
 

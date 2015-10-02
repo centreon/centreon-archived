@@ -57,7 +57,8 @@ include_once $centreon_path . "www/include/common/common-Func.php";
 /**
  * Create XML Request Objects
  */
-$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
+session_start();
+$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 CentreonSession::start();
 
 /*
@@ -424,9 +425,9 @@ if (!PEAR::isError($DBRESULT)) {
             $obj->XML->writeElement("hico", $data["h_icon_images"]);
             $obj->XML->writeElement("hip", $data["address"]);
             $obj->XML->writeElement("hdtm", $data["h_scheduled_downtime_depth"]);
-            $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?sid=" . $obj->session_id . "&hid=" . $data['host_id']);
+            $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=" . $data['host_id']);
             $obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
-            $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?sid=" . $obj->session_id . "&hid=" . $data['host_id']);
+            $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=" . $data['host_id']);
             $obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
             $obj->XML->writeElement("hid", $data["host_id"]);
         }
@@ -463,9 +464,9 @@ if (!PEAR::isError($DBRESULT)) {
         $obj->XML->writeElement("eh", $data["event_handler_enabled"]);
         $obj->XML->writeElement("is", $data["flapping"]);
         $obj->XML->writeElement("dtm", $data["scheduled_downtime_depth"]);
-        $obj->XML->writeElement("dtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?sid=" . $obj->session_id . "&hid=" . $data['host_id'] . "&svc_id=" . $data['service_id']);
+        $obj->XML->writeElement("dtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=" . $data['host_id'] . "&svc_id=" . $data['service_id']);
         $obj->XML->writeElement("dtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
-        $obj->XML->writeElement("ackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?sid=" . $obj->session_id . "&hid=" . $data['host_id'] . "&svc_id=" . $data['service_id']);
+        $obj->XML->writeElement("ackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=" . $data['host_id'] . "&svc_id=" . $data['service_id']);
         $obj->XML->writeElement("ackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
 
         if ($data["notes"] != "") {

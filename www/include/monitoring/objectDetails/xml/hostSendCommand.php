@@ -47,7 +47,7 @@
 
 	CentreonSession::start();
 	$oreon = $_SESSION["centreon"];
-	if (!isset($_SESSION["centreon"]) || !isset($_GET["host_id"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]) || !isset($_GET["actiontype"]))
+	if (!isset($_SESSION["centreon"]) || !isset($_GET["host_id"]) || !isset($_GET["cmd"]) || !isset($_GET["actiontype"]))
 		exit();
 
 	$pearDB = new CentreonDB();
@@ -55,7 +55,7 @@
 	$host_id = $_GET["host_id"];
 	$poller = $hostObj->getHostPollerId($host_id);
 	$cmd = $_GET["cmd"];
-	$sid = $_GET["sid"];
+	$sid = session_id();
 	$act_type = $_GET["actiontype"];
 
 	$pearDB = new CentreonDB();

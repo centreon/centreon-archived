@@ -50,12 +50,13 @@
 	 * Counters
 	 */
 	global $regCounter, $gdCounter, $fileRemoved, $dirCreated;
-
-	if (!isset($_GET["session_id"]))
+    session_start();
+    $sid = session_id();
+	if (!isset($sid))
 		exit ;
 
-	if (isset($_GET["session_id"])) {
-		$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '".$pearDB->escape($_GET["session_id"])."'");
+	if (isset($sid)) {
+		$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '".$pearDB->escape($sid)."'");
 		if ($DBRESULT->numRows() == 0)
 			exit();
 	}

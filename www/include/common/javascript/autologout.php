@@ -55,7 +55,7 @@ function call_XMLHttpReq2() {
     xhr2.onreadystatechange = function() { change_status(xhr2); };
 
     //on appelle le fichier XMLresponse.php
-    xhr2.open("GET", "./include/common/javascript/autologoutXMLresponse.php?sid=" + sid, true);
+    xhr2.open("GET", "./include/common/javascript/autologoutXMLresponse.php", true);
     xhr2.send(null);
 }
 

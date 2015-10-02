@@ -9,11 +9,7 @@
 		return NULL;
 	}
 
-	if (function_exists("filter_var")){
-		$sid = filter_var($_GET["sid"], FILTER_SANITIZE_SPECIAL_CHARS);
-	} else {
-		$sid = filter_get($_GET["sid"]);
-	}
+	$sid = session_id();
 
 	if (function_exists("filter_var") && isset($_GET["search_host"])){
 		$search_host = filter_var($_GET["search_host"], FILTER_SANITIZE_SPECIAL_CHARS);

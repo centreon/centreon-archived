@@ -45,7 +45,7 @@
 
 	CentreonSession::start();
 
-	if (!isset($_SESSION["centreon"]) || !isset($_GET["poller"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]) || !isset($_GET["type"])) {
+	if (!isset($_SESSION["centreon"]) || !isset($_GET["poller"]) || !isset($_GET["cmd"]) || !isset($_GET["type"])) {
 		exit();
 	}
 
@@ -64,7 +64,7 @@
 
 	$poller =  htmlentities($_GET["poller"], ENT_QUOTES, "UTF-8");
 	$cmd =     htmlentities($_GET["cmd"], ENT_QUOTES, "UTF-8");
-	$sid =     htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8");
+	$sid =     session_id();
 	$type =    htmlentities($_GET["type"], ENT_QUOTES, "UTF-8");
 
 	$pearDB = new CentreonDB();

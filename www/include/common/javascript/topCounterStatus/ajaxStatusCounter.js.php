@@ -222,7 +222,7 @@ function reloadStatusCounter(_reload_time, _sid) {
 
 	xhrC.open("POST",_adrrsearchC,true);
 	xhrC.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhrC.send("sid="+_sid+"&version="+_version+"&session_expire="+(_reload_time/1000));
+	xhrC.send("&version="+_version+"&session_expire="+(_reload_time/1000));
 	//setQuickTip();
 	setTimeout('reloadStatusCounter("'+ _reload_time +'","'+ _sid +'")', _reload_time);
 }
@@ -230,7 +230,7 @@ function reloadStatusCounter(_reload_time, _sid) {
 function setQuickTip() {
 	new Ext.ToolTip({
 			target: 'host_down',
-			autoLoad: {url: 'include/monitoring/status/TopCounter/quicktipContent.php?type=host&status=1&sid=' + _sid},
+			autoLoad: {url: 'include/monitoring/status/TopCounter/quicktipContent.php?type=host&status=1' },
 			autoHide: true
 	});
 }

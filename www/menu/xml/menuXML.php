@@ -48,7 +48,9 @@
 	require_once $centreon_path."/www/class/centreonLang.class.php";
 	require_once $centreon_path."/www/class/centreonMenu.class.php";
 
-	if (!isset($_GET["sid"]) || !isset($_GET["menu"]))
+    session_start();
+    $sid = session_id();
+	if (!isset($sid) || !isset($_GET["menu"]))
 		exit();
 
 	/*
@@ -60,7 +62,7 @@
 	/*
 	 * Check Session existence
 	 */
-	$session = $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".$pearDB->escape($_GET["sid"])."'");
+	$session = $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".$pearDB->escape($sid)."'");
 	if (!$session->numRows()){
 		$buffer = new CentreonXML();
 		$buffer->startElement("root");
@@ -83,12 +85,12 @@
 	 */
 	$buffer = new CentreonXML();
 
-	$user_id = getUserIdFromSID(htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8"));
+	$user_id = getUserIdFromSID($sid);
 
 	if (!$user_id)
 		exit();
 
-	$is_admin = isUserAdmin(htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8"));
+	$is_admin = isUserAdmin($sid);
 	$access = new CentreonACL($user_id, $is_admin);
 	$topoStr = $access->getTopologyString();
 

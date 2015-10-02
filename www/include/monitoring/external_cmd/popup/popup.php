@@ -56,9 +56,9 @@
 	if (!isset($oreon) || !isset($_GET['o']) || !isset($_GET['cmd']) || !isset($_GET['p'])) {
 		exit;
 	}
-
-	if (isset($_GET["sid"])){
-		$sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8");
+    $sid = session_id();
+	if (isset($sid)){
+		//$sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8");
 		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if (!$session = $res->fetchRow())
 			exit;
