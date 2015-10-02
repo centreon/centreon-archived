@@ -185,6 +185,22 @@ $attrsAdvSelect = array("style" => "width: 400px; height: 250px;");
 $attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
+$attrServices = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+    'multiple' => true
+);
+$attrServicetemplates = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list&l=1',
+    'multiple' => true
+);
+$attrHostgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+    'multiple' => true
+);
+
 #
 ## Form begin
 #
@@ -216,7 +232,6 @@ $hostFilter = ($hostFilter + $acl->getHostAclConf(null,
                                                        'order'   => array('host.host_name')),
                                                  false));
 
-$form->addElement('select', 'host_filter', _('Host'), $hostFilter, array('onChange' => 'hostFilterSelect(this);'));
 $form->addElement('header', 'relation', _("Relations"));
 if (isset($_REQUEST['sg_hServices']) && count($_REQUEST['sg_hServices'])) {
    $sql = "SELECT host_id, service_id, host_name, service_description FROM host h, service s, host_service_relation hsr
@@ -229,24 +244,24 @@ if (isset($_REQUEST['sg_hServices']) && count($_REQUEST['sg_hServices'])) {
        $hServices[$k] = $row['host_name'] . ' - ' . $row['service_description'];
    }
 }
-$ams1 = $form->addElement('advmultiselect', 'sg_hServices', array(_("Linked Host Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);
+$attrService1 = array_merge(
+    $attrServices,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=servicegroups&field=sg_hServices&id=' . $sg_id)
+);
+$form->addElement('select2', 'sg_hServices', _("Linked Host Services"), array(), $attrService1);
 
-$form->addElement('header', 'relation', _("Relations"));
-$ams1 = $form->addElement('advmultiselect', 'sg_hgServices', array(_("Linked Host Group Services"), _("Available"), _("Selected")), $hgServices, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
+$attrHostgroup1 = array_merge(
+    $attrHostgroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=servicegroups&field=sg_hgServices&id=' . $sg_id)
+);
+$form->addElement('select2', 'sg_hgServices', _("Linked Host Group Services"), array(), $attrHostgroup1);
 
-$form->addElement('header', 'relation', _("Relations"));
-$ams1 = $form->addElement('advmultiselect', 'sg_tServices', array(_("Linked Service Templates"), _("Available"), _("Selected")), $tServices, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);
+
+$attrServicetemplate1 = array_merge(
+    $attrServicetemplates,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=servicegroups&field=sg_tServices&id=' . $sg_id)
+);
+$form->addElement('select2', 'sg_tServices', _("Linked Service Templates"), array(), $attrServicetemplate1);
 
 /*
  * Further informations

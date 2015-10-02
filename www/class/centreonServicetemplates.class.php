@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -13,7 +14,7 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <htcontact://www.gnu.org/licenses>.
+ * this program; if not, see <http://www.gnu.org/licenses>.
  *
  * Linking this program statically or dynamically with other modules is making a
  * combined work based on this program. Thus, the terms and conditions of the GNU
@@ -35,86 +36,47 @@
  * SVN : $Id$
  *
  */
+require_once $centreon_path . 'www/class/centreonService.class.php';
+require_once $centreon_path . 'www/class/centreonInstance.class.php';
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . "/centreon_configuration_service.class.php";
-
-class CentreonConfigurationServicetemplate extends CentreonConfigurationService
+/**
+ *  Class that contains various methods for managing services
+ */
+class CentreonServicetemplates extends CentreonService
 {
     /**
-     * Constructor
+     *  Constructor
+     *
+     *  @param CentreonDB $db
      */
-    public function __construct()
+    public function __construct($db)
     {
-        parent::__construct();
+        parent::__construct($db);
     }
-    
     /**
      * 
-     * @return array
+     * @param type $values
+     * @return type
      */
-    public function getList()
+    public function getObjectForSelect2($values = array())
     {
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
+        $selectedServices = '';
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
         } else {
-            $q = $this->arguments['q'];
+            $selectedServices .= "AND hsr.service_service_id IN ($explodedValues) ";
         }
         
-        if (false === isset($this->arguments['l'])) {
-            $l = '0';
-        } else {
-            $l = $this->arguments['l'];
-        }
-        if ($l == '1') {
-            $serviceTemplateList = $this->listWithHostTemplate($q);
-        } else {
-            $serviceTemplateList = $this->listClassic($q);
-        }
-        return $serviceTemplateList;
-    }
-    
-    /**
-     * 
-     * @param string $q
-     * @return array
-     */
-    private function listClassic($q)
-    {
-        $queryContact = "SELECT service_id, service_description "
-            . "FROM service "
-            . "WHERE service_description LIKE '%$q%' "
-            . "AND service_register = '0' "
-            . "ORDER BY service_description";
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
-
-        while ($data = $DBRESULT->fetchRow()) {
-            $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
-        }
-        
-        return $serviceList;
-    }
-    
-    /**
-     * 
-     * @param string $q
-     * @return array
-     */
-    private function listWithHostTemplate($q = '')
-    {
         $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
             . "FROM host h, service s, host_service_relation hsr "
-            . 'WHERE hsr.host_host_id = h.host_id '
+            . "WHERE hsr.host_host_id = h.host_id "
             . "AND hsr.service_service_id = s.service_id "
             . "AND h.host_register = '0' AND s.service_register = '0' "
-            . "AND s.service_description LIKE '%$q%' "
+            . $selectedServices
             . "ORDER BY h.host_name";
         
-        $DBRESULT = $this->pearDB->query($queryService);
+        $DBRESULT = $this->db->query($queryService);
         
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
@@ -127,3 +89,5 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
         return $serviceList;
     }
 }
+
+?>

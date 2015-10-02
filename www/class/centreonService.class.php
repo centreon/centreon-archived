@@ -36,6 +36,7 @@
  * SVN : $Id$
  *
  */
+require_once $centreon_path . 'www/class/centreonInstance.class.php';
 
 /**
  *  Class that contains various methods for managing services
@@ -104,9 +105,9 @@ class CentreonService
         }
         $res = $this->db->query(
                 "SELECT service_id 
-                        FROM service
-                        WHERE service_description = '" . $this->db->escape($templateName) . "' 
-                            AND service_register = '0'"
+                 FROM service
+                 WHERE service_description = '" . $this->db->escape($templateName) . "' 
+                    AND service_register = '0'"
         );
         if (!$res->numRows()) {
             return null;
@@ -710,6 +711,16 @@ class CentreonService
                 $parameters['relationObject']['field'] = 'host_host_id';
                 $parameters['relationObject']['comparator'] = 'service_service_id';
                 break;
+            case 'service_hgPars':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'hostgroup';
+                $parameters['externalObject']['id'] = 'hg_id';
+                $parameters['externalObject']['name'] = 'hg_name';
+                $parameters['externalObject']['comparator'] = 'hg_id';
+                $parameters['relationObject']['table'] = 'host_service_relation';
+                $parameters['relationObject']['field'] = 'hostgroup_hg_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
             case 'service_sgs':
                 $parameters['type'] = 'relation';
                 $parameters['externalObject']['table'] = 'servicegroup';
@@ -753,6 +764,42 @@ class CentreonService
         }
         
         return $parameters;
+    }
+    
+    /**
+     * 
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        $selectedServices = '';
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        } else {
+            $selectedServices .= "AND hsr.service_service_id IN ($explodedValues) ";
+        }
+        
+        $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
+            . "FROM host h, service s, host_service_relation hsr "
+            . 'WHERE hsr.host_host_id = h.host_id '
+            . "AND hsr.service_service_id = s.service_id "
+            . "AND h.host_register = '1' AND s.service_register = '1' "
+            . $selectedServices
+            . "ORDER BY h.host_name";
+        
+        $DBRESULT = $this->db->query($queryService);
+        
+        $serviceList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
+            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+            
+            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
+        }
+        
+        return $serviceList;
     }
 }
 

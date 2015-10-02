@@ -742,11 +742,12 @@ if ($form_service_type == "BYHOST") {
 }
 
 if ($form_service_type == "BYHOSTGROUP") {
-    $ams3 = $form->addElement('advmultiselect', 'service_hgPars', array(_("Linked with Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
-    $ams3->setButtonAttributes('add', array('value' => _("Add")));
-    $ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-    $ams3->setElementTemplate($eTemplate);
-    echo $ams3->getElementJs(false);
+    $attrHostgroup1 = array_merge(
+        $attrHostgroups,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=service&field=service_hgPars&id=' . $service_id)
+    );
+    $form->addElement('select2', 'service_hgPars', _("Linked with Host Groups"), array(), $attrHostgroup1);
+    
     if (isset($service['service_hgPars']) && count($service['service_hgPars']) > 1) {
         $sgReadOnly = true;
     }
