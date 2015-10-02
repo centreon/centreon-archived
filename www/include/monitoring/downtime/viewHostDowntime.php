@@ -157,7 +157,7 @@ for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
 $DBRESULT_NDO->free();
 unset($data);
 
-$rows = $pearDBndo->numberRows();
+$rows = $pearDBO->numberRows();
 include("./include/common/checkPagination.php");
 
 $en = array("0" => _("No"), "1" => _("Yes"));
