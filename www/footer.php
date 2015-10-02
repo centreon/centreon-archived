@@ -71,7 +71,7 @@ if (!$min) {
             //var i = document.getElementsByTagName("html")[0];
             var i = document.documentElement;
             if(jQuery("#footer").css('display') == 'none'){
-                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").show({duration : duration});
+                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3,#header").show({duration : duration});
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 } else if (document.msExitFullscreen) {
@@ -82,7 +82,7 @@ if (!$min) {
                    document.webkitExitFullscreen();
                 }
             }else{
-                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").hide({duration : duration});
+                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3,#header").hide({duration : duration});
                 // go full-screen
                 if (i.requestFullscreen) {
                     i.requestFullscreen();
@@ -119,10 +119,9 @@ if (!$min) {
         
         var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
         var event = state ? 'FullscreenOn' : 'FullscreenOff';
-        console.log(event);
         if (event === 'FullscreenOff')
         {
-            jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").show({duration : 0});
+            jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu, #menu_2, #menu_3,#header").show({duration : 0});
         }
         
 
