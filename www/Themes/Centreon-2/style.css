@@ -712,16 +712,6 @@ div.menuLeft {
 .pathWay 	{padding:0px;margin:0px;color:#5a5a5a;}
 .imgPathWay {border:0;margin:0 0 -2px;padding:0;}
 
-#linkBar {
-    font-weight: 700;
-    position: absolute;
-    right: 0;
-    text-align: right;
-    top: 110px;
-    width: 150px;
-}
-#linkBar img 	{margin-left:4px;}
-
 .separator 		{color:#000000;font-style:italic;font-weight:700;}
 .list_separator {text-align:center;background-color:#99CC55;}
 

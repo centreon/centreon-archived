@@ -54,7 +54,6 @@
 	}
 
 ?>
-<script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
 var _debug = 0;
 
@@ -80,16 +79,6 @@ var _criticality_id = 0;
 	  		}
 		}
 		return tab;
-	}
-
-	if (document.getElementById('linkBar'))	{
-		var _linkBar = document.getElementById('linkBar')
-		var _divBar = document.createElement("div");
-
-		_divBar.appendChild(create_graph_link('select','svc_id'));
-		_divBar.appendChild(create_log_link('select','svc_id'));
-		_divBar.setAttribute('style','float:right; margin-right:10px;');
-		_linkBar.appendChild(_divBar);
 	}
 
 	function set_header_title() {

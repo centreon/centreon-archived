@@ -236,7 +236,6 @@
 	$tpl->display("viewLog.ihtml");
 
 ?>
-<script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>
 
@@ -278,16 +277,6 @@
 	// linkBar to log/reporting/graph/ID_card
 	function getCheckedList(tree){
 		return tree.getAllChecked();
-	}
-
-	if (document.getElementById('linkBar')){
-		var _menu_2 = document.getElementById('linkBar')
-		var _divBar = document.createElement("div");
-
-		_divBar.appendChild(create_graph_link(tree,'id'));
-		_divBar.appendChild(create_monitoring_link(tree,'id'));
-		_divBar.setAttribute('style','float:right; margin-right:10px;' );
-		_menu_2.appendChild(_divBar);
 	}
 
 	function onDblClick(nodeId){
