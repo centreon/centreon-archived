@@ -1001,7 +1001,8 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .ToolbarTR td:first-child {
     width: 40%;
 }
-.ToolbarTR select {border: 1px solid #BBBBBB;}
+.ToolbarTR select { height: 25px; line-height: 25px; }
+.ToolbarTR a.btc { display: inline-block; height: 25px; line-height: 25px; padding: 0 4px; }
 .ToolbarPagination	{text-align:center;}
 
 .Toolbar_TDSelectAction_Top {
