@@ -991,7 +991,8 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .ToolbarTR td:first-child {
     width: 40%;
 }
-.ToolbarTR select {border: 1px solid #BBBBBB;}
+.ToolbarTR select { height: 25px; line-height: 25px; }
+.ToolbarTR a.btc { display: inline-block; height: 25px; line-height: 25px; padding: 0 4px; }
 .ToolbarPagination	{text-align:center;}
 
 .Toolbar_TDSelectAction_Top {
@@ -1010,6 +1011,10 @@ td,a.infobulle:hover td {padding:0px;}
 #menu_3 a,#footer a,#logli a,#logOut a {color:#666;}
 
 #Tcontener,#Tmainpage,#tabLegend,div.tab,.Tmenu3 .center,.ListTable {width:100%;}
+
+#Tmainpage {
+    vertical-align: top;
+}
 
 .Small,.pagination,.ListColPicker,.ListColFooterCenter,.ListColCenter,.ListCol1,#page a,#page {text-align:center;}
 

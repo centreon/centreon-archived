@@ -15,7 +15,7 @@
 			<td>
 				{$msg.options} {$form.o1.html}
 				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL1}">{$msg.addT}</a>
+				<a href="{$msg.addL1}" class="btc bt_success">{$msg.addT}</a>
 			</td>
 			{ else }
 			<td>&nbsp;</td>
@@ -51,7 +51,7 @@
 			<td>
 				{$msg.options} {$form.o2.html}
 				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL1}">{$msg.addT}</a>
+				<a href="{$msg.addL1}" class="btc bt_success">{$msg.addT}</a>
 			</td>
 			{ else }
 			<td>&nbsp;</td>
