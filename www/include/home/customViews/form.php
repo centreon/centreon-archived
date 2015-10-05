@@ -47,7 +47,7 @@ $title = "";
 $action = null;
 $defaultTab = array();
 if ($_REQUEST['action'] == "add") {
-    $title = _("Add a new view");
+    $title = _("Add new view");
     $action = "add";
 } elseif ($_REQUEST['action'] == "edit" && isset($_REQUEST['view_id']) && $_REQUEST['view_id']) {
     $viewId = $_REQUEST['view_id'];
@@ -117,10 +117,10 @@ $form->addElement('select', 'wiewLoad', _("Public views list"),$arrayView );
 /**
  * Name
  */
-$form->addElement('text', 'name', _("View name"), $attrsText);
+$form->addElement('text', 'name', _("Name"), $attrsText);
 
 $createLoad = array();
-$createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Create"), 'create');
+$createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Create new view "), 'create');
 $createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Load from existing view"), 'load');
 $form->addGroup($createLoad, 'create_load', _("create or load"), '&nbsp;');
 $form->setDefaults(array('create_load[create_load]' => 'create'));
@@ -145,8 +145,8 @@ $form->addElement('checkbox', 'public', _("Public"), $attrsText);
 /**
  * Submit button
  */
-$form->addElement('button', 'submit', _("Submit"), array("onClick" => "submitData();"));
-$form->addElement('reset', 'reset', _("Reset"));
+$form->addElement('button', 'submit', _("Submit"), array("onClick" => "submitData();","class" => "btc bt_success"));
+$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 $form->addElement('hidden', 'action');
 $form->setDefaults(array('action' => $action));
 

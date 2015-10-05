@@ -1,9 +1,9 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form {$form.attributes}>
-	<table class="ToolbarTable">
+	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			<td class="Toolbar_TDSelectAction_Top">
-				{$msg.options} {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}">{$msg.addT}</a>&nbsp;-&nbsp;<a href= '#' onClick="window.open('./main.php?p={$p}&o=sd&min=1&session_id={$session_id}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=350, height=250');">{$syncDir}</a><input name="p" value="{$p}" type="hidden">
+			<td>
+				{$msg.options} {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>&nbsp;-&nbsp;<a href='#' class="btc bt_info" onClick="window.open('./main.php?p={$p}&o=sd&min=1&session_id={$session_id}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=350, height=250');">{$syncDir}</a><input name="p" value="{$p}" type="hidden">
 			</td>
 			{php}
 			   include('./include/common/pagination.php');
@@ -40,12 +40,10 @@
 			{/if}
 		{/foreach}
 	</table>
-	<table class="ToolbarTable">
+	<table class="ToolbarTable table">
 		<tr>
-			<td class="Toolbar_TDSelectAction_Bottom">
-				{$msg.options} {$form.o2.html}
-				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL}">{$msg.addT}</a>
+			<td>
+				{$msg.options} {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>&nbsp;-&nbsp;<a href='#' class="btc bt_info" onClick="window.open('./main.php?p={$p}&o=sd&min=1&session_id={$session_id}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=350, height=250');">{$syncDir}</a><input name="p" value="{$p}" type="hidden">
 			</td>
 			<input name="p" value="{$p}" type="hidden">
 			{php}

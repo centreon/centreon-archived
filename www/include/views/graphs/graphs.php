@@ -202,7 +202,6 @@
 	$tpl->assign('Apply', _("Apply"));
 	$tpl->display("graphs.ihtml");
 ?>
-<script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
     var gmt = <?php echo $userGmt ? $userGmt : 0;?>;
     var useGmt = <?php echo $useGmt;?>;
@@ -252,16 +251,6 @@
 	// linkBar to log/reporting/graph/ID_card
 	function getCheckedList(tree){
 		return tree.getAllChecked();
-	}
-
-	if (document.getElementById('linkBar')){
-		var _menu_2 = document.getElementById('linkBar');
-		var _divBar = document.createElement("div");
-
-		_divBar.appendChild(create_log_link(tree,'id'));
-		//_divBar.appendChild(create_monitoring_link(tree,'id'));
-		_divBar.setAttribute('style','float:right; margin-right:10px;' );
-		_menu_2.appendChild(_divBar);
 	}
 
 	function onDblClick(nodeId){

@@ -93,8 +93,8 @@ foreach ($widgetList as $widgetModelId => $widgetModelName) {
 /**
  * Submit button
  */
-$form->addElement('button', 'submit', _("Submit"), array("onClick" => "submitData();"));
-$form->addElement('reset', 'reset', _("Reset"));
+$form->addElement('button', 'submit', _("Submit"), array("onClick" => "submitData();","class" => "btc bt_success"));
+$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 $form->addElement('hidden', 'action');
 $form->addElement('hidden', 'custom_view_id');
 $form->setDefaults(array('action'         => $action,
