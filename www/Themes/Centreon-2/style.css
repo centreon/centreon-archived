@@ -67,14 +67,18 @@ ul {
     list-style-type:none;
 }
 
-table {border-collapse:collapse;empty-cells:show;border-spacing:0;}
+table {
+    border-collapse:collapse;
+    empty-cells:show;
+    border-spacing:0;
+}
 
 img 		{margin:0 0 -4px;padding:0;}
 
 input, select {
     padding: 4px;
     font-size: 11px !important;
-    border: 1px solid #bcbdc0 !important;
+    border: 1px solid #bcbdc0;
     line-height: 14px;
 }
 
@@ -97,6 +101,15 @@ iframe {
     width: 100%;
     //white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+p.description {
+    color: #a7a9ac;
+    padding: 4px 0px;
+}
+
+p.description a, p.description a:visited {
+    color: #4ccaff;
 }
 
 /* ------ START : Colors -----*/
@@ -347,7 +360,7 @@ vertical-align: middle;
 }
 
 #mainnav li a {
-    padding: .4em .8em .4em .8em;
+    padding: .6em .8em .6em .8em;
     display: inline-block;
 }
 
@@ -659,6 +672,8 @@ div.menuLeft {
 .formTable .ListHeader h3 {
     font-weight: normal;
     color: #597f00;
+    margin: 4px 0;
+    font-size: 1.3em;
 }
 
 .formTable .list_lvl_1 {
@@ -666,14 +681,18 @@ div.menuLeft {
 }
 
 .formTable .list_lvl_1 .ListColLvl1_name {
-    padding-bottom: 12px;
+    padding: 8px 0;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #e7e7e8;
+    border-top: 1px solid #e7e7e8;
 }
 
 .formTable .list_lvl_1 h4 {
     font-weight: normal;
-    color: #818285;
+    color: #009fdf;
     margin-left: 12px;
     padding: 4px;
+    font-size: 1.1em;
 }
 /* ------ END : Forms -------- */
 
