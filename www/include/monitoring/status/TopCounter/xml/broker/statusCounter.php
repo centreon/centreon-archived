@@ -170,7 +170,7 @@ if (!$obj->is_admin) {
 }
 $DBRESULT = $obj->DBC->query($rq3);
 while ($data = $DBRESULT->fetchRow()) {
-	$svc_stat[$ndo["state"] + 5] = $data["number"];
+	$svc_stat[$data["state"] + 5] = $data["number"];
 }
 $DBRESULT->free();
 unset($data);
@@ -185,7 +185,7 @@ $error = "";
 $pollerListInError = "";
 $pollersWithLatency = array();
 
-$timeunit = 300;
+$timeUnit = 300;
 if ($pollerList != "") {
 	$request = 	"SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 AND name IN ($pollerList)";
 	$DBRESULT = $obj->DBC->query($request);
