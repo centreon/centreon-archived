@@ -191,7 +191,7 @@
 				"`debug_level_opt`, `debug_verbosity` , `max_debug_file_size` , `daemon_dumps_core`, " .
 				"`enable_environment_macros` , `use_setpgid`, `use_regexp_matching` , `use_true_regexp_matching` , `admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, " .
 				"`event_broker_options` , `enable_embedded_perl` , `use_embedded_perl_implicitly`, `translate_passive_host_checks`, " .
-				"`passive_host_checks_are_soft`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, `cfg_file`, `log_pid`) ";
+				"`passive_host_checks_are_soft`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, `cfg_file`, `log_pid`, `use_check_result_path`) ";
 		$rq .= "VALUES (";
 		$rq .= "NULL, ";
         isset($ret["nagios_name"]) && $ret["nagios_name"] != NULL ? $rq .= "'".htmlentities($ret["nagios_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
@@ -330,7 +330,8 @@
 		isset($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]) && $ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"] != 2 ? $rq .= "'".$ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]."', " : $rq .= "'2', ";
 		isset($ret["external_command_buffer_slots"]["external_command_buffer_slots"]) && $ret["external_command_buffer_slots"]["external_command_buffer_slots"] != 2 ? $rq .= "'".$ret["external_command_buffer_slots"]["external_command_buffer_slots"]."', " : $rq .= "'2', ";
         isset($ret["cfg_file"]) && $ret["cfg_file"] != NULL ? $rq .= "'".htmlentities($ret["cfg_file"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
-        isset($ret["log_pid"]["log_pid"]) && $ret["log_pid"]["log_pid"] ? $rq .= "'1', " : $rq .= "'0')";
+        isset($ret["log_pid"]["log_pid"]) && $ret["log_pid"]["log_pid"] ? $rq .= "'1', " : $rq .= "'0', ";
+        isset($ret['use_check_result_path']['use_check_result_path']) && $ret['use_check_result_path']['use_check_result_path'] ? $rq .= "'1')" : $rq .= "'0')";
         
 		$DBRESULT = $pearDB->query($rq);
 		$DBRESULT = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
@@ -504,6 +505,7 @@
         
         isset($ret["cfg_file"]) && $ret["cfg_file"] != NULL ? $rq .= "cfg_file = '".htmlentities($ret["cfg_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "cfg_file = NULL, ";
 		isset($ret["log_pid"]["log_pid"]) && $ret["log_pid"]["log_pid"] ? $rq .= "log_pid = '1',  " : $rq .= "log_pid = '0', ";
+        isset($ret['use_check_result_path']['use_check_result_path']) && $ret['use_check_result_path']['use_check_result_path'] ? $rq .= "use_check_result_path = '1', " : $rq .= "use_check_result_path = '0', ";
         
 		$rq .= "nagios_activate = '".$ret["nagios_activate"]["nagios_activate"]."' ";
 		$rq .= "WHERE nagios_id = '".$nagios_id."'";
