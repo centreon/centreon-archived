@@ -91,7 +91,14 @@
 	$attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
 	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
-
+    $attrHostgroups = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+        'multiple' => true
+    );
+    
+    
+    
 	/*
 	 * Form begin
 	 */
@@ -131,18 +138,18 @@
 	$tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"));
 	$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
 	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
-
-	$ams1 = $form->addElement('advmultiselect', 'dep_hgParents', array(_("Host Groups Name"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
-
-	$ams1 = $form->addElement('advmultiselect', 'dep_hgChilds', array(_("Dependent Host Groups Name"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+    
+    $attrHostgroup1 = array_merge(
+        $attrHostgroups,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=dependency&field=dep_hgParents&id=' . $dep_id)
+    );
+    $form->addElement('select2', 'dep_hgParents', _("Host Groups Name"), array(), $attrHostgroup1);
+    
+    $attrHostgroup2 = array_merge(
+        $attrHostgroups,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=dependency&field=dep_hgChilds&id=' . $dep_id)
+    );
+    $form->addElement('select2', 'dep_hgChilds', _("Dependent Host Groups Name"), array(), $attrHostgroup2);
 
 	$form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
 
@@ -156,8 +163,8 @@
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
-        $init = $form->addElement('hidden', 'initialValues');
-        $init->setValue(serialize($initialValues));
+    $init = $form->addElement('hidden', 'initialValues');
+    $init->setValue(serialize($initialValues));
         
 	/*
 	 * Form Rules
