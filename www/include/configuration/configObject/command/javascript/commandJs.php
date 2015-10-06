@@ -36,6 +36,11 @@
 <script type="text/javascript">
 var listArea;
 
+var regSvc = /\$_SERVICE(\w+)\$/g;
+var regHost = /\$_HOST(\w+)\$/g;
+var macroSvc  = new Array();
+var macroHost = new Array();
+
 function goPopup() {
 	var cmd_line;
 	var tmpStr;
@@ -74,6 +79,86 @@ function closeBox() {
 function clearArgs() {
 	listArea = document.getElementById('listOfArg');
 	listArea.value = "";
+}
+
+function manageMacros()
+{
+    var commandLine = document.Form.command_line.value;
+    var tmpStr = "";
+/*
+    macroSvc = commandLine.match(regSvc);
+    macroHost = commandLine.match(regHost);
+
+    console.log(macroSvc);
+    console.log(macroHost);
+
+    cleanArrayMacro('host');
+    cleanArrayMacro('service');
+
+    console.log(macroSvc);
+    console.log(macroHost);
+   */ 
+    Modalbox.show('./include/configuration/configObject/command/formMacros.php?cmd_line=' + commandLine + '&textArea=' + tmpStr, {title: 'Macro description', width:800});
+
+}
+function cleanArrayMacro(type)
+{
+    var x = 0;
+    var table = new Array();
+    if (type == 'host' && macroHost != null) {
+        for (var y = 0; y < macroHost.length; y++) {
+            ele = macroHost[y];
+            ele1 = ele.substring(6, ele.lastIndexOf('$'))
+            table[x++] = ele1;
+        }
+        macroHost = table;
+    } else if(type == 'service' && macroSvc != null) {
+        for (var y = 0; y < macroSvc.length; y++) {
+            ele = macroSvc[y];
+            ele1 = ele.substring(6, ele.lastIndexOf('$'))
+            table[x++] = ele1;
+        }
+        macroSvc = table;
+    }
+}
+
+function createInputMacro()
+{
+    if (macroHost != null) {
+        for (var y = 0; y < macroHost.length; y++) {
+            ele = macroHost[y];
+            ele1 = ele.substring(6, ele.lastIndexOf('$'))
+            table[x++] = ele1;
+        }
+
+    }
+
+    if(macroSvc != null) {
+        for (var y = 0; y < macroSvc.length; y++) {
+            ele = macroSvc[y];
+            ele1 = ele.substring(6, ele.lastIndexOf('$'))
+            table[x++] = ele1;
+        }
+        macroSvc = table;
+    }
+}
+
+function setMacrosDescriptions() {
+	var i;
+	var tmpStr2;
+	var listDiv;
+
+	tmpStr2 = "";
+	listArea = document.getElementById('listOfMacros');
+	listDiv = document.getElementById('listOfMacros');
+	for (i=0; document.getElementById('desc_'+i); i++) {
+		tmpStr2 += "MACRO " + document.getElementById('macro_'+i).value + " : " + document.getElementById('desc_'+i).value + "\n";
+	}
+	listArea.cols=100;
+	listArea.rows=i;
+	listArea.value = tmpStr2;
+	listDiv.style.visibility = "visible";
+	Modalbox.hide();
 }
 
 </script>

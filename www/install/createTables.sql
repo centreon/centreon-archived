@@ -2384,6 +2384,16 @@ CREATE TABLE `meta_contact` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+CREATE TABLE `on_demand_macro_command` (
+  `command_macro_id` int(11) NOT NULL AUTO_INCREMENT,
+  `command_macro_name` varchar(255) NOT NULL,
+  `command_macro_desciption` text DEFAULT NULL,
+  `command_command_id` int(11) NOT NULL,
+  `command_macro_type` enum('1','2') DEFAULT NULL,
+  PRIMARY KEY (`command_macro_id`),
+  KEY `command_command_id` (`command_command_id`),
+  CONSTRAINT `on_demand_macro_command_ibfk_1` FOREIGN KEY (`command_command_id`) REFERENCES `command` (`command_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
