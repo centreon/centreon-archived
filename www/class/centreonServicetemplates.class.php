@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -35,31 +36,58 @@
  * SVN : $Id$
  *
  */
+require_once $centreon_path . 'www/class/centreonService.class.php';
+require_once $centreon_path . 'www/class/centreonInstance.class.php';
 
-session_start();
-require_once '../functions.php';
-define('PROCESS_ID', 'createuser');
+/**
+ *  Class that contains various methods for managing services
+ */
+class CentreonServicetemplates extends CentreonService
+{
+    /**
+     *  Constructor
+     *
+     *  @param CentreonDB $db
+     */
+    public function __construct($db)
+    {
+        parent::__construct($db);
+    }
+    /**
+     * 
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        $selectedServices = '';
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        } else {
+            $selectedServices .= "AND hsr.service_service_id IN ($explodedValues) ";
+        }
+        
+        $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
+            . "FROM host h, service s, host_service_relation hsr "
+            . "WHERE hsr.host_host_id = h.host_id "
+            . "AND hsr.service_service_id = s.service_id "
+            . "AND h.host_register = '0' AND s.service_register = '0' "
+            . $selectedServices
+            . "ORDER BY h.host_name";
+        
+        $DBRESULT = $this->db->query($queryService);
+        
+        $serviceList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
+            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+            
+            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
+        }
+        
+        return $serviceList;
+    }
+}
 
-$link = myConnect();
-if (false === $link) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-if (!isset($_SESSION['DB_USER'])) {
-    exitProcess(PROCESS_ID, 1, _('Could not find database user. Session probably expired.'));
-}
-$dbUser = $_SESSION['DB_USER'];
-$dbPass = $_SESSION['DB_PASS'];
-$host = "localhost";
-// if database server is not on localhost...
-if (isset($_SESSION['ADDRESS']) && $_SESSION['ADDRESS'] && 
-    $_SESSION['ADDRESS'] != "127.0.0.1" && $_SESSION['ADDRESS'] != "localhost") {
-        $host = $_SERVER['SERVER_ADDR'];
-}
-$query = "GRANT ALL PRIVILEGES ON `%s`.* TO `". $dbUser . "`@`". $host . "` IDENTIFIED BY '". $dbPass . "' WITH GRANT OPTION";
-if (false === mysql_query(sprintf($query, $_SESSION['CONFIGURATION_DB']))) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-if (false === mysql_query(sprintf($query, $_SESSION['STORAGE_DB']))) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-exitProcess(PROCESS_ID, 0, "OK");
+?>

@@ -106,8 +106,6 @@ $template->display('content.tpl');
                 if (key == 'dbconf') {
                     nextStep('dbstorage');   
                 } else if (key == 'dbstorage') {
-                    nextStep('dbutils')
-                } else if (key == 'dbutils') {
                     nextStep('createuser');
                 } else if (key == 'createuser') {
                     nextStep('baseconf');

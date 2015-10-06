@@ -36,6 +36,7 @@
  * SVN : $Id$
  *
  */
+require_once $centreon_path . 'www/class/centreonInstance.class.php';
 
 /**
  *  Class that contains various methods for managing services
@@ -104,9 +105,9 @@ class CentreonService
         }
         $res = $this->db->query(
                 "SELECT service_id 
-                        FROM service
-                        WHERE service_description = '" . $this->db->escape($templateName) . "' 
-                            AND service_register = '0'"
+                 FROM service
+                 WHERE service_description = '" . $this->db->escape($templateName) . "' 
+                    AND service_register = '0'"
         );
         if (!$res->numRows()) {
             return null;
@@ -673,6 +674,13 @@ class CentreonService
                 $parameters['externalObject']['name'] = 'command_name';
                 $parameters['externalObject']['comparator'] = 'command_id';
                 break;
+            case 'service_template_model_stm_id':
+                $parameters['type'] = 'simple';
+                $parameters['externalObject']['table'] = 'service';
+                $parameters['externalObject']['id'] = 'service_id';
+                $parameters['externalObject']['name'] = 'service_description';
+                $parameters['externalObject']['comparator'] = 'service_id';
+                break;
             case 'service_cs':
                 $parameters['type'] = 'relation';
                 $parameters['externalObject']['table'] = 'contact';
@@ -681,6 +689,16 @@ class CentreonService
                 $parameters['externalObject']['comparator'] = 'contact_id';
                 $parameters['relationObject']['table'] = 'contact_service_relation';
                 $parameters['relationObject']['field'] = 'contact_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            case 'service_cgs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'contactgroup';
+                $parameters['externalObject']['id'] = 'cg_id';
+                $parameters['externalObject']['name'] = 'cg_name';
+                $parameters['externalObject']['comparator'] = 'cg_id';
+                $parameters['relationObject']['table'] = 'contactgroup_service_relation';
+                $parameters['relationObject']['field'] = 'contactgroup_cg_id';
                 $parameters['relationObject']['comparator'] = 'service_service_id';
                 break;
             case 'service_hPars':
@@ -693,9 +711,95 @@ class CentreonService
                 $parameters['relationObject']['field'] = 'host_host_id';
                 $parameters['relationObject']['comparator'] = 'service_service_id';
                 break;
+            case 'service_hgPars':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'hostgroup';
+                $parameters['externalObject']['id'] = 'hg_id';
+                $parameters['externalObject']['name'] = 'hg_name';
+                $parameters['externalObject']['comparator'] = 'hg_id';
+                $parameters['relationObject']['table'] = 'host_service_relation';
+                $parameters['relationObject']['field'] = 'hostgroup_hg_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            case 'service_sgs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'servicegroup';
+                $parameters['externalObject']['id'] = 'sg_id';
+                $parameters['externalObject']['name'] = 'sg_name';
+                $parameters['externalObject']['comparator'] = 'sg_id';
+                $parameters['relationObject']['table'] = 'servicegroup_relation';
+                $parameters['relationObject']['field'] = 'servicegroup_sg_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            case 'service_traps':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'traps';
+                $parameters['externalObject']['id'] = 'traps_id';
+                $parameters['externalObject']['name'] = 'traps_name';
+                $parameters['externalObject']['comparator'] = 'traps_id';
+                $parameters['relationObject']['table'] = 'traps_service_relation';
+                $parameters['relationObject']['field'] = 'traps_id';
+                $parameters['relationObject']['comparator'] = 'service_id';
+                break;
+            case 'graph_id':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'giv_graphs_template';
+                $parameters['externalObject']['id'] = 'graph_id';
+                $parameters['externalObject']['name'] = 'name';
+                $parameters['externalObject']['comparator'] = 'graph_id';
+                $parameters['relationObject']['table'] = 'extended_service_information';
+                $parameters['relationObject']['field'] = 'graph_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            case 'service_categories':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'service_categories';
+                $parameters['externalObject']['id'] = 'sc_id';
+                $parameters['externalObject']['name'] = 'sc_name';
+                $parameters['externalObject']['comparator'] = 'sc_id';
+                $parameters['relationObject']['table'] = 'service_categories_relation';
+                $parameters['relationObject']['field'] = 'sc_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
         }
         
         return $parameters;
+    }
+    
+    /**
+     * 
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        $selectedServices = '';
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        } else {
+            $selectedServices .= "AND hsr.service_service_id IN ($explodedValues) ";
+        }
+        
+        $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
+            . "FROM host h, service s, host_service_relation hsr "
+            . 'WHERE hsr.host_host_id = h.host_id '
+            . "AND hsr.service_service_id = s.service_id "
+            . "AND h.host_register = '1' AND s.service_register = '1' "
+            . $selectedServices
+            . "ORDER BY h.host_name";
+        
+        $DBRESULT = $this->db->query($queryService);
+        
+        $serviceList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
+            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+            
+            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
+        }
+        
+        return $serviceList;
     }
 }
 

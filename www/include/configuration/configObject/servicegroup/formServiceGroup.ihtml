@@ -19,7 +19,6 @@
 		<tr class="list_one">
 			<td class="FormRowField"><img class="helpTooltip" name="members"> {$form.sg_hServices.label}</td>
 			<td class="FormRowValue">
-				{$form.host_filter.html}
 				{$form.sg_hServices.html}
 			</td>
 		</tr>

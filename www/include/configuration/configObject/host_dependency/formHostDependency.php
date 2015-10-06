@@ -141,7 +141,17 @@
 	$attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
 	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
-
+    $attrHosts = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+        'multiple' => true
+    );
+    $attrServices = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+        'multiple' => true
+    );
+    
 	/*
 	 * Form begin
 	 */
@@ -181,25 +191,24 @@
 	$tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"));
 	$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
 	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
+    
+    $attrHost1 = array_merge(
+        $attrHosts,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=dependency&field=dep_hostParents&id=' . $dep_id)
+    );
+    $form->addElement('select2', 'dep_hostParents', _("Host Names"), array(), $attrHost1);
 
-	$ams1 = $form->addElement('advmultiselect', 'dep_hostParents', array(_("Host Names"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
-
-	$ams1 = $form->addElement('advmultiselect', 'dep_hostChilds', array(_("Dependent Host Names"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
-
-	$form->addElement('select', 'host_filter', _('Host Filter'), $hostFilter, array('onChange' => 'hostFilterSelect(this);'));
-	$ams1 = $form->addElement('advmultiselect', 'dep_hSvChi', array(_("Dependent Services"), _("Available"), _("Selected")), $childServices, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+    $attrHost2 = array_merge(
+        $attrHosts,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=dependency&field=dep_hostChilds&id=' . $dep_id)
+    );
+    $form->addElement('select2', 'dep_hostChilds', _("Dependent Host Names"), array(), $attrHost2);
+    
+    $attrService1 = array_merge(
+        $attrServices,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=dependency&field=dep_hSvChi&id=' . $dep_id)
+    );
+    $form->addElement('select2', 'dep_hSvChi', _("Dependent Services"), array(), $attrService1);
 
 	$form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
 

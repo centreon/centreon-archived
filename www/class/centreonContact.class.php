@@ -145,6 +145,16 @@ class CentreonContact
                 $parameters['relationObject']['field'] = 'command_command_id';
                 $parameters['relationObject']['comparator'] = 'contact_contact_id';
                 break;
+            case 'contact_cgNotif':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'contactgroup';
+                $parameters['externalObject']['id'] = 'cg_id';
+                $parameters['externalObject']['name'] = 'cg_name';
+                $parameters['externalObject']['comparator'] = 'cg_id';
+                $parameters['relationObject']['table'] = 'contactgroup_contact_relation';
+                $parameters['relationObject']['field'] = 'contactgroup_cg_id';
+                $parameters['relationObject']['comparator'] = 'contact_contact_id';
+                break;
         }
         
         return $parameters;

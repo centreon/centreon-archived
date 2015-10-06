@@ -153,6 +153,10 @@ $attrTimeperiods = array(
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
     'multiple' => false
 );
+$attrCommands = array(
+    'datasourceOrigin' => 'ajax',
+    'multiple' => true
+);
 
 
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
@@ -237,11 +241,14 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_hcmds' => '0'));
 }
 
-$ams1 = $form->addElement('advmultiselect', 'contact_hostNotifCmds', array(_("Host Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' => _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);
+$attrCommand1 = array_merge(
+    $attrCommands,
+    array(
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=contact&field=contact_hostNotifCmds&id=' . $contact_id,
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list&t=1'
+    )
+);
+$form->addElement('select2', 'contact_hostNotifCmds', _("Host Notification Commands"), array(), $attrCommand1);
 
 /** * *****************************
  * Service notifications
@@ -269,11 +276,14 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_svcmds' => '0'));
 }
-$ams2 = $form->addElement('advmultiselect', 'contact_svNotifCmds', array(_("Service Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
-$ams2->setButtonAttributes('add', array('value' => _("Add")));
-$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams2->setElementTemplate($eTemplate);
-echo $ams2->getElementJs(false);
+$attrCommand2 = array_merge(
+    $attrCommands,
+    array(
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=contact&field=contact_svNotifCmds&id=' . $contact_id,
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list&t=1'
+    )
+);
+$form->addElement('select2', 'contact_svNotifCmds', _("Service Notification Commands"), array(), $attrCommand2);
 
 /**
  * Further informations
