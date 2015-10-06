@@ -288,8 +288,13 @@ try {
 } catch (CentreonCustomViewException $e) {
     echo $e->getMessage() . "<br/>";
 }
+$modeEdit = 'undefined';
+if (isset($_SESSION['customview_edit_mode'])) {
+    $modeEdit = $_SESSION['customview_edit_mode'] ? 'true' : 'false';
+}
 ?>
 <script type="text/javascript">
+var modeEdit = <?php echo $modeEdit; ?>;
 /**
  * Resize widget iframe
  */
