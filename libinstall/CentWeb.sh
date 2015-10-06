@@ -343,6 +343,14 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 [ ! -h $INSTALL_DIR_CENTREON/filesUpload -a ! -d $INSTALL_DIR_CENTREON/filesUpload ] && \
 	ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
 
+# Add new directory for save installation directories
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
+	$CENTREON_GENDIR/installDir >> "$LOG_FILE" 2>&1
+chmod -R g+rwxs $CENTREON_GENDIR/installDir
+[ ! -h $INSTALL_DIR_CENTREON/installDir -a ! -d $INSTALL_DIR_CENTREON/installDir ] && \
+	ln -s $CENTREON_GENDIR/installDir $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
+
 log "INFO" "$(gettext "Copying GPL_LIB")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
