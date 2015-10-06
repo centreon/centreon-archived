@@ -8,13 +8,15 @@
             <li class="b" id='c4'><a href="#" style='cursor:pointer' onclick="javascript:montre('4');">{$sort4}</a></li>
         </ul>
 
-        <div id="validFormTop">
-        {if $o == "a" || $o == "c" || $o == "mc"}
-            <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-        {else if $o == "w"}
-            <p class="oreonbutton">{$form.change.html}</p>
-        {/if}
-        </div>
+        <!--
+			<div id="validFormTop">
+			{if $o == "a" || $o == "c" || $o == "mc"}
+				<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+			{else if $o == "w"}
+				<p class="oreonbutton">{$form.change.html}</p>
+			{/if}
+			</div>
+		 -->
      </div>
 
      <div id='tab1' class='tab'>
@@ -82,7 +84,7 @@
 			<p class="description">{$form.tplTextParallel.label}<p>
 		</td>
 		<td class="FormRowValue" id="parallelTemplate">
-                    {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="template" cloneSet=$cloneSetTemplate}
+            {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="template" cloneSet=$cloneSetTemplate}
 		</td>
 	</tr>
 
@@ -107,19 +109,26 @@
 	    </td>
 	</tr>
 
- 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="check_period"> {$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
+ 	<tr class="list_two">
+ 		<td class="FormRowField">
+ 			<img class="helpTooltip" name="check_period"> {$form.timeperiod_tp_id.label}</td>
+ 			<td class="FormRowValue">{$form.timeperiod_tp_id.html}
+		</td>
+	</tr>
+
  	<tr class="list_one">
 		<td class="FormRowField"><img class="helpTooltip" name="check_command"> {$form.command_command_id.label}</td>
 		<td class="FormRowValue">
 			{$form.command_command_id.html}
 			{if $o == "a" || $o == "c"}
-			&nbsp;<img src='./img/icones/16x16/about.gif' style='cursor:help' style='cursor:pointer' onclick="window.open('main.php?p=60706&command_id='+ document.Form.elements['command_command_id'].options[document.Form.elements['command_command_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
+			<img src='./img/icons/info.png' style='cursor:help; margin-left: 4px;' onclick="window.open('main.php?p=60706&command_id='+ document.Form.elements['command_command_id'].options[document.Form.elements['command_command_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=200');">
 			{/if}
 		</td>
 	</tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="check_command_args"> {$form.command_command_id_arg1.label}</td><td class="FormRowValue">{$form.command_command_id_arg1.html}
+	<tr class="list_two">
+		<td class="FormRowField"><img class="helpTooltip" name="check_command_args"> {$form.command_command_id_arg1.label}</td><td class="FormRowValue">{$form.command_command_id_arg1.html}
 	{if $o == "a" || $o == "c"}
-	&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  style='cursor:pointer' onclick="set_arg('example1','command_command_id_arg1');"></a><input type="text" name="example1" disabled>
+	<img src="./img/icons/arrow-left.png" style='cursor:pointer;margin: 0 6px;vertical-align: middle;' alt="*" class="ico-14" onclick="set_arg('example1','command_command_id_arg1');"><input type="text" name="example1" disabled>
 	{/if}
 	</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="max_check_attempts"> {$form.host_max_check_attempts.label}</td><td class="FormRowValue">{$form.host_max_check_attempts.html}</td></tr>
@@ -130,7 +139,7 @@
 
  	<tr class="list_lvl_1">
  		<td class="ListColLvl1_name" colspan="2">
- 			<img src='./img/icones/16x16/gear_new.gif'>&nbsp;&nbsp;{$form.header.macro}
+ 			<h4>{$form.header.macro}</h4>
  		</td>
  	</tr>
 	<tr class="list_one">
@@ -142,7 +151,9 @@
         </td>
 	</tr>
 
- 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
+ 	<tr class="list_lvl_1">
+ 		<td class="ListColLvl1_name" colspan="2">
+ 			<h4>{$form.header.notification}</h4></td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notifications_enabled"> {$form.host_notifications_enabled.label}</td><td class="FormRowValue">{$form.host_notifications_enabled.html}</td></tr>
         {if $o == "mc"}
             <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_hcg.label}</td><td class="FormRowValue">{$form.mc_mod_hcg.html}</td></tr>
@@ -289,7 +300,7 @@
 </div>
 <div id="validForm">
 {if $o == "a" || $o == "c" || $o == "mc"}
-	<p>{$form.action.html}</p>
+
 	<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 {else if $o == "w"}
 	<p class="oreonbutton">{$form.change.html}</p>

@@ -79,11 +79,12 @@ input, select {
     padding: 4px;
     font-size: 11px !important;
     border: 1px solid #bcbdc0;
-    line-height: 14px;
+    line-height: 18px;
 }
 
 input[type="checkbox"] 	{border:0px;margin:0;padding:0px;}
 select {
+    padding: 6px;
 }
 
 select[multiple="multiple"] {
@@ -110,6 +111,18 @@ p.description {
 
 p.description a, p.description a:visited {
     color: #4ccaff;
+}
+
+/* ------ Select 2 ---------*/
+
+.select2-container {
+    width: 213px !important;
+}
+
+.select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #bbb !important;
+    border-radius: 0 !important;
 }
 
 /* ------ START : Colors -----*/
@@ -142,14 +155,14 @@ p.description a, p.description a:visited {
 /* ------ START : Buttons -----*/
 .btc {
     border-radius: 4px !important;
-    padding: 4px;
+    padding: 4px 10px;
     border: none !important;
     outline: none !important;
     color: #fff;
 }
 a.btc {
     color: #fff !important;
-    padding: 4px 6px;
+    padding: 4px 10px;
     margin : 0px 4px;
 }
 .bt_default {
@@ -225,7 +238,7 @@ a.btc {
 
 /* -------- START: Form ---------*/
 input[type="submit"] {
-    padding : 4px 6px;
+    padding : 4px 10px;
     color: #fff;
 }
 /*--------- END : Form ---------*/
@@ -988,7 +1001,10 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 
 
 #validForm input 	{font-size:11px;font-weight:400;margin-top:5px;}
-#validForm 			{float:right;padding:10px;text-align:center;width:98%;}
+#validForm 	{
+    padding:10px;
+    text-align:center;
+}
 #validFormTop {
    float: right;
 }
@@ -1073,7 +1089,7 @@ form label { margin-left: 3px; }
 
 .helpTooltip {padding-right:3px;}
 
-p.oreonbutton input {padding:0px 15px;}
+/*p.oreonbutton input {padding:0px 15px;}*/
 
 .pull-left {
     float: left;
