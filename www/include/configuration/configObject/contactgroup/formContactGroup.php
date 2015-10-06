@@ -144,7 +144,12 @@
 	$attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"60");
 	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
-
+    $attrContacts = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+        'multiple' => true
+    );
+    
 	/*
 	 * form begin
 	 */
@@ -167,12 +172,12 @@
 	 * Contacts Selection
 	 */
 	$form->addElement('header', 'notification', _("Relations"));
-
-	$ams1 = $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+    
+    $attrContact1 = array_merge(
+        $attrContacts,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=contactgroup&field=cg_contacts&id=' . $cg_id)
+    );
+    $form->addElement('select2', 'cg_contacts', _("Linked Contacts"), array(), $attrContact1);
 
 
 	/*

@@ -13,7 +13,7 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <htcontact://www.gnu.org/licenses>.
+ * this program; if not, see <http://www.gnu.org/licenses>.
  *
  * Linking this program statically or dynamically with other modules is making a
  * combined work based on this program. Thus, the terms and conditions of the GNU
@@ -39,16 +39,28 @@
 global $centreon_path;
 require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . "/centreon_configuration_service.class.php";
+require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
-class CentreonConfigurationServicetemplate extends CentreonConfigurationService
+class CentreonConfigurationManufacturer extends CentreonConfigurationObjects
 {
     /**
-     * Constructor
+     *
+     * @var type 
+     */
+    protected $pearDBMonitoring;
+
+    /**
+     * 
      */
     public function __construct()
     {
         parent::__construct();
+        $brk = new CentreonBroker($this->pearDB);
+        if ($brk->getBroker() == 'broker') {
+            $this->pearDBMonitoring = new CentreonDB('centstorage');
+        } else {
+            $this->pearDBMonitoring = new CentreonDB('ndo');
+        }
     }
     
     /**
@@ -64,67 +76,18 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
             $q = $this->arguments['q'];
         }
         
-        if (false === isset($this->arguments['l'])) {
-            $l = '0';
-        } else {
-            $l = $this->arguments['l'];
-        }
+        $queryTimeperiod = "SELECT id, name "
+            . "FROM traps_vendor "
+            . "WHERE name LIKE '%$q%' "
+            . "ORDER BY name";
         
-        if ($l == '1') {
-            $serviceTemplateList = $this->listWithHostTemplate($q);
-        } else {
-            $serviceTemplateList = $this->listClassic($q);
-        }
-        return $serviceTemplateList;
-    }
-    
-    /**
-     * 
-     * @param string $q
-     * @return array
-     */
-    private function listClassic($q)
-    {
-        $queryContact = "SELECT service_id, service_description "
-            . "FROM service "
-            . "WHERE service_description LIKE '%$q%' "
-            . "AND service_register = '0' "
-            . "ORDER BY service_description";
+        $DBRESULT = $this->pearDB->query($queryTimeperiod);
         
-        $DBRESULT = $this->pearDB->query($queryContact);
-
+        $manufacturerList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
+            $manufacturerList[] = array('id' => $data['id'], 'text' => $data['name']);
         }
         
-        return $serviceList;
-    }
-    
-    /**
-     * 
-     * @param string $q
-     * @return array
-     */
-    private function listWithHostTemplate($q = '')
-    {
-        $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
-            . "FROM host h, service s, host_service_relation hsr "
-            . 'WHERE hsr.host_host_id = h.host_id '
-            . "AND hsr.service_service_id = s.service_id "
-            . "AND h.host_register = '0' AND s.service_register = '0' "
-            . "AND s.service_description LIKE '%$q%' "
-            . "ORDER BY h.host_name";
-        
-        $DBRESULT = $this->pearDB->query($queryService);
-        
-        $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
-            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
-            
-            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
-        }
-        
-        return $serviceList;
+        return $manufacturerList;
     }
 }

@@ -215,4 +215,50 @@ class CentreonDependency
         )";
         $db->query($sql);
     }
+    
+    /**
+     * 
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'host';
+        $parameters['currentObject']['id'] = 'host_id';
+        $parameters['currentObject']['name'] = 'host_name';
+        $parameters['currentObject']['comparator'] = 'host_id';
+
+        switch ($field) {
+            case 'dep_hostParents':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'dependency_hostParent_relation';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+            case 'dep_hostChilds':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'dependency_hostChild_relation';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+            case 'dep_hSvChi':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonService';
+                $parameters['relationObject']['table'] = 'dependency_serviceChild_relation';
+                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+        }
+        
+        return $parameters;
+    }
 }
