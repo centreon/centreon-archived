@@ -607,7 +607,6 @@ class CentreonHost
                 }
             }
         } elseif (isset($_REQUEST['macroInput'])) {
-            unset($_REQUEST['macroInput'][0]);
             foreach ($_REQUEST['macroInput'] as $key => $val) {
                 $arr[$i]['macroInput_#index#'] = $val;
                 $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
@@ -911,8 +910,7 @@ class CentreonHost
     public function ajaxMacroControl($form){
 
         $macroArray = $this->getCustomMacro();
-        $this->purgeOldMacroToForm(&$macroArray,$form,'fromTpl');
-        
+        $indexToSub = $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
         $aListTemplate = array();
         foreach($form['tpSelect'] as $templates){
             $tmpTpl = array_merge(array(array('host_id' => $templates)),$this->getTemplateChain($templates, array(), -1, false));
@@ -937,13 +935,13 @@ class CentreonHost
         }
     
         
-        $this->purgeOldMacroToForm(&$macroArray,$form,'fromCommand',$aMacroInCommande);
+        //$this->purgeOldMacroToForm(&$macroArray,&$form,'fromCommand',$aMacroInCommande);
         
         //filter a macro
         $aTempMacro = array();
         if (count($macroArray) > 0) {
             foreach($macroArray as $key=>$directMacro){
-                $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key];
+                $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key - $indexToSub];
                 $directMacro['source'] = 'direct';
                 $aTempMacro[] = $directMacro;
             }
@@ -987,7 +985,21 @@ class CentreonHost
         
     }
     
-    public function purgeOldMacroToForm(&$macroArray,$form,$fromKey,$macrosArrayToCompare = null){
+    public function purgeOldMacroToForm(&$macroArray,&$form,$fromKey,$macrosArrayToCompare = null){
+        
+        
+        if(isset($form["macroInput"]["#index#"])){
+            unset($form["macroInput"]["#index#"]); 
+        }
+        if(isset($form["macroValue"]["#index#"])){
+            unset($form["macroValue"]["#index#"]); 
+        }
+        $indexToSub = 0;
+        if(isset($form["macroFrom"]["#index#"])){
+            $indexToSub = 1;
+            unset($form["macroFrom"]["#index#"]); 
+        }
+        
         
         
         foreach($macroArray as $key=>$macro){
@@ -995,11 +1007,10 @@ class CentreonHost
                 unset($macroArray[$key]);
             }
         }
-    
-    
+        
         if(is_null($macrosArrayToCompare)){
             foreach($macroArray as $key=>$macro){
-                if($form['macroFrom'][$key] == $fromKey){
+                if($form['macroFrom'][$key - $indexToSub] == $fromKey){
                     unset($macroArray[$key]);
                 }
             }
@@ -1020,6 +1031,7 @@ class CentreonHost
                 }
             }
         }
+        return $indexToSub;
 
     }
     
