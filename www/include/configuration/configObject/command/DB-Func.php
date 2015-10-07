@@ -232,6 +232,9 @@ function insertCommand($ret = array()) {
 
     $oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $pearDB->escape($ret["command_name"]), "a", $fields);
     insertArgDesc($cmd_id["MAX(command_id)"], $ret);
+    
+    insertMacrosDesc($cmd_id["MAX(command_id)"], $ret);
+    
     return ($cmd_id["MAX(command_id)"]);
 }
 
