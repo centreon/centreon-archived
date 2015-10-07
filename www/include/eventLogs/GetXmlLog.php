@@ -33,8 +33,6 @@
  *
  */
 
-ini_set("display_errors", "Off");
-
 /*
  * XML tag
  */
@@ -44,7 +42,7 @@ header('Content-Disposition: attachment; filename="eventLogs-' . time() . '.xml"
 /** ****************************
  * Include configurations files
  */
-include_once "@CENTREON_ETC@/centreon.conf.php";
+include_once "../../../config/centreon.config.php";
 
 /*
  * Require Classes
@@ -55,12 +53,12 @@ require_once $centreon_path . "www/class/centreonSession.class.php";
 require_once $centreon_path . "www/class/centreon.class.php";
 
 centreonSession::start();
-$oreon = $_SESSION["centreon"];
+$centreon = $_SESSION["centreon"];
 
 /**
  * Language informations init
  */
-$locale = $oreon->user->get_lang();
+$locale = $centreon->user->get_lang();
 putenv("LANG=$locale");
 setlocale(LC_ALL, $locale);
 bindtextdomain("messages", $centreon_path . "/www/locale/");
@@ -77,7 +75,7 @@ $pearDBO 	= new CentreonDB("centstorage");
 /** 
  * Get Broker
  */
-if ($oreon->broker->getBroker() == "ndo") {
+if ($centreon->broker->getBroker() == "ndo") {
     $pearDBndo 	= new CentreonDB("ndo");
     define("STATUS_OK", "OK");
     define("STATUS_WARNING", "WARNING");
@@ -89,7 +87,7 @@ if ($oreon->broker->getBroker() == "ndo") {
     define("STATUS_UNREACHABLE", "UNREACHABLE");
     define("TYPE_SOFT", "SOFT");
     define("TYPE_HARD", "HARD");
-} elseif ($oreon->broker->getBroker() == "broker") {
+} elseif ($centreon->broker->getBroker() == "broker") {
     define("STATUS_OK", 0);
     define("STATUS_WARNING", 1);
     define("STATUS_CRITICAL", 2);
@@ -137,7 +135,7 @@ $contact_id = check_session($sid, $pearDB);
 $is_admin = isUserAdmin($sid);
 if (isset($sid) && $sid){
     $access = new CentreonAcl($contact_id, $is_admin);
-    $lca = array("LcaHost" => $access->getHostServices(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO), null, 1), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
+    $lca = array("LcaHost" => $access->getHostServices($pearDBO, null, 1), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 }
 
 (isset($_GET["num"])) ? $num = htmlentities($_GET["num"]) : $num = "0";
