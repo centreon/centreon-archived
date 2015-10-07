@@ -58,13 +58,9 @@
 	}
 	$DBRESULT->free();
 
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
-
-	if (isset($search)) {
+    $search = '';
+	if (isset($_POST['searchHT']) && $_POST['searchHT']) {
+        $search = $_POST['searchHT'];
 		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '%".CentreonDB::escape($search)."%' OR host_alias LIKE '%".CentreonDB::escape($search)."%') AND host_register = '0'");
 	} else {
 		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host WHERE host_register = '0'");
@@ -269,5 +265,6 @@
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
+    $tpl->assign('searchHT', $search);
 	$tpl->display("listHostTemplateModel.ihtml");
 ?>
