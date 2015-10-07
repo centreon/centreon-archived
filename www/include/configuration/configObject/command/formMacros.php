@@ -59,6 +59,15 @@ if (!isset($pearDB) || is_null($pearDB)) {
 
 }
 
+if(!function_exists("array_column"))
+{
+    function array_column($array,$column_name)
+    {
+        return array_map(function($element) use($column_name){return $element[$column_name];}, $array);
+
+    }
+
+}
 /**
  * 
  * @global type $pearDB
@@ -70,104 +79,87 @@ if (!isset($pearDB) || is_null($pearDB)) {
 function getMacrosCommand($aMacro, $sType)
 {
     global $pearDB;
-    
     $aReturn = array();
     
-    if (!in_array($sType, array('1', '2'))) {
-        $sType = "1";
-    }
-    $sRq = "SELECT * FROM `on_demand_macro_command` WHERE command_macro_type = '".$sType."'";
-    
     if (count($aMacro) > 0) {
-       $sRq .= " AND command_macro_name IN ('".  implode("', '", $aMacro)."') "; 
+        
+        if (!in_array($sType, array('1', '2'))) {
+            $sType = "1";
+        }
+        
+        $sRq = "SELECT * FROM `on_demand_macro_command` WHERE command_macro_type = '".$sType."' "
+                . " AND command_macro_name IN ('".  implode("', '", $aMacro)."') "; 
+        
+        $DBRESULT = $pearDB->query($sRq);
+        while ($row = $DBRESULT->fetchRow()){
+            
+            $arr['id']   = $row['command_macro_id'];
+            $arr['name'] = $row['command_macro_name'];
+            $arr['description'] = $row['command_macro_desciption'];
+            $arr['type']        = $sType;
+            $aReturn[] = $arr;
+        }
+        $DBRESULT->free();
     }
-
-    $DBRESULT = $pearDB->query($sRq);
-    $i = 0;
-    while ($row = $DBRESULT->fetchRow()){
-        $arr[$i]['id']   = $row['command_macro_id'];
-        $arr[$i]['name'] = $row['command_macro_name'];
-        $arr[$i]['desciption'] = $row['command_macro_desciption'];
-        $i++;
-        $aReturn[] = $arr;
-    }
-    $DBRESULT->free();
     
     return $aReturn;
 }
 
+function match_object($sStr, $sType)
+{
+    $macros = array();
+    $macrosDesc = array();
+    
+    if (!in_array($sType, array('1', '2'))) {
+        $sType = "1";
+    }
+    
+    $aPreg = array(
+        "2" => '/\$_SERVICE(\w+)\$/', 
+        "1" => '/\$_HOST(\w+)\$/'
+    );
+    
+    preg_match_all($aPreg[$sType], $sStr, $matches1, PREG_SET_ORDER);   
+
+    foreach ($matches1 as $match) {
+        $macros[] = $match[1];
+    }
+    
+    if (count($macros) > 0) {
+        $macrosDesc =  getMacrosCommand($macros, $sType);
+        
+        $aNames = array_column($macrosDesc, 'name');
+
+        foreach ($macros as $detail) {
+            if (!in_array($detail, $aNames) && !empty($detail)) {
+                $arr['id']          = "";
+                $arr['name']        = $detail;
+                $arr['description'] = "";
+                $arr['type']        = $sType;
+            
+                $macrosDesc[] = $arr;
+            }
+        }
+    }
+    return $macrosDesc;
+}
+
 $macros = array();
-$macrosService = array();
-$macrosHost = array();
-$macrosDesc = array();
 $macrosServiceDesc = array();
 $macrosHostDesc = array();
-$matches1 = array();
-$matches2 = array();
-$nb_arg = 0;
-$nb_arg1 = 0;
-$nb_arg2 = 0;
 
+$nb_arg = 0;
 
 if (isset($_GET['cmd_line']) && $_GET['cmd_line']) {
     $str = $_GET['cmd_line'];
     
-    $nb_arg1 = preg_match_all('/\$_SERVICE(\w+)\$/', $str, $matches1, PREG_SET_ORDER);
-
-    foreach ($matches1 as $match) {
-        $macrosService[] = $match[1];
-    }
-    
-    $i = 0;
-    if (count($macrosService) > 0) {
-        $macrosServiceDesc =  getMacrosCommand($macrosService, '1');
-       
-        foreach ($macrosService as $detail) {
-            if (!in_array($detail, array_values($macrosServiceDesc))) {
-                $macrosServiceDesc[$i]['id']   = "";
-                $macrosServiceDesc[$i]['name'] = $detail;
-                $macrosServiceDesc[$i]['desciption'] = "";
-                $i++;
-                
-                /*
-                $arr[$i]['id']   = "";
-                $arr[$i]['name'] = $detail;
-                $arr[$i]['desciption'] = "";
-                $macrosServiceDesc[] = $arr;
-                $i++;
-                */
-            }
-        }
-    }
-    
+    $macrosHostDesc = match_object($str, '1');
+    $macrosServiceDesc = match_object($str, '2');
    
-    $nb_arg2 = preg_match_all('/\$_HOST(\w+)\$/', $str, $matches2, PREG_SET_ORDER);
-    foreach ($matches2 as $match) {
-        $macrosHost[] = $match[1];
-    }
-
-    if (count($macrosHost) > 0) {
-        $macrosHostDesc =  getMacrosCommand($macrosHost, '2');
-        
-        foreach ($macrosHost as $detail2) {
-            if (!in_array($detail2, array_values($macrosHostDesc))) {
-                $macrosHostDesc[$i]['id']   = "";
-                $macrosHostDesc[$i]['name'] = $detail2;
-                $macrosHostDesc[$i]['desciption'] = "";
-                $i++;
-            }
-        }
-    }
-    $nb_arg = $nb_arg1 + $nb_arg2;
+    $nb_arg = count($macrosHostDesc) + count($macrosServiceDesc);
     
     $macros = array_merge($macrosServiceDesc, $macrosHostDesc);
 }
-
-//echo "<pre>";
-//print_r($macros);
-//print_r($macrosHostDesc);
-//print_r($macrosServiceDesc);
-//die;
 
 /* FORM */
 
@@ -205,7 +197,6 @@ $tpl->force_compile = true;
 $tpl->assign('nb_arg', $nb_arg);
  
 $tpl->assign('macros', $macros);
-//$tpl->assign('macrosDesc', $macrosDesc);
 $tpl->assign('noArgMsg', _("Sorry, your command line does not contain any \$_SERVICE\$ macro or \$_HOST\$ macro."));
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -213,6 +204,5 @@ $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1"></font>
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
-//$tpl->assign('args', $args);
 $tpl->display("formMacros.ihtml");
 ?>

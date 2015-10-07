@@ -152,7 +152,11 @@ function setMacrosDescriptions() {
 	listArea = document.getElementById('listOfMacros');
 	listDiv = document.getElementById('listOfMacros');
 	for (i=0; document.getElementById('desc_'+i); i++) {
-		tmpStr2 += "MACRO " + document.getElementById('macro_'+i).value + " : " + document.getElementById('desc_'+i).value + "\n";
+            var type = "HOST";
+            if (document.getElementById('type_'+i).value == 2) {
+                type = "SERVICE";
+            }
+            tmpStr2 += "MACRO ("+ type +") "+ document.getElementById('macro_'+i).value + " : " + document.getElementById('desc_'+i).value + "\n";
 	}
 	listArea.cols=100;
 	listArea.rows=i;
