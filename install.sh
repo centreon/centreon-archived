@@ -50,7 +50,7 @@
 # -- on upgrade, overwrite existing ? backup ? 
 
 # Define centreon version
-version="2.6.3"
+version="2.6.4"
 
 # Debug
 #set -x
@@ -440,7 +440,7 @@ ${CAT} << __EOT__
 #                 Go to the URL : http://$server/centreon/                    #
 #                   	     to finish the setup                              #
 #                                                                             #
-#                  Report bugs at http://forge.centreon.com                   #
+#           Report bugs at https://github.com/centreon/centreon/issues        #
 #                                                                             #
 #                         Thanks for using Centreon.                          #
 #                          -----------------------                            #
