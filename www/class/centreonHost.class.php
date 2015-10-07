@@ -935,7 +935,7 @@ class CentreonHost
         }
     
         
-        //$this->purgeOldMacroToForm(&$macroArray,&$form,'fromCommand',$aMacroInCommande);
+        $this->purgeOldMacroToForm(&$macroArray,&$form,'fromCommand',$aMacroInCommande);
         
         //filter a macro
         $aTempMacro = array();
@@ -997,7 +997,6 @@ class CentreonHost
         $indexToSub = 0;
         if(isset($form["macroFrom"]["#index#"])){
             $indexToSub = 1;
-            unset($form["macroFrom"]["#index#"]); 
         }
         
         
@@ -1019,12 +1018,10 @@ class CentreonHost
             foreach($macrosArrayToCompare as $tocompare){
                 if (isset($tocompare['macroInput_#index#'])) {
                     $inputIndexArray[] = $tocompare['macroInput_#index#'];
-                } else {
-                    $inputIndexArray[] = "";
                 }
             }
             foreach($macroArray as $key=>$macro){
-                if($form['macroFrom'][$key] == $fromKey){
+                if($form['macroFrom'][$key - $indexToSub] == $fromKey){
                     if(!in_array($macro['macroInput_#index#'],$inputIndexArray)){
                         unset($macroArray[$key]);
                     }
