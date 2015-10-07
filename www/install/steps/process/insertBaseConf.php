@@ -61,4 +61,10 @@ if (isset($_SESSION['BROKER_MODULE']) && is_file('../../var/baseconf/'.$_SESSION
 splitQueries('../../insertTopology.sql', ';', null, '../../tmp/insertTopology');
 splitQueries('../../insertBaseConf.sql', ';', null, '../../tmp/insertBaseConf');
 splitQueries('../../insertACL.sql', ';', null, '../../tmp/insertACL');
+
+/* Get Centreon version */
+$res = mysql_query("SELECT `value` FROM informations WHERE `key` = 'version'", $link);
+$row = mysql_fetch_assoc($res);
+$_SESSION['version'] = $row['value'];
+
 exitProcess(PROCESS_ID, 0, "OK");

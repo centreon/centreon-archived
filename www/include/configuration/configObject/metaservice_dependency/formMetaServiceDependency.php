@@ -97,7 +97,12 @@
 	$attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
 	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
-
+    $attrMetas = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_meta&action=list',
+        'multiple' => true
+    );
+    
 	#
 	## Form begin
 	#
@@ -140,17 +145,17 @@
 	$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'sNone2', 'onClick' => 'uncheckAllS2(this);'));
 	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
-	$ams1 = $form->addElement('advmultiselect', 'dep_msParents', array(_("Meta Service Names"), _("Available"), _("Selected")), $metas, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+    $attrMeta1 = array_merge(
+        $attrMetas,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_meta&action=defaultValues&target=dependency&field=dep_msParents&id=' . $dep_id)
+    );
+    $form->addElement('select2', 'dep_msParents', _("Meta Service Names"), array(), $attrMeta1);
 
-	$ams1 = $form->addElement('advmultiselect', 'dep_msChilds', array(_("Dependent Meta Service Names"), _("Available"), _("Selected")), $metas, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+    $attrMeta2 = array_merge(
+        $attrMetas,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_meta&action=defaultValues&target=dependency&field=dep_msChilds&id=' . $dep_id)
+    );
+    $form->addElement('select2', 'dep_msChilds', _("Dependent Meta Service Names"), array(), $attrMeta2);
 
 	$form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
 

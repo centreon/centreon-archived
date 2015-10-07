@@ -58,4 +58,3 @@ function __autoload($className)
     }
 }
 
-?>

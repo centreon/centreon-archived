@@ -293,4 +293,33 @@ class CentreonContactgroup
         }
         return true;
     }
+    
+    /**
+     * 
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'contactgroup';
+        $parameters['currentObject']['id'] = 'cg_id';
+        $parameters['currentObject']['name'] = 'cg_name';
+        $parameters['currentObject']['comparator'] = 'cg_id';
+
+        switch ($field) {
+            case 'cg_contacts':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'contact';
+                $parameters['externalObject']['id'] = 'contact_id';
+                $parameters['externalObject']['name'] = 'contact_name';
+                $parameters['externalObject']['comparator'] = 'contact_id';
+                $parameters['relationObject']['table'] = 'contactgroup_contact_relation';
+                $parameters['relationObject']['field'] = 'contact_contact_id';
+                $parameters['relationObject']['comparator'] = 'contactgroup_cg_id';
+                break;
+        }
+        
+        return $parameters;
+    }
 }

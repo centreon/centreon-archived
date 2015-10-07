@@ -13,7 +13,7 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <http://www.gnu.org/licenses>.
+ * this program; if not, see <htcontact://www.gnu.org/licenses>.
  *
  * Linking this program statically or dynamically with other modules is making a
  * combined work based on this program. Thus, the terms and conditions of the GNU
@@ -36,30 +36,46 @@
  *
  */
 
-session_start();
-require_once '../functions.php';
-define('PROCESS_ID', 'createuser');
+global $centreon_path;
+require_once $centreon_path . "/www/class/centreonBroker.class.php";
+require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
-$link = myConnect();
-if (false === $link) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
+class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
+{
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getList()
+    {
+        // Check for select2 'q' argument
+        if (false === isset($this->arguments['q'])) {
+            $q = '';
+        } else {
+            $q = $this->arguments['q'];
+        }
+        
+        $queryContact = "SELECT sg_id, sg_name "
+            . "FROM servicegroup "
+            . "WHERE sg_name LIKE '%$q%' "
+            . "ORDER BY sg_name";
+        
+        $DBRESULT = $this->pearDB->query($queryContact);
+        
+        $serviceList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $serviceList[] = array('id' => $data['sg_id'], 'text' => $data['sg_name']);
+        }
+        
+        return $serviceList;
+    }
 }
-if (!isset($_SESSION['DB_USER'])) {
-    exitProcess(PROCESS_ID, 1, _('Could not find database user. Session probably expired.'));
-}
-$dbUser = $_SESSION['DB_USER'];
-$dbPass = $_SESSION['DB_PASS'];
-$host = "localhost";
-// if database server is not on localhost...
-if (isset($_SESSION['ADDRESS']) && $_SESSION['ADDRESS'] && 
-    $_SESSION['ADDRESS'] != "127.0.0.1" && $_SESSION['ADDRESS'] != "localhost") {
-        $host = $_SERVER['SERVER_ADDR'];
-}
-$query = "GRANT ALL PRIVILEGES ON `%s`.* TO `". $dbUser . "`@`". $host . "` IDENTIFIED BY '". $dbPass . "' WITH GRANT OPTION";
-if (false === mysql_query(sprintf($query, $_SESSION['CONFIGURATION_DB']))) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-if (false === mysql_query(sprintf($query, $_SESSION['STORAGE_DB']))) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-exitProcess(PROCESS_ID, 0, "OK");

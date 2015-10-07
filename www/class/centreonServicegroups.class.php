@@ -41,9 +41,24 @@
   * Servicegroups objects
   *
   */
- class CentreonServicegroups {
+ class CentreonServicegroups
+{
+    /**
+     *
+     * @var type 
+     */
  	private $DB;
+    
+    /**
+     *
+     * @var type 
+     */
  	private $relationCache;
+    
+    /**
+     *
+     * @var type 
+     */
  	private $dataTree;
 
  	/**
@@ -51,7 +66,8 @@
  	 * Constructor
  	 * @param $pearDB
  	 */
- 	function __construct($pearDB) {
+ 	function __construct($pearDB)
+    {
  		$this->DB = $pearDB;
  	}
 
@@ -60,7 +76,8 @@
  	 * Enter description here ...
  	 * @param unknown_type $sg_id
  	 */
- 	public function getServiceGroupServices($sg_id = NULL)	{
+ 	public function getServiceGroupServices($sg_id = NULL)
+    {
 		if (!$sg_id) {
 			return;
 		}
@@ -84,6 +101,49 @@
 		$res->free();
 		return $services;
 	}
+    
+    /**
+     * 
+     * @param type $field
+     * @return string
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'servicegroup';
+        $parameters['currentObject']['id'] = 'sg_id';
+        $parameters['currentObject']['name'] = 'sg_name';
+        $parameters['currentObject']['comparator'] = 'sg_id';
+
+        switch ($field) {
+            case 'sg_hServices':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonService';
+                $parameters['relationObject']['table'] = 'servicegroup_relation';
+                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['comparator'] = 'servicegroup_sg_id';
+                break;
+            case 'sg_tServices':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonServicetemplates';
+                $parameters['relationObject']['table'] = 'servicegroup_relation';
+                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['comparator'] = 'servicegroup_sg_id';
+                break;
+            case 'sg_hgServices':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'hostgroup';
+                $parameters['externalObject']['id'] = 'hg_id';
+                $parameters['externalObject']['name'] = 'hg_name';
+                $parameters['externalObject']['comparator'] = 'hg_id';
+                $parameters['relationObject']['table'] = 'servicegroup_relation';
+                $parameters['relationObject']['field'] = 'hostgroup_hg_id';
+                $parameters['relationObject']['comparator'] = 'servicegroup_sg_id';
+                break;
+        }
+        
+        return $parameters;
+    }
 }
 
 ?>

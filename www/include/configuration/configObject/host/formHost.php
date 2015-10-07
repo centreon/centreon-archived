@@ -60,11 +60,13 @@ $initialValues = array();
 $hcString = $acl->getHostCategoriesString();
 
 /* notification contacts */
-$notifCs = $acl->getContactAclConf(array('fields' => array('contact_id', 'contact_name'),
+$notifCs = $acl->getContactAclConf(array(
+    'fields' => array('contact_id', 'contact_name'),
     'get_row' => 'contact_name',
     'keys' => array('contact_id'),
     'conditions' => array('contact_register' => '1'),
-    'order' => array('contact_name')));
+    'order' => array('contact_name')
+));
 
 /* notification contact groups */
 $notifCgs = array();

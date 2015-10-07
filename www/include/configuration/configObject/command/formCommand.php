@@ -129,6 +129,7 @@
 	$attrsTextarea 	= array("rows"=>"9", "cols"=>"65", "id"=>"command_line");
 	$attrsTextarea2 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfArg");
 	$attrsTextarea3	= array("rows"=>"5", "cols"=>"50", "id"=>"command_comment");
+        $attrsTextarea4 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfMacros");
 
 	/*
 	 * Form begin
@@ -148,6 +149,7 @@
 		$form->addElement('header', 'information', $tabCommandType[$type]);
 	else
 		$form->addElement('header', 'information', _("Information"));
+        
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 
 	if (isset($tabCommandType)) {
@@ -184,6 +186,11 @@
     $form->addElement('button', 'clear_arg', _("Clear arguments"), array("onClick"=>"clearArgs();"));
 
 	$form->addElement('textarea', 'command_comment', _("Comment"), $attrsTextarea2);
+        
+        $form->addElement('button', 'desc_macro', _("Describe macros"), array("onClick"=>"manageMacros();"));
+        
+        $macrosListObj = $form->addElement('textarea', 'listOfMacros', _("Macros Descriptions"), $attrsTextarea4);
+	$macrosListObj->setAttribute("readonly");
 
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
@@ -276,6 +283,7 @@
 
 	?><script type='text/javascript'>
 	<!--
+                
 	function insertValueQuery(elem) {
 	    var myQuery = document.Form.command_line;
 		if(elem == 1)	{
@@ -314,6 +322,7 @@
 	        }
 	    }
 	}
+        
 	//-->
 	</script><?php
 
@@ -331,6 +340,7 @@
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->assign('arg_desc_label', _("Argument Descriptions"));
+		$tpl->assign('macro_desc_label', _("Macros Descriptions"));
 		$tpl->display("formCommand.ihtml");
 	}
 ?>

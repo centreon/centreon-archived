@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -36,30 +36,51 @@
  *
  */
 
-session_start();
-require_once '../functions.php';
-define('PROCESS_ID', 'createuser');
+/**
+ *
+ * Enter description here ...
+ * @author jmathis
+ *
+ */
+class CentreonServicecategories
+{
+    protected $_db;
 
-$link = myConnect();
-if (false === $link) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
+    /*
+     * constructor
+     */
+    public function __construct($pearDB)
+    {
+        $this->_db = $pearDB;
+    }
+    
+    /**
+     * 
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'service_categories';
+        $parameters['currentObject']['id'] = 'sc_id';
+        $parameters['currentObject']['name'] = 'sc_name';
+        $parameters['currentObject']['comparator'] = 'sc_id';
+
+        switch ($field) {
+            case 'sc_svcTpl':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'service';
+                $parameters['externalObject']['id'] = 'service_id';
+                $parameters['externalObject']['name'] = 'service_description';
+                $parameters['externalObject']['comparator'] = 'service_id';
+                $parameters['relationObject']['table'] = 'service_categories_relation';
+                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['comparator'] = 'sc_id';
+                break;
+        }
+        
+        return $parameters;
+    }
 }
-if (!isset($_SESSION['DB_USER'])) {
-    exitProcess(PROCESS_ID, 1, _('Could not find database user. Session probably expired.'));
-}
-$dbUser = $_SESSION['DB_USER'];
-$dbPass = $_SESSION['DB_PASS'];
-$host = "localhost";
-// if database server is not on localhost...
-if (isset($_SESSION['ADDRESS']) && $_SESSION['ADDRESS'] && 
-    $_SESSION['ADDRESS'] != "127.0.0.1" && $_SESSION['ADDRESS'] != "localhost") {
-        $host = $_SERVER['SERVER_ADDR'];
-}
-$query = "GRANT ALL PRIVILEGES ON `%s`.* TO `". $dbUser . "`@`". $host . "` IDENTIFIED BY '". $dbPass . "' WITH GRANT OPTION";
-if (false === mysql_query(sprintf($query, $_SESSION['CONFIGURATION_DB']))) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-if (false === mysql_query(sprintf($query, $_SESSION['STORAGE_DB']))) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-exitProcess(PROCESS_ID, 0, "OK");
+?>

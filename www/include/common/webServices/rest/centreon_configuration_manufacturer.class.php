@@ -36,30 +36,58 @@
  *
  */
 
-session_start();
-require_once '../functions.php';
-define('PROCESS_ID', 'createuser');
+global $centreon_path;
+require_once $centreon_path . "/www/class/centreonBroker.class.php";
+require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
-$link = myConnect();
-if (false === $link) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
+class CentreonConfigurationManufacturer extends CentreonConfigurationObjects
+{
+    /**
+     *
+     * @var type 
+     */
+    protected $pearDBMonitoring;
+
+    /**
+     * 
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $brk = new CentreonBroker($this->pearDB);
+        if ($brk->getBroker() == 'broker') {
+            $this->pearDBMonitoring = new CentreonDB('centstorage');
+        } else {
+            $this->pearDBMonitoring = new CentreonDB('ndo');
+        }
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getList()
+    {
+        // Check for select2 'q' argument
+        if (false === isset($this->arguments['q'])) {
+            $q = '';
+        } else {
+            $q = $this->arguments['q'];
+        }
+        
+        $queryTimeperiod = "SELECT id, name "
+            . "FROM traps_vendor "
+            . "WHERE name LIKE '%$q%' "
+            . "ORDER BY name";
+        
+        $DBRESULT = $this->pearDB->query($queryTimeperiod);
+        
+        $manufacturerList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $manufacturerList[] = array('id' => $data['id'], 'text' => $data['name']);
+        }
+        
+        return $manufacturerList;
+    }
 }
-if (!isset($_SESSION['DB_USER'])) {
-    exitProcess(PROCESS_ID, 1, _('Could not find database user. Session probably expired.'));
-}
-$dbUser = $_SESSION['DB_USER'];
-$dbPass = $_SESSION['DB_PASS'];
-$host = "localhost";
-// if database server is not on localhost...
-if (isset($_SESSION['ADDRESS']) && $_SESSION['ADDRESS'] && 
-    $_SESSION['ADDRESS'] != "127.0.0.1" && $_SESSION['ADDRESS'] != "localhost") {
-        $host = $_SERVER['SERVER_ADDR'];
-}
-$query = "GRANT ALL PRIVILEGES ON `%s`.* TO `". $dbUser . "`@`". $host . "` IDENTIFIED BY '". $dbPass . "' WITH GRANT OPTION";
-if (false === mysql_query(sprintf($query, $_SESSION['CONFIGURATION_DB']))) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-if (false === mysql_query(sprintf($query, $_SESSION['STORAGE_DB']))) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-exitProcess(PROCESS_ID, 0, "OK");

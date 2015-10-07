@@ -55,6 +55,17 @@
 				 </div>
 			</td>
 		</tr>
+                <tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="macro_description"> {$macro_desc_label}</td>
+			<td class="FormRowValue">
+				<div id="listOfMacroDiv">
+				    {$form.desc_macro.html}
+				</div>
+                                <div id="listOfArgDiv">
+				    {$form.listOfMacros.html}
+				</div>
+			</td>
+		</tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="connectors"> {$form.connectors.label}</td><td class="FormRowValue">{$form.connectors.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="graph_template"> {$form.graph_id.label}</td><td class="FormRowValue">{$form.graph_id.html}</td></tr>

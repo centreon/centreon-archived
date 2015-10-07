@@ -255,6 +255,11 @@ $attrCommands = array(
     'datasourceOrigin' => 'ajax',
     'multiple' => true
 );
+$attrContactgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+    'multiple' => true
+);
 
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a")
@@ -315,11 +320,12 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_cg, 'mc_mod_cg', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_cg' => '0'));
 }
-$ams3 = $form->addElement('advmultiselect', 'contact_cgNotif', array(_("Linked to Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+
+$attrContactgroup1 = array_merge(
+    $attrContactgroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=defaultValues&target=contact&field=contact_cgNotif&id=' . $contact_id)
+);
+$form->addElement('select2', 'contact_cgNotif', _("Linked to Contact Groups"), array(), $attrContactgroup1);
 
 /**
  * Contact Centreon information
@@ -430,13 +436,6 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_hcmds' => '0'));
 }
 
-/*$ams1 = $form->addElement('advmultiselect', 'contact_hostNotifCmds', array(_("Host Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' => _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);*/
-
-
 $attrCommand1 = array_merge(
     $attrCommands,
     array(
@@ -472,12 +471,6 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_svcmds' => '0'));
 }
-
-/*$ams2 = $form->addElement('advmultiselect', 'contact_svNotifCmds', array(_("Service Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
-$ams2->setButtonAttributes('add', array('value' => _("Add")));
-$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams2->setElementTemplate($eTemplate);
-echo $ams2->getElementJs(false);*/
 
 $attrCommand2 = array_merge(
     $attrCommands,

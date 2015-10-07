@@ -1,4 +1,5 @@
 <div id='globalView'>
+  <div class="toggleEdit edit"><a href="#"><span class="ui-icon ui-icon-pencil"></span></a></div>
   <!-- Action bar -->
   <div id='actionBar'>
     <!-- Button for add a view -->
@@ -284,7 +285,10 @@ function addTab(info, init) {
       select: function(event, ui) {
         jQuery('.viewBody').empty();
       },
-      selected: -1
+      selected: -1,
+      load: function () {
+        displayBtnToggleEdit();
+      }
     });
     infoEmptyTab();
   }
@@ -302,7 +306,10 @@ function deleteTab(viewId) {
     select: function(event, ui) {
       jQuery('.viewBody').empty();
     },
-    selected: -1
+    selected: -1,
+    load: function () {
+      displayBtnToggleEdit();
+    }
   });
   
   if (jQuery('#tabs .tabs_header > li').length > 0) {
@@ -487,6 +494,47 @@ function initColorbox(selector, url, w, h)
   });
 }
   
+function displayBtnToggleEdit() {
+  if (jQuery('.tabs_header').children().length > 0
+      && jQuery('.portlet').length > 0) {
+    jQuery('.toggleEdit').show();
+    toggleEdit(modeEdit);
+  } else {
+    jQuery('.toggleEdit').hide();
+    toggleEdit(true);
+  }
+}
+  
+function toggleEdit(forceShow) {
+  var $el = jQuery('.toggleEdit');
+
+  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit'))) {
+    $el.removeClass('edit');
+    jQuery('#actionBar').hide();
+    jQuery('.portlet-header').hide();
+    if (forceShow === undefined) {
+      modeEdit = false;
+    }
+  } else {
+    $el.addClass('edit');
+    jQuery('#actionBar').show();
+    jQuery('.portlet-header').show();
+    if (forceShow === undefined) {
+      modeEdit = true;
+    }
+  }
+  if (forceShow === undefined) {
+    jQuery.ajax({
+      url: './include/home/customViews/action.php',
+      data: {
+        action: 'defaultEditMode',
+        editMode: modeEdit
+      },
+      type: 'POST'
+    });
+  }
+}
+  
 jQuery(function () {
   /* Initialize buttons */
   jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}});
@@ -584,12 +632,24 @@ jQuery(function () {
           select: function(event, ui) {
             jQuery('.viewBody').empty();
           },
-          selected: -1
+          selected: -1,
+          load: function () {
+            displayBtnToggleEdit();
+          }
         });
       }
       jQuery("#tabs").tabs('select', getTabPos(data.current));
       infoEmptyTab();
     }
+  });
+  
+  displayBtnToggleEdit();
+  
+  /* Toggle edit mode or view mode */
+  jQuery(".toggleEdit > a").on('click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleEdit();
   });
 });
 {/literal}

@@ -43,10 +43,16 @@
 	$childServices = array();
         
         /* hosts */
-        $hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields'  => array('host.host_id', 'host.host_name'),
-                                                                               'keys'    => array('host_id'),
-                                                                               'get_row' => 'host_name',
-                                                                               'order'   => array('host.host_name')));
+        $hosts = $acl->getHostAclConf(
+            null,
+            $oreon->broker->getBroker(),
+            array(
+                'fields'  => array('host.host_id', 'host.host_name'),
+                'keys'    => array('host_id'),
+                'get_row' => 'host_name',
+                'order'   => array('host.host_name')
+            )
+        );
 
         /* services */
         if (!$oreon->user->admin) {
@@ -100,12 +106,12 @@
 									FROM dependency_serviceParent_relation dspr
 									WHERE dspr.dependency_dep_id = '".$dep_id."'");
 		for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-                    $key = $service["host_host_id"]."_".$service["service_service_id"];
-                    if (!$oreon->user->admin && !isset($hServices[$key])) {
-                        $initialValues['dep_hSvPar'][] = $key;
-                    } else {
-                        $dep["dep_hSvPar"][$i] = $key;
-                    }
+            $key = $service["host_host_id"]."_".$service["service_service_id"];
+            if (!$oreon->user->admin && !isset($hServices[$key])) {
+                $initialValues['dep_hSvPar'][] = $key;
+            } else {
+                $dep["dep_hSvPar"][$i] = $key;
+            }
 		}
 
                 // Set Host Children
@@ -113,11 +119,11 @@
 									FROM dependency_hostChild_relation dspr
 									WHERE dspr.dependency_dep_id = '".$dep_id."'");
 		for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-                    if (!$oreon->user->admin && !isset($hosts[$service['host_host_id']])) {
-                        $initialValues['dep_hHostChi'][] = $service["host_host_id"];
-                    } else {
-                        $dep["dep_hHostChi"][$i] = $service["host_host_id"];
-                    }
+            if (!$oreon->user->admin && !isset($hosts[$service['host_host_id']])) {
+                $initialValues['dep_hHostChi'][] = $service["host_host_id"];
+            } else {
+                $dep["dep_hHostChi"][$i] = $service["host_host_id"];
+            }
 		}
 		$DBRESULT->free();
 
@@ -151,12 +157,12 @@
             $hServices = array();
             $DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
             while ($elem = $DBRESULT->fetchRow())	{
-                    $services = getMyHostServices($elem["host_id"]);
-                    foreach ($services as $key=>$index)	{
-                            $index = str_replace('#S#', "/", $index);
-                            $index = str_replace('#BS#', "\\", $index);
-                            $hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
-                    }
+                $services = getMyHostServices($elem["host_id"]);
+                foreach ($services as $key=>$index)	{
+                    $index = str_replace('#S#', "/", $index);
+                    $index = str_replace('#BS#', "\\", $index);
+                    $hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
+                }
             }
         }
 
@@ -168,7 +174,17 @@
 	$attrsAdvSelect = array("style" => "width: 400px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
 	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
-
+    $attrHosts = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+        'multiple' => true
+    );
+    $attrServices = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+        'multiple' => true
+    );
+    
 	/*
 	 * Form begin
 	 */
@@ -213,32 +229,24 @@
 	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
 	$form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
-
-	/*
-	 * Sort 2 Host Service Dependencies
-	 */
-	$hostFilter = array(null => null,
-	                    0    => sprintf('%s', _('All ressources'))) + $hosts;
     
-        $form->addElement('select', 'host_filterParent', _('Host Filter'), $hostFilter, array('onChange' => 'hostFilterSelect("parent", this);'));
-	$ams1 = $form->addElement('advmultiselect', 'dep_hSvPar', array(_("Services"), _("Available"), _("Selected")), $parentServices, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
-
-	$form->addElement('select', 'host_filterChild', _('Host Filter'), $hostFilter, array('onChange' => 'hostFilterSelect("child", this);'));
-	$ams1 = $form->addElement('advmultiselect', 'dep_hSvChi', array(_("Dependent Services"), _("Available"), _("Selected")), $childServices, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
-
-	$ams1 = $form->addElement('advmultiselect', 'dep_hHostChi', array(_("Dependent Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+    $attrService1 = array_merge(
+        $attrServices,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=dependency&field=dep_hSvPar&id=' . $dep_id)
+    );
+    $form->addElement('select2', 'dep_hSvPar', _("Services"), array(), $attrService1);
+    
+    $attrService2 = array_merge(
+        $attrServices,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=dependency&field=dep_hSvChi&id=' . $dep_id)
+    );
+    $form->addElement('select2', 'dep_hSvChi', _("Dependent Services"), array(), $attrService2);
+    
+    $attrHost2 = array_merge(
+        $attrHosts,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=dependency&field=dep_hHostChi&id=' . $dep_id)
+    );
+    $form->addElement('select2', 'dep_hHostChi', _("Dependent Hosts"), array(), $attrHost2);
 
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');

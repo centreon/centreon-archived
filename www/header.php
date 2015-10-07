@@ -54,7 +54,7 @@ define('SMARTY_DIR', realpath('../GPL_LIB/Smarty/libs/') . '/');
 /*
  * Include
  */
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once "../config/centreon.config.php";
 
 require_once "$classdir/centreonDB.class.php";
 require_once "$classdir/centreonLang.class.php";
@@ -197,5 +197,3 @@ $DBRESULT = $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$le
 $centreonLang = new CentreonLang($centreon_path, $centreon);
 $centreonLang->bindLang();
 $centreonLang->bindLang('help');
-
-?>
