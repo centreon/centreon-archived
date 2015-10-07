@@ -278,7 +278,7 @@ if (($o == "c" || $o == "w") && $host_id) {
     foreach($aMacros as $key=>$macro){
         switch($macro['source']){
             case 'direct' : 
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'red');
+                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => '#e00b3d');
                 break;
             case 'fromTpl' :
                 $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'blue');
@@ -1082,7 +1082,7 @@ if ($o != "mc") {
         $from_list_menu = true;
 }
 
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
+$form->setRequiredNote("<i style='color: red;'>*</i>&nbsp;" . _("Required fields"));
 
 $macChecker = $form->addElement("hidden", "macChecker");
 $macChecker->setValue(1);
@@ -1107,8 +1107,8 @@ if ($o == "w") {
     /*
      * Modify a host information
      */
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"),_("class='btc bt_success'"));
+    $res = $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);", "class" => "btc bt_default"));
     $form->setDefaults($host);
 } else if ($o == "a") {
     /*
@@ -1176,7 +1176,7 @@ if ($form->validate() && $from_list_menu == false) {
     $form->freeze();
     $valid = true;
 } elseif ($form->isSubmitted()) {
-    $tpl->assign("macChecker", "<font color='red'>" . $form->getElementError("macChecker") . "</font>");
+    $tpl->assign("macChecker", "<i style='color:red;'>" . $form->getElementError("macChecker") . "</i>");
 }
 $action = $form->getSubmitValue("action");
 
@@ -1187,8 +1187,8 @@ if ($valid && $action["action"]) {
      * Apply a template definition
      */
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $renderer->setRequiredTemplate('{$label}&nbsp;<i  style="color:red;" size="1">*</i>');
+    $renderer->setErrorTemplate('<i style="color:red;">{$error}</i><br />{$html}');
     $form->accept($renderer);
     $tpl->assign('is_not_template', $host_register);
     $tpl->assign('form', $renderer->toArray());

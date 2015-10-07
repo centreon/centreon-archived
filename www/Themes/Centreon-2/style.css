@@ -67,19 +67,24 @@ ul {
     list-style-type:none;
 }
 
-table {border-collapse:collapse;empty-cells:show;border-spacing:0;}
+table {
+    border-collapse:collapse;
+    empty-cells:show;
+    border-spacing:0;
+}
 
 img 		{margin:0 0 -4px;padding:0;}
 
 input, select {
     padding: 4px;
     font-size: 11px !important;
-    border: 1px solid #bcbdc0 !important;
-    line-height: 14px;
+    border: 1px solid #bcbdc0;
+    line-height: 18px;
 }
 
 input[type="checkbox"] 	{border:0px;margin:0;padding:0px;}
 select {
+    padding: 6px;
 }
 
 select[multiple="multiple"] {
@@ -97,6 +102,27 @@ iframe {
     width: 100%;
     //white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+p.description {
+    color: #a7a9ac;
+    padding: 4px 0px;
+}
+
+p.description a, p.description a:visited {
+    color: #4ccaff;
+}
+
+/* ------ Select 2 ---------*/
+
+.select2-container {
+    width: 213px !important;
+}
+
+.select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #bbb !important;
+    border-radius: 0 !important;
 }
 
 /* ------ START : Colors -----*/
@@ -129,14 +155,14 @@ iframe {
 /* ------ START : Buttons -----*/
 .btc {
     border-radius: 4px !important;
-    padding: 4px;
+    padding: 4px 10px;
     border: none !important;
     outline: none !important;
     color: #fff;
 }
 a.btc {
     color: #fff !important;
-    padding: 4px 6px;
+    padding: 4px 10px;
     margin : 0px 4px;
 }
 .bt_default {
@@ -212,7 +238,7 @@ a.btc {
 
 /* -------- START: Form ---------*/
 input[type="submit"] {
-    padding : 4px 6px;
+    padding : 4px 10px;
     color: #fff;
 }
 /*--------- END : Form ---------*/
@@ -347,7 +373,7 @@ vertical-align: middle;
 }
 
 #mainnav li a {
-    padding: .4em .8em .4em .8em;
+    padding: .6em .8em .6em .8em;
     display: inline-block;
 }
 
@@ -665,6 +691,8 @@ div.menuLeft {
 .formTable .ListHeader h3 {
     font-weight: normal;
     color: #597f00;
+    margin: 4px 0;
+    font-size: 1.3em;
 }
 
 .formTable .list_lvl_1 {
@@ -672,14 +700,18 @@ div.menuLeft {
 }
 
 .formTable .list_lvl_1 .ListColLvl1_name {
-    padding-bottom: 12px;
+    padding: 8px 0;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #e7e7e8;
+    border-top: 1px solid #e7e7e8;
 }
 
 .formTable .list_lvl_1 h4 {
     font-weight: normal;
-    color: #818285;
+    color: #009fdf;
     margin-left: 12px;
     padding: 4px;
+    font-size: 1.1em;
 }
 /* ------ END : Forms -------- */
 
@@ -975,7 +1007,10 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 
 
 #validForm input 	{font-size:11px;font-weight:400;margin-top:5px;}
-#validForm 			{float:right;padding:10px;text-align:center;width:98%;}
+#validForm 	{
+    padding:10px;
+    text-align:center;
+}
 #validFormTop {
    float: right;
 }
@@ -1060,7 +1095,7 @@ form label { margin-left: 3px; }
 
 .helpTooltip {padding-right:3px;}
 
-p.oreonbutton input {padding:0px 15px;}
+/*p.oreonbutton input {padding:0px 15px;}*/
 
 .pull-left {
     float: left;
