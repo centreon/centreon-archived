@@ -45,16 +45,12 @@ include("./include/common/autoNumLimit.php");
 $mediaObj = new CentreonMedia($pearDB);
 
 /*
- * start quickSearch form
- */
-$advanced_search = 0;
-include_once("./include/common/quickSearch.php");
-
-/*
  * Search
  */
 $SearchTool = NULL;
-if (isset($search) && $search) {
+$search = "";
+if (isset($_POST['searchHg']) && $_POST['searchHg']) {
+    $search = $_POST['searchHg'];
     $SearchTool = " (hg_name LIKE '%".$pearDB->escape($search)."%' OR hg_alias LIKE '%".$pearDB->escape($search)."%') AND ";
 }
 
@@ -235,6 +231,8 @@ $o1->setSelected(NULL);
 $o2 = $form->getElement('o2');
 $o2->setValue(NULL);
 $o2->setSelected(NULL);
+
+$tpl->assign('searchHg', $search);
 
 $tpl->assign('limit', $limit);
 

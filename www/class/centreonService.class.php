@@ -458,9 +458,9 @@ class CentreonService
             foreach ($_REQUEST['macroInput'] as $key => $val) {
                 $arr[$i]['macroInput_#index#'] = $val;
                 $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
-                $arr[$i]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;
-                $arr[$i]['macroDescription_#index#'] = $row['description'];
-                $arr[$i]['macroDescription'] = $row['description'];
+                $arr[$i]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;                
+                $arr[$i]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
+                $arr[$i]['macroDescription'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
                 $i++;
             }
         }
