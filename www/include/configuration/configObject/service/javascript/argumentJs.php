@@ -70,7 +70,9 @@ function transformForm()
 function changeCommand(value)
 {
 	_cmdId = value;
-	_templateId = document.getElementById('svcTemplate').value;
+    if(document.getElementById('svcTemplate') != null){
+        _templateId = document.getElementById('svcTemplate').value;
+    }
 	transformForm();
 }
 
