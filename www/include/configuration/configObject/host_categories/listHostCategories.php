@@ -42,16 +42,12 @@
 	include("./include/common/autoNumLimit.php");
 
 	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
-
-	/*
 	 * Search
 	 */
 	$SearchTool = NULL;
-	if (isset($search) && $search) {
+    $search = "";
+	if (isset($_POST['searchHC']) && $_POST['searchHC']) {
+        $search = $_POST['searchHC'];
 		$SearchTool = " WHERE (hc_name LIKE '%".$pearDB->escape($search)."%' OR hc_alias LIKE '%".$pearDB->escape($search)."%')";
     }
 
@@ -219,6 +215,7 @@
 	$o2->setSelected(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchHC', $search);
 
 	/*
 	 * Apply a template definition
