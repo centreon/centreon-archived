@@ -607,13 +607,12 @@ class CentreonHost
                 }
             }
         } elseif (isset($_REQUEST['macroInput'])) {
-            unset($_REQUEST['macroInput'][0]);
             foreach ($_REQUEST['macroInput'] as $key => $val) {
                 $arr[$i]['macroInput_#index#'] = $val;
                 $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
                 $arr[$i]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;
-                $arr[$i]['macroDescription_#index#'] = $row['description'];
-                $arr[$i]['macroDescription'] = $row['description'];
+                $arr[$i]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
+                $arr[$i]['macroDescription'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
                 $i++;
             }
         }
@@ -791,6 +790,7 @@ class CentreonHost
         $aTempMacro = array();
         if (count($macroArray) > 0) {
             foreach($macroArray as $directMacro){
+                $directMacro['macroOldValue_#index#'] = $directMacro["macroValue_#index#"];
                 $directMacro['macroFrom_#index#'] = 'direct';
                 $directMacro['source'] = 'direct';
                 $aTempMacro[] = $directMacro;
@@ -802,6 +802,7 @@ class CentreonHost
         if (count($aMacroTemplate) > 0) {  
             foreach ($aMacroTemplate as $key => $macr) {
                 foreach ($macr as $mm) {
+                    $mm['macroOldValue_#index#'] = $mm["macroValue_#index#"];
                     $mm['macroFrom_#index#'] = 'fromTpl';
                     $mm['source'] = 'fromTpl';
                     $aTempMacro[$iNb++] = $mm;
@@ -813,6 +814,7 @@ class CentreonHost
         if (count($aMacroInCommande) > 0) {
             $macroCommande = current($aMacroInCommande);
             for ($i = 0; $i < count($macroCommande); $i++) {
+                $macroCommande[$i]['macroOldValue_#index#'] = $macroCommande[$i]["macroValue_#index#"];
                 $macroCommande[$i]['macroFrom_#index#'] = 'fromCommand';
                 $macroCommande[$i]['source'] = 'fromCommand';
                 $aTempMacro[$iNb++] = $macroCommande[$i];
@@ -911,8 +913,7 @@ class CentreonHost
     public function ajaxMacroControl($form){
 
         $macroArray = $this->getCustomMacro();
-        $this->purgeOldMacroToForm(&$macroArray,$form,'fromTpl');
-        
+        $indexToSub = $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
         $aListTemplate = array();
         foreach($form['tpSelect'] as $templates){
             $tmpTpl = array_merge(array(array('host_id' => $templates)),$this->getTemplateChain($templates, array(), -1, false));
@@ -937,13 +938,14 @@ class CentreonHost
         }
     
         
-        $this->purgeOldMacroToForm(&$macroArray,$form,'fromCommand',$aMacroInCommande);
+        $this->purgeOldMacroToForm(&$macroArray,&$form,'fromCommand',$aMacroInCommande);
         
         //filter a macro
         $aTempMacro = array();
         if (count($macroArray) > 0) {
             foreach($macroArray as $key=>$directMacro){
-                $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key];
+                $directMacro['macroOldValue_#index#'] = $directMacro["macroValue_#index#"];
+                $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key - $indexToSub];
                 $directMacro['source'] = 'direct';
                 $aTempMacro[] = $directMacro;
             }
@@ -954,6 +956,7 @@ class CentreonHost
         if (count($aMacroTemplate) > 0) {  
             foreach ($aMacroTemplate as $key => $macr) {
                 //foreach ($macr as $mm) {
+                    $macr['macroOldValue_#index#'] = $macr["macroValue_#index#"];
                     $macr['macroFrom_#index#'] = 'fromTpl';
                     $macr['source'] = 'fromTpl';
                     $aTempMacro[$iNb++] = $macr;
@@ -967,6 +970,7 @@ class CentreonHost
         if (count($aMacroInCommande) > 0) {
             $macroCommande = current($aMacroInCommande);
             for ($i = 0; $i < count($macroCommande); $i++) {
+                $macroCommande[$i]['macroOldValue_#index#'] = $macroCommande[$i]["macroValue_#index#"];
                 $macroCommande[$i]['macroFrom_#index#'] = 'fromCommand';
                 $macroCommande[$i]['source'] = 'fromCommand';
                 $aTempMacro[$iNb++] = $macroCommande[$i];
@@ -987,7 +991,20 @@ class CentreonHost
         
     }
     
-    public function purgeOldMacroToForm(&$macroArray,$form,$fromKey,$macrosArrayToCompare = null){
+    public function purgeOldMacroToForm(&$macroArray,&$form,$fromKey,$macrosArrayToCompare = null){
+        
+        
+        if(isset($form["macroInput"]["#index#"])){
+            unset($form["macroInput"]["#index#"]); 
+        }
+        if(isset($form["macroValue"]["#index#"])){
+            unset($form["macroValue"]["#index#"]); 
+        }
+        $indexToSub = 0;
+        if(isset($form["macroFrom"]["#index#"])){
+            $indexToSub = 1;
+        }
+        
         
         
         foreach($macroArray as $key=>$macro){
@@ -995,27 +1012,29 @@ class CentreonHost
                 unset($macroArray[$key]);
             }
         }
-    
-    
+        
         if(is_null($macrosArrayToCompare)){
             foreach($macroArray as $key=>$macro){
-                if($form['macroFrom'][$key] == $fromKey){
+                if($form['macroFrom'][$key - $indexToSub] == $fromKey){
                     unset($macroArray[$key]);
                 }
             }
         }else{
             $inputIndexArray = array();
             foreach($macrosArrayToCompare as $tocompare){
-                $inputIndexArray[] = $tocompare['macroInput_#index#'];
+                if (isset($tocompare['macroInput_#index#'])) {
+                    $inputIndexArray[] = $tocompare['macroInput_#index#'];
+                }
             }
             foreach($macroArray as $key=>$macro){
-                if($form['macroFrom'][$key] == $fromKey){
+                if($form['macroFrom'][$key - $indexToSub] == $fromKey){
                     if(!in_array($macro['macroInput_#index#'],$inputIndexArray)){
                         unset($macroArray[$key]);
                     }
                 }
             }
         }
+        return $indexToSub;
 
     }
     

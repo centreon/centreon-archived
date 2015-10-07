@@ -232,6 +232,9 @@ function insertCommand($ret = array()) {
 
     $oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $pearDB->escape($ret["command_name"]), "a", $fields);
     insertArgDesc($cmd_id["MAX(command_id)"], $ret);
+    
+    insertMacrosDesc($cmd_id["MAX(command_id)"], $ret);
+    
     return ($cmd_id["MAX(command_id)"]);
 }
 
@@ -376,6 +379,7 @@ function insertMacrosDesc($cmd, $ret)
 {
     global $pearDB;
 
+    $arr = array("HOST" => "1", "SERVICE" => "2");
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
@@ -385,17 +389,30 @@ function insertMacrosDesc($cmd, $ret)
         
         foreach ($tab1 as $key => $value) {
             $tab2 = preg_split("/\ \:\ /", $value, 2);
-            $sName = trim(substr($tab2[0], 6));
+            $str = trim(substr($tab2[0], 6));
             $sDesc = trim(str_replace("\r", "", $tab2[1]));
-
+            $pos = strpos($str, ")");
+            if ($pos > 0) {
+                $sType = substr($str, 1, $pos - 1);
+                $sName = trim(substr($str, $pos + 1));
+            } else {
+                $sType = "1";
+                $sName =  trim($str);
+            }
+            /*
+            echo $sType."<br />";
+            echo $sName."<br />";
+            echo "<pre>";
+            print_r($tab2);
+die;
+             * 
+             */
             if (!empty($sName)) {
                 $query = "DELETE FROM `on_demand_macro_command` WHERE command_macro_name = '".$pearDB->escape($sName)."' AND `command_command_id` = ".intval($cmd);
                 $pearDB->query($query);
 
-                //if ($pearDB->affectedRows() == 0) {
-                    $sQueryInsert = "INSERT INTO `on_demand_macro_command` (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) VALUES (".  intval($cmd).", '".$pearDB->escape($sName)."', '".$pearDB->escape($sDesc)."', '1')";
-                    $pearDB->query($sQueryInsert);
-                //}
+                $sQueryInsert = "INSERT INTO `on_demand_macro_command` (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) VALUES (".  intval($cmd).", '".$pearDB->escape($sName)."', '".$pearDB->escape($sDesc)."', '".$arr[$sType]."')";
+                $pearDB->query($sQueryInsert);
             }
         }
     }

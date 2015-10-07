@@ -280,24 +280,6 @@ if (($o == "c" || $o == "w") && $service_id) {
     $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId);
 
 
-    foreach($aMacros as $key=>$macro){
-        switch($macro['source']){
-            case 'direct' : 
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'red');
-                break;
-            case 'fromTpl' :
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'blue');
-                break;
-            case 'fromCommand' :
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'green');
-                break;
-            case 'fromService' :
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'orange');
-                break;
-            default :
-                break;
-        }
-    }
 }
 
 $cdata = CentreonData::getInstance();
@@ -305,6 +287,8 @@ $cdata->addJsData('clone-values-macro', htmlspecialchars(
                 json_encode($aMacros), ENT_QUOTES
         )
 );
+
+$cdata->addJsData('clone-count-macro', count($aMacros));
 
 # Service Templates comes from DB -> Store in $svTpls Array
 $svTpls = array(null => null);
@@ -576,6 +560,9 @@ $cloneSetMacro[] = $form->addElement(
     'reset[#index#]',
     _('Reset'),
     array('id' => 'resetMacro_#index#')
+);
+$cloneSetMacro[] = $form->addElement(
+    'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
 );
 
 
