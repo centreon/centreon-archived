@@ -32,9 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 function get_user_param($user_id, $pearDB)
@@ -95,5 +92,3 @@ function getMyHostIDService($svc_id = NULL)
     }
     return NULL;
 }
-
-?>
