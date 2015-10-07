@@ -13,6 +13,7 @@
         </p>
     </div>
 </div>
+
 <ul id="{$cloneId}" class="clonable no-deco-list">
     <li class="clone_template" id="{$cloneId}_template">
         <hr style='margin:2;'/>
