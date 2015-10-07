@@ -60,7 +60,7 @@
 </table>
 <div id="forAjax"></div>
 <table class="ToolbarTable table">
-	<tr>
+	<tr class="ToolbarTR">
 		<td width="330">{$form.o2.html}<input name="p" value="{$p}" type="hidden"></td>
 		<td id="pagination2" class="ToolbarPagination"></td>
 		<td id="sel2" class="Toolbar_pagelimit"></td>
