@@ -868,6 +868,8 @@ class CentreonService
                 $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_template_model_stm_id'],$template);
             }
         }
+        
+        $iIdCommande = $form['command_command_id'];
         //Get macro attached to the command        
         if (!empty($iIdCommande)) {
             $oCommand = new CentreonCommand($this->db);
