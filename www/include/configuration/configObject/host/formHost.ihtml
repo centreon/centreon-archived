@@ -147,7 +147,7 @@
 			<img class="helpTooltip" name="macro"> {$custom_macro_label}
 		</td>
 		<td class="FormRowValue">
-            {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="macro" cloneSet=$cloneSetMacro}
+            {include file="file:$centreon_path/www/include/common/templates/cloneMacro.ihtml" cloneId="macro" cloneSet=$cloneSetMacro}
         </td>
 	</tr>
 

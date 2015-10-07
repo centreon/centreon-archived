@@ -41,14 +41,10 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
-
 	$SearchTool = NULL;
-	if (isset($search) && $search) {
+    $search = "";
+	if (isset($_POST['searchSC']) && $_POST['searchSC']) {
+        $search = $_POST['searchSC'];
 		$SearchTool = "WHERE (sc_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR sc_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
     }
 
@@ -183,6 +179,7 @@
 	$o2->setSelected(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchSC', $search);
 
 	/*
 	 * Apply a template definition
