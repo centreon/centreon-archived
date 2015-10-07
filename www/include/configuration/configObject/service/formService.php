@@ -306,6 +306,8 @@ $cdata->addJsData('clone-values-macro', htmlspecialchars(
         )
 );
 
+$cdata->addJsData('clone-count-macro', count($aMacros));
+
 # Service Templates comes from DB -> Store in $svTpls Array
 $svTpls = array(null => null);
 $DBRESULT = $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '" . $service_id . "' ORDER BY service_description");
@@ -576,6 +578,9 @@ $cloneSetMacro[] = $form->addElement(
     'reset[#index#]',
     _('Reset'),
     array('id' => 'resetMacro_#index#')
+);
+$cloneSetMacro[] = $form->addElement(
+    'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
 );
 
 

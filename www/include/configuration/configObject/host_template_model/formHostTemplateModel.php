@@ -45,6 +45,7 @@
 	## Database retrieve information for Host
 	#
 	$host = array();
+    $macroArray = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
             if (isset($lockedElements[$host_id])) {
                 $o = "w";
@@ -127,7 +128,7 @@
         /*
          * Preset values of macros
          */
-        $cdata = CentreonData::getInstance();
+        
         
         $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1);
 
@@ -136,32 +137,11 @@
         }
 
         $macroArray = $hostObj->getMacros($host_id, true, $aTemplates, $cmdId);
-        foreach($macroArray as $key=>$macro){
-            switch($macro['source']){
-                case 'direct' : 
-                    $macroArray[$key]['style'][] = array('prop' => 'background-color', 'value' => 'red');
-                    break;
-                case 'fromTpl' :
-                    $macroArray[$key]['style'][] = array('prop' => 'background-color', 'value' => 'blue');
-                    break;
-                case 'fromCommand' :
-                    $macroArray[$key]['style'][] = array('prop' => 'background-color', 'value' => 'green');
-                    break;
-                case 'fromService' :
-                    $macroArray[$key]['style'][] = array('prop' => 'background-color', 'value' => 'orange');
-                    break;
-                default :
-                    break;
-            }
-        }
+
 	}
+    
 
-
-
-        
-        
-        
-        
+        $cdata = CentreonData::getInstance();
         
         $cdata->addJsData('clone-values-macro', htmlspecialchars(
                           json_encode($macroArray), 
@@ -179,6 +159,10 @@
                                 )
         );
         $cdata->addJsData('clone-count-template', count($tplArray));
+        
+        
+        
+        
         
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -429,6 +413,9 @@ $DBRESULT->free();
                     "type" => "select-one"
                     )
                 );
+        $cloneSetMacro[] = $form->addElement(
+            'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
+        );
         
 	/*
 	 * Check information

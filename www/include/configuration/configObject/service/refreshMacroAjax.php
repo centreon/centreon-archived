@@ -33,57 +33,27 @@
  *
  */
 
-?>
-<script language='javascript' type='text/javascript'>
-function mk_pagination(){}
-function mk_paginationFF(){}
-function set_header_title(){}
+include_once('/etc/centreon/centreon.conf.php');
+require_once $centreon_path . '/www/class/centreonDB.class.php';
+require_once $centreon_path . '/www/include/common/common-Func.php';
+require_once $centreon_path . 'www/class/centreonService.class.php';
+require_once $centreon_path."www/class/centreonCommand.class.php";
 
-var o = '<?php echo $o;?>';
-var _cmdId = '<?php echo $cmdId;?>';
-var _svcId = '<?php echo $service_id;?>';
-var _svcTplId = '<?php echo $serviceTplId;?>';
-
-/**
- *
+/*
+ * Validate the session
  */
-function transformForm()
-{
-    var params;
-    var proc;
-    var addrXML;
-    var addrXSL;
+session_start();
+$db = new CentreonDB();
 
-    params = '?cmdId=' + _cmdId + '&svcId=' + _svcId + '&svcTplId=' + _svcTplId + '&o=' + o;
-    proc = new Transformation();
-    addrXML = './include/configuration/configObject/service/xml/argumentsXml.php' + params;
-    addrXSL = './include/configuration/configObject/service/xsl/arguments.xsl';
-    proc.setXml(addrXML);
-    proc.setXslt(addrXSL);
-    proc.transform("dynamicDiv");
-	trapId = 0;
-}
+$serviceObj = new CentreonService($db);
 
-/**
- *
- */
-function changeCommand(value)
-{
-	_cmdId = value;
-	_templateId = document.getElementById('svcTemplate').value;
-	transformForm();
-}
 
-/**
- *
- */
-function changeServiceTemplate(value)
-{
-	_svcTplId = value;
-    if(document.getElementById('checkCommand') != null){
-        _cmdId = document.getElementById('checkCommand').value;
-        transformForm();
-    }
-	
-}
-</script>
+$aMacros = $serviceObj->ajaxMacroControl($_POST);
+
+$countMacro = count($aMacros);
+
+
+$arrayReturn = array('macros' => $aMacros, 'count' => $countMacro);
+
+echo json_encode($arrayReturn);
+die;
