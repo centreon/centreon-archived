@@ -659,7 +659,6 @@ class CentreonService
         $indexToSub = 0;
         if(isset($form["macroFrom"]["#index#"])){
             $indexToSub = 1;
-            unset($form["macroFrom"]["#index#"]); 
         }
         
         
@@ -679,10 +678,12 @@ class CentreonService
         }else{
             $inputIndexArray = array();
             foreach($macrosArrayToCompare as $tocompare){
-                $inputIndexArray[] = $tocompare['macroInput_#index#'];
+                if (isset($tocompare['macroInput_#index#'])) {
+                    $inputIndexArray[] = $tocompare['macroInput_#index#'];
+                }
             }
             foreach($macroArray as $key=>$macro){
-                if($form['macroFrom'][$key] == $fromKey){
+                if($form['macroFrom'][$key - $indexToSub] == $fromKey){
                     if(!in_array($macro['macroInput_#index#'],$inputIndexArray)){
                         unset($macroArray[$key]);
                     }
@@ -876,10 +877,13 @@ class CentreonService
             $aMacroInService[] = $oCommand->getMacroByIdAndType($iIdCommande, 'service');
         }
 
+        $this->purgeOldMacroToForm(&$macroArray,&$form,'fromService',$aMacroInService);
+        
+        
         //filter a macro
         $aTempMacro = array();
         if (count($macroArray) > 0) {
-            foreach($macroArray as $directMacro){
+            foreach($macroArray as $key => $directMacro){
                 $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key - $indexToSub];
                 $directMacro['source'] = 'direct';
                 $aTempMacro[] = $directMacro;

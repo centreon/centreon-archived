@@ -1274,7 +1274,7 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
                     }
                 }
             }
-        $hostObj->insertMacro($host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, false);
+        $hostObj->insertMacro($host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, false, $ret["command_command_id"]);
     } else {
         $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '" . CentreonDB::escape($host_id) . "'");
     }
