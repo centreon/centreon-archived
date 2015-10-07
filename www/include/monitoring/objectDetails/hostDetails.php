@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -49,12 +49,12 @@ $hostObj = new CentreonHost($pearDB);
  * ACL Actions
  */
 $GroupListofUser = array();
-$GroupListofUser = $oreon->user->access->getAccessGroups();
+$GroupListofUser = $centreon->user->access->getAccessGroups();
 
 $allActions = false;
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = array();
-    $authorized_actions = $oreon->user->access->getActions();
+    $authorized_actions = $centreon->user->access->getActions();
 }
 
 if (isset($_GET["host_name"]) && $_GET["host_name"]) {
@@ -72,7 +72,7 @@ if (isset($_GET["host_name"]) && $_GET["host_name"]) {
  * ACL
  */
 if (!$is_admin) {
-    $lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName($pearDBO);
+    $lcaHost["LcaHost"] = $centreon->user->access->getHostServicesName($pearDBO);
 }
 
 $tab_status = array();
@@ -91,10 +91,8 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             $hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
         }
         $DBRESULT->free();
-        
-        
-        $DBRESULT = $pearDB->query("SELECT DISTINCT hc.* FROM hostcategories hc"
-            . " INNER JOIN hostcategories_relation hcr on hc.hc_id = hcr.hostcategories_hc_id AND hcr.host_host_id = '".$host_id."' ");
+         
+        $DBRESULT = $pearDB->query("SELECT DISTINCT hc.* FROM hostcategories hc INNER JOIN hostcategories_relation hcr on hc.hc_id = hcr.hostcategories_hc_id AND hcr.host_host_id = '".$host_id."' ");
         while ($hc = $DBRESULT->fetchRow()) {
             $hostCategorie[] = $hc['hc_name'];
         }
