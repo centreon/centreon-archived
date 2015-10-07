@@ -640,9 +640,11 @@ class CentreonHost
                 $i++;
             }
         } else {
-            foreach ($_REQUEST['tpSelect'] as $val) {
-                $arr[$i]['tpSelect_#index#'] = $val;
-                $i++;
+            if (isset($_REQUEST['tpSelect'])) {
+                foreach ($_REQUEST['tpSelect'] as $val) {
+                    $arr[$i]['tpSelect_#index#'] = $val;
+                    $i++;
+                }
             }
         }
         return $arr;
