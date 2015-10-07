@@ -14,8 +14,8 @@
     </div>
 </div>
 
-<ul id="{$cloneId}" class="clonable no-deco-list">
-    <li class="clone_template" id="{$cloneId}_template">
+<ul id="{$cloneId}" class="macroclone no-deco-list">
+    <li class="clone_template onemacro" id="{$cloneId}_template">
         <hr style='margin:2;'/>
         <div class="clone-cell">
             {foreach from=$cloneSet item=v}
