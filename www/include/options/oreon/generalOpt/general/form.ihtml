@@ -16,11 +16,8 @@
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sessions_expiration_time">{$form.session_expire.label}</td><td class="FormRowValue">{$form.session_expire.html}&nbsp;{$time_min}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/refresh.gif'>&nbsp;&nbsp;{$genOpt_refresh_properties}</td></tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval">{$form.oreon_refresh.label}</td><td class="FormRowValue">{$form.oreon_refresh.html}&nbsp;{$time_sec}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_statistics">{$form.AjaxTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_monitoring">{$form.AjaxTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr>
- 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_first_refresh_delay_for_statistics">{$form.AjaxFirstTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxFirstTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_first_refresh_delay_for_monitoring">{$form.AjaxFirstTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxFirstTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr> 	
  	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_rich_colored.gif'>&nbsp;&nbsp;{$genOpt_display_options}</td></tr>
  	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_template">{$form.template.label}</td><td class="FormRowValue">{$form.template.html}</td></tr>

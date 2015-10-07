@@ -33,9 +33,6 @@
  *
  */
 
-
-ini_set('display_errors', 'Off');
-
 $etc = "/etc/centreon";
 
 clearstatcache(true, "$etc/centreon.conf.php");
@@ -181,13 +178,11 @@ if (isset($_POST["submit"])
 /*
  * Check PHP version
  *
- *  Centreon 2.x doesn't support PHP < 5
+ *  Centreon 2.x doesn't support PHP < 5.3
  *
  */
-if (version_compare(phpversion(), '5.0') < 0){
-    echo "<div class='msg'> PHP version is < 5.0. Please Upgrade PHP</div>";
+if (version_compare(phpversion(), '5.3') < 0){
+    echo "<div class='msg'> PHP version is < 5.3. Please Upgrade PHP</div>";
 } else {
     include_once("./login.php");
 }
-
-?>

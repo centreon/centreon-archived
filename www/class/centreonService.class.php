@@ -36,6 +36,7 @@
  * SVN : $Id$
  *
  */
+require_once $centreon_path . 'www/class/centreonInstance.class.php';
 
 /**
  *  Class that contains various methods for managing services
@@ -104,9 +105,9 @@ class CentreonService
         }
         $res = $this->db->query(
                 "SELECT service_id 
-                        FROM service
-                        WHERE service_description = '" . $this->db->escape($templateName) . "' 
-                            AND service_register = '0'"
+                 FROM service
+                 WHERE service_description = '" . $this->db->escape($templateName) . "' 
+                    AND service_register = '0'"
         );
         if (!$res->numRows()) {
             return null;
@@ -617,6 +618,7 @@ class CentreonService
         $aTempMacro = array();
         if (count($macroArray) > 0) {
             foreach($macroArray as $directMacro){
+                $directMacro['macroFrom_#index#'] = 'direct';
                 $directMacro['source'] = 'direct';
                 $aTempMacro[] = $directMacro;
             }
@@ -626,6 +628,7 @@ class CentreonService
         if (count($aMacroTemplate) > 0) {  
             foreach ($aMacroTemplate as $key => $macr) {
                 foreach ($macr as $mm) {
+                    $mm['macroFrom_#index#'] = 'fromTpl';
                     $mm['source'] = 'fromTpl';
                     $aTempMacro[$iNb++] = $mm;
                 }
@@ -634,6 +637,7 @@ class CentreonService
         $serv = current($aMacroInService);
         if (count($aMacroInService) > 0) {
             for ($i = 0; $i < count($serv); $i++) {
+                $serv[$i]['macroFrom_#index#'] = 'fromService';
                 $serv[$i]['source'] = 'fromService';
                 $aTempMacro[$iNb++] = $serv[$i];
             }
@@ -643,6 +647,54 @@ class CentreonService
         return $aFinalMacro;
     }
 
+    public function purgeOldMacroToForm(&$macroArray,&$form,$fromKey,$macrosArrayToCompare = null){
+        
+        
+        if(isset($form["macroInput"]["#index#"])){
+            unset($form["macroInput"]["#index#"]); 
+        }
+        if(isset($form["macroValue"]["#index#"])){
+            unset($form["macroValue"]["#index#"]); 
+        }
+        $indexToSub = 0;
+        if(isset($form["macroFrom"]["#index#"])){
+            $indexToSub = 1;
+            unset($form["macroFrom"]["#index#"]); 
+        }
+        
+        
+        
+        foreach($macroArray as $key=>$macro){
+            if($macro["macroInput_#index#"] == ""){
+                unset($macroArray[$key]);
+            }
+        }
+        
+        if(is_null($macrosArrayToCompare)){
+            foreach($macroArray as $key=>$macro){
+                if($form['macroFrom'][$key - $indexToSub] == $fromKey){
+                    unset($macroArray[$key]);
+                }
+            }
+        }else{
+            $inputIndexArray = array();
+            foreach($macrosArrayToCompare as $tocompare){
+                $inputIndexArray[] = $tocompare['macroInput_#index#'];
+            }
+            foreach($macroArray as $key=>$macro){
+                if($form['macroFrom'][$key] == $fromKey){
+                    if(!in_array($macro['macroInput_#index#'],$inputIndexArray)){
+                        unset($macroArray[$key]);
+                    }
+                }
+            }
+        }
+        return $indexToSub;
+
+    }
+    
+    
+    
     /**
      * 
      * @param integer $field
@@ -673,6 +725,13 @@ class CentreonService
                 $parameters['externalObject']['name'] = 'command_name';
                 $parameters['externalObject']['comparator'] = 'command_id';
                 break;
+            case 'service_template_model_stm_id':
+                $parameters['type'] = 'simple';
+                $parameters['externalObject']['table'] = 'service';
+                $parameters['externalObject']['id'] = 'service_id';
+                $parameters['externalObject']['name'] = 'service_description';
+                $parameters['externalObject']['comparator'] = 'service_id';
+                break;
             case 'service_cs':
                 $parameters['type'] = 'relation';
                 $parameters['externalObject']['table'] = 'contact';
@@ -681,6 +740,16 @@ class CentreonService
                 $parameters['externalObject']['comparator'] = 'contact_id';
                 $parameters['relationObject']['table'] = 'contact_service_relation';
                 $parameters['relationObject']['field'] = 'contact_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            case 'service_cgs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'contactgroup';
+                $parameters['externalObject']['id'] = 'cg_id';
+                $parameters['externalObject']['name'] = 'cg_name';
+                $parameters['externalObject']['comparator'] = 'cg_id';
+                $parameters['relationObject']['table'] = 'contactgroup_service_relation';
+                $parameters['relationObject']['field'] = 'contactgroup_cg_id';
                 $parameters['relationObject']['comparator'] = 'service_service_id';
                 break;
             case 'service_hPars':
@@ -693,10 +762,154 @@ class CentreonService
                 $parameters['relationObject']['field'] = 'host_host_id';
                 $parameters['relationObject']['comparator'] = 'service_service_id';
                 break;
+            case 'service_hgPars':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'hostgroup';
+                $parameters['externalObject']['id'] = 'hg_id';
+                $parameters['externalObject']['name'] = 'hg_name';
+                $parameters['externalObject']['comparator'] = 'hg_id';
+                $parameters['relationObject']['table'] = 'host_service_relation';
+                $parameters['relationObject']['field'] = 'hostgroup_hg_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            case 'service_sgs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'servicegroup';
+                $parameters['externalObject']['id'] = 'sg_id';
+                $parameters['externalObject']['name'] = 'sg_name';
+                $parameters['externalObject']['comparator'] = 'sg_id';
+                $parameters['relationObject']['table'] = 'servicegroup_relation';
+                $parameters['relationObject']['field'] = 'servicegroup_sg_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            case 'service_traps':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'traps';
+                $parameters['externalObject']['id'] = 'traps_id';
+                $parameters['externalObject']['name'] = 'traps_name';
+                $parameters['externalObject']['comparator'] = 'traps_id';
+                $parameters['relationObject']['table'] = 'traps_service_relation';
+                $parameters['relationObject']['field'] = 'traps_id';
+                $parameters['relationObject']['comparator'] = 'service_id';
+                break;
+            case 'graph_id':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'giv_graphs_template';
+                $parameters['externalObject']['id'] = 'graph_id';
+                $parameters['externalObject']['name'] = 'name';
+                $parameters['externalObject']['comparator'] = 'graph_id';
+                $parameters['relationObject']['table'] = 'extended_service_information';
+                $parameters['relationObject']['field'] = 'graph_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            case 'service_categories':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'service_categories';
+                $parameters['externalObject']['id'] = 'sc_id';
+                $parameters['externalObject']['name'] = 'sc_name';
+                $parameters['externalObject']['comparator'] = 'sc_id';
+                $parameters['relationObject']['table'] = 'service_categories_relation';
+                $parameters['relationObject']['field'] = 'sc_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
         }
         
         return $parameters;
     }
+    
+    /**
+     * 
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        $selectedServices = '';
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        } else {
+            $selectedServices .= "AND hsr.service_service_id IN ($explodedValues) ";
+        }
+        
+        $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
+            . "FROM host h, service s, host_service_relation hsr "
+            . 'WHERE hsr.host_host_id = h.host_id '
+            . "AND hsr.service_service_id = s.service_id "
+            . "AND h.host_register = '1' AND s.service_register = '1' "
+            . $selectedServices
+            . "ORDER BY h.host_name";
+        
+        $DBRESULT = $this->db->query($queryService);
+        
+        $serviceList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
+            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+            
+            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
+        }
+        
+        return $serviceList;
+    }
+    
+    public function ajaxMacroControl($form){
+
+        $macroArray = $this->getCustomMacro();
+        $indexToSub = $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
+        $aListTemplate = array_merge(array(array('service_template_model_stm_id' => $form['service_template_model_stm_id']))
+                        ,getListTemplates($this->db, $form['service_template_model_stm_id']));
+        
+        //Get macro attached to the template
+        $aMacroTemplate = array();
+        
+        foreach ($aListTemplate as $template) {
+            if (!empty($template)) {
+                $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_template_model_stm_id'],$template);
+            }
+        }
+        //Get macro attached to the command        
+        if (!empty($iIdCommande)) {
+            $oCommand = new CentreonCommand($this->db);
+            $aMacroInService[] = $oCommand->getMacroByIdAndType($iIdCommande, 'service');
+        }
+
+        //filter a macro
+        $aTempMacro = array();
+        if (count($macroArray) > 0) {
+            foreach($macroArray as $directMacro){
+                $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key - $indexToSub];
+                $directMacro['source'] = 'direct';
+                $aTempMacro[] = $directMacro;
+            }
+        }
+        
+        $iNb = count($aTempMacro);
+        if (count($aMacroTemplate) > 0) {  
+            foreach ($aMacroTemplate as $key => $macr) {
+                foreach ($macr as $mm) {
+                    $mm['macroFrom_#index#'] = 'fromTpl';
+                    $mm['source'] = 'fromTpl';
+                    $aTempMacro[$iNb++] = $mm;
+                }
+            }
+        }
+        $serv = current($aMacroInService);
+        if (count($aMacroInService) > 0) {
+            for ($i = 0; $i < count($serv); $i++) {
+                $serv[$i]['macroFrom_#index#'] = 'fromService';
+                $serv[$i]['source'] = 'fromService';
+                $aTempMacro[$iNb++] = $serv[$i];
+            }
+        }
+        $aFinalMacro = macro_unique($aTempMacro);
+        
+        return $aFinalMacro;
+        
+    }
+    
+    
+    
 }
 
 ?>

@@ -114,6 +114,11 @@ $attrsText2 	= array("size"=>"60");
 $attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
 $attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrServicetemplates = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
+    'multiple' => true
+);
 
 /*
  * Form begin
@@ -152,16 +157,12 @@ $form->addElement('select', 'sc_severity_icon', _("Icon"), $iconImgs, array(
                                                                             "onChange" => "showLogo('icon_id_ctn', this.value)",
                                                                             "onkeyup" => "this.blur(); this.focus();"));
 
-$ams1 = $form->addElement('advmultiselect', 'sc_svc', array(_("Host Service Descriptions"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);
+$attrServicetemplate1 = array_merge(
+    $attrServicetemplates,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=servicecategories&field=sc_svcTpl&id=' . $sc_id)
+);
+$form->addElement('select2', 'sc_svcTpl', _("Linked Service Templates"), array(), $attrServicetemplate1);
 
-$ams1 = $form->addElement('advmultiselect', 'sc_svcTpl', array(_("Service Template Descriptions"), _("Available"), _("Selected")), $hServicesTpl, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
 if (!$oreon->user->admin) {
     $ams1->setPersistantFreeze(true);
     $ams1->freeze();

@@ -1947,6 +1947,11 @@ function str2db($string) {
             if (count($aFinalMacro) > 0) {
                 for ($j = 0; $j < count($aFinalMacro); $j++ ) {
                     if ($aFinalMacro[$j]['macroInput_#index#'] == $sInput) {
+                        if(isset($aFinalMacro[$j]['source']) 
+                        && $aFinalMacro[$j]['source'] == 'direct' 
+                        && !isset($aFinalMacro[$j]['tplValue']) && $aTempMacro[$i]['source'] == "fromTpl"){    
+                            $aFinalMacro[$j]['tplValue'] = $aTempMacro[$i]['macroValue_#index#'];
+                        }
                         $existe = $j;
                         break;
                     } else {

@@ -148,9 +148,24 @@
 	$attrsText 		= array("size"=>"50");
 	$attrsLongText 	= array("size"=>"120");
 	$attrsTextarea 	= array("rows"=>"10", "cols"=>"120");
-        $attrsAdvSelect 	= array("style" => "width: 270px; height: 100px;");
-        $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
-
+    $attrsAdvSelect 	= array("style" => "width: 270px; height: 100px;");
+    $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+    $attrManufacturer= array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer&action=list',
+        'multiple' => false
+    );
+    $attrServices = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+        'multiple' => true
+    );
+    $attrServicetemplates = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
+        'multiple' => true
+    );
+    
 	/*
 	 * Form begin
 	 */
@@ -180,7 +195,13 @@
 	 * Command information
 	 */
 	$form->addElement('text', 'traps_name', _("Trap name"), $attrsText);
-	$form->addElement('select', 'manufacturer_id', _("Vendor Name"), $mnftr);
+    
+    $attrManufacturer1 = array_merge(
+        $attrManufacturer,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer&action=defaultValues&target=traps&field=manufacturer_id&id=' . $traps_id)
+    );
+    $form->addElement('select2', 'manufacturer_id', _("Vendor Name"), array(), $attrManufacturer1);
+    
 	$form->addElement('textarea', 'traps_comments', _("Comments"), $attrsTextarea);
 
 	/**
@@ -237,7 +258,7 @@
         /*
          * Service relations
          */
-        $hostFilter = array(null => null,
+        /*$hostFilter = array(null => null,
                             0    => sprintf('__%s__', _('ALL')));
         $hostFilter = ($hostFilter + $acl->getHostAclConf(null,
                                                          $oreon->broker->getBroker(),
@@ -251,15 +272,27 @@
 	$ams->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams->setElementTemplate($eTemplate);
-	echo $ams->getElementJs(false);
+	echo $ams->getElementJs(false);*/
+    
+    $attrService1 = array_merge(
+        $attrServices,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=traps&field=services&id=' . $traps_id)
+    );
+    $form->addElement('select2', 'services', _("Linked Services"), array(), $attrService1);
         
         if ($centreon->user->admin) {
-            $svcObj = new CentreonService($pearDB);
+            
+            $attrServicetemplate1 = array_merge(
+                $attrServicetemplates,
+                array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=traps&field=service_templates&id=' . $traps_id)
+            );
+            $form->addElement('select2', 'service_templates', _("Linked Service Templates"), array(), $attrServicetemplate1);
+            /*$svcObj = new CentreonService($pearDB);
             $ams = $form->addElement('advmultiselect', 'service_templates', array(_("Linked services templates"), _("Available"), _("Selected")), $svcObj->getServiceTemplateList(), $attrsAdvSelect, SORT_ASC);
             $ams->setButtonAttributes('add', array('value' =>  _("Add")));
             $ams->setButtonAttributes('remove', array('value' => _("Remove")));
             $ams->setElementTemplate($eTemplate);
-            echo $ams->getElementJs(false);
+            echo $ams->getElementJs(false);*/
         }
         
         /*
@@ -440,7 +473,7 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$trapObj = new Centreon_Traps($centreon, $pearDB, $form);
+		$trapObj = new CentreonTraps($centreon, $pearDB, $form);
                 $trapParam = $form->getElement('traps_id');
 		if ($form->getSubmitValue("submitA"))
 			$trapParam->setValue($trapObj->insert());

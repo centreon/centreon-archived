@@ -180,6 +180,8 @@ function updateCommand($cmd_id = null, $params = array()) {
     $fields["connector_id"] = $ret["connectors"];
     $oreon->CentreonLogAction->insertLog("command", $cmd_id, $pearDB->escape($ret["command_name"]), "c", $fields);
     insertArgDesc($cmd_id, $ret);
+    
+    insertMacrosDesc($cmd_id, $ret);
 }
 
 function insertCommandInDB($ret = array()) {
@@ -362,4 +364,55 @@ function getCommandIdByName($name) {
     return $id;
 }
 
+/**
+ * Inserts descriptions of macros rattached to the command
+ * 
+ * @global type $pearDB
+ * @param type $cmd
+ * @param type $ret
+ * 
+ */
+function insertMacrosDesc($cmd, $ret)
+{
+    global $pearDB;
+
+    $arr = array("HOST" => "1", "SERVICE" => "2");
+    if (!count($ret)) {
+        $ret = $form->getSubmitValues();
+    }
+
+    if (isset($ret['listOfMacros']) && $ret['listOfMacros']) {
+        $tab1 = preg_split("/\\n/", $ret['listOfMacros']);
+        
+        foreach ($tab1 as $key => $value) {
+            $tab2 = preg_split("/\ \:\ /", $value, 2);
+            $str = trim(substr($tab2[0], 6));
+            $sDesc = trim(str_replace("\r", "", $tab2[1]));
+            $pos = strpos($str, ")");
+            if ($pos > 0) {
+                $sType = substr($str, 1, $pos - 1);
+                $sName = trim(substr($str, $pos + 1));
+            } else {
+                $sType = "1";
+                $sName =  trim($str);
+            }
+            /*
+            echo $sType."<br />";
+            echo $sName."<br />";
+            echo "<pre>";
+            print_r($tab2);
+die;
+             * 
+             */
+            if (!empty($sName)) {
+                $query = "DELETE FROM `on_demand_macro_command` WHERE command_macro_name = '".$pearDB->escape($sName)."' AND `command_command_id` = ".intval($cmd);
+                $pearDB->query($query);
+
+                $sQueryInsert = "INSERT INTO `on_demand_macro_command` (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) VALUES (".  intval($cmd).", '".$pearDB->escape($sName)."', '".$pearDB->escape($sDesc)."', '".$arr[$sType]."')";
+                $pearDB->query($sQueryInsert);
+            }
+        }
+    }
+
+}
 ?>

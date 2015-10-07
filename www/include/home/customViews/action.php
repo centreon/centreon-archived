@@ -104,6 +104,8 @@ try {
         $viewObj->setDefault($customViewId);
     } elseif ($action == "setRotate" && isset($_POST['timer'])) {
         $_SESSION['rotation_timer'] = $_POST['timer'];
+    } elseif ($action == "defaultEditMode") {
+        $_SESSION['customview_edit_mode'] = $_POST['editMode'];
     }
     $xml->writeElement('custom_view_id', $customViewId);
 } catch (CentreonCustomViewException $e) {

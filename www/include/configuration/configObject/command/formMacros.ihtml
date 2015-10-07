@@ -1,0 +1,37 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<table class="ListTable">
+	 	<tr class="ListHeader">
+                    <td class="FormHeader" colspan="2">
+                        &nbsp;<img src="./img/icones/16x16/exchange.gif">&nbsp;&nbsp;{$form.header.title}
+                    </td>
+	 	</tr>
+	 	<tr class="list_lvl_1">
+                    <td class="ListColLvl1_name" colspan="2">
+                        <img src="./img/icones/16x16/note.gif">&nbsp;&nbsp;{$form.header.information}
+                    </td>
+	 	</tr>
+		
+                {foreach  item=args key=key from=$macros}
+                    <tr class="{cycle values="list_one,list_two"}">
+                        <td class="FormRowField">
+                            {$args.name}
+                        </td>
+                        <td class="FormRowValue">
+                            <input type="text" id="desc_{$key}" size="90" value="{$args.description}">
+                            <input type="hidden" id="macro_{$key}" value="{$args.name}"> 
+                            <input type="hidden" id="type_{$key}" value="{$args.type}"> 
+                        </td>
+                    </tr>
+                {/foreach}
+
+	</table>
+        <div id="validForm">
+		{$form.hidden}		
+		{if $nb_arg}
+		<p class="oreonbutton">{$form.submitSaveAdd.html}&nbsp;&nbsp;{$form.close.html}</p>
+		{else}
+		<p class="oreonbutton">{$form.close.html}</p>		
+		{/if}		
+	</div>
+</form>

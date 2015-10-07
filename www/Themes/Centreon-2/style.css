@@ -665,6 +665,12 @@ div.menuLeft {
     padding: 6px 6px !important;
 }
 
+.toggleEdit {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
 
 /* ------ END : Tabs -----*/
 

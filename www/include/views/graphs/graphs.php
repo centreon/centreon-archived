@@ -70,12 +70,6 @@
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 	/*
-	 * Add Quick Search
-	 */
-	$FlagSearchService = 1;
-	require_once "./include/common/quickSearch.php";
-
-	/*
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
@@ -110,6 +104,8 @@
 	$id 	= getGetPostValue("id");
 	$id_svc = getGetPostValue("svc_id");
 	$meta 	= getGetPostValue("meta");
+    $search = getGetPostValue("search");
+    $search_service = getGetPostValue("search_service");
 
 	if (isset($id_svc) && $id_svc){
 		$id = "";
@@ -191,6 +187,8 @@
 	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>10));
 	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepicker", "size"=>5));
 	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));
+    $form->addElement('text', 'search', _('Host'));
+    $form->addElement('text', 'search_service', _('Service'));
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
@@ -429,6 +427,10 @@ function nextPeriod() {
         if (EndTime == "") {
         	EndTime = "23:59";
         }
+        
+        // Get search information
+        var search = encodeURI(document.FormPeriod.search.value);
+        var search_service = encodeURI(document.FormPeriod.search_service.value);
 
 		// Metrics
 		var _metrics ="";
@@ -481,7 +483,13 @@ function nextPeriod() {
 		tree.selectItem(id);
 		var proc = new Transformation();
 		var _addrXSL = "./include/views/graphs/graph.xsl";
-		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; if ($focusUrl) print "&focusUrl=".urlencode($focusUrl);?>';
+		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if ($focusUrl) print "&focusUrl=".urlencode($focusUrl);?>';
+        if (search) {
+            _addrXML += '&search=' + search;
+        }
+        if (search_service) {
+            _addrXML += '&search_service=' + search_service;
+        }
 
 		proc.setXml(_addrXML);
 		proc.setXslt(_addrXSL);

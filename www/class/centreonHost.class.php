@@ -611,8 +611,8 @@ class CentreonHost
                 $arr[$i]['macroInput_#index#'] = $val;
                 $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
                 $arr[$i]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;
-                $arr[$i]['macroDescription_#index#'] = $row['description'];
-                $arr[$i]['macroDescription'] = $row['description'];
+                $arr[$i]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
+                $arr[$i]['macroDescription'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
                 $i++;
             }
         }
@@ -723,7 +723,7 @@ class CentreonHost
     
     public function hasMacroFromHostChanged($host_id,&$macroInput,&$macroValue,$cmdId = false)
     {
-        $aTemplates = $this->getTemplateChain($host_id, array(), -1);
+        $aTemplates = $this->getTemplateChain($host_id, array(), -1, false);
 
         if (!isset($cmdId)) {
             $cmdId = "";
@@ -768,6 +768,7 @@ class CentreonHost
             }
         }
 
+        
         //Get macro attached to the command        
         if (!empty($iIdCommande)) {
             $oCommand = new CentreonCommand($this->db);
@@ -789,6 +790,7 @@ class CentreonHost
         $aTempMacro = array();
         if (count($macroArray) > 0) {
             foreach($macroArray as $directMacro){
+                $directMacro['macroFrom_#index#'] = 'direct';
                 $directMacro['source'] = 'direct';
                 $aTempMacro[] = $directMacro;
             }
@@ -799,6 +801,7 @@ class CentreonHost
         if (count($aMacroTemplate) > 0) {  
             foreach ($aMacroTemplate as $key => $macr) {
                 foreach ($macr as $mm) {
+                    $mm['macroFrom_#index#'] = 'fromTpl';
                     $mm['source'] = 'fromTpl';
                     $aTempMacro[$iNb++] = $mm;
                 }
@@ -809,6 +812,7 @@ class CentreonHost
         if (count($aMacroInCommande) > 0) {
             $macroCommande = current($aMacroInCommande);
             for ($i = 0; $i < count($macroCommande); $i++) {
+                $macroCommande[$i]['macroFrom_#index#'] = 'fromCommand';
                 $macroCommande[$i]['source'] = 'fromCommand';
                 $aTempMacro[$iNb++] = $macroCommande[$i];
             }
@@ -868,7 +872,9 @@ class CentreonHost
                 while ($row = $DBRESULT->fetchRow()) {
                     if(!$allFields){
                         $templates[] = array(
-                            "id" => $row['host_id']
+                            "id" => $row['host_id'],
+                            "host_id" => $row['host_id'],
+                            "host_name" => $row['host_name']
                         );
                     } else{
                         $templates[] = $row;
@@ -900,6 +906,135 @@ class CentreonHost
         }
         return $arr;
     }
+    
+    public function ajaxMacroControl($form){
+
+        $macroArray = $this->getCustomMacro();
+        $indexToSub = $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
+        $aListTemplate = array();
+        foreach($form['tpSelect'] as $templates){
+            $tmpTpl = array_merge(array(array('host_id' => $templates)),$this->getTemplateChain($templates, array(), -1, false));
+            $aListTemplate = array_merge($aListTemplate,$tmpTpl);
+        }
+        
+        
+        $aMacroTemplate = array();
+        foreach ($aListTemplate as $template) {
+            if (!empty($template['host_id'])) {
+                $aMacroTemplate = array_merge($aMacroTemplate,$this->getCustomMacroInDb($template['host_id'],$template));
+            }
+        }
+        
+        $iIdCommande = $form['command_command_id'];
+        
+        $aMacroInCommande = array();
+        //Get macro attached to the command        
+        if (!empty($iIdCommande) && is_numeric($iIdCommande)) {
+            $oCommand = new CentreonCommand($this->db);
+            $aMacroInCommande[] = $oCommand->getMacroByIdAndType($iIdCommande, 'host');
+        }
+    
+        
+        //$this->purgeOldMacroToForm(&$macroArray,&$form,'fromCommand',$aMacroInCommande);
+        
+        //filter a macro
+        $aTempMacro = array();
+        if (count($macroArray) > 0) {
+            foreach($macroArray as $key=>$directMacro){
+                $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key - $indexToSub];
+                $directMacro['source'] = 'direct';
+                $aTempMacro[] = $directMacro;
+            }
+        }
+        
+        $iNb = count($aTempMacro);
+        
+        if (count($aMacroTemplate) > 0) {  
+            foreach ($aMacroTemplate as $key => $macr) {
+                //foreach ($macr as $mm) {
+                    $macr['macroFrom_#index#'] = 'fromTpl';
+                    $macr['source'] = 'fromTpl';
+                    $aTempMacro[$iNb++] = $macr;
+                //}
+            }
+        }
+        
+        
+        
+        
+        if (count($aMacroInCommande) > 0) {
+            $macroCommande = current($aMacroInCommande);
+            for ($i = 0; $i < count($macroCommande); $i++) {
+                $macroCommande[$i]['macroFrom_#index#'] = 'fromCommand';
+                $macroCommande[$i]['source'] = 'fromCommand';
+                $aTempMacro[$iNb++] = $macroCommande[$i];
+            }
+        }
+
+        /*if (count($aMacroInService) > 0) {
+            foreach ($aMacroInService as $key => $macr) {
+                foreach ($macr as $mm) {
+                    $mm['source'] = 'fromService';
+                    $aTempMacro[$iNb++] = $mm;
+                }
+            }
+        }*/
+       
+        $aFinalMacro = macro_unique($aTempMacro);
+        return $aFinalMacro;
+        
+    }
+    
+    public function purgeOldMacroToForm(&$macroArray,&$form,$fromKey,$macrosArrayToCompare = null){
+        
+        
+        if(isset($form["macroInput"]["#index#"])){
+            unset($form["macroInput"]["#index#"]); 
+        }
+        if(isset($form["macroValue"]["#index#"])){
+            unset($form["macroValue"]["#index#"]); 
+        }
+        $indexToSub = 0;
+        if(isset($form["macroFrom"]["#index#"])){
+            $indexToSub = 1;
+            unset($form["macroFrom"]["#index#"]); 
+        }
+        
+        
+        
+        foreach($macroArray as $key=>$macro){
+            if($macro["macroInput_#index#"] == ""){
+                unset($macroArray[$key]);
+            }
+        }
+        
+        if(is_null($macrosArrayToCompare)){
+            foreach($macroArray as $key=>$macro){
+                if($form['macroFrom'][$key - $indexToSub] == $fromKey){
+                    unset($macroArray[$key]);
+                }
+            }
+        }else{
+            $inputIndexArray = array();
+            foreach($macrosArrayToCompare as $tocompare){
+                if (isset($tocompare['macroInput_#index#'])) {
+                    $inputIndexArray[] = $tocompare['macroInput_#index#'];
+                } else {
+                    $inputIndexArray[] = "";
+                }
+            }
+            foreach($macroArray as $key=>$macro){
+                if($form['macroFrom'][$key] == $fromKey){
+                    if(!in_array($macro['macroInput_#index#'],$inputIndexArray)){
+                        unset($macroArray[$key]);
+                    }
+                }
+            }
+        }
+        return $indexToSub;
+
+    }
+    
     
     /**
      * 

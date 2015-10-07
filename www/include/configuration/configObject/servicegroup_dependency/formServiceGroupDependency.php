@@ -94,7 +94,12 @@
 	$attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
 	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
-
+    $attrServicegroups = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list',
+        'multiple' => true
+    );
+    
 	/*
 	 * Form begin
 	 */
@@ -137,17 +142,17 @@
 	$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'sNone2', 'onClick' => 'uncheckAllS2(this);'));
 	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
-	$ams1 = $form->addElement('advmultiselect', 'dep_sgParents', array(_("Service Group Names"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
-
-	$ams1 = $form->addElement('advmultiselect', 'dep_sgChilds', array(_("Dependent Service Group Names"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+    $attrServicegroup1 = array_merge(
+        $attrServicegroups,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=dependency&field=dep_sgParents&id=' . $dep_id)
+    );
+    $form->addElement('select2', 'dep_sgParents', _("Linked with Servicegroups"), array(), $attrServicegroup1);
+    
+    $attrServicegroup2= array_merge(
+        $attrServicegroups,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=dependency&field=dep_sgChilds&id=' . $dep_id)
+    );
+    $form->addElement('select2', 'dep_sgChilds', _("Linked with Servicegroups"), array(), $attrServicegroup2);
 
 	$form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
 

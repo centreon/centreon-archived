@@ -80,7 +80,10 @@ function changeCommand(value)
 function changeServiceTemplate(value)
 {
 	_svcTplId = value;
-	_cmdId = document.getElementById('checkCommand').value;
-	transformForm();
+    if(document.getElementById('checkCommand') != null){
+        _cmdId = document.getElementById('checkCommand').value;
+        transformForm();
+    }
+	
 }
 </script>

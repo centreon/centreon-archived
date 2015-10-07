@@ -31,12 +31,7 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
-
- 	ini_set("display_errors", "Off");
 
  	// Set logging options                                                                                                                                                                                                                                                    
 	if (defined("E_DEPRECATED")) {

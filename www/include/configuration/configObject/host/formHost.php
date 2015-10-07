@@ -60,11 +60,13 @@ $initialValues = array();
 $hcString = $acl->getHostCategoriesString();
 
 /* notification contacts */
-$notifCs = $acl->getContactAclConf(array('fields' => array('contact_id', 'contact_name'),
+$notifCs = $acl->getContactAclConf(array(
+    'fields' => array('contact_id', 'contact_name'),
     'get_row' => 'contact_name',
     'keys' => array('contact_id'),
     'conditions' => array('contact_register' => '1'),
-    'order' => array('contact_name')));
+    'order' => array('contact_name')
+));
 
 /* notification contact groups */
 $notifCgs = array();
@@ -267,7 +269,7 @@ if (($o == "c" || $o == "w") && $host_id) {
         $host['criticality_id'] = $cr['hc_id'];
     }
     
-    $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1, true);
+    $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1, false);
     if (!isset($cmdId)) {
         $cmdId = "";
     }
@@ -554,26 +556,32 @@ $form->addElement('static', 'tplText', _("Using a Template allows you to have mu
 
 $cloneSetMacro = array();
 $cloneSetMacro[] = $form->addElement(
-        'text', 'macroInput[#index#]', _('Macro name'), array(
+    'text', 'macroInput[#index#]', _('Macro name'), array(
     'id' => 'macroInput_#index#',
     'size' => 25
-        )
+    )
 );
 $cloneSetMacro[] = $form->addElement(
-        'text', 'macroValue[#index#]', _('Macro value'), array(
+    'text', 'macroValue[#index#]', _('Macro value'), array(
     'id' => 'macroValue_#index#',
     'size' => 25
-        )
+    )
 );
 $cloneSetMacro[] = $form->addElement(
-        'checkbox', 'macroPassword[#index#]', _('Password'), null, array(
+    'checkbox', 'macroPassword[#index#]', _('Password'), null, array(
     'id' => 'macroPassword_#index#',
     'onClick' => 'javascript:change_macro_input_type(this, false)'
-        )
+    )
 );
 
 $cloneSetMacro[] = $form->addElement(
-        'button', 'reset[#index#]', _('Reset'), array('id' => 'resetMacro_#index#')
+    'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
+);
+
+
+
+$cloneSetMacro[] = $form->addElement(
+    'button', 'reset[#index#]', _('Reset'), array('id' => 'resetMacro_#index#')
 );
 
 

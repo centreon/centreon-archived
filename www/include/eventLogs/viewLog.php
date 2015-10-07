@@ -31,209 +31,206 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($centreon)) {
+	exit();
+}
 
-	function get_user_param($user_id, $pearDB) {
-		$list_param = array('log_filter_host', 'log_filter_svc', 'log_filter_host_down',
-			'log_filter_host_up', 'log_filter_host_unreachable', 'log_filter_svc_ok',
-			'log_filter_svc_warning', 'log_filter_svc_critical', 'log_filter_svc_unknown',
-			'log_filter_notif', 'log_filter_error', 'log_filter_alert', 'log_filter_oh',
-			'search_H', 'search_S', 'log_filter_period');
-		$tab_row = array();
-		$cache = null;
-		foreach ($list_param as $param) {
-			if (isset($_SESSION[$param])) {
-				$tab_row[$param] = $_SESSION[$param];
-			} else {
-				if (is_null($cache)) {
-					$cache = array();
-					$query = "SELECT cp_key, cp_value FROM contact_param WHERE cp_key in ('" . join("', '", $list_param) . "') AND cp_contact_id = " . $user_id;
-					$DBRESULT = $pearDB->query($query);
-					while ($row = $DBRESULT->fetchRow()) {
-						$cache[$row['cp_key']] = $row['cp_value'];
-					}
-				}
-				if (isset($cache[$param])) {
-					$tab_row[$param] = $cache[$param];
+function get_user_param($user_id, $pearDB) {
+	$list_param = array('log_filter_host', 'log_filter_svc', 'log_filter_host_down',
+		'log_filter_host_up', 'log_filter_host_unreachable', 'log_filter_svc_ok',
+		'log_filter_svc_warning', 'log_filter_svc_critical', 'log_filter_svc_unknown',
+		'log_filter_notif', 'log_filter_error', 'log_filter_alert', 'log_filter_oh',
+		'search_H', 'search_S', 'log_filter_period');
+	$tab_row = array();
+	$cache = null;
+	foreach ($list_param as $param) {
+		if (isset($_SESSION[$param])) {
+			$tab_row[$param] = $_SESSION[$param];
+		} else {
+			if (is_null($cache)) {
+				$cache = array();
+				$query = "SELECT cp_key, cp_value FROM contact_param WHERE cp_key in ('" . join("', '", $list_param) . "') AND cp_contact_id = " . $user_id;
+				$DBRESULT = $pearDB->query($query);
+				while ($row = $DBRESULT->fetchRow()) {
+					$cache[$row['cp_key']] = $row['cp_value'];
 				}
 			}
+			if (isset($cache[$param])) {
+				$tab_row[$param] = $cache[$param];
+			}
 		}
-		return $tab_row;
 	}
+	return $tab_row;
+}
 
-	$user_params = get_user_param($oreon->user->user_id, $pearDB);
+$user_params = get_user_param($oreon->user->user_id, $pearDB);
 
-	if (!isset($user_params["log_filter_host"]))
-		$user_params["log_filter_host"] = 1;
-	if (!isset($user_params["log_filter_svc"]))
-		$user_params["log_filter_svc"] = 1;
-	if (!isset($user_params["log_filter_host_down"]))
-		$user_params["log_filter_host_down"] = 1;
-	if (!isset($user_params["log_filter_host_up"]))
-		$user_params["log_filter_host_up"] = 1;
-	if (!isset($user_params["log_filter_host_unreachable"]))
-		$user_params["log_filter_host_unreachable"] = 1;
-	if (!isset($user_params["log_filter_svc_ok"]))
-		$user_params["log_filter_svc_ok"] = 1;
-	if (!isset($user_params["log_filter_svc_warning"]))
-		$user_params["log_filter_svc_warning"] = 1;
-	if (!isset($user_params["log_filter_svc_critical"]))
-		$user_params["log_filter_svc_critical"] = 1;
-	if (!isset($user_params["log_filter_svc_unknown"]))
-		$user_params["log_filter_svc_unknown"] = 1;
-	if (!isset($user_params["log_filter_notif"]))
-		$user_params["log_filter_notif"] = 1;
-	if (!isset($user_params["log_filter_error"]))
-		$user_params["log_filter_error"] = 1;
-	if (!isset($user_params["log_filter_alert"]))
-		$user_params["log_filter_alert"] = 1;
-	if (!isset($user_params["log_filter_oh"]))
-		$user_params["log_filter_oh"] = 1;
+if (!isset($user_params["log_filter_host"]))
+	$user_params["log_filter_host"] = 1;
+if (!isset($user_params["log_filter_svc"]))
+	$user_params["log_filter_svc"] = 1;
+if (!isset($user_params["log_filter_host_down"]))
+	$user_params["log_filter_host_down"] = 1;
+if (!isset($user_params["log_filter_host_up"]))
+	$user_params["log_filter_host_up"] = 1;
+if (!isset($user_params["log_filter_host_unreachable"]))
+	$user_params["log_filter_host_unreachable"] = 1;
+if (!isset($user_params["log_filter_svc_ok"]))
+	$user_params["log_filter_svc_ok"] = 1;
+if (!isset($user_params["log_filter_svc_warning"]))
+	$user_params["log_filter_svc_warning"] = 1;
+if (!isset($user_params["log_filter_svc_critical"]))
+	$user_params["log_filter_svc_critical"] = 1;
+if (!isset($user_params["log_filter_svc_unknown"]))
+	$user_params["log_filter_svc_unknown"] = 1;
+if (!isset($user_params["log_filter_notif"]))
+	$user_params["log_filter_notif"] = 1;
+if (!isset($user_params["log_filter_error"]))
+	$user_params["log_filter_error"] = 1;
+if (!isset($user_params["log_filter_alert"]))
+	$user_params["log_filter_alert"] = 1;
+if (!isset($user_params["log_filter_oh"]))
+	$user_params["log_filter_oh"] = 1;
 
-	if (!isset($user_params["search_H"]))
-		$user_params["search_H"] = "";
-	if (!isset($user_params["search_S"]))
-		$user_params["search_S"] = "";
+if (!isset($user_params["search_H"]))
+	$user_params["search_H"] = "";
+if (!isset($user_params["search_S"]))
+	$user_params["search_S"] = "";
 
-	if (!isset($user_params['log_filter_period']))
-		$user_params['log_filter_period'] = "";
+if (!isset($user_params['log_filter_period']))
+	$user_params['log_filter_period'] = "";
 
-	/*
-	 * Pear library
-	 */
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	/*
-	 * Add QuickSearch ToolBar
-	 */
-	$FlagSearchService = 1;
-	include_once("./include/common/quickSearch.php");
+/*
+ * Add QuickSearch ToolBar
+ */
+$FlagSearchService = 1;
+include_once("./include/common/quickSearch.php");
 
-	/*
-	 * Path to the configuration dir
-	 */
-	$path = "./include/eventLogs/";
+/*
+ * Path to the configuration dir
+ */
+$path = "./include/eventLogs/";
 
-	/*
-	 * Smarty template Init
-	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
+/*
+ * Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
 
-	$openid = '0';
-	$open_id_sub = '0';
-	if (isset($_GET["openid"])){
-		$openid = $_GET["openid"];
-		$open_id_type = substr($openid, 0, 2);
-		$open_id_sub = substr($openid, 3, strlen($openid));
+$openid = '0';
+$open_id_sub = '0';
+if (isset($_GET["openid"])){
+	$openid = $_GET["openid"];
+	$open_id_type = substr($openid, 0, 2);
+	$open_id_sub = substr($openid, 3, strlen($openid));
+}
+
+if (isset($_GET["id"])){
+	$id = $_GET["id"];
+} else {
+	$id = 1;
+}
+
+if (isset($_POST["id"])){
+	$id = $_POST["id"];
+}
+
+/*
+ * From Monitoring
+ */
+if (isset($_POST["svc_id"])) {
+	$id = "";
+    $services = preg_split("/\,/", $_POST["svc_id"]);
+	foreach ($services as $str) {
+		$buf_svc = preg_split("/\;/", urldecode($str));
+        $lhost_id = getMyHostID($buf_svc[0]);
+		$id .= "HS_" . getMyServiceID($buf_svc[1], $lhost_id)."_" . $lhost_id . ",";
 	}
+}
 
-	if (isset($_GET["id"])){
-		$id = $_GET["id"];
-	} else {
-		$id = 1;
-	}
-
-	if (isset($_POST["id"])){
-		$id = $_POST["id"];
-	}
-
-	/*
-	 * From Monitoring
-	 */
-	if (isset($_POST["svc_id"])) {
+/*
+ * From Graphs
+ */
+if (!strncmp("MS", $id, 2)) {
+	$meta = 0;
+	if (isset($id) && $id){
 		$id = "";
-	    $services = preg_split("/\,/", $_POST["svc_id"]);
-		foreach ($services as $str) {
-			$buf_svc = preg_split("/\;/", urldecode($str));
-            $lhost_id = getMyHostID($buf_svc[0]);
-			$id .= "HS_" . getMyServiceID($buf_svc[1], $lhost_id)."_" . $lhost_id . ",";
+		$id_svc = $id;
+		$tab_svcs = explode(",", $id_svc);
+		foreach ($tab_svcs as $svc){
+			$tmp = explode(";", urldecode($svc));
+             $lhost_id = getMyHostID($tmp[0]);
+			$id .= "HS_" . getMyServiceID($tmp[1], $lhost_id)."_" . $lhost_id . ",";
 		}
 	}
+} else {
+	$meta = 1;
+}
 
-	/*
-	 * From Graphs
-	 */
-	if (!strncmp("MS", $id, 2)) {
-		$meta = 0;
-		if (isset($id) && $id){
-			$id = "";
-			$id_svc = $id;
-			$tab_svcs = explode(",", $id_svc);
-			foreach ($tab_svcs as $svc){
-				$tmp = explode(";", urldecode($svc));
-                 $lhost_id = getMyHostID($tmp[0]);
-				$id .= "HS_" . getMyServiceID($tmp[1], $lhost_id)."_" . $lhost_id . ",";
-			}
-		}
-	} else {
-		$meta = 1;
-	}
+$id_log = "'RR_0'";
+$multi = 0;
+$lockTree = 0;
+    $focusUrl = "";
+if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
+	$mode = 0;
+	$lockTree = 1;
+	$id_log = "'".$id."'";
+	$multi =1;
+	$focusUrl = "?p=$p&id=$id&mode=0&lock_tree=0";
+} else {
+	$mode = 1;
+	$id = 1;
+}
 
-	$id_log = "'RR_0'";
-	$multi = 0;
-	$lockTree = 0;
-        $focusUrl = "";
-	if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
-		$mode = 0;
-		$lockTree = 1;
-		$id_log = "'".$id."'";
-		$multi =1;
-		$focusUrl = "?p=$p&id=$id&mode=0&lock_tree=0";
-	} else {
-		$mode = 1;
-		$id = 1;
-	}
+/*
+ * Form begin
+ */
+$form = new HTML_QuickForm('FormPeriod', 'get', "?p=".$p);
+$form->addElement('header', 'title', _("Choose the source"));
 
-	/*
-	 * Form begin
-	 */
-	$form = new HTML_QuickForm('FormPeriod', 'get', "?p=".$p);
-	$form->addElement('header', 'title', _("Choose the source"));
+$periods = array(	""=>"",
+					"10800"=>_("Last 3 Hours"),
+					"21600"=>_("Last 6 Hours"),
+					"43200"=>_("Last 12 Hours"),
+					"86400"=>_("Last 24 Hours"),
+					"172800"=>_("Last 2 Days"),
+					"302400"=>_("Last 4 Days"),
+					"604800"=>_("Last 7 Days"),
+					"1209600"=>_("Last 14 Days"),
+					"2419200"=>_("Last 28 Days"),
+					"2592000"=>_("Last 30 Days"),
+					"2678400"=>_("Last 31 Days"),
+					"5184000"=>_("Last 2 Months"),
+					"10368000"=>_("Last 4 Months"),
+					"15552000"=>_("Last 6 Months"),
+					"31104000"=>_("Last Year"));
 
-	$periods = array(	""=>"",
-						"10800"=>_("Last 3 Hours"),
-						"21600"=>_("Last 6 Hours"),
-						"43200"=>_("Last 12 Hours"),
-						"86400"=>_("Last 24 Hours"),
-						"172800"=>_("Last 2 Days"),
-						"302400"=>_("Last 4 Days"),
-						"604800"=>_("Last 7 Days"),
-						"1209600"=>_("Last 14 Days"),
-						"2419200"=>_("Last 28 Days"),
-						"2592000"=>_("Last 30 Days"),
-						"2678400"=>_("Last 31 Days"),
-						"5184000"=>_("Last 2 Months"),
-						"10368000"=>_("Last 4 Months"),
-						"15552000"=>_("Last 6 Months"),
-						"31104000"=>_("Last Year"));
+$form->addElement('select', 'period', _("Log Period"), $periods, array("onchange" => "resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
+$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "class" => "datepicker", "size"=>8));
+$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "class"=>"timepicker", "size"=>5));
+$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>8));
+$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepicker", "size"=>5));
+$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));
 
-	$form->addElement('select', 'period', _("Log Period"), $periods, array("onchange" => "resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
-	$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "class" => "datepicker", "size"=>8));
-	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "class"=>"timepicker", "size"=>5));
-	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>8));
-	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepicker", "size"=>5));
-	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));
+$form->setDefaults(array("period" => $user_params['log_filter_period']));
 
-	$form->setDefaults(array("period" => $user_params['log_filter_period']));
-
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('From', _("From"));
-	$tpl->assign('To', _("To"));
-	$tpl->assign('periodORlabel', _("or"));
-	$tpl->assign('focusUrl', $focusUrl);
-	$tpl->assign('treeFocus', _('Tree Focus'));
-	$tpl->display("viewLog.ihtml");
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form->accept($renderer);
+$tpl->assign('form', $renderer->toArray());
+$tpl->assign('From', _("From"));
+$tpl->assign('To', _("To"));
+$tpl->assign('periodORlabel', _("or"));
+$tpl->assign('focusUrl', $focusUrl);
+$tpl->assign('treeFocus', _('Tree Focus'));
+$tpl->display("viewLog.ihtml");
 
 ?>
 <script language='javascript' src='./include/common/javascript/tool.js'></script>

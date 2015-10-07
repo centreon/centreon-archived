@@ -319,5 +319,87 @@ jQuery('input[name=host_check_interval]').change(function(){
     }
 });
 
+jQuery(function() {
+doajax = true;
+if(doajax)
+jQuery('select[name^=tpSelect], select[name=command_command_id]' ).on('change',function(){
+    jQuery.ajax({
+        url: "./include/configuration/configObject/host/refreshMacroAjax.php",
+        type: "POST",
+        dataType : "json",
+        data: this.form.serialize(),
+        success : function(json){
+            if(typeof sheepIt != "undefined"){
+                sheepIt.removeAllForms();
+            }
+            jQuery('#macro_add').unbind();
+            jQuery('.cloneremove').unbind();
+            sheepIt = jQuery("#macro").sheepIt({
+                separator: '',
+                allowRemoveLast: true,
+                allowRemoveCurrent: true,
+                allowRemoveAll: true,
+                minFormsCount: 0,
+                maxFormsCount: 200,
+                continuousIndex : false,
+                iniFormsCount: json.count,
+                data: json.macros
+            });
+            jQuery(".macroclone").sortable(
+                {
+                   handle: ".clonehandle",
+                   axis: "y",
+                   helper: "clone",
+                   opacity: 0.5,
+                   placeholder: "clone-placeholder",
+                   tolerance: "pointer"
+                }
+            );
+
+            jQuery(".onemacro").each(function(idx,elem){
+                var from = jQuery(elem).find('input[name^=macroFrom]').val();
+                if(from === "direct"){
+                    jQuery(elem).find("input[name^='macroInput']").css("background","red");
+                    jQuery(elem).find("input[name^='macroValue']").css("background","red");
+                }else if(from === "fromTpl"){
+                    jQuery(elem).find("input[name^='macroInput']").css("background","blue");
+                    jQuery(elem).find("input[name^='macroValue']").css("background","blue");
+                }else {
+                    jQuery(elem).find("input[name^='macroInput']").css("background","green");
+                    jQuery(elem).find("input[name^='macroValue']").css("background","green");
+                }
+            });
+        }
+    });
+});
+
+
+sheepIt = jQuery("#macro").sheepIt({
+    separator: '',
+    allowRemoveLast: true,
+    allowRemoveCurrent: true,
+    allowRemoveAll: true,
+    minFormsCount: 0,
+    maxFormsCount: 200,
+    continuousIndex : false,
+    iniFormsCount: jQuery("#clone-count-macro").data("clone-count-macro"),
+    data: jQuery("#clone-values-macro").data("clone-values-macro")
+});
+jQuery(".onemacro").each(function(idx,elem){
+    var from = jQuery(elem).find('input[name^=macroFrom]').val();
+    if(from === "direct"){
+        jQuery(elem).find("input[name^='macroInput']").css("background","red");
+        jQuery(elem).find("input[name^='macroValue']").css("background","red");
+    }else if(from === "fromTpl"){
+        jQuery(elem).find("input[name^='macroInput']").css("background","blue");
+        jQuery(elem).find("input[name^='macroValue']").css("background","blue");
+    }else {
+        jQuery(elem).find("input[name^='macroInput']").css("background","green");
+        jQuery(elem).find("input[name^='macroValue']").css("background","green");
+    }
+});
+
+
+});
 {/literal}
 </script>
