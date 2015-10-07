@@ -3,6 +3,16 @@
 <script language='javascript' src='./include/views/graphs/javascript/cropper/cropper.uncompressed.js'></script>
 <div id="div1">
 	<form {$form.attributes}>
+        <table class="ajaxOption table">
+            <tr>
+                <td><h4>{$form.search.label}</h4></td>
+                <td><h4>{$form.search_service.label}</h4></td>
+            </tr>
+            <tr>
+                <td>{$form.search.html}</td>
+                <td>{$form.search_service.html}</td>
+            </tr>
+        </table>
 		<table class="ajaxOption">
 	        <tr>
 	        	<td style='white-space:nowrap;'>
