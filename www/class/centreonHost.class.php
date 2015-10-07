@@ -611,8 +611,8 @@ class CentreonHost
                 $arr[$i]['macroInput_#index#'] = $val;
                 $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
                 $arr[$i]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;
-                $arr[$i]['macroDescription_#index#'] = $row['description'];
-                $arr[$i]['macroDescription'] = $row['description'];
+                $arr[$i]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
+                $arr[$i]['macroDescription'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
                 $i++;
             }
         }
@@ -1017,7 +1017,11 @@ class CentreonHost
         }else{
             $inputIndexArray = array();
             foreach($macrosArrayToCompare as $tocompare){
-                $inputIndexArray[] = $tocompare['macroInput_#index#'];
+                if (isset($tocompare['macroInput_#index#'])) {
+                    $inputIndexArray[] = $tocompare['macroInput_#index#'];
+                } else {
+                    $inputIndexArray[] = "";
+                }
             }
             foreach($macroArray as $key=>$macro){
                 if($form['macroFrom'][$key] == $fromKey){
