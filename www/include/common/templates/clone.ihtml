@@ -1,6 +1,6 @@
 <div id="{$cloneId}_controls">
     <div id="{$cloneId}_add">
-        <span style="cursor:pointer;">
+        <p style="cursor:pointer; color: #4ccaff;">
             {assign var=isFrozen value=0}
             {foreach from=$cloneSet item=v}
                 {if $v->isFrozen()}
@@ -8,28 +8,29 @@
                 {/if}
             {/foreach}
             {if $isFrozen == 0}
-                {t}Add a new entry{/t} <img src="./img/icones/16x16/navigate_plus.gif">
+                {t} + Add a new entry{/t}
             {/if}
-        </span>
+        </p>
     </div>
 </div>
+
 <ul id="{$cloneId}" class="clonable no-deco-list">
     <li class="clone_template" id="{$cloneId}_template">
         <hr style='margin:2;'/>
         <div class="clone-cell">
             {foreach from=$cloneSet item=v}
 		{if $v->isFrozen()}
-	   		<span style="padding-right: 10px;">{$v->getLabel()} : {$v->unfreeze()}{$v->setAttribute('disabled', 'disabled')}{$v->toHtml()}   </span>
+	   		{$v->getLabel()} : {$v->unfreeze()}{$v->setAttribute('disabled', 'disabled')}{$v->toHtml()}
 		{else}
-                    <span style="padding-right: 10px;">{$v->getLabel()} : {$v->toHtml()}</span>
+                   {$v->getLabel()}  {$v->toHtml()}
 		{/if}
             {/foreach}
         {if $isFrozen == 0}
-            <span class="clonehandle">
-                <img src="./img/icones/16x16/move.png">
+            <span>
+                <img src="./img/icons/move.png" class="ico-16">
             </span>
-            <a id="{$cloneId}_remove_current" class="cloneremove" style='padding-right:5px;'>
-                <img src="./img/icones/16x16/delete.gif">
+            <a id="{$cloneId}_remove_current" style='padding-right:5px;'>
+                <img src="./img/icons/circle-cross.png" class="ico-16">
             </a>
         {/if}
         </div>

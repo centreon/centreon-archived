@@ -1,6 +1,6 @@
 <div id="{$cloneId}_controls">
     <div id="{$cloneId}_add">
-        <span style="cursor:pointer;">
+        <p style="cursor:pointer; color: #4ccaff;">
             {assign var=isFrozen value=0}
             {foreach from=$cloneSet item=v}
                 {if $v->isFrozen()}
@@ -8,9 +8,9 @@
                 {/if}
             {/foreach}
             {if $isFrozen == 0}
-                {t}Add a new entry{/t} <img src="./img/icones/16x16/navigate_plus.gif">
+                {t} + Add a new entry{/t}
             {/if}
-        </span>
+        </p>
     </div>
 </div>
 
@@ -24,7 +24,7 @@
 		{else}
                     <span style="padding-right: 10px;"> {if $v->getLabel() != ""}  {$v->getLabel()} : {/if}  {$v->toHtml()}</span>
 		{/if}
-                
+
             {/foreach}
             <img src="./img/icones/16x16/text_view.gif" onclick='javascript:loadDescription(#index#)' />
             <input type='hidden' id='macroDescription_#index#' name='macroDescription_#index#' value="" />
