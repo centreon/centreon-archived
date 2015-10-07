@@ -194,7 +194,7 @@ if (!isset($selectedPoller)) {
     unset($tmpKeys);
 }
 
-$form->addElement('select', 'pollers', _("Poller :"), $pollerList, array("onChange" => "this.form.submit();"));
+$form->addElement('select', 'pollers', _("Poller"), $pollerList, array("onChange" => "this.form.submit();"));
 $form->setDefaults(array('pollers' => $selectedPoller));
 $pollerName = $pollerList[$selectedPoller];
 

@@ -33,9 +33,6 @@
  *
  */
 
-
-ini_set('display_errors', 'Off');
-
 $etc = "/etc/centreon";
 
 clearstatcache(true, "$etc/centreon.conf.php");

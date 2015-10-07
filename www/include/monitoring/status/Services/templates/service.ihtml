@@ -8,33 +8,38 @@
     </tr>
 	<tr>
 		<td><h4>{$hostStr}</h4></td>
-		<td>
+		<td><h4>{$hgStr}</h4></td>
+        <td><h4>{$serviceStr}</h4></td>
+    </tr>
+    <tr>
+        <td>
 		    <input type='text' name='host_search' id='host_search'>
 		</td>
-
-		<td><h4>{$hgStr}</h4></td>
         <td id="hostgroups_selected"></td>
-
-        <td><h4>{$serviceStr}</h4></td>
-		<td>
+        <td>
 		    <input type='text' name='search' id='input_search'>
 		</td>
     </tr>
     <tr>
 		<td><h4>{$form.statusFilter.label}</h4></td>
-		<td>{$form.statusFilter.html}</td>
         {if $criticalityUsed}
             <td><h4>{$form.criticality.label}</h4></td>
-            <td>{$form.criticality.html}</td>
         {/if}
-
         <td><h4>{$outputStr}</h4></td>
-		<td><input type='text' name='output_search' id='output_search'></td>	    
             {if $poller_listing}
                 <td><h4>{$pollerStr}</h4></td>
-                <td><span id="instance_selected"></span></td>
             {/if}
 	</tr>
+    <tr>
+      <td>{$form.statusFilter.html}</td>
+      {if $criticalityUsed}
+      <td>{$form.criticality.html}</td>
+      {/if}
+      <td><input type='text' name='output_search' id='output_search'></td>
+      {if $poller_listing}
+      <td><span id="instance_selected"></span></td>
+      {/if}
+    </tr>
 </table>
 
 <table class="ToolbarTable table">
