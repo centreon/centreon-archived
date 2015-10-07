@@ -63,7 +63,7 @@
 		{/foreach}
 	</table>
 	<table class="ToolbarTable table">
-		<tr>
+		<tr class="ToolbarTR">
 			<td>
 				{$msg.options} {$form.o2.html}
 				&nbsp;&nbsp;&nbsp;
