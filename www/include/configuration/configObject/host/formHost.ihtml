@@ -242,7 +242,9 @@
 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title3}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/import2.gif'>&nbsp;&nbsp;{$form.header.treatment}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="obsess_over_host"> {$form.host_obsess_over_host.label}</td><td class="FormRowValue">{$form.host_obsess_over_host.html}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code_java2.gif'>&nbsp;&nbsp;{$Freshness_Control_options}</td></tr>
+	<tr class="list_lvl_1">
+		<td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code_java2.gif'>&nbsp;&nbsp;{$Freshness_Control_options}</td>
+	</tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="check_freshness"> {$form.host_check_freshness.label}</td><td class="FormRowValue">{$form.host_check_freshness.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name=freshness_threshold""> {$form.host_freshness_threshold.label}</td><td class="FormRowValue">{$form.host_freshness_threshold.html}&nbsp;{$seconds}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$Flapping_Options}</td></tr>
