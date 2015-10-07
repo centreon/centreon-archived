@@ -253,7 +253,7 @@ $form->addRule('hg_name', _("Compulsory Name"), 'required');
 $form->addRule('hg_alias', _("Compulsory Alias"), 'required');
 
 if (!$oreon->user->admin) {
-    $form->addRule('hg_hosts', _('Compulsory hosts (due to ACL restrictions that could prevent you from seeing this host group)'), 'required');
+    //$form->addRule('hg_hosts', _('Compulsory hosts (due to ACL restrictions that could prevent you from seeing this host group)'), 'required');
 }
 
 $form->registerRule('exist', 'callback', 'testHostGroupExistence');
