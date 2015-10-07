@@ -140,6 +140,8 @@ class CentreonCommand
             return array();
         }
         
+        $aDescription = $this->getMacroDescription($iIdCommand);
+
         $sql = "SELECT command_id, command_name, command_line
             FROM command
             WHERE command_type = 2
@@ -158,11 +160,13 @@ class CentreonCommand
                 
                 foreach ($matches as $match) {
                     if(!in_array($match[1], $macroToFilter)){
-                        $arr[$i]['macroInput_#index#'] = $match[1];
+                        $sName = $match[1];
+                        $sDesc = isset($aDescription[$sName]['description']) ? $aDescription[$sName]['description'] : "";
+                        $arr[$i]['macroInput_#index#'] = $sName;
                         $arr[$i]['macroValue_#index#'] = "";
                         $arr[$i]['macroPassword_#index#'] = NULL;
-                        $arr[$i]['macroDescription_#index#'] = "";
-                        $arr[$i]['macroDescription'] = "";
+                        $arr[$i]['macroDescription_#index#'] = $sDesc;
+                        $arr[$i]['macroDescription'] = $sDesc;
                         $i++;
                     }
                 }
@@ -175,5 +179,28 @@ class CentreonCommand
 
         return $arr;
         
+    }
+    /**
+     * 
+     * @param type $iIdCmd
+
+     * @return string
+     */
+    public function getMacroDescription($iIdCmd)
+    { 
+        $aReturn = array();
+        $sSql = "SELECT * FROM `on_demand_macro_command` WHERE `command_command_id` = ".intval($iIdCmd);
+        
+        $DBRESULT = $this->_db->query($sSql);
+        while ($row = $DBRESULT->fetchRow()){ 
+            $arr['id']   = $row['command_macro_id'];
+            $arr['name'] = $row['command_macro_name'];
+            $arr['description'] = $row['command_macro_desciption'];
+            $arr['type']        = $row['command_macro_type'];
+            $aReturn[$row['command_macro_name']] = $arr;
+        }
+        $DBRESULT->free();
+        
+        return $aReturn;
     }
 }
