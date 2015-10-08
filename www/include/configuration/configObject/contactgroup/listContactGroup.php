@@ -41,16 +41,12 @@
 
 	include_once "./include/common/autoNumLimit.php";
 
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once "./include/common/quickSearch.php";
-
 	$SearchSTR = "";
 
         $clauses = array();
-        if (isset($search) && $search) {
+        $search = '';
+        if (isset($_POST['searchCG']) && $_POST['searchCG']) {
+            $search = $_POST['searchCG'];
             $clauses = array('cg_name'  => array('LIKE', '%'.$search.'%'),
                              'cg_alias' => array('OR', 'LIKE', '%'.$search.'%'));
         }
@@ -181,5 +177,6 @@
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchCG', $search);
 	$tpl->display("listContactGroup.ihtml");
 ?>
