@@ -38,12 +38,6 @@
 	}
 	
 	include_once "./include/common/autoNumLimit.php";
-
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once "./include/common/quickSearch.php";
 	
 	if ($type) {
 		$type_str = " `command_type` = $type";
@@ -51,7 +45,9 @@
 		$type_str = "";
 	}
 	
-	if (isset($search) && $search){
+    $search = '';
+	if (isset($_POST['searchC']) && $_POST['searchC']){
+        $search = $_POST['searchC'];
 		$search = str_replace('#S#', "/", $search);
 		$search = str_replace('#BS#', "\\", $search);		
 
@@ -263,6 +259,7 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('limit', $limit);
 	$tpl->assign('type', $type);
+    $tpl->assign('searchC', $search);
 	
 	$tpl->display("listCommand.ihtml");
 ?>
