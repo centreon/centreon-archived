@@ -1950,6 +1950,7 @@ function str2db($string) {
                         if(isset($aFinalMacro[$j]['source']) 
                         && $aFinalMacro[$j]['source'] == 'direct' 
                         && !isset($aFinalMacro[$j]['tplValue']) && $aTempMacro[$i]['source'] == "fromTpl"){    
+                            //store the template value when it is overloaded with direct macro
                             $aFinalMacro[$j]['tplValue'] = $aTempMacro[$i]['macroValue_#index#'];
                         }
                         $existe = $j;
