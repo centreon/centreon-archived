@@ -147,6 +147,47 @@ p.description a, p.description a:visited {
     background-color: #f1f1f1 !important;
 }
 
+/* -------- Tooltip ------- */
+#WzTtDiV {
+    overflow: visible !important;
+    border: 1px solid #d1d2d4;
+    border-radius: 4px;
+    background: #fff;
+}
+#WzTiTl {
+    background: #fff !important;
+}
+
+#WzClOsE {
+    padding: 1px 0px !important;
+    cursor: pointer !important;
+    color: #e00b3d !important;
+    font-size: 8px !important;
+    background: #fff !important;
+    border: 2px solid #e00b3d !important;
+    border-radius: 20px !important;
+    margin: 0px -15px 0px 0px;
+    display: inline-block;
+    top: -1.2em;
+}
+#WzTiTlI,#WzTtShDwR,#WzTtShDwB {
+    display: none;
+}
+
+#WzBoDy {
+    position: relative !important;
+    z-index: 1 !important;
+    border: none !important;
+    padding: 0px 6px !important;
+    background: none !important;
+    top: -1em !important;
+}
+#WzBoDyI {
+    color: #555 !important;
+    text-align: left !important;
+    line-height: 16px !important;
+}
+
 /* ------ START : Colors -----*/
 .red {
     color: #e00b3d;
