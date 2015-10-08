@@ -49,12 +49,12 @@
         }
         
 	$rq = "SELECT COUNT(*) FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+	$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
                         FROM dependency_servicegroupParent_relation dsgpr 
                         WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
                  OR    (SELECT DISTINCT COUNT(*) 
                         FROM dependency_servicegroupChild_relation dsgpr 
-                        WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0";
+                        WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
 	
 	/*
 	 * Search case
@@ -93,12 +93,12 @@
 	 * Dependcy list
 	 */
 	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+	$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
                         FROM dependency_servicegroupParent_relation dsgpr 
                         WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
                  OR    (SELECT DISTINCT COUNT(*) 
                         FROM dependency_servicegroupChild_relation dsgpr 
-                        WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0";
+                        WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
 	
 	/*
 	 * Search Case
