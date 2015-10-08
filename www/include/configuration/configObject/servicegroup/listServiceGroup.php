@@ -41,13 +41,9 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
-
-	if (isset($search)){
+    $search = '';
+	if (isset($_POST['searchSG']) && $_POST['searchSG']){
+        $search = $_POST['searchSG'];
 		$DBRESULT = $pearDB->query("SELECT COUNT(*)
                                     FROM servicegroup
                                     WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')".
@@ -169,6 +165,7 @@
 	$o2->setValue(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchSG', $search);
 
 	/*
 	 * Apply a template definition

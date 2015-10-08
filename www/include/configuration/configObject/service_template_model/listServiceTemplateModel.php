@@ -46,14 +46,11 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	/*
-	 * start quickSearch form
-	 */
 	$o = "";
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
 
-	if (isset($search)) {
+    $search = '';
+	if (isset($_POST['searchST']) && $_POST['searchST']) {
+        $search = $_POST['searchST'];
 		$search = str_replace('/', "#S#", $search);
 		$search = str_replace('\\', "#BS#", $search);
 		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM service sv WHERE (sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') AND sv.service_register = '0'");
@@ -284,6 +281,7 @@
 	$o2->setSelected(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchST', $search);
 
 	/*
 	 * Apply a template definition

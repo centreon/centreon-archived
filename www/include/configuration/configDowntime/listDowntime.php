@@ -42,13 +42,10 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
-
 	/* Search clause */
-	if (isset($search) && $search) {
+    $search = '';
+	if (isset($_POST['searchDT']) && $_POST['searchDT']) {
+        $search = $_POST['searchDT'];
 		$downtime->setSearch($search);
 	}
 
@@ -161,6 +158,7 @@
 	$o2->setSelected(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchDT', $search);
 
 	/*
 	 * Apply a template definition

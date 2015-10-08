@@ -618,6 +618,7 @@ class CentreonService
         $aTempMacro = array();
         if (count($macroArray) > 0) {
             foreach($macroArray as $directMacro){
+                $directMacro['macroOldValue_#index#'] = $directMacro["macroValue_#index#"];
                 $directMacro['macroFrom_#index#'] = 'direct';
                 $directMacro['source'] = 'direct';
                 $aTempMacro[] = $directMacro;
@@ -628,6 +629,7 @@ class CentreonService
         if (count($aMacroTemplate) > 0) {  
             foreach ($aMacroTemplate as $key => $macr) {
                 foreach ($macr as $mm) {
+                    $mm['macroOldValue_#index#'] = $mm["macroValue_#index#"];
                     $mm['macroFrom_#index#'] = 'fromTpl';
                     $mm['source'] = 'fromTpl';
                     $aTempMacro[$iNb++] = $mm;
@@ -637,6 +639,7 @@ class CentreonService
         $serv = current($aMacroInService);
         if (count($aMacroInService) > 0) {
             for ($i = 0; $i < count($serv); $i++) {
+                $serv[$i]['macroOldValue_#index#'] = $serv[$i]["macroValue_#index#"];
                 $serv[$i]['macroFrom_#index#'] = 'fromService';
                 $serv[$i]['source'] = 'fromService';
                 $aTempMacro[$iNb++] = $serv[$i];

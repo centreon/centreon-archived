@@ -41,12 +41,10 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
 
-	if (isset($search) && $search != "") {
+    $search = '';
+	if (isset($_POST['searchMS']) && $_POST['searchMS'] != "") {
+        $search = $_POST['searchMS'];
 		$DBRESULT = $pearDB->query("SELECT COUNT(*)
                                     FROM meta_service
                                     WHERE meta_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ".
@@ -191,6 +189,7 @@
 	$o2->setSelected(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchMS', $search);
 
 	/*
 	 * Apply a template definition

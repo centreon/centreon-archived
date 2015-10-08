@@ -24,11 +24,6 @@
 	{/php}
 	</tr>
 </table>
-<table class="ListTable">
-	<tr class='ListHeader'>
-	<td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;&nbsp;{$cmt_host_comment}</td>		
-</tr>
-</table>
 <br />	
 {if $nb_comments_host}
 <table class="ListTable">	
