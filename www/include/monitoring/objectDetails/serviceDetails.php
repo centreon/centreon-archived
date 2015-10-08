@@ -96,7 +96,7 @@ if (!is_null($host_id)) {
 
         // Get Hostgroup List
         $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."' " .
-                                   $oreon->user->access->queryBuilder("AND", "host_host_id", $oreon->user->access->getHostsString("ID", $pearDBO));
+                                   $oreon->user->access->queryBuilder("AND", "host_host_id", $oreon->user->access->getHostsString("ID", $pearDBO)));
         for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
             $hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
         }
@@ -207,7 +207,7 @@ if (!is_null($host_id)) {
 
         $rq2 =	"SELECT state AS current_state FROM hosts WHERE name LIKE '".$pearDBO->escape($host_name)."'";
         $DBRESULT = $pearDBO->query($rq2);
-        
+
         $ndo2 = $DBRESULT->fetchRow();
         $host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
 

@@ -42,12 +42,6 @@
 	include("./include/common/autoNumLimit.php");
 
 	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
-
-	/*
 	 * Create Timeperiod Cache
 	 */
 	$tpCache = array("" => "");
@@ -58,7 +52,9 @@
 	$DBRESULT->free();
 
     $clauses = array();
-    if (isset($search) && $search) {
+    $search = '';
+    if (isset($_POST['searchC']) && $_POST['searchC']) {
+        $search = $_POST['searchC'];
         $clauses = array('contact_name'  => array('LIKE', '%'.$search.'%'),
                          'contact_alias' => array('OR', 'LIKE', '%'.$search.'%'));
     }
@@ -228,6 +224,7 @@
 	$o2->setSelected(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchC', $search);
 
 	/*
 	 * Apply a template definition
