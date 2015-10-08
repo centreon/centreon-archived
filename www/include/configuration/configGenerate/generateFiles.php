@@ -59,7 +59,7 @@
 	
 	switch ($o)	{
 		default : 
-			require_once($path."formGenerateFiles.php"); 
+			require_once($path . "formGenerateFiles.php"); 
 			break;
 	}
 ?>
