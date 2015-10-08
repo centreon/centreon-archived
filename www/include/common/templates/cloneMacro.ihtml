@@ -30,7 +30,6 @@
             <button type="button" class="ResetMacroButton" >Reset</button>
             <input type='hidden' id='macroDescription_#index#' name='macroDescription_#index#' value="" />
             <input type='hidden' id='macroTpl_#index#' name='macroTpl_#index#' value="" />
-            <input type='hidden' id='macroDescription_#index#' name='macroDescription_#index#' value="" />
             <input type='hidden' id='macroOldValue_#index#' name='macroOldValue_#index#' value="" />
         {if $isFrozen == 0}
             <span class="clonehandle">

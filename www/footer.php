@@ -50,7 +50,7 @@ if (!$min) {
 			<table cellpadding='0' cellspacing='0' width='100%' border='0'>
 				<tr>
 					<td align='center' class='copyRight'>
-                        <div style="float: right;" onclick="myToggleAll(0,true);saveFullScreenSetting();" > FullScreen</div>
+                        <div style="float: right;" onclick="myToggleAll(0,true);" > FullScreen</div>
                         <a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
                         <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a> | 
                         Copyright &copy; 2005-2015 <a href="http://www.centreon.com">Centreon</a><br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
@@ -62,6 +62,33 @@ if (!$min) {
 		</div>
         
 	</div>
+<style>
+html, body {
+margin: 0;
+width: 100%;
+height: 100%;
+}
+ 
+
+/* While in fullscreen, hide any children with class 'tohide' */
+:-webkit-full-screen .tohide {
+  display: none;
+}
+:-moz-full-screen .tohide {
+  display: none;
+}
+:-ms-fullscreen .tohide {
+  display: none;
+}
+:fullscreen .tohide {
+  display: none;
+}
+    
+.tohide{
+    display: none;    
+}
+    
+</style>
 <?php
 }
 ?>
@@ -70,8 +97,13 @@ if (!$min) {
         if(toggle){
             //var i = document.getElementsByTagName("html")[0];
             var i = document.documentElement;
-            if(jQuery("#footer").css('display') == 'none'){
-                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3,#header").show({duration : duration});
+            if (
+                document.fullscreenElement ||
+                document.webkitFullscreenElement ||
+                document.mozFullScreenElement ||
+                document.msFullscreenElement
+            ){
+                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 } else if (document.msExitFullscreen) {
@@ -82,7 +114,7 @@ if (!$min) {
                    document.webkitExitFullscreen();
                 }
             }else{
-                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3,#header").hide({duration : duration});
+                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").addClass('tohide');
                 // go full-screen
                 if (i.requestFullscreen) {
                     i.requestFullscreen();
@@ -117,11 +149,12 @@ if (!$min) {
     
     function exitHandler(){
         
-        var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
+        var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement;
         var event = state ? 'FullscreenOn' : 'FullscreenOff';
+        console.log(state);
         if (event === 'FullscreenOff')
         {
-            jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu, #menu_2, #menu_3,#header").show({duration : 0});
+            jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
         }
         
 
@@ -131,7 +164,7 @@ if (!$min) {
     
     
     
-    
+    /*
     function saveFullScreenSetting(){
         var d = new Date();
         var n = d.getTime();
@@ -141,7 +174,7 @@ if (!$min) {
            data: { timestamp: n }
         });
     }
-    
+    */
 
 </script>
 

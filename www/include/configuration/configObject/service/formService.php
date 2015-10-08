@@ -555,12 +555,7 @@ $cloneSetMacro[] = $form->addElement(
     )
 );
 
-$cloneSetMacro[] = $form->addElement(
-    'button',
-    'reset[#index#]',
-    _('Reset'),
-    array('id' => 'resetMacro_#index#')
-);
+
 $cloneSetMacro[] = $form->addElement(
     'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
 );

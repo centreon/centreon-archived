@@ -251,7 +251,11 @@ jQuery('input[name=service_normal_check_interval]').change(function(){
 });
 
 jQuery(function() {
-    jQuery('select[name=service_template_model_stm_id], select[name=command_command_id]' ).on('change',function(){
+    jQuery('select[name=service_template_model_stm_id], select[name=command_command_id]' ).on('change',function(event,data){
+        if(typeof data != "undefined" && typeof data.origin !=undefined 
+            && data.origin == "select2defaultinit"){
+            return false;
+        }
         jQuery.ajax({
             url: "./include/configuration/configObject/service/refreshMacroAjax.php",
             type: "POST",
