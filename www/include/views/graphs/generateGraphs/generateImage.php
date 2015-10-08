@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
@@ -108,13 +105,8 @@ $contactId = $row['contact_id'];
 
 if (!$isAdmin) {
     $acl = new CentreonACL($contactId, $isAdmin);
-    $brokerObj = new CentreonBroker($pearDB);
-    if ($brokerObj->getBroker() == 'broker') {
-        $dbmon = new CentreonDB('centstorage');
-    } else {
-        $dbmon = new CentreonDB('ndo');
-    }
     $dbstorage = new CentreonDB('centstorage');
+
     $aclGroups = $acl->getAccessGroupsString();
     $sql = "SELECT host_id, service_id FROM index_data WHERE id = " .$pearDB->escape($index);
     $res = $dbstorage->query($sql);
@@ -125,12 +117,8 @@ if (!$isAdmin) {
     unset($res);
     $hostId = $row['host_id'];
     $serviceId = $row['service_id'];
-    $sql = "SELECT service_id 
-            FROM centreon_acl 
-            WHERE host_id = $hostId
-            AND service_id = $serviceId
-            AND group_id IN ($aclGroups)";
-    $res = $dbmon->query($sql);
+    $sql = "SELECT service_id FROM centreon_acl WHERE host_id = $hostId AND service_id = $serviceId AND group_id IN ($aclGroups)";
+    $res = $dbcentstorage->query($sql);
     if (!$res->numRows()) {
         die('Access denied');
     }
@@ -193,7 +181,6 @@ $obj->createLegend();
  * Display Images Binary Data
  */
 $obj->displayImageFlow();
-
 
 /**
  * Closing session

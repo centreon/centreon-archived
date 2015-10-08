@@ -51,6 +51,22 @@ $hostObj = new CentreonHost($pearDB);
 $GroupListofUser = array();
 $GroupListofUser = $centreon->user->access->getAccessGroups();
 
+/*
+ * Init Table status
+ */
+$tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
+$tab_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
+$tab_host_statusid = array("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2);
+
+$en_acknowledge_text    = array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Host Problem"));
+$en_acknowledge         = array("1" => "0", "0" => "1");
+$en_inv                 = array("1" => "1", "0" => "0");
+$en_inv_text            = array("1" => _("Disable"), "0" => _("Enable"));
+$color_onoff            = array("1" => "#00ff00", "0" => "#ff0000");
+$color_onoff_inv        = array("0" => "#00ff00", "1" => "#ff0000");
+$en_disable             = array("1" => _("Enabled"), "0" => _("Disabled"));
+$img_en                 = array("0" => "'./img/icones/16x16/element_next.gif'", "1" => "'./img/icones/16x16/element_previous.gif'");
+
 $allActions = false;
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = array();
@@ -81,17 +97,33 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
     include_once("alt_error.php");
 } else {
 
+    $path = "./include/monitoring/objectDetails/";
+
+    $en = array("0" => _("No"), "1" => _("Yes"));
+
+    /*
+     * Smarty template Init
+     */
+    $tpl = new Smarty();
+    $tpl = initSmartyTpl($path, $tpl, "./template/");
+
+    // Get GMT
+    $centreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
+
     /*
      * Host Group List
      */
     $host_id = getMyHostID($host_name);
     if (!is_null($host_id)) {
+        
+        // Get HG relations 
         $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
         for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
             $hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
         }
         $DBRESULT->free();
          
+        // Get service categories
         $DBRESULT = $pearDB->query("SELECT DISTINCT hc.* FROM hostcategories hc INNER JOIN hostcategories_relation hcr on hc.hc_id = hcr.hostcategories_hc_id AND hcr.host_host_id = '".$host_id."' ");
         while ($hc = $DBRESULT->fetchRow()) {
             $hostCategorie[] = $hc['hc_name'];
@@ -109,14 +141,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
 
         /*
-         * Init Table status
-         */
-        $tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
-        $tab_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
-        $tab_host_statusid = array("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2);
-
-        /*
-         * start ndo svc info
+         * Get services informations on the current Host
          */    
         $rq = "SELECT s.state AS current_state," .
             " s.output as plugin_output," .
@@ -150,9 +175,9 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $DBRESULT->free();
 
         /*
-         * start ndo host detail
+         * Get host informations
          */
-    $rq2 = "SELECT state AS current_state," .
+        $rq2 = "SELECT state AS current_state, h.name, alias, h.address, " .
             " acknowledged AS problem_has_been_acknowledged, " .
             " passive_checks AS passive_checks_enabled," .
             " active_checks AS active_checks_enabled," .
@@ -161,6 +186,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             " latency as check_latency," .
             " perfdata as performance_data," .
             " check_attempt as current_attempt," .
+            " max_check_attempts, ".
             " state_type," .
             " check_type," .
             " last_notification," .
@@ -208,24 +234,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             $host_status[$host_name]["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);
         }
 
-        /*
-         * Get Centreon Data
-         */
-        $res = $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
-        $hostDB = $res->fetchRow();
-        $current_attempts = getMyHostField($hostDB["host_id"], "host_max_check_attempts");
-
         $url_id = NULL;
-
-        $path = "./include/monitoring/objectDetails/";
-
-        $en = array("0" => _("No"), "1" => _("Yes"));
-
-        /*
-         * Smarty template Init
-         */
-        $tpl = new Smarty();
-        $tpl = initSmartyTpl($path, $tpl, "./template/");
 
         /*
          * Get comments for hosts
@@ -247,16 +256,6 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $DBRESULT->free();
         unset($data);
         
-        $en_acknowledge_text 	= array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Host Problem"));
-        $en_acknowledge 		= array("1" => "0", "0" => "1");
-        $en_inv 				= array("1" => "1", "0" => "0");
-        $en_inv_text 			= array("1" => _("Disable"), "0" => _("Enable"));
-        $color_onoff 			= array("1" => "#00ff00", "0" => "#ff0000");
-        $color_onoff_inv 		= array("0" => "#00ff00", "1" => "#ff0000");
-        $en_disable 			= array("1" => _("Enabled"), "0" => _("Disabled"));
-        $img_en 				= array("0" => "'./img/icones/16x16/element_next.gif'", "1" => "'./img/icones/16x16/element_previous.gif'");
-
-        $oreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
         $host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])];
         $host_status[$host_name]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"]);
         $host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"]) : "";
@@ -394,7 +393,6 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("p", $p);
         $tpl->assign("en", $en);
         $tpl->assign("en_inv", $en_inv);
-        $tpl->assign("current_attempts", $current_attempts);
         $tpl->assign("en_inv_text", $en_inv_text);
         $tpl->assign("img_en", $img_en);
         $tpl->assign("color_onoff", $color_onoff);
@@ -405,7 +403,6 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("en_acknowledge", $en_acknowledge);
         $tpl->assign("admin", $is_admin);
         $tpl->assign("lcaTopo", $oreon->user->access->topology);
-        $tpl->assign("h", $hostDB);
         $tpl->assign("url_id", $url_id);
         $tpl->assign("m_mon_ticket", "Open Ticket");
 

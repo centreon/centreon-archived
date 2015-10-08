@@ -792,6 +792,7 @@ class CentreonHost
         $aTempMacro = array();
         if (count($macroArray) > 0) {
             foreach($macroArray as $directMacro){
+                $directMacro['macroOldValue_#index#'] = $directMacro["macroValue_#index#"];
                 $directMacro['macroFrom_#index#'] = 'direct';
                 $directMacro['source'] = 'direct';
                 $aTempMacro[] = $directMacro;
@@ -803,6 +804,7 @@ class CentreonHost
         if (count($aMacroTemplate) > 0) {  
             foreach ($aMacroTemplate as $key => $macr) {
                 foreach ($macr as $mm) {
+                    $mm['macroOldValue_#index#'] = $mm["macroValue_#index#"];
                     $mm['macroFrom_#index#'] = 'fromTpl';
                     $mm['source'] = 'fromTpl';
                     $aTempMacro[$iNb++] = $mm;
@@ -814,6 +816,7 @@ class CentreonHost
         if (count($aMacroInCommande) > 0) {
             $macroCommande = current($aMacroInCommande);
             for ($i = 0; $i < count($macroCommande); $i++) {
+                $macroCommande[$i]['macroOldValue_#index#'] = $macroCommande[$i]["macroValue_#index#"];
                 $macroCommande[$i]['macroFrom_#index#'] = 'fromCommand';
                 $macroCommande[$i]['source'] = 'fromCommand';
                 $aTempMacro[$iNb++] = $macroCommande[$i];
@@ -943,6 +946,7 @@ class CentreonHost
         $aTempMacro = array();
         if (count($macroArray) > 0) {
             foreach($macroArray as $key=>$directMacro){
+                $directMacro['macroOldValue_#index#'] = $directMacro["macroValue_#index#"];
                 $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key - $indexToSub];
                 $directMacro['source'] = 'direct';
                 $aTempMacro[] = $directMacro;
@@ -954,6 +958,7 @@ class CentreonHost
         if (count($aMacroTemplate) > 0) {  
             foreach ($aMacroTemplate as $key => $macr) {
                 //foreach ($macr as $mm) {
+                    $macr['macroOldValue_#index#'] = $macr["macroValue_#index#"];
                     $macr['macroFrom_#index#'] = 'fromTpl';
                     $macr['source'] = 'fromTpl';
                     $aTempMacro[$iNb++] = $macr;
@@ -967,6 +972,7 @@ class CentreonHost
         if (count($aMacroInCommande) > 0) {
             $macroCommande = current($aMacroInCommande);
             for ($i = 0; $i < count($macroCommande); $i++) {
+                $macroCommande[$i]['macroOldValue_#index#'] = $macroCommande[$i]["macroValue_#index#"];
                 $macroCommande[$i]['macroFrom_#index#'] = 'fromCommand';
                 $macroCommande[$i]['source'] = 'fromCommand';
                 $aTempMacro[$iNb++] = $macroCommande[$i];
