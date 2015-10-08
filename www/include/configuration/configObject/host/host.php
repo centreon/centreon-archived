@@ -102,6 +102,7 @@ switch ($o)	{
  case "mu" 	: disableHostInDB(NULL, isset($select) ? $select : array()); require_once($path."listHost.php"); break;
  case "m" 	: multipleHostInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listHost.php"); break; #Duplicate n hosts
  case "d" 	: deleteHostInDB(isset($select) ? $select : array()); require_once($path."listHost.php"); break; #Delete n hosts
+ case "dp" 	: applytpl(isset($select) ? $select : array()); require_once($path."listHost.php"); break; #Deploy service n hosts
  default 	: require_once($path."listHost.php"); break;
 }
 
