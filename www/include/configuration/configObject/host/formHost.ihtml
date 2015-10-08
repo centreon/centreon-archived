@@ -22,13 +22,9 @@
      <div id='tab1' class='tab'>
         <table class="formTable table">
 	        <tr class="ListHeader">
-	            <td class="FormHeader">
+	            <td class="FormHeader" colspan="2">
 	                <h3>| {$form.header.title}</h3>
 	            </td>
-	             <td style="text-align:right;">
-	                <a href="./main.php?p={$p}&min=1&doc=1&page=configobject.html" target="_blank"  style='cursor:help' alt='{$topdoc}'>
-	                <img src="./img/icones/16x16/text_code.gif" title="{$topdoc}"></a>
-	             </td>
 	        </tr>
 
  	        <tr class="list_lvl_1">
