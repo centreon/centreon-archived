@@ -49,12 +49,12 @@
         }
         
 	$rq = "SELECT COUNT(*) FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+	$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
                         FROM dependency_hostgroupParent_relation dhgpr 
                         WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
                  OR    (SELECT DISTINCT COUNT(*) 
                         FROM dependency_hostgroupChild_relation dhgpr 
-                        WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0";
+                        WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
 
     $search = '';
 	if (isset($_POST['searchHGD']) && $_POST['searchHGD']) {

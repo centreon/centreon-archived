@@ -52,12 +52,12 @@
         }
         
 	$rq = "SELECT COUNT(*) FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+	$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
                         FROM dependency_hostParent_relation dhpr $aclFrom
 						WHERE dhpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
 			OR (SELECT DISTINCT COUNT(*)
 				FROM dependency_hostChild_relation dhcr $aclFrom
-				WHERE dhcr.dependency_dep_id = dep.dep_id $aclCond) > 0	";
+				WHERE dhcr.dependency_dep_id = dep.dep_id $aclCond) > 0)	";
 
     $search = '';
 	if (isset($_POST['searchHD']) && $_POST['searchHD']) {
