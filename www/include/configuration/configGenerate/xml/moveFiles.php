@@ -106,7 +106,7 @@ try {
     /*  Set new error handler */
     set_error_handler('log_error');
 
-    $centcore_pipe = "@CENTREON_VARLIB@/centcore.cmd";
+    $centcore_pipe = "/var/lib/centreon/centcore.cmd";
 	if ($centcore_pipe == "/centcore.cmd") {
 		$centcore_pipe = "/var/lib/centreon/centcore.cmd";
 	}
@@ -129,33 +129,18 @@ try {
         }
     }
 
-    /*
-     * Copy correlation file
-     */
-    $brokerObj = new CentreonConfigCentreonBroker($pearDB);
-    $correlationPath = $brokerObj->getCorrelationFile();
-    $localId = getLocalhostId();
-    if (false !== $correlationPath && false !== $localId) {
-        $tmpFilename = $centreonBrokerPath . '/' . $localId . '/correlation_*.xml';
-	/* Purge file */
-	$listRemovesFiles = glob(dirname($correlationPath) . '/correlation_*.xml');
-	foreach ($listRemovesFiles as $file) {
-	    @unlink($file);
-	}
-	/* Copy file */
-	$listFiles = glob($tmpFilename);
-    $listFiles[] = $correlationPath;
-	foreach ($listFiles as $file) {
-            @copy($file, dirname($correlationPath));
-	}
-    }
-
-
     $tab_server = array();
     $tabs = $oreon->user->access->getPollerAclConf(array('fields'     => array('name', 'id', 'localhost'),
                                                          'order'      => array('name'),
                                                          'conditions' => array('ns_activate' => '1'),
                                                          'keys'       => array('id')));
+
+
+    # Get correlation infos
+    $brokerObj = new CentreonConfigCentreonBroker($pearDB);
+    $correlationPath = $brokerObj->getCorrelationFile();
+    $localId = getLocalhostId();
+
     foreach ($tabs as $tab) {
         if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
             $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
@@ -163,6 +148,19 @@ try {
     }
 
     foreach ($tab_server as $host) {
+        # Manage correlation files
+        if (false !== $correlationPath && false !== $localId) {
+            $tmpFilename = $centreonBrokerPath . '/' . $host['id'] . '/correlation_' . $host['id'] . '.xml';
+            $filenameToGenerate = dirname($correlationPath) . '/correlation_' . $host['id'] . '.xml';
+            # Purge file
+            if (file_exists($filenameToGenerate)) {
+                @unlink($filenameToGenerate);
+            }
+            # Copy file
+            if (file_exists($tmpFilename)) {
+                @copy($tmpFilename, $filenameToGenerate);
+            }
+        }
         if (isset($poller) && ($poller == 0 || $poller == $host['id'])) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
                 /*

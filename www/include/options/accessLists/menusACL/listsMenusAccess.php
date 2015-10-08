@@ -40,15 +40,11 @@
 		exit();
 		
 	include("./include/common/autoNumLimit.php");
-	
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
 
 	$SearchStr = "";
-	if (isset($search))
+    $search = '';
+	if (isset($_POST['searchACLM']) && $_POST['searchACLM'])
+        $search = $_POST['searchACLM'];
 		$SearchStr = " WHERE (acl_topo_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_topo_alias LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
 	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_topology" . $SearchStr);
 		
@@ -162,6 +158,7 @@
 	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchACLM', $search);
 
 	/*
 	 * Apply a template definition
