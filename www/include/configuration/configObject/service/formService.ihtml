@@ -306,6 +306,18 @@ jQuery(function() {
                         jQuery(elem).find("input[name^='macroValue']").val(jQuery(elem).find("input[name^='macroOldValue']").val());
                     });
 
+
+                    if(typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined'){
+                        if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1"){
+                            var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
+                            var tplValue = tplValueField.val();
+
+                            tplValueField.after(jQuery('<img/>',{src : 'none'}).on('click',function(){
+                                jQuery(elem).find("input[name^='macroValue']").val(tplValue);
+                            }));
+                        }
+                    }
+
                 });
             }
         });
@@ -341,7 +353,31 @@ jQuery(function() {
             jQuery(elem).find("input[name^='macroValue']").val(jQuery(elem).find("input[name^='macroOldValue']").val());
         });
 
+
+        if(typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined'){
+            if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1"){
+                var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
+                var tplValue = tplValueField.val();
+
+                tplValueField.after(jQuery('<img/>',{src : 'none'}).on('click',function(){
+                    jQuery(elem).find("input[name^='macroValue']").val(tplValue);
+                }));
+            }
+        }
+
     });
+
+    jQuery(".macroclone").sortable(
+        {
+           handle: ".clonehandle",
+           axis: "y",
+           helper: "clone",
+           opacity: 0.5,
+           placeholder: "clone-placeholder",
+           tolerance: "pointer"
+        }
+    );
+
 
 });
 

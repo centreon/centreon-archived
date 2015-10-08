@@ -11,8 +11,14 @@ jQuery(function() {
             allowRemoveAll: true,
             minFormsCount: 0,
             maxFormsCount: 200,
+            continuousIndex : false,
             iniFormsCount: jQuery("#clone-count-" + suffixid).data("clone-count-" + suffixid),
-            data: jQuery("#clone-values-" + suffixid).data("clone-values-" + suffixid)
+            data: jQuery("#clone-values-" + suffixid).data("clone-values-" + suffixid),
+            afterAdd: function(source, clone) {
+                if (typeof clonerefreshListeber == 'function') { 
+                    clonerefreshListeber(clone); 
+                }
+            }
          });
          cloneResort(suffixid);
         });
