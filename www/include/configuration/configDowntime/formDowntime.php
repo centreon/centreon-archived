@@ -221,7 +221,7 @@
 		 * Just watch a host information
 		 */
 		if (!$min && $centreon->user->access->page($p) != 2) {
-			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dt_id=".$id."'"));
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dt_id=".$id."'", "class" => "btc bt_default"));
 		}
 	    $form->setDefaults($default_dt);
 		$form->freeze();
@@ -229,15 +229,15 @@
 		/*
 		 * Modify a service information
 		 */
-		$subC = $form->addElement('button', 'submitC', _("Save"), array("onClick" => "validForm();"));
-		$res = $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);"));
+		$subC = $form->addElement('button', 'submitC', _("Save"), array("onClick" => "validForm();", "class" => "btc bt_success"));
+		$res = $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);", "class" => "btc bt_default"));
 	    $form->setDefaults($default_dt);
 	} elseif ($o == "a") {
 		/*
 		 * Add a service information
 		 */
-		$subA = $form->addElement('button', 'submitA', _("Save"), array("onClick" => "validForm();"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('button', 'submitA', _("Save"), array("onClick" => "validForm();", "class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	}
 
 	$tpl->assign("sort1", _("Downtime Configuration"));

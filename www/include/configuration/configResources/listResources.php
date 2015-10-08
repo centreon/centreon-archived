@@ -42,16 +42,14 @@
 	include("./include/common/autoNumLimit.php");
 
 	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
-
-	/*
 	 * Search engine
 	 */
 	$SearchTool = NULL;
-	if (isset($search) && $search)
+    $search = '';
+	if (isset($_POST['searchR']) && $_POST['searchR']) {
+        $search = $_POST['searchR'];
 		$SearchTool = " WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
+    }
 
     $aclCond = "";
     if (!$oreon->user->admin && count($allowedResourceConf)) {
@@ -205,6 +203,7 @@
 	$o2->setSelected(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchR', $search);
 
 	/*
 	 * Apply a template definition

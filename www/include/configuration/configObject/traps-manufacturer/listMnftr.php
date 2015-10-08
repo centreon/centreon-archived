@@ -41,15 +41,13 @@
 		
 	include("./include/common/autoNumLimit.php");
 	$mnftr_id = NULL;
-
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
 		
 	$SearchTool = NULL;
-	if (isset($search) && $search)
+    $search = '';
+	if (isset($_POST['searchTM']) && $_POST['searchTM']) {
+        $search = $_POST['searchTM'];
 		$SearchTool = " WHERE (alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') OR (name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
+    }
 
 	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM traps_vendor $SearchTool");
 	$tmp = $DBRESULT->fetchRow();
@@ -153,6 +151,7 @@
 	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchTM', $search);
 	
 	/*
 	 * Apply a template definition

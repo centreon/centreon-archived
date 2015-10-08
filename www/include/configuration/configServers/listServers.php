@@ -55,13 +55,10 @@
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
-
 	$LCASearch = "";
-	if (isset($search)) {
+    $search = '';
+	if (isset($_POST['searchP']) && $_POST['searchP']) {
+      $search = $_POST['searchP'];
 	  $LCASearch = " WHERE name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
 	}
 
@@ -270,6 +267,7 @@
 	$o2->setValue(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchP', $search);
 
 	/*
 	 * Apply a template definition

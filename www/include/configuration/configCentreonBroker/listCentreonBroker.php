@@ -40,11 +40,6 @@ if (!isset($oreon)) {
 include("./include/common/autoNumLimit.php");
 
 /*
- * start quickSearch form
- */
-include_once("./include/common/quickSearch.php");
-
-/*
  * nagios servers comes from DB
  */
 $nagios_servers = array();
@@ -80,8 +75,12 @@ $tpl->assign("headerMenu_options", _("Options"));
  * Centreon Brober config list
  */
 $aclCond = "";
+$search = '';
+if (isset($_POST['searchCB']) && $_POST['searchCB']) {
+    $search = $_POST['searchCB'];
+}
 if (!$oreon->user->admin && count($allowedBrokerConf)) {
-    if (isset($search) && $search) {
+    if ($search) {
         $aclCond = " AND ";
     } else {
         $aclCond = " WHERE ";
@@ -91,7 +90,7 @@ if (!$oreon->user->admin && count($allowedBrokerConf)) {
 if ($search) {
     $rq = "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate
                FROM cfg_centreonbroker
-               WHERE description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'
+               WHERE config_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'
                $aclCond
                ORDER BY config_name
                LIMIT ".$num * $limit.", ".$limit;
@@ -209,6 +208,7 @@ $o2 = $form->getElement('o2');
 $o2->setValue(NULL);
 
 $tpl->assign('limit', $limit);
+$tpl->assign('searchCB', $search);
 
 /*
  * Apply a template definition

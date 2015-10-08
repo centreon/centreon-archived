@@ -192,9 +192,9 @@ class CentreonDowntime
 	public function getList($num, $limit, $type = NULL)
 	{
 		if ($type == "h") {
-			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime WHERE downtime.dt_id IN(SELECT dt_id FROM downtime_host_relation) OR downtime.dt_id IN (SELECT dt_id FROM downtime_hostgroup_relation) " . ($this->search == '' ? "" : " AND ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
+			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime WHERE (downtime.dt_id IN(SELECT dt_id FROM downtime_host_relation) OR downtime.dt_id IN (SELECT dt_id FROM downtime_hostgroup_relation)) " . ($this->search == '' ? "" : " AND ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
 		} else if ($type == "s") {
-			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime WHERE downtime.dt_id IN (SELECT dt_id FROM downtime_service_relation) OR downtime.dt_id IN (SELECT dt_id FROM downtime_servicegroup_relation) " . ($this->search == '' ? "" : " AND ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
+			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime WHERE (downtime.dt_id IN (SELECT dt_id FROM downtime_service_relation) OR downtime.dt_id IN (SELECT dt_id FROM downtime_servicegroup_relation)) " . ($this->search == '' ? "" : " AND ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
 		} else {
 			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime " . ($this->search == '' ? "" : " WHERE ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
 		}

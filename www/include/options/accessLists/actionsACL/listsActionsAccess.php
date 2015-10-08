@@ -42,17 +42,15 @@
 	
 	# QuickSearch
 	$SearchStr = "";
-	if (isset($search))
+    $search = '';
+	if (isset($_POST['searchACLA']) && $_POST['searchACLA']) {
+        $search = $_POST['searchACLA'];
 		$SearchStr = " WHERE (acl_action_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_action_description LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
+    }
 	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_actions" . $SearchStr);
 		
 	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	# start quickSearch form
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	include("./include/common/checkPagination.php");
 
@@ -150,6 +148,7 @@
 	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchACLA', $search);
 
 	/*
 	 * Apply a template definition
