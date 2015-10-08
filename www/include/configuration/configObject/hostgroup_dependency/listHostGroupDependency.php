@@ -41,12 +41,6 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
-
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 
         $aclCond = "";
@@ -62,8 +56,11 @@
                         FROM dependency_hostgroupChild_relation dhgpr 
                         WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0";
 
-	if (isset($search))
-		$rq .= " AND (dep_name LIKE '".CentreonDB::escape($search)."' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";
+    $search = '';
+	if (isset($_POST['searchHGD']) && $_POST['searchHGD']) {
+        $search = $_POST['searchHGD'];
+		$rq .= " AND (dep_name LIKE '%".CentreonDB::escape($search)."%' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";
+    }
 	$DBRESULT = $pearDB->query($rq);
 	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -101,7 +98,7 @@
                         WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0";
 
 	if ($search)
-		$rq .= " AND (dep_name LIKE '".CentreonDB::escape($search)."' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";
+		$rq .= " AND (dep_name LIKE '%".CentreonDB::escape($search)."%' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";
 	$rq .= " ORDER BY dep_name, dep_description LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
 
@@ -174,6 +171,7 @@
 	$o2->setSelected(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchHGD', $search);
 
 	/*
 	 * Apply a template definition
