@@ -2503,3 +2503,21 @@ function testCg($list)
 {
     return CentreonContactgroup::verifiedExists($list);
 }
+
+
+/**
+* Apply template in order to deploy services
+*
+* @param array $hosts
+* @return void
+*/
+function applytpl($hosts)
+{
+    global $pearDB;
+    
+    $hostObj = new CentreonHost($pearDB);
+    
+    foreach ($hosts as $key => $value) {
+        $hostObj->deployServices($key);
+    }
+}
