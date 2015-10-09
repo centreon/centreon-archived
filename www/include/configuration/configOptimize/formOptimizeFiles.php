@@ -94,7 +94,7 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub = $form->addElement('submit', 'submit', _("Export"));
+	$sub = $form->addElement('submit', 'submit', _("Export"), array("class" => "btc bt_success"));
 	$msg = NULL;
 	$stdout = NULL;
 
