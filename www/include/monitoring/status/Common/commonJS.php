@@ -292,11 +292,7 @@ function construct_HostGroupSelectList(id) {
 <?php
 		$hgNdo = array();
 		$hgBrk = array();
-		if ($broker == 'broker') {
-		    $acldb = $pearDBO;
-		} else {
-            $acldb = new CentreonDB("ndo");
-		}
+        $acldb = $pearDBO;
 		if (!$oreon->user->access->admin) {
 			$query = "SELECT DISTINCT hg.hg_alias, hg.hg_name AS name
 				  FROM hostgroup hg, acl_resources_hg_relations arhr
