@@ -65,3 +65,11 @@ CREATE TABLE `on_demand_macro_command` (
   KEY `command_command_id` (`command_command_id`),
   CONSTRAINT `on_demand_macro_command_ibfk_1` FOREIGN KEY (`command_command_id`) REFERENCES `command` (`command_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Move downtime page
+DELETE FROM topology WHERE topology_page IN ('20218', '20106', '60305');
+
+-- #3787
+DELETE FROM topology WHERE topology_page IN ('60902', '60903', '60707', '60804');
+DELETE FROM topology WHERE topology_page IS NULL AND topology_name LIKE 'Plugins' AND topology_url IS NULL;
+DELETE FROM topology WHERE topology_page IS NULL AND topology_name LIKE 'NDOutils' AND topology_url IS NULL;
