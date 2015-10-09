@@ -256,15 +256,15 @@
 		/*
 		 * Modify a Contact Group information
 		 */
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	    $form->setDefaults($cg);
 	} else if ($o == "a")	{
 		/*
 		 * Add a Contact Group information
 		 */
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	}
 
 	$valid = false;

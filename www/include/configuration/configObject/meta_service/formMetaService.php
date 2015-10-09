@@ -357,15 +357,15 @@
 		/*
 		 * Modify a service information
 		 */
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	    $form->setDefaults($ms);
 	} else if ($o == "a")	{
 		/*
 		 * Add a service information
 		 */
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	}
 
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version()));

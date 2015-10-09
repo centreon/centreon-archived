@@ -905,15 +905,15 @@ if ($o == "w")	{
     $form->setDefaults($service);
     $form->freeze();
  } elseif ($o == "c")	{ // Modify a service information
-     $subC = $form->addElement('submit', 'submitC', _("Save"));
-     $res = $form->addElement('reset', 'reset', _("Reset"));
+     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
      $form->setDefaults($service);
  } elseif ($o == "a")	{ // Add a service information
-     $subA = $form->addElement('submit', 'submitA', _("Save"));
-     $res = $form->addElement('reset', 'reset', _("Reset"));
+     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
  } elseif ($o == "mc")	{ // Massive Change
-     $subMC = $form->addElement('submit', 'submitMC', _("Save"));
-     $res = $form->addElement('reset', 'reset', _("Reset"));
+     $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
+     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
  }
 
 require_once $centreon_path.'www/include/configuration/configObject/service/javascript/argumentJs.php';

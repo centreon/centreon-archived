@@ -253,15 +253,15 @@
         /*
          * Modify a Command information
          */
-        $subC = $form->addElement('submit', 'submitC', _("Save"));
-        $res = $form->addElement('reset', 'reset', _("Reset"));
+        $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+        $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
         $form->setDefaults($cmd);
     } else if ($o == "a") {
         /*
          * Add a Command information
          */
-        $subA = $form->addElement('submit', 'submitA', _("Save"));
-        $res = $form->addElement('reset', 'reset', _("Reset"));
+        $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+        $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     }
 
     $tpl->assign('msg', array ("comment"=>_("Commands definitions can contain Macros but they have to be valid.")));

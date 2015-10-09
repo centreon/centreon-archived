@@ -1947,11 +1947,19 @@ function str2db($string) {
             if (count($aFinalMacro) > 0) {
                 for ($j = 0; $j < count($aFinalMacro); $j++ ) {
                     if ($aFinalMacro[$j]['macroInput_#index#'] == $sInput) {
+                        
+                        //store the template value when it is overloaded with direct macro
                         if(isset($aFinalMacro[$j]['source']) 
                         && $aFinalMacro[$j]['source'] == 'direct' 
-                        && !isset($aFinalMacro[$j]['tplValue']) && $aTempMacro[$i]['source'] == "fromTpl"){    
-                            $aFinalMacro[$j]['tplValue'] = $aTempMacro[$i]['macroValue_#index#'];
+                        && !isset($aFinalMacro[$j]['macroTplValue_#index#']) && $aTempMacro[$i]['source'] == "fromTpl"){    
+                            $aFinalMacro[$j]['macroTplValue_#index#'] = $aTempMacro[$i]['macroValue_#index#'];
+                            $aFinalMacro[$j]['macroTplValToDisplay_#index#'] = 1;
+                        }else{
+                            $aFinalMacro[$j]['macroTplValToDisplay_#index#'] = 0;
+                            $aFinalMacro[$j]['macroTplValue_#index#'] = "";
                         }
+                        //
+                        
                         $existe = $j;
                         break;
                     } else {

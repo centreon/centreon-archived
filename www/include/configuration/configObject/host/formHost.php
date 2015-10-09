@@ -1107,21 +1107,21 @@ if ($o == "w") {
     /*
      * Modify a host information
      */
-    $subC = $form->addElement('submit', 'submitC', _("Save"),_("class='btc bt_success'"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);", "class" => "btc bt_default"));
     $form->setDefaults($host);
 } else if ($o == "a") {
     /*
      * Add a host information
      */
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 } else if ($o == "mc") {
     /*
      * Massive Change
      */
-    $subMC = $form->addElement('submit', 'submitMC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $tpl->assign('msg', array("nagios" => $oreon->user->get_version(), "tpl" => 0));

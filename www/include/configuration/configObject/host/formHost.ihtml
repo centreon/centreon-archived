@@ -8,7 +8,6 @@
             <li class="b" id='c4'><a href="#" style='cursor:pointer' onclick="javascript:montre('4');">{$sort4}</a></li>
         </ul>
 
-        <!--
 			<div id="validFormTop">
 			{if $o == "a" || $o == "c" || $o == "mc"}
 				<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
@@ -16,15 +15,18 @@
 				<p class="oreonbutton">{$form.change.html}</p>
 			{/if}
 			</div>
-		 -->
      </div>
 
      <div id='tab1' class='tab'>
         <table class="formTable table">
 	        <tr class="ListHeader">
-	            <td class="FormHeader" colspan="2">
+	            <td class="FormHeader">
 	                <h3>| {$form.header.title}</h3>
 	            </td>
+	             <td style="text-align:right;">
+	                <a href="./main.php?p={$p}&min=1&doc=1&page=configobject.html" target="_blank"  style='cursor:help' alt='{$topdoc}'>
+	                <img src="./img/icones/16x16/text_code.gif" title="{$topdoc}"></a>
+	             </td>
 	        </tr>
 
  	        <tr class="list_lvl_1">
@@ -195,20 +197,36 @@
 </table>
 </div>
 <div id='tab2' class='tab'>
- <table class="ListTable">
-	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title2}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.HGlinks}</td></tr>
+ <table class="formTable table">
+	<tr class="ListHeader">
+      <td class="FormHeader" colspan="2">
+        <h3>| {$form.header.title2}</h3>
+      </td>
+    </tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.HGlinks}</h4>
+      </td>
+    </tr>
 	{if !$msg.tpl}
 		{if $o == "mc"}
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_hhg.label}</td><td class="FormRowValue">{$form.mc_mod_hhg.html}</td></tr>
 		{/if}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hostgroups"> {$form.host_hgs.label}</td><td class="FormRowValue">{$form.host_hgs.html}</td></tr>
-        <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.HClinks}</td></tr>
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.HClinks}</h4>
+          </td>
+        </tr>
                 {if $o == "mc"}
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_hhc.label}</td><td class="FormRowValue">{$form.mc_mod_hhc.html}</td></tr>
 		{/if}
                 <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hostcategories"> {$form.host_hcs.label}</td><td class="FormRowValue">{$form.host_hcs.html}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.links}</h4>
+      </td>
+   </tr>
 		{if $o == "mc"}
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_hpar.label}</td><td class="FormRowValue">{$form.mc_mod_hpar.html}</td></tr>
 		{/if}
@@ -222,7 +240,11 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_htpl.label}</td><td class="FormRowValue">{$form.mc_mod_htpl.html}</td></tr>
 		{/if}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_templates"> {$form.host_svTpls.label}</td><td class="FormRowValue">{$form.host_svTpls.html}</td></tr>
-        <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.HClinks}</td></tr>
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.HClinks}</h4>
+          </td>
+        </tr>
         {if $o == "mc"}
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_hhc.label}</td><td class="FormRowValue">{$form.mc_mod_hhc.html}</td></tr>
 		{/if}
@@ -234,26 +256,48 @@
  </table>
 </div>
 <div id='tab3' class='tab'>
- <table class="ListTable">
-	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title3}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/import2.gif'>&nbsp;&nbsp;{$form.header.treatment}</td></tr>
+ <table class="formTable table">
+	<tr class="ListHeader">
+      <td class="FormHeader" colspan="2">
+        <h3>| {$form.header.title3}</h3>
+      </td>
+    </tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.treatment}</h4>
+      </td>
+    </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="obsess_over_host"> {$form.host_obsess_over_host.label}</td><td class="FormRowValue">{$form.host_obsess_over_host.html}</td></tr>
 	<tr class="list_lvl_1">
-		<td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code_java2.gif'>&nbsp;&nbsp;{$Freshness_Control_options}</td>
+		<td class="ListColLvl1_name" colspan="2">
+          <h4>{$Freshness_Control_options}</h4>
+        </td>
 	</tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="check_freshness"> {$form.host_check_freshness.label}</td><td class="FormRowValue">{$form.host_check_freshness.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name=freshness_threshold""> {$form.host_freshness_threshold.label}</td><td class="FormRowValue">{$form.host_freshness_threshold.html}&nbsp;{$seconds}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$Flapping_Options}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="freshness_threshold"> {$form.host_freshness_threshold.label}</td><td class="FormRowValue">{$form.host_freshness_threshold.html}&nbsp;{$seconds}</td></tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$Flapping_Options}</h4>
+      </td>
+    </tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="flap_detection_enabled"> {$form.host_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.host_flap_detection_enabled.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="low_flap_threshold"> {$form.host_low_flap_threshold.label}</td><td class="FormRowValue">{$form.host_low_flap_threshold.html}&nbsp;%</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="high_flap_threshold"> {$form.host_high_flap_threshold.label}</td><td class="FormRowValue">{$form.host_high_flap_threshold.html}&nbsp;%</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$Perfdata_Options}</td></tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$Perfdata_Options}</h4>
+      </td>
+    </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="process_perf_data"> {$form.host_process_perf_data.label}</td><td class="FormRowValue">{$form.host_process_perf_data.html}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$History_Options}</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+      <h4>{$History_Options}</h4>
+    </td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retain_status_information"> {$form.host_retain_status_information.label}</td><td class="FormRowValue">{$form.host_retain_status_information.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retain_nonstatus_information"> {$form.host_retain_nonstatus_information.label}</td><td class="FormRowValue">{$form.host_retain_nonstatus_information.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="stalking_options"> {$form.host_stalOpts.label}</td><td class="FormRowValue">{$form.host_stalOpts.html}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$Event_Handler}</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+      <h4>{$Event_Handler}</h4>
+    </td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="event_handler_enabled"> {$form.host_event_handler_enabled.label}</td><td class="FormRowValue">{$form.host_event_handler_enabled.html}</td></tr>
 	<tr class="list_two">
 		<td class="FormRowField"><img class="helpTooltip" name="event_handler"> {$form.command_command_id2.label}</td>
@@ -266,7 +310,7 @@
 	</tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="event_handler_args"> {$form.command_command_id_arg2.label}</td><td class="FormRowValue">{$form.command_command_id_arg2.html}
 		{if $o == "a" || $o == "c"}
-		&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  style='cursor:pointer' onclick="set_arg('example2','command_command_id_arg2');"></a><input type="text" name="example2" disabled>
+		&nbsp;<a><img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  style='cursor:pointer' onclick="set_arg('example2','command_command_id_arg2');"></a><input type="text" name="example2" disabled>
 		{/if}</td>
 	</tr>
 	{if $o == "a" || $o == "c"}
@@ -275,9 +319,17 @@
  </table>
 </div>
 <div id='tab4' class='tab'>
- <table class="ListTable">
-	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title4}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$form.header.nagios}</td></tr>
+ <table class="formTable table">
+	<tr class="ListHeader">
+      <td class="FormHeader" colspan="2">
+        <h3>| {$form.header.title4}</h3>
+      </td>
+    </tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.nagios}</h4>
+      </td>
+    </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notes_url"> {$form.ehi_notes_url.label}</td><td class="FormRowValue">{$form.ehi_notes_url.html}</td></tr>
  	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notes"> {$form.ehi_notes.label}</td><td class="FormRowValue">{$form.ehi_notes.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="action_url"> {$form.ehi_action_url.label}</td><td class="FormRowValue">{$form.ehi_action_url.html}</td></tr>
@@ -288,7 +340,11 @@
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="2d_coords"> {$form.ehi_2d_coords.label}</td><td class="FormRowValue">{$form.ehi_2d_coords.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="3d_coords"> {$form.ehi_3d_coords.label}</td><td class="FormRowValue">{$form.ehi_3d_coords.html}</td></tr>
     <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="criticality_id"> {$form.criticality_id.label}</td><td class="FormRowValue">{$form.criticality_id.html}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.furtherInfos}</h4>
+      </td>
+    </tr>
 	<tr class="list_two"><td class="FormRowField">{$form.host_activate.label}</td><td class="FormRowValue">{$form.host_activate.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue">{$form.host_comment.html}</td></tr>
 	{if $o == "a" || $o == "c"}
@@ -318,63 +374,7 @@ jQuery('input[name=host_check_interval]').change(function(){
 });
 
 jQuery(function() {
-    jQuery('select[name^=tpSelect], select[name=command_command_id]' ).on('change',function(){
-        jQuery.ajax({
-            url: "./include/configuration/configObject/host/refreshMacroAjax.php",
-            type: "POST",
-            dataType : "json",
-            data: this.form.serialize(),
-            success : function(json){
-                if(typeof sheepIt != "undefined"){
-                    sheepIt.removeAllForms();
-                }
-                jQuery('#macro_add').unbind();
-                jQuery('.cloneremove').unbind();
-                sheepIt = jQuery("#macro").sheepIt({
-                    separator: '',
-                    allowRemoveLast: true,
-                    allowRemoveCurrent: true,
-                    allowRemoveAll: true,
-                    minFormsCount: 0,
-                    maxFormsCount: 200,
-                    continuousIndex : false,
-                    iniFormsCount: json.count,
-                    data: json.macros
-                });
-                jQuery(".macroclone").sortable(
-                    {
-                       handle: ".clonehandle",
-                       axis: "y",
-                       helper: "clone",
-                       opacity: 0.5,
-                       placeholder: "clone-placeholder",
-                       tolerance: "pointer"
-                    }
-                );
-
-                jQuery(".onemacro").each(function(idx,elem){
-                    var from = jQuery(elem).find('input[name^=macroFrom]').val();
-                    if(from === "direct"){
-                        jQuery(elem).find("input[name^='macroInput']").css("background","red");
-                        jQuery(elem).find("input[name^='macroValue']").css("background","red");
-                    }else if(from === "fromTpl"){
-                        jQuery(elem).find("input[name^='macroInput']").css("background","blue");
-                        jQuery(elem).find("input[name^='macroValue']").css("background","blue");
-                    }else {
-                        jQuery(elem).find("input[name^='macroInput']").css("background","green");
-                        jQuery(elem).find("input[name^='macroValue']").css("background","green");
-                    }
-
-                    jQuery(elem).find("button[class='ResetMacroButton']").click(function(button){
-                        jQuery(elem).find("input[name^='macroValue']").val(jQuery(elem).find("input[name^='macroOldValue']").val());
-                    });
-
-
-                });
-            }
-        });
-    });
-
+    setListener(jQuery('select[name^=tpSelect], select[name=command_command_id]' ));
 
     sheepIt = jQuery("#macro").sheepIt({
         separator: '',
@@ -403,9 +403,118 @@ jQuery(function() {
         jQuery(elem).find("button[class='ResetMacroButton']").click(function(button){
             jQuery(elem).find("input[name^='macroValue']").val(jQuery(elem).find("input[name^='macroOldValue']").val());
         });
+
+
+        if(typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined'){
+            if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1"){
+                var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
+                var tplValue = tplValueField.val();
+
+                tplValueField.after(jQuery('<img/>',{src : 'none'}).on('click',function(){
+                    jQuery(elem).find("input[name^='macroValue']").val(tplValue);
+                }));
+            }
+        }
     });
+
+    jQuery(".macroclone").sortable(
+        {
+           handle: ".clonehandle",
+           axis: "y",
+           helper: "clone",
+           opacity: 0.5,
+           placeholder: "clone-placeholder",
+           tolerance: "pointer"
+        }
+    );
 
 
 });
+
+    function setListener(elem){
+        elem.on('change',function(event,data){
+            if(typeof data != "undefined" && typeof data.origin !=undefined 
+                && data.origin == "select2defaultinit"){
+                return false;
+            }
+            doAjaxLoad(this);
+        });
+
+        elem.on("remove", function () {
+            jQuery(this).val("");
+            doAjaxLoad(this);
+        });
+    }
+
+    function clonerefreshListeber(el){
+        setListener(el.find('select[name^=tpSelect]'));
+    }
+
+    function doAjaxLoad(elems){
+            jQuery.ajax({
+                url: "./include/configuration/configObject/host/refreshMacroAjax.php",
+                type: "POST",
+                dataType : "json",
+                data: elems.form.serialize(),
+                success : function(json){
+                    if(typeof sheepIt != "undefined"){
+                        sheepIt.removeAllForms();
+                    }
+                    jQuery('#macro_add').unbind();
+                    jQuery('.cloneremove').unbind();
+                    sheepIt = jQuery("#macro").sheepIt({
+                        separator: '',
+                        allowRemoveLast: true,
+                        allowRemoveCurrent: true,
+                        allowRemoveAll: true,
+                        minFormsCount: 0,
+                        maxFormsCount: 200,
+                        continuousIndex : false,
+                        iniFormsCount: json.count,
+                        data: json.macros
+                    });
+                    jQuery(".macroclone").sortable(
+                        {
+                           handle: ".clonehandle",
+                           axis: "y",
+                           helper: "clone",
+                           opacity: 0.5,
+                           placeholder: "clone-placeholder",
+                           tolerance: "pointer"
+                        }
+                    );
+
+                    jQuery(".onemacro").each(function(idx,elem){
+                        var from = jQuery(elem).find('input[name^=macroFrom]').val();
+                        if(from === "direct"){
+                            jQuery(elem).find("input[name^='macroInput']").css("background","red");
+                            jQuery(elem).find("input[name^='macroValue']").css("background","red");
+                        }else if(from === "fromTpl"){
+                            jQuery(elem).find("input[name^='macroInput']").css("background","blue");
+                            jQuery(elem).find("input[name^='macroValue']").css("background","blue");
+                        }else {
+                            jQuery(elem).find("input[name^='macroInput']").css("background","green");
+                            jQuery(elem).find("input[name^='macroValue']").css("background","green");
+                        }
+
+                        jQuery(elem).find("button[class='ResetMacroButton']").click(function(button){
+                            jQuery(elem).find("input[name^='macroValue']").val(jQuery(elem).find("input[name^='macroOldValue']").val());
+                        });
+
+                        if(typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined'){
+                            if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1"){
+                                var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
+                                var tplValue = tplValueField.val();
+
+                                tplValueField.after(jQuery('<img/>',{src : 'none'}).on('click',function(){
+                                    jQuery(elem).find("input[name^='macroValue']").val(tplValue);
+                                }));
+                            }
+                        }
+                    });
+                }
+            });
+    }
+
 {/literal}
 </script>

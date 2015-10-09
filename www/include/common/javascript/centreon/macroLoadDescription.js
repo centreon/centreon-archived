@@ -9,14 +9,17 @@ function loadDescription(id)
         popDescription += '<div>'+ fromTpl +'</div>';
     }
     
+    var popin = jQuery('<div/>',{html : popDescription});
+    popin.appendTo('body');
     
-    
-    Modalbox.show(popDescription, {title: 'Description: ' + document.title, width: 800});
+    jQuery("#macroDescription_"+id)[0].myPopin = popin;
+    popin.centreonPopin("open");
 }
 
 function closePop(id)
 {
-    Modalbox.hide();
-    var content = jQuery('textarea').val();
+    var popin = jQuery("#macroDescription_"+id)[0].myPopin;
+    popin.centreonPopin("close");
+    var content = popin.find('textarea').val();
     jQuery("#macroDescription_"+id).val(content);
 }

@@ -130,14 +130,14 @@
 	}
 	# Modify a Command information
 	else if ($o == "c")	{
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	    $form->setDefaults($mnftr);
 	}
 	# Add a Command information
 	else if ($o == "a")	{
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	}
 
 	$valid = false;

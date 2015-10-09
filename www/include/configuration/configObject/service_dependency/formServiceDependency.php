@@ -299,12 +299,12 @@
 	    $form->setDefaults($dep);
 		$form->freeze();
 	} elseif ($o == "c") {
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	    $form->setDefaults($dep);
 	} elseif ($o == "a") {
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 		$form->setDefaults(array('inherits_parent', '0'));
 	}
 	$tpl->assign("nagios", $oreon->user->get_version());
