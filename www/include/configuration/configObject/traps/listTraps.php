@@ -44,14 +44,11 @@
 	
 	$tabStatus = array(0 => _("OK"), 1 => _("Warning"), 2 => _("Critical"), 3 => _("Unknown"), 4 => _("Pending"));
 	
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
-	
 	$SearchTool = NULL;
-	if (isset($search) && $search)
+	if (isset($_POST['searchT']) && $_POST['searchT']) {
+        $search = $_POST['searchT'];
 		$SearchTool = "WHERE traps_oid LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR traps_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
+    }
 	
 	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM traps $SearchTool");
 	$tmp = $DBRESULT->fetchRow();
@@ -162,6 +159,7 @@
 	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchT', $search);
 	
 	#
 	##Apply a template definition

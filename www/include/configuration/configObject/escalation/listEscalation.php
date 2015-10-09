@@ -42,12 +42,6 @@
 	include("./include/common/autoNumLimit.php");
 	
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
-
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
 	
         $aclFrom = "";
         $aclCond = array('h'  => '',
@@ -89,10 +83,14 @@
                                 WHERE emsr.escalation_esc_id = esc.esc_id ".$aclCond['ms'].") > 0 ";
 	}
 	
-	if (isset($search) && $list)
+    $search = '';
+	if (isset($_POST['searchE']) && $_POST['searchE'] && $list) {
+        $search = $_POST['searchE'];
 		$rq .= " AND (esc.esc_name LIKE '".$search."' OR esc.esc_alias LIKE '%".$search."%')";
-	else if (isset($search))
+    } else if (isset($_POST['searchE']) && $_POST['searchE']) {
+        $search = $_POST['searchE'];
 		$rq .= " WHERE (esc.esc_name LIKE '".$search."' OR esc.esc_alias LIKE '%".$search."%')";
+    }
 	$DBRESULT = $pearDB->query($rq);
 	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -230,6 +228,7 @@
 	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchE', $search);
 	
 	/*
 	 * Apply a template definition

@@ -202,13 +202,13 @@
 		$form->freeze();
 	} else if ($o == "c")	{
 		# Modify a Dependency information
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	    $form->setDefaults($dep);
 	} else if ($o == "a")	{
 		# Add a Dependency information
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 		$form->setDefaults(array('inherits_parent', '0'));
 	}
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );

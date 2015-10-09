@@ -434,7 +434,7 @@ class CentreonService
      * @param int $serviceId
      * @return array
      */
-    public function getCustomMacro($serviceId = null)
+    public function getCustomMacro($serviceId = null, $realKeys = false)
     {
         $arr = array();
         $i = 0;
@@ -456,11 +456,15 @@ class CentreonService
             }
         } elseif (isset($_REQUEST['macroInput'])) {
             foreach ($_REQUEST['macroInput'] as $key => $val) {
-                $arr[$i]['macroInput_#index#'] = $val;
-                $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
-                $arr[$i]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;                
-                $arr[$i]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
-                $arr[$i]['macroDescription'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
+                $index = $i;
+                if($realKeys){
+                    $index = $key;
+                }
+                $arr[$index]['macroInput_#index#'] = $val;
+                $arr[$index]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
+                $arr[$index]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;                
+                $arr[$index]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
+                $arr[$index]['macroDescription'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
                 $i++;
             }
         }
@@ -659,10 +663,7 @@ class CentreonService
         if(isset($form["macroValue"]["#index#"])){
             unset($form["macroValue"]["#index#"]); 
         }
-        $indexToSub = 0;
-        if(isset($form["macroFrom"]["#index#"])){
-            $indexToSub = 1;
-        }
+
         
         
         
@@ -674,7 +675,7 @@ class CentreonService
         
         if(is_null($macrosArrayToCompare)){
             foreach($macroArray as $key=>$macro){
-                if($form['macroFrom'][$key - $indexToSub] == $fromKey){
+                if($form['macroFrom'][$key] == $fromKey){
                     unset($macroArray[$key]);
                 }
             }
@@ -686,15 +687,13 @@ class CentreonService
                 }
             }
             foreach($macroArray as $key=>$macro){
-                if($form['macroFrom'][$key - $indexToSub] == $fromKey){
+                if($form['macroFrom'][$key] == $fromKey){
                     if(!in_array($macro['macroInput_#index#'],$inputIndexArray)){
                         unset($macroArray[$key]);
                     }
                 }
             }
         }
-        return $indexToSub;
-
     }
     
     
@@ -859,8 +858,8 @@ class CentreonService
     
     public function ajaxMacroControl($form){
 
-        $macroArray = $this->getCustomMacro();
-        $indexToSub = $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
+        $macroArray = $this->getCustomMacro(null,true);
+        $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
         $aListTemplate = array_merge(array(array('service_template_model_stm_id' => $form['service_template_model_stm_id']))
                         ,getListTemplates($this->db, $form['service_template_model_stm_id']));
         
@@ -887,7 +886,8 @@ class CentreonService
         $aTempMacro = array();
         if (count($macroArray) > 0) {
             foreach($macroArray as $key => $directMacro){
-                $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key - $indexToSub];
+                $directMacro['macroOldValue_#index#'] = $directMacro["macroValue_#index#"];
+                $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key];
                 $directMacro['source'] = 'direct';
                 $aTempMacro[] = $directMacro;
             }
@@ -897,6 +897,7 @@ class CentreonService
         if (count($aMacroTemplate) > 0) {  
             foreach ($aMacroTemplate as $key => $macr) {
                 foreach ($macr as $mm) {
+                    $mm['macroOldValue_#index#'] = $mm["macroValue_#index#"];
                     $mm['macroFrom_#index#'] = 'fromTpl';
                     $mm['source'] = 'fromTpl';
                     $aTempMacro[$iNb++] = $mm;
@@ -906,6 +907,7 @@ class CentreonService
         $serv = current($aMacroInService);
         if (count($aMacroInService) > 0) {
             for ($i = 0; $i < count($serv); $i++) {
+                $serv[$i]['macroOldValue_#index#'] = $serv[$i]["macroValue_#index#"];
                 $serv[$i]['macroFrom_#index#'] = 'fromService';
                 $serv[$i]['source'] = 'fromService';
                 $aTempMacro[$iNb++] = $serv[$i];
@@ -914,11 +916,138 @@ class CentreonService
         $aFinalMacro = macro_unique($aTempMacro);
         
         return $aFinalMacro;
+    }
+    /**
+     * 
+     * @param type $ret
+     * @return type
+     */
+    public function insert($ret)
+    {
+        $ret["service_description"] = $this->checkIllegalChar($ret["service_description"]);
+
+        if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null)		{
+            $ret["command_command_id_arg2"] = str_replace("\n", "//BR//", $ret["command_command_id_arg2"]);
+            $ret["command_command_id_arg2"] = str_replace("\t", "//T//", $ret["command_command_id_arg2"]);
+            $ret["command_command_id_arg2"] = str_replace("\r", "//R//", $ret["command_command_id_arg2"]);
+        }
+        $rq = "INSERT INTO service " .
+            "(service_template_model_stm_id, command_command_id, timeperiod_tp_id, command_command_id2, timeperiod_tp_id2, " .
+            "service_description, service_alias, service_is_volatile, service_max_check_attempts, service_normal_check_interval, " .
+            "service_retry_check_interval, service_active_checks_enabled, " .
+            "service_passive_checks_enabled, service_obsess_over_service, service_check_freshness, service_freshness_threshold, " .
+            "service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, " .
+            "service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, " .
+            "service_notification_options, service_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host, service_stalking_options, service_first_notification_delay ,service_comment, command_command_id_arg, command_command_id_arg2, " .
+            "service_register, service_activate) " .
+            "VALUES ( ";
+        isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL ? $rq .= "'".$ret["service_template_model_stm_id"]."', ": $rq .= "NULL, ";
+        isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'".$ret["command_command_id"]."', ": $rq .= "NULL, ";
+        isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
+        isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
+        isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
+        isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_description"])."', ": $rq .= "NULL, ";
+        isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_alias"])."', ": $rq .= "NULL, ";
+        isset($ret["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
+        isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != NULL ? $rq .= "'".$ret["service_max_check_attempts"]."', " : $rq .= "NULL, ";
+        isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != NULL ? $rq .= "'".$ret["service_normal_check_interval"]."', ": $rq .= "NULL, ";
+        isset($ret["service_retry_check_interval"]) && $ret["service_retry_check_interval"] != NULL ? $rq .= "'".$ret["service_retry_check_interval"]."', ": $rq .= "NULL, ";
+        isset($ret["service_active_checks_enabled"]["service_active_checks_enabled"]) && $ret["service_active_checks_enabled"]["service_active_checks_enabled"] != 2 ? $rq .= "'".$ret["service_active_checks_enabled"]["service_active_checks_enabled"]."', ": $rq .= "'2', ";
+        isset($ret["service_passive_checks_enabled"]["service_passive_checks_enabled"]) && $ret["service_passive_checks_enabled"]["service_passive_checks_enabled"] != 2 ? $rq .= "'".$ret["service_passive_checks_enabled"]["service_passive_checks_enabled"]."', ": $rq .= "'2', ";
+        isset($ret["service_obsess_over_service"]["service_obsess_over_service"]) && $ret["service_obsess_over_service"]["service_obsess_over_service"] != 2 ? $rq .= "'".$ret["service_obsess_over_service"]["service_obsess_over_service"]."', ": $rq .= "'2', ";
+        isset($ret["service_check_freshness"]["service_check_freshness"]) && $ret["service_check_freshness"]["service_check_freshness"] != 2 ? $rq .= "'".$ret["service_check_freshness"]["service_check_freshness"]."', ": $rq .= "'2', ";
+        isset($ret["service_freshness_threshold"]) && $ret["service_freshness_threshold"] != NULL ? $rq .= "'".$ret["service_freshness_threshold"]."', ": $rq .= "NULL, ";
+        isset($ret["service_event_handler_enabled"]["service_event_handler_enabled"]) && $ret["service_event_handler_enabled"]["service_event_handler_enabled"] != 2 ? $rq .= "'".$ret["service_event_handler_enabled"]["service_event_handler_enabled"]."', ": $rq .= "'2', ";
+        isset($ret["service_low_flap_threshold"]) && $ret["service_low_flap_threshold"] != NULL ? $rq .= "'".$ret["service_low_flap_threshold"]."', " : $rq .= "NULL, ";
+        isset($ret["service_high_flap_threshold"]) && $ret["service_high_flap_threshold"] != NULL ? $rq .= "'".$ret["service_high_flap_threshold"]."', " : $rq .= "NULL, ";
+        isset($ret["service_flap_detection_enabled"]["service_flap_detection_enabled"]) && $ret["service_flap_detection_enabled"]["service_flap_detection_enabled"] != 2 ? $rq .= "'".$ret["service_flap_detection_enabled"]["service_flap_detection_enabled"]."', " : $rq .= "'2', ";
+        isset($ret["service_process_perf_data"]["service_process_perf_data"]) && $ret["service_process_perf_data"]["service_process_perf_data"] != 2 ? $rq .= "'".$ret["service_process_perf_data"]["service_process_perf_data"]."', " : $rq .= "'2', ";
+        isset($ret["service_retain_status_information"]["service_retain_status_information"]) && $ret["service_retain_status_information"]["service_retain_status_information"] != 2 ? $rq .= "'".$ret["service_retain_status_information"]["service_retain_status_information"]."', " : $rq .= "'2', ";
+        isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]) && $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"] != 2 ? $rq .= "'".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', " : $rq .= "'2', ";
+        isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL ? $rq .= "'".$ret["service_notification_interval"]."', " : $rq .= "NULL, ";
+        isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_notifOpts"]))."', " : $rq .= "NULL, ";
+        isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
+        $rq .= (isset($ret["contact_additive_inheritance"]) ? 1 : 0) . ', ';
+        $rq .= (isset($ret["cg_additive_inheritance"]) ? 1 : 0) . ', ';
+        isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) && $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != NULL ? $rq .= "'".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', " : $rq .= "'NULL', ";
+        isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
+        isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= "NULL, ";
+
+        isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
+        $ret['command_command_id_arg'] = $this->getCommandArgs($ret, $ret);
+        isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg"])."', " : $rq .= "NULL, ";
+
+
+        isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg2"])."', " : $rq .= "NULL, ";
+        isset($ret["service_register"]) && $ret["service_register"] != NULL ? $rq .= "'".$ret["service_register"]."', " : $rq .= "NULL, ";
+        isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
+        $rq .= ")";
+        $DBRESULT = $this->db->query($rq);
         
+        $DBRESULT   = $this->db->query("SELECT MAX(service_id) as id FROM service");
+        $service_id = $DBRESULT->fetchRow();
+        
+        return $service_id['id'];
+    
     }
     
+    /**
+     * 
+     * @param type $aDatas
+     * @return type
+     */
+    public function insertExtendInfo($aDatas)
+    {
+        
+        if (empty($aDatas['service_service_id'])) {
+            return;
+        }
+        $rq = "INSERT INTO extended_service_information ";
+        $rq .= "(service_service_id, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt, graph_id) ";
+        $rq .= "VALUES ";
+        $rq .= "('".$aDatas['service_service_id']."', ";
+        $rq .= (isset($aDatas["esi_notes"]) ? "'" .CentreonDB::escape($aDatas["esi_notes"])."'" : NULL) . ", ";
+        $rq .= (isset($aDatas["esi_notes_url"]) ? "'" .CentreonDB::escape($aDatas["esi_notes_url"])."'" : NULL) . ", ";
+        $rq .= (isset($aDatas["esi_action_url"]) ? "'" .CentreonDB::escape($aDatas["esi_action_url"])."'" : NULL) . ", ";
+        $rq .= (isset($aDatas["esi_icon_image"]) ? "'" .CentreonDB::escape($aDatas["esi_icon_image"])."'" : NULL) . ", ";
+        $rq .= (isset($aDatas["esi_icon_image_alt"]) ? "'" .CentreonDB::escape($aDatas["esi_icon_image_alt"])."'" : NULL) . ", ";
+        $rq .= (isset($aDatas["graph_id"]) ? CentreonDB::escape($aDatas["graph_id"]) : NULL) . " ";
+        $rq .= ")";
+        $DBRESULT = $this->db->query($rq);
+    }
     
-    
+    /**
+    * Returns the formatted string for command arguments
+    *
+    * @param $argArray
+    * @return string
+    */
+   function getCommandArgs($argArray = array(), $conf = array())
+   {
+       if (isset($conf['command_command_id_arg'])) {
+           return $conf['command_command_id_arg'];
+       }
+       $argTab = array();
+       foreach ($argArray as $key => $value) {
+           if (preg_match('/^ARG(\d+)/', $key, $matches)) {
+               $argTab[$matches[1]] = $value;
+               $argTab[$matches[1]] = str_replace("\n", "#BR#", $argTab[$matches[1]]);
+               $argTab[$matches[1]] = str_replace("\t", "#T#", $argTab[$matches[1]]);
+               $argTab[$matches[1]] = str_replace("\r", "#R#", $argTab[$matches[1]]);
+           }
+       }
+       ksort($argTab);
+       $str = "";
+       foreach ($argTab as $val) {
+           if ($val != "") {
+               $str .= "!" . $val;
+           }
+       }
+       if (!strlen($str)) {
+           return null;
+       }
+       return $str;
+   }
 }
 
 ?>

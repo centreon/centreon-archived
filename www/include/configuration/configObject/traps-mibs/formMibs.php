@@ -113,7 +113,7 @@
 	/*
 	 * Just watch a Command information
 	 */
-	$subA = $form->addElement('submit', 'submit', _("Import"));
+	$subA = $form->addElement('submit', 'submit', _("Import"), array("class" => "btc bt_success"));
 	$form->addElement('header', 'status',_("Status"));
 	$valid = false;
 	$msg = NULL;

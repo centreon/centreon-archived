@@ -97,7 +97,7 @@
 	 * Var information to format the element
 	 */
 	$attrsText 		= array("size"=>"35");
-	$attrsTextLong	= array("size"=>"55");
+	$attrsTextLong	= array("size"=>"55", "maxlength" => "200");
 	$attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
 	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
@@ -256,15 +256,15 @@
 		/*
 		 * Modify a Time Period information
 		 */
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	    $form->setDefaults($tp);
 	} else if ($o == "a")	{
 		/*
 		 * Add a Time Period information
 		 */
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	}
 
 	/*
