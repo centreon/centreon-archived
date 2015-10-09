@@ -1930,44 +1930,5 @@ function str2db($string) {
             return $svcTmpl;
         }
     }
-    
-    /**
-     * This method remove duplicate macro by her name
-     * 
-     * @param array $aTempMacro
-     * @return array
-     */
-    function macro_unique($aTempMacro)
-    {
-        $aFinalMacro = array();
-        $x = 0;
-        for ($i = 0; $i < count($aTempMacro); $i++) {
-            $sInput = $aTempMacro[$i]['macroInput_#index#'];
-
-            if (count($aFinalMacro) > 0) {
-                for ($j = 0; $j < count($aFinalMacro); $j++ ) {
-                    if ($aFinalMacro[$j]['macroInput_#index#'] == $sInput) {
-                        if(isset($aFinalMacro[$j]['source']) 
-                        && $aFinalMacro[$j]['source'] == 'direct' 
-                        && !isset($aFinalMacro[$j]['tplValue']) && $aTempMacro[$i]['source'] == "fromTpl"){    
-                            $aFinalMacro[$j]['tplValue'] = $aTempMacro[$i]['macroValue_#index#'];
-                        }
-                        $existe = $j;
-                        break;
-                    } else {
-                        $existe = null;
-                    }
-                }
-                if (is_null($existe)) {
-                    $aFinalMacro[$x++] = $aTempMacro[$i];
-                } else {
-                    //$aFinalMacro[$existe] = $aTempMacro[$i];
-                }
-            } else {
-                $aFinalMacro[$x++] = $aTempMacro[$i];
-            }
-        }
-        return $aFinalMacro;
-    }
 
 ?>

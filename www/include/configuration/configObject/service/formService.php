@@ -555,12 +555,7 @@ $cloneSetMacro[] = $form->addElement(
     )
 );
 
-$cloneSetMacro[] = $form->addElement(
-    'button',
-    'reset[#index#]',
-    _('Reset'),
-    array('id' => 'resetMacro_#index#')
-);
+
 $cloneSetMacro[] = $form->addElement(
     'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
 );
@@ -1022,17 +1017,17 @@ if ($o == "w") {
     $form->freeze();
 } elseif ($o == "c") {
     // Modify a service information
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);", "class" => "btc bt_default"));
     $form->setDefaults($service);
 } elseif ($o == "a") {
     // Add a service information
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 } elseif ($o == "mc") {
     // Massive Change
-    $subMC = $form->addElement('submit', 'submitMC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $tpl->assign('msg', array("nagios" => $oreon->user->get_version(), "tpl" => 0));

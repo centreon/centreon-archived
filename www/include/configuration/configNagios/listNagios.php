@@ -41,13 +41,10 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	# start quickSearch form
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
-
 	$SearchTool = NULL;
-	if (isset($search) && $search) {
+    $search = '';
+	if (isset($_POST['searchN']) && $_POST['searchN']) {
+        $search = $_POST['searchN'];
 		$SearchTool = " WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ";
     }
 
@@ -180,6 +177,7 @@
 		$o2->setValue(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchN', $search);
 
 	/*
 	 * Apply a template definition

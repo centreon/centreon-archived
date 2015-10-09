@@ -42,13 +42,25 @@ class CentreonGMT {
     var $listGTM;
     var $myGMT;
     var $use;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $db;
+    
 
-    public function __construct($DB) {
+    public function __construct($DB)
+    {
+        $this->db = $DB;
+        
         /*
          * Define Table of GMT line
          */
-        $this->listGTM = array(null => null);
-
+        //$this->listGTM = array(null => null);
+        $this->listGTM = $this->getList();
+        
+/*
         $this->listGTM['-12'] = -12;
         $this->listGTM['-11'] = -11;
         $this->listGTM['-10'] = -10;
@@ -74,14 +86,15 @@ class CentreonGMT {
         $this->listGTM['10'] = 10;
         $this->listGTM['11'] = 11;
         $this->listGTM['12'] = 12;
-
+*/
         /*
          * Flag activ / inactiv
          */
         $this->use = $this->checkGMTStatus($DB);
     }
-
+    
     function checkGMTStatus($DB) {
+        /*
         global $pearDB;
 
         if (!isset($pearDB) && isset($DB))
@@ -90,6 +103,9 @@ class CentreonGMT {
         $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'enable_gmt'");
         $result = $DBRESULT->fetchRow();
         return ($result["value"]);
+         * 
+         */
+        return 1;
     }
 
     function used() {
@@ -234,4 +250,26 @@ class CentreonGMT {
         return date($dateFormat, $date);
     }
 
+    
+    /**
+     * Get the list of timezone
+     *
+     * @return array
+     */
+    public function getList()
+    {
+        $aDatas = array();
+        
+        $queryList = "SELECT timezone_id, timezone_name FROM timezone ORDER BY timezone_name asc";
+        $res = $this->db->query($queryList);
+        if (PEAR::isError($res)) {
+            return array();
+        }
+ 
+        $aDatas[null] = null;
+        while ($row = $res->fetchRow()) {
+            $aDatas[$row['timezone_id']] =  $row['timezone_name'];
+        }
+        return $aDatas;
+    }
 }

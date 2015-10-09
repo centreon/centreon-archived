@@ -1,6 +1,6 @@
 {$form.javascript}
 <form {$form.attributes}>
-<div>
+<div class="headerTabContainer">
 <ul id="mainnav">
 	<li class="a" id='c1'><a href="#"  onclick="javascript:montre('1');">{$sort1}</a></li>
 	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
@@ -9,7 +9,6 @@
 	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
 	<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">{$sort6}</a></li>
 </ul>
-</div>
 <div id="validFormTop">
 {if $o == "a" || $o == "c"}
 	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
@@ -17,10 +16,19 @@
 	<p class="oreonbutton">{$form.change.html}</p>
 {/if}
 </div>
+</div>
 <div id='tab1' class="tab">
-	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmark.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name"> {$form.esc_name.label}</td><td class="FormRowValue">{$form.esc_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.esc_alias.label}</td><td class="FormRowValue">{$form.esc_alias.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="first_notification"> {$form.first_notification.label}</td><td class="FormRowValue">{$form.first_notification.html}</td></tr>
@@ -34,17 +42,33 @@
 	</table>
 </div>
 <div id='tab2' class="tab">
-	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
 
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.hosts}</td></tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.hosts}</h4>
+          </td>
+        </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_name"> {$form.esc_hosts.label}</td><td class="FormRowValue">{$form.esc_hosts.html}</td></tr>
 	</table>
 </div>
 <div id='tab3' class="tab">
-	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.services}</td></tr>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.services}</h4>
+          </td>
+        </tr>
 		<tr class="list_one">
 			<td class="FormRowField">
 				<img class="helpTooltip" name="service_description"> 
@@ -57,29 +81,52 @@
 	</table>
 </div>
 <div id='tab4' class="tab">
-	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.hgs}</td></tr>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.hgs}</h4>
+          </td>
+        </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_name"> {$form.esc_hgs.label}</td><td class="FormRowValue">{$form.esc_hgs.html}</td></tr>
 	</table>
 </div>
 <div id='tab5' class="tab">
-	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.metas}</td></tr>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.metas}</h4>
+          </td>
+        </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="metaservice_name"> {$form.esc_metas.label}</td><td class="FormRowValue">{$form.esc_metas.html}</td></tr>
 	</table>
 </div>
 <div id='tab6' class="tab">
-	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.sgs}</td></tr>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.sgs}</h4>
+          </td>
+        </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="servicegroup_name"> {$form.esc_sgs.label}</td><td class="FormRowValue">{$form.esc_sgs.html}</td></tr>
 	</table>
 </div>
 <div id="validForm">
 {if $o == "a" || $o == "c"}
-	<p>{$form.action.html}</p>
 	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 {else if $o == "w"}
 	<p class="oreonbutton">{$form.change.html}</p>

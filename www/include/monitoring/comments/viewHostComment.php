@@ -76,11 +76,6 @@ $tpl = initSmartyTpl($path, $tpl, "template/");
 
 include_once("./class/centreonDB.class.php");
 
-if ($oreon->broker->getBroker() == "ndo") {
-	$pearDBndo = new CentreonDB("ndo");
-	$ndo_base_prefix = getNDOPrefix();
-}
-
 $form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 
 $tab_comments_host = array();
@@ -88,7 +83,7 @@ $tab_comments_svc = array();
 
 $en = array("0" => _("No"), "1" => _("Yes"));
 
-$acl_host_list = $centreon->user->access->getHostsString("NAME", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
+$acl_host_list = $centreon->user->access->getHostsString("NAME", $pearDBO);
 
 $search_request = "";
 if (isset($host_name)) {
@@ -100,7 +95,7 @@ if (isset($host_name)) {
  */
 $rq2 = "SELECT SQL_CALC_FOUND_ROWS c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, h.name as host_name " .
                "FROM comments c, hosts h ";
-        $rq2 .= ($hostgroup ? ", hosts_hostgroups hgm, hostgroups hg " : "");
+$rq2 .= ($hostgroup ? ", hosts_hostgroups hgm, hostgroups hg " : "");
 $rq2 .=	"WHERE c.host_id = h.host_id AND c.service_id IS NULL AND h.enabled = 1";
 if (!$is_admin) {
     $rq2 .= " AND EXISTS(SELECT 1 FROM centreon_acl WHERE c.host_id = centreon_acl.host_id AND group_id IN (" . $oreon->user->access->getAccessGroupsString() . ")) ";
@@ -114,21 +109,20 @@ if ($hostgroup) {
                AND hgm.host_id = c.host_id ";
 }
 $rq2 .= " AND c.expires = '0' ";
-        $rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
-        $rq2 .= " ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+$rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
+$rq2 .= " ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
 $DBRESULT = $pearDBO->query($rq2);
 $rows = $pearDBO->numberRows();
 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
-	$tab_comments_host[$i] = $data;
-	$tab_comments_host[$i]['host_name'] = htmlentities($data['host_name']);
-	$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
-	$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
-	$tab_comments_host[$i]["host_name_link"] = urlencode($tab_comments_host[$i]["host_name"]);
-                $tab_comments_host[$i]['comment_data'] = htmlentities($tab_comments_host[$i]['comment_data']);
+  	$tab_comments_host[$i] = $data;
+  	$tab_comments_host[$i]['host_name'] = htmlentities($data['host_name']);
+  	$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
+  	$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
+  	$tab_comments_host[$i]["host_name_link"] = urlencode($tab_comments_host[$i]["host_name"]);
+    $tab_comments_host[$i]['comment_data'] = htmlentities($tab_comments_host[$i]['comment_data']);
 }
 unset($data);
 $DBRESULT->free();
-
 
 /*
  * Pagination
@@ -141,7 +135,6 @@ include("./include/common/checkPagination.php");
 $form->addElement('hidden', 'p');
 $tab = array ("p" => $p);
 $form->setDefaults($tab);
-
 
 if ($centreon->user->access->checkAction("host_comment")) {
 	$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add a comment"), "delConfirm"=>_("Do you confirm the deletion ?")));
@@ -161,7 +154,6 @@ $tpl->assign("svc_comment_link", "./main.php?p=".$p."&o=vs");
 $tpl->assign("view_svc_comments", _("View comments of services"));
 $tpl->assign("delete", _("Delete"));
 
-
 $tpl->assign("Host", _("Host Name"));
 $tpl->assign("Output", _("Output"));
 $tpl->assign("user", _("Useres"));
@@ -170,7 +162,6 @@ $tpl->assign('Search', _("Search"));
 $tpl->assign("search_output", $search_output);
 $tpl->assign('search_host', $host_name);
 
-$acldb = $oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO;
 $hg = array();
 if ($oreon->user->access->admin) {
     $query = "SELECT hg_id, hg_name
@@ -183,9 +174,7 @@ if ($oreon->user->access->admin) {
              "WHERE hg.hg_id = arhr.hg_hg_id " .
              "AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
              "AND hg.hg_activate = '1' ".
-             "AND hg.hg_id in (SELECT hostgroup_hg_id
-                               FROM hostgroup_relation
-                               WHERE host_host_id IN (".$oreon->user->access->getHostsString("ID", $acldb).")) " .
+             "AND hg.hg_id in (SELECT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id IN (".$oreon->user->access->getHostsString("ID", $pearDBO).")) " .
              "ORDER BY hg.hg_name";
 }
 $res = $pearDB->query($query);

@@ -39,12 +39,6 @@ if (!isset($oreon)) {
 		
 include("./include/common/autoNumLimit.php");
 
-/*
- * start quickSearch form
- */
-$advanced_search = 0;
-include_once("./include/common/quickSearch.php");
-
 isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 
 $aclFrom = "";
@@ -65,7 +59,9 @@ $rq .= " WHERE ((SELECT DISTINCT COUNT(*)
                     FROM dependency_serviceChild_relation dscr $aclFrom
                     WHERE dscr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
 
-if (isset($search)) {
+$search = '';
+if (isset($_POST['searchSD']) && $_POST['searchSD']) {
+    $search = $_POST['searchSD'];
 	$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";		
 }
 $DBRESULT = $pearDB->query($rq);
@@ -184,6 +180,7 @@ $o2->setValue(NULL);
 $o2->setSelected(NULL);
 
 $tpl->assign('limit', $limit);
+$tpl->assign('searchSD', $search);
 
 /*
  * Apply a template definition

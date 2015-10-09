@@ -39,14 +39,10 @@ if (!isset($oreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-/**
- *  start quickSearch form
- */
-$advanced_search = 0;
-include_once("./include/common/quickSearch.php");
-
 $SearchStr = "";
-if (isset($search)) {
+$search = '';
+if (isset($_POST['searchACLG']) && $_POST['searchACLG']) {
+    $search = $_POST['searchACLG'];
     $SearchStr = "WHERE (acl_group_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_group_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
  }
 $rq = "SELECT COUNT(*) FROM acl_groups $SearchStr ORDER BY acl_group_name";
@@ -178,6 +174,7 @@ $o2->setValue(NULL);
 $o2->setSelected(NULL);
 
 $tpl->assign('limit', $limit);
+$tpl->assign('searchACLG', $search);
 
 /*
  * Apply a template definition

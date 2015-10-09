@@ -24,7 +24,6 @@
 	{/php}
 	</tr>
 </table>
-<br />	
 {if $nb_comments_host}
 <table class="ListTable">	
 	<tr class='ListHeader'>

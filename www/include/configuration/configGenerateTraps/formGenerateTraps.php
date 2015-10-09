@@ -119,7 +119,7 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub = $form->addElement('submit', 'submit', _("Generate"));
+	$sub = $form->addElement('submit', 'submit', _("Generate"), array("class" => "btc bt_success"));
 	$msg = NULL;
 	$stdout = NULL;
         $msg_generate = "";

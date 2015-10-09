@@ -368,7 +368,7 @@ echo $ams3->getElementJs(false);
 require_once $centreon_path . "www/class/centreonGMT.class.php";
 
 $CentreonGMT = new CentreonGMT($pearDB);
-
+/*
 $GMTList = $CentreonGMT->getGMTList();
 $form->addElement('select', 'contact_location', _("Timezone / Location"), $GMTList);
 $form->setDefaults(array('contact_location' => '0'));
@@ -376,6 +376,18 @@ if (!isset($cct["contact_location"])) {
     $cct["contact_location"] = 0;
 }
 unset($GMTList);
+ */
+
+$attrTimezones = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=defaultValues&target=contact&field=contact_location&id=' . $contact_id,
+    'multiple' => false
+);
+
+
+$form->addElement('select2', 'contact_location', _("Timezone / Location"), array(), $attrTimezones);
+
 
 if ($o != "mc") {
     $auth_type = array();
@@ -592,17 +604,17 @@ if ($o == "w") {
     $form->freeze();
 } else if ($o == "c") {
 # Modify a contact information
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cct);
 } else if ($o == "a") {
 # Add a contact information
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 } else if ($o == "mc") {
 # Massive Change
-    $subMC = $form->addElement('submit', 'submitMC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {

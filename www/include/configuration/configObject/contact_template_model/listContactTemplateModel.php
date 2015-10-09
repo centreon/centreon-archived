@@ -43,12 +43,6 @@ if (!isset($oreon))
 include("./include/common/autoNumLimit.php");
 
 /*
- * start quickSearch form
- */
-$advanced_search = 0;
-include_once("./include/common/quickSearch.php");
-
-/*
  * Create Timeperiod Cache
  */
 $tpCache = array("" => "");
@@ -59,7 +53,9 @@ unset($data);
 $DBRESULT->free();
 
 $clauses = array();
-if (isset($search) && $search) {
+$search = '';
+if (isset($_POST['searchCT']) && $_POST['searchCT']) {
+    $search = $_POST['searchCT'];
     $clauses = array('contact_name' => '%' . $search . '%');
 }
 
@@ -202,6 +198,7 @@ $o2->setValue(NULL);
 $o2->setSelected(NULL);
 
 $tpl->assign('limit', $limit);
+$tpl->assign('searchCT', $search);
 
 /*
  * Apply a template definition
