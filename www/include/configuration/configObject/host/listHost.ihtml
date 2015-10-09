@@ -74,7 +74,6 @@
 	</tr>
 	{/section}
 </table>
-
 <table class="ToolbarTable table">
 	<tr class="ToolbarTR">
 		{ if $mode_access == 'w' }
