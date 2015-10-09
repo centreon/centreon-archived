@@ -32,6 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
+require_once $centreon_path . "www/class/centreonGMT.class.php";
 
 if (!isset($centreon)) {
     exit();
@@ -82,7 +83,12 @@ $form->addElement('select', 'maxViewMonitoring', _("Limit per page for Monitorin
 $form->addElement('text', 'maxViewConfiguration', _("Limit per page (default)"), $attrsText2);
 $form->addElement('text', 'AjaxTimeReloadStatistic', _("Refresh Interval for statistics"), $attrsText2);
 $form->addElement('text', 'AjaxTimeReloadMonitoring', _("Refresh Interval for monitoring"), $attrsText2);
-$form->addElement('text', 'gmt', _("Default host timezone"), $attrsText2);
+
+
+$CentreonGMT = new CentreonGMT($pearDB);
+$GMTList = $CentreonGMT->getGMTList();
+
+$form->addElement('select', 'gmt', _("Timezone"), $GMTList);
 
 $templates = array();
 if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{

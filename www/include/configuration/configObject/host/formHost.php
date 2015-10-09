@@ -522,12 +522,24 @@ $CentreonGMT = new CentreonGMT($pearDB);
 
 $GMTList = $CentreonGMT->getGMTList($pearDB);
 
+/*
 $form->addElement('select', 'host_location', _("Timezone / Location"), $GMTList);
+
 if ($o != "mc")
     $form->setDefaults(array('host_location' => $oreon->optGen["gmt"]));
 if (!isset($host["host_location"]))
     $host["host_location"] = NULL;
 unset($GMTList);
+*/
+$attrTimezones = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=defaultValues&target=host&field=host_location&id=' . $host_id,
+    'multiple' => false
+);
+
+
+$form->addElement('select2', 'host_location', _("Timezone / Location"), array(), $attrTimezones);
 
 $form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 /*
@@ -1013,6 +1025,7 @@ if (is_array($select)) {
     $select_pear = $form->addElement('hidden', 'select');
     $select_pear->setValue($select_str);
 }
+
 
 /*
  * Form Rules

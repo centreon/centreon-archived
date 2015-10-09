@@ -2395,6 +2395,18 @@ CREATE TABLE `on_demand_macro_command` (
   CONSTRAINT `on_demand_macro_command_ibfk_1` FOREIGN KEY (`command_command_id`) REFERENCES `command` (`command_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `timezone` (
+  `timezone_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `timezone_name` varchar(200) NOT NULL,
+  `timezone_offset` varchar(200) NOT NULL,
+  `timezone_dst_offset` varchar(200) NOT NULL,
+  `timezone_description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`timezone_id`),
+  UNIQUE KEY `name` (`timezone_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

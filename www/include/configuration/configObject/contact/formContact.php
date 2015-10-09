@@ -368,7 +368,7 @@ echo $ams3->getElementJs(false);
 require_once $centreon_path . "www/class/centreonGMT.class.php";
 
 $CentreonGMT = new CentreonGMT($pearDB);
-
+/*
 $GMTList = $CentreonGMT->getGMTList();
 $form->addElement('select', 'contact_location', _("Timezone / Location"), $GMTList);
 $form->setDefaults(array('contact_location' => '0'));
@@ -376,6 +376,18 @@ if (!isset($cct["contact_location"])) {
     $cct["contact_location"] = 0;
 }
 unset($GMTList);
+ */
+
+$attrTimezones = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=defaultValues&target=contact&field=contact_location&id=' . $contact_id,
+    'multiple' => false
+);
+
+
+$form->addElement('select2', 'contact_location', _("Timezone / Location"), array(), $attrTimezones);
+
 
 if ($o != "mc") {
     $auth_type = array();
