@@ -1930,52 +1930,5 @@ function str2db($string) {
             return $svcTmpl;
         }
     }
-    
-    /**
-     * This method remove duplicate macro by her name
-     * 
-     * @param array $aTempMacro
-     * @return array
-     */
-    function macro_unique($aTempMacro)
-    {
-        $aFinalMacro = array();
-        $x = 0;
-        for ($i = 0; $i < count($aTempMacro); $i++) {
-            $sInput = $aTempMacro[$i]['macroInput_#index#'];
-
-            if (count($aFinalMacro) > 0) {
-                for ($j = 0; $j < count($aFinalMacro); $j++ ) {
-                    if ($aFinalMacro[$j]['macroInput_#index#'] == $sInput) {
-                        
-                        //store the template value when it is overloaded with direct macro
-                        if(isset($aFinalMacro[$j]['source']) 
-                        && $aFinalMacro[$j]['source'] == 'direct' 
-                        && !isset($aFinalMacro[$j]['macroTplValue_#index#']) && $aTempMacro[$i]['source'] == "fromTpl"){    
-                            $aFinalMacro[$j]['macroTplValue_#index#'] = $aTempMacro[$i]['macroValue_#index#'];
-                            $aFinalMacro[$j]['macroTplValToDisplay_#index#'] = 1;
-                        }else{
-                            $aFinalMacro[$j]['macroTplValToDisplay_#index#'] = 0;
-                            $aFinalMacro[$j]['macroTplValue_#index#'] = "";
-                        }
-                        //
-                        
-                        $existe = $j;
-                        break;
-                    } else {
-                        $existe = null;
-                    }
-                }
-                if (is_null($existe)) {
-                    $aFinalMacro[$x++] = $aTempMacro[$i];
-                } else {
-                    //$aFinalMacro[$existe] = $aTempMacro[$i];
-                }
-            } else {
-                $aFinalMacro[$x++] = $aTempMacro[$i];
-            }
-        }
-        return $aFinalMacro;
-    }
 
 ?>

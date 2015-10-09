@@ -146,7 +146,7 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub = $form->addElement('submit', 'submit', _("Load"));
+	$sub = $form->addElement('submit', 'submit', _("Load"), array("class" => "btc bt_success"));
 	$msg = NULL;
 	if ($form->validate()) {
 		$ret = $form->getSubmitValues();

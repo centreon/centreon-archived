@@ -39,29 +39,37 @@ if (!isset($centreon)) {
 
 require_once("./class/centreonData.class.php");
 
-if (!$min) {
+ if (!$min) {
+ 
 
-?><div>
-		<table cellpadding="0" cellspacing="0" style="height:1px; width:100%;">
-			<tr><td id="footerline1"></td></tr>
-			<tr><td id="footerline2"></td></tr>
-		</table>
-		<div id="footer">
-			<table cellpadding='0' cellspacing='0' width='100%' border='0'>
-				<tr>
-					<td align='center' class='copyRight'>
-                        <div style="float: right;" onclick="myToggleAll(0,true);" > FullScreen</div>
+?>    <div id="footer">
+			<table cellpadding='0' cellspacing='0' width='100%' border='0' id="tfooter">
+ 				<tr>
+				    <td>
+				        <?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
+				    </td>
+ 					<td align='center' class='copyRight'>
+						<div style="float: right;" onclick="myToggleAll(0,true);saveFullScreenSetting();" > FullScreen</div>
+					    <a href='http://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> 
                         <a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
-                        <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a> | 
-                        Copyright &copy; 2005-2015 <a href="http://www.centreon.com">Centreon</a><br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
-                        <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
-                        | <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a></td>
-                        <?php } ?>
-                </tr>
-			</table>
-		</div>
-        
-	</div>
+                        <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a>
+                        <br />
+                         <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
+                        <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
+                         <?php } ?>
+                        <!-- - <a href="http://www.centreon.com">Centreon Web</a>-->
+                    </td>
+
+                      <td>
+                         Copyright &copy; 2005-2015
+                     </td>
+                 </tr>
+ 			</table>
+ 		</div>
+
+ <?php
+ }
+?>
 <style>
 html, body {
 margin: 0;
@@ -89,9 +97,6 @@ height: 100%;
 }
     
 </style>
-<?php
-}
-?>
 <script type="text/javascript">
     function myToggleAll(duration,toggle){
         if(toggle){

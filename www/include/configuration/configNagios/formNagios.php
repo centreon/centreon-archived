@@ -813,14 +813,14 @@
 		$form->freeze();
 	} else if ($o == "c")	{
 		# Modify a nagios information
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')", "class" => "btc bt_default"));
 
 		$form->setDefaults($nagios);
 	} else if ($o == "a")	{
 		# Add a nagios information
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')", "class" => "btc bt_default"));
 
 	}
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version()));

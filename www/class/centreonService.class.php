@@ -434,7 +434,7 @@ class CentreonService
      * @param int $serviceId
      * @return array
      */
-    public function getCustomMacro($serviceId = null)
+    public function getCustomMacro($serviceId = null, $realKeys = false)
     {
         $arr = array();
         $i = 0;
@@ -456,11 +456,15 @@ class CentreonService
             }
         } elseif (isset($_REQUEST['macroInput'])) {
             foreach ($_REQUEST['macroInput'] as $key => $val) {
-                $arr[$i]['macroInput_#index#'] = $val;
-                $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
-                $arr[$i]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;                
-                $arr[$i]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
-                $arr[$i]['macroDescription'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
+                $index = $i;
+                if($realKeys){
+                    $index = $key;
+                }
+                $arr[$index]['macroInput_#index#'] = $val;
+                $arr[$index]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
+                $arr[$index]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;                
+                $arr[$index]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
+                $arr[$index]['macroDescription'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
                 $i++;
             }
         }
@@ -613,9 +617,32 @@ class CentreonService
             $oCommand = new CentreonCommand($this->db);
             $aMacroInService[] = $oCommand->getMacroByIdAndType($iIdCommande, 'service');
         }
+        
+        
 
         //filter a macro
         $aTempMacro = array();
+        $serv = current($aMacroInService);
+        if (count($aMacroInService) > 0) {
+            for ($i = 0; $i < count($serv); $i++) {
+                $serv[$i]['macroOldValue_#index#'] = $serv[$i]["macroValue_#index#"];
+                $serv[$i]['macroFrom_#index#'] = 'fromService';
+                $serv[$i]['source'] = 'fromService';
+                $aTempMacro[] = $serv[$i];
+            }
+        }
+        
+        if (count($aMacroTemplate) > 0) {  
+            foreach ($aMacroTemplate as $key => $macr) {
+                foreach ($macr as $mm) {
+                    $mm['macroOldValue_#index#'] = $mm["macroValue_#index#"];
+                    $mm['macroFrom_#index#'] = 'fromTpl';
+                    $mm['source'] = 'fromTpl';
+                    $aTempMacro[] = $mm;
+                }
+            }
+        }
+        
         if (count($macroArray) > 0) {
             foreach($macroArray as $directMacro){
                 $directMacro['macroOldValue_#index#'] = $directMacro["macroValue_#index#"];
@@ -625,27 +652,10 @@ class CentreonService
             }
         }
         
-        $iNb = count($aTempMacro);
-        if (count($aMacroTemplate) > 0) {  
-            foreach ($aMacroTemplate as $key => $macr) {
-                foreach ($macr as $mm) {
-                    $mm['macroOldValue_#index#'] = $mm["macroValue_#index#"];
-                    $mm['macroFrom_#index#'] = 'fromTpl';
-                    $mm['source'] = 'fromTpl';
-                    $aTempMacro[$iNb++] = $mm;
-                }
-            }
-        }
-        $serv = current($aMacroInService);
-        if (count($aMacroInService) > 0) {
-            for ($i = 0; $i < count($serv); $i++) {
-                $serv[$i]['macroOldValue_#index#'] = $serv[$i]["macroValue_#index#"];
-                $serv[$i]['macroFrom_#index#'] = 'fromService';
-                $serv[$i]['source'] = 'fromService';
-                $aTempMacro[$iNb++] = $serv[$i];
-            }
-        }
-        $aFinalMacro = macro_unique($aTempMacro);
+        
+
+
+        $aFinalMacro = $this->macro_unique($aTempMacro);
         
         return $aFinalMacro;
     }
@@ -659,10 +669,7 @@ class CentreonService
         if(isset($form["macroValue"]["#index#"])){
             unset($form["macroValue"]["#index#"]); 
         }
-        $indexToSub = 0;
-        if(isset($form["macroFrom"]["#index#"])){
-            $indexToSub = 1;
-        }
+
         
         
         
@@ -674,7 +681,7 @@ class CentreonService
         
         if(is_null($macrosArrayToCompare)){
             foreach($macroArray as $key=>$macro){
-                if($form['macroFrom'][$key - $indexToSub] == $fromKey){
+                if($form['macroFrom'][$key] == $fromKey){
                     unset($macroArray[$key]);
                 }
             }
@@ -686,15 +693,13 @@ class CentreonService
                 }
             }
             foreach($macroArray as $key=>$macro){
-                if($form['macroFrom'][$key - $indexToSub] == $fromKey){
+                if($form['macroFrom'][$key] == $fromKey){
                     if(!in_array($macro['macroInput_#index#'],$inputIndexArray)){
                         unset($macroArray[$key]);
                     }
                 }
             }
         }
-        return $indexToSub;
-
     }
     
     
@@ -859,10 +864,10 @@ class CentreonService
     
     public function ajaxMacroControl($form){
 
-        $macroArray = $this->getCustomMacro();
-        $indexToSub = $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
-        $aListTemplate = array_merge(array(array('service_template_model_stm_id' => $form['service_template_model_stm_id']))
-                        ,getListTemplates($this->db, $form['service_template_model_stm_id']));
+        $macroArray = $this->getCustomMacro(null,true);
+        $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
+        $aListTemplate = array_merge(
+                        getListTemplates($this->db, $form['service_template_model_stm_id']),array(array('service_template_model_stm_id' => $form['service_template_model_stm_id'])));
         
         //Get macro attached to the template
         $aMacroTemplate = array();
@@ -885,39 +890,93 @@ class CentreonService
         
         //filter a macro
         $aTempMacro = array();
-        if (count($macroArray) > 0) {
-            foreach($macroArray as $key => $directMacro){
-                $directMacro['macroOldValue_#index#'] = $directMacro["macroValue_#index#"];
-                $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key - $indexToSub];
-                $directMacro['source'] = 'direct';
-                $aTempMacro[] = $directMacro;
-            }
-        }
         
-        $iNb = count($aTempMacro);
-        if (count($aMacroTemplate) > 0) {  
-            foreach ($aMacroTemplate as $key => $macr) {
-                foreach ($macr as $mm) {
-                    $mm['macroOldValue_#index#'] = $mm["macroValue_#index#"];
-                    $mm['macroFrom_#index#'] = 'fromTpl';
-                    $mm['source'] = 'fromTpl';
-                    $aTempMacro[$iNb++] = $mm;
-                }
-            }
-        }
         $serv = current($aMacroInService);
         if (count($aMacroInService) > 0) {
             for ($i = 0; $i < count($serv); $i++) {
                 $serv[$i]['macroOldValue_#index#'] = $serv[$i]["macroValue_#index#"];
                 $serv[$i]['macroFrom_#index#'] = 'fromService';
                 $serv[$i]['source'] = 'fromService';
-                $aTempMacro[$iNb++] = $serv[$i];
+                $aTempMacro[] = $serv[$i];
             }
         }
-        $aFinalMacro = macro_unique($aTempMacro);
+        
+        if (count($aMacroTemplate) > 0) {  
+            foreach ($aMacroTemplate as $key => $macr) {
+                foreach ($macr as $mm) {
+                    $mm['macroOldValue_#index#'] = $mm["macroValue_#index#"];
+                    $mm['macroFrom_#index#'] = 'fromTpl';
+                    $mm['source'] = 'fromTpl';
+                    $aTempMacro[] = $mm;
+                }
+            }
+        }
+        
+        if (count($macroArray) > 0) {
+            foreach($macroArray as $key => $directMacro){
+                $directMacro['macroOldValue_#index#'] = $directMacro["macroValue_#index#"];
+                $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key];
+                $directMacro['source'] = 'direct';
+                $aTempMacro[] = $directMacro;
+            }
+        }
+        
+        $aFinalMacro = $this->macro_unique($aTempMacro);
         
         return $aFinalMacro;
     }
+    
+        /**
+     * This method remove duplicate macro by her name
+     * 
+     * @param array $aTempMacro
+     * @return array
+     */
+    function macro_unique($aTempMacro)
+    {
+        $aFinalMacro = array();
+        
+        
+        $x = 0;
+        foreach($aTempMacro as $keyTmp=>$TempMacro){
+            $sInput = $TempMacro['macroInput_#index#'];
+            $existe = null;
+            if (count($aFinalMacro) > 0) {
+                foreach($aFinalMacro as $keyFinal=>$FinalMacro){
+                //for ($j = 0; $j < count($aFinalMacro); $j++ ) 
+                    if ($FinalMacro['macroInput_#index#'] == $sInput) {
+                        
+                        //store the template value when it is overloaded with direct macro
+                        if(isset($FinalMacro['source']) 
+                        && $FinalMacro['source'] == 'fromTpl' 
+                        && $TempMacro['source'] == "direct"){    
+                            $TempMacro['macroTplValue_#index#'] = $FinalMacro['macroValue_#index#'];
+                            $TempMacro['macroTplValToDisplay_#index#'] = 1;
+                        }else{
+                            $TempMacro['macroTplValue_#index#'] = "";
+                            $TempMacro['macroTplValToDisplay_#index#'] = 0;
+                        }
+                        //
+                        
+                        $existe = $keyFinal;
+                    }
+                }
+                if (is_null($existe)) {
+                    $aFinalMacro[] = $TempMacro;
+                } else {
+                    $aFinalMacro[$existe] = $TempMacro;
+                }
+            } else {
+                $aFinalMacro[] = $TempMacro;
+            }
+        }
+        
+        return $aFinalMacro;
+    }
+    
+    
+    
+    
     /**
      * 
      * @param type $ret

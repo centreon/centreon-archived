@@ -76,3 +76,12 @@ CREATE TABLE `timezone` (
   PRIMARY KEY (`timezone_id`),
   UNIQUE KEY `name` (`timezone_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Move downtime page
+DELETE FROM topology WHERE topology_page IN ('20218', '20106', '60305');
+
+-- #3787
+DELETE FROM topology WHERE topology_page IN ('60902', '60903', '60707', '60804');
+DELETE FROM topology WHERE topology_page IS NULL AND topology_name LIKE 'Plugins' AND topology_url IS NULL;
+DELETE FROM topology WHERE topology_page IS NULL AND topology_name LIKE 'NDOutils' AND topology_url IS NULL;
+
