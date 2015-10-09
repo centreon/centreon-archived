@@ -57,7 +57,7 @@
 		</tr>
 	</table>
 	{$form.hidden}
-	<div id="validForm">
-		<p class="oreonbutton">{$form.submit.html}&nbsp;{$form.reset.html}</p>
+	<div id="validForm" class="button_group_center">
+		<p>{$form.submit.html}&nbsp;{$form.reset.html}</p>
 	</div>
 </form>

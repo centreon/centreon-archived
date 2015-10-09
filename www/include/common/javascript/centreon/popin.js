@@ -3,11 +3,12 @@
   
   function CentreonPopin(settings, $elem) {
     var self = this;
-    var closeBtn = $('<a class="close" href="#"><img src="./img/icons/circle-cross.png"></a>');
+    var closeBtn = $('<a class="close" href="#"><img src="./img/icons/circle-cross.png" class="ico-18"></a>');
     var $newElem = $('<div></div>');
     this.settings = settings;
 
     /* Add class */
+    $elem.addClass('popin-wrapper');
     $newElem.addClass('centreon-popin');
     $newElem.hide();
     $elem.wrap($newElem);
@@ -16,7 +17,7 @@
     this.$elem.appendTo('body');
     
     /* Append close button */
-    closeBtn.appendTo(this.$elem);
+    closeBtn.appendTo($elem);
     closeBtn.on('click', function () {
       self.close();
     });

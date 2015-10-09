@@ -150,6 +150,9 @@ try {
     $formEditView->addElement('header', 'title', _('Edit a view'));
     $formEditView->addElement('header', 'information', _("General Information"));
 
+    $template->assign('editMode', _("Show/Hide edit mode"));
+Tu es chaude en ce jour ^^^^
+It's ghgetting Hot In Here
     /**
      * Name
      */
@@ -212,8 +215,8 @@ try {
      */
     //$userList = array_diff_key($centreon->user->getUserList($db), $viewers);
     $ams1 = $formShareView->addElement('advmultiselect', 'user_id', array(_("User List"), _("Available"), _("Selected")), $centreon->user->getUserList($db), $attrsAdvSelect);
-    $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-    $ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+    $ams1->setButtonAttributes('add', array('value' =>  _("Add"),'class' =>  _("btc bt_success")));
+    $ams1->setButtonAttributes('remove', array('value' => _("Remove"),'class' =>  _("btc bt_danger")));
     $ams1->setElementTemplate($eTemplate);
     echo $ams1->getElementJs(false);
 
@@ -222,8 +225,8 @@ try {
      */
     //$userGroupList = array_diff_key($cgObj->getListContactgroup(true), $viewerGroups);
     $ams1 = $formShareView->addElement('advmultiselect', 'usergroup_id', array(_("User Group List"), _("Available"), _("Selected")), $cgObj->getListContactgroup(true), $attrsAdvSelect);
-    $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-    $ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+    $ams1->setButtonAttributes('add', array('value' =>  _("Add"),'class' =>  _("btc bt_success")));
+    $ams1->setButtonAttributes('remove', array('value' => _("Remove"),'class' =>  _("btc bt_danger")));
     $ams1->setElementTemplate($eTemplate);
     echo $ams1->getElementJs(false);
 
@@ -231,8 +234,8 @@ try {
     /**
      * Submit button
      */
-    $formShareView->addElement('button', 'submit', _("Share"), array("onClick" => "submitData();"));
-    $formShareView->addElement('reset', 'reset', _("Reset"));
+    $formShareView->addElement('button', 'submit', _("Share"), array("onClick" => "submitData();", "class" => "btc bt_info"));
+    $formShareView->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $formShareView->addElement('hidden', 'action');
     $formShareView->setDefaults(array('action' => 'share'));
     $formShareView->addElement('hidden', 'custom_view_id');
