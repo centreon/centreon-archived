@@ -31,12 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -510,12 +507,6 @@ $form->setDefaults(array('contact_register' => '1'));
 
 $form->addElement('textarea', 'contact_comment', _("Comments"), $attrsTextarea);
 
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
-
 $form->addElement('hidden', 'contact_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -638,12 +629,10 @@ if ($form->validate() && $from_list_menu == false) {
                 updateContactInDB($value, true);
     }
     $o = NULL;
-    $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&contact_id=" . $cctObj->getValue() . "'"));
-    $form->freeze();
     $valid = true;
 }
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+
+if ($valid {
     require_once($path . "listContact.php");
 } else {
 # Apply a template definition
@@ -654,47 +643,48 @@ if ($valid && $action["action"]) {
     $tpl->assign('form', $renderer->toArray());
     $tpl->assign('o', $o);
     $tpl->assign("tzUsed", $CentreonGMT->used());
-    if ($oreon->optGen['ldap_auth_enable'])
+    if ($oreon->optGen['ldap_auth_enable']) {
         $tpl->assign('ldap', $oreon->optGen['ldap_auth_enable']);
+    }
     $tpl->display("formContact.ihtml");
 }
 ?>
-
 <script type="text/javascript" src="./include/common/javascript/keygen.js"></script>
 <script type="text/javascript">
 
-    function uncheckAllH(object)
-    {
-        if (object.id == "hNone" && object.checked) {
-            document.getElementById('hDown').checked = false;
-            document.getElementById('hUnreachable').checked = false;
-            document.getElementById('hRecovery').checked = false;
-            if (document.getElementById('hFlapping')) {
-                document.getElementById('hFlapping').checked = false;
-            }
-            if (document.getElementById('hScheduled')) {
-                document.getElementById('hScheduled').checked = false;
-            }
-        } else {
-            document.getElementById('hNone').checked = false;
+function uncheckAllH(object)
+{
+    if (object.id == "hNone" && object.checked) {
+        document.getElementById('hDown').checked = false;
+        document.getElementById('hUnreachable').checked = false;
+        document.getElementById('hRecovery').checked = false;
+        if (document.getElementById('hFlapping')) {
+            document.getElementById('hFlapping').checked = false;
         }
+        if (document.getElementById('hScheduled')) {
+            document.getElementById('hScheduled').checked = false;
+        }
+    } else {
+        document.getElementById('hNone').checked = false;
     }
+}
 
-    function uncheckAllS(object)
-    {
-        if (object.id == "sNone" && object.checked) {
-            document.getElementById('sWarning').checked = false;
-            document.getElementById('sUnknown').checked = false;
-            document.getElementById('sCritical').checked = false;
-            document.getElementById('sRecovery').checked = false;
-            if (document.getElementById('sFlapping')) {
-                document.getElementById('sFlapping').checked = false;
-            }
-            if (document.getElementById('sScheduled')) {
-                document.getElementById('sScheduled').checked = false;
-            }
-        } else {
-            document.getElementById('sNone').checked = false;
+function uncheckAllS(object)
+{
+    if (object.id == "sNone" && object.checked) {
+        document.getElementById('sWarning').checked = false;
+        document.getElementById('sUnknown').checked = false;
+        document.getElementById('sCritical').checked = false;
+        document.getElementById('sRecovery').checked = false;
+        if (document.getElementById('sFlapping')) {
+            document.getElementById('sFlapping').checked = false;
         }
+        if (document.getElementById('sScheduled')) {
+            document.getElementById('sScheduled').checked = false;
+        }
+    } else {
+        document.getElementById('sNone').checked = false;
     }
+}
+
 </script>

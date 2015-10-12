@@ -828,12 +828,6 @@ $form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
 $form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
 $form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
 
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
-
 $form->addElement('hidden', 'service_id');
 $reg = $form->addElement('hidden', 'service_register');
 $reg->setValue("0");
@@ -890,7 +884,7 @@ $form->addRule("argChecker", _("You must either fill all the arguments or leave 
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 #
-##End of form definition
+## End of form definition
 #
 
 # Smarty template Init
@@ -961,17 +955,12 @@ if ($form->validate() && $from_list_menu == false)	{
     } else {
         $o = null;
     }
-    if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
-    }
-    $form->freeze();
     $valid = true;
- } elseif ($form->isSubmitted()) {
+} elseif ($form->isSubmitted()) {
      $tpl->assign("argChecker", "<font color='red'>". $form->getElementError("argChecker") . "</font>");
- }
+}
 
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+if ($valid) {
     require_once($path."listServiceTemplateModel.php");
  } else {
     # Apply a template definition
