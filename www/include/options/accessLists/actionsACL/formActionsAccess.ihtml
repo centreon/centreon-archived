@@ -8,23 +8,46 @@
 	{/if}
 	</div>
 	<div id='tab1' class='tab'>
-	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>	 	
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>	 	
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_action_name">{$form.acl_action_name.label}</td><td class="FormRowValue">{$form.acl_action_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_description">{$form.acl_action_description.label}</td><td class="FormRowValue">{$form.acl_action_description.html}</td></tr>
 
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/businessmen.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.notification}</h4>
+          </td>
+        </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_linked_groups">{$form.acl_groups.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.acl_groups.html}</p></td></tr>
 	 	
 	 	<!-- Global -->
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.global_access}</td></tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.global_access}</h4>
+          </td>
+        </tr>
 	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_display_top_counter">{$form.top_counter.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.top_counter.html}</p></td></tr>
 	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_top_counter_pollers_statistics">{$form.poller_stats.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.poller_stats.html}</p></td></tr>
 	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_display_poller_listing">{$form.poller_listing.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.poller_listing.html}</p></td></tr>
 
 		<!-- Global External Command -->
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="1"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.global_actions}</td><td class="FormRowValue" ><p class="oreonbutton">{$form.all_engine.html}</p></td></tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="1">
+            <h4>{$form.header.global_actions}</h4>
+          </td>
+          <td class="ListColLvl1_name FormRowValue" >
+            <p class="oreonbutton">{$form.all_engine.html}</p>
+          </td>
+        </tr>
 	 	<tr class="list_one engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_shutdown_nagios">{$form.global_shutdown.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_shutdown.html}</p></td></tr>
 	 	<tr class="list_two engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_restart_nagios">{$form.global_restart.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_restart.html}</p></td></tr>
 	 	<tr class="list_one engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications">{$form.global_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_notifications.html}</p></td></tr>
@@ -39,7 +62,14 @@
 	 	<tr class="list_two engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_performance_data">{$form.global_perf_data.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_perf_data.html}</p></td></tr>
 	 	
 	 	<!-- Services -->
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="1"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.service_actions}</td><td class="FormRowValue" ><p class="oreonbutton">{$form.all_service.html}</p></td></tr>		 	
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="1">
+            <h4>{$form.header.service_actions}</h4>
+          </td>
+          <td class="ListColLvl1_name FormRowValue" >
+            <p class="oreonbutton">{$form.all_service.html}</p>
+          </td>
+        </tr>		 	
 		<tr class="list_one serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_checks_for_a_service">{$form.service_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_checks.html}</p></td></tr>
 		<tr class="list_two serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications_for_a_service">{$form.service_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_notifications.html}</p></td></tr>
 		<tr class="list_one serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_acknowledge_a_service">{$form.service_acknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_acknowledgement.html}</p></td></tr>
@@ -54,7 +84,14 @@
 		<tr class="list_two serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_submit_result_for_a_service">{$form.service_submit_result.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_submit_result.html}</p></td></tr>
 		 
 		<!-- Hosts -->
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="1"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.host_actions}</td><td class="FormRowValue" ><p class="oreonbutton">{$form.all_host.html}</p></td></tr>		
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="1">
+            <h4>{$form.header.host_actions}</h4>
+          </td>
+          <td class="ListColLvl1_name FormRowValue" >
+            <p class="oreonbutton">{$form.all_host.html}</p>
+          </td>
+        </tr>		
 		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_checks_for_a_host">{$form.host_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_checks.html}</p></td></tr>	
 		<tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications_for_a_host">{$form.host_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications.html}</p></td></tr>	
 		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_acknowledge_a_host">{$form.host_acknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_acknowledgement.html}</p></td></tr>
@@ -69,7 +106,11 @@
 		<tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications_services_of_a_host">{$form.host_notifications_for_services.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications_for_services.html}</p></td></tr>
 		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_submit_result_for_a_host">{$form.host_submit_result.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_submit_result.html}</p></td></tr>
 										 	
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.furtherInfos}</h4>
+          </td>
+        </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_status">{$form.acl_action_activate.label}</td><td class="FormRowValue">{$form.acl_action_activate.html}</td></tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
@@ -78,7 +119,6 @@
 	</div>
 	<div id="validForm">
 	{if $o == "a" || $o == "c"}
-		<p>{$form.action.html}</p>
 		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
 		<p class="oreonbutton">{$form.change.html}</p>
@@ -86,6 +126,7 @@
 	</div>
 	{$form.hidden}
 </form>
+{literal}
 <script>
 
     jQuery('input[name=all_service]').change(function(){
@@ -113,6 +154,6 @@
     });
 
 </script>
-
+{/literal}
 
 {$helptext}
