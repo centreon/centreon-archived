@@ -275,24 +275,7 @@ if (($o == "c" || $o == "w") && $host_id) {
     }
 
     $aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId);
-    foreach($aMacros as $key=>$macro){
-        switch($macro['source']){
-            case 'direct' : 
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => '#e00b3d');
-                break;
-            case 'fromTpl' :
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'blue');
-                break;
-            case 'fromCommand' :
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'green');
-                break;
-            case 'fromService' :
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'orange');
-                break;
-            default :
-                break;
-        }
-    }
+
 }
 /*
  * Preset values of macros
