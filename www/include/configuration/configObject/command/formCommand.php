@@ -80,10 +80,31 @@
         }
     }
 
+    $oCommande = new CentreonCommand($pearDB);
+    $aMacroDescription = $oCommande->getMacroDescription($command_id);
+    $sStrMcro = "";
+    $nbRowMacro = 0;
+ 
+    if (count($aMacroDescription) > 0) {
+        foreach ($aMacroDescription as $macro) {
+            $sStrMcro .= "MACRO (".$oCommande->aTypeMacro[$macro['type']] . ") ". $macro['name'] ." : ". $macro['description'] . "\n";
+            $nbRowMacro++;
+        }
+    } else {
+        $macrosHostDesc = $oCommande->match_object($cmd['command_line'], '1');
+        $macrosServiceDesc = $oCommande->match_object($cmd['command_line'], '2');
+       
+        $aMacroDescription = array_merge($macrosServiceDesc, $macrosHostDesc);
+
+        foreach ($aMacroDescription as $macro) {
+            $sStrMcro .= "MACRO (".$oCommande->aTypeMacro[$macro['type']] . ") ". $macro['name'] ." : ". $macro['description'] . "\n";
+            $nbRowMacro++;
+        }
+    }
+
     /*
      * Resource Macro
      */
-
     $resource = array();
     $DBRESULT = $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`");
     while ($row = $DBRESULT->fetchRow()){
@@ -129,7 +150,7 @@
     $attrsTextarea  = array("rows"=>"9", "cols"=>"65", "id"=>"command_line");
     $attrsTextarea2 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfArg");
     $attrsTextarea3 = array("rows"=>"5", "cols"=>"50", "id"=>"command_comment");
-    $attrsTextarea4 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfMacros");
+    $attrsTextarea4 = array("rows"=>"$nbRowMacro", "cols"=>"100", "id"=>"listOfMacros");
 
     /*
      * Form begin
@@ -198,7 +219,8 @@
     $tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
     $form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
     $form->setDefaults(array('action' => '1'));
-    $form->setDefaults(array("listOfArg"=>$strArgDesc));
+    $form->setDefaults(array("listOfArg" => $strArgDesc));
+    $form->setDefaults(array("listOfMacros" => $sStrMcro));
 
     $connectors[NULL] = _("Select a connector...");
     $form->addElement('select', 'resource', null, $resource);
