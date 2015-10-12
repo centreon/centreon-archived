@@ -165,32 +165,32 @@ $form->addElement('header', 'resource', _("Resources access list link"));
 $form->addElement('header', 'actions', _("Action access list link"));
 
 $ams1 = $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc"));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
 $ams1 = $form->addElement('advmultiselect', 'cg_contactGroups', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $contactGroups, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc"));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
 $ams1 = $form->addElement('advmultiselect', 'menuAccess', array(_("Menu access"), _("Available"), _("Selected")), $menus, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc"));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
 $ams1 = $form->addElement('advmultiselect', 'actionAccess', array(_("Actions access"), _("Available"), _("Selected")), $action, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc"));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
 $ams1 = $form->addElement('advmultiselect', 'resourceAccess', array(_("Resources access"), _("Available"), _("Selected")), $resources, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc"));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
@@ -264,15 +264,15 @@ if ($o == "w") {
     /*
      * Modify a Contact Group information
      */
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($group);
  } else if ($o == "a") {
     /*
      * Add a Contact Group information
      */
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
  }
 
 $valid = false;
