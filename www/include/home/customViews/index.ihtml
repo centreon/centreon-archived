@@ -1,5 +1,5 @@
 <div id='globalView'>
-  <div class="toggleEdit edit"><a href="#"><span class="ui-icon ui-icon-pencil"></span></a></div>
+  <div class="toggleEdit edit"><a href="#" title="{$editMode}"><img src="./img/icons/edit-mode.png" class="ico-14"></a></div>
   <!-- Action bar -->
   <div id='actionBar'>
     <!-- Button for add a view -->
@@ -12,7 +12,7 @@
             <table class="table">
               <tr>
                 <td class="FormHeader" colspan="2">
-                  <h3>{$formAddView.header.title}</h3>
+                  <h3 style="color:#88b917;">{$formAddView.header.title}</h3>
                 </td>
               </tr>
               <tr class="list_two">
@@ -55,7 +55,7 @@
             <table class="table">
               <tr>
                 <td class="FormHeader" colspan="2">
-                  <h3>{$formEditView.header.title}</h3>
+                  <h3 style="color:#00bfb3;">{$formEditView.header.title}</h3>
                 </td>
               </tr>
               <tr class="create_field">
@@ -93,14 +93,17 @@
       <button class='shareView btnAction btnExtraAction btc bt_info'>{t}Share view{/t}</button>
       <div class="toggle_wrapper inactive" id="shareView">
         <form {$formShareView.attributes}>
-          <table class="ListTable">
-            <tr class="ListHeader">
-              <td class="FormHeader" colspan="2"><img src='./img/icones/16x16/branch_element.gif'>&nbsp;&nbsp;{$formShareView.header.title}</td>
+          <table class="table">
+            <tr>
+              <td class="FormHeader" colspan="2">
+                <h3 style="color: #00bfb3;">{$formShareView.header.title}</h3>
+              </td>
             </tr>
             <tr class="list_lvl_1">
               <td class="ListColLvl1_name" colspan="2">{$viewerLabel}</td>
             </tr>
-            <tr class='list_one'>
+
+            <tr>
               <td class="FormRowValue" colspan="2">
               {foreach name=viewerId item=viewer from=$viewers}
                 <div id='viewer_{$viewer.user_id}'>
@@ -134,24 +137,29 @@
               </td>
             </tr>
             <tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$formShareView.header.information}</td>
+              <td class="ListColLvl1_name" colspan="2"><h4>{$formShareView.header.information}</h4>
+              </td>
             </tr>
-            <tr class="list_one">
+            <tr>
               <td class="FormRowField">{$formShareView.locked.label}</td>
               <td class="FormRowValue">{$formShareView.locked.html}</td>
             </tr>
-            <tr class="list_two">
-              <td class="FormRowField">{$formShareView.user_id.label}</td>
-              <td class="FormRowValue">{$formShareView.user_id.html}</td>
+            <tr>
+              <td  class="FormRowField FormHeader" colspan="2">{$formShareView.user_id.label}</td>
             </tr>
-            <tr class="list_one">
-              <td class="FormRowField">{$formShareView.usergroup_id.label}</td>
-              <td class="FormRowValue">{$formShareView.usergroup_id.html}</td>
+            <tr>
+              <td class="FormRowValue" colspan="2">{$formShareView.user_id.html}</td>
+            </tr>
+            <tr>
+              <td class="FormRowField FormHeader" colspan="2">{$formShareView.usergroup_id.label}</td>
+            </tr>
+            <tr>
+              <td class="FormRowValue" colspan="2">{$formShareView.usergroup_id.html}</td>
             </tr>
           </table>
           {$formShareView.hidden}
-          <div id="validForm">
-            <p class="oreonbutton">{$formShareView.submit.html}&nbsp;{$formShareView.reset.html}</p>
+          <div class="button_group_center">
+            <p>{$formShareView.submit.html}&nbsp;{$formShareView.reset.html}</p>
           </div>
         </form>
       </div>
@@ -162,25 +170,24 @@
       <button class='addWidget btnAction btnExtraAction btc bt_success'>{t}Add widget{/t}</button>
       <div class="toggle_wrapper inactive" id="addwdgt">
         <form {$formAddWidget.attributes}>
-           <table  class="table">
+           <table  class="table ">
               <tr>
                 <td class="FormHeader" colspan="2">
-                  <h3>{$formAddWidget.header.title}</h3>
+                  <h3 style="color:#88b917;">{$formAddWidget.header.title}</h3>
                 </td>
               </tr>
               <tr>
-                <td class="FormRowField">{$formAddWidget.widget_title.label}</td>
-                <td class="FormRowValue">{$formAddWidget.widget_title.html}</td>
+                <td class="FormRowValue" colspan="2" style="text-align: center;">{$formAddWidget.widget_title.label} {$formAddWidget.widget_title.html}</td>
               </tr>
               <tr>
                 <td colspan="2">
-                  <table class="table">
-                  <tr>
-                    <td class="ListColHeaderPicker"></td>
-                    <td class="ListColHeaderLeft">{t}Title{/t}</td>
-                    <td class="ListColHeaderLeft">{t}Version{/t}</td>
-                    <td class="ListColHeaderLeft">{t}Description{/t}</td>
-                    <td class="ListColHeaderLeft">{t}Author{/t}</td>
+                  <table class="subTable ListTable">
+                  <tr class="ListHeader">
+                    <th class="ListColHeaderPicker"></th>
+                    <th class="ListColHeaderLeft">{t}Title{/t}</th>
+                    <th class="ListColHeaderLeft">{t}Version{/t}</th>
+                    <th class="ListColHeaderLeft">{t}Description{/t}</th>
+                    <th class="ListColHeaderLeft">{t}Author{/t}</th>
                   </tr>
                   {foreach item=elem from=$widgetModels}
                   {cycle values='list_one,list_two' assign=rowStyle}
@@ -217,12 +224,12 @@
     <div class="cntn">
       <button class='setRotate btnAction btnExtraAction btc bt_info'>{t}Rotation{/t}</button>
       <div class="toggle_wrapper inactive" id="rotationTabs">
-        <center>
-          <div id='rotation_timer' style="width: 300px;"></div>
+          <div id='rotation_timer'></div>
           <div id='timer_value'></div>
-          <br/>
-          <input type='button' value='Apply' onClick='submitRotation();'/>
-        </center>
+          <div class="button_group_center">
+
+            <input type='button' value='Apply' class="btc bt_success" onClick='submitRotation();'/>
+          </div>
       </div>
     </div>
   </div>
@@ -238,17 +245,17 @@
 
 </div>
 <div id="deleteViewConfirm">
-  <div>{t}Deleting this view might impact other users. Are you sure you want to do it?{/t}</div>
-  <div style="text-align: center">
+  <p>{t}Deleting this view might impact other users. Are you sure you want to do it?{/t}</p>
+  <div class="button_group_center">
     <button type="button" class="btc bt_danger">{t}Delete{/t}</button>
-    <button type="button" class="btc">{t}Cancel{/t}</button>
+    <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
   </div>
 </div>
 <div id="setDefaultConfirm">
-  <div>{t}Set this view as your default view{/t}</div>
-  <div style="text-align: center">
-    <button type="button" class="btc bt_info">{t}Save{/t}</button>
-    <button type="button" class="btc">{t}Cancel{/t}</button>
+  <p>{t}Set this view as your default view{/t}</p>
+  <div class="button_group_center">
+    <button type="button" class="btc bt_success">{t}Save{/t}</button>
+    <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
   </div>
 </div>
 <script>  

@@ -37,6 +37,22 @@ class CentreonCommand
 {
     protected $_db;
     
+    public $aTypeMacro = array(
+        '1' => 'HOST',
+        '2' => 'SERVICE'
+    );
+    
+    public $aTypeCommand = array(
+            'host'    => array(
+                'key' => '$_HOST', 
+                'preg' => '/\$_HOST(\w+)\$/'
+            ),
+            'service' => array(
+                'key' => '$_SERVICE', 
+                'preg' => '/\$_SERVICE(\w+)\$/'
+            ),
+        );
+    
     /**
      * Constructor
      * 
@@ -124,19 +140,8 @@ class CentreonCommand
     {
         
         $macroToFilter = array("SNMPVERSION","SNMPCOMMUNITY");
-        
-        $aTypeCommand = array(
-            'host'    => array(
-                'key' => '$_HOST', 
-                'preg' => '/\$_HOST(\w+)\$/'
-            ),
-            'service' => array(
-                'key' => '$_SERVICE', 
-                'preg' => '/\$_SERVICE(\w+)\$/'
-            ),
-        );
          
-        if (empty($iIdCommand) || !array_key_exists($sType, $aTypeCommand)) {
+        if (empty($iIdCommand) || !array_key_exists($sType, $this->aTypeCommand)) {
             return array();
         }
         
@@ -146,7 +151,7 @@ class CentreonCommand
             FROM command
             WHERE command_type = 2
             AND command_id = ?
-            AND command_line like '%".$aTypeCommand[$sType]['key']."%'
+            AND command_line like '%".$this->aTypeCommand[$sType]['key']."%'
             ORDER BY command_name";       
         
         $res = $this->_db->query($sql, array($iIdCommand));
@@ -156,7 +161,7 @@ class CentreonCommand
         if ($iWithFormatData == 1) {
              while ($row = $res->fetchRow()) {
                  
-                preg_match_all($aTypeCommand[$sType]['preg'], $row['command_line'], $matches, PREG_SET_ORDER);
+                preg_match_all($this->aTypeCommand[$sType]['preg'], $row['command_line'], $matches, PREG_SET_ORDER);
                 
                 foreach ($matches as $match) {
                     if(!in_array($match[1], $macroToFilter)){
@@ -180,6 +185,7 @@ class CentreonCommand
         return $arr;
         
     }
+    
     /**
      * 
      * @param type $iIdCmd
@@ -187,7 +193,7 @@ class CentreonCommand
      * @return string
      */
     public function getMacroDescription($iIdCmd)
-    { 
+    {
         $aReturn = array();
         $sSql = "SELECT * FROM `on_demand_macro_command` WHERE `command_command_id` = ".intval($iIdCmd);
         
@@ -197,10 +203,82 @@ class CentreonCommand
             $arr['name'] = $row['command_macro_name'];
             $arr['description'] = $row['command_macro_desciption'];
             $arr['type']        = $row['command_macro_type'];
+            
             $aReturn[$row['command_macro_name']] = $arr;
         }
         $DBRESULT->free();
         
         return $aReturn;
+    }
+    
+   /**
+    * This method search macro in commande by name and type 
+    * 
+    * @param array $aMacro
+    * @param string $sType
+    * 
+    * @return array $aReturn
+    */
+   function getMacrosCommand($aMacro, $sType)
+   {
+       $aReturn = array();
+
+       if (count($aMacro) > 0 && array_key_exists($sType, $this->aTypeMacro)) {
+            $sRq = "SELECT * FROM `on_demand_macro_command` WHERE command_macro_type = '".$sType."' "
+                    . " AND command_macro_name IN ('".  implode("', '", $aMacro)."') "; 
+
+            $DBRESULT = $this->_db->query($sRq);
+            while ($row = $DBRESULT->fetchRow()){
+
+                $arr['id']   = $row['command_macro_id'];
+                $arr['name'] = $row['command_macro_name'];
+                $arr['description'] = $row['command_macro_desciption'];
+                $arr['type']        = $sType;
+                $aReturn[] = $arr;
+            }
+            $DBRESULT->free();
+       }
+
+       return $aReturn;
+   }
+   
+   /**
+    * 
+    * @param string $sStr
+    * @param string $sType
+    * @return array
+    */
+    function match_object($sStr, $sType)
+    {
+        $macros = array();
+        $macrosDesc = array();
+
+        if (array_key_exists($sType, $this->aTypeMacro)) {
+
+            preg_match_all($this->aTypeCommand[strtolower($this->aTypeMacro[$sType])]['preg'], $sStr, $matches1, PREG_SET_ORDER);   
+
+            foreach ($matches1 as $match) {
+              $macros[] = $match[1];
+            }
+
+            if (count($macros) > 0) {
+                $macrosDesc = $this->getMacrosCommand($macros, $sType);
+
+                $aNames = array_column($macrosDesc, 'name');
+
+                foreach ($macros as $detail) {
+                    if (!in_array($detail, $aNames) && !empty($detail)) {
+                        $arr['id']          = "";
+                        $arr['name']        = $detail;
+                        $arr['description'] = "";
+                        $arr['type']        = $sType;
+
+                        $macrosDesc[] = $arr;
+                    }
+                }
+            }
+        }
+        
+        return $macrosDesc;
     }
 }

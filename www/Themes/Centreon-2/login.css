@@ -35,6 +35,79 @@
  * 
  */
 
+.login_wrapper {
+    top: 24%;
+    position: relative;
+}
+.logintab{
+    background-color: #fff;
+    border: 1px solid #d1d2d4;
+    border-radius: 4px;
+    width: 254px;
+    margin: 0 auto;
+    padding: 1em;
+}
+
+#logintab1 {
+    width: 100%;
+}
+
+.LoginInvitVersion {
+    padding: 1em 0;
+}
+
+.error_msg {
+    position: absolute;
+    left: 47%;
+    top: 19em;
+}
+
+.msg 	{
+    background-color: #ffe6ec;
+    border: 1px solid #e00b3d;
+    color: #e00b3d;
+    font-weight: bold;
+    margin: 5px auto;
+    padding: 6px;
+    text-align: center;
+    border-radius: 4px;
+    width: 30%;
+}
+
+/* button */
+
+.btc {
+    border-radius: 4px !important;
+    padding: 4px 10px;
+    border: none !important;
+    outline: none !important;
+    color: #fff;
+}
+
+.bt_success {
+    background: #88b917 !important;
+}
+
+.bt_info {
+    background: #00bfb3 !important;
+}
+.button_group {
+    text-align: right;
+    padding: 8px;
+}
+
+.button_group_center {
+    text-align: center;
+    margin: .8em;
+}
+
+.button_group input{
+    padding: 0.4em .8em !important;
+    text-decoration: none;
+    color: #fff !important;
+}
+
+
 /* Link */
 a			{text-decoration:none;}
 a:hover		{text-decoration:underline;}
@@ -42,25 +115,34 @@ a:hover		{text-decoration:underline;}
 body, .msg, #sublogin, #LoginInvitcpy a, #LoginInvitcpy {text-align:center;}
 
 table {empty-cells:show; border-spacing:0px; border-collapse:collapse;font-family:'Bitstream Vera Sans', 'arial', 'Tahoma', 'Sans serif';}
-body, input, textarea, checkbox, select, option, td, .msg, input[type="submit"], label, table {font-family:'Bitstream Vera Sans', 'arial', 'Tahoma', 'Sans serif';font-weight: normal;font-size:11px;}
+body, input, textarea, checkbox, select, option, td, .msg, input[type="submit"], label, table {font-family:'Open Sans', 'arial', 'Tahoma', 'Sans serif';font-weight: normal;font-size:11px;}
+
+label {
+    color: #007f77;
+}
 
 input, textarea, checkbox, select, option, input[type="submit"],body {font-size: 11px;}
 .msg 		{font-size:12px;}
 img 		{border:0;}
-input		{border-style:none;padding:2px;}
+input, select {
+    padding: 4px;
+    font-size: 11px !important;
+    border: 1px solid #bcbdc0;
+    line-height: 18px;
+    width: 100%;
+}
 checkbox	{padding:2px;}
 select		{border-style:none;}
 td			{padding:3px;color:#525252;white-space:nowrap;}
 form		{padding:0px;margin:0px;}
 
-input[type="submit"] {background: url("./Images/bg_input_orange.gif");background-position:0px 0px;color:#000000;}
-
 input[type="submit"] {
-    width:86px;
-    height:22px;
-    border: 0.5px solid gray;
-    vertical-align:middle;
-    text-align:center;
+    margin-top: .5em;
+}
+
+input[type="submit"]:hover {
+    background-color: #00a499 !important;
+    transition: .7s all ease;
 }
 
 #LoginInvit{
@@ -70,22 +152,19 @@ input[type="submit"] {
 	width:200px;
 	text-align: center;
 }
-#logintab1 		{width:290px;}
+
+.LoginInvitLogo {
+    width: 254px;
+    margin: 2em auto;
+}
+
 #logintab2		{width:290px;}
 #logintab2 td	{border:1px;padding:7px;background-color:#eaeaee;}
 #sublogin		{width:200px;}
 
-.LoginInvitVersion	{text-align:left;}
 .LoginInvitDate		{text-align:right;}
 
 #LoginInvitcpy a,  #LoginInvitcpy {color:gray;}
  
 .grayLine					{padding-top:15px;}
-.inputclassic, .inputclassicPass, #logintab2 	{border:1px solid gray;}
-#logintab2 										{border-top: 2px solid gray;border-bottom: 2px solid gray;}
-.inputclassic, .inputclassicPass 				{width:150px;}
-.inputclassic									{padding:2px 2px 3px 18px;background: #FFFFFF url("../../img/icones/16x16/user1.gif") no-repeat scroll 1px 1px;}
-.inputclassicPass								{padding:2px 2px 3px 18px;background: #FFFFFF url("../../img/icones/16x16/key1.gif") no-repeat scroll 1px 1px;}
-.msg, body 										{color:#FFFFFF;}
-.msg											{border: 4px solid white;padding:3px;text-align:center;background-color:red;margin:5px;}
 

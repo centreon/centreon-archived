@@ -32,12 +32,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -913,12 +910,6 @@ $form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
 $form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
 $form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
 
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
-
 $form->addElement('hidden', 'service_id');
 $reg = $form->addElement('hidden', 'service_register');
 $reg->setValue("1");
@@ -942,7 +933,6 @@ if (is_array($select)) {
 
 #
 ## Form Rules
-
 #
 function myReplace() {
     global $form;
@@ -960,8 +950,6 @@ if ($o != "mc") {
         $form->addRule('service_normal_check_interval', _("Required Field"), 'required');
         $form->addRule('service_retry_check_interval', _("Required Field"), 'required');
         $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
-        //$form->addRule('service_notification_interval', _("Required Field"), 'required');
-        //$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
         $form->addRule('service_notifOpts', _("Compulsory Option"), 'required');
         if (!$form->getSubmitValue("service_hPars")) {
             $form->addRule('service_hgPars', _("HostGroup or Host Required"), 'required');
@@ -1072,13 +1060,6 @@ if ($form->validate() && $from_list_menu == false) {
         }
     }
     $o = "w";
-    $form->addElement(
-        "button",
-        "change",
-        _("Modify"),
-        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&service_id=" . $serviceObj->getValue() . "'")
-    );
-    $form->freeze();
     $valid = true;
 } elseif ($form->isSubmitted()) {
     $tpl->assign("argChecker", "<font color='red'>" . $form->getElementError("argChecker") . "</font>");
@@ -1086,8 +1067,8 @@ if ($form->validate() && $from_list_menu == false) {
 }
 
 require_once $path . 'javascript/argumentJs.php';
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+
+if ($valid) {
     if ($p == "60201") {
         require_once($path . "listServiceByHost.php");
     } elseif ($p == "60202") {

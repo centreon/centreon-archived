@@ -9,11 +9,12 @@ function loadDescription(id)
         popDescription += '<div>'+ fromTpl +'</div>';
     }
     
-    var popin = jQuery('<div/>',{html : popDescription});
+    var popin = jQuery('<div/>',{html : popDescription}).css('position','relative');
     popin.appendTo('body');
     
     jQuery("#macroDescription_"+id)[0].myPopin = popin;
     popin.centreonPopin("open");
+    popin.parent().addClass('fixedDiv');
 }
 
 function closePop(id)

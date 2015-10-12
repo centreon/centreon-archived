@@ -155,8 +155,8 @@ $tpl = initSmartyTpl($path.'centstorage/', $tpl);
 $form->setDefaults($gopt);
 		$centreon->initOptGen($pearDB);
 
-$subC = $form->addElement('submit', 'submitC', _("Save"));
-$form->addElement('reset', 'reset', _("Reset"));
+$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 $valid = false;
 
 if ($form->validate())	{
