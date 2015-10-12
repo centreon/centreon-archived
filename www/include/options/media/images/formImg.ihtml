@@ -1,13 +1,17 @@
 {$form.javascript}
 <form {$form.attributes}>
 	<div id='tab1' class='tab'>
-	 <table class="ListTable">
+	 <table class="formTable table">
 		{if $o == "w"}
 			{assign var=cols value=3}
 		{else}
 			{assign var=cols value=2}
 		{/if}
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="{$cols}"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="{$cols}">
+            <h4>{$form.header.title}</h4>
+          </td>
+        </tr>
 		{if $o == "ci" || $o == "w"}
 			<tr class="list_one">
 				{if $o == "w"}
@@ -40,13 +44,12 @@
 		</tr>
 		
 		{if $o == "a" || $o == "ci"}
-			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
 	</table>
 	</div>
 	<div id="validForm">
 	{if $o == "a"}
-		<p>{$form.action.html}</p>
 		<p>{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.cancel.html}</p>
 	{elseif $o == "ci"}
 		<p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.cancel.html}</p>
@@ -55,5 +58,6 @@
 	{/if}
 	</div>
 	{$form.hidden}
-</form>{$helptext}
+</form>
+{$helptext}
 
