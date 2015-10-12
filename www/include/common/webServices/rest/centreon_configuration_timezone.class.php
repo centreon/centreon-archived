@@ -37,52 +37,26 @@
  */
 
 global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
+//require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
-class CentreonConfigurationHosttemplate extends CentreonConfigurationObjects
+class CentreonConfigurationTimezone extends CentreonConfigurationObjects
 {
-    
     /**
-     *
-     * @var type 
-     */
-    protected $pearDBMonitoring;
-
-    /**
-     * 
+     * Constructor
      */
     public function __construct()
     {
         parent::__construct();
-        $brk = new CentreonBroker($this->pearDB);
-        if ($brk->getBroker() == 'broker') {
-            $this->pearDBMonitoring = new CentreonDB('centstorage');
-        } else {
-            $this->pearDBMonitoring = new CentreonDB('ndo');
-        }
     }
     
     /**
      * 
-     * @param array $args
      * @return array
      */
     public function getList()
     {
-        global $centreon;
-        
-        $userId = $centreon->user->user_id;
-        $isAdmin = $centreon->user->admin;
-        $aclHosts = '';
-        
-        /* Get ACL if user is not admin */
-        if (!$isAdmin) {
-            $acl = new CentreonACL($userId, $isAdmin);
-            $aclHosts .= 'AND h.host_id IN (' . $acl->getHostsString('ID', $this->pearDBMonitoring) . ') ';
-        }
-        
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -90,20 +64,18 @@ class CentreonConfigurationHosttemplate extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
         
-        $queryHost = "SELECT DISTINCT h.host_name, h.host_id "
-            . "FROM host h "
-            . "WHERE h.host_register = '0' "
-            . "AND h.host_name LIKE '%$q%' "
-            . $aclHosts
-            . "ORDER BY h.host_name";
+        $queryTimezone = "SELECT timezone_id, timezone_name "
+            . " FROM timezone "
+            . " WHERE timezone_name LIKE '%$q%' "
+            . " ORDER BY timezone_name";
         
-        $DBRESULT = $this->pearDB->query($queryHost);
+        $DBRESULT = $this->pearDB->query($queryTimezone);
         
-        $hostList = array();
+        $timezoneList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $hostList[] = array('id' => htmlentities($data['host_id']), 'text' => $data['host_name']);
+            $timezoneList[] = array('id' => $data['timezone_id'], 'text' => $data['timezone_name']);
         }
         
-        return $hostList;
+        return $timezoneList;
     }
 }

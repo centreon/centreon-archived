@@ -95,7 +95,7 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
             $trapCompleteName = $data['name'] . ' - ' . $data['traps_name'];
             $trapCompleteId = $data['traps_id'];
             
-            $trapList[] = array('id' => htmlentities($trapCompleteId), 'text' => htmlentities($trapCompleteName));
+            $trapList[] = array('id' => htmlentities($trapCompleteId), 'text' => $trapCompleteName);
         }
         
         return $trapList;

@@ -155,6 +155,13 @@ class CentreonContact
                 $parameters['relationObject']['field'] = 'contactgroup_cg_id';
                 $parameters['relationObject']['comparator'] = 'contact_contact_id';
                 break;
+             case 'contact_location':
+                $parameters['type'] = 'simple';
+                $parameters['externalObject']['table'] = 'timezone';
+                $parameters['externalObject']['id'] = 'timezone_id';
+                $parameters['externalObject']['name'] = 'timezone_name';
+                $parameters['externalObject']['comparator'] = 'timezone_id';
+                break;
         }
         
         return $parameters;
