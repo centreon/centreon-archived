@@ -1,9 +1,17 @@
 {$form.javascript}
 {$colorJS}
 <form {$form.attributes}>
-<table class="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$genOpt_debug_options}</td></tr>
- 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;{$form.header.debug}</td></tr>
+<table class="formTable table">
+ 	<tr class="ListHeader">
+      <td class="FormHeader" colspan="2">
+        <h3>| {$genOpt_debug_options}</h3>
+      </td>
+    </tr>
+ 	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.debug}</h4>
+      </td>
+    </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_logs_directory">{$form.debug_path.label}</td><td class="FormRowValue">{$form.debug_path.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_authentication_debug">{$form.debug_auth.label}</td><td class="FormRowValue">{$form.debug_auth.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_nagios_import_debug">{$form.debug_nagios_import.label}</td><td class="FormRowValue">{$form.debug_nagios_import.html}</td></tr>
@@ -13,7 +21,7 @@
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_centcore_debug">{$form.debug_centcore.label}</td><td class="FormRowValue">{$form.debug_centcore.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_centstorage_debug">{$form.debug_centstorage.label}</td><td class="FormRowValue">{$form.debug_centstorage.html}</td></tr>
 	 <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_centreontrapd_debug">{$form.debug_centreontrapd.label}</td><td class="FormRowValue">{$form.debug_centreontrapd.html}</td></tr>
-	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
 </table>
 {if !$valid}
 	<div id="validForm" class="oreonbutton">
