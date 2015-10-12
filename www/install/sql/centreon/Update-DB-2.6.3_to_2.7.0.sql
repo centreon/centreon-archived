@@ -85,3 +85,139 @@ DELETE FROM topology WHERE topology_page IN ('60902', '60903', '60707', '60804')
 DELETE FROM topology WHERE topology_page IS NULL AND topology_name LIKE 'Plugins' AND topology_url IS NULL;
 DELETE FROM topology WHERE topology_page IS NULL AND topology_name LIKE 'NDOutils' AND topology_url IS NULL;
 
+
+--Migrate timezones
+
+-- Europe/London +00:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Europe/London') where contact_location = 0;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Europe/London') where host_location = 0;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Europe/London')  where `key` ='gmt' AND `value` = '0';
+
+-- Europe/Paris +01:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Europe/Paris') where contact_location = 1;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Europe/Paris') where host_location = 1;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Europe/Paris')  where `key` ='gmt' AND `value` = '1';
+
+-- Europe/Athens +02:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Europe/Athens') where contact_location = 2;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Europe/Athens') where host_location = 2;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Europe/Athens')  where `key` ='gmt' AND `value` = '2';
+
+-- Europe/Moscow +03:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Europe/Moscow') where contact_location = 3;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Europe/Moscow') where host_location = 3;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Europe/Moscow')  where `key` ='gmt' AND `value` = '3';
+
+-- Asia/Dubai +04:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Asia/Dubai') where contact_location = 4;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Asia/Dubai') where host_location = 4;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Asia/Dubai')  where `key` ='gmt' AND `value` = '4';
+
+-- Indian/Kerguelen +05:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Indian/Kerguelen') where contact_location = 5;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Indian/Kerguelen') where host_location = 5;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Indian/Kerguelen')  where `key` ='gmt' AND `value` = '5';
+
+-- Asia/Novosibirsk +06:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Asia/Novosibirsk') where contact_location = 6;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Asia/Novosibirsk') where host_location = 6;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Asia/Novosibirsk')  where `key` ='gmt' AND `value` = '6';
+
+-- Asia/Bangkok +07:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Asia/Bangkok') where contact_location = 7;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Asia/Bangkok') where host_location = 7;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Asia/Bangkok')  where `key` ='gmt' AND `value` = '7';
+
+-- Asia/Hong_Kong +08:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Asia/Hong_Kong') where contact_location = 8;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Asia/Hong_Kong') where host_location = 8;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Asia/Hong_Kong')  where `key` ='gmt' AND `value` = '8';
+
+-- Asia/Tokyo +09:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Asia/Tokyo') where contact_location = 9;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Asia/Tokyo') where host_location = 9;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Asia/Tokyo')  where `key` ='gmt' AND `value` = '9';
+
+-- Australia/Brisbane +10:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Australia/Brisbane') where contact_location = 10;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Australia/Brisbane') where host_location = 10;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Australia/Brisbane')  where `key` ='gmt' AND `value` = '10';
+
+-- Australia/Melbourne +11:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Australia/Melbourne') where contact_location = 11;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Australia/Melbourne') where host_location = 11;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Australia/Melbourne')  where `key` ='gmt' AND `value` = '11';
+
+-- Pacific/Wallis +12:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Pacific/Wallis') where contact_location = 12;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Pacific/Wallis') where host_location = 12;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Pacific/Wallis')  where `key` ='gmt' AND `value` = '12';
+
+-- Pacific/Auckland +13:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Pacific/Auckland') where contact_location = 13;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Pacific/Auckland') where host_location = 13;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Pacific/Auckland')  where `key` ='gmt' AND `value` = '13';
+
+-- Pacific/Apia +14:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Pacific/Apia') where contact_location = 14;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Pacific/Apia') where host_location = 14;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Pacific/Apia')  where `key` ='gmt' AND `value` = '14';
+
+-- Atlantic/Azores -01:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Atlantic/Azores') where contact_location = -1;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Atlantic/Azores') where host_location = -1;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Atlantic/Azores')  where `key` ='gmt' AND `value` = '-1';
+
+-- America/Sao_Paulo -02:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'America/Sao_Paulo') where contact_location = -2;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'America/Sao_Paulo') where host_location = -2;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'America/Sao_Paulo')  where `key` ='gmt' AND `value` = '-2';
+
+-- America/Argentina/Buenos_Aires -03:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'America/Argentina/Buenos_Aires') where contact_location = -3;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'America/Argentina/Buenos_Aires') where host_location = -3;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'America/Argentina/Buenos_Aires')  where `key` ='gmt' AND `value` = '-3';
+
+--America/Guyana -04:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'America/Guyana') where contact_location = -4;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'America/Guyana') where host_location = -4;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'America/Guyana')  where `key` ='gmt' AND `value` = '-4';
+
+-- America/New_York -05:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'America/New_York') where contact_location = -5;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'America/New_York') where host_location = -5;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'America/New_York')  where `key` ='gmt' AND `value` = '-5';
+
+-- America/Mexico_City -06:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'America/Mexico_City') where contact_location = -6;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'America/Mexico_City') where host_location = -6;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'America/Mexico_City')  where `key` ='gmt' AND `value` = '-6';
+
+-- America/Denver -07:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'America/Denver') where contact_location = -7;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'America/Denver') where host_location = -7;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'America/Denver')  where `key` ='gmt' AND `value` = '-7';
+
+-- America/Los_Angeles -08:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'America/Los_Angeles') where contact_location = -8;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'America/Los_Angeles') where host_location = -8;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'America/Los_Angeles')  where `key` ='gmt' AND `value` = '-8';
+
+-- America/Yakutat -09:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'America/Yakutat') where contact_location = -9;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'America/Yakutat') where host_location = -9;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'America/Yakutat')  where `key` ='gmt' AND `value` = '-9';
+
+-- Pacific/Honolulu -10:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Pacific/Honolulu') where contact_location = -10;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Pacific/Honolulu') where host_location = -10;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Pacific/Honolulu')  where `key` ='gmt' AND `value` = '-10';
+
+-- Pacific/Pago_Pago -11:00
+update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Pacific/Pago_Pago') where contact_location = -11;
+update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Pacific/Pago_Pago') where host_location = -11;
+update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Pacific/Pago_Pago')  where `key` ='gmt' AND `value` = '-11';
+
+--Migrate default timezone
+update `contact` set `contact_location` = (select `value` from `options` where `key` ='gmt')  where contact_location IS Null;
+update `host` set `host_location` = (select `value` from `options` where `key` ='gmt')  where host_location IS Null;

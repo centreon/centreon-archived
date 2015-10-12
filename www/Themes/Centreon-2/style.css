@@ -104,6 +104,12 @@ iframe {
     text-overflow: ellipsis;
 }
 
+.subTable {
+    margin: 4px 8px;
+    width: auto !important;
+    line-height: 18px;
+}
+
 p.description {
     color: #a7a9ac;
     padding: 4px 0px;
@@ -111,6 +117,37 @@ p.description {
 
 p.description a, p.description a:visited {
     color: #4ccaff;
+}
+
+/* ------ slider ------------*/
+
+#rotation_timer {
+    width: 180px !important;;
+    margin: 12px 10px !important;;
+    background-color: #f1f1f1 !important;;
+    border: 1px solid #bcbdc0 !important;;
+}
+
+.ui-slider .ui-slider-handle {
+    width: 8px !important;
+    height: 8px !important;
+    background: #bcbdc0 !important;
+    border: 1px solid #a7a9ac !important;
+    z-index: 3 !important;
+    border-radius: 4px !important;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+    top: -0.3em !important;
+}
+
+.ui-slider-horizontal {
+    height: .2em !important;
+}
+
+#timer_value {
+    text-align: center;
+    color: #00bfb3;
 }
 
 /* ------ Select 2 ---------*/
@@ -286,6 +323,11 @@ a.btc {
 .button_group {
     text-align: right;
     padding: 8px;
+}
+
+.button_group_center {
+    text-align: center;
+    margin: .8em;
 }
 
 .button_group input{
@@ -619,7 +661,7 @@ div.menuLeft {
 .toggle_wrapper {
     position: absolute;
     background-color: #fff;
-    top: 6em;
+    top: 5.4em;
     z-index: 1;
     //width: 40%;
     border: 1px solid #d1d2d4;
@@ -837,7 +879,17 @@ div.pagination 		{margin-left:40%;}
 }
 
 /* Warning */
-.msg 	{background-color:red;border:1px solid #000;color:#FFF;font-weight:400;margin:5px;padding:3px;text-align:center;}
+.msg 	{
+    background-color: #ffe6ec;
+    border: 1px solid #e00b3d;
+    color: #e00b3d;
+    font-weight: bold;
+    margin: 5px auto;
+    padding: 6px;
+    text-align: center;
+    border-radius: 4px;
+    width: 30%;
+}
 #centreonMsg 	{
     top:50px;
     height:20px;
@@ -962,7 +1014,8 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 
 
 }
-.ListHeader td 	{
+.ListHeader td,
+.ListHeader th {
     padding: 8px 4px !important;
     font-weight:700;
     height:18px;
@@ -1175,10 +1228,10 @@ ul.no-deco-list {
 }
 
 .clonehandle {
-    margin-top: -5px;
+   /* margin-top: -5px;
     margin-right: 10px;
     cursor: move;
-    float: right;
+    float: right;*/
 }
 
 .cloneremove {
@@ -1265,18 +1318,37 @@ span.state_badge {
 
 /* Style for popin */
 .centreon-popin {
-  position: absolute;
-  z-index: 1010;
-  background-color: white;
-  padding: 10px 20px;
+    position: absolute;
+    z-index: 1010;
+    background-color: white;
+    padding: 1em;
+    border-radius: 4px;
+    border: 1px solid #a7a8ac;
 }
 
-.centreon-popin .close {
-  float: right;
+.popin-wrapper {
+    position: relative;
+}
+
+.popin-wrapper .button_group_center {
+    margin-bottom: 0 !important;
+}
+
+.popin-wrapper p {
+    color: #555;
+}
+
+.popin-wrapper a.close {
+    position: absolute;
+    top: -2em;
+    right: -2em;
+    z-index: 1020;
+    background-color: #fff;
+    border-radius: 30px;
 }
 
 .centreon-popin-overlay {
-  opacity: 0.7;
+  opacity: 0.1;
   position: fixed;
   width: 100%;
   height: 100%;
