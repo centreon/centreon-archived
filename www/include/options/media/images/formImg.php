@@ -86,7 +86,7 @@
 		$form->addElement('autocomplete', 'directories', _("Existing or new directory"), $dir_ids, array('id' => 'directories'));
 		$form->addElement('select', 'list_dir', "", $dir_list_sel, array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;'));
  		$file = $form->addElement('file', 'filename', _("Image or archive"));
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
 	} else if ($o == "ci") {
 		$form->addElement('header', 'title', _("Modify Image"));
 		$form->addElement('text', 'img_name', _("Image Name"), $attrsText);
@@ -94,7 +94,7 @@
 		$list_dir = $form->addElement('select', 'list_dir', "", $dir_list_sel, array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;'));
 		$list_dir->setSelected($dir['dir_id']);
  		$file = $form->addElement('file', 'filename', _("Image"));
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
 		$form->setDefaults($img);
 		$form->addRule('img_name', _("Compulsory image name"), 'required');
 	} else if ($o == "w") {
@@ -103,10 +103,10 @@
 		$form->addElement('text', 'img_path', $img_path, NULL);
 		$form->addElement('autocomplete', 'directories', _("Directory"), $dir_ids, array('id', 'directories'));
  		$file = $form->addElement('file', 'filename', _("Image"));
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ci&img_id=".$img_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ci&img_id=".$img_id."'"), array("class" => "btc bt_success"));
 		$form->setDefaults($img);
 	}
-	$form->addElement("button", "cancel", _("Cancel"), array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
+	$form->addElement("button", "cancel", _("Cancel"), array("onClick"=>"javascript:window.location.href='?p=".$p."'"), array("class" => "btc bt_default"));
 
 	$form->addElement('textarea', 'img_comment', _("Comments"), $attrsTextarea);
 
