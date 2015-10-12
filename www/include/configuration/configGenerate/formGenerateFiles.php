@@ -104,7 +104,7 @@ $redirect->setValue($o);
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$sub = $form->addElement('button', 'submit', _("Export"), array('id' => 'exportBtn', 'onClick' => 'generationProcess();'));
+$sub = $form->addElement('button', 'submit', _("Export"), array('id' => 'exportBtn', 'onClick' => 'generationProcess();', 'class' => 'btc bt_success'));
 $msg = NULL;
 $stdout = NULL;
 

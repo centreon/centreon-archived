@@ -56,8 +56,6 @@ $form->addElement('header', 'title', _("Modify Centcore options"));
 /*
  * Centcore Options
  */
-$form->addElement('checkbox', 'enable_perfdata_sync', _("Enable Perfdata Synchronisation"));
-$form->addElement('checkbox', 'enable_logs_sync', _("Enable Logs Synchronisation"));
 $form->addElement('checkbox', 'enable_broker_stats', _("Enable Broker Statistics Collection"));
 $form->addElement('text', 'centcore_cmd_timeout', _("Timeout value for Centcore commands"), $attrsText2);
 $form->addRule('centcore_cmd_timeout', _('Must be a number'), 'numeric');
@@ -76,8 +74,8 @@ $tpl = initSmartyTpl($path . "/centcore", $tpl);
 
 $form->setDefaults($gopt);
 
-$subC = $form->addElement('submit', 'submitC', _("Save"));
-$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
+$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+$DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 // prepare help texts
 $helptext = "";
