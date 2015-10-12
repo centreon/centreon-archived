@@ -1,5 +1,7 @@
 <?php
 
+require_once "@CENTREON_ETC@/centreon.conf.php";
+
 require_once dirname(__FILE__) . '/backend.class.php';
 require_once dirname(__FILE__) . '/abstract/object.class.php';
 require_once dirname(__FILE__) . '/abstract/objectXML.class.php';
@@ -33,6 +35,8 @@ class Generate {
     private $poller_cache = array();
     private $backend_instance = null;
     private $current_poller = null;
+    private $installed_modules = null;
+    private $module_objects = null;
     
     public function __construct() {
         $this->backend_instance = Backend::getInstance();
@@ -121,14 +125,17 @@ class Generate {
         Connector::getInstance()->reset();
         Resource::getInstance()->reset();
         Correlation::getInstance()->reset();
+        $this->resetModuleObjects();
     }
     
     private function configPoller() {
         $this->backend_instance->initPath($this->current_poller['id']);
         $this->backend_instance->setPollerId($this->current_poller['id']);
         $this->resetObjectsEngine();
+
         Host::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
         Engine::getInstance()->generateFromPoller($this->current_poller);
+        $this->generateModuleObjects();
         $this->backend_instance->movePath($this->current_poller['id']);
 
         $this->backend_instance->initPath($this->current_poller['id'], 2);
@@ -170,6 +177,54 @@ class Generate {
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             $this->current_poller = $value;
             $this->configPollerFromId($this->current_poller['id']);
+        }
+    }
+
+    public function getInstalledModules() {
+        if (!is_null($this->installed_modules)) {
+            return $this->installed_modules;
+        }
+        $this->installed_modules = array();
+        $stmt = $this->backend_instance->db->prepare("SELECT name FROM modules_informations");
+        $stmt->execute();
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
+            $this->installed_modules[] = $value['name'];
+        }
+    }
+
+    public function getModuleObjects() {
+        $this->getInstalledModules();
+
+        global $centreon_path;
+
+        foreach ($this->installed_modules as $module) {
+            if ($files = glob($centreon_path . 'www/modules/' . $module . '/generate_files/*.class.php')) {
+                foreach ($files as $full_file) {
+                    require_once $full_file;
+                    $file_name = str_replace('.class.php', '', basename($full_file));
+                    if (class_exists(ucfirst($file_name))) {
+                        $this->module_objects[] = ucfirst($file_name);
+                    }
+                }
+            }
+        }
+    }
+
+    public function generateModuleObjects() {
+        if (is_null($this->module_objects)) {
+            $this->getModuleObjects();
+        }
+        foreach ($this->module_objects as $module_object) {
+            $module_object::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
+        }
+    }
+
+    public function resetModuleObjects() {
+        if (is_null($this->module_objects)) {
+            $this->getModuleObjects();
+        }
+        foreach ($this->module_objects as $module_object) {
+            $module_object::getInstance()->reset();
         }
     }
 }

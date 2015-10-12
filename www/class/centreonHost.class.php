@@ -1174,6 +1174,13 @@ class CentreonHost
                 $parameters['relationObject']['field'] = 'service_service_id';
                 $parameters['relationObject']['comparator'] = 'host_host_id';
                 break;
+            case 'host_location':
+                $parameters['type'] = 'simple';
+                $parameters['externalObject']['table'] = 'timezone';
+                $parameters['externalObject']['id'] = 'timezone_id';
+                $parameters['externalObject']['name'] = 'timezone_name';
+                $parameters['externalObject']['comparator'] = 'timezone_id';
+                break;
         }
         
         return $parameters;

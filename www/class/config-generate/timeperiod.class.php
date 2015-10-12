@@ -37,7 +37,7 @@ class Timeperiod extends AbstractObject {
     );
     protected $stmt_extend = array('include' => null, 'exclude' => null);
     
-    private function getTimeperiods() {        
+    public function getTimeperiods() {        
         $stmt = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
             FROM timeperiod

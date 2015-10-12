@@ -147,7 +147,7 @@ abstract class AbstractHost extends AbstractObject {
         if (!is_null($host['host_snmp_community']) && $host['host_snmp_community'] != '') {
             $host['macros']['_SNMPCOMMUNITY'] = $host['host_snmp_community'];
         }
-        if (!is_null($host['host_snmp_version'])) {
+        if (!is_null($host['host_snmp_version']) && $host['host_snmp_version'] != 0) {
             $host['macros']['_SNMPVERSION'] = $host['host_snmp_version'];
         }
         
