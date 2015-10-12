@@ -210,8 +210,8 @@ if (version_compare('1.4.0', $version, '>')) {
 
 $form->setDefaults($gopt);
 
-$subC = $form->addElement('submit', 'submitC', _("Save"));
-$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
+$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+$DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 $valid = false;
 if ($form->validate())	{
