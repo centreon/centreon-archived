@@ -8,10 +8,18 @@
 	{/if}
 	</div>
 	<div id='tab1' class='tab'>
-	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/user1_message.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
 	 	
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>
 		<tr class="list_one"><td class="FormRowField">{$form.contact_name.label}</td><td class="FormRowValue">{$form.contact_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.contact_alias.label}</td><td class="FormRowValue">{$form.contact_alias.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
@@ -24,7 +32,11 @@
 		</tr>
                 <tr class="list_two"><td class="FormRowField">{$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.contact_js_effects.label}</td><td class="FormRowValue">{$form.contact_js_effects.html}</td></tr>
-                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src="./img/icones/16x16/gear.gif">&nbsp;{t}UI notifications{/t}</td></tr>
+                <tr class="list_lvl_1">
+                  <td class="ListColLvl1_name" colspan="2">
+                    <h4>{t}UI notifications{/t}</h4>
+                  </td>
+                </tr>
                 <tr class="list_one"><td class="FormRowField">{$form.monitoring_host_notification_0.label}</td><td class="FormRowValue">{$form.monitoring_host_notification_0.html}</td></tr>
                 <tr class="list_two"><td class="FormRowField">{$form.monitoring_host_notification_1.label}</td><td class="FormRowValue">{$form.monitoring_host_notification_1.html}</td></tr>
                 <tr class="list_one"><td class="FormRowField">{$form.monitoring_host_notification_2.label}</td><td class="FormRowValue">{$form.monitoring_host_notification_2.html}</td></tr>
@@ -40,7 +52,7 @@
                 <tr class="list_one"><td class="FormRowField">{$form.monitoring_sound_svc_notification_2.label}</td><td class="FormRowValue">{$form.monitoring_sound_svc_notification_2.html}</td></tr>
                 <tr class="list_two"><td class="FormRowField">{$form.monitoring_sound_svc_notification_3.label}</td><td class="FormRowValue">{$form.monitoring_sound_svc_notification_3.html}</td></tr>
 		{if $o == "c"}
-			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
 	</table>
 	<div id="validForm">
