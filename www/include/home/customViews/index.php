@@ -151,8 +151,7 @@ try {
     $formEditView->addElement('header', 'information', _("General Information"));
 
     $template->assign('editMode', _("Show/Hide edit mode"));
-Tu es chaude en ce jour ^^^^
-It's ghgetting Hot In Here
+
     /**
      * Name
      */

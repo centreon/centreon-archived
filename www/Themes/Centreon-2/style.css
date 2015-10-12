@@ -1228,10 +1228,10 @@ ul.no-deco-list {
 }
 
 .clonehandle {
-    margin-top: -5px;
+   /* margin-top: -5px;
     margin-right: 10px;
     cursor: move;
-    float: right;
+    float: right;*/
 }
 
 .cloneremove {
