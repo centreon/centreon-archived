@@ -1043,10 +1043,16 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 }
 .ListTableMedium 		{width:60%;}
 .ListTableSmall 		{width:40%;}
-.ListTableSmallArg 		{width:60%;}
+.ListTableSmallArg 		{
+    width: 100%;
+    border-width: 0px;;
+}
+table.ListTableSmallArg td {
+    padding: 2px 0px;
+}
 .ListTableMultiTp 		{border-width:0;width:100%;}
-.ListTable,.ListTableMedium,.ListTableSmall,.ListTableSmallArg,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
-.ListTable,.ListTableMedium,.ListTableSmall,.ListTableSmallArg {border-width:1px;}
+.ListTable,.ListTableMedium,.ListTableSmall,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
+.ListTable,.ListTableMedium,.ListTableSmall {border-width:1px;}
 .ListTable td,.ListTableMedium td,.ListTableSmall td,.ListTableSmallArg {padding-bottom:2px;padding-top:2px;}
 
 .tab .ListTableMedium {
@@ -1148,8 +1154,12 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .ToolbarTR td:first-child {
     width: 40%;
 }
-.ToolbarTR select { height: 25px; line-height: 25px; }
-.ToolbarTR a.btc { display: inline-block; height: 25px; line-height: 25px; padding: 0 4px; }
+.ToolbarTR select {
+    height: 25px;
+    line-height: 25px;
+    float: left;
+}
+.ToolbarTR a.btc { display: inline-block; height: 25px; line-height: 25px; padding: 0 1px; }
 .ToolbarPagination	{text-align:center;}
 
 .Toolbar_TDSelectAction_Top {
