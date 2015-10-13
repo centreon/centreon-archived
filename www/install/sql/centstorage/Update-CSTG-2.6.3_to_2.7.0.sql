@@ -16,4 +16,6 @@ ALTER TABLE log_snmptt ENGINE=InnoDB;
 ALTER TABLE metrics ENGINE=InnoDB;
 ALTER TABLE statistics ENGINE=InnoDB;
 
+ALTER TABLE centreon_acl DROP COLUMN host_name;
+ALTER TABLE centreon_acl DROP COLUMN service_description;
 
