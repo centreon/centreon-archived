@@ -42,14 +42,10 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
-
 	$SearchStr = "";
-	if (isset($search)) {
+    $search = "";
+	if (isset($_POST['searchACLR']) && $_POST['searchACLR']) {
+        $search = $_POST['searchACLR'];
 		$SearchStr = " WHERE (acl_res_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_res_alias LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
 	}
 	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_resources" . $SearchStr);
@@ -173,6 +169,7 @@
 	$o2->setSelected(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchACLR', $search);
 
 	/*
 	 * Apply a template definition
