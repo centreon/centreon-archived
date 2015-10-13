@@ -632,7 +632,7 @@ if ($form->validate() && $from_list_menu == false) {
     $valid = true;
 }
 
-if ($valid {
+if ($valid) {
     require_once($path . "listContact.php");
 } else {
 # Apply a template definition
