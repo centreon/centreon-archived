@@ -160,6 +160,10 @@ class Host extends AbstractHost {
         # For applied on services without severity
         $this->hosts[$host_id_arg]['severity_id_for_services'] = $severity_instance->getHostSeverityById($severity_id);
     }
+
+    public function addHost($host_id, $attr = array()) {
+        $this->hosts[$host_id] = $attr;
+    }
     
     private function getHosts($poller_id) {        
         # We use host_register = 1 because we don't want _Module_* hosts

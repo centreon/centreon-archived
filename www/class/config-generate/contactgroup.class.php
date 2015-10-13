@@ -4,8 +4,8 @@ class Contactgroup extends AbstractObject {
     private $use_cache = 1;
     private $done_cache = 0;
     private $cg_service_linked_cache = array();
-    private $cg_cache = array();
-    private $cg = null;
+    protected $cg_cache = array();
+    protected $cg = null;
     protected $generate_filename = 'contactgroups.cfg';
     protected $object_name = 'contactgroup';
     protected $attributes_select = '
@@ -24,7 +24,7 @@ class Contactgroup extends AbstractObject {
     protected $stmt_contact = null;
     protected $stmt_cg_service = null;
     
-    private function getCgCache() {
+    protected function getCgCache() {
         $stmt = $this->backend_instance->db->prepare("SELECT 
                     $this->attributes_select
                 FROM contactgroup
@@ -49,7 +49,7 @@ class Contactgroup extends AbstractObject {
         }
     }
     
-    private function buildCache() {
+    protected function buildCache() {
         if ($this->done_cache == 1) {
             return 0;
         }
@@ -84,7 +84,7 @@ class Contactgroup extends AbstractObject {
         return $this->cg_service_linked_cache[$service_id];
     }
     
-    private function getCgFromId($cg_id) {
+    public function getCgFromId($cg_id) {
         if (is_null($this->stmt_cg)) {
             $this->stmt_cg = $this->backend_instance->db->prepare("SELECT 
                     $this->attributes_select
@@ -96,9 +96,10 @@ class Contactgroup extends AbstractObject {
         $this->stmt_cg->execute();
         $results = $this->stmt_cg->fetchAll(PDO::FETCH_ASSOC);
         $this->cg[$cg_id] = array_pop($results);
+        return $this->cg[$cg_id];
     }
     
-    protected function getContactFromCgId($cg_id) {
+    public function getContactFromCgId($cg_id) {
         if (!isset($this->cg[$cg_id]['members_cache'])) {
             if (is_null($this->stmt_contact)) {
                 $this->stmt_contact = $this->backend_instance->db->prepare("SELECT 
