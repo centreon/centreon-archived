@@ -29,6 +29,7 @@ require_once dirname(__FILE__) . '/resource.class.php';
 require_once dirname(__FILE__) . '/engine.class.php';
 require_once dirname(__FILE__) . '/broker.class.php';
 require_once dirname(__FILE__) . '/correlation.class.php';
+require_once dirname(__FILE__) . '/timezone.class.php';
 
 class Generate {
     private $generate_index_data = 1;
@@ -134,8 +135,8 @@ class Generate {
         $this->resetObjectsEngine();
 
         Host::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
-        Engine::getInstance()->generateFromPoller($this->current_poller);
         $this->generateModuleObjects();
+        Engine::getInstance()->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
         $this->backend_instance->initPath($this->current_poller['id'], 2);

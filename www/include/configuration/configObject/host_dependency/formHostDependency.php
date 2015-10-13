@@ -275,7 +275,7 @@ if ($form->validate())	{
 
 if ($valid) {
 	require_once("listHostDependency.php");
-} else {
+} else {
 	/*
 	 * Apply a template definition
 	 */

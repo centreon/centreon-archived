@@ -262,6 +262,7 @@ class Engine extends AbstractObject {
     );
     protected $stmt_engine = null;
     protected $stmt_broker = null;
+    protected $add_cfg_files = array();
     
     private function buildCfgFile($poller_id) {
         $this->engine['cfg_dir'] = preg_replace('/\/$/', '', $this->engine['cfg_dir']);
@@ -292,6 +293,10 @@ class Engine extends AbstractObject {
             $value['cfg_file'][] = $value['path'] . '/meta_timeperiod.cfg';
             $value['cfg_file'][] = $value['path'] . '/meta_host.cfg';
             $value['cfg_file'][] = $value['path'] . '/meta_services.cfg';
+
+            foreach ($this->add_cfg_files as $add_cfg_file) {
+                $value['cfg_file'][] =  $value['path'] . '/' . $add_cfg_file;
+            }
         }
     }
     
@@ -369,6 +374,10 @@ class Engine extends AbstractObject {
         Resource::getInstance()->generateFromPollerId($poller['id']);
         
         $this->generate($poller['id']);
+    }
+
+    public function addCfgPath($cfg_path) {
+        $this->add_cfg_files[] = $cfg_path;
     }
 }
 

@@ -1086,7 +1086,7 @@ if ($o == "w") {
      * Just watch a host information
      */
     if (!$min && $centreon->user->access->page($p) != 2)
-        $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&host_id=" . $host_id . "'"));
+        $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&host_id=" . $host_id . "'", "class" => "btc bt_default"));
     $form->setDefaults($host);
     $form->freeze();
 } else if ($o == "c") {
@@ -1161,9 +1161,8 @@ if ($form->validate() && $from_list_menu == false) {
 } elseif ($form->isSubmitted()) {
     $tpl->assign("macChecker", "<i style='color:red;'>" . $form->getElementError("macChecker") . "</i>");
 }
-$action = $form->getSubmitValue("action");
 
-if ($valid && $action["action"]) {
+if ($valid) {
     require_once ($path . "listHost.php");
 } else {
     /*

@@ -13,7 +13,7 @@ class Host extends AbstractHost {
     protected $stmt_service = null;
     protected $stmt_service_sg = null;
     protected $generated_parentship = array();
-    
+
     private function getHostGroups(&$host) {
         if (!isset($host['hg'])) {
             if (is_null($this->stmt_hg)) {
@@ -183,6 +183,10 @@ class Host extends AbstractHost {
         $this->getImages($host);
         $this->getMacros($host);
         $host['macros']['_HOST_ID'] = $host['host_id'];
+        /*
+        $oTimezone = Timezone::getInstance();
+        $host['timezone'] = " : ". $oTimezone->getTimezoneFromId($host['host_location']);
+        */
         $this->getHostTemplates($host);
         $this->getHostCommands($host);
         $this->getHostPeriods($host);
@@ -230,7 +234,7 @@ class Host extends AbstractHost {
     public function getGeneratedParentship() {
         return $this->generated_parentship;
     }
-    
+     
     public function reset() {
         $this->hosts_by_name = array();
         $this->hosts = null;
