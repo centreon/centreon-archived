@@ -609,7 +609,7 @@ class CentreonService
         
         foreach ($aListTemplate as $template) {
             if (!empty($template)) {
-                $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_template_model_stm_id'],$template);
+                $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_id'],$template);
             }
         }
         //Get macro attached to the command        
