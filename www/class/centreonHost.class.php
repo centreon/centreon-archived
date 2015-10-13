@@ -907,8 +907,8 @@ class CentreonHost
         $macroArray = $this->getCustomMacro(null,'realKeys');
         $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
         $aListTemplate = array();
-        foreach($form['tpSelect'] as $templates){
-            $tmpTpl = array_merge(array(array('host_id' => $templates)),$this->getTemplateChain($templates, array(), -1, false));
+        foreach($form['tpSelect'] as $template){
+            $tmpTpl = array_merge(array(array('host_id' => $template, 'host_name' => $this->getHostName($template))),$this->getTemplateChain($template, array(), -1, false));
             $aListTemplate = array_merge($aListTemplate,$tmpTpl);
         }
         
@@ -1014,6 +1014,118 @@ class CentreonHost
 
     }
     
+    private function comparaPriority($macroA,$macroB,$getFirst = true){
+        
+        $arrayPrio = array('direct' => 3,'fromTpl' => 2,'fromCommand' => 1);
+        if($getFirst){
+            if($arrayPrio[$macroA['source']] > $arrayPrio[$macroB['source']]){
+                return $macroA;
+            }else{
+                return $macroB;
+            }
+        }else{
+            if($arrayPrio[$macroA['source']] >= $arrayPrio[$macroB['source']]){
+                return $macroA;
+            }else{
+                return $macroB;
+            }
+        }
+    }
+    
+    public function macro_unique($aTempMacro)
+    {
+        
+        $storedMacros = array();
+        foreach($aTempMacro as $TempMacro){
+            $sInput = $TempMacro['macroInput_#index#'];
+            $storedMacros[$sInput][] = $TempMacro;
+        }
+        
+        $finalMacros = array();
+        foreach($storedMacros as $key=>$macros){
+            $choosedMacro = array();
+            foreach($macros as $macro){
+                $choosedMacro = $this->comparaPriority($macro,$choosedMacro);
+            }
+            if(!empty($choosedMacro)){
+                $finalMacros[] = $choosedMacro;
+            }
+        }
+        $this->addInfosToMacro($storedMacros,&$finalMacros);
+        return $finalMacros;
+    }
+    
+    private function addInfosToMacro($storedMacros,&$finalMacros){
+        
+        foreach($finalMacros as &$finalMacro){
+            $sInput = $finalMacro['macroInput_#index#'];
+            $this->setInheritedDescription(&$finalMacro,$this->getInheritedDescription($storedMacros[$sInput],$finalMacro));
+            switch($finalMacro['source']){
+                case 'direct' :
+                    $this->setTplValue($this->findTplValue($storedMacros[$sInput]),&$finalMacro);
+                    break;
+                case 'fromTpl' : 
+                    break;
+                case 'fromCommand' :
+                    break;
+                default :
+                    break;
+            }
+            
+        }
+    }
+    
+    private function getInheritedDescription($storedMacros,$finalMacro){
+        if(empty($finalMacro['macroDescription'])){
+            $choosedMacro = array();
+            foreach($storedMacros as $storedMacro){
+                if(!empty($storedMacro['macroDescription'])){
+                    $choosedMacro = $this->comparaPriority($storedMacro,$choosedMacro);
+                    $description = $choosedMacro['macroDescription'];
+                }
+            }
+        }else{
+            $description = $finalMacro['macroDescription'];
+        }
+        return $description;
+    }
+    
+    private function setInheritedDescription(&$finalMacro,$description){
+        $finalMacro['macroDescription_#index#'] = $description;
+        $finalMacro['macroDescription'] = $description;
+    }
+    
+    private function setTplValue($tplValue,&$finalMacro){
+        
+        if($tplValue){
+            $finalMacro['macroTplValue_#index#'] = $tplValue;
+            $finalMacro['macroTplValToDisplay_#index#'] = 1;
+        }else{
+            $finalMacro['macroTplValue_#index#'] = "";
+            $finalMacro['macroTplValToDisplay_#index#'] = 0;
+        }
+    }
+    
+    private function findTplValue($storedMacro,$getFirst = true){
+        if($getFirst){
+            foreach($storedMacro as $macros){
+                if($macros['source'] == 'fromTpl'){
+                    return $macros['macroValue_#index#'];
+                } 
+            }
+        }else{
+            $macroReturn = false;
+            foreach($storedMacro as $macros){
+                if($macros['source'] == 'fromTpl'){
+                    $macroReturn = $macros['macroValue_#index#'];
+                } 
+            }
+            return $macroReturn;
+        }
+        return false;
+    }
+    
+    
     
     
     /**
@@ -1022,6 +1134,7 @@ class CentreonHost
      * @param array $aTempMacro
      * @return array
      */
+    /*
     function macro_unique($aTempMacro)
     {
         $aFinalMacro = array();
@@ -1062,7 +1175,7 @@ class CentreonHost
             }
         }
         return $aFinalMacro;
-    }
+    }*/
     
     /**
      * 

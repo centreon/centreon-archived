@@ -52,6 +52,10 @@ class Service extends AbstractService {
         $stmt->execute();
         $this->service_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
     }
+
+    public function addServiceCache($service_id, $attr = array()) {
+        $this->service_cache[$service_id] = $attr;
+    }
     
     private function getServiceFromId($service_id) {
         if (is_null($this->stmt_service)) {
@@ -208,7 +212,7 @@ class Service extends AbstractService {
         }
     }
     
-    private function addGeneratedServices($host_id, $service_id) {
+    public function addGeneratedServices($host_id, $service_id) {
         if (!isset($this->generated_services[$host_id])) {
             $this->generated_services[$host_id] = array();
         }
