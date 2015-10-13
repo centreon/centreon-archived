@@ -134,8 +134,8 @@ class Generate {
         $this->resetObjectsEngine();
 
         Host::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
-        Engine::getInstance()->generateFromPoller($this->current_poller);
         $this->generateModuleObjects();
+        Engine::getInstance()->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
         $this->backend_instance->initPath($this->current_poller['id'], 2);
