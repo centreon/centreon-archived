@@ -32,15 +32,12 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 
-if (!isset($oreon))
+if (!isset($centreon)) {
     exit();
-
+}
 
 if (!$oreon->user->admin) {
     if ($host_id && false === strpos($aclHostString, "'" . $host_id . "'")) {
@@ -275,24 +272,7 @@ if (($o == "c" || $o == "w") && $host_id) {
     }
 
     $aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId);
-    foreach($aMacros as $key=>$macro){
-        switch($macro['source']){
-            case 'direct' : 
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => '#e00b3d');
-                break;
-            case 'fromTpl' :
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'blue');
-                break;
-            case 'fromCommand' :
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'green');
-                break;
-            case 'fromService' :
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'orange');
-                break;
-            default :
-                break;
-        }
-    }
+
 }
 /*
  * Preset values of macros
@@ -1002,12 +982,6 @@ $form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
 $form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
 $form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
 
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
-
 $form->addElement('hidden', 'host_id');
 $reg = $form->addElement('hidden', 'host_register');
 $reg->setValue("1");
@@ -1030,7 +1004,6 @@ if (is_array($select)) {
 /*
  * Form Rules
  */
-
 function myReplace() {
     global $form;
     return (str_replace(" ", "_", $form->getSubmitValue("host_name")));
@@ -1184,9 +1157,6 @@ if ($form->validate() && $from_list_menu == false) {
         }
     }
     $o = "w";
-    if ($centreon->user->access->page($p) != 2)
-        $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&host_id=" . $hostObj->getValue() . "'"));
-    $form->freeze();
     $valid = true;
 } elseif ($form->isSubmitted()) {
     $tpl->assign("macChecker", "<i style='color:red;'>" . $form->getElementError("macChecker") . "</i>");

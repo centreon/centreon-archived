@@ -31,12 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -247,12 +244,6 @@ $hcActivation[] = HTML_QuickForm::createElement('radio', 'hc_activate', null, _(
 $form->addGroup($hcActivation, 'hc_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('hc_activate' => '1'));
 
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
-
 $form->addElement('hidden', 'hc_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -334,13 +325,10 @@ if ($form->validate())	{
         updateHostCategoriesInDB($hcObj->getValue());
     $o = NULL;
     $hcObj = $form->getElement('hc_id');
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hc_id=".$hcObj->getValue()."'"));
-    $form->freeze();
     $valid = true;
 }
 
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+if ($valid) {
     require_once($path."listHostCategories.php");
 } else	{
     /*

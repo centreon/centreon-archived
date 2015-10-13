@@ -69,7 +69,7 @@
 			</td>
 			<td class="FormRowValue">
 				{$form.hiddenArg.html}{$argChecker}
-				<div id='dynamicDiv' style='padding-top:0px;border:1px;border-color:#AAA;'></div>
+				<div id='dynamicDiv'></div>
 			</td>
 		</tr>
 		{/if}

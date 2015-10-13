@@ -273,12 +273,6 @@ $form->addGroup($sgActivation, 'sg_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('sg_activate' => '1'));
 $form->addElement('textarea', 'sg_comment', _("Comments"), $attrsTextarea);
 
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
-
 $form->addElement('hidden', 'sg_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -348,16 +342,14 @@ if ($form->validate())	{
     else if ($form->getSubmitValue("submitC"))
         updateServiceGroupInDB($sgObj->getValue());
     $o = NULL;
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sgObj->getValue()."'"));
-    $form->freeze();
     $valid = true;
 }
 $action = $form->getSubmitValue("action");
 
-if ($valid && $action["action"])
-require_once($path."listServiceGroup.php");
-else	{
-#Apply a template definition
+if ($valid) {
+    require_once($path."listServiceGroup.php");    
+} else {
+    // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

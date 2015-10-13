@@ -31,12 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -168,12 +165,6 @@ $sc_activate[] = HTML_QuickForm::createElement('radio', 'sc_activate', null, _("
 $form->addGroup($sc_activate, 'sc_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('sc_activate' => '1'));
 
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action'=>'1'));
-
 $form->addElement('hidden', 'sc_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -264,13 +255,10 @@ if ($form->validate() && $from_list_menu == false)	{
     else if ($form->getSubmitValue("submitC"))
         updateServiceCategorieInDB($cctObj->getValue());
     $o = NULL;
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$cctObj->getValue()."'"));
-    $form->freeze();
-    $valid = true;
+   $valid = true;
 }
 
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"])
+if ($valid)
     require_once($path."listServiceCategories.php");
 else	{
     /*
