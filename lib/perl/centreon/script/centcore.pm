@@ -1,5 +1,5 @@
 ################################################################################
-# Copyright 2005-2013 Centreon
+# Copyright 2005-2015 Centreon
 # Centreon is developped by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
 # 
@@ -28,7 +28,6 @@
 # exception to your version of the program, but you are not obliged to do so. If you
 # do not wish to do so, delete this exception statement from your version.
 # 
-#
 ####################################################################################
 
 package centreon::script::centcore;
@@ -165,10 +164,10 @@ sub reload {
     }
     
     if ($self->{centreon_config}->{centreon_db} ne $self->{centreon_dbc}->db() ||
-         $self->{centreon_config}->{db_host} ne $self->{centreon_dbc}->host() ||
-         $self->{centreon_config}->{db_user} ne $self->{centreon_dbc}->user() ||
-         $self->{centreon_config}->{db_passwd} ne $self->{centreon_dbc}->password() ||
-         $self->{centreon_config}->{db_port} ne $self->{centreon_dbc}->port()) {
+        $self->{centreon_config}->{db_host} ne $self->{centreon_dbc}->host() ||
+        $self->{centreon_config}->{db_user} ne $self->{centreon_dbc}->user() ||
+        $self->{centreon_config}->{db_passwd} ne $self->{centreon_dbc}->password() ||
+        $self->{centreon_config}->{db_port} ne $self->{centreon_dbc}->port()) {
         $self->{logger}->writeLogInfo("Database config had been modified");
         $self->{centreon_dbc}->disconnect();
         $self->{centreon_dbc}->db($self->{centreon_config}->{centreon_db});
@@ -192,34 +191,6 @@ sub moveCmdFile($){
         $self->{logger}->writeLogError("Cannot move $cmdfile to ".$cmdfile."_read");
         return(0);
     }
-}
-
-############################################
-## Get all perfdata files
-#
-sub GetAllNagiosServerPerfData {
-    my $self = shift;
-
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `localhost` = '0' AND `ns_activate` = '1'");
-    if ($status == -1) {
-        $self->{logger}->writeLogError("Error when getting server properties");
-        return -1;
-    }
-    while (my $data = $sth->fetchrow_hashref()) {
-        if (!$self->{stop}) {
-            return ;
-        }
-        if ($self->{perfdataSync} == 1) {
-            $self->GetPerfData($data->{id});
-        }
-        if ($self->{logSync} == 1) {
-            $self->GetLogFile($data->{id});
-        }
-        if ($self->{enable_broker_stats} == 1) {
-            $self->getBrokerStats($data->{id});
-        }
-    }
-    return 0;
 }
 
 ###########################################
@@ -322,26 +293,6 @@ sub getServerConfig($){
     return $data;
 }
 
-#####################################
-## Get perfdata file path
-#
-sub getPerfDataFile($$){
-    my $self = shift;
-    my ($filename);
-    my ($poller_id) = @_;
-
-    # Create request
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `nagios_perfdata` FROM `nagios_server` WHERE `id` = '".$poller_id."' LIMIT 1");
-    if ($status == -1) {
-        $self->{logger}->writeLogError("Error when getting perfdata file");
-        return "";
-    }
-    my $data = $sth->fetchrow_hashref();
-    $filename = $data->{'nagios_perfdata'};
-
-    return $filename;
-}
-
 ##################################
 ## Check SSH Port Value
 #
@@ -394,9 +345,9 @@ sub sendExternalCommand($$){
                 $self->{logger}->writeLogError("Cannot write external command on central server : \"".$cmd."\"");
             }
         } else {
-	    $cmd =~ s/\'/\'\\\'\'/g;
+	        $cmd =~ s/\'/\'\\\'\'/g;
             $self->{logger}->writeLogInfo("External command : ".$server_info->{ns_ip_address}." ($id) : \"".$cmd."\"");
-	    $cmd2 = "$self->{ssh} -q ". $server_info->{ns_ip_address} ." -p $port \"$self->{echo} '".$cmd."' >> ".$command_file."\"";
+	        $cmd2 = "$self->{ssh} -q ". $server_info->{ns_ip_address} ." -p $port \"$self->{echo} '".$cmd."' >> ".$command_file."\"";
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2,
                                                                   logger => $self->{logger},
                                                                   timeout => $self->{cmd_timeout}
@@ -409,7 +360,6 @@ sub sendExternalCommand($$){
         if (defined($stdout) && $stdout){
             $self->{logger}->writeLogInfo("Result : $stdout");
         }
-
     } else {
         $self->{logger}->writeLogError("Ip address not defined for poller $id");
     }
@@ -429,90 +379,6 @@ sub waitPipe($) {
         }
     }
     return 0;
-}
-
-
-#######################################
-## Get perfdata on a specific poller
-#
-sub GetPerfData($){
-    my $self = shift;
-    # init Values
-    my ($id) = @_;
-    my ($lerror, $stdout, $cmd);
-
-    # Get Server Infos
-    my $server_info = $self->getServerConfig($id);
-    my $port = checkSSHPort($server_info->{ssh_port});;
- 
-    my $distantconnexion = $server_info->{ns_ip_address};
-
-    # Where is perfdata file on remote poller 
-    my $distantperffile = $self->getPerfDataFile($id);
-    my $distantperffile_buffer = $distantperffile . ".buff";
-
-    if (!defined($distantperffile_buffer) || !$distantperffile_buffer) {
-        $self->{logger}->writeLogError("perfdata file not configured for poller $id ($distantconnexion)");
-        return;
-    }
-
-    # Build destination directory reserved for this poller
-    my $localbasevardir = $self->{centreon_config}->{VarLib} . "/perfdata/$id";
-
-    # check if directory exists
-    if (!-d $localbasevardir) {
-        mkpath $localbasevardir;
-    }
-
-    my $localtmpperffile = "$localbasevardir/service-perfdata";
-    my $localperffile = $self->getPerfDataFile($self->getLocalServerID());
-    my $move_cmd = "rm -f $distantperffile_buffer 2> /dev/null; cp $distantperffile $distantperffile_buffer 2> /dev/null ; echo \"# New File\" > $distantperffile";
-
-    # Get Perfdata file
-    if (!defined($distantperffile)) {
-        $self->{logger}->writeLogError("Cannot get perfdata file. Unkown perfdata file on poller $id");
-        return ;
-    }
-    
-    # Rename perfdata file
-    $cmd = "$self->{ssh} ". $server_info->{ns_ip_address} ." -p $port '".$move_cmd."'";
-    $self->{logger}->writeLogDebug($cmd);
-    
-    ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                          logger => $self->{logger},
-                                                          timeout => 120
-                                                          );
-    if (defined($stdout) && $stdout){
-        $self->{logger}->writeLogInfo("Result : $stdout");
-    }
-
-    # Get Perfdata File
-    $self->{logger}->writeLogDebug("$self->{scp} -P $port $distantconnexion:$distantperffile_buffer $localtmpperffile");
-    $cmd = "$self->{scp} -P $port $distantconnexion:$distantperffile_buffer $localtmpperffile 2>> /dev/null";
-    ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                          logger => $self->{logger},
-                                                          timeout => 300
-                                                          );
-    if (defined($stdout) && $stdout){
-        $self->{logger}->writeLogInfo("Result : $stdout");
-    }
-
-    # Write data from distant poller on local file for centstorage
-    if (-f $localtmpperffile){
-        # Concat poller perfdata to central perfdata.
-        $self->{logger}->writeLogDebug("cat $localtmpperffile >> $localperffile");
-        $cmd = "cat $localtmpperffile >> $localperffile";
-        
-        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                              logger => $self->{logger},
-                                                              timeout => 300
-                                                             );
-
-        # Remove old file
-        if (!unlink($localtmpperffile)) {
-            $self->{logger}->writeLogError("Cannot Remove performance data file : $localtmpperffile");
-        }
-    }
 }
 
 ##
@@ -545,103 +411,6 @@ sub checkRotation($$$$$) {
                                                               timeout => 120
                                                               );
         $self->{logger}->writeLogInfo("Info: copied rotated file for instance $instanceId");
-    }
-}
-
-##################################
-## Get Log files on the specific 
-## poller
-#
-sub GetLogFile($) {
-    my $self = shift;
-    # Init values
-    my $id = $_[0];
-    my $last_access;
-    my ($lerror, $stdout, $cmd);
-
-    # Get Server informations
-    my $server_info = $self->getServerConfig($id);
-    my $port = checkSSHPort($server_info->{ssh_port});
-    
-    # Check configuration
-    my $distantconnexion = $server_info->{ns_ip_address};
-    if (!defined($distantconnexion)) {
-        $self->{logger}->writeLogError("IP address not defined for poller $id");
-        return -1;
-    }
-
-    # Set local directory
-    my $localDir = $self->{centreon_config}->{VarLib} . "/log/$id/";
-
-    # Create tmp directory
-    mkpath $localDir if (!-d $localDir);
-
-    # Get logs if dir exists
-    if (-d $localDir) {
-        # Get distant log file path
-        my $distantlogfile = $self->getNagiosConfigurationField($id, "log_file");;
-        my $locallogfile = $localDir."nagios.log";
-
-        # check if we can do the transfert
-        if (defined($distantconnexion) && defined($distantlogfile)) {
-            # Check if nagios.log file is up to date
-            my $flag;
-            if (-f $localDir.".nagios.log.flag") {
-                # Cet old flag
-                $cmd = "cat " . $localDir . ".nagios.log.flag";
-                ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                                      logger => $self->{logger},
-                                                                      timeout => 120
-                                                                      );
-                $stdout =~ s/\n//g;
-
-                $self->checkRotation($id, $stdout, $distantconnexion, $locallogfile, $port);
-
-                # Check update 
-                $cmd = "$self->{ssh} -p $port -q $distantconnexion 'stat  -c \'STAT_RESULT=%Y\' $distantlogfile'";
-                $self->{logger}->writeLogDebug("Get Log Files - stat: $cmd");
-                
-                ($lerror, my $last_access) = centreon::common::misc::backtick(command => $cmd,
-                                                                              logger => $self->{logger},
-                                                                              timeout => 120
-                                                                              );
-                
-                $last_access =~ /STAT_RESULT=(\d+)/;
-                $last_access = $1;
-                $self->{logger}->writeLogDebug("Get Log File - stat: Finished");
-
-                # Check buffer
-                if ($stdout !~ $last_access) {
-                    $flag = 1;
-                } else {
-                    $flag = 0;
-                }
-            } else {
-                $flag = 1;
-            }
-
-            if ($flag == 1) {
-                # Get file with rsync
-                $cmd = "$self->{scp} -P $port $distantconnexion:$distantlogfile $locallogfile > /dev/null";
-                ($lerror, $stdout, my $exit_code) = centreon::common::misc::backtick(command => $cmd,
-                                                                                     logger => $self->{logger},
-                                                                                     timeout => 300,
-                                                                                     wait_exit => 1
-                                                                                     );
-                $self->{logger}->writeLogDebug($cmd);
-                if (($exit_code >> 8) != 0) {
-                    $self->{logger}->writeLogError("Cannot get log file or log file doesn't exists on poller $id");
-                }
-            }
-            # Update or create time buffer
-            $cmd = "echo '$last_access' > ".$localDir.".nagios.log.flag";
-            ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                                  logger => $self->{logger},
-                                                                  timeout => $self->{cmd_timeout}
-                                                                  );
-        }
-    } else {
-        $self->{logger}->writeLogError("Unable to create $localDir. Can get nagios log file for poller $id");
     }
 }
 
@@ -827,53 +596,6 @@ sub testConfig($) {
     $self->{logger}->writeLogInfo("Test Config Result: $stdout");
 }
 
-###################################
-## Sync engine Logs Archives in the 
-## central Server 
-#
-sub syncArchives($) {
-    my $self = shift;
-    my $id = $_[0];
-    my ($lerror, $stdout, $cmd);
-
-    # Get configuration
-    my $ns_server = $self->getServerConfig($id);
-    my $port = checkSSHPort($ns_server->{ssh_port});
-
-    if ($id != 0) {
-        $self->{logger}->writeLogInfo("Begin synchronize all archives of poller " . $id);
-        # Sync Archive for one poller
-        if (! -d $self->{centreon_config}->{VarLib} . "/log/".$ns_server->{id}."/archives/") {
-            if (! -d $self->{centreon_config}->{VarLib} . "/log/".$ns_server->{id}."/archives/") {
-                mkpath $self->{centreon_config}->{VarLib} . "/log/".$ns_server->{id}."/archives/";
-            }
-        }
-        my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$id."' AND `nagios_activate` = '1'");
-        if ($status == -1) {
-            $self->{logger}->writeLogError("Can't get archive path for poller ".$ns_server->{id}." (".$ns_server->{ns_address_ip}.")");
-            return ;
-        }
-        my $data = $sth->fetchrow_hashref();
-        # Archive Sync
-        $cmd = "$self->{rsyncWT} --port=$port -c ". $ns_server->{ns_ip_address}. ":".$data->{log_archive_path}."/*.log $self->{centreon_config}->{VarLib}/log/".$ns_server->{id}."/archives/ 2>> /dev/null";
-        $self->{logger}->writeLogDebug($cmd);
-        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                              logger => $self->{logger},
-                                                              timeout => 300
-                                                              );
-    } else {
-        # synchronize Archives for all pollers
-        my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
-        if ($status == -1) {
-            return ;
-        }
-        $self->{logger}->writeLogInfo("Receive Order to synchronize all archives of all pollers");
-        while (my $server = $sth->fetchrow_hashref()) {
-            $self->syncArchives($server->{'id'});
-        }
-    }
-}
-
 ##################################
 ## Get Monitoring Engine.
 #
@@ -1003,8 +725,6 @@ sub parseRequest($){
         $self->initCentreonTrapd($1, 'restart');
     } elsif ($action =~ /^RELOADCENTREONTRAPD\:([0-9]*)/){
         $self->initCentreonTrapd($1, 'reload');
-    } elsif ($action =~ /^SYNCARCHIVES\:([0-9]*)/){
-        $self->syncArchives($1);
     } elsif ($action =~ /^EXTERNALCMD\:([0-9]*)\:(.*)/){
         $self->storeCommands($1, $2);
     } elsif ($action =~ /^GETINFOS\:([0-9]*)/){
@@ -1148,8 +868,7 @@ sub run {
             
             # Check debug Flag
             $self->checkDebugFlag();
-
-            $self->GetAllNagiosServerPerfData();        
+                  
             $self->{timeSyncPerf} = time();
         }
 
