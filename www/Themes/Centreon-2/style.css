@@ -960,10 +960,19 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
     vertical-align: middle;
     padding: 2px 0px;
 }
+
 .ajaxOption h4 {
     color: #007f77;
 }
 
+.ajaxOption .divider hr {
+  margin: 10px 0;
+}
+
+.ajaxOption .checkbox h4 {
+  display: inline-block;
+  margin-left: 5px;
+}
 
 /* Taktical Overview */
 .SubTableTactical table {margin:3px;}

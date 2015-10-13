@@ -18,15 +18,15 @@
       <td><input type='text' name='search_output' value="{$search_output}" /></td>
       <td><input type='text' name='search_author' value="{$search_author}" /></td>
     </tr>
-  </tbody>
-</table>
-<br />
-<table class="ajaxOption table">
+    <tr class="divider">
+      <td colspan="4"><hr></td>
+    </tr>
 	<tr>
-        <td><h4>{$ViewAll}</h4><input type='checkbox' name='view_all' {if $view_all == '1'}checked{/if} /></td>
-        <td><h4>{$ViewDowntimeCycle}</h4><input type='checkbox' name='view_downtime_cycle' {if $view_downtime_cycle == '1'}checked{/if} /></td>
-        <td><input type='submit' name='SearchB' value='{$Search}' class="btc bt_success" /></td>
+        <td class="checkbox"><input type='checkbox' name='view_all' {if $view_all == '1'}checked{/if} /> <h4>{$ViewAll}</h4></td>
+        <td class="checkbox"><input type='checkbox' name='view_downtime_cycle' {if $view_downtime_cycle == '1'}checked{/if} /> <h4>{$ViewDowntimeCycle}</h4></td>
+        <td colspan="2" class="actions"><input type='submit' name='SearchB' value='{$Search}' class="btc bt_success" /></td>
 	</tr>
+  </tbody>
 </table>
 <br/>
 <hidden name="p" value='{$p}'>	
@@ -38,7 +38,7 @@
                         <option value="cs">{$cancel}</option>
                         <option value="ds">{$delete}</option>
                     </select>
-                    {if $msgs}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
+                    {if $msgs}<a class="btc bt_success" href="{$msgs.addL}">{$msgs.addT}</a>{/if}
             </td>
             {php}
             include('./include/common/pagination.php');
@@ -102,6 +102,7 @@
                     <option value="cs">{$cancel}</option>
                     <option value="ds">{$delete}</option>
                 </select>
+                {if $msgs}<a class="btc bt_success" href="{$msgs.addL}">{$msgs.addT}</a>{/if}
         </td>
 	{php}
 	   include('./include/common/pagination.php');
