@@ -50,21 +50,21 @@
 
             <div class="Toolbar_TDSelectAction_Top">
                 <span class="consol_button">
-                    <a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');">
+                    <div id="JS_monitoring_refresh" style="cursor:pointer" onclick="javascript:monitoring_refresh('');">
                         <img src='./img/icons/refresh.png' title='Refresh'>
-                    </a>
+                    </div>
                 </span>
                 <span class="consol_button">
-                    <a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');">
+                    <div id="JS_monitoring_play" style="cursor:pointer" class="cachediv"  onclick="javascript:monitoring_play('');">
                         <img src='./img/icons/media_play.png' title='Play'>
-                    </a>
+                    </div>
                 </span>
 
                 <span class="consol_button"><img id="JS_monitoring_play_gray" src='./img/icons/media_play_gray.png' class="ico-20" title='Play'></span>
                 <span class="consol_button">
-                    <a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');">
+                    <div class="" id="JS_monitoring_pause" style="cursor:pointer" onclick="javascript:monitoring_pause('');">
                         <img src='./img/icons/media_pause.png' title='Pause'>
-                    </a>
+                    </div>
                 </span>
                 <span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icons/media_pause_gray.png' title='Pause'></span>
             </div>
