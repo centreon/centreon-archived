@@ -26,7 +26,8 @@ class Contact extends AbstractObject {
         contact_address5 as address5,
         contact_address6 as address6,
         contact_enable_notifications as enable_notifications,
-        contact_register as register
+        contact_register as register,
+        contact_location
     ';
     protected $attributes_write = array(
         'name',
@@ -45,6 +46,7 @@ class Contact extends AbstractObject {
         'host_notification_options',
         'service_notification_options',
         'register',
+        'timezone'
     );
     protected $attributes_default = array(
         'host_notifications_enabled',
@@ -194,6 +196,10 @@ class Contact extends AbstractObject {
         $period = Timeperiod::getInstance();
         $this->contacts[$contact_id]['host_notification_period'] = $period->generateFromTimeperiodId($this->contacts[$contact_id]['host_notification_period_id']);
         $this->contacts[$contact_id]['service_notification_period'] = $period->generateFromTimeperiodId($this->contacts[$contact_id]['service_notification_period_id']);
+        /*
+        $oTimezone = Timezone::getInstance();
+        $this->contacts[$contact_id]['timezone'] = " : ". $oTimezone->getTimezoneFromId($this->contacts[$contact_id]['contact_location']);
+         */
         
         $this->generateObjectInFile($this->contacts[$contact_id], $contact_id);
         return $this->contacts[$contact_id]['register'] == 1 ? $this->contacts[$contact_id]['contact_name'] : $this->contacts[$contact_id]['name'];

@@ -292,7 +292,7 @@ try {
 }
 $modeEdit = 'undefined';
 if (isset($_SESSION['customview_edit_mode'])) {
-    $modeEdit = $_SESSION['customview_edit_mode'] ? 'true' : 'false';
+    $modeEdit = $_SESSION['customview_edit_mode'] == "true" ? 'true' : 'false';
 }
 ?>
 <script type="text/javascript">
