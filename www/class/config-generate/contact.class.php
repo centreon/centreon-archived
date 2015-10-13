@@ -4,8 +4,8 @@ class Contact extends AbstractObject {
     private $use_cache = 1;
     private $done_cache = 0;
     private $contacts_service_linked_cache = array();
-    private $contacts_cache = array();
-    private $contacts = array();
+    protected $contacts_cache = array();
+    protected $contacts = array();
     protected $generate_filename = 'contacts.cfg';
     protected $object_name = 'contact';
     protected $attributes_select = '
@@ -109,7 +109,7 @@ class Contact extends AbstractObject {
         return $this->contacts_service_linked_cache[$service_id];
     }
     
-    private function getContactFromId($contact_id) {
+    protected function getContactFromId($contact_id) {
         if (is_null($this->stmt_contact)) {
             $this->stmt_contact = $this->backend_instance->db->prepare("SELECT 
                     $this->attributes_select
@@ -149,7 +149,7 @@ class Contact extends AbstractObject {
         }        
     }
     
-    private function buildCache() {
+    protected function buildCache() {
         if ($this->done_cache == 1) {
             return 0;
         }
