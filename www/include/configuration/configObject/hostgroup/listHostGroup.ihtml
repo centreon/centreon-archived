@@ -2,13 +2,18 @@
 
 <form name='form' method='POST'>
     <table class="ajaxOption table">
-      <tr>
-        <td><h4>{t}Hostgroup{/t}</h4></td>
-      </tr>
-      <tr>
-        <td><input type="text" name="searchHg" value="{$searchHg}" ></td>
-        <td><input type='submit' value='{t}Search{/t}' class="btc bt_success"/></td>
-      </tr>
+      <tbody>
+        <tr>
+          <th><h5>{t}Filters{/t}</h5></th>
+        </tr>
+        <tr>
+          <td><h4>{t}Hostgroup{/t}</h4></td>
+        </tr>
+        <tr>
+          <td><input type="text" name="searchHg" value="{$searchHg}" ></td>
+          <td><input type='submit' value='{t}Search{/t}' class="btc bt_success"/></td>
+        </tr>
+      </tbody>
     </table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
