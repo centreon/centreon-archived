@@ -343,8 +343,7 @@ function insertValueQuery(elem) {
 //-->
 </script><?php
 
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"])
+if ($valid)
     require_once($path."listCommand.php");
 else {
     /*
