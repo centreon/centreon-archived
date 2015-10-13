@@ -607,6 +607,8 @@ class CentreonService
         //Get macro attached to the template
         $aMacroTemplate = array();
         
+        // clear current template/service from the list.
+        unset($aListTemplate[count($aListTemplate) - 1]);
         foreach ($aListTemplate as $template) {
             if (!empty($template)) {
                 $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_id'],$template);
@@ -868,17 +870,14 @@ class CentreonService
         $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
         $aListTemplate = array();
         if(isset($form['service_template_model_stm_id']) && !empty($form['service_template_model_stm_id'])){
-            $aListTemplate = array_merge(
-                getListTemplates($this->db, $form['service_template_model_stm_id']),
-                array(array('service_template_model_stm_id' => $form['service_template_model_stm_id'], 'service_description' => $this->getServiceName($form['service_template_model_stm_id'])))
-            );
+             $aListTemplate = getListTemplates($this->db, $form['service_template_model_stm_id']);
         }
         //Get macro attached to the template
         $aMacroTemplate = array();
         
         foreach ($aListTemplate as $template) {
             if (!empty($template)) {
-                $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_template_model_stm_id'],$template);
+                $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_id'],$template);
             }
         }
         
