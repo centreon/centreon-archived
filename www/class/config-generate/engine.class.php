@@ -266,15 +266,17 @@ class Engine extends AbstractObject {
     
     private function buildCfgFile($poller_id) {
         $this->engine['cfg_dir'] = preg_replace('/\/$/', '', $this->engine['cfg_dir']);
-        $this->cfg_file = array('target' => array(
-                                    'cfg_file' => array(), 
-                                    'path' => $this->engine['cfg_dir'], 
-                                    'resource_file' => $this->engine['cfg_dir'] . '/resource.cfg'),
-                                'debug' => array(
-                                    'cfg_file' => array(), 
-                                    'path' => $this->backend_instance->getEngineGeneratePath() . '/' . $poller_id, 
-                                    'resource_file' => $this->backend_instance->getEngineGeneratePath() . '/' . $poller_id . '/resource.cfg')
-                                );
+        $this->cfg_file = array(
+            'target' => array(
+                'cfg_file' => array(), 
+                'path' => $this->engine['cfg_dir'], 
+                'resource_file' => $this->engine['cfg_dir'] . '/resource.cfg'
+            ),
+            'debug' => array(
+                'cfg_file' => array(), 
+                'path' => $this->backend_instance->getEngineGeneratePath() . '/' . $poller_id, 
+                'resource_file' => $this->backend_instance->getEngineGeneratePath() . '/' . $poller_id . '/resource.cfg')
+            );
         foreach ($this->cfg_file as &$value) {
             $value['cfg_file'][] = $value['path'] . '/hostTemplates.cfg';
             $value['cfg_file'][] = $value['path'] . '/hosts.cfg';
@@ -378,6 +380,10 @@ class Engine extends AbstractObject {
 
     public function addCfgPath($cfg_path) {
         $this->add_cfg_files[] = $cfg_path;
+    }
+
+    public function reset() {
+        $this->add_cfg_files = array();
     }
 }
 
