@@ -39,6 +39,8 @@
 global $centreon_path;
 require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once $centreon_path . "/www/class/centreonContactgroup.class.php";
+require_once $centreon_path . "/www/class/centreonLDAP.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
@@ -57,6 +59,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
      */
     public function getList()
     {
+        global $centreon;
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -64,16 +67,29 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
         
-        $queryContactgroup = "SELECT cg_id, cg_name "
-            . "FROM contactgroup "
-            . "WHERE cg_name LIKE '%$q%' "
-            . "ORDER BY cg_name";
-        
-        $DBRESULT = $this->pearDB->query($queryContactgroup);
+        $notifCgs = array();
+        $cg = new CentreonContactgroup($this->pearDB);
+        $acl = new CentreonACL($centreon->user->user_id);
+        if ($centreon->user->admin) {
+            $notifCgs = $cg->getListContactgroup(true);
+        } else {
+            $cgAcl = $acl->getContactGroupAclConf(array('fields'  => array('cg_id', 'cg_name'),
+                'get_row' => 'cg_name',
+                'keys' => array('cg_id'),
+                'order' => array('cg_name')));
+            $cgLdap = $cg->getListContactgroup(true, true);
+            $notifCgs = array_intersect_key($cgLdap, $cgAcl);
+        }
         
         $contactgroupList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $contactgroupList[] = array('id' => $data['cg_id'], 'text' => $data['cg_name']);
+        foreach ($notifCgs as $id => $contactgroup) {
+            if ((false === isset($this->arguments['q']) || '' === $this->arguments['q'])
+               || stristr($contactgroup, $this->arguments['q'])) {
+                $contactgroupList[] = array(
+                    'id' => $id,
+                    'text' => $contactgroup
+                );
+            }
         }
         
         return $contactgroupList;
