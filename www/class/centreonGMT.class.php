@@ -114,14 +114,14 @@ class CentreonGMT {
                     $this->getList();
                 }
                 
-                if (isset($this->listGTM[$gmt])) {
+                if (isset($this->listGTM[$gmt]) && !empty($this->listGTM[$gmt])) {
                     $sDate = new DateTime();
                             
                     $sDate->setTimestamp($date);
                     $sDate->setTimezone(new DateTimeZone($this->listGTM[$gmt]));
                     $return = $sDate->format($format);
                 } else {
-                    $return = $date;
+                    $return = date($format, $date);
                 }
 
                 return $return;
@@ -147,7 +147,7 @@ class CentreonGMT {
                     $this->getList();
                 }
                 //$date += -1 * ($gmt * 60 * 60);
-                if (isset($this->listGTM[$gmt])) {
+                if (isset($this->listGTM[$gmt]) && !empty($this->listGTM[$gmt])) {
                     $sDate = new DateTime();
                             
                     $sDate->setTimestamp($date);
@@ -213,7 +213,7 @@ class CentreonGMT {
                     $locations[$row['host_id']] = $row['host_location'];
                 }
             }
-            if (isset($locations[$host_id]) && isset($this->listGTM[$locations[$host_id]])) {          
+            if (isset($locations[$host_id]) && isset($this->listGTM[$locations[$host_id]]) && !empty($this->listGTM[$locations[$host_id]])) {          
                 $sDate = new DateTime();
                 $sDate->setTimezone(new DateTimeZone($this->listGTM[$locations[$host_id]]));
                 $sReturn = $sDate->format($date_format);
