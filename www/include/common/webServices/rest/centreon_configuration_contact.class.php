@@ -39,7 +39,6 @@
 global $centreon_path;
 require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once $centreon_path . "/www/class/centreonContact.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationContact extends CentreonConfigurationObjects
@@ -71,7 +70,7 @@ class CentreonConfigurationContact extends CentreonConfigurationObjects
         $contactList = array();
         foreach ($contacts as $id => $contactName) {
             if ((false === isset($this->arguments['q']) || '' === $this->arguments['q'])
-                 || strstr($contactName, $this->arguments['q'])) {
+                 || stristr($contactName, $this->arguments['q'])) {
                 $contactList[] = array(
                     'id' => $id,
                     'text' => $contactName
