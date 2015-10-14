@@ -250,12 +250,6 @@ $tpl->display("viewLog.ihtml");
     tree=new dhtmlXTreeObject("menu_20301","100%","100%","1");
     tree.setImagePath("./img/icones/csh_vista/");
 
-    //link tree to xml
-    tree.setXMLAutoLoading("./include/eventLogs/XmlTree/GetXmlTree.php");
-
-    //load first level of tree
-    tree.loadXML("./include/eventLogs/XmlTree/GetXmlTree.php?<?php if (isset($meta) && $meta) print "meta=$meta"."&"; ?>search_host=<?php print $search; ?><?php if (isset($search_service) && $search_service) print "&search_service=$search_service"; ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&lock_tree=<?php echo $lockTree;?>");
-
 	// system to reload page after link with new url
 	//set function object to call on node select
 	tree.attachEvent("onClick", onNodeSelect)
