@@ -29,6 +29,7 @@ require_once dirname(__FILE__) . '/resource.class.php';
 require_once dirname(__FILE__) . '/engine.class.php';
 require_once dirname(__FILE__) . '/broker.class.php';
 require_once dirname(__FILE__) . '/correlation.class.php';
+require_once dirname(__FILE__) . '/timezone.class.php';
 
 class Generate {
     private $generate_index_data = 1;
