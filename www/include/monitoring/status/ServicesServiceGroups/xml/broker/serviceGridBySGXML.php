@@ -105,7 +105,7 @@
 
     $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
         . "FROM servicegroups sg, services_servicegroups sgm, hosts h, services s "
-        . "WHERE sg.servicegroup_id = sgm.servicegroup_id AND sgm.host_id = h.host_id AND h.host_id = s.host_id ";
+        . "WHERE sg.servicegroup_id = sgm.servicegroup_id AND sgm.host_id = h.host_id AND h.host_id = s.host_id AND s.service_id = sgm.service_id ";
 
     /* Host ACL */
     $query .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
