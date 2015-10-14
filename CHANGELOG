@@ -1,3 +1,26 @@
+## Centreon 2.6.4
+
+#3793: Porblem when creating an empty hostgroup with non admin user
+#3795: Update Centreon Administration About page (forge -> Github)
+#3796: Problem when connect two time with same user in API
+#3797: Password in macro
+#3800: Current State Duration isn't displayed
+#3803: ACL : Manage multiple Resources group on the same ACL user group
+#3807: Unable to enable status option on main.cfg
+
+## Centreon 2.6.3
+
+Bug fixes
+=========
+
+#564: Filter field does not work in service groups monitoring screen
+#1000: Services of service groups are dispatched on many pages
+#3782: SQL Keyswords
+#3783: index_data switch in option form
+#3788: Problem with static keywords
+
+
+
 ## Centreon 2.6.2
 
 Features

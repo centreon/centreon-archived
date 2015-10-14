@@ -294,7 +294,7 @@ class CentreonDB {
      * @return string
      */
     static public function escape($str, $htmlSpecialChars = false) {
-        static::check_injection($str);
+        self::check_injection($str);
         
         if ($htmlSpecialChars) {
             $str = htmlspecialchars($str);

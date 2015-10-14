@@ -435,9 +435,9 @@ Fin de la mise à jour :
     ###############################################################################
     #                                                                             #
     #                 Go to the URL : http://localhost/centreon/                  #
-    #                   	     to finish the setup                              #
+    #                   	     to finish the setup                          #
     #                                                                             #
-    #                  Report bugs at http://forge.centreon.com                   #
+    #           Report bugs at https://github.com/centreon/centreon/issues        #
     #                                                                             #
     #                         Thanks for using Centreon.                          #
     #                          -----------------------                            #

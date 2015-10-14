@@ -41,20 +41,24 @@
 	 */
 	include "@CENTREON_ETC@/centreon.conf.php";
 
+    require_once "$centreon_path/www/class/centreonDB.class.php";
 	require_once "$centreon_path/www/class/centreonGraph.class.php";
 
-	/*
-	 * Create XML Request Objects
-	 */
-	$obj = new CentreonGraph($_GET["session_id"], $_GET["index"], 0, 1);
+    $pearDB = new CentreonDB();
 
-	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-		;
-	} else {
-		$obj->displayError();
+    /* Check security session */
+	if (!CentreonSession::checkSession($_GET["session_id"], $pearDB)) {
+		CentreonGraph::displayError();
 	}
 
+    $contactId = CentreonSession::getUser($_GET["session_id"], $pearDB);
+
 	require_once $centreon_path."www/include/common/common-Func.php";
+
+    /*
+	 * Create XML Request Objects
+	 */
+	$obj = new CentreonGraph($contactId, $_GET["index"], 0, 1);
 
 	/*
 	 * Set arguments from GET
@@ -62,9 +66,7 @@
 	$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );
 	$obj->setRRDOption("end",   $obj->checkArgument("end", $_GET, time()) );
 
- 	$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
-
-	/*
+    /*
 	 * Template Management
 	 */
  	if (isset($_GET["template_id"])) {

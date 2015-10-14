@@ -162,21 +162,8 @@ class CentreonMetric extends CentreonWebService {
             try {
                 /* Get index data */
                 $indexData = CentreonGraphService::getIndexId($hostId, $serviceId, $this->pearDBMonitoring);
-                /* Create a virtual session for graph */
-                if (false === is_null($this->token)) {
-                    $sessionId = $this->token;
-                    $this->pearDB->query("INSERT INTO session (session_id, user_id) VALUES ('" . $this->token . "', " . $centreon->user->user_id . ")");
-                } else {
-                    $sessionId = session_id();
-                }
-                $graph = new CentreonGraphService($indexData, $sessionId);
-                if (false === is_null($this->token)) {
-                    $this->pearDB->query("DELETE FROM session WHERE session_id = '" . $this->token . "'");
-                }
+                $graph = new CentreonGraphService($indexData, $userId);
             } catch (Exception $e) {
-                if (false === is_null($this->token)) {
-                    $this->pearDB->query("DELETE FROM session WHERE session_id = '" . $this->token . "'");
-                }
                 throw new RestNotFoundException("Graph not found");
             }
             $graph->setRRDOption("start", $start);
