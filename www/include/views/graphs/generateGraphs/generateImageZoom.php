@@ -41,7 +41,7 @@
 	 */
 	include "@CENTREON_ETC@/centreon.conf.php";
 
-    require_once "$centreon_path/www/class/centreonDb.class.php";
+    require_once "$centreon_path/www/class/centreonDB.class.php";
 	require_once "$centreon_path/www/class/centreonGraph.class.php";
 
     $pearDB = new CentreonDB();
@@ -51,7 +51,7 @@
 		CentreonGraph::displayError();
 	}
 
-    $contactId = CentreonSession::getUser($_GET["session_id"]);
+    $contactId = CentreonSession::getUser($_GET["session_id"], $pearDB);
 
 	require_once $centreon_path."www/include/common/common-Func.php";
 
