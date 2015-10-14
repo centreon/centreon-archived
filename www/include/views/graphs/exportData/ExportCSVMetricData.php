@@ -31,18 +31,15 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	function get_error($str){
-		echo $str."<br />";
-		exit(0);
-	}
+function get_error($str){
+	echo $str."<br />";
+	exit(0);
+}
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once '../../../class/centreonDB.class.php';
+include_once "@CENTREON_ETC@/centreon.conf.php";
+require_once '../../../class/centreonDB.class.php';
 
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
@@ -56,26 +53,23 @@
 	} else
 		get_error('need session identifiant !');
 
-	isset ($_GET["metric_id"]) ? $mtrcs = htmlentities($_GET["metric_id"], ENT_QUOTES, "UTF-8") : $mtrcs = NULL;
-	isset ($_POST["metric_id"]) ? $mtrcs = htmlentities($_POST["metric_id"], ENT_QUOTES, "UTF-8") : $mtrcs = $mtrcs;
+isset ($_GET["metric_id"]) ? $mtrcs = htmlentities($_GET["metric_id"], ENT_QUOTES, "UTF-8") : $mtrcs = NULL;
+isset ($_POST["metric_id"]) ? $mtrcs = htmlentities($_POST["metric_id"], ENT_QUOTES, "UTF-8") : $mtrcs = $mtrcs;
 
-	$path = "./include/views/graphs/graphODS/";
-	require_once '../../../class/centreonDuration.class.php';
-	require_once '../../common/common-Func.php';
+$path = "./include/views/graphs/graphODS/";
+require_once '../../../class/centreonDuration.class.php';
+require_once '../../common/common-Func.php';
 
-	$period = (isset($_POST["period"])) ? htmlentities($_POST["period"], ENT_QUOTES, "UTF-8") : "today";
-	$period = (isset($_GET["period"])) ? htmlentities($_GET["period"], ENT_QUOTES, "UTF-8") : $period;
+$period = (isset($_POST["period"])) ? htmlentities($_POST["period"], ENT_QUOTES, "UTF-8") : "today";
+$period = (isset($_GET["period"])) ? htmlentities($_GET["period"], ENT_QUOTES, "UTF-8") : $period;
 
-	header("Content-Type: application/csv-tab-delimited-table");
-	header("Content-disposition: filename=".$mhost.".csv");
+header("Content-Type: application/csv-tab-delimited-table");
+header("Content-disposition: filename=".$mhost.".csv");
 
-	print "Date;value\n";
-	$begin = time() - 26000;
+print "Date;value\n";
+$begin = time() - 26000;
 
-	$res = $pearDB->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$mtrcs."' AND CTIME >= '".$begin."'");
-	while ($data = $res->fetchRow()){
-		print $data["ctime"].";".$data["value"].";".date("Y-m-d H:i:s", $data["ctime"])."\n";
-	}
-	exit();
-    
-?>
+$res = $pearDB->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$mtrcs."' AND CTIME >= '".$begin."'");
+while ($data = $res->fetchRow()){
+	print $data["ctime"].";".$data["value"].";".date("Y-m-d H:i:s", $data["ctime"])."\n";
+}

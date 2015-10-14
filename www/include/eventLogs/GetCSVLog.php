@@ -38,7 +38,7 @@ ini_set("display_errors", "Off");
 /**
  * Include configuration
  */
-include_once "@CENTREON_ETC@/centreon.conf.php";
+include_once "../../../config/centreon.config.php";
 
 /**
  * Include Classes / Methods

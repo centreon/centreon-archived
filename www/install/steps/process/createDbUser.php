@@ -62,7 +62,4 @@ if (false === mysql_query(sprintf($query, $_SESSION['CONFIGURATION_DB']))) {
 if (false === mysql_query(sprintf($query, $_SESSION['STORAGE_DB']))) {
     exitProcess(PROCESS_ID, 1, mysql_error());
 }
-if (false === mysql_query(sprintf($query, $_SESSION['UTILS_DB']))) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
 exitProcess(PROCESS_ID, 0, "OK");

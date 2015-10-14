@@ -2,29 +2,33 @@
 <form name="form" method='GET'>
 <hidden name="p" value='{$p}'>
 <hidden name="o" value='{$o}'>
-<table class="ajaxOption">
+<table class="ajaxOption table">
+  <tbody>
+    <tr>
+      <th colspan="4"><h5>{t}Filters{/t}</h5></th>
+    </tr>
 	<tr>
-		<td>{$Host}: <input type='text' name='search_host' value="{$search_host}" /></td>
-		<td>&nbsp;&nbsp;{$Service}: <input type='text' name='search_service' value="{$search_service}" /></td>
-		<td>&nbsp;&nbsp;{$Output}: <input type='text' name='search_output' value="{$search_output}" /></td>
-	    <td><input type='submit' name='SearchB' value='{$Search}' /></td>
+        <td><h4>{$Host}</h4></td>
+		<td><h4>{$Service}</h4></td>
+		<td><h4>{$Output}</h4></td>
 	</tr>
+    <tr>
+      <td><input type='text' name='search_host' value="{$search_host}" /></td>
+      <td><input type='text' name='search_service' value="{$search_service}" /></td>
+      <td><input type='text' name='search_output' value="{$search_output}" /></td>
+      <td><input type='submit' name='SearchB' class="btc bt_success" value='{$Search}' /></td>
+    </tr>
+  </tbody>
 </table>
 <br/>
-<table class="ToolbarTable">
+<table class="ToolbarTable table">
 	<tr class="ToolbarTR">
-		<td width='450'>{if $msgs}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}</td>
+		<td>{if $msgs}<a href="{$msgs.addL}" class="btc bt_success">{$msgs.addT}</a>{/if}</td>
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}
 	</tr>
 </table>
-<table class="ListTable">
-	<tr class='ListHeader'>
-	<td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$cmt_service_comment}</td>		
-</tr>
-</table>
-<br />
 {if $nb_comments_svc} 
 <table class="ListTable">
 	<tr class='ListHeader'>
@@ -56,9 +60,9 @@
 {else}
 <center><b>{$no_svc_comments}</b></center>
 {/if}
-<table class="ToolbarTable">
+<table class="ToolbarTable table">
 	<tr class="ToolbarTR">
-		<td width='450'>&nbsp;</td>
+		<td>{if $msgs}<a href="{$msgs.addL}" class="btc bt_success">{$msgs.addT}</a>{/if}</td>
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}

@@ -143,6 +143,16 @@ class CentreonMeta
                 $parameters['relationObject']['field'] = 'contact_id';
                 $parameters['relationObject']['comparator'] = 'meta_id';
                 break;
+            case 'ms_cs':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'contactgroup';
+                $parameters['externalObject']['id'] = 'cg_id';
+                $parameters['externalObject']['name'] = 'cg_name';
+                $parameters['externalObject']['comparator'] = 'cg_id';
+                $parameters['relationObject']['table'] = 'meta_contactgroup_relation';
+                $parameters['relationObject']['field'] = 'cg_cg_id';
+                $parameters['relationObject']['comparator'] = 'meta_id';
+                break;
         }
         
         return $parameters;

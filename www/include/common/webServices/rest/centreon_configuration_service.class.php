@@ -103,9 +103,9 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
-            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+            $serviceCompleteId = $data['host_id'] . '_' . $data['service_id'];
             
-            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
+            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
         
         return $serviceList;
@@ -139,7 +139,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
             $serviceCompleteId = $data['host_host_id'] . '-' . $data['service_service_id'];
             
-            $defaultValues[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
+            $defaultValues[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
         
         return $defaultValues;

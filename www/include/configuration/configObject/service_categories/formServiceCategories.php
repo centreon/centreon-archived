@@ -31,12 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -114,6 +111,11 @@ $attrsText2 	= array("size"=>"60");
 $attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
 $attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrServicetemplates = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
+    'multiple' => true
+);
 
 /*
  * Form begin
@@ -152,32 +154,16 @@ $form->addElement('select', 'sc_severity_icon', _("Icon"), $iconImgs, array(
                                                                             "onChange" => "showLogo('icon_id_ctn', this.value)",
                                                                             "onkeyup" => "this.blur(); this.focus();"));
 
-$ams1 = $form->addElement('advmultiselect', 'sc_svc', array(_("Host Service Descriptions"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);
-
-$ams1 = $form->addElement('advmultiselect', 'sc_svcTpl', array(_("Service Template Descriptions"), _("Available"), _("Selected")), $hServicesTpl, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
-if (!$oreon->user->admin) {
-    $ams1->setPersistantFreeze(true);
-    $ams1->freeze();
-}
-echo $ams1->getElementJs(false);
+$attrServicetemplate1 = array_merge(
+    $attrServicetemplates,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=servicecategories&field=sc_svcTpl&id=' . $sc_id)
+);
+$form->addElement('select2', 'sc_svcTpl', _("Linked Service Templates"), array(), $attrServicetemplate1);
 
 $sc_activate[] = HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Enabled"), '1');
 $sc_activate[] = HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Disabled"), '0');
 $form->addGroup($sc_activate, 'sc_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('sc_activate' => '1'));
-
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action'=>'1'));
 
 $form->addElement('hidden', 'sc_id');
 $redirect = $form->addElement('hidden', 'o');
@@ -250,15 +236,15 @@ if ($o == "w")	{
     /*
      * Modify a service_categories information
      */
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($sc);
 } else if ($o == "a")	{
     /*
      * Add a service_categories information
      */
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $valid = false;
@@ -269,13 +255,10 @@ if ($form->validate() && $from_list_menu == false)	{
     else if ($form->getSubmitValue("submitC"))
         updateServiceCategorieInDB($cctObj->getValue());
     $o = NULL;
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$cctObj->getValue()."'"));
-    $form->freeze();
-    $valid = true;
+   $valid = true;
 }
 
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"])
+if ($valid)
     require_once($path."listServiceCategories.php");
 else	{
     /*

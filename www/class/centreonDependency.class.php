@@ -215,4 +215,118 @@ class CentreonDependency
         )";
         $db->query($sql);
     }
+    
+    /**
+     * 
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'host';
+        $parameters['currentObject']['id'] = 'host_id';
+        $parameters['currentObject']['name'] = 'host_name';
+        $parameters['currentObject']['comparator'] = 'host_id';
+
+        switch ($field) {
+            case 'dep_hostParents':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'dependency_hostParent_relation';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+            case 'dep_hostChilds':
+            case 'dep_hHostChi':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'dependency_hostChild_relation';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+            case 'dep_hSvPar':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonService';
+                $parameters['relationObject']['table'] = 'dependency_serviceParent_relation';
+                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+            case 'dep_hSvChi':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonService';
+                $parameters['relationObject']['table'] = 'dependency_serviceChild_relation';
+                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+            case 'dep_hgParents':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'hostgroup';
+                $parameters['externalObject']['id'] = 'hg_id';
+                $parameters['externalObject']['name'] = 'hg_name';
+                $parameters['externalObject']['comparator'] = 'hg_id';
+                $parameters['relationObject']['table'] = 'dependency_hostgroupParent_relation';
+                $parameters['relationObject']['field'] = 'hostgroup_hg_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+            case 'dep_hgChilds':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'hostgroup';
+                $parameters['externalObject']['id'] = 'hg_id';
+                $parameters['externalObject']['name'] = 'hg_name';
+                $parameters['externalObject']['comparator'] = 'hg_id';
+                $parameters['relationObject']['table'] = 'dependency_hostgroupChild_relation';
+                $parameters['relationObject']['field'] = 'hostgroup_hg_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+            case 'dep_sgParents':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'servicegroup';
+                $parameters['externalObject']['id'] = 'sg_id';
+                $parameters['externalObject']['name'] = 'sg_name';
+                $parameters['externalObject']['comparator'] = 'sg_id';
+                $parameters['relationObject']['table'] = 'dependency_servicegroupParent_relation';
+                $parameters['relationObject']['field'] = 'servicegroup_sg_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+            case 'dep_sgChilds':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'servicegroup';
+                $parameters['externalObject']['id'] = 'sg_id';
+                $parameters['externalObject']['name'] = 'sg_name';
+                $parameters['externalObject']['comparator'] = 'sg_id';
+                $parameters['relationObject']['table'] = 'dependency_servicegroupChild_relation';
+                $parameters['relationObject']['field'] = 'servicegroup_sg_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+            case 'dep_msParents':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'meta_service';
+                $parameters['externalObject']['id'] = 'meta_id';
+                $parameters['externalObject']['name'] = 'meta_name';
+                $parameters['externalObject']['comparator'] = 'meta_id';
+                $parameters['relationObject']['table'] = 'dependency_metaserviceParent_relation';
+                $parameters['relationObject']['field'] = 'meta_service_meta_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+            case 'dep_msChilds':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'meta_service';
+                $parameters['externalObject']['id'] = 'meta_id';
+                $parameters['externalObject']['name'] = 'meta_name';
+                $parameters['externalObject']['comparator'] = 'meta_id';
+                $parameters['relationObject']['table'] = 'dependency_metaserviceChild_relation';
+                $parameters['relationObject']['field'] = 'meta_service_meta_id';
+                $parameters['relationObject']['comparator'] = 'dependency_dep_id';
+                break;
+        }
+        
+        return $parameters;
+    }
 }

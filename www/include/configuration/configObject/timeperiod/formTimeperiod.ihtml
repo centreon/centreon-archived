@@ -1,25 +1,37 @@
 {$form.javascript}
 <form {$form.attributes}>
-	<div>
+	<div class="headerTabContainer">
 	<ul id="mainnav">
 		<li class="a" id='c1'><a href="#"  onclick="javascript:montre('1');">{$form.header.notification_base}</a></li>
 		<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$form.header.include}</a></li>
 	</ul>
-	</div>
-	<div id="validFormTop">
+    <div id="validFormTop">
 	{if $o == "a" || $o == "c"}
 		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
 		<p class="oreonbutton">{$form.change.html}</p>
 	{/if}
 	</div>
+	</div>
 	<div id='tab1' class='tab'>
-		 <table class="ListTable">
-		 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-		 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+		 <table class="formTable table">
+		 	<tr class="ListHeader">
+              <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title}</h3>
+              </td>
+            </tr>
+		 	<tr class="list_lvl_1">
+              <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.information}</h4>
+              </td>
+            </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="timeperiod_name"> {$form.tp_name.label}</td><td class="FormRowValue">{$form.tp_name.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.tp_alias.label}</td><td class="FormRowValue">{$form.tp_alias.html}</td></tr>
-		 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
+		 	<tr class="list_lvl_1">
+              <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.notification}</h4>
+              </td>
+            </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_sunday.label}</td><td class="FormRowValue">{$form.tp_sunday.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_monday.label}</td><td class="FormRowValue">{$form.tp_monday.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_tuesday.label}</td><td class="FormRowValue">{$form.tp_tuesday.html}</td></tr>
@@ -27,7 +39,11 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_thursday.label}</td><td class="FormRowValue">{$form.tp_thursday.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_friday.label}</td><td class="FormRowValue">{$form.tp_friday.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_saturday.label}</td><td class="FormRowValue">{$form.tp_saturday.html}</td></tr>
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/date-time_preferences.gif'>&nbsp;&nbsp;{$form.header.exception}</td></tr>			
+			<tr class="list_lvl_1">
+              <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.exception}</h4>
+              </td>
+            </tr>			
 			{if $gmtUsed}
 				<tr class='list_one'><td colspan='2'><img src='./img/icones/16x16/warning.gif'>&nbsp; {$noExceptionMessage}</td></tr>
 			{/if}
@@ -51,8 +67,12 @@
 		 </table>
 	</div>
 	<div id='tab2' class='tab'>
-		 <table class="ListTable">
-		 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+		 <table class="formTable table">
+		 	<tr class="ListHeader">
+              <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title}</h3>
+              </td>
+            </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="include"> {$form.tp_include.label}</td><td class="FormRowValue">{$form.tp_include.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="exclude"> {$form.tp_exclude.label}</td><td class="FormRowValue">{$form.tp_exclude.html}</td></tr>
 			{if $o == "a" || $o == "c"}
@@ -62,7 +82,6 @@
 	</div>
 	<div id="validForm">
 	{if $o == "a" || $o == "c"}
-		<p>{$form.action.html}</p>
 		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
 		<p class="oreonbutton">{$form.change.html}</p>

@@ -60,34 +60,38 @@
                     </td>
                 </xsl:if>
 		<td class="ListColLeft" style="white-space:nowrap;">
+
 			<xsl:if test="hn/@none = 0">
-				<xsl:element name="span">
-					<xsl:if test="hdtm = 0">
-						<xsl:if test="hs = 1">
-							<xsl:attribute name="class">host_down</xsl:attribute>
-						</xsl:if>
-						<xsl:if test="hs = 2">
-							<xsl:attribute name="class">host_unreachable</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					<xsl:if test="hdtm != 0">
-						<xsl:attribute name="class">host_downtime</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="hico != ''">
-						<xsl:element name="img">
-							<xsl:attribute name="src">./img/media/<xsl:value-of select="hico"/></xsl:attribute>
-							<xsl:attribute name="width">16</xsl:attribute>
-							<xsl:attribute name="height">16</xsl:attribute>
-							<xsl:attribute name="style">padding-right:5px;</xsl:attribute>
-						</xsl:element>
-					</xsl:if>
-					<xsl:element name="a">
-					  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hnl" /></xsl:attribute>
-                        <xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
-						<xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
-						<xsl:value-of select="hn"/>
-					</xsl:element>
-				</xsl:element>
+                <xsl:element name="a">
+
+                    <xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hnl" /></xsl:attribute>
+                    <xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
+                    <xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
+
+
+                    <xsl:element name="span">
+                        <xsl:if test="hdtm = 0">
+                            <xsl:if test="hs = 1">
+                                <xsl:attribute name="class">state_badge host_down</xsl:attribute>
+                            </xsl:if>
+                            <xsl:if test="hs = 2">
+                                <xsl:attribute name="class">state_badge host_unreachable</xsl:attribute>
+                            </xsl:if>
+                        </xsl:if>
+                        <xsl:if test="hdtm != 0">
+                            <xsl:attribute name="class">state_badge host_downtime</xsl:attribute>
+                        </xsl:if>
+                        <xsl:if test="hico != ''">
+                            <xsl:element name="img">
+                                <xsl:attribute name="src">./img/media/<xsl:value-of select="hico"/></xsl:attribute>
+                                <xsl:attribute name="width">16</xsl:attribute>
+                                <xsl:attribute name="height">16</xsl:attribute>
+                                <xsl:attribute name="style">padding-right:5px;</xsl:attribute>
+                            </xsl:element>
+                        </xsl:if>
+                    </xsl:element>
+                    <xsl:value-of select="hn"/>
+                </xsl:element>
 			</xsl:if>
 		</td>
 		<td class="ListColLeft" style="white-space:nowrap;">
@@ -258,7 +262,8 @@
 			</xsl:if>
 			<xsl:if test="ne = 0">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
+                        <xsl:attribute name="class">ico-18</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/notifications_off.png</xsl:attribute>
 					  	<xsl:attribute name="title">					  		
 					  		<xsl:value-of select='//i/notif_disabled'/>
 					  	</xsl:attribute>
@@ -272,8 +277,8 @@
 				  		<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>					
 							<xsl:element name="img">
 					  			<xsl:attribute name="id"><xsl:value-of select="svc_index"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
-                                <xsl:attribute name="class">graph-volant</xsl:attribute>
-                                <xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>					
+                                <xsl:attribute name="class">graph-volant ico-18</xsl:attribute>
+                                <xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
 							</xsl:element>					
 					</xsl:element>
 				</xsl:if>

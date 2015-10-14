@@ -219,19 +219,16 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     function toHtml()
     {
         $strHtml = '';
+        $readonly = '';
         
-        if ($this->_flagFrozen) {
-            $strHtml = $this->getFrozenHtml();
-        } else {
-            $strHtml = '<select id="' . $this->getName()
-                . '" name="' . $this->getElementHtmlName()
-                . '" ' . $this->_multipleHtml . ' '
-                . ' style="width: 300px;"><option></option>'
-                . '%%DEFAULT_SELECTED_VALUES%%'
-                . '</select>';
-            $strHtml .= $this->getJsInit();
-            $strHtml = str_replace('%%DEFAULT_SELECTED_VALUES%%', $this->_defaultSelectedOptions, $strHtml);
-        }
+        $strHtml = '<select id="' . $this->getName()
+            . '" name="' . $this->getElementHtmlName()
+            . '" ' . $this->_multipleHtml . ' '
+            . ' style="width: 300px;" ' . $readonly . '><option></option>'
+            . '%%DEFAULT_SELECTED_VALUES%%'
+            . '</select>';
+        $strHtml .= $this->getJsInit();
+        $strHtml = str_replace('%%DEFAULT_SELECTED_VALUES%%', $this->_defaultSelectedOptions, $strHtml);
         
         return $strHtml;
     }
@@ -252,6 +249,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $label = $this->getLabel();
         if (!empty($label)) {
             $mainJsInit .= 'placeholder: "' . $this->getLabel() . '",';
+        }
+        
+        if ($this->_flagFrozen) {
+             $mainJsInit .= 'disabled: true,';
         }
         
         if ($this->_ajaxSource) {
@@ -361,7 +362,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             }
  
             // Update the selected options that are displayed
-            $currentSelect2Object'.$this->getName().'.trigger("change");
+            $currentSelect2Object'.$this->getName().'.trigger("change",[{origin:\'select2defaultinit\'}]);
         });
         
         $request' . $this->getName() . '.error(function(data) {

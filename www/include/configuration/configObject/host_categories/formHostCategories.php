@@ -31,12 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -154,6 +151,16 @@ $attrsTextLong 	= array("size"=>"50");
 $attrsAdvSelect = array("style" => "width: 220px; height: 220px;");
 $attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
 $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrHosts = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'multiple' => true
+);
+$attrHosttemplates = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=list',
+    'multiple' => true
+);
 
 /*
  * Create formulary
@@ -182,29 +189,50 @@ if (isset($hc_id) && isset($hc['level']) && $hc['level'] != "") {
 }
 $form->addElement('text', 'hc_severity_level', _("Level"), array("size" => "10"));
 $iconImgs = return_image_list(1);
-$form->addElement('select', 'hc_severity_icon', _("Icon"), $iconImgs, array("id" => "icon_id",
-                                                                            "onChange" => "showLogo('icon_id_ctn', this.value)",
-                                                                            "onkeyup" => "this.blur(); this.focus();"));
+$form->addElement(
+    'select',
+    'hc_severity_icon',
+    _("Icon"),
+    $iconImgs,
+    array(
+        "id" => "icon_id",
+        "onChange" => "showLogo('icon_id_ctn', this.value)",
+        "onkeyup" => "this.blur(); this.focus();"
+    )
+);
 
 /*
  * Hosts Selection
  */
-$form->addElement('header', 'relation', _("Relations"));
+/*$form->addElement('header', 'relation', _("Relations"));
 $ams1 = $form->addElement('advmultiselect', 'hc_hosts', array(_("Linked Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
 $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 $ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 $ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);
+echo $ams1->getElementJs(false);*/
 
-$ams1 = $form->addElement('advmultiselect', 'hc_hostsTemplate', array(_("Linked Host Template"), _("Available"), _("Selected")) , $hostTpl, $attrsAdvSelect, SORT_ASC);
+$attrHost1 = array_merge(
+    $attrHosts,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=service&field=hc_hosts&id=' . $hc_id)
+);
+$form->addElement('select2', 'hc_hosts', _("Linked Hosts"), array(), $attrHost1);
+
+
+/*$ams1 = $form->addElement('advmultiselect', 'hc_hostsTemplate', array(_("Linked Host Template"), _("Available"), _("Selected")) , $hostTpl, $attrsAdvSelect, SORT_ASC);
 $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 $ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 $ams1->setElementTemplate($eTemplate);
+echo $ams1->getElementJs(false);*/
+
+$attrHost2 = array_merge(
+    $attrHosttemplates,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=service&field=hc_hostsTemplate&id=' . $hc_id)
+);
+$ams1 = $form->addElement('select2', 'hc_hostsTemplate', _("Linked Host Template"), array(), $attrHost2);
 if (!$oreon->user->admin) {
     $ams1->setPersistantFreeze(true);
     $ams1->freeze();
 }
-echo $ams1->getElementJs(false);
 
 /*
  * Further informations
@@ -215,12 +243,6 @@ $hcActivation[] = HTML_QuickForm::createElement('radio', 'hc_activate', null, _(
 $hcActivation[] = HTML_QuickForm::createElement('radio', 'hc_activate', null, _("Disabled"), '0');
 $form->addGroup($hcActivation, 'hc_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('hc_activate' => '1'));
-
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
 
 $form->addElement('hidden', 'hc_id');
 $redirect = $form->addElement('hidden', 'o');
@@ -281,15 +303,15 @@ if ($o == "w")	{
     /*
      * Modify a HostCategorie information
      */
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($hc);
 } else if ($o == "a")	{
     /*
      * Add a HostCategorie information
      */
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $tpl->assign('p', $p);
@@ -303,13 +325,10 @@ if ($form->validate())	{
         updateHostCategoriesInDB($hcObj->getValue());
     $o = NULL;
     $hcObj = $form->getElement('hc_id');
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hc_id=".$hcObj->getValue()."'"));
-    $form->freeze();
     $valid = true;
 }
 
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+if ($valid) {
     require_once($path."listHostCategories.php");
 } else	{
     /*

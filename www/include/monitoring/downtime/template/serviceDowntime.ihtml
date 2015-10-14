@@ -1,33 +1,44 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name="form" action="" method='POST'>
 <hidden name="p" value='{$p}'>
-<table class="ajaxOption">
+<table class="ajaxOption table">
+  <tbody>
+    <tr>
+      <th colspan="4"><h5>{t}Filters{/t}</h5></th>
+    </tr>
 	<tr>
-		<td>{$Host}: <input type='text' name='search_host' value="{$search_host}" /></td>
-		<td>&nbsp;&nbsp;{$Service}: <input type='text' name='search_service' value="{$search_service}" /></td>
-		<td>&nbsp;&nbsp;{$Output}: <input type='text' name='search_output' value="{$search_output}" /></td>
-		<td>&nbsp;&nbsp;{$Author}: <input type='text' name='search_author' value="{$search_author}" /></td>
+		<td><h4>{$Host}</h4></td>
+		<td><h4>{$Service}</h4></td>
+		<td><h4>{$Output}</h4></td>
+		<td><h4>{$Author}</h4></td>
 	</tr>
-</table>
-<br />
-<table class="ajaxOption">
+    <tr>
+      <td><input type='text' name='search_host' value="{$search_host}" /></td>
+      <td><input type='text' name='search_service' value="{$search_service}" /></td>
+      <td><input type='text' name='search_output' value="{$search_output}" /></td>
+      <td><input type='text' name='search_author' value="{$search_author}" /></td>
+    </tr>
+    <tr class="divider">
+      <td colspan="4"><hr></td>
+    </tr>
 	<tr>
-		<td>&nbsp;&nbsp;{$ViewAll}: <input type='checkbox' name='view_all' {if $view_all == '1'}checked{/if} /></td>
-		<td>&nbsp;&nbsp;{$ViewDowntimeCycle}: <input type='checkbox' name='view_downtime_cycle' {if $view_downtime_cycle == '1'}checked{/if} /></td>
-	    <td><input type='submit' name='SearchB' value='{$Search}' /></td>
+        <td class="checkbox"><input type='checkbox' name='view_all' {if $view_all == '1'}checked{/if} /> <h4>{$ViewAll}</h4></td>
+        <td class="checkbox"><input type='checkbox' name='view_downtime_cycle' {if $view_downtime_cycle == '1'}checked{/if} /> <h4>{$ViewDowntimeCycle}</h4></td>
+        <td colspan="2" class="actions"><input type='submit' name='SearchB' value='{$Search}' class="btc bt_success" /></td>
 	</tr>
+  </tbody>
 </table>
 <br/>
 <hidden name="p" value='{$p}'>	
-<table class="ToolbarTable">
+<table class="ToolbarTable table">
 	<tr class="ToolbarTR">
-            <td class="Toolbar_TDSelectAction_Top">
+            <td>
                     <select name="o1" onChange="javascript: doAction(this, this.value); return true;">
                         <option value=0></option>
                         <option value="cs">{$cancel}</option>
                         <option value="ds">{$delete}</option>
                     </select>
-                    {if $msgs}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
+                    {if $msgs}<a class="btc bt_success" href="{$msgs.addL}">{$msgs.addT}</a>{/if}
             </td>
             {php}
             include('./include/common/pagination.php');
@@ -83,14 +94,15 @@
         </tr>
     {/if}
 </table>
-<table class="ToolbarTable">
+<table class="ToolbarTable table">
     <tr class="ToolbarTR">
-        <td class="Toolbar_TDSelectAction_Bottom">
+        <td>
                 <select name="o2" onChange="javascript: doAction(this, this.value); return true;">
                     <option value=0></option>
                     <option value="cs">{$cancel}</option>
                     <option value="ds">{$delete}</option>
                 </select>
+                {if $msgs}<a class="btc bt_success" href="{$msgs.addL}">{$msgs.addT}</a>{/if}
         </td>
 	{php}
 	   include('./include/common/pagination.php');

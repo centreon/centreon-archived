@@ -81,7 +81,7 @@
 	 */
 	isset($_POST['pollers']) && $_POST['pollers'] != "" ? $selectedPoller = $_POST['pollers'] : $selectedPoller = $defaultPoller;
 
-	$form->addElement('select', 'pollers', _("Poller :"), $pollerList, array("onChange" =>"this.form.submit();"));
+	$form->addElement('select', 'pollers', _("Poller"), $pollerList, array("onChange" =>"this.form.submit();"));
 	if (isset($_POST["pollers"])) {
 		$form->setDefaults(array('pollers' => $selectedPoller));
 		$host_list[$selectedPoller] = $pollerList[$selectedPoller];

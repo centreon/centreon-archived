@@ -60,8 +60,13 @@
 </style>
 {/literal}
 <form {$form.attributes}>
-<table class="ajaxOption">
-	<tr><td>&nbsp;&nbsp;<b>{$form.pollers.label}</b>&nbsp;&nbsp;{$form.pollers.html}</td></tr>
+<table class="ajaxOption table">
+  <tr>
+    <td><h4>{$form.pollers.label}</h4></td>
+  </tr>
+  <tr>
+    <td>{$form.pollers.html}</td>
+  </tr>
 </table>
 </form>
 <div>

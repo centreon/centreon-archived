@@ -31,17 +31,13 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
 require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
-
 
 $cct = array();
 if (($o == "c" || $o == "w") && $contact_id) {
@@ -153,6 +149,10 @@ $attrTimeperiods = array(
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
     'multiple' => false
 );
+$attrCommands = array(
+    'datasourceOrigin' => 'ajax',
+    'multiple' => true
+);
 
 
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
@@ -237,11 +237,14 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_hcmds' => '0'));
 }
 
-$ams1 = $form->addElement('advmultiselect', 'contact_hostNotifCmds', array(_("Host Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' => _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);
+$attrCommand1 = array_merge(
+    $attrCommands,
+    array(
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=contact&field=contact_hostNotifCmds&id=' . $contact_id,
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list&t=1'
+    )
+);
+$form->addElement('select2', 'contact_hostNotifCmds', _("Host Notification Commands"), array(), $attrCommand1);
 
 /** * *****************************
  * Service notifications
@@ -269,11 +272,14 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_svcmds' => '0'));
 }
-$ams2 = $form->addElement('advmultiselect', 'contact_svNotifCmds', array(_("Service Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
-$ams2->setButtonAttributes('add', array('value' => _("Add")));
-$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams2->setElementTemplate($eTemplate);
-echo $ams2->getElementJs(false);
+$attrCommand2 = array_merge(
+    $attrCommands,
+    array(
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=contact&field=contact_svNotifCmds&id=' . $contact_id,
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list&t=1'
+    )
+);
+$form->addElement('select2', 'contact_svNotifCmds', _("Service Notification Commands"), array(), $attrCommand2);
 
 /**
  * Further informations
@@ -291,12 +297,6 @@ $form->addElement('hidden', 'contact_register');
 $form->setDefaults(array('contact_register' => '0'));
 
 $form->addElement('textarea', 'contact_comment', _("Comments"), $attrsTextarea);
-
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
 
 $form->addElement('hidden', 'contact_id');
 $redirect = $form->addElement('hidden', 'o');
@@ -374,17 +374,17 @@ if ($o == "w") {
     $form->freeze();
 } else if ($o == "c") {
 // Modify a contact information
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cct);
 } else if ($o == "a") {
 // Add a contact information
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 } else if ($o == "mc") {
 // Massive Change
-    $subMC = $form->addElement('submit', 'submitMC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $valid = false;
@@ -403,12 +403,10 @@ if ($form->validate() && $from_list_menu == false) {
         }
     }
     $o = NULL;
-    $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&contact_id=" . $cctObj->getValue() . "'"));
-    $form->freeze();
     $valid = true;
 }
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+
+if ($valid) {
     require_once($path . "listContactTemplateModel.php");
 } else {
     // Apply a template definition

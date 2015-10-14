@@ -42,12 +42,6 @@
 	include("./include/common/autoNumLimit.php");
 
 	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
-
-	/*
 	 * Create Timeperiod Cache
 	 */
 	$tpCache = array("" => "");
@@ -58,7 +52,9 @@
 	$DBRESULT->free();
 
     $clauses = array();
-    if (isset($search) && $search) {
+    $search = '';
+    if (isset($_POST['searchC']) && $_POST['searchC']) {
+        $search = $_POST['searchC'];
         $clauses = array('contact_name'  => array('LIKE', '%'.$search.'%'),
                          'contact_alias' => array('OR', 'LIKE', '%'.$search.'%'));
     }
@@ -136,12 +132,12 @@
 		$moptions = "";
 		if ($contact["contact_id"] != $centreon->user->get_id()) {
 			if ($contact["contact_activate"]) {
-				$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+				$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_inactive.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 			} else {
-				$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+				$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_active.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 			}
 		} else {
-			$moptions .= "<img src='img/icones/16x16/element_next_grey.gif' border='0' alt='"._("Enabled")."'>&nbsp;&nbsp;";
+			$moptions .= "&nbsp;&nbsp;";
 		}
 		$moptions .= "&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$contact['contact_id']."]'></input>";
@@ -228,6 +224,7 @@
 	$o2->setSelected(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchC', $search);
 
 	/*
 	 * Apply a template definition

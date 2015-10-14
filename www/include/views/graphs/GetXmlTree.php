@@ -39,7 +39,7 @@
 /**
  * Include config file
  */
-include_once "/etc/centreon/centreon.conf.php";
+include_once "@CENTREON_ETC@/centreon.conf.php";
 
 /*
  * Include Dependancies

@@ -66,7 +66,7 @@
 	}
 	$DBRESULT->free();
 	isset($_POST['pollers']) && $_POST['pollers'] != "" ? $selectedPoller = $_POST['pollers'] : $selectedPoller = $defaultPoller;
-	$form->addElement('select', 'pollers', _("Poller :"), $pollerList, array("onChange" =>"this.form.submit();"));
+	$form->addElement('select', 'pollers', _("Poller"), $pollerList, array("onChange" =>"this.form.submit();"));
 	if (isset($selectedPoller) && $selectedPoller) {
 		$form->setDefaults(array('pollers' => $selectedPoller));
 		$host_list[$selectedPoller] = $pollerList[$selectedPoller];
@@ -88,7 +88,7 @@
 						"last6month" 	=> _("Last 6 months"),
 						"lastyear" 		=> _("Last year"));
 
-	$selTP = $form->addElement('select', 'start', _("Period :"), $time_period, array("onChange" =>"this.form.submit();"));
+	$selTP = $form->addElement('select', 'start', _("Period"), $time_period, array("onChange" =>"this.form.submit();"));
 	if (isset($_POST["start"])) {
 		$form->setDefaults(array('start' => $_POST["start"]));
 	} else {

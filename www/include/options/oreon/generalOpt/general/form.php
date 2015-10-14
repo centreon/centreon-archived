@@ -32,6 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
+require_once $centreon_path . "www/class/centreonGMT.class.php";
 
 if (!isset($centreon)) {
     exit();
@@ -74,7 +75,6 @@ $form->addElement('header', 'oreon', _("Centreon information"));
 $form->addElement('text', 'oreon_path', _("Directory"), $attrsText);
 $form->addElement('text', 'oreon_web_path', _("Centreon Web Directory"), $attrsText);
 
-$form->addElement('text', 'oreon_refresh', _("Refresh Interval"), $attrsText2);
 $form->addElement('text', 'session_expire', _("Sessions Expiration Time"), $attrsText2);
 
 $limit = array(10 => 10, 20 => 20, 30 => 30, 40 => 40, 50 => 50, 60 => 60, 70 => 70, 80 => 80, 90 => 90, 100 => 100, 200 => 200, 300 => 300, 400 => 400, 500 => 500);
@@ -83,9 +83,12 @@ $form->addElement('select', 'maxViewMonitoring', _("Limit per page for Monitorin
 $form->addElement('text', 'maxViewConfiguration', _("Limit per page (default)"), $attrsText2);
 $form->addElement('text', 'AjaxTimeReloadStatistic', _("Refresh Interval for statistics"), $attrsText2);
 $form->addElement('text', 'AjaxTimeReloadMonitoring', _("Refresh Interval for monitoring"), $attrsText2);
-$form->addElement('text', 'AjaxFirstTimeReloadStatistic', _("First Refresh delay for statistics"), $attrsText2);
-$form->addElement('text', 'AjaxFirstTimeReloadMonitoring', _("First Refresh delay for monitoring"), $attrsText2);
-$form->addElement('text', 'gmt', _("Default host timezone"), $attrsText2);
+
+
+$CentreonGMT = new CentreonGMT($pearDB);
+$GMTList = $CentreonGMT->getGMTList();
+
+$form->addElement('select', 'gmt', _("Timezone"), $GMTList);
 
 $templates = array();
 if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{
@@ -195,8 +198,8 @@ $tpl = initSmartyTpl($path.'general/', $tpl);
 
 $form->setDefaults($gopt);
 
-$subC = $form->addElement('submit', 'submitC', _("Save"));
-$form->addElement('reset', 'reset', _("Reset"));
+$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 $valid = false;
 if ($form->validate()) {

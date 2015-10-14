@@ -36,6 +36,9 @@
 <script type="text/javascript">
 var listArea;
 
+var macroSvc  = new Array();
+var macroHost = new Array();
+
 function goPopup() {
 	var cmd_line;
 	var tmpStr;
@@ -74,6 +77,38 @@ function closeBox() {
 function clearArgs() {
 	listArea = document.getElementById('listOfArg');
 	listArea.value = "";
+}
+
+function manageMacros()
+{
+    var commandLine = document.Form.command_line.value;
+    var tmpStr = "";
+
+    Modalbox.show('./include/configuration/configObject/command/formMacros.php?cmd_line=' + commandLine + '&textArea=' + tmpStr, {title: 'Macro description', width:800});
+}
+
+function setMacrosDescriptions() {
+	var i;
+	var tmpStr2;
+	var listDiv;
+
+	tmpStr2 = "";
+	listArea = document.getElementById('listOfMacros');
+	listDiv = document.getElementById('listOfMacros');
+	for (i=0; document.getElementById('desc_'+i); i++) {
+            var type = "HOST";
+            if (document.getElementById('type_'+i).value == 2) {
+                type = "SERVICE";
+            }
+            tmpStr2 += "MACRO ("+ type +") "+ document.getElementById('macro_'+i).value + " : " + document.getElementById('desc_'+i).value + "\n";
+	}
+        
+	listArea.cols= 100;
+	listArea.rows= i;
+        
+	listArea.value = tmpStr2;
+	listDiv.style.visibility = "visible";
+	Modalbox.hide();
 }
 
 </script>

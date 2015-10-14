@@ -70,7 +70,9 @@ function transformForm()
 function changeCommand(value)
 {
 	_cmdId = value;
-	_templateId = document.getElementById('svcTemplate').value;
+    if(document.getElementById('svcTemplate') != null){
+        _templateId = document.getElementById('svcTemplate').value;
+    }
 	transformForm();
 }
 
@@ -80,7 +82,10 @@ function changeCommand(value)
 function changeServiceTemplate(value)
 {
 	_svcTplId = value;
-	_cmdId = document.getElementById('checkCommand').value;
-	transformForm();
+    if(document.getElementById('checkCommand') != null){
+        _cmdId = document.getElementById('checkCommand').value;
+        transformForm();
+    }
+	
 }
 </script>

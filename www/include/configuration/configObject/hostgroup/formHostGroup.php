@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -225,13 +225,6 @@ $hgActivation[] = HTML_QuickForm::createElement('radio', 'hg_activate', null, _(
 $form->addGroup($hgActivation, 'hg_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('hg_activate' => '1'));
 
-
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
-
 $form->addElement('hidden', 'hg_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -253,7 +246,7 @@ $form->addRule('hg_name', _("Compulsory Name"), 'required');
 $form->addRule('hg_alias', _("Compulsory Alias"), 'required');
 
 if (!$oreon->user->admin) {
-    $form->addRule('hg_hosts', _('Compulsory hosts (due to ACL restrictions that could prevent you from seeing this host group)'), 'required');
+    //$form->addRule('hg_hosts', _('Compulsory hosts (due to ACL restrictions that could prevent you from seeing this host group)'), 'required');
 }
 
 $form->registerRule('exist', 'callback', 'testHostGroupExistence');
@@ -278,19 +271,18 @@ if ($o == "w") {
     /*
      * Modify a HostGroup information
      */
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($hg);
 } else if ($o == "a") {
     /*
      * Add a HostGroup information
      */
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $tpl->assign('p', $p);
-$tpl->assign('nagios', $oreon->user->get_version());
 $tpl->assign("initJS", "<script type='text/javascript'>
 							jQuery(function () {
 							initAutoComplete('Form','city_name','sub');
@@ -315,13 +307,10 @@ if ($form->validate())	{
         updateHostGroupInDB($hgObj->getValue());
     $o = NULL;
     $hgObj = $form->getElement('hg_id');
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hgObj->getValue()."'"));
-    $form->freeze();
     $valid = true;
 }
 
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+if ($valid) {
     require_once($path."listHostGroup.php");
 } else	{
     /*
@@ -337,5 +326,3 @@ if ($valid && $action["action"]) {
     $tpl->assign('topdoc', _("Documentation"));
     $tpl->display("formHostGroup.ihtml");
 }
-
-

@@ -1,8 +1,22 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form' method='POST'>
-	<table class="ToolbarTable">
+    <table class="ajaxOption table">
+    <tbody>
+      <tr>
+        <td><h5>{t}Filters{/t}</h5></td>
+      </tr>
+      <tr>
+        <td><h4>{t}ACL Menu{/t}</h4></td>
+      </tr>
+      <tr>
+        <td><input type="text" name="searchACLM" value="{$searchACLM}"></td>
+        <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+      </tr>
+    </tbody>
+    </table>
+	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			<td class="Toolbar_TDSelectAction_Top">{$msg.options} {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}">{$msg.addT}</a><input name="p" value="{$p}" type="hidden"></td>
+			<td>{$msg.options} {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a><input name="p" value="{$p}" type="hidden"></td>
 			
 			{php}
 			   include('./include/common/pagination.php');
@@ -29,12 +43,10 @@
 		{/section}
 	</table>
 
-	<table class="ToolbarTable">
-		<tr>
-			<td class="Toolbar_TDSelectAction_Bottom">
-				{$msg.options} {$form.o2.html}
-				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL}">{$msg.addT}</a>
+	<table class="ToolbarTable table">
+		<tr class="ToolbarTR">
+			<td>
+				{$msg.options} {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 			</td>
 			<input name="p" value="{$p}" type="hidden">
 			{php}

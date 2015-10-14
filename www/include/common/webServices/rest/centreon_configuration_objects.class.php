@@ -81,6 +81,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             throw new RestBadRequestException("Bad parameters target");
         }
         
+        // 
         $defaultValuesParameters = array();
         $targetedFile = $centreon_path . "/www/class/centreon$target.class.php";
         if (file_exists($targetedFile)) {
@@ -89,16 +90,12 @@ class CentreonConfigurationObjects extends CentreonWebService
             $defaultValuesParameters = $calledClass::getDefaultValuesParameters($field);
         }
         
-        /**
-         * 
-         */
+        // 
         if (count($defaultValuesParameters) == 0) {
             throw new RestBadRequestException("Bad parameters count");
         }
         
-        /**
-         * 
-         */
+        // 
         if ($defaultValuesParameters['type'] === 'simple') {
             if (isset($defaultValuesParameters['reverse']) && $defaultValuesParameters['reverse']) {
                 $selectedValues = $this->retrieveSimpleValues(
@@ -118,9 +115,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             throw new RestBadRequestException("Bad parameters");
         }
         
-        /**
-         * 
-         */
+        // 
         $finalDatas = array();
         if (count($selectedValues) > 0) {
             $finalDatas = $this->retrieveExternalObjectDatas($defaultValuesParameters['externalObject'], $selectedValues);
@@ -136,22 +131,32 @@ class CentreonConfigurationObjects extends CentreonWebService
      */
     private function retrieveExternalObjectDatas($externalObject, $values)
     {
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
-        }
-        $query = "SELECT $externalObject[id], $externalObject[name] "
-            . "FROM $externalObject[table] "
-            . "WHERE $externalObject[comparator] "
-            . "IN ($explodedValues)";
-        
+        global $centreon_path;
         $tmpValues = array();
-        $resRetrieval = $this->pearDB->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
-            $tmpValues[] = array(
-                'id' => $row[$externalObject['id']],
-                'text' => $row[$externalObject['name']]
-            );
+        
+        if (isset($externalObject['object'])) {
+            $classFile = $externalObject['object'] . '.class.php';
+            include_once $centreon_path . "/www/class/$classFile";
+            $calledClass = ucfirst($externalObject['object']);
+            $externalObjectInstance = new $calledClass($this->pearDB);
+            $tmpValues = $externalObjectInstance->getObjectForSelect2($values);
+        } else {
+            $explodedValues = implode(',', $values);
+            if (empty($explodedValues)) {
+                $explodedValues = "''";
+            }
+            $query = "SELECT $externalObject[id], $externalObject[name] "
+                . "FROM $externalObject[table] "
+                . "WHERE $externalObject[comparator] "
+                . "IN ($explodedValues)";
+
+            $resRetrieval = $this->pearDB->query($query);
+            while ($row = $resRetrieval->fetchRow()) {
+                $tmpValues[] = array(
+                    'id' => $row[$externalObject['id']],
+                    'text' => $row[$externalObject['name']]
+                );
+            }
         }
         
         return $tmpValues;

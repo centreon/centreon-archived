@@ -139,7 +139,7 @@
 	 * Display Login
 	 */
 	$tpl->assign("user_login", $oreon->user->get_alias());
-	$tpl->assign("loggedlabel", _("You are"));
+	$tpl->assign("loggedlabel", _("Welcome"));
 
 	/*
 	 * Fixe ACL
@@ -307,7 +307,7 @@
 	$tpl->assign("Menu3ID", "menu3_bgcolor");
 	$tpl->assign("Menu4Color", "menu_4");
 	$tpl->assign("Menu4ID", "menu4_bgcolor");
-	$tpl->assign("connected_users", _("Connected"));
+	$tpl->assign("connected_users", _("Connected Users"));
 	$tpl->assign("main_menu", _("Main Menu"));
 
 	/*

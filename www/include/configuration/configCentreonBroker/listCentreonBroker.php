@@ -40,11 +40,6 @@ if (!isset($oreon)) {
 include("./include/common/autoNumLimit.php");
 
 /*
- * start quickSearch form
- */
-include_once("./include/common/quickSearch.php");
-
-/*
  * nagios servers comes from DB
  */
 $nagios_servers = array();
@@ -80,8 +75,12 @@ $tpl->assign("headerMenu_options", _("Options"));
  * Centreon Brober config list
  */
 $aclCond = "";
+$search = '';
+if (isset($_POST['searchCB']) && $_POST['searchCB']) {
+    $search = $_POST['searchCB'];
+}
 if (!$oreon->user->admin && count($allowedBrokerConf)) {
-    if (isset($search) && $search) {
+    if ($search) {
         $aclCond = " AND ";
     } else {
         $aclCond = " WHERE ";
@@ -91,7 +90,7 @@ if (!$oreon->user->admin && count($allowedBrokerConf)) {
 if ($search) {
     $rq = "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate
                FROM cfg_centreonbroker
-               WHERE description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'
+               WHERE config_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'
                $aclCond
                ORDER BY config_name
                LIMIT ".$num * $limit.", ".$limit;
@@ -127,9 +126,9 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[".$config['config_id']."]");
 
     if ($config["config_activate"]) {
-        $moptions .= "<a href='main.php?p=".$p."&id=".$config['config_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+        $moptions .= "<a href='main.php?p=".$p."&id=".$config['config_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_inactive.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
     } else {
-        $moptions .= "<a href='main.php?p=".$p."&id=".$config['config_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+        $moptions .= "<a href='main.php?p=".$p."&id=".$config['config_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_active.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
     }
     $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$config['config_id']."]'></input>";
 
@@ -209,6 +208,7 @@ $o2 = $form->getElement('o2');
 $o2->setValue(NULL);
 
 $tpl->assign('limit', $limit);
+$tpl->assign('searchCB', $search);
 
 /*
  * Apply a template definition

@@ -39,9 +39,9 @@
 global $centreon_path;
 require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
+require_once dirname(__FILE__) . "/centreon_configuration_service.class.php";
 
-class CentreonConfigurationServicetemplate extends CentreonConfigurationObjects
+class CentreonConfigurationServicetemplate extends CentreonConfigurationService
 {
     /**
      * Constructor
@@ -64,6 +64,27 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
         
+        if (false === isset($this->arguments['l'])) {
+            $l = '0';
+        } else {
+            $l = $this->arguments['l'];
+        }
+        
+        if ($l == '1') {
+            $serviceTemplateList = $this->listWithHostTemplate($q);
+        } else {
+            $serviceTemplateList = $this->listClassic($q);
+        }
+        return $serviceTemplateList;
+    }
+    
+    /**
+     * 
+     * @param string $q
+     * @return array
+     */
+    private function listClassic($q)
+    {
         $queryContact = "SELECT service_id, service_description "
             . "FROM service "
             . "WHERE service_description LIKE '%$q%' "
@@ -71,10 +92,37 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationObjects
             . "ORDER BY service_description";
         
         $DBRESULT = $this->pearDB->query($queryContact);
+
+        while ($data = $DBRESULT->fetchRow()) {
+            $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
+        }
+        
+        return $serviceList;
+    }
+    
+    /**
+     * 
+     * @param string $q
+     * @return array
+     */
+    private function listWithHostTemplate($q = '')
+    {
+        $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
+            . "FROM host h, service s, host_service_relation hsr "
+            . 'WHERE hsr.host_host_id = h.host_id '
+            . "AND hsr.service_service_id = s.service_id "
+            . "AND h.host_register = '0' AND s.service_register = '0' "
+            . "AND s.service_description LIKE '%$q%' "
+            . "ORDER BY h.host_name";
+        
+        $DBRESULT = $this->pearDB->query($queryService);
         
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
+            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
+            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+            
+            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
         
         return $serviceList;

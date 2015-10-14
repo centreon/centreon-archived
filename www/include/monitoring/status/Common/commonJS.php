@@ -31,20 +31,15 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($centreon)) {
+	exit();
+}
 
-	if (!isset($default_poller)) {
-		include_once "./include/monitoring/status/Common/default_poller.php";
-	}
-
-	$broker = $centreon->broker->getBroker();
+if (!isset($default_poller)) {
+	include_once "./include/monitoring/status/Common/default_poller.php";
+}
 
 ?>
 // Dynamique
@@ -92,11 +87,11 @@ var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
 var _popup_no_comment_msg = '<?php echo addslashes(_("Please enter a comment")); ?>';
 
 // Hosts WS For Poppin
-var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/<?php print $centreon->broker->getBroker(); ?>/makeXMLForOneHost.php";
+var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/broker/makeXMLForOneHost.php";
 var _addrXSLSpanhost = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
 
 // Services WS For Poppin
-var _addrXMLSpanSvc = "./include/monitoring/status/Services/xml/<?php print $centreon->broker->getBroker(); ?>/makeXMLForOneService.php";
+var _addrXMLSpanSvc = "./include/monitoring/status/Services/xml/broker/makeXMLForOneService.php";
 var _addrXSLSpanSvc = "./include/monitoring/status/Services/xsl/popupForService.xsl";
 
 // Position
@@ -248,53 +243,27 @@ function construct_selecteList_ndo_instance(id){
     /** *************************************
      * Get instance listing
      */
-    if ($broker == "broker") {
-    	if ($oreon->user->admin || !count($pollerArray)) {
-	        $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = '1' ORDER BY name";
-		} else {
-		    $instanceQuery = "SELECT instance_id, name  ".
-		    				 "FROM `instances` WHERE running = '1' AND name IN (". $oreon->user->access->getPollerString('NAME') .") ORDER BY name";
-		}
-		$DBRESULT = $pearDBO->query($instanceQuery);
-   		 while ($nagios_server = $DBRESULT->fetchRow())	{   ?>
-			var m = document.createElement('option');
-			m.value= "<?php echo $nagios_server["instance_id"]; ?>";
-			_select.appendChild(m);
-			var n = document.createTextNode("<?php echo $nagios_server["name"] . "  "; ?>   ");
-			m.appendChild(n);
-			_select.appendChild(m);
-			select_index["<?php echo $nagios_server["instance_id"]; ?>"] = i;
-			i++;
-	<?php }	?>
-			_select.selectedIndex = select_index[_default_instance];
-			_select_instance.appendChild(_select);
-		}
-		<?php
-    } else {
-		if ($oreon->user->admin || !count($pollerArray)) {
-	        $instanceQuery = "SELECT instance_id, instance_name FROM `".getNDOPrefix()."instances` ORDER BY instance_name";
-		} else {
-		    $instanceQuery = "SELECT instance_id, instance_name  ".
-		    				 "FROM `".getNDOPrefix()."instances` WHERE instance_name IN (". $oreon->user->access->getPollerString('NAME') .") ORDER BY instance_name";
-		}
-		$DBRESULT = $pearDBndo->query($instanceQuery);
-		while ($nagios_server = $DBRESULT->fetchRow())	{
-?>
-			var m = document.createElement('option');
-			m.value= "<?php echo $nagios_server["instance_id"]; ?>";
-			_select.appendChild(m);
-			var n = document.createTextNode("<?php echo $nagios_server["instance_name"] . "  "; ?>   ");
-			m.appendChild(n);
-			_select.appendChild(m);
-			select_index["<?php echo $nagios_server["instance_id"]; ?>"] = i;
-			i++;
-	<?php }	?>
-			_select.selectedIndex = select_index[_default_instance];
-			_select_instance.appendChild(_select);
-		}
-	<?php
-    }
-    ?>
+    
+	if ($oreon->user->admin || !count($pollerArray)) {
+        $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = '1' ORDER BY name";
+	} else {
+	    $instanceQuery = "SELECT instance_id, name  ".
+	    				 "FROM `instances` WHERE running = '1' AND name IN (". $oreon->user->access->getPollerString('NAME') .") ORDER BY name";
+	}
+	$DBRESULT = $pearDBO->query($instanceQuery);
+		 while ($nagios_server = $DBRESULT->fetchRow())	{   ?>
+		var m = document.createElement('option');
+		m.value= "<?php echo $nagios_server["instance_id"]; ?>";
+		_select.appendChild(m);
+		var n = document.createTextNode("<?php echo $nagios_server["name"] . "  "; ?>   ");
+		m.appendChild(n);
+		_select.appendChild(m);
+		select_index["<?php echo $nagios_server["instance_id"]; ?>"] = i;
+		i++;
+<?php }	?>
+		_select.selectedIndex = select_index[_default_instance];
+		_select_instance.appendChild(_select);
+	}
 }
 
 function construct_HostGroupSelectList(id) {
@@ -323,11 +292,7 @@ function construct_HostGroupSelectList(id) {
 <?php
 		$hgNdo = array();
 		$hgBrk = array();
-		if ($broker == 'broker') {
-		    $acldb = $pearDBO;
-		} else {
-            $acldb = new CentreonDB("ndo");
-		}
+        $acldb = $pearDBO;
 		if (!$oreon->user->access->admin) {
 			$query = "SELECT DISTINCT hg.hg_alias, hg.hg_name AS name
 				  FROM hostgroup hg, acl_resources_hg_relations arhr
@@ -346,53 +311,35 @@ function construct_HostGroupSelectList(id) {
 			unset($data);
 		}
 
-		if ($broker == 'broker') {
-			$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroups.hostgroup_id FROM `hostgroups`, `hosts_hostgroups` WHERE hostgroups.enabled = 1 AND hostgroups.hostgroup_id = hosts_hostgroups.hostgroup_id AND name NOT LIKE 'meta\_%' AND enabled = 1 ORDER BY `name`");
-		} else {
-			$DBRESULT = $pearDB->query("SELECT DISTINCT `hg_name` as name, `hg_alias` as alias , `hg_id` as hostgroup_id FROM `hostgroup` ORDER BY `name`");
-		}
+		$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroups.hostgroup_id FROM `hostgroups`, `hosts_hostgroups` WHERE hostgroups.enabled = 1 AND hostgroups.hostgroup_id = hosts_hostgroups.hostgroup_id AND name NOT LIKE 'meta\_%' AND enabled = 1 ORDER BY `name`");
 		while ($hostgroups = $DBRESULT->fetchRow()) {
-			if ($broker == 'broker') {
-				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
-				    if (!isset($tabHG)) {
-				        $tabHG = array();
-				    }
-				    if (!isset($tabHG[$hostgroups["name"]])) {
-				        $tabHG[$hostgroups["name"]] = "";
-				    } else {
-				        $tabHG[$hostgroups["name"]] .= ",";
-				    }
-                    $tabHG[$hostgroups["name"]] .= $hostgroups["hostgroup_id"];
-	 		    }
-			} else {
-				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgNdo[$hostgroups["name"]]))) { ?>
-					var m = document.createElement('option');
-					m.value= "<?php echo addslashes($hostgroups['name']); ?>";
-					_select.appendChild(m);
-					var n = document.createTextNode("<?php echo $hostgroups["name"]; ?>   ");
-					m.appendChild(n);
-					_select.appendChild(m);
-					select_index["<?php echo addslashes($hostgroups['name']); ?>"] = i;
-					i++;
-	<?php 		}
-			}
+			if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
+			    if (!isset($tabHG)) {
+			        $tabHG = array();
+			    }
+			    if (!isset($tabHG[$hostgroups["name"]])) {
+			        $tabHG[$hostgroups["name"]] = "";
+			    } else {
+			        $tabHG[$hostgroups["name"]] .= ",";
+			    }
+                $tabHG[$hostgroups["name"]] .= $hostgroups["hostgroup_id"];
+ 		    }
+		
 		}
 
-		if ($broker == 'broker') {
-			if (isset($tabHG)) {
-				foreach ($tabHG as $name => $id) {
-	                ?>
-	                var m = document.createElement('option');
-						m.value= "<?php echo $id; ?>";
-						_select.appendChild(m);
-						var n = document.createTextNode("<?php echo $name; ?>   ");
-						m.appendChild(n);
-						_select.appendChild(m);
-						select_index["<?php echo $id; ?>"] = i;
-						i++;
-					<?php
-	            }
-			}
+		if (isset($tabHG)) {
+			foreach ($tabHG as $name => $id) {
+                ?>
+                var m = document.createElement('option');
+					m.value= "<?php echo $id; ?>";
+					_select.appendChild(m);
+					var n = document.createTextNode("<?php echo $name; ?>   ");
+					m.appendChild(n);
+					_select.appendChild(m);
+					select_index["<?php echo $id; ?>"] = i;
+					i++;
+				<?php
+            }
 		}
 ?>
 		if (typeof(_default_hg) != "undefined") {

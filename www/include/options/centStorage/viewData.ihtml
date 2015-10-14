@@ -1,27 +1,37 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form' method='POST'>
 	<input name="o" type="hidden">
-	<table class="ajaxOption">
+	<table class="ajaxOption table">
+      <tbody>
+        <tr>
+          <th><h5>{t}Filters{/t}</h5></th>
+        </tr>
 		<tr>
-			<td>{$Hosts} : <input type='text' name='searchH' value="{$searchH}" /></td>
-			<td>&nbsp;&nbsp;{$Services} : <input type='text' name='searchS' value="{$searchS}" /></td>
-			<td>{$Pollers} :
-              <select name="searchP">
-                <option value=""></option>
-              {foreach from=$instances key=instanceId item=instanceName}
-                <option value="{$instanceId}"{if $instanceId == $searchP} selected{/if}>{$instanceName}</option>
-              {/foreach}
-              </select>
-            </td>
-            <td><input type='submit' name='Search' value='{$Search}' /></td>
+            <td><h4>{$Hosts}</h4></td>
+			<td><h4>{$Services}</h4></td>
+			<td><h4>{$Pollers}</h4></td>
 		</tr>
+        <tr>
+          <td><input type='text' name='searchH' value="{$searchH}" /></td>
+          <td><input type='text' name='searchS' value="{$searchS}" /></td>
+          <td>
+            <select name="searchP">
+              <option value=""></option>
+            {foreach from=$instances key=instanceId item=instanceName}
+              <option value="{$instanceId}"{if $instanceId == $searchP} selected{/if}>{$instanceName}</option>
+            {/foreach}
+            </select>
+          </td>
+          <td><input type='submit' name='Search' value='{$Search}' class="btc bt_success" /></td>
+        </tr>
+      </tbody>
 	</table><br />
-	<table class="ToolbarTable">
+	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			<td class="Toolbar_TDSelectAction_Top">
+			<td>
 				{$msg.options} {$form.o1.html}
 				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL}">{$msg.addT}</a>
+				<!-- <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a> -->
 			</td>
 			<input name="p" value="{$p}" type="hidden">
 			{php}
@@ -57,12 +67,12 @@
 	 	{assign var='host_name' value=$d.host_name}	
 		{/foreach}
 	</table>
-	<table class="ToolbarTable">
-		<tr>
-			<td class="Toolbar_TDSelectAction_Bottom">
+	<table class="ToolbarTable table">
+		<tr class="ToolbarTR">
+			<td>
 				{$msg.options} {$form.o2.html}
 				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL}">{$msg.addT}</a>
+				<!-- <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a> -->
 			</td>
 			<input name="p" value="{$p}" type="hidden">
 			{php}

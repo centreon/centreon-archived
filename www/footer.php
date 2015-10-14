@@ -39,36 +39,137 @@ if (!isset($centreon)) {
 
 require_once("./class/centreonData.class.php");
 
-if (!$min) {
+ if (!$min) {
+ 
 
-?><div>
-		<table cellpadding="0" cellspacing="0" style="height:1px; width:100%;">
-			<tr><td id="footerline1"></td></tr>
-			<tr><td id="footerline2"></td></tr>
-		</table>
-		<div id="footer">
-			<table cellpadding='0' cellspacing='0' width='100%' border='0'>
-				<tr>
-					<td align='center' class='copyRight'>
+?>    <div id="footer">
+			<table cellpadding='0' cellspacing='0' width='100%' border='0' id="tfooter">
+ 				<tr>
+				    <td>
+				        <?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
+				    </td>
+ 					<td align='center' class='copyRight'>
+						<div style="float: right;" onclick="myToggleAll(0,true);saveFullScreenSetting();" > FullScreen</div>
+					    <a href='http://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> 
                         <a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
-                        <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a> | 
-                        Copyright &copy; 2005-2015 <a href="http://www.centreon.com">Centreon</a><br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
-                        <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
-                        | <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a></td>
-                        <?php } ?>
-                </tr>
-			</table>
-		</div>
-        <div style="float: right;" onclick="myToggleAll(400);saveFullScreenSetting();" > FullScreen</div>
-	</div>
-<?php
-}
+                        <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a>
+                        <br />
+                         <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
+                        <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
+                         <?php } ?>
+                        <!-- - <a href="http://www.centreon.com">Centreon Web</a>-->
+                    </td>
+
+                      <td>
+                         Copyright &copy; 2005-2015
+                     </td>
+                 </tr>
+ 			</table>
+ 		</div>
+
+ <?php
+ }
 ?>
+<style>
+html, body {
+margin: 0;
+width: 100%;
+height: 100%;
+}
+ 
+
+/* While in fullscreen, hide any children with class 'tohide' */
+:-webkit-full-screen .tohide {
+  display: none;
+}
+:-moz-full-screen .tohide {
+  display: none;
+}
+:-ms-fullscreen .tohide {
+  display: none;
+}
+:fullscreen .tohide {
+  display: none;
+}
+    
+.tohide{
+    display: none;    
+}
+    
+</style>
 <script type="text/javascript">
-    function myToggleAll(duration){
-        jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").toggle({duration : duration});
+    function myToggleAll(duration,toggle){
+        if(toggle){
+            //var i = document.getElementsByTagName("html")[0];
+            var i = document.documentElement;
+            if (
+                document.fullscreenElement ||
+                document.webkitFullscreenElement ||
+                document.mozFullScreenElement ||
+                document.msFullscreenElement
+            ){
+                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.msExitFullscreen) {
+                   document.msExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                   document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                   document.webkitExitFullscreen();
+                }
+            }else{
+                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").addClass('tohide');
+                // go full-screen
+                if (i.requestFullscreen) {
+                    i.requestFullscreen();
+                } else if (i.webkitRequestFullscreen) {
+                    i.webkitRequestFullscreen();
+                } else if (i.mozRequestFullScreen) {
+                    i.mozRequestFullScreen();
+                } else if (i.msRequestFullscreen) {
+                    i.msRequestFullscreen();
+                }
+            }
+        }else{
+            /*var i = document.getElementsByTagName("html")[0];
+            jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").hide({duration : duration});
+            // go full-screen
+            if (i.requestFullscreen) {
+                i.requestFullscreen();
+            } else if (i.webkitRequestFullscreen) {
+                i.webkitRequestFullscreen();
+            } else if (i.mozRequestFullScreen) {
+                i.mozRequestFullScreen();
+            } else if (i.msRequestFullscreen) {
+                i.msRequestFullscreen();
+            }*/
+        }
     }
     
+    document.addEventListener('webkitfullscreenchange', exitHandler, false);
+    document.addEventListener('mozfullscreenchange', exitHandler, false);
+    document.addEventListener('fullscreenchange', exitHandler, false);
+    document.addEventListener('MSFullscreenChange', exitHandler, false);
+    
+    function exitHandler(){
+        
+        var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement;
+        var event = state ? 'FullscreenOn' : 'FullscreenOff';
+        console.log(state);
+        if (event === 'FullscreenOff')
+        {
+            jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
+        }
+        
+
+    }
+    
+    
+    
+    
+    
+    /*
     function saveFullScreenSetting(){
         var d = new Date();
         var n = d.getTime();
@@ -78,7 +179,7 @@ if (!$min) {
            data: { timestamp: n }
         });
     }
-    
+    */
 
 </script>
 
@@ -88,7 +189,7 @@ if ((isset($_GET["mini"]) && $_GET["mini"] == 1) ||
     (isset($_SESSION['fullScreen']) && isset($_SESSION['fullScreen']['value']) && $_SESSION['fullScreen']['value'])) {
 ?>
 	<script type="text/javascript">
-        myToggleAll(0);
+        myToggleAll(0,false);
 	</script>
 <?php } else {
 	if (!$centreon->user->showDiv("footer")) { ?> <script type="text/javascript">new Effect.toggle('footer', 'blind', { duration : 0 });</script> <?php }

@@ -111,11 +111,11 @@
 				$tpl->assign("output4", _("Unable to install module"));
 			}
 		} else {
-			$form1->addElement('submit', 'install', _("Install Module"));
+			$form1->addElement('submit', 'install', _("Install Module"), array("class" => "btc bt_success"));
 			$redirect = $form1->addElement('hidden', 'o');
 			$redirect->setValue("i");
 		}
-		$form1->addElement('submit', 'list', _("Back"));
+		$form1->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
 		$hid_name = $form1->addElement('hidden', 'name');
 		$hid_name->setValue($name);
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -166,7 +166,7 @@
 							}
 						}
 						if (!$upgrade_ok)	{
-							$form->addElement('submit', 'upgrade', _("Upgrade"));
+							$form->addElement('submit', 'upgrade', _("Upgrade"), array("class" => "btc bt_success"));
 							$redirect = $form->addElement('hidden', 'o');
 							$redirect->setValue("u");
 						}
@@ -195,7 +195,7 @@
 						$hid_id->setValue($id);
 						$up_name = $form->addElement('hidden', 'filename');
 						$up_name->setValue($filename);
-						$form->addElement('submit', 'list', _("Back"));
+						$form->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
 						$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 						$form->accept($renderer);
 						$tpl->assign('form', $renderer->toArray());
@@ -213,7 +213,7 @@
 		$tpl->assign("module_isinstalled", _("Yes"));
 		$tpl->assign("elemArr", $elemArr);
 		$form2 = new HTML_QuickForm('Form', 'post', "?p=".$p);
-		$form2->addElement('submit', 'list', _("Back"));
+		$form2->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$form2->accept($renderer);
 		$tpl->assign('form2', $renderer->toArray());
