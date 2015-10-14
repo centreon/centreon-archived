@@ -215,6 +215,8 @@
               $command_line .= " --font LEGEND:".$optGen["rrdtool_legend_fontsize"].":".$optGen["rrdtool_legend_title"]." ";
         }
 
+		$command_line .= " --color BACK#FFFFFF --color FRAME#FFFFFF --color SHADEA#FFFFFF --color SHADEB#FFFFFF ";
+		
 		/*
 		 * get all template infos
 		 */
