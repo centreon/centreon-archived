@@ -183,10 +183,8 @@ class Host extends AbstractHost {
         $this->getImages($host);
         $this->getMacros($host);
         $host['macros']['_HOST_ID'] = $host['host_id'];
-        /*
         $oTimezone = Timezone::getInstance();
         $host['timezone'] = " : ". $oTimezone->getTimezoneFromId($host['host_location']);
-        */
         $this->getHostTemplates($host);
         $this->getHostCommands($host);
         $this->getHostPeriods($host);

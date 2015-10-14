@@ -39,6 +39,7 @@
 global $centreon_path;
 require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once $centreon_path . "/www/class/centreonContact.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationContact extends CentreonConfigurationObjects
@@ -57,23 +58,25 @@ class CentreonConfigurationContact extends CentreonConfigurationObjects
      */
     public function getList()
     {
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
-            $q = $this->arguments['q'];
-        }
+        global $centreon;
         
-        $queryContact = "SELECT contact_id, contact_name "
-            . "FROM contact "
-            . "WHERE contact_name LIKE '%$q%' "
-            . "ORDER BY contact_name";
+        $acl = new CentreonACL($centreon->user->user_id);
         
-        $DBRESULT = $this->pearDB->query($queryContact);
-        
+        $contacts = $acl->getContactAclConf(array('fields' => array('contact_id', 'contact_name'),
+            'get_row' => 'contact_name',
+            'keys' => array('contact_id'),
+            'conditions' => array('contact_register' => '1'),
+            'order' => array('contact_name')));
+
         $contactList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $contactList[] = array('id' => $data['contact_id'], 'text' => $data['contact_name']);
+        foreach ($contacts as $id => $contactName) {
+            if ((false === isset($this->arguments['q']) || '' === $this->arguments['q'])
+                 || strstr($contactName, $this->arguments['q'])) {
+                $contactList[] = array(
+                    'id' => $id,
+                    'text' => $contactName
+                );
+            }
         }
         
         return $contactList;
