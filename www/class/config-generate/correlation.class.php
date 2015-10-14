@@ -7,45 +7,70 @@ class Correlation extends AbstractObjectXML {
     protected $object_name = null;
     protected $stmt_correlation = null;
     private $correlation_object = array();
+    private $correlation_dependency_object = array();
+    private $correlation_parentship_object = array();
     private $has_correlation = null;
     private $correlation_file_path = null;
-    private $stmt_poller = null;
+    private $poller_ids = array();
     
     public function generateFromPollerId($poller_id, $localhost) {
         if ($localhost) {
             $this->generateMainCorrelation();
+            $this->generateDependency();
+            $this->generateParentship();
         }
 
         $this->generate_filename = 'correlation_' . $poller_id . '.xml';
 
         $this->doHost($poller_id);
         $this->doService($poller_id);
-        $this->doDependency($poller_id);
-        $this->doHostParentship($poller_id);
 
         # Generate correlation files
         $this->generateFile($this->correlation_object, false, 'conf');
         $this->writeFile($this->backend_instance->getPath());        
     }
 
-    public function generateMainCorrelation() {
+    private function generateMainCorrelation() {
         $object = array();
         $this->generate_filename = basename($this->correlation_file_path);
         $dir = dirname($this->correlation_file_path);
 
-        $this->stmt_poller = $this->backend_instance->db->prepare("SELECT
-              id
-            FROM nagios_server
-            WHERE ns_activate = '1'
-            ");
-        $this->stmt_poller->execute();
-        $result = $this->stmt_poller->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($result as $row) {
-            $object[]['include'] = $dir . '/correlation_' . $row['id'] . '.xml';
+        if (!count($this->poller_ids)) {
+            $this->getPollerIds();
         }
+
+        foreach ($this->poller_ids as $poller_id) {
+            $object[]['include'] = $dir . '/correlation_' . $poller_id . '.xml';
+        }
+        $object[]['include'] = $dir . '/correlation_dependency.xml';
+        $object[]['include'] = $dir . '/correlation_parentship.xml';
 
         # Generate main file
         $this->generateFile($object, true, 'conf');
+        $this->writeFile($this->backend_instance->getPath());
+    }
+
+    private function generateDependency() {
+        $this->generate_filename = 'correlation_dependency.xml';
+        $dir = dirname($this->correlation_file_path);
+
+        $this->doHostHostDependency();
+        $this->doServiceHostDependency();
+        $this->doHostServiceDependency();
+
+        # Generate dependency file
+        $this->generateFile($this->correlation_dependency_object, false, 'conf');
+        $this->writeFile($this->backend_instance->getPath());
+    }
+
+    private function generateParentship() {
+        $this->generate_filename = 'correlation_parentship.xml';
+        $dir = dirname($this->correlation_file_path);
+
+        $this->doParentship();
+
+        # Generate parentship file
+        $this->generateFile($this->correlation_parentship_object, false, 'conf');
         $this->writeFile($this->backend_instance->getPath());
     }
 
@@ -81,30 +106,54 @@ class Correlation extends AbstractObjectXML {
         }
     }
 
-    private function doDependency($poller_id) {
-        $dependency_instance = Dependency::getInstance();
-        $dependencies_exported = $dependency_instance->getGeneratedDependencies();
-        foreach ($dependencies_exported as $value) {
-            $this->correlation_object[]['dependency'] = $value;
+    private function doHostHostDependency() {
+        $stmt = $this->backend_instance->db->prepare("SELECT
+              dhp.host_host_id as parent_host_id, dhc.host_host_id as child_host_id
+            FROM dependency_hostParent_relation dhp, dependency_hostChild_relation dhc
+            WHERE dhp.dependency_dep_id = dhc.dependency_dep_id
+            ");
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $this->correlation_dependency_object[]['dependency'] = array(
+                '@attributes' => array(
+                    'host' => $row['parent_host_id'],
+                    'dependent_host' => $row['child_host_id']
+                )
+            );
         }
-
-        $this->doServiceHostDependency($poller_id);
-        $this->doHostServiceDependency($poller_id);
     }
 
-    private function doServiceHostDependency($poller_id) {
-        $this->stmt_service_host_dependency = $this->backend_instance->db->prepare("SELECT
-              dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id, dhc.host_host_id as child_host_id
-            FROM dependency_serviceParent_relation dsp, dependency_hostChild_relation dhc, ns_host_relation nhr
-            WHERE dsp.dependency_dep_id = dhc.dependency_dep_id
-              AND dsp.host_host_id = nhr.host_host_id
-              AND nhr.nagios_server_id = :poller_id
+    private function doServiceServiceDependency() {
+        $stmt = $this->backend_instance->db->prepare("SELECT
+              dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id, dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
+            FROM dependency_serviceParent_relation dsp, dependency_serviceChild_relation dsc
+            WHERE dsp.dependency_dep_id = dsc.dependency_dep_id
             ");
-        $this->stmt_service_host_dependency->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
-        $this->stmt_service_host_dependency->execute();
-        $result = $this->stmt_service_host_dependency->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
-            $this->correlation_object[]['dependency'] = array(
+            $this->correlation_dependency_object[]['dependency'] = array(
+                '@attributes' => array(
+                    'host' => $row['parent_host_id'],
+                    'service' => $row['parent_service_id'],
+                    'dependent_host' => $row['child_host_id'],
+                    'dependent_service' => $row['child_service_id']
+                )
+            );
+        }
+    }
+
+    private function doServiceHostDependency() {
+        $stmt = $this->backend_instance->db->prepare("SELECT
+              dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id, dhc.host_host_id as child_host_id
+            FROM dependency_serviceParent_relation dsp, dependency_hostChild_relation dhc
+            WHERE dsp.dependency_dep_id = dhc.dependency_dep_id
+            ");
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $this->correlation_dependency_object[]['dependency'] = array(
                     '@attributes' => array(
                         'host' => $row['parent_host_id'],
                         'service' => $row['parent_service_id'],
@@ -114,19 +163,16 @@ class Correlation extends AbstractObjectXML {
         }
     }
 
-    private function doHostServiceDependency($poller_id) {
-        $this->stmt_host_service_dependency = $this->backend_instance->db->prepare("SELECT
+    private function doHostServiceDependency() {
+        $stmt = $this->backend_instance->db->prepare("SELECT
               dhp.host_host_id as parent_host_id, dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
-            FROM dependency_hostParent_relation dhp, dependency_serviceChild_relation dsc, ns_host_relation nhr
+            FROM dependency_hostParent_relation dhp, dependency_serviceChild_relation dsc
             WHERE dhp.dependency_dep_id = dsc.dependency_dep_id
-              AND dhp.host_host_id = nhr.host_host_id
-              AND nhr.nagios_server_id = :poller_id
             ");
-        $this->stmt_host_service_dependency->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
-        $this->stmt_host_service_dependency->execute();
-        $result = $this->stmt_host_service_dependency->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
-            $this->correlation_object[]['dependency'] = array(
+            $this->correlation_dependency_object[]['dependency'] = array(
                     '@attributes' => array(
                         'host' => $row['parent_host_id'],
                         'dependent_host' => $row['child_host_id'],
@@ -136,16 +182,22 @@ class Correlation extends AbstractObjectXML {
         }
     }
 
-    private function dohostParentship($poller_id) {
-        $host_instance = Host::getInstance();
-        $hosts_parentship = $host_instance->getGeneratedParentship();
-        foreach ($hosts_parentship as $value) {
-            $this->correlation_object[]['parent'] = $value;
+    private function doParentship() {
+        $stmt = $this->backend_instance->db->prepare("SELECT
+              host_host_id, host_parent_hp_id
+            FROM host_hostparent_relation
+            ");
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $this->correlation_parentship_object[]['parent'] = array(
+                '@attributes' => array(
+                    'parent' => $row['host_parent_hp_id'],
+                    'host' => $row['host_host_id'],
+                    'instance_id' => $this->backend_instance->getPollerId()
+                )
+            );
         }
-    }
-
-    public function reset() {
-        parent::reset();
     }
 
     public function setCorrelation() {
@@ -173,6 +225,23 @@ class Correlation extends AbstractObjectXML {
             $this->setCorrelation();
         }
         return $this->has_correlation;
+    }
+
+    public function getPollerIds() {
+        $stmt = $this->backend_instance->db->prepare("SELECT
+              id
+            FROM nagios_server
+            WHERE ns_activate = '1'
+            ");
+        $stmt->execute();
+        $this->poller_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function reset() {
+        $this->correlation_object = array();
+        $this->correlation_dependency_object = array();
+        $this->correlation_parentship_object = array();
+        parent::reset();
     }
 }
 
