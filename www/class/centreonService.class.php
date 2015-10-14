@@ -1124,7 +1124,7 @@ class CentreonService
      */
     public function insertExtendInfo($aDatas)
     {
-        
+       
         if (empty($aDatas['service_service_id'])) {
             return;
         }
@@ -1132,13 +1132,14 @@ class CentreonService
         $rq .= "(service_service_id, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt, graph_id) ";
         $rq .= "VALUES ";
         $rq .= "('".$aDatas['service_service_id']."', ";
-        $rq .= (isset($aDatas["esi_notes"]) ? "'" .CentreonDB::escape($aDatas["esi_notes"])."'" : NULL) . ", ";
-        $rq .= (isset($aDatas["esi_notes_url"]) ? "'" .CentreonDB::escape($aDatas["esi_notes_url"])."'" : NULL) . ", ";
-        $rq .= (isset($aDatas["esi_action_url"]) ? "'" .CentreonDB::escape($aDatas["esi_action_url"])."'" : NULL) . ", ";
-        $rq .= (isset($aDatas["esi_icon_image"]) ? "'" .CentreonDB::escape($aDatas["esi_icon_image"])."'" : NULL) . ", ";
-        $rq .= (isset($aDatas["esi_icon_image_alt"]) ? "'" .CentreonDB::escape($aDatas["esi_icon_image_alt"])."'" : NULL) . ", ";
-        $rq .= (isset($aDatas["graph_id"]) ? CentreonDB::escape($aDatas["graph_id"]) : NULL) . " ";
+        isset($aDatas["esi_notes"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_notes"])."'," : $rq .="NULL, ";
+        isset($aDatas["esi_notes_url"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_notes_url"])."'," : $rq .= "NULL, ";
+        isset($aDatas["esi_action_url"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_action_url"])."'," : $rq .= "NULL, ";
+        isset($aDatas["esi_icon_image"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_icon_image"])."'," : $rq .= "NULL, ";
+        isset($aDatas["esi_icon_image_alt"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_icon_image_alt"])."'," : $rq .= "NULL, ";
+        isset($aDatas["graph_id"]) ? $rq .= CentreonDB::escape($aDatas["graph_id"]) : $rq .= "NULL ";
         $rq .= ")";
+        
         $DBRESULT = $this->db->query($rq);
     }
     
