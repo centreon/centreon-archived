@@ -197,7 +197,10 @@ class Contact extends AbstractObject {
         $this->contacts[$contact_id]['host_notification_period'] = $period->generateFromTimeperiodId($this->contacts[$contact_id]['host_notification_period_id']);
         $this->contacts[$contact_id]['service_notification_period'] = $period->generateFromTimeperiodId($this->contacts[$contact_id]['service_notification_period_id']);
         $oTimezone = Timezone::getInstance();
-        $this->contacts[$contact_id]['timezone'] = " : ". $oTimezone->getTimezoneFromId($this->contacts[$contact_id]['contact_location']);
+        $sTimezone = $oTimezone->getTimezoneFromId($this->contacts[$contact_id]['contact_location']);
+        if (!is_null($sTimezone)) {
+            $this->contacts[$contact_id]['timezone'] = ":". $sTimezone;
+        }
         
         $this->generateObjectInFile($this->contacts[$contact_id], $contact_id);
         return $this->contacts[$contact_id]['register'] == 1 ? $this->contacts[$contact_id]['contact_name'] : $this->contacts[$contact_id]['name'];
