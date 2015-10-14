@@ -33,11 +33,7 @@
 						<tr class='ListHeader'></tr>
 						<tr>
 							<td class="ListColCenter">
-								{php}
-									global $items, $service_id, $host_name, $pie_chart_get_str, $service_name;
-									include_once 'lib/ofc-library/open_flash_chart_object.php';
-									open_flash_chart_object( 300, 250, 'include/reporting/dashboard/imagesGenerations/pie-charts.php?service_name='.$service_name.'&host_name='.$host_name.$pie_chart_get_str );
-								{/php}
+                                                            <div id="chart"></div>
 							</td>					
 						</tr>
 					</table>
@@ -137,3 +133,36 @@
 		</td>
 	</tr>
 </table>
+
+<script>
+{literal}
+    jQuery(function () {
+        c3.generate({
+            bindto: d3.select('#chart'),
+            data: {
+                // iris data from R
+                columns: [
+                    ['Ok', {/literal}{$service_ok}{literal}],
+                    ['Warning', {/literal}{$service_warning}{literal}],
+                    ['Critical', {/literal}{$service_critical}{literal}],
+                    ['Unknown', {/literal}{$service_unknown}{literal}],
+                    ['Downtime', {/literal}{$service_maintenance}{literal}],
+                    ['Undetermined', {/literal}{$service_undetermined}{literal}]
+                ],
+                type : 'pie',
+                colors : {
+                    'Ok' : '#13EB3A',
+                    'Warning' : '#F8C706',
+                    'Critical' : '#F91D05',
+                    'Unknown' : '#DCDADA',
+                    'Downtime' : '#CC99FF',
+                    'Undetermined' : '#F0F0F0'
+                }
+            },
+            size: {
+                height: 210
+            }
+        });
+    });
+{/literal}
+</script>

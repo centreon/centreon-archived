@@ -196,6 +196,10 @@ if (!is_null($host_id)) {
                 " s.check_attempt as current_attempt," .
                 " s.last_update as status_update_time," .
                 " s.last_state_change," .
+                " s.last_time_ok," .
+                " s.last_time_warning," .
+                " s.last_time_critical," .
+                " s.last_time_unknown," .
                 " s.last_check," .
                 " s.notify AS notifications_enabled," .
                 " s.next_check," .

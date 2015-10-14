@@ -60,7 +60,7 @@
 
 	$pearDB = new CentreonDB();
 
-	$DBRESULT = $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".$sid."'");
+	$DBRESULT = $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".CentreonDB::escape($sid)."'");
 	if (!$DBRESULT->numRows())
 		exit();
 	if (!$oreon->user->access->checkAction($cmd))

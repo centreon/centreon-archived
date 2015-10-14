@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -42,310 +43,299 @@
 require_once "@CENTREON_ETC@/centreon.conf.php";
 require_once $centreon_path . '/www/autoloader.php';
 
-/** *****************************
+/** * ****************************
  * Class for XML/Ajax request
  *
  */
-class CentreonXMLBGRequest
-{
+class CentreonXMLBGRequest {
+    /*
+     * Objects
+     */
 
-	/*
-	 * Objects
-	 */
-	var $DB;
-	var $DBC;
-	var $DBNdo;
+    var $DB;
+    var $DBC;
+    var $DBNdo;
+    var $XML;
+    var $GMT;
+    var $hostObj;
+    var $serviceObj;
+    var $monObj;
+    var $access;
+    var $session_id;
+    var $broker;
 
-	var $XML;
-	var $GMT;
+    /*
+     * Variables
+     */
+    var $ndoPrefix;
+    var $buffer;
+    var $debug;
+    var $compress;
+    var $header;
+    var $is_admin;
+    var $user_id;
+    var $grouplist;
+    var $grouplistStr;
+    var $general_opt;
+    var $class;
+    var $stateType;
+    var $statusHost;
+    var $statusService;
+    var $colorHost;
+    var $colorHostInService;
+    var $colorService;
+    var $en;
+    var $stateTypeFull;
 
-	var $hostObj;
-	var $serviceObj;
-	var $monObj;
+    /*
+     * Filters
+     */
+    var $defaultPoller;
+    var $defaultHostgroups;
+    var $defaultCriticality = 0;
 
-	var $access;
-	var $session_id;
-	var $broker;
+    /*
+     * Class constructor
+     *
+     * <code>
+     * $obj = new CentreonBGRequest($_GET["session_id"], 1, 1, 0, 1);
+     * </code>
+     *
+     * $session_id 	char 	session id
+     * $dbneeds		bool 	flag for enable ndo connexion
+     * $headType	bool 	send XML header
+     * $debug		bool 	debug flag.
+     * $compress	bool 	compress enable.
+     */
 
-	/*
-	 * Variables
-	 */
-	var $ndoPrefix;
-	var $buffer;
-	var $debug;
-	var $compress;
-	var $header;
-	var $is_admin;
-	var $user_id;
-	var $grouplist;
-	var $grouplistStr;
-	var $general_opt;
-	var $class;
-	var $stateType;
-	var $statusHost;
-	var $statusService;
-	var $colorHost;
-	var $colorHostInService;
-	var $colorService;
-	var $en;
-	var $stateTypeFull;
+    public function __construct($session_id, $dbNeeds, $headerType, $debug, $compress = null) {
+        if (!isset($debug)) {
+            $this->debug = 0;
+        }
 
-	/*
-	 * Filters
-	 */
-	var $defaultPoller;
-	var $defaultHostgroups;
-	var $defaultCriticality = 0;
+        (!isset($headerType)) ? $this->header = 1 : $this->header = $headerType;
+        (!isset($compress)) ? $this->compress = 1 : $this->compress = $compress;
 
-	/*
-	 * Class constructor
-	 *
-	 * <code>
-	 * $obj = new CentreonBGRequest($_GET["session_id"], 1, 1, 0, 1);
-	 * </code>
-	 *
-	 * $session_id 	char 	session id
-	 * $dbneeds		bool 	flag for enable ndo connexion
-	 * $headType	bool 	send XML header
-	 * $debug		bool 	debug flag.
-	 * $compress	bool 	compress enable.
-	 */
-	public function __construct($session_id, $dbNeeds, $headerType, $debug, $compress = null)
-	{
-		if (!isset($debug)) {
-			$this->debug = 0;
-		}
+        if (!isset($session_id)) {
+            print "Your might check your session id";
+            exit(1);
+        } else {
+            $this->session_id = htmlentities($session_id, ENT_QUOTES, "UTF-8");
+        }
 
-		(!isset($headerType)) ? $this->header = 1 : $this->header = $headerType;
-		(!isset($compress)) ? $this->compress = 1 : $this->compress = $compress;
+        /*
+         * Enable Database Connexions
+         */
+        $this->DB = new CentreonDB();
+        $this->DBC = new CentreonDB("centstorage");
 
-		if (!isset($session_id)) {
-			print "Your might check your session id";
-			exit(1);
-		} else {
-			$this->session_id = htmlentities($session_id, ENT_QUOTES, "UTF-8");
-		}
+        /*
+         * Init Objects
+         */
+        $this->hostObj = new CentreonHost($this->DB);
+        $this->serviceObj = new CentreonService($this->DB);
+        $this->broker = new CentreonBroker($this->DB);
 
-		/*
-		 * Enable Database Connexions
-		 */
-		$this->DB 		= new CentreonDB();
-		$this->DBC 		= new CentreonDB("centstorage");
+        /*
+         * Connect NDO
+         */
+        if ($dbNeeds && $this->broker->getBroker() == "ndo") {
+            $this->DBNdo = new CentreonDB("ndo");
+        }
 
-		/*
-		 * Init Objects
-		 */
-		$this->hostObj		= new CentreonHost($this->DB);
-		$this->serviceObj	= new CentreonService($this->DB);
-		$this->broker 		= new CentreonBroker($this->DB);
+        /*
+         * Init Object Monitoring
+         */
+        $this->monObj = new CentreonMonitoring($this->DB);
 
-		/*
-		 * Connect NDO
-		 */
-		if ($dbNeeds && $this->broker->getBroker() == "ndo") {
-			$this->DBNdo= new CentreonDB("ndo");
-		}
+        /*
+         * Timezone management
+         */
+        $this->GMT = new CentreonGMT($this->DB);
+        $this->GMT->getMyGMTFromSession($this->session_id, $this->DB);
 
-		/*
-		 * Init Object Monitoring
-		 */
-		$this->monObj 		= new CentreonMonitoring($this->DB);
+        /*
+         * XML class
+         */
+        $this->XML = new CentreonXML();
 
-		/*
-		 * Timezone management
-		 */
-		$this->GMT = new CentreonGMT($this->DB);
-		$this->GMT->getMyGMTFromSession($this->session_id, $this->DB);
+        /*
+         * Get Centreon Status DB prefix
+         */
+        $this->ndoPrefix = $this->getNDOPrefix();
 
-		/*
-		 * XML class
-		 */
-		$this->XML = new CentreonXML();
+        /*
+         * ACL init
+         */
+        $this->getUserIdFromSID();
+        $this->isUserAdmin();
+        $this->access = new CentreonACL($this->user_id, $this->is_admin);
+        $this->grouplist = $this->access->getAccessGroups();
+        $this->grouplistStr = $this->access->getAccessGroupsString();
 
-		/*
-		 * Get Centreon Status DB prefix
-		 */
-		$this->ndoPrefix = $this->getNDOPrefix();
+        /*
+         * Init Color table
+         */
+        $this->getStatusColor();
 
-		/*
-		 * ACL init
-		 */
-		$this->getUserIdFromSID();
-		$this->isUserAdmin();
-		$this->access = new CentreonACL($this->user_id, $this->is_admin);
-		$this->grouplist = $this->access->getAccessGroups();
-		$this->grouplistStr = $this->access->getAccessGroupsString();
+        /*
+         * Init class
+         */
+        $this->classLine = "list_one";
 
-		/*
-		 * Init Color table
-		 */
-		$this->getStatusColor();
+        /*
+         * Init Tables
+         */
+        $this->en = array("0" => _("No"), "1" => _("Yes"));
+        $this->stateType = array("1" => "H", "0" => "S");
+        $this->stateTypeFull = array("1" => "HARD", "0" => "SOFT");
+        $this->statusHost = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE", "4" => "PENDING");
+        $this->statusService = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
+        $this->colorHost = array(0 => $this->general_opt["color_up"], 1 => $this->general_opt["color_down"], 2 => $this->general_opt["color_unreachable"], 4 => $this->general_opt["color_pending"]);
+        $this->colorService = array(0 => $this->general_opt["color_ok"], 1 => $this->general_opt["color_warning"], 2 => $this->general_opt["color_critical"], 3 => $this->general_opt["color_unknown"], 4 => $this->general_opt["color_pending"]);
+        $this->colorHostInService = array(0 => "normal", 1 => "#FD8B46", 2 => "normal", 4 => "normal");
+    }
 
-		/*
-		 * Init class
-		 */
-		$this->classLine = "list_one";
+    /*
+     * Update session table for this user.
+     * 	=> value used for logout session
+     */
 
-		/*
-		 * Init Tables
-		 */
-		$this->en 			= array("0" => _("No"), "1" => _("Yes"));
-		$this->stateType	= array("1" => "H", "0" => "S");
-		$this->stateTypeFull= array("1" => "HARD", "0" => "SOFT");
-		$this->statusHost 	= array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE", "4" => "PENDING");
-		$this->statusService= array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
-		$this->colorHost 	= array(0 => $this->general_opt["color_up"], 1 => $this->general_opt["color_down"], 2 => $this->general_opt["color_unreachable"], 4 => $this->general_opt["color_pending"]);
-		$this->colorService	= array(0 => $this->general_opt["color_ok"], 1 => $this->general_opt["color_warning"], 2 => $this->general_opt["color_critical"], 3 => $this->general_opt["color_unknown"], 4 => $this->general_opt["color_pending"]);
-		$this->colorHostInService = array(0 => "normal", 1 => "#FD8B46", 2 => "normal", 4 => "normal");
-	}
+    public function reloadSession() {
+        $DBRESULT2 = $this->DB->query("UPDATE `session` SET `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] . "' WHERE `session_id` = '" . $this->session_id . "'");
+    }
 
+    /*
+     * Check if user is admin
+     */
 
-	/*
-	 * Update session table for this user.
-	 * 	=> value used for logout session
-	 */
-	public function reloadSession()
-	{
-		$DBRESULT2 = $this->DB->query("UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE `session_id` = '".$this->session_id."'");
-	}
+    private function isUserAdmin() {
+        $DBRESULT = $this->DB->query("SELECT contact_admin, contact_id FROM contact WHERE contact.contact_id = '" . CentreonDB::escape($this->user_id) . "' LIMIT 1");
+        $admin = $DBRESULT->fetchRow();
+        $DBRESULT->free();
+        if ($admin["contact_admin"])
+            $this->is_admin = 1;
+        else
+            $this->is_admin = 0;
+    }
 
-	/*
-	 * Check if user is admin
-	 */
-	private function isUserAdmin()
-	{
-		$DBRESULT = $this->DB->query("SELECT contact_admin, contact_id FROM contact WHERE contact.contact_id = '".$this->user_id."' LIMIT 1");
-		$admin = $DBRESULT->fetchRow();
-		$DBRESULT->free();
-		if ($admin["contact_admin"])
-			$this->is_admin = 1;
-		else
-			$this->is_admin = 0;
-	}
+    /*
+     * Get user id from session_id
+     */
 
-	/*
-	 * Get user id from session_id
-	 */
-	protected function getUserIdFromSID()
-	{
-		$DBRESULT = $this->DB->query("SELECT user_id FROM session WHERE session_id = '".$this->session_id."' LIMIT 1");
-		$admin = $DBRESULT->fetchRow();
-		unset($DBRESULT);
-		if (isset($admin["user_id"])) {
-			$this->user_id = $admin["user_id"];
-		}
-	}
+    protected function getUserIdFromSID() {
+        $DBRESULT = $this->DB->query("SELECT user_id FROM session WHERE session_id = '" . CentreonDB::escape($this->session_id) . "' LIMIT 1");
+        $admin = $DBRESULT->fetchRow();
+        unset($DBRESULT);
+        if (isset($admin["user_id"])) {
+            $this->user_id = $admin["user_id"];
+        }
+    }
 
-	/**
-	 * Decode Function
-	 */
-	private function myDecode($arg)	{
-		return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
-	}
+    /**
+     * Decode Function
+     */
+    private function myDecode($arg) {
+        return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
+    }
 
-	/*
-	 * Get Status Color
-	 */
-	protected function getStatusColor()
-	{
-		$this->general_opt = array();
-		$DBRESULT = $this->DB->query("SELECT * FROM `options` WHERE `key` LIKE 'color%'");
-		while ($c = $DBRESULT->fetchRow()) {
-			$this->general_opt[$c["key"]] = $this->myDecode($c["value"]);
-		}
-		$DBRESULT->free();
-		unset($c);
-	}
+    /*
+     * Get Status Color
+     */
 
-	/*
-	 * Init NDO prefix
-	 */
-	protected function getNDOPrefix()
-	{
-		$DBRESULT = $this->DB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
-		$conf_ndo = $DBRESULT->fetchRow();
-		$DBRESULT->free();
-		unset($DBRESULT);
-		return $conf_ndo["db_prefix"];
-	}
+    protected function getStatusColor() {
+        $this->general_opt = array();
+        $DBRESULT = $this->DB->query("SELECT * FROM `options` WHERE `key` LIKE 'color%'");
+        while ($c = $DBRESULT->fetchRow()) {
+            $this->general_opt[$c["key"]] = $this->myDecode($c["value"]);
+        }
+        $DBRESULT->free();
+        unset($c);
+    }
 
-	/*
-	 * Send headers information for web server
-	 */
-	public function header()
-	{
+    /*
+     * Init NDO prefix
+     */
+
+    protected function getNDOPrefix() {
+        $DBRESULT = $this->DB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
+        $conf_ndo = $DBRESULT->fetchRow();
+        $DBRESULT->free();
+        unset($DBRESULT);
+        return $conf_ndo["db_prefix"];
+    }
+
+    /*
+     * Send headers information for web server
+     */
+
+    public function header() {
         /* Force no encoding compress */
-	    $encoding = false;
+        $encoding = false;
 
-		header('Content-Type: text/xml');
-		header('Pragma: no-cache');
-		header('Expires: 0');
-		header('Cache-Control: no-cache, must-revalidate');
-		if ($this->compress && $encoding) {
-			header('Content-Encoding: '.$encoding);
-		}
-	}
+        header('Content-Type: text/xml');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+        header('Cache-Control: no-cache, must-revalidate');
+        if ($this->compress && $encoding) {
+            header('Content-Encoding: ' . $encoding);
+        }
+    }
 
-	public function getNextLineClass()
-	{
-		if ($this->classLine == "list_one") {
-			$this->classLine = "list_two";
-		} else {
-			$this->classLine = "list_one";
-		}
-		return $this->classLine;
-	}
+    public function getNextLineClass() {
+        if ($this->classLine == "list_one") {
+            $this->classLine = "list_two";
+        } else {
+            $this->classLine = "list_one";
+        }
+        return $this->classLine;
+    }
 
-	public function getDefaultFilters()
-	{
-		$this->defaultPoller = -1;
-		$this->defaultHostgroups = NULL;
-		if (isset($_SESSION['monitoring_default_hostgroups'])) {
-			$this->defaultHostgroups = $_SESSION['monitoring_default_hostgroups'];
-		}
-		if (isset($_SESSION['monitoring_default_poller'])) {
-			$this->defaultPoller = $_SESSION['monitoring_default_poller'];
-		}
-		if (isset($_SESSION['criticality_id'])) {
-			$this->defaultCriticality = $_SESSION['criticality_id'];
-		}
-	}
+    public function getDefaultFilters() {
+        $this->defaultPoller = -1;
+        $this->defaultHostgroups = NULL;
+        if (isset($_SESSION['monitoring_default_hostgroups'])) {
+            $this->defaultHostgroups = $_SESSION['monitoring_default_hostgroups'];
+        }
+        if (isset($_SESSION['monitoring_default_poller'])) {
+            $this->defaultPoller = $_SESSION['monitoring_default_poller'];
+        }
+        if (isset($_SESSION['criticality_id'])) {
+            $this->defaultCriticality = $_SESSION['criticality_id'];
+        }
+    }
 
-	public function setInstanceHistory($instance)
-	{
-		$_SESSION['monitoring_default_poller'] = $instance;
-	}
+    public function setInstanceHistory($instance) {
+        $_SESSION['monitoring_default_poller'] = $instance;
+    }
 
-	public function setHostGroupsHistory($hg)
-	{
-		$_SESSION['monitoring_default_hostgroups'] = $hg;
-	}
-    
-	public function setCriticality($criticality)
-	{
-		$_SESSION['criticality_id'] = $criticality;
-	}
+    public function setHostGroupsHistory($hg) {
+        $_SESSION['monitoring_default_hostgroups'] = $hg;
+    }
 
-	public function checkArgument($name, $tab, $defaultValue)
-	{
-		if (isset($name) && isset($tab)) {
-			if (isset($tab[$name])) {
-				if ($name == 'num' && $tab[$name] < 0) {
-					$tab[$name] = 0;
-				}
-				return CentreonDB::escape($tab[$name]);
-			}
-			else {
-				return CentreonDB::escape($defaultValue);
-			}
-		}
-	}
+    public function setCriticality($criticality) {
+        $_SESSION['criticality_id'] = $criticality;
+    }
 
-	public function prepareObjectName($name)
-	{
-		$name = str_replace("/", "#S#", $name);
-		$name = str_replace("\\", "#BS#", $name);
-		return $name;
-	}
+    public function checkArgument($name, $tab, $defaultValue) {
+        if (isset($name) && isset($tab)) {
+            if (isset($tab[$name])) {
+                if ($name == 'num' && $tab[$name] < 0) {
+                    $tab[$name] = 0;
+                }
+                return CentreonDB::escape($tab[$name]);
+            } else {
+                return CentreonDB::escape($defaultValue);
+            }
+        }
+    }
+
+    public function prepareObjectName($name) {
+        $name = str_replace("/", "#S#", $name);
+        $name = str_replace("\\", "#BS#", $name);
+        return $name;
+    }
+
 }
+
 ?>

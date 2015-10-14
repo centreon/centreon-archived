@@ -234,6 +234,18 @@ log "INFO" "$(gettext "Install") : spool directory"
 $INSTALL_DIR/cinstall $cinstall_opts -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
 	/var/spool/centreontrapd
 
+## Install Logrotate
+log "INFO" "$(gettext "Change macros for centreontrapd.logrotate")"
+${SED} -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+    $TMP_DIR/src/logrotate/centreontrapd > $TMP_DIR/work/centreontrapd.logrotate
+check_result $? "$(gettext "Change macros for centreontrapd.logrotate")"
+cp $TMP_DIR/work/centreontrapd.logrotate $TMP_DIR/final/centreontrapd.logrotate >> "$LOG_FILE" 2>&1
+
+log "INFO" "$(gettext "Install centreontrapd.logrotate")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+    -m 644 \
+    $TMP_DIR/final/centreontrapd.logrotate $LOGROTATE_D/centreontrapd >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Install Centreon Trapd logrotate.d file")"
 
 # Create traps directory in nagios pluginsdir
 #$INSTALL_DIR/cinstall $cinstall_opts -d 664 \

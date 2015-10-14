@@ -1021,7 +1021,7 @@ CREATE TABLE `cron_operation` (
   `module` enum('0','1') DEFAULT NULL,
   `running` enum('0','1') DEFAULT NULL,
   `pid` int(11) DEFAULT NULL,
-  `last_execution_time` int(11) NOT NULL,
+  `last_execution_time` int(11) NOT NULL DEFAULT '0',
   `activate` enum('0','1') DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1485,7 +1485,7 @@ CREATE TABLE `giv_graphs_template` (
   `base` int(11) DEFAULT '1000',
   `lower_limit` float DEFAULT NULL,
   `upper_limit` float DEFAULT NULL,
-  `size_to_max` tinyint(6) NOT NULL,
+  `size_to_max` tinyint(6) NOT NULL DEFAULT '0',
   `bg_grid_color` varchar(200) DEFAULT NULL,
   `bg_color` varchar(200) DEFAULT NULL,
   `police_color` varchar(200) DEFAULT NULL,
@@ -2341,6 +2341,15 @@ CREATE TABLE `widgets` (
   KEY `fk_wdg_model_id` (`widget_model_id`),
   CONSTRAINT `fk_wdg_model_id` FOREIGN KEY (`widget_model_id`) REFERENCES `widget_models` (`widget_model_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE ws_token (
+  contact_id INT NOT NULL,
+  token VARCHAR(100) NOT NULL,
+  generate_date DATETIME NOT NULL,
+  UNIQUE (token),
+  FOREIGN KEY (contact_id) REFERENCES contact (contact_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

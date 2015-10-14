@@ -136,26 +136,23 @@ if (!$isAdmin) {
     }
 }
 
-/**
- * Create XML Request Objects
- */
-$obj = new CentreonGraph($mySessionId, $index, 0, 1);
-
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
-    $obj->displayError();
+/* Check security session */
+if (!CentreonSession::checkSession($mySessionId, $pearDB)) {
+    CentreonGraph::displayError();
 }
 
 require_once $centreon_path."www/include/common/common-Func.php";
+
+/**
+ * Create XML Request Objects
+ */
+$obj = new CentreonGraph($contactId, $index, 0, 1);
 
 /**
  * Set arguments from GET
  */
 $obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );
 $obj->setRRDOption("end",   $obj->checkArgument("end", $_GET, time()) );
-
-$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
 
 /**
  * Template Management
@@ -199,6 +196,6 @@ $obj->displayImageFlow();
  * Closing session
  */
 if (isset($_GET['akey'])) {
-    $pearDB->query("DELETE FROM session WHERE session_id = '".$pearDB->escape($mySessionId)."'");
+    $pearDB->query("DELETE FROM session WHERE session_id = '".$pearDB->escape($mySessionId)."'AND user_id = (SELECT contact_id from contact where contact_autologin_key = '".$_GET['akey']."')");
 }
 

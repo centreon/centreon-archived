@@ -21,7 +21,6 @@ Sommaire :
    upgrade/index
    guide_utilisateur/index
    guide_exploitation/index
-   architecture/index
    faq/index
    extendcentreon/index
 

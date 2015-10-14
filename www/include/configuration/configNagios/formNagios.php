@@ -751,7 +751,8 @@
 	'debug_verbosity' => '0',
 	'max_debug_file_size' => '1000000000',
 	'daemon_dumps_core' => '0',
-	'cfg_file' => 'centengine.cfg'
+	'cfg_file' => 'centengine.cfg',
+    'use_check_result_path' => '0'
 	));
 
 	$form->setDefaults(array('action' => '1'));

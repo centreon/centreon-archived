@@ -12,10 +12,9 @@ function change_macro_input_type(box, must_disable) {
     if (must_disable === true) {
         jQuery(box).parent().hide();
     }
-    input.removeAttr("type");
     if (box.checked) {
-        input.prop('type', 'password');
+        input[0].type = 'password';
     } else {
-        input.prop('type', 'text');
+        input[0].type = 'text';
     }
 }

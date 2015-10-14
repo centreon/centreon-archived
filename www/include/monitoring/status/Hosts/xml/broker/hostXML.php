@@ -156,7 +156,7 @@ if (!$obj->is_admin) {
     $rq1 .= " AND h.host_id = centreon_acl.host_id " . $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
 }
 if ($search != "") {
-    $rq1 .= " AND (h.name LIKE '%" . $search . "%' OR h.alias LIKE '%" . $search . "%' OR h.address LIKE '%" . $search . "%') ";
+    $rq1 .= " AND (h.name LIKE '%" . CentreonDB::escape($search) . "%' OR h.alias LIKE '%" . CentreonDB::escape($search) . "%' OR h.address LIKE '%" . CentreonDB::escape($search) . "%') ";
 }
 if ($o == "hpb") {
     $rq1 .= " AND (h.state != 0 AND h.state != 4) ";

@@ -19,7 +19,7 @@ packages. Either way, make sure to read our installation documentation:
 ===============================================================================
 Below is a list of official links that may be useful to you:
 * Official website: http://www.centreon.com
-* Bug tracker: http://forge.centreon.com/projects/centreon
+* Bug tracker: https://github.com/centreon/centreon/issues
 * Forum: http://forum.centreon.com
 * Documentation: http://documentation.centreon.com
 

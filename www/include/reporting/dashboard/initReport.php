@@ -225,6 +225,8 @@
 	$formPeriod->addElement('submit', 'button', _("Apply"));
 	$formPeriod->setDefaults(array('period' => $period, "StartDate" => $get_date_start, "EndDate" => $get_date_end));
 ?>
+<script src="./include/common/javascript/d3.min.js" language="javascript"></script>
+<script src="./include/common/javascript/c3.min.js" language="javascript"></script>
 <script type='text/javascript'>
 function togglePeriodType()
 {
