@@ -960,7 +960,11 @@ class CentreonService
         foreach($storedMacros as $key=>$macros){
             $choosedMacro = array();
             foreach($macros as $macro){
-                $choosedMacro = $this->comparaPriority($macro,$choosedMacro,false);
+                if(empty($choosedMacro)){
+                    $choosedMacro = $macro;
+                }else{
+                    $choosedMacro = $this->comparaPriority($macro,$choosedMacro,false);
+                }
             }
             if(!empty($choosedMacro)){
                 $finalMacros[] = $choosedMacro;
@@ -995,7 +999,11 @@ class CentreonService
             $choosedMacro = array();
             foreach($storedMacros as $storedMacro){
                 if(!empty($storedMacro['macroDescription'])){
-                    $choosedMacro = $this->comparaPriority($storedMacro,$choosedMacro,false);
+                    if(empty($choosedMacro)){
+                        $choosedMacro = $storedMacro;
+                    }else{
+                        $choosedMacro = $this->comparaPriority($storedMacro,$choosedMacro,false);
+                    }
                     $description = $choosedMacro['macroDescription'];
                 }
             }
