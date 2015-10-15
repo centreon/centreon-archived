@@ -180,6 +180,9 @@
 
 <script>
 {literal}
+    jQuery("#EndDate").datepicker({
+		maxDate: '-1'
+	});
     jQuery(function () {
         c3.generate({
             bindto: d3.select('#chart'),
