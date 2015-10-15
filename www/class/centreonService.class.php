@@ -931,7 +931,7 @@ class CentreonService
     
     private function comparaPriority($macroA,$macroB,$getFirst = true){
         
-        $arrayPrio = array('direct' => 3,'fromTpl' => 2,'fromCommand' => 1);
+        $arrayPrio = array('direct' => 3,'fromTpl' => 2,'fromService' => 1);
         if($getFirst){
             if($arrayPrio[$macroA['source']] > $arrayPrio[$macroB['source']]){
                 return $macroA;
@@ -981,7 +981,7 @@ class CentreonService
                     break;
                 case 'fromTpl' : 
                     break;
-                case 'fromCommand' :
+                case 'fromService' :
                     break;
                 default :
                     break;
