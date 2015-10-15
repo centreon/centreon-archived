@@ -44,9 +44,9 @@
 	/*
 	 * Create XML Request Objects
 	 */
-    session_start();
+    CentreonSession::start();
 	$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
-	CentreonSession::start();
+
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;

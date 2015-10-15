@@ -73,7 +73,6 @@
 		exit;
 	}
 
-	session_start();
 	$oreon = $_SESSION['centreon'];
 
 	$centreonLang = new CentreonLang($centreon_path, $oreon);
