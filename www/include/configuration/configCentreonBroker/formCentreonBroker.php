@@ -91,7 +91,10 @@ $tpl = initSmartyTpl($path, $tpl);
 /*
  * TAB 1 - General informations
  */
-$tpl->assign('centreonbroker_configuration', _("Centreon Broker information"));
+$tpl->assign('centreonbroker_main_options', _("Main options"));
+$tpl->assign('centreonbroker_log_options', _("Log options"));
+$tpl->assign('centreonbroker_advanced_options', _("Advanced options"));
+
 $form->addElement('header', 'information', _("Centreon Broker configuration"));
 $form->addElement('text', 'name', _("Name"), $attrsText);
 $form->addElement('text', 'filename', _("Config file name"), $attrsText);
@@ -116,6 +119,11 @@ $status = array();
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), 0);
 $form->addGroup($status, 'activate', _("Status"), '&nbsp;');
+
+$stats_activate = array();
+$stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', null, _("Yes"), 1);
+$stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', null, _("No"), 0);
+$form->addGroup($stats_activate, 'stats_activate', _("Statistics"), '&nbsp;');
 
 $correlation_activate = array();
 $correlation_activate[] = HTML_QuickForm::createElement('radio', 'correlation_activate', null, _("Yes"), 1);
@@ -143,6 +151,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a'){
         "retention_path" => '/var/lib/centreon-broker/',
         "write_timestamp" => '1',
         "write_thread_id" => '1',
+        "stats_activate" => '1',
         "correlation_activate" => '0',
         "activate" => '1'
     ));

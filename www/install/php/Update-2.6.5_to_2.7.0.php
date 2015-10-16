@@ -40,6 +40,7 @@ if (isset($pearDB)) {
     # Add temporary and retention path to general tab
     $query = "ALTER TABLE cfg_centreonbroker
         ADD COLUMN retention_path varchar(255),
+        ADD COLUMN stats_activate enum('0','1') DEFAULT '1',
         ADD COLUMN correlation_activate enum('0','1') DEFAULT '0'";
     $pearDB->query($query);
 
@@ -114,11 +115,27 @@ if (isset($pearDB)) {
             )";
     $pearDB->query($query);
 
-    # Delete correlation configuration if it was configured
+    # Delete correlation, stats and temporary configuration if it was configured
     $query = "DELETE FROM cfg_centreonbroker_info
         WHERE config_group='correlation'
+        OR config_group='stats'
+        OR config_group='temporary'
         ");
      $pearDB->query($query);
+
+    # Delete correlation, stats and temporary tabs
+    $query = "DELETE FROM cb_tag
+        WHERE tagname='correlation'
+        OR tagname='stats'
+        OR tagname='temporary'";
+    $pearDB->query($query);
+
+    # Delete correlation, stats and temporary parameters
+    $query = "DELETE FROM cb_module
+        WHERE name='correlation'
+        OR name='stats'
+        OR name='temporary'";
+    $pearDB->query($query);
 
 }
 ?>
