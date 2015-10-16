@@ -51,16 +51,16 @@ function DeleteComment($type, $hosts = array()) {
 function AddHostComment($host, $comment, $persistant) {
     global $oreon, $pearDB;
 
-    if (!isset($persistant) || !in_array($persistant, array(0, 1)))
-        $persistant = 0;
+    if (!isset($persistant) || !in_array($persistant, array('0', '1')))
+        $persistant = '0';
     write_command(" ADD_HOST_COMMENT;" . getMyHostName($host) . ";" . $persistant . ";" . $oreon->user->get_alias() . ";" . trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
 }
 
 function AddSvcComment($host, $service, $comment, $persistant) {
     global $oreon, $pearDB;
 
-    if (!isset($persistant) || !in_array($persistant, array(0, 1)))
-        $persistant = 0;
+    if (!isset($persistant) || !in_array($persistant, array('0', '1')))
+        $persistant = '0';
     write_command(" ADD_SVC_COMMENT;" . getMyHostName($host) . ";" . getMyServiceName($service) . ";" . $persistant . ";" . $oreon->user->get_alias() . ";" . trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
 }
 

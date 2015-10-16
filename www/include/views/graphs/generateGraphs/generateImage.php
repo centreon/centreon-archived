@@ -47,8 +47,9 @@ require_once $centreon_path . '/www/class/centreonBroker.class.php';
 
 $pearDB = new CentreonDB();
 
-$mySessionId = isset($_GET['session_id']) ? $_GET['session_id'] : '' ;
-
+//$mySessionId = isset($_GET['session_id']) ? $_GET['session_id'] : '' ;
+session_start();
+$mySessionId = session_id();
 /**
  * Checks for token
  */
@@ -60,8 +61,6 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
     				AND `contact_autologin_key` = '".$token."' LIMIT 1");
     if ($DBRESULT->numRows()) {
         $row = $DBRESULT->fetchRow();
-        session_start();
-        $mySessionId = session_id();
         $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
         if (!$res->numRows()) {
             $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".$mySessionId."', '".$row["contact_id"]."', '', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");

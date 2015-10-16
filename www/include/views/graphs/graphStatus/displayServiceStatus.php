@@ -80,7 +80,8 @@
 	 * Verify if session is active
 	 */
 
-    $sid = $pearDB->escape($_GET['session_id']);
+    $sid = session_id();
+    //$sid = $pearDB->escape($_GET['session_id']);
 
     $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$sid."'");
 	if (!$session->numRows()){

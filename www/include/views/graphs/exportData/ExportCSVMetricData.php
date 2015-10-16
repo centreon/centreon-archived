@@ -41,17 +41,17 @@ function get_error($str){
 include_once "@CENTREON_ETC@/centreon.conf.php";
 require_once '../../../class/centreonDB.class.php';
 
-$pearDB 	= new CentreonDB();
-$pearDBO 	= new CentreonDB("centstorage");
-
-if (isset($_GET["sid"])){
-	$sid = CentreonDB::escape($_GET["sid"]);
-	$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-	if (!$session = $res->fetchRow()) {
-		get_error('bad session id');		
-	}
-} else
-	get_error('need session identifiant !');
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
+    session_start();
+    $sid = session_id();
+	if (isset($sid)){
+		//$sid = CentreonDB::escape($_GET["sid"]);
+		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+		if (!$session = $res->fetchRow())
+			get_error('bad session id');
+	} else
+		get_error('need session identifiant !');
 
 isset ($_GET["metric_id"]) ? $mtrcs = htmlentities($_GET["metric_id"], ENT_QUOTES, "UTF-8") : $mtrcs = NULL;
 isset ($_POST["metric_id"]) ? $mtrcs = htmlentities($_POST["metric_id"], ENT_QUOTES, "UTF-8") : $mtrcs = $mtrcs;

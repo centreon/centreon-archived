@@ -882,7 +882,8 @@ class CentreonService
         }
         
         $iIdCommande = $form['command_command_id'];
-        //Get macro attached to the command        
+        //Get macro attached to the command     
+        $aMacroInService = array();
         if (!empty($iIdCommande)) {
             $oCommand = new CentreonCommand($this->db);
             $aMacroInService[] = $oCommand->getMacroByIdAndType($iIdCommande, 'service');
@@ -931,7 +932,7 @@ class CentreonService
     
     private function comparaPriority($macroA,$macroB,$getFirst = true){
         
-        $arrayPrio = array('direct' => 3,'fromTpl' => 2,'fromCommand' => 1);
+        $arrayPrio = array('direct' => 3,'fromTpl' => 2,'fromService' => 1);
         if($getFirst){
             if($arrayPrio[$macroA['source']] > $arrayPrio[$macroB['source']]){
                 return $macroA;
@@ -960,7 +961,11 @@ class CentreonService
         foreach($storedMacros as $key=>$macros){
             $choosedMacro = array();
             foreach($macros as $macro){
-                $choosedMacro = $this->comparaPriority($macro,$choosedMacro,false);
+                if(empty($choosedMacro)){
+                    $choosedMacro = $macro;
+                }else{
+                    $choosedMacro = $this->comparaPriority($macro,$choosedMacro,false);
+                }
             }
             if(!empty($choosedMacro)){
                 $finalMacros[] = $choosedMacro;
@@ -981,7 +986,7 @@ class CentreonService
                     break;
                 case 'fromTpl' : 
                     break;
-                case 'fromCommand' :
+                case 'fromService' :
                     break;
                 default :
                     break;
@@ -991,11 +996,16 @@ class CentreonService
     }
     
     private function getInheritedDescription($storedMacros,$finalMacro){
+        $description = "";
         if(empty($finalMacro['macroDescription'])){
             $choosedMacro = array();
             foreach($storedMacros as $storedMacro){
                 if(!empty($storedMacro['macroDescription'])){
-                    $choosedMacro = $this->comparaPriority($storedMacro,$choosedMacro,false);
+                    if(empty($choosedMacro)){
+                        $choosedMacro = $storedMacro;
+                    }else{
+                        $choosedMacro = $this->comparaPriority($storedMacro,$choosedMacro,false);
+                    }
                     $description = $choosedMacro['macroDescription'];
                 }
             }

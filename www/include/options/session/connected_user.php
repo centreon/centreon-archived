@@ -44,9 +44,10 @@
 	
 	require_once "./include/common/common-Func.php";
 	require_once "./class/centreonMsg.class.php";
-		
+    session_start();
+	$sid = session_id();
 	if (isset($_GET["o"]) && $_GET["o"] == "k"){
-		$pearDB->query("DELETE FROM session WHERE session_id = '".$pearDB->escape($_GET["session_id"])."'");
+		$pearDB->query("DELETE FROM session WHERE session_id = '".$pearDB->escape($sid)."'");
 		$msg = new CentreonMsg();
 		$msg->setTextStyle("bold");
 		$msg->setText(_("User kicked"));
@@ -89,7 +90,7 @@
 			$session_data[$cpt]["topology_icone"] = "<img src='".$rCP["topology_icone"]."'>";
 		else
 			$session_data[$cpt]["topology_icone"] = "&nbsp;";
-		$session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=k&session_id=".$r["session_id"]."'><img src='./img/icones/16x16/flash.gif' border='0' alt='"._("Kick User")."' title='"._("Kick User")."'></a>";
+		$session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=k'><img src='./img/icones/16x16/flash.gif' border='0' alt='"._("Kick User")."' title='"._("Kick User")."'></a>";
 
 	}
 	
