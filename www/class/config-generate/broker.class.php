@@ -16,6 +16,8 @@ class Broker extends AbstractObjectXML {
         correlation_activate,
         event_queue_max_size,
         retention_path,
+        buffering_timeout,
+        retry_interval,
         command_file
     ';
     protected $attributes_select_parameters = '
@@ -72,11 +74,20 @@ class Broker extends AbstractObjectXML {
         foreach ($result as $row) {
             $this->generate_filename = $row['config_filename'];
             $object = array();
+            $output_options = array();
 
             $config_name = $row['config_name'];
             $retention_path = $row['retention_path'];
             $stats_activate = $row['stats_activate'];
             $correlation_activate = $row['correlation_activate'];
+
+            if (trim($row['buffering_timeout']) != '') {
+                $output_options['buffering_timeout'] = $row['buffering_timeout'];
+            }
+
+            if (trim($row['retry_interval']) != '') {
+                $output_options['retry_interval'] = $row['retry_interval'];
+            }
 
             # Base parameters
             $object['instance'] = $this->engine['id'];
@@ -93,37 +104,40 @@ class Broker extends AbstractObjectXML {
 
             $failover_config_group_id = $this->max_config_group_id + 1;
             foreach ($resultParameters as $key => $value) {
+                $subobjects = array();
                 $failover = false;
                 $output_name = null;
+                $outputs = array();
 
                 # Flow parameters
                 foreach ($value as $subvalue) {
                     if (in_array($subvalue['config_key'], $this->exclude_parameters) || trim($subvalue['config_value']) == '') {
                         continue;
                     } else if ($subvalue['config_key'] == 'category') {
-                        $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] = $subvalue['config_value'];
+                        $subobjects[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] = $subvalue['config_value'];
                     } else {
-                        $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] = $subvalue['config_value'];
-                    }
-                    
-                    if ($key == 'output' && $subvalue['config_key'] == 'type' && $subvalue['config_value'] != 'file') {
-                        $failover = true;
-                    } else if ($key == 'output' && $subvalue['config_key'] == 'name') {
-                        $output_name = $subvalue['config_value'];
+                        $subobjects[$subvalue['config_group_id']][$key][$subvalue['config_key']] = $subvalue['config_value'];
                     }
                 }
 
                 # Failover parameters
-                if ($failover == true && !is_null($output_name)) {
-                    $object[$failover_config_group_id][$key] = array(
-                        'type' => 'file',
-                        'name' => $retention_path . '/' . $config_name . '_' . $output_name . '.retention',
-                        'protocol' => 'bbdo',
-                        'compression' => 'auto',
-                        'max_size' => '104857600'
-                    );
-                    $failover_config_group_id++;
+                foreach ($subobjects as $config_group_id => $subvalue) {
+                    if (isset($subvalue['output']['type']) && $subvalue['output']['type'] != 'file' && !isset($subvalue['output']['failover']) && isset($subvalue['output']['name'])) {
+                        $output_name =  $subobjects[$config_group_id]['output']['name'];
+                        $subobjects[$config_group_id]['output']['failover'] = $output_name . '-failover';
+                        $subobjects[$failover_config_group_id]['output']= array(
+                            'type' => 'file',
+                            'name' => $output_name . '-failover',
+                            'path' => $retention_path . '/' . $config_name . '_' . $output_name . '.retention',
+                            'protocol' => 'bbdo',
+                            'compression' => 'auto',
+                            'max_size' => '104857600'
+                        );
+                        $failover_config_group_id++;
+                    }
                 }
+
+                $object = array_merge($object, $subobjects);
             }
 
             # Temporary parameters

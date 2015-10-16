@@ -102,6 +102,8 @@ $form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers)
 $form->addElement('text', 'retention_path', _("Retention path"), $attrsText);
 
 $form->addElement('text', 'event_queue_max_size', _('Event queue max size'), $attrsText);
+$form->addElement('text', 'retry_interval', _('Retry interval'), $attrsText);
+$form->addElement('text', 'buffering_timeout', _('Buffering timeout'), $attrsText);
 $command = $form->addElement('text', 'command_file', _('Command file'), $attrText);
 $command->freeze();
 
@@ -153,7 +155,9 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a'){
         "write_thread_id" => '1',
         "stats_activate" => '1',
         "correlation_activate" => '0',
-        "activate" => '1'
+        "activate" => '1',
+        "retry_interval" => '60',
+        "buffering_timeout" => '0'
     ));
     $tpl->assign('config_id', 0);
 } else {
