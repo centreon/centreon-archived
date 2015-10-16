@@ -37,6 +37,8 @@ if (!isset($centreon)) {
     exit();
 }
 
+include_once("./class/centreonUtils.class.php");
+
 include_once("./class/centreonDB.class.php");
 include_once("./class/centreonHost.class.php");
 include_once("./class/centreonService.class.php");
@@ -299,6 +301,7 @@ if (!is_null($host_id)) {
                 " WHERE obj.name1 = '".$pearDBndo->escape($host_name)."' AND obj.name2 = '".$pearDBndo->escape($svc_description)."' AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
             $DBRESULT = $pearDBndo->query($rq2);
             for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+                $data = array_map(array("CentreonUtils","escapeSecure"),$data);
                 $tabCommentServices[$i] = $data;
                 $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
             }
@@ -316,6 +319,7 @@ if (!is_null($host_id)) {
                                       ORDER BY cmt.entry_time DESC";
             $DBRESULT = $pearDBO->query($rq2);
             for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+                $data = array_map(array("CentreonUtils","escapeSecure"),$data);
                 $tabCommentServices[$i] = $data;
                 $tabCommentServices[$i]['host_name'] = utf8_encode($data['host_name']);
                 $tabCommentServices[$i]['service_description'] = utf8_encode($data['service_description']);

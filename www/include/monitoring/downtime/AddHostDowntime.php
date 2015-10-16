@@ -190,8 +190,8 @@
 
 		  	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
 		  	    $values = $form->getSubmitValues();
-				if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array(0, 1)))
-					$_POST["persistant"] = 0;
+				if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array('0', '1')))
+					$_POST["persistant"] = '0';
 				if (!isset($_POST["comment"]))
 					$_POST["comment"] = 0;
 				$_POST["comment"] = str_replace("'", " ", $_POST['comment']);

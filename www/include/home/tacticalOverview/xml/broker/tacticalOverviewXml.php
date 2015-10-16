@@ -217,7 +217,11 @@
             $infoC = $criticality->getData($critId);
             if (isset($infoC)) {
                 $availableHostCriticalities = 1;
-                $tab_hostcriticality[$nbhostpb] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+		if (file_exists('../../../../../img/media/'.$media->getFilename($infoC["icon_id"]))) {
+		  $tab_hostcriticality[$nbhostpb] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+		} else {
+		  $tab_hostcriticality[$nbhostpb] = '';
+		}
             }
         }
         
@@ -608,7 +612,11 @@
                 $infoC = $criticality->getData($critId, true);
                 if (isset($infoC)) {
                     $availableSvcCriticalities = 1;
-                    $tab_svccriticality[$j] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+		    if (file_exists('../../../../../img/media/'.$media->getFilename($infoC["icon_id"]))) {
+		      $tab_svccriticality[$j] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+		    } else {
+		      $tab_svccriticality[$j] = '';
+		    }
                 }
             }
             

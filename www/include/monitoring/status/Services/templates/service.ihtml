@@ -28,10 +28,10 @@
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
 		<td class="Toolbar_TDSelectAction_Top" width="550">
-			<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' title='Refresh'></a></span>
-			<span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' title='Play'></a></span>
+			<span class="consol_button"><div id="JS_monitoring_refresh" style="cursor:pointer;" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' title='Refresh'></div></span>
+			<span class="consol_button"><div id="JS_monitoring_play" class="cachediv" style="cursor:pointer;" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' title='Play'></div></span>
 			<span class="consol_button"><img id="JS_monitoring_play_gray" src='./img/icones/16x16/media_play_gray.gif' title='Play'></span>
-			<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' title='Pause'></a></span>
+			<span class="consol_button"><div class="" id="JS_monitoring_pause" style="cursor:pointer;" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' title='Pause'></div></span>
 			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' title='Pause'></span>
 			<span class="consol_button">{$form.o1.html}</span>
 			<input name="p" value="{$p}" type="hidden">

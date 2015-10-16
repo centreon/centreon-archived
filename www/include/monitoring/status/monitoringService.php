@@ -69,14 +69,14 @@ if (!isset($_GET["cmd"]) && isset($_POST["cmd"])) {
 }
 
 if (isset($param["cmd"]) && $param["cmd"] == 15 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 1) {
-    if (!isset($param["sticky"]) || !in_array($param["sticky"], array(0, 1))) {
-        $param["sticky"] = 0;
+    if (!isset($param["sticky"]) || !in_array($param["sticky"], array('0', '1'))) {
+        $param["sticky"] = '0';
     }
-    if (!isset($param["notify"]) || !in_array($param["notify"], array(0, 1))) {
-        $param["notify"] = 0;
+    if (!isset($param["notify"]) || !in_array($param["notify"], array('0', '1'))) {
+        $param["notify"] = '0';
     }
-    if (!isset($param["persistent"]) || !in_array($param["persistent"], array(0, 1))) {
-        $param["persistent"] = 0;
+    if (!isset($param["persistent"]) || !in_array($param["persistent"], array('0', '1'))) {
+        $param["persistent"] = '0';
     }
     acknowledgeService($param);
 } else if (isset($param["cmd"]) && $param["cmd"] == 15 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 0) {

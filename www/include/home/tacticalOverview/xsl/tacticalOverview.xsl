@@ -266,13 +266,15 @@
                                 <xsl:attribute name='class'>ListColCenter</xsl:attribute>
                                 <xsl:attribute name='align'>center</xsl:attribute>
                                 <xsl:attribute name='style'>font-weight:bold;white-space:nowrap;width:17px;</xsl:attribute>
-                                <xsl:element name='img'>
+                                <xsl:if test="hostcriticality != ''">
+				<xsl:element name='img'>
                                     <xsl:attribute name='src'>
                                         <xsl:value-of select='hostcriticality'/>
                                     </xsl:attribute>
                                     <xsl:attribute name='width'>16</xsl:attribute>
 									<xsl:attribute name='height'>16</xsl:attribute>
                                 </xsl:element>
+				</xsl:if>
                             </xsl:element>
                         </xsl:if>
 						<xsl:element name='td'>
@@ -713,13 +715,15 @@
                                         <xsl:attribute name='class'>ListColCenter</xsl:attribute>
                                         <xsl:attribute name='style'>white-space: nowrap;font-weight:bold;width:17px;</xsl:attribute>
                                         <xsl:attribute name='align'>center</xsl:attribute>
-                                        <xsl:element name='img'>
+                                        <xsl:if test="servicecriticality != ''">
+					  <xsl:element name='img'>
                                             <xsl:attribute name='src'>
                                                 <xsl:value-of select='servicecriticality'/>
                                             </xsl:attribute>
                                             <xsl:attribute name='width'>16</xsl:attribute>
                                             <xsl:attribute name='height'>16</xsl:attribute>
-                                        </xsl:element>
+                                          </xsl:element>
+					</xsl:if>
                                     </xsl:element>
                                 </xsl:if>
 								<td class="ListColLeft" style="white-space:nowrap;">

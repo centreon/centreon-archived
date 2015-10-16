@@ -37,6 +37,8 @@ if (!isset($oreon)) {
     exit();
 }
 
+include_once("./class/centreonUtils.class.php");
+
 include_once "./class/centreonDB.class.php";
 include_once "./class/centreonHost.class.php";
 
@@ -299,6 +301,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
                 " WHERE obj.name1 = '".$pearDBndo->escape($host_name)."' AND obj.name2 IS NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
             $DBRESULT = $pearDBndo->query($rq2);
             for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+                $data = array_map(array("CentreonUtils","escapeSecure"),$data);
                 $tabCommentHosts[$i] = $data;
                 $tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];
             }
@@ -315,6 +318,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
                                       ORDER BY cmt.entry_time DESC";
             $DBRESULT = $pearDBO->query($rq2);
             for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+                $data = array_map(array("CentreonUtils","escapeSecure"),$data);
                 $tabCommentHosts[$i] = $data;
                 $tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];
             }
