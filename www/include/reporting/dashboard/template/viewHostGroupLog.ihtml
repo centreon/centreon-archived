@@ -20,102 +20,84 @@
 				{/if}
 			</form>
 		</td>
+		<td style='padding:5px;vertical-align:top;'>
+			<form {$formPeriod.attributes} style="padding-bottom : 0px;">
+			<input type="radio" value="preset" name="period_choice" {if $period_choice == "on" } checked="checked" {/if}/>
+					<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle} : {$formPeriod.period.html}{$formPeriod.hidden}{$periodORlabel}
+					<input type="radio" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
+							{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
+							{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
+					{$formPeriod.button.html}{$formPeriod.hidden}
+			</form>
+		</td>
 		<td>
-			<a href="{$link_csv_url}"><img src="./img/icones/16x16/text_binary_csv.gif" alt={$link_csv_name}/></a>
+			<a href="{$link_csv_url}"><img src="./img/icones/16x16/text_binary_csv.gif" alt={$link_csv_name}/>&nbsp; Export in CSV format</a>
 		</td>
 	</tr>
 	<tr class='list_lvl_3'>
-		<td colspan=2>
-			<table style='width:100%'>
-			<tr>
-				<td rowspan=3 style='width:300px; padding:5px'>
+				<td style='width:300px; padding:5px'>
 					<!-- chart drawing -->
 					{if $name}	
-						<table class="ListTable" >
-							<tr>
-								<td class="ListColCenter">
-                                                                    <div id="chart"></div>
-								</td>					
-							</tr>
-						</table>
+						<div id="chart" style="text-align: center; max-height: 180px; position: relative;" ></div>
 					{/if}
 				</td>
-			</tr>
 			<!-- period selection -->
-			<tr>
-				<td style='padding:5px;vertical-align:top;'><form {$formPeriod.attributes}>
-					<table class="ajaxOption">
-						<tr>
-							<td>&nbsp;<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle} : </td>
-				        		<td>{$formPeriod.period.html}{$formPeriod.hidden}</td>
-							<td>&nbsp;{$periodORlabel}&nbsp;</td>
-							<td>
-									{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
-									{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
-							</td>
-							<td>{$formPeriod.button.html}{$formPeriod.hidden}</td>
-						</tr>
-					</table>
-					</form>
-				</td>
-			</tr>
 			<!-- host statistics -->
-			<tr>
-				<td style='vertical-align:top;padding:5px;'>
+				<td style='vertical-align:top;padding:5px;' colspan="2">
 					<table class="ListTable">
 						<tr class='ListHeader'>
 							<td colspan=5>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$resumeTitle}</td>
 						</tr>
 						<!-- headers -->
 						<tr class='list_lvl_1'>
-							<td class="ListColHeaderCenter">{$stateLabel}</td>
-							<td class="ListColHeaderRight">{$totalTimeLabel}</td>
-							<td class="ListColHeaderRight">{$meanTimeLabel}</td>
-							<td class="ListColHeaderRight">{$alertsLabel}</td>
+							<td style="padding:5px;" class="ListColHeaderCenter">{$stateLabel}</td>
+							<td style="padding:5px;" class="ListColHeaderCenter">{$totalTimeLabel}</td>
+							<td style="padding:5px;" class="ListColHeaderCenter">{$meanTimeLabel}</td>
+							<td style="padding:5px;" class="ListColHeaderCenter">{$alertsLabel}</td>
 						</tr>
 						<!-- Values -->
 						<tr class="list_one">
-							<td {$style.UP}>{$states.UP}</td>
-							<td class='ListColRight'>{$summary.UP_TP}%</td>
-							<td class='ListColRight'>{$summary.UP_MP}%</td>
-							<td class='ListColRight'>{$summary.UP_A}</td>
+							<td {$style.UP}><span {$badge_UP}></span> <b>{$states.UP}</b></td>
+							<td style="padding:5px;" class='ListColCenter'>{$summary.UP_TP}%</td>
+							<td style="padding:5px;" class='ListColCenter'>{$summary.UP_MP}%</td>
+							<td style="padding:5px;" class='ListColCenter'>{$summary.UP_A}</td>
 						</tr>
 						<tr class="list_two">
-							<td {$style.DOWN}>{$states.DOWN}</td>
-							<td class='ListColRight'>{$summary.DOWN_TP}%</td>
-							<td class='ListColRight'>{$summary.DOWN_MP}%</td>
-							<td class='ListColRight'>{$summary.DOWN_A}</td>
+							<td {$style.DOWN}><span {$badge_DOWN}></span> <b>{$states.DOWN}</b></td>
+							<td style="padding:5px;" class='ListColCenter'>{$summary.DOWN_TP}%</td>
+							<td style="padding:5px;" class='ListColCenter'>{$summary.DOWN_MP}%</td>
+							<td style="padding:5px;" class='ListColCenter'>{$summary.DOWN_A}</td>
 						</tr>
 						<tr class="list_one">
-							<td {$style.UNREACHABLE}>{$states.UNREACHABLE}</td>
-							<td class='ListColRight'>{$summary.UNREACHABLE_TP}%</td>
-							<td class='ListColRight'>{$summary.UNREACHABLE_MP}%</td>
-							<td class='ListColRight'>{$summary.UNREACHABLE_A}</td>
+							<td {$style.UNREACHABLE}><span {$badge_UNREACHABLE}></span> <b>{$states.UNREACHABLE}</b></td>
+							<td style="padding:5px;" class='ListColCenter'>{$summary.UNREACHABLE_TP}%</td>
+							<td style="padding:5px;" class='ListColCenter'>{$summary.UNREACHABLE_MP}%</td>
+							<td style="padding:5px;" class='ListColCenter'>{$summary.UNREACHABLE_A}</td>
 						</tr>
 						<tr class="list_one">
-							<td {$style.MAINTENANCE}>{$states.MAINTENANCE}</td>
-							<td class='ListColRight'>{$summary.MAINTENANCE_TP}%</td>
-							<td class='ListColRight'></td>
-							<td class='ListColRight'></td>
+							<td {$style.MAINTENANCE}><span {$badge_MAINTENANCE}></span> <b>{$states.MAINTENANCE}</b></td>
+							<td style="padding:5px;" class='ListColCenter'>{$summary.MAINTENANCE_TP}%</td>
+							<td style="padding:5px;" class='ListColCenter'></td>
+							<td style="padding:5px;" class='ListColCenter'></td>
 						</tr>
 						<tr class="list_one">
-							<td {$style.UNDETERMINED}>{$states.UNDETERMINED}</td>
-							<td class='ListColRight'>{$summary.UNDETERMINED_TP}%</td>
-							<td class='ListColRight'></td>
-							<td class='ListColRight'></td>
+							<td {$style.UNDETERMINED}><span {$badge_UNDETERMINED}></span> <b>{$states.UNDETERMINED}</b></td>
+							<td style="padding:5px;" class='ListColCenter'>{$summary.UNDETERMINED_TP}%</td>
+							<td style="padding:5px;" class='ListColCenter'></td>
+							<td style="padding:5px;" class='ListColCenter'></td>
 						</tr>
 						<!-- Total -->
 						<tr class='list_lvl_2'>
-							<td class="ListColHeaderCenter">{$totalLabel}</td>
-							<td class='ListColRight'></td>
-							<td class='ListColRight'></td>
-							<td class='ListColRight'>{$totalAlert}</td>
+							<td style="padding:5px;" class="ListColHeaderCenter">{$totalLabel}</td>
+							<td style="padding:5px;" class='ListColCenter'></td>
+							<td style="padding:5px;" class='ListColCenter'></td>
+							<td style="padding:5px;" class='ListColCenter'>{$totalAlert}</td>
 						</tr>
 					</table>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2 style=' padding:5px;'>
+				<td colspan="3" style=' padding:5px;'>
 					<table class="ListTable">
 						<tr class='ListHeader'>
 							<td class="FormHeader" colspan=12>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
@@ -142,31 +124,48 @@
 						{foreach item=tb from=$components}
 						<tr class={cycle values="list_two, list_one"}>
 							<td class="ListColHeaderLeft"><a href="main.php?p=30701&host={$tb.ID}&period={$get_period}&start={$get_date_start}&end={$get_date_end}">{$tb.NAME}</a></td>							
-							<td {$style.UP}>{$tb.UP_TP}% ({$tb.UP_MP}%)</td>
-							<td {$style.UP} >{$tb.UP_A}</td>
-							<td {$style.DOWN}>{$tb.DOWN_TP}% ({$tb.DOWN_MP}%)</td>
-							<td {$style.DOWN} style="width:30px;">{$tb.DOWN_A}</td>
-							<td {$style.UNREACHABLE}>{$tb.UNREACHABLE_TP}% ({$tb.UNREACHABLE_MP}%)</td>
-							<td {$style.UNREACHABLE} style="width:30px;">{$tb.UNREACHABLE_A}</td>
-							<td {$style.MAINTENANCE}>{$tb.MAINTENANCE_TP}%</td>
-							<td {$style.UNDETERMINED}>{$tb.UNDETERMINED_TP}%</td>
+							<td class="ListColCenter" {$style.UP_BOTTOM}>{$tb.UP_TP}% ({$tb.UP_MP}%)</td>
+							<td class="ListColCenter" {$style.UP_BOTTOM} >{$tb.UP_A}</td>
+							<td class="ListColCenter" {$style.DOWN_BOTTOM}>{$tb.DOWN_TP}% ({$tb.DOWN_MP}%)</td>
+							<td class="ListColCenter" {$style.DOWN_BOTTOM} style="width:30px;">{$tb.DOWN_A}</td>
+							<td class="ListColCenter" {$style.UNREACHABLE_BOTTOM}>{$tb.UNREACHABLE_TP}% ({$tb.UNREACHABLE_MP}%)</td>
+							<td class="ListColCenter" {$style.UNREACHABLE_BOTTOM} style="width:30px;">{$tb.UNREACHABLE_A}</td>
+							<td class="ListColCenter" {$style.MAINTENANCE_BOTTOM}>{$tb.MAINTENANCE_TP}%</td>
+							<td class="ListColCenter" {$style.UNDETERMINED_BOTTOM}>{$tb.UNDETERMINED_TP}%</td>
 						</tr>
 						{/foreach}
 					</table>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2 style=' padding:5px;'>
+				<td colspan="3" style=' padding:5px;'>
 					<div id="my-timeline" style="height: 250px; border: 1px solid #aaa"></div>
 				</td>
 			</tr>		
-			</table>
 		</td>
 	</tr>
 </table>
 
 <script>
 {literal}
+    jQuery("#StartDate").datepicker({
+        onSelect : function(data){  
+            jQuery( "select[name='period'] > option[value='']" ).prop('selected', true);
+            jQuery( "input:[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
+        }
+    });
+
+    jQuery("#EndDate").datepicker({
+        maxDate: '-1',
+        onSelect : function(data){  
+            jQuery( "select[name='period'] > option[value='']" ).prop('selected', true);
+            jQuery( "input:[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
+        }
+    });
+    jQuery( "select[name='period']" ).click(function() {
+        jQuery( "input:not([value])[name='period_choice'][type='radio']").prop('checked', true);
+    });
+
     jQuery(function () {
         c3.generate({
             bindto: d3.select('#chart'),
@@ -189,7 +188,8 @@
                 }
             },
             size: {
-                height: 210
+                height: 200,
+                width: 350
             }
         });
     });
