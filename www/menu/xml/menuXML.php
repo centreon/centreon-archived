@@ -48,7 +48,9 @@
 	require_once $centreon_path."/www/class/centreonLang.class.php";
 	require_once $centreon_path."/www/class/centreonMenu.class.php";
 
-    session_start();
+    if(!isset($_SESSION)){
+        session_start();
+    }
     $sid = session_id();
 	if (!isset($sid) || !isset($_GET["menu"]))
 		exit();

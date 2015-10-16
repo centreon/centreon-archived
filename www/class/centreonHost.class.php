@@ -1080,6 +1080,7 @@ class CentreonHost
     }
     
     private function getInheritedDescription($storedMacros,$finalMacro){
+        $description = "";
         if(empty($finalMacro['macroDescription'])){
             $choosedMacro = array();
             foreach($storedMacros as $storedMacro){

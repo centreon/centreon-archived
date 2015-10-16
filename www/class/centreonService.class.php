@@ -882,7 +882,8 @@ class CentreonService
         }
         
         $iIdCommande = $form['command_command_id'];
-        //Get macro attached to the command        
+        //Get macro attached to the command     
+        $aMacroInService = array();
         if (!empty($iIdCommande)) {
             $oCommand = new CentreonCommand($this->db);
             $aMacroInService[] = $oCommand->getMacroByIdAndType($iIdCommande, 'service');
