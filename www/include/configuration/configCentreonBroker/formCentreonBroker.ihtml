@@ -28,15 +28,17 @@
                 <h4>{$centreonbroker_configuration}</h4>
               </td>
             </tr>
-			<tr class="list_one"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
-            <tr class="list_one"><td class="FormRowField">{$form.write_timestamp.label}</td><td class="FormRowValue">{$form.write_timestamp.html}</td></tr>
-            <tr class="list_two"><td class="FormRowField">{$form.write_thread_id.label}</td><td class="FormRowValue">{$form.write_thread_id.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.ns_nagios_server.label}</td><td class="FormRowValue">{$form.ns_nagios_server.html}</td></tr>
-                        <tr class="list_one"><td class="FormRowField">{$form.event_queue_max_size.label}</td><td class="FormRowValue">{$form.event_queue_max_size.html}</td></tr>
-            <tr class="list_two"><td class="FormRowField">{$form.command_file.label}</td><td class="FormRowValue">{$form.command_file.html}</td></tr>
-			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+                <tr class="list_one"><td class="FormRowField">{$form.ns_nagios_server.label}</td><td class="FormRowValue">{$form.ns_nagios_server.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
+                <tr class="list_one"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
+                <tr class="list_one"><td class="FormRowField">{$form.write_timestamp.label}</td><td class="FormRowValue">{$form.write_timestamp.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField">{$form.write_thread_id.label}</td><td class="FormRowValue">{$form.write_thread_id.html}</td></tr>
+                <tr class="list_one"><td class="FormRowField">{$form.correlation_activate.label}</td><td class="FormRowValue">{$form.correlation_activate.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField">{$form.event_queue_max_size.label}</td><td class="FormRowValue">{$form.event_queue_max_size.html}</td></tr>
+                <tr class="list_one"><td class="FormRowField">{$form.retention_path.label}</td><td class="FormRowValue">{$form.retention_path.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField">{$form.command_file.label}</td><td class="FormRowValue">{$form.command_file.html}</td></tr>
+                <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		</table>
 	</div>
 	{foreach from=$tabs item=tab name=tabForeach2}

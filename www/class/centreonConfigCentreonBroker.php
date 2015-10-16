@@ -410,13 +410,15 @@ class CentreonConfigCentreonBroker
     	/*
 	     * Insert the Centreon Broker configuration
 	     */
-	    $query = "INSERT INTO cfg_centreonbroker (config_name, config_filename, config_write_timestamp, config_write_thread_id, config_activate, ns_nagios_server, event_queue_max_size) VALUES (
+	    $query = "INSERT INTO cfg_centreonbroker (config_name, config_filename, ns_nagios_server, config_activate, config_write_timestamp, config_write_thread_id, correlation_activate, retention_path, event_queue_max_size) VALUES (
                             '" . $this->db->escape($values['name']) . "', 
                             '" . $this->db->escape($values['filename']) . "', 
+                            " . $this->db->escape($values['ns_nagios_server']) . ", 
+                            '" . $this->db->escape($values['activate']['activate']) . "',
                             '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "',
                             '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
-                            '" . $this->db->escape($values['activate']['activate']) . "',
-                            " . $this->db->escape($values['ns_nagios_server']) . ", 
+                            '" . $this->db->escape($values['correlation_activate']['correlation_activate']) . "',
+                            '" . $this->db->escape($values['retention_path']) . "',
                             ".$this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])).")";
 	    if (PEAR::isError($this->db->query($query))) {
 	        return false;
@@ -451,10 +453,12 @@ class CentreonConfigCentreonBroker
 	    $query = "UPDATE cfg_centreonbroker SET 
                 config_name = '" . $this->db->escape($values['name']) . "', 
                 config_filename = '"  . $this->db->escape($values['filename']) . "', 
+                ns_nagios_server = "  . $this->db->escape($values['ns_nagios_server']) . ",
+                config_activate = '"  . $this->db->escape($values['activate']['activate']) . "', 
                 config_write_timestamp = '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "', 
                 config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "', 
-                config_activate = '"  . $this->db->escape($values['activate']['activate']) . "', 
-                ns_nagios_server = "  . $this->db->escape($values['ns_nagios_server']) . ",
+                correlation_activate = '" . $this->db->escape($values['correlation_activate']['correlation_activate']) . "',
+                retention_path = '" . $this->db->escape($values['retention_path']) . "',
                 event_queue_max_size = ".(int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size']))."
 	    	WHERE config_id = " . $id;
 	    if (PEAR::isError($this->db->query($query))) {
