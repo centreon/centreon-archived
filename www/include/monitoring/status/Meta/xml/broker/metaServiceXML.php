@@ -63,10 +63,11 @@
 	/*
 	 * security check 2/2
 	 */
-
-	if (isset($_GET["sid"])) {
-		$sid = $_GET["sid"];
-		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
+    session_start();
+	$sid = session_id();
+	if (isset($sid)) {
+		/*$sid = $_GET["sid"];
+		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");*/
 		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
 		if (!$session = $res->fetchRow())
 			get_error('bad session id');

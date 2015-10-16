@@ -41,7 +41,8 @@ include_once $centreon_path . "www/include/common/common-Func.php";
 /*
  * Create XML Request Objects
  */
-$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
+    session_start();
+	$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 	;

@@ -42,16 +42,17 @@ include_once("@CENTREON_ETC@/centreon.conf.php");
 include_once($centreon_path."www/class/centreonDB.class.php");
 include_once($centreon_path."www/class/centreonXML.class.php");
 
-$pearDB = new CentreonDB();
-$pearDBO = new CentreonDB("centstorage");
-
-if (isset($_GET["sid"])){
-	$sid = CentreonDB::escape($_GET["sid"]);
-	$res = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $sid . "'");
-	if (!$session = $res->fetchRow())
-		get_error('bad session id');
-} else
-	get_error('need session identifiant !');
+	$pearDB = new CentreonDB();
+	$pearDBO = new CentreonDB("centstorage");
+    session_start();
+    $sid = session_id();
+	if (isset($sid)){
+		//$sid = CentreonDB::escape($_GET["sid"]);
+		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $sid . "'");
+		if (!$session = $res->fetchRow())
+			get_error('bad session id');
+	} else
+		get_error('need session identifiant !');
 
 isset($_GET["index"]) ? $index = htmlentities($_GET["index"], ENT_QUOTES, "UTF-8") : $index = NULL;
 isset($_POST["index"]) ? $index = htmlentities($_POST["index"], ENT_QUOTES, "UTF-8") : $index = $index;

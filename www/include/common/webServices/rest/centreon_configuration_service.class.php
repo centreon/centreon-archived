@@ -103,7 +103,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
-            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+            $serviceCompleteId = $data['host_id'] . '_' . $data['service_id'];
             
             $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }

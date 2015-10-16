@@ -431,7 +431,7 @@ try {
         /** ***********************************************
          * Begin to build ACL
          */
-        $strBegin = "INSERT INTO `centreon_acl` ( `host_name` , `service_description` , `host_id` , `service_id`,`group_id` ) VALUES ";
+        $strBegin = "INSERT INTO `centreon_acl` (`host_id` , `service_id`,`group_id` ) VALUES ";
         $cpt = 0;
         foreach ($tabGroups as $acl_group_id => $acl_res_id) {
             $tabElem = array();
@@ -582,14 +582,14 @@ try {
                             if ($str != "") {
                                 $str .= ", ";
                             }
-                            $str .= " ('".$pearDBO->escape($host)."', NULL, {$singleId}, NULL, {$acl_group_id}) ";
+                            $str .= " ({$singleId}, NULL, {$acl_group_id}) ";
                         }
                         foreach ($svc_list as $desc => $t) {
                             if ($str != "") {
                                 $str .= ', ';
                             }
                             $id_tmp = preg_split("/\,/", $t);
-                            $str .= "('" . $host . "', '" . addslashes($desc) . "', '" . $id_tmp[0] . "' , '" . $id_tmp[1] . "' , " . $acl_group_id . ") ";
+                            $str .= "('" . $id_tmp[0] . "' , '" . $id_tmp[1] . "' , " . $acl_group_id . ") ";
                             $i++;
                             if ($i >= 1000) {
                                 $pearDBO->query($strBegin . $str);

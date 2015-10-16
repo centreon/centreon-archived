@@ -52,7 +52,7 @@ require_once $centreon_path . "www/class/centreonDB.class.php";
 require_once $centreon_path . "www/class/centreonSession.class.php";
 require_once $centreon_path . "www/class/centreon.class.php";
 
-centreonSession::start();
+CentreonSession::start();
 $centreon = $_SESSION["centreon"];
 
 /**
@@ -101,7 +101,8 @@ $buffer->startElement("root");
  */
 (isset($_GET["lang"])) ? $lang_ = htmlentities($_GET["lang"], ENT_QUOTES, "UTF-8") : $lang_ = "-1";
 (isset($_GET["id"])) ? $openid = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8") : $openid = "-1";
-(isset($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8") : $sid = "-1";
+$sid = session_id();
+(isset($sid)) ? $sid = $sid : $sid = "-1";
 
 /*
  * Init GMT class

@@ -229,7 +229,7 @@ function goM(_time_reload, _sid, _o) {
 	}
 
 	proc.setCallback(monitoringCallBack);
-	proc.setXml(_addrXML+"?"+'sid='+_sid+'&search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id);
+	proc.setXml(_addrXML+"?"+'search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
 
@@ -269,7 +269,7 @@ function cmdCallback(cmd) {
                 }
             }
         }
-        Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title: '<?php echo _("External commands") ?>', width: 600});
+        Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?' + 'o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title: '<?php echo _("External commands") ?>', width: 600});
         return 0;
     }
 }
@@ -319,7 +319,7 @@ function send_the_command() {
 
 	    var author = document.getElementById('author').value;
 
-	    xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+	    xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author  + _getVar, true);
 	}
 	else if (_cmd == '74' || _cmd == '75') {
 		var downtimehostservice = 0;
@@ -337,7 +337,7 @@ function send_the_command() {
 		var author = document.getElementById('author').value;
 		var duration = document.getElementById('duration').value;
         var duration_scale = document.getElementById('duration_scale').value;
-		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&start=" + start + "&end=" + end +  "&comment=" + comment + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&start=" + start + "&end=" + end +  "&comment=" + comment + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
 	}
     xhr_cmd.send(null);
 	Modalbox.hide();

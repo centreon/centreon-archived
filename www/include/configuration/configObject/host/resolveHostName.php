@@ -45,8 +45,9 @@ require_once $centreon_path . '/www/include/common/common-Func.php';
  */
 session_start();
 $db = new CentreonDB();
-if (isset($_GET['sid'])) {
-    $res = $db->query('SELECT * FROM session WHERE session_id = \'' . CentreonDB::escape($_GET['sid']) . '\'');
+$sid = session_id();
+if (isset($sid)) {
+    $res = $db->query('SELECT * FROM session WHERE session_id = \'' . CentreonDB::escape($sid) . '\'');
     if (!$res->fetchRow()) {
         header($_SERVER['SERVER_PROTOCOL'] . ' 401 Unauthorized', true, 401);
         exit;

@@ -64,9 +64,9 @@
 	/*
 	 * Add quickSearch toolbar
 	 */
-	if ($p != 30702) {
+	/*if ($p != 30702 && $p != 307) {
 		require_once "./include/common/quickSearch.php";
-	}
+	}*/
 
 	/*
 	 * Create DB connexion
@@ -105,17 +105,49 @@
 	$oreon->optGen["color_maintenance"] = "#CC99FF";
 
 	$tpl->assign('style_ok', 		"class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");
+    $tpl->assign('style_ok_top', 		" style='color:" . $oreon->optGen["color_ok"]."'");
 	$tpl->assign('style_ok_alert', 		"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_ok"]."'");
 	$tpl->assign('style_warning' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_warning"]."'");
+    $tpl->assign('style_warning_top' , 		"style='color:" . $oreon->optGen["color_warning"]."'");
 	$tpl->assign('style_warning_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_warning"]."'");
 	$tpl->assign('style_critical' , 	"class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'");
+    $tpl->assign('style_critical_top' , 	"style='color:" . $oreon->optGen["color_critical"]."'");
 	$tpl->assign('style_critical_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_critical"]."'");
 	$tpl->assign('style_unknown' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'");
+    $tpl->assign('style_unknown_top' , 		"style='color:" . $oreon->optGen["color_unknown"]."'");
 	$tpl->assign('style_unknown_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_unknown"]."'");
 	$tpl->assign('style_pending' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'");
+	$tpl->assign('style_pending_top' , 		"style='color:" . $oreon->optGen["color_undetermined"]."'");
 	$tpl->assign('style_pending_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_undetermined"]."'");
 	$tpl->assign('style_maintenance' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_maintenance"]."'");
-
+    $tpl->assign('style_maintenance_top' , 		"style='color:" . $oreon->optGen["color_maintenance"]."'");
+    
+    
+    $tpl->assign('badge_UP', 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_up"]."'");
+	$tpl->assign('badge_DOWN' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_down"]."'");
+	$tpl->assign('badge_UNREACHABLE' , 	"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_unreachable"]."'");
+	$tpl->assign('badge_UNDETERMINED' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_undetermined"]."'");
+	$tpl->assign('badge_MAINTENANCE' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_maintenance"]."'");
+    
+    
+    $tpl->assign('badge_ok', 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_ok"]."'");
+	$tpl->assign('badge_warning' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_warning"]."'");
+	$tpl->assign('badge_critical' , 	"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_critical"]."'");
+	$tpl->assign('badge_unknown' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_unknown"]."'");
+	$tpl->assign('badge_pending' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_undetermined"]."'");
+	$tpl->assign('badge_maintenance' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_maintenance"]."'");
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 	$tpl->assign('actualTitle', _("Actual"));
 
 	$tpl->assign('serviceTitle', _("Service"));
@@ -159,11 +191,16 @@
 	 /*
 	  * CSS Definition for status colors
 	  */
-	$style["UP"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
-	$style["DOWN"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
-	$style["UNREACHABLE"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";
-	$style["UNDETERMINED"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'";
-	$style["MAINTENANCE"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_maintenance"]."'";
+	$style["UP"] = "style='padding:5px;color:" . $oreon->optGen["color_up"]."'";
+    $style["UP_BOTTOM"] = "style='padding:5px;background-color:" . $oreon->optGen["color_up"]."'";
+	$style["DOWN"] = "style='padding:5px;color:" . $oreon->optGen["color_down"]."'";
+    $style["DOWN_BOTTOM"] = "style='padding:5px;background-color:" . $oreon->optGen["color_down"]."'";
+	$style["UNREACHABLE"] = "style='padding:5px;color:" . $oreon->optGen["color_unreachable"]."'";
+    $style["UNREACHABLE_BOTTOM"] = "style='padding:5px;background-color:" . $oreon->optGen["color_unreachable"]."'";
+	$style["UNDETERMINED"] = "style='padding:5px;color:" . $oreon->optGen["color_undetermined"]."'";
+    $style["UNDETERMINED_BOTTOM"] = "style='padding:5px;background-color:" . $oreon->optGen["color_undetermined"]."'";
+	$style["MAINTENANCE"] = "style='padding:5px;color:" . $oreon->optGen["color_maintenance"]."'";
+    $style["MAINTENANCE_BOTTOM"] = "style='padding:5px;background-color:" . $oreon->optGen["color_maintenance"]."'";
 	$tpl->assign('style', $style);
 
 	/*
@@ -213,12 +250,15 @@
 	$tpl->assign("get_date_start", $get_date_start);
 	$tpl->assign("get_date_end", $get_date_end);
 	$tpl->assign("get_period", $period);
-
+    $period_choice = (isset($_POST["period_choice"])) ? $_POST["period_choice"] : "";
+    
+    
+    $tpl->assign('period_choice', $period_choice);
 	/*
 	 * Period Selection form
 	 */
 	$formPeriod = new HTML_QuickForm('FormPeriod', 'post', "?p=".$p);
-	$formPeriod->addElement('select', 'period', "", $periodList, array("id" => "presetPeriod", "onchange"=>"resetFields([this.form.StartDate, this.form.EndDate]);this.form.submit();"));
+	$formPeriod->addElement('select', 'period', "", $periodList, array("id" => "presetPeriod"));
 	$formPeriod->addElement('hidden', 'timeline', "1");
 	$formPeriod->addElement('text', 'StartDate', _("From"), array("id"=>"StartDate", "size"=>10, "class"=>"datepicker", "onClick" => "javascript: togglePeriodType();"));
 	$formPeriod->addElement('text', 'EndDate', _("to"), array("id"=>"EndDate", "size"=>10, "class"=>"datepicker", "onClick" => "javascript: togglePeriodType();"));

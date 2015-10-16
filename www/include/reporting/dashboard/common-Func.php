@@ -42,6 +42,7 @@
 	function getPeriodToReport() {
 		$period = (isset($_POST["period"])) ? $_POST["period"] : "";
 		$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
+        $period_choice = (isset($_POST["period_choice"])) ? $_POST["period_choice"] : "";
 		$end_date = 0;
 		$start_date = 0;
 		$start_date = (isset($_POST["StartDate"])) ? $_POST["StartDate"] : "";
@@ -49,8 +50,12 @@
 		$end_date = (isset($_POST["EndDate"])) ? $_POST["EndDate"] : "";
 		$end_date = (isset($_GET["end"])) ? $_GET["end"] : $end_date;
 		$interval = array(0, 0);
-		if ($period == "" && $start_date == "" && $end_date == "")
+        if($period_choice == "custom" && $start_date != "" && $end_date != ""){
+            $period = "";
+        }
+		if ($period == "" && $start_date == "" && $end_date == ""){
 			$period = "yesterday";
+        }
 		if ($period == "" && $start_date != "") {
 			$interval = getDateSelect_customized($start_date, $end_date);
 		} else {

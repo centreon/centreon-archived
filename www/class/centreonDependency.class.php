@@ -311,7 +311,7 @@ class CentreonDependency
                 $parameters['externalObject']['id'] = 'meta_id';
                 $parameters['externalObject']['name'] = 'meta_name';
                 $parameters['externalObject']['comparator'] = 'meta_id';
-                $parameters['relationObject']['table'] = 'dependency_servicegroupParent_relation';
+                $parameters['relationObject']['table'] = 'dependency_metaserviceParent_relation';
                 $parameters['relationObject']['field'] = 'meta_service_meta_id';
                 $parameters['relationObject']['comparator'] = 'dependency_dep_id';
                 break;

@@ -778,7 +778,7 @@ var func_displayIMG = function(event) {
 
         var elements = $(self).id.split('-');
         var NewImageAlt = 'graph popup' + '&index=' + elements[0] + '&time=<?php print time(); ?>';
-        jQuery('.img_volante').append('<img style="display: none" src="' + 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ _sid +'&index='+ elements[0] + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
+        jQuery('.img_volante').append('<img style="display: none" src="' + 'include/views/graphs/generateGraphs/generateImage.php?index='+ elements[0] + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
         NewImage.onload = function(){
                 jQuery('.img_volante .mimgload').remove();
                 <?php   if ($centreon->user->get_js_effects() > 0) { ?>
@@ -790,7 +790,7 @@ var func_displayIMG = function(event) {
                 jQuery('.img_volante img').show();
                 <?php } ?>
         };
-        NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ _sid +'&index='+ elements[0];
+        NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?index='+ elements[0];
         if (NewImage.complete) {
                 jQuery('.img_volante .mimgload').remove();
                 <?php   if ($centreon->user->get_js_effects() > 0) { ?>

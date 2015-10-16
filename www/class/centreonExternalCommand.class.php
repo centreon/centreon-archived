@@ -338,8 +338,8 @@ class CentreonExternalCommand {
             $centreon = $oreon;
         }
 
-        if (!isset($persistant) || !in_array($persistant, array(0, 1))) {
-            $persistant = 0;
+        if (!isset($persistant) || !in_array($persistant, array('0', '1'))) {
+            $persistant = '0';
         }
 
         $start_time = $this->GMT->getUTCDate($this->getDate($start));
@@ -382,8 +382,8 @@ class CentreonExternalCommand {
         }
 
 
-        if (!isset($persistant) || !in_array($persistant, array(0, 1))) {
-            $persistant = 0;
+        if (!isset($persistant) || !in_array($persistant, array('0', '1'))) {
+            $persistant = '0';
         }
 
         $start_time = $this->GMT->getUTCDate($this->getDate($start));

@@ -180,22 +180,6 @@ class Dependency extends AbstractObject {
             }
 
             $this->generateObjectInFile($dependency, 0);
-                
-            $correlation_instance = Correlation::getInstance();
-            if ($correlation_instance->hasCorrelation()) {
-                if (isset($this->dependency_linked_host_parent_cache[$dp_id]) && isset($this->dependency_linked_host_child_cache[$dp_id])){
-                    foreach ($this->dependency_linked_host_parent_cache[$dp_id] as $value) {
-                        foreach ($this->dependency_linked_host_child_cache[$dp_id] as $value2) {
-                            $this->generated_dependencies[] = array(
-                                '@attributes' => array(
-                                    'host' => $value,
-                                    'dependent_host' => $value2
-                                )
-                            );
-                        }
-                    }
-                }
-            }
         }
     }
     
@@ -219,18 +203,6 @@ class Dependency extends AbstractObject {
                             $dependency['dependent_service_description'] = array($this->service_instance->getString($value2['service_service_id'], 'service_description'));
 
                             $this->generateObjectInFile($dependency, 0);
-
-                            $correlation_instance = Correlation::getInstance();
-                            if ($correlation_instance->hasCorrelation()) {
-                                $this->generated_dependencies[] = array(
-                                    '@attributes' => array(
-                                        'host' => $value['host_host_id'],
-                                        'service' => $value['service_service_id'],
-                                        'dependent_host' => $value2['host_host_id'],
-                                        'dependent_service' => $value2['service_service_id']
-                                    )
-                                );
-                            }
                         }
                     }
                 }
