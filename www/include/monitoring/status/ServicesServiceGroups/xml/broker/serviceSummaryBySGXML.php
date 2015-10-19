@@ -159,7 +159,7 @@
     $obj->XML->writeElement("sc", $obj->colorService[2]);
     $obj->XML->writeElement("su", $obj->colorService[3]);
     $obj->XML->writeElement("sp", $obj->colorService[4]);
-    ($o == "svcOVSG") ? $obj->XML->writeElement("s", "1")  : $obj->XML->writeElement("s", "0");
+    $obj->XML->writeElement("s", "1");
     $obj->XML->endElement();
     
     
