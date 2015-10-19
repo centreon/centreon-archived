@@ -41,14 +41,12 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
-
 	$SearchTool = NULL;
-	if (isset($search) && $search)
+    $search = '';
+	if (isset($_POST['searchGT']) && $_POST['searchGT']) {
+        $search = $_POST['searchGT'];
 		$SearchTool = " WHERE name LIKE '%".$search."%'";
+    }
 
 	$res = $pearDB->query("SELECT COUNT(*) FROM giv_graphs_template".$SearchTool);
 	$tmp = $res->fetchRow();
@@ -145,6 +143,7 @@
 	$o2->setValue(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchGT', $search);
 
 	/*
 	 * Apply a template definition

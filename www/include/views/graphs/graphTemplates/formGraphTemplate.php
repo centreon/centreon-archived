@@ -143,7 +143,7 @@
 		isset($graph[$nameColor]) ?	$codeColor = $graph[$nameColor] : $codeColor = NULL;
 		$attrsText3 	= array("value"=>$codeColor,"size"=>"8","maxlength"=>"7");
 		$attrsText4 	= array("style"=>"width:50px; height:18px; background-color:".$codeColor."; border-color:".$codeColor.";");
-		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','".addslashes($nameLang)."');");
+		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','".addslashes($nameLang)."');", "class" => "btc bt_info");
 
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
@@ -168,12 +168,6 @@
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
-
-	$tab = array();
-	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'graph_id');
 	$redirect = $form->addElement('hidden', 'o');
@@ -206,12 +200,12 @@
 	    $form->setDefaults($graph);
 		$form->freeze();
 	} else if ($o == "c")	{
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Delete"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Delete"), array("class" => "btc bt_danger"));
 	    $form->setDefaults($graph);
 	} else if ($o == "a")	{
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Delete"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Delete"), array("class" => "btc bt_danger"));
 	}
 	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&graph_id=".$graph_id, "changeT"=>_("Modify")));
 
@@ -272,7 +266,7 @@
 	}
 
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"])
+	if ($valid)
 		require_once("listGraphTemplates.php");
 	else	{
 		#Apply a template definition
