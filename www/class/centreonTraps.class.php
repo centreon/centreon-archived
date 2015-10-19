@@ -556,6 +556,16 @@ class CentreonTraps
                 $parameters['externalObject']['name'] = 'name';
                 $parameters['externalObject']['comparator'] = 'id';
                 break;
+             case 'groups':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'traps';
+                $parameters['externalObject']['id'] = 'traps_id';
+                $parameters['externalObject']['name'] = 'traps_name';
+                $parameters['externalObject']['comparator'] = 'traps_id';
+                $parameters['relationObject']['table'] = 'traps_group_relation';
+                $parameters['relationObject']['field'] = 'traps_id';
+                $parameters['relationObject']['comparator'] = 'traps_group_id';
+                break;
             case 'services':
                 $parameters['type'] = 'relation';
                 $parameters['externalObject']['object'] = 'centreonService';

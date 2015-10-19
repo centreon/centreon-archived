@@ -30,13 +30,22 @@ ALTER TABLE `on_demand_macro_host` ADD COLUMN `description` text DEFAULT NULL AF
 ALTER TABLE `on_demand_macro_service` ADD COLUMN `description` text DEFAULT NULL AFTER `is_password`;
 
 CREATE TABLE `traps_group` (
-  `traps_group_id` int(11) DEFAULT NULL,
-  `traps_id` int(11) DEFAULT NULL,
-  KEY `traps_group_id` (`traps_group_id`),
-  KEY `traps_id` (`traps_id`),
-  CONSTRAINT `traps_group_ibfk_1` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE
+  `traps_group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `traps_group_name` varchar(255) NOT NULL,
+  PRIMARY KEY (traps_group_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `traps_group_relation` (
+  `traps_group_id` int(11) NOT NULL,
+  `traps_id` int(11) NOT NULL,
+  KEY `traps_group_id` (`traps_group_id`),
+  KEY `traps_id` (`traps_id`),
+  CONSTRAINT `traps_group_relation_ibfk_1` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE,
+  CONSTRAINT `traps_group_relation_ibfk_2` FOREIGN KEY (`traps_group_id`) REFERENCES `traps_group` (`traps_group_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO topology (topology_name, topology_icone, topology_parent, topology_page, topology_order, topology_group, topology_url, topology_popup, topology_modules) VALUES 
+('Group', './img/icones/16x16/factory.gif', 617, 61705, 25, 1, './include/configuration/configObject/traps-groups/groups.php', 0, 0);
 
 -- Create table for relation between metaservice and contact
 CREATE TABLE `meta_contact` (
