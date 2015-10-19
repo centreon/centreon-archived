@@ -46,6 +46,7 @@ if (isset($pearDB)) {
         $query2 = "SELECT config_value
             FROM cfg_centreonbroker_info
             WHERE config_key = 'path'
+            AND config_id = " . $pearDB->escape($row1['config_id']) . "
             ORDER BY config_group DESC";
         $res2 = $pearDB->query($query2);
         while ($row2 = $res2->fetchRow()) {
@@ -59,11 +60,6 @@ if (isset($pearDB)) {
             WHERE config_id = " . $pearDB->escape($row1['config_id']);
         $pearDB->query($query3);
     }
-
-    # Delete old temporary configuration
-    $query = "DELETE FROM cfg_centreonbroker_info
-        WHERE config_group='temporary'";
-    $pearDB->query($query);
 
     # Delete old failover output
     $query = "DELETE FROM cfg_centreonbroker_info

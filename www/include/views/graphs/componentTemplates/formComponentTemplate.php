@@ -218,12 +218,6 @@
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
-	$tab = array();
-	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-	$form->setDefaults(array('action'=>'1'));
-
 	$form->addElement('hidden', 'compo_id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -286,15 +280,15 @@
 		/*
 		 * Modify
 		 */
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$compo["host_id"].",".$compo["index_id"].")"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$compo["host_id"].",".$compo["index_id"].")", "class" => "btc bt_default"));
 		$form->setDefaults($compo);
 	} else if ($o == "a")	{
 		/*
 		 * Add
 		 */
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"),array("onClick"=>"javascript:resetLists(0,0)"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"),array("onClick"=>"javascript:resetLists(0,0)", "class" => "btc bt_default"));
 		$form->setDefaults(array("ds_color_area" => "#FFFFFF", "ds_color_area_warn" => "#F8C706", "ds_color_area_crit" => "#F91E05", "ds_color_line" => "#0000FF", "ds_color_line_mode" => '0', "ds_transparency" => "80", "ds_average" => true, "ds_last" => true));
 	}
 	if ($o == "c" || $o == "a") {
@@ -357,7 +351,7 @@
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"])
+	if ($valid)
 		require_once("listComponentTemplates.php");
 	else	{
 		/*

@@ -642,12 +642,9 @@ INSERT INTO `traps` (`traps_id`, `traps_name`, `traps_oid`, `traps_args`, `traps
 --
 
 INSERT INTO `cb_tag` (`cb_tag_id`, `tagname`) VALUES
-(4, 'correlation'),
 (2, 'input'),
 (3, 'logger'),
-(1, 'output'),
-(5, 'stats'),
-(6, 'temporary');
+(1, 'output');
 
 --
 -- Contenu de la table `cb_module`
@@ -665,9 +662,6 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (10, 'Centreon Storage', NULL, NULL, 1, 1),
 (11, 'Compression', 'compression.so', 60, 0, 1),
 (12, 'Failover', NULL, NULL, 0, 1),
-(13, 'Correlation', 'correlation.so', 20, 0, 1),
-(14, 'Statistics', 'stats.so', 5, 0, 1),
-(15, 'Temporary', NULL, NULL, 0, 1),
 (17, 'Dumper', 'dumper.so', 20, 0, 1);
 
 
