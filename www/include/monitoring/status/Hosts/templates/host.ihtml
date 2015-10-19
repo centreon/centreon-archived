@@ -2,7 +2,7 @@
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
-{assign var='nbCol' value='3'}
+{assign var='nbCol' value='4'}
 {if $criticalityUsed}
 {assign var='nbCol' value='$nbCol+1'}
 {/if}
@@ -15,15 +15,16 @@
       <th colspan="{$nbCol}"><h5>Filters</h5></th>
     </tr>
 	<tr>
-		<td><h4>{$hostStr}</h4></td>
-        <td><h4>{$form.statusFilter.label}</h4></td>
-        {if $criticalityUsed}
-        <td><h4>{$form.criticality.label}</h4></td>
-        {/if}
-        {if $poller_listing}
-		<td><h4>{$pollerStr}</h4></td>
-        {/if}
-        <td><h4>{$hgStr}</h4></td>
+            <td><h4>{$hostStr}</h4></td>
+            <td><h4>{$form.statusFilter.label}</h4></td>
+            {if $criticalityUsed}
+                <td><h4>{$form.criticality.label}</h4></td>
+            {/if}
+            {if $poller_listing}
+                <td><h4>{$pollerStr}</h4></td>
+            {/if}
+            <td><h4>{$hgStr}</h4></td>
+            <td><h4>{$statusHost}</h4></td>
     </tr>
     <tr>
 		<td><input type='text' name='host_search' id='host_search'></td>
@@ -35,6 +36,7 @@
 		<td><span id="instance_selected"></span></td>
 		{/if}
 	    <td><span id="hostgroups_selected"></span></td>
+            <td>{$form.statusHost.html}</td>
 	</tr>
   </tbody>
 </table>

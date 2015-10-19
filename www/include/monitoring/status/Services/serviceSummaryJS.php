@@ -125,28 +125,28 @@ function mainLoopLocal() {
 	setTimeout("mainLoopLocal()", 250);
 }
 
-function initM(_time_reload, _sid, _o ){
+function initM(_time_reload, _sid, _o )
+{
+    // INIT Select objects
+    construct_selecteList_ndo_instance('instance_selected');
+    construct_HostGroupSelectList('hostgroups_selected');
 
-	// INIT Select objects
-	construct_selecteList_ndo_instance('instance_selected');
-	construct_HostGroupSelectList('hostgroups_selected');
+    if (document.getElementById("host_search") && document.getElementById("host_search").value) {
+            _host_search = document.getElementById("host_search").value;
+            viewDebugInfo('search: '+document.getElementById("host_search").value);
+    } else if (document.getElementById("host_search").lenght == 0) {
+            _host_search = "";
+    }
 
-	if (document.getElementById("host_search") && document.getElementById("host_search").value) {
-		_host_search = document.getElementById("host_search").value;
-		viewDebugInfo('search: '+document.getElementById("host_search").value);
-	} else if (document.getElementById("host_search").lenght == 0) {
-		_host_search = "";
-	}
+    if (_first){
+        mainLoopLocal();
+        _first = 0;
+    }
 
-	if (_first){
-		mainLoopLocal();
-		_first = 0;
-	}
-
-	_time=<?php echo $time; ?>;
-	if (_on) {
-		goM(_time_reload,_sid,_o);
-	}
+    _time=<?php echo $time; ?>;
+    if (_on) {
+            goM(_time_reload,_sid,_o);
+    }
 }
 
 function goM(_time_reload, _sid, _o) {

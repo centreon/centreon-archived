@@ -55,6 +55,19 @@
 	if (isset($_GET["host_search"])) {
 		$centreon->historySearch[$url] = $_GET["host_search"];
 	}
+        
+        $aTypeAffichageLevel1 = array(
+            "svcOVSG" => _("Details"),
+            "svcSumSG" => _("Summary")
+        );
+        
+        $aTypeAffichageLevel2 = array(
+            "" => _("All"),
+            "pb" => _("Problems"),
+            "ack_1" => _("Acknowledge"),
+            "ack_0" => _("Not Acknowledged"),
+        );
+        
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 10;
@@ -69,6 +82,8 @@
 	$tpl->assign("p", $p);
 	$tpl->assign('o', $o);
 	$tpl->assign("sort_types", $sort_types);
+	$tpl->assign("typeDisplay", _("Display"));
+        $tpl->assign("typeDisplay2", _("Display details"));
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
 	$tpl->assign("mon_host", _("Hosts"));
@@ -77,7 +92,7 @@
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign('search', _('Host'));
-    $tpl->assign('sgStr', _('Servicegroup'));
+        $tpl->assign('sgStr', _('Servicegroup'));
 	$tpl->assign('pollerStr', _('Poller'));
 	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 	$tpl->assign("mon_status_information", _("Status information"));
@@ -101,26 +116,46 @@
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 	$tpl->assign("tab_order", $tab_order);
     
-    
-    
-    
-
-
 	##Toolbar select $lang["lgd_more_actions"]
 	?>
 	<script type="text/javascript">
-	function setO(_i) {
-		document.forms['form'].elements['cmd'].value = _i;
-		document.forms['form'].elements['o1'].selectedIndex = 0;
-		document.forms['form'].elements['o2'].selectedIndex = 0;
-	}
-	</SCRIPT>
+            _tm = <?php echo $tM ?>;
+            function setO(_i) {
+                    document.forms['form'].elements['cmd'].value = _i;
+                    document.forms['form'].elements['o1'].selectedIndex = 0;
+                    document.forms['form'].elements['o2'].selectedIndex = 0;
+            }
+            function displayingLevel1(val)
+            {
+                _o = val;
+                if (_o == 'svcOVSG') {
+                    _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceGridBySGXML.php";
+                    _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceGridBySG.xsl";
+                } else {
+                   _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceSummaryBySGXML.php";
+                    _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceSummaryBySG.xsl";
+                }
+                monitoring_refresh();
+            }
+            function displayingLevel2(val)
+            {
+                var sel1 = document.getElementById("typeDisplay").value;
+                _o = sel1;
+                if (val != '') {
+                    _o = _o + "_" + val;
+                }
+                monitoring_refresh();
+            }
+	</script>
 	<?php
 
+        $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);"));
+        $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
+        
 	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
-    $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."),
-													"3"		=>	_("Verification Check"),
-													"4"		=>	_("Verification Check (Forced)"),
+        $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."),
+													"3"	=>	_("Verification Check"),
+													"4"	=>	_("Verification Check (Forced)"),
 													"70" 	=> 	_("Services : Acknowledge"),
 													"71" 	=> 	_("Services : Disacknowledge"),
 													"80" 	=> 	_("Services : Enable Notification"),
@@ -137,11 +172,11 @@
 	$form->setDefaults(array('o1' => NULL));
 	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
-
+        
 	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();");
-    $form->addElement('select', 'o2', NULL, array(	NULL	=>	_("More actions..."),
-													"3"		=>	_("Verification Check"),
-													"4"		=>	_("Verification Check (Forced)"),
+        $form->addElement('select', 'o2', NULL, array(	NULL	=>	_("More actions..."),
+													"3"	=>	_("Verification Check"),
+													"4"	=>	_("Verification Check (Forced)"),
 													"70" 	=> 	_("Services : Acknowledge"),
 													"71" 	=> 	_("Services : Disacknowledge"),
 													"80" 	=> 	_("Services : Enable Notification"),

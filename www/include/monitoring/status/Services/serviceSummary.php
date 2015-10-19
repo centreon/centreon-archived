@@ -35,7 +35,11 @@
  * SVN : $Id$
  *
  */
-
+/*
+echo "<pre>";
+var_dump($_GET);
+die;
+*/
 	if (!isset($oreon))
 		exit();
 
@@ -75,6 +79,8 @@
 	$tpl->assign("limit", $limit);
 	$tpl->assign("mon_host", _("Hosts"));
 	$tpl->assign("mon_status", _("Status"));
+        $tpl->assign("typeDisplay", _("Display"));
+        $tpl->assign("typeDisplay2", _("Display details"));
 	$tpl->assign("mon_ip", _("IP"));
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
@@ -85,23 +91,63 @@
 	$tpl->assign("order", strtolower($order));
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 	$tpl->assign("tab_order", $tab_order);
+        
+        $aTypeAffichageLevel1 = array(
+            "svcOV" => _("Details"),
+            "svcSum" => _("Summary")
+        );
+        
+        $aTypeAffichageLevel2 = array(
+            "pb" => _("Problems"),
+            "ack_1" => _("Acknowledge"),
+            "ack_0" => _("Not Acknowledged"),
+        );
 
 
+        
 	##Toolbar select $lang["lgd_more_actions"]
 	?>
 	<script type="text/javascript">
-	function setO(_i) {
-		document.forms['form'].elements['cmd'].value = _i;
-		document.forms['form'].elements['o1'].selectedIndex = 0;
-		document.forms['form'].elements['o2'].selectedIndex = 0;
-	}
-	</SCRIPT>
-	<?php
+            p = <?php echo $p ?>;
+            
+            function setO(_i) {
+                    document.forms['form'].elements['cmd'].value = _i;
+                    document.forms['form'].elements['o1'].selectedIndex = 0;
+                    document.forms['form'].elements['o2'].selectedIndex = 0;
+            }
+            function displayingLevel1(val)
+            {
+                _o = val;
+                if (_o == 'svcOV') { 
+                    _addrXML = "./include/monitoring/status/Services/xml/serviceGridXML.php";
+                    _addrXSL = "./include/monitoring/status/Services/xsl/serviceGrid.xsl";
+                } else {
+                    _addrXML = "./include/monitoring/status/Services/xml/serviceSummaryXML.php";
+                    _addrXSL = "./include/monitoring/status/Services/xsl/serviceSummary.xsl";
+                }
+                monitoring_refresh();
 
+            }
+            function displayingLevel2(val)
+            {
+                var sel1 = document.getElementById("typeDisplay").value;
+                _o = "svcSum";
+                if (val != '') {
+                    _o = _o + "_" + val;
+                }
+                
+                monitoring_refresh();
+            }
+	</script>
+	<?php
+        
+        $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);"));
+        $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
+        
 	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
-    $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."),
-													"3"		=>	_("Verification Check"),
-													"4"		=>	_("Verification Check (Forced)"),
+        $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."),
+													"3"	=>	_("Verification Check"),
+													"4"	=>	_("Verification Check (Forced)"),
 													"70" 	=> 	_("Services : Acknowledge"),
 													"71" 	=> 	_("Services : Disacknowledge"),
 													"80" 	=> 	_("Services : Enable Notification"),
@@ -120,9 +166,9 @@
 	$o1->setValue(NULL);
 
 	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();");
-    $form->addElement('select', 'o2', NULL, array(	NULL	=>	_("More actions..."),
-													"3"		=>	_("Verification Check"),
-													"4"		=>	_("Verification Check (Forced)"),
+        $form->addElement('select', 'o2', NULL, array(	NULL	=>	_("More actions..."),
+													"3"	=>	_("Verification Check"),
+													"4"	=>	_("Verification Check (Forced)"),
 													"70" 	=> 	_("Services : Acknowledge"),
 													"71" 	=> 	_("Services : Disacknowledge"),
 													"80" 	=> 	_("Services : Enable Notification"),
@@ -144,8 +190,8 @@
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('search', _('Search'));
-    $tpl->assign('pollerStr', _('Poller'));
-    $tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
+        $tpl->assign('pollerStr', _('Poller'));
+        $tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 	$tpl->assign('hgStr', _('Hostgroup'));
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("serviceGrid.ihtml");
