@@ -42,7 +42,6 @@ class Broker extends AbstractObjectXML {
     protected $stmt_broker = null;
     protected $stmt_broker_parameters = null;
     protected $stmt_engine_parameters = null;
-    protected $max_config_group_id = null;
     
     private function generate($poller_id) {
         if (is_null($this->stmt_broker)) {
@@ -54,10 +53,6 @@ class Broker extends AbstractObjectXML {
         }
         $this->stmt_broker->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
         $this->stmt_broker->execute();
-
-        if (is_null($this->max_config_group_id)) {
-            $this->getMaxConfigGroupId();
-        }
 
         $this->getEngineParameters($poller_id);
 
@@ -75,6 +70,7 @@ class Broker extends AbstractObjectXML {
             $this->generate_filename = $row['config_filename'];
             $object = array();
             $output_options = array();
+            $flow_count = 0;
 
             $config_name = $row['config_name'];
             $retention_path = $row['retention_path'];
@@ -102,46 +98,40 @@ class Broker extends AbstractObjectXML {
             $this->stmt_broker_parameters->execute();
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
 
-            $failover_config_group_id = $this->max_config_group_id + 1;
+            # Flow parameters
             foreach ($resultParameters as $key => $value) {
-                $subobjects = array();
-                $failover = false;
-                $output_name = null;
-                $outputs = array();
-
-                # Flow parameters
                 foreach ($value as $subvalue) {
                     if (in_array($subvalue['config_key'], $this->exclude_parameters) || trim($subvalue['config_value']) == '') {
                         continue;
                     } else if ($subvalue['config_key'] == 'category') {
-                        $subobjects[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] = $subvalue['config_value'];
+                        $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] = $subvalue['config_value'];
                     } else {
-                        $subobjects[$subvalue['config_group_id']][$key][$subvalue['config_key']] = $subvalue['config_value'];
+                        $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] = $subvalue['config_value'];
                     }
+                    $flow_count++;
                 }
+            }
 
-                # Failover parameters
-                foreach ($subobjects as $config_group_id => $subvalue) {
-                    if (isset($subvalue['output']['type']) && $subvalue['output']['type'] != 'file' && !isset($subvalue['output']['failover']) && isset($subvalue['output']['name'])) {
-                        $output_name =  $subobjects[$config_group_id]['output']['name'];
-                        $subobjects[$config_group_id]['output']['failover'] = $output_name . '-failover';
-                        $subobjects[$failover_config_group_id]['output']= array(
+            # Failover parameters
+            foreach ($object as &$subvalue) {
+                foreach ($subvalue as $config_type => &$flow) {
+                    if ($config_type == 'output' && isset($flow['name']) && !isset($flow['failover']) && isset($flow['type']) && $flow['type'] != 'file') {
+                        $flow['failover'] = $flow['name'] . '-' . $config_type . '-failover';
+                        $object[$flow_count][$config_type] = array(
                             'type' => 'file',
-                            'name' => $output_name . '-failover',
-                            'path' => $retention_path . '/' . $config_name . '_' . $output_name . '.retention',
+                            'name' => $flow['name'] . '-' . $config_type . '-failover',
+                            'path' => $retention_path . '/' . $config_name . '_' . $flow['name'] . '.retention',
                             'protocol' => 'bbdo',
                             'compression' => 'auto',
                             'max_size' => '104857600'
                         );
-                        $failover_config_group_id++;
+                        $flow_count++;
                     }
                 }
-
-                $object = array_merge($object, $subobjects);
             }
 
             # Temporary parameters
-            $object[1]['temporary'] = array(
+            $object[$flow_count]['temporary'] = array(
                 'type' => 'file',
                 'name' => $config_name . '-temporary',
                 'path' => $retention_path . '/' . $config_name . '.temporary',
@@ -149,14 +139,16 @@ class Broker extends AbstractObjectXML {
                 'compression' => 'auto',
                 'max_size' => '104857600'
             );
+            $flow_count++;
 
             # Stats parameters
             if ($stats_activate == '1') {
-                $object[1]['stats'] = array(
+                $object[$flow_count]['stats'] = array(
                     'type' => 'stats',
                     'name' => $config_name . '-stats',
-                    'fifo' => $retention_path . '/' . $config_name . '.temporary',
+                    'fifo' => $retention_path . '/' . $config_name . '.stats',
                 );
+                $flow_count++;
             }
 
             # Generate file
@@ -186,20 +178,6 @@ class Broker extends AbstractObjectXML {
         }
     }
 
-    private function getMaxConfigGroupId() {
-        $stmt = $this->backend_instance->db->prepare("SELECT
-              MAX(config_group_id) as max_config_group_id
-            FROM cfg_centreonbroker_info
-            ");
-        $stmt->execute();
-        try {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $this->max_config_group_id = $row['max_config_group_id'];
-        } catch (Exception $e) {
-            throw new Exception('Exception received : ' .  $e->getMessage() . "\n");
-        }
-    }
-    
     public function generateFromPoller($poller) {
         $this->generate($poller['id']);
     }
