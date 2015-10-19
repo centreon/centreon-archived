@@ -1,4 +1,6 @@
 -- Change version of Centreon
+UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.5' LIMIT 1;
+
 ALTER TABLE options ENGINE=InnoDB;
 ALTER TABLE css_color_menu ENGINE=InnoDB;
 
@@ -85,8 +87,13 @@ DELETE FROM topology WHERE topology_page IN ('60902', '60903', '60707', '60804')
 DELETE FROM topology WHERE topology_page IS NULL AND topology_name LIKE 'Plugins' AND topology_url IS NULL;
 DELETE FROM topology WHERE topology_page IS NULL AND topology_name LIKE 'NDOutils' AND topology_url IS NULL;
 
+-- Add new general option for centreon broker
+ALTER TABLE cfg_centreonbroker
+ADD COLUMN retention_path varchar(255),
+ADD COLUMN stats_activate enum('0','1') DEFAULT '1',
+ADD COLUMN correlation_activate enum('0','1') DEFAULT '0';
 
---Migrate timezones
+-- Migrate timezones
 
 -- Europe/London +00:00
 update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Europe/London') where contact_location = 0;

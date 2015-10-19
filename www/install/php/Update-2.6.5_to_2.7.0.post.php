@@ -37,13 +37,6 @@
 # Make broker configuration easier
 if (isset($pearDB)) {
 
-    # Add temporary and retention path to general tab
-    $query = "ALTER TABLE cfg_centreonbroker
-        ADD COLUMN retention_path varchar(255),
-        ADD COLUMN stats_activate enum('0','1') DEFAULT '1',
-        ADD COLUMN correlation_activate enum('0','1') DEFAULT '0'";
-    $pearDB->query($query);
-
     # Fill retention path
     $query1 = "SELECT config_id
         FROM cfg_centreonbroker";
