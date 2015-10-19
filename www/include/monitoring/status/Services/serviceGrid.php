@@ -62,7 +62,17 @@
 
 	include_once("./include/monitoring/status/Common/default_poller.php");
 	include_once("./include/monitoring/status/Common/default_hostgroups.php");
-	include_once($svc_path."/serviceGridJS.php");
+	include_once($svc_path."/serviceGridJS.php");        
+        $aTypeAffichageLevel1 = array(
+            "svcOV" => _("Details"),
+            "svcSum" => _("Summary")
+        );
+        
+        $aTypeAffichageLevel2 = array(
+            "problems" => _("Problems"),
+            "acknowledge" => _("Acknowledge"),
+            "nacknowledge" => _("Not Acknowledged"),
+        );
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -75,6 +85,8 @@
 	$tpl->assign("limit", $limit);
 	$tpl->assign("mon_host", _("Hosts"));
 	$tpl->assign("mon_status", _("Status"));
+        $tpl->assign("typeDisplay", _("Display"));
+        $tpl->assign("typeDisplay2", _("Display details"));
 	$tpl->assign("mon_ip", _("IP"));
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
@@ -96,8 +108,11 @@
 	</SCRIPT>
 	<?php
 
+        $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displaying(this.value);"));
+        $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
+        
 	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
-    $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."),
+        $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."),
 													"3"		=>	_("Verification Check"),
 													"4"		=>	_("Verification Check (Forced)"),
 													"70" 	=> 	_("Services : Acknowledge"),

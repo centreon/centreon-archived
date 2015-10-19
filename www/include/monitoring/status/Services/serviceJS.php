@@ -226,7 +226,7 @@ var _criticality_id = 0;
 	}
 
 	function goM(_time_reload,_sid,_o){
-
+                console.log()
 		_lock = 1;
 		var proc = new Transformation();
 

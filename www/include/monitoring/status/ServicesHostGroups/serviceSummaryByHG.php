@@ -55,6 +55,17 @@
 	if (isset($_GET["host_search"])) {
 		$centreon->historySearch[$url] = $_GET["host_search"];
 	}
+        
+        $aTypeAffichageLevel1 = array(
+            "svcOVSG" => _("Details"),
+            "svcSumSG" => _("Summary")
+        );
+        
+        $aTypeAffichageLevel2 = array(
+            "problems" => _("Problems"),
+            "acknowledge" => _("Acknowledge"),
+            "nacknowledge" => _("Not Acknowledged"),
+        );
 
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
@@ -75,6 +86,8 @@
 	$tpl->assign("limit", $limit);
 	$tpl->assign("mon_host", _("Hosts"));
 	$tpl->assign("mon_status", _("Status"));
+        $tpl->assign("typeDisplay", _("Display"));
+        $tpl->assign("typeDisplay2", _("Display details"));
 	$tpl->assign("mon_ip", _("IP"));
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
@@ -85,19 +98,22 @@
 	$tpl->assign('hgStr', _('Hostgroup'));
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-
+        
+        $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displaying(this.value);"));
+        $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
+        
 	$tpl->assign("order", strtolower($order));
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 	$tpl->assign("tab_order", $tab_order);
 
 	?>
 	<script type="text/javascript">
-	function setO(_i) {
-		document.forms['form'].elements['cmd'].value = _i;
-		document.forms['form'].elements['o1'].selectedIndex = 0;
-		document.forms['form'].elements['o2'].selectedIndex = 0;
-	}
-	</SCRIPT>
+            function setO(_i) {
+                    document.forms['form'].elements['cmd'].value = _i;
+                    document.forms['form'].elements['o1'].selectedIndex = 0;
+                    document.forms['form'].elements['o2'].selectedIndex = 0;
+            }
+	</script>
 	<?php
 
 	$tpl->assign('limit', $limit);

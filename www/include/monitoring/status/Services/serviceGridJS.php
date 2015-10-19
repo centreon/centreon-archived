@@ -160,7 +160,6 @@ function goM(_time_reload, _sid, _o) {
 		document.getElementById("host_search").value = _host_search;
 		_counter += 1;
 	}
-
 	_lock = 0;
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;

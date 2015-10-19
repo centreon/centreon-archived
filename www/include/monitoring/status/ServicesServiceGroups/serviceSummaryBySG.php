@@ -56,8 +56,19 @@
 	if (isset($_GET["host_search"])) {
 		$centreon->historySearch[$url] = $_GET["host_search"];
 	}
+        
+        $aTypeAffichageLevel1 = array(
+            "svcOVSG" => _("Details"),
+            "svcSumSG" => _("Summary")
+        );
+        
+        $aTypeAffichageLevel2 = array(
+            "problems" => _("Problems"),
+            "acknowledge" => _("Acknowledge"),
+            "nacknowledge" => _("Not Acknowledged"),
+        );
     
-    /*
+        /*
 	 * Check search value in Service Group search field
 	 */
 	if (isset($_GET["sg_search"])) {
@@ -80,6 +91,8 @@
 	$tpl->assign("limit", $limit);
 	$tpl->assign("mon_host", _("Hosts"));
 	$tpl->assign("mon_status", _("Status"));
+        $tpl->assign("typeDisplay", _("Display"));
+        $tpl->assign("typeDisplay2", _("Display details"));
 	$tpl->assign("mon_ip", _("IP"));
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
@@ -123,6 +136,10 @@
 	<?php
 
 	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
+        
+        $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displaying(this.value);"));
+        $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
+        
     $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."),
 													"3"		=>	_("Verification Check"),
 													"4"		=>	_("Verification Check (Forced)"),

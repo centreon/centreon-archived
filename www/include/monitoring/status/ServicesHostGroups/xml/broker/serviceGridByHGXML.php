@@ -55,8 +55,8 @@
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
 	} else {
-		print "Bad Session ID";
-		exit();
+            print "Bad Session ID";
+            exit();
 	}
 
 	/*
@@ -67,18 +67,18 @@
 	/* **************************************************
 	 * Check Arguments From GET tab
 	 */
-	$o 			= $obj->checkArgument("o", $_GET, "h");
-	$p 			= $obj->checkArgument("p", $_GET, "2");
+	$o 		= $obj->checkArgument("o", $_GET, "h");
+	$p 		= $obj->checkArgument("p", $_GET, "2");
 	$hg 		= $obj->checkArgument("hg", $_GET, "");
 	$num 		= $obj->checkArgument("num", $_GET, 0);
 	$limit 		= $obj->checkArgument("limit", $_GET, 20);
 	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
+	$hostgroups     = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 	$search 	= $obj->checkArgument("search", $_GET, "");
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
-	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-	$grouplistStr = $obj->access->getAccessGroupsString();
+	$dateFormat     = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+	$grouplistStr   = $obj->access->getAccessGroupsString();
 
 	/** **************************************
 	 * Get Host status

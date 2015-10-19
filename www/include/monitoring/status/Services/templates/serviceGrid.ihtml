@@ -2,7 +2,7 @@
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
-{assign var='nbCol' value='2'}
+{assign var='nbCol' value='4'}
 {if $poller_listing}
 {assign var='nbCol' value='$nbCol+1'}
 {/if}
@@ -12,11 +12,13 @@
       <th colspan="{$nbCol}"><h5>{t}Filters{/t}</h5></th>
     </tr>
 	<tr>
-        <td><h4>{$search}</h4></td>
-		{if $poller_listing}
-		<td><h4>{$pollerStr}</h4></td>
-		{/if}
-        <td><h4>{$hgStr}</h4></td>
+            <td><h4>{$search}</h4></td>
+                    {if $poller_listing}
+                    <td><h4>{$pollerStr}</h4></td>
+                    {/if}
+            <td><h4>{$hgStr}</h4></td>
+            <td><h4>{$typeDisplay}</h4></td>
+            <td><h4>{$typeDisplay2}</h4></td>
 	</tr>
     <tr>
       <td><input size="15" id="host_search" class="search_input" style="padding-top:1px;padding-bottom:1px;" name="host_search" type="text" /></td>
@@ -24,6 +26,8 @@
       <td><span id="instance_selected"></span></td>
       {/if}
       <td><span id="hostgroups_selected"></span></td>
+      <td>{$form.typeDisplay.html}</td>
+      <td>{$form.typeDisplay2.html}</td>
     </tr>
   </tbody>
 </table>
