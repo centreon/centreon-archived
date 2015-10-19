@@ -1,5 +1,19 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form' method='POST'>
+    <table class="ajaxOption table">
+      <tbody>
+        <tr>
+          <td><h5>{t}Filters{/t}</h5></td>
+        </tr>
+        <tr>
+          <td><h4>{t}Virtual metrics{/t}</h4></td>
+        </tr>
+        <tr>
+          <td><input type="text" name="searchVM" value="{$searchVM}"></td>
+          <td><input type="submit" class="btc bt_success" value="{t}Search{/t}"></td>
+        </tr>
+      </tbody>
+    </table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
 			<td>
@@ -63,7 +77,7 @@
 		{/section}
 	</table>
 	<table class="ToolbarTable table">
-		<tr>
+		<tr class="ToolbarTR">
 			<td>
 				{$msg.options} {$form.o2.html}
 				&nbsp;&nbsp;&nbsp;
