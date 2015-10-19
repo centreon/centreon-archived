@@ -46,6 +46,7 @@ if (isset($pearDB)) {
         $query2 = "SELECT config_value
             FROM cfg_centreonbroker_info
             WHERE config_key = 'path'
+            AND config_id = " . $pearDB->escape($row1['config_id']) . "
             ORDER BY config_group DESC";
         $res2 = $pearDB->query($query2);
         while ($row2 = $res2->fetchRow()) {
