@@ -60,11 +60,6 @@ if (isset($pearDB)) {
         $pearDB->query($query3);
     }
 
-    # Delete old temporary configuration
-    $query = "DELETE FROM cfg_centreonbroker_info
-        WHERE config_group='temporary'";
-    $pearDB->query($query);
-
     # Delete old failover output
     $query = "DELETE FROM cfg_centreonbroker_info
         WHERE (config_id,config_group,config_group_id) IN
