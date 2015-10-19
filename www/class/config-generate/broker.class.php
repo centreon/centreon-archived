@@ -16,8 +16,6 @@ class Broker extends AbstractObjectXML {
         correlation_activate,
         event_queue_max_size,
         retention_path,
-        buffering_timeout,
-        retry_interval,
         command_file
     ';
     protected $attributes_select_parameters = '
@@ -69,21 +67,12 @@ class Broker extends AbstractObjectXML {
         foreach ($result as $row) {
             $this->generate_filename = $row['config_filename'];
             $object = array();
-            $output_options = array();
             $flow_count = 0;
 
             $config_name = $row['config_name'];
             $retention_path = $row['retention_path'];
             $stats_activate = $row['stats_activate'];
             $correlation_activate = $row['correlation_activate'];
-
-            if (trim($row['buffering_timeout']) != '') {
-                $output_options['buffering_timeout'] = $row['buffering_timeout'];
-            }
-
-            if (trim($row['retry_interval']) != '') {
-                $output_options['retry_interval'] = $row['retry_interval'];
-            }
 
             # Base parameters
             $object['instance'] = $this->engine['id'];

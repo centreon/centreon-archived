@@ -411,7 +411,7 @@ class CentreonConfigCentreonBroker
 	     * Insert the Centreon Broker configuration
 	     */
 	    $query = "INSERT INTO cfg_centreonbroker "
-                . "(config_name, config_filename, ns_nagios_server, config_activate, config_write_timestamp, config_write_thread_id, stats_activate, correlation_activate, retention_path, buffering_timeout, retry_interval, event_queue_max_size) "
+                . "(config_name, config_filename, ns_nagios_server, config_activate, config_write_timestamp, config_write_thread_id, stats_activate, correlation_activate, retention_path, event_queue_max_size) "
                 . "VALUES (
                 '" . $this->db->escape($values['name']) . "', 
                 '" . $this->db->escape($values['filename']) . "', 
@@ -422,8 +422,6 @@ class CentreonConfigCentreonBroker
                 '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
                 '" . $this->db->escape($values['correlation_activate']['correlation_activate']) . "',
                 '" . $this->db->escape($values['retention_path']) . "',
-                '" . $this->db->escape($values['buffering_timeout']) . "',
-                '" . $this->db->escape($values['retry_interval']) . "',
                 ".$this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']))
                 . ")";
 	    if (PEAR::isError($this->db->query($query))) {
@@ -466,8 +464,6 @@ class CentreonConfigCentreonBroker
                 stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
                 correlation_activate = '" . $this->db->escape($values['correlation_activate']['correlation_activate']) . "',
                 retention_path = '" . $this->db->escape($values['retention_path']) . "',
-                buffering_timeout = '" . $this->db->escape($values['buffering_timeout']) . "',
-                retry_interval = '" . $this->db->escape($values['retry_interval']) . "',
                 event_queue_max_size = ".(int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size']))."
 	    	WHERE config_id = " . $id;
 	    if (PEAR::isError($this->db->query($query))) {

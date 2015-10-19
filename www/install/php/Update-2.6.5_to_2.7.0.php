@@ -41,9 +41,7 @@ if (isset($pearDB)) {
     $query = "ALTER TABLE cfg_centreonbroker
         ADD COLUMN retention_path varchar(255),
         ADD COLUMN stats_activate enum('0','1') DEFAULT '1',
-        ADD COLUMN correlation_activate enum('0','1') DEFAULT '0',
-        ADD COLUMN buffering_timeout varchar(255) NOT NULL,
-        ADD COLUMN retry_interval varchar(255) NOT NULL";
+        ADD COLUMN correlation_activate enum('0','1') DEFAULT '0'";
     $pearDB->query($query);
 
     # Fill retention path
@@ -137,15 +135,6 @@ if (isset($pearDB)) {
         WHERE name='correlation'
         OR name='stats'
         OR name='temporary'";
-    $pearDB->query($query);
-
-    # Delete buffering_timeout and retry_interval field relations
-    $query = "DELETE FROM cb_type_field_relation 
-        WHERE cb_field_id IN 
-            (SELECT cb_field_id
-            FROM cb_field
-            WHERE fieldname IN ('buffering_timeout','retry_interval')
-            )";
     $pearDB->query($query);
 }
 ?>
