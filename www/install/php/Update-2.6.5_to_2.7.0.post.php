@@ -47,7 +47,7 @@ if (isset($pearDB)) {
     # Fill retention path
     $query1 = "SELECT config_id
         FROM cfg_centreonbroker";
-    $res1 = $pearDB->query($query);
+    $res1 = $pearDB->query($query1);
     while ($row1 = $res1->fetchRow()) {
         $retention_path = '/var/lib/centreon-broker/';
         $query2 = "SELECT config_value
@@ -61,8 +61,8 @@ if (isset($pearDB)) {
                 continue;
             }
         }
-        $query3 = "INSERT INTO cfg_centreonbroker (retention_path)
-            VALUES ('" . $pearDB->escape($retention_path). "')
+        $query3 = "UPDATE cfg_centreonbroker
+            SET retention_path = '" . $pearDB->escape($retention_path). "'
             WHERE config_id = " . $pearDB->escape($row1['config_id']);
         $pearDB->query($query3);
     }
@@ -107,7 +107,7 @@ if (isset($pearDB)) {
 
     # Enable correlation if it was configured
     $query = "UPDATE cfg_centreonbroker
-        SET enable_correlation='1'
+        SET correlation_activate='1'
         WHERE config_id IN
             (SELECT distinct config_id
             FROM cfg_centreonbroker_info
