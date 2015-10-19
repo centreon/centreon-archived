@@ -51,7 +51,7 @@ if (isset($pearDB)) {
         while ($row2 = $res2->fetchRow()) {
             if (trim($row2['config_value']) != '') {
                 $retention_path = dirname(trim($row2['config_value']));
-                continue;
+                break;
             }
         }
         $query3 = "UPDATE cfg_centreonbroker
