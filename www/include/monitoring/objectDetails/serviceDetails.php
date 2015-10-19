@@ -409,7 +409,7 @@ if (!is_null($host_id)) {
             $status .= "&value[".$key."]=".$value;
         }
 
-        $optionsURL = "session_id=".session_id()."&host_name=".urlencode($host_name)."&service_description=".urlencode($svc_description);
+        $optionsURL = "host_name=".urlencode($host_name)."&service_description=".urlencode($svc_description);
 
         $DBRES = $pearDBO->query("SELECT id FROM `index_data`, metrics WHERE metrics.index_id = index_data.id AND host_name LIKE '".$pearDBO->escape($host_name)."' AND service_description LIKE '".$pearDBO->escape($svc_description)."' LIMIT 1");
         $index_data = 0;
@@ -417,7 +417,7 @@ if (!is_null($host_id)) {
             $row = $DBRES->fetchRow();
             $index_data = $row['id'];
         }
-        $optionsURL2 = "session_id=".session_id()."&index=".$index_data;
+        $optionsURL2 = "index=".$index_data;
 
         /*
          * Assign translations
@@ -653,7 +653,6 @@ if (!is_null($host_id)) {
 
 <?php if (!is_null($host_id)) { ?>
 <script type="text/javascript">
-	var _sid = '<?php echo session_id();?>';
 	var glb_confirm = '<?php  echo _("Submit command?"); ?>';
 	var command_sent = '<?php echo _("Command sent"); ?>';
 	var command_failure = "<?php echo _("Failed to execute command");?>";
@@ -715,8 +714,8 @@ if (!is_null($host_id)) {
 		    xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 		}
 		xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, cmd); };
-	   	xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/serviceSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&service_id=" + svc_id + "&sid=" + _sid + "&actiontype=" + actiontype, true);
-    		xhr_cmd.send(null);
+	   	xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/serviceSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&service_id=" + svc_id + "&actiontype=" + actiontype, true);
+    	xhr_cmd.send(null);
 	}
 
 	function display_result(xhr_cmd, cmd) {

@@ -55,9 +55,9 @@ $dbb = new CentreonDB("centstorage");
 
 $centreonlang = new CentreonLang($centreon_path, $oreon);
 $centreonlang->bindLang();
-
-if (isset($_GET["sid"])){
-    $sid = $_GET["sid"];
+$sid = session_id();
+if (isset($sid)){
+    //$sid = $_GET["sid"];
     $res = $db->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
     if (!$session = $res->fetchRow()) {
         get_error('bad session id');

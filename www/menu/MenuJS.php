@@ -42,7 +42,6 @@
 
 ?>
 <script>
-	var _sid='<?php echo $sid?>';
 	var _p='<?php echo $p?>';
 	var _o='<?php echo $o?>';
 
@@ -58,7 +57,7 @@
 		if (_previous_click != p) {
 			_lock_menu = 1;
 			var proc = new Transformation();
-			_addrXML_menu = "./menu/xml/menuXML.php?sid="+_sid+"&menu="+p;
+			_addrXML_menu = "./menu/xml/menuXML.php?menu="+p;
 			proc.setXml(_addrXML_menu)
 			proc.setXslt(_addrXSL_menu)
 			proc.transform("forMenuAjax");

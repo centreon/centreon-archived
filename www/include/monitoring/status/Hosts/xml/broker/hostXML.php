@@ -43,8 +43,9 @@ include_once $centreon_path . "www/include/common/common-Func.php";
 /*
  * Create XML Request Objects
  */
-$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 CentreonSession::start();
+$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
+
 if (isset($_SESSION['centreon'])) {
     $centreon = $_SESSION['centreon'];
 } else { 
@@ -321,9 +322,9 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("lhs", 	($hard_duration ? $hard_duration : "N/A"));
     $obj->XML->writeElement("ha", 	$ndo["acknowledged"]);
     $obj->XML->writeElement("hdtm", $ndo["scheduled_downtime_depth"]);
-    $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?sid=".$obj->session_id."&hid=".$ndo['host_id']);
+    $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=".$ndo['host_id']);
     $obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
-    $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?sid=".$obj->session_id."&hid=".$ndo['host_id']);
+    $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=".$ndo['host_id']);
     $obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
     $obj->XML->writeElement("hae", 	$ndo["active_checks"]);
     $obj->XML->writeElement("hpe", 	$ndo["passive_checks"]);

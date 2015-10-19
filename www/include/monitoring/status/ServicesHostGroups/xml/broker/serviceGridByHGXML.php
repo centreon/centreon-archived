@@ -47,9 +47,10 @@
 	/*
 	 * Create XML Request Objects
 	 */
-	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
+    CentreonSession::start();
+	$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 	$svcObj = new CentreonService($obj->DB);
-	CentreonSession::start();
+	
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;

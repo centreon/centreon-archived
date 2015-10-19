@@ -162,9 +162,10 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
 		$subA = $form->addElement('submit', 'submitA', _("Save"));
 		$res = $form->addElement('reset', 'reset', _("Reset"));
 
-	  	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
-                        if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array(0, 1)))
-                            $_POST["persistant"] = 0;
+	  	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate()) {
+                        if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array('0', '1'))) {
+                            $_POST["persistant"] = '0';
+                        }
                         if (!isset($_POST["comment"]))
                             $_POST["comment"] = 0;
 		    $_POST["comment"] = str_replace("'", " ", $_POST['comment']);

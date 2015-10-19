@@ -58,10 +58,10 @@ function transformForm()
     var addrXML;
     var addrXSL;
 
-    var params = '?sid=' + sid;
+    //var params = '?sid=' + sid;
 
     if (o == 'w' || o == 'ldap') {
-        params = params+'&arId='+arId;
+        params = '?arId='+arId;
         proc = new Transformation();
         addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php' + params;
         addrXSL = './include/options/oreon/generalOpt/ldap/xsl/ldap_host.xsl';
@@ -70,7 +70,7 @@ function transformForm()
         proc.transform("dynamicDiv");
         o = 0;
     } else {
-        params = params + '&id=' + counter + '&nbOfInitialRows=' + nbOfInitialRows;
+        params = '?id=' + counter + '&nbOfInitialRows=' + nbOfInitialRows;
         proc = new Transformation();
         addrXML = './include/options/oreon/generalOpt/ldap/xml/additionalRowXml.php' + params;
         addrXSL = './include/options/oreon/generalOpt/ldap/xsl/additionalRow.xsl';

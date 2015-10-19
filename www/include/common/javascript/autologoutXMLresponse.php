@@ -50,10 +50,11 @@
 	$buffer->startElement("entry");
 
 	session_start();
+    $sid = session_id();
 	if (isset($_SESSION['centreon'])) {
 	    $oreon = $_SESSION['centreon'];
     	$currentTime = $oreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $oreon->user->getMyGMT());
-    	$DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . $pearDB->escape($_GET['sid']) . "'");
+    	$DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'");
     	if ($DBRESULT->numRows()) {
     		$buffer->writeElement("state", "ok");
     	} else {

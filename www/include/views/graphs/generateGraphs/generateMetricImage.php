@@ -39,11 +39,13 @@
 include "@CENTREON_ETC@/centreon.conf.php";
 
 require_once "$centreon_path/www/class/centreonGraph.class.php";
-
 /**
  * Create XML Request Objects
  */
-$obj = new CentreonGraph($_GET["session_id"], $_GET["index"], 0, 1);
+session_start();
+$sid = session_id();
+$obj = new CentreonGraph($sid, $_GET["index"], 0, 1);
+
 
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 	;

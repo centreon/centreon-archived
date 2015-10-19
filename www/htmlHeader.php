@@ -114,20 +114,23 @@ global $search, $search_service;
 
 $searchStr = "";
 if (isset($_GET["search"]))
-    $searchStr = "&search_host=".htmlentities($_GET["search"], ENT_QUOTES, "UTF-8");
+    $searchStr .= "search_host=".htmlentities($_GET["search"], ENT_QUOTES, "UTF-8");
 if (isset($centreon->historySearch[$url]) && !isset($_GET["search"]))
-    $searchStr = "&search_host=".$centreon->historySearch[$url];
+    $searchStr .= "search_host=".$centreon->historySearch[$url];
 
 $searchStrSVC = "";
 if (isset($_GET["search_service"])) {
-    $searchStrSVC = "&search_service=".htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8");
+    $searchStrSVC = "search_service=".htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8");
+    if($searchStr == ""){
+        $searchStrSVC = "&".$searchStrSVC;
+    }
     $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8");
 } else if (isset($centreon->historySearchService[$url]) && !isset($_GET["search_service"])) {
     $search_service = $centreon->historySearchService[$url];
-    $searchStr = "&search_service=".$centreon->historySearchService[$url];
+    $searchStr .= "search_service=".$centreon->historySearchService[$url];
 }
 
-print "<script type='text/javascript' src='./include/common/javascript/codebase/dhtmlxtree.php?sid=".session_id().$searchStr.$searchStrSVC."'></script>\n";
+print "<script type='text/javascript' src='./include/common/javascript/codebase/dhtmlxtree.php?".$searchStr.$searchStrSVC."'></script>\n";
 
 /*
  * include javascript

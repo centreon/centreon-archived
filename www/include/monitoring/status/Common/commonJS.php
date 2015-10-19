@@ -87,11 +87,11 @@ var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
 var _popup_no_comment_msg = '<?php echo addslashes(_("Please enter a comment")); ?>';
 
 // Hosts WS For Poppin
-var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/broker/makeXMLForOneHost.php";
+var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/makeXMLForOneHost.php";
 var _addrXSLSpanhost = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
 
 // Services WS For Poppin
-var _addrXMLSpanSvc = "./include/monitoring/status/Services/xml/broker/makeXMLForOneService.php";
+var _addrXMLSpanSvc = "./include/monitoring/status/Services/xml/makeXMLForOneService.php";
 var _addrXSLSpanSvc = "./include/monitoring/status/Services/xsl/popupForService.xsl";
 
 // Position
@@ -417,6 +417,7 @@ function mk_img(_src, _alt)	{
   	_img.src = _src;
   	_img.alt = _alt;
   	_img.title = _alt;
+    _img.className = 'ico-14';
   	if (_img.complete){
   		_img.alt = _alt;
   	} else {
@@ -522,10 +523,10 @@ function pagination_changed(){
 
 <?php
 	for ($i = 1; $i <= 2; $i++) { ?>
-	var _img_previous<?php echo $i; ?> 	= mk_img("./img/icones/16x16/arrow_left_blue.gif", "previous");
-	var _img_next<?php echo $i; ?> 		= mk_img("./img/icones/16x16/arrow_right_blue.gif", "next");
-	var _img_first<?php echo $i; ?> 	= mk_img("./img/icones/16x16/arrow_left_blue_double.gif", "first");
-	var _img_last<?php echo $i; ?> 		= mk_img("./img/icones/16x16/arrow_right_blue_double.gif", "last");
+	var _img_previous<?php echo $i; ?> 	= mk_img("./img/icons/rewind.png", "previous");
+	var _img_next<?php echo $i; ?> 		= mk_img("./img/icons/fast_forward.png", "next");
+	var _img_first<?php echo $i; ?> 	= mk_img("./img/icons/first_rewind.png", "first");
+	var _img_last<?php echo $i; ?> 		= mk_img("./img/icons/end_forward.png", "last");
 
 	var _linkaction_right<?php echo $i; ?> = document.createElement("a");
 	_linkaction_right<?php echo $i; ?>.href = '#' ;
@@ -778,7 +779,7 @@ var func_displayIMG = function(event) {
 
         var elements = $(self).id.split('-');
         var NewImageAlt = 'graph popup' + '&index=' + elements[0] + '&time=<?php print time(); ?>';
-        jQuery('.img_volante').append('<img style="display: none" src="' + 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ _sid +'&index='+ elements[0] + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
+        jQuery('.img_volante').append('<img style="display: none" src="' + 'include/views/graphs/generateGraphs/generateImage.php?index='+ elements[0] + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
         NewImage.onload = function(){
                 jQuery('.img_volante .mimgload').remove();
                 <?php   if ($centreon->user->get_js_effects() > 0) { ?>
@@ -790,7 +791,7 @@ var func_displayIMG = function(event) {
                 jQuery('.img_volante img').show();
                 <?php } ?>
         };
-        NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ _sid +'&index='+ elements[0];
+        NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?index='+ elements[0];
         if (NewImage.complete) {
                 jQuery('.img_volante .mimgload').remove();
                 <?php   if ($centreon->user->get_js_effects() > 0) { ?>
