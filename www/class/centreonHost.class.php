@@ -290,6 +290,27 @@ class CentreonHost
         }
         return null;
     }
+    
+    public function getOneHostName($host_id){
+        if(isset($host_id) && is_numeric($host_id)){
+            $rq = "SELECT host_id, host_name
+     	    	   FROM host where host_id = ".$this->db->escape($host_id);
+            $res = $this->db->query($rq);
+            $row = $res->fetchRow();
+            return $row['host_name'];
+        }
+    }
+    
+    public function getHostCommandId($host_id){
+        if(isset($host_id) && is_numeric($host_id)){
+            $rq = "SELECT host_id, command_command_id
+     	    	   FROM host where host_id = ".$this->db->escape($host_id);
+            $res = $this->db->query($rq);
+            $row = $res->fetchRow();
+            return $row['command_command_id'];
+        }
+    }
+    
 
     /**
      * Method that returns a host alias from host_id
@@ -737,7 +758,7 @@ class CentreonHost
     
     public function hasMacroFromHostChanged($host_id,&$macroInput,&$macroValue,$cmdId = false)
     {
-        $aTemplates = $this->getTemplateChain($host_id, array(), -1, false);
+        $aTemplates = $this->getTemplateChain($host_id, array(), -1, true,"host_name,host_id,command_command_id");
 
         if (!isset($cmdId)) {
             $cmdId = "";
@@ -781,6 +802,16 @@ class CentreonHost
             }
         }
 
+        
+        if(empty($iIdCommande)){
+            foreach($aListTemplate as $template){
+                if(!empty($template['command_command_id'])){
+                    $iIdCommande = $template['command_command_id'];
+                    break;
+                }
+            }
+        }
+        
         
         //Get macro attached to the command        
         if (!empty($iIdCommande)) {
@@ -835,7 +866,7 @@ class CentreonHost
      * @param int $depth The depth to search
      * @return array
      */
-    public function getTemplateChain($hostId, $alreadyProcessed = array(), $depth = -1, $allFields = false)
+    public function getTemplateChain($hostId, $alreadyProcessed = array(), $depth = -1, $allFields = false, $fields = array())
     {
         $templates = array();
         
@@ -848,10 +879,12 @@ class CentreonHost
             } else {
                 $alreadyProcessed[] = $hostId;
 
-                if(!$allFields){
-                    $fields = "h.host_id, h.host_name";
-                }else{
-                    $fields = " * ";
+                if(empty($fields)){
+                    if(!$allFields){
+                        $fields = "h.host_id, h.host_name";
+                    }else{
+                        $fields = " * ";
+                    }
                 }
                 
                 $sql = "SELECT " . $fields . " " 
@@ -908,7 +941,7 @@ class CentreonHost
         $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
         $aListTemplate = array();
         foreach($form['tpSelect'] as $template){
-            $tmpTpl = array_merge(array(array('host_id' => $template, 'host_name' => $this->getHostName($template))),$this->getTemplateChain($template, array(), -1, false));
+            $tmpTpl = array_merge(array(array('host_id' => $template, 'host_name' => $this->getOneHostName($template), 'command_command_id' => $this->getHostCommandId($template))),$this->getTemplateChain($template, array(), -1, true,"host_name,host_id,command_command_id"));
             $aListTemplate = array_merge($aListTemplate,$tmpTpl);
         }
         
@@ -921,6 +954,16 @@ class CentreonHost
         }
         
         $iIdCommande = $form['command_command_id'];
+        
+        if(empty($iIdCommande)){
+            foreach($aListTemplate as $template){
+                if(!empty($template['command_command_id'])){
+                    $iIdCommande = $template['command_command_id'];
+                    break;
+                }
+            }
+        }
+        
         
         $aMacroInCommande = array();
         //Get macro attached to the command        
