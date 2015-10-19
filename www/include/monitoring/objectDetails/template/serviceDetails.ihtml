@@ -17,7 +17,7 @@
 			<td style='vertical-align:top;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$m_mon_status_info}</td>
+						<td class="ListColHeaderLeft" colspan="2">{$m_mon_status_info}</td>
 					</tr>
 					<tr class='list_two'>
 						<td class="ListColLeft">{$m_mon_services_status}</td>
@@ -100,7 +100,7 @@
 				{if $index_data}
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$detailed_graph}</td>
+						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icons/chart.png'>{$detailed_graph}</td>
 					</tr>
 					<tr class='list_one'>					
 						<td class="ListColCenter" colspan="2"><a href="./main.php?p=4&mode=0&svc_id={$host_name};{$svc_description}"><img src="./include/views/graphs/generateGraphs/generateImage.php?{$options2}"></a></td>
@@ -111,7 +111,7 @@
 				{if $flag_graph}
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$status_str}</td>
+						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icons/chart.png'>&nbsp;{$status_str}</td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColCenter" colspan="2"><img src="./include/views/graphs/graphStatus/displayServiceStatus.php?{$options}"></td>
