@@ -98,31 +98,45 @@ die;
         );
         
         $aTypeAffichageLevel2 = array(
-            "problems" => _("Problems"),
-            "acknowledge" => _("Acknowledge"),
-            "nacknowledge" => _("Not Acknowledged"),
+            "pb" => _("Problems"),
+            "ack_1" => _("Acknowledge"),
+            "ack_0" => _("Not Acknowledged"),
         );
+
 
         
 	##Toolbar select $lang["lgd_more_actions"]
 	?>
 	<script type="text/javascript">
-            _sid = '<?php echo $sid ?>';
-            _tm = <?php echo $tM ?>;
+            p = <?php echo $p ?>;
+            
             function setO(_i) {
                     document.forms['form'].elements['cmd'].value = _i;
                     document.forms['form'].elements['o1'].selectedIndex = 0;
                     document.forms['form'].elements['o2'].selectedIndex = 0;
             }
-            function displayingLevel1(_i)
+            function displayingLevel1(val)
             {
-                initM(_tm, _sid, _i);
-                
+                _o = val;
+                if (_o == 'svcOV') { 
+                    _addrXML = "./include/monitoring/status/Services/xml/serviceGridXML.php";
+                    _addrXSL = "./include/monitoring/status/Services/xsl/serviceGrid.xsl";
+                } else {
+                    _addrXML = "./include/monitoring/status/Services/xml/serviceSummaryXML.php";
+                    _addrXSL = "./include/monitoring/status/Services/xsl/serviceSummary.xsl";
+                }
+                monitoring_refresh();
+
             }
-            function displayingLevel2(_i)
+            function displayingLevel2(val)
             {
-                initM(_tm, _sid, _i);
+                var sel1 = document.getElementById("typeDisplay").value;
+                _o = "svcSum";
+                if (val != '') {
+                    _o = _o + "_" + val;
+                }
                 
+                monitoring_refresh();
             }
 	</script>
 	<?php

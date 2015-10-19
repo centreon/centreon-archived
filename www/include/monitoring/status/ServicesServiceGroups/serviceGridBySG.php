@@ -62,9 +62,10 @@
         );
         
         $aTypeAffichageLevel2 = array(
-            "problems" => _("Problems"),
-            "acknowledge" => _("Acknowledge"),
-            "nacknowledge" => _("Not Acknowledged"),
+            "" => _("All"),
+            "pb" => _("Problems"),
+            "ack_1" => _("Acknowledge"),
+            "ack_0" => _("Not Acknowledged"),
         );
         
 
@@ -118,18 +119,32 @@
 	##Toolbar select $lang["lgd_more_actions"]
 	?>
 	<script type="text/javascript">
+            _tm = <?php echo $tM ?>;
             function setO(_i) {
                     document.forms['form'].elements['cmd'].value = _i;
                     document.forms['form'].elements['o1'].selectedIndex = 0;
                     document.forms['form'].elements['o2'].selectedIndex = 0;
             }
-            function displayingLevel1(value)
+            function displayingLevel1(val)
             {
-                setO(value);
+                _o = val;
+                if (_o == 'svcOVSG') {
+                    _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceGridBySGXML.php";
+                    _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceGridBySG.xsl";
+                } else {
+                   _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceSummaryBySGXML.php";
+                    _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceSummaryBySG.xsl";
+                }
+                monitoring_refresh();
             }
-            function displayingLevel2(value)
+            function displayingLevel2(val)
             {
-                setO(value);
+                var sel1 = document.getElementById("typeDisplay").value;
+                _o = sel1;
+                if (val != '') {
+                    _o = _o + "_" + val;
+                }
+                monitoring_refresh();
             }
 	</script>
 	<?php

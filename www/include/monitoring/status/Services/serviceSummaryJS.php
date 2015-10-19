@@ -137,14 +137,10 @@ function initM(_time_reload, _sid, _o )
     } else if (document.getElementById("host_search").lenght == 0) {
             _host_search = "";
     }
-    
-    if (document.getElementById("typeDisplay") && document.getElementById("typeDisplay").value) {
-        _o = document.getElementById("typeDisplay").value;
-    }
 
     if (_first){
-            mainLoopLocal();
-            _first = 0;
+        mainLoopLocal();
+        _first = 0;
     }
 
     _time=<?php echo $time; ?>;

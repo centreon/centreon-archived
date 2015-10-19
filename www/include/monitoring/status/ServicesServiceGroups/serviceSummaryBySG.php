@@ -63,9 +63,10 @@
         );
         
         $aTypeAffichageLevel2 = array(
-            "problems" => _("Problems"),
-            "acknowledge" => _("Acknowledge"),
-            "nacknowledge" => _("Not Acknowledged"),
+            "" => _("All"),
+            "pb" => _("Problems"),
+            "ack_1" => _("Acknowledge"),
+            "ack_0" => _("Not Acknowledged"),
         );
     
         /*
@@ -127,17 +128,39 @@
 	##Toolbar select $lang["lgd_more_actions"]
 	?>
 	<script type="text/javascript">
-	function setO(_i) {
-		document.forms['form'].elements['cmd'].value = _i;
-		document.forms['form'].elements['o1'].selectedIndex = 0;
-		document.forms['form'].elements['o2'].selectedIndex = 0;
-	}
-	</SCRIPT>
+            function setO(_i) {
+                document.forms['form'].elements['cmd'].value = _i;
+                document.forms['form'].elements['o1'].selectedIndex = 0;
+                document.forms['form'].elements['o2'].selectedIndex = 0;
+            }
+            function displayingLevel1(val)
+            {
+                _o = val;
+                if (_o == 'svcOVSG') {
+                    _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceGridBySGXML.php";
+                    _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceGridBySG.xsl";
+                } else {
+                   _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceSummaryBySGXML.php";
+                    _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceSummaryBySG.xsl";
+                }
+                monitoring_refresh();
+            }
+            function displayingLevel2(val)
+            {
+                var sel1 = document.getElementById("typeDisplay").value;
+                _o = sel1;
+                if (val != '') {
+                    _o = _o + "_" + val;
+                }
+                
+                monitoring_refresh();
+            }
+	</script>
 	<?php
 
 	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
         
-        $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displaying(this.value);"));
+        $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);"));
         $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
         
     $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."),
