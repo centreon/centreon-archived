@@ -23,7 +23,7 @@
 			</td>
 		</tr>
 		<xsl:if test="notes != ''">
-		<tr class='list_separator'>
+		<tr>
 			<td class='separator' colspan='2'><xsl:value-of select='tr4'></xsl:value-of></td>
 		</tr>
 		<tr class='list_one'>
@@ -31,7 +31,7 @@
 			<td class="ColPopup">&#160;<xsl:value-of select="notes"/></td>
 		</tr>
 		</xsl:if>
-		<tr class='list_separator' colspan='2'>
+		<tr colspan='2'>
 			<td class='separator' colspan='2'><xsl:value-of select='tr5'></xsl:value-of></td>
 		</tr>
 		<tr class='list_one'>
@@ -69,7 +69,7 @@
 			</xsl:for-each>
 			</td>
 		</tr>
-		<tr class='list_separator'>
+		<tr>
 			<td class="separator" colspan="2"><xsl:value-of select="tr1"/></td>
 		</tr>
 		<tr class='list_two'>
@@ -96,7 +96,7 @@
 			<td class="ColPopup">&#160;<xsl:value-of select="last_update_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="last_update"/></td>
 		</tr>
-		<tr class='list_separator'>
+		<tr>
 			<td class="separator" colspan="2"><xsl:value-of select="tr2"/></td>
 		</tr>
 		<tr class='list_two'>
@@ -111,7 +111,7 @@
 			<td class="ColPopup">&#160;<xsl:value-of select="current_notification_number_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="current_notification_number"/></td>
 		</tr>
-		<tr class='list_separator'>
+		<tr>
 			<td class="separator" colspan="2"><xsl:value-of select="tr3"/></td>
 		</tr>
 		<tr class='list_one'>

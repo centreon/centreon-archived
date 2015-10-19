@@ -48,7 +48,7 @@
 			</xsl:element>
 		</td>
                 <xsl:if test = "//i/use_criticality = 1">
-                    <td class="ListColCenter" style="white-space:nowrap;width:17px;">
+                    <td class="ListColCenter">
                     <xsl:if test = "hci = 1">
                         <xsl:element name="img">
                             <xsl:attribute name="src">img/media/<xsl:value-of select="ci"/></xsl:attribute>
@@ -60,112 +60,111 @@
                     </td>
                 </xsl:if>
 		<td class="ListColLeft" style="white-space:nowrap;">
-
-			<xsl:if test="hn/@none = 0">
-                <xsl:element name="a">
-
-                    <xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hnl" /></xsl:attribute>
-                    <xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
-                    <xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
-
-
-                    <xsl:element name="span">
-                        <xsl:if test="hdtm = 0">
-                            <xsl:if test="hs = 1">
-                                <xsl:attribute name="class">state_badge host_down</xsl:attribute>
-                            </xsl:if>
-                            <xsl:if test="hs = 2">
-                                <xsl:attribute name="class">state_badge host_unreachable</xsl:attribute>
-                            </xsl:if>
-                        </xsl:if>
-                        <xsl:if test="hdtm != 0">
-                            <xsl:attribute name="class">state_badge host_downtime</xsl:attribute>
-                        </xsl:if>
-                        <xsl:if test="hico != ''">
-                            <xsl:element name="img">
-                                <xsl:attribute name="src">./img/media/<xsl:value-of select="hico"/></xsl:attribute>
-                                <xsl:attribute name="width">16</xsl:attribute>
-                                <xsl:attribute name="height">16</xsl:attribute>
-                                <xsl:attribute name="style">padding-right:5px;</xsl:attribute>
-                            </xsl:element>
-                        </xsl:if>
-                    </xsl:element>
-                    <xsl:value-of select="hn"/>
-                </xsl:element>
-			</xsl:if>
-		</td>
-		<td class="ListColLeft" style="white-space:nowrap;">
 			<xsl:if test="hn/@none = 0">
 				<xsl:if test="hnu != 'none'">
 					<xsl:element name="a">
-					  	<xsl:attribute name="class">infobulle</xsl:attribute>
-					  	<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
+						<xsl:attribute name="class">infobulle</xsl:attribute>
+						<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
-						  	<xsl:attribute name="title">
-						  		<xsl:if test="hnn = ''">
-						  			<xsl:value-of select="//i/http_link"/>&#160;:&#160;<xsl:value-of select="hnu"/>
-						  		</xsl:if>
-						  		<xsl:if test="hnn != ''">
-						  			<xsl:value-of select="hnn"/>
-						  		</xsl:if>
-						  	</xsl:attribute>
+							<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+							<xsl:attribute name="title">
+								<xsl:if test="hnn = ''">
+									<xsl:value-of select="//i/http_link"/>&#160;:&#160;<xsl:value-of select="hnu"/>
+								</xsl:if>
+								<xsl:if test="hnn != ''">
+									<xsl:value-of select="hnn"/>
+								</xsl:if>
+							</xsl:attribute>
 						</xsl:element>
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="hau != 'none'">
 					<xsl:element name="a">
-					  	<xsl:attribute name="class">infobulle</xsl:attribute>
-					  	<xsl:attribute name="href"><xsl:value-of select="hau"/></xsl:attribute>
+						<xsl:attribute name="class">infobulle</xsl:attribute>
+						<xsl:attribute name="href"><xsl:value-of select="hau"/></xsl:attribute>
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
-						  	<xsl:attribute name="title">
-						  		<xsl:value-of select="//i/http_action_link"/>&#160;:&#160;<xsl:value-of select="hau"/></xsl:attribute>
+							<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+							<xsl:attribute name="title">
+								<xsl:value-of select="//i/http_action_link"/>&#160;:&#160;<xsl:value-of select="hau"/></xsl:attribute>
 						</xsl:element>
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="hdtm != 0">
 					<xsl:element name="a">
 						<xsl:attribute name="class">infobulle</xsl:attribute>
+						<xsl:attribute name="title">Downtime</xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
-						  	<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/warning.png</xsl:attribute>
+							<xsl:attribute name="class">link_generic_info_volante ico-18</xsl:attribute>
 							<xsl:attribute name="id">dtmspan_<xsl:value-of select="hid"/></xsl:attribute>
 							<xsl:attribute name="name"><xsl:value-of select="hdtmXml"/>|<xsl:value-of select="hdtmXsl"/></xsl:attribute>
 						</xsl:element>
-					</xsl:element>					
+					</xsl:element>
 				</xsl:if>
 				<xsl:if test="ha = 1">
 					<xsl:element name="a">
 						<xsl:attribute name="class">infobulle</xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-						  	<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
+							<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+							<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
 							<xsl:attribute name="id">ackspan_<xsl:value-of select="hid"/></xsl:attribute>
-							<xsl:attribute name="name"><xsl:value-of select="hackXml"/>|<xsl:value-of select="hackXsl"/></xsl:attribute>					
+							<xsl:attribute name="name"><xsl:value-of select="hackXml"/>|<xsl:value-of select="hackXsl"/></xsl:attribute>
 						</xsl:element>
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="hae = 0 and hpe = 1">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
-					  	<xsl:attribute name="title">
-					  		<xsl:value-of select='//i/host_passive_mode'/>					  		
-					  	</xsl:attribute>
+						<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+						<xsl:attribute name="title">
+							<xsl:value-of select='//i/host_passive_mode'/>
+						</xsl:attribute>
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="hae = 0 and hpe = 0">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
-					  	<xsl:attribute name="title">					  		
-					  		<xsl:value-of select='//i/host_never_checked'/>
-					  	</xsl:attribute>
+						<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+						<xsl:attribute name="title">
+							<xsl:value-of select='//i/host_never_checked'/>
+						</xsl:attribute>
 					</xsl:element>
 				</xsl:if>
 			</xsl:if>
 		</td>
+		<td class="ListColLeft" style="white-space:nowrap;">
+
+			<xsl:if test="hn/@none = 0">
+					<xsl:if test="hdtm = 0">
+						<xsl:if test="hs = 1">
+							<xsl:attribute name="class">state_badge host_down</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="hs = 2">
+							<xsl:attribute name="class">state_badge host_unreachable</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+					<xsl:if test="hdtm != 0">
+					</xsl:if>
+					<xsl:if test="hico != ''">
+						<xsl:element name="img">
+							<xsl:attribute name="src">./img/media/<xsl:value-of select="hico"/></xsl:attribute>
+							<xsl:attribute name="width">16</xsl:attribute>
+							<xsl:attribute name="height">16</xsl:attribute>
+							<xsl:attribute name="style">vertical-align:middle;</xsl:attribute>
+						</xsl:element>
+					</xsl:if>
+                <xsl:element name="a">
+
+                    <xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hnl" /></xsl:attribute>
+                    <xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
+                    <xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
+
+					<xsl:value-of select="hn"/>
+
+                </xsl:element>
+			</xsl:if>
+		</td>
+
 		<td class="ListColLeft" style="white-space:nowrap;">
 			<xsl:if test="sico != ''">
 				<xsl:element name="img">
@@ -185,7 +184,7 @@
 		<td class="ListColRight" style="white-space:nowrap;">
 			<xsl:if test="snu != 'none'">
 				<xsl:element name="a">
-				  	<xsl:attribute name="classe">infobulle</xsl:attribute>
+				  	<xsl:attribute name="class">infobulle</xsl:attribute>
 				  	<xsl:attribute name="target">_blank</xsl:attribute>
 				  	<xsl:attribute name="href"><xsl:value-of select="snu"/></xsl:attribute>
 						<xsl:element name="img">
@@ -218,8 +217,8 @@
 				<xsl:element name="a">
 					<xsl:attribute name="class">infobulle</xsl:attribute>
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
-					  	<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/warning.png</xsl:attribute>
+					  	<xsl:attribute name="class">link_generic_info_volante ico-18</xsl:attribute>
 						<xsl:attribute name="id">dtmspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
 						<xsl:attribute name="name"><xsl:value-of select="dtmXml"/>|<xsl:value-of select="dtmXsl"/></xsl:attribute>				
 					</xsl:element>

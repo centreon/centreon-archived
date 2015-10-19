@@ -50,13 +50,13 @@
 	/*
 	 * Create XML Request Objects
 	 */
-    session_start();
+    CentreonSession::start();
 	$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 
 	/**
 	 * Manage Session
 	 */
-	CentreonSession::start();
+	
 	$centreon = $_SESSION['centreon'];
 
 	/**

@@ -219,8 +219,9 @@
 						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
 						<xsl:element name='img'>
 							<xsl:attribute name="title">first</xsl:attribute>						
-							<xsl:attribute name="alt">first</xsl:attribute>						
-							<xsl:attribute name="src">./img/icones/16x16/arrow_left_blue_double.gif</xsl:attribute>						
+							<xsl:attribute name="alt">first</xsl:attribute>
+                            <xsl:attribute name="class">ico-14</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/first_rewind.png</xsl:attribute>						
 						</xsl:element>
 					</xsl:element>
 				</td>
@@ -232,8 +233,9 @@
 						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
 						<xsl:element name='img'>
 							<xsl:attribute name="title">previous</xsl:attribute>						
-							<xsl:attribute name="alt">previous</xsl:attribute>						
-							<xsl:attribute name="src">./img/icones/16x16/arrow_left_blue.gif</xsl:attribute>						
+							<xsl:attribute name="alt">previous</xsl:attribute>	
+                            <xsl:attribute name="class">ico-14</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/rewind.png</xsl:attribute>						
 						</xsl:element>
 					</xsl:element>
 				</td>
@@ -260,8 +262,9 @@
 						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
 						<xsl:element name='img'>
 							<xsl:attribute name="title">next</xsl:attribute>						
-							<xsl:attribute name="alt">next</xsl:attribute>						
-							<xsl:attribute name="src">./img/icones/16x16/arrow_right_blue.gif</xsl:attribute>						
+							<xsl:attribute name="alt">next</xsl:attribute>	
+                            <xsl:attribute name="class">ico-14</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/fast_forward.png</xsl:attribute>						
 						</xsl:element>
 					</xsl:element>
 				</td>
@@ -273,8 +276,9 @@
 						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
 						<xsl:element name='img'>
 							<xsl:attribute name="title">last</xsl:attribute>						
-							<xsl:attribute name="alt">last</xsl:attribute>						
-							<xsl:attribute name="src">./img/icones/16x16/arrow_right_blue_double.gif</xsl:attribute>						
+							<xsl:attribute name="alt">last</xsl:attribute>	
+                            <xsl:attribute name="class">ico-14</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/end_forward.png</xsl:attribute>						
 						</xsl:element>
 					</xsl:element>
 				</td>

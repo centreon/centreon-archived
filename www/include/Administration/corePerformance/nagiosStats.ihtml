@@ -17,16 +17,16 @@
 {assign var='cpt' value=$cpt+1}
 	<table class="ListTable">
 	 	<tr class="ListHeader">
-	 		<td class="FormHeader"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$pollerName}&nbsp;</td>
+	 		<td class="FormHeader">&nbsp;&nbsp;{$pollerName}</td>
 	 	</tr>
 		{assign var='counter' value=0}
 		<tr>
 			<td align="center">
 	 		{foreach from=$options key=keyOptions item=itemOptions} 		
 		 		{if $startPeriod}
-		 		<img src="./include/Administration/corePerformance/getStats.php?ns_id={$key}&key={$keyOptions}&start={$startPeriod}">
+		 		<img src="./include/Administration/corePerformance/getStats.php?ns_id={$key}&key={$keyOptions}&start={$startPeriod}" style="margin: 5px;">
 		 		{else}
-		 		<img src="./include/Administration/corePerformance/getStats.php?ns_id={$key}&key={$keyOptions}">
+		 		<img src="./include/Administration/corePerformance/getStats.php?ns_id={$key}&key={$keyOptions}  style="margin: 5px;"">
 		 		{/if}	 	
 	 		{assign var='counter' value=$counter+1}
 		 	{/foreach}

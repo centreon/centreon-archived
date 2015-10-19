@@ -1,5 +1,5 @@
 <td class="ToolbarPagination">
-	{if $firstPage}&nbsp;<a href="{$firstPage}{if $host_name}&host_name={$host_name}{/if}"><img src="./img/icones/16x16/arrow_left_blue_double.gif" title='{$first}'></a>{/if}
+	{if $firstPage}&nbsp;<a href="{$firstPage}{if $host_name}&host_name={$host_name}{/if}"><img src="./img/icons/first_rewind.png" class="ico-14" title='{$first}'></a>{/if}
 	{if $pagePrev}&nbsp;<a href="{$pagePrev}{if $host_name}&host_name={$host_name}{/if}"><img src="./img/icons/rewind.png" class="ico-14" title='{$previous}'></a>{/if}
 	{foreach key=key item=item from=$pageArr }
 		{if $pageArr[$key].num != $num}
@@ -9,10 +9,9 @@
 		{/if}
 	{/foreach}
 	{if $pageNext}&nbsp;<a href="{$pageNext}{if $host_name}&host_name={$host_name}{/if}"><img src="./img/icons/fast_forward.png" class="ico-14" title='{$next}'></a>{/if}
-	{if $lastPage}&nbsp;<a href="{$lastPage}{if $host_name}&host_name={$host_name}{/if}"><img src="./img/icones/16x16/arrow_right_blue_double.gif" title='{$last}'></a>{/if}
+	{if $lastPage}&nbsp;<a href="{$lastPage}{if $host_name}&host_name={$host_name}{/if}"><img src="./img/icons/end_forward.png" class="ico-14" title='{$last}'></a>{/if}
 </td>
 <td class="Toolbar_pagelimit">
-    {$form.l.label}</b>&nbsp;
     {$form.l.html}
 </td>
 {$form.hidden}

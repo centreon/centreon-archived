@@ -417,6 +417,7 @@ function mk_img(_src, _alt)	{
   	_img.src = _src;
   	_img.alt = _alt;
   	_img.title = _alt;
+    _img.className = 'ico-14';
   	if (_img.complete){
   		_img.alt = _alt;
   	} else {
@@ -522,10 +523,10 @@ function pagination_changed(){
 
 <?php
 	for ($i = 1; $i <= 2; $i++) { ?>
-	var _img_previous<?php echo $i; ?> 	= mk_img("./img/icones/16x16/arrow_left_blue.gif", "previous");
-	var _img_next<?php echo $i; ?> 		= mk_img("./img/icones/16x16/arrow_right_blue.gif", "next");
-	var _img_first<?php echo $i; ?> 	= mk_img("./img/icones/16x16/arrow_left_blue_double.gif", "first");
-	var _img_last<?php echo $i; ?> 		= mk_img("./img/icones/16x16/arrow_right_blue_double.gif", "last");
+	var _img_previous<?php echo $i; ?> 	= mk_img("./img/icons/rewind.png", "previous");
+	var _img_next<?php echo $i; ?> 		= mk_img("./img/icons/fast_forward.png", "next");
+	var _img_first<?php echo $i; ?> 	= mk_img("./img/icons/first_rewind.png", "first");
+	var _img_last<?php echo $i; ?> 		= mk_img("./img/icons/end_forward.png", "last");
 
 	var _linkaction_right<?php echo $i; ?> = document.createElement("a");
 	_linkaction_right<?php echo $i; ?>.href = '#' ;

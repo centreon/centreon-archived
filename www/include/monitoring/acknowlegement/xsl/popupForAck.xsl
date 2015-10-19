@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:template match="//response">
 	<table class="ListTable">
-		<tr class="list_separator" style='font-weight: bold;'>
+		<tr>
 			<td style="padding: 4px;"><xsl:value-of select="//label/author"/></td>
 			<td style="padding: 4px;"><xsl:value-of select="//label/entrytime"/></td>
 			<td style="padding: 4px;"><xsl:value-of select="//label/persistent"/></td>

@@ -36,6 +36,8 @@
  *
  */
 
+require_once realpath(dirname(__FILE__) . "/centreonLDAP.class.php");
+
 /**
  * Manage contactgroups
  */
