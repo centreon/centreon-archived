@@ -119,8 +119,7 @@ if (isset($pearDB)) {
     $query = "DELETE FROM cfg_centreonbroker_info
         WHERE config_group='correlation'
         OR config_group='stats'
-        OR config_group='temporary'
-        ");
+        OR config_group='temporary'";
      $pearDB->query($query);
 
     # Delete correlation, stats and temporary tabs
