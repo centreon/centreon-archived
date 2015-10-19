@@ -43,17 +43,17 @@
 
     						<td>
     						    <span id='latency'>
-    						        <img src='./img/icones/16x16/clock.gif' width=14 id="img_latency" />
+    						        <img src='./img/icons/clock.png' class="ico-10" id="img_latency" />
     						    </span>
     						</td>
     						<td>
     						    <span id="pollingState">
-    						        <img src='./img/icones/16x16/gear.gif' width=14 id="img_pollingState"/>
+    						        <img src='./img/icons/poller.png' class="ico-10" id="img_pollingState"/>
     						    </span>
     						</td>
     						<td>
     						    <span id="activity">
-    						        <img src='./img/icones/16x16/data_into.gif'  width=14 id="img_activity" />
+    						        <img src='./img/icons/database.png' class="ico-10" id="img_activity" />
     						    </span>
     						</td>
     					</tr>

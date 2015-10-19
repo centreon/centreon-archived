@@ -133,14 +133,14 @@
 .list_unreachable 			{	background-color:<?php print $options["color_host_unreachable"]; ?>;}
 .list_unreachable:hover 	{	background-color:<?php print $options["color_host_unreachable"]; ?>;}
 
-.line_downtime		{	background-color:<?php print $options["color_downtime"]; ?>;}
+.line_downtime		{	background-color: #f1dfff;}
 .line_downtime:hover{	background-color:<?php print $options["color_downtime"]; ?>;}
 
 .line_ack			{	background-color:<?php print $options["color_ack"]; ?>;}
 .line_ack:hover		{	background-color:<?php print $options["color_ack"]; ?>;}
 
 /* Monitoring Side */
-.host_down 			{-moz-border-radius:8px;background-color:<?php print $options["color_host_down"]; ?>;border:2px <?php print $options["color_host_down"]; ?> solid;}
+.host_down 			{-moz-border-radius:8px;background-color:<?php print $options["color_host_down"]; ?>;}
 .host_unreachable 	{-moz-border-radius:8px;background-color:<?php print $options["color_host_unreachable"]; ?>;border:2px <?php print $options["color_host_unreachable"]; ?> solid;}
 .host_downtime 		{-moz-border-radius:8px;background-color:<?php print $options["color_downtime"]; ?>;border:2px <?php print $options["color_downtime"]; ?> solid;}
 
