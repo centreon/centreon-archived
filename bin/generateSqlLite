@@ -141,7 +141,7 @@ try {
     $result_traps_preexec = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     $stmt = $db_centreon->prepare("SELECT traps_group_id, traps_id
-        FROM traps_group");
+        FROM traps_group_relation");
     $stmt->execute();
     $result_traps_group = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
@@ -298,7 +298,7 @@ try {
                     
             CREATE INDEX IF NOT EXISTS idx_tprexec_trap_id ON traps_preexec (trap_id);
             
-            CREATE TABLE IF NOT EXISTS `traps_group` (
+            CREATE TABLE IF NOT EXISTS `traps_group_relation` (
                     `traps_group_id` int(11) DEFAULT NULL,
                     `traps_id` int(11) DEFAULT NULL
                     );
@@ -527,7 +527,7 @@ try {
                 $stmt->execute();
             }
             
-            $stmt = $dbh_sqlite->prepare("INSERT INTO traps_group (traps_group_id, traps_id) VALUES (
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps_group_relation (traps_group_id, traps_id) VALUES (
                     :traps_group_id, :traps_id)");
             foreach ($result_traps_group as $value) {
                 $stmt->bindParam(':traps_group_id', $value['traps_group_id'], PDO::PARAM_INT);
