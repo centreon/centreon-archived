@@ -228,3 +228,8 @@ update `options` set `value` = (select timezone_id from timezone where timezone_
 --Migrate default timezone
 update `contact` set `contact_location` = (select `value` from `options` where `key` ='gmt')  where contact_location IS Null;
 update `host` set `host_location` = (select `value` from `options` where `key` ='gmt')  where host_location IS Null;
+
+
+DELETE FROM topology WHERE topology_page IN ('20103', '20105', '20215', '20202','2020403', '20210', '202013', 
+'2020401', '2020402','20205', '2020501', '2020502', '2020902', '2020903', '2021001', '2021002', '2021201', '2021202', '2021203', 
+'20213','2021301', '2021302', '2020901');
