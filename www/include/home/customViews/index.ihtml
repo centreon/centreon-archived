@@ -659,6 +659,16 @@ jQuery(function () {
     }
   });
   
+  jQuery('input[name="create_load[create_load]"]').change(function (){
+    if (jQuery(this).val() == 'load'){
+        jQuery('.load_field').css('display','table-row');
+        jQuery('.create_field').css('display','none');
+    } else if (jQuery(this).val() == 'create'){
+        jQuery('.load_field').css('display','none');
+        jQuery('.create_field').css('display','table-row');
+    }
+  });
+  
   /* Initialize tabs */
   jQuery(".ui-tabs-panel").css('overflow', 'auto');
   
