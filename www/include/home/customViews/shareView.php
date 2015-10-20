@@ -70,11 +70,22 @@ $attrsText 		= array("size"=>"30");
 $attrsAdvSelect = array("style" => "width: 200px; height: 150px;");
 $attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrContacts = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+    'multiple' => true
+);
+$attrContactgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+    'multiple' => true
+);
 
 /**
  * Quickform
  */
 require_once 'HTML/QuickForm.php';
+require_once 'HTML/QuickForm/select2.php';
 require_once 'HTML/QuickForm/advmultiselect.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
@@ -98,7 +109,7 @@ $viewerGroups = $viewObj->getUsergroupsFromViewId($viewId);
 
 /**
  * Users
- */
+ *
 $userList = array_diff_key($centreon->user->getUserList($db), $viewers);
 $ams1 = $form->addElement('advmultiselect', 'user_id', array(_("User List"), _("Available"), _("Selected")), $userList, $attrsAdvSelect);
 $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
@@ -106,15 +117,36 @@ $ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
+
+
 /**
  * User groups
- */
+ *
 $userGroupList = array_diff_key($cgObj->getListContactgroup(true), $viewerGroups);
 $ams1 = $form->addElement('advmultiselect', 'usergroup_id', array(_("User Group List"), _("Available"), _("Selected")), $userGroupList, $attrsAdvSelect);
 $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 $ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);
+echo $ams1->getElementJs(false);*/
+
+
+/*
+ *  Contacts
+ */
+/*$attrContact1 = array_merge(
+    $attrContacts,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=host&field=user_id&id=' . $viewId)
+);
+$form->addElement('select2', 'user_id', _("User List"), array(), $attrContact1);*/
+
+/*
+ *  Contact groups
+ */
+$attrContactgroup1 = array_merge(
+    $attrContactgroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=defaultValues&target=host&field=usergroup_id&id=' . $viewId)
+);
+$form->addElement('select2', 'usergroup_id', _("User Group List"), array(), $attrContactgroup1);
 
 
 /**

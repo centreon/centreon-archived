@@ -55,6 +55,8 @@ ALTER TABLE `on_demand_macro_host` ADD COLUMN `macro_order` int(11) NULL DEFAULT
 ALTER TABLE `on_demand_macro_service` ADD COLUMN `macro_order` int(11) NULL DEFAULT 0;
 
 
+
+
 CREATE TABLE `on_demand_macro_command` (
   `command_macro_id` int(11) NOT NULL AUTO_INCREMENT,
   `command_macro_name` varchar(255) NOT NULL,

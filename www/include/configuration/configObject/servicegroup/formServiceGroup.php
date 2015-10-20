@@ -252,7 +252,10 @@ $form->addElement('select2', 'sg_hServices', _("Linked Host Services"), array(),
 
 $attrHostgroup1 = array_merge(
     $attrHostgroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=servicegroups&field=sg_hgServices&id=' . $sg_id)
+    array(
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list&t=hostgroup',
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=servicegroups&field=sg_hgServices&id=' . $sg_id
+    )
 );
 $form->addElement('select2', 'sg_hgServices', _("Linked Host Group Services"), array(), $attrHostgroup1);
 

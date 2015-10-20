@@ -39,6 +39,7 @@
 global $centreon_path;
 require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once $centreon_path . "/www/class/centreonHost.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationHost extends CentreonConfigurationObjects
@@ -55,6 +56,8 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
      */
     public function __construct()
     {
+        global $pearDBO;
+        
         parent::__construct();
         $brk = new CentreonBroker($this->pearDB);
         if ($brk->getBroker() == 'broker') {
@@ -62,6 +65,8 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         } else {
             $this->pearDBMonitoring = new CentreonDB('ndo');
         }
+        
+        $pearDBO = $this->pearDBMonitoring;
     }
     
     /**
@@ -105,5 +110,31 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         }
         
         return $hostList;
+    }
+    
+    /**
+     * 
+     * @return type
+     * @throws RestBadRequestException
+     */
+    public function getServices()
+    {
+        // Check for id
+        if (false === isset($this->arguments['id'])) {
+            throw new RestBadRequestException("Missing host id");
+        }
+        $id = $this->arguments['id'];
+        
+        $hostObj = new CentreonHost($this->pearDB);
+        $serviceList = array();
+        $serviceListRaw = $hostObj->getServices($id);
+        
+        foreach ($serviceListRaw as $service_id => $service_description) {
+            if (service_has_graph($id, $service_id)) {
+                $serviceList[$service_id] = $service_description;
+            }
+        }
+        
+        return $serviceList;
     }
 }
