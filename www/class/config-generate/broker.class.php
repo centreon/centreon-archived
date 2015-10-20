@@ -112,7 +112,7 @@ class Broker extends AbstractObjectXML {
                             'path' => $retention_path . '/' . $config_name . '_' . $flow['name'] . '.retention',
                             'protocol' => 'bbdo',
                             'compression' => 'auto',
-                            'max_size' => '104857600'
+                            'max_size' => '209715200'
                         );
                         $flow_count++;
                     }
@@ -126,7 +126,7 @@ class Broker extends AbstractObjectXML {
                 'path' => $retention_path . '/' . $config_name . '.temporary',
                 'protocol' => 'bbdo',
                 'compression' => 'auto',
-                'max_size' => '104857600'
+                'max_size' => '209715200'
             );
             $flow_count++;
 
