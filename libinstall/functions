@@ -2241,8 +2241,7 @@ function find_macros_in_dir() {
 		log "INFO" "$(gettext "Search file for macro") : $mac"
 		( cd $src_dir ;
 			find $sub_dir -mindepth 1 -type f -name "$file" | \
-				xargs ${GREP} "$mac" | \
-				cut -d: -f1 | \
+				xargs ${GREP} -l "$mac" | \
 				uniq >> "$file_out_tmp" 2>>"$LOG_FILE";
 		)
 	done
