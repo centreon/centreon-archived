@@ -39,10 +39,9 @@ if (!isset($centreon)) {
 
 require_once("./class/centreonData.class.php");
 
- if (!$min) {
- 
-
-?>    <div id="footer">
+if (!$min) {
+?>    
+        <div id="footer">
 			<table cellpadding='0' cellspacing='0' width='100%' border='0' id="tfooter">
  				<tr>
 				    <td>
@@ -107,7 +106,7 @@ height: 100%;
                 document.webkitFullscreenElement ||
                 document.mozFullScreenElement ||
                 document.msFullscreenElement
-            ){
+            ) {
                 jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
@@ -118,7 +117,7 @@ height: 100%;
                 } else if (document.webkitExitFullscreen) {
                    document.webkitExitFullscreen();
                 }
-            }else{
+            } else {
                 jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").addClass('tohide');
                 // go full-screen
                 if (i.requestFullscreen) {
@@ -131,7 +130,7 @@ height: 100%;
                     i.msRequestFullscreen();
                 }
             }
-        }else{
+        } else {
             /*var i = document.getElementsByTagName("html")[0];
             jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").hide({duration : duration});
             // go full-screen
@@ -152,33 +151,13 @@ height: 100%;
     document.addEventListener('fullscreenchange', exitHandler, false);
     document.addEventListener('MSFullscreenChange', exitHandler, false);
     
-    function exitHandler(){
-        
+    function exitHandler() {
         var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement;
         var event = state ? 'FullscreenOn' : 'FullscreenOff';
-        if (event === 'FullscreenOff')
-        {
+        if (event === 'FullscreenOff') {
             jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
         }
-        
-
     }
-    
-    
-    
-    
-    
-    /*
-    function saveFullScreenSetting(){
-        var d = new Date();
-        var n = d.getTime();
-        jQuery.ajax({
-           url: "./menu/userFullScreenPreferences.php",
-           type: "POST",
-           data: { timestamp: n }
-        });
-    }
-    */
 
 </script>
 
@@ -210,7 +189,7 @@ jQuery(function() {
     initWholePage();
 });
 
-/**
+/*
  * Init whole page
  */
 function initWholePage() {
@@ -221,7 +200,7 @@ function initWholePage() {
         });
 }
 
-/**
+/*
  * set quick search position
  */
 function setQuickSearchPosition() {
@@ -235,16 +214,17 @@ function setQuickSearchPosition() {
     jQuery(".timepicker").timepicker();
     jQuery(".datepicker").datepicker();
 }
-
 </script>
 </body>
 </html>
 <?php
 
+/* 
+ * Close all DB handler
+ */
 if (isset($pearDB) && is_object($pearDB)) {
     $pearDB->disconnect();
 }
 if (isset($pearDBO) && is_object($pearDBO)) {
     $pearDBO->disconnect();
 }
-?>
