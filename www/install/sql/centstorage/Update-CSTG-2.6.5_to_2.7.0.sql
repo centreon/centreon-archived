@@ -19,3 +19,4 @@ ALTER TABLE statistics ENGINE=InnoDB;
 ALTER TABLE centreon_acl DROP COLUMN host_name;
 ALTER TABLE centreon_acl DROP COLUMN service_description;
 
+ALTER TABLE `config` ADD COLUMN `len_storage_downtimes` int(11) DEFAULT NULL,  ADD COLUMN `len_storage_comments` int(11) DEFAULT NULL;
