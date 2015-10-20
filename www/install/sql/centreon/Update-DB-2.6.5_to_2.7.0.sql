@@ -1,4 +1,6 @@
 -- Change version of Centreon
+UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.5' LIMIT 1;
+
 ALTER TABLE options ENGINE=InnoDB;
 ALTER TABLE css_color_menu ENGINE=InnoDB;
 
@@ -28,13 +30,22 @@ ALTER TABLE `on_demand_macro_host` ADD COLUMN `description` text DEFAULT NULL AF
 ALTER TABLE `on_demand_macro_service` ADD COLUMN `description` text DEFAULT NULL AFTER `is_password`;
 
 CREATE TABLE `traps_group` (
-  `traps_group_id` int(11) DEFAULT NULL,
-  `traps_id` int(11) DEFAULT NULL,
-  KEY `traps_group_id` (`traps_group_id`),
-  KEY `traps_id` (`traps_id`),
-  CONSTRAINT `traps_group_ibfk_1` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE
+  `traps_group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `traps_group_name` varchar(255) NOT NULL,
+  PRIMARY KEY (traps_group_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `traps_group_relation` (
+  `traps_group_id` int(11) NOT NULL,
+  `traps_id` int(11) NOT NULL,
+  KEY `traps_group_id` (`traps_group_id`),
+  KEY `traps_id` (`traps_id`),
+  CONSTRAINT `traps_group_relation_ibfk_1` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE,
+  CONSTRAINT `traps_group_relation_ibfk_2` FOREIGN KEY (`traps_group_id`) REFERENCES `traps_group` (`traps_group_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO topology (topology_name, topology_icone, topology_parent, topology_page, topology_order, topology_group, topology_url, topology_popup, topology_modules) VALUES 
+('Group', './img/icones/16x16/factory.gif', 617, 61705, 25, 1, './include/configuration/configObject/traps-groups/groups.php', 0, 0);
 
 -- Create table for relation between metaservice and contact
 CREATE TABLE `meta_contact` (
@@ -87,8 +98,13 @@ DELETE FROM topology WHERE topology_page IN ('60902', '60903', '60707', '60804')
 DELETE FROM topology WHERE topology_page IS NULL AND topology_name LIKE 'Plugins' AND topology_url IS NULL;
 DELETE FROM topology WHERE topology_page IS NULL AND topology_name LIKE 'NDOutils' AND topology_url IS NULL;
 
+-- Add new general option for centreon broker
+ALTER TABLE cfg_centreonbroker
+ADD COLUMN retention_path varchar(255),
+ADD COLUMN stats_activate enum('0','1') DEFAULT '1',
+ADD COLUMN correlation_activate enum('0','1') DEFAULT '0';
 
---Migrate timezones
+-- Migrate timezones
 
 -- Europe/London +00:00
 update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'Europe/London') where contact_location = 0;
@@ -223,3 +239,8 @@ update `options` set `value` = (select timezone_id from timezone where timezone_
 --Migrate default timezone
 update `contact` set `contact_location` = (select `value` from `options` where `key` ='gmt')  where contact_location IS Null;
 update `host` set `host_location` = (select `value` from `options` where `key` ='gmt')  where host_location IS Null;
+
+
+DELETE FROM topology WHERE topology_page IN ('20103', '20105', '20215', '20202','2020403', '20210', '202013', 
+'2020401', '2020402','20205', '2020501', '2020502', '2020902', '2020903', '2021001', '2021002', '2021201', '2021202', '2021203', 
+'20213','2021301', '2021302', '2020901');

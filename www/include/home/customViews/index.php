@@ -193,7 +193,7 @@ try {
      */
     $cgObj = new CentreonContactgroup($db);
     $formShareView = new HTML_QuickForm('formShareView', 'post', "?p=103");
-    $formShareView->addElement('header', 'title', $title);
+    $formShareView->addElement('header', 'title', _("Share view"));
     $formShareView->addElement('header', 'information', _("General Information"));
 
     /**

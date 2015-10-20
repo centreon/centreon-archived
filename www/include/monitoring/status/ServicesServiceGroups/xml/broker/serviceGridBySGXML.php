@@ -153,7 +153,7 @@
     $obj->XML->writeElement("host_name", _("Hosts"), 0);
     $obj->XML->writeElement("services", _("Services"), 0);
     $obj->XML->writeElement("p", $p);
-    ($o == "svcOVSG") ? $obj->XML->writeElement("s", "1")  : $obj->XML->writeElement("s", "0");
+    $obj->XML->writeElement("s", "1");
     $obj->XML->endElement();
 
     /* Construct query for servigroups search */

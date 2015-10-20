@@ -121,6 +121,7 @@ check_result $? "$(gettext "Change right on") $CENTREON_ETC"
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
 cp -Rf $TMP_DIR/src/www $TMP_DIR/final
 cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
+cp -Rf $TMP_DIR/src/config $TMP_DIR/final
 
 ## Create temporary directory
 mkdir -p $TMP_DIR/work/bin >> $LOG_FILE 2>&1
@@ -211,6 +212,29 @@ ${CAT} "$file_php_temp" | while read file ; do
 	cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1 
 done
 check_result $flg_error "$(gettext "Change macros for php files")"
+
+macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
+find_macros_in_dir "$macros" "$TMP_DIR/src" "config" "*.php" "file_php_config_temp"
+
+log "INFO" "$(gettext "Apply macros")"
+
+flg_error=0
+${CAT} "$file_php_config_temp" | while read file ; do
+        log "MACRO" "$(gettext "Change macro for") : $file"
+        [ ! -d $(dirname $TMP_DIR/work/$file) ] && \
+                mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
+        ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+                -e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
+                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+                -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
+                -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+                -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+                $TMP_DIR/src/$file > $TMP_DIR/work/$file
+                [ $? -ne 0 ] && flg_error=1
+        log "MACRO" "$(gettext "Copy in final dir") : $file"
+        cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1
+done
+check_result $flg_error "$(gettext "Change macros for php config file")"
 
 ### Step 2.1 : replace macro for perl binary
 
@@ -311,6 +335,13 @@ check_result $? "$(gettext "Change right for install directory")"
 	$INSTALL_DIR/cinstall $cinstall_opts \
 		-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
 		$INSTALL_DIR_CENTREON/www/img/media >> "$LOG_FILE" 2>&1
+
+$INSTALL_DIR/cinstall $cinstall_opts \
+        -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
+        -p $TMP_DIR/final/configi \
+        $TMP_DIR/final/config/* $INSTALL_DIR_CENTREON/config/ >> "$LOG_FILE" 2>&1
+
+$CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/config
 
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \

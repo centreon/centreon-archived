@@ -266,7 +266,7 @@ if (($o == "c" || $o == "w") && $host_id) {
         $host['criticality_id'] = $cr['hc_id'];
     }
     
-    $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1, false);
+    $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1, true,"host_name,host_id,command_command_id");
     if (!isset($cmdId)) {
         $cmdId = "";
     }

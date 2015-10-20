@@ -137,13 +137,6 @@ $form->addElement('text', 'crit', _("Critical Threshold"), $attrsText2);
 $form->addElement('checkbox', 'vhidden', _("Hidden Graph And Legend"), "", "onChange=manageVDEF();");
 $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action'=>'1'));
-
-
 $form->addElement('hidden', 'vmetric_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -183,13 +176,13 @@ if ($o == "w") {
     $form->freeze();
 } else if ($o == "c") {
     // Modify
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$vmetric["host_id"].",".$vmetric["index_id"].");"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$vmetric["host_id"].",".$vmetric["index_id"].");", "class" => "btc bt_default"));
     $form->setDefaults($vmetric);
 } else if ($o == "a") {
     // Add
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(0,0)"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(0,0)", "class" => "btc bt_default"));
 }
 
 if ($o == "c" || $o == "a") {
@@ -272,7 +265,7 @@ if ($form->validate())  {
     }
 }
 $action = $form->getSubmitValue("action");
-if ($valid && $action["action"]["action"])
+if ($valid)
     require_once("listVirtualMetrics.php");
 else {
     if (isset($error)) {

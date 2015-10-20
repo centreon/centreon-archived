@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:template match="//reponse">
-	<table width="350">
-		<tr class="ListHeaderPopup">
+	<table width="350" class="ListTable">
+		<tr class='ListHeader'>
 			<td>
 				<xsl:element name="img">
 					<xsl:attribute name="src"><xsl:value-of select="ico"/></xsl:attribute>
@@ -10,10 +10,10 @@
 			</td>			
 			<td class="ColPopup" style="width:100%;text-align:right;"><xsl:value-of select="hostname"/>&#160;//&#160;<xsl:value-of select="address"/>&#160;</td>
 		</tr>
-                <tr class="ListHeaderPopup">
+        <tr class='ListHeader'>
 			<td class="ColPopup" colspan="2" style="width:100%;text-align:right;">
-                            <xsl:value-of select="hostalias"/>
-                        </td>
+					<xsl:value-of select="hostalias"/>
+				</td>
 		</tr>
 		<tr class='list_two'>
 			<td colspan="2" class="ColPopup">

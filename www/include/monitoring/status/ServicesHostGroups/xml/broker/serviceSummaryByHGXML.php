@@ -138,7 +138,7 @@
 	$obj->XML->writeElement("num", $num);
 	$obj->XML->writeElement("limit", $limit);
 	$obj->XML->writeElement("p", $p);
-	$o == "svcOVHG" ? $obj->XML->writeElement("s", "1") : $obj->XML->writeElement("s", "0");
+        $obj->XML->writeElement("s", "1");
 	$obj->XML->endElement();
 
 	while ($ndo = $DBRESULT->fetchRow()) {

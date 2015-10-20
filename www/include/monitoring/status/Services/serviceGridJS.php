@@ -73,12 +73,12 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
-		var h = document.getElementById('current_state');
-		h.innerHTML = "<?php echo _("Status")?>";
-	  	h.indice = 'current_state';
-	  	h.title = '<?php echo addslashes(_("Sort by Status")); ?>';
-	  	h.onclick=function(){change_type_order(this.indice)};
-		h.style.cursor = "pointer";
+                var h = document.getElementById('current_state');
+                h.innerHTML = "<?php echo _("Status")?>";
+                h.indice = 'current_state';
+                h.title = '<?php echo addslashes(_("Sort by Status")); ?>';
+                h.onclick=function(){change_type_order(this.indice)};
+                h.style.cursor = "pointer";
 
 		var h = document.getElementById('services');
 		h.innerHTML = '<?php echo addslashes(_("Services information"))?>';
@@ -148,7 +148,8 @@ function initM(_time_reload, _sid, _o ){
 	}
 }
 
-function goM(_time_reload, _sid, _o) {
+function goM(_time_reload, _sid, _o)
+{
 	_lock = 1;
 	var proc = new Transformation();
 	proc.setCallback(monitoringCallBack);
@@ -160,7 +161,6 @@ function goM(_time_reload, _sid, _o) {
 		document.getElementById("host_search").value = _host_search;
 		_counter += 1;
 	}
-
 	_lock = 0;
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
