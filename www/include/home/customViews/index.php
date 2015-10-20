@@ -193,7 +193,6 @@ try {
     $cgObj = new CentreonContactgroup($db);
     $formShareView = new HTML_QuickForm('formShareView', 'post', "?p=103");
     $formShareView->addElement('header', 'title', _("Share view"));
-    $formShareView->addElement('header', 'information', _("General Information"));
 
     /**
      * Locked
@@ -233,7 +232,7 @@ try {
     /**
      * Submit button
      */
-    $formShareView->addElement('button', 'submit', _("Share"), array("onClick" => "submitData();", "class" => "btc bt_info"));
+    $formShareView->addElement('button', 'submit', _("Share"), array("onClick" => "submitShareView();", "class" => "btc bt_info"));
     $formShareView->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $formShareView->addElement('hidden', 'action');
     $formShareView->setDefaults(array('action' => 'share'));
