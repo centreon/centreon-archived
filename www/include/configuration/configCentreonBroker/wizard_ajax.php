@@ -104,8 +104,7 @@ if ($finish) {
     case 1:
         $lang['welcome'] = _('Welcome to Centreon Broker configuration');
         $lang['steptext'] = _('Choose a configuration template:');
-        $lang['central_configuration_without_poller'] = _('Central without poller');
-        $lang['central_configuration_with_poller'] = _('Central with pollers');
+        $lang['central_configuration'] = _('Central');
         $lang['poller_configuration'] = _('Simple poller');
         $page = 'step1.ihtml';
         break;
