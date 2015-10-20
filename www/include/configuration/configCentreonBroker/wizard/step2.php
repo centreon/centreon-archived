@@ -72,10 +72,10 @@
         return $list;
     }
 
-    if ($wizard->getValue(1, 'configtype') == 'central_without_poller') {
+    if ($wizard->getValue(1, 'configtype') == 'central') {
         $requester = getLocalRequester();
         if (count($requester) != 0) {
-            $lang['central_configuration_without_poller'] = _('Central without poller configuration');
+            $lang['central_configuration'] = _('Central configuration');
             $lang['requester'] = _('Requester');
             $lang['informations'] = _('Information');
             $lang['configuration_name'] = _('Configuration name');
@@ -84,23 +84,7 @@
             $lang['none'] = _('None');
             $tpl->assign('requester', $requester['name']);
             $tpl->assign('requester_id', $requester['id']);
-            $page = 'step2_central_without_poller.ihtml';
-        } else {
-            $tpl->assign('strerr', _('Error while getting the local requester.'));
-            $page = 'error.ihtml';
-        }
-    } elseif ($wizard->getValue(1, 'configtype') == 'central_with_poller') {
-        $requester = getLocalRequester();
-        if (count($requester) != 0) {
-            $lang['central_configuration_with_poller'] = _('Central with poller configuration');
-            $lang['requester'] = _('Requester');
-            $lang['informations'] = _('Information');
-            $lang['prefix_configuration_name'] = _('Prefix configuration name');
-            $lang['additional_daemon'] = _('Additional daemon');
-            $lang['protocol'] = _('Serialization protocol');
-            $tpl->assign('requester', $requester['name']);
-            $tpl->assign('requester_id', $requester['id']);
-            $page = 'step2_central_with_poller.ihtml';
+            $page = 'step2_central.ihtml';
         } else {
             $tpl->assign('strerr', _('Error while getting the local requester.'));
             $page = 'error.ihtml';
