@@ -415,6 +415,10 @@ form#AjaxBankBasic {
 vertical-align: middle;
 }
 
+.ToolbarPagination img {
+    vertical-align: bottom;
+}
+
 /* ------- END : Table -----------*/
 /* ------ START : Indicators -----*/
 
@@ -794,34 +798,40 @@ div.menuLeft {
 
 }
 
-.formTable .ListHeader {
+.formTable .ListHeader,
+.table .ListHeader{
     background: #fff;
     border-bottom: none;
 }
-.formTable .ListHeader td {
+.formTable .ListHeader td,
+.table .ListHeader td{
     border-bottom: none;
     padding: 0px 4px !important;
 }
 
-.formTable .ListHeader h3 {
+.formTable .ListHeader h3,
+.table .ListHeader h3 {
     font-weight: normal;
     color: #597f00;
     margin: 4px 0;
     font-size: 1.3em;
 }
 
-.formTable .list_lvl_1 {
+.formTable .list_lvl_1,
+.table .list_lvl_1 {
     background-color: #fff;
 }
 
-.formTable .list_lvl_1 .ListColLvl1_name {
-    padding: 8px 0;
+.formTable .list_lvl_1 .ListColLvl1_name,
+.table .list_lvl_1 .ListColLvl1_name {
+    padding: 6px 0;
     background-color: #f4f4f4;
     border-bottom: 1px solid #e7e7e8;
     border-top: 1px solid #e7e7e8;
 }
 
-.formTable .list_lvl_1 h4 {
+.formTable .list_lvl_1 h4,
+.table .list_lvl_1 h4 {
     font-weight: normal;
     color: #009fdf;
     margin-left: 12px;
@@ -875,10 +885,10 @@ a.infobulle:hover 	{z-index:25;}
 /* Pagination */
 div.pagination 		{margin-left:40%;}
 .otherPageNumber 	{
-    color:#005a7f;
+    color:#4ccaff;
 }
 .currentPageNumber {
-    color:#4ccaff;
+    color:#005a7f;
 }
 .page_limit 		{background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-left:25px;width:80px;}
 .mini_checkbox 		{height:12px;width:12px;top:-5px;}
@@ -1073,11 +1083,13 @@ table.ListTableSmallArg td {
 .ListTable,.ListTableMedium,.ListTableSmall,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
 .ListTable,.ListTableMedium,.ListTableSmall {border-width:1px;}
 .ListTable td,.ListTableMedium td,.ListTableSmall td,.ListTableSmallArg {padding-bottom:2px;padding-top:2px;}
-
+.ListTable td {padding: 4px 0;}
 .tab .ListTableMedium {
     margin-top:21px;
 }
-
+.ListTable img {
+    vertical-align: middle;
+}
 .TableFooter {margin-bottom:4px;margin-top:8px;width:100%;z-index:1;}
 
 .list_lvl_1, .list_lvl_2 {
@@ -1112,6 +1124,7 @@ table.ListTableSmallArg td {
 
 .ColPopup {
     white-space:nowrap;
+    padding: .6em !important;
 }
 
 .bulleDashtab {
@@ -1165,6 +1178,7 @@ table.ListTableSmallArg td {
 .consol_button img {
     width: 20px;
     height: 20px;
+    vertical-align: middle;
 }
 .ToolbarTable {
     margin: 6px 0px;
@@ -1176,9 +1190,9 @@ table.ListTableSmallArg td {
 .ToolbarTR select {
     height: 25px;
     line-height: 25px;
+    float: left;
 }
 .ToolbarTR a.btc { display: inline-block; height: 25px; line-height: 25px; padding: 0 10px; }
-.ToolbarPagination	{text-align:center;}
 
 .Toolbar_TDSelectAction_Top {
     border: 1px solid #bcbdc0;
@@ -1215,7 +1229,7 @@ td,a.infobulle:hover td {padding:0px;}
     display: none;
     position:fixed;
     z-index:500;
-    padding: 1em;
+    //padding: 1em;
     border-radius: 4px;
     border: 1px solid #a7a8ac;
     font-weight:normal;
@@ -1226,6 +1240,9 @@ td,a.infobulle:hover td {padding:0px;}
 
 .FormFooter,.ListColFooter5,.ListColFooter5 a,.ListColFooterCenter,.ListColFooterLeft,.ListColFooterRight 	{font-size:12px;font-weight:700;padding-right:10px;}
 .ListColFooterRight,.ListColRight,.Toolbar_pagelimit {text-align:right;}
+.Toolbar_pagelimit select {
+    float: right;
+}
 .list_one,.list_two,.list_three,.list_four,.line_ack,.line_downtime,.list_unreachable,.row_disabled		{font-weight:400;vertical-align:middle;}
 
 div.ams		{text-align:center;font-style:italic;}
@@ -1279,8 +1296,9 @@ ul.no-deco-list {
 /* reporting 2015 */
 
 form#FormPeriod input{
-    padding : 2px 0;
+    /*padding : 2px 0;*/
 }
+
 form#FormPeriod input[type="submit"] {
     padding: 2px 6px;
     color: white;
