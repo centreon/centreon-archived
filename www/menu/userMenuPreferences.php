@@ -34,9 +34,9 @@
  */
  
 require_once "../../config/centreon.config.php";
-require_once $centreon_path."/www/class/centreonDB.class.php";
-require_once $centreon_path."/www/class/centreon.class.php";
-require_once $centreon_path."/www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_."/www/class/centreon.class.php";
+require_once _CENTREON_PATH_."/www/class/centreonSession.class.php";
 
 session_start();
 if(!isset($_SESSION['centreon']) || !isset($_GET['div']) || !isset($_GET['uid']))
