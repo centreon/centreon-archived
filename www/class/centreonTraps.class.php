@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
@@ -150,37 +147,37 @@ class Centreon_Traps {
          * @param $nbrDup
          */
 	public function duplicate($traps = array(), $nbrDup = array()) {
-            foreach ($traps as $key => $value) {
-                $res = $this->_db->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
-                $row = $res->fetchRow();
-		$row["traps_id"] = '';
-		for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
-                    $val = null;
-                    foreach ($row as $key2 => $value2) {
-                        $key2 == "traps_name" ? ($traps_name = $value2 = $value2."_".$i) : null;
-			$val ? $val .= ($value2!=NULL?(", '".$this->_db->escape($value2)."'"):", NULL") : $val .= ($value2!=NULL?("'".$this->_db->escape($value2)."'"):"NULL");
-                        if ($key2 != "traps_id") {
-                            $fields[$key2] = $value2;
-                        }
-                        if (isset($traps_name)) {
-                            $fields["traps_name"] = $traps_name;
-                        }
+        foreach ($traps as $key => $value) {
+            $res = $this->_db->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
+            $row = $res->fetchRow();
+		    $row["traps_id"] = '';
+		    for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
+                $val = null;
+                foreach ($row as $key2 => $value2) {
+                    $key2 == "traps_name" ? ($traps_name = $value2 = $value2."_".$i) : null;
+			        $val ? $val .= ($value2!=NULL?(", '".$this->_db->escape($value2)."'"):", NULL") : $val .= ($value2!=NULL?("'".$this->_db->escape($value2)."'"):"NULL");
+                    if ($key2 != "traps_id") {
+                        $fields[$key2] = $value2;
                     }
-                    $val ? $rq = "INSERT INTO traps VALUES (".$val.")" : $rq = null;
-                    $res = $this->_db->query($rq);
-                    $res2 = $this->_db->query("SELECT MAX(traps_id) FROM traps");
-                    $maxId = $res2->fetchRow();
-                    $this->_db->query("INSERT INTO traps_service_relation (traps_id, service_id) 
-                                    (SELECT ".$maxId['MAX(traps_id)'].", service_id 
-                                        FROM traps_service_relation 
-                                        WHERE traps_id = ".$this->_db->escape($key).")");
-                    $this->_db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) 
-                                    (SELECT ".$maxId['MAX(traps_id)'].", tpe_string, tpe_order
-                                        FROM traps_preexec 
-                                        WHERE trap_id = ".$this->_db->escape($key).")");
-                    $this->_centreon->CentreonLogAction->insertLog("traps", $maxId["MAX(traps_id)"], $traps_name, "a", $fields);
-		}
-            }
+                    if (isset($traps_name)) {
+                        $fields["traps_name"] = $traps_name;
+                    }
+                }
+                $val ? $rq = "INSERT INTO traps VALUES (".$val.")" : $rq = null;
+                $res = $this->_db->query($rq);
+                $res2 = $this->_db->query("SELECT MAX(traps_id) FROM traps");
+                $maxId = $res2->fetchRow();
+                $this->_db->query("INSERT INTO traps_service_relation (traps_id, service_id) 
+                                (SELECT ".$maxId['MAX(traps_id)'].", service_id 
+                                    FROM traps_service_relation 
+                                    WHERE traps_id = ".$this->_db->escape($key).")");
+                $this->_db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) 
+                                (SELECT ".$maxId['MAX(traps_id)'].", tpe_string, tpe_order
+                                    FROM traps_preexec 
+                                    WHERE trap_id = ".$this->_db->escape($key).")");
+                $this->_centreon->CentreonLogAction->insertLog("traps", $maxId["MAX(traps_id)"], $traps_name, "a", $fields);
+		    }
+        }
 	}
 
     /**
@@ -321,24 +318,32 @@ class Centreon_Traps {
                         FROM service s 
                         WHERE s.service_register = '0'
                         AND s.service_id = traps_service_relation.service_id)");
+            print("DELETE FROM traps_service_relation 
+                    WHERE traps_id = " . $this->_db->escape($trapId). "
+                    AND NOT EXISTS (SELECT s.service_id 
+                        FROM service s 
+                        WHERE s.service_register = '0'
+                        AND s.service_id = traps_service_relation.service_id)");
+
             $services = CentreonUtils::mergeWithInitialValues($this->_form, 'services');
             $insertStr = "";
             $first = true;
             $already = array();
             foreach ($services as $id) {
-                if (!$first) {
-                    $insertStr .= ",";
-                } else {
-                    $first = false;
-                }
                 $t = preg_split("/\-/", $id);
                 if (!isset($already[$t[1]])) {
+                    if (!$first) {
+                        $insertStr .= ",";
+                    } else {
+                        $first = false;
+                    }
                     $insertStr .= "($trapId, $t[1])";
                 }
                 $already[$t[1]] = true;
             }
             if ($insertStr) {
                 $this->_db->query("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");
+                print("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");
             }
         }
         
