@@ -82,13 +82,15 @@
 				<xsl:element name="a">
 				  	<xsl:attribute name="href">main.php?o=svc&amp;p=20201&amp;host_search=<xsl:value-of select="hnl"/></xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/view.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/view.png</xsl:attribute>
+							<xsl:attribute name="class">ico-18</xsl:attribute>
 						</xsl:element>
 					</xsl:element>
 					<xsl:element name="a">
 					  	<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/></xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
+							<xsl:attribute name="class">ico-18</xsl:attribute>
 						</xsl:element>
 					</xsl:element>
 			</td>

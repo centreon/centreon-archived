@@ -81,7 +81,7 @@ function goToMonitoring(_input_name, _id){
 }
 
 function create_report_link(_input_name, _id){
-	var _img_report = _mk_img('./img/icones/16x16/column-chart.gif', "Reporting for the first svc selected");
+	var _img_report = _mk_img('./img/icons/chart.png', "Reporting for the first svc selected");
 	var _linkaction_report = document.createElement("a");
 	_linkaction_report.href = '#';
 	_linkaction_report.onclick=function(){goToReport(_input_name, _id)}
@@ -90,7 +90,7 @@ function create_report_link(_input_name, _id){
 }
 
 function create_graph_link(_input_name, _id){	
-	var _img_graph = _mk_img('./img/icones/16x16/column-chart.gif', "Graph");
+	var _img_graph = _mk_img('./img/icons/chart.png', "Graph");
 	var _linkaction_graph = document.createElement("a");
 	_linkaction_graph.href = '#';
 	_linkaction_graph.onclick=function(){goToGraph(_input_name, _id); false;}

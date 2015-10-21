@@ -231,7 +231,55 @@ p.description a, p.description a:visited {
 }
 /* ------ END : Colors -----*/
 
+/* ------- Badge -----------*/
+.badge              {   display: inline-block;
+                        border-radius: 7px;
+                        color: #fff;
+                        padding: 2px 4px;
+                        font-size: 11px;
+                        font-weight: bold;
+                    }
+
+.badge a            {
+                        display: inline-block;
+                        padding: 4px 8px;
+                        color: #fff;
+                    }
+.default_badge 		{background-color: #00a499;}
+.host_down,.down,
+.service_critical 	{background-color: #e00b3d;}
+.host_unreachable 	{background-color: #818285;}
+.host_downtime 		{background-color: #cc99ff;}
+
+.service_ok,.up		{background-color: #88b917;}
+.service_warning	{background-color: #ff9a13;}
+.service_pending    {background-color: #2AD1D4;}
+.service_unknown    {background-color: #d1d2d4;}
+
+
+.bdg_dtm:before {
+    padding: 2px 4px;
+    content: 'DTM';
+    z-index: -7;
+    background-color: #CC99FF;
+    color: white;
+    font-size: 8px;
+    border-radius: 2px;
+    font-weight: bold;
+}
+.badge_downtime {
+    padding: 2px;
+    background-color: #CC99FF;
+    border-radius: 4px;
+    display: inline-block;
+}
+
 /*------- START : Size icons --------*/
+
+.ico-8 {
+    width: 8px;
+    height: 8px;
+}
 
 .ico-10 {
     width: 10px;
@@ -414,10 +462,14 @@ form#AjaxBankBasic {
 .ListTable tr{
 vertical-align: middle;
 }
-
+.ToolbarPagination {
+    text-align: center;
+}
 .ToolbarPagination img {
     vertical-align: bottom;
 }
+
+.
 
 /* ------- END : Table -----------*/
 /* ------ START : Indicators -----*/
@@ -1083,7 +1135,7 @@ table.ListTableSmallArg td {
 .ListTable,.ListTableMedium,.ListTableSmall,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
 .ListTable,.ListTableMedium,.ListTableSmall {border-width:1px;}
 .ListTable td,.ListTableMedium td,.ListTableSmall td,.ListTableSmallArg {padding-bottom:2px;padding-top:2px;}
-.ListTable td {padding: 4px 0;}
+.ListTable td {padding: 4px;}
 .tab .ListTableMedium {
     margin-top:21px;
 }
@@ -1184,8 +1236,8 @@ table.ListTableSmallArg td {
     margin: 6px 0px;
 }
 .ToolbarTR 			{padding-left:10px;}
-.ToolbarTR td:first-child {
-    width: 40%;
+.ToolbarTR td, .ToolbarTable td{
+    width: 33.33%;
 }
 .ToolbarTR select {
     height: 25px;
@@ -1397,28 +1449,4 @@ span.state_badge {
   height: 100%;
   background-color: black;
   z-index: 1000;
-}
-
-
-/* Badge */
-.badge {
-    padding: 2px;
-
-}
-
-.bdg_dtm:before {
-    padding: 2px 4px;
-    content: 'DTM';
-    z-index: -7;
-    background-color: #CC99FF;
-    color: white;
-    font-size: 8px;
-    border-radius: 2px;
-    font-weight: bold;
-}
-.badge_downtime {
-    padding: 2px;
-    background-color: #CC99FF;
-    border-radius: 4px;
-    display: inline-block;
 }

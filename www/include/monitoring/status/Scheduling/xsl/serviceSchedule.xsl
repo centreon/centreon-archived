@@ -88,7 +88,7 @@
 				<xsl:element name="a">
 				  	<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
 						</xsl:element>
 				</xsl:element>
 			</xsl:if>
