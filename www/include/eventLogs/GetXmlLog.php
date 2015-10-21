@@ -486,7 +486,7 @@ if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
     $flag = 0;
     $str_unitSVC = "";
     $service_search_sql = "";
-    if (count($tab_svc) > 0 && ($ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
+    if (count($tab_svc) > 0 && ($up == 'true' || $down == 'true' || $unreachable == 'true' || $ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
         $req_append = "";
         foreach ($tab_svc as $host_name => $services) {
             $str = "";
