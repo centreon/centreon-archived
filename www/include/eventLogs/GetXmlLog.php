@@ -149,6 +149,9 @@ if (isset($sid) && $sid){
 (isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
 (isset($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES, "UTF-8") : $export = 0;
 
+
+
+
 $start = 0;
 $end = 0;
 if ($contact_id){
@@ -368,20 +371,135 @@ if ($alert == 'true') {
         $msg_req .= " `type` = '".TYPE_HARD."' ";
     }
 }
-if ($error == 'true') {
+/*if ($error == 'true') {
     if ($flag_begin == 0) {
         $msg_req .= "AND ";
     } else
         $msg_req .= " OR ";
     $msg_req .= " (`msg_type` IN ('4') AND `status` IS NULL) ";
-}
+}*/
 if ($flag_begin) {
     $msg_req = " AND (".$msg_req.") ";
+}
+
+$tab_id = preg_split("/\,/", $openid);
+$tab_host_name = array();
+$tab_svc = array();
+//var_dump($lca["LcaHost"]);
+foreach ($tab_id as $openid) {
+    $tab_tmp = preg_split("/\_/", $openid);
+    $id = "";
+    $hostId = "";
+
+    if (isset($tab_tmp[2])) {
+        $hostId = $tab_tmp[1];
+        $id = $tab_tmp[2];
+    }else if(isset($tab_tmp[1])){
+        $id = $tab_tmp[1];
+    }
+    if ($id == "") {
+        continue;
+    }
+    
+    $type = $tab_tmp[0];
+    
+    
+    if ($type == "HG" && (isset($lca["LcaHostGroup"][$id]) || $is_admin)){
+        // Get hosts from hostgroups
+        $hosts = getMyHostGroupHosts($id);
+        foreach ($hosts as $h_id) {
+            if (isset($lca["LcaHost"][$h_id])) {
+                $host_name = getMyHostName($h_id);
+                $tab_host_name[] = $host_name;
+                $tab_svc[$host_name] = $lca["LcaHost"][$h_id];
+            }
+        }
+    } else if ($type == 'ST' && (isset($lca["LcaSG"][$id]) || $is_admin)){
+        $services = getMyServiceGroupServices($id);
+        foreach ($services as $svc_id => $svc_name) {
+            $tab_tmp = preg_split("/\_/", $svc_id);
+            $tmp_host_id = $tab_tmp[0];
+            $tmp_service_id = $tab_tmp[1];
+            $tab = preg_split("/\:/", $svc_name);
+            $host_name = $tab[3];
+            if (isset($lca["LcaHost"][$tmp_host_id][$tmp_service_id])) {
+                $tab_svc[$host_name][$tmp_service_id] = $lca["LcaHost"][$tmp_host_id][$tmp_service_id];
+            }
+        }
+    } else if ($type == "HH" && isset($lca["LcaHost"][$id])) {
+        $host_name = getMyHostName($id);
+        $tab_host_name[] = $host_name;
+        $tab_svc[$host_name] = $lca["LcaHost"][$id];
+    } else if ($type == "HS" && isset($lca["LcaHost"][$hostId][$id])) {
+        $host_name = getMyHostName($hostId);
+        $tab_svc[$host_name][$id] = $lca["LcaHost"][$hostId][$id];
+    } else if ($type == "MS") {
+        $tab_svc["_Module_Meta"][$id] = "meta_".$id;
+    }
 }
 
 // Build final request
 $req = "SELECT SQL_CALC_FOUND_ROWS * FROM logs WHERE ctime > '$start' AND ctime <= '$end' $msg_req";
 
+
+
+/*
+ * Add Host
+ */
+$str_unitH = "";
+$str_unitH_append = "";
+$host_search_sql = "";
+
+if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
+    $req .= " AND 1 = 0 ";
+} else {
+
+    foreach ($tab_host_name as $host_name ) {
+        $str_unitH .= $str_unitH_append . "'$host_name'";
+        $str_unitH_append = ", ";
+    }
+    if ($str_unitH != "") {
+
+        $str_unitH = "(host_name IN ($str_unitH) AND service_id IS NULL)";
+        if (isset($search_host) && $search_host != "") {
+            $host_search_sql = " AND host_name LIKE '%".$pearDBO->escape($search_host)."%' ";
+        }
+    }
+    
+    /*
+     * Add services
+     */
+    $flag = 0;
+    $str_unitSVC = "";
+    $service_search_sql = "";
+    if (count($tab_svc) > 0 && ($ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
+        $req_append = "";
+        foreach ($tab_svc as $host_name => $services) {
+            $str = "";
+            $str_append = "";
+            foreach ($services as $svc_id => $svc_name) {
+                $str .= $str_append . "'$svc_name'";
+                $str_append = ", ";
+            }
+            if ($str != "") {
+                $str_unitSVC .= $req_append . " (host_name = '".$host_name."' AND service_description IN ($str)) ";
+                $req_append = " OR";
+            }
+        }
+        if (isset($search_service) && $search_service != "") {
+            $service_search_sql = " AND service_description LIKE '%".$pearDBO->escape($search_service)."%' ";
+        }
+        if ($str_unitH != "" && $str_unitSVC != "") {
+            $str_unitSVC = " OR " . $str_unitSVC;
+        }
+    } 
+    if ($str_unitH != "" || $str_unitSVC != "") {
+        $req .= " AND (".$str_unitH.$str_unitSVC.")";
+    }
+    
+    $req .= $host_search_sql . $service_search_sql;
+    
+}
 /*
  * calculate size before limit for pagination
  */
@@ -401,9 +519,19 @@ if (isset($req) && $req) {
     if (!($DBRESULT->numRows()) && ($num != 0)) {
         $DBRESULT = $pearDBO->query($req . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit);
     }
+
+    $buffer->startElement("selectLimit");
+    for ($i = 10; $i <= 100; $i = $i +10)
+    {
+        $buffer->writeElement("limitValue", $i);
+    }
+    $buffer->writeElement("limit", $limit);
+    $buffer->endElement();
+    
+    
+    
     
     require_once $centreon_path . "www/include/common/checkPagination.php";
-    
     /*
      * pagination
      */
@@ -428,6 +556,7 @@ if (isset($req) && $req) {
             else
                 $buffer->writeElement("selected", "0");
             $buffer->writeElement("num", $tab["num"]);
+
             $buffer->writeElement("url_page", $tab["url_page"]);
             $buffer->writeElement("label_page", $tab["label_page"]);
             $buffer->endElement();
@@ -554,7 +683,9 @@ if (isset($req) && $req) {
         $cpts++;
     }
 } else {
+    
     $buffer->startElement("page");
+    $buffer->writeElement("limit", $limit);
     $buffer->writeElement("selected", "1");
     $buffer->writeElement("num", 0);
     $buffer->writeElement("url_page", "");

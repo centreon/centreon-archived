@@ -283,6 +283,22 @@
 					</xsl:element>
 				</td>
 				</xsl:if>
+                                <td>    
+                                    <xsl:element name='select'>
+                                        <xsl:attribute name="onChange">setL(this.value); log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+                                        <xsl:attribute name="name">l</xsl:attribute>
+                                            <xsl:for-each select="//limitValue">
+                                                <xsl:element name='option'>
+                                                    <xsl:attribute name="value"><xsl:value-of select="current()"/></xsl:attribute>
+                                                    <xsl:if test="current() = //limit">
+                                                        <xsl:attribute name="selected">selected</xsl:attribute>
+                                                    </xsl:if>
+                                                    <xsl:value-of select="current()"/>
+                                                </xsl:element>
+                                            </xsl:for-each>
+                                    </xsl:element>
+                                    
+                                </td>
 			</tr>
 		</table>
 	</div>

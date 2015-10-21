@@ -106,13 +106,14 @@ if (!isset($user_params['log_filter_period']))
  * Pear library
  */
 require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/select2.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 /*
  * Add QuickSearch ToolBar
  */
 $FlagSearchService = 1;
-include_once("./include/common/quickSearch.php");
+//include_once("./include/common/quickSearch.php");
 
 /*
  * Path to the configuration dir
@@ -142,6 +143,33 @@ if (isset($_GET["id"])){
 if (isset($_POST["id"])){
 	$id = $_POST["id"];
 }
+
+$hostArray = array();
+$hostGrpArray = array();
+$serviceArray = array();
+$serviceGrpArray = array();
+if(isset($_GET['h'])){
+    $h = explode(",",$_GET['h']);
+    $hostObj = new CentreonHost($pearDB);
+    $hostArray = $hostObj->getHostsNames($h);
+}
+if(isset($_GET['hg'])){
+    $hg = explode(",",$_GET['hg']);
+    $hostGrpObj = new CentreonHostgroups($pearDB);
+    $hostGrpArray = $hostGrpObj->getHostsgroups($hg);
+}
+if(isset($_GET['svc'])){
+    $svc = explode(",",$_GET['svc']);
+    $serviceObj = new CentreonService($pearDB);
+    $serviceArray = $serviceObj->getServicesDescr($svc);
+}
+if(isset($_GET['svcg'])){
+    $svcg = explode(",",$_GET['svcg']);
+    $serviceGrpObj = new CentreonServicegroups($pearDB);
+    $serviceGrpArray = $serviceGrpObj->getSerivcesGroups($svcg);
+}
+
+
 
 /*
  * From Monitoring
@@ -213,12 +241,78 @@ $periods = array(	""=>"",
 					"15552000"=>_("Last 6 Months"),
 					"31104000"=>_("Last Year"));
 
-$form->addElement('select', 'period', _("Log Period"), $periods, array("onchange" => "resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
+$form->addElement('select', 'period', _("Log Period"), $periods);
 $form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "class" => "datepicker", "size"=>8));
 $form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "class"=>"timepicker", "size"=>5));
 $form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>8));
 $form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepicker", "size"=>5));
 $form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));
+
+
+
+$attrHosts = array(
+    'datasourceOrigin' => 'ajax',
+    'allowClear' => false,
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'multiple' => true
+);
+/* Host Parents */
+$attrHost1 = array_merge(
+    $attrHosts,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=host&field=host_parents&id=')
+);
+$form->addElement('select2', 'host_filter', _("Hosts"), array(), $attrHost1);
+
+
+$attrServicegroups = array(
+    'datasourceOrigin' => 'ajax',
+    'allowClear' => false,
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list',
+    'multiple' => true
+);
+
+$attrServicegroup1 = array_merge(
+    $attrServicegroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=service&field=service_sgs&id=')
+);
+$form->addElement('select2', 'service_group_filter', _("Services Groups"), array(), $attrServicegroup1);
+
+
+
+$attrService = array(
+    'datasourceOrigin' => 'ajax',
+    'allowClear' => false,
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+    'multiple' => true
+);
+
+$attrService1 = array_merge(
+    $attrService,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=service&field=service_sgs&id=')
+);
+$form->addElement('select2', 'service_filter', _("Services"), array(), $attrService1);
+
+
+
+$attrHostGroup = array(
+    'datasourceOrigin' => 'ajax',
+    'allowClear' => false,
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+    'multiple' => true
+);
+/* Host Parents */
+$attrHostGroup1 = array_merge(
+    $attrHostGroup,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=host&field=host_parents&id=')
+);
+$form->addElement('select2', 'host_group_filter', _("Hosts Groups"), array(), $attrHostGroup1);
+
+
+
+
+
+
+
 
 $form->setDefaults(array("period" => $user_params['log_filter_period']));
 
@@ -300,6 +394,12 @@ $tpl->display("viewLog.ihtml");
 		log_4_host(openid,'','');
 	}
 
+
+    var _limit = 30;
+    function setL(_this){
+        _limit = _this;
+    }
+
 	var _num = 0;
 	function log_4_host_page(id, formu, num)	{
 		_num = num;
@@ -337,7 +437,7 @@ $tpl->display("viewLog.ihtml");
 	var EndDate='';
 	var StartTime='';
 	var EndTime='';
-
+    
 	if (document.FormPeriod && document.FormPeriod.period.value != "")	{
 		period = document.FormPeriod.period.value;
 	}
@@ -410,13 +510,13 @@ $tpl->display("viewLog.ihtml");
 		var _addrXSL = "./include/eventLogs/log.xsl";
 
 		if (!type){
-			var _addr = './include/eventLogs/GetXmlLog.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
+			var _addr = './include/eventLogs/GetXmlLog.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+id+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
 			proc.setXml(_addr)
 			proc.setXslt(_addrXSL)
 			proc.transform("logView4xml");
 		} else {
 			var openid = document.getElementById('openid').innerHTML;
-			var _addr = './include/eventLogs/Get'+type+'Log.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+openid+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
+			var _addr = './include/eventLogs/Get'+type+'Log.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
 			document.location.href = _addr;
 		}
 	}
@@ -454,8 +554,242 @@ $tpl->display("viewLog.ihtml");
         }
 
 	jQuery(function () {
-    // Here is your precious function
-    // You can call as many functions as you want here;
-	log_4_host(<?php echo $id_log;?>, '', '');
-});
+        // Here is your precious function
+        // You can call as many functions as you want here;
+        log_4_host(<?php echo $id_log;?>, '', '');
+
+    
+        jQuery("#service_group_filter, #host_filter, #service_filter, #host_group_filter").change(function(event,infos){
+           var host_value = jQuery("#host_filter").val();
+           var service_value = jQuery("#service_filter").val();
+           var hg_value = jQuery("#host_group_filter").val();
+           var sg_value = jQuery("#service_group_filter").val();
+           
+           if(typeof infos !== "undefined" && infos.origin === "select2defaultinit"){
+            return false;
+           }
+           
+           
+           var args = "";
+           var urlargs = "";
+            if(host_value != null){
+                urlargs += "&h=";
+                var flagfirst = true;
+                host_value.each(function(val){
+                    if(val != " " && val != ""){
+                        if(args != ""){
+                            args += ",";
+                        }
+                        if(!flagfirst){
+                            urlargs += ",";
+                        }else{
+                            flagfirst = false;
+                        }
+                        urlargs += val;
+                        args += "HH_" + val;
+                    }
+                });
+            }
+            if(service_value != null){
+                urlargs += "&svc=";
+                var flagfirst = true;
+                service_value.each(function(val){
+                    if(val != " " && val != ""){
+                        if(args != ""){
+                            args += ",";
+                        }
+                        if(!flagfirst){
+                            urlargs += ",";
+                        }else{
+                            flagfirst = false;
+                        }
+                        urlargs += val;
+                        args += "HS_" + val;
+                    }
+                });
+            }
+            if(hg_value != null){
+                urlargs += "&hg=";
+                var flagfirst = true;
+                hg_value.each(function(val){
+                    if(val != " " && val != ""){
+                        if(args != ""){
+                            args += ",";
+                        }
+                        if(!flagfirst){
+                            urlargs += ",";
+                        }else{
+                            flagfirst = false;
+                        }
+                        urlargs += val;
+                        args += "HG_" + val;
+                    }
+                });
+            }
+            if(sg_value != null){
+                urlargs += "&svcg=";
+                var flagfirst = true;
+                sg_value.each(function(val){
+                    if(val != " " && val != ""){
+                        if(args != ""){
+                            args += ",";
+                        }
+                        if(!flagfirst){
+                            urlargs += ",";
+                        }else{
+                            flagfirst = false;
+                        }
+                        urlargs += val;
+                        args += "ST_" + val;
+                    }
+                });
+            }
+           if (window.history.pushState) {
+               window.history.pushState("aaa", "title", "/centreon/main.php?p=203"+urlargs);
+           }
+           
+           log_4_host(args, '', false);
+        });
+        //setServiceGroup
+        jQuery("#setHostGroup").click(function(){
+            var hg_value = jQuery("#host_group_filter").val();
+            var host_value = jQuery("#host_filter").val();
+            if(host_value === null){
+                host_value = new Array();
+            }
+            jQuery.ajax({
+                url: "./include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=hostList",
+                type: "GET",
+                dataType : "json",
+                data: "hgid="+hg_value,
+                success : function(json){
+                    json.each(function(elem){
+                        if(jQuery.inArray(elem.id,host_value) === -1){
+                            jQuery("#host_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                            host_value.push(elem.id);
+                        }    
+                    });
+                    jQuery("#host_filter").val(host_value).trigger("change",[{origin:"select2defaultinit"}]);
+                    jQuery("#host_group_filter").val('');
+                    jQuery("#host_group_filter").empty().append(jQuery('<option>'));
+                    jQuery("#host_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
+                }
+            });    
+
+        });
+        
+        
+        
+        
+        jQuery("#setServiceGroup").click(function(){
+           var service_value = jQuery("#service_filter").val();
+           var sg_value = jQuery("#service_group_filter").val();
+            if(service_value === null){
+                service_value = new Array();
+            }
+            jQuery.ajax({
+                url: "./include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=serviceList",
+                type: "GET",
+                dataType : "json",
+                data: "sgid="+sg_value,
+                success : function(json){
+                    json.each(function(elem){
+                        if(jQuery.inArray(elem.id,service_value) === -1){
+                            jQuery("#service_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                            service_value.push(elem.id);
+                        }    
+                    });
+                    jQuery("#service_filter").val(service_value).trigger("change",[{origin:"select2defaultinit"}]);
+                    jQuery("#service_group_filter").val('');
+                    jQuery("#service_group_filter").empty().append(jQuery('<option>'));
+                    jQuery("#service_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
+                }
+            });    
+
+        });
+        
+        jQuery("#clearhostgroup").click(function(){
+            jQuery("#host_group_filter").val('');
+            jQuery("#host_group_filter").empty().append(jQuery('<option>'));
+            jQuery("#host_group_filter").trigger("change");
+        });    
+        
+        jQuery("#clearservicegroup").click(function(){
+            jQuery("#service_group_filter").val('');
+            jQuery("#service_group_filter").empty().append(jQuery('<option>'));
+            jQuery("#service_group_filter").trigger("change");
+        });    
+        
+        jQuery("#clearhost").click(function(){
+            jQuery("#host_filter").val('');
+            jQuery("#host_filter").empty().append(jQuery('<option>'));
+            jQuery("#host_filter").trigger("change");
+        });   
+        
+        jQuery("#clearservice").click(function(){
+            jQuery("#service_filter").val('');
+            jQuery("#service_filter").empty().append(jQuery('<option>'));
+            jQuery("#service_filter").trigger("change");
+        });   
+        
+        
+
+        /// Initialise selection with Get params
+        arrayHostValues = new Array();
+        <?php 
+            foreach($hostArray as $host){
+                ?>
+                arrayHostValues.push(<?php echo $host['id']; ?>);
+                jQuery("#host_filter").append(jQuery('<option>').val(<?php echo $host['id']; ?> ).html('<?php echo $host['name']; ?>'));        
+                     
+                <?php         
+            }
+        ?>
+        jQuery("#host_filter").val(arrayHostValues).trigger("change",[{origin:"select2defaultinit"}]);            
+        
+        
+        arrayServicesValues = new Array();
+        <?php 
+            foreach($serviceArray as $service){
+                ?>
+                arrayServicesValues.push('<?php echo $service['host_id'].'_'.$service['service_id']; ?>');
+                jQuery("#service_filter").append(jQuery('<option>').val('<?php echo $service['host_id'].'_'.$service['service_id']; ?>').html('<?php echo $service['host_name']. ' - ' .$service['description']; ?>'));        
+                     
+                <?php         
+            }
+        ?>
+        jQuery("#service_filter").val(arrayServicesValues).trigger("change",[{origin:"select2defaultinit"}]);       
+        
+        
+        arrayServicesGrpValues = new Array();
+        <?php 
+            foreach($serviceGrpArray as $serviceGrp){
+                ?>
+                arrayServicesGrpValues.push('<?php echo $serviceGrp['id']; ?>');
+                jQuery("#service_group_filter").append(jQuery('<option>').val('<?php echo $serviceGrp['id']; ?>').html('<?php echo $serviceGrp['name']; ?>'));        
+                     
+                <?php         
+            }
+        ?>
+        jQuery("#service_group_filter").val(arrayServicesGrpValues).trigger("change",[{origin:"select2defaultinit"}]);
+        
+        arrayHostsGrpValues = new Array();
+        <?php 
+            foreach($hostGrpArray as $hostGrp){
+                ?>
+                arrayHostsGrpValues.push('<?php echo $hostGrp['id']; ?>');
+                jQuery("#host_group_filter").append(jQuery('<option>').val('<?php echo $hostGrp['id']; ?>').html('<?php echo $hostGrp['name']; ?>'));        
+                     
+                <?php         
+            }
+        ?>
+        jQuery("#host_group_filter").val(arrayHostsGrpValues).trigger("change");
+        
+        
+        
+        
+        
+    });
+    
+
 </script>

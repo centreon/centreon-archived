@@ -106,6 +106,15 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      */
     var $_jsCallback;
     
+    
+    /**
+     *
+     * @var boolean 
+     */
+    var $_allowClear;
+    
+    
+    
     /**
      * 
      * @param string $elementName
@@ -124,6 +133,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_ajaxSource = false;
         $this->_defaultSelectedOptions = '';
         $this->_multipleHtml = '';
+        $this->_allowClear = true; 
         $this->HTML_QuickForm_select($elementName, $elementLabel, $options, $attributes);
         $this->_elementHtmlName = $this->getName();
         $this->parseCustomAttributes($attributes);
@@ -157,6 +167,13 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $this->_multiple = false;
         }
+        
+        if(isset($attributes['allowClear']) && $attributes['allowClear'] === false){
+            $this->_allowClear = false;
+        }else if(isset($attributes['allowClear']) && $attributes['allowClear'] === true){
+            $this->_allowClear = true;
+        }
+        
     }
     
     /**
@@ -268,6 +285,15 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $mainJsInit .= 'false,';
         }
+        
+        
+        $mainJsInit .= 'allowClear: ';
+        if ($this->_allowClear) {
+            $mainJsInit .= 'true,';
+        } else {
+            $mainJsInit .= 'false,';
+        }
+        
         
         $strJsInitEnding = '});';
         

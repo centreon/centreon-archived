@@ -138,6 +138,28 @@
         }
         return "";
 	}
+    
+    
+    /**
+	 * Get Hostgroup Id/Name
+	 *
+	 * @param int $hg_id
+	 * @return string
+	 */
+	public function getHostsgroups($hg_id = array())
+	{
+        $arrayReturn = array();
+        if (!empty($hg_id)) {
+            $query = "SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (" . $this->DB->escape(implode(",",$hg_id)).")";
+            $res = $this->DB->query($query);
+            $arrayReturn = array();
+            while ($row = $res->fetchRow()) {
+                $arrayReturn[] = array("id" => $row['hg_id'], "name" => $row['hg_name']);
+            }
+        }
+        return $arrayReturn;
+	}
+    
 
 	/**
 	 * Get Hostgroup Id

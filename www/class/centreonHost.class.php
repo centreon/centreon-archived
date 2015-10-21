@@ -301,6 +301,20 @@ class CentreonHost
         }
     }
     
+    public function getHostsNames($host_id = array()){
+        if(!empty($host_id)){
+            $rq = "SELECT host_id, host_name
+     	    	   FROM host where host_id IN (".$this->db->escape(implode(",",$host_id)).") ";
+            $res = $this->db->query($rq);
+            
+            $arrayReturn = array();
+            while ($row = $res->fetchRow()) {
+                $arrayReturn[] = array("id" => $row['host_id'], "name" => $row['host_name']);
+            }
+        }
+        return $arrayReturn;
+    }
+    
     public function getHostCommandId($host_id){
         if(isset($host_id) && is_numeric($host_id)){
             $rq = "SELECT host_id, command_command_id
