@@ -2019,6 +2019,49 @@ class HTML_QuickForm extends HTML_Common
         return isset($errorMessages[$value]) ? $errorMessages[$value] : $errorMessages[QUICKFORM_ERROR];
     } // end func errorMessage
 
+    /**
+     * 
+     */
+    function createSecurityToken()
+    {
+        $token = md5(uniqid());
+        $_SESSION['x-centreon-token'] = $token;
+        $_SESSION['x-centreon-token-generated-at'] = time();
+        
+        $myTokenElement = $this->addElement('hidden', 'centreon_token');
+        $myTokenElement->setValue($token);
+    }
+    
+    /**
+     * 
+     * @param type $submittedValues
+     * @return boolean
+     */
+    function checkSecurityToken($submittedValues)
+    {
+        $success = false;
+        
+        if (isset($submittedValues['centreon_token']) && isset($_SESSION['x-centreon-token']) && isset($_SESSION['x-centreon-token-generated-at'])) {
+            $elapsedTime = time() - $_SESSION['x-centreon-token-generated-at'];
+            if ($elapsedTime < (15 * 60)) {
+                if ($submittedValues['centreon_token'] == $_SESSION['x-centreon-token']) {
+                    unset($_SESSION['x-centreon-token']);
+                    unset($_SESSION['x-centreon-token-generated-at']);
+                    $success = true;
+                }
+            }
+        }
+        
+        if ($success) {
+            $error = true;
+        } else {
+            $error = array('centreon_token' => 'The Token is invalid');
+            echo "<div class='msg' align='center'>"._("The CRSF token is invalid")."</div>";
+        }
+        
+        return $error;
+    }
+    
     // }}}
 } // end class HTML_QuickForm
 
