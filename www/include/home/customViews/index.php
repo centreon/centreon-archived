@@ -41,7 +41,7 @@ require_once $centreon_path . "www/class/centreonContactgroup.class.php";
  * Quickform
  */
 require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/advmultiselect.php';
+require_once 'HTML/QuickForm/select2.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 try {
@@ -201,32 +201,25 @@ try {
     $formShareView->setDefaults(array('locked' => '1'));
 
     /**
-     * Get viewers
-     */
-    /*$viewers = $viewObj->getUsersFromViewId($viewId);
-    $viewerGroups = $viewObj->getUsergroupsFromViewId($viewId); */
-
-    /**
      * Users
      */
-    //$userList = array_diff_key($centreon->user->getUserList($db), $viewers);
-    $ams1 = $formShareView->addElement('advmultiselect', 'user_id', array(_("User List"), _("Available"), _("Selected")), $centreon->user->getUserList($db), $attrsAdvSelect);
-    $ams1->setButtonAttributes('add', array('value' =>  _("Add"),'class' =>  _("btc bt_success")));
-    $ams1->setButtonAttributes('remove', array('value' => _("Remove"),'class' =>  _("btc bt_danger")));
-    $ams1->setElementTemplate($eTemplate);
-    echo $ams1->getElementJs(false);
+    $attrContacts = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+        'multiple' => true
+    );
+    $formShareView->addElement('select2', 'user_id', _("User List"), array(), $attrContacts);
 
     /**
      * User groups
      */
-    //$userGroupList = array_diff_key($cgObj->getListContactgroup(true), $viewerGroups);
-    $ams1 = $formShareView->addElement('advmultiselect', 'usergroup_id', array(_("User Group List"), _("Available"), _("Selected")), $cgObj->getListContactgroup(true), $attrsAdvSelect);
-    $ams1->setButtonAttributes('add', array('value' =>  _("Add"),'class' =>  _("btc bt_success")));
-    $ams1->setButtonAttributes('remove', array('value' => _("Remove"),'class' =>  _("btc bt_danger")));
-    $ams1->setElementTemplate($eTemplate);
-    echo $ams1->getElementJs(false);
-
-
+    $attrContactgroups = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+        'multiple' => true
+    );
+    $formShareView->addElement('select2', 'usergroup_id', _("User Group List"), array(), $attrContactgroups);
+    
     /**
      * Submit button
      */
