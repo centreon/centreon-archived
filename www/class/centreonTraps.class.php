@@ -318,13 +318,6 @@ class Centreon_Traps {
                         FROM service s 
                         WHERE s.service_register = '0'
                         AND s.service_id = traps_service_relation.service_id)");
-            print("DELETE FROM traps_service_relation 
-                    WHERE traps_id = " . $this->_db->escape($trapId). "
-                    AND NOT EXISTS (SELECT s.service_id 
-                        FROM service s 
-                        WHERE s.service_register = '0'
-                        AND s.service_id = traps_service_relation.service_id)");
-
             $services = CentreonUtils::mergeWithInitialValues($this->_form, 'services');
             $insertStr = "";
             $first = true;
@@ -343,7 +336,6 @@ class Centreon_Traps {
             }
             if ($insertStr) {
                 $this->_db->query("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");
-                print("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");
             }
         }
         
