@@ -41,6 +41,8 @@
 
 	include("./include/common/autoNumLimit.php");
 
+        include_once("./class/centreonUtils.class.php");
+
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
@@ -104,9 +106,9 @@
 					"RowMenu_ImgLink"=>"?p=".$p."&o=ci&img_id=".$elem['img_id'],
 					"RowMenu_DirLink"=>"?p=".$p."&o=cd&dir_id=".$elem['dir_id'],
 					"RowMenu_dir"=>$elem["dir_name"],
-					"RowMenu_img"=>html_entity_decode($elem["dir_alias"]."/".$elem["img_path"], ENT_QUOTES, "UTF-8"),
-					"RowMenu_name"=>html_entity_decode($elem["img_name"], ENT_QUOTES, "UTF-8"),
-					"RowMenu_comment"=>html_entity_decode($elem["img_comment"], ENT_QUOTES, "UTF-8") );
+					"RowMenu_img"=>CentreonUtils::escapeSecure(html_entity_decode($elem["dir_alias"]."/".$elem["img_path"], ENT_QUOTES, "UTF-8")),
+					"RowMenu_name"=>CentreonUtils::escapeSecure(html_entity_decode($elem["img_name"], ENT_QUOTES, "UTF-8")),
+					"RowMenu_comment"=>CentreonUtils::escapeSecure(html_entity_decode($elem["img_comment"], ENT_QUOTES, "UTF-8")));
 			$elemArr[$elem['dir_id']]["elem"][$i] = $rowOpt;
 			$elemArr[$elem['dir_id']]["head"]["counter"]++;
 		}

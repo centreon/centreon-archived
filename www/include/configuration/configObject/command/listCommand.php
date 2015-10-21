@@ -36,7 +36,9 @@
 	if (!isset($oreon)) {
 	    exit();
 	}
-	
+
+        include_once("./class/centreonUtils.class.php");
+
 	include_once "./include/common/autoNumLimit.php";
 
 	/*
@@ -136,7 +138,7 @@
 							"RowMenu_select" => $selectedElements->toHtml(),
 							"RowMenu_name" => $cmd["command_name"],
 							"RowMenu_link" => "?p=".$p."&o=c&command_id=".$cmd['command_id']."&type=".$cmd['command_type'],
-							"RowMenu_desc" => substr(myDecodeCommand($cmd["command_line"]), 0, 50)."...",
+							"RowMenu_desc" => CentreonUtils::escapeSecure(substr(myDecodeCommand($cmd["command_line"]), 0, 50)."..."),
 							"RowMenu_type" => $commandType[$cmd["command_type"]],
 							"RowMenu_huse" => "<a name='#' title='"._("Host links (host template links)")."'>".getHostNumberUse($cmd['command_id']) . " (".getHostTPLNumberUse($cmd['command_id']).")</a>",
 							"RowMenu_suse" => "<a name='#' title='"._("Service links (service template links)")."'>".getServiceNumberUse($cmd['command_id']) . " (".getServiceTPLNumberUse($cmd['command_id']).")</a>",
