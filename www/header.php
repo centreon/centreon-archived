@@ -33,6 +33,10 @@
  *
  */
 
+if (!defined('SMARTY_DIR')) {
+    define('SMARTY_DIR', realpath('../GPL_LIB/Smarty/libs/') . '/');
+}
+
 /*
  * Bench
  */
@@ -45,11 +49,6 @@ set_time_limit(60);
 $time_start = microtime_float();
 
 $advanced_search = 0;
-
-/*
- * Define
- */
-define('SMARTY_DIR', realpath('../GPL_LIB/Smarty/libs/') . '/');
 
 /*
  * Include
