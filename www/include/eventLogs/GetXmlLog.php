@@ -492,10 +492,13 @@ if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
         if ($str_unitH != "" && $str_unitSVC != "") {
             $str_unitSVC = " OR " . $str_unitSVC;
         }
-    } 
-    if ($str_unitH != "" || $str_unitSVC != "") {
-        $req .= " AND (".$str_unitH.$str_unitSVC.")";
-    }
+        if ($str_unitH != "" || $str_unitSVC != "") {
+            $req .= " AND (".$str_unitH.$str_unitSVC.")";
+        }
+    } else {
+      $req .= "AND 0 ";
+    }   
+
     
     $req .= $host_search_sql . $service_search_sql;
     
