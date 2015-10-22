@@ -42,7 +42,7 @@ if (!isset($centreon)) {
 if (!$oreon->user->admin) {
     if ($host_id && false === strpos($aclHostString, "'" . $host_id . "'")) {
         $msg = new CentreonMsg();
-        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
         $msg->setText(_('You are not allowed to access this host'));
         return null;
