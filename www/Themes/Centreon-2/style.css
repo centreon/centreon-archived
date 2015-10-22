@@ -462,16 +462,10 @@ form#AjaxBankBasic {
 .ListTable tr{
 vertical-align: middle;
 }
-.ToolbarPagination {
-    text-align: center;
-}
+
 .ToolbarPagination img {
     vertical-align: bottom;
-    height: 12px;
-    width: 12px;
 }
-
-.
 
 /* ------- END : Table -----------*/
 /* ------ START : Indicators -----*/
@@ -1137,7 +1131,7 @@ table.ListTableSmallArg td {
 .ListTable,.ListTableMedium,.ListTableSmall,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
 .ListTable,.ListTableMedium,.ListTableSmall {border-width:1px;}
 .ListTable td,.ListTableMedium td,.ListTableSmall td,.ListTableSmallArg {padding-bottom:2px;padding-top:2px;}
-.ListTable td {padding: 4px;}
+.ListTable td {padding: 4px 0;}
 .tab .ListTableMedium {
     margin-top:21px;
 }
@@ -1238,8 +1232,8 @@ table.ListTableSmallArg td {
     margin: 6px 0px;
 }
 .ToolbarTR 			{padding-left:10px;}
-.ToolbarTR td, .ToolbarTable td{
-    width: 33.33%;
+.ToolbarTR td:first-child {
+    width: 40%;
 }
 .ToolbarTR select {
     height: 25px;

@@ -39,16 +39,16 @@
 /**
  * Include config file
  */
-include_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
 /*
  * Include Dependancies
  */
-require_once $centreon_path . "www/class/centreonDB.class.php";
-require_once $centreon_path . "www/class/centreonSession.class.php";
-require_once $centreon_path . "www/class/centreon.class.php";
-require_once $centreon_path . "www/class/centreonLang.class.php";
-require_once $centreon_path . "www/class/centreonBroker.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
 
 /*
  * Database Connection
@@ -70,7 +70,7 @@ if ($objBroker->getBroker() == "ndo") {
 /*
  * PHP functions
  */
-include_once $centreon_path . "www/include/views/graphs/common-Func.php";
+include_once _CENTREON_PATH_ . "www/include/views/graphs/common-Func.php";
 
 CentreonSession::start();
 $oreon = $_SESSION["centreon"];
@@ -78,14 +78,14 @@ $oreon = $_SESSION["centreon"];
 /*
  * Tanslation
  */
-$centreonLang = new CentreonLang($centreon_path, $oreon);
+$centreonLang = new CentreonLang(_CENTREON_PATH_, $oreon);
 $centreonLang->bindLang();
 
 /**
  * Include Access Class
  */
-include_once $centreon_path . "www/class/centreonACL.class.php";
-include_once $centreon_path . "www/class/centreonXML.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 
 if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml")) {
     header("Content-type: application/xhtml+xml");

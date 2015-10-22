@@ -52,7 +52,7 @@ if ($tab['monitoring_engine'] == 'CENGINE') {
     if ($row['centreonconnector_path'] != '') {
         $connector_basepath = preg_replace('!/$!', '', $row['centreonconnector_path']);
         
-        require_once $centreon_path . 'www/class/centreonConnector.class.php';
+        require_once _CENTREON_PATH_ . 'www/class/centreonConnector.class.php';
         $connectorObj = new CentreonConnector($pearDB);
         $connectorList = $connectorObj->getList(true, false, 0, true);
         

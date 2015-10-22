@@ -107,7 +107,7 @@
         $form->addElement('checkbox', 'monitoring_svc_notification_2', _('Show Critical status'));
         $form->addElement('checkbox', 'monitoring_svc_notification_3', _('Show Unknown status'));
 
-        $sound_files = scandir($centreon_path."www/sounds/");
+        $sound_files = scandir(_CENTREON_PATH_."www/sounds/");
         $sounds = array(null => null);
         foreach ($sound_files as $f) {
             if($f == "." || $f == "..") {

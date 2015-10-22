@@ -40,8 +40,8 @@ if (!isset($centreon)) {
 
 global $form_service_type;
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 $serviceObj = new CentreonService($pearDB);
 
@@ -68,7 +68,7 @@ if (!$oreon->user->admin) {
                                         AND group_id IN (" . $acl->getAccessGroupsString() . ")");
         if (!$checkres->numRows()) {
             $msg = new CentreonMsg();
-            $msg->setImage("./img/icones/16x16/warning.gif");
+            $msg->setImage("./img/icons/warning.png");
             $msg->setTextStyle("bold");
             $msg->setText(_('You are not allowed to access this service'));
             return null;

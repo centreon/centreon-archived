@@ -49,7 +49,7 @@ function myReplace()	{
     return (str_replace(" ", "_", $ret["command_name"]));
 }
 
-require_once $centreon_path . "www/include/configuration/configObject/command/javascript/commandJs.php";
+require_once _CENTREON_PATH_ . "www/include/configuration/configObject/command/javascript/commandJs.php";
 
 /*
  * Database retrieve information for Command

@@ -55,7 +55,7 @@
 		$msg->setTextStyle("bold");
 		$msg->setText(_("ACL reloaded"));
 		$msg->setTimeOut("3");
-		passthru("php " . $centreon_path . "/cron/centAcl.php");
+		passthru("php " . _CENTREON_PATH_ . "/cron/centAcl.php");
 	} elseif (isset($_POST["o"]) && $_POST["o"] == "u") {
 		isset($_GET["select"]) ? $sel = $_GET["select"] : $sel = NULL;
 		isset($_POST["select"]) ? $sel = $_POST["select"] : $sel;
@@ -80,7 +80,7 @@
 		$msg->setTextStyle("bold");
 		$msg->setText(_("ACL reloaded"));
 		$msg->setTimeOut("3");
-		passthru("php " . $centreon_path . "/cron/centAcl.php");
+		passthru("php " . _CENTREON_PATH_ . "/cron/centAcl.php");
 	}
 
 	# Smarty template Init

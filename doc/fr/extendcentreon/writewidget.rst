@@ -198,10 +198,10 @@ Now, let's see how you could retrieve the parameter values in your PHP code.
   <?php
   // required classes
   require_once "/etc/centreon/centreon.conf.php";
-  require_once $centreon_path . "www/class/centreon.class.php";
-  require_once $centreon_path . "www/class/centreonSession.class.php";
-  require_once $centreon_path . "www/class/centreonDB.class.php";
-  require_once $centreon_path . "www/class/centreonWidget.class.php";
+  require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+  require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+  require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+  require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
    
   // check if session is alive
   session_start();

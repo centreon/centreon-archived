@@ -35,15 +35,15 @@
 
 require_once "../../../config/centreon.config.php";
 
-require_once $centreon_path."/www/include/common/common-Func.php";
+require_once _CENTREON_PATH_."/www/include/common/common-Func.php";
 
-require_once $centreon_path."/www/class/centreonDB.class.php";
-require_once $centreon_path."/www/class/centreonXML.class.php";
-require_once $centreon_path."/www/class/centreonACL.class.php";
-require_once $centreon_path."/www/class/centreon.class.php";
-require_once $centreon_path."/www/class/centreonSession.class.php";
-require_once $centreon_path."/www/class/centreonLang.class.php";
-require_once $centreon_path."/www/class/centreonMenu.class.php";
+require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_."/www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_."/www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_."/www/class/centreon.class.php";
+require_once _CENTREON_PATH_."/www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_."/www/class/centreonLang.class.php";
+require_once _CENTREON_PATH_."/www/class/centreonMenu.class.php";
 
 if (!isset($_SESSION)) {
     session_start();
@@ -74,7 +74,7 @@ if (!$session->numRows()){
 
 $oreon = $_SESSION['centreon'];
 
-$centreonLang = new CentreonLang($centreon_path, $oreon);
+$centreonLang = new CentreonLang(_CENTREON_PATH_, $oreon);
 $centreonLang->bindLang();
 $centreonMenu = new CentreonMenu($centreonLang);
 
@@ -100,7 +100,7 @@ $DBRESULT2 = $pearDB->query("SELECT css_name FROM `css_color_menu` WHERE menu_nb
 $menu_style = $DBRESULT2->fetchRow();
 
 ob_start();
-require_once $centreon_path . "/www/Themes/Centreon-2/Color/" . $menu_style['css_name'];
+require_once _CENTREON_PATH_ . "/www/Themes/Centreon-2/Color/" . $menu_style['css_name'];
 ob_end_clean();
 
 

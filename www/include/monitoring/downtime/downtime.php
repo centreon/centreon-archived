@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -33,84 +33,55 @@
  *
  */
 
-if (!isset($centreon) || !isset($_REQUEST['view_id'])) {
-    exit;
+if (!isset($centreon)) {
+    exit();
 }
 
-/**
- * Smarty
+/*
+ * External Command Object
  */
-$path = "./include/home/customViews/";
-$template = new Smarty();
-$template = initSmartyTpl($path, $template, "./");
+$ecObj = new CentreonExternalCommand($centreon);
 
-/**
- * Quickform
+/*
+ * Pear library
  */
-require_once 'HTML/QuickForm.php';
+require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/advmultiselect.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-$rotationTimer = 0;
-if (isset($_SESSION['rotation_timer'])) {
-    $rotationTimer = $_SESSION['rotation_timer'];
-}
-$viewId = $_REQUEST['view_id'];
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 
-/**
- * Renderer
+/*
+ * Path to the configuration dir
  */
-$template->display("rotation.ihtml");
-?>
-<script type="text/javascript">
-var rotationTimer = <?php echo $rotationTimer;?>;
-var viewId = <?php echo $viewId;?>;
+$path = "./include/monitoring/downtime/";
 
-jQuery(function()
-{
-	jQuery("#rotation_timer").slider({
-										value	: rotationTimer,
-										min		: 0,
-										max		: 300,
-										step	: 5,
-										slide	: function(event, ui) {
-													jQuery("#timer_value").html(ui.value + " seconds");
-										},
-										stop	: function(event, ui) {
-													setTimerLabel();
-												}
-									 });
-	jQuery("input[type=button]").button();
-	setTimerLabel();
-});
+/*
+ * PHP functions
+ */
+require_once "./include/common/common-Func.php";
+require_once "./include/monitoring/downtime/common-Func.php";
+require_once "./include/monitoring/external_cmd/functions.php";
 
-function setTimerLabel()
-{
-	var val = jQuery("#rotation_timer").slider("value");
-
-	jQuery("#timer_value").html(val + " seconds");
+switch ($o) {
+    case "as" :
+        require_once($path . "AddSvcDowntime.php");
+        break;
+    case "ds" :
+        if (isset($_POST["select"])) {
+            $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
+            deleteDowntimeFromDb($oreon, $_POST['select']);
+        }
+        require_once($path . "listDowntime.php");
+        break;
+    case "cs" :
+        $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
+        require_once($path . "listDowntime.php");
+        break;
+    case "vs" :
+        require_once($path . "listDowntime.php");
+        break;
+    default :
+        require_once($path . "lisDowntime.php");
+        break;
 }
-
-function submitData()
-{
-	jQuery.ajax({
-			type	:	"POST",
-			dataType:	"xml",
-			url 	:	"./include/home/customViews/action.php",
-			data	:   {
-							action:	"setRotate",
-							timer:	jQuery("#rotation_timer").slider("value")
-						},
-			success :	function(response) {
-							var view = response.getElementsByTagName('custom_view_id');
-							var error = response.getElementsByTagName('error');
-							if (typeof(view) != 'undefined') {
-								window.top.location = './main.php?p=103&currentView='+viewId;
-							} else if (typeof(err) != 'undefined') {
-								var errorMsg = err.item(0).firstChild.data;
-								console.log(errorMsg);
-							}
-						}
-	});
-}
-</script>

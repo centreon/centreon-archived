@@ -39,9 +39,9 @@
 	header('Content-Type: application/json');
 	header('Cache-Control: no-cache');
 
-	require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once $centreon_path . "/www/class/centreonDB.class.php";
-	require_once $centreon_path . "/www/class/centreonDowntime.class.php";
+	require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+	require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+	require_once _CENTREON_PATH_ . "/www/class/centreonDowntime.class.php";
 
 	$pearDB = new CentreonDB();
 
@@ -51,7 +51,7 @@
 		$id = 0;
 	}
 
-	$path = $centreon_path . "/www/include/configuration/configDowntime/";
+	$path = _CENTREON_PATH_ . "/www/include/configuration/configDowntime/";
 
 	$downtime = new CentreonDowntime($pearDB);
 

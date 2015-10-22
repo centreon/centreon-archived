@@ -38,21 +38,21 @@
 /**
  * Require configuration.
  */
-include_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
 /**
  * Require Sepecific XML / Ajax Class
  */
-include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-include_once $centreon_path . "www/class/centreonInstance.class.php";
-include_once $centreon_path . "www/class/centreonCriticality.class.php";
-include_once $centreon_path . "www/class/centreonMedia.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonCriticality.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonMedia.class.php";
 
 /**
  * Require commonu Files.
  */
-include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
-include_once $centreon_path . "www/include/common/common-Func.php";
+include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
+include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 /**
  * Create XML Request Objects
@@ -75,7 +75,7 @@ if (isset($_SESSION['centreon'])) {
 $locale = $centreon->user->get_lang();
 putenv("LANG=$locale");
 setlocale(LC_ALL, $locale);
-bindtextdomain("messages", $centreon_path . "www/locale/");
+bindtextdomain("messages", _CENTREON_PATH_ . "www/locale/");
 ;
 bind_textdomain_codeset("messages", "UTF-8");
 textdomain("messages");

@@ -36,21 +36,21 @@
  *
  */
 
-    require_once "@CENTREON_ETC@/centreon.conf.php";
+    require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
-	require_once $centreon_path . "www/class/centreonDuration.class.php";
-	require_once $centreon_path . "www/include/common/common-Func.php";
-	require_once $centreon_path . "www/class/centreonDB.class.php";
-    require_once $centreon_path . "www/class/centreonSession.class.php";
-    require_once $centreon_path . "www/class/centreonXML.class.php";
-    require_once $centreon_path . "www/class/centreon.class.php";
-    require_once $centreon_path . 'www/class/centreonACL.class.php';
-    require_once $centreon_path . 'www/class/centreonUser.class.php';
-    require_once $centreon_path . 'www/class/centreonDuration.class.php';
-    require_once $centreon_path . 'www/class/centreonLang.class.php';
-    require_once $centreon_path . 'www/class/centreonInstance.class.php';
-    include_once $centreon_path . "www/class/centreonCriticality.class.php";
-    require_once $centreon_path . "www/class/centreonMedia.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonDuration.class.php";
+    require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+    require_once _CENTREON_PATH_ . 'www/class/centreonACL.class.php';
+    require_once _CENTREON_PATH_ . 'www/class/centreonUser.class.php';
+    require_once _CENTREON_PATH_ . 'www/class/centreonDuration.class.php';
+    require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
+    require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
+    include_once _CENTREON_PATH_ . "www/class/centreonCriticality.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonMedia.class.php";
 
 	session_start();
 
@@ -67,7 +67,7 @@
     $media = new CentreonMedia($db);
     $instanceObj = new CentreonInstance($db);
 
-    $centreonLang = new CentreonLang($centreon_path, $centreon);
+    $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 	$centreonLang->bindLang();
 
     /**

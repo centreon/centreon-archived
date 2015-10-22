@@ -37,8 +37,8 @@ if (!isset($centreon)) {
 	exit();		
 }
 
-include_once $centreon_path."www/class/centreonGMT.class.php";
-include_once $centreon_path."www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_."www/class/centreonDB.class.php";
 
 if ($oreon->broker->getBroker() == "ndo") {
 	$pearDBndo = new CentreonDB("ndo");

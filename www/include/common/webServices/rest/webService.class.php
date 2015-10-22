@@ -36,8 +36,8 @@
  *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
 class CentreonWebService
 {
@@ -214,12 +214,12 @@ class CentreonWebService
 
     /**
      * Route the webservice to the good method
-     * @global string $centreon_path
+     * @global string _CENTREON_PATH_
      * @global type $pearDB3
      */
     public static function router()
     {
-        global $centreon_path;
+        
         global $pearDB;
         
         /* Test if route is defined */
@@ -232,10 +232,10 @@ class CentreonWebService
         $action = $methodPrefix . ucfirst($_GET['action']);
         
         /* Generate path for WebService */
-        self::$webServicePaths = glob($centreon_path . '/www/include/common/webServices/rest/*.class.php');
+        self::$webServicePaths = glob(_CENTREON_PATH_ . '/www/include/common/webServices/rest/*.class.php');
         $res = $pearDB->query("SELECT name FROM modules_informations");
         while ($row = $res->fetchRow()) {
-            self::$webServicePaths = array_merge(self::$webServicePaths, glob($centreon_path . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php'));
+            self::$webServicePaths = array_merge(self::$webServicePaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php'));
         }
         
         $webService = self::webservicePath($object);
