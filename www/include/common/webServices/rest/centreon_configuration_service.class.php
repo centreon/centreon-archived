@@ -169,7 +169,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
     {
         $queryService = "SELECT DISTINCT s.service_description, s.service_id, hg.hg_name, hg.hg_id "
             . "FROM hostgroup hg, service s, host_service_relation hsr "
-            . 'WHERE hsr.hostgroup_hg_id = h.hg_id '
+            . 'WHERE hsr.hostgroup_hg_id = hg.hg_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND s.service_register = '1' "
             . "AND s.service_description LIKE '%$q%' "
@@ -180,8 +180,8 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
-            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+            $serviceCompleteName = $data['hg_name'] . ' - ' . $data['service_description'];
+            $serviceCompleteId = $data['hg_id'] . '-' . $data['service_id'];
             
             $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
