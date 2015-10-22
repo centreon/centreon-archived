@@ -14,7 +14,7 @@
 				<td style='padding-left:5px;'>
 					<xsl:element name='a'>
 						<xsl:attribute name="href">#</xsl:attribute>
-						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
 						<xsl:element name='img'>
 							<xsl:attribute name="title">first</xsl:attribute>						
 							<xsl:attribute name="alt">first</xsl:attribute>
@@ -28,7 +28,7 @@
 				<td style='padding-left:5px;'>
 					<xsl:element name='a'>
 						<xsl:attribute name="href">#</xsl:attribute>
-						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
 						<xsl:element name='img'>
 							<xsl:attribute name="title">previous</xsl:attribute>						
 							<xsl:attribute name="alt">previous</xsl:attribute>	
@@ -48,7 +48,7 @@
 						<xsl:if test="selected = 1">
 							<xsl:attribute name="class">currentPageNumber</xsl:attribute>
 						</xsl:if>
-						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="num"/>'); return false;</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="num"/>'); return false;</xsl:attribute>
 						<xsl:value-of select="label_page"/>
 					</xsl:element>
 				</td>
@@ -57,7 +57,7 @@
 				<td style='padding-left:5px;'>
 					<xsl:element name='a'>
 						<xsl:attribute name="href">#</xsl:attribute>
-						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
 						<xsl:element name='img'>
 							<xsl:attribute name="title">next</xsl:attribute>						
 							<xsl:attribute name="alt">next</xsl:attribute>	
@@ -71,7 +71,7 @@
 				<td style='padding-left:5px;'>
 					<xsl:element name='a'>
 						<xsl:attribute name="href">#</xsl:attribute>
-						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
 						<xsl:element name='img'>
 							<xsl:attribute name="title">last</xsl:attribute>						
 							<xsl:attribute name="alt">last</xsl:attribute>	
@@ -83,7 +83,7 @@
 				</xsl:if>
                                 <td>    
                                     <xsl:element name='select'>
-                                        <xsl:attribute name="onChange">setL(this.value); log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+                                        <xsl:attribute name="onChange">setL(this.value); log_4_engine_page('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
                                         <xsl:attribute name="name">l</xsl:attribute>
                                             <xsl:for-each select="//limitValue">
                                                 <xsl:element name='option'>
@@ -137,7 +137,7 @@
 					<td style='padding-left:5px;'>
 						<xsl:element name='a'>
 							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
 							<xsl:element name='img'>
 								<xsl:attribute name="title">first</xsl:attribute>						
 								<xsl:attribute name="alt">first</xsl:attribute>						
@@ -150,7 +150,7 @@
 					<td style='padding-left:5px;'>
 						<xsl:element name='a'>
 							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
 							<xsl:element name='img'>
 								<xsl:attribute name="title">previous</xsl:attribute>						
 								<xsl:attribute name="alt">previous</xsl:attribute>						
@@ -169,7 +169,7 @@
 						<xsl:if test="selected = 1">
 							<xsl:attribute name="class">currentPageNumber</xsl:attribute>
 						</xsl:if>
-						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="num"/>'); return false;</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="num"/>'); return false;</xsl:attribute>
 						<xsl:value-of select="label_page"/>
 					</xsl:element>
 				</td>
@@ -178,7 +178,7 @@
 					<td style='padding-left:5px;'>
 						<xsl:element name='a'>
 							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
 							<xsl:element name='img'>
 								<xsl:attribute name="title">next</xsl:attribute>						
 								<xsl:attribute name="alt">next</xsl:attribute>						
@@ -191,7 +191,7 @@
 					<td style='padding-left:5px;'>
 						<xsl:element name='a'>
 							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
 							<xsl:element name='img'>
 								<xsl:attribute name="title">last</xsl:attribute>						
 								<xsl:attribute name="alt">last</xsl:attribute>						

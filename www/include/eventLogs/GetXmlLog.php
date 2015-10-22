@@ -142,14 +142,14 @@ if (isset($sid) && $sid){
 (isset($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
 (isset($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
 (isset($_GET["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($_GET["oh"])) : $oh = "false";
+(isset($_GET["output"])) ? $output = urldecode($_GET["output"]) : $output = "";
 
 (isset($_GET["search_H"])) ? set_user_param($contact_id, $pearDB, "search_H", htmlentities($_GET["search_H"])) : $search_H = "VIDE";
 (isset($_GET["search_S"])) ? set_user_param($contact_id, $pearDB, "search_S", htmlentities($_GET["search_S"])) : $search_S = "VIDE";
 (isset($_GET["search_host"])) ? $search_host = htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : $search_host = "";
 (isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
 (isset($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES, "UTF-8") : $export = 0;
-
-
+(isset($_GET["engine"])) ? $engine = htmlentities($_GET["engine"]) : $engine = "false";
 
 
 $start = 0;
@@ -186,6 +186,8 @@ if ($contact_id){
         $user_params["search_H"] = "";
     if (!isset($user_params["search_S"]))
         $user_params["search_S"] = "";
+    if (!isset($user_params["output"]))
+        $user_params["output"] = "";
     
     $alert = $user_params["log_filter_alert"];
     $notification = $user_params["log_filter_notif"];
@@ -312,6 +314,18 @@ if ($unknown == 'true')
     array_push($svc_msg_status_set, "'".STATUS_UNKNOWN."'");
 
 $flag_begin = 0;
+$innerJoinEngineLog = "";
+$whereOutput = "";
+if(isset($output) && $output != "" ){
+    $whereOutput = " AND logs.output like '%".$pearDBO->escape($output)."%' ";
+}
+if($engine == "true"){
+    if(!isset($openid) || $openid == "undefined" || $openid == ""){
+        $openid = "null";
+    }
+    $innerJoinEngineLog = " inner join instance i on i.instance_id IN (".$openid.") AND i.instance_name = logs.instance_name ";
+}
+
 if ($notification == 'true') {
     if (count($host_msg_status_set)) {
         $msg_req .= "(";
@@ -371,13 +385,15 @@ if ($alert == 'true') {
         $msg_req .= " `type` = '".TYPE_HARD."' ";
     }
 }
-/*if ($error == 'true') {
+// Error filter is only used in the engine log page.
+if ($error == 'true') {
     if ($flag_begin == 0) {
         $msg_req .= "AND ";
-    } else
+    } else{
         $msg_req .= " OR ";
-    $msg_req .= " (`msg_type` IN ('4') AND `status` IS NULL) ";
-}*/
+    }
+    $msg_req .= " (`msg_type` IN ('4','5')) ";
+}
 if ($flag_begin) {
     $msg_req = " AND (".$msg_req.") ";
 }
@@ -439,9 +455,7 @@ foreach ($tab_id as $openid) {
 }
 
 // Build final request
-$req = "SELECT SQL_CALC_FOUND_ROWS * FROM logs WHERE ctime > '$start' AND ctime <= '$end' $msg_req";
-
-
+$req = "SELECT SQL_CALC_FOUND_ROWS * FROM logs ".$innerJoinEngineLog." WHERE ctime > '$start' AND ctime <= '$end' $whereOutput $msg_req";
 
 /*
  * Add Host
@@ -451,7 +465,9 @@ $str_unitH_append = "";
 $host_search_sql = "";
 
 if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
-    $req .= " AND 1 = 0 ";
+    if($engine == "false"){
+        $req .= " AND 1 = 0 ";
+    }
 } else {
 
     foreach ($tab_host_name as $host_name ) {
@@ -506,6 +522,8 @@ if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
 /*
  * calculate size before limit for pagination
  */
+
+
 if (isset($req) && $req) {
     
     /*

@@ -23,6 +23,7 @@
             <tr>
                 <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.host_group_filter.label} : </td><td style="vertical-align: top;" ></b>&nbsp;&nbsp;{$form.host_group_filter.html} <span style="cursor:pointer;" id="clearhostgroup" >x</span></td>
                 <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.service_group_filter.label} : </td><td style="vertical-align: top;" > </b>&nbsp;&nbsp;{$form.service_group_filter.html} <span style="cursor:pointer;" id="clearservicegroup" >x</span></td>
+                <td> {$form.output.label} </td><td> {$form.output.html} </td>
             </tr>
             <tr>
                 <td> </td><td id="setHostGroup" style="text-align:center;" > <img style="cursor: pointer;" src="./img/icons/arrow-bottom.png" alt=""/> </td><td> </td><td id="setServiceGroup" style="text-align:center;" > <img style="cursor: pointer;" src="./img/icons/arrow-bottom.png" alt=""/> </td>
@@ -33,5 +34,111 @@
             </tr>
         </table>
 </form>
+
+
+
+
+
+<form name="formu2">
+	<table class="ajaxOption">
+		<tr>
+			<td style="vertical-align:top;"><b>{$lang.ty}</b>
+			</td>
+			<td>
+			<table>
+				<tr>
+					<td>
+						<input name="alert" id="alertId" type="checkbox" onClick="{literal}if (!this.checked) {
+									document.getElementById('ohId').checked = false;
+								}
+								checkAlertNotifCheckbox();
+								log_4_host(opid, this.form, ''); {/literal}" {if $user_params.log_filter_alert == 'true'} checked="checked" {/if}/>
+					{$lang.a}
+                                        </td>
+					<td>
+						<input name="oh" id="ohId" type="checkbox" onClick="{literal}if (this.checked) {
+									document.getElementById('alertId').checked = true;
+								}
+								log_4_host(opid, this.form, ''); {/literal}" {if $user_params.log_filter_oh == 'true'} checked="checked" {/if}/>
+					{$lang.oh}
+                                        </td>
+				</tr>
+				<tr>
+					<td>
+					<input name="notification" id="notifId" type="checkbox" onClick="{literal}checkAlertNotifCheckbox();
+                                                                                                        log_4_host(opid, this.form, '');
+                                                                                                        {/literal}" {if $user_params.log_filter_notif == 'true'} checked="checked" {/if}/>
+					{$lang.n}
+                                        </td>
+				</tr>
+			</table>
+			</td>
+			<td>
+				<table style="">
+					<tr>
+						<td><b>{$lang.h}</b></td>
+						<td>
+							<input name="up" id="cb_up" type="checkbox" onClick="{literal}checkStatusCheckbox(this.checked);
+                                                                                                            log_4_host(opid, this.form, '');
+                                                                                                            {/literal}" {if $user_params.log_filter_host_up == "true"} checked="checked" {/if}/>
+                                                {$lang.up}
+						</td>
+						<td>
+							<input name="down" id="cb_down" type="checkbox" onClick="{literal}checkStatusCheckbox(this.checked);
+                                                                                                                log_4_host(opid, this.form, '');
+                                                                                                                {/literal}" {if $user_params.log_filter_host_down == "true"} checked="checked" {/if} />
+						{$lang.do}
+                                                </td>
+						<td colspan="2">
+							<input name="unreachable" id="cb_unreachable" type="checkbox" onClick="{literal}checkStatusCheckbox(this.checked);
+                                                                                                                                log_4_host(opid, this.form, '');
+                                                                                                                                {/literal}" {if $user_params.log_filter_host_unreachable == "true"} checked="checked" {/if}/>
+						{$lang.un}
+                                                </td>
+					</tr>
+					<tr>	
+						<td><b>{$lang.sc}</b></td>		               	
+						<td>
+							<input name="ok" id="cb_ok" type="checkbox" onClick="{literal}checkStatusCheckbox(this.checked);
+                                                                                                            log_4_host(opid, this.form, '');
+                                                                                                            {/literal}" {if $user_params.log_filter_svc_ok == "true"} checked="checked" {/if}/>
+                                                {$lang.ok}                                                            
+                                                </td>
+						<td>
+							<input name="warning" id="cb_warning" type="checkbox" onClick="{literal}checkStatusCheckbox(this.checked);
+                                                                                                                        log_4_host(opid, this.form, '');
+                                                                                                                        {/literal}" {if $user_params.log_filter_alert == "true"} checked="checked" {/if}/>
+						{$lang.w}  
+                                                </td>
+						<td>
+							<input name="critical" id="cb_critical" type="checkbox" onClick="{literal}checkStatusCheckbox(this.checked);
+                                                                                                                        log_4_host(opid, this.form, '');
+                                                                                                                        {/literal}" {if $user_params.log_filter_svc_warning == "true"} checked="checked" {/if}/>
+						{$lang.cr}
+                                                </td>
+						<td>
+							<input name="unknown" id="cb_unknown" type="checkbox" onClick="{literal}checkStatusCheckbox(this.checked);
+                                                                                                                        log_4_host(opid, this.form, '');
+                                                                                                                        {/literal}" {if $user_params.log_filter_svc_unknown == "true"} checked="checked" {/if}/>
+						{$lang.uk}
+                                                </td>
+					</tr>
+				</table>
+			</td>
+			<td valign="top">
+				
+			</td>
+		</tr>
+	</table>
+</form>			
+							
+							
+							
+							
+							
+							
+
+
+
 </div>
 <div id="logView4xml"></div>

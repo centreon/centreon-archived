@@ -302,12 +302,11 @@ class CentreonHost
     }
     
     public function getHostsNames($host_id = array()){
+        $arrayReturn = array();
         if(!empty($host_id)){
             $rq = "SELECT host_id, host_name
      	    	   FROM host where host_id IN (".$this->db->escape(implode(",",$host_id)).") ";
             $res = $this->db->query($rq);
-            
-            $arrayReturn = array();
             while ($row = $res->fetchRow()) {
                 $arrayReturn[] = array("id" => $row['host_id'], "name" => $row['host_name']);
             }
