@@ -31,27 +31,24 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($centreon)) {
+	exit();		
+}
 
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-	$sid = session_id();
-	$time = time();
+$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+$sid = session_id();
+$time = time();
 
-	$obis = $o;
-	if(isset($_GET["problem"])) {
-		$obis .= '_pb';
-	}
-	if(isset($_GET["acknowledge"])) {
-		$obis .= '_ack_' . $_GET["acknowledge"];
-	}
+$obis = $o;
+if (isset($_GET["problem"])) {
+	$obis .= '_pb';
+}
+if (isset($_GET["acknowledge"])) {
+	$obis .= '_ack_' . $_GET["acknowledge"];
+}
 
 ?>
 <script type="text/javascript">
@@ -138,14 +135,14 @@ var _criticality_id = 0;
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 
-                        var h = document.getElementById('criticality_id');
-                        if (h) {
-                            h.innerHTML = '<?php echo addslashes("S"); ?>';
-                            h.indice = 'criticality_id';
-                            h.title = "<?php echo _("Sort by severity"); ?>";
-                            h.onclick=function(){change_type_order(this.indice)};
-                            h.style.cursor = "pointer";
-                        }
+            var h = document.getElementById('criticality_id');
+            if (h) {
+                h.innerHTML = '<?php echo addslashes("S"); ?>';
+                h.indice = 'criticality_id';
+                h.title = "<?php echo _("Sort by severity"); ?>";
+                h.onclick=function(){change_type_order(this.indice)};
+                h.style.cursor = "pointer";
+            }
 
 			var h = document.getElementById('plugin_output');
 			h.innerHTML = '<?php echo addslashes(_("Status information")); ?>';
@@ -176,18 +173,6 @@ var _criticality_id = 0;
 		// INIT Select objects
 		construct_selecteList_ndo_instance('instance_selected');
 		construct_HostGroupSelectList('hostgroups_selected');
-
-		if (!document.getElementById('debug')){
-			var _divdebug = document.createElement("div");
-			_divdebug.id = 'debug';
-			var _debugtable = document.createElement("table");
-			_debugtable.id = 'debugtable';
-			var _debugtr = document.createElement("tr");
-			_debugtable.appendChild(_debugtr);
-			_divdebug.appendChild(_debugtable);
-			_header = document.getElementById('header');
-			_header.appendChild(_divdebug);
-		}
 
 		if (document.getElementById("host_search") && document.getElementById("host_search").value) {
 			_host_search = document.getElementById("host_search").value;
@@ -256,9 +241,9 @@ var _criticality_id = 0;
 		for (keyz in _selectedElem) {
 			if (keyz == _selectedElem[keyz]) {
 				removeFromSelectedElem(decodeURIComponent(keyz));
-                                if (document.getElementById(decodeURIComponent(keyz))) { 
-                                    document.getElementById(decodeURIComponent(keyz)).checked = false;
-                                }
+                if (document.getElementById(decodeURIComponent(keyz))) { 
+                    document.getElementById(decodeURIComponent(keyz)).checked = false;
+                }
 			}
 		}
 	}
@@ -273,12 +258,12 @@ var _criticality_id = 0;
 			return 1;
 		} else {
 			for (keyz in _selectedElem) {
-                            if ((keyz == _selectedElem[keyz]) && typeof(document.getElementById(decodeURIComponent(keyz)) != 'undefined') &&
-                                document.getElementById(decodeURIComponent(keyz))) {
-                                if (document.getElementById(decodeURIComponent(keyz)).checked) {
-                                    _getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
-                                }
-                            }
+                if ((keyz == _selectedElem[keyz]) && typeof(document.getElementById(decodeURIComponent(keyz)) != 'undefined') &&
+                    document.getElementById(decodeURIComponent(keyz))) {
+                    if (document.getElementById(decodeURIComponent(keyz)).checked) {
+                        _getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
+                    }
+                }
 			}
 			Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title:'<?php echo _("External commands") ?>',width:600});
 			return 0;
