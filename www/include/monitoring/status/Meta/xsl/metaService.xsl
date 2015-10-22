@@ -63,8 +63,9 @@
 			</xsl:if>
 			<xsl:if test="ne = 0">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/notifications_off.png</xsl:attribute>
 					  	<xsl:attribute name="title">Notification is disabled</xsl:attribute>
+						<xsl:attribute name="class">ico-18</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 		</td>

@@ -446,6 +446,7 @@ if (!PEAR::isError($DBRESULT)) {
         $obj->XML->writeElement("svc_id", $data["service_id"]);
         $obj->XML->writeElement("sc", $obj->colorService[$data["state"]]);
         $obj->XML->writeElement("cs", _($obj->statusService[$data["state"]]), false);
+        $obj->XML->writeElement("ssc", $data["state"]);
         $obj->XML->writeElement("po", $pluginShortOuput);
         $obj->XML->writeElement("ca", $data["current_attempt"] . "/" . $data["max_check_attempts"] . " (" . $obj->stateType[$data["state_type"]] . ")");
         if (isset($data['criticality']) && $data['criticality'] != '' && isset($critCache[$data['service_id']])) {

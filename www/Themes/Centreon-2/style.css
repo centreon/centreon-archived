@@ -246,15 +246,15 @@ p.description a, p.description a:visited {
                         color: #fff;
                     }
 .default_badge 		{background-color: #00a499;}
-.host_down,.down,
+.host_down,
 .service_critical 	{background-color: #e00b3d;}
 .host_unreachable 	{background-color: #818285;}
 .host_downtime 		{background-color: #cc99ff;}
 
-.service_ok,.up		{background-color: #88b917;}
+.service_ok,.host_up		{background-color: #88b917;}
 .service_warning	{background-color: #ff9a13;}
-.service_pending    {background-color: #2AD1D4;}
-.service_unknown    {background-color: #d1d2d4;}
+.pending    {background-color: #2AD1D4;}
+.service_unknown    {background-color: #bcbdc0;}
 
 
 .bdg_dtm:before {
@@ -467,6 +467,8 @@ vertical-align: middle;
 }
 .ToolbarPagination img {
     vertical-align: bottom;
+    height: 12px;
+    width: 12px;
 }
 
 .

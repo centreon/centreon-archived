@@ -494,7 +494,7 @@ var _p = 20201;
 
 }
 
-function viewDebugInfo(_str){
+/*function viewDebugInfo(_str){
 	if(_debug)
 	{
 		_nb = _nb + 1;
@@ -503,7 +503,7 @@ function viewDebugInfo(_str){
 		var newcell=newrow.insertCell(0) //insert new cell to row
 		newcell.innerHTML='<td>line:' + _nb + ' ' + _str + '</td>';
 	}
-}
+}*/
 
 function initM(_time_reload,_sid,_o){
 	_form=document.getElementById('fsave');
@@ -511,7 +511,7 @@ function initM(_time_reload,_sid,_o){
 	_form.time.value = _time - 1000;
 
 
-	if(document.getElementById('debug'))
+	/*if(document.getElementById('debug'))
 	{
 		viewDebugInfo('--RESTART--');
 		viewDebugInfo('');
@@ -527,7 +527,7 @@ function initM(_time_reload,_sid,_o){
 		_header = document.getElementById('header');
 		_header.appendChild(_divdebug);
 		viewDebugInfo('--INIT--');
-	}
+	}*/
 	goM(_time_reload,_sid,_o);
 }
 
