@@ -129,19 +129,22 @@ if (isset($sid) && $sid){
 (isset($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"]) : $EndTime = "";
 (isset($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
 (isset($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
+(isset($_GET["engine"])) ? $engine = htmlentities($_GET["engine"]) : $engine = "false";
+if($engine == "false"){
+    (isset($_GET["up"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_up", htmlentities($_GET["up"])) : $up = "true";
+    (isset($_GET["down"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_down", htmlentities($_GET["down"])) : $down = "true";
+    (isset($_GET["unreachable"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_unreachable", htmlentities($_GET["unreachable"])) : $unreachable = "true";
+    (isset($_GET["ok"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_ok", htmlentities($_GET["ok"])) : $ok = "true";
+    (isset($_GET["warning"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_warning", htmlentities($_GET["warning"])) : $warning = "true";
+    (isset($_GET["critical"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_critical", htmlentities($_GET["critical"])) : $critical = "true";
+    (isset($_GET["unknown"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_unknown", htmlentities($_GET["unknown"])) : $unknown = "true";
+    (isset($_GET["notification"])) ? set_user_param($contact_id, $pearDB, "log_filter_notif", htmlentities($_GET["notification"])) : $notification = "false";
+    (isset($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
+    (isset($_GET["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($_GET["oh"])) : $oh = "false";
+}else{
+    (isset($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
+}
 
-(isset($_GET["up"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_up", htmlentities($_GET["up"])) : $up = "true";
-(isset($_GET["down"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_down", htmlentities($_GET["down"])) : $down = "true";
-(isset($_GET["unreachable"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_unreachable", htmlentities($_GET["unreachable"])) : $unreachable = "true";
-(isset($_GET["ok"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_ok", htmlentities($_GET["ok"])) : $ok = "true";
-(isset($_GET["warning"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_warning", htmlentities($_GET["warning"])) : $warning = "true";
-(isset($_GET["critical"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_critical", htmlentities($_GET["critical"])) : $critical = "true";
-(isset($_GET["unknown"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_unknown", htmlentities($_GET["unknown"])) : $unknown = "true";
-
-(isset($_GET["notification"])) ? set_user_param($contact_id, $pearDB, "log_filter_notif", htmlentities($_GET["notification"])) : $notification = "false";
-(isset($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
-(isset($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
-(isset($_GET["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($_GET["oh"])) : $oh = "false";
 (isset($_GET["output"])) ? $output = urldecode($_GET["output"]) : $output = "";
 
 (isset($_GET["search_H"])) ? set_user_param($contact_id, $pearDB, "search_H", htmlentities($_GET["search_H"])) : $search_H = "VIDE";
@@ -149,7 +152,7 @@ if (isset($sid) && $sid){
 (isset($_GET["search_host"])) ? $search_host = htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : $search_host = "";
 (isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
 (isset($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES, "UTF-8") : $export = 0;
-(isset($_GET["engine"])) ? $engine = htmlentities($_GET["engine"]) : $engine = "false";
+
 
 
 $start = 0;
@@ -192,6 +195,7 @@ if ($contact_id){
     $alert = $user_params["log_filter_alert"];
     $notification = $user_params["log_filter_notif"];
     $error = $user_params["log_filter_error"];
+
     $unknown = $user_params["log_filter_svc_unknown"];
     $unreachable = $user_params["log_filter_host_unreachable"];
     $up = $user_params["log_filter_host_up"];
@@ -200,7 +204,18 @@ if ($contact_id){
     $warning = $user_params["log_filter_svc_warning"];
     $critical = $user_params["log_filter_svc_critical"];
     $oh = $user_params["log_filter_oh"];
-    
+    if($engine == "true"){
+        $ok = "false";
+        $up = "false";
+        $unknown = "false";
+        $unreachable = "false";
+        $down = "false";
+        $warning = "false";
+        $critical = "false";
+        $oh = "false";
+        $notification = "false";
+        $alert = "false";
+    }
     $search_H = $user_params["search_H"];
     $search_S = $user_params["search_S"];
 }
