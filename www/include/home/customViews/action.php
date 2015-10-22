@@ -106,6 +106,32 @@ try {
         $_SESSION['rotation_timer'] = $_POST['timer'];
     } elseif ($action == "defaultEditMode") {
         $_SESSION['customview_edit_mode'] = $_POST['editMode'];
+    } elseif ($action == "get_share_info") {
+        /* Get share information for a view */
+        if (isset($_POST['viewId'])) {
+            $viewers = $viewObj->getUsersFromViewId($_POST['viewId']);
+            $viewerGroups = $viewObj->getUsergroupsFromViewId($_POST['viewId']);
+            $xml->startElement('contacts');
+            foreach ($viewers as $viewer) {
+                if ($viewer['user_id'] != $centreon->user->user_id) {
+                    $xml->startElement('contact');
+                    $xml->writeAttribute('locked', $viewer['locked']);
+                    $xml->writeAttribute('id', $viewer['user_id']);
+                    $xml->text($viewer['contact_name']);
+                    $xml->endElement();
+                }
+            }
+            $xml->endElement();
+            $xml->startElement('contactgroups');
+            foreach ($viewerGroups as $viewerGroup) {
+                $xml->startElement('contactgroup');
+                $xml->writeAttribute('locked', $viewerGroup['locked']);
+                $xml->writeAttribute('id', $viewerGroup['usergroup_id']);
+                $xml->text($viewerGroup['cg_name']);
+                $xml->endElement();
+            }
+            $xml->endElement();
+        }
     }
     $xml->writeElement('custom_view_id', $customViewId);
 } catch (CentreonCustomViewException $e) {

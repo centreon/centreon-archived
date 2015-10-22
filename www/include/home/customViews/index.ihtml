@@ -20,7 +20,10 @@
               </tr>
               <tr class="create_field">
                 <td class="FormRowField">{$formAddView.name.label}</td>
-                <td class="FormRowValue">{$formAddView.name.html}</td>
+                <td class="FormRowValue">
+                  <div>{$formAddView.name.html}</div>
+                  <span class="error-msg" style="display: none;">{t}This view name is required{/t}</span>
+                </td>
               </tr>
               <tr class="load_field" style="display:none;">
                 <td class="FormRowField">{$formAddView.wiewLoad.label}</td>
@@ -60,7 +63,10 @@
               </tr>
               <tr class="create_field">
                 <td class="FormRowField">{$formEditView.name.label}</td>
-                <td class="FormRowValue">{$formEditView.name.html}</td>
+                <td class="FormRowValue">
+                  <div>{$formEditView.name.html}</div>
+                  <span class="error-msg" style="display: none;">{t}This view name is required{/t}</span>
+                </td>
               </tr>
               <tr class="create_field">
                 <td class="FormRowField">{$formEditView.layout.label}</td>
@@ -99,42 +105,24 @@
                 <h3 style="color: #00bfb3;">{$formShareView.header.title}</h3>
               </td>
             </tr>
-
-            <tr>
-              <td class="FormRowValue" colspan="2">
-              {foreach name=viewerId item=viewer from=$viewers}
-                <div id='viewer_{$viewer.user_id}'>
-                  {if $viewer.locked == 1}
-                    {assign var='contactColor' value='red'}
-                  {else}
-                    {assign var='contactColor' value='green'}
-                  {/if}
-                  <span style='float:left;'><font color='{$contactColor}'>{$viewer.contact_name}</font></span>
-                  <span style='float:left;' class='removeUser ui-icon ui-icon-close' id='rmUser_{$viewer.user_id}'></span>
-                </div>
-              {/foreach}
+            <tr class="list_lvl_1 viewerInfo">
+              <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}Viewers{/t}</h4>
               </td>
             </tr>
-            <tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">{$viewergroupLabel}</td>
+            <tr class="viewerInfo">
+              <td colspan="2" id="share_viewer"></td>
             </tr>
-            <tr class='list_one'>
-              <td class="FormRowValue" colspan="2">
-              {foreach name=viewergroupId item=viewergroup from=$viewerGroups}
-                <div id='viewergroup_{$viewergroup.usergroup_id}'>
-                  {if $viewergroup.locked == 1}
-                    {assign var='contactColor' value='red'}
-                  {else}
-                    {assign var='contactColor' value='green'}
-                  {/if}
-                  <span style='float:left;'><font color='{$contactColor}'>{$viewergroup.cg_name}</font></span>
-                  <span style='float:left;' class='removeUsergroup ui-icon ui-icon-close' id='rmUsergroup_{$viewergroup.usergroup_id}'></span>
-                </div>
-              {/foreach}
+            <tr class="list_lvl_1 viewergroupInfo">
+              <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}Viewers group{/t}</h4>
               </td>
             </tr>
+            <tr class="viewergroupInfo">
+              <td colspan="2" id="share_viewergroup"></td>
+            </tr>
             <tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2"><h4>{$formShareView.header.information}</h4>
+              <td class="ListColLvl1_name" colspan="2"><h4>{t}Add viewer / viewer group{/t}</h4>
               </td>
             </tr>
             <tr>
@@ -341,6 +329,10 @@ function setTimerLabel() {
 
 /* Submit action for add a view */
 function submitAddView() {
+  if (jQuery("#formAddView input[name='name']").val().trim() === '') {
+    jQuery('.create_field .error-msg').show();
+    return false;
+  }
   jQuery.ajax({
     type: "post",
     dataType: "xml",
@@ -369,6 +361,10 @@ function submitAddView() {
              
 /* Submit action for edit a view */
 function submitEditView() {
+  if (jQuery("#formEditView input[name='name']").val().trim() === '') {
+    jQuery('.create_field .error-msg').show();
+    return false;
+  }
   jQuery.ajax({
     type: "post",
     dataType: "xml",
@@ -574,25 +570,28 @@ function toggleEdit(forceShow) {
 /* Share view functions */
   
 function removeUserFromView(user_id) {
+  var viewId = jQuery(
+    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+  ).data('cvId');
   jQuery.ajax({
     type: "POST",
     dataType: "xml",
     url: "./include/home/customViews/action.php",
     data: {
       action: "remove",
-      custom_view_id: jQuery('[name=custom_view_id]').val(),
+      custom_view_id: viewId,
       user_id: user_id
     },
     success: function(response) {
       var view = response.getElementsByTagName('custom_view_id');
-      var contact_name = response.getElementsByTagName('contact_name');
       var error = response.getElementsByTagName('error');
       if (typeof(view) != 'undefined') {
-        jQuery('#viewer_' + user_id).hide();
-        var mselbox = document.getElementById("user_id-f");
-        var newElem = new Option(contact_name.item(0).firstChild.data, user_id);
-        mselbox.options[(mselbox.options.length)] = newElem;
-        mselbox.removeAttribute('disabled');
+        jQuery('.removeViewer').each(function () {
+          var $el = jQuery(this);
+          if ($el.data('id') == user_id) {
+            $el.parents('.badge').remove();
+          }
+        });
       } else if (typeof(error) != 'undefined') {
         var errorMsg = error.item(0).firstChild.data;
       }
@@ -601,6 +600,9 @@ function removeUserFromView(user_id) {
 }
 
 function removeUsergroupFromView(usergroup_id) {
+  var viewId = jQuery(
+    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+  ).data('cvId');
   jQuery.ajax({
     type: "POST",
     dataType: "xml",
@@ -612,14 +614,14 @@ function removeUsergroupFromView(usergroup_id) {
     },
     success: function(response) {
       var view = response.getElementsByTagName('custom_view_id');
-      var contact_name = response.getElementsByTagName('contact_name');
       var error = response.getElementsByTagName('error');
       if (typeof(view) != 'undefined') {
-        jQuery('#viewergroup_' + usergroup_id).hide();
-        var mselbox = document.getElementById("usergroup_id-f");
-        var newElem = new Option(contact_name.item(0).firstChild.data, usergroup_id);
-        mselbox.options[(mselbox.options.length)] = newElem;
-        mselbox.removeAttribute('disabled');
+        jQuery('.removeViewergroup').each(function () {
+          var $el = jQuery(this);
+          if ($el.data('id') == usergroup_id) {
+            $el.parents('.badge').remove();
+          }
+        });
       } else if (typeof(error) != 'undefined') {
         var errorMsg = error.item(0).firstChild.data;
       }
@@ -629,12 +631,94 @@ function removeUsergroupFromView(usergroup_id) {
   
 jQuery(function () {
   /* Initialize buttons */
-  jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}});
+  jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}}).on('click', function () {
+    jQuery('#formAddView input[name="name"]').val('');
+    jQuery('#formAddView input[name="layout[layout]"][value="column_1"]').prop('checked', true);
+    jQuery('#formAddView input[name="public"]').prop('checked', false);
+  });
   jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}});
   jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
     jQuery("#deleteViewConfirm").centreonPopin("open");
   });
-  jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}});
+  jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}}).on('click', function () {
+    /* Get default information for a share view */
+    var viewId = jQuery(
+      jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+    ).data('cvId');
+    if (jQuery('#user_id').val() !== null) {
+      jQuery('#user_id').val(null).trigger('change');
+    }
+    if (jQuery('#usergroup_id').val() !== null) {
+      jQuery('#usergroup_id').val(null).trigger('change');
+    }
+    jQuery.ajax({
+      url: './include/home/customViews/action.php',
+      type: 'post',
+      dataType: 'xml',
+      data: {
+        action: 'get_share_info',
+        viewId: viewId
+      },
+      success: function (data) {
+        var viewerList = jQuery('#share_viewer');
+        var viewergroupList = jQuery('#share_viewergroup');
+        viewerList.html('');
+        viewergroupList.html('');
+        jQuery(".viewerInfo").hide();
+        jQuery(".viewergroupInfo").hide();
+        /* Add viewer who have the view partaged */
+        jQuery.map(data.getElementsByTagName('contact'), function (node) {
+          var viewerBadge = jQuery('<span></span>')
+            .addClass('badge default_badge')
+            .text(node.firstChild.data);
+          var closeButton = jQuery('<a></a>')
+            .attr('href', '#')
+            .addClass('removeViewer')
+            .data('id', node.getAttribute('id'))
+            .append(
+              jQuery('<img/>')
+                .attr('src', './img/icons/circle-cross.png')
+                .addClass('ico-10')
+            );
+          viewerBadge.append(closeButton);
+          if (node.getAttribute('locked') == 1) {
+            viewerBadge.prepend(
+              jQuery('<img/>')
+                .attr('src', './img/icons/circle-cross.png') // @todo replace by lock icons
+                .addClass('ico-10')
+            );
+          }
+          jQuery(".viewerInfo").show();
+          viewerList.append(viewerBadge);
+        });
+        /* Add viewergroup who have the view partaged */
+        jQuery.map(data.getElementsByTagName('contactgroup'), function (node) {
+          var viewerBadge = jQuery('<span></span>')
+            .addClass('badge default_badge')
+            .text(node.firstChild.data);
+          var closeButton = jQuery('<a></a>')
+            .attr('href', '#')
+            .addClass('removeViewergroup')
+            .data('id', node.getAttribute('id'))
+            .append(
+              jQuery('<img/>')
+                .attr('src', './img/icons/circle-cross.png')
+                .addClass('ico-10')
+            );
+          viewerBadge.append(closeButton);
+          if (node.getAttribute('locked') == 1) {
+            viewerBadge.prepend(
+              jQuery('<img/>')
+                .attr('src', './img/icons/circle-cross.png') // @todo replace by lock icons
+                .addClass('ico-10')
+            );
+          }
+          jQuery(".viewerInfo").show();
+          viewergroupList.append(viewerBadge);
+        });
+      }
+    });
+  });
   jQuery('.addWidget').button({ icons : { primary: 'ui-icon-plus'}});
   jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
   jQuery('.setDefault').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
@@ -642,20 +726,16 @@ jQuery(function () {
   });
   
   /* Initialize action for share views */
-  jQuery(".removeUser").click(function (event) {
-    var substr = event.target.id.split("rmUser_");
-    if (typeof(substr[1]) != 'undefined') {
-      if (confirm('Remove user from viewer list?')) {
-        removeUserFromView(substr[1]);
-      }
+  jQuery('#shareView').on('click', '.removeViewer', function (event) {
+    var id = jQuery(this).data('id');
+    if (confirm('Remove user from viewer list?')) {
+      removeUserFromView(id);
     }
   });
-  jQuery(".removeUsergroup").click(function (event) {
-    var substr = event.target.id.split("rmUsergroup_");
-    if (typeof(substr[1]) != 'undefined') {
-      if (confirm('Remove user group from viewer list?')) {
-        removeUsergroupFromView(substr[1]);
-      }
+  jQuery('#shareView').on('click', '.removeViewergroup', function (event) {
+    var id = jQuery(this).data('id');
+    if (confirm('Remove user group from viewer list?')) {
+      removeUsergroupFromView(id);
     }
   });
   
@@ -717,7 +797,7 @@ jQuery(function () {
   jQuery('#setDefaultConfirm button.btc').on('click', function () {
     jQuery('#setDefaultConfirm').centreonPopin("close");
   });
-  jQuery('#setDefaultConfirm button.bt_info').on('click', function () {
+  jQuery('#setDefaultConfirm button.bt_success').on('click', function () {
     submitSetDefaultView();
   });
   
@@ -732,6 +812,7 @@ jQuery(function () {
       }
       return false;
     }).hide();
+    jQuery(this).parents('.cntn').find('.error-msg').hide();
     jQuery(this).parents('.cntn').find('.toggle_wrapper').toggle();
   });
   
