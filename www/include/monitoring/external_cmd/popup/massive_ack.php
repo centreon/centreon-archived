@@ -52,20 +52,20 @@
 		}
 	}
 
-	$path = "$centreon_path/www/include/monitoring/external_cmd/popup/";
+	$path = _CENTREON_PATH_."/www/include/monitoring/external_cmd/popup/";
 
 	/*
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
-	$tpl = initSmartyTplForPopup($path, $tpl, './templates/', $centreon_path);
+	$tpl = initSmartyTplForPopup($path, $tpl, './templates/', _CENTREON_PATH_);
 
 	/*
 	 * Pear library
 	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-	require_once $centreon_path . "www/include/monitoring/common-Func.php";
+	require_once _CENTREON_PATH_ . "www/include/monitoring/common-Func.php";
 
 	/*
 	 * Fetch default values for form

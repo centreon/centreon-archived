@@ -36,7 +36,7 @@ if (!isset($centreon)) {
 	exit();
 }
 
-include_once $centreon_path."www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
 include_once "./include/common/autoNumLimit.php";
 
 if (isset($_POST["hostgroup"]))

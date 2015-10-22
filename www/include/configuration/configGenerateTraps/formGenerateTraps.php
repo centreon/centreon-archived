@@ -156,7 +156,7 @@
                                 $filename = "{$trapdPath}/{$host['id']}/centreontrapd.sdb";
                                 $output = array();
                                 $returnVal = 0;
-                                exec("$centreon_path/bin/generateSqlLite '{$host['id']}' '{$filename}' 2>&1", $output, $returnVal);
+                                exec(_CENTREON_PATH_."/bin/generateSqlLite '{$host['id']}' '{$filename}' 2>&1", $output, $returnVal);
                                 $stdout .= implode("<br/>", $output)."<br/>";
                                 if ($returnVal != 0) {
                                     break;

@@ -50,11 +50,11 @@ function parse_zend_license_file($file)
 }
     
 // Load conf
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path . '/www/autoloader.php';
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . '/www/autoloader.php';
 
 // Modules access
-$modulesPath = $centreon_path . 'www/modules/';
+$modulesPath = _CENTREON_PATH_ . 'www/modules/';
 $modulesDirResource = opendir($modulesPath);
 
 $XmlObj = new CentreonXML(true);

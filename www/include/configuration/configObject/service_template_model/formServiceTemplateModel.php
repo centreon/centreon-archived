@@ -37,8 +37,8 @@ if (!isset($centreon)) {
     exit();
  }
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 function myDecodeSvTP($arg) {
     $arg = str_replace('#BR#', "\\n", $arg);
@@ -910,7 +910,7 @@ if ($o == "w")	{
      $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
  }
 
-require_once $centreon_path.'www/include/configuration/configObject/service/javascript/argumentJs.php';
+require_once _CENTREON_PATH_.'www/include/configuration/configObject/service/javascript/argumentJs.php';
 
 $tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>1));
 $tpl->assign("sort1", _("Service Configuration"));
@@ -964,7 +964,7 @@ if ($valid) {
     require_once($path."listServiceTemplateModel.php");
  } else {
     # Apply a template definition
-    require_once $centreon_path . 'www/include/configuration/configObject/service/javascript/argumentJs.php';
+    require_once _CENTREON_PATH_ . 'www/include/configuration/configObject/service/javascript/argumentJs.php';
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

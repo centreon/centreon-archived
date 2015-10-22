@@ -33,11 +33,11 @@
  *
  */
 
-require_once("@CENTREON_ETC@/centreon.conf.php");
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
 if (isset($_POST["sid"])){
 
-	$path = "$centreon_path/www";
+	$path = _CENTREON_PATH_."/www";
 
 	require_once("$path/class/centreon.class.php");
 	require_once("$path/class/centreonSession.class.php");

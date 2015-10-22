@@ -37,11 +37,11 @@ if (!isset($centreon)) {
     exit();
 }
 		
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 /* Init connection to storage db */
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
 $brk = new CentreonBroker($pearDB);
 if ($brk->getBroker() == 'broker') {
     $pearDBMonitoring = new CentreonDB('centstorage');

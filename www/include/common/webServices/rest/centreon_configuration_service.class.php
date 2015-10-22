@@ -36,9 +36,9 @@
  *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+
+require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationService extends CentreonConfigurationObjects
@@ -100,10 +100,11 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         
         $DBRESULT = $this->pearDB->query($queryService);
         
+        
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
-            $serviceCompleteId = $data['host_id'] . '_' . $data['service_id'];
+            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
             
             $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }

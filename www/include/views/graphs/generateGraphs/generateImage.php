@@ -36,13 +36,13 @@
 /**
  * Include config file
  */
-include "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-require_once $centreon_path . '/www/class/centreon.class.php';
-require_once $centreon_path . '/www/class/centreonACL.class.php';
-require_once $centreon_path . '/www/class/centreonGraph.class.php';
-require_once $centreon_path . '/www/class/centreonDB.class.php';
-require_once $centreon_path . '/www/class/centreonBroker.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreon.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonACL.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonGraph.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonBroker.class.php';
 
 
 $pearDB = new CentreonDB();
@@ -134,7 +134,7 @@ if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $
     $obj->displayError();
 }
 
-require_once $centreon_path."www/include/common/common-Func.php";
+require_once _CENTREON_PATH_."www/include/common/common-Func.php";
 
 /**
  * Set arguments from GET

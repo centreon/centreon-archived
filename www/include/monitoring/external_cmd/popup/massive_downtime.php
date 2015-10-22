@@ -52,7 +52,7 @@
 		}
 	}
 
-	$path = "$centreon_path/www/include/monitoring/external_cmd/popup/";
+	$path = _CENTREON_PATH_."/www/include/monitoring/external_cmd/popup/";
 	
 	/*
 	 * Init GMT
@@ -64,7 +64,7 @@
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
-	$tpl = initSmartyTplForPopup($path, $tpl, './templates/', $centreon_path);
+	$tpl = initSmartyTplForPopup($path, $tpl, './templates/', _CENTREON_PATH_);
 
 	/*
 	 * Pear library

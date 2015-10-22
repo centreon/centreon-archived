@@ -39,18 +39,18 @@
 	/**
 	 * Require Centreon Config file
 	 */
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
 	/**
 	 * Include Monitoring Classes
 	 */
-	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-	include_once $centreon_path . "www/class/centreonLang.class.php";
+	include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
+	include_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
 
 	/*
 	 * Create XML Request Objects
 	 */
-    CentreonSession::start();
+        CentreonSession::start();
 	$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 
 	/**
@@ -72,7 +72,7 @@
 	/** **************************************************
 	 * Enable Lang Object
 	 */
-	$centreonlang = new CentreonLang($centreon_path, $centreon);
+	$centreonlang = new CentreonLang(_CENTREON_PATH_, $centreon);
 	$centreonlang->bindLang();
 
 	/** **************************************************

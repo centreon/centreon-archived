@@ -36,9 +36,9 @@
  *
  */
 
-    require_once $centreon_path . '/www/class/centreonHost.class.php';
-    require_once $centreon_path . '/www/class/centreonServicegroups.class.php';
-    require_once $centreon_path . '/www/class/centreonDependency.class.php';
+    require_once _CENTREON_PATH_ . '/www/class/centreonHost.class.php';
+    require_once _CENTREON_PATH_ . '/www/class/centreonServicegroups.class.php';
+    require_once _CENTREON_PATH_ . '/www/class/centreonDependency.class.php';
 
     function getHostFormHg($db, $hgId, $instanceId=null) {
         $hostList = array();

@@ -36,19 +36,19 @@
  *
  */
 
-    require_once "@CENTREON_ETC@/centreon.conf.php";
- 	require_once $centreon_path . "www/class/centreonDB.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 
-	$pearDB = new CentreonDB();
+    $pearDB = new CentreonDB();
 
- 	/*
- 	 * Get Options colors
- 	 */
- 	$options = array();
- 	$DBRESULT = $pearDB->query("SELECT * FROM options");
- 	while ($res = $DBRESULT->fetchRow())
- 		$options[$res["key"]] = $res["value"];
- 	unset($res);
+    /*
+     * Get Options colors
+     */
+    $options = array();
+    $DBRESULT = $pearDB->query("SELECT * FROM options");
+    while ($res = $DBRESULT->fetchRow())
+            $options[$res["key"]] = $res["value"];
+    unset($res);
 
 ?>
 

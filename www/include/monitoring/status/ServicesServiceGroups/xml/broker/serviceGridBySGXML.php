@@ -38,12 +38,12 @@
 
     ini_set("display_errors", "Off");
 
-    include_once "@CENTREON_ETC@/centreon.conf.php";
+    require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
-    include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-    include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
-    include_once $centreon_path . "www/include/common/common-Func.php";
-    include_once $centreon_path . "www/class/centreonService.class.php";
+    include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
+    include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
+    include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+    include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 
     /*
      * Create XML Request Objects

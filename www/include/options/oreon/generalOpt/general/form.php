@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-require_once $centreon_path . "www/class/centreonGMT.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 if (!isset($centreon)) {
     exit();
