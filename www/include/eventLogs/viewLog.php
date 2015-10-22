@@ -800,7 +800,7 @@ if($engine == 'false'){
                 });    
 
             });
-
+/*
             jQuery("#clearhostgroup").click(function(){
                 jQuery("#host_group_filter").val('');
                 jQuery("#host_group_filter").empty().append(jQuery('<option>'));
@@ -823,7 +823,7 @@ if($engine == 'false'){
                 jQuery("#service_filter").val('');
                 jQuery("#service_filter").empty().append(jQuery('<option>'));
                 jQuery("#service_filter").trigger("change");
-            });   
+            });   */
 
 
 

@@ -21,16 +21,16 @@
 	</table>
         <table>
             <tr>
-                <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.host_group_filter.label} : </td><td style="vertical-align: top;" ></b>&nbsp;&nbsp;{$form.host_group_filter.html} <span style="cursor:pointer;" id="clearhostgroup" >x</span></td>
-                <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.service_group_filter.label} : </td><td style="vertical-align: top;" > </b>&nbsp;&nbsp;{$form.service_group_filter.html} <span style="cursor:pointer;" id="clearservicegroup" >x</span></td>
+                <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.host_group_filter.label} : </td><td style="vertical-align: top;" ></b>&nbsp;&nbsp;{$form.host_group_filter.html} </td>
+                <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.service_group_filter.label} : </td><td style="vertical-align: top;" > </b>&nbsp;&nbsp;{$form.service_group_filter.html} </td>
                 <td> {$form.output.label} </td><td> {$form.output.html} </td>
             </tr>
             <tr>
                 <td> </td><td id="setHostGroup" style="text-align:center;" > <img style="cursor: pointer;" src="./img/icons/arrow-bottom.png" alt=""/> </td><td> </td><td id="setServiceGroup" style="text-align:center;" > <img style="cursor: pointer;" src="./img/icons/arrow-bottom.png" alt=""/> </td>
             </tr>
             <tr>
-                <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.host_filter.label} : </td><td style="vertical-align: top;" > </b>&nbsp;&nbsp;{$form.host_filter.html} <span style="cursor:pointer;" id="clearhost" >x</span></td>
-                <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.service_filter.label} : </td><td style="vertical-align: top;" > </b>&nbsp;&nbsp;{$form.service_filter.html} <span style="cursor:pointer;" id="clearservice" >x</span></td>
+                <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.host_filter.label} : </td><td style="vertical-align: top;" > </b>&nbsp;&nbsp;{$form.host_filter.html} </td>
+                <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.service_filter.label} : </td><td style="vertical-align: top;" > </b>&nbsp;&nbsp;{$form.service_filter.html} </td>
             </tr>
         </table>
 </form>

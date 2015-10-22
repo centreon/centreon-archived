@@ -21,7 +21,7 @@
 	</table>
         <table>
             <tr>
-                <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.poller_filter.label} : </td><td style="vertical-align: top;" ></b>&nbsp;&nbsp;{$form.poller_filter.html} <span style="cursor:pointer;" id="clearhostgroup" >x</span></td>
+                <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.poller_filter.label} : </td><td style="vertical-align: top;" ></b>&nbsp;&nbsp;{$form.poller_filter.html} </td>
                 <td> {$form.output.label} </td><td> {$form.output.html} </td>
             </tr>
         </table>

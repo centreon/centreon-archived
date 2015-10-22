@@ -138,6 +138,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_elementHtmlName = $this->getName();
         $this->parseCustomAttributes($attributes);
         $this->_jsCallback = '';
+        $this->_allowClear = false;
     }
     
     /**
@@ -238,12 +239,18 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $strHtml = '';
         $readonly = '';
         
+        
+        
         $strHtml = '<select id="' . $this->getName()
             . '" name="' . $this->getElementHtmlName()
             . '" ' . $this->_multipleHtml . ' '
             . ' style="width: 300px;" ' . $readonly . '><option></option>'
             . '%%DEFAULT_SELECTED_VALUES%%'
             . '</select>';
+        if(!$this->_allowClear){
+            $strHtml .= '<span style="cursor:pointer;" class="clearAllSelect2">x</span>';
+        }
+        
         $strHtml .= $this->getJsInit();
         $strHtml = str_replace('%%DEFAULT_SELECTED_VALUES%%', $this->_defaultSelectedOptions, $strHtml);
         
@@ -296,8 +303,20 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $mainJsInit .= 'false,';
         }
         
+
+
         
         $strJsInitEnding = '});';
+        
+        if (!$this->_allowClear) {
+            $strJsInitEnding .= 'jQuery("#' . $this->getName() . '").nextAll(".clearAllSelect2").on("click",function(){'
+                . 'jQuery("#' . $this->getName() . '").val("");'
+                . 'jQuery("#' . $this->getName() . '").empty().append(jQuery("<option>"));'
+                . 'jQuery("#' . $this->getName() . '").trigger("change");'
+                . '});';
+        }
+        
+        
         
         $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $additionnalJs . $this->_jsCallback . $jsPost;
         
