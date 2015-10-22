@@ -15,61 +15,49 @@
         {/foreach}
         
         <form action="./index.php" method="post" name="login">
-            <div style='text-align:center;align:center;padding-top:90px;'>
-                <table id="logintab1" style="text-align:center;" align="center">
-                    <tr>
-                        <td class="LoginInvitLogo" colspan="2">
-                            <img src="img/centreon.png" alt="Centreon Logo" title="Centreon Logo" style="" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="LoginInvitVersion">
-                            <br />
+            <p align="center">
+                <div class="login_wrapper">
+                    <div class="LoginInvitLogo">
+                       <img src="img/centreon.png" alt="Centreon Logo" title="Centreon Logo" />
+                    </div>
+
+                    <div class="logintab">
+                        <table id="logintab1" style="text-align:center;" align="center">
+
+                           <tr>
+                                <td align='right'>
+                                    {$form.useralias.label}
+                                </td>
+                                <td>
+                                    {$form.useralias.html}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align='right'>
+                                    {$form.password.label}
+                                </td>
+                                <td>
+                                    {$form.password.html}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td  colspan="2" align='center'>
+                                    {$form.submitLogin.html}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="LoginInvitVersion">
+                        <span id="LoginInvitcpy">
+                            &copy; <a href="mailto:infos@centreon.com">Centreon</a> 2005-2015
+                        </span>
+                        <br>
+                        <span>
                             {$centreonVersion}
-                        </td>
-                        <td class="LoginInvitDate">
-                            <br />
-                            {$currentDate}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <table id="logintab2">
-                                <tr>
-                                    <td style="grayLine"><td>
-                                </tr>
-                                <tr>
-                                    <td align='right'>
-                                        {$form.useralias.label}
-                                    </td>
-                                    <td>
-                                        {$form.useralias.html}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align='right'>
-                                        {$form.password.label}
-                                    </td>
-                                    <td>
-                                        {$form.password.html}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" align='center'>
-                                        {$form.submitLogin.html}
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td id="LoginInvitcpy" colspan="2">
-                            <br />
-                            &copy; 2005-2015 <a href="mailto:infos@centreon.com">Centreon</a>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+                        </span>
+                    </div>
+                </div>
+            </p>
             {$form.hidden}
         </form>
     </body>

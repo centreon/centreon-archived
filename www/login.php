@@ -75,9 +75,9 @@
      * Defining Login Form
      */
     $form = new HTML_QuickForm('Form', 'post', './index.php');
-    $form->addElement('text', 'useralias', _("Login:"));
-    $form->addElement('password', 'password', _("Password"));
-    $submitLogin = $form->addElement('submit', 'submitLogin', _("Connect >>"));
+    $form->addElement('text', 'useralias', _("Login:"), array('class' => 'inputclassic'));
+    $form->addElement('password', 'password', _("Password"), array('class' => 'inputclassicPass'));
+    $submitLogin = $form->addElement('submit', 'submitLogin', _("Connect >>"), array('class' => 'btc bt_info'));
     
     $loginValidate = $form->validate();
     
