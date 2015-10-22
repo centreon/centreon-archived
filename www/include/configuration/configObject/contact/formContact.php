@@ -63,8 +63,8 @@ $cgs = $acl->getContactGroupAclConf(
     )
 );
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 $initialValues = array();
 
@@ -362,7 +362,7 @@ echo $ams3->getElementJs(false);
 /**
  * Include GMT Class
  */
-require_once $centreon_path . "www/class/centreonGMT.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 $CentreonGMT = new CentreonGMT($pearDB);
 /*

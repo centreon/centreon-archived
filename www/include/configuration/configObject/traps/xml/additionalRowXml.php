@@ -44,14 +44,14 @@
     $nbOfInitialRows = htmlentities($_GET['nbOfInitialRows'], ENT_QUOTES, "UTF-8");
     $currentId = htmlentities($_GET['id'], ENT_QUOTES, "UTF-8");
 
-    include_once("@CENTREON_ETC@/centreon.conf.php");
-	require_once $centreon_path . "/www/class/centreonXML.class.php";
+    require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+	require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
 
         /*
 	 * Get session
 	 */
-	require_once ($centreon_path . "www/class/centreonSession.class.php");
-	require_once ($centreon_path . "www/class/centreon.class.php");
+	require_once (_CENTREON_PATH_ . "www/class/centreonSession.class.php");
+	require_once (_CENTREON_PATH_ . "www/class/centreon.class.php");
 	if (!isset($_SESSION['centreon'])) {
 		CentreonSession::start();
 	}
@@ -68,7 +68,7 @@
 	$locale = $oreon->user->get_lang();
 	putenv("LANG=$locale");
 	setlocale(LC_ALL, $locale);
-	bindtextdomain("messages",  $centreon_path . "www/locale/");;
+	bindtextdomain("messages",  _CENTREON_PATH_ . "www/locale/");;
 	bind_textdomain_codeset("messages", "UTF-8");
 	textdomain("messages");
         

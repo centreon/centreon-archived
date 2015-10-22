@@ -40,8 +40,8 @@ if (!isset($centreon)) {
 
 global $form_service_type;
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 $serviceObj = new CentreonService($pearDB);
 

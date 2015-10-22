@@ -38,8 +38,8 @@
     if (!isset ($oreon))
         exit ();
 
-    require_once $centreon_path . 'www/class/centreonConnector.class.php';
-    $path = $centreon_path . 'www/include/configuration/configObject/connector/';
+    require_once _CENTREON_PATH_ . 'www/class/centreonConnector.class.php';
+    $path = _CENTREON_PATH_ . 'www/include/configuration/configObject/connector/';
     require_once $path . "DB-Func.php";
 
     /*

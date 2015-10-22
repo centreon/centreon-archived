@@ -36,7 +36,7 @@
  * 
  */
 	
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 	
 	if ($type == "Service") {
 		$arg = "id=".$service_id."&host_id=".$host_id;

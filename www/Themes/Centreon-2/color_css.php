@@ -127,22 +127,22 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 .list_up			{	background-color:<?php print $color_list_up; ?>;}
 .list_up:hover		{	background-color:<?php print $color_list_up_hover; ?>;}
 
-.list_down 			{	background-color:<?php print $options["color_line_critical"]; ?>;}
-.list_down:hover 	{	background-color:<?php print $options["color_line_critical"]; ?>;}
+.list_down 			{	background-color: #ffaec1;}
+.list_down:hover 	{	background-color: #e17790;}
 
 .list_unreachable 			{	background-color:<?php print $options["color_host_unreachable"]; ?>;}
 .list_unreachable:hover 	{	background-color:<?php print $options["color_host_unreachable"]; ?>;}
 
 .line_downtime		{	background-color: #f1dfff;}
-.line_downtime:hover{	background-color:<?php print $options["color_downtime"]; ?>;}
+.line_downtime:hover{	background-color: #e7c9ff;}
 
 .line_ack			{	background-color:<?php print $options["color_ack"]; ?>;}
 .line_ack:hover		{	background-color:<?php print $options["color_ack"]; ?>;}
 
 /* Monitoring Side */
-.host_down 			{-moz-border-radius:8px;background-color:<?php print $options["color_host_down"]; ?>;}
-.host_unreachable 	{-moz-border-radius:8px;background-color:<?php print $options["color_host_unreachable"]; ?>;border:2px <?php print $options["color_host_unreachable"]; ?> solid;}
-.host_downtime 		{-moz-border-radius:8px;background-color:<?php print $options["color_downtime"]; ?>;border:2px <?php print $options["color_downtime"]; ?> solid;}
+.host_down 			{background-color: #e00b3d;}
+.host_unreachable 	{background-color: #818285;}
+.host_downtime 		{background-color: #cc99ff; ?>;}
 
 
 /* Menu */

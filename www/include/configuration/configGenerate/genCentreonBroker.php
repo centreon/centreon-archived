@@ -42,7 +42,7 @@
      */
     $pearDBO = new CentreonDB("centstorage");
 
-    require_once $centreon_path . "/www/class/centreonXML.class.php";
+    require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
 
     $dir_conf = $centreonBrokerPath . '/' . $tab['id'];
 

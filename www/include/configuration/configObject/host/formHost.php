@@ -79,8 +79,8 @@ if ($oreon->user->admin) {
     $notifCgs = array_intersect_key($cgLdap, $cgAcl);
 }
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 /*
  * Validate function for all host is in the same instances
@@ -496,7 +496,7 @@ $form->addElement('select', 'host_snmp_version', _("Version"), array(NULL => NUL
 /*
  * Include GMT Class
  */
-require_once $centreon_path . "www/class/centreonGMT.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 $CentreonGMT = new CentreonGMT($pearDB);
 

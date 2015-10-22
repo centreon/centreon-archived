@@ -36,7 +36,7 @@
  * SVN : $Id$
  *
  */
-require_once $centreon_path . 'www/class/centreonInstance.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
 
 /**
  *  Class that contains various methods for managing services

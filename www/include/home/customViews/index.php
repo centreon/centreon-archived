@@ -120,9 +120,7 @@ try {
     $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("2 Columns"), 'column_2');
     $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("3 Columns"), 'column_3');
     $formAddView->addGroup($layouts, 'layout', _("Layout"), '&nbsp;');
-    if ($action == "add") {
-        $formAddView->setDefaults(array('layout[layout]' => 'column_1'));
-    }
+    $formAddView->setDefaults(array('layout[layout]' => 'column_1'));
 
     $formAddView->addElement('checkbox', 'public', _("Public"), $attrsText);
 
@@ -193,7 +191,6 @@ try {
     $cgObj = new CentreonContactgroup($db);
     $formShareView = new HTML_QuickForm('formShareView', 'post', "?p=103");
     $formShareView->addElement('header', 'title', _("Share view"));
-    $formShareView->addElement('header', 'information', _("General Information"));
 
     /**
      * Locked
@@ -233,7 +230,7 @@ try {
     /**
      * Submit button
      */
-    $formShareView->addElement('button', 'submit', _("Share"), array("onClick" => "submitData();", "class" => "btc bt_info"));
+    $formShareView->addElement('button', 'submit', _("Share"), array("onClick" => "submitShareView();", "class" => "btc bt_info"));
     $formShareView->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $formShareView->addElement('hidden', 'action');
     $formShareView->setDefaults(array('action' => 'share'));

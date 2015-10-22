@@ -36,9 +36,9 @@
  *
  */
 
-include_once('@CENTREON_ETC@/centreon.conf.php');
-require_once $centreon_path . '/www/class/centreonDB.class.php';
-require_once $centreon_path . '/www/include/common/common-Func.php';
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_ . '/www/include/common/common-Func.php';
 
 /*
  * Validate the session

@@ -1,6 +1,6 @@
 <?php
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 
 define ('TMP_DIR_PREFIX', 'tmpdir_');
 define ('TMP_DIR_SUFFIX', '.d');
@@ -148,7 +148,7 @@ class Backend {
     private function __construct() {
         global $conf_centreon, $centreon_path;
 
-        $this->generate_path = $centreon_path . '/filesGeneration';
+        $this->generate_path = _CENTREON_PATH_ . '/filesGeneration';
                 
         $mysql_host = $conf_centreon["hostCentreon"];
         $mysql_database = $conf_centreon["db"];

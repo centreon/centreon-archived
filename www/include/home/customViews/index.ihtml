@@ -99,9 +99,6 @@
                 <h3 style="color: #00bfb3;">{$formShareView.header.title}</h3>
               </td>
             </tr>
-            <tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">{$viewerLabel}</td>
-            </tr>
 
             <tr>
               <td class="FormRowValue" colspan="2">
@@ -485,6 +482,38 @@ function submitRotation() {
     }
   });
 }
+  
+/* Submit action for share views */
+function submitShareView()
+{
+  var viewId = jQuery(
+    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+  ).data('cvId');
+  var postData = {};
+  jQuery("#formShareView").serializeArray().each(function (value, idx) {
+    if (value.name === 'custom_view_id') {
+      postData.custom_view_id = viewId;
+    } else {
+      postData[value.name] = value.value;
+    }
+  });
+  
+  jQuery.ajax({
+    type: "POST",
+    dataType: "xml",
+    url: "./include/home/customViews/action.php",
+    data: postData,
+    success: function (response) {
+      var view = response.getElementsByTagName('custom_view_id');
+      var error = response.getElementsByTagName('error');
+      if (typeof(view) != 'undefined') {
+        jQuery('#shareView').hide();
+      } else if (typeof(error) != 'undefined') {
+        var errorMsg = error.item(0).firstChild.data;
+      }
+    }
+  });
+}
              
 /**
  * Initializes Colorbox
@@ -541,6 +570,62 @@ function toggleEdit(forceShow) {
     });
   }
 }
+
+/* Share view functions */
+  
+function removeUserFromView(user_id) {
+  jQuery.ajax({
+    type: "POST",
+    dataType: "xml",
+    url: "./include/home/customViews/action.php",
+    data: {
+      action: "remove",
+      custom_view_id: jQuery('[name=custom_view_id]').val(),
+      user_id: user_id
+    },
+    success: function(response) {
+      var view = response.getElementsByTagName('custom_view_id');
+      var contact_name = response.getElementsByTagName('contact_name');
+      var error = response.getElementsByTagName('error');
+      if (typeof(view) != 'undefined') {
+        jQuery('#viewer_' + user_id).hide();
+        var mselbox = document.getElementById("user_id-f");
+        var newElem = new Option(contact_name.item(0).firstChild.data, user_id);
+        mselbox.options[(mselbox.options.length)] = newElem;
+        mselbox.removeAttribute('disabled');
+      } else if (typeof(error) != 'undefined') {
+        var errorMsg = error.item(0).firstChild.data;
+      }
+    }
+  });
+}
+
+function removeUsergroupFromView(usergroup_id) {
+  jQuery.ajax({
+    type: "POST",
+    dataType: "xml",
+    url: "./include/home/customViews/action.php",
+    data: {
+      action: "removegroup",
+      custom_view_id: jQuery('[name=custom_view_id]').val(),
+      usergroup_id:	usergroup_id
+    },
+    success: function(response) {
+      var view = response.getElementsByTagName('custom_view_id');
+      var contact_name = response.getElementsByTagName('contact_name');
+      var error = response.getElementsByTagName('error');
+      if (typeof(view) != 'undefined') {
+        jQuery('#viewergroup_' + usergroup_id).hide();
+        var mselbox = document.getElementById("usergroup_id-f");
+        var newElem = new Option(contact_name.item(0).firstChild.data, usergroup_id);
+        mselbox.options[(mselbox.options.length)] = newElem;
+        mselbox.removeAttribute('disabled');
+      } else if (typeof(error) != 'undefined') {
+        var errorMsg = error.item(0).firstChild.data;
+      }
+    }
+  });
+}
   
 jQuery(function () {
   /* Initialize buttons */
@@ -554,6 +639,34 @@ jQuery(function () {
   jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
   jQuery('.setDefault').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
     jQuery("#setDefaultConfirm").centreonPopin("open");
+  });
+  
+  /* Initialize action for share views */
+  jQuery(".removeUser").click(function (event) {
+    var substr = event.target.id.split("rmUser_");
+    if (typeof(substr[1]) != 'undefined') {
+      if (confirm('Remove user from viewer list?')) {
+        removeUserFromView(substr[1]);
+      }
+    }
+  });
+  jQuery(".removeUsergroup").click(function (event) {
+    var substr = event.target.id.split("rmUsergroup_");
+    if (typeof(substr[1]) != 'undefined') {
+      if (confirm('Remove user group from viewer list?')) {
+        removeUsergroupFromView(substr[1]);
+      }
+    }
+  });
+  
+  jQuery('input[name="create_load[create_load]"]').change(function (){
+    if (jQuery(this).val() == 'load'){
+        jQuery('.load_field').css('display','table-row');
+        jQuery('.create_field').css('display','none');
+    } else if (jQuery(this).val() == 'create'){
+        jQuery('.load_field').css('display','none');
+        jQuery('.create_field').css('display','table-row');
+    }
   });
   
   /* Initialize tabs */

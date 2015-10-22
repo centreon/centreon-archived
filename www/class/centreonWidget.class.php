@@ -33,8 +33,8 @@
  *
  */
 
-require_once $centreon_path . "www/class/centreonUtils.class.php";
-require_once $centreon_path . "www/class/centreonCustomView.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonCustomView.class.php";
 
 /**
  * Centreon Widget Exception

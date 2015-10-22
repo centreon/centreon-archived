@@ -3,10 +3,10 @@ if (!isset($_POST['poller'])) {
     exit;
 }
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path.'/www/class/centreonDB.class.php';
-require_once $centreon_path.'/www/class/centreonXML.class.php';
-require_once $centreon_path.'/www/class/centreonInstance.class.php';
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_.'/www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_.'/www/class/centreonXML.class.php';
+require_once _CENTREON_PATH_.'/www/class/centreonInstance.class.php';
 
 $poller = $_POST['poller'];
 $db = new CentreonDB();

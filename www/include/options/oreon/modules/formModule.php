@@ -62,13 +62,13 @@
 	 */
 	if ($name) {
 		$flag = false;
-		include_once($centreon_path . "www/modules/".$name."/conf.php");
+		include_once(_CENTREON_PATH_ . "www/modules/".$name."/conf.php");
 		$tpl->assign("module_rname", $module_conf[$name]["rname"]);
 		$tpl->assign("module_release", $module_conf[$name]["mod_release"]);
 		$tpl->assign("module_author", $module_conf[$name]["author"]);
 		$tpl->assign("module_infos", $module_conf[$name]["infos"]);
-		if (is_dir($centreon_path . "www/modules/".$name."/infos") && is_file("./modules/".$name."/infos/infos.txt"))	{
-			$infos_streams = file($centreon_path . "www/modules/".$name."/infos/infos.txt");
+		if (is_dir(_CENTREON_PATH_ . "www/modules/".$name."/infos") && is_file("./modules/".$name."/infos/infos.txt"))	{
+			$infos_streams = file(_CENTREON_PATH_ . "www/modules/".$name."/infos/infos.txt");
 			$infos_streams = implode("<br />", $infos_streams);
 			$tpl->assign("module_infosTxt", $infos_streams);
 		} else
@@ -96,7 +96,7 @@
 				 * PHP execution if need
 				 */
 				$php_file = "install.php";
-				$php_file_path = $centreon_path . "www/modules/".$name."/php/".$php_file;
+				$php_file_path = _CENTREON_PATH_ . "www/modules/".$name."/php/".$php_file;
 				if ($module_conf[$name]["php_files"] && file_exists($php_file_path))	{
 					$tpl->assign("output3", _("PHP file included"));
 					include_once($php_file_path);
@@ -129,13 +129,13 @@
 
 		$moduleinfo = getModuleInfoInDB(NULL, $id);
 		$elemArr = array();
-		if (is_dir($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE"))	{
-			$handle = opendir($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE");
+		if (is_dir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE"))	{
+			$handle = opendir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE");
 			$i = 0;
 			$elemArr = array();
 			while (false !== ($filename = readdir($handle)))	{
 				if (substr($filename, 0, 1) != "." && strstr($filename, $moduleinfo["name"]."-"))	{
-					include_once($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/conf.php");
+					include_once(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/conf.php");
 					if ($moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])	{
 						$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 						$upgrade_ok = false;
@@ -147,14 +147,14 @@
 								$tpl->assign("output1", _("Module installed and registered"));
 								# SQL update if need
 								$sql_file = "upgrade.sql";
-								$sql_file_path = $centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/sql/";
+								$sql_file_path = _CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/sql/";
 								if ($upgrade_conf[$moduleinfo["name"]]["sql_files"] && file_exists($sql_file_path.$sql_file))	{
 									$tpl->assign("output2", _("SQL file included"));
 									execute_sql_file($sql_file, $sql_file_path);
 								}
 								# PHP update if need
 								$php_file = "upgrade.php";
-								$php_file_path = $centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/php/".$php_file;
+								$php_file_path = _CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/php/".$php_file;
 								if ($upgrade_conf[$moduleinfo["name"]]["php_files"] && file_exists($php_file_path))	{
 									$tpl->assign("output3", _("PHP file included"));
 									include_once($php_file_path);
@@ -171,8 +171,8 @@
 							$redirect->setValue("u");
 						}
 
-						if (is_dir($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos") && is_file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt"))	{
-							$infos_streams = file($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt");
+						if (is_dir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos") && is_file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt"))	{
+							$infos_streams = file(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt");
 							$infos_streams = implode("<br />", $infos_streams);
 							$upgrade_infosTxt = $infos_streams;
 						} else {
