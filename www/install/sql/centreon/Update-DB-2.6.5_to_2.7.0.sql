@@ -247,7 +247,7 @@ DELETE FROM topology WHERE topology_page IN ('20103', '20105', '20215', '20202',
 
 -- Moving Graphs section to Performances
 SET foreign_key_checks = 0;
-DELETE FROM topology_JS WHERE id_page IN (40201);
+DELETE FROM topology_JS WHERE id_page = 40201;
 UPDATE topology SET topology_parent = 2 WHERE topology_id = 137;
 UPDATE topology SET topology_parent = 204 WHERE topology_id = 138;
 UPDATE topology SET topology_page = 20401, topology_parent = 204 WHERE topology_id = 139;
