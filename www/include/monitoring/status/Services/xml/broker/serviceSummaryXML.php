@@ -40,6 +40,8 @@
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 
+        include_once $centreon_path . "www/class/centreonUtils.class.php";
+
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
@@ -175,8 +177,8 @@
 		$obj->XML->startElement("l");
 		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 		$obj->XML->writeElement("o", $ct++);
-		$obj->XML->writeElement("hn", $host_name, false);
-		$obj->XML->writeElement("hnl", urlencode($host_name));
+		$obj->XML->writeElement("hn", CentreonUtils::escapeSecure($host_name), false);
+		$obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
 		$obj->XML->writeElement("hid", $tab["host_id"], false);
 		$obj->XML->writeElement("ico", $tabIcone[$host_name]);
 		$obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);

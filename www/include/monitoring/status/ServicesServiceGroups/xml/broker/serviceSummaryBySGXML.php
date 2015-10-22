@@ -40,6 +40,8 @@
 
     include_once "@CENTREON_ETC@/centreon.conf.php";
 
+    include_once $centreon_path . "www/class/centreonUtils.class.php";
+
     include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
     include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
     include_once $centreon_path . "www/include/common/common-Func.php";
@@ -218,20 +220,20 @@
             $count = 0;
             $ct++;
             $obj->XML->startElement("sg");
-            $obj->XML->writeElement("sgn", $sg);
+            $obj->XML->writeElement("sgn", CentreonUtils::escapeSecure($sg));
             $obj->XML->writeElement("o", $ct);
 
             foreach ($h as $hostName => $hostInfos) {
                 $count++;
                 $obj->XML->startElement("h");
                 $obj->XML->writeAttribute("class", $obj->getNextLineClass());
-                $obj->XML->writeElement("hn", $hostName, false);
+                $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($hostName), false);
                 if ($hostInfos['icon_image']) {
                     $obj->XML->writeElement("hico", $hostInfos['icon_image']);
                 } else {
                     $obj->XML->writeElement("hico", "none");
                 }
-                $obj->XML->writeElement("hnl", urlencode($hostName));
+                $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($hostName)));
                 $obj->XML->writeElement("hcount", $count);
                 $obj->XML->writeElement("hid", $hostInfos['host_id']);
                 $obj->XML->writeElement("hs", _($obj->statusHost[$hostInfos['host_state']]));
