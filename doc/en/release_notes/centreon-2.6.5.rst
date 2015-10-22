@@ -2,6 +2,7 @@
 Centreon 2.6.5
 ==============
 
+Released October 21, 2015
 
 ******
 Notice
