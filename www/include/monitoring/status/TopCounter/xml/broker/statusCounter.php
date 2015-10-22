@@ -201,7 +201,7 @@ if ($pollerList != "") {
 			}
 			$pollerListInError .= $ndo["name"];
 		}
-		if ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 2)) {
+		if ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 10)) {
 			$status = 2;
 			if ($pollerListInError != "") {
 				$pollerListInError .= ", ";
@@ -211,18 +211,18 @@ if ($pollerList != "") {
 		/*
 		 * Activity
 		 */
-		if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
+		if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 5)) {
 			$activity = 2;
 			if ($inactivInstance != "") {
             	$inactivInstance .= ",";
             }
-            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
-		} else if ((time() - $ndo["last_update"] >= $timeUnit * 2)) {
+            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 5)."s]";
+		} else if ((time() - $ndo["last_update"] >= $timeUnit * 10)) {
 			$activity = 1;
 			if ($inactivInstance != "") {
             	$inactivInstance .= ",";
             }
-            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
+            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 10)."s]";
 		}
 
 	}
@@ -236,16 +236,16 @@ if ($pollerList != "") {
 					"	AND ns.stat_key LIKE 'Average' " .
 					"	AND ns.instance_id = i.instance_id" .
 					"	AND i.deleted = 0" .
-                                            "       AND i.name IN ($pollerList)";
+                    "   AND i.name IN ($pollerList)";
 	$DBRESULT = $obj->DBC->query($request);
 	while ($ndo = $DBRESULT->fetchRow()) {
 		if (!$latency && $ndo["stat_value"] >= 60) {
 			$latency = 1;
-                            $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
+            $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
 		}
 		if ($ndo["stat_value"] >= 120) {
 			$latency = 2;
-                            $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
+            $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
 		}
 	}
 	$DBRESULT->free();

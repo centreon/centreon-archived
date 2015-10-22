@@ -31,27 +31,25 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($centreon)) {
+	exit();		
+}
 
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-	$sid = session_id();
-	$time = time();
+$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+$sid = session_id();
+$time = time();
 
-	$obis = $o;
-	if(isset($_GET["problem"])) {
-		$obis .= '_pb';
-	}
-	if(isset($_GET["acknowledge"])) {
-		$obis .= '_ack_' . $_GET["acknowledge"];
-	}
+$obis = $o;
+if(isset($_GET["problem"])) {
+	$obis .= '_pb';
+}
+if(isset($_GET["acknowledge"])) {
+	$obis .= '_ack_' . $_GET["acknowledge"];
+}
+
 ?>
 <script type="text/javascript">
 var _debug = 0;
@@ -132,10 +130,10 @@ function initM(_time_reload, _sid, _o )
     construct_HostGroupSelectList('hostgroups_selected');
 
     if (document.getElementById("host_search") && document.getElementById("host_search").value) {
-            _host_search = document.getElementById("host_search").value;
-            viewDebugInfo('search: '+document.getElementById("host_search").value);
+        _host_search = document.getElementById("host_search").value;
+        viewDebugInfo('search: '+document.getElementById("host_search").value);
     } else if (document.getElementById("host_search").lenght == 0) {
-            _host_search = "";
+        _host_search = "";
     }
 
     if (_first){
@@ -145,7 +143,7 @@ function initM(_time_reload, _sid, _o )
 
     _time=<?php echo $time; ?>;
     if (_on) {
-            goM(_time_reload,_sid,_o);
+        goM(_time_reload,_sid,_o);
     }
 }
 
