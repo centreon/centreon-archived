@@ -40,7 +40,7 @@ if (!isset($centreon)) {
 if (!$centreon->user->admin) {
     if ($sg_id && false === strpos($sgString, "'".$sg_id."'")) {
         $msg = new CentreonMsg();
-        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
         $msg->setText(_('You are not allowed to access this service group'));
         return null;
@@ -252,7 +252,10 @@ $form->addElement('select2', 'sg_hServices', _("Linked Host Services"), array(),
 
 $attrHostgroup1 = array_merge(
     $attrHostgroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=servicegroups&field=sg_hgServices&id=' . $sg_id)
+    array(
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list&t=hostgroup',
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=servicegroups&field=sg_hgServices&id=' . $sg_id
+    )
 );
 $form->addElement('select2', 'sg_hgServices', _("Linked Host Group Services"), array(), $attrHostgroup1);
 

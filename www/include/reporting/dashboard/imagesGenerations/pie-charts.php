@@ -36,9 +36,9 @@
  *
  */
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once $centreon_path."www/class/centreonSession.class.php";
-	require_once $centreon_path."www/class/centreon.class.php";
+	require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+	require_once _CENTREON_PATH_."www/class/centreonSession.class.php";
+	require_once _CENTREON_PATH_."www/class/centreon.class.php";
 
 	CentreonSession::start();
 	if (!isset($_SESSION['centreon'])) {
@@ -63,7 +63,7 @@
 				$legend[] = "";
 			}
 	}
-	include_once($centreon_path . '/www/lib/ofc-library/open-flash-chart.php' );
+	include_once(_CENTREON_PATH_ . '/www/lib/ofc-library/open-flash-chart.php' );
 
 	$g = new graph();
 	$g->bg_colour = '#F3F6F6';

@@ -64,9 +64,6 @@
                 </xsl:if>
 		<td class="ListColLeft">
 			<xsl:element name="span">
-				<xsl:if test="hdtm != 0">
-					<xsl:attribute name="class">host_downtime</xsl:attribute>
-				</xsl:if>
 				<xsl:if test="ico != ''">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/media/<xsl:value-of select="ico"/></xsl:attribute>
@@ -128,8 +125,8 @@
 				<xsl:element name="a">
 					<xsl:attribute name="class">infobulle</xsl:attribute>
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
-					  	<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/warning.png</xsl:attribute>
+					  	<xsl:attribute name="class">infobulle link_generic_info_volante ico-18</xsl:attribute>
 						<xsl:attribute name="id">dtmspan_<xsl:value-of select="hid"/></xsl:attribute>
 						<xsl:attribute name="name"><xsl:value-of select="hdtmXml"/>|<xsl:value-of select="hdtmXsl"/></xsl:attribute>
 					</xsl:element>
@@ -158,18 +155,19 @@
 			</xsl:if>
 			<xsl:if test="ne = 0">
 				<xsl:element name="img">
-				  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
-                                        <xsl:attribute name="title">					  		
-                                            <xsl:value-of select='//i/notif_disabled'/>
-                                        </xsl:attribute>
+				  	<xsl:attribute name="src">./img/icons/notifications_off.png</xsl:attribute>
+					<xsl:attribute name="title">
+						<xsl:value-of select='//i/notif_disabled'/>
+					</xsl:attribute>
+					<xsl:attribute name="class">ico-18</xsl:attribute>
 				</xsl:element>
 			</xsl:if>
 			<xsl:element name="a">
 				<xsl:attribute name="href">./main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/></xsl:attribute>
 				<xsl:element name="img">
 					<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
+					<xsl:attribute name="class">ico-18</xsl:attribute>
 					<xsl:attribute name="title">See Graphs of this host</xsl:attribute>
-                    <xsl:attribute name="class">ico-18</xsl:attribute>
 				</xsl:element>
 			</xsl:element>
 			

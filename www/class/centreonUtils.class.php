@@ -34,8 +34,8 @@
  */
 
 
-require_once $centreon_path . 'www/class/centreonDB.class.php';
-require_once $centreon_path . 'www/class/centreonGMT.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonGMT.class.php';
 
 class CentreonUtils
 {

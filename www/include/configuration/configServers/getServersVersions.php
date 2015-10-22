@@ -39,9 +39,10 @@
 /*
 * Centcore pipe path
 */
-$centcore_pipe = "@CENTREON_VARLIB@/centcore.cmd";
-if ($centcore_pipe == "/centcore.cmd") {
-       $centcore_pipe = "/var/lib/centreon/centcore.cmd";
+if (defined('_CENTREON_VARLIB_')) {
+    $centcore_pipe = _CENTREON_VARLIB_."/centcore.cmd";
+} else {
+    $centcore_pipe = "/var/lib/centreon/centcore.cmd";
 }
 
 

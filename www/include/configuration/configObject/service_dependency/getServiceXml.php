@@ -36,18 +36,18 @@
  *
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
 /*
  * Include Classes
  */
-require_once $centreon_path . "www/class/centreon.class.php";
-require_once $centreon_path . "www/class/centreonUser.class.php";
-require_once $centreon_path . "www/class/centreonSession.class.php";
-require_once $centreon_path . "www/class/centreonXML.class.php";
-require_once $centreon_path . "www/class/centreonDB.class.php";
-require_once $centreon_path . "www/class/centreonACL.class.php";
-require_once $centreon_path . "www/class/centreonBroker.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
 
 session_start();
 

@@ -269,6 +269,12 @@ class HTML_QuickForm extends HTML_Common
      * @access    private
      */
     var $_flagSubmitted = false;
+    
+    /**
+     *
+     * @var type 
+     */
+    var $_tokenValidated = false;
 
     // }}}
     // {{{ constructor
@@ -329,6 +335,7 @@ class HTML_QuickForm extends HTML_Common
                     $this->_maxFileSize = $matches['1'];
             }
         }
+        $this->addFormRule(array($this, 'checkSecurityToken'));
     } // end constructor
 
     // }}}
@@ -1579,7 +1586,7 @@ class HTML_QuickForm extends HTML_Common
                 }
             }
         }
-
+        
         // process the global rules now
         foreach ($this->_formRules as $rule) {
             if (true !== ($res = call_user_func($rule, $this->_submitValues, $this->_submitFiles))) {
@@ -1682,7 +1689,6 @@ class HTML_QuickForm extends HTML_Common
     function accept(&$renderer)
     {
         $this->createSecurityToken();
-        $this->addFormRule(array($this, 'checkSecurityToken'));
         $renderer->startForm($this);
         foreach (array_keys($this->_elements) as $key) {
             $element =& $this->_elements[$key];
@@ -2043,13 +2049,18 @@ class HTML_QuickForm extends HTML_Common
     {
         $success = false;
         
-        if (isset($submittedValues['centreon_token']) && isset($_SESSION['x-centreon-token']) && isset($_SESSION['x-centreon-token-generated-at'])) {
-            $elapsedTime = time() - $_SESSION['x-centreon-token-generated-at'];
-            if ($elapsedTime < (15 * 60)) {
-                if ($submittedValues['centreon_token'] == $_SESSION['x-centreon-token']) {
-                    unset($_SESSION['x-centreon-token']);
-                    unset($_SESSION['x-centreon-token-generated-at']);
-                    $success = true;
+        if ($this->_tokenValidated) {
+            $success = true;
+        } else {
+            if (isset($submittedValues['centreon_token']) && isset($_SESSION['x-centreon-token']) && isset($_SESSION['x-centreon-token-generated-at'])) {
+                $elapsedTime = time() - $_SESSION['x-centreon-token-generated-at'];
+                if ($elapsedTime < (15 * 60)) {
+                    if ($submittedValues['centreon_token'] == $_SESSION['x-centreon-token']) {
+                        unset($_SESSION['x-centreon-token']);
+                        unset($_SESSION['x-centreon-token-generated-at']);
+                        $success = true;
+                        $this->_tokenValidated = true;
+                    }
                 }
             }
         }

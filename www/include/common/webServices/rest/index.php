@@ -36,9 +36,9 @@
  *
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path . 'www/class/centreon.class.php';
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . '/webService.class.php';
 require_once dirname(__FILE__) . '/exceptions.php';
 
@@ -55,8 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     
     /* @todo Check if user already have valid token */
     
-    require_once $centreon_path . "/www/class/centreonLog.class.php";
-    require_once $centreon_path . "/www/class/centreonAuth.class.php";
+    require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
+    require_once _CENTREON_PATH_ . "/www/class/centreonAuth.class.php";
     
     /* Authenticate the user */
     $log = new CentreonUserLog(0, $pearDB);

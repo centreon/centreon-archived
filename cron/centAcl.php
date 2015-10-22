@@ -40,12 +40,12 @@ define('LDAP_UPDATE_PERIOD', 3600);
 
 include_once "DB.php";
 
-include_once "@CENTREON_ETC@/centreon.conf.php";
-include_once $centreon_path . "/cron/centAcl-Func.php";
-include_once $centreon_path . "/www/class/centreonDB.class.php";
-include_once $centreon_path . "/www/class/centreonLDAP.class.php";
-include_once $centreon_path . "/www/class/centreonMeta.class.php";
-include_once $centreon_path . "/www/class/centreonContactgroup.class.php";
+require_once realpath(dirname(__FILE__) . "/../config/centreon.config.php");
+include_once _CENTREON_PATH_ . "/cron/centAcl-Func.php";
+include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_ . "/www/class/centreonLDAP.class.php";
+include_once _CENTREON_PATH_ . "/www/class/centreonMeta.class.php";
+include_once _CENTREON_PATH_ . "/www/class/centreonContactgroup.class.php";
 
 $centreonDbName = $conf_centreon['db'];
 

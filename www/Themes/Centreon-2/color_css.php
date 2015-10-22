@@ -36,19 +36,19 @@
  *
  */
 
-    require_once "@CENTREON_ETC@/centreon.conf.php";
- 	require_once $centreon_path . "www/class/centreonDB.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 
-	$pearDB = new CentreonDB();
+    $pearDB = new CentreonDB();
 
- 	/*
- 	 * Get Options colors
- 	 */
- 	$options = array();
- 	$DBRESULT = $pearDB->query("SELECT * FROM options");
- 	while ($res = $DBRESULT->fetchRow())
- 		$options[$res["key"]] = $res["value"];
- 	unset($res);
+    /*
+     * Get Options colors
+     */
+    $options = array();
+    $DBRESULT = $pearDB->query("SELECT * FROM options");
+    while ($res = $DBRESULT->fetchRow())
+            $options[$res["key"]] = $res["value"];
+    unset($res);
 
 ?>
 
@@ -113,10 +113,10 @@
 .list_two_fixe 		{	background-color:<?php print $color_list_2; ?>;}
 
 .list_one			{	background-color:<?php print $color_list_1; ?>;}
-.list_one:hover 	{	background-color:<?php print $color_list_1_hover; ?>;}
+.list_one:hover 	{	background-color:#CFEDF9;;}
 
 .list_two 			{	background-color:<?php print $color_list_2; ?>; }
-.list_two:hover 	{	background-color:<?php print $color_list_2_hover; ?>;}
+.list_two:hover 	{	background-color: #CFEDF9;}
 
 .list_three 		{	background-color:<?php print $color_list_3; ?>;}
 .list_three:hover 	{	background-color:<?php print $color_list_3_hover; ?>;}
@@ -124,7 +124,7 @@
 .list_four 			{	background-color:<?php print $color_list_4; ?>;}
 .list_four:hover 	{	background-color:<?php print $color_list_4_hover; ?>;}
 
-.list_up			{	background-color:<?php print $color_list_up; ?>;}
+.list_up			{	background-color: #88b917;}
 .list_up:hover		{	background-color:<?php print $color_list_up_hover; ?>;}
 
 .list_down 			{	background-color: #ffaec1;}
@@ -140,10 +140,6 @@
 .line_ack:hover		{	background-color:<?php print $options["color_ack"]; ?>;}
 
 /* Monitoring Side */
-.host_down 			{background-color: #e00b3d;}
-.host_unreachable 	{background-color: #818285;}
-.host_downtime 		{background-color: #cc99ff; ?>;}
-
 
 /* Menu */
 #menu1_bgimg	{

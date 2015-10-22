@@ -34,8 +34,8 @@
  *
  */
 
-require_once $centreon_path . 'www/class/centreonInstance.class.php';
-require_once $centreon_path . 'www/class/centreonService.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
 
 /*
  *  Class that contains various methods for managing hosts

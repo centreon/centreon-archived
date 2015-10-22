@@ -42,7 +42,7 @@
 	$locale = $oreon->user->get_lang();
 	putenv("LANG=$locale");
 	setlocale(LC_ALL, $locale);
-	bindtextdomain("messages",  $centreon_path . "www/locale/");;
+	bindtextdomain("messages",  _CENTREON_PATH_ . "www/locale/");;
 	bind_textdomain_codeset("messages", "UTF-8"); 
 	textdomain("messages");
 ?><script type="text/javascript">

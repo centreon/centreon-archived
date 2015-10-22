@@ -47,10 +47,10 @@ include_once "../../../config/centreon.config.php";
 /*
  * Require Classes
  */
-require_once $centreon_path . "www/include/eventLogs/common-Func.php";
-require_once $centreon_path . "www/class/centreonDB.class.php";
-require_once $centreon_path . "www/class/centreonSession.class.php";
-require_once $centreon_path . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/include/eventLogs/common-Func.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 
 CentreonSession::start();
 $centreon = $_SESSION["centreon"];
@@ -61,7 +61,7 @@ $centreon = $_SESSION["centreon"];
 $locale = $centreon->user->get_lang();
 putenv("LANG=$locale");
 setlocale(LC_ALL, $locale);
-bindtextdomain("messages", $centreon_path . "/www/locale/");
+bindtextdomain("messages", _CENTREON_PATH_ . "/www/locale/");
 bind_textdomain_codeset("messages", "UTF-8");
 textdomain("messages");
 
@@ -85,10 +85,10 @@ define("TYPE_HARD", 1);
 /**
  * Include Access Class
  */
-include_once $centreon_path . "www/class/centreonACL.class.php";
-include_once $centreon_path . "www/class/centreonXML.class.php";
-include_once $centreon_path . "www/class/centreonGMT.class.php";
-include_once $centreon_path . "www/include/common/common-Func.php";
+include_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 /*
  * Start XML document root
@@ -551,8 +551,7 @@ if (isset($req) && $req) {
     
     
     
-    
-    require_once $centreon_path . "www/include/common/checkPagination.php";
+    require_once _CENTREON_PATH_ . "www/include/common/checkPagination.php";
     /*
      * pagination
      */

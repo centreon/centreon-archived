@@ -34,12 +34,12 @@
  *
  */
 
-require_once("@CENTREON_ETC@/centreon.conf.php");
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-require_once $centreon_path . "/www/class/centreonSession.class.php";
-require_once $centreon_path . "/www/class/centreon.class.php";
-require_once $centreon_path . 'www/class/centreonLang.class.php';
-require_once $centreon_path . "/www/class/centreonCommand.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
+require_once _CENTREON_PATH_ . "/www/class/centreonCommand.class.php";
 
 
 session_start();
@@ -48,7 +48,7 @@ $centreon = $_SESSION['centreon'];
 if (!isset($centreon))
     exit();
 
-$centreonLang = new CentreonLang($centreon_path, $centreon);
+$centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 
 require_once "HTML/QuickForm.php";
@@ -80,7 +80,7 @@ if (isset($_GET['cmd_line']) && $_GET['cmd_line']) {
 }
 
 /* FORM */
-$path = "$centreon_path/www/include/configuration/configObject/command/";
+$path = _CENTREON_PATH_."/www/include/configuration/configObject/command/";
 
 $attrsText = array("size" => "30");
 $attrsText2 = array("size" => "60");
@@ -99,14 +99,14 @@ $subS = $form->addElement('button', 'close', _("Close"), array("onClick" => "clo
 /*
  *  Smarty template
  */
-define('SMARTY_DIR', "$centreon_path/GPL_LIB/Smarty/libs/");
+define('SMARTY_DIR', _CENTREON_PATH_."/GPL_LIB/Smarty/libs/");
 require_once SMARTY_DIR . "Smarty.class.php";
 
 $tpl = new Smarty();
 $tpl->template_dir = $path;
-$tpl->compile_dir = "$centreon_path/GPL_LIB/SmartyCache/compile";
-$tpl->config_dir = "$centreon_path/GPL_LIB/SmartyCache/config";
-$tpl->cache_dir = "$centreon_path/GPL_LIB/SmartyCache/cache";
+$tpl->compile_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/compile";
+$tpl->config_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/config";
+$tpl->cache_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/cache";
 $tpl->caching = 0;
 $tpl->compile_check = true;
 $tpl->force_compile = true;

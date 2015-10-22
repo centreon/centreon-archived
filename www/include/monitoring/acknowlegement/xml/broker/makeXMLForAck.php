@@ -36,15 +36,15 @@
  *
  */
 
-include_once "@CENTREON_ETC@/centreon.conf.php";
-include_once $centreon_path . "www/class/centreonDuration.class.php";
-include_once $centreon_path . "www/class/centreonGMT.class.php";
-include_once $centreon_path . "www/class/centreonXML.class.php";
-include_once $centreon_path . "www/class/centreonDB.class.php";
-include_once $centreon_path . "www/class/centreonSession.class.php";
-include_once $centreon_path . "www/class/centreon.class.php";
-include_once $centreon_path . "www/class/centreonLang.class.php";
-include_once $centreon_path . "www/include/common/common-Func.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+include_once _CENTREON_PATH_ . "www/class/centreonDuration.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
+include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 session_start();
 $oreon = $_SESSION['centreon'];
@@ -53,7 +53,7 @@ $db = new CentreonDB();
 $pearDB = $db;
 $dbb = new CentreonDB("centstorage");
 
-$centreonlang = new CentreonLang($centreon_path, $oreon);
+$centreonlang = new CentreonLang(_CENTREON_PATH_, $oreon);
 $centreonlang->bindLang();
 $sid = session_id();
 if (isset($sid)){

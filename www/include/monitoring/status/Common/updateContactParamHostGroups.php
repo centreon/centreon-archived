@@ -37,9 +37,9 @@ if (!isset($_GET['uid']) || !isset($_GET['hostgroups'])) {
 	exit(0);
 }
 	
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once $centreon_path . "/www/class/centreonSession.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
 
 $pearDB = new CentreonDB();
 

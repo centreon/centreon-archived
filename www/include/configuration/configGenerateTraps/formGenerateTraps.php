@@ -42,9 +42,10 @@
 	/*
 	 * Init Centcore Pipe
 	 */
-	$centcore_pipe = "@CENTREON_VARLIB@/centcore.cmd";
-	if ($centcore_pipe == "/centcore.cmd") {
-		$centcore_pipe = "/var/lib/centreon/centcore.cmd";
+        if (defined('_CENTREON_VARLIB_')) {
+            $centcore_pipe = _CENTREON_VARLIB_."/centcore.cmd";
+        } else  {
+            $centcore_pipe = "/var/lib/centreon/centcore.cmd";
 	}
 
 	/*
@@ -156,7 +157,7 @@
                                 $filename = "{$trapdPath}/{$host['id']}/centreontrapd.sdb";
                                 $output = array();
                                 $returnVal = 0;
-                                exec("$centreon_path/bin/generateSqlLite '{$host['id']}' '{$filename}' 2>&1", $output, $returnVal);
+                                exec(_CENTREON_PATH_."/bin/generateSqlLite '{$host['id']}' '{$filename}' 2>&1", $output, $returnVal);
                                 $stdout .= implode("<br/>", $output)."<br/>";
                                 if ($returnVal != 0) {
                                     break;

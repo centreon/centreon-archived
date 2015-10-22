@@ -417,7 +417,7 @@ function mk_img(_src, _alt)	{
   	_img.src = _src;
   	_img.alt = _alt;
   	_img.title = _alt;
-    _img.className = 'ico-14';
+    //_img.className = 'ico-10';
   	if (_img.complete){
   		_img.alt = _alt;
   	} else {
