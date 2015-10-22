@@ -215,7 +215,7 @@
     	require_once ("./class/centreonMsg.class.php");
     	$msg = new CentreonMsg();
     	if (!$centreon->user->admin && !count($centreon->user->access->getAccessGroups())) {
-    		$msg->setImage("./img/icones/16x16/warning.gif");
+    		$msg->setImage("./img/icons/warning.png");
     		$msg->setTextStyle("bold");
     		$msg->setText(_("You are not in an access group"));
     		$msg->setTimeOut("3");

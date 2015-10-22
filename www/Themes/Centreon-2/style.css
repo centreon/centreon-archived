@@ -231,7 +231,55 @@ p.description a, p.description a:visited {
 }
 /* ------ END : Colors -----*/
 
+/* ------- Badge -----------*/
+.badge              {   display: inline-block;
+                        border-radius: 7px;
+                        color: #fff;
+                        padding: 2px 4px;
+                        font-size: 11px;
+                        font-weight: bold;
+                    }
+
+.badge a            {
+                        display: inline-block;
+                        padding: 4px 8px;
+                        color: #fff;
+                    }
+.default_badge 		{background-color: #00a499;}
+.host_down,
+.service_critical 	{background-color: #e00b3d;}
+.host_unreachable 	{background-color: #818285;}
+.host_downtime 		{background-color: #cc99ff;}
+
+.service_ok,.host_up		{background-color: #88b917;}
+.service_warning	{background-color: #ff9a13;}
+.pending    {background-color: #2AD1D4;}
+.service_unknown    {background-color: #bcbdc0;}
+
+
+.bdg_dtm:before {
+    padding: 2px 4px;
+    content: 'DTM';
+    z-index: -7;
+    background-color: #CC99FF;
+    color: white;
+    font-size: 8px;
+    border-radius: 2px;
+    font-weight: bold;
+}
+.badge_downtime {
+    padding: 2px;
+    background-color: #CC99FF;
+    border-radius: 4px;
+    display: inline-block;
+}
+
 /*------- START : Size icons --------*/
+
+.ico-8 {
+    width: 8px;
+    height: 8px;
+}
 
 .ico-10 {
     width: 10px;
@@ -1397,33 +1445,4 @@ span.state_badge {
   height: 100%;
   background-color: black;
   z-index: 1000;
-}
-
-.error-msg {
-  color: #e00b3d;
-  font-size: 10px;
-}
-
-
-/* Badge */
-.badge {
-    padding: 2px;
-
-}
-
-.bdg_dtm:before {
-    padding: 2px 4px;
-    content: 'DTM';
-    z-index: -7;
-    background-color: #CC99FF;
-    color: white;
-    font-size: 8px;
-    border-radius: 2px;
-    font-weight: bold;
-}
-.badge_downtime {
-    padding: 2px;
-    background-color: #CC99FF;
-    border-radius: 4px;
-    display: inline-block;
 }

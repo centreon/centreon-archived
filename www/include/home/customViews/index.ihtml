@@ -677,14 +677,14 @@ jQuery(function () {
             .data('id', node.getAttribute('id'))
             .append(
               jQuery('<img/>')
-                .attr('src', './img/icons/circle-cross.png')
+                .attr('src', './img/icons/delete.png')
                 .addClass('ico-10')
             );
           viewerBadge.append(closeButton);
           if (node.getAttribute('locked') == 1) {
             viewerBadge.prepend(
               jQuery('<img/>')
-                .attr('src', './img/icons/circle-cross.png') // @todo replace by lock icons
+                .attr('src', './img/icons/lock_closed.png')
                 .addClass('ico-10')
             );
           }
@@ -702,14 +702,14 @@ jQuery(function () {
             .data('id', node.getAttribute('id'))
             .append(
               jQuery('<img/>')
-                .attr('src', './img/icons/circle-cross.png')
+                .attr('src', './img/icons/delete.png')
                 .addClass('ico-10')
             );
           viewerBadge.append(closeButton);
           if (node.getAttribute('locked') == 1) {
             viewerBadge.prepend(
               jQuery('<img/>')
-                .attr('src', './img/icons/circle-cross.png') // @todo replace by lock icons
+                .attr('src', './img/icons/lock_closed.png')
                 .addClass('ico-10')
             );
           }

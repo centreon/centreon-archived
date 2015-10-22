@@ -45,7 +45,7 @@
               </td>
             </tr>			
 			{if $gmtUsed}
-				<tr class='list_one'><td colspan='2'><img src='./img/icones/16x16/warning.gif'>&nbsp; {$noExceptionMessage}</td></tr>
+				<tr class='list_one'><td colspan='2'><img src='./img/icons/warning.png' class="ico-16">&nbsp; {$noExceptionMessage}</td></tr>
 			{/if}
 			<tr class="list_two">
 				<td class='FormRowField'><img class="helpTooltip" name="exception">{$exceptionLabel}<input type="hidden" name="nbOfExceptions" id="hiddenExInput" style='display:none'></td>								

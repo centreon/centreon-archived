@@ -68,7 +68,7 @@ if (!$oreon->user->admin) {
                                         AND group_id IN (" . $acl->getAccessGroupsString() . ")");
         if (!$checkres->numRows()) {
             $msg = new CentreonMsg();
-            $msg->setImage("./img/icones/16x16/warning.gif");
+            $msg->setImage("./img/icons/warning.png");
             $msg->setTextStyle("bold");
             $msg->setText(_('You are not allowed to access this service'));
             return null;
