@@ -31,23 +31,23 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon))
-		exit();
+if (!isset($centreon)) {
+	exit();		
+}
 
-	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
-	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-	$sid = session_id();
-	$time = time();
+$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
+$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
+$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+$sid = session_id();
+$time = time();
 
-	if($num < 0)
-		$num =0;
+if ($num < 0) {
+ 	$num =0;
+}
+
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">

@@ -36,10 +36,10 @@
  *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once $centreon_path . "/www/class/centreonGraphService.class.php";
+
+require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonGraphService.class.php";
 require_once dirname(__FILE__) . "/webService.class.php";
 
 class CentreonMetric extends CentreonWebService {

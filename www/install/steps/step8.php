@@ -58,11 +58,11 @@ $contents .= _('For professional support subscription please contact the <a href
 
 $centreon_path = realpath(dirname(__FILE__) . '/../../../');
 
-if (false === is_dir($centreon_path . '/installDir')) {
-    $contents .= '<br>Warning : The installation directory cannot be move. Please create the directory ' . $centreon_path . '/installDir and give it the rigths to apache user to write.';
+if (false === is_dir(_CENTREON_PATH_ . '/installDir')) {
+    $contents .= '<br>Warning : The installation directory cannot be move. Please create the directory ' . _CENTREON_PATH_ . '/installDir and give it the rigths to apache user to write.';
 } else {
     $name = 'install-' . $_SESSION['version'] . '-' . date('Ymd_His');
-    @rename(str_replace('steps', '', getcwd()), $centreon_path . '/installDir/' . $name);
+    @rename(str_replace('steps', '', getcwd()), _CENTREON_PATH_ . '/installDir/' . $name);
 }
 
 session_destroy();

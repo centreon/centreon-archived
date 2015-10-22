@@ -96,7 +96,7 @@
 	/*
 	 *  Assign centreon path
 	 */
-	$tpl->assign("centreon_path", $centreon_path);
+	$tpl->assign("centreon_path", _CENTREON_PATH_);
 
 	/*
 	 * Translations and styles

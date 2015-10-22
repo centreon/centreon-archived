@@ -20,7 +20,10 @@
               </tr>
               <tr class="create_field">
                 <td class="FormRowField">{$formAddView.name.label}</td>
-                <td class="FormRowValue">{$formAddView.name.html}</td>
+                <td class="FormRowValue">
+                  <div>{$formAddView.name.html}</div>
+                  <span class="error-msg" style="display: none;">{t}This view name is required{/t}</span>
+                </td>
               </tr>
               <tr class="load_field" style="display:none;">
                 <td class="FormRowField">{$formAddView.wiewLoad.label}</td>
@@ -60,7 +63,10 @@
               </tr>
               <tr class="create_field">
                 <td class="FormRowField">{$formEditView.name.label}</td>
-                <td class="FormRowValue">{$formEditView.name.html}</td>
+                <td class="FormRowValue">
+                  <div>{$formEditView.name.html}</div>
+                  <span class="error-msg" style="display: none;">{t}This view name is required{/t}</span>
+                </td>
               </tr>
               <tr class="create_field">
                 <td class="FormRowField">{$formEditView.layout.label}</td>
@@ -323,6 +329,10 @@ function setTimerLabel() {
 
 /* Submit action for add a view */
 function submitAddView() {
+  if (jQuery("#formAddView input[name='name']").val().trim() === '') {
+    jQuery('.create_field .error-msg').show();
+    return false;
+  }
   jQuery.ajax({
     type: "post",
     dataType: "xml",
@@ -351,6 +361,10 @@ function submitAddView() {
              
 /* Submit action for edit a view */
 function submitEditView() {
+  if (jQuery("#formEditView input[name='name']").val().trim() === '') {
+    jQuery('.create_field .error-msg').show();
+    return false;
+  }
   jQuery.ajax({
     type: "post",
     dataType: "xml",
@@ -617,7 +631,11 @@ function removeUsergroupFromView(usergroup_id) {
   
 jQuery(function () {
   /* Initialize buttons */
-  jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}});
+  jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}}).on('click', function () {
+    jQuery('#formAddView input[name="name"]').val('');
+    jQuery('#formAddView input[name="layout[layout]"][value="column_1"]').prop('checked', true);
+    jQuery('#formAddView input[name="public"]').prop('checked', false);
+  });
   jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}});
   jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
     jQuery("#deleteViewConfirm").centreonPopin("open");
@@ -779,7 +797,7 @@ jQuery(function () {
   jQuery('#setDefaultConfirm button.btc').on('click', function () {
     jQuery('#setDefaultConfirm').centreonPopin("close");
   });
-  jQuery('#setDefaultConfirm button.bt_info').on('click', function () {
+  jQuery('#setDefaultConfirm button.bt_success').on('click', function () {
     submitSetDefaultView();
   });
   
@@ -794,6 +812,7 @@ jQuery(function () {
       }
       return false;
     }).hide();
+    jQuery(this).parents('.cntn').find('.error-msg').hide();
     jQuery(this).parents('.cntn').find('.toggle_wrapper').toggle();
   });
   

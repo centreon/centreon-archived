@@ -135,7 +135,7 @@ class CentreonAuth {
      * @return void
      */
     protected function checkPassword($password, $token = "", $autoimport = false) {
-        global $centreon_path;
+        
 
         if ((strlen($password) == 0 || $password == "") && $token == "") {
             $this->passwdOk = 0;
@@ -146,7 +146,7 @@ class CentreonAuth {
             /*
              * Insert LDAP Class
              */
-            include_once ($centreon_path . "/www/class/centreonAuth.LDAP.class.php");
+            include_once (_CENTREON_PATH_ . "/www/class/centreonAuth.LDAP.class.php");
 
             $query = "SELECT ar_id FROM auth_ressource WHERE ar_enable = '1'";
             $res = $this->pearDB->query($query);

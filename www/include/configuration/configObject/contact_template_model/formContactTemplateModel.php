@@ -37,7 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 $cct = array();
 if (($o == "c" || $o == "w") && $contact_id) {
@@ -360,7 +360,7 @@ $tpl->assign("helpattr", 'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this
 
 // prepare help texts
 $helptext = "";
-include_once("{$centreon_path}/www/include/configuration/configObject/contact/help.php");
+include_once(_CENTREON_PATH_."/www/include/configuration/configObject/contact/help.php");
 foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }

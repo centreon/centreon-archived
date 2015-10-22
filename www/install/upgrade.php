@@ -40,7 +40,7 @@
 /*
  * configuration
  */
-include_once ("@CENTREON_ETC@/centreon.conf.php");
+require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
 include_once ("./step_upgrade/functions.php");
 include_once ("../class/centreonSession.class.php");
 

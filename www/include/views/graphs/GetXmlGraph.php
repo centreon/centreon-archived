@@ -52,15 +52,15 @@ function cmpmultiple($a, $b) {
 /*
  * Include Config file
  */
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path . "www/class/centreonXML.class.php";
-require_once $centreon_path . "www/class/centreonDB.class.php";
-require_once $centreon_path . "www/class/centreonACL.class.php";
-require_once $centreon_path . "www/class/centreonLog.class.php";
-require_once $centreon_path . "www/class/centreonUser.class.php";
-require_once $centreon_path . "www/class/centreonGMT.class.php";
-require_once $centreon_path . "www/class/centreonBroker.class.php";
-require_once $centreon_path . "www/class/centreon.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonLog.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 
 session_start();
 
@@ -86,7 +86,7 @@ $debugXML = 1;
 /*
  * PHP functions
  */
-require_once($centreon_path . "www/include/common/common-Func.php");
+require_once(_CENTREON_PATH_ . "www/include/common/common-Func.php");
 
 /*
  * Lang file
@@ -95,7 +95,7 @@ $oreon = $_SESSION['centreon'];
 $locale = $oreon->user->get_lang();
 putenv("LANG=$locale");
 setlocale(LC_ALL, $locale);
-bindtextdomain("messages",  $centreon_path . "www/locale/");
+bindtextdomain("messages",  _CENTREON_PATH_ . "www/locale/");;
 bind_textdomain_codeset("messages", "UTF-8");
 textdomain("messages");
 

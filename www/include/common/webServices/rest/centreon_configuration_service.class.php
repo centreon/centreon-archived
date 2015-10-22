@@ -36,10 +36,9 @@
  *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once $centreon_path . "/www/include/common/common-Func.php";
+
+require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationService extends CentreonConfigurationObjects
@@ -141,6 +140,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             . "ORDER BY h.host_name";
         
         $DBRESULT = $this->pearDB->query($queryService);
+        
         
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {

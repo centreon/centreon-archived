@@ -44,15 +44,15 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
-	include_once($centreon_path."www/class/centreonDuration.class.php");
-	include_once($centreon_path."www/class/centreonACL.class.php");
-	include_once($centreon_path."www/class/centreonXML.class.php");
-	include_once($centreon_path."www/class/centreonDB.class.php");
-	include_once($centreon_path."www/class/centreonGMT.class.php");
-	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";
-	include_once($centreon_path."www/include/common/common-Func.php");
+	include_once(_CENTREON_PATH_."www/class/centreonDuration.class.php");
+	include_once(_CENTREON_PATH_."www/class/centreonACL.class.php");
+	include_once(_CENTREON_PATH_."www/class/centreonXML.class.php");
+	include_once(_CENTREON_PATH_."www/class/centreonDB.class.php");
+	include_once(_CENTREON_PATH_."www/class/centreonGMT.class.php");
+	include_once _CENTREON_PATH_."www/include/monitoring/status/Common/common-Func.php";
+	include_once(_CENTREON_PATH_."www/include/common/common-Func.php");
 
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");

@@ -36,14 +36,14 @@
 /*
  * this class need also others classes
  */
-require_once $centreon_path."www/class/centreonDuration.class.php";
-require_once $centreon_path."www/class/centreonGMT.class.php";
-require_once $centreon_path."www/class/centreonACL.class.php";
-require_once $centreon_path."www/class/centreonDB.class.php";
-require_once $centreon_path."www/class/centreonHost.class.php";
-require_once $centreon_path."www/class/centreonService.class.php";
-require_once $centreon_path."www/class/centreonSession.class.php";
-require_once $centreon_path."www/include/common/common-Func.php";
+require_once _CENTREON_PATH_."www/class/centreonDuration.class.php";
+require_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
+require_once _CENTREON_PATH_."www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_."www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_."www/class/centreonHost.class.php";
+require_once _CENTREON_PATH_."www/class/centreonService.class.php";
+require_once _CENTREON_PATH_."www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_."www/include/common/common-Func.php";
 
 /*
  * Class for XML/Ajax request

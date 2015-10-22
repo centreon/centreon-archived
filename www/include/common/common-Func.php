@@ -145,9 +145,9 @@ function initSmartyTplForPopup($path = NULL, $tpl = NULL, $subDir = NULL, $centr
     if (!$tpl)
         return;
     $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = "$centreon_path/GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = "$centreon_path/GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = "$centreon_path/GPL_LIB/SmartyCache/cache";
+    $tpl->compile_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/compile";
+    $tpl->config_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/config";
+    $tpl->cache_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/cache";
 
     $tpl->caching = 0;
     $tpl->compile_check = true;

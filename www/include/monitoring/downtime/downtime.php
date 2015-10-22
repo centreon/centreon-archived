@@ -33,27 +33,55 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
-require_once _CENTREON_PATH_ . '/www/include/common/common-Func.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
-require_once _CENTREON_PATH_."www/class/centreonCommand.class.php";
+if (!isset($centreon)) {
+    exit();
+}
 
 /*
- * Validate the session
+ * External Command Object
  */
-session_start();
-$db = new CentreonDB();
+$ecObj = new CentreonExternalCommand($centreon);
 
-$serviceObj = new CentreonService($db);
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/advmultiselect.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 
-$aMacros = $serviceObj->ajaxMacroControl($_POST);
+/*
+ * Path to the configuration dir
+ */
+$path = "./include/monitoring/downtime/";
 
-$countMacro = count($aMacros);
+/*
+ * PHP functions
+ */
+require_once "./include/common/common-Func.php";
+require_once "./include/monitoring/downtime/common-Func.php";
+require_once "./include/monitoring/external_cmd/functions.php";
 
-
-$arrayReturn = array('macros' => $aMacros, 'count' => $countMacro);
-
-echo json_encode($arrayReturn);
-die;
+switch ($o) {
+    case "as" :
+        require_once($path . "AddSvcDowntime.php");
+        break;
+    case "ds" :
+        if (isset($_POST["select"])) {
+            $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
+            deleteDowntimeFromDb($oreon, $_POST['select']);
+        }
+        require_once($path . "listDowntime.php");
+        break;
+    case "cs" :
+        $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
+        require_once($path . "listDowntime.php");
+        break;
+    case "vs" :
+        require_once($path . "listDowntime.php");
+        break;
+    default :
+        require_once($path . "lisDowntime.php");
+        break;
+}

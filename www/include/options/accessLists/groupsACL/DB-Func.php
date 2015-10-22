@@ -40,8 +40,8 @@
 		exit ();
 	}
 
-	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
- 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+	require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+ 	require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
  	/**
  	 * Set the Acl group changed flag to 1

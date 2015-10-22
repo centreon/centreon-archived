@@ -38,13 +38,13 @@ ini_set("display_errors", "Off");
 /**
  * Include configuration
  */
-include_once "../../../config/centreon.config.php";
+require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 
 /**
  * Include Classes / Methods
  */
-include_once $centreon_path . "www/class/centreonDB.class.php";
-include_once $centreon_path . "www/include/common/common-Func.php";
+include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 /** *****************************************
  * Connect MySQL DB
@@ -78,7 +78,7 @@ $pearDBO 	= new CentreonDB("centstorage");
  */
 $csv_flag = 1; //setting the csv_flag variable to change limit in SQL request of getODSXmlLog.php when CSV exporting
 ob_start();
-require_once $centreon_path."www/include/eventLogs/GetXmlLog.php";
+require_once _CENTREON_PATH_."www/include/eventLogs/GetXmlLog.php";
 $flow = ob_get_contents();
 ob_end_clean();
 

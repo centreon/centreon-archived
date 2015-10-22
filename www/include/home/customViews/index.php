@@ -33,9 +33,9 @@
  *
  */
 
-require_once $centreon_path . 'www/class/centreonCustomView.class.php';
-require_once $centreon_path . "www/class/centreonWidget.class.php";
-require_once $centreon_path . "www/class/centreonContactgroup.class.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
+require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
 
 /**
  * Quickform
@@ -88,7 +88,7 @@ try {
     $template->assign('empty', $i);
     $template->assign('msg', _("No view available. To create a new view, please click \"Add view\" button."));
 
-    $formAddView = new HTML_QuickForm('formAddView', 'post', "?p=103");
+    $formAddView = new HTML_QuickForm('formAddView', 'post', "?p=103", '_selft', array('onSubmit' => 'submitAddView(); return false;'));
     $formAddView->addElement('header', 'title', _("Create a view"));
     $formAddView->addElement('header', 'information', _("General Information"));
 
@@ -127,7 +127,7 @@ try {
     /**
      * Submit button
      */
-    $formAddView->addElement('button', 'submit', _("Submit"), array("onClick" => "submitAddView();","class" => "btc bt_success"));
+    $formAddView->addElement('submit', 'submit', _("Submit"), array("class" => "btc bt_success"));
     $formAddView->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $formAddView->addElement('hidden', 'action');
     $formAddView->setDefaults(array('action' => 'add'));
@@ -144,7 +144,7 @@ try {
     /**
      * Form for edit view
      */
-    $formEditView = new HTML_QuickForm('formEditView', 'post', "?p=103");
+    $formEditView = new HTML_QuickForm('formEditView', 'post', "?p=103", '', array('onSubmit' => 'submitEditView(); return false;'));
     $formEditView->addElement('header', 'title', _('Edit a view'));
     $formEditView->addElement('header', 'information', _("General Information"));
 
@@ -170,7 +170,7 @@ try {
     /**
      * Submit button
      */
-    $formEditView->addElement('button', 'submit', _("Submit"), array("onClick" => "submitEditView();","class" => "btc bt_success"));
+    $formEditView->addElement('submit', 'submit', _("Submit"), array("class" => "btc bt_success"));
     $formEditView->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $formEditView->addElement('hidden', 'action');
     $formEditView->addElement('hidden', 'custom_view_id');
@@ -189,7 +189,7 @@ try {
      * Form share view
      */
     $cgObj = new CentreonContactgroup($db);
-    $formShareView = new HTML_QuickForm('formShareView', 'post', "?p=103");
+    $formShareView = new HTML_QuickForm('formShareView', 'post', "?p=103", '', array('onSubmit' => 'submitShareView(); return false;'));
     $formShareView->addElement('header', 'title', _("Share view"));
 
     /**
@@ -223,7 +223,7 @@ try {
     /**
      * Submit button
      */
-    $formShareView->addElement('button', 'submit', _("Share"), array("onClick" => "submitShareView();", "class" => "btc bt_info"));
+    $formShareView->addElement('submit', 'submit', _("Share"), array("class" => "btc bt_info"));
     $formShareView->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $formShareView->addElement('hidden', 'action');
     $formShareView->setDefaults(array('action' => 'share'));
@@ -238,7 +238,7 @@ try {
      * Form add widget
      */
     $widgetObj = new CentreonWidget($centreon, $db);
-    $formAddWidget = new HTML_QuickForm('formAddWidget', 'post', "?p=103");
+    $formAddWidget = new HTML_QuickForm('formAddWidget', 'post', "?p=103", '', array('onSubmit' => 'submitAddWidget(); return false;'));
     $formAddWidget->addElement('header', 'w_title', _('Add a widget'));
     $formAddWidget->addElement('header', 'title', _('Add a widget'));
     $formAddWidget->addElement('header', 'information', _("Widget Information"));
@@ -260,7 +260,7 @@ try {
     /**
      * Submit button
      */
-    $formAddWidget->addElement('button', 'submit', _("Submit"), array("onClick" => "submitAddWidget();","class" => "btc bt_success"));
+    $formAddWidget->addElement('submit', 'submit', _("Submit"), array("class" => "btc bt_success"));
     $formAddWidget->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $formAddWidget->addElement('hidden', 'action');
     $formAddWidget->addElement('hidden', 'custom_view_id');

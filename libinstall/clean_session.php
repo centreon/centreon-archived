@@ -45,7 +45,7 @@ if (!file_exists($centreon_etc . '/centreon.conf.php')) {
 }
 
 require_once $centreon_etc . '/centreon.conf.php';
-require_once $centreon_path . '/www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
 
 $dbconn = new CentreonDB();
 $queryCleanSession = 'DELETE FROM session';

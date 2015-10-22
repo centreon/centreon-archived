@@ -31,27 +31,24 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($centreon)) {
+	exit();		
+}
 
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-	$sid = session_id();
-	$time = time();
+$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+$sid = session_id();
+$time = time();
 
-	$obis = $o;
-	if (isset($_GET["problem"])) {
-		$obis .= '_pb';
-	}
-	if (isset($_GET["acknowledge"])) {
-		$obis .= '_ack_' . $_GET["acknowledge"];
-	}
+$obis = $o;
+if (isset($_GET["problem"])) {
+	$obis .= '_pb';
+}
+if (isset($_GET["acknowledge"])) {
+	$obis .= '_ack_' . $_GET["acknowledge"];
+}
 
 ?>
 <script type="text/javascript">
@@ -66,7 +63,7 @@ var _criticality_id = 0;
 
 var _selectedElem = new Array();
 
-function set_header_title(){
+function set_header_title() {
 
 	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
 	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
@@ -116,14 +113,14 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
-                var h = document.getElementById('criticality_id');
-                if (h) {
-                    h.innerHTML = '<?php echo addslashes("S"); ?>';
-                    h.indice = 'criticality_id';
-                    h.title = "<?php echo _("Sort by severity"); ?>";
-                    h.onclick=function(){change_type_order(this.indice)};
-                    h.style.cursor = "pointer";
-                }
+        var h = document.getElementById('criticality_id');
+        if (h) {
+            h.innerHTML = '<?php echo addslashes("S"); ?>';
+            h.indice = 'criticality_id';
+            h.title = "<?php echo _("Sort by severity"); ?>";
+            h.onclick=function(){change_type_order(this.indice)};
+            h.style.cursor = "pointer";
+        }
 
 		var h = document.getElementById('plugin_output');
 		h.innerHTML = '<?php echo addslashes(_("Status information"))?>';
@@ -132,18 +129,18 @@ function set_header_title(){
 		h.style.cursor = "pointer";
 
 		if (_sort_type) {
-                    var h = document.getElementById(_sort_type);
-                    var _linkaction_asc = document.createElement("a");
-                    if (_order == 'ASC') {
-                        _linkaction_asc.appendChild(_img_asc);
-                    } else {
-                        _linkaction_asc.appendChild(_img_desc);
-                    }
-                    _linkaction_asc.href = '#' ;
-                    _linkaction_asc.onclick=function(){change_order()};
-                    if (h) {
-                        h.appendChild(_linkaction_asc);
-                    }
+            var h = document.getElementById(_sort_type);
+            var _linkaction_asc = document.createElement("a");
+            if (_order == 'ASC') {
+                _linkaction_asc.appendChild(_img_asc);
+            } else {
+                _linkaction_asc.appendChild(_img_desc);
+            }
+            _linkaction_asc.href = '#' ;
+            _linkaction_asc.onclick=function(){change_order()};
+            if (h) {
+                h.appendChild(_linkaction_asc);
+            }
 		}
 	}
 }
@@ -181,18 +178,6 @@ function initM(_time_reload, _sid, _o ){
 	// INIT Select objects
 	construct_selecteList_ndo_instance('instance_selected');
 	construct_HostGroupSelectList('hostgroups_selected');
-
-	if (!document.getElementById('debug')){
-		var _divdebug = document.createElement("div");
-		_divdebug.id = 'debug';
-		var _debugtable = document.createElement("table");
-		_debugtable.id = 'debugtable';
-		var _debugtr = document.createElement("tr");
-		_debugtable.appendChild(_debugtr);
-		_divdebug.appendChild(_debugtable);
-		_header = document.getElementById('header');
-		_header.appendChild(_divdebug);
-	}
 
 	if (document.getElementById("host_search") && document.getElementById("host_search").value) {
 		_host_search = document.getElementById("host_search").value;
@@ -241,14 +226,13 @@ function goM(_time_reload, _sid, _o) {
 	set_header_title();
 }
 
-function unsetCheckboxes()
-{
+function unsetCheckboxes() {
 	for (keyz in _selectedElem) {
 		if (keyz == _selectedElem[keyz]) {
 			removeFromSelectedElem(decodeURIComponent(keyz));
-                        if (document.getElementById(decodeURIComponent(keyz))) {
-                            document.getElementById(decodeURIComponent(keyz)).checked = false;
-                        }
+                if (document.getElementById(decodeURIComponent(keyz))) {
+                    document.getElementById(decodeURIComponent(keyz)).checked = false;
+                }
 		}
 	}
 }
