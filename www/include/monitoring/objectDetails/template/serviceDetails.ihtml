@@ -100,7 +100,7 @@
 				{if $index_data}
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icons/chart.png'>{$detailed_graph}</td>
+						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icons/chart.png' class="ico-18">{$detailed_graph}</td>
 					</tr>
 					<tr class='list_one'>					
 						<td class="ListColCenter" colspan="2"><a href="./main.php?p=4&mode=0&svc_id={$host_name};{$svc_description}"><img src="./include/views/graphs/generateGraphs/generateImage.php?{$options2}"></a></td>
@@ -111,7 +111,7 @@
 				{if $flag_graph}
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icons/chart.png'>&nbsp;{$status_str}</td>
+						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icons/chart.png' class="ico-18">&nbsp;{$status_str}</td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColCenter" colspan="2"><img src="./include/views/graphs/graphStatus/displayServiceStatus.php?{$options}"></td>
