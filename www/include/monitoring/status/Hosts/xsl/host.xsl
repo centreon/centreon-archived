@@ -64,9 +64,6 @@
                 </xsl:if>
 		<td class="ListColLeft">
 			<xsl:element name="span">
-				<xsl:if test="hdtm != 0">
-					<xsl:attribute name="class">host_downtime</xsl:attribute>
-				</xsl:if>
 				<xsl:if test="ico != ''">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/media/<xsl:value-of select="ico"/></xsl:attribute>
