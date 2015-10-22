@@ -1399,6 +1399,11 @@ span.state_badge {
   z-index: 1000;
 }
 
+.error-msg {
+  color: #e00b3d;
+  font-size: 10px;
+}
+
 
 /* Badge */
 .badge {
