@@ -18,11 +18,11 @@
 			<input type="hidden" name="icone_problem_has_been_acknowledged" value="./img/icones/16x16/worker.gif" />
 			<input type="hidden" name="icone_accept_passive_check0" value="./img/icones/14x14/gears_pause.gif" />
 			<input type="hidden" name="icone_accept_passive_check1" value="./img/icones/14x14/gears_stop.gif" />
-			<input type="hidden" name="icone_notifications_enabled" value="./img/icones/14x14/noloudspeaker.gif" />
+			<input type="hidden" name="icone_notifications_enabled" value="./img/icons/notifications_off.png" />
 			<input type="hidden" name="icone_undo" value="./img/icones/14x14/undo.gif" />
 			<input type="hidden" name="icone_graph" value="./img/icons/chart.png"/>
 			<input type="hidden" name="icone_host_has_been_acknowledged" value="./img/icones/16x16/worker.gif"/>
-			<input type="hidden" name="icone_notifications_disabled" value="./img/icones/14x14/noloudspeaker.gif" />
+			<input type="hidden" name="icone_notifications_disabled" value="./img/icons/notifications_off.png" />
 			<input type="hidden" name="icon_downtime" value="./img/icones/14x14/breakpoint.gif" />
 			<input type="hidden" name="icon_comment" value="./img/icones/14x14/about.gif" />
 			<input type="hidden" name="version" value="{$version}"/>
@@ -42,7 +42,7 @@
     					    <th>{$ndoState}</th>
 
     						<td>
-    						    <span id='latency'>
+    						    <span id='latency' >
     						        <img src='./img/icons/clock.png' class="ico-10" id="img_latency" />
     						    </span>
     						</td>
@@ -71,25 +71,25 @@
 
     					    </th>
 
-                            <!--<th>{$Up}</th>-->
+                            <!--<th>{$Up} style='background:{$color.UP}'</th>-->
 
                             <td>
-                                <span>&#8593;</span><span id="host_up" style='background:{$color.UP}'>?</span>
+                                <span>&#8593;</span><span id="host_up" class="host_up" >?</span>
                             </td>
 
-                            <!--<th>{$Down}</th>-->
+                            <!--<th>{$Down} style='background:{$color.DOWN}'</th>-->
                             <td>
-                                <span id="host_down" style='background:{$color.DOWN}'>?</span>
+                                <span id="host_down" class="host_down" >?</span>
                             </td>
 
-                            <!--<th>{$Unreachable}</th>-->
+                            <!--<th>{$Unreachable} style='background:{$color.UNREACHABLE}'</th>-->
                             <td>
-                                <span id="host_unreachable" style='background:{$color.UNREACHABLE}'>?</span>
+                                <span id="host_unreachable" class="host_unreachable">?</span>
                             </td>
 
-                            <!--<th>{$Pending}</th>-->
+                            <!--<th>{$Pending} style='background:{$color.PENDING}'</th>-->
                             <td>
-                                <span id="host_pending" style='background:{$color.PENDING}'>?</span>
+                                <span id="host_pending" class="pending">?</span>
                             </td>
 
     					</tr>
@@ -104,29 +104,29 @@
     					        {$Services}
     					    </th>
 
-                            <!--<th>{$Ok}</th>-->
+                            <!--<th>{$Ok} style='background:{$color.OK}'</th>-->
                             <td>
-                                <span id="service_ok" style='background:{$color.OK}'>?</span>
+                                <span id="service_ok" class="service_ok">?</span>
                             </td>
 
-                            <!--<th>{$Warning}</th>-->
+                            <!--<th>{$Warning} style='background:{$color.WARNING}'</th>-->
                             <td>
-                                <span id="service_warning" style='background:{$color.WARNING}'>?</span>
+                                <span id="service_warning" class="service_warning">?</span>
                             </td>
 
-                            <!--<th>{$Critical}</th>-->
+                            <!--<th>{$Critical} style='background:{$color.CRITICAL}'</th>-->
                             <td>
-                                <span id="service_critical" style='background:{$color.CRITICAL}'>?</span>
+                                <span id="service_critical" class="service_critical">?</span>
                             </td>
 
-                            <!--<th>{$Unknown}</th>-->
+                            <!--<th>{$Unknown} style='background:{$color.UNKNOWN}'</th>-->
                             <td>
-                                <span id="service_unknown" style='background:{$color.UNKNOWN}'>?</span>
+                                <span id="service_unknown" class="service_unknown">?</span>
                             </td>
 
-                            <!--<th>{$Pending}</th>-->
+                            <!--<th>{$Pending} style='background:{$color.PENDING}'</th>-->
                             <td>
-                                <span id="service_pending" style='background:{$color.PENDING}'>?</span>
+                                <span id="service_pending" class="pending">?</span>
                             </td>
 
     					</tr>
