@@ -244,7 +244,7 @@ function cmdCallback(cmd) {
     _getVar = "";
     if (cmd != '72' && cmd != '75') {
 		return 1;
-    }else {
+    } else {
     	for (keyz in _selectedElem) {
             if ((keyz == _selectedElem[keyz]) && typeof(document.getElementById(decodeURIComponent(keyz)) != 'undefined') &&
                 document.getElementById(decodeURIComponent(keyz))) {
@@ -253,7 +253,9 @@ function cmdCallback(cmd) {
                 }
             }
         }
-        Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?' + 'o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title: '<?php echo _("External commands") ?>', width: 600});
+        
+        
+        Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title: '<?php echo _("External commands") ?>', width: 600});
         return 0;
     }
 }

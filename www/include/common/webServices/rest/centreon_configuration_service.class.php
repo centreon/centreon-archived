@@ -54,6 +54,8 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
      */
     public function __construct()
     {
+        global $pearDBO;
+        
         parent::__construct();
         $brk = new CentreonBroker($this->pearDB);
         if ($brk->getBroker() == 'broker') {
@@ -61,6 +63,8 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         } else {
             $this->pearDBMonitoring = new CentreonDB('ndo');
         }
+        
+        $pearDBO = $this->pearDBMonitoring;
     }
     
     /**
@@ -89,6 +93,43 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
         
+        // Check for service type
+        if (false === isset($this->arguments['t'])) {
+            $t = 'host';
+        } else {
+            $t = $this->arguments['t'];
+        }
+        
+        // Check for service type
+        $g = false;
+        if (isset($this->arguments['g'])) {
+            $g = $this->arguments['g'];
+            if ($g == '1') {
+                $g = true;
+            }
+        }
+        
+        
+        switch ($t) {
+            default:
+            case 'host':
+                $serviceList = $this->getServicesByHost($q, $aclServices, $g);
+                break;
+            case 'hostgroup':
+                $serviceList = $this->getServicesByHostgroup($q, $aclServices);
+                break;
+        }
+        
+        return $serviceList;
+    }
+    
+    /**
+     * 
+     * @param type $q
+     * @param type $aclServices
+     */
+    private function getServicesByHost($q, $aclServices, $hasGraph = false)
+    {
         $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
             . "FROM host h, service s, host_service_relation hsr "
             . 'WHERE hsr.host_host_id = h.host_id '
@@ -103,15 +144,52 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
-            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+            if ($hasGraph) {
+                if (service_has_graph($data['host_id'], $data['service_id'])) {
+                    $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
+                    $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+                    $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
+                }
+            } else {
+                $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
+                $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+                $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
+            }
+        }
+        
+        return $serviceList;
+    }
+    
+    /**
+     * 
+     * @param type $q
+     * @param type $aclServices
+     */
+    private function getServicesByHostgroup($q, $aclServices)
+    {
+        $queryService = "SELECT DISTINCT s.service_description, s.service_id, hg.hg_name, hg.hg_id "
+            . "FROM hostgroup hg, service s, host_service_relation hsr "
+            . 'WHERE hsr.hostgroup_hg_id = hg.hg_id '
+            . "AND hsr.service_service_id = s.service_id "
+            . "AND s.service_register = '1' "
+            . "AND s.service_description LIKE '%$q%' "
+            . $aclServices
+            . "ORDER BY hg.hg_name, s.service_description";
+        
+        $DBRESULT = $this->pearDB->query($queryService);
+        
+        $serviceList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $serviceCompleteName = $data['hg_name'] . ' - ' . $data['service_description'];
+            $serviceCompleteId = $data['hg_id'] . '-' . $data['service_id'];
             
             $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
         
         return $serviceList;
     }
-    
+
+
     /**
      * 
      * @param type $args

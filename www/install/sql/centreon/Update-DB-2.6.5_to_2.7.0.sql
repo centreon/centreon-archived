@@ -66,6 +66,8 @@ ALTER TABLE `on_demand_macro_host` ADD COLUMN `macro_order` int(11) NULL DEFAULT
 ALTER TABLE `on_demand_macro_service` ADD COLUMN `macro_order` int(11) NULL DEFAULT 0;
 
 
+
+
 CREATE TABLE `on_demand_macro_command` (
   `command_macro_id` int(11) NOT NULL AUTO_INCREMENT,
   `command_macro_name` varchar(255) NOT NULL,
@@ -661,3 +663,18 @@ update `host` set `host_location` = (select `value` from `options` where `key` =
 DELETE FROM topology WHERE topology_page IN ('20103', '20105', '20215', '20202','2020403', '20210', '202013', 
 '2020401', '2020402','20205', '2020501', '2020502', '2020902', '2020903', '2021001', '2021002', '2021201', '2021202', '2021203', 
 '20213','2021301', '2021302', '2020901');
+
+-- Moving Graphs section to Performances
+SET foreign_key_checks = 0;
+DELETE FROM topology_JS WHERE id_page = 40201;
+UPDATE topology SET topology_parent = 2 WHERE topology_id = 137;
+UPDATE topology SET topology_parent = 204 WHERE topology_id = 138;
+UPDATE topology SET topology_page = 20401, topology_parent = 204 WHERE topology_id = 139;
+UPDATE topology SET topology_parent = 204 WHERE topology_id = 140;
+UPDATE topology SET topology_page = 20404, topology_parent = 204 WHERE topology_id = 141;
+UPDATE topology SET topology_page = 20405, topology_parent = 204 WHERE topology_id = 142;
+UPDATE topology SET topology_parent = 204 WHERE topology_id = 143;
+UPDATE topology SET topology_page = 20408, topology_parent = 204 WHERE topology_id = 144;
+UPDATE topology_JS SET id_page = 20404 WHERE id_page = 40204;
+UPDATE topology_JS SET id_page = 20405 WHERE id_page = 40205;
+SET foreign_key_checks = 1;

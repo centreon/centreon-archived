@@ -2,30 +2,32 @@
 <script src="./include/common/javascript/scriptaculous/scriptaculous.js?load=dragdrop" type="text/javascript"></script>
 <script language='javascript' src='./include/views/graphs/javascript/cropper/cropper.uncompressed.js'></script>
 <div id="div1">
-	<form {$form.attributes}>
+        <form {$form.attributes}>
         <table class="ajaxOption table">
             <tr>
-                <td><h4>{$form.search.label}</h4></td>
-                <td><h4>{$form.search_service.label}</h4></td>
+                <td colspan="2"> <h4>{$form.host_selector.label}</h4></td>
+                <td colspan="2"><h4>{$form.service_selector.label}</h4></td>
             </tr>
             <tr>
-                <td>{$form.search.html}</td>
-                <td>{$form.search_service.html}</td>
+                <td colspan="2">{$form.host_selector.html}</td>
+                <td>{$form.service_selector.html}</td>
             </tr>
+            <tr>
+                <td class="divider" colspan="3"><hr /></td>
+            </tr>
+            <tr>
+                <td colspan="3"> <h4>{$form.period.label}</h4></td>
+            </tr>
+            <tr>
+                <td>{$form.period.html}</td>
+                <td>
+                   <h4>{$from}</h4>
+                   {$form.StartDate.html} {$form.StartTime.html} <br>
+                   <h4> {$to}</h4> {$form.EndDate.html} {$form.EndTime.html}
+                </td>
+                <td>{$form.graph.html}</td>
+             </tr>
         </table>
-		<table class="ajaxOption">
-	        <tr>
-	        	<td style='white-space:nowrap;'>
-		        	<b>{$form.period.label} : </b>&nbsp;{$form.period.html}
-	        	</td>
-			<td style='white-space:nowrap;'> {$periodORlabel} </td>
-			<td style='white-space:nowrap;'>
-				&nbsp;{$from}&nbsp;{$form.StartDate.html}&nbsp;{$form.StartTime.html}
-				{$to}&nbsp;{$form.EndDate.html}&nbsp;{$form.EndTime.html}&nbsp;
-			</td>
-			<td style='white-space:nowrap;'>{$form.graph.html}</td>			
-		</tr>
-		</table>
-	</form>
+        </form>
 </div>
 <div id="graphView4xml"></div>
