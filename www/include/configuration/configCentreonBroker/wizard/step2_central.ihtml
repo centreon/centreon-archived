@@ -9,7 +9,7 @@
        </select></p>
        <p class="title2">{$lang.informations} :</p>
        <p class="form">{$lang.requester}&nbsp;:&nbsp;{$requester}</p>
-       <p class="form">{$lang.additional_daemon}&nbsp;:&nbsp;1</p>
+       <p class="form">{$lang.additional_daemon}&nbsp;:&nbsp;2</p>
        <input type="hidden" name="step2_requester_id" value="{$requester_id}" />
    </form>
 </div>

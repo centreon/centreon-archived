@@ -44,13 +44,15 @@ CREATE TABLE `config` (
   `nagios_log_file` varchar(255) DEFAULT NULL,
   `last_line_read` int(11) DEFAULT '31',
   `audit_log_option` enum('0','1') NOT NULL DEFAULT '1',
+  `len_storage_downtimes` int(11) DEFAULT NULL,
+  `len_storage_comments` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES (1,'@CENTSTORAGE_RRD@/metrics/','@CENTSTORAGE_RRD@/status/','@CENTSTORAGE_RRD@/nagios-perf/',180,180,'1',10,360,2,NULL,'1',31,365,'@MONITORING_VAR_LOG@/nagios.log',0,'1');
+INSERT INTO `config` (1,'@CENTSTORAGE_RRD@/metrics/','@CENTSTORAGE_RRD@/status/','@CENTSTORAGE_RRD@/nagios-perf/',180,180,'1',10,360,2,NULL,'1',31,365,'@MONITORING_VAR_LOG@/nagios.log',0,'1', '0', '0');
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

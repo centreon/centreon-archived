@@ -1,5 +1,4 @@
 <div id="{$Menu1ID}">
-
     <div id="{$Menu1Color}">
     <ul>
         {section name=elem1 loop=$elemArr1}

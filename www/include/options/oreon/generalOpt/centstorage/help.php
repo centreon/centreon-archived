@@ -17,6 +17,8 @@ $help['tip_path_to_rrdtool_database_for_nagios_statistics'] = dgettext('help', '
 
 $help['tip_rrdtool_database_size'] = dgettext('help', 'RRDTool database size (in days).');
 $help['tip_retention_duration_for_data_in_mysql'] = dgettext('help', 'Duration of retention regarding performance data stored in database.');
+$help['tip_retention_duration_for_data_in_downtimes'] = dgettext('help', 'Duration of retention regarding performance data stored in database.');
+$help['tip_retention_duration_for_data_in_comments'] = dgettext('help', 'Duration of retention regarding performance data stored in database.');
 
 /**
  * Purge options

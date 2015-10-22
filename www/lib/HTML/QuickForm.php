@@ -1509,8 +1509,6 @@ class HTML_QuickForm extends HTML_Common
      */
     function validate()
     {
-        $this->addFormRule(array($this, 'checkSecurityToken'));
-        
         if (count($this->_rules) == 0 && count($this->_formRules) == 0 && 
             $this->isSubmitted()) {
             return (0 == count($this->_errors));
@@ -1684,6 +1682,7 @@ class HTML_QuickForm extends HTML_Common
     function accept(&$renderer)
     {
         $this->createSecurityToken();
+        $this->addFormRule(array($this, 'checkSecurityToken'));
         $renderer->startForm($this);
         foreach (array_keys($this->_elements) as $key) {
             $element =& $this->_elements[$key];

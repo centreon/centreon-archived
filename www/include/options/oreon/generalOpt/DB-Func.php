@@ -356,6 +356,12 @@ function updateODSConfigData() {
         $ret["purge_interval"] = 60;
     if ($ret["RRDdatabase_path"][strlen($ret["RRDdatabase_path"]) - 1] != "/")
         $ret["RRDdatabase_path"] .= "/";
+    
+    if (!isset($ret["len_storage_downtimes"]))
+        $ret["len_storage_downtimes"] = 0;
+    if (!isset($ret["len_storage_comments"]))
+        $ret["len_storage_comments"] = 0;
+    
     $rq = "UPDATE `config` SET `RRDdatabase_path` = '".$ret["RRDdatabase_path"]."',  `RRDdatabase_status_path` = '".$ret["RRDdatabase_status_path"]."',
 				`RRDdatabase_nagios_stats_path` = '".$ret["RRDdatabase_nagios_stats_path"]."',
 				`len_storage_rrd` = '".$ret["len_storage_rrd"]."',
@@ -365,8 +371,11 @@ function updateODSConfigData() {
 				`archive_log` = '".$ret["archive_log"]."',
 				`archive_retention` = '".$ret["archive_retention"]."',
 				`reporting_retention` = '".$ret["reporting_retention"]."',
-                `audit_log_option` = '".$ret["audit_log_option"]."',
-				`storage_type` = '".$ret["storage_type"]."' WHERE `id` = 1 LIMIT 1 ;";
+                                `audit_log_option` = '".$ret["audit_log_option"]."',
+				`storage_type` = '".$ret["storage_type"]."', 
+                                `len_storage_downtimes` = '".$ret["len_storage_downtimes"]."',
+                                `len_storage_comments` = '".$ret["len_storage_comments"]."' "
+                                . " WHERE `id` = 1 LIMIT 1 ;";
     $DBRESULT = $pearDBO->query($rq);
 
     updateOption($pearDB, "centstorage", isset($ret["enable_centstorage"]) && $ret["enable_centstorage"] != NULL ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8"): "0");

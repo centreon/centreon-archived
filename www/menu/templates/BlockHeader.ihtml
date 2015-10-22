@@ -162,7 +162,7 @@
 </div>
 {literal}
 <script type='text/javascript'>
-/**
+/*
  * Toggle Header
  */
 function toggleHeader()

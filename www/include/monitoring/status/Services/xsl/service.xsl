@@ -135,9 +135,12 @@
 		<td class="ListColLeft" style="white-space:nowrap;">
 
 			<xsl:if test="hn/@none = 0">
+
 					<xsl:if test="hdtm = 0">
 						<xsl:if test="hs = 1">
-							<xsl:attribute name="class">state_badge host_down</xsl:attribute>
+							<xsl:element name="span">
+								<xsl:attribute name="class">state_badge host_down</xsl:attribute>
+							</xsl:element>
 						</xsl:if>
 						<xsl:if test="hs = 2">
 							<xsl:attribute name="class">state_badge host_unreachable</xsl:attribute>
