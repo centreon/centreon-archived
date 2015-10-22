@@ -88,9 +88,10 @@ class CentreonExternalCommand {
     public function write() {
         global $oreon;
 
-        $varlib = "@CENTREON_VARLIB@";
-        if ($varlib == "") {
+        if (!defined('_CENTREON_VARLIB_')) {
             $varlib = "/var/lib/centreon";
+        } else {
+            $varlib = _CENTREON_VARLIB_;
         }
 
         $str_local = "";
