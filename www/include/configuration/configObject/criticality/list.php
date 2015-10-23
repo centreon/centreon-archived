@@ -40,6 +40,8 @@ if (!isset($oreon)) {
     exit();
 }
 
+include_once("./class/centreonUtils.class.php");
+
 include("./include/common/autoNumLimit.php");
 
 /*
@@ -79,9 +81,9 @@ $rowz = $criticality->getList($search, "level", "ASC", $num * $limit, $limit);
 foreach ($rowz as $criticalityId => $row) {
     $selectedElements = $form->addElement('checkbox', "select[" . $criticalityId . "]");
     $elemArr[] = array("RowMenu_select" => $selectedElements->toHtml(),
-                       "RowMenu_name" => $row["name"],
+                       "RowMenu_name" => CentreonUtils::escapeSecure($row["name"]),
                        "RowMenu_level" => $row["level"],
-                       "RowMenu_comments" => $row["comments"],
+                       "RowMenu_comments" => CentreonUtils::escapeSecure($row["comments"]),
                        "RowMenu_link" => "?p=" . $p . "&o=c&crit_id=" . $criticalityId,
                        "RowMenu_icon" => $media->getFilename($row["icon_id"]));
 }
