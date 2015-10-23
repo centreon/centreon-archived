@@ -59,9 +59,6 @@ CREATE TABLE `meta_contact` (
 ALTER TABLE `command` ADD `command_locked` BOOLEAN DEFAULT 0;
 ALTER TABLE `host` ADD `host_locked` BOOLEAN DEFAULT 0 AFTER `host_comment`;
 
--- Change version of Centreon
-UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.3' LIMIT 1;
-
 ALTER TABLE `on_demand_macro_host` ADD COLUMN `macro_order` int(11) NULL DEFAULT 0;
 ALTER TABLE `on_demand_macro_service` ADD COLUMN `macro_order` int(11) NULL DEFAULT 0;
 
@@ -667,7 +664,7 @@ DELETE FROM topology WHERE topology_page IN ('20103', '20105', '20215', '20202',
 -- Moving Graphs section to Performances
 SET foreign_key_checks = 0;
 DELETE FROM topology_JS WHERE id_page = 40201;
-UPDATE topology SET topology_parent = 2 WHERE topology_id = 137;
+UPDATE topology SET topology_page = 204, topology_name = 'Performances', topology_parent = 2 WHERE topology_id = 137;
 UPDATE topology SET topology_parent = 204 WHERE topology_id = 138;
 UPDATE topology SET topology_page = 20401, topology_parent = 204 WHERE topology_id = 139;
 UPDATE topology SET topology_parent = 204 WHERE topology_id = 140;
