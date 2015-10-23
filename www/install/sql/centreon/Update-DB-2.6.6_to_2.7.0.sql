@@ -664,14 +664,14 @@ DELETE FROM topology WHERE topology_page IN ('20103', '20105', '20215', '20202',
 -- Moving Graphs section to Performances
 SET foreign_key_checks = 0;
 DELETE FROM topology_JS WHERE id_page = 40201;
-UPDATE topology SET topology_page = 204, topology_name = 'Performances', topology_parent = 2 WHERE topology_id = 137;
-UPDATE topology SET topology_parent = 204 WHERE topology_id = 138;
-UPDATE topology SET topology_page = 20401, topology_parent = 204 WHERE topology_id = 139;
-UPDATE topology SET topology_parent = 204 WHERE topology_id = 140;
-UPDATE topology SET topology_page = 20404, topology_parent = 204 WHERE topology_id = 141;
-UPDATE topology SET topology_page = 20405, topology_parent = 204 WHERE topology_id = 142;
-UPDATE topology SET topology_parent = 204 WHERE topology_id = 143;
-UPDATE topology SET topology_page = 20408, topology_parent = 204 WHERE topology_id = 144;
+UPDATE topology SET topology_page = 204, topology_name = 'Performances', topology_parent = 2 WHERE topology_parent = 2 AND topology_page = 402;
+UPDATE topology SET topology_parent = 204 WHERE topology_page = 402 AND topology_page IS NULL;
+UPDATE topology SET topology_page = 20401, topology_parent = 204 WHERE topology_page = 40201;
+UPDATE topology SET topology_parent = 204 WHERE topology_page = 40204;
+UPDATE topology SET topology_page = 20404, topology_parent = 204 WHERE topology_page = 40204;
+UPDATE topology SET topology_page = 20405, topology_parent = 204 WHERE topology_page = 40205;
+UPDATE topology SET topology_parent = 204 WHERE topology_id = 402 AND topology_name 'Virtuals' AND topology_page IS NULL;
+UPDATE topology SET topology_page = 20408, topology_parent = 204 WHERE topology_page = 40208;
 UPDATE topology_JS SET id_page = 20404 WHERE id_page = 40204;
 UPDATE topology_JS SET id_page = 20405 WHERE id_page = 40205;
 SET foreign_key_checks = 1;
