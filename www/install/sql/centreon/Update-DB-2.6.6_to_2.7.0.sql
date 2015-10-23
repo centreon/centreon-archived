@@ -59,9 +59,6 @@ CREATE TABLE `meta_contact` (
 ALTER TABLE `command` ADD `command_locked` BOOLEAN DEFAULT 0;
 ALTER TABLE `host` ADD `host_locked` BOOLEAN DEFAULT 0 AFTER `host_comment`;
 
--- Change version of Centreon
-UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.3' LIMIT 1;
-
 ALTER TABLE `on_demand_macro_host` ADD COLUMN `macro_order` int(11) NULL DEFAULT 0;
 ALTER TABLE `on_demand_macro_service` ADD COLUMN `macro_order` int(11) NULL DEFAULT 0;
 
@@ -667,7 +664,7 @@ DELETE FROM topology WHERE topology_page IN ('20103', '20105', '20215', '20202',
 -- Moving Graphs section to Performances
 SET foreign_key_checks = 0;
 DELETE FROM topology_JS WHERE id_page = 40201;
-UPDATE topology SET topology_parent = 2 WHERE topology_id = 137;
+UPDATE topology SET topology_page = 204, topology_name = 'Performances', topology_parent = 2 WHERE topology_id = 137;
 UPDATE topology SET topology_parent = 204 WHERE topology_id = 138;
 UPDATE topology SET topology_page = 20401, topology_parent = 204 WHERE topology_id = 139;
 UPDATE topology SET topology_parent = 204 WHERE topology_id = 140;
@@ -678,3 +675,39 @@ UPDATE topology SET topology_page = 20408, topology_parent = 204 WHERE topology_
 UPDATE topology_JS SET id_page = 20404 WHERE id_page = 40204;
 UPDATE topology_JS SET id_page = 20405 WHERE id_page = 40205;
 SET foreign_key_checks = 1;
+
+-- Reorganisation des menus
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtimes',NULL,2,210,60,1,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtime','./img/icones/16x16/warning.gif',210,21001,10,1,'./include/monitoring/downtime/downtimeService.php','&o=vs','0','0','1',NULL,NULL,NULL,'1');
+UPDATE topology SET topology_name = 'Downtimes' WHERE topology_parent = 210; 
+
+UPDATE topology SET topology_name = 'Status Details' WHERE topology_page = 202;
+UPDATE topology SET topology_name = 'Status' WHERE topology_name = 'By Status' AND topology_page IS NULL; 
+UPDATE topology SET topology_name = 'Services' WHERE topology_name = 'All Services' AND topology_page = 20201;
+UPDATE topology SET topology_name = 'Services Grid', topology_group = 7 WHERE topology_name = 'Details' AND topology_page = 20204;
+UPDATE topology SET topology_name = 'Services by Hostgroup', topology_group = 7 WHERE topology_name = 'Details' AND topology_page = 20209;
+UPDATE topology SET topology_name = 'Services by Servicegroup', topology_group = 7, topology_order = 80 WHERE topology_name = 'Details' AND topology_page = 20212;
+
+-- Hosts pages
+DELETE FROM topology_JS WHERE id_page = 20102;
+UPDATE topology SET topology_page = 20202, topology_group = 7, topology_parent = 202, topology_order = 30 WHERE topology_page = 20102; 
+
+DELETE FROM topology_JS WHERE id_page = 20104;
+UPDATE topology SET topology_page = 20203, topology_group = 7, topology_parent = 202, topology_order = 120 WHERE topology_page = 20104;
+insert into topology_JS (id_page, PathName_js, Init) VALUES ('20203', './include/common/javascript/ajaxMonitoring.js', 'initM');
+DELETE FROM topology WHERE topology_parent = '20203';
+
+-- Move temporary comments
+update topology set topology_page = '21002', topology_name = 'Host comments', topology_parent = '210', topology_group = '30' WHERE topology_page = '20107';
+update topology set topology_page = '21003', topology_name = 'Service comments', topology_parent = '210', topology_group = '40' WHERE topology_page = '20219';
+
+-- Delete Host tab
+DELETE FROM topology WHERE topology_page = 201;
+
+-- Add System Logs
+UPDATE topology set topology_name = 'Event Logs' WHERE topology_page = '20301';
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'System Logs','./img/icones/16x16/text_code.gif',203,20302,20,30,'./include/eventLogs/viewLog.php','&engine=true','0','0','1',NULL,NULL,NULL,'1');
+
+-- DELETE Global Health
+DELETE FROM topology WHERE topology_page = 10102;

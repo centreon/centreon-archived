@@ -570,15 +570,12 @@ function nextPeriod() {
         launchGraph();
     });
     
-    jQuery("#host_selector").on("select2:unselecting", function(event, data) {
-        /*$myHostPattern = 'HS_' + event.params.args.data.id;
-        console.log(event.params.args.data);
-        jQuery.each($hostsServicesForGraph, function(index, value) {
-            if (value.indexOf($myHostPattern) !== -1) {
-                
-            }
-        });*/
-    });
+    function fillHostsServices()
+    {
+        $hostsServicesForGraph = [];
+        $selectedHosts = jQuery("#host_selector").val();
+        $selectedServices = jQuery("#service_selector").val();
+    }
     
     jQuery("#host_selector").on("change", function() {
         $selectedOptions = jQuery(this).val();
