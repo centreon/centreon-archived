@@ -68,7 +68,7 @@ class CentreonUserLog {
 		if (isset($optGen["debug_path"]) && $optGen["debug_path"] != "") {
 			$this->path = $optGen["debug_path"];
 		} else {
-			$this->path = "@CENTREON_LOG@/";
+			$this->path = "/var/log/centreon/";
 		}
 
 		$this->errorType[1] = $this->path."/login.log";
@@ -141,7 +141,7 @@ class CentreonLog {
 		/*
 		 * Init log Directory
 		 */
-		$this->path = "@CENTREON_LOG@/";
+		$this->path = "/var/log/centreon/";
 
 		$this->errorType[1] = $this->path."/login.log";
 		$this->errorType[2] = $this->path."/sql-error.log";

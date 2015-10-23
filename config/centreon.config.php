@@ -4,7 +4,7 @@
  */
 
 /* MySQL configuration file */
-include_once "@CENTREON_ETC@/centreon.conf.php";
+include_once "/etc/centreon/centreon.conf.php";
 
 define('_CENTREON_PATH_', $centreon_path);
 define('hostCentreon', $conf_centreon['hostCentreon']);
