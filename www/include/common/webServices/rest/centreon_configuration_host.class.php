@@ -39,6 +39,7 @@
 
 require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonHost.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationHost extends CentreonConfigurationObjects

@@ -50,7 +50,14 @@
 	isset($_GET["name"]) ? $nameG = $_GET["name"] : $nameG = NULL;	
 	isset($_POST["name"]) ? $nameP = $_POST["name"] : $nameP = NULL;
 	$nameG ? $name = $nameG : $name = $nameP;
-		
+    
+    $operationType = '';
+    if ($name !== NULL) {
+        $operationType = 'install';
+    } elseif ($id !== NULL) {
+        $operationType = 'upgrade';
+    }
+    
 	/*
 	 * Pear library
 	 */

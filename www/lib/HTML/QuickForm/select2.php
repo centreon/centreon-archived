@@ -169,9 +169,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $this->_multiple = false;
         }
         
-        if(isset($attributes['allowClear']) && $attributes['allowClear'] === false){
+        if (isset($attributes['allowClear']) && $attributes['allowClear'] === false) {
             $this->_allowClear = false;
-        }else if(isset($attributes['allowClear']) && $attributes['allowClear'] === true){
+        } elseif (isset($attributes['allowClear']) && $attributes['allowClear'] === true) {
             $this->_allowClear = true;
         }
         
@@ -310,11 +310,12 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $strJsInitEnding = '});';
         
         if (!$this->_allowClear) {
-            $strJsInitEnding .= 'jQuery("#' . $this->getName() . '").nextAll(".clearAllSelect2").on("click",function(){'
+            $strJsInitEnding .= 'jQuery("#' . $this->getName() . '").nextAll(".clearAllSelect2").on("click",function(){ '
+                . '$currentValues = jQuery("#' . $this->getName() . '").val(); console.log($currentValues); '
                 . 'jQuery("#' . $this->getName() . '").val("");'
                 . 'jQuery("#' . $this->getName() . '").empty().append(jQuery("<option>"));'
-                . 'jQuery("#' . $this->getName() . '").trigger("change");'
-                . '});';
+                . 'jQuery("#' . $this->getName() . '").trigger("change", $currentValues);'
+                . ' });';
         }
         
         

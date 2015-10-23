@@ -35,11 +35,14 @@
 /*
  * Define
  */
+
+require_once realpath(dirname(__FILE__).'/../config/centreon.config.php');
+
+$etc = _CENTREON_PATH_;
+
 define('SMARTY_DIR', realpath('../GPL_LIB/Smarty/libs/') . '/');
 
 ini_set('display_errors', 'Off');
-
-$etc = "@CENTREON_ETC@";
 
 clearstatcache(true, "$etc/centreon.conf.php");
 if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
@@ -53,9 +56,9 @@ if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
         require_once ("$etc/centreon.conf.php");
         $freeze = 0;
     } else {
-        $freeze = 1;
-        require_once ("../centreon.conf.php");
-        $msg = _("You have to move centreon configuration file from temporary directory to final directory");
+        $freeze = 0;
+        //require_once ("../centreon.conf.php");
+       // $msg = _("You have to move centreon configuration file from temporary directory to final directory");
     }
 }
 

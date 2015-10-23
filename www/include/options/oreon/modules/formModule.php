@@ -56,11 +56,11 @@
 	$tpl->assign("headerMenu_infos", _("Additionnal Information"));
 	$tpl->assign("headerMenu_isinstalled", _("Installed"));
 	$tpl->assign("headerMenu_isvalid", _("Valid for an upgrade"));
-
+    
 	/*
 	 * "Name" case, it's not a module which is installed
 	 */
-	if ($name) {
+	if ($operationType === 'install') {
 		$flag = false;
 		include_once(_CENTREON_PATH_ . "www/modules/".$name."/conf.php");
 		$tpl->assign("module_rname", $module_conf[$name]["rname"]);
@@ -71,8 +71,9 @@
 			$infos_streams = file(_CENTREON_PATH_ . "www/modules/".$name."/infos/infos.txt");
 			$infos_streams = implode("<br />", $infos_streams);
 			$tpl->assign("module_infosTxt", $infos_streams);
-		} else
+		} else {
 			$tpl->assign("module_infosTxt", false);
+        }
 
 		$form1 = new HTML_QuickForm('Form', 'post', "?p=".$p);
 
@@ -121,7 +122,7 @@
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$form1->accept($renderer);
 		$tpl->assign('form1', $renderer->toArray());
-	} else if ($id)	{
+	} elseif ($operationType === 'upgrade')	{
 
 		/*
 		 * "ID" case, it's an installed module
@@ -129,6 +130,8 @@
 
 		$moduleinfo = getModuleInfoInDB(NULL, $id);
 		$elemArr = array();
+        $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+        $form->addElement('submit', 'list', _("Back"));
 		if (is_dir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE"))	{
 			$handle = opendir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE");
 			$i = 0;
@@ -137,7 +140,7 @@
 				if (substr($filename, 0, 1) != "." && strstr($filename, $moduleinfo["name"]."-"))	{
 					include_once(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/conf.php");
 					if ($moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])	{
-						$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+						
 						$upgrade_ok = false;
 						# Upgrade
 						if ($form->validate())	{
@@ -195,28 +198,23 @@
 						$hid_id->setValue($id);
 						$up_name = $form->addElement('hidden', 'filename');
 						$up_name->setValue($filename);
-						$form->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
-						$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-						$form->accept($renderer);
-						$tpl->assign('form', $renderer->toArray());
+						
 					}
 				}
 			}
 			closedir($handle);
 		}
-		$moduleinfo = array();
-		$moduleinfo = getModuleInfoInDB(NULL, $id);
-		$tpl->assign("module_rname", $moduleinfo["rname"]);
-		$tpl->assign("module_release", $moduleinfo["mod_release"]);
-		$tpl->assign("module_author", $moduleinfo["author"]);
-		$tpl->assign("module_infos", $moduleinfo["infos"]);
-		$tpl->assign("module_isinstalled", _("Yes"));
-		$tpl->assign("elemArr", $elemArr);
-		$form2 = new HTML_QuickForm('Form', 'post', "?p=".$p);
-		$form2->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
-		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-		$form2->accept($renderer);
-		$tpl->assign('form2', $renderer->toArray());
+        $moduleinfo = array();
+        $moduleinfo = getModuleInfoInDB(NULL, $id);
+        $tpl->assign("module_rname", $moduleinfo["rname"]);
+        $tpl->assign("module_release", $moduleinfo["mod_release"]);
+        $tpl->assign("module_author", $moduleinfo["author"]);
+        $tpl->assign("module_infos", $moduleinfo["infos"]);
+        $tpl->assign("module_isinstalled", _("Yes"));
+        $tpl->assign("elemArr", $elemArr);
+        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+        $form->accept($renderer);
+        $tpl->assign('form', $renderer->toArray());
 	}
 
 	/**

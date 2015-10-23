@@ -1447,6 +1447,19 @@ span.state_badge {
   z-index: 1000;
 }
 
+/* Fullscreen icon */
+.fullscreen-icon {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  border-radius: 4px;
+  background-color: #58585a;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.fullscreen-icon img {
+  vertical-align: middle;
 /* Style for Eventlogs page */
 .log-extend-icon {
   cursor: pointer;
