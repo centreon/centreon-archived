@@ -666,7 +666,7 @@ SET foreign_key_checks = 0;
 DELETE FROM topology_JS WHERE id_page = 40201;
 UPDATE topology SET topology_page = 204, topology_name = 'Performances', topology_parent = 2 WHERE topology_parent = 2 AND topology_page = 402;
 UPDATE topology SET topology_parent = 204 WHERE topology_page = 402 AND topology_page IS NULL;
-UPDATE topology SET topology_page = 20401, topology_parent = 204 WHERE topology_page = 40201;
+UPDATE topology SET topology_page = 20401, topology_parent = 204, topology_name = 'Graphs' WHERE topology_page = 40201;
 UPDATE topology SET topology_parent = 204 WHERE topology_page = 40204;
 UPDATE topology SET topology_page = 20404, topology_parent = 204 WHERE topology_page = 40204;
 UPDATE topology SET topology_page = 20405, topology_parent = 204 WHERE topology_page = 40205;
