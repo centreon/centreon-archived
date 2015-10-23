@@ -18,7 +18,7 @@ Security fixes
 ==============
 
 - #3831: XSS injection in object lists (ZSL-2015-5266)
-- #3835: CRSF Issues on Centreon (ZSL-2015-5263)
+- #3835: CSRF Issues on Centreon (ZSL-2015-5263)
 
 Bug fixes
 =========
