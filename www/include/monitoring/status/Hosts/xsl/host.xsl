@@ -173,10 +173,12 @@
 			
 		</td>
 		<td class="ListColCenter">
+          <span class="badge">
 			<xsl:attribute name="style">
 				background-color:<xsl:value-of select="hc"/>;
 			</xsl:attribute>
 			<xsl:value-of select="cs"/>
+          </span>
 		</td>
 		<td class="ListColRight"><xsl:value-of select="a"/></td>
 	    <td class="ListColRight"><xsl:value-of select="lc"/></td>
