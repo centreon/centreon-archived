@@ -37,17 +37,17 @@ if (!isset($centreon)) {
     exit;
 }
 
-require_once $centreon_path . "www/class/centreonCustomView.class.php";
-require_once $centreon_path . "www/class/centreonWidget.class.php";
-require_once $centreon_path . "www/class/centreonWidget/Params/Boolean.class.php";
-require_once $centreon_path . "www/class/centreonWidget/Params/Hidden.class.php";
-require_once $centreon_path . "www/class/centreonWidget/Params/List.class.php";
-require_once $centreon_path . "www/class/centreonWidget/Params/Password.class.php";
-require_once $centreon_path . "www/class/centreonWidget/Params/Range.class.php";
-require_once $centreon_path . "www/class/centreonWidget/Params/Text.class.php";
-require_once $centreon_path . "www/class/centreonWidget/Params/Compare.class.php";
-require_once $centreon_path . "www/class/centreonWidget/Params/Sort.class.php";
-require_once $centreon_path . "www/class/centreonWidget/Params/Date.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonCustomView.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Boolean.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Hidden.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/List.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Password.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Range.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Text.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Compare.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Sort.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Date.class.php";
 
 $db = new CentreonDB();
 $viewObj = new CentreonCustomView($centreon, $db);
@@ -88,11 +88,11 @@ $form->addElement('header', 'information', _("General Information"));
 /* Prepare list of installed modules and have widget connectors */
 $loadConnectorPaths = array();
 /* Add core path */
-$loadConnectorPaths[] = $centreon_path . "www/class/centreonWidget/Params/Connector";
+$loadConnectorPaths[] = _CENTREON_PATH_ . "www/class/centreonWidget/Params/Connector";
 $query = 'SELECT name FROM modules_informations ORDER BY name';
 $res = $db->query($query);
 while ($module = $res->fetchRow()) {
-    $dirPath = $centreon_path . 'www/modules/' . $module['name'] . '/widgets/Params/Connector';
+    $dirPath = _CENTREON_PATH_ . 'www/modules/' . $module['name'] . '/widgets/Params/Connector';
     if (is_dir($dirPath)) {
         $loadConnectorPaths[] = $dirPath;
     }

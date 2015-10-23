@@ -100,7 +100,7 @@
 				{if $index_data}
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icons/chart.png'>{$detailed_graph}</td>
+						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icons/chart.png' class="ico-18">{$detailed_graph}</td>
 					</tr>
 					<tr class='list_one'>					
 						<td class="ListColCenter" colspan="2"><a href="./main.php?p=4&mode=0&svc_id={$host_name};{$svc_description}"><img src="./include/views/graphs/generateGraphs/generateImage.php?{$options2}"></a></td>
@@ -111,7 +111,7 @@
 				{if $flag_graph}
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icons/chart.png'>&nbsp;{$status_str}</td>
+						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icons/chart.png' class="ico-18">&nbsp;{$status_str}</td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColCenter" colspan="2"><img src="./include/views/graphs/graphStatus/displayServiceStatus.php?{$options}"></td>
@@ -230,7 +230,7 @@
 						{if $aclAct.service_schedule_downtime || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft">
-									<img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='./main.php?p=20218&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_downtime}</a>
+									<img src='./img/icons/warning.png' class="ico-14" border='1'>&nbsp;<a href='./main.php?p=20218&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_downtime}</a>
 								</td>
 							</tr>
 						{/if}

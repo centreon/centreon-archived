@@ -93,7 +93,7 @@
 
     if (!$oreon->user->admin && $meta_id && false === strpos($metaStr, "'".$meta_id."'")) {
         $msg = new CentreonMsg();
-        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
         $msg->setText(_('You are not allowed to access this meta service'));
         return null;

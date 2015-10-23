@@ -34,7 +34,7 @@
  */
 
 ini_set("display_errors", "Off");
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 define('STATUS_OK', 0);
 define('STATUS_NOK', 1);
 
@@ -82,17 +82,17 @@ try {
     $ret['host'] = $poller;
     $ret['restart_mode'] = $_POST['mode'];
 
-    chdir($centreon_path . "www");
-    $nagiosCFGPath = "$centreon_path/filesGeneration/nagiosCFG/";
-    $centreonBrokerPath = "$centreon_path/filesGeneration/broker/";
-    require_once $centreon_path . "www/include/configuration/configGenerate/DB-Func.php";
-    require_once $centreon_path . "www/class/centreonDB.class.php";
-    require_once $centreon_path . "www/class/centreonSession.class.php";
-    require_once $centreon_path . "www/class/centreon.class.php";
-    require_once $centreon_path . "www/class/centreonXML.class.php";
-    require_once $centreon_path . "www/class/centreonBroker.class.php";
-    require_once $centreon_path . "www/class/centreonACL.class.php";
-    require_once $centreon_path . "www/class/centreonUser.class.php";
+    chdir(_CENTREON_PATH_ . "www");
+    $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/nagiosCFG/";
+    $centreonBrokerPath = _CENTREON_PATH_."/filesGeneration/broker/";
+    require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 
     session_start();
     if ($_POST['sid'] != session_id()) {
@@ -103,11 +103,12 @@ try {
 
     /*  Set new error handler */
     set_error_handler('log_error');
-
-    $centcore_pipe = "@CENTREON_VARLIB@/centcore.cmd";
-	if ($centcore_pipe == "/centcore.cmd") {
-		$centcore_pipe = "/var/lib/centreon/centcore.cmd";
-	}
+    
+    if (defined('_CENTREON_VARLIB_')) {
+        $centcore_pipe = _CENTREON_VARLIB_."/centcore.cmd";
+    } else {
+	$centcore_pipe = "/var/lib/centreon/centcore.cmd";
+    }
 
     $xml = new CentreonXML();
     $pearDB = new CentreonDB();
@@ -222,13 +223,13 @@ try {
     foreach ($oreon->modules as $key => $value) {
         $addModule = true;
         if (function_exists('zend_loader_enabled') && (zend_loader_file_encoded() == true)) {
-            $module_license_validity = zend_loader_install_license ($centreon_path . "www/modules/".$key."license/merethis_lic.zl", true);
+            $module_license_validity = zend_loader_install_license (_CENTREON_PATH_ . "www/modules/".$key."license/merethis_lic.zl", true);
             if ($module_license_validity == false)
                 $addModule = false;
         }
         
         if ($addModule) {
-            if ($value["restart"] && $files = glob($centreon_path . "www/modules/".$key."/restart_pollers/*.php")) {
+            if ($value["restart"] && $files = glob(_CENTREON_PATH_ . "www/modules/".$key."/restart_pollers/*.php")) {
                 foreach ($files as $filename)
                     include $filename;
             }

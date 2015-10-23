@@ -38,27 +38,31 @@
 					<xsl:value-of select="hn"/>
 				</xsl:element>
 			</td>
-			<td class="ListColLeft" width="40">
+			<td class="ListColLeft" style="white-space:nowrap;width:37px;">
 				<xsl:element name="a">
 				  	<xsl:attribute name="href">main.php?o=svc&amp;p=20201&amp;host_search=<xsl:value-of select="hnl"/></xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/view.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/view.png</xsl:attribute>
+							<xsl:attribute name="class">ico-18</xsl:attribute>
 						</xsl:element>
 				</xsl:element>
 				<xsl:element name="a">
 				  	<xsl:attribute name="href">main.php?p=40201&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/></xsl:attribute>
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
-                            <xsl:attribute name="class">ico-18</xsl:attribute>
+							<xsl:attribute name="class">ico-18</xsl:attribute>
 						</xsl:element>
 				</xsl:element>
 			</td>
 			<xsl:if test="//i/s = 1">
 			<td class="ListColLeft">
-				<xsl:attribute name="style">
-					background-color:<xsl:value-of select="hc"/>;
-				</xsl:attribute>
-				<xsl:value-of select="hs"/>
+				<xsl:element name="span">
+					<xsl:attribute name="style">
+						background-color:<xsl:value-of select="hc"/>;
+					</xsl:attribute>
+					<xsl:attribute name="class">badge</xsl:attribute>
+					<xsl:value-of select="hs"/>
+				</xsl:element>
 			</td>
 			</xsl:if>
 			<td class="ListColLeft">

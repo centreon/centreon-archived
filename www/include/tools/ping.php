@@ -36,7 +36,7 @@
  * 
  */
 	
-	include("@CENTREON_ETC@/centreon.conf.php");
+	require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 	require_once ("../../$classdir/centreonSession.class.php");
 	require_once ("../../$classdir/centreon.class.php");
 

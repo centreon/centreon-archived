@@ -287,10 +287,19 @@
 			</xsl:if>
 		</td>
 		<td class="ListColCenter">
-			<xsl:attribute name="style">
-				background-color:<xsl:value-of select="sc"/>;
-			</xsl:attribute>
-			<xsl:value-of select="cs"/>
+
+			<xsl:element name="span">
+				<xsl:attribute name="style">
+					background-color:<xsl:value-of select="sc"/>;
+					<xsl:if test="ssc = 3">
+						color: #818285;
+						font-weight: normal;
+					</xsl:if>
+				</xsl:attribute>
+				<xsl:attribute name="class">badge</xsl:attribute>
+				<xsl:value-of select="cs"/>
+			</xsl:element>
+
 		</td>
 		<td class="ListColRight" style="white-space:nowrap;">
 			<xsl:value-of select="d"/>

@@ -43,7 +43,7 @@ if (!isset($oreon)) {
 if (!$oreon->user->admin && $server_id  && count($serverResult)) {
     if (!isset($serverResult[$server_id])) {
         $msg = new CentreonMsg();
-        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
         $msg->setText(_('You are not allowed to access this monitoring instance'));
         return null;

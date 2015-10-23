@@ -36,7 +36,7 @@
  * SVN : $Id$
  *
  */
-require_once $centreon_path . 'www/class/centreonInstance.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
 
 /**
  *  Class that contains various methods for managing services
@@ -210,6 +210,57 @@ class CentreonService
         }
         return null;
     }
+    
+    /**
+     * Get Service alias
+     *
+     * @param int $sid
+     * @return string
+     */
+    public function getServicesDescr($sid = array())
+    {
+
+        
+        
+        
+        $arrayReturn = array();
+        
+        if (!empty($sid)) {
+            $where = "";
+            foreach($sid as $s){
+                $tmp = explode("_",$s);
+                if(isset($tmp[0]) && isset($tmp[1])){
+                    if($where !== ""){
+                        $where .= " OR ";
+                    }else{
+                        $where .= " AND ( ";
+                    }
+                    $where .= " (h.host_id = ".$this->db->escape($tmp[0]); 
+                    $where .= " AND s.service_id = ".$this->db->escape($tmp[1])." ) "; 
+                }
+            }
+            if($where !== ""){
+                $where .= " ) ";
+                $query = "SELECT s.service_description, s.service_id, h.host_name, h.host_id
+                          FROM service s
+                          INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
+                          INNER JOIN host h ON hsr.host_host_id = h.host_id 
+                          WHERE  1 = 1 ".$where;
+                $res = $this->db->query($query);
+                while($row = $res->fetchRow()){
+                    $arrayReturn[] = array("service_id" => $row['service_id'], 
+                                            "description" => $row['service_description'],
+                                            "host_name" => $row['host_name'],
+                                            "host_id" => $row['host_id']
+                                        );
+                }
+            }
+        }
+        return $arrayReturn;
+    }
+    
+    
+    
 
     /**
      * Check illegal char defined into nagios.cfg file

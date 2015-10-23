@@ -36,9 +36,9 @@
  *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+
+require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/webService.class.php";
 
 class CentreonConfigurationObjects extends CentreonWebService
@@ -53,12 +53,12 @@ class CentreonConfigurationObjects extends CentreonWebService
     
     /**
      * 
-     * @global type $centreon_path
+     * @global type _CENTREON_PATH_
      * @throws RestBadRequestException
      */
     public function getDefaultValues()
     {
-        global $centreon_path;
+        
         
         // Get Object targeted
         if (isset($this->arguments['id']) && !empty($this->arguments['id'])) {
@@ -83,7 +83,7 @@ class CentreonConfigurationObjects extends CentreonWebService
         
         // 
         $defaultValuesParameters = array();
-        $targetedFile = $centreon_path . "/www/class/centreon$target.class.php";
+        $targetedFile = _CENTREON_PATH_ . "/www/class/centreon$target.class.php";
         if (file_exists($targetedFile)) {
             require_once $targetedFile;
             $calledClass = 'Centreon' . $target;
@@ -96,7 +96,7 @@ class CentreonConfigurationObjects extends CentreonWebService
         }
         
         // 
-        if ($defaultValuesParameters['type'] === 'simple') {
+        if (isset($defaultValuesParameters['type']) && $defaultValuesParameters['type'] === 'simple') {
             if (isset($defaultValuesParameters['reverse']) && $defaultValuesParameters['reverse']) {
                 $selectedValues = $this->retrieveSimpleValues(
                     array(
@@ -109,7 +109,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             } else {
                 $selectedValues = $this->retrieveSimpleValues($defaultValuesParameters['currentObject'], $id, $field);
             }
-        } elseif ($defaultValuesParameters['type'] === 'relation') {
+        } elseif (isset($defaultValuesParameters['type']) && $defaultValuesParameters['type'] === 'relation') {
             $selectedValues = $this->retrieveRelatedValues($defaultValuesParameters['relationObject'], $id);
         } else {
             throw new RestBadRequestException("Bad parameters");
@@ -131,12 +131,12 @@ class CentreonConfigurationObjects extends CentreonWebService
      */
     private function retrieveExternalObjectDatas($externalObject, $values)
     {
-        global $centreon_path;
+        
         $tmpValues = array();
         
         if (isset($externalObject['object'])) {
             $classFile = $externalObject['object'] . '.class.php';
-            include_once $centreon_path . "/www/class/$classFile";
+            include_once _CENTREON_PATH_ . "/www/class/$classFile";
             $calledClass = ucfirst($externalObject['object']);
             $externalObjectInstance = new $calledClass($this->pearDB);
             $tmpValues = $externalObjectInstance->getObjectForSelect2($values);

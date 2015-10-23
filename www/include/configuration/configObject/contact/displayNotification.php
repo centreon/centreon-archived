@@ -40,7 +40,7 @@
 		exit();
 	}
 
-    require_once $centreon_path . 'www/class/centreonNotification.class.php';
+    require_once _CENTREON_PATH_ . 'www/class/centreonNotification.class.php';
 
 	/*
 	 * Connect to Database

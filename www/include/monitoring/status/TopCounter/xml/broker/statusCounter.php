@@ -37,11 +37,11 @@ ini_set("display_errors", "Off");
 
 $debug = 0;
 
-include_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
-require_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-require_once $centreon_path . 'www/class/centreonLang.class.php';
-include_once $centreon_path . "www/include/common/common-Func.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
+include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 session_start();
 if (!isset($_SESSION['centreon'])) {
@@ -49,7 +49,7 @@ if (!isset($_SESSION['centreon'])) {
 }
 $centreon = $_SESSION['centreon'];
 
-$centreonLang = new CentreonLang($centreon_path, $centreon);
+$centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 
 /*

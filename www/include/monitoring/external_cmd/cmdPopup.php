@@ -36,13 +36,12 @@
  *
  */
 
-	require_once("@CENTREON_ETC@/centreon.conf.php");
-	//require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
-	require_once $centreon_path . "www/class/centreonSession.class.php";
-	require_once $centreon_path . "www/class/centreon.class.php";
-	require_once $centreon_path . "www/class/centreonDB.class.php";
-	require_once $centreon_path . "www/class/centreonGMT.class.php";
+	require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+	require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+	require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+	require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 	session_start();
 	$oreon = $_SESSION['centreon'];
@@ -61,13 +60,13 @@
     $sid = session_id();
 	$centreonGMT->getMyGMTFromSession($sid, $pearDB);
 
-	require_once $centreon_path . "www/include/common/common-Func.php";
-	require_once $centreon_path . "www/include/monitoring/common-Func.php";
+	require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+	require_once _CENTREON_PATH_ . "www/include/monitoring/common-Func.php";
 
 	if (!isset($oreon))
 		exit();
 
-	include_once $centreon_path . "www/include/monitoring/external_cmd/functionsPopup.php";
+	include_once _CENTREON_PATH_ . "www/include/monitoring/external_cmd/functionsPopup.php";
 
 	if (isset($_GET["select"]) && isset($sid)) {
 		$is_admin = isUserAdmin($sid);

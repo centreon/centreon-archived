@@ -42,7 +42,7 @@ $tpG ? $tp_id = $tpG : $tp_id = $tpP;
 $path = "./include/configuration/configObject/timeperiod/";
 require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
-require_once $centreon_path . "www/class/centreonTimeperiodRenderer.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonTimeperiodRenderer.class.php";
 $imgpath = "./include/common/javascript/scriptaculous/images/bramus/";
 $imgs = scandir($imgpath);
 $t = null;

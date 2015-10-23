@@ -15,13 +15,11 @@
  * For information : contact@centreon.com
  */
 
-
-	//require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+    require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
 
-    require_once $centreon_path . "www/class/centreonSession.class.php";
-    require_once $centreon_path . "www/class/centreon.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 
 	session_start();
 
@@ -195,23 +193,23 @@ function reloadStatusCounter(_reload_time, _sid) {
 					if (_statistic_latency == 0) {
 						document.getElementById("latency").style.backgroundColor = "#88b917";
 					} else if (_statistic_latency == 1) {
-						document.getElementById("latency").style.backgroundColor = "orange";
+						document.getElementById("latency").style.backgroundColor = "#ff9a13";
 					} else if (_statistic_latency == 2) {
 						document.getElementById("latency").style.backgroundColor = "#e00b3d";
 					}
 
 					if (_statistic_activity == 0) {
-						document.getElementById("activity").style.backgroundColor = "";
+						document.getElementById("activity").style.backgroundColor = "#ffffff";
 					} else if (_statistic_activity == 1) {
-						document.getElementById("activity").style.backgroundColor = "orange";
+						document.getElementById("activity").style.backgroundColor = "#ff9a13";
 					} else if (_statistic_activity == 2) {
 						document.getElementById("activity").style.backgroundColor = "#e00b3d";
 					}
 
 					if (_statistic_pollingState == 0) {
-						document.getElementById("pollingState").style.backgroundColor = "";
+						document.getElementById("pollingState").style.backgroundColor = "#ffffff";
 					} else if (_statistic_pollingState == 1) {
-						document.getElementById("pollingState").style.backgroundColor = "orange";
+						document.getElementById("pollingState").style.backgroundColor = "#ff9a13";
 					} else if (_statistic_pollingState == 2) {
 						document.getElementById("pollingState").style.backgroundColor = "#e00b3d";
 					}

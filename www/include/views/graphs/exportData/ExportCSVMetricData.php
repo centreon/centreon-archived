@@ -38,7 +38,7 @@ function get_error($str){
 	exit(0);
 }
 
-include_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 require_once '../../../class/centreonDB.class.php';
 
 	$pearDB 	= new CentreonDB();

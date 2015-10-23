@@ -21,7 +21,7 @@
             <td><h4>{$typeDisplay2}</h4></td>
 	</tr>
     <tr>
-      <td><input size="15" id="host_search" class="search_input" style="padding-top:1px;padding-bottom:1px;" name="host_search" type="text" /></td>
+      <td><input size="15" id="host_search" class="search_input" name="host_search" type="text" /></td>
       {if $poller_listing}
       <td><span id="instance_selected"></span></td>
       {/if}

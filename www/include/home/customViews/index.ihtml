@@ -1,7 +1,7 @@
 <div id='globalView'>
   <div class="toggleEdit edit"><a href="#" title="{$editMode}"><img src="./img/icons/edit-mode.png" class="ico-14"></a></div>
   <!-- Action bar -->
-  <div id='actionBar'>
+  <div id='actionBar' style="display: none;">
     <!-- Button for add a view -->
     <div class="cntn">
       <button class='addView btnAction btc bt_success'>{t}Add view{/t}</button>
@@ -677,14 +677,14 @@ jQuery(function () {
             .data('id', node.getAttribute('id'))
             .append(
               jQuery('<img/>')
-                .attr('src', './img/icons/circle-cross.png')
+                .attr('src', './img/icons/delete.png')
                 .addClass('ico-10')
             );
           viewerBadge.append(closeButton);
           if (node.getAttribute('locked') == 1) {
             viewerBadge.prepend(
               jQuery('<img/>')
-                .attr('src', './img/icons/circle-cross.png') // @todo replace by lock icons
+                .attr('src', './img/icons/lock_closed.png')
                 .addClass('ico-10')
             );
           }
@@ -702,14 +702,14 @@ jQuery(function () {
             .data('id', node.getAttribute('id'))
             .append(
               jQuery('<img/>')
-                .attr('src', './img/icons/circle-cross.png')
+                .attr('src', './img/icons/delete.png')
                 .addClass('ico-10')
             );
           viewerBadge.append(closeButton);
           if (node.getAttribute('locked') == 1) {
             viewerBadge.prepend(
               jQuery('<img/>')
-                .attr('src', './img/icons/circle-cross.png') // @todo replace by lock icons
+                .attr('src', './img/icons/lock_closed.png')
                 .addClass('ico-10')
             );
           }
@@ -843,9 +843,7 @@ jQuery(function () {
       infoEmptyTab();
     }
   });
-  
-  displayBtnToggleEdit();
-  
+    
   /* Toggle edit mode or view mode */
   jQuery(".toggleEdit > a").on('click', function (e) {
     e.preventDefault();

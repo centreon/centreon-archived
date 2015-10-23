@@ -41,8 +41,8 @@
 	if (!isset ($oreon))
 		exit ();
 
-	require_once ($centreon_path . "www/class/centreonHost.class.php");
-	require_once ($centreon_path . "www/class/centreonDB.class.php");
+	require_once (_CENTREON_PATH_ . "www/class/centreonHost.class.php");
+	require_once (_CENTREON_PATH_ . "www/class/centreonDB.class.php");
 
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	isset($_GET["service_description"]) ? $service_description = $_GET["service_description"] : $service_description = NULL;

@@ -40,7 +40,7 @@ if (!isset($centreon)) {
 if (!$oreon->user->admin) {
     if ($hg_id && false === strpos($hgString, "'".$hg_id."'")) {
         $msg = new CentreonMsg();
-        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
         $msg->setText(_('You are not allowed to access this host group'));
         return null;

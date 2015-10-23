@@ -37,7 +37,7 @@
  */
 
 ini_set("display_errors", "Off");
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
 if (!isset($_POST['poller']) || !isset($_POST['comment']) || !isset($_POST['debug']) || !isset($_POST['sid'])) {
     exit;
@@ -49,19 +49,19 @@ if (!isset($_POST['poller']) || !isset($_POST['comment']) || !isset($_POST['debu
 global $generatePhpErrors;
 $generatePhpErrors = array();
 
-$path = $centreon_path . "www/include/configuration/configGenerate/";
-$nagiosCFGPath = $centreon_path . "filesGeneration/nagiosCFG/";
-$centreonBrokerPath = $centreon_path . "filesGeneration/broker/";
+$path = _CENTREON_PATH_ . "www/include/configuration/configGenerate/";
+$nagiosCFGPath = _CENTREON_PATH_ . "filesGeneration/nagiosCFG/";
+$centreonBrokerPath = _CENTREON_PATH_ . "filesGeneration/broker/";
 $DebugPath = "filesGeneration/nagiosCFG/";
 
-chdir($centreon_path . "www");
-require_once $centreon_path . "www/include/configuration/configGenerate/DB-Func.php";
-require_once $centreon_path . 'www/class/config-generate/generate.class.php';
-require_once $centreon_path . "www/class/centreon.class.php";
-require_once $centreon_path . "www/class/centreonContactgroup.class.php";
-require_once $centreon_path . "www/class/centreonACL.class.php";
-require_once $centreon_path . "www/class/centreonDB.class.php";
-require_once $centreon_path . "www/class/centreonXML.class.php";
+chdir(_CENTREON_PATH_ . "www");
+require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 
 session_start();
 if ($_POST['sid'] != session_id()) {

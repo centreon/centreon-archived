@@ -36,11 +36,11 @@
  * 
  */
 
-require_once $centreon_path.'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_.'www/class/centreonLDAP.class.php';
 $tpl = new Smarty();
 
 if (isset($_REQUEST['ar_id']) || isset($_REQUEST['new'])) {
-    include $centreon_path.'www/include/options/oreon/generalOpt/ldap/form.php';
+    include _CENTREON_PATH_.'www/include/options/oreon/generalOpt/ldap/form.php';
 } else {
     $ldapAction = isset($_REQUEST['a']) ? $_REQUEST['a'] : null;
     if (!is_null($ldapAction) && isset($_REQUEST['select']) && is_array($_REQUEST['select'])) {
@@ -60,6 +60,6 @@ if (isset($_REQUEST['ar_id']) || isset($_REQUEST['new'])) {
                 break;
         }
     }
-    include $centreon_path.'www/include/options/oreon/generalOpt/ldap/list.php';
+    include _CENTREON_PATH_.'www/include/options/oreon/generalOpt/ldap/list.php';
 }
 ?>

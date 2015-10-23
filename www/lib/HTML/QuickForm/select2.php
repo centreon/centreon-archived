@@ -106,6 +106,15 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      */
     var $_jsCallback;
     
+    
+    /**
+     *
+     * @var boolean 
+     */
+    var $_allowClear;
+    
+    
+    
     /**
      * 
      * @param string $elementName
@@ -124,10 +133,12 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_ajaxSource = false;
         $this->_defaultSelectedOptions = '';
         $this->_multipleHtml = '';
+        $this->_allowClear = true; 
         $this->HTML_QuickForm_select($elementName, $elementLabel, $options, $attributes);
         $this->_elementHtmlName = $this->getName();
         $this->parseCustomAttributes($attributes);
         $this->_jsCallback = '';
+        $this->_allowClear = false;
     }
     
     /**
@@ -157,6 +168,13 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $this->_multiple = false;
         }
+        
+        if (isset($attributes['allowClear']) && $attributes['allowClear'] === false) {
+            $this->_allowClear = false;
+        } elseif (isset($attributes['allowClear']) && $attributes['allowClear'] === true) {
+            $this->_allowClear = true;
+        }
+        
     }
     
     /**
@@ -221,12 +239,18 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $strHtml = '';
         $readonly = '';
         
+        
+        
         $strHtml = '<select id="' . $this->getName()
             . '" name="' . $this->getElementHtmlName()
             . '" ' . $this->_multipleHtml . ' '
             . ' style="width: 300px;" ' . $readonly . '><option></option>'
             . '%%DEFAULT_SELECTED_VALUES%%'
             . '</select>';
+        if(!$this->_allowClear){
+            $strHtml .= '<span style="cursor:pointer;" class="clearAllSelect2">x</span>';
+        }
+        
         $strHtml .= $this->getJsInit();
         $strHtml = str_replace('%%DEFAULT_SELECTED_VALUES%%', $this->_defaultSelectedOptions, $strHtml);
         
@@ -255,6 +279,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
              $mainJsInit .= 'disabled: true,';
         }
         
+        
         if ($this->_ajaxSource) {
             $mainJsInit .= $this->setAjaxSource() . ',';
             if ($this->_defaultDatasetRoute) {
@@ -270,8 +295,30 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $mainJsInit .= 'false,';
         }
+        //$mainJsInit .= 'minimumInputLength: 1,';
+        
+        $mainJsInit .= 'allowClear: ';
+        if ($this->_allowClear) {
+            $mainJsInit .= 'true,';
+        } else {
+            $mainJsInit .= 'false,';
+        }
+        
+
+
         
         $strJsInitEnding = '});';
+        
+        if (!$this->_allowClear) {
+            $strJsInitEnding .= 'jQuery("#' . $this->getName() . '").nextAll(".clearAllSelect2").on("click",function(){ '
+                . '$currentValues = jQuery("#' . $this->getName() . '").val(); console.log($currentValues); '
+                . 'jQuery("#' . $this->getName() . '").val("");'
+                . 'jQuery("#' . $this->getName() . '").empty().append(jQuery("<option>"));'
+                . 'jQuery("#' . $this->getName() . '").trigger("change", $currentValues);'
+                . ' });';
+        }
+        
+        
         
         $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $additionnalJs . $this->_jsCallback . $jsPost;
         

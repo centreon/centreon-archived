@@ -1,6 +1,6 @@
 <?php
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 
 require_once dirname(__FILE__) . '/backend.class.php';
 require_once dirname(__FILE__) . '/abstract/object.class.php';
@@ -198,10 +198,10 @@ class Generate {
     public function getModuleObjects() {
         $this->getInstalledModules();
 
-        global $centreon_path;
+        
 
         foreach ($this->installed_modules as $module) {
-            if ($files = glob($centreon_path . 'www/modules/' . $module . '/generate_files/*.class.php')) {
+            if ($files = glob(_CENTREON_PATH_ . 'www/modules/' . $module . '/generate_files/*.class.php')) {
                 foreach ($files as $full_file) {
                     require_once $full_file;
                     $file_name = str_replace('.class.php', '', basename($full_file));
