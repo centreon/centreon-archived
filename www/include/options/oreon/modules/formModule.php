@@ -132,8 +132,6 @@
 		$elemArr = array();
         $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
         $form->addElement('submit', 'list', _("Back"));
-		if (is_dir($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE"))	{
-			$handle = opendir($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE");
 		if (is_dir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE"))	{
 			$handle = opendir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE");
 			$i = 0;
