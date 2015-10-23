@@ -1,7 +1,7 @@
 <div id='globalView'>
   <div class="toggleEdit edit"><a href="#" title="{$editMode}"><img src="./img/icons/edit-mode.png" class="ico-14"></a></div>
   <!-- Action bar -->
-  <div id='actionBar'>
+  <div id='actionBar' style="display: none;">
     <!-- Button for add a view -->
     <div class="cntn">
       <button class='addView btnAction btc bt_success'>{t}Add view{/t}</button>
@@ -843,9 +843,7 @@ jQuery(function () {
       infoEmptyTab();
     }
   });
-  
-  displayBtnToggleEdit();
-  
+    
   /* Toggle edit mode or view mode */
   jQuery(".toggleEdit > a").on('click', function (e) {
     e.preventDefault();
