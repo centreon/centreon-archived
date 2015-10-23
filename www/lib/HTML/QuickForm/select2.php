@@ -279,6 +279,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
              $mainJsInit .= 'disabled: true,';
         }
         
+        
         if ($this->_ajaxSource) {
             $mainJsInit .= $this->setAjaxSource() . ',';
             if ($this->_defaultDatasetRoute) {
@@ -294,7 +295,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $mainJsInit .= 'false,';
         }
-        
+        //$mainJsInit .= 'minimumInputLength: 1,';
         
         $mainJsInit .= 'allowClear: ';
         if ($this->_allowClear) {

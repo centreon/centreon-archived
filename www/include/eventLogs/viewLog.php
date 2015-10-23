@@ -286,12 +286,12 @@ $form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "class" => "
 $form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "class"=>"timepicker", "size"=>5));
 $form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>8));
 $form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepicker", "size"=>5));
-$form->addElement('text', 'output', _("Output"),  array("id"=>"output", "class"=>"", "size"=>5, "value" => $user_params['output']));
+$form->addElement('text', 'output', _("Output"),  array("id"=>"output", "class"=>"", "size"=>15, "value" => $user_params['output']));
 
 if($engine == "false"){
-    $form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));
+    $form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()","class"=>"btc bt_success"));
 }else{
-    $form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period_engine()"));
+    $form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period_engine()","class"=>"btc bt_success"));
 }
 
 
