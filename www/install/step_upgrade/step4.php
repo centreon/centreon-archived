@@ -39,7 +39,7 @@
 session_start();
 DEFINE('STEP_NUMBER', 4);
 $_SESSION['step'] = STEP_NUMBER;
-require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 require_once '../steps/functions.php';
 $template = getTemplate('../steps/templates');
 

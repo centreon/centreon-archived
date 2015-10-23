@@ -32,85 +32,96 @@
  * For more information : contact@centreon.com
  *
  */
-?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-<title>Centreon - IT & Network Monitoring</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2015 Open Source Matters. All rights reserved." />
-<meta name="robots" content="index, nofollow" />
-<link href="<?php echo $skin; ?>login.css" rel="stylesheet" type="text/css">
-<link rel="shortcut icon" href="./img/favicon.ico">
-</head>
-<body OnLoad="document.login.useralias.focus();">
-<?php
-    /*
-     * Init Date
+    require_once $centreon_path . "www/autoloader.php";
+    
+    // Adding requirements
+    require_once "HTML/QuickForm.php";
+    require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+    
+    /**
+     * Path to the configuration dir
      */
-    $date = date("d/m/Y");
+    global $path;
 
-    if (isset($msg_error))
-        echo "<div class='error_msg'><span class='msg'>$msg_error</span></div>";
-    else if (isset($_POST["submit"]))
-        echo "<div  class='error_msg'><span class='msg'>Invalid user</span></div>";
-    ?>
-<form action="./index.php" method="post" name="login" style="height: 100%;">
-<?php
-    if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2)
-        print "<div class='error_msg'><span class='msg'>Session Expired.</span></div>";
-    if ($file_install_acces)
-        print "<div class='error_msg'><span class='msg'>$error_msg</span></div>";
-    if (isset($msg) && $msg)
-        print "<div class='error_msg'><span class='msg'>$msg</span></div>";
-
-?>
-<p align="center">
-    <div class="login_wrapper">
-        <div class="LoginInvitLogo">
-           <img src="img/centreon.png" alt="Centreon Logo" title="Centreon Logo" />
-        </div>
-
-        <div class="logintab">
-            <table id="logintab1" style="text-align:center;" align="center">
-
-               <tr>
-                    <td align='right'>
-                        <label for="useralias">Login</label>
-                    </td>
-                    <td>
-                        <input type="text" name="useralias" value="" class="inputclassic" <?php if (isset($freeze) && $freeze) print "disabled='disabled'"; ?>>
-                    </td>
-                </tr>
-                <tr>
-                    <td align='right'><label for="password">Password</label></td>
-                    <td><input type="password" name="password" value="" class="inputclassicPass" <?php if (isset($freeze) && $freeze) print "disabled='disabled'"; ?>></td>
-                </tr>
-                <tr>
-                    <td  colspan="2" align='center'>
-                        <input type="Submit" name="submit" class="btc bt_info" value="Connect" <?php if ($file_install_acces) print "disabled"; ?> >
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="LoginInvitVersion">
-            <span id="LoginInvitcpy">
-                &copy; <a href="mailto:infos@centreon.com">Centreon</a> 2005-2015
-            </span>
-            <br>
-            <span>
-                <?php
-                    /*
-                     * Print Centreon Version
-                     */
-                    $DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
-                    $release = $DBRESULT->fetchRow();
-                    print("v. ".$release["value"]);
-                ?>
-            </span>
-            <!--<span class="LoginInvitDate"><br /><?php echo $date; ?></span>-->
-        </div>
-    </div>
-</p>
-</form>
-</body>
-</html>
+    /**
+     * Set login messages (errors)
+     */
+    $loginMessages = array();
+    if (isset($msg_error)) {
+        $loginMessages[] = $msg_error;
+    } elseif (isset($_POST["centreon_token"])) {
+        $loginMessages[] = 'Invalid user';
+    }
+    
+    if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2) {
+        $loginMessages[] = 'Session Expired.';
+    }
+    
+    if ($file_install_acces) {
+        $loginMessages[] = $error_msg;
+    }
+    
+    if (isset($msg) && $msg) {
+        $loginMessages[] = $msg;
+    }
+    
+    /**
+     * Getting Centreon Version
+     */
+    $DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+    $release = $DBRESULT->fetchRow();
+    
+    /**
+     * Defining Login Form
+     */
+    $form = new HTML_QuickForm('Form', 'post', './index.php');
+    $form->addElement('text', 'useralias', _("Login:"), array('class' => 'inputclassic'));
+    $form->addElement('password', 'password', _("Password"), array('class' => 'inputclassicPass'));
+    $submitLogin = $form->addElement('submit', 'submitLogin', _("Connect >>"), array('class' => 'btc bt_info'));
+    
+    $loginValidate = $form->validate();
+    
+    /**
+     * Adding hidden value
+     */
+    if (isset($_GET['p'])) {
+        $pageElement = $form->addElement('hidden', 'p');
+        $pageElement->setValue($_GET['p']);
+    }
+    
+    /**
+     * Adding validation rule
+     */
+    $form->addRule('useralias', _("You must specifiy a username"), 'required');
+    $form->addRule('password', _("You must specifiy a password"), 'required');
+    
+    /**
+     * Form parameters
+     */
+    if (isset($freeze) && $freeze) {
+        $form->freeze();
+    }
+    if ($file_install_acces) {
+        $submitLogin->freeze();
+    }
+    
+    /*
+	 * Smarty template Init
+	 */
+	$tpl = new Smarty();
+	$tpl = initSmartyTpl($path, $tpl);
+    
+    // Initializing variables
+    $tpl->assign('skin', $skin);
+    $tpl->assign('loginMessages', $loginMessages);
+    $tpl->assign('centreonVersion', $release['value']);
+    $tpl->assign('currentDate', date("d/m/Y"));
+    
+    // Applying and Displaying template
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->display("login.ihtml");
+    require_once("./processLogin.php");

@@ -36,27 +36,25 @@
 
 /**
  * Configuration file
- *
+ */
+
 require_once realpath(dirname(__FILE__) . "/../config/centreon.config.php");
-*/
 $delay = 600; /* Default 10 minutes */
 
 /* Does not modified after */
 
 /* ***********************************************
  * Test if Centreon configuration file exists
- *
-if (false === file_exists($centreonConf)) {
-	file_put_contents('php://stderr', "The configuration file does not exists.");
-	exit(1);
+ */
+if (!defined("_CENTREON_PATH_")) {
+    file_put_contents('php://stderr', "The configuration file does not exists.");
+    exit(1);
 }
 
-require_once $centreonConf;
-*/
-$varlib = "@CENTREON_VARLIB@";
 
+$varlib = _CENTREON_VARLIB_;
 
-$centreonClasspath = _CENTREON_PATH_ . 'www/class';
+$centreonClasspath = _CENTREON_PATH_ . '/www/class';
 
 /* Include class */
 require_once $centreonClasspath . '/centreonDB.class.php';

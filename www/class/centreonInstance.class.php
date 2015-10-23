@@ -4,6 +4,7 @@
  */
 class CentreonInstance {
     protected $db;
+    protected $dbo;
     protected $params;
     protected $instances;
 
@@ -13,9 +14,12 @@ class CentreonInstance {
      * @param CentreonDB $db
      * @return void
      */
-    public function __construct($db)
+    public function __construct($db,$dbo = null)
     {
         $this->db = $db;
+        if(!empty($dbo)){
+            $this->dbo = $dbo;
+        }
         $this->instances = array();
         $this->initParams();
     }
@@ -44,6 +48,22 @@ class CentreonInstance {
             }
         }
     }
+    
+    public function getInstancesMonitoring($poller_id = array()){
+        $pollers = array();
+        if(!empty($poller_id)){
+            $query = "SELECT instance_id, instance_name
+                FROM instance
+                WHERE instance_id IN (".$this->dbo->escape(implode(",",$poller_id)).") ";
+            $res = $this->dbo->query($query);
+            while ($row = $res->fetchRow()) {
+                $pollers[] = array('id' => $row['instance_id'], 'name' => $row['instance_name']);
+            }  
+        }
+        
+        return $pollers;
+    }
+    
 
     /**
      * Get Parameter

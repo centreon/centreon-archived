@@ -761,10 +761,22 @@ class CentreonGraph {
      */
     public function createLegend()
     {
+        $currentColors = array("Min"=>"#19EE11", "Max"=>"#F91E05", "Average"=>"#2AD1D4",
+                    "Last_Min"=>"#2AD1D4", "Last_5_Min"=>"#13EB3A", "Last_15_Min"=>"#F8C706",
+                    "Last_Hour"=>"#F91D05", "Up"=>"#19EE11", "Down"=>"#F91E05",
+                    "Unreach"=>"#2AD1D4", "Ok"=>"#13EB3A", "Warn"=>"#F8C706",
+                    "Crit"=>"#F91D05", "Unk"=>"#2AD1D4", "In_Use"=>"#13EB3A",
+                    "Max_Used"=>"#F91D05", "Total_Available"=>"#2AD1D4"
+                );
+        
         $cpt = 0;
         $rpn_values = "";
         $rpn_expr = "";
         foreach ($this->metrics as $key => $tm) {
+            if (in_array($tm['metric'], $currentColors)) {
+                $tm["ds_color_line"] = $currentColors[$tm['metric']];
+            }
+            
             if ( isset($tm["need"]) && $tm["need"] == 1 )
                 continue;
             if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
@@ -798,6 +810,7 @@ class CentreonGraph {
                     }
                 }
 
+                
                 if (!isset($tm["ds_stack"]) || !$tm["ds_stack"] || $cpt == 0) {
                     $arg = "LINE".$tm["ds_tickness"].":".$this->vname[$tm["metric"]];
                 } else {
@@ -820,6 +833,8 @@ class CentreonGraph {
 
                 $vdefs = "";
                 $prints = "";
+                
+                
                 foreach (array("last" => "LAST", "min" => "MINIMUM", "max" => "MAXIMUM",
                                "average" => "AVERAGE", "total" => "TOTAL") as $name => $cf) {
                     if (!$tm["ds_" . $name]) {

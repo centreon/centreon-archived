@@ -13,7 +13,7 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <http://www.gnu.org/licenses>.
+ * this program; if not, see <htcommand://www.gnu.org/licenses>.
  *
  * Linking this program statically or dynamically with other modules is making a
  * combined work based on this program. Thus, the terms and conditions of the GNU
@@ -29,50 +29,61 @@
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
  *
- * For more information : contact@centreon.com
+ * For more information : command@centreon.com
  *
  * SVN : $URL$
  * SVN : $Id$
  *
  */
 
-	/*
-	 * Write command in nagios pipe or in centcore pipe.
-	 */
+global $centreon_path;
+require_once $centreon_path . "/www/class/centreonBroker.class.php";
+require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
-	function write_command($cmd, $poller){
-		global $centreon, $key, $pearDB;
-
-		$str = NULL;
-
-		/*
-		 * Destination is centcore pipe path
-		 */
-                if (defined("_CENTREON_VARLIB_")) {
-                    $destination = _CENTREON_VARLIB_."/centcore.cmd";
-                } else {
-                    $destination = "/var/lib/centreon/centcore.cmd";
-                }
-		$cmd = str_replace("`", "&#96;", $cmd);
-		//$cmd = str_replace("'", "&#39;", $cmd);
-
-		$cmd = str_replace("\n", "<br>", $cmd);
-		$informations = preg_split("/\;/", $key);
-
-		if (!mb_detect_encoding($cmd, 'UTF-8', true)) {
-			$cmd = utf8_encode($cmd);
-		}
-		setlocale(LC_CTYPE, 'en_US.UTF-8');
-
-        $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . $destination;
-		return passthru($str);
-	}
-
-	function send_cmd($cmd, $poller = NULL){
-		if (isset($cmd))
-			$flg = write_command($cmd, $poller);
-		isset($flg) && $flg ? $ret = $flg : $ret = _("Command execution problem");
-		return $ret;
-	}
-
-?>
+class CentreonConfigurationPoller extends CentreonConfigurationObjects
+{
+    /**
+     *
+     * @var type 
+     */
+    protected $pearDBMonitoring;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->pearDBMonitoring = new CentreonDB('centstorage');
+        parent::__construct();
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getList()
+    {
+        // Check for select2 'q' argument
+        if (false === isset($this->arguments['q'])) {
+            $q = '';
+        } else {
+            $q = $this->arguments['q'];
+        }
+        
+        $queryPoller = "SELECT instance_id, instance_name "
+            . "FROM instance "
+            . "WHERE instance_name LIKE '%$q%' ";
+        
+            
+        $queryPoller .= "ORDER BY instance_name";
+        
+        $DBRESULT = $this->pearDBMonitoring->query($queryPoller);
+        
+        $pollerList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $pollerList[] = array('id' => $data['instance_id'], 'text' => $data['instance_name']);
+        }
+        
+        return $pollerList;
+    }
+}
