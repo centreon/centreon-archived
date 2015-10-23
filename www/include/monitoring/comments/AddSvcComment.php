@@ -120,8 +120,8 @@ if ($oreon->user->access->checkAction("service_comment")) {
 	$form->addRule('service_id', _("Required Field"), 'required');
 	$form->addRule('comment', _("Required Field"), 'required');
 
-	$subA = $form->addElement('submit', 'submitA', _("Save"));
-	$res = $form->addElement('reset', 'reset', _("Reset"));
+	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
   	$form->setDefaults($data);
 

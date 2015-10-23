@@ -1,9 +1,11 @@
 {$form.javascript}
 <div align=center>
 	<form {$form.attributes}>
-		<table class="ListTableMedium">
+		<table class="formTable table">
 			<tr class="ListHeader">
-				<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$form.header.title}</td>
+				<td class="FormHeader" colspan="2">
+                  <h3>| {$form.header.title}</h3>
+                </td>
 			<tr>
 			<tr class="list_one">
 				<td class="ListColLeft">{$form.host_id.label}</td>
