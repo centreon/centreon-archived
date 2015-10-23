@@ -1460,4 +1460,11 @@ span.state_badge {
 
 .fullscreen-icon img {
   vertical-align: middle;
+/* Style for Eventlogs page */
+.log-extend-icon {
+  cursor: pointer;
+}
+
+.ajaxOption td.log-select {
+    vertical-align: top;
 }
