@@ -49,12 +49,12 @@
   		</td>
  	</tr>
  	{/if}
- 	{if $form2.list.html}
+ 	{if $form.list.html}
 	 	<tr class="list_one">
 	 		<td colspan="2" align="center">
-	 			<form {$form2.attributes}>
+	 			<form {$form.attributes}>
 	 			<br />
-	 			{$form2.list.html}
+	 			{$form.list.html}
 	 			 </form>
 	 		</td>
 	 	</tr>
