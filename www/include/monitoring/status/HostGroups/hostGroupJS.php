@@ -88,8 +88,8 @@ function set_header_title(){
 function goM(_time_reload, _sid ,_o) {
 	_lock = 1;
 	var proc = new Transformation();
-
-	proc.setXml(_addrXML+"?"+'search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&instance='+_instance+'&time=<?php print time(); ?>')
+    var _search = jQuery('input[name="searchHG"]').val();
+    proc.setXml(_addrXML+'search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&instance='+_instance+'&time=<?php print time(); ?>')
 	proc.setXslt(_addrXSL);
 	proc.setCallback(monitoringCallBack);
 	proc.transform("forAjax");
