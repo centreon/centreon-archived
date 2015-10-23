@@ -90,19 +90,19 @@
                          </td>  
                           
                          <td class="Toolbar_pagelimit">   
-                                    <xsl:element name='select'>
-                                        <xsl:attribute name="onChange">setL(this.value); log_4_engine('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
-                                        <xsl:attribute name="name">l</xsl:attribute>
-                                            <xsl:for-each select="//limitValue">
-                                                <xsl:element name='option'>
-                                                    <xsl:attribute name="value"><xsl:value-of select="current()"/></xsl:attribute>
-                                                    <xsl:if test="current() = //limit">
-                                                        <xsl:attribute name="selected">selected</xsl:attribute>
-                                                    </xsl:if>
-                                                    <xsl:value-of select="current()"/>
-                                                </xsl:element>
-                                            </xsl:for-each>
-                                    </xsl:element>
+                            <xsl:element name='select'>
+                                <xsl:attribute name="onChange">setL(this.value); log_4_engine('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+                                <xsl:attribute name="name">l</xsl:attribute>
+                                    <xsl:for-each select="//limitValue">
+                                        <xsl:element name='option'>
+                                            <xsl:attribute name="value"><xsl:value-of select="current()"/></xsl:attribute>
+                                            <xsl:if test="current() = //limit">
+                                                <xsl:attribute name="selected">selected</xsl:attribute>
+                                            </xsl:if>
+                                            <xsl:value-of select="current()"/>
+                                        </xsl:element>
+                                    </xsl:for-each>
+                            </xsl:element>
                         </td>
                     </tr>
 		</table>
@@ -137,37 +137,43 @@
 		</xsl:for-each>
 	</table>
 	</div>
-	<div class="pagination">
-		<table>
-			<tr>
+	<div>
+		<table class="ToolbarTable table">
+			<tr class="ToolbarTR">
+                            <td></td>
+                            <td class="ToolbarPagination">
+                                <table>
+                                    <tr>
 				<xsl:if test="first/@show = 'true'">
-					<td style='padding-left:5px;'>
-						<xsl:element name='a'>
-							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name="title">first</xsl:attribute>						
-								<xsl:attribute name="alt">first</xsl:attribute>						
-								<xsl:attribute name="src">./img/icones/16x16/arrow_left_blue_double.gif</xsl:attribute>						
-							</xsl:element>
+				<td style='width:auto;padding-left:5px;'>
+					<xsl:element name='a'>
+						<xsl:attribute name="href">#</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
+						<xsl:element name='img'>
+							<xsl:attribute name="title">first</xsl:attribute>						
+							<xsl:attribute name="alt">first</xsl:attribute>
+                            <xsl:attribute name="class">ico-14</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/first_rewind.png</xsl:attribute>						
 						</xsl:element>
-					</td>
+					</xsl:element>
+				</td>
 				</xsl:if>
 				<xsl:if test="prev/@show = 'true'">
-					<td style='padding-left:5px;'>
-						<xsl:element name='a'>
-							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name="title">previous</xsl:attribute>						
-								<xsl:attribute name="alt">previous</xsl:attribute>						
-								<xsl:attribute name="src">./img/icones/16x16/arrow_left_blue.gif</xsl:attribute>						
-							</xsl:element>
+				<td style='width:auto;padding-left:5px;'>
+					<xsl:element name='a'>
+						<xsl:attribute name="href">#</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
+						<xsl:element name='img'>
+							<xsl:attribute name="title">previous</xsl:attribute>						
+							<xsl:attribute name="alt">previous</xsl:attribute>	
+                            <xsl:attribute name="class">ico-14</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/rewind.png</xsl:attribute>						
 						</xsl:element>
-					</td>
+					</xsl:element>
+				</td>
 				</xsl:if>
 				<xsl:for-each select="//page">
-				<td style='padding-left:5px;'>
+				<td style='width:auto;padding-left:5px;'>
 					<xsl:element name='a'>
 						<xsl:attribute name="href">#</xsl:attribute>
 						<xsl:if test="selected = 0">
@@ -182,32 +188,53 @@
 				</td>
 				</xsl:for-each>
 				<xsl:if test="next/@show = 'true'">
-					<td style='padding-left:5px;'>
-						<xsl:element name='a'>
-							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name="title">next</xsl:attribute>						
-								<xsl:attribute name="alt">next</xsl:attribute>						
-								<xsl:attribute name="src">./img/icones/16x16/arrow_right_blue.gif</xsl:attribute>						
-							</xsl:element>
+				<td style='width:auto;padding-left:5px;'>
+					<xsl:element name='a'>
+						<xsl:attribute name="href">#</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
+						<xsl:element name='img'>
+							<xsl:attribute name="title">next</xsl:attribute>						
+							<xsl:attribute name="alt">next</xsl:attribute>	
+                            <xsl:attribute name="class">ico-14</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/fast_forward.png</xsl:attribute>						
 						</xsl:element>
-					</td>
+					</xsl:element>
+				</td>
 				</xsl:if>
 				<xsl:if test="last/@show = 'true'">
-					<td style='padding-left:5px;'>
-						<xsl:element name='a'>
-							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name="title">last</xsl:attribute>						
-								<xsl:attribute name="alt">last</xsl:attribute>						
-								<xsl:attribute name="src">./img/icones/16x16/arrow_right_blue_double.gif</xsl:attribute>						
-							</xsl:element>
+				<td style='width:auto;padding-left:5px;'>
+					<xsl:element name='a'>
+						<xsl:attribute name="href">#</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_engine_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
+						<xsl:element name='img'>
+							<xsl:attribute name="title">last</xsl:attribute>						
+							<xsl:attribute name="alt">last</xsl:attribute>	
+                            <xsl:attribute name="class">ico-14</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/end_forward.png</xsl:attribute>						
 						</xsl:element>
-					</td>
+					</xsl:element>
+				</td>
 				</xsl:if>
-			</tr>
+                                </tr>
+                                </table> 
+                         </td>  
+                          
+                         <td class="Toolbar_pagelimit">   
+                            <xsl:element name='select'>
+                                <xsl:attribute name="onChange">setL(this.value); log_4_engine('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+                                <xsl:attribute name="name">l</xsl:attribute>
+                                    <xsl:for-each select="//limitValue">
+                                        <xsl:element name='option'>
+                                            <xsl:attribute name="value"><xsl:value-of select="current()"/></xsl:attribute>
+                                            <xsl:if test="current() = //limit">
+                                                <xsl:attribute name="selected">selected</xsl:attribute>
+                                            </xsl:if>
+                                            <xsl:value-of select="current()"/>
+                                        </xsl:element>
+                                    </xsl:for-each>
+                            </xsl:element>
+                        </td>
+                    </tr>
 		</table>
 	</div>
 </div>

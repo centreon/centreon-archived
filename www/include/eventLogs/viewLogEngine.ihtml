@@ -1,30 +1,41 @@
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <div id="div1">
-<form {$form.attributes}>
-	<table class="ajaxOption">
+
+
+<table class="ajaxOption table">
+
+    <tr>
+        <th><h5>{t}Filters{/t}</h5>
+    </tr>
+    <tr>
+        <td><h4>{$form.poller_filter.label}</h4></td>
+        <td><h4>{$form.output.label}</h4></td>
+    </tr>
+    <tr>
+        <td class="log-select">{$form.poller_filter.html}</td>
+        <td class="log-select">{$form.output.html}</td>
+    </tr>
+    <tr>
+        <td class="divider" colspan="3"><hr></td>
+    </tr>
+
+    <form {$form.attributes}>
         <tr>
-        	<td>&nbsp;&nbsp;<b>{$form.period.label} : </b>&nbsp;&nbsp;{$form.period.html}</td>
-			<td style='white-space:nowrap;'> {$periodORlabel}</td>
-			<td>
-				&nbsp;{$From}&nbsp;{$form.StartDate.html}&nbsp;{$form.StartTime.html} 
-				&nbsp;{$To}&nbsp;{$form.EndDate.html}&nbsp;{$form.EndTime.html}&nbsp;
-			</td>			
-			<td style='white-space:nowrap;'>{$form.graph.html}</td>
-			{if $focusUrl != ''}
-				&nbsp;<td style='white-space:nowrap;'><input type='button' onClick="location.href='main.php{$focusUrl}'" value='{$treeFocus}'></td>
-			{/if}  
-			<td>
-				&nbsp;&nbsp;<a href="javascript:log_4_engine(this, '', 'CSV')"><img src="./img/icones/16x16/text_binary_csv.gif" alt="export CSV"/></a>
-				&nbsp;<a href="javascript:log_4_engine(this, '', 'Xml')"><img src="./img/icones/16x16/text_binary_xml.gif" alt="export XML" target="_blank"/></a>
-			</td>
-		</tr>
-	</table>
-        <table>
-            <tr>
-                <td style="vertical-align: top;padding-top: 7px;" >&nbsp;&nbsp;<b>{$form.poller_filter.label} : </td><td style="vertical-align: top;" ></b>&nbsp;&nbsp;{$form.poller_filter.html} </td>
-                <td> {$form.output.label} </td><td> {$form.output.html} </td>
-            </tr>
-        </table>
-</form>
+            <td><h4>{$form.period.label}</h4></td>
+        </tr>
+        <tr>
+            <td>{$form.period.html}</td>
+            <td>
+                <h4>{$From}</h4>
+                {$form.StartDate.html}
+                {$form.StartTime.html} 
+                <h4>{$To}</h4>
+                {$form.EndDate.html}
+                {$form.EndTime.html}
+            </td>			
+            <td style='white-space:nowrap;'>{$form.graph.html}</td>
+        </tr>
+    </form>
+</table>
 </div>
 <div id="logView4xml"></div>
