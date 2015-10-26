@@ -189,7 +189,10 @@
 		if (isset($rows) && $rows)
 			$select[$rows] = $rows;
 		ksort($select);
-	}
+    } else {
+       for ($i = 10; $i <= 100; $i = $i +10)
+			$select[$i]=$i; 
+    }
 
 	?><script type="text/javascript">
 	function setL(_this){
