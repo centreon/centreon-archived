@@ -2026,19 +2026,25 @@ class HTML_QuickForm extends HTML_Common
     } // end func errorMessage
 
     /**
-     * 
+     * Create the CSRF Token to be set in every form using QuickForm
      */
     function createSecurityToken()
     {
+
         $token = md5(uniqid());
-        $_SESSION['x-centreon-token'] = $token;
-        $_SESSION['x-centreon-token-generated-at'] = time();
+        if (false === isset($_SESSION['x-centreon-token'])) {
+            $_SESSION['x-centreon-token'] = array();
+            $_SESSION['x-centreon-token-generated-at'] = array();
+        }
+        $_SESSION['x-centreon-token'][] = $token;
+        $_SESSION['x-centreon-token-generated-at'][(string)$token] = time();
         
         $myTokenElement = $this->addElement('hidden', 'centreon_token');
         $myTokenElement->setValue($token);
     }
     
     /**
+     * Check if the CSRF Token is still valid
      * 
      * @param type $submittedValues
      * @return boolean
@@ -2046,19 +2052,17 @@ class HTML_QuickForm extends HTML_Common
     function checkSecurityToken($submittedValues)
     {
         $success = false;
-        
         if ($this->_tokenValidated) {
             $success = true;
         } else {
-            if (isset($submittedValues['centreon_token']) && isset($_SESSION['x-centreon-token']) && isset($_SESSION['x-centreon-token-generated-at'])) {
-                $elapsedTime = time() - $_SESSION['x-centreon-token-generated-at'];
+            if (isset($submittedValues['centreon_token']) && in_array($submittedValues['centreon_token'], $_SESSION['x-centreon-token'])) {
+                $elapsedTime = time() - $_SESSION['x-centreon-token-generated-at'][(string)$submittedValues['centreon_token']];
                 if ($elapsedTime < (15 * 60)) {
-                    if ($submittedValues['centreon_token'] == $_SESSION['x-centreon-token']) {
-                        unset($_SESSION['x-centreon-token']);
-                        unset($_SESSION['x-centreon-token-generated-at']);
-                        $success = true;
-                        $this->_tokenValidated = true;
-                    }
+                    $key = array_search((string)$submittedValues['centreon_token'], $_SESSION['x-centreon-token']);
+                    unset($_SESSION['x-centreon-token'][$key]);
+                    unset($_SESSION['x-centreon-token-generated-at'][(string)$submittedValues['centreon_token']]);
+                    $success = true;
+                    $this->_tokenValidated = true;
                 }
             }
         }
@@ -2067,12 +2071,29 @@ class HTML_QuickForm extends HTML_Common
             $error = true;
         } else {
             $error = array('centreon_token' => 'The Token is invalid');
-            echo "<div class='msg' align='center'>"._("The CRSF token is invalid")."</div>";
+            echo "<div class='msg' align='center'>"._("The CSRF token is invalid")."</div>";
         }
+        
+        $this->purgeToken();
         
         return $error;
     }
     
+    /**
+     * Empty all elapsed Toekn stored
+     */
+    function purgeToken()
+    {
+        foreach ($_SESSION['x-centreon-token-generated-at'] as $key => $value) {
+            $elapsedTime = time() - $value;
+            if ($elapsedTime > (15 * 60)) {
+                $tokenKey = array_search((string)$key, $_SESSION['x-centreon-token']);
+                unset($_SESSION['x-centreon-token'][$tokenKey]);
+                unset($_SESSION['x-centreon-token-generated-at'][(string)$key]);
+            }
+        }
+    }
+
     // }}}
 } // end class HTML_QuickForm
 
