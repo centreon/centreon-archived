@@ -93,7 +93,7 @@ class CentreonSession
     
     public static function getUser($sessionId, $pearDB)
     {
-        $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE `session_id` LIKE '".htmlentities(trim($session_id), ENT_QUOTES, "UTF-8")."'");
+        $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE `session_id` LIKE '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'");
         $row = $DBRESULT->fetchRow();
         if (!$row) {
             return 0;
