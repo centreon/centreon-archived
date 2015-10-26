@@ -19,7 +19,8 @@
                   <xsl:attribute name="href"><xsl:value-of select="notes_url"/></xsl:attribute>
                   <xsl:attribute name="target">_blank</xsl:attribute>
                   <xsl:element name="img">
-                    <xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+                    <xsl:attribute name="src">./img/icons/link.png</xsl:attribute>
+					  <xsl:attribute name="class">ico-14</xsl:attribute>
                   </xsl:element>
                 </xsl:element>
               </xsl:if>
@@ -28,7 +29,8 @@
                   <xsl:attribute name="href"><xsl:value-of select="action_url"/></xsl:attribute>
                   <xsl:attribute name="target">_blank</xsl:attribute>
                   <xsl:element name="img">
-                    <xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+                    <xsl:attribute name="src">./img/icons/star-full.png</xsl:attribute>
+					  <xsl:attribute name="class">ico-16</xsl:attribute>
                   </xsl:element>
                 </xsl:element>
               </xsl:if>
@@ -42,7 +44,8 @@
                   <xsl:attribute name="href"><xsl:value-of select="notes_url"/></xsl:attribute>
                   <xsl:attribute name="target">_blank</xsl:attribute>
                   <xsl:element name="img">
-                    <xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+                    <xsl:attribute name="src">./img/icons/link.png</xsl:attribute>
+					  <xsl:attribute name="class">ico-14</xsl:attribute>
                   </xsl:element>
                 </xsl:element>
               </xsl:if>
@@ -51,7 +54,8 @@
                   <xsl:attribute name="href"><xsl:value-of select="action_url"/></xsl:attribute>
                   <xsl:attribute name="target">_blank</xsl:attribute>
                   <xsl:element name="img">
-                    <xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+                    <xsl:attribute name="src">./img/icons/star-full.png</xsl:attribute>
+					  <xsl:attribute name="class">ico-16</xsl:attribute>
                   </xsl:element>
                 </xsl:element>
               </xsl:if>

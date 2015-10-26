@@ -67,7 +67,8 @@
 						<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
-							<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/link.png</xsl:attribute>
+							<xsl:attribute name="class">ico-14</xsl:attribute>
 							<xsl:attribute name="title">
 								<xsl:if test="hnn = ''">
 									<xsl:value-of select="//i/http_link"/>&#160;:&#160;<xsl:value-of select="hnu"/>
@@ -85,7 +86,8 @@
 						<xsl:attribute name="href"><xsl:value-of select="hau"/></xsl:attribute>
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
-							<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/star-full.png</xsl:attribute>
+							<xsl:attribute name="class">ico-16</xsl:attribute>
 							<xsl:attribute name="title">
 								<xsl:value-of select="//i/http_action_link"/>&#160;:&#160;<xsl:value-of select="hau"/></xsl:attribute>
 						</xsl:element>
@@ -158,7 +160,7 @@
 					</xsl:if>
                 <xsl:element name="a">
 
-                    <xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hnl" /></xsl:attribute>
+                    <xsl:attribute name="href">main.php?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="hnl" /></xsl:attribute>
                     <xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
                     <xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 
@@ -191,7 +193,8 @@
 				  	<xsl:attribute name="target">_blank</xsl:attribute>
 				  	<xsl:attribute name="href"><xsl:value-of select="snu"/></xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/link.png</xsl:attribute>
+							<xsl:attribute name="class">ico-14</xsl:attribute>
 						  	<xsl:attribute name="title">
                                 <xsl:if test="snn = 'none'">
                                     <xsl:value-of select='//i/http_link'/>&#160;:&#160;<xsl:value-of select="snu"/>
@@ -209,7 +212,8 @@
 				  	<xsl:attribute name="target">_blank</xsl:attribute>
 				  	<xsl:attribute name="href"><xsl:value-of select="sau"/></xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/star-full.png</xsl:attribute>
+							<xsl:attribute name="class">ico-16</xsl:attribute>
 						  	<xsl:attribute name="title">
 						  		<xsl:value-of select='//i/http_action_link'/>&#160;:&#160;<xsl:value-of select="sau"/>
 						  	</xsl:attribute>

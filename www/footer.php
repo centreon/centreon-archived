@@ -109,7 +109,7 @@ height: 100%;
                 document.mozFullScreenElement ||
                 document.msFullscreenElement
             ) {
-                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
+                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 } else if (document.msExitFullscreen) {
@@ -120,7 +120,7 @@ height: 100%;
                    document.webkitExitFullscreen();
                 }
             } else {
-                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").addClass('tohide');
+                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").addClass('tohide');
                 // go full-screen
                 if (i.requestFullscreen) {
                     i.requestFullscreen();
@@ -157,7 +157,7 @@ height: 100%;
         var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement;
         var event = state ? 'FullscreenOn' : 'FullscreenOff';
         if (event === 'FullscreenOff') {
-            jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
+            jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
         }
     }
 

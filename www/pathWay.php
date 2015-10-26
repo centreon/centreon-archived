@@ -126,11 +126,11 @@ if ($centreon->user->access->page($p)){
 		<a href="main.php?p=<?php echo $cle.$valeur["opt"]; ?>" class="pathWay" >
 		   <?php print $valeur["name"]; ?></a>
 		<?php
-		$flag = '&nbsp;>&nbsp;';
+		$flag = '<span class="pathWayBracket" >  &nbsp;&#62;&nbsp; </span>';
 	}
 
 	if (isset($_GET["host_id"]))	{
-		echo '&nbsp;>&nbsp;';
+		echo '<span class="pathWayBracket" > &nbsp;&#62;&nbsp; </span>';
 		echo getMyHostName(htmlentities($_GET["host_id"], ENT_QUOTES, "UTF-8"));
 	}
 }
