@@ -37,6 +37,8 @@ if (!isset($oreon)) {
     exit();
  }
 
+include_once("./class/centreonUtils.class.php");
+
 include("./include/common/autoNumLimit.php");
 
 /*
@@ -157,9 +159,9 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     $elemArr[$i] = array(
                          "MenuClass" => "list_".$style,
                          "RowMenu_select" => $selectedElements->toHtml(),
-                         "RowMenu_name" => $config["config_name"],
+                         "RowMenu_name" => CentreonUtils::escapeSecure($config["config_name"]),
                          "RowMenu_link" => "?p=".$p."&o=c&id=".$config['config_id'],
-                         "RowMenu_desc" => substr($nagios_servers[$config["ns_nagios_server"]], 0, 40),
+                         "RowMenu_desc" => CentreonUtils::escapeSecure(substr($nagios_servers[$config["ns_nagios_server"]], 0, 40)),
                          "RowMenu_inputs" => $inputNumber,
                          "RowMenu_outputs" => $outputNumber,
                          "RowMenu_loggers" => $loggerNumber,

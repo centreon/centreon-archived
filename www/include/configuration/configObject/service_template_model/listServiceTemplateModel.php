@@ -39,6 +39,8 @@
 	if (!isset($oreon))
 		exit();
 
+        include_once("./class/centreonUtils.class.php");
+
 	/*
 	 * Object init
 	 */
@@ -188,11 +190,11 @@
 
 			$elemArr[$i] = array("MenuClass" => "list_".$style,
 									"RowMenu_select" => $selectedElements->toHtml(),
-									"RowMenu_desc" => $service["service_description"],
-									"RowMenu_alias" => $service["service_alias"],
-									"RowMenu_parent" => $tplStr,
+									"RowMenu_desc" => CentreonUtils::escapeSecure($service["service_description"]),
+									"RowMenu_alias" => CentreonUtils::escapeSecure($service["service_alias"]),
+									"RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
 									"RowMenu_icon" => $svc_icon,
-									"RowMenu_retry" => "$normal_check_interval $normal_units / $retry_check_interval $retry_units",
+									"RowMenu_retry" => CentreonUtils::escapeSecure("$normal_check_interval $normal_units / $retry_check_interval $retry_units"),
 									"RowMenu_attempts" => getMyServiceField($service['service_id'], "service_max_check_attempts"),
 									"RowMenu_link" => "?p=".$p."&o=c&service_id=".$service['service_id'],
 									"RowMenu_status" => $service["service_activate"] ? _("Enabled") : _("Disabled"),

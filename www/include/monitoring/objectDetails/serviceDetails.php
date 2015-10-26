@@ -37,6 +37,8 @@ if (!isset($centreon)) {
     exit();
 }
 
+include_once("./class/centreonUtils.class.php");
+
 include_once("./class/centreonDB.class.php");
 include_once("./class/centreonHost.class.php");
 include_once("./class/centreonService.class.php");
@@ -299,6 +301,7 @@ if (!is_null($host_id)) {
                 " WHERE obj.name1 = '".$pearDBndo->escape($host_name)."' AND obj.name2 = '".$pearDBndo->escape($svc_description)."' AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
             $DBRESULT = $pearDBndo->query($rq2);
             for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+                $data = array_map(array("CentreonUtils","escapeSecure"),$data);
                 $tabCommentServices[$i] = $data;
                 $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
             }
@@ -316,6 +319,7 @@ if (!is_null($host_id)) {
                                       ORDER BY cmt.entry_time DESC";
             $DBRESULT = $pearDBO->query($rq2);
             for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+                $data = array_map(array("CentreonUtils","escapeSecure"),$data);
                 $tabCommentServices[$i] = $data;
                 $tabCommentServices[$i]['host_name'] = utf8_encode($data['host_name']);
                 $tabCommentServices[$i]['service_description'] = utf8_encode($data['service_description']);
@@ -580,20 +584,20 @@ if (!is_null($host_id)) {
         $tpl->assign("actpass", array("0"=>_("Active"), "1"=>_("Passive")));
         $tpl->assign("harsof", array("0"=>_("SOFT"), "1"=>_("HARD")));
         $tpl->assign("status", $status);
-        $tpl->assign("h", $host);
+        $tpl->assign("h", CentreonUtils::escapeSecure($host));
         $tpl->assign("admin", $is_admin);
         $tpl->assign("lcaTopo", $oreon->user->access->topology);
         $tpl->assign("count_comments_svc", count($tabCommentServices));
-        $tpl->assign("tab_comments_svc", $tabCommentServices);
+        $tpl->assign("tab_comments_svc", CentreonUtils::escapeSecure($tabCommentServices));
         $centreonGraph = new CentreonGraph(session_id(), null, 0, null);
         $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
         $tpl->assign("service_id", $service_id);
         $tpl->assign("host_data", $host_status[$host_name]);
         $tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
-        $tpl->assign("host_name", utf8_encode($host_name));
-        $tpl->assign("svc_description", utf8_encode($svc_description));
+        $tpl->assign("host_name", CentreonUtils::escapeSecure(utf8_encode($host_name)));
+        $tpl->assign("svc_description", CentreonUtils::escapeSecure(utf8_encode($svc_description)));
         if ($oreon->broker->getBroker() == "ndo") {
-            $tpl->assign("svc_description", $svc_description);
+            $tpl->assign("svc_description", CentreonUtils::escapeSecure($svc_description));
         }
         $tpl->assign("status_str", _("Status Graph"));
         $tpl->assign("detailed_graph", _("Detailed Graph"));
@@ -603,7 +607,7 @@ if (!is_null($host_id)) {
          */
         $tpl->assign("contactgroups_label", _("Contact groups notified for this service"));
         if (isset($contactGroups)) {
-            $tpl->assign("contactgroups", $contactGroups);
+            $tpl->assign("contactgroups", CentreonUtils::escapeSecure($contactGroups));
         }
 
         /*
@@ -611,7 +615,7 @@ if (!is_null($host_id)) {
          */
         $tpl->assign("contacts_label", _("Contacts notified for this service"));
         if (isset($contacts)) {
-            $tpl->assign("contacts", $contacts);
+            $tpl->assign("contacts", CentreonUtils::escapeSecure($contacts));
         }
 
             
@@ -620,7 +624,7 @@ if (!is_null($host_id)) {
          */
         $tpl->assign("hostgroups_label", _("Host Groups"));
         if (isset($hostGroups)) {
-            $tpl->assign("hostgroups", $hostGroups);
+            $tpl->assign("hostgroups", CentreonUtils::escapeSecure($hostGroups));
         }
 
         /*
@@ -628,7 +632,7 @@ if (!is_null($host_id)) {
          */
         $tpl->assign("servicegroups_label", _("Service groups"));
         if (isset($serviceGroups)) {
-            $tpl->assign("servicegroups", $serviceGroups);
+            $tpl->assign("servicegroups", CentreonUtils::escapeSecure($serviceGroups));
         }
 
         /*
@@ -636,7 +640,7 @@ if (!is_null($host_id)) {
          */
         $tpl->assign("sg_label", _("Service Categories"));
         if (isset($serviceCategories)) {
-            $tpl->assign("service_categories", $serviceCategories);
+            $tpl->assign("service_categories", CentreonUtils::escapeSecure($serviceCategories));
         }
 
         /*
@@ -656,13 +660,13 @@ if (!is_null($host_id)) {
         $tpl->assign("serv_shortcut", _("Service Shortcuts"));
         $tpl->assign("lnk_host_config", _("Configure host"));
         $tpl->assign("lnk_serv_config", _("Configure service"));
-        $tpl->assign("lnk_host_graphs", sprintf(_("View graphs for host %s"), $host_name));
-        $tpl->assign("lnk_host_reports", sprintf(_("View report for host %s"), $host_name));
-        $tpl->assign("lnk_serv_reports", sprintf(_("View report for service %s"), $svc_description));
+        $tpl->assign("lnk_host_graphs", sprintf(_("View graphs for host %s"), CentreonUtils::escapeSecure($host_name)));
+        $tpl->assign("lnk_host_reports", sprintf(_("View report for host %s"), CentreonUtils::escapeSecure($host_name)));
+        $tpl->assign("lnk_serv_reports", sprintf(_("View report for service %s"), CentreonUtils::escapeSecure($svc_description)));
         $tpl->assign("lnk_host_status", _("View host status page"));
-        $tpl->assign("lnk_serv_status", sprintf(_("View status of all services on host %s"), $host_name));
-        $tpl->assign("lnk_host_logs", sprintf(_("View logs for host %s"), $host_name));
-        $tpl->assign("lnk_serv_logs", sprintf(_("View logs for service %s"), $svc_description));
+        $tpl->assign("lnk_serv_status", sprintf(_("View status of all services on host %s"), CentreonUtils::escapeSecure($host_name)));
+        $tpl->assign("lnk_host_logs", sprintf(_("View logs for host %s"), CentreonUtils::escapeSecure($host_name)));
+        $tpl->assign("lnk_serv_logs", sprintf(_("View logs for service %s"), CentreonUtils::escapeSecure($svc_description)));
 
         /*
          * Ext informations
@@ -679,14 +683,14 @@ if (!is_null($host_id)) {
             $actionurl = str_replace("\$INSTANCENAME\$", $service_status[$host_name."_".$svc_description]["instance_name"], $actionurl);
         }
 
-        $tpl->assign("sv_ext_notes", getMyServiceExtendedInfoField($service_id, "esi_notes"));
-        $tpl->assign("sv_ext_notes_url", $notesurl);
+        $tpl->assign("sv_ext_notes", CentreonUtils::escapeSecure(getMyServiceExtendedInfoField($service_id, "esi_notes")));
+        $tpl->assign("sv_ext_notes_url", CentreonUtils::escapeSecure($notesurl));
         $tpl->assign("sv_ext_action_url_lang", _("Action URL"));
-        $tpl->assign("sv_ext_action_url", $actionurl);
+        $tpl->assign("sv_ext_action_url", CentreonUtils::escapeSecure($actionurl));
         $tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
         $tpl->assign("options", $optionsURL);
         $tpl->assign("index_data", $index_data);
-        $tpl->assign("options2", $optionsURL2);
+        $tpl->assign("options2", CentreonUtils::escapeSecure($optionsURL2));
 
         /*
          * Dynamics tools
@@ -710,7 +714,7 @@ if (!is_null($host_id)) {
         }
 
         if(count($tools) > 0) {
-            $tpl->assign("tools", $tools);
+            $tpl->assign("tools", CentreonUtils::escapeSecure($tools));
         }
 
         $tpl->display("serviceDetails.ihtml");

@@ -37,6 +37,8 @@ if (!isset($oreon)) {
     exit();
 }
 
+include_once("./class/centreonUtils.class.php");
+
 include("./include/common/autoNumLimit.php");
 
 /*
@@ -171,9 +173,9 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
     }
     $elemArr[$i] = array("MenuClass"=>"list_".$style,
                          "RowMenu_select"=>$selectedElements->toHtml(),
-                         "RowMenu_name"=>$hg["hg_name"],
+                         "RowMenu_name"=>CentreonUtils::escapeSecure($hg["hg_name"]),
                          "RowMenu_link"=>"?p=".$p."&o=c&hg_id=".$hg['hg_id'],
-                         "RowMenu_desc"=>html_entity_decode($hg["hg_alias"]),
+                         "RowMenu_desc"=>CentreonUtils::escapeSecure(html_entity_decode($hg["hg_alias"])),
                          "RowMenu_status"=>$hg["hg_activate"] ? _("Enabled") : _("Disabled"),
                          "RowMenu_hostAct"=>$nbrhostAct,
                          "RowMenu_icone" => $hgIcone,

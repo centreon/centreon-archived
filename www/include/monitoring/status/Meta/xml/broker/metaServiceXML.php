@@ -46,6 +46,8 @@
 
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 
+        include_once $centreon_path . "www/class/centreonUtils.class.php";
+
 	include_once($centreon_path."www/class/centreonDuration.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
 	include_once($centreon_path."www/class/centreonXML.class.php");
@@ -246,15 +248,15 @@
 		$buffer->writeElement("o", $ct++);
 		$buffer->writeElement("f", $flag);
 		$buffer->writeElement("ppd", $ndo["process_perfdata"]);
-		$buffer->writeElement("sd", $ndo['display_name']);
-		$buffer->writeElement("hn", $ndo['host_name']);
-		$buffer->writeElement("rsd", $ndo['service_description']);
+		$buffer->writeElement("sd", CentreonUtils::escapeSecure($ndo['display_name']));
+		$buffer->writeElement("hn", CentreonUtils::escapeSecure($ndo['host_name']));
+		$buffer->writeElement("rsd", CentreonUtils::escapeSecure($ndo['service_description']));
 		$buffer->writeElement("svc_id", $ndo["service_id"]);
         $buffer->writeElement("hid", $ndo["host_id"]);
 		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $ndo["service_description"], $pearDBO));
 		$buffer->writeElement("sc", $color_service);
 		$buffer->writeElement("cs", _($tab_status_svc[$ndo["state"]]));
-		$buffer->writeElement("po", $ndo["plugin_output"]);
+		$buffer->writeElement("po", CentreonUtils::escapeSecure($ndo["plugin_output"]));
 		$buffer->writeElement("ca", $ndo["check_attempt"]);
 		$buffer->writeElement("ne", $ndo["notify"]);
 		$buffer->writeElement("pa", $ndo["acknowledged"]);

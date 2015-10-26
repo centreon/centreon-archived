@@ -38,6 +38,8 @@
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 
+        include_once $centreon_path . "www/class/centreonUtils.class.php";
+
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
@@ -170,7 +172,7 @@
 					}
 					$hg = $hg_name;
 					$obj->XML->startElement("hg");
-					$obj->XML->writeElement("hgn", $hg_name);
+					$obj->XML->writeElement("hgn", CentreonUtils::escapeSecure($hg_name));
 				}
 				$obj->XML->startElement("l");
 				$obj->XML->writeAttribute("class", $obj->getNextLineClass());
@@ -185,13 +187,13 @@
 				$obj->XML->writeElement("sp", $tab[4]);
 				$obj->XML->writeElement("spc", $obj->colorService[4] );
 				$obj->XML->writeElement("o", $ct++);
-				$obj->XML->writeElement("hn", $host_name, false);
+				$obj->XML->writeElement("hn", CentreonUtils::escapeSecure($host_name), false);
 				if (isset($tab["icon"]) && $tab["icon"]) {
 					$obj->XML->writeElement("hico", $tab["icon"]);
 				} else {
 					$obj->XML->writeElement("hico", "none");
 				}
-				$obj->XML->writeElement("hnl", urlencode($host_name));
+				$obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
 				$obj->XML->writeElement("hid", $tab["hid"]);
 				$obj->XML->writeElement("hcount", $count);
 				$obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);

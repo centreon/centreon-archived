@@ -39,6 +39,8 @@
 	if (!isset($oreon))
 		exit();
 
+        include_once("./class/centreonUtils.class.php");
+
 	include("./include/common/autoNumLimit.php");
 
 	/*
@@ -132,9 +134,9 @@
 
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$ms["meta_name"],
+						"RowMenu_name"=>CentreonUtils::escapeSecure($ms["meta_name"]),
 						"RowMenu_link"=>"?p=".$p."&o=c&meta_id=".$ms['meta_id'],
-						"RowMenu_type"=>$calcType[$ms["calcul_type"]],
+						"RowMenu_type"=>CentreonUtils::escapeSecure($calcType[$ms["calcul_type"]]),
 						"RowMenu_levelw"=>isset($ms["warning"]) && $ms["warning"] ? $ms["warning"] : "-",
 						"RowMenu_levelc"=>isset($ms["critical"]) && $ms["critical"] ? $ms["critical"] : "-",
 						"RowMenu_status"=>$ms["meta_activate"] ? _("Enabled") : _("Disabled"),

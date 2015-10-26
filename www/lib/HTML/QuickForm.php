@@ -267,6 +267,12 @@ class HTML_QuickForm extends HTML_Common
      * @access    private
      */
     var $_flagSubmitted = false;
+    
+    /**
+     *
+     * @var type 
+     */
+    var $_tokenValidated = false;
 
     // }}}
     // {{{ constructor
@@ -326,7 +332,8 @@ class HTML_QuickForm extends HTML_Common
                 default:
                     $this->_maxFileSize = $matches['1'];
             }
-        }    
+        }
+        $this->addFormRule(array($this, 'checkSecurityToken'));
     } // end constructor
 
     // }}}
@@ -1577,7 +1584,7 @@ class HTML_QuickForm extends HTML_Common
                 }
             }
         }
-
+        
         // process the global rules now
         foreach ($this->_formRules as $rule) {
             if (true !== ($res = call_user_func($rule, $this->_submitValues, $this->_submitFiles))) {
@@ -1679,6 +1686,7 @@ class HTML_QuickForm extends HTML_Common
     */
     function accept(&$renderer)
     {
+        $this->createSecurityToken();
         $renderer->startForm($this);
         foreach (array_keys($this->_elements) as $key) {
             $element =& $this->_elements[$key];
@@ -2017,6 +2025,54 @@ class HTML_QuickForm extends HTML_Common
         return isset($errorMessages[$value]) ? $errorMessages[$value] : $errorMessages[QUICKFORM_ERROR];
     } // end func errorMessage
 
+    /**
+     * 
+     */
+    function createSecurityToken()
+    {
+        $token = md5(uniqid());
+        $_SESSION['x-centreon-token'] = $token;
+        $_SESSION['x-centreon-token-generated-at'] = time();
+        
+        $myTokenElement = $this->addElement('hidden', 'centreon_token');
+        $myTokenElement->setValue($token);
+    }
+    
+    /**
+     * 
+     * @param type $submittedValues
+     * @return boolean
+     */
+    function checkSecurityToken($submittedValues)
+    {
+        $success = false;
+        
+        if ($this->_tokenValidated) {
+            $success = true;
+        } else {
+            if (isset($submittedValues['centreon_token']) && isset($_SESSION['x-centreon-token']) && isset($_SESSION['x-centreon-token-generated-at'])) {
+                $elapsedTime = time() - $_SESSION['x-centreon-token-generated-at'];
+                if ($elapsedTime < (15 * 60)) {
+                    if ($submittedValues['centreon_token'] == $_SESSION['x-centreon-token']) {
+                        unset($_SESSION['x-centreon-token']);
+                        unset($_SESSION['x-centreon-token-generated-at']);
+                        $success = true;
+                        $this->_tokenValidated = true;
+                    }
+                }
+            }
+        }
+        
+        if ($success) {
+            $error = true;
+        } else {
+            $error = array('centreon_token' => 'The Token is invalid');
+            echo "<div class='msg' align='center'>"._("The CRSF token is invalid")."</div>";
+        }
+        
+        return $error;
+    }
+    
     // }}}
 } // end class HTML_QuickForm
 

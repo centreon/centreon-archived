@@ -486,7 +486,7 @@ if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
     $flag = 0;
     $str_unitSVC = "";
     $service_search_sql = "";
-    if (count($tab_svc) > 0 && ($ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
+    if (count($tab_svc) > 0 && ($up == 'true' || $down == 'true' || $unreachable == 'true' || $ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
         $req_append = "";
         foreach ($tab_svc as $host_name => $services) {
             $str = "";
@@ -506,18 +506,15 @@ if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
         if ($str_unitH != "" && $str_unitSVC != "") {
             $str_unitSVC = " OR " . $str_unitSVC;
         }
-    } 
-    if ($str_unitH != "" || $str_unitSVC != "") {
-        $req .= " AND (".$str_unitH.$str_unitSVC.")";
-    }
-    
+        if ($str_unitH != "" || $str_unitSVC != "") {
+            $req .= " AND (".$str_unitH.$str_unitSVC.")";
+        }
+    } else {
+      $req .= "AND 0 ";
+    }    
     $req .= $host_search_sql . $service_search_sql;
     
 }
-//if ($str_unitH  == "" && $str_unitSVC == "") {
-//    $req = "";
-//}
-
 
 /*
  * calculate size before limit for pagination
@@ -529,10 +526,9 @@ if (isset($req) && $req) {
      */
     $req .= $suffix_order;
     
-    if ($num < 0)
+    if ($num < 0) {
         $num = 0;
-    
-    //        print $req;
+    }
     
     if (isset($csv_flag) && ($csv_flag == 1)) {
         $DBRESULT = $pearDBO->query($req . " LIMIT 0,64000"); //limit a little less than 2^16 which is excel maximum number of lines

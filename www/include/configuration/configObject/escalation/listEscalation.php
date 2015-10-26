@@ -39,6 +39,8 @@
 	if (!isset($oreon))
 		exit();
 		
+        include_once("./class/centreonUtils.class.php");
+
 	include("./include/common/autoNumLimit.php");
 	
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
@@ -175,8 +177,8 @@
 		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$esc['esc_id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>myDecode($esc["esc_name"]),
-						"RowMenu_alias"=>myDecode($esc["esc_alias"]),
+						"RowMenu_name"=>CentreonUtils::escapeSecure(myDecode($esc["esc_name"])),
+						"RowMenu_alias"=>CentreonUtils::escapeSecure(myDecode($esc["esc_alias"])),
 						"RowMenu_link"=>"?p=".$p."&o=c&esc_id=".$esc['esc_id'],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
