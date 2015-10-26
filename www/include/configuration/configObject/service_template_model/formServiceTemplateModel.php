@@ -57,7 +57,7 @@ if (($o == "c" || $o == "w") && $service_id) {
     if (isset($lockedElements[$service_id])) {
         $o = "w";
     }            
-    $DBRESULT = $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM service LEFT JOIN extended_service_information esi ON esi.service_service_id = service_id WHERE service_id = '".$service_id."'  LIMIT 1");
     // Set base value
     $service_list = $DBRESULT->fetchRow();
     $service = array_map("myDecodeSvTP", $service_list);
