@@ -465,6 +465,8 @@ vertical-align: middle;
 
 .ToolbarPagination img {
     vertical-align: bottom;
+    width: 12px;
+    height: 12px;
 }
 
 /* ------- END : Table -----------*/

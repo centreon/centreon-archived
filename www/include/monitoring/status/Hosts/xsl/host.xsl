@@ -93,7 +93,8 @@
 					<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
-							<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/link.png</xsl:attribute>
+							<xsl:attribute name="class">ico-14</xsl:attribute>
 							<xsl:if test="hnn = 'none'">
 								<xsl:attribute name="title">HTTP Link <xsl:value-of select="hnu"/></xsl:attribute>
 							</xsl:if>
@@ -108,8 +109,9 @@
 					<xsl:attribute name="href"><xsl:value-of select="hau"/></xsl:attribute>
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
-							<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>							
-                                                        <xsl:attribute name="title">
+							<xsl:attribute name="src">./img/icons/star-full.png</xsl:attribute>
+							<xsl:attribute name="class">ico-16</xsl:attribute>
+                             <xsl:attribute name="title">
 						  		<xsl:value-of select='//i/http_action_link'/>&#160;:&#160;<xsl:value-of select="hau"/>
 						  	</xsl:attribute>
 						</xsl:element>
