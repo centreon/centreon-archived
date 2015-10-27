@@ -34,7 +34,7 @@
 	<tr class="ToolbarTR">
             <td>
                     <select name="o1" onChange="javascript: doAction(this, this.value); return true;">
-                        <option value=0></option>
+                        <option value="0">{t}More actions...{/t}</option>
                         <option value="cs">{$cancel}</option>
                         <option value="ds">{$delete}</option>
                     </select>
@@ -98,7 +98,7 @@
     <tr class="ToolbarTR">
         <td>
                 <select name="o2" onChange="javascript: doAction(this, this.value); return true;">
-                    <option value=0></option>
+                    <option value="0">{t}More actions...{/t}</option>
                     <option value="cs">{$cancel}</option>
                     <option value="ds">{$delete}</option>
                 </select>

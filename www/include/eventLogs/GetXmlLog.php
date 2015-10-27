@@ -549,11 +549,19 @@ if (isset($req) && $req) {
     if ($num < 0)
         $num = 0;
         
-    $DBRESULT = $pearDBO->query($req . " LIMIT " . $num * $limit . ", " . $limit);
+
+    $limitReq = "";
+    $limitReq2 = "";
+    if($export !== "1"){
+        $limitReq = " LIMIT " . $num * $limit . ", " . $limit;
+        $limitReq2 =" LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
+    }
+    
+    $DBRESULT = $pearDBO->query($req .$limitReq);
     $rows = $pearDBO->numberRows();
     
     if (!($DBRESULT->numRows()) && ($num != 0)) {
-        $DBRESULT = $pearDBO->query($req . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit);
+        $DBRESULT = $pearDBO->query($req . $limitReq2);
     }
 
     $buffer->startElement("selectLimit");
