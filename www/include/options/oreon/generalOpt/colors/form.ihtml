@@ -18,7 +18,7 @@
     {$form.color_unreachable.html}&nbsp;&nbsp;{$form.color_unreachable_color.html}&nbsp;&nbsp;{$form.color_unreachable_modify.html}
     </td></tr>
 
-	<tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.service}</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><img src='./img/icons/service.png '>&nbsp;&nbsp;{$form.header.service}</td></tr>
  	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_service_ok_color">{$form.color_ok.label}</td><td class="FormRowValue">
     {$form.color_ok.html}&nbsp;&nbsp;{$form.color_ok_color.html}&nbsp;&nbsp;{$form.color_ok_modify.html}
     </td></tr>

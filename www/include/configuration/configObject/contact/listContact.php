@@ -132,9 +132,9 @@
 		$moptions = "";
 		if ($contact["contact_id"] != $centreon->user->get_id()) {
 			if ($contact["contact_activate"]) {
-				$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_inactive.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+				$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 			} else {
-				$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_active.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+				$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 			}
 		} else {
 			$moptions .= "&nbsp;&nbsp;";

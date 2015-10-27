@@ -105,4 +105,4 @@ It is also possible to enable or disable an object via the “Status” field of
 *	|disabled| to disable
 
 .. |enabled|    image:: /images/enabled.png
-.. |disabled|    image:: /images/disabled.png
+.. |disabled|    image:: /images/enabled.png

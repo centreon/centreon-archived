@@ -139,7 +139,7 @@
 		$obj->XML->writeElement("svc_name", $data["description"], false);
 
 		if ($data["icon_image"] == "") {
-			$data["icon_image"] = "./img/icones/16x16/gear.gif";
+			$data["icon_image"] = "./img/icons/service.png ";
 		} else {
 			$data["icon_image"] = "./img/media/" . $data["icon_image"];
 		}

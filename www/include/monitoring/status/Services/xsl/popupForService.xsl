@@ -17,9 +17,9 @@
 						<xsl:attribute name="class">ico-16</xsl:attribute>
 						<xsl:attribute name="style">vertical-align:middle;</xsl:attribute>
 					</xsl:element>
-					| <xsl:value-of select="hostname"/>
+					| <xsl:value-of select="service_description"/>
 					<p style="padding-left: 26px; font-size: 12px;float:right;">
-						<xsl:value-of select="service_description"/>
+						<xsl:value-of select="hostname"/>
 					</p>
 				</xsl:element>
 			</td>

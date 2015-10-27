@@ -63,7 +63,7 @@ $en_acknowledge         = array("1" => "0", "0" => "1");
 $en_inv                 = array("1" => "1", "0" => "0");
 $en_inv_text            = array("1" => _("Disable"), "0" => _("Enable"));
 $color_onoff            = array("1" => "#00ff00", "0" => "#ff0000");
-$color_onoff_inv        = array("0" => "#00ff00", "1" => "#ff0000");
+$color_onoff_inv        = array("0" => "#00ff00", "1" => "#00ff00");
 $en_disable             = array("1" => _("Enabled"), "0" => _("Disabled"));
 $img_en                 = array("0" => "'./img/icones/16x16/element_next.gif'", "1" => "'./img/icones/16x16/element_previous.gif'");
 
