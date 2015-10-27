@@ -2034,7 +2034,7 @@ class HTML_QuickForm extends HTML_Common
     {
 
         $token = md5(uniqid());
-        if (false === isset($_SESSION['x-centreon-token'])) {
+        if (false === isset($_SESSION['x-centreon-token']) && false === is_array($_SESSION['x-centreon-token'])) {
             $_SESSION['x-centreon-token'] = array();
             $_SESSION['x-centreon-token-generated-at'] = array();
         }
