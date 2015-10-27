@@ -193,4 +193,15 @@ function syncInputField(name, val) {
     jQuery("input[name='"+name+"']").val(val);
 }
 
+function isChecked()
+{
+    var ret = false;
+    jQuery("input[type=checkbox]:checked").each( 
+        function() {
+            ret = true;
+        } 
+    );
+    return ret;
+}
+
 //  End -->

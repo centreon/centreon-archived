@@ -70,6 +70,7 @@
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information"));
+    $tpl->assign('poller_listing', $centreon->user->access->checkAction('poller_listing'));
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 

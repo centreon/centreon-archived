@@ -244,13 +244,23 @@ $tpl->display("listDowntime.ihtml");
 var msgArr = new Array();
 msgArr['cs'] = '<?php echo addslashes(_("Do you confirm the cancellation ?")); ?>';
 msgArr['ds'] = '<?php echo addslashes(_("Do you confirm the deletion ?")); ?>';
+msgArr['NoItemSelected'] = '<?php echo addslashes(_("Please select one or more items")); ?>';
 
 function doAction(slt, act) {
+      var bChecked = isChecked();
+    if (slt.selectedIndex != 0 && !bChecked) {
+      alert(msgArr['NoItemSelected']); 
+      return false;
+    }
+    if (slt.selectedIndex == 0) {
+        return false;
+    } else { 
 	if (confirm(msgArr[act])) {
             jQuery('input[name=o]').attr('value', act);
             document.form.submit();
 	} else {
             slt.value = 0;
 	}
+    }
 }
 </script>

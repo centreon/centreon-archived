@@ -47,6 +47,7 @@ sub new {
     );
     bless $self, $class;
     $self->{rsync} = "rsync";
+    $self->{ssh} = "ssh";
     return $self;
 }
 
