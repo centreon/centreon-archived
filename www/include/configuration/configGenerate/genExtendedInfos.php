@@ -130,7 +130,7 @@
 
 	$svc_method = new CentreonService($pearDB);
 
-	$DBRESULT = $pearDB->query("SELECT service_id, service_description, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt FROM service, extended_service_information WHERE service_service_id = service_id AND service_register = '1' AND service_activate = '1'");
+	$DBRESULT = $pearDB->query("SELECT service_id, service_description, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt FROM service LEFT JOIN extended_service_information  ON service_service_id = service_id WHERE service_register = '1' AND service_activate = '1'");
 	while ($esi = $DBRESULT->fetchRow())	{	
 		if (isset($esi["service_id"]) && ($esi["esi_notes"] || $esi["esi_notes_url"] || $esi["esi_action_url"] || $esi["esi_icon_image"] || $esi["esi_icon_image_alt"]))	{			
 			$hosts = getMyServiceHosts($esi["service_id"]);
