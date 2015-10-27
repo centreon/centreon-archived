@@ -48,7 +48,9 @@ if (!$min) {
 				        <?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
 				    </td>
  					<td align='center' class='copyRight'>
-						<div style="float: right;" onclick="myToggleAll(0,true);saveFullScreenSetting();" > FullScreen</div>
+						<div class="fullscreen-icon" title="Fullscreen" onclick="myToggleAll(0,true);saveFullScreenSetting();" >
+                            <img class="ico-16" alt="FullScreen" src="./img/icons/fullscreen.png">
+                        </div>
 					    <a href='http://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> 
                         <a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
                         <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a>
@@ -107,7 +109,7 @@ height: 100%;
                 document.mozFullScreenElement ||
                 document.msFullscreenElement
             ) {
-                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
+                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 } else if (document.msExitFullscreen) {
@@ -118,7 +120,7 @@ height: 100%;
                    document.webkitExitFullscreen();
                 }
             } else {
-                jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").addClass('tohide');
+                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").addClass('tohide');
                 // go full-screen
                 if (i.requestFullscreen) {
                     i.requestFullscreen();
@@ -155,7 +157,7 @@ height: 100%;
         var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement;
         var event = state ? 'FullscreenOn' : 'FullscreenOff';
         if (event === 'FullscreenOff') {
-            jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
+            jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
         }
     }
 

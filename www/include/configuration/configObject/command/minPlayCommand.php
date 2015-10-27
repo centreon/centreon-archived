@@ -42,8 +42,8 @@
   	if (!isset ($oreon))
 		exit ();
 
-	global $centreon_path;
-	require_once($centreon_path . "www/include/common/common-Func.php");
+	
+	require_once(_CENTREON_PATH_ . "www/include/common/common-Func.php");
 
  	$error_msg = "";
 	$command = $_GET["command_line"];

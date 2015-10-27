@@ -40,7 +40,7 @@ if (!isset($centreon)) {
 if (!$oreon->user->admin) {
     if ($hc_id && $hcString != "''" && false === strpos($hcString, "'".$hc_id."'")) {
         $msg = new CentreonMsg();
-        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
         $msg->setText(_('You are not allowed to access this host category'));
         return null;

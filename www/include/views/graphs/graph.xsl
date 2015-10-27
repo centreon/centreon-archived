@@ -6,7 +6,6 @@
 	<xsl:value-of select="//opid"/>
 </div>
 <xsl:if test="host">
-	<div>
 		<table class="ListTable">
 			<xsl:for-each select="//svc">
 		        <tr class="list_one">
@@ -48,29 +47,28 @@
 				</tr>			
 			</xsl:for-each>
 	    </table>
-	</div>
 </xsl:if>
+
 <xsl:if test="svc">
-	<div id="div2" valign="top" align='left'>
+	<div id="div2">
 		<form name="formu2">
     	    <table class="ajaxOption">
 				<tr>
-           		<td>
-					<xsl:element name='input'>
-						<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>',multi); return false;</xsl:attribute>
-						<xsl:attribute name="name">split</xsl:attribute>
-						<xsl:attribute name="type">checkbox</xsl:attribute>
-						<xsl:if test="//split = 1">
-							<xsl:attribute name="checked">checked</xsl:attribute>
-						</xsl:if>
-					</xsl:element>
-					<xsl:value-of select="//lang/giv_split_component"/>
-           		</td>
+					<td>
+						<xsl:element name='input'>
+							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>',multi); return false;</xsl:attribute>
+							<xsl:attribute name="name">split</xsl:attribute>
+							<xsl:attribute name="type">checkbox</xsl:attribute>
+							<xsl:if test="//split = 1">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</xsl:element>
+						<xsl:value-of select="//lang/giv_split_component"/>
+					</td>
 				</tr>
         	</table>
 		</form>
    	</div>
-	<div>
 		<table class="ListTable">
 	       <xsl:for-each select="//period">
 		        <tr class="list_one">
@@ -80,7 +78,7 @@
 							<xsl:attribute name="id">zoom_<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/></xsl:attribute>
 							<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/>"); return false;</xsl:attribute>
 							<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
-							<img src="./img/icones/16x16/view.gif" style="margin-right:5px;" />
+							<img src="./img/icons/view.png" style="margin-right:5px;" />
 						</xsl:element>
 						<xsl:element name="a">
 							<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
@@ -139,7 +137,6 @@
 				</tr>			
 			</xsl:for-each>
 	    </table>
-	</div>
 </xsl:if>
 <xsl:if test="svc_zoom">
 	    <div id="div3"   valign="top" align='left'>
@@ -199,7 +196,7 @@
 						<xsl:attribute name="id">zoom_<xsl:value-of select="//opid"/></xsl:attribute>
 						<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="//opid"/>");</xsl:attribute>
 						<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
-						<img src="./img/icones/16x16/view.gif" style="margin-right:5px;" />
+						<img src="./img/icons/view.png" style="margin-right:5px;" />
 					</xsl:element>
 					<xsl:element name="a">
 						<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImageZoom.php?<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>&amp;warn=<xsl:value-of select="//warning"/>&amp;crit=<xsl:value-of select="//critical"/></xsl:attribute>
@@ -282,7 +279,7 @@
 	</div>
 </xsl:if>
 <xsl:if test="//multi_svc">
-	<div id="div2"   valign="top" align='left'>
+	<div id="div2">
 		<form name="formu2">
     	    <table class="ajaxOption">
 				<tr>
@@ -330,7 +327,7 @@
 							<xsl:attribute name="id">zoom_<xsl:value-of select="opid"/></xsl:attribute>
 							<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="opid"/>");</xsl:attribute>
 							<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
-							<img src="./img/icones/16x16/view.gif" style="margin-right:5px;vertical-align:top;" />
+							<img src="./img/icons/view.png" style="margin-right:5px;vertical-align:top;" />
 						</xsl:element>
 						<xsl:element name="a">
 							<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
@@ -392,7 +389,7 @@
 													<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 													<xsl:attribute name="id">zoom_<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
 													<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/>");</xsl:attribute>
-													<img src="./img/icones/16x16/view.gif" style="vertical-align:top;" />
+													<img src="./img/icons/view.png" style="vertical-align:top;" />
 												</xsl:element>
 											</td>
 										</xsl:if>

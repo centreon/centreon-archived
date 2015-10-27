@@ -37,11 +37,11 @@ ini_set("display_errors", "Off");
 
 $debug = 0;
 
-include_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
-require_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-require_once $centreon_path . 'www/class/centreonLang.class.php';
-include_once $centreon_path . "www/include/common/common-Func.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
+include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 session_start();
 if (!isset($_SESSION['centreon'])) {
@@ -49,7 +49,7 @@ if (!isset($_SESSION['centreon'])) {
 }
 $centreon = $_SESSION['centreon'];
 
-$centreonLang = new CentreonLang($centreon_path, $centreon);
+$centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 
 /*
@@ -201,7 +201,7 @@ if ($pollerList != "") {
 			}
 			$pollerListInError .= $ndo["name"];
 		}
-		if ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 2)) {
+		if ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 10)) {
 			$status = 2;
 			if ($pollerListInError != "") {
 				$pollerListInError .= ", ";
@@ -211,18 +211,18 @@ if ($pollerList != "") {
 		/*
 		 * Activity
 		 */
-		if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
+		if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 5)) {
 			$activity = 2;
 			if ($inactivInstance != "") {
             	$inactivInstance .= ",";
             }
-            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
-		} else if ((time() - $ndo["last_update"] >= $timeUnit * 2)) {
+            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 5)."s]";
+		} else if ((time() - $ndo["last_update"] >= $timeUnit * 10)) {
 			$activity = 1;
 			if ($inactivInstance != "") {
             	$inactivInstance .= ",";
             }
-            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
+            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 10)."s]";
 		}
 
 	}
@@ -236,16 +236,16 @@ if ($pollerList != "") {
 					"	AND ns.stat_key LIKE 'Average' " .
 					"	AND ns.instance_id = i.instance_id" .
 					"	AND i.deleted = 0" .
-                                            "       AND i.name IN ($pollerList)";
+                    "   AND i.name IN ($pollerList)";
 	$DBRESULT = $obj->DBC->query($request);
 	while ($ndo = $DBRESULT->fetchRow()) {
 		if (!$latency && $ndo["stat_value"] >= 60) {
 			$latency = 1;
-                            $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
+            $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
 		}
 		if ($ndo["stat_value"] >= 120) {
 			$latency = 2;
-                            $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
+            $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
 		}
 	}
 	$DBRESULT->free();

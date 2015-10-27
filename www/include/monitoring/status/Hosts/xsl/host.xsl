@@ -64,9 +64,6 @@
                 </xsl:if>
 		<td class="ListColLeft">
 			<xsl:element name="span">
-				<xsl:if test="hdtm != 0">
-					<xsl:attribute name="class">host_downtime</xsl:attribute>
-				</xsl:if>
 				<xsl:if test="ico != ''">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/media/<xsl:value-of select="ico"/></xsl:attribute>
@@ -76,7 +73,7 @@
 					</xsl:element>
 				</xsl:if>
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?p=20102&amp;o=hd&amp;host_name=<xsl:value-of select="hnl"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="hnl"/></xsl:attribute>
 					<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
 				    <xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 					<xsl:if test="//i/o = 'h_unhandled' or //i/o = 'hpb'">
@@ -96,7 +93,8 @@
 					<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
-							<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/link.png</xsl:attribute>
+							<xsl:attribute name="class">ico-14</xsl:attribute>
 							<xsl:if test="hnn = 'none'">
 								<xsl:attribute name="title">HTTP Link <xsl:value-of select="hnu"/></xsl:attribute>
 							</xsl:if>
@@ -111,8 +109,9 @@
 					<xsl:attribute name="href"><xsl:value-of select="hau"/></xsl:attribute>
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
-							<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>							
-                                                        <xsl:attribute name="title">
+							<xsl:attribute name="src">./img/icons/star-full.png</xsl:attribute>
+							<xsl:attribute name="class">ico-16</xsl:attribute>
+                             <xsl:attribute name="title">
 						  		<xsl:value-of select='//i/http_action_link'/>&#160;:&#160;<xsl:value-of select="hau"/>
 						  	</xsl:attribute>
 						</xsl:element>
@@ -128,8 +127,8 @@
 				<xsl:element name="a">
 					<xsl:attribute name="class">infobulle</xsl:attribute>
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
-					  	<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/warning.png</xsl:attribute>
+					  	<xsl:attribute name="class">infobulle link_generic_info_volante ico-18</xsl:attribute>
 						<xsl:attribute name="id">dtmspan_<xsl:value-of select="hid"/></xsl:attribute>
 						<xsl:attribute name="name"><xsl:value-of select="hdtmXml"/>|<xsl:value-of select="hdtmXsl"/></xsl:attribute>
 					</xsl:element>
@@ -158,26 +157,30 @@
 			</xsl:if>
 			<xsl:if test="ne = 0">
 				<xsl:element name="img">
-				  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
-                                        <xsl:attribute name="title">					  		
-                                            <xsl:value-of select='//i/notif_disabled'/>
-                                        </xsl:attribute>
+				  	<xsl:attribute name="src">./img/icons/notifications_off.png</xsl:attribute>
+					<xsl:attribute name="title">
+						<xsl:value-of select='//i/notif_disabled'/>
+					</xsl:attribute>
+					<xsl:attribute name="class">ico-18</xsl:attribute>
 				</xsl:element>
 			</xsl:if>
 			<xsl:element name="a">
 				<xsl:attribute name="href">./main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/></xsl:attribute>
 				<xsl:element name="img">
-					<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
+					<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
+					<xsl:attribute name="class">ico-18</xsl:attribute>
 					<xsl:attribute name="title">See Graphs of this host</xsl:attribute>
 				</xsl:element>
 			</xsl:element>
 			
 		</td>
 		<td class="ListColCenter">
+          <span class="badge">
 			<xsl:attribute name="style">
 				background-color:<xsl:value-of select="hc"/>;
 			</xsl:attribute>
 			<xsl:value-of select="cs"/>
+          </span>
 		</td>
 		<td class="ListColRight"><xsl:value-of select="a"/></td>
 	    <td class="ListColRight"><xsl:value-of select="lc"/></td>

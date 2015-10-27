@@ -39,7 +39,7 @@
     if (!$oreon->user->admin && isset($resource_id)
         && count($allowedResourceConf) && !isset($allowedResourceConf[$resource_id])) {
         $msg = new CentreonMsg();
-        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
         $msg->setText(_('You are not allowed to access this object configuration'));
         return null;
@@ -84,7 +84,7 @@
 	$attrsAdvSelect = array("style" => "width: 220px; height: 220px;");
     $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
-	require_once $centreon_path . "www/class/centreonInstance.class.php";
+	require_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
 
 	/**
 	 * Form

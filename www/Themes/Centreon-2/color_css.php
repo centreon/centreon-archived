@@ -36,19 +36,19 @@
  *
  */
 
-    require_once "@CENTREON_ETC@/centreon.conf.php";
- 	require_once $centreon_path . "www/class/centreonDB.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 
-	$pearDB = new CentreonDB();
+    $pearDB = new CentreonDB();
 
- 	/*
- 	 * Get Options colors
- 	 */
- 	$options = array();
- 	$DBRESULT = $pearDB->query("SELECT * FROM options");
- 	while ($res = $DBRESULT->fetchRow())
- 		$options[$res["key"]] = $res["value"];
- 	unset($res);
+    /*
+     * Get Options colors
+     */
+    $options = array();
+    $DBRESULT = $pearDB->query("SELECT * FROM options");
+    while ($res = $DBRESULT->fetchRow())
+            $options[$res["key"]] = $res["value"];
+    unset($res);
 
 ?>
 
@@ -113,10 +113,10 @@
 .list_two_fixe 		{	background-color:<?php print $color_list_2; ?>;}
 
 .list_one			{	background-color:<?php print $color_list_1; ?>;}
-.list_one:hover 	{	background-color:<?php print $color_list_1_hover; ?>;}
+.list_one:hover 	{	background-color:#CFEDF9;;}
 
 .list_two 			{	background-color:<?php print $color_list_2; ?>; }
-.list_two:hover 	{	background-color:<?php print $color_list_2_hover; ?>;}
+.list_two:hover 	{	background-color: #CFEDF9;}
 
 .list_three 		{	background-color:<?php print $color_list_3; ?>;}
 .list_three:hover 	{	background-color:<?php print $color_list_3_hover; ?>;}
@@ -124,26 +124,22 @@
 .list_four 			{	background-color:<?php print $color_list_4; ?>;}
 .list_four:hover 	{	background-color:<?php print $color_list_4_hover; ?>;}
 
-.list_up			{	background-color:<?php print $color_list_up; ?>;}
+.list_up			{	background-color: #88b917;}
 .list_up:hover		{	background-color:<?php print $color_list_up_hover; ?>;}
 
-.list_down 			{	background-color:<?php print $options["color_line_critical"]; ?>;}
-.list_down:hover 	{	background-color:<?php print $options["color_line_critical"]; ?>;}
+.list_down 			{	background-color: #ffaec1;}
+.list_down:hover 	{	background-color: #e17790;}
 
 .list_unreachable 			{	background-color:<?php print $options["color_host_unreachable"]; ?>;}
 .list_unreachable:hover 	{	background-color:<?php print $options["color_host_unreachable"]; ?>;}
 
 .line_downtime		{	background-color: #f1dfff;}
-.line_downtime:hover{	background-color:<?php print $options["color_downtime"]; ?>;}
+.line_downtime:hover{	background-color: #e7c9ff;}
 
 .line_ack			{	background-color:<?php print $options["color_ack"]; ?>;}
 .line_ack:hover		{	background-color:<?php print $options["color_ack"]; ?>;}
 
 /* Monitoring Side */
-.host_down 			{-moz-border-radius:8px;background-color:<?php print $options["color_host_down"]; ?>;}
-.host_unreachable 	{-moz-border-radius:8px;background-color:<?php print $options["color_host_unreachable"]; ?>;border:2px <?php print $options["color_host_unreachable"]; ?> solid;}
-.host_downtime 		{-moz-border-radius:8px;background-color:<?php print $options["color_downtime"]; ?>;border:2px <?php print $options["color_downtime"]; ?> solid;}
-
 
 /* Menu */
 #menu1_bgimg	{

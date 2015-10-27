@@ -23,7 +23,10 @@
 <br/>
 <table class="ToolbarTable table">
 	<tr class="ToolbarTR">
-		<td>{if $msgs}<a href="{$msgs.addL}" class="btc bt_success">{$msgs.addT}</a>{/if}</td>
+		<td>
+          {if $msgs}<a href="{$msgs.addL}" class="btc bt_success">{$msgs.addT}</a>{/if}
+          {if $nb_comments_svc}<input type="submit" name="submit2" value="{$delete}" class="btc bt_danger" onclick="return confirm('{$msgs.delConfirm}')">{/if}
+        </td>
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}
@@ -51,23 +54,28 @@
 		<td class="ListColCenter">{$tcs.is_persistent}</td>
 	</tr>
 	{/foreach}
-	<tr>
-		<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="ds"><input type="submit" name="submit2" value="{$delete}" style="margin-left: 20px;" onclick="return confirm('{$msgs.delConfirm}')"></td>
-		<td class="ListColFooterCenter" colspan="4">&nbsp;</td>
-		<td class="ListColFooterRight" align="right">&nbsp;</td>
-	</tr>	
 </table>	
 {else}
-<center><b>{$no_svc_comments}</b></center>
+<table class="ListTable">
+  <tr>
+    <td>
+      <center><b>{$no_svc_comments}</b></center>
+    </td>
+  </tr>
+</table>
 {/if}
 <table class="ToolbarTable table">
 	<tr class="ToolbarTR">
-		<td>{if $msgs}<a href="{$msgs.addL}" class="btc bt_success">{$msgs.addT}</a>{/if}</td>
+		<td>
+          {if $msgs}<a href="{$msgs.addL}" class="btc bt_success">{$msgs.addT}</a>{/if}
+          {if $nb_comments_svc}<input type="submit" name="submit2" value="{$delete}" class="btc bt_danger" onclick="return confirm('{$msgs.delConfirm}')">{/if}
+        </td>
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}
 	</tr>
 </table>
+<input type="hidden" name="o" value="ds">
 <input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>

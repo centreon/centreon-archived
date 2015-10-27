@@ -67,6 +67,7 @@
 	 */
 
 	require_once "HTML/QuickForm.php";
+    require_once 'HTML/QuickForm/select2.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 	/*
@@ -128,25 +129,6 @@
 		}
 	}
 
-	$id_log = "'RR_0'";
-	$multi = 0;
-	$lockTree = 0;
-	$focusUrl = "";
-	if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
-		$mode = 0;
-		$lockTree = 1;
-		$id_log = "'".$id."'";
-		$multi = 1;
-		$focusUrl = "?p=$p&id=$id&id_svc=$id_svc&meta=$meta&mode=0&lock_tree=0";
-	} else {
-		$mode = 1;
-		$id = 1;
-	}
-
-	if (isset($_GET['lock_tree'])) {
-	    $lockTree = $_GET['lock_tree'];
-	}
-
 	/* Get Period if is in url */
 	$period_start = 'undefined';
 	$period_end = 'undefined';
@@ -186,9 +168,27 @@
 	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "class"=>"timepicker", "size"=>5));
 	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>10));
 	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepicker", "size"=>5));
-	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));
+	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()", "class"=>"btc bt_success"));
     $form->addElement('text', 'search', _('Host'));
     $form->addElement('text', 'search_service', _('Service'));
+    
+    // Service Selector
+    $attrServices = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list&g=1',
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=host&field=host_cs&id=99999',
+        'multiple' => true,
+    );
+    $form->addElement('select2', 'service_selector', _("Services"), array(), $attrServices);
+    
+    $attrHosts = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=host&field=host_cs&id=99999',
+        'multiple' => true,
+    );
+    $form->addElement('select2', 'host_selector', _("Hosts"), array(), $attrHosts);
+    
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
@@ -199,107 +199,45 @@
 	$tpl->assign('to', _("to"));
 	$tpl->assign('Apply', _("Apply"));
 	$tpl->display("graphs.ihtml");
+    
+    $multi = 1;
 ?>
 <script type="text/javascript">
+    
     var gmt = <?php echo $userGmt ? $userGmt : 0;?>;
     var useGmt = <?php echo $useGmt;?>;
     var currentMicroTime = <?php echo number_format($currentServerMicroTime, 15, '.', '');?>;
-    var css_file 	= './include/common/javascript/codebase/dhtmlxtree.css';
-    var headID 		= document.getElementsByTagName("head")[0];
-    var cssNode 	= document.createElement('link');
-    cssNode.type 	= 'text/css';
-    cssNode.rel 	= 'stylesheet';
-    cssNode.href 	= css_file;
-    cssNode.media 	= 'screen';
+    var $hostsServicesForGraph = [];
 
     /* Period if in URL */
     var period_start = <?php echo $period_start; ?>;
     var period_end = <?php echo $period_end; ?>;
 
-    headID.appendChild(cssNode);
-
 	var multi 	= <?php echo $multi; ?>;
-  	var _menu_div = document.getElementById("menu_40201");
-
-	tree = new dhtmlXTreeObject("menu_40201","100%","100%","1");
-    tree.setImagePath("./img/icones/csh_vista/");
-
-    //link tree to xml
-    tree.setXMLAutoLoading("./include/views/graphs/GetXmlTree.php");
-
-    //load first level of tree
-    tree.loadXML("./include/views/graphs/GetXmlTree.php?<?php if (isset($meta) && $meta) print "meta=$meta"."&"; ?><?php if (isset($search) && $search) print "search=$search"."&"; ?><?php if (isset($search_service) && $search_service) print "search_service=$search_service"."&"; ?>id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&lock_tree=<?php echo $lockTree;?>");
-
-	// system to reload page after link with new url
-	//set function object to call on node select
-	tree.attachEvent("onClick", onNodeSelect)
-
-	//set function object to call on node select
-	tree.attachEvent("onDblClick", onDblClick)
-
-	//set function object to call on node select
-	tree.attachEvent("onCheck",onCheck)
-
-	//see other available event handlers in API documentation
-	tree.enableDragAndDrop(0);
-	tree.enableTreeLines(false);
-	tree.enableCheckBoxes(true);
-	tree.enableThreeStateCheckboxes(true);
-
-	// linkBar to log/reporting/graph/ID_card
-	function getCheckedList(tree){
-		return tree.getAllChecked();
-	}
-
-	function onDblClick(nodeId){
-		tree.openAllItems(nodeId);
-		return(false);
-	}
-
-	function onCheck(nodeId){
-		multi = 1;
-		if (document.getElementById('openid'))
-			document.getElementById('openid').innerHTML = tree.getAllChecked();
-		graph_4_host(tree.getAllChecked(), 1);
-	}
-
-	function onNodeSelect(nodeId){
-		multi = 0;
-
-		tree.openItem(nodeId);
-		if (nodeId.substring(0,2) == 'HS' || nodeId.substring(0,2) == 'MS'){
-			var graphView4xml = document.getElementById('graphView4xml');
-			graphView4xml.innerHTML="";
-			graph_4_host(nodeId, null);
-		}
-	}
+  	
 
 	// it's fake methode for using ajax system by default
 	function mk_pagination(){;}
 	function mk_paginationFF(){;}
 	function set_header_title(){;}
-	function apply_period()	{
-		var openid = document.getElementById('openid').innerHTML;
-		if (openid.indexOf(',') != -1) {
-			multi = 1;
-		}
-		if (multi == 0) {
-			openid = openid.replace('HS_', 'SS_');
-		}
-		graph_4_host(openid, multi);
+	function apply_period()
+    {
+        launchGraph();
 	}
 
-function form2ctime(dpart, tpart) {
-        // dpart : MM/DD/YYYY
-        // tpart : HH:mm
-        var dparts = dpart.split("/");
-        var tparts = tpart.split(":");
-        return new Date(dparts[2], dparts[0]-1, dparts[1], tparts[0], tparts[1], 0).getTime() - (new Date().getTimezoneOffset() * 60 * 1000);
+function form2ctime(dpart, tpart)
+{
+    // dpart : MM/DD/YYYY
+    // tpart : HH:mm
+    var dparts = dpart.split("/");
+    var tparts = tpart.split(":");
+    return new Date(dparts[2], dparts[0]-1, dparts[1], tparts[0], tparts[1], 0).getTime() - (new Date().getTimezoneOffset() * 60 * 1000);
 }
 
-function ctime2date(ctime) {
-        var date = new Date(ctime + (new Date().getTimezoneOffset() * 60 * 1000));
-        return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear();
+function ctime2date(ctime)
+{
+    var date = new Date(ctime + (new Date().getTimezoneOffset() * 60 * 1000));
+    return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear();
 }
 
 function ctime2time(ctime) {
@@ -379,9 +317,9 @@ function nextPeriod() {
 	var EndTime = '';
 	var ms_per_hour = 60 * 60 * 1000;
 
-	if (document.FormPeriod.period.value != "")	{
+	if (document.FormPeriod.period.value !== "")	{
 		period = document.FormPeriod.period.value;
-	} else if (period_start != undefined && period_end != undefined) {
+	} else if (period_start !== undefined && period_end !== undefined) {
 		StartDate = ctime2date(period_start * 1000);
 		StartTime = ctime2time(period_start * 1000);
 		EndDate = ctime2date(period_end * 1000);
@@ -411,7 +349,7 @@ function nextPeriod() {
 
 		if (pStart && pEnd){
 			period = pEnd - pStart;
-		} else if (document.FormPeriod.period.value != "") {
+		} else if (document.FormPeriod.period.value !== "") {
 			period = document.FormPeriod.period.value;
 		} else if (document.FormPeriod) {
 			period = '';
@@ -421,16 +359,16 @@ function nextPeriod() {
 			EndTime = document.FormPeriod.EndTime.value;
 		}
 
-		if (StartTime == "") {
+		if (StartTime === "") {
        		StartTime = "00:00";
         }
-        if (EndTime == "") {
+        if (EndTime === "") {
         	EndTime = "23:59";
         }
         
         // Get search information
-        var search = encodeURI(document.FormPeriod.search.value);
-        var search_service = encodeURI(document.FormPeriod.search_service.value);
+        /*var search = encodeURI(document.FormPeriod.search.value);
+        var search_service = encodeURI(document.FormPeriod.search_service.value);*/
 
 		// Metrics
 		var _metrics ="";
@@ -455,7 +393,7 @@ function nextPeriod() {
 
 		// Templates
 		var _tpl_id = 1;
-		if (document.formu2 && document.formu2.template_select && document.formu2.template_select.value != ""){
+		if (document.formu2 && document.formu2.template_select && document.formu2.template_select.value !== ""){
 			_tpl_id = document.formu2.template_select.value;
 		}
 
@@ -480,16 +418,15 @@ function nextPeriod() {
 			_critical = 1;
 		}
 
-		tree.selectItem(id);
 		var proc = new Transformation();
 		var _addrXSL = "./include/views/graphs/graph.xsl";
-		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'<?php if ($focusUrl) print "&focusUrl=".urlencode($focusUrl);?>';
-        if (search) {
+		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if ($focusUrl) print "&focusUrl=".urlencode($focusUrl);?>';
+        /*if (search) {
             _addrXML += '&search=' + search;
         }
         if (search_service) {
             _addrXML += '&search_service=' + search_service;
-        }
+        }*/
 
 		proc.setXml(_addrXML);
 		proc.setXslt(_addrXSL);
@@ -501,12 +438,6 @@ function nextPeriod() {
 	    // Here is your precious function
 	    // You can call as many functions as you want here;
 	    myOnloadFunction1();
-
-	    if (period_start != undefined && period_end != undefined) {
-	    	graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>, undefined, period_start, period_end);
-	    } else {
-			graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
-	    }
 	});
 
     // Your precious function
@@ -537,7 +468,7 @@ function nextPeriod() {
         			return(matches[1] + "__M:");
     			});
     			$$("img[id^=" + basename + "]").each(function(el) {
-        			if (el.id != self) {
+        			if (el.id !== self) {
             			var elHeight = el.height;
             			list_img.get(el.id).setArea(coords.x1, 0, coords.x2, elHeight);
         			}
@@ -559,10 +490,10 @@ function nextPeriod() {
     function toGraphZoom(img_name) {
         mutli = 0;
     	var s_multi = true;
-        if ($$("img[id=" + img_name + "]").size() == 0) {
+        if ($$("img[id=" + img_name + "]").size() === 0) {
             var s_multi = false;
             var tmplist = $$("img[id^=" + img_name + "]");
-            if (tmplist.size() == 0) {
+            if (tmplist.size() === 0) {
                 return(false);
             }
             img_name = tmplist[0].id;
@@ -597,7 +528,7 @@ function nextPeriod() {
 		document.FormPeriod.EndDate.value = ctime2date(end);
 		document.FormPeriod.StartTime.value = ctime2time(start);
 		document.FormPeriod.EndTime.value = ctime2time(end);
-		if (img_name.indexOf('__M:') != -1 && s_multi) {
+		if (img_name.indexOf('__M:') !== -1 && s_multi) {
             metrics = img_name.substring(img_name.indexOf('__M:') + 4);
             graph_4_host(id, 0, null, "", "", metrics);
             return false;
@@ -608,13 +539,69 @@ function nextPeriod() {
 
     function switchZoomGraph(tag_name) {
         $("zoom_" + tag_name).setAttribute("onClick", "toGraphZoom('" + tag_name + "'); return false;");
-        if ($(tag_name) != null) {
-            if (list_img.get(tag_name) == undefined) {
+        if ($(tag_name) !== null) {
+            if (list_img.get(tag_name) === undefined) {
         		addGraphZoom(tag_name);
             }
         	return false;
         }
-        $$("img[id^=" + tag_name + "]").each(function(el) { if (list_img.get(el.id) == undefined) { addGraphZoom(el.id); } });
+        $$("img[id^=" + tag_name + "]").each(function(el) { if (list_img.get(el.id) === undefined) { addGraphZoom(el.id); } });
         return false;
     }
+    
+    function launchGraph() {
+        $hostsServices = '';
+        jQuery.each($hostsServicesForGraph, function(index, value) {
+            $hostsServices += value + ',';
+        });
+        graph_4_host($hostsServices, 1);
+    };
+    
+    jQuery("#service_selector").on("change", function() {
+        $selectedOptions = jQuery(this).val();
+        
+        jQuery.each($selectedOptions, function(index, value) {
+            $splittedValue = value.split('-');
+            finalValue = 'HS_' + $splittedValue[1] + '_' + $splittedValue[0];
+            if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
+                $hostsServicesForGraph.push(finalValue);
+            }
+        });
+        launchGraph();
+    });
+    
+    function fillHostsServices()
+    {
+        $hostsServicesForGraph = [];
+        $selectedHosts = jQuery("#host_selector").val();
+        $selectedServices = jQuery("#service_selector").val();
+    }
+    
+    jQuery("#host_selector").on("change", function() {
+        $selectedOptions = jQuery(this).val();
+        
+        // Get all connected services
+        jQuery.each($selectedOptions, function(index, value) {
+            jQuery.ajax({
+                url: './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=services&id=' + value + '&g=1',
+                success: function(data) {
+                    jQuery.each(data, function(id, description) {
+                        finalValue = 'HS_' + id + '_' + value;
+                        if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
+                            $hostsServicesForGraph.push(finalValue);
+                        }
+                    });
+                    launchGraph();
+                }
+            });
+        });
+    });
+    
+    function resetFields(fields) {
+        for(i=0;i<fields.length;i++ ) {
+            fields[i].value="";
+        }
+    }
+
+    
 </script>

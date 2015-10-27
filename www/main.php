@@ -84,7 +84,7 @@
 	include_once ("./include/common/common-Func.php");
 	include_once ("./header.php");
 
-	require_once $centreon_path . "www/autoloader.php";
+	require_once _CENTREON_PATH_ . "www/autoloader.php";
 
 	/*
 	 * LCA Init Common Var
@@ -215,7 +215,7 @@
     	require_once ("./class/centreonMsg.class.php");
     	$msg = new CentreonMsg();
     	if (!$centreon->user->admin && !count($centreon->user->access->getAccessGroups())) {
-    		$msg->setImage("./img/icones/16x16/warning.gif");
+    		$msg->setImage("./img/icons/warning.png");
     		$msg->setTextStyle("bold");
     		$msg->setText(_("You are not in an access group"));
     		$msg->setTimeOut("3");

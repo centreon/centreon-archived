@@ -37,19 +37,19 @@ if (!isset($centreon_path)) {
 }
 
 set_include_path(implode(PATH_SEPARATOR, array(
-    realpath($centreon_path . '/www/class'),
-    realpath($centreon_path . '/www/lib'),
+    realpath(_CENTREON_PATH_ . '/www/class'),
+    realpath(_CENTREON_PATH_ . '/www/lib'),
     get_include_path(),
 )));
 
 function __autoload($className)
 {
-    global $centreon_path;
+    
 
     $fileName = $className;
     $fileName{0} = strtolower($fileName{0});
-    $fileNameType1 = $centreon_path  . "/www/class/" . $fileName . ".class.php";
-    $fileNameType2 = $centreon_path  . "/www/class/" . $fileName . ".php";
+    $fileNameType1 = _CENTREON_PATH_  . "/www/class/" . $fileName . ".class.php";
+    $fileNameType2 = _CENTREON_PATH_  . "/www/class/" . $fileName . ".php";
 
     if (file_exists($fileNameType1)) {
         require_once $fileNameType1;

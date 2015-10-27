@@ -152,6 +152,7 @@ class CentreonGMT {
                             
                     $sDate->setTimestamp($date);
                     $sDate->setTimezone(new DateTimeZone($this->listGTM[$gmt]));
+                    $sDate = $sDate->getTimestamp();
                 } else {
                     $sDate = $date;
                 }

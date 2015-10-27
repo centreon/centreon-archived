@@ -36,9 +36,9 @@
  *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+
+require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
@@ -105,4 +105,45 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         
         return $hostgroupList;
     }
+    
+    public function getHostList(){
+        global $centreon;
+        
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        $aclHostgroups = '';
+        $aclHosts = '';
+        
+        /* Get ACL if user is not admin */
+        
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclHostgroups .= ' AND hg.hg_id IN (' . $acl->getHostGroupsString('ID') . ') ';
+            $aclHosts .= ' AND h.host_id IN (' . $acl->getHostsString('ID', $this->pearDBMonitoring) . ') ';
+        }
+
+        
+        // Check for select2 'q' argument
+        if (false === isset($this->arguments['hgid'])) {
+            $hgid = '';
+        } else {
+            $hgid = $this->arguments['hgid'];
+        }
+        
+        $queryHostgroup = "SELECT DISTINCT h.host_name , h.host_id "
+            . "FROM hostgroup hg "
+            . "INNER JOIN hostgroup_relation hgr ON hg.hg_id = hgr.hostgroup_hg_id "
+            . "INNER JOIN host h ON  h.host_id = hgr.host_host_id "
+            . "WHERE hg.hg_id IN (".$hgid.") "
+            . $aclHostgroups.$aclHosts;
+        
+        $DBRESULT = $this->pearDB->query($queryHostgroup);
+        $hostList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $hostList[] = array('id' => htmlentities($data['host_id']), 'text' => $data['host_name']);
+        }
+        
+        return $hostList;
+    }
+    
 }

@@ -19,7 +19,8 @@
                   <xsl:attribute name="href"><xsl:value-of select="notes_url"/></xsl:attribute>
                   <xsl:attribute name="target">_blank</xsl:attribute>
                   <xsl:element name="img">
-                    <xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+                    <xsl:attribute name="src">./img/icons/link.png</xsl:attribute>
+					  <xsl:attribute name="class">ico-14</xsl:attribute>
                   </xsl:element>
                 </xsl:element>
               </xsl:if>
@@ -28,7 +29,8 @@
                   <xsl:attribute name="href"><xsl:value-of select="action_url"/></xsl:attribute>
                   <xsl:attribute name="target">_blank</xsl:attribute>
                   <xsl:element name="img">
-                    <xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+                    <xsl:attribute name="src">./img/icons/star-full.png</xsl:attribute>
+					  <xsl:attribute name="class">ico-16</xsl:attribute>
                   </xsl:element>
                 </xsl:element>
               </xsl:if>
@@ -42,7 +44,8 @@
                   <xsl:attribute name="href"><xsl:value-of select="notes_url"/></xsl:attribute>
                   <xsl:attribute name="target">_blank</xsl:attribute>
                   <xsl:element name="img">
-                    <xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+                    <xsl:attribute name="src">./img/icons/link.png</xsl:attribute>
+					  <xsl:attribute name="class">ico-14</xsl:attribute>
                   </xsl:element>
                 </xsl:element>
               </xsl:if>
@@ -51,7 +54,8 @@
                   <xsl:attribute name="href"><xsl:value-of select="action_url"/></xsl:attribute>
                   <xsl:attribute name="target">_blank</xsl:attribute>
                   <xsl:element name="img">
-                    <xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+                    <xsl:attribute name="src">./img/icons/star-full.png</xsl:attribute>
+					  <xsl:attribute name="class">ico-16</xsl:attribute>
                   </xsl:element>
                 </xsl:element>
               </xsl:if>
@@ -82,13 +86,15 @@
 				<xsl:element name="a">
 				  	<xsl:attribute name="href">main.php?o=svc&amp;p=20201&amp;host_search=<xsl:value-of select="hnl"/></xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/view.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/view.png</xsl:attribute>
+							<xsl:attribute name="class">ico-18</xsl:attribute>
 						</xsl:element>
 					</xsl:element>
 					<xsl:element name="a">
 					  	<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/></xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
+							<xsl:attribute name="class">ico-18</xsl:attribute>
 						</xsl:element>
 					</xsl:element>
 			</td>

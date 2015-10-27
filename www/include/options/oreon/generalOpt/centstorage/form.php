@@ -119,6 +119,8 @@ $form->addElement('text', 'RRDdatabase_status_path', _("Path to RRDTool Database
 $form->addElement('text', 'RRDdatabase_nagios_stats_path', _("Path to RRDTool Database For Monitoring Engine Statistics"), $attrsText);
 $form->addElement('text', 'len_storage_rrd', _("RRDTool database size"), $attrsText2);
 $form->addElement('text', 'len_storage_mysql', _("Retention Duration for Data in MySQL"), $attrsText2);
+$form->addElement('text', 'len_storage_downtimes', _("Retention Duration for Downtimes"), $attrsText2);
+$form->addElement('text', 'len_storage_comments', _("Retention Duration for Comments"), $attrsText2);
 $form->addElement('checkbox', 'autodelete_rrd_db', _("RRDTool auto delete"));
 $form->addElement('text', 'purge_interval', _("Purge check interval"), $attrsText2);
 $form->addElement('checkbox', 'centstorage_auto_drop', _("Drop Data in another file"));

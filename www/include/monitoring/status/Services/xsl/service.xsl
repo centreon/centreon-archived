@@ -67,7 +67,8 @@
 						<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
-							<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/link.png</xsl:attribute>
+							<xsl:attribute name="class">ico-14</xsl:attribute>
 							<xsl:attribute name="title">
 								<xsl:if test="hnn = ''">
 									<xsl:value-of select="//i/http_link"/>&#160;:&#160;<xsl:value-of select="hnu"/>
@@ -85,7 +86,8 @@
 						<xsl:attribute name="href"><xsl:value-of select="hau"/></xsl:attribute>
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
-							<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/star-full.png</xsl:attribute>
+							<xsl:attribute name="class">ico-16</xsl:attribute>
 							<xsl:attribute name="title">
 								<xsl:value-of select="//i/http_action_link"/>&#160;:&#160;<xsl:value-of select="hau"/></xsl:attribute>
 						</xsl:element>
@@ -135,9 +137,12 @@
 		<td class="ListColLeft" style="white-space:nowrap;">
 
 			<xsl:if test="hn/@none = 0">
+
 					<xsl:if test="hdtm = 0">
 						<xsl:if test="hs = 1">
-							<xsl:attribute name="class">state_badge host_down</xsl:attribute>
+							<xsl:element name="span">
+								<xsl:attribute name="class">state_badge host_down</xsl:attribute>
+							</xsl:element>
 						</xsl:if>
 						<xsl:if test="hs = 2">
 							<xsl:attribute name="class">state_badge host_unreachable</xsl:attribute>
@@ -155,7 +160,7 @@
 					</xsl:if>
                 <xsl:element name="a">
 
-                    <xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hnl" /></xsl:attribute>
+                    <xsl:attribute name="href">main.php?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="hnl" /></xsl:attribute>
                     <xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
                     <xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 
@@ -188,7 +193,8 @@
 				  	<xsl:attribute name="target">_blank</xsl:attribute>
 				  	<xsl:attribute name="href"><xsl:value-of select="snu"/></xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/link.png</xsl:attribute>
+							<xsl:attribute name="class">ico-14</xsl:attribute>
 						  	<xsl:attribute name="title">
                                 <xsl:if test="snn = 'none'">
                                     <xsl:value-of select='//i/http_link'/>&#160;:&#160;<xsl:value-of select="snu"/>
@@ -206,7 +212,8 @@
 				  	<xsl:attribute name="target">_blank</xsl:attribute>
 				  	<xsl:attribute name="href"><xsl:value-of select="sau"/></xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/star-full.png</xsl:attribute>
+							<xsl:attribute name="class">ico-16</xsl:attribute>
 						  	<xsl:attribute name="title">
 						  		<xsl:value-of select='//i/http_action_link'/>&#160;:&#160;<xsl:value-of select="sau"/>
 						  	</xsl:attribute>
@@ -284,10 +291,19 @@
 			</xsl:if>
 		</td>
 		<td class="ListColCenter">
-			<xsl:attribute name="style">
-				background-color:<xsl:value-of select="sc"/>;
-			</xsl:attribute>
-			<xsl:value-of select="cs"/>
+
+			<xsl:element name="span">
+				<xsl:attribute name="style">
+					background-color:<xsl:value-of select="sc"/>;
+					<xsl:if test="ssc = 3">
+						color: #818285;
+						font-weight: normal;
+					</xsl:if>
+				</xsl:attribute>
+				<xsl:attribute name="class">badge</xsl:attribute>
+				<xsl:value-of select="cs"/>
+			</xsl:element>
+
 		</td>
 		<td class="ListColRight" style="white-space:nowrap;">
 			<xsl:value-of select="d"/>

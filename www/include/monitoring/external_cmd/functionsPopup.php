@@ -36,7 +36,7 @@
 		$cmd = str_replace("\n", "<br>", $cmd);
         
 		setlocale(LC_CTYPE, 'en_US.UTF-8');
-        $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . "@CENTREON_VARLIB@/centcore.cmd";
+        $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . _CENTREON_VARLIB_."/centcore.cmd";
 		return passthru($str);
 	}
 

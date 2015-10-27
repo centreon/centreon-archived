@@ -35,7 +35,7 @@
  * SVN : $Id$
  *
  */
-
+include_once(realpath(dirname(__FILE__) . "/../../config/centreon.config.php"));
 require_once ("DB.php");
 
 class CentreonDB
@@ -71,12 +71,20 @@ class CentreonDB
     public function __construct($db = "centreon", $retry = 3, $silent = false)
     {
         try {
-            include("@CENTREON_ETC@/centreon.conf.php");
+           
 
-            require_once $centreon_path . "/www/class/centreonLog.class.php";
+            $conf_centreon['hostCentreon'] = hostCentreon;
+            $conf_centreon['hostCentstorage'] = hostCentstorage;
+            $conf_centreon['user'] = user;
+            $conf_centreon['password'] = password;
+            $conf_centreon['db'] = db;
+            $conf_centreon['dbcstg'] = dbcstg;
+            $conf_centreon['port'] = port;
+
+            require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
             $this->log = new CentreonLog();
 
-            $this->centreon_path = $centreon_path;
+            $this->centreon_path = _CENTREON_PATH_;
             $this->retry = $retry;
             $this->options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 

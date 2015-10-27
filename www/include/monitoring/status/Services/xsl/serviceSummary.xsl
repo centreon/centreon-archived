@@ -21,7 +21,7 @@
 				</xsl:element>
 			</xsl:if>
 			<xsl:element name="a">
-			  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hnl"/></xsl:attribute>
+			  	<xsl:attribute name="href">main.php?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="hnl"/></xsl:attribute>
 				<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
 				<xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 				<xsl:value-of select="hn"/>
@@ -31,13 +31,15 @@
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">main.php?o=svc&amp;p=20201&amp;host_search=<xsl:value-of select="hnl"/></xsl:attribute>
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/view.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/view.png</xsl:attribute>
+						<xsl:attribute name="class">ico-18</xsl:attribute>
 					</xsl:element>
 			</xsl:element>
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/></xsl:attribute>
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
+						<xsl:attribute name="class">ico-18</xsl:attribute>
 					</xsl:element>
 			</xsl:element>
 		</td>
@@ -49,7 +51,6 @@
 		</td>
 		<td class="ListColLeft">
 			<xsl:if test="sk >= 1">
-				<span>
 					<xsl:attribute name="style">
 						background-color:<xsl:value-of select="skc"/>;
 					</xsl:attribute>
@@ -57,10 +58,8 @@
 			  	<xsl:attribute name="href">main.php?o=svc_ok&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
 					<xsl:value-of select="sk"/> OK
 			</xsl:element>
-				</span>&#160;
 			</xsl:if>
 			<xsl:if test="sw >= 1">
-				<span>
 					<xsl:attribute name="style">
 						background-color:<xsl:value-of select="swc"/>;
 					</xsl:attribute>
@@ -68,10 +67,8 @@
 			  	<xsl:attribute name="href">main.php?o=svc_warning&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
 				<xsl:value-of select="sw"/> WARNING
 			</xsl:element>
-				</span>&#160;
 			</xsl:if>
 			<xsl:if test="sc >= 1">
-				<span>
 					<xsl:attribute name="style">
 						background-color:<xsl:value-of select="scc"/>;
 					</xsl:attribute>
@@ -79,10 +76,8 @@
 			  	<xsl:attribute name="href">main.php?o=svc_critical&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
 				<xsl:value-of select="sc"/> CRITICAL
 			</xsl:element>
-				</span>&#160;
 			</xsl:if>
 			<xsl:if test="su >= 1">
-				<span>
 					<xsl:attribute name="style">
 						background-color:<xsl:value-of select="suc"/>;
 					</xsl:attribute>
@@ -90,10 +85,8 @@
 			  	<xsl:attribute name="href">main.php?o=svc_unknown&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
 				<xsl:value-of select="su"/> UNKNOWN
 			</xsl:element>
-				</span>&#160;
 			</xsl:if>
 			<xsl:if test="sp >= 1">
-				<span>
 					<xsl:attribute name="style">
 						background-color:<xsl:value-of select="spc"/>;
 					</xsl:attribute>
@@ -101,7 +94,6 @@
 			  	<xsl:attribute name="href">main.php?o=svc_pending&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
 				<xsl:value-of select="sp"/> PENDING
 			</xsl:element>
-				</span>
 			</xsl:if>
 		</td>
 	</tr>

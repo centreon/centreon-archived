@@ -47,11 +47,6 @@
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["sort_type"]) ? $sort_type = "hostGroup_name" : $sort_type = $_GET["sort_type"];
 
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
-
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 10;
 
@@ -75,6 +70,7 @@
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information"));
+    $tpl->assign('poller_listing', $centreon->user->access->checkAction('poller_listing'));
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 
@@ -83,6 +79,9 @@
 	$tpl->assign("tab_order", $tab_order);
 
 	$tpl->assign('limit', $limit);
+    if (isset($_GET['searchHG'])) {
+        $tpl->assign('searchHG', $_GET['searchHG']);
+    }
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);

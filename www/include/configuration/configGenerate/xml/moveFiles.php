@@ -37,7 +37,7 @@
  */
 
 ini_set("display_errors", "Off");
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 define('STATUS_OK', 0);
 define('STATUS_NOK', 1);
 
@@ -84,17 +84,17 @@ try {
     $ret = array();
     $ret['host'] = $poller;
 
-    chdir($centreon_path . "www");
-    $nagiosCFGPath = "$centreon_path/filesGeneration/nagiosCFG/";
-    $centreonBrokerPath = "$centreon_path/filesGeneration/broker/";
-    require_once $centreon_path . "www/include/configuration/configGenerate/DB-Func.php";
-    require_once $centreon_path . "www/class/centreonDB.class.php";
-    require_once $centreon_path . "www/class/centreonSession.class.php";
-    require_once $centreon_path . "www/class/centreon.class.php";
-    require_once $centreon_path . "www/class/centreonXML.class.php";
-    require_once $centreon_path . "www/class/centreonACL.class.php";
-    require_once $centreon_path . "www/class/centreonUser.class.php";
-    require_once $centreon_path . "www/class/centreonConfigCentreonBroker.php";
+    chdir(_CENTREON_PATH_ . "www");
+    $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/nagiosCFG/";
+    $centreonBrokerPath = _CENTREON_PATH_."/filesGeneration/broker/";
+    require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonConfigCentreonBroker.php";
 
     session_start();
     if ($_POST['sid'] != session_id()) {
@@ -123,8 +123,8 @@ try {
             if (!is_dir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"])) {
                 $mkdirResult = @mkdir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]);
             }
-            if (file_exists($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"]))  {
-                $copyResult = @copy($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
+            if (file_exists(_CENTREON_PATH_."www/img/media/".$images["dir_alias"]."/".$images["img_path"]))  {
+                $copyResult = @copy(_CENTREON_PATH_."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
             }
         }
     }

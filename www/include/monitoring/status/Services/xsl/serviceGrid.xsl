@@ -25,51 +25,56 @@
 				</xsl:element>
 			</xsl:if>
 			<xsl:element name="a">
-			  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hnl"/></xsl:attribute>
+			  	<xsl:attribute name="href">main.php?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="hnl"/></xsl:attribute>
 			  	<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
 				<xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 				<xsl:value-of select="hn"/>
 			</xsl:element>
 		</td>
 		<td class="ListColLeft" style="white-space:nowrap;width:37px;">
-			<span>
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">main.php?o=svc&amp;p=20201&amp;host_search=<xsl:value-of select="hnl"/></xsl:attribute>
 				<xsl:element name="img">
-				  	<xsl:attribute name="src">./img/icones/16x16/view.gif</xsl:attribute>
+				  	<xsl:attribute name="src">./img/icons/view.png</xsl:attribute>
+					<xsl:attribute name="class">ico-18</xsl:attribute>
 				</xsl:element>
 			</xsl:element>
-			<span>
-			</span>
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/></xsl:attribute>
 				<xsl:element name="img">
-				  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
+				  	<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
+					<xsl:attribute name="class">ico-18</xsl:attribute>
 				</xsl:element>
 			</xsl:element>
-			</span>		
 		</td>
 		<xsl:if test="//i/s = 1">
 		<td class="ListColCenter">
-		<xsl:attribute name="style">
-				background-color:<xsl:value-of select="hc"/>;
-		</xsl:attribute>
-			<xsl:value-of select="hs"/>
+			<xsl:element name="span">
+				<xsl:attribute name="style">
+					background-color:<xsl:value-of select="hc"/>;
+				</xsl:attribute>
+				<xsl:attribute name="class">badge</xsl:attribute>
+				<xsl:value-of select="hs"/>
+			</xsl:element>
 		</td>
 		</xsl:if>
 		<td class="ListColLeft">
 		<xsl:for-each select="svc">
-			<span>
-				<xsl:attribute name="style">
-					background-color:<xsl:value-of select="sc"/>;
-				</xsl:attribute>
-				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?o=svcd&amp;p=202&amp;host_name=<xsl:value-of select="../hnl"/>&amp;service_description=<xsl:value-of select="snl"/></xsl:attribute>
-					<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
-				    <xsl:attribute name="id">service-<xsl:value-of select="../hid"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
-					<xsl:value-of select="sn"/>
+			<xsl:element name="a">
+
+				<xsl:attribute name="href">main.php?o=svcd&amp;p=202&amp;host_name=<xsl:value-of select="../hnl"/>&amp;service_description=<xsl:value-of select="snl"/></xsl:attribute>
+				<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
+				<xsl:attribute name="id">service-<xsl:value-of select="../hid"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
+
+				<xsl:element name="span">
+					<xsl:attribute name="class">state_badge</xsl:attribute>
+					<xsl:attribute name="style">
+						background-color:<xsl:value-of select="sc"/>;
+					</xsl:attribute>
 				</xsl:element>
-			</span>&#160;
+				<xsl:value-of select="sn"/>
+
+			</xsl:element>
 		</xsl:for-each>
 		</td>
 	</tr>

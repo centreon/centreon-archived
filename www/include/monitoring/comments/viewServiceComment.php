@@ -37,7 +37,7 @@ if (!isset($oreon)) {
   exit();
 }
 
-include_once $centreon_path."www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
 include("./include/common/autoNumLimit.php");
 
 if (isset($_POST["search_service"]))

@@ -33,8 +33,8 @@
  *
  */
 
-require_once $centreon_path .'www/class/centreonLDAP.class.php';
-require_once $centreon_path .'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ .'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ .'www/class/centreonContactgroup.class.php';
 
 /**
  * Centreon Custom View Exception
@@ -550,4 +550,7 @@ class CentreonCustomView
             unset($customView);
         }
     }
+    
+    
+    
 }

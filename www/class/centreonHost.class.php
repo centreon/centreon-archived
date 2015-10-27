@@ -34,8 +34,8 @@
  *
  */
 
-require_once $centreon_path . 'www/class/centreonInstance.class.php';
-require_once $centreon_path . 'www/class/centreonService.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
 
 /*
  *  Class that contains various methods for managing hosts
@@ -299,6 +299,19 @@ class CentreonHost
             $row = $res->fetchRow();
             return $row['host_name'];
         }
+    }
+    
+    public function getHostsNames($host_id = array()){
+        $arrayReturn = array();
+        if(!empty($host_id)){
+            $rq = "SELECT host_id, host_name
+     	    	   FROM host where host_id IN (".$this->db->escape(implode(",",$host_id)).") ";
+            $res = $this->db->query($rq);
+            while ($row = $res->fetchRow()) {
+                $arrayReturn[] = array("id" => $row['host_id'], "name" => $row['host_name']);
+            }
+        }
+        return $arrayReturn;
     }
     
     public function getHostCommandId($host_id){

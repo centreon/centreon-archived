@@ -41,7 +41,7 @@ if (!isset($oreon)) {
     exit();
 }
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 
 $attrsText = array("size" => "40");
 $attrsText2 = array("size" => "5");

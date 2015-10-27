@@ -37,13 +37,13 @@
  */
  
 	
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 	
-	require_once $centreon_path."www/include/reporting/dashboard/common-Func.php";
-	require_once $centreon_path."www/class/centreonDuration.class.php";
-	require_once $centreon_path."www/class/centreonXML.class.php";
-	require_once $centreon_path."www/class/centreonDB.class.php";
-	require_once $centreon_path."www/include/reporting/dashboard/xmlInformations/common-Func.php";
+	require_once _CENTREON_PATH_."www/include/reporting/dashboard/common-Func.php";
+	require_once _CENTREON_PATH_."www/class/centreonDuration.class.php";
+	require_once _CENTREON_PATH_."www/class/centreonXML.class.php";
+	require_once _CENTREON_PATH_."www/class/centreonDB.class.php";
+	require_once _CENTREON_PATH_."www/include/reporting/dashboard/xmlInformations/common-Func.php";
 		
 	$buffer = new CentreonXML();
 	$buffer->startElement("data");	

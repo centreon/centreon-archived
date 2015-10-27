@@ -119,7 +119,7 @@
 	 * Different style between each lines
 	 */
 	$style = "one";
-	$contactTypeIcone = array(1 => "./img/icones/16x16/guard.gif", 2 => "./img/icones/16x16/user1.gif", 3 => "./img/icones/16x16/user1_information.png");
+	$contactTypeIcone = array(1 => "./img/icons/admin.png", 2 => "./img/icons/user.png", 3 => "./img/icones/16x16/user1_information.png");
 	$contactTypeIconeTitle = array(1 => _("This user is an administrator."), 2 => _("This user is a simple user."), 3 => _("This is a contact template."));
 
 	/*

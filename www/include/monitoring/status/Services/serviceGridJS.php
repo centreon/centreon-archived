@@ -31,27 +31,25 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($centreon)) {
+	exit();		
+}
 
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-	$sid = session_id();
-	$time = time();
+$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+$sid = session_id();
+$time = time();
 
-	$obis = $o;
-	if(isset($_GET["problem"])) {
-		$obis .= '_pb';
-	}
-	if(isset($_GET["acknowledge"])) {
-		$obis .= '_ack_' . $_GET["acknowledge"];
-	}
+$obis = $o;
+if(isset($_GET["problem"])) {
+	$obis .= '_pb';
+}
+if(isset($_GET["acknowledge"])) {
+	$obis .= '_ack_' . $_GET["acknowledge"];
+}
+
 ?>
 <script type="text/javascript">
 var _debug = 0;
@@ -73,12 +71,12 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
-                var h = document.getElementById('current_state');
-                h.innerHTML = "<?php echo _("Status")?>";
-                h.indice = 'current_state';
-                h.title = '<?php echo addslashes(_("Sort by Status")); ?>';
-                h.onclick=function(){change_type_order(this.indice)};
-                h.style.cursor = "pointer";
+        var h = document.getElementById('current_state');
+        h.innerHTML = "<?php echo _("Status")?>";
+        h.indice = 'current_state';
+        h.title = '<?php echo addslashes(_("Sort by Status")); ?>';
+        h.onclick=function(){change_type_order(this.indice)};
+        h.style.cursor = "pointer";
 
 		var h = document.getElementById('services');
 		h.innerHTML = '<?php echo addslashes(_("Services information"))?>';

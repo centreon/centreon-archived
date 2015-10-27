@@ -5,7 +5,7 @@
 		    <img src='./img/icons/host.png' width="16px" {if $h_ext_icon_image_alt} alt='{$h_ext_icon_image_alt}'{/if}> {$host_data.alias} / {$host_data.name} <span>[{$host_data.address}]</span>
 			{if $h_ext_notes_url}					
 				<a href="{$h_ext_notes_url}" target="_blank">
-				<img src='./img/icones/15x7/weblink.gif' title="{if $host_data.notes}{$host_data.notes}{else}{$host_data.notes_url}{/if}">
+				<img src='./img/icons/link.png' class="ico-14" title="{if $host_data.notes}{$host_data.notes}{else}{$host_data.notes_url}{/if}">
 				</a>
 			{/if}
 		</td>
@@ -246,7 +246,7 @@
 				{if $aclAct.host_schedule_downtime || $admin == 1}	
 					<tr class='list_one'>
 						<td class="ListColLeft" id="host_downtime">
-							<img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='main.php?p=20106&o=ah&host_name={$h.host_name}'>{$m_mon_SCH_downtime}</a>
+							<img src='./img/icons/warning.png' class="ico-14" border='1'>&nbsp;<a href='main.php?p=20106&o=ah&host_name={$h.host_name}'>{$m_mon_SCH_downtime}</a>
 						</td>
 					</tr>
 				{/if}

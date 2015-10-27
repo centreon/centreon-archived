@@ -45,7 +45,7 @@ if (!$oreon->user->admin && $cg_id) {
     $cgs = $acl->getContactGroupAclConf($aclOptions);
     if (!count($cgs)) {
         $msg = new CentreonMsg();
-        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
         $msg->setText(_('You are not allowed to access this contact group'));
         return null;

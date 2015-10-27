@@ -102,6 +102,22 @@
 		return $services;
 	}
     
+    public function getSerivcesGroups($sg_id = array()){
+        
+        $arrayReturn = array();
+        if (!empty($sg_id)) {
+            $query = "SELECT sg_id, sg_name "
+                    . "FROM servicegroup "
+                    . "WHERE sg_id IN (" . $this->DB->escape(implode(",",$sg_id))." ) ";
+            $res = $this->DB->query($query);
+            while($row = $res->fetchRow()){
+                $arrayReturn[] = array("id" => $row['sg_id'], "name" => $row['sg_name']);
+            }
+        }
+        return $arrayReturn;
+    }
+    
+    
     /**
      * 
      * @param type $field
