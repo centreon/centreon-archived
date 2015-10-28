@@ -125,13 +125,13 @@
         }
         return true;
     }
-
+    
 	/*
 	 * Database retrieve information for Host
 	 */
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
-		$DBRESULT = $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM host LEFT JOIN extended_host_information ehi ON ehi.host_host_id = host.host_id WHERE host_id = '".$host_id."' LIMIT 1");
 
 		/*
 		 * Set base value
