@@ -565,15 +565,20 @@ function nextPeriod() {
     }
     
     function launchGraph() {
+        $hostsServicesForGraph = [];
         $hostsServices = '';
+        
+        getListOfServices();
+        getListOfHosts();
+        
         jQuery.each($hostsServicesForGraph, function(index, value) {
             $hostsServices += value + ',';
         });
         graph_4_host($hostsServices, 1);
     };
     
-    jQuery("#service_selector").on("change", function() {
-        $selectedOptions = jQuery(this).val();
+    function getListOfServices() {
+        $selectedOptions = jQuery("#service_selector").val();
         
         if ($selectedOptions !== null) {
             jQuery.each($selectedOptions, function(index, value) {
@@ -583,19 +588,18 @@ function nextPeriod() {
                     $hostsServicesForGraph.push(finalValue);
                 }
             });
-            launchGraph();
         }
-    });
-    jQuery("#service_selector").trigger("change");
+    }
     
-    jQuery("#host_selector").on("change", function() {
-        $selectedOptions = jQuery(this).val();
+    function getListOfHosts() {
+        $selectedOptions = jQuery("#host_selector").val();
         
         // Get all connected services
         if ($selectedOptions !== null) {
             jQuery.each($selectedOptions, function(index, value) {
                 jQuery.ajax({
                     url: './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=services&id=' + value + '&g=1',
+                    async: false,
                     success: function(data) {
                         jQuery.each(data, function(id, description) {
                             finalValue = 'HS_' + id + '_' + value;
@@ -603,12 +607,19 @@ function nextPeriod() {
                                 $hostsServicesForGraph.push(finalValue);
                             }
                         });
-                        console.log(data);
-                        launchGraph();
                     }
                 });
             });
         }
+    }
+    
+    jQuery("#service_selector").on("change", function() {
+        launchGraph();
+    });
+    jQuery("#service_selector").trigger("change");
+    
+    jQuery("#host_selector").on("change", function() {
+        launchGraph();
     });
     jQuery("#host_selector").trigger("change");
     
