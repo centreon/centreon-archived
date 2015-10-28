@@ -140,14 +140,24 @@
 		$action_list[4] = _("Schedule immediate check (Forced)");
 	}
 
-	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
+	$attrs = array(	'onchange'=>"javascript: ".
+             " var bChecked = isChecked(); ".
+             " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
+             " alert('"._("Please select one or more items")."'); return false;} " .
+             " if (this.form.elements['o1'].selectedIndex != 0) { ".
+             " setO(this.form.elements['o1'].value); submit(); }");
     $form->addElement('select', 'o1', NULL, $action_list, $attrs);
 
 	$form->setDefaults(array('o1' => NULL));
 	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 
-	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();");
+	$attrs = array('onchange'=>"javascript: ".
+            " var bChecked = isChecked(); ".
+            " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
+            " alert('"._("Please select one or more items")."'); return false;} " .
+            " if (this.form.elements['o2'].selectedIndex != 0) { ".
+             "setO(this.form.elements['o2'].value); submit(); }");
     $form->addElement('select', 'o2', NULL, $action_list, $attrs);
 
 	$form->setDefaults(array('o2' => NULL));

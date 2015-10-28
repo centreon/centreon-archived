@@ -268,7 +268,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 	} elseif ($icone = $mediaObj->getFilename(getMyServiceExtendedInfoField($service["service_id"], "esi_icon_image"))) {
 		$svc_icon = "./img/media/" . $icone;
 	} else {
-		$svc_icon = "./img/icones/16x16/gear.gif";
+		$svc_icon = "./img/icons/service.png ";
 	}
 
 	/*
@@ -326,6 +326,9 @@ function setO(_i) {
 <?php
 $attrs1 = array(
 	'onchange'=>"javascript: " .
+                        " var bChecked = isChecked(); ".
+                        " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
+                        " alert('"._("Please select one or more items")."'); return false;} " .
 			"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 			" 	setO(this.form.elements['o1'].value); submit();} " .
 			"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
@@ -341,6 +344,9 @@ $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_
 
 $attrs2 = array(
 	'onchange'=>"javascript: " .
+                        " var bChecked = isChecked(); ".
+                        " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
+                        " alert('"._("Please select one or more items")."'); return false;} " .
 			"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 			" 	setO(this.form.elements['o2'].value); submit();} " .
 			"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .

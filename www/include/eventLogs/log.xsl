@@ -127,7 +127,12 @@
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="time"/></td>
 	   		<td style="padding-left:5px;"><xsl:value-of select="host_name"/></td>
 	   		<td style="padding-left:5px;"><xsl:value-of select="service_description"/></td>
-	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:attribute name="style">background-color:<xsl:value-of select="status/@color"/>;</xsl:attribute><xsl:value-of select="status"/></td>
+	   		<td style="padding-left:5px;" class="ListColCenter">
+              <xsl:element name="span">
+                <xsl:attribute name="class">badge <xsl:value-of select="status/@color"/></xsl:attribute>
+                <xsl:value-of select="status"/>
+              </xsl:element>
+            </td>
 	   		<td style="padding-left:5px;padding-right:5px;" class="ListColCenter"><xsl:value-of select="type"/></td>
 	   		<td style="padding-left:5px;padding-right:5px;" class="ListColCenter"><xsl:value-of select="retry"/></td>
 	   		<td style="padding-left:5px;"><xsl:value-of select="output"/></td>

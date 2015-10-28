@@ -101,10 +101,7 @@
 				<xsl:if test="//i/s = 1">
 				<td class="ListColCenter">
 					<xsl:element name="span">
-						<xsl:attribute name="style">
-							background-color:<xsl:value-of select="hc"/>;
-						</xsl:attribute>
-						<xsl:attribute name="class">badge</xsl:attribute>
+						<xsl:attribute name="class">badge <xsl:value-of select="hc"/></xsl:attribute>
 						<xsl:value-of select="hs"/>
 					</xsl:element>
 				</td>
@@ -117,10 +114,7 @@
 				            <xsl:attribute name="id">service-<xsl:value-of select="../hid"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
 
 							<xsl:element name="span">
-								<xsl:attribute name="class">state_badge</xsl:attribute>
-								<xsl:attribute name="style">
-									background-color:<xsl:value-of select="sc"/>;
-								</xsl:attribute>
+								<xsl:attribute name="class">state_badge <xsl:value-of select="sc"/></xsl:attribute>
 							</xsl:element>
 							<xsl:value-of select="sn"/>
 						</xsl:element>

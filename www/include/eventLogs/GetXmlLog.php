@@ -248,8 +248,8 @@ if ($auto_period > 0) {
 
 $general_opt = getStatusColor($pearDB);
 
-$tab_color_service 	= array(STATUS_OK => $general_opt["color_ok"], STATUS_WARNING => $general_opt["color_warning"], STATUS_CRITICAL => $general_opt["color_critical"], STATUS_UNKNOWN => $general_opt["color_unknown"], STATUS_PENDING => $general_opt["color_pending"]);
-$tab_color_host		= array(STATUS_UP => $general_opt["color_up"], STATUS_DOWN => $general_opt["color_down"], STATUS_UNREACHABLE => $general_opt["color_unreachable"]);
+$tab_color_service 	= array(STATUS_OK => 'service_ok', STATUS_WARNING => 'service_warning', STATUS_CRITICAL => 'service_critical', STATUS_UNKNOWN => 'service_unknown', STATUS_PENDING => 'pending');
+$tab_color_host		= array(STATUS_UP => 'host_up', STATUS_DOWN => 'host_down', STATUS_UNREACHABLE => 'host_unreachable');
 
 $tab_type 			= array("1" => "HARD", "0" => "SOFT");
 $tab_class 			= array("0" => "list_one", "1" => "list_two");

@@ -86,10 +86,7 @@
 		<td class="ListColCenter">
 
 			<xsl:element name="span">
-				<xsl:attribute name="class">badge</xsl:attribute>
-				<xsl:attribute name="style">
-					background-color:<xsl:value-of select="sc"/>;
-				</xsl:attribute>
+				<xsl:attribute name="class">badge <xsl:value-of select="sc"/></xsl:attribute>
 
 				<xsl:value-of select="cs"/>
 			</xsl:element>

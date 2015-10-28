@@ -241,7 +241,7 @@
 			</table>
 			<table class="ListTable">
 				<tr class='ListHeader'>
-					<td class="ListColHeaderLeft"><img src="./img/icones/16x16/gear.gif">&nbsp;{$hosts_command}</td>
+					<td class="ListColHeaderLeft"><img src="./img/icons/service.png ">&nbsp;{$hosts_command}</td>
 				</tr>
 				{if $aclAct.host_schedule_downtime || $admin == 1}	
 					<tr class='list_one'>

@@ -26,11 +26,8 @@
                                                 <xsl:attribute name="href"><xsl:value-of select="hgurlhost"/>&amp;o=h_up</xsl:attribute>
 						<span>
                             <xsl:attribute name="class">
-                              state_badge
+                              state_badge <xsl:value-of select="huc"/>
                             </xsl:attribute>
-							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="huc"/>;
-    						</xsl:attribute>
 						</span><xsl:value-of select="hu"/>
                                             </xsl:element>    
 					</xsl:if>
@@ -40,11 +37,8 @@
                                                 <xsl:attribute name="href"><xsl:value-of select="hgurlhost"/>&amp;o=h_down</xsl:attribute>			
 						<span>
                             <xsl:attribute name="class">
-                              state_badge
+                              state_badge <xsl:value-of select="hdc"/>
                             </xsl:attribute>
-							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="hdc"/>;
-    						</xsl:attribute>
 						</span> <xsl:value-of select="hd"/>
                                             </xsl:element>
 					</xsl:if>
@@ -53,11 +47,8 @@
                                                 <xsl:attribute name="href"><xsl:value-of select="hgurlhost"/>&amp;o=h_unreachable</xsl:attribute>				
 						<span>
                             <xsl:attribute name="class">
-                              state_badge
+                              state_badge <xsl:value-of select="hurc"/>
                             </xsl:attribute>
-							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="hurc"/>;
-    						</xsl:attribute>
 						</span> <xsl:value-of select="hur"/>
                                             </xsl:element>
 					</xsl:if>
@@ -69,11 +60,8 @@
                                                 <xsl:attribute name="href"><xsl:value-of select="hgurl"/>&amp;o=svc_ok</xsl:attribute>
 						<span>
                             <xsl:attribute name="class">
-                              state_badge
+                              state_badge <xsl:value-of select="skc"/>
                             </xsl:attribute>
-							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="skc"/>;
-    						</xsl:attribute>
 						</span> <xsl:value-of select="sk"/>
                                             </xsl:element>
 					</xsl:if>
@@ -84,11 +72,8 @@
                                                 <xsl:attribute name="href"><xsl:value-of select="hgurl"/>&amp;o=svc_warning</xsl:attribute>
 						<span>
                             <xsl:attribute name="class">
-                              state_badge
+                              state_badge <xsl:value-of select="swc"/>
                             </xsl:attribute>
-							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="swc"/>;
-    						</xsl:attribute>
 						</span> <xsl:value-of select="sw"/>
                                             </xsl:element>
 					</xsl:if>
@@ -97,11 +82,8 @@
                                                 <xsl:attribute name="href"><xsl:value-of select="hgurl"/>&amp;o=svc_critical</xsl:attribute>
 						<span>
                             <xsl:attribute name="class">
-                              state_badge
+                              state_badge <xsl:value-of select="scc"/>
                             </xsl:attribute>
-							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="scc"/>;
-    						</xsl:attribute>
 						</span> <xsl:value-of select="sc"/>
                                             </xsl:element>
 					</xsl:if>
@@ -110,11 +92,8 @@
                                                 <xsl:attribute name="href"><xsl:value-of select="hgurl"/>&amp;o=svc_unknown</xsl:attribute>
 						<span>
                             <xsl:attribute name="class">
-                              state_badge
+                              state_badge <xsl:value-of select="suc"/>
                             </xsl:attribute>
-							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="suc"/>;
-    						</xsl:attribute>
 						</span> <xsl:value-of select="su"/>
                                             </xsl:element>
 					</xsl:if>
@@ -123,11 +102,8 @@
                                                 <xsl:attribute name="href"><xsl:value-of select="hgurl"/>&amp;o=svc_pending</xsl:attribute>
 						<span>
                             <xsl:attribute name="class">
-                              state_badge
+                              state_badge <xsl:value-of select="spc"/>
                             </xsl:attribute>
-							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="spc"/>;
-    						</xsl:attribute>
 						</span> <xsl:value-of select="sp"/>
                                             </xsl:element>
 					</xsl:if>

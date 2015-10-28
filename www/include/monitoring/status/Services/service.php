@@ -272,14 +272,26 @@ if (isset($authorized_actions) && $allActions == false) {
     $action_list[75] = _("Hosts : Set Downtime");
 }
 
-$attrs = array('onchange' => "javascript: if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
+$attrs = array('onchange' => "javascript: ".
+    " var bChecked = isChecked(); ".
+    " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
+    " alert('"._("Please select one or more items")."'); return false;} " .
+    " if (this.form.elements['o1'].selectedIndex == 0) {".
+    " return false;} ".
+    " if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
 $form->addElement('select', 'o1', NULL, $action_list, $attrs);
 
 $form->setDefaults(array('o1' => NULL));
 $o1 = $form->getElement('o1');
 $o1->setValue(NULL);
 
-$attrs = array('onchange' => "javascript: if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
+$attrs = array('onchange' => "javascript: ".
+    " var bChecked = isChecked(); ".
+    " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
+    " alert('"._("Please select one or more items")."'); return false;} ".
+    " if (this.form.elements['o2'].selectedIndex == 0) {".
+    " return false;} ".
+    " if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
 $form->addElement('select', 'o2', NULL, $action_list, $attrs);
 $form->setDefaults(array('o2' => NULL));
 $o2 = $form->getElement('o2');

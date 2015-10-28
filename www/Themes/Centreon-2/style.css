@@ -90,7 +90,7 @@ select {
 select[multiple="multiple"] {
     overflow:auto;
 }
-hr 			{background-color:#CCC;height:1px;margin-bottom:10px;margin-top:3px;}
+hr 			{background-color:#CCC;height:1px;margin: 3px 0;}
 form		{padding-bottom:10px;}
 
 option 		{padding-left:1px;padding-right:1px;}
@@ -231,7 +231,8 @@ p.description a, p.description a:visited {
 }
 /* ------ END : Colors -----*/
 
-/* ------- Badge -----------*/
+/* ------------ Badge -----------*/
+
 .badge              {   display: inline-block;
                         border-radius: 7px;
                         color: #fff;
@@ -245,6 +246,9 @@ p.description a, p.description a:visited {
                         padding: 4px 8px;
                         color: #fff;
                     }
+
+/* ----------- States --------------- */
+
 .default_badge 		{background-color: #00a499;}
 .host_down,
 .service_critical 	{background-color: #e00b3d;}
@@ -750,7 +754,7 @@ div.menuLeft {
 }
 
 .table .FormHeader {
-    padding: 10px;
+    padding: 4px;
     color: #818285;
     border-bottom: 1px solid #d1d2d4;
 }
@@ -884,7 +888,7 @@ div.menuLeft {
 .table .list_lvl_1 h4 {
     font-weight: normal;
     color: #009fdf;
-    margin-left: 12px;
+    /*margin-left: 12px;*/
     padding: 4px;
     font-size: 1.1em;
 }
@@ -992,8 +996,8 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 /* Search Options */
 .search_input_host 	{padding:2px 2px 3px 18px; background: #FFFFFF url("../../img/icones/16x16/server_network.gif") no-repeat scroll 1px 0px;}
 .search_input_active_host 	{padding:2px 2px 3px 18px; background: #F778A1 url("../../img/icones/16x16/server_network.gif") no-repeat scroll 1px 0px;}
-.search_input_service 	{padding:2px 2px 3px 18px; background: #FFFFFF url("../../img/icones/16x16/gear.gif") no-repeat scroll 1px 0px;}
-.search_input_active_service 	{padding:2px 2px 3px 18px; background: #F778A1 url("../../img/icones/16x16/gear.gif") no-repeat scroll 1px 0px;}
+.search_input_service 	{padding:2px 2px 3px 18px; background: #FFFFFF url("../../img/icons/service.png ") no-repeat scroll 1px 0px;}
+.search_input_active_service 	{padding:2px 2px 3px 18px; background: #F778A1 url("../../img/icons/service.png ") no-repeat scroll 1px 0px;}
 
 .search_input_active	{background-color:#F778A1;}
 .search_input_found 	{background-color:#99C68E;}
@@ -1095,7 +1099,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 }
 .ListHeader td,
 .ListHeader th {
-    padding: 8px 4px !important;
+    padding: 8px !important;
     font-weight:700;
     height:18px;
     vertical-align:middle;
@@ -1461,7 +1465,8 @@ span.state_badge {
 }
 
 .fullscreen-icon img {
-  vertical-align: middle;
+    vertical-align: middle;
+}
 /* Style for Eventlogs page */
 .log-extend-icon {
   cursor: pointer;
@@ -1469,4 +1474,10 @@ span.state_badge {
 
 .ajaxOption td.log-select {
     vertical-align: top;
+}
+
+/* -------- List Links --------------- */
+
+.linkList_text {
+    padding: 4px;
 }

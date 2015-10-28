@@ -27,8 +27,6 @@
 		<div class='portlet invisible-portlet'></div>
 	</div>
 	{else}
-		<div><center><div style='padding:100px;'><img src='./img/icones/16x16/help_button.png' style='padding-right:5px;'><b>{$error_msg}</b></div></center></div>
-
 		 <div class="info_box">
             <h4><img src='./img/icones/16x16/help_button.png'> {$error_msg}</h4>
         </div>

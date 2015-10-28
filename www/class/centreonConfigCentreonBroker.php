@@ -572,9 +572,10 @@ class CentreonConfigCentreonBroker
             $fieldname = $tag . '[' . $row['config_group_id'] . '][' . $this->getConfigFieldName($config_id, $tag, $row) . ']';
 	    /* Multi value for a multiselect */
 	    if (isset($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
-                $tmpValue = array($formsInfos[$row['config_group_id']]['defaults'][$fieldname]);
-		$tmpValue[] = $row['config_value'];
-		$formsInfos[$row['config_group_id']]['defaults'][$fieldname] = $tmpValue;
+                if (!is_array($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
+                    $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = array($formsInfos[$row['config_group_id']]['defaults'][$fieldname]);
+                }
+                $formsInfos[$row['config_group_id']]['defaults'][$fieldname][] = $row['config_value'];
 	    } else {
                 $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = $row['config_value'];
                 $formsInfos[$row['config_group_id']]['defaults'][$fieldname . '[' . $row['config_key'] . ']'] = $row['config_value']; // Radio button

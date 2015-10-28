@@ -173,9 +173,9 @@ function setDisabledRowStyle(img)
 {
 	document.observe("dom:loaded", function() {
 		if (!img) {
-			var img = "eye_active.png";
+			var img = "enabled.png";
 		}
-		$$('img[src$="eye_active.png"]').each(function(el) {
+		$$('img[src$="enabled.png"]').each(function(el) {
 			el.up(2).setAttribute('class', 'row_disabled');
 		});
 	});
@@ -191,6 +191,17 @@ function setDisabledRowStyle(img)
  */
 function syncInputField(name, val) {
     jQuery("input[name='"+name+"']").val(val);
+}
+
+function isChecked()
+{
+    var ret = false;
+    jQuery("input[type=checkbox]:checked").each( 
+        function() {
+            ret = true;
+        } 
+    );
+    return ret;
 }
 
 //  End -->
