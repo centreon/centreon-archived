@@ -1467,19 +1467,29 @@ class CentreonACL {
             }
 # Cant manage empty servicegroup with ACLs. We'll have a problem with acl for conf...
             $groupIds = array_keys($this->accessGroups);
-            $query = "(SELECT " . $request['fields'] . " FROM $db_name_acl.centreon_acl, hostgroup_relation, servicegroup_relation, servicegroup " .
-                    " WHERE $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") " .
-                    " AND $db_name_acl.centreon_acl.host_id = hostgroup_relation.host_host_id " .
-                    " AND hostgroup_relation.hostgroup_hg_id = servicegroup_relation.hostgroup_hg_id " .
-                    " AND servicegroup_relation.service_service_id = $db_name_acl.centreon_acl.service_id " .
-                    " AND servicegroup_relation.servicegroup_sg_id = servicegroup.sg_id $searchSTR" .
+            $query = "(SELECT " . $request['fields'] . " FROM hostgroup_relation, servicegroup_relation,servicegroup,  acl_res_group_relations, acl_resources_hg_relations " .
+			
+                    " WHERE acl_res_group_relations.acl_group_id  IN (" . implode(',', $groupIds) . ") " .
+					
+					" AND acl_resources_hg_relations.acl_res_id = acl_res_group_relations.acl_res_id $searchSTR " .
+					
+					" AND servicegroup_relation.hostgroup_hg_id = hostgroup_relation.hostgroup_hg_id " .
+					
+					" AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id " .
+
                     ") UNION ALL (" .
-                    " SELECT " . $request['fields'] . " FROM $db_name_acl.centreon_acl, servicegroup_relation, servicegroup " .
-                    " WHERE $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") " .
-                    " AND $db_name_acl.centreon_acl.host_id = servicegroup_relation.host_host_id AND $db_name_acl.centreon_acl.service_id = servicegroup_relation.service_service_id " .
-                    " AND servicegroup_relation.servicegroup_sg_id = servicegroup.sg_id $searchSTR)" .
+					
+                    " SELECT " . $request['fields'] . " FROM  servicegroup, acl_resources_sg_relations, acl_res_group_relations " .
+					
+                    " WHERE acl_res_group_relations.acl_group_id  IN (" . implode(',', $groupIds) . ") " .
+					
+					" AND acl_resources_sg_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
+                    
+                    " AND acl_resources_sg_relations.sg_id = servicegroup.sg_id $searchSTR)" .
+					
                     $request['order'];
         }
+
         $res = $pearDB->query($query);
         if (PEAR::isError($res)) {
             return $sg;
