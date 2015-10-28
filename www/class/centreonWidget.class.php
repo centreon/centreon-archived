@@ -196,8 +196,59 @@ class CentreonWidget
         		  VALUES ('".$this->db->escape($params['widget_title'])."', ".$this->db->escape($params['widget_model_id']).")";
         $this->db->query($query);
         $lastId = $this->getLastInsertedWidgetId($params['widget_title']);
+        /* Get view layout */
+        $query = "SELECT layout FROM custom_views WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']);
+        $res = $this->db->query($query);
+        if (PEAR::isError($res)) {
+            throw new CentreonWidgetException('No view found');
+        }
+        $row = $res->fetchRow();
+        if (is_null($row)) {
+            throw new CentreonWidgetException('No view found');
+        }
+        $layout = str_replace('column_', '', $row['layout']);
+        /* Default position */
+        $newPosition = null;
+        /* Prepare first position */
+        $matrix = array();
+        $query = "SELECT widget_order FROM widget_views WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']);
+        $res = $this->db->query($query);
+        if (PEAR::isError($res)) {
+            throw new CentreonWidgetException('No view found');
+        }
+        while ($position = $res->fetchRow()) {
+            list($col, $row) = explode('_', $position['widget_order']);
+            if (false == isset($matrix[$row])) {
+                $matrix[$row] = array();
+            }
+            $matrix[$row][] = $col;
+        }
+        ksort($matrix);
+        $rowNb = 0;
+        foreach ($matrix as $row => $cols) {
+            if ($rowNb != $row) {
+                break;
+            }
+            file_put_contents('/tmp/debug-layout', "Row " . $row);
+            if (count($cols) < $layout) {
+                sort($cols);
+                for ($i = 0; $i < $layout; $i++) {
+                    file_put_contents('/tmp/debug-layout', "Col " . $i, FILE_APPEND);
+                    if ($cols[$i] != $i) {
+                        $newPosition = $i . '_' . $rowNb;
+                        break;
+                    } 
+                }
+                break;
+            }
+            $rowNb++;
+        }
+        if (is_null($newPosition)) {
+            $newPosition = '0_' . $rowNb;
+        }
+        
         $query = "INSERT INTO widget_views (custom_view_id, widget_id, widget_order)
-        		  VALUES (".$this->db->escape($params['custom_view_id']).", ".$this->db->escape($lastId).", 0)";
+        		  VALUES (".$this->db->escape($params['custom_view_id']).", ".$this->db->escape($lastId).", '" . $newPosition . "')";
         $this->db->query($query);
     }
 
