@@ -23,7 +23,7 @@
 			<a href='./main.php?p=307&host={$h.host_id}'><img src="./img/icones/16x16/reporting.gif" alt="{$lnk_host_reports}" onmouseover="Tip('{$lnk_host_reports}')" onmouseout="UnTip()"></a>
 		{/if}
 		{if $lcaTopo.4 || $admin == 1}
-			<a href='./main.php?p=4&mode=0&svc_id={$h.host_name}'><img src="./img/icones/16x16/line-chart.gif" alt="{$lnk_host_graphs}" onmouseover="Tip('{$lnk_host_graphs}')" onmouseout="UnTip()"></a>
+			<a href='./main.php?p=204&mode=0&svc_id={$h.host_name}'><img src="./img/icones/16x16/line-chart.gif" alt="{$lnk_host_graphs}" onmouseover="Tip('{$lnk_host_graphs}')" onmouseout="UnTip()"></a>
 		{/if}
 		</td>
 	</tr>

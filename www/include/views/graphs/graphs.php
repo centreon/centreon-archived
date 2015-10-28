@@ -67,7 +67,6 @@
 	 */
 
 	require_once "HTML/QuickForm.php";
-    require_once 'HTML/QuickForm/select2.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 	/*
@@ -78,6 +77,9 @@
 
 	$openid = '0';
 	$open_id_sub = '0';
+    
+    $defaultServicesForGraph = array();
+    $defaultHostsForGraph = array();
 
 	if (isset($_GET["openid"])){
 		$openid = $_GET["openid"];
@@ -110,11 +112,13 @@
 
 	if (isset($id_svc) && $id_svc){
 		$id = "";
+        $grId = '';
 		$tab_svcs = explode(",", $id_svc);
 		foreach($tab_svcs as $svc){
 			$tmp = explode(";", $svc);
 			if (!isset($tmp[1])) {
 				$id .= "HH_" . getMyHostID($tmp[0]).",";
+                $grId .= getMyHostID($tmp[0]);
 			}
 			if ((isset($tmp[0]) && $tmp[0] == "") || $meta == 1) {
 				$DBRESULT = $pearDB->query("SELECT `meta_id` FROM meta_service WHERE meta_name = '".$tmp[1]."'");
@@ -122,13 +126,24 @@
 				$DBRESULT->free();
 				$id .= "MS_".$res["meta_id"].",";
 				$meta = 1;
+                $grId .= $res["meta_id"];
 			} else {
-				if (isset($tmp[1]))
+				if (isset($tmp[1])) {
 					$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
+                    $grId .= getMyHostID($tmp[0]) . '-' .  getMyServiceID($tmp[1], getMyHostID($tmp[0]));
+                }
 			}
+            
+            if (strpos($grId, '-')) {
+                $defaultServicesForGraph[$svc] = $grId;
+            } elseif ($meta == 1) {
+                
+            } else {
+                $defaultHostsForGraph[$svc] = $grId;
+            }
 		}
 	}
-
+    
 	/* Get Period if is in url */
 	$period_start = 'undefined';
 	$period_end = 'undefined';
@@ -176,7 +191,7 @@
     $attrServices = array(
         'datasourceOrigin' => 'ajax',
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list&g=1',
-        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=host&field=host_cs&id=99999',
+        'defaultDataset' => $defaultServicesForGraph,
         'multiple' => true,
     );
     $form->addElement('select2', 'service_selector', _("Services"), array(), $attrServices);
@@ -184,7 +199,7 @@
     $attrHosts = array(
         'datasourceOrigin' => 'ajax',
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
-        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=host&field=host_cs&id=99999',
+        'defaultDataset' => $defaultHostsForGraph,
         'multiple' => true,
     );
     $form->addElement('select2', 'host_selector', _("Hosts"), array(), $attrHosts);
@@ -560,48 +575,47 @@ function nextPeriod() {
     jQuery("#service_selector").on("change", function() {
         $selectedOptions = jQuery(this).val();
         
-        jQuery.each($selectedOptions, function(index, value) {
-            $splittedValue = value.split('-');
-            finalValue = 'HS_' + $splittedValue[1] + '_' + $splittedValue[0];
-            if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
-                $hostsServicesForGraph.push(finalValue);
-            }
-        });
-        launchGraph();
+        if ($selectedOptions !== null) {
+            jQuery.each($selectedOptions, function(index, value) {
+                $splittedValue = value.split('-');
+                finalValue = 'HS_' + $splittedValue[1] + '_' + $splittedValue[0];
+                if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
+                    $hostsServicesForGraph.push(finalValue);
+                }
+            });
+            launchGraph();
+        }
     });
-    
-    function fillHostsServices()
-    {
-        $hostsServicesForGraph = [];
-        $selectedHosts = jQuery("#host_selector").val();
-        $selectedServices = jQuery("#service_selector").val();
-    }
+    jQuery("#service_selector").trigger("change");
     
     jQuery("#host_selector").on("change", function() {
         $selectedOptions = jQuery(this).val();
         
         // Get all connected services
-        jQuery.each($selectedOptions, function(index, value) {
-            jQuery.ajax({
-                url: './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=services&id=' + value + '&g=1',
-                success: function(data) {
-                    jQuery.each(data, function(id, description) {
-                        finalValue = 'HS_' + id + '_' + value;
-                        if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
-                            $hostsServicesForGraph.push(finalValue);
-                        }
-                    });
-                    launchGraph();
-                }
+        if ($selectedOptions !== null) {
+            jQuery.each($selectedOptions, function(index, value) {
+                jQuery.ajax({
+                    url: './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=services&id=' + value + '&g=1',
+                    success: function(data) {
+                        jQuery.each(data, function(id, description) {
+                            finalValue = 'HS_' + id + '_' + value;
+                            if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
+                                $hostsServicesForGraph.push(finalValue);
+                            }
+                        });
+                        console.log(data);
+                        launchGraph();
+                    }
+                });
             });
-        });
+        }
     });
+    jQuery("#host_selector").trigger("change");
     
-    function resetFields(fields) {
+    function resetFields(fields)
+    {
         for(i=0;i<fields.length;i++ ) {
             fields[i].value="";
         }
     }
-
-    
 </script>
