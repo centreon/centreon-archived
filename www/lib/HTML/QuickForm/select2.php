@@ -78,6 +78,12 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     
     /**
      *
+     * @var type 
+     */
+    var $_defaultDataset;
+    
+    /**
+     *
      * @var boolean 
      */
     var $_ajaxSource;
@@ -136,9 +142,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_allowClear = true; 
         $this->HTML_QuickForm_select($elementName, $elementLabel, $options, $attributes);
         $this->_elementHtmlName = $this->getName();
-        $this->parseCustomAttributes($attributes);
+        $this->_defaultDataset = array();
         $this->_jsCallback = '';
         $this->_allowClear = false;
+        $this->parseCustomAttributes($attributes);
     }
     
     /**
@@ -175,6 +182,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $this->_allowClear = true;
         }
         
+        if (isset($attributes['defaultDataset'])) {
+            $this->_defaultDataset = $attributes['defaultDataset'];
+        }
     }
     
     /**
@@ -279,11 +289,12 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
              $mainJsInit .= 'disabled: true,';
         }
         
-        
         if ($this->_ajaxSource) {
             $mainJsInit .= $this->setAjaxSource() . ',';
-            if ($this->_defaultDatasetRoute) {
+            if ($this->_defaultDatasetRoute && (count($this->_defaultDataset) == 0)) {
                 $additionnalJs .= $this->setDefaultAjaxDatas();
+            } else {
+                $this->setDefaultFixedDatas();
             }
         } else {
             $mainJsInit .= $this->setFixedDatas() . ',';
@@ -304,9 +315,6 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $mainJsInit .= 'false,';
         }
         
-
-
-        
         $strJsInitEnding = '});';
         
         if (!$this->_allowClear) {
@@ -317,9 +325,6 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 . 'jQuery("#' . $this->getName() . '").trigger("change", $currentValues);'
                 . ' });';
         }
-        
-        
-        
         $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $additionnalJs . $this->_jsCallback . $jsPost;
         
         return $finalJs;
@@ -351,6 +356,18 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $datas .= ']';
         
         return $datas;
+    }
+    
+    /**
+     * 
+     */
+    function setDefaultFixedDatas()
+    {
+        foreach ($this->_defaultDataset as $elementName => $elementValue) {
+            $this->_defaultSelectedOptions .= '<option selected="selected" value="'
+                . $elementValue . '">'
+                . $elementName . "</option>";
+        }
     }
     
     /**
