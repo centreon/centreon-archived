@@ -41,6 +41,9 @@ require_once("./class/centreonData.class.php");
 
 if (!$min) {
 ?>    
+        <div class="fullscreen-icon" title="Fullscreen" onclick="myToggleAll(0,true);saveFullScreenSetting();" >
+            <img class="ico-16" alt="FullScreen" src="./img/icons/fullscreen.png">
+        </div>    
         <div id="footer">
 			<table cellpadding='0' cellspacing='0' width='100%' border='0' id="tfooter">
  				<tr>
@@ -48,9 +51,7 @@ if (!$min) {
 				        <?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
 				    </td>
  					<td align='center' class='copyRight'>
-						<div class="fullscreen-icon" title="Fullscreen" onclick="myToggleAll(0,true);saveFullScreenSetting();" >
-                            <img class="ico-16" alt="FullScreen" src="./img/icons/fullscreen.png">
-                        </div>
+
 					    <a href='http://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> 
                         <a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
                         <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a>
