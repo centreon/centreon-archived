@@ -40,6 +40,7 @@
 	 </table>
 	 </div>
 	 {/if}	
+         {$form.hidden}
 </form>
 {$helptext}
 
