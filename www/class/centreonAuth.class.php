@@ -247,13 +247,13 @@ class CentreonAuth {
                     if ($this->debug) {
                         $this->CentreonLog->insertLog(1, "Contact '" . $username . "' doesn't match with password");
                     }
-                    $this->error = "Invalid user";
+                    $this->error = _('Your credentials are incorrect.');
                 }
             } else {
                 if ($this->debug) {
                     $this->CentreonLog->insertLog(1, "Contact '" . $username . "' is not enable for reaching centreon");
                 }
-                $this->error = "Invalid user";
+                $this->error = _('Your credentials are incorrect.');
             }
         } elseif (count($this->ldap_auto_import)) {
             /*
@@ -273,7 +273,7 @@ class CentreonAuth {
             if ($this->debug) {
                 $this->CentreonLog->insertLog(1, "No contact found with this login : '$username'");
             }
-            $this->error = "Invalid user";
+            $this->error = _('Your credentials are incorrect.');
         }
     }
 
