@@ -1,3 +1,16 @@
+## Centreon 2.6.6
+
+#3793: Problems with host group creation
+#3812: Strange display of service group details page with Centreon 2.6.3
+#3824: PHP Warning: array_map(): Argument #2 should be an array
+#3840: Centreon 2.6.4 : Wrong reporting graph data with default user language fr_FR.UTF-8
+#3846: [2.6.5] CRSF Token critical: Impossible to upgrade a plugin
+#3847: [2.6.5] split component switch
+#3851: [2.6.5] split component switch, other problem
+#3852: [2.6.5] CSRF error appears in user massive change form
+#3854: Cannot add new macro after deleting all macros already created
+#3855: Cannot add new host template to host after deleting all templates
+
 ## Centreon 2.6.5
 
 #3831: XSS injection in object lists (ZSL-2015-5266)
