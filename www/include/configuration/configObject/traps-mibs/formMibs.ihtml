@@ -36,5 +36,7 @@
 	 </table>
 	 </div>
 	 {/if}	
-</form>{$helptext}
+         {$form.hidden}
+</form>
+{$helptext}
 
