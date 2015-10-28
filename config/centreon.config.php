@@ -4,23 +4,19 @@
  */
 
 /* MySQL configuration file */
-define('_CENTREON_ETC_', '@CENTREON_ETC@');
+include_once "@CENTREON_ETC@/centreon.conf.php";
 
-if (file_exists("@CENTREON_ETC@/centreon.conf.php")) {
-    include_once "@CENTREON_ETC@/centreon.conf.php";
+define('_CENTREON_PATH_', $centreon_path);
+define('_CENTREON_LOG_', '@CENTREON_LOG@');
+define('_CENTREON_VARLIB_', '@CENTREON_VARLIB@');
 
-    define('_CENTREON_PATH_', $centreon_path);
-    define('_CENTREON_LOG_', '@CENTREON_LOG@');
-    define('_CENTREON_VARLIB_', '@CENTREON_VARLIB@');
-
-    define('hostCentreon', $conf_centreon['hostCentreon']);
-    define('hostCentstorage', $conf_centreon['hostCentstorage']);
-    define('user', $conf_centreon['user']);
-    define('password', $conf_centreon['password']);
-    define('db', $conf_centreon['db']);
-    define('dbcstg', $conf_centreon['dbcstg']);
-    define('port', $conf_centreon['port']);
-}
+define('hostCentreon', $conf_centreon['hostCentreon']);
+define('hostCentstorage', $conf_centreon['hostCentstorage']);
+define('user', $conf_centreon['user']);
+define('password', $conf_centreon['password']);
+define('db', $conf_centreon['db']);
+define('dbcstg', $conf_centreon['dbcstg']);
+define('port', $conf_centreon['port']);
 
 
 /* Enable PHP error */

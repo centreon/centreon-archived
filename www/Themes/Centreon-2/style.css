@@ -102,6 +102,7 @@ iframe {
     width: 100%;
     //white-space: nowrap;
     text-overflow: ellipsis;
+    white-space: initial;
 }
 
 .subTable {
@@ -1477,7 +1478,22 @@ span.state_badge {
 }
 
 /* -------- List Links --------------- */
-
-.linkList_text {
-    padding: 4px;
+.linkList {
+    table-layout: fixed;
 }
+.linkList td {
+    border-bottom: 1px solid #d1d2d4;
+    padding: 4px !important;
+    white-space: initial;
+    width: 50%;
+}
+
+.linkList td a {
+    text-decoration: none;
+    color: #005a7f;
+}
+.linkList td a:hover {
+    text-decoration: none;
+    color: #4ccaff;
+}
+
