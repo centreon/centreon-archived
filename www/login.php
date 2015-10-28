@@ -50,11 +50,11 @@
     if (isset($msg_error)) {
         $loginMessages[] = $msg_error;
     } elseif (isset($_POST["centreon_token"])) {
-        $loginMessages[] = 'Invalid user';
+        $loginMessages[] = _('Your credentials are incorrect.');
     }
     
     if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2) {
-        $loginMessages[] = 'Session Expired.';
+        $loginMessages[] = _('Your session is expired.');
     }
     
     if ($file_install_acces) {
