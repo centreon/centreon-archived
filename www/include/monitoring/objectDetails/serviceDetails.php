@@ -272,9 +272,9 @@ if (!is_null($host_id)) {
         $en_disable 		= array("1" => _("Enabled"), "0" => _("Disabled"));
         $en_inv				= array("1" => "1", "0" => "0");
         $en_inv_text 		= array("1" => _("Disable"), "0" => _("Enable"));
-        $color_onoff 		= array("1" => "#00ff00", "0" => "#ff0000");
+        $color_onoff 		= array("1" => "#88b917", "0" => "#e00b3d");
         $color_onoff_inv 	= array("0" => "#F7FAFF", "1" => "#E7C9FF");
-        $img_en 			= array("0" => "'./img/icones/16x16/element_next.gif'", "1" => "'./img/icones/16x16/element_previous.gif'");
+        $img_en 			= array("0" => "'./img/icons/enabled.png'", "1" => "'./img/icons/disabled.png'");
 
         /*
          * Ajust data for beeing displayed in template
@@ -584,6 +584,7 @@ if (!is_null($host_id)) {
          */
         $tpl->assign("host_shortcut", _("Host Shortcuts"));
         $tpl->assign("serv_shortcut", _("Service Shortcuts"));
+        $tpl->assign("all_serv", _("All Services"));
         $tpl->assign("lnk_host_config", _("Configure host"));
         $tpl->assign("lnk_serv_config", _("Configure service"));
         $tpl->assign("lnk_host_graphs", sprintf(_("View graphs for host %s"), $host_name));
