@@ -726,3 +726,8 @@ DELETE FROM topology WHERE topology_page = 101;
 -- DELETE topology for Performance info
 DELETE FROM topology_JS WHERE id_page = 10203;
 DELETE FROM topology WHERE topology_page = 10203;
+
+-- DELETE topology for Scheduling queue
+DELETE FROM topology_JS WHERE id_page = 20207;
+DELETE FROM topology WHERE topology_page = 20207; 
+DELETE FROM topology WHERE topology_parent = 202 AND topology_group = 33 AND topology_name = 'Monitoring Engine';
