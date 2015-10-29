@@ -51,7 +51,7 @@ $contents .= '
         <li>'._('Official website').': <a href="http://www.centreon.com">www.centreon.com</a></li>
         <li>'._('Forum').': <a href="http://forum.centreon.com">forum.centreon.com</a></li>
         <li>'._('Documentation').': <a href="http://documentation.centreon.com">documentation.centreon.com</a></li>
-        <li>'._('Bug Tracker').': <a href="https://github.com/centreon/centreon/issues">forge.centreon.com</a></li>
+        <li>'._('Bug Tracker').': <a href="https://github.com/centreon/centreon/issues">github.com/centreon/centreon</a></li>
     </ul>';
 $contents .= _('For professional support subscription please contact the <a href="http://support.centreon.com">Centreon Support Center</a>.');
 
