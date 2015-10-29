@@ -31,17 +31,14 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
-	$page_max = ceil($rows / $limit);
-	if ($num >= $page_max && $rows)
-		$num = $page_max - 1;
-			
-	if ($rows == 0) {
-		$num = 0;
-		$page_max = 0;
+
+$page_max = ceil($rows / $limit);
+if ($num >= $page_max && $rows)
+	$num = $page_max - 1;
 		
-	}
-?>
+if ($rows == 0) {
+	$num = 0;
+	$page_max = 0;
+	
+}
