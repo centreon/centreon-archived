@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
 	exit();
 }
 
@@ -101,7 +101,6 @@ $tpl = initSmartyTpl($path, $tpl, "template/");
  * Pear library
  */
 require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 $form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
@@ -113,45 +112,59 @@ $tab_downtime_svc = array();
  */
 if ($view_all == 1) {
 	$downtimeTable = "downtimehistory";
-	if ($oreon->broker->getBroker() == "ndo") {
-	    $extrafields = ", UNIX_TIMESTAMP(dtm.actual_end_time) as actual_end_time, was_cancelled ";
-	} else {
-	    $extrafields = ", actual_end_time, cancelled as was_cancelled ";
-	}
+	$extrafields = ", actual_end_time, cancelled as was_cancelled ";
 } else {
 	$downtimeTable = "scheduleddowntime";
 	$extrafields = "";
 }
 
-$request =  "SELECT SQL_CALC_FOUND_ROWS d.internal_id as internal_downtime_id,
-        d.entry_time, duration, d.author as author_name, d.comment_data,
-        d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time,
-        d.started as was_started, h.name as host_name, s.description as service_description " . $extrafields .
-        "FROM downtimes d, services s, hosts h " .
-        "WHERE d.host_id = s.host_id AND
-            d.service_id = s.service_id AND
-            s.host_id = h.host_id ";
+/* --------------- Services ---------------*/
+$request = "(SELECT SQL_CALC_FOUND_ROWS d.internal_id as internal_downtime_id, d.entry_time, duration, d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name, s.description as service_description " . $extrafields .
+        "FROM downtimes d, services s, hosts h " . ($is_admin ? "" : ", centreon_acl acl") .
+        "WHERE d.host_id = s.host_id " .
+        "AND d.service_id = s.service_id ". 
+        "AND s.host_id = h.host_id ";
+
 if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
 }
 if (!$is_admin) {
-    $request .= " AND EXISTS(SELECT 1 FROM centreon_acl WHERE s.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id AND group_id IN (" . $oreon->user->access->getAccessGroupsString() . ")) ";
+    $request .= " AND s.host_id = acl.host_id AND s.service_id = acl.service_id AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
 }
+
 $request .= (isset($search_service) && $search_service != "" ? "AND s.description LIKE '%$search_service%' " : "") .
             (isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
             (isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
             (isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
             (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ? " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
+            (isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "") ;
+
+/* --------------- Hosts --------------- */
+$request .=  ") UNION (SELECT d.internal_id as internal_downtime_id, d.entry_time, duration, d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name, '' as service_description " . $extrafields .
+        "FROM downtimes d, hosts h " . ($is_admin ? "" : ", centreon_acl acl") .
+        "WHERE d.host_id = h.host_id ";
+if (!$view_all) {
+    $request .= " AND d.cancelled = 0 ";
+}
+if (!$is_admin) {
+    $request .= " AND h.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
+}
+
+$request .= (isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
+            (isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
+            (isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
+            (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ? " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
             (isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "") .
-            "ORDER BY d.start_time DESC " .
+            ") ORDER BY scheduled_start_time DESC " .
             "LIMIT ".$num * $limit.", ".$limit;
+
 $DBRESULT_NDO = $pearDBO->query($request);
 $rows = $pearDBO->numberRows();
 for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
 	$tab_downtime_svc[$i] = $data;
     $tab_downtime_svc[$i]['comment_data'] = htmlentities(trim($data['comment_data']));
 	$tab_downtime_svc[$i]['host_name'] = htmlentities($data['host_name']);
-	$tab_downtime_svc[$i]['service_description'] = htmlentities($data['service_description']);
+	$tab_downtime_svc[$i]['service_description'] = htmlentities($data['service_description'] != '' ? $data['service_description'] : '-');
 	$tab_downtime_svc[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_start_time"])." ";
 	$tab_downtime_svc[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_end_time"])." ";
 	$tab_downtime_svc[$i]["host_name_link"] = urlencode($tab_downtime_svc[$i]["host_name"]);
@@ -187,8 +200,11 @@ $form->addElement('hidden', 'p');
 $tab = array ("p" => $p);
 $form->setDefaults($tab);
 
-if ($oreon->user->access->checkAction("service_schedule_downtime")) {
-	$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add a downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
+if ($centreon->user->access->checkAction("service_schedule_downtime")) {
+	$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add a Service downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
+}
+if ($centreon->user->access->checkAction("service_schedule_downtime") || 1) {
+	$tpl->assign('msgs2', array ("addL2"=>"?p=".$p."&o=ah", "addT2"=>_("Add a Host downtime")));
 }
 
 $tpl->assign("p", $p);
