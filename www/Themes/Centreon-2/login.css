@@ -58,8 +58,8 @@
 
 .error_msg {
     position: absolute;
-    left: 47%;
-    top: 20%;
+    left: 40px;
+    top: -60px;
 }
 
 .msg 	{
@@ -71,7 +71,7 @@
     padding: 6px;
     text-align: center;
     border-radius: 4px;
-    width: 30%;
+    width: 32%;
 }
 
 /* button */
@@ -156,6 +156,7 @@ input[type="submit"]:hover {
 .LoginInvitLogo {
     width: 254px;
     margin: 2em auto;
+    position: relative;
 }
 
 #logintab2		{width:290px;}
