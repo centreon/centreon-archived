@@ -87,7 +87,7 @@
 		<td class="ListColRight">
 			<xsl:if test="svc_index &gt; 0">
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
 							<xsl:attribute name="class">ico-18</xsl:attribute>

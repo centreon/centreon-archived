@@ -53,7 +53,7 @@ function goToGraph(_input_name, _id){
 	_form.setAttribute('id', 'goToGraphByPost');
 	_form.setAttribute('name', 'goToGraphByPost');
 	_form.setAttribute('method', 'POST');
-	_form.setAttribute('action', 'main.php?p=40201&mode=0');
+	_form.setAttribute('action', 'main.php?p=20401&mode=0');
 	var _idValue = document.createElement("input");
 	_idValue.type ='text';
 	_idValue.value = tab;

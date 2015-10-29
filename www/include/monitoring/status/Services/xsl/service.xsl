@@ -280,7 +280,7 @@
 			<xsl:if test="ppd &gt; 0">
 				<xsl:if test="svc_index &gt; 0">
 					<xsl:element name="a">
-				  		<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>					
+				  		<xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>					
 							<xsl:element name="img">
 					  			<xsl:attribute name="id"><xsl:value-of select="svc_index"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
                                 <xsl:attribute name="class">graph-volant ico-18</xsl:attribute>
