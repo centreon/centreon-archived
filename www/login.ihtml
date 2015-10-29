@@ -9,15 +9,16 @@
         <link rel="shortcut icon" href="./img/favicon.ico">
     </head>
     <body OnLoad="document.login.useralias.focus();">
-        
-        {foreach from=$loginMessages item=message}
-            <div style='padding-top: 60px;'><span class='msg'>{$message}</span></div>
-        {/foreach}
-        
-        <form action="./index.php" method="post" name="login">
-            <p align="center">
+
+        <form action="./index.php" method="post" name="login" style="height: 100%;">
+
                 <div class="login_wrapper">
                     <div class="LoginInvitLogo">
+
+                        {foreach from=$loginMessages item=message}
+                            <div class="error_msg"><span class='msg'>{$message}</span></div>
+                        {/foreach}
+
                        <img src="img/centreon.png" alt="Centreon Logo" title="Centreon Logo" />
                     </div>
 
@@ -57,7 +58,6 @@
                         </span>
                     </div>
                 </div>
-            </p>
             {$form.hidden}
         </form>
     </body>
