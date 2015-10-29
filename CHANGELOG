@@ -5,7 +5,6 @@
 #3840: Centreon 2.6.4 : Wrong reporting graph data with default user language fr_FR.UTF-8
 #3846: [2.6.5] CRSF Token critical: Impossible to upgrade a plugin
 #3847: [2.6.5] split component switch
-#3851: [2.6.5] split component switch, other problem
 #3852: [2.6.5] CSRF error appears in user massive change form
 #3854: Cannot add new macro after deleting all macros already created
 #3855: Cannot add new host template to host after deleting all templates
