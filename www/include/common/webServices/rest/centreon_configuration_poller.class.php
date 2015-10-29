@@ -31,13 +31,9 @@
  *
  * For more information : command@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
