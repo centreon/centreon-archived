@@ -147,11 +147,6 @@ class CentreonXMLBGRequest {
         $this->XML = new CentreonXML();
 
         /*
-         * Get Centreon Status DB prefix
-         */
-        $this->ndoPrefix = $this->getNDOPrefix();
-
-        /*
          * ACL init
          */
         $this->getUserIdFromSID();
