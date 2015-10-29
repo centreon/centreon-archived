@@ -718,3 +718,7 @@ DELETE FROM topology WHERE topology_page = 50501;
 -- DELETE topology for Process control
 DELETE FROM topology_JS WHERE id_page = 50502;
 DELETE FROM topology WHERE topology_page = 50502;
+
+-- DELETE topology for Tactical overview
+DELETE FROM topology WHERE topology_page = 10101;
+DELETE FROM topology WHERE topology_page = 101;
