@@ -2073,7 +2073,9 @@ class HTML_QuickForm extends HTML_Common
             $error = true;
         } else {
             $error = array('centreon_token' => 'The Token is invalid');
-            echo "<div class='msg' align='center'>"._("The CSRF token is invalid")."</div>";
+            $errorTitle = _("The CSRF * token is invalid, please click");
+            $errorDetails = _("* Cross-Site Request Forgery : unauthorized commands are transmitted");
+            echo "<div class='msg' align='center'>$errorTitle<a href='' OnLoad = windows.location(); alt='reload'> here</a><br><small>$errorDetails</small></div>";
         }
         
         $this->purgeToken();
