@@ -722,3 +722,7 @@ DELETE FROM topology WHERE topology_page = 50502;
 -- DELETE topology for Tactical overview
 DELETE FROM topology WHERE topology_page = 10101;
 DELETE FROM topology WHERE topology_page = 101;
+
+-- DELETE topology for Performance info
+DELETE FROM topology_JS WHERE id_page = 10203;
+DELETE FROM topology WHERE topology_page = 10203;
