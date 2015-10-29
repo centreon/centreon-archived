@@ -3,33 +3,6 @@
     <div id="centreon_logo">
 	    <img src='{$urlLogo}' title='Centreon Logo' id="logo" />
 	</div>
-	<!-- informations bank for ajax -->
-	<form id="AjaxBankBasic" action="#" method="post">
-		<div>
-			<input type="hidden" name="color_OK" value="{$color.OK}"/>
-			<input type="hidden" name="color_CRITICAL" value="{$color.CRITICAL}" />
-			<input type="hidden" name="color_WARNING" value="{$color.WARNING}" />
-			<input type="hidden" name="color_PENDING" value="{$color.PENDING}" />
-			<input type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" />	        
-			<input type="hidden" name="color_UP" value="{$color.UP}"/>
-			<input type="hidden" name="color_DOWN" value="{$color.DOWN}" />
-			<input type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" />
-			<input type="hidden" name="icone_is_flapping" value="./img/icones/16x16/flapping.gif" />
-			<input type="hidden" name="icone_problem_has_been_acknowledged" value="./img/icones/16x16/worker.gif" />
-			<input type="hidden" name="icone_accept_passive_check0" value="./img/icones/14x14/gears_pause.gif" />
-			<input type="hidden" name="icone_accept_passive_check1" value="./img/icones/14x14/gears_stop.gif" />
-			<input type="hidden" name="icone_notifications_enabled" value="./img/icons/notifications_off.png" />
-			<input type="hidden" name="icone_undo" value="./img/icones/14x14/undo.gif" />
-			<input type="hidden" name="icone_graph" value="./img/icons/chart.png"/>
-			<input type="hidden" name="icone_host_has_been_acknowledged" value="./img/icones/16x16/worker.gif"/>
-			<input type="hidden" name="icone_notifications_disabled" value="./img/icons/notifications_off.png" />
-			<input type="hidden" name="icon_downtime" value="./img/icones/14x14/breakpoint.gif" />
-			<input type="hidden" name="icon_comment" value="./img/icones/14x14/about.gif" />
-			<input type="hidden" name="version" value="{$version}"/>
-			<input type="hidden" name="date_time_format_status" value="{$date_time_format_status}"/>			
-		</div>
-	</form>
-
     <!-- stat -->
     	<div id="resume_light">
     		{if $displayTopCounter == 1 || $displayPollerStats == 1}
