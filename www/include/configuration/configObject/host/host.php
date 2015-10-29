@@ -53,7 +53,6 @@ $cG ? $dupNbr = $cG : $dupNbr = $cP;
  * Pear library
  */
 require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
 require_once 'HTML/QuickForm/select2.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
@@ -85,7 +84,7 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
  }
 
 $acl = $oreon->user->access;
-$dbmon = $oreon->broker->getBroker() == 'broker' ? new CentreonDB('centstorage') : new CentreonDB('ndo');
+$dbmon = new CentreonDB('centstorage');
 $aclDbName = $acl->getNameDBAcl($oreon->broker->getBroker());
 $hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker());
 $aclHostString = $acl->getHostsString('ID', $dbmon);

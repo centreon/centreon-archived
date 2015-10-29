@@ -31,48 +31,45 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
  
-	if (!isset ($oreon))
-		exit ();
+if (!isset($centreon)) {
+	exit ();
+}
 
-	isset($_GET["id"]) ? $trapGroupG = $_GET["id"] : $trapGroupG = NULL;
-	isset($_POST["id"]) ? $trapGroupP = $_POST["id"] : $trapGroupP = NULL;
-	$trapGroupG ? $id = $trapGroupG : $id = $trapGroupP;
+isset($_GET["id"]) ? $trapGroupG = $_GET["id"] : $trapGroupG = NULL;
+isset($_POST["id"]) ? $trapGroupP = $_POST["id"] : $trapGroupP = NULL;
+$trapGroupG ? $id = $trapGroupG : $id = $trapGroupP;
 
-	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
-	$cG ? $select = $cG : $select = $cP;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+$cG ? $select = $cG : $select = $cP;
 
-	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
-	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-	#Pear library
-	require_once "HTML/QuickForm.php";
-    require_once 'HTML/QuickForm/select2.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+#Pear library
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/select2.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#Path to the configuration dir
-	$path = "./include/configuration/configObject/traps-groups/";
+#Path to the configuration dir
+$path = "./include/configuration/configObject/traps-groups/";
 
-	#PHP functions
-	require_once $path . "DB-Func.php";
-	require_once "./include/common/common-Func.php";
-	
-	/* Set the real page */
-	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-		$p = $ret['topology_page'];
+#PHP functions
+require_once $path . "DB-Func.php";
+require_once "./include/common/common-Func.php";
 
-	switch ($o)	{
-		case "a" : require_once($path . "formGroups.php"); break; #Add a Trap
-		case "w" : require_once($path . "formGroups.php"); break; #Watch a Trap
-		case "c" : require_once($path . "formGroups.php"); break; #Modify a Trap
-		case "m" : multipleTrapGroupInDB(isset($select) ? $select : array(), $dupNbr); require_once($path . "listGroups.php"); break; #Duplicate n Traps
-		case "d" : deleteTrapGroupInDB(isset($select) ? $select : array()); require_once($path . "listGroups.php"); break; #Delete n Traps
-		default : require_once($path . "listGroups.php"); break;
-	}
-?>
+/* Set the real page */
+if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+	$p = $ret['topology_page'];
+
+switch ($o)	{
+	case "a" : require_once($path . "formGroups.php"); break; #Add a Trap
+	case "w" : require_once($path . "formGroups.php"); break; #Watch a Trap
+	case "c" : require_once($path . "formGroups.php"); break; #Modify a Trap
+	case "m" : multipleTrapGroupInDB(isset($select) ? $select : array(), $dupNbr); require_once($path . "listGroups.php"); break; #Duplicate n Traps
+	case "d" : deleteTrapGroupInDB(isset($select) ? $select : array()); require_once($path . "listGroups.php"); break; #Delete n Traps
+	default : require_once($path . "listGroups.php"); break;
+}

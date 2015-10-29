@@ -31,51 +31,47 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset ($oreon))
-		exit ();
+if (!isset($centreon)) {
+	exit ();
+}
 
-	isset($_GET["tp_id"]) ? $tpG = $_GET["tp_id"] : $tpG = NULL;
-	isset($_POST["tp_id"]) ? $tpP = $_POST["tp_id"] : $tpP = NULL;
-	$tpG ? $tp_id = $tpG : $tp_id = $tpP;
+isset($_GET["tp_id"]) ? $tpG = $_GET["tp_id"] : $tpG = NULL;
+isset($_POST["tp_id"]) ? $tpP = $_POST["tp_id"] : $tpP = NULL;
+$tpG ? $tp_id = $tpG : $tp_id = $tpP;
 
-	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
-	$cG ? $select = $cG : $select = $cP;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+$cG ? $select = $cG : $select = $cP;
 
-	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
-	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-	/*
-	 * Pear library
-	 */
-	require_once 'HTML/QuickForm.php';
-	require_once 'HTML/QuickForm/advmultiselect.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+/*
+ * Pear library
+ */
+require_once 'HTML/QuickForm.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	//Path to the configuration dir
-	$path = "./include/configuration/configObject/timeperiod/";
+//Path to the configuration dir
+$path = "./include/configuration/configObject/timeperiod/";
 
-	//PHP functions
-	require_once $path."DB-Func.php";
-	require_once "./include/common/common-Func.php";
+//PHP functions
+require_once $path."DB-Func.php";
+require_once "./include/common/common-Func.php";
 
-	/* Set the real page */
-	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-		$p = $ret['topology_page'];
+/* Set the real page */
+if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+	$p = $ret['topology_page'];
 
-	switch ($o)	{
-		case "a" : require_once($path."formTimeperiod.php"); break; //Add a Timeperiod
-		case "w" : require_once($path."formTimeperiod.php"); break; //Watch a Timeperiod
-		case "c" : require_once($path."formTimeperiod.php"); break; //Modify a Timeperiod
-		case "s" : require_once($path."renderTimeperiod.php"); break; //Show Timeperiod
-		case "m" : multipleTimeperiodInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listTimeperiod.php"); break; #Duplicate n Timeperiods
-		case "d" : deleteTimeperiodInDB(isset($select) ? $select : array()); require_once($path."listTimeperiod.php"); break; #Delete n Timeperiods
-		default : require_once($path."listTimeperiod.php"); break;
-	}
-?>
+switch ($o)	{
+	case "a" : require_once($path."formTimeperiod.php"); break; //Add a Timeperiod
+	case "w" : require_once($path."formTimeperiod.php"); break; //Watch a Timeperiod
+	case "c" : require_once($path."formTimeperiod.php"); break; //Modify a Timeperiod
+	case "s" : require_once($path."renderTimeperiod.php"); break; //Show Timeperiod
+	case "m" : multipleTimeperiodInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listTimeperiod.php"); break; #Duplicate n Timeperiods
+	case "d" : deleteTimeperiodInDB(isset($select) ? $select : array()); require_once($path."listTimeperiod.php"); break; #Delete n Timeperiods
+	default : require_once($path."listTimeperiod.php"); break;
+}
