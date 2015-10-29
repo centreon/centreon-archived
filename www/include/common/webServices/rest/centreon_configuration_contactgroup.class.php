@@ -31,13 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-
-require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonContactgroup.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonLDAP.class.php";

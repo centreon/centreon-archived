@@ -31,13 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-
-require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
@@ -116,10 +111,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
             $aclServices .= ' AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
         }
         
-        
-        
-        
-                /* Get ACL if user is not admin */
+        /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             
@@ -142,7 +134,4 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         
         return $serviceList;
     }
-    
-    
-    
 }

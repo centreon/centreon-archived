@@ -115,7 +115,6 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
  * Add QuickSearch ToolBar
  */
 $FlagSearchService = 1;
-//include_once("./include/common/quickSearch.php");
 
 /*
  * Path to the configuration dir

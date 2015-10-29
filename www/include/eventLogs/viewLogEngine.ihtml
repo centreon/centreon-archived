@@ -1,9 +1,6 @@
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <div id="div1">
-
-
 <table class="ajaxOption table">
-
     <tr>
         <th><h5>{t}Filters{/t}</h5>
     </tr>
@@ -18,7 +15,6 @@
     <tr>
         <td class="divider" colspan="3"><hr></td>
     </tr>
-
     <form {$form.attributes}>
         <tr>
             <td><h4>{$form.period.label}</h4></td>
