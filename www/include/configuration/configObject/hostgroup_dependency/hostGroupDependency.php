@@ -72,9 +72,9 @@ require_once "./include/common/common-Func.php";
 if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
 	$p = $ret['topology_page'];
 
-    $acl = $oreon->user->access;
-    $hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker());
-    $hgstring = CentreonUtils::toStringWithQuotes($hgs);
+$acl = $oreon->user->access;
+$hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker());
+$hgstring = CentreonUtils::toStringWithQuotes($hgs);
     
 switch ($o)	{
 	case "a" : require_once($path."formHostGroupDependency.php"); break; #Add a Dependency
