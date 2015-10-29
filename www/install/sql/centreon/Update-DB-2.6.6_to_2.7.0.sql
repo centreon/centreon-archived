@@ -699,6 +699,7 @@ insert into topology_JS (id_page, PathName_js, Init) VALUES ('20203', './include
 DELETE FROM topology WHERE topology_parent = '20203';
 
 -- Move temporary comments
+update topology set topology_url = './include/monitoring/downtime/downtime.php' WHERE topology_page = 21001;
 update topology set topology_page = '21002', topology_name = 'Host comments', topology_parent = '210', topology_group = '30' WHERE topology_page = '20107';
 update topology set topology_page = '21003', topology_name = 'Service comments', topology_parent = '210', topology_group = '40' WHERE topology_page = '20219';
 
