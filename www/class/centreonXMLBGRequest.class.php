@@ -32,9 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /*
@@ -54,7 +51,6 @@ class CentreonXMLBGRequest {
 
     var $DB;
     var $DBC;
-    var $DBNdo;
     var $XML;
     var $GMT;
     var $hostObj;
@@ -67,7 +63,6 @@ class CentreonXMLBGRequest {
     /*
      * Variables
      */
-    var $ndoPrefix;
     var $buffer;
     var $debug;
     var $compress;
@@ -134,14 +129,6 @@ class CentreonXMLBGRequest {
          */
         $this->hostObj = new CentreonHost($this->DB);
         $this->serviceObj = new CentreonService($this->DB);
-        $this->broker = new CentreonBroker($this->DB);
-
-        /*
-         * Connect NDO
-         */
-        if ($dbNeeds && $this->broker->getBroker() == "ndo") {
-            $this->DBNdo = new CentreonDB("ndo");
-        }
 
         /*
          * Init Object Monitoring
@@ -254,18 +241,6 @@ class CentreonXMLBGRequest {
     }
 
     /*
-     * Init NDO prefix
-     */
-
-    protected function getNDOPrefix() {
-        $DBRESULT = $this->DB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
-        $conf_ndo = $DBRESULT->fetchRow();
-        $DBRESULT->free();
-        unset($DBRESULT);
-        return $conf_ndo["db_prefix"];
-    }
-
-    /*
      * Send headers information for web server
      */
 
@@ -337,5 +312,3 @@ class CentreonXMLBGRequest {
     }
 
 }
-
-?>
