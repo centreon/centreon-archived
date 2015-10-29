@@ -141,9 +141,9 @@ unset($ndo);
  *  Get Real non-ok Status
  */
 if (!$obj->is_admin) {
-    $rq3 =  "SELECT COUNT(DISTINCT CONCAT(s.service_id,';', s.host_id)) as number, s.state_type, s.acknowledged, s.scheduled_downtime_depth, s.state " .
-	    	"FROM services s, `hosts` h, centreon_acl " .
-			"WHERE s.host_id IS NOT NULL " .
+    $rq3 =  " SELECT COUNT(DISTINCT CONCAT(s.service_id,';', s.host_id)) as number, s.state_type, s.acknowledged, s.scheduled_downtime_depth, s.state " .
+	    	" FROM services s, `hosts` h, centreon_acl " .
+			" WHERE s.host_id IS NOT NULL " .
 			" 	AND s.host_id = h.host_id " .
 			"	AND s.scheduled_downtime_depth = '0' " .
 			"	AND s.acknowledged = '0' " .
@@ -156,9 +156,9 @@ if (!$obj->is_admin) {
 			"	AND h.state = '0' " .
 			" GROUP BY s.state, s.acknowledged, s.scheduled_downtime_depth";
 } else {
-    $rq3 =  "SELECT COUNT(DISTINCT CONCAT(s.service_id,';', s.host_id)) as number, s.state_type, s.acknowledged, s.scheduled_downtime_depth, s.state " .
-	    	"FROM services s, `hosts` h " .
-			"WHERE s.host_id IS NOT NULL " .
+    $rq3 =  " SELECT COUNT(DISTINCT CONCAT(s.service_id,';', s.host_id)) as number, s.state_type, s.acknowledged, s.scheduled_downtime_depth, s.state " .
+	    	" FROM services s, `hosts` h " .
+			" WHERE s.host_id IS NOT NULL " .
     		" 	AND s.host_id = h.host_id " .
 			"	AND s.scheduled_downtime_depth = '0' " .
 			"	AND s.acknowledged = '0' " .
@@ -230,13 +230,13 @@ if ($pollerList != "") {
 
 	$error = "Pollers $pollerListInError not running.";
 
-	$request = 	"SELECT stat_value, i.instance_id, name " .
-					"FROM `nagios_stats` ns, instances i " .
-					"WHERE ns.stat_label = 'Service Check Latency' " .
-					"	AND ns.stat_key LIKE 'Average' " .
-					"	AND ns.instance_id = i.instance_id" .
-					"	AND i.deleted = 0" .
-                    "   AND i.name IN ($pollerList)";
+	$request = 	" SELECT stat_value, i.instance_id, name " .
+				" FROM `nagios_stats` ns, instances i " .
+				" WHERE ns.stat_label = 'Service Check Latency' " .
+				"	AND ns.stat_key LIKE 'Average' " .
+				"	AND ns.instance_id = i.instance_id" .
+				"	AND i.deleted = 0" .
+                "   AND i.name IN ($pollerList)";
 	$DBRESULT = $obj->DBC->query($request);
 	while ($ndo = $DBRESULT->fetchRow()) {
 		if (!$latency && $ndo["stat_value"] >= 60) {

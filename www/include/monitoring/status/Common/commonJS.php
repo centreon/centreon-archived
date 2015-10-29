@@ -769,131 +769,131 @@ function set_page(page)	{
 // Popin images
 
 var func_displayIMG = function(event) {
-        var NewImage = new Image(),
-            self = event.currentTarget;
+    var NewImage = new Image(),
+        self = event.currentTarget;
 
-        jQuery('.img_volante').html('<img class="mimgload" src="img/misc/ajax-loader.gif" />');
-        jQuery('.img_volante').css('left', event.pageX + 20);
-        jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
-        jQuery('.img_volante').show();
+    jQuery('.img_volante').html('<img class="mimgload" src="img/misc/ajax-loader.gif" />');
+    jQuery('.img_volante').css('left', event.pageX + 20);
+    jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+    jQuery('.img_volante').show();
 
-        var elements = $(self).id.split('-');
-        var NewImageAlt = 'graph popup' + '&index=' + elements[0] + '&time=<?php print time(); ?>';
-        jQuery('.img_volante').append('<img style="display: none" src="' + 'include/views/graphs/generateGraphs/generateImage.php?index='+ elements[0] + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
-        NewImage.onload = function(){
-                jQuery('.img_volante .mimgload').remove();
-                <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-                jQuery('.img_volante').stop(true, true).animate({width: self.width, height: self.height, top: (jQuery(window).height() / 2) - (self.height / 2)}, 25);
-                jQuery('.img_volante img').stop(true, true).fadeIn(1000);
-                <?php } else { ?>
-                jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
-                jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (self.height / 2));
-                jQuery('.img_volante img').show();
-                <?php } ?>
-        };
-        NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?index='+ elements[0];
-        if (NewImage.complete) {
-                jQuery('.img_volante .mimgload').remove();
-                <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-                jQuery('.img_volante').stop(true, true).animate({width: NewImage.width, height: NewImage.height, top: (jQuery(window).height() / 2) - (NewImage.height / 2)}, 25);
-                jQuery('.img_volante img').stop(true, true).fadeIn(1000);
-                <?php } else { ?>
-                jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
-                jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (NewImage.height / 2));
-                jQuery('.img_volante img').show();
-                <?php } ?>
-        }
+    var elements = $(self).id.split('-');
+    var NewImageAlt = 'graph popup' + '&index=' + elements[0] + '&time=<?php print time(); ?>';
+    jQuery('.img_volante').append('<img style="display: none" src="' + 'include/views/graphs/generateGraphs/generateImage.php?index='+ elements[0] + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
+    NewImage.onload = function(){
+            jQuery('.img_volante .mimgload').remove();
+            <?php   if ($centreon->user->get_js_effects() > 0) { ?>
+            jQuery('.img_volante').stop(true, true).animate({width: self.width, height: self.height, top: (jQuery(window).height() / 2) - (self.height / 2)}, 25);
+            jQuery('.img_volante img').stop(true, true).fadeIn(1000);
+            <?php } else { ?>
+            jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
+            jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (self.height / 2));
+            jQuery('.img_volante img').show();
+            <?php } ?>
+    };
+    NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?index='+ elements[0];
+    if (NewImage.complete) {
+            jQuery('.img_volante .mimgload').remove();
+            <?php   if ($centreon->user->get_js_effects() > 0) { ?>
+            jQuery('.img_volante').stop(true, true).animate({width: NewImage.width, height: NewImage.height, top: (jQuery(window).height() / 2) - (NewImage.height / 2)}, 25);
+            jQuery('.img_volante img').stop(true, true).fadeIn(1000);
+            <?php } else { ?>
+            jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
+            jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (NewImage.height / 2));
+            jQuery('.img_volante img').show();
+            <?php } ?>
+    }
 };
 
 var func_hideIMG = function(event) {
-        jQuery('.img_volante').hide();
-        jQuery('.img_volante').empty();
-        jQuery('.img_volante').css('width', 'auto');
-        jQuery('.img_volante').css('height', 'auto');
+    jQuery('.img_volante').hide();
+    jQuery('.img_volante').empty();
+    jQuery('.img_volante').css('width', 'auto');
+    jQuery('.img_volante').css('height', 'auto');
 };
 
 // Poppin Function
 var popup_counter = {};
 
 var func_popupXsltCallback = function(trans_obj) {
-        var target_element = trans_obj.getTargetElement();
-        if (popup_counter[target_element] == 0) {
-                return ;
-        }
+    var target_element = trans_obj.getTargetElement();
+    if (popup_counter[target_element] == 0) {
+            return ;
+    }
 
-        jQuery('.popup_volante .container-load').empty();
+    jQuery('.popup_volante .container-load').empty();
 <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-        jQuery('.popup_volante').stop(true, true).animate({width: jQuery('#' + target_element).width(), height: jQuery('#' + target_element).height(),
-                             top: (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2)}, 25);
-        jQuery('#' + target_element).stop(true, true).fadeIn(1000);
+    jQuery('.popup_volante').stop(true, true).animate({width: jQuery('#' + target_element).width(), height: jQuery('#' + target_element).height(),
+                         top: (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2)}, 25);
+    jQuery('#' + target_element).stop(true, true).fadeIn(1000);
 <?php } else { ?>
-        jQuery('.popup_volante').css('left', jQuery('#' + target_element).attr('left'));
-        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2));
-        jQuery('#' + target_element).show();
+    jQuery('.popup_volante').css('left', jQuery('#' + target_element).attr('left'));
+    jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2));
+    jQuery('#' + target_element).show();
 <?php } ?>
 };
 
 var func_displayPOPUP = function(event) {
-        var self = event.currentTarget,
-            position = jQuery('#' + $(self).id).offset();
+    var self = event.currentTarget,
+        position = jQuery('#' + $(self).id).offset();
 
-        if (jQuery('#popup-container-display-' + $(self).id).length == 0) {
-                popup_counter['popup-container-display-' + $(self).id] = 1;
-                jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).id + '" style="display: none"></div>');
-        } else {
-                popup_counter['popup-container-display-' + $(self).id] += 1;
-        }
-        jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).id).width() + 10);
-        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
-        jQuery('.popup_volante').show();
+    if (jQuery('#popup-container-display-' + $(self).id).length == 0) {
+            popup_counter['popup-container-display-' + $(self).id] = 1;
+            jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).id + '" style="display: none"></div>');
+    } else {
+            popup_counter['popup-container-display-' + $(self).id] += 1;
+    }
+    jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
+    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).id).width() + 10);
+    jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+    jQuery('.popup_volante').show();
 
-        var elements = $(self).id.split('-');
-        var proc_popup = new Transformation();
-        proc_popup.setCallback(func_popupXsltCallback);
-        if (elements[0] == "host") {
-                proc_popup.setXml(_addrXMLSpanHost+"?"+'&sid='+_sid+'&host_id=' + elements[1]);
-                proc_popup.setXslt(_addrXSLSpanhost);
-        } else {
-                proc_popup.setXml(_addrXMLSpanSvc+"?"+'&sid='+_sid+'&svc_id=' + elements[1] + '_' + elements[2]);
-                proc_popup.setXslt(_addrXSLSpanSvc);
-        }
-        proc_popup.transform('popup-container-display-' + $(self).id);
+    var elements = $(self).id.split('-');
+    var proc_popup = new Transformation();
+    proc_popup.setCallback(func_popupXsltCallback);
+    if (elements[0] == "host") {
+            proc_popup.setXml(_addrXMLSpanHost+"?"+'&sid='+_sid+'&host_id=' + elements[1]);
+            proc_popup.setXslt(_addrXSLSpanhost);
+    } else {
+            proc_popup.setXml(_addrXMLSpanSvc+"?"+'&sid='+_sid+'&svc_id=' + elements[1] + '_' + elements[2]);
+            proc_popup.setXslt(_addrXSLSpanSvc);
+    }
+    proc_popup.transform('popup-container-display-' + $(self).id);
 };
 
 var func_hidePOPUP = function(event) {
-        var self = event.currentTarget;
-        popup_counter['popup-container-display-' + $(self).id] -= 1;
-        jQuery('.popup_volante .container-load').empty();
-        jQuery('#popup-container-display-' + $(self).id).hide();
-        jQuery('.popup_volante').hide();
-        jQuery('.popup_volante').css('width', 'auto');
-        jQuery('.popup_volante').css('height', 'auto');
+    var self = event.currentTarget;
+    popup_counter['popup-container-display-' + $(self).id] -= 1;
+    jQuery('.popup_volante .container-load').empty();
+    jQuery('#popup-container-display-' + $(self).id).hide();
+    jQuery('.popup_volante').hide();
+    jQuery('.popup_volante').css('width', 'auto');
+    jQuery('.popup_volante').css('height', 'auto');
 };
 
 /* Use 'id' attribute to get element */
 /* Use 'name' attribute to get xml/xsl infos */
 var func_displayGenericInfo = function(event) {
-        var self = event.currentTarget,
-            position = jQuery('#' + $(self).id).offset();
+    var self = event.currentTarget,
+        position = jQuery('#' + $(self).id).offset();
 
-        if (jQuery('#popup-container-display-' + $(self).id).length == 0) {
-                popup_counter['popup-container-display-' + $(self).id] = 1;
-                jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).id + '" style="display: none"></div>');
-        } else {
-                popup_counter['popup-container-display-' + $(self).id] += 1;
-        }
-        jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).id).width() + 10);
-        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
-        jQuery('.popup_volante').show();
+    if (jQuery('#popup-container-display-' + $(self).id).length == 0) {
+            popup_counter['popup-container-display-' + $(self).id] = 1;
+            jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).id + '" style="display: none"></div>');
+    } else {
+            popup_counter['popup-container-display-' + $(self).id] += 1;
+    }
+    jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
+    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).id).width() + 10);
+    jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+    jQuery('.popup_volante').show();
 
-        var elements = $(self).name.split('|');
-        var proc_popup = new Transformation();
-        proc_popup.setCallback(func_popupXsltCallback);
-        proc_popup.setXml(elements[0]);
-        proc_popup.setXslt(elements[1]);
-        proc_popup.transform('popup-container-display-' + $(self).id);
+    var elements = $(self).name.split('|');
+    var proc_popup = new Transformation();
+    proc_popup.setCallback(func_popupXsltCallback);
+    proc_popup.setXml(elements[0]);
+    proc_popup.setXslt(elements[1]);
+    proc_popup.transform('popup-container-display-' + $(self).id);
 };
 
 // Monitoring Refresh management Options
