@@ -1315,18 +1315,7 @@ class CentreonACL {
             return $dbname;
         }
 
-        if (strtolower($broker) == 'broker') {
-            $dbname = $conf_centreon["dbcstg"];
-        } else {
-            $res = $pearDB->query("SELECT db_name FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
-            if (PEAR::isError($res) || !$res->numRows()) { // no broker dbname
-                $dbname = null;
-            } else {
-                $row = $res->fetchRow();
-                $dbname = $row['db_name'];
-            }
-        }
-        return $dbname;
+        return $conf_centreon["dbcstg"];
     }
 
     /**
