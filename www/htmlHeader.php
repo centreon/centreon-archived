@@ -94,12 +94,12 @@ foreach ($oreon->modules as $module_name => $infos) {
 if ($centreon->user->access->admin == 0) {
     $tabActionACL = $centreon->user->access->getActions();
     if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
-        print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js.php\"></script>\n";
+        print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
     }
     unset($tabActionACL);
 } else {
     if ($min != 1) {
-        print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js.php\"></script>\n";
+        print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
     }
 }
 
