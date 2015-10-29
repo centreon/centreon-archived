@@ -1308,13 +1308,8 @@ class CentreonACL {
      * @return string
      */
     public function getNameDBAcl($broker = null) {
-        global $pearDB, $conf_centreon;
-        static $dbname = "";
-
-        if ($dbname != "") {
-            return $dbname;
-        }
-
+        global $conf_centreon;
+        
         return $conf_centreon["dbcstg"];
     }
 
