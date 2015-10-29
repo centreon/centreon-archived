@@ -185,7 +185,7 @@
 								<tr>
 									<td class="ColPopup">
 										{if $lcaTopo.201 || $admin == 1}
-											<a href='./main.php?p=201&o=hd&host_name={$h.host_name}'>{$lnk_host_status}</a>
+											<a href='./main.php?p=20202&o=hd&host_name={$h.host_name}'>{$lnk_host_status}</a>
 										{/if}
 									</td>
 									<td></td>
