@@ -523,7 +523,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
 
         if (isset($tabCommentHosts)) {
-            $tpl->assign("tab_comments_host", CentreonUtils::escapeSecure($tabCommentHosts));
+            $tpl->assign("tab_comments_host", array_map(array("CentreonUtils","escapeSecure"),$tabCommentHosts));
         }
         $tpl->assign("host_data", $host_status[$host_name]);
 
