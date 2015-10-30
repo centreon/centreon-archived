@@ -586,7 +586,6 @@ class CentreonACL {
                     $hostgroups[] = "'" . $key . "'";
                     break;
             }
-            $i++;
         }
 
         $result = "''";
@@ -773,31 +772,37 @@ class CentreonACL {
     public function getHostsString($flag = null, $pearDBndo, $escape = true) {
         $this->checkUpdateACL();
 
+        $groupIds = array_keys($this->accessGroups);
+        if (!count($groupIds)) {
+            return "''";
+        }
+
         $flag = strtoupper($flag);
+        switch ($flag) {
+            case "NAME" :
+                $query = "SELECT DISTINCT h.host_id, h.name "
+                    . "FROM centreon_acl ca, hosts h "
+                    . "WHERE ca.host_id = h.host_id "
+                    . "AND group_id IN (" . implode(',', $groupIds) . ") "
+                    . "GROUP BY h.name, h.host_id "
+                    . "ORDER BY h.name ASC ";
+                $fieldName = 'name';
+                break;
+            default :
+                $query = "SELECT DISTINCT host_id "
+                    . "FROM centreon_acl "
+                    . "WHERE group_id IN (" . implode(',', $groupIds) . ") ";
+                $fieldName = 'host_id';
+                break;
+        }
 
         $hosts = array();
-        $groupIds = array_keys($this->accessGroups);
-        if (count($groupIds)) {
-            $query = "SELECT DISTINCT h.host_id, h.name "
-                . "FROM centreon_acl ca, hosts h "
-                . "WHERE ca.host_id = h.host_id "
-                . "AND group_id IN (" . implode(',', $groupIds) . ") "
-                . "GROUP BY h.name, h.host_id "
-                . "ORDER BY h.name ASC ";
-            $DBRES = $pearDBndo->query($query);
-            while ($row = $DBRES->fetchRow()) {
-                switch ($flag) {
-                    case "NAME" :
-                        if ($escape === true) {
-                            $hosts[] = "'" . CentreonDB::escape($row['name']) . "'";
-                        } else {
-                            $hosts[] = "'" . $row['name'] . "'";
-                        }
-                        break;
-                    default :
-                        $hosts[] = "'" . $row['host_id'] . "'";
-                        break;
-                }
+        $DBRES = $pearDBndo->query($query);
+        while ($row = $DBRES->fetchRow()) {
+            if ($escape === true) {
+                $hosts[] = "'" . CentreonDB::escape($row[$fieldName]) . "'";
+            } else {
+                $hosts[] = "'" . $row[$fieldName] . "'";
             }
         }
 
@@ -818,35 +823,41 @@ class CentreonACL {
     public function getServicesString($flag = null, $pearDBndo, $escape = true) {
         $this->checkUpdateACL();
 
+        $groupIds = array_keys($this->accessGroups);
+        if (!count($groupIds)) {
+            return "''";
+        }
+
         $flag = strtoupper($flag);
+        switch ($flag) {
+            case "NAME" :
+                $query = "SELECT DISTINCT s.service_id, s.description "
+                    . "FROM centreon_acl ca, services s "
+                    . "WHERE ca.service_id = s.service_id "
+                    . "AND group_id IN (" . implode(',', $groupIds) . ") ";
+                $fieldName = 'description';
+                break;
+            default :
+                $query = "SELECT DISTINCT service_id "
+                    . "FROM centreon_acl "
+                    . "WHERE group_id IN (" . implode(',', $groupIds) . ") ";
+                $fieldName = 'service_id';
+                break;
+        }
 
         $services = array();
 
-        $groupIds = array_keys($this->accessGroups);
-        if (count($groupIds)) {
-            $query = "SELECT DISTINCT s.service_id, s.description "
-                . "FROM centreon_acl ca, services s "
-                . "WHERE ca.service_id = s.service_id "
-                . "AND group_id IN (" . implode(',', $groupIds) . ") ";
-            $DBRES = $pearDBndo->query($query);
-            $items = array();
-            while ($row = $DBRES->fetchRow()) {
-                switch ($flag) {
-                    case "NAME" :
-                        if (isset($items[$row['description']])) {
-                            continue;
-                        }
-                        $items[$row['description']] = true;
-                        if ($escape === true) {
-                            $services[] = "'" . CentreonDB::escape($row['description']) . "'";
-                        } else {
-                            $services[] = "'" . $row['description'] . "'";
-                        }
-                        break;
-                    default :
-                        $services[] = "'" . $row['service_id'] . "'";
-                        break;
-                }
+        $DBRES = $pearDBndo->query($query);
+        $items = array();
+        while ($row = $DBRES->fetchRow()) {
+            if (isset($items[$row[$fieldName]])) {
+                continue;
+            }
+            $items[$row[$fieldName]] = true;
+            if ($escape === true) {
+                $services[] = "'" . CentreonDB::escape($row[$fieldName]) . "'";
+            } else {
+                $services[] = "'" . $row[$fieldName] . "'";
             }
         }
 
