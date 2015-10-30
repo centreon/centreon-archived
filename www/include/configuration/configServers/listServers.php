@@ -59,7 +59,7 @@
     $search = '';
 	if (isset($_POST['searchP']) && $_POST['searchP']) {
       $search = $_POST['searchP'];
-	  $LCASearch = " WHERE name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
+	  $LCASearch = " AND name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
 	}
 
 	/*
@@ -77,22 +77,12 @@
 	/*
 	 * Get information info RTM
 	 */
-	if ($centreon->broker->getBroker() == "broker") {
-		$nagiosInfo = array();
-		$DBRESULT = $pearDBO->query("SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, name AS instance_name , last_alive FROM instances WHERE deleted = 0");
-		while ($info = $DBRESULT->fetchRow()) {
-			$nagiosInfo[$info["instance_name"]] = $info;
-		}
-		$DBRESULT->free();
-	} else {
-		$ndoPrefix = getNDOPrefix();
-		$nagiosInfo = array();
-		$DBRESULT = $pearDBNdo->query("SELECT UNIX_TIMESTAMP(program_start_time) as program_start_time, is_currently_running, process_id, p.instance_id, instance_name, UNIX_TIMESTAMP(status_update_time) AS last_alive FROM `".$ndoPrefix."programstatus` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id");
-		while ($info = $DBRESULT->fetchRow()) {
-			$nagiosInfo[$info["instance_name"]] = $info;
-		}
-		$DBRESULT->free();
-	}
+    $nagiosInfo = array();
+    $DBRESULT = $pearDBO->query("SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, name AS instance_name , last_alive FROM instances WHERE deleted = 0");
+    while ($info = $DBRESULT->fetchRow()) {
+        $nagiosInfo[$info["instance_name"]] = $info;
+    }
+    $DBRESULT->free();
 
 	/*
 	 * Get Nagios / Icinga / Shinken / Scheduler version
@@ -101,19 +91,11 @@
 	if ($pollerNumber == 0) {
 		$pollerNumber = 1;
 	}
-	if ($centreon->broker->getBroker() == "broker") {
-		$DBRESULT = $pearDBO->query("SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances WHERE deleted = 0 LIMIT $pollerNumber");
-		while ($info = $DBRESULT->fetchRow()) {
-			$nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
-		}
-		$DBRESULT->free();
-	} else {
-		$DBRESULT = $pearDBNdo->query("SELECT DISTINCT p.instance_id, program_version, program_name, instance_name FROM `".$ndoPrefix."processevents` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id ORDER BY processevent_id DESC LIMIT $pollerNumber");
-		while ($info = $DBRESULT->fetchRow()) {
-			$nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
-		}
-		$DBRESULT->free();
-	}
+    $DBRESULT = $pearDBO->query("SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances WHERE deleted = 0 LIMIT $pollerNumber");
+    while ($info = $DBRESULT->fetchRow()) {
+        $nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
+    }
+    $DBRESULT->free();
 
 	/*
 	 * Smarty template Init
@@ -145,9 +127,9 @@
 	/*
 	 * Nagios list
 	 */
-	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default
-           FROM `nagios_server` $LCASearch ".
-           $oreon->user->access->queryBuilder($LCASearch ? 'AND' : 'WHERE', 'id', $pollerstring).
+	$rq = "SELECT SQL_CALC_FOUND_ROWS ns.id, ns.name, ns.ns_activate, ns.ns_ip_address, ns.localhost, ns.is_default, n.nagios_id
+           FROM `nagios_server` ns, cfg_nagios n WHERE ns.id = n.nagios_server_id AND n.nagios_activate = '1' $LCASearch ".
+           $oreon->user->access->queryBuilder('AND', 'id', $pollerstring).
            " ORDER BY name
            LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
@@ -215,6 +197,7 @@
 				     "RowMenu_pid" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["process_id"] : "-",
 				     "RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
 				     "RowMenu_statusVal" => $config["ns_activate"],
+                     "RowMenu_cfg_id" => $config['nagios_id'],
 				     "RowMenu_options" => $moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}

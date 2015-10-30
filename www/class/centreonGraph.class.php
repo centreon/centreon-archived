@@ -192,8 +192,7 @@ class CentreonGraph {
         $this->onecurve = false;
         $this->checkcurve = false;
 
-        $DBRESULT = $this->DBC->query("SELECT RRDdatabase_path, RRDdatabase_status_path 
-                                        FROM config LIMIT 1");
+        $DBRESULT = $this->DBC->query("SELECT RRDdatabase_path, RRDdatabase_status_path FROM config LIMIT 1");
         $config = $DBRESULT->fetchRow();
         $this->dbPath = $config["RRDdatabase_path"];
         $this->dbStatusPath = $config['RRDdatabase_status_path'];

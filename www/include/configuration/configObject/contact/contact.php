@@ -32,13 +32,10 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
-    exit();
+if (!isset($centreon)) {
+    exit ();        
 }
 
 isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = NULL;
@@ -58,7 +55,6 @@ $cG ? $dupNbr = $cG : $dupNbr = $cP;
  */
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/select2.php';
-require_once 'HTML/QuickForm/advmultiselect.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 /*
@@ -114,4 +110,3 @@ switch ($o) {
     default : require_once($path . "listContact.php");
         break;
 }
-?>
