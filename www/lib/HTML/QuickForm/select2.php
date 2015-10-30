@@ -258,7 +258,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             . '%%DEFAULT_SELECTED_VALUES%%'
             . '</select>';
         if(!$this->_allowClear){
-            $strHtml .= '<span style="cursor:pointer;" class="clearAllSelect2">x</span>';
+            $strHtml .= '<span style="cursor:pointer;" class="clearAllSelect2" title="Clear field" ><img src="./img/icons/circle-cross.png" class="ico-14" /></span>';
         }
         
         $strHtml .= $this->getJsInit();
