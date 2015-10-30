@@ -45,6 +45,7 @@
 			<td class="ListColHeaderCenter">{$headerMenu_version}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_default}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
+            <td class="ListColHeaderCenter">{t}Actions{/t}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
 		{section name=elem loop=$elemArr}
@@ -53,14 +54,32 @@
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
 			<td class="ListColCenter"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_ip_address}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_localisation}</td>
-			<td class="ListColCenter"{if $elemArr[elem].RowMenu_statusVal} style='background-color:#{if $elemArr[elem].RowMenu_is_runningFlag}00FF00;{else}FF0000{/if}'{/if}>{$elemArr[elem].RowMenu_is_running}</td>
-			<td class="ListColCenter"{if $elemArr[elem].RowMenu_statusVal} style='background-color:#{if $elemArr[elem].RowMenu_hasChangedFlag}F7D507;{else}00FF00{/if}'{/if}>{$elemArr[elem].RowMenu_hasChanged}</td>
+			<td class="ListColCenter">
+              <span class="badge {if $elemArr[elem].RowMenu_is_runningFlag}service_ok{else}service_critical{/if}">
+                {$elemArr[elem].RowMenu_is_running}
+              </span>
+            </td>
+			<td class="ListColCenter" class="{if $elemArr[elem].RowMenu_hasChangedFlag}{else}service_critical{/if}">
+              {$elemArr[elem].RowMenu_hasChanged}
+            </td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_pid}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_startTime}</td>
 			<td class="ListColCenter"{if $elemArr[elem].RowMenu_statusVal == 1} style='background-color:#{if $elemArr[elem].RowMenu_lastUpdateTimeFlag}F7D507;{/if}'{/if}>{$elemArr[elem].RowMenu_lastUpdateTime}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_version}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
+            <td class="ListColCenter">
+              {if $mode_access == 'w' }
+              <!-- Link for generate poller configuration -->
+              <a href="./main.php?p=60902&poller={$elemArr[elem].RowMenu_name}">
+                <img src="./img/icones/16x16/gear_run.gif" title="Generate configuration">
+              </a>
+              <!-- Link for edit poller monitoring engine configuration -->
+              <a href="./main.php?p=60903&o=c&nagios_id={$elemArr[elem].RowMenu_cfg_id}">
+                <img src="./img/icones/16x16/document_edit.gif" title="Edit monitoring engine configuration">
+              </a>
+              {/if}
+            </td>
 			<td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
 		{/section}

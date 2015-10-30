@@ -45,26 +45,12 @@ $tab_nagios_server = $acl->getPollerAclConf(array('get_row'    => 'name',
                                                   'order'      => array('name'),
                                                   'keys'       => array('id'),
                                                   'conditions' => array('ns_activate' => 1)));
-$n = count($tab_nagios_server);
-$newTabNagiosServer = array();
-
-/*
- * Display null option
- */
-if ($n > 1) {
-    $newTabNagiosServer[-1] = "";
-}
-
-/*
- * Display all server options
- */
-if ($n > 1) {
-    $newTabNagiosServer[0] = _("All Pollers");
-}
-
 /* Sort the list of poller server */
+$pollerId = null;
 foreach ($tab_nagios_server as $key => $name) {
-    $newTabNagiosServer[$key] = $name;
+    if ($name == $_GET['poller']) {
+        $pollerId = $key;
+    }
 }
 
 /*
@@ -77,8 +63,6 @@ $form->addElement('header', 'title', _("Configuration Files Export"));
 $form->addElement('header', 'infos', _("Implied Server"));
 $form->addElement('header', 'opt', _("Export Options"));
 $form->addElement('header', 'result', _("Actions"));
-
-$form->addElement('select', 'host', _("Poller"), $newTabNagiosServer, array("id" => "nhost", "style" => "width: 220px;"));
 
 $form->addElement('checkbox', 'comment', _("Include Comments"), null, array('id' => 'ncomment'));
 
@@ -130,6 +114,9 @@ $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
+$tpl->assign('pollerName', $name);
+$tpl->assign('pollerId', $pollerId);
+$tpl->assign('pollerListMsg', _('The list of pollers is <a href="./main.php?p=60901">here</a>.'));
 $tpl->display("formGenerateFiles.ihtml");
 ?>
 <script type='text/javascript'>

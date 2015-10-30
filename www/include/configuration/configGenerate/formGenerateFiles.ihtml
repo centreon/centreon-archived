@@ -1,4 +1,5 @@
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/scriptaculous/themes/test/theme.css" />
+{if isset($pollerId)}
 {$form.javascript}
 <form {$form.attributes}>
 	 <input type="hidden" name="level" value="1"> 
@@ -13,7 +14,13 @@
             <h4>{$form.header.infos}</h4>
           </td>
         </tr>	 	
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host">&nbsp;{$form.host.label}</td><td class="FormRowValue">{$form.host.html}</td></tr>
+		<tr class="list_one">
+          <td class="FormRowField"><img class="helpTooltip" name="host">&nbsp;{t}Poller{/t}</td>
+          <td class="FormRowValue">
+            {$pollerName}
+            <input type="hidden" name="host" value="{$pollerId}">
+          </td>
+        </tr>
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$form.header.result}</h4>
@@ -98,3 +105,12 @@
 	{$form.hidden}
 </form>
 {$helptext}
+{else}
+<span id="progress_bar" style="display: none;">0%</span>
+<div class="info_box">
+  <h4>
+    <p>{t}You must set a poller for generate configuration.{/t}</p>
+    <p>{$pollerListMsg}</p>
+  </h4>
+</div>
+{/if}
