@@ -110,7 +110,7 @@ if (is_null($session)) {
     exit();
 }
 $access = new CentreonAcl($session["user_id"], $is_admin);
-$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
+$lca = array("LcaHost" => $access->getHostsServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 
 $hoststr = $access->getHostsString("ID", $pearDBndo);
 $servicestr = $access->getServicesString("ID", $pearDBndo);

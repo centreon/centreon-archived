@@ -811,7 +811,6 @@ class CentreonACL {
      *  - ID => will return the id's of the element
      *  - NAME => will return the names of the element
      */
-
     public function getHostsString($flag = null, $pearDBndo, $escape = true) {
         $this->checkUpdateACL();
 
@@ -819,41 +818,40 @@ class CentreonACL {
             $flag = "ID";
         }
         $flag = strtoupper($flag);
-        $string = "";
         $i = 0;
+        $hosts = array();
         $groupIds = array_keys($this->accessGroups);
         if (count($groupIds)) {
-            $query = "SELECT DISTINCT host_name, host_id
-                FROM centreon_acl
-                WHERE group_id IN (" . implode(',', $groupIds) . ")
-                GROUP BY host_name, host_id
-                ORDER BY host_name ASC";
+            $query = "SELECT DISTINCT h.host_id, h.name "
+                . "FROM centreon_acl ca, hosts h "
+                . "WHERE group_id IN (" . implode(',', $groupIds) . ") "
+                . "AND ca.host_id = h.host_id "
+                . "GROUP BY h.name, h.host_id "
+                . "ORDER BY h.name ASC ";
             $DBRES = $pearDBndo->query($query);
             while ($row = $DBRES->fetchRow()) {
-                if ($i) {
-                    $string .= ", ";
-                }
                 switch ($flag) {
-                    case "ID" :
-                        $string .= "'" . $row['host_id'] . "'";
-                        break;
                     case "NAME" :
                         if ($escape === true) {
-                            $string .= "'" . CentreonDB::escape($row['host_name']) . "'";
+                            $hosts[] = "'" . CentreonDB::escape($row['name']) . "'";
                         } else {
-                            $string .= "'" . $row['host_name'] . "'";
+                            $hosts[] = "'" . $row['name'] . "'";
                         }
                         break;
-                    default : $string .= "'" . $row['host_id'] . "'";
+                    default :
+                        $hosts[] = "'" . $row['host_id'] . "'";
                         break;
                 }
-                $i++;
             }
         }
-        if (!$i) {
-            $string = "''";
+
+        $result = "''";
+        if (count($hosts)) {
+            $result = implode(', ', $hosts);
         }
-        return $string;
+        
+
+        return $result;
     }
 
     /*
@@ -1039,89 +1037,98 @@ class CentreonACL {
      *  Otherwise, it returns all the services of a specific host
      *
      */
-
-    public function getHostServices($DB, $host_id = null, $get_service_description = null) {
+    public function getHostsServices($pearDBMonitoring, $get_service_description = null) {
         global $pearDB;
 
         $tab = array();
-        if (!isset($host_id)) {
-            if ($this->admin) {
-                $req = (!is_null($get_service_description)) ? ", s.service_description " : "";
-                $query = "SELECT s.service_id, h.host_id $req FROM host_service_relation hsr, host h, service s " .
-                        "WHERE hsr.service_service_id = s.service_id " .
-                        "AND s.service_activate = '1' " .
-                        "AND hsr.host_host_id = h.host_id " .
-                        "AND h.host_activate = '1'";
-                $DBRESULT = $pearDB->query($query);
-                while ($row = $DBRESULT->fetchRow()) {
-                    if (!is_null($get_service_description)) {
-                        $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
-                    } else {
-                        $tab[$row['host_id']][$row['service_id']] = 1;
-                    }
-                }
-                $DBRESULT->free();
-
-                // Used By EventLogs page Only
+        if ($this->admin) {
+            $req = (!is_null($get_service_description)) ? ", s.service_description " : "";
+            $query = "SELECT h.host_id, s.service_id, " . $req
+                . "FROM host_service_relation hsr, host h, service s "
+                . "WHERE hsr.host_host_id = h.host_id "
+                . "AND h.host_activate = '1'"
+                . "AND hsr.service_service_id = s.service_id "
+                . "AND s.service_activate = '1' ";
+            $DBRESULT = $pearDB->query($query);
+            while ($row = $DBRESULT->fetchRow()) {
                 if (!is_null($get_service_description)) {
-                    /*
-                     * Get Services attached to hostgroups
-                     */
-                    $DBRESULT = $pearDB->query("SELECT hgr.host_host_id, s.service_id, s.service_description
-                                      FROM hostgroup_relation hgr, service s, host_service_relation hsr" .
-                            " WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-                            " AND s.service_id = hsr.service_service_id");
-                    while ($elem = $DBRESULT->fetchRow()) {
-                        $tab[$elem['host_host_id']][$elem["service_id"]] = $elem["service_description"];
-                    }
-                    $DBRESULT->free();
+                    $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
+                } else {
+                    $tab[$row['host_id']][$row['service_id']] = 1;
                 }
-            } else {
-                $req = (!is_null($get_service_description)) ? ", service_description " : "";
-                $query = "SELECT host_id, service_id $req FROM centreon_acl WHERE group_id IN (" . $this->getAccessGroupsString() . ")";
-                $DBRESULT = $DB->query($query);
-                while ($row = $DBRESULT->fetchRow()) {
-                    if (!is_null($get_service_description)) {
-                        $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
-                    } else {
-                        $tab[$row['host_id']][$row['service_id']] = 1;
-                    }
+            }
+            $DBRESULT->free();
+
+            # Used By EventLogs page Only
+            if (!is_null($get_service_description)) {
+                # Get Services attached to hostgroups
+                $query = "SELECT hgr.host_host_id, s.service_id, s.service_description "
+                    . "FROM hostgroup_relation hgr, service s, host_service_relation hsr "
+                    . "WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id "
+                    . "AND s.service_id = hsr.service_service_id ";
+                $DBRESULT = $pearDB->query($query);
+                while ($elem = $DBRESULT->fetchRow()) {
+                    $tab[$elem['host_host_id']][$elem["service_id"]] = $elem["service_description"];
                 }
                 $DBRESULT->free();
             }
         } else {
-            if ($this->admin) {
-                $query = "SELECT s.service_id, s.service_description, h.host_id FROM host_service_relation hsr, host h, service s " .
-                        "WHERE hsr.service_service_id = s.service_id " .
-                        "AND s.service_activate = '1' " .
-                        "AND hsr.host_host_id = h.host_id " .
-                        "AND h.host_activate = '1' " .
-                        "AND h.host_id = '" . CentreonDB::escape($host_id) . "'";
-                $DBRESULT = $pearDB->query($query);
-                while ($row = $DBRESULT->fetchRow()) {
-                    $tab[$row['service_id']] = $row['service_description'];
+            $req = (!is_null($get_service_description)) ? ", service_description " : "";
+            $query = "SELECT host_id, service_id " . $req
+                . "FROM centreon_acl "
+                . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") ";
+            $DBRESULT = $pearDBMonitoring->query($query);
+            while ($row = $DBRESULT->fetchRow()) {
+                if (!is_null($get_service_description)) {
+                    $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
+                } else {
+                    $tab[$row['host_id']][$row['service_id']] = 1;
                 }
-                $DBRESULT->free();
-
-                /*
-                 * Get Services attached to hostgroups
-                 */
-                $DBRESULT = $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
-                        " WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-                        " AND service_id = hsr.service_service_id");
-                while ($elem = $DBRESULT->fetchRow()) {
-                    $tab[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES, "UTF-8");
-                }
-                $DBRESULT->free();
-            } else {
-                $query = "SELECT service_id, service_description FROM centreon_acl WHERE host_id = '" . CentreonDB::escape($host_id) . "' AND group_id IN (" . $this->getAccessGroupsString() . ")";
-                $DBRESULT = $DB->query($query);
-                while ($row = $DBRESULT->fetchRow()) {
-                    $tab[$row['service_id']] = $row['service_description'];
-                }
-                $DBRESULT->free();
             }
+            $DBRESULT->free();
         }
+
+        return $tab;
+    }
+
+    public function getHostServices($pearDBMonitoring, $host_id, $get_service_description = null) {
+        if ($this->admin) {
+            $query = "SELECT h.host_id, s.service_id, s.service_description "
+                . "FROM host_service_relation hsr, host h, service s "
+                . "WHERE h.host_activate = '1' "
+                . "AND hsr.host_host_id = h.host_id "
+                . "AND h.host_id = '" . CentreonDB::escape($host_id) . "'"
+                . "AND hsr.service_service_id = s.service_id "
+                . "AND s.service_activate = '1' ";
+            $DBRESULT = $pearDB->query($query);
+            while ($row = $DBRESULT->fetchRow()) {
+                $tab[$row['service_id']] = $row['service_description'];
+            }
+            $DBRESULT->free();
+
+            # Get Services attached to hostgroups
+            $query = "SELECT service_id, service_description "
+                . "FROM hostgroup_relation hgr, service, host_service_relation hsr "
+                . "WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) . "' "
+                . "AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id "
+                . "AND service_id = hsr.service_service_id ";
+            $DBRESULT = $pearDB->query($query);
+            while ($elem = $DBRESULT->fetchRow()) {
+                $tab[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES, "UTF-8");
+            }
+            $DBRESULT->free();
+        } else {
+            $query = "SELECT service_id, service_description "
+                . "FROM centreon_acl "
+                . "WHERE host_id = '" . CentreonDB::escape($host_id) . "' "
+                . "AND group_id IN (" . $this->getAccessGroupsString() . ") ";
+            $DBRESULT = $pearDBMonitoring->query($query);
+            while ($row = $DBRESULT->fetchRow()) {
+                $tab[$row['service_id']] = $row['service_description'];
+            }
+            $DBRESULT->free();
+        }
+
         return $tab;
     }
 
@@ -1600,7 +1607,7 @@ class CentreonACL {
 
         $searchCondition = "";
         if ($search != "") {
-            $searchCondition = "(host.host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host.host_alias LIKE '%" . CentreonDB::escape($search) . "%') ";
+            $searchCondition = "AND (host.host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host.host_alias LIKE '%" . CentreonDB::escape($search) . "%') ";
         }
 
         $emptyJoin = "";
@@ -1616,9 +1623,9 @@ class CentreonACL {
             $query = $request['select'] . $request['fields'] . " "
                 . "FROM host "
                 . $emptyJoin
-                . "WHERE " . $searchCondition
-                . "AND host_activate = '1' "
-                . "AND host_register = '1' ";
+                . "WHERE host_activate = '1' "
+                . "AND host_register = '1' "
+                . $searchCondition;
         } else {
             $groupIds = array_keys($this->accessGroups);
             if ($host_empty) {
@@ -1627,9 +1634,9 @@ class CentreonACL {
             $query = $request['select'] . $request['fields'] . " "
                 . "FROM host, $db_name_acl.centreon_acl "
                 . $empty_join
-                . "WHERE " . $searchCondition
-                . "AND host.host_activate = '1'"
+                . "WHERE host.host_activate = '1' "
                 . "AND host.host_register = '1' "
+                . $searchCondition
                 . "AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") "
                 . "AND $db_name_acl.centreon_acl.host_id = host.host_id ";
         }
