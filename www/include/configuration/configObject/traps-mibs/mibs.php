@@ -31,32 +31,28 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
- */
- 
-	if (!isset ($oreon))
-		exit ();
+*/
 
-	isset($_GET["id"]) ? $mnftrG = $_GET["id"] : $mnftrG = NULL;
-	isset($_POST["id"]) ? $mnftrP = $_POST["id"] : $mnftrP = NULL;
-	$mnftrG ? $id = $mnftrG : $id = $mnftrP;
+if (!isset($centreon)) {
+	exit ();
+}
 
-	#Pear library
-	require_once "HTML/QuickForm.php";
-    require_once 'HTML/QuickForm/select2.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+isset($_GET["id"]) ? $mnftrG = $_GET["id"] : $mnftrG = NULL;
+isset($_POST["id"]) ? $mnftrP = $_POST["id"] : $mnftrP = NULL;
+$mnftrG ? $id = $mnftrG : $id = $mnftrP;
 
-	#Path to the configuration dir
-	$path = "./include/configuration/configObject/traps-mibs/";
-	//$nagios_plugins = "/etc/nagios/libexec";
+#Pear library
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/select2.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#PHP functions
-	require_once "./include/common/common-Func.php";
+#Path to the configuration dir
+$path = "./include/configuration/configObject/traps-mibs/";
 
-	switch ($o)	{
-		case "a" : require_once($path."formMibs.php"); break; #Show command execution
-		default : require_once($path."formMibs.php"); break;
-	}
-?>
+#PHP functions
+require_once "./include/common/common-Func.php";
+
+switch ($o)	{
+	case "a" : require_once($path."formMibs.php"); break; #Show command execution
+	default : require_once($path."formMibs.php"); break;
+}

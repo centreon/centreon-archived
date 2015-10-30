@@ -31,30 +31,27 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon))
-		exit();
+if (!isset($centreon)) {
+	exit();
+}
 
-    function deleteDowntimeFromDb($centreon, $select = array()) {
-        if (isset($select)) {
-            $pearDBO = new CentreonDB("centstorage");
-		    $ndo_base_prefix = getNDOPrefix();
-            $dIds =  array();
-            foreach ($select as $key => $val) {
-                $tmp = explode(";",$key);
-                if (isset($tmp[1])) {
-                    $dIds[] = $tmp[1];
-                }
-            }
-            if (count($dIds)) {
-                $request = "DELETE FROM downtimes WHERE internal_id IN (".implode(', ',$dIds).")";
-                $pearDBO->query($request);
-            }
-		}
-    }
+function deleteDowntimeFromDb($centreon, $select = array()) {
+    if (isset($select)) {
+        $pearDBO = new CentreonDB("centstorage");
 
-?>
+        $dIds =  array();
+        foreach ($select as $key => $val) {
+            $tmp = explode(";",$key);
+            if (isset($tmp[1])) {
+                $dIds[] = $tmp[1];
+            }
+        }
+
+        if (count($dIds)) {
+            $request = "DELETE FROM downtimes WHERE internal_id IN (".implode(', ',$dIds).")";
+            $pearDBO->query($request);
+        }
+	}
+}

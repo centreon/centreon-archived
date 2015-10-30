@@ -271,8 +271,7 @@ if (($o == "c" || $o == "w") && $host_id) {
         $cmdId = "";
     }
 
-    $aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId);
-
+    $aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId, $_POST);
 }
 /*
  * Preset values of macros

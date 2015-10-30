@@ -49,7 +49,6 @@ if ($num < 0) {
 }
 
 ?>
-<script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
 	var _debug = 0;
 	var _addrXSL = "./include/monitoring/status/Meta/xsl/metaService.xsl";

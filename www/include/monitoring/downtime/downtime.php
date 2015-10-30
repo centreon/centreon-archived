@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -31,6 +32,9 @@
  *
  * For more information : contact@centreon.com
  *
+ * SVN : $URL$
+ * SVN : $Id$
+ *
  */
 
 if (!isset($centreon)) {
@@ -46,7 +50,6 @@ $ecObj = new CentreonExternalCommand($centreon);
  * Pear library
  */
 require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
@@ -81,7 +84,24 @@ switch ($o) {
     case "vs" :
         require_once($path . "listDowntime.php");
         break;
+    case "ah" :
+        require_once($path."AddHostDowntime.php");
+        break;
+    case "dh" :
+        if (isset($_POST["select"])) {
+            $ecObj->DeleteDowntime("HOST", isset($_POST["select"]) ? $_POST["select"] : array());
+            deleteDowntimeFromDb($oreon, $_POST['select']);
+        }
+        require_once($path."listDowntime.php");
+        break;
+    case "ch" :
+        $ecObj->DeleteDowntime("HOST", isset($_POST["select"]) ? $_POST["select"] : array());
+        require_once($path."listDowntime.php");
+        break;
+    case "vh" :
+        require_once($path."listDowntime.php");
+        break;
     default :
-        require_once($path . "lisDowntime.php");
+        require_once($path."listDowntime.php");
         break;
 }

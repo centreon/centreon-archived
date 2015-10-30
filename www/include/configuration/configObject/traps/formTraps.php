@@ -67,52 +67,6 @@ if (($o == "c" || $o == "w") && $traps_id) {
             $trap['severity'] = $trap['severity_id'];
 	$DBRESULT->free();
             
-            /**
-             * ACL
-             */
-            if (!$centreon->user->admin) {
-                $aclSql = "SELECT hsr.host_host_id, hsr.service_service_id
-                    FROM traps_service_relation tsr, $aclDbName.centreon_acl acl, host_service_relation hsr
-                    WHERE tsr.traps_id = '".$trapsId."'
-                    AND tsr.service_id = hsr.service_service_id
-                    AND hsr.host_host_id = acl.host_id
-                    AND acl.service_id = tsr.service_id
-                    AND acl.group_id IN (".$acl->getAccessGroupsString().")";
-                $aclRes = $pearDB->query($aclSql);
-                $aclHs = array();
-                while ($aclRow = $aclRes->fetchRow()) {
-                    $aclHs[$aclRow['host_host_id']."-".$aclRow['service_service_id']] = true;
-                }
-            }
-            $DBRESULT = $pearDB->query("SELECT tsr.service_id, hsr.host_host_id, h.host_name, s.service_description
-                    FROM traps_service_relation tsr, host_service_relation hsr, host h, service s
-                    WHERE h.host_id = hsr.host_host_id
-                    AND hsr.service_service_id = s.service_id
-                    AND s.service_register = '1'
-                    AND hsr.service_service_id = tsr.service_id
-                    AND tsr.traps_id = '".$pearDB->escape($traps_id)."'");
-            for ($i = 0; $hs = $DBRESULT->fetchRow(); $i++) {
-                $hkey = $hs["host_host_id"]."-".$hs["service_id"];
-                if (isset($aclHs) && !isset($aclHs[$hkey])) {
-                    $initialValues['services'][] = $hkey;
-                } else {
-                    $hServices[$hkey] = $hs["host_name"]."&nbsp;-&nbsp;".$hs['service_description'];
-                    $trap["services"][$i] = $hkey;
-                }
-            }
-
-            if ($centreon->user->admin) {
-                $res = $pearDB->query("SELECT s.service_id 
-                            FROM traps_service_relation tsr, service s
-                            WHERE tsr.service_id = s.service_id
-                            AND s.service_register = '0'
-                            AND tsr.traps_id = " . $pearDB->escape($traps_id ));
-                $trap['service_templates'] = array();
-                while ($row = $res->fetchRow()) {
-                    $trap['service_templates'][] = $row['service_id'];
-                }
-            }
-            
             $cdata = CentreonData::getInstance();
             /*
              * Preset values of preexec commands
@@ -481,4 +435,4 @@ if ($valid) {
 	$tpl->display("formTraps.ihtml");
 }
 
-require_once $path . '/javascript/trapJs.php';
+?>

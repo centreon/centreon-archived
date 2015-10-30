@@ -50,7 +50,7 @@ $centreon = $_SESSION['centreon'];
 ?>
 // JavaScript Document
 
-var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/<?php global $centreon; print $centreon->broker->getBroker(); ?>/statusCounter.php";
+var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/statusCounter.php";
 
 function getXhrC(){
 	if (window.XMLHttpRequest) {
@@ -73,13 +73,9 @@ function getXhrC(){
 
 function reloadStatusCounter(_reload_time, _sid) {
 
-	_form=document.getElementById('AjaxBankBasic');
-	_version=_form.version.value;
-
 	var xhrC = getXhrC();
 	// On defini ce qu'on va faire quand on aura la reponse
-	xhrC.onreadystatechange = function()
-	{
+	xhrC.onreadystatechange = function() {
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
 		if (xhrC && xhrC.readyState == 4 && xhrC.status == 200 && xhrC.responseXML) {
 			reponseC = xhrC.responseXML.documentElement;

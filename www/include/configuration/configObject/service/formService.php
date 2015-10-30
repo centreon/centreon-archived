@@ -274,7 +274,7 @@ if (($o == "c" || $o == "w") && $service_id) {
         $cmdId = "";
     }
     
-    $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId);
+    $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId, $_POST);
 
 
 }

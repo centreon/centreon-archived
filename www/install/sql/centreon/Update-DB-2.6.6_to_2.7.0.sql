@@ -699,6 +699,7 @@ insert into topology_JS (id_page, PathName_js, Init) VALUES ('20203', './include
 DELETE FROM topology WHERE topology_parent = '20203';
 
 -- Move temporary comments
+update topology set topology_url = './include/monitoring/downtime/downtime.php' WHERE topology_page = 21001;
 update topology set topology_page = '21002', topology_name = 'Host comments', topology_parent = '210', topology_group = '30' WHERE topology_page = '20107';
 update topology set topology_page = '21003', topology_name = 'Service comments', topology_parent = '210', topology_group = '40' WHERE topology_page = '20219';
 
@@ -731,3 +732,15 @@ DELETE FROM topology WHERE topology_page = 10203;
 DELETE FROM topology_JS WHERE id_page = 20207;
 DELETE FROM topology WHERE topology_page = 20207; 
 DELETE FROM topology WHERE topology_parent = 202 AND topology_group = 33 AND topology_name = 'Monitoring Engine';
+
+-- Change monitoring engine and centreon menu
+SET foreign_key_checks = 0;
+UPDATE topology_JS SET id_page = 60902 WHERE id_page = 60701;
+UPDATE topology SET topology_page = 60902, topology_parent = 609, topology_group = 1, topology_show = '0' WHERE topology_page = 60701;
+UPDATE topology_JS SET id_page = 60903 WHERE id_page = 60703;
+UPDATE topology SET topology_page = 60903, topology_parent = 609, topology_group = 1, topology_name = 'Engine configuration' WHERE topology_page = 60703;
+UPDATE topology SET topology_page = 60904, topology_parent = 609, topology_group = 1, topology_name = 'Resources' WHERE topology_page = 60704;
+DELETE FROM topology WHERE topology_parent = 607;
+DELETE FROM topology WHERE topology_page = 607;
+UPDATE topology SET topology_name = "Pollers" WHERE topology_page = 609;
+SET foreign_key_checks = 1;
