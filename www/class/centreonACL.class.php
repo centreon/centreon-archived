@@ -533,7 +533,6 @@ class CentreonACL {
                     $resourceGroups[] = "'" . $key . "'";
                     break;
             }
-            $i++;
         }
 
         $result = "''";
@@ -781,8 +780,8 @@ class CentreonACL {
         if (count($groupIds)) {
             $query = "SELECT DISTINCT h.host_id, h.name "
                 . "FROM centreon_acl ca, hosts h "
-                . "WHERE group_id IN (" . implode(',', $groupIds) . ") "
-                . "AND ca.host_id = h.host_id "
+                . "WHERE ca.host_id = h.host_id "
+                . "AND group_id IN (" . implode(',', $groupIds) . ") "
                 . "GROUP BY h.name, h.host_id "
                 . "ORDER BY h.name ASC ";
             $DBRES = $pearDBndo->query($query);
@@ -806,7 +805,6 @@ class CentreonACL {
         if (count($hosts)) {
             $result = implode(', ', $hosts);
         }
-        
 
         return $result;
     }
@@ -826,22 +824,23 @@ class CentreonACL {
 
         $groupIds = array_keys($this->accessGroups);
         if (count($groupIds)) {
-            $query = "SELECT DISTINCT service_id, service_description "
-                . "FROM centreon_acl "
-                . "WHERE group_id IN (" . implode(',', $groupIds) . ") ";
+            $query = "SELECT DISTINCT s.service_id, s.description "
+                . "FROM centreon_acl ca, services s "
+                . "WHERE ca.service_id = s.service_id "
+                . "AND group_id IN (" . implode(',', $groupIds) . ") ";
             $DBRES = $pearDBndo->query($query);
             $items = array();
             while ($row = $DBRES->fetchRow()) {
                 switch ($flag) {
                     case "NAME" :
-                        if (isset($items[$row['service_description']])) {
+                        if (isset($items[$row['description']])) {
                             continue;
                         }
-                        $items[$row['service_description']] = true;
+                        $items[$row['description']] = true;
                         if ($escape === true) {
-                            $services[] = "'" . CentreonDB::escape($row['service_description']) . "'";
+                            $services[] = "'" . CentreonDB::escape($row['description']) . "'";
                         } else {
-                            $services[] = "'" . $row['service_description'] . "'";
+                            $services[] = "'" . $row['description'] . "'";
                         }
                         break;
                     default :
@@ -1684,7 +1683,7 @@ class CentreonACL {
         if ($this->admin) {
             $empty_exists = "";
             if (!is_null($hg_empty)) {
-                $empty_exists = 'AND EXISTS (SELECT * FROM hostgroup_relation WHERE (hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup_relation.host_host_id IS NOT NULL))';
+                $empty_exists = 'AND EXISTS (SELECT * FROM hostgroup_relation WHERE (hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup_relation.host_host_id IS NOT NULL)) ';
             }
             # We should check if host is activate (maybe)
             $query = $request['select'] . $request['fields'] . " "
