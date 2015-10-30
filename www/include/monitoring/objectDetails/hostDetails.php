@@ -58,14 +58,20 @@ $tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3
 $tab_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
 $tab_host_statusid = array("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2);
 
+$tab_color_host		= array('up' => 'host_up', 'down' => 'host_down', 'unreachable' => 'host_unreachable');
+
 $en_acknowledge_text    = array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Host Problem"));
 $en_acknowledge         = array("1" => "0", "0" => "1");
 $en_inv                 = array("1" => "1", "0" => "0");
 $en_inv_text            = array("1" => _("Disable"), "0" => _("Enable"));
-$color_onoff            = array("1" => "#00ff00", "0" => "#ff0000");
-$color_onoff_inv        = array("0" => "#00ff00", "1" => "#00ff00");
+
+$color_onoff            = array("1" => "host_up", "0" => "host_down");
+$color_onoff_inv        = array("0" => "host_up", "1" => "host_up");
+
+
+
 $en_disable             = array("1" => _("Enabled"), "0" => _("Disabled"));
-$img_en                 = array("0" => "'./img/icones/16x16/element_next.gif'", "1" => "'./img/icones/16x16/element_previous.gif'");
+$img_en                 = array("0" => "'./img/icons/enabled.png'", "1" => "'./img/icons/disabled.png'");
 
 $allActions = false;
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
@@ -166,14 +172,13 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             " AND h.enabled = 1 " .
             " AND s.enabled = 1 ";
         $DBRESULT = $pearDBO->query($rq);
+        $services = array();
         while ($ndo = $DBRESULT->fetchRow()){
-            if (!isset($tab_status[$ndo["current_state"]])) {
-                $tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
-            }
-            $tab_status[$tab_status_service[$ndo["current_state"]]]++;
+            $ndo["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $ndo["last_check"]);
+            $services[] = $ndo;
         }
         $DBRESULT->free();
-
+        
         /*
          * Get host informations
          */
@@ -255,8 +260,13 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
         $DBRESULT->free();
         unset($data);
+       
+        $host_status[$host_name]["status_class"] = $tab_color_host[strtolower($host_status[$host_name]["current_state"])];
         
-        $host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])];
+        
+        
+        
+        
         $host_status[$host_name]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"]);
         $host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"]) : "";
         !$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_notification"]);
@@ -355,6 +365,9 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("m_mon_flap_detection", _("Flap Detection"));
         $tpl->assign("m_mon_services_en_acknowledge", _("Acknowledged"));
         $tpl->assign("m_mon_submit_passive", _("Submit result for this host"));
+        
+        
+        
 
         /*
          * Strings are used by javascript command handler
@@ -418,6 +431,10 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         if(isset($hostCategorie)){
             $tpl->assign("hostcategorie", $hostCategorie);
         }
+        
+        $tpl->assign("hosts_services", $services);
+        
+        
         
         /*
          * Contactgroups Display
