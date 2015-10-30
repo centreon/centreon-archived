@@ -81,7 +81,9 @@ input, select {
     border: 1px solid #bcbdc0;
     line-height: 18px;
 }
-
+/*input[type="text"] {
+    width: 70%;
+}*/
 input[type="checkbox"] 	{border:0px;margin:0;padding:0px;}
 select {
     padding: 6px;
@@ -154,7 +156,7 @@ p.description a, p.description a:visited {
 /* ------ Select 2 ---------*/
 
 .select2-container {
-    width: 213px !important;
+   width: 213px !important;
 }
 
 .select2-container .select2-selection--multiple {
@@ -173,9 +175,18 @@ p.description a, p.description a:visited {
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
     margin-top: 3px !important;
-    background-color: #feffdd !important;
-    border: 1px solid #c6c97f !important;
+    background-color: #bfecff !important;
+    border: 1px solid #4dcaff !important;
+    margin-right: 2px !important;
+    padding: 0 2px !important;
+    color: #0072ce;
 }
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #58585a !important;
+    margin-left: 2px;
+    float: right;
+}
+
 
 .select2-container--default .select2-selection--multiple {
     border-radius: 0 !important;
@@ -185,6 +196,18 @@ p.description a, p.description a:visited {
     background-color: #f1f1f1 !important;
 }
 
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    max-height: 52px;
+}
+
+.clearAllSelect2 {
+     margin-left: 4px;
+    vertical-align: middle;
+ }
+
+.clearAllSelect2 img {
+    vertical-align: middle;
+}
 /* -------- Tooltip ------- */
 #WzTtDiV {
     overflow: visible !important;
@@ -1455,6 +1478,7 @@ span.state_badge {
 }
 
 /* Fullscreen icon */
+
 .fullscreen-icon {
   position: fixed;
 //  top: -10px;
@@ -1472,11 +1496,14 @@ span.state_badge {
 }
 /* Style for Eventlogs page */
 .log-extend-icon {
-  cursor: pointer;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-left: 1em;
 }
 
 .ajaxOption td.log-select {
     vertical-align: top;
+    position: relative;
 }
 
 /* -------- List Links --------------- */

@@ -84,6 +84,7 @@ foreach ($oreon->modules as $module_name => $infos) {
 <script type="text/javascript" src="./include/common/javascript/centreon/notifier.js"></script>
 <script type="text/javascript" src="./include/common/javascript/centreon/multiselectResizer.js"></script>
 <script type="text/javascript" src="./include/common/javascript/centreon/popin.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/jquery.nicescroll.min.js"></script>
 <?php } ?>
 <script type="text/javascript" src="./class/centreonToolTip.js"></script>
 <?php
