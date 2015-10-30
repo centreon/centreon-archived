@@ -36,8 +36,6 @@
  *
  */
 
-
-require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_service.class.php";
 
@@ -69,11 +67,18 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
         } else {
             $l = $this->arguments['l'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
         if ($l == '1') {
-            $serviceTemplateList = $this->listWithHostTemplate($q);
+            $serviceTemplateList = $this->listWithHostTemplate($q, $range);
         } else {
-            $serviceTemplateList = $this->listClassic($q);
+            $serviceTemplateList = $this->listClassic($q, $range);
         }
         return $serviceTemplateList;
     }
@@ -83,21 +88,27 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
      * @param string $q
      * @return array
      */
-    private function listClassic($q)
+    private function listClassic($q, $range = '')
     {
-        $queryContact = "SELECT service_id, service_description "
+        $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT service_id, service_description "
             . "FROM service "
             . "WHERE service_description LIKE '%$q%' "
             . "AND service_register = '0' "
-            . "ORDER BY service_description";
+            . "ORDER BY service_description "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryContact);
+
+        $total = $this->pearDB->numberRows();
 
         while ($data = $DBRESULT->fetchRow()) {
             $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
         }
-        
-        return $serviceList;
+
+        return array(
+            'items' => $serviceList,
+            'total' => $total
+        );
     }
     
     /**
@@ -105,17 +116,20 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
      * @param string $q
      * @return array
      */
-    private function listWithHostTemplate($q = '')
+    private function listWithHostTemplate($q = '', $range = '')
     {
-        $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
+        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
             . "FROM host h, service s, host_service_relation hsr "
             . 'WHERE hsr.host_host_id = h.host_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND h.host_register = '0' AND s.service_register = '0' "
             . "AND s.service_description LIKE '%$q%' "
-            . "ORDER BY h.host_name";
+            . "ORDER BY h.host_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryService);
+
+        $total = $this->pearDB->numberRows();
         
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
@@ -124,7 +138,10 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
             
             $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
-        
-        return $serviceList;
+
+        return array(
+            'items' => $serviceList,
+            'total' => $total
+        );
     }
 }

@@ -36,8 +36,6 @@
  *
  */
 
-
-require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
@@ -58,25 +56,43 @@ class CentreonConfigurationContact extends CentreonConfigurationObjects
     public function getList()
     {
         global $centreon;
-        
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $offset = $this->arguments['page_limit'];
+            $range = $limit . ',' . $offset;
+        } else {
+            $range = '';
+        }
+
+        $filterContact = array('contact_register' => '1');
+        if (isset($this->arguments['q'])) {
+            $filterContact['contact_name'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+            $filterContact['contact_alias'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+        } 
+
         $acl = new CentreonACL($centreon->user->user_id);
         
-        $contacts = $acl->getContactAclConf(array('fields' => array('contact_id', 'contact_name'),
-            'get_row' => 'contact_name',
-            'keys' => array('contact_id'),
-            'conditions' => array('contact_register' => '1'),
-            'order' => array('contact_name')));
+        $contacts = $acl->getContactAclConf(
+            array(
+                'fields' => array('contact_id', 'contact_name'),
+                'get_row' => 'contact_name',
+                'keys' => array('contact_id'),
+                'conditions' => $filterContact,
+                'order' => array('contact_name'),
+                'pages' => $range,
+                'total' => true
+            )
+        );
 
         $contactList = array();
-        foreach ($contacts as $id => $contactName) {
-            if ((false === isset($this->arguments['q']) || '' === $this->arguments['q'])
-                 || stristr($contactName, $this->arguments['q'])) {
-                $contactList[] = array(
-                    'id' => $id,
-                    'text' => $contactName
-                );
-            }
+        foreach ($contacts['items'] as $id => $contactName) {
+            $contactList['items'][] = array(
+                'id' => $id,
+                'text' => $contactName
+            );
         }
+        $contactList['total'] = $contacts['total'];
         
         return $contactList;
     }

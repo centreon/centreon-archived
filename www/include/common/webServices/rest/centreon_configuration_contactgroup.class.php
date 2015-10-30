@@ -36,8 +36,6 @@
  *
  */
 
-
-require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonContactgroup.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonLDAP.class.php";
@@ -60,37 +58,47 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
     public function getList()
     {
         global $centreon;
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $offset = $this->arguments['page_limit'];
+            $range = $limit . ',' . $offset;
         } else {
-            $q = $this->arguments['q'];
+            $range = '';
         }
-        
-        $notifCgs = array();
+
+        $filterContactgroup = array();
+        if (isset($this->arguments['q'])) {
+            $filterContactgroup['cg_name'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+            $filterContactgroup['cg_alias'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+        }
+
         $cg = new CentreonContactgroup($this->pearDB);
         $acl = new CentreonACL($centreon->user->user_id);
-        if ($centreon->user->admin) {
-            $notifCgs = $cg->getListContactgroup(true);
-        } else {
-            $cgAcl = $acl->getContactGroupAclConf(array('fields'  => array('cg_id', 'cg_name'),
+
+        $cgAcl = $acl->getContactGroupAclConf(
+            array(
+                'fields'  => array('cg_id', 'cg_name'),
                 'get_row' => 'cg_name',
                 'keys' => array('cg_id'),
-                'order' => array('cg_name')));
-            $cgLdap = $cg->getListContactgroup(true, true);
-            $notifCgs = array_intersect_key($cgLdap, $cgAcl);
-        }
+                'conditions' => $filterContactgroup,
+                'order' => array('cg_name'),
+                'pages' => $range,
+                'total' => true
+            )
+        );
+        //$cgLdap = $cg->getListContactgroup(true, true);
+        //$cgs = array_intersect_key($cgLdap, $cgAcl);
+        $cgs = $cgAcl;
         
         $contactgroupList = array();
-        foreach ($notifCgs as $id => $contactgroup) {
-            if ((false === isset($this->arguments['q']) || '' === $this->arguments['q'])
-               || stristr($contactgroup, $this->arguments['q'])) {
-                $contactgroupList[] = array(
-                    'id' => $id,
-                    'text' => $contactgroup
-                );
-            }
+        foreach ($cgs['items'] as $id => $contactgroup) {
+            $contactgroupList['items'][] = array(
+                'id' => $id,
+                'text' => $contactgroup
+            );
         }
+        $contactgroupList['total'] = $cgs['total'];
         
         return $contactgroupList;
     }

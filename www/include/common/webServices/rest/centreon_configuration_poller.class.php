@@ -36,9 +36,7 @@
  *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once  _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationPoller extends CentreonConfigurationObjects
@@ -69,21 +67,32 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryPoller = "SELECT instance_id, instance_name "
+        $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, instance_name "
             . "FROM instance "
-            . "WHERE instance_name LIKE '%$q%' ";
-        
-            
-        $queryPoller .= "ORDER BY instance_name";
+            . "WHERE instance_name LIKE '%$q%' "
+            . "ORDER BY instance_name "
+            . $range;
         
         $DBRESULT = $this->pearDBMonitoring->query($queryPoller);
+
+        $total = $this->pearDB->numberRows();
         
         $pollerList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $pollerList[] = array('id' => $data['instance_id'], 'text' => $data['instance_name']);
         }
         
-        return $pollerList;
+        return array(
+            'items' => $pollerList,
+            'total' => $total
+        );
     }
 }
