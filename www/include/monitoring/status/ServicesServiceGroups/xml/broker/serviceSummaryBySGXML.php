@@ -40,6 +40,8 @@
 
     require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
+    include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
+
     include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
     include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
     include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
@@ -106,10 +108,10 @@
 
     $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
         . "FROM servicegroups sg, services_servicegroups sgm, hosts h, services s "
-        . "WHERE sg.servicegroup_id = sgm.servicegroup_id AND sgm.host_id = h.host_id AND h.host_id = s.host_id ";
+        . "WHERE sg.servicegroup_id = sgm.servicegroup_id AND sgm.host_id = h.host_id AND h.host_id = s.host_id AND s.service_id = sgm.service_id ";
 
     /* Host ACL */
-    $query .= $obj->access->queryBuilder("", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
+    $query .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
 
     /* Service ACL */
     $query .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
@@ -219,20 +221,20 @@
             $count = 0;
             $ct++;
             $obj->XML->startElement("sg");
-            $obj->XML->writeElement("sgn", $sg);
+            $obj->XML->writeElement("sgn", CentreonUtils::escapeSecure($sg));
             $obj->XML->writeElement("o", $ct);
 
             foreach ($h as $hostName => $hostInfos) {
                 $count++;
                 $obj->XML->startElement("h");
                 $obj->XML->writeAttribute("class", $obj->getNextLineClass());
-                $obj->XML->writeElement("hn", $hostName, false);
+                $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($hostName), false);
                 if ($hostInfos['icon_image']) {
                     $obj->XML->writeElement("hico", $hostInfos['icon_image']);
                 } else {
                     $obj->XML->writeElement("hico", "none");
                 }
-                $obj->XML->writeElement("hnl", urlencode($hostName));
+                $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($hostName)));
                 $obj->XML->writeElement("hcount", $count);
                 $obj->XML->writeElement("hid", $hostInfos['host_id']);
                 $obj->XML->writeElement("hs", _($obj->statusHost[$hostInfos['host_state']]));

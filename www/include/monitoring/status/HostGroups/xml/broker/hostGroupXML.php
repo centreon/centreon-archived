@@ -38,6 +38,8 @@
 
 	require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
+        include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
+
 	include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 	include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
@@ -214,7 +216,7 @@
 				$obj->XML->startElement("l");
 				$obj->XML->writeAttribute("class", $class);
 				$obj->XML->writeElement("o", $ct++);
-				$obj->XML->writeElement("hn", $convertTable[$name] . " (".$name.")", false);
+				$obj->XML->writeElement("hn", CentreonUtils::escapeSecure($convertTable[$name] . " (".$name.")"), false);
 				$obj->XML->writeElement("hu", $stat["h"][0]);
 				$obj->XML->writeElement("huc", $obj->colorHost[0]);
 				$obj->XML->writeElement("hd", $stat["h"][1]);
@@ -231,8 +233,8 @@
 				$obj->XML->writeElement("suc", $obj->colorService[3]);
 				$obj->XML->writeElement("sp", $stat["s"][4]);
 				$obj->XML->writeElement("spc", $obj->colorService[4]);
-				$obj->XML->writeElement("hgurl", "main.php?p=20201&o=svc&hg=".$convertID[$convertTable[$name]]);
-                $obj->XML->writeElement("hgurlhost", "main.php?p=20202&o=h&hostgroups=".$convertID[$convertTable[$name]]);
+                                $obj->XML->writeElement("hgurl", CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=".$convertID[$convertTable[$name]]));
+                                $obj->XML->writeElement("hgurlhost", "main.php?p=20202&o=h&hostgroups=".$convertID[$convertTable[$name]]);
 				$obj->XML->endElement();
 			}
 		}

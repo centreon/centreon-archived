@@ -33,9 +33,12 @@
  *
  */
 
+<<<<<<< HEAD
 if (!isset($centreon)) {
 	exit();
 }
+
+include_once("./class/centreonUtils.class.php");
 
 include("./include/common/autoNumLimit.php");
 
@@ -162,12 +165,12 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
 	$svArr = getMyHostServices($host['host_id']);
 	$elemArr[$i] = array("MenuClass" => "list_".$style,
 					"RowMenu_select" => $selectedElements->toHtml(),
-					"RowMenu_name" => $host["host_name"],
+					"RowMenu_name" => CentreonUtils::escapeSecure($host["host_name"]),
 					"RowMenu_link" => "?p=".$p."&o=c&host_id=".$host['host_id'],
-					"RowMenu_desc" => $host["host_alias"],
+					"RowMenu_desc" => CentreonUtils::escapeSecure($host["host_alias"]),
 					"RowMenu_icone" => $host_icone,
 					"RowMenu_svChilds" => count($svArr),
-					"RowMenu_parent" => $tplStr,
+					"RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
 					"RowMenu_status" => $host["host_activate"] ? _("Enabled") : _("Disabled"),
 					"RowMenu_options" => $moptions);
 	$style != "two" ? $style = "two" : $style = "one";
@@ -233,3 +236,4 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->assign('searchHT', $search);
 $tpl->display("listHostTemplateModel.ihtml");
 
+?>

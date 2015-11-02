@@ -37,6 +37,8 @@ if (!isset($centreon)) {
     exit();
 }
 
+include_once("./class/centreonUtils.class.php");
+
 include_once "./class/centreonDB.class.php";
 include_once "./class/centreonHost.class.php";
 
@@ -433,6 +435,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("en_acknowledge", $en_acknowledge);
         $tpl->assign("admin", $is_admin);
         $tpl->assign("lcaTopo", $oreon->user->access->topology);
+        $tpl->assign("h", CentreonUtils::escapeSecure($hostDB));
         $tpl->assign("url_id", $url_id);
         $tpl->assign("m_mon_ticket", "Open Ticket");
 
@@ -441,7 +444,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
          */
         $tpl->assign("hostgroups_label", _("Member of Host Groups"));
         if (isset($hostGroups)) {
-            $tpl->assign("hostgroups", $hostGroups);
+            $tpl->assign("hostgroups", CentreonUtils::escapeSecure($hostGroups));
         }
 
         $tpl->assign("hostcategorie_label", _("Host Categories"));
@@ -458,16 +461,16 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
          */
         $tpl->assign("contactgroups_label", _("Contact groups notified for this host"));
         if (isset($contactGroups)) {
-            $tpl->assign("contactgroups", $contactGroups);
+            $tpl->assign("contactgroups", CentreonUtils::escapeSecure($contactGroups));
         }
 
-        /*
-         * Contacts Display
-         */
-        $tpl->assign("contacts_label", _("Contacts notified for this host"));
-        if (isset($contacts)) {
-            $tpl->assign("contacts", $contacts);
-        }
+       /*
+        * Contacts Display
+        */
+       $tpl->assign("contacts_label", _("Contacts notified for this host"));
+       if (isset($contacts)) {
+           $tpl->assign("contacts", CentreonUtils::escapeSecure($contacts));
+       }
 
         /*
          * Macros
@@ -480,7 +483,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
 
         if (isset($tabCommentHosts)) {
-            $tpl->assign("tab_comments_host", $tabCommentHosts);
+            $tpl->assign("tab_comments_host", array_map(array("CentreonUtils","escapeSecure"),$tabCommentHosts));
         }
         $tpl->assign("host_data", $host_status[$host_name]);
 
@@ -495,8 +498,8 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $notesurl = str_replace("\$HOSTSTATE\$", $host_status[$host_name]["current_state"], $notesurl);
         $notesurl = str_replace("\$HOSTSTATEID\$", $tab_host_statusid[$host_status[$host_name]["current_state"]], $notesurl);
 
-        $tpl->assign("h_ext_notes_url", $notesurl);
-        $tpl->assign("h_ext_notes", getMyHostExtendedInfoField($host_id, "ehi_notes"));
+        $tpl->assign("h_ext_notes_url", CentreonUtils::escapeSecure($notesurl));
+        $tpl->assign("h_ext_notes", CentreonUtils::escapeSecure(getMyHostExtendedInfoField($host_id, "ehi_notes")));
         $tpl->assign("h_ext_notes_url_lang", _("URL Notes"));
         $tpl->assign("h_ext_action_url_lang", _("Action URL"));
 
@@ -507,7 +510,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
         $actionurl = str_replace("\$HOSTSTATE\$", $host_status[$host_name]["current_state"], $actionurl);
         $actionurl = str_replace("\$HOSTSTATEID\$", $tab_host_statusid[$host_status[$host_name]["current_state"]], $actionurl);
-        $tpl->assign("h_ext_action_url", $actionurl);
+        $tpl->assign("h_ext_action_url", CentreonUtils::escapeSecure($actionurl));
         $tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
         $tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
 

@@ -39,6 +39,8 @@
 	if (!isset($oreon))
 		exit();
 
+        include_once("./class/centreonUtils.class.php");
+
 	include("./include/common/autoNumLimit.php");
 
 	/*
@@ -160,7 +162,7 @@
 						"RowMenu_ico_title" => isset($contactTypeIconeTitle[$contact_type]) ? $contactTypeIconeTitle[$contact_type] : "",
 						"RowMenu_type" => $contact_type,
 						"RowMenu_link" => "?p=".$p."&o=c&contact_id=".$contact['contact_id'],
-						"RowMenu_desc" => html_entity_decode($contact["contact_alias"], ENT_QUOTES, "UTF-8"),
+						"RowMenu_desc" => CentreonUtils::escapeSecure(html_entity_decode($contact["contact_alias"], ENT_QUOTES, "UTF-8")),
 						"RowMenu_email" => $contact["contact_email"],
 						"RowMenu_hostNotif" => html_entity_decode($tpCache[(isset($contact["timeperiod_tp_id"]) ? $contact["timeperiod_tp_id"] : "")], ENT_QUOTES, "UTF-8")." (".(isset($contact["contact_host_notification_options"]) ? $contact["contact_host_notification_options"] : "").")",
 						"RowMenu_svNotif" => html_entity_decode($tpCache[(isset($contact["timeperiod_tp_id2"]) ? $contact["timeperiod_tp_id2"] : "")], ENT_QUOTES, "UTF-8")." (".(isset($contact["contact_service_notification_options"]) ? $contact["contact_service_notification_options"] : "").")",

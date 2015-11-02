@@ -140,3 +140,4 @@ if ($oreon->user->access->checkAction("host_comment")) {
 		$tpl->display("AddHostComment.ihtml");
     }
 }
+?>

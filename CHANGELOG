@@ -1,3 +1,36 @@
+## Centreon 2.6.6
+
+#3812: Strange display of service group details page with Centreon 2.6.3
+#3824: PHP Warning: array_map(): Argument #2 should be an array
+#3840: Centreon 2.6.4 : Wrong reporting graph data with default user language fr_FR.UTF-8
+#3846: [2.6.5] CRSF Token critical: Impossible to upgrade a plugin
+#3847: [2.6.5] split component switch
+#3852: [2.6.5] CSRF error appears in user massive change form
+#3854: Cannot add new macro after deleting all macros already created
+#3855: Cannot add new host template to host after deleting all templates
+#3861: Comments shows only "A"
+#3864: [2.6.5] CSRF when trying to upload a SNMP MiB
+
+## Centreon 2.6.5
+
+#3831: XSS injection in object lists (ZSL-2015-5266)
+#3835: CRSF Issues on Centreon (ZSL-2015-5263)
+#3821: Upgrade from 2.6.1 to 2.6.3 kill Centreon Frontend
+#3826: Split Component and zoom doesn't work
+#3827: Service Group Details page isn't displayed for non admin in Centreon 2.6.3
+#3837: Relation of passive service with SNMP traps problem with multihost link
+#3842: Full logs display on event logs page for a non admin user
+
+## Centreon 2.6.4
+
+#3793: Porblem when creating an empty hostgroup with non admin user
+#3795: Update Centreon Administration About page (forge -> Github)
+#3796: Problem when connect two time with same user in API
+#3797: Password in macro
+#3800: Current State Duration isn't displayed
+#3803: ACL : Manage multiple Resources group on the same ACL user group
+#3807: Unable to enable status option on main.cfg
+
 ## Centreon 2.6.3
 
 Bug fixes

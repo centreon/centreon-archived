@@ -837,7 +837,7 @@ sub run {
         if (-d $self->{cmdDir}) {
             opendir(my $dh, $self->{cmdDir});
             while (my $file = readdir($dh)) {
-                if ($file ne "." && $file ne ".." && $file ne "") {
+                if ($file ne "." && $file ne ".." && $file ne "" && $file !~ /.*_read$/	&& $file !~ /^\..*/) {
                     if ($self->moveCmdFile($self->{cmdDir} . $file) && open(FILE, "< ". $self->{cmdDir} . $file . "_read")) {
                         while (<FILE>){
                             $self->parseRequest($_);

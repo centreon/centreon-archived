@@ -39,6 +39,8 @@
 	if (!isset($centreon))
 		exit();
 
+        include_once("./class/centreonUtils.class.php");
+
 	include("./include/common/autoNumLimit.php");
 
 	/*
@@ -123,10 +125,10 @@
 		$elemArr[$i] = array(	"order" => $tabResources[1],
 								"MenuClass"=>"list_".$style,
 								"RowMenu_select"=>$selectedElements->toHtml(),
-								"RowMenu_name"=>$resource["resource_name"],
+								"RowMenu_name"=>CentreonUtils::escapeSecure($resource["resource_name"]),
 								"RowMenu_link"=>"?p=".$p."&o=c&resource_id=".$resource['resource_id'],
 								"RowMenu_values"=>substr($resource["resource_line"], 0, 40),
-								"RowMenu_comment"=>substr(html_entity_decode($resource["resource_comment"], ENT_QUOTES, "UTF-8"), 0, 40),
+								"RowMenu_comment"=>CentreonUtils::escapeSecure(substr(html_entity_decode($resource["resource_comment"], ENT_QUOTES, "UTF-8"), 0, 40)),
                                 "RowMenu_associated_poller" => getLinkedPollerList($resource['resource_id']),
 								"RowMenu_status"=>$resource["resource_activate"] ? _("Enabled") :  _("Disabled"),
 								"RowMenu_options"=>$moptions);
