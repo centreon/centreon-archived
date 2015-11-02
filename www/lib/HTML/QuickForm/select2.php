@@ -292,7 +292,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         
         if ($this->_ajaxSource) {
             $mainJsInit .= $this->setAjaxSource() . ',';
-            if ($this->_defaultDatasetRoute && (count($this->_defaultDataset) == 0)) {
+            if ($this->_defaultDatasetRoute) {
                 $additionnalJs .= $this->setDefaultAjaxDatas();
             }
         } else {
