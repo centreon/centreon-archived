@@ -757,7 +757,7 @@ if($engine == 'false'){
                                 var existingOptions = jQuery("#host_filter").find('option');
                                 var existFlag = false;
                                 existingOptions.each(function(el){
-                                    if(parseInt($(el).val()) == parseInt(elem.id)){
+                                    if(jQuery(this).val() == elem.id){
                                         existFlag = true;
                                     }
                                 });
