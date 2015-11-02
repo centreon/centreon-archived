@@ -109,8 +109,8 @@
 					<xsl:element name="a">
 						<xsl:attribute name="class">infobulle</xsl:attribute>
 						<xsl:element name="img">
-							<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-							<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
+							<xsl:attribute name="src">./img/icons/technician.png</xsl:attribute>
+							<xsl:attribute name="class">infobulle link_generic_info_volante ico-20</xsl:attribute>
 							<xsl:attribute name="id">ackspan_<xsl:value-of select="hid"/></xsl:attribute>
 							<xsl:attribute name="name"><xsl:value-of select="hackXml"/>|<xsl:value-of select="hackXsl"/></xsl:attribute>
 						</xsl:element>
@@ -118,7 +118,8 @@
 				</xsl:if>
 				<xsl:if test="hae = 0 and hpe = 1">
 					<xsl:element name="img">
-						<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+						<xsl:attribute name="src">./img/icons/passive_check.png</xsl:attribute>
+						<xsl:attribute name="class">ico-16</xsl:attribute>
 						<xsl:attribute name="title">
 							<xsl:value-of select='//i/host_passive_mode'/>
 						</xsl:attribute>
@@ -126,7 +127,8 @@
 				</xsl:if>
 				<xsl:if test="hae = 0 and hpe = 0">
 					<xsl:element name="img">
-						<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+						<xsl:attribute name="src">./img/icons/never_checked.png</xsl:attribute>
+						<xsl:attribute name="class">ico-16</xsl:attribute>
 						<xsl:attribute name="title">
 							<xsl:value-of select='//i/host_never_checked'/>
 						</xsl:attribute>
@@ -235,8 +237,8 @@
 				<xsl:element name="a">
 					<xsl:attribute name="class">infobulle</xsl:attribute>
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-					  	<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/technician.png</xsl:attribute>
+					  	<xsl:attribute name="class">infobulle link_generic_info_volante ico-20</xsl:attribute>
 						<xsl:attribute name="id">ackspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
 						<xsl:attribute name="name"><xsl:value-of select="ackXml"/>|<xsl:value-of select="ackXsl"/></xsl:attribute>
 					</xsl:element>
@@ -244,7 +246,8 @@
 			</xsl:if>
 			<xsl:if test="ac = 0 and pc = 1">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/passive_check.png</xsl:attribute>
+						<xsl:attribute name="class">ico-16</xsl:attribute>
 					  	<xsl:attribute name="title">					  	
 					  		<xsl:value-of select='//i/service_passive_mode'/>
 					  	</xsl:attribute>
@@ -252,7 +255,8 @@
 			</xsl:if>
 			<xsl:if test="ac = 0 and pc = 0">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/never_checked.png</xsl:attribute>
+						<xsl:attribute name="class">ico-16</xsl:attribute>
 					  	<xsl:attribute name="title">					  		
 					  		<xsl:value-of select='//i/service_not_active_not_passive'/>
 					  	</xsl:attribute>

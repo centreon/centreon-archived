@@ -136,8 +136,8 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 .line_downtime		{	background-color: #f1dfff;}
 .line_downtime:hover{	background-color: #e7c9ff;}
 
-.line_ack			{	background-color:<?php print $options["color_ack"]; ?>;}
-.line_ack:hover		{	background-color:<?php print $options["color_ack"]; ?>;}
+.line_ack			{	background-color: #fefc8e;}
+.line_ack:hover		{	background-color: #fcf17f;}
 
 /* Monitoring Side */
 
