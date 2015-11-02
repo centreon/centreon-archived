@@ -1,5 +1,7 @@
 <div id='globalView'>
-  <div class="toggleEdit edit"><a href="#" title="{$editMode}"><img src="./img/icons/edit-mode.png" class="ico-14"></a></div>
+  <div class="toggleEdit edit">
+    <a href="#" title="{$editMode}"><img src="./img/icons/edit-mode.png" class="ico-14"></a>
+  </div>
   <!-- Action bar -->
   <div id='actionBar' style="display: none;">
     <!-- Button for add a view -->
@@ -544,6 +546,7 @@ function toggleEdit(forceShow) {
     $el.removeClass('edit');
     jQuery('#actionBar').hide();
     jQuery('.portlet-header').hide();
+    $img1 = $el.find('img').attr('src','./img/icons/edit_mode.png');
     if (forceShow === undefined) {
       modeEdit = false;
     }
@@ -551,6 +554,9 @@ function toggleEdit(forceShow) {
     $el.addClass('edit');
     jQuery('#actionBar').show();
     jQuery('.portlet-header').show();
+    $el.find('img').attr('src','./img/icons/no_edit_mode.png').append('Hide edit mode');
+
+
     if (forceShow === undefined) {
       modeEdit = true;
     }
