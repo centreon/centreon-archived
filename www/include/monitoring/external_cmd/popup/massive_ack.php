@@ -133,8 +133,8 @@
 	$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
 	$form->setJsWarnings(_("Invalid information entered"), _("Please correct these fields"));
 
-	$form->addElement('button', 'submit', _("Acknowledge selected problems"), array("onClick" => "send_the_command();"));
-	$form->addElement('reset', 'reset', _("Reset"));
+	$form->addElement('button', 'submit', _("Acknowledge selected problems"), array("onClick" => "send_the_command();", "class" => "btc bt_info"));
+	$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
