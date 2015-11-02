@@ -201,32 +201,15 @@ $form->addElement(
     )
 );
 
-/*
- * Hosts Selection
- */
-/*$form->addElement('header', 'relation', _("Relations"));
-$ams1 = $form->addElement('advmultiselect', 'hc_hosts', array(_("Linked Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);*/
-
 $attrHost1 = array_merge(
     $attrHosts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=service&field=hc_hosts&id=' . $hc_id)
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=hostcategories&field=hc_hosts&id=' . $hc_id)
 );
 $form->addElement('select2', 'hc_hosts', _("Linked Hosts"), array(), $attrHost1);
 
-
-/*$ams1 = $form->addElement('advmultiselect', 'hc_hostsTemplate', array(_("Linked Host Template"), _("Available"), _("Selected")) , $hostTpl, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);*/
-
 $attrHost2 = array_merge(
     $attrHosttemplates,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=service&field=hc_hostsTemplate&id=' . $hc_id)
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=defaultValues&target=hostcategories&field=hc_hostsTemplate&id=' . $hc_id)
 );
 $ams1 = $form->addElement('select2', 'hc_hostsTemplate', _("Linked Host Template"), array(), $attrHost2);
 if (!$oreon->user->admin) {

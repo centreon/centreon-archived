@@ -908,5 +908,64 @@ class CentreonDowntime
 		}
 		return $list;
 	}
+    
+    /**
+     * 
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'downtime';
+        $parameters['currentObject']['id'] = 'dt_id';
+        $parameters['currentObject']['name'] = 'dt_name';
+        $parameters['currentObject']['comparator'] = 'dt_id';
+
+        switch ($field) {
+            case 'host_relation':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'downtime_host_relation';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'dt_id';
+                break;
+            case 'hostgroup_relation':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'hostgroup';
+                $parameters['externalObject']['id'] = 'hg_id';
+                $parameters['externalObject']['name'] = 'hg_name';
+                $parameters['externalObject']['comparator'] = 'hg_id';
+                $parameters['relationObject']['table'] = 'downtime_hostgroup_relation';
+                $parameters['relationObject']['field'] = 'hg_hg_id';
+                $parameters['relationObject']['comparator'] = 'dt_id';
+                break;
+            case 'svc_relation':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'service';
+                $parameters['externalObject']['id'] = 'service_id';
+                $parameters['externalObject']['name'] = 'service_description';
+                $parameters['externalObject']['comparator'] = 'service_id';
+                $parameters['relationObject']['table'] = 'downtime_service_relation';
+                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['comparator'] = 'dt_id';
+                break;
+            case 'svcgroup_relation':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'servicegroup';
+                $parameters['externalObject']['id'] = 'sg_id';
+                $parameters['externalObject']['name'] = 'sg_name';
+                $parameters['externalObject']['comparator'] = 'sg_id';
+                $parameters['relationObject']['table'] = 'downtime_servicegroup_relation';
+                $parameters['relationObject']['field'] = 'sg_sg_id';
+                $parameters['relationObject']['comparator'] = 'dt_id';
+                break;
+        }
+        
+        return $parameters;
+    }
 }
 ?>
