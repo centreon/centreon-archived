@@ -949,7 +949,7 @@ class CentreonService
     public function ajaxMacroControl($form){
 
         $macroArray = $this->getCustomMacro(null,true);
-        $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
+        $this->purgeOldMacroToForm($macroArray,$form,'fromTpl');
         $aListTemplate = array();
         if(isset($form['service_template_model_stm_id']) && !empty($form['service_template_model_stm_id'])){
              $aListTemplate = getListTemplates($this->db, $form['service_template_model_stm_id']);
@@ -981,7 +981,7 @@ class CentreonService
             $aMacroInService[] = $oCommand->getMacroByIdAndType($iIdCommande, 'service');
         }
 
-        $this->purgeOldMacroToForm(&$macroArray,&$form,'fromService',$aMacroInService);
+        $this->purgeOldMacroToForm($macroArray,$form,'fromService',$aMacroInService);
         
         
         //filter a macro
@@ -1063,7 +1063,7 @@ class CentreonService
                 $finalMacros[] = $choosedMacro;
             }
         }
-        $this->addInfosToMacro($storedMacros,&$finalMacros);
+        $this->addInfosToMacro($storedMacros,$finalMacros);
         return $finalMacros;
     }
     
@@ -1071,10 +1071,10 @@ class CentreonService
         
         foreach($finalMacros as &$finalMacro){
             $sInput = $finalMacro['macroInput_#index#'];
-            $this->setInheritedDescription(&$finalMacro,$this->getInheritedDescription($storedMacros[$sInput],$finalMacro));
+            $this->setInheritedDescription($finalMacro,$this->getInheritedDescription($storedMacros[$sInput],$finalMacro));
             switch($finalMacro['source']){
                 case 'direct' :
-                    $this->setTplValue($this->findTplValue($storedMacros[$sInput]),&$finalMacro);
+                    $this->setTplValue($this->findTplValue($storedMacros[$sInput]),$finalMacro);
                     break;
                 case 'fromTpl' : 
                     break;

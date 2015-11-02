@@ -968,7 +968,7 @@ class CentreonHost
     public function ajaxMacroControl($form){
 
         $macroArray = $this->getCustomMacro(null,'realKeys');
-        $this->purgeOldMacroToForm(&$macroArray,&$form,'fromTpl');
+        $this->purgeOldMacroToForm($macroArray,$form,'fromTpl');
         $aListTemplate = array();
         foreach($form['tpSelect'] as $template){
             $tmpTpl = array_merge(array(array('host_id' => $template, 'host_name' => $this->getOneHostName($template), 'command_command_id' => $this->getHostCommandId($template))),$this->getTemplateChain($template, array(), -1, true,"host_name,host_id,command_command_id"));
@@ -1003,7 +1003,7 @@ class CentreonHost
         }
     
         
-        $this->purgeOldMacroToForm(&$macroArray,&$form,'fromCommand',$aMacroInCommande);
+        $this->purgeOldMacroToForm($macroArray,$form,'fromCommand',$aMacroInCommande);
         
         
         
@@ -1128,7 +1128,7 @@ class CentreonHost
                 $finalMacros[] = $choosedMacro;
             }
         }
-        $this->addInfosToMacro($storedMacros,&$finalMacros);
+        $this->addInfosToMacro($storedMacros,$finalMacros);
         return $finalMacros;
     }
     
@@ -1136,10 +1136,10 @@ class CentreonHost
         
         foreach($finalMacros as &$finalMacro){
             $sInput = $finalMacro['macroInput_#index#'];
-            $this->setInheritedDescription(&$finalMacro,$this->getInheritedDescription($storedMacros[$sInput],$finalMacro));
+            $this->setInheritedDescription($finalMacro,$this->getInheritedDescription($storedMacros[$sInput],$finalMacro));
             switch($finalMacro['source']){
                 case 'direct' :
-                    $this->setTplValue($this->findTplValue($storedMacros[$sInput]),&$finalMacro);
+                    $this->setTplValue($this->findTplValue($storedMacros[$sInput]),$finalMacro);
                     break;
                 case 'fromTpl' : 
                     break;
