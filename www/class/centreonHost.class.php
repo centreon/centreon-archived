@@ -1208,58 +1208,6 @@ class CentreonHost
         return false;
     }
     
-    
-    
-    
-    /**
-     * This method remove duplicate macro by her name
-     * 
-     * @param array $aTempMacro
-     * @return array
-     */
-    /*
-    function macro_unique($aTempMacro)
-    {
-        $aFinalMacro = array();
-        
-        
-        $x = 0;
-        foreach($aTempMacro as $keyTmp=>$TempMacro){
-            $sInput = $TempMacro['macroInput_#index#'];
-            $existe = null;
-            if (count($aFinalMacro) > 0) {
-                foreach($aFinalMacro as $keyFinal=>$FinalMacro){
-                //for ($j = 0; $j < count($aFinalMacro); $j++ ) 
-                    if ($FinalMacro['macroInput_#index#'] == $sInput) {
-                        
-                        //store the template value when it is overloaded with direct macro
-                        if(isset($aFinalMacro[$keyFinal]['source']) 
-                        && $aFinalMacro[$keyFinal]['source'] == 'direct' 
-                        && !isset($aFinalMacro[$keyFinal]['macroTplValue_#index#']) && $aTempMacro[$keyTmp]['source'] == "fromTpl"){    
-                            $aFinalMacro[$keyFinal]['macroTplValue_#index#'] = $aTempMacro[$keyTmp]['macroValue_#index#'];
-                            $aFinalMacro[$keyFinal]['macroTplValToDisplay_#index#'] = 1;
-                        }else{
-                            $aFinalMacro[$keyFinal]['macroTplValToDisplay_#index#'] = 0;
-                            $aFinalMacro[$keyFinal]['macroTplValue_#index#'] = "";
-                        }
-                        //
-                        
-                        $existe = $keyFinal;
-                        break;
-                    }
-                }
-                if (is_null($existe)) {
-                    $aFinalMacro[] = $TempMacro;
-                } else {
-                    //$aFinalMacro[$existe] = $TempMacro;
-                }
-            } else {
-                $aFinalMacro[] = $TempMacro;
-            }
-        }
-        return $aFinalMacro;
-    }*/
-    
     /**
      * 
      * @param integer $field
@@ -1491,6 +1439,39 @@ class CentreonHost
         $rq .= "('".$iHostId."', '".$iServiceId."')";
        
         $DBRESULT = $this->db->query($rq);
+    }
+    
+    /**
+     * 
+     * @param array $values
+     * @return array
+     */
+    public function getObjectForSelect2($values = array(), $register = '1')
+    {
+        $selectedHosts = '';
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        } else {
+            $selectedHosts .= "AND h.host_id IN ($explodedValues) ";
+        }
+        
+        $queryHost = "SELECT DISTINCT h.host_name, h.host_id "
+            . "FROM host h, service s, host_service_relation hsr "
+            . 'WHERE hsr.host_host_id = h.host_id '
+            . "AND hsr.service_service_id = s.service_id "
+            . "AND h.host_register = '$register' "
+            . $selectedHosts
+            . "ORDER BY h.host_name";
+        
+        $DBRESULT = $this->db->query($queryHost);
+        
+        $hostList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $hostList[] = array('id' => htmlentities($data['host_id']), 'text' => htmlentities($data['host_name']));
+        }
+        
+        return $hostList;
     }
 }
 
