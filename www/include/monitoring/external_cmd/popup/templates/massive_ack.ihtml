@@ -1,30 +1,37 @@
 {$form.javascript}
 <form {$form.attributes}>
 	<div align=center>
-		 <table class="ListTableMedium">
-		 	<tr class="ListHeader"><td class="tactical_light_header"><img src="./img/icones/16x16/flag_red.gif">&nbsp;&nbsp;{$form.header.title}</td></tr>
-			<tr class="list_two">
-	            <td class="FormRowField" style='padding-left:15px;'>{$form.sticky.html}&nbsp;{$form.sticky.label}</td>
+		 <table class="table">
+                     <tr><td class="FormHeader" colspan='2'><h3 style="color: #00bfb3;">{$form.header.title}</h3></td></tr>
+			<tr>
+	            <td class="FormRowField" style='padding-left:15px;'>{$form.sticky.label}</td>
+                    <td class="FormRowValue" style='padding-left:15px;'>{$form.sticky.html}</td>
 	        </tr>
-			<tr class="list_one">
-				<td class="FormRowValue" style='padding-left:15px;'>{$form.notify.html}&nbsp;{$form.notify.label}</td>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$form.notify.label}</td>
+                                <td class="FormRowValue" style='padding-left:15px;'>{$form.notify.html}</td>
 			</tr>
-			<tr class="list_two">
-				<td class="FormRowValue" style='padding-left:15px;'>{$form.persistent.html}&nbsp;{$form.persistent.label}</td>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$form.persistent.label}</td>
+                                <td class="FormRowValue" style='padding-left:15px;'>{$form.persistent.html}</td>
 			</tr>
-			<tr class="list_one">
-				<td class="FormRowValue" style='padding-left:15px;'>{$authorlabel}&nbsp;:&nbsp;{$authoralias}</td>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$authorlabel}</td>
+                                <td class="FormRowValue" style='padding-left:15px;'>{$authoralias}</td>
 			</tr>
-			<tr class="list_two">
-				<td class="FormRowValue" style='padding-left:15px;padding-right:15px;'>{$form.comment.label}:<br />{$form.comment.html}</td>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;padding-right:15px;'>{$form.comment.label}</td>
+                                <td class="FormRowValue" style='padding-left:15px;padding-right:15px;'>{$form.comment.html}</td>
 			</tr>
 			{if $cmd == '72'}
-			<tr class="list_one">
-	            <td class="FormRowField" style='padding-left:15px;'>{$form.ackhostservice.html}&nbsp;{$form.ackhostservice.label}</td>
+			<tr>
+	            <td class="FormRowField" style='padding-left:15px;'>{$form.ackhostservice.label}</td>
+                    <td class="FormRowValue" style='padding-left:15px;'>{$form.ackhostservice.html}</td>
 	        </tr>
 			{/if}
-			<tr class="list_two">
-				<td class="FormRowValue" style='padding-left:15px;'>{$form.force_check.html}&nbsp;{$form.force_check.label}</td>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$form.force_check.label}</td>
+                                <td class="FormRowValue" style='padding-left:15px;'>{$form.force_check.html}</td>
 			</tr>
 		</table>
 		<div id="validForm">
