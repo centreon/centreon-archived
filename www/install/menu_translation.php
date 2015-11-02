@@ -155,6 +155,9 @@ echo _("Broker Statistics");
 echo _("Custom Views");
 echo _("Monitoring Engines");
 echo _("Extra");
+echo _("Services Grid");
+echo _("Services by Hostgroup");
+echo _("Services by Servicegroup");
 
 /* List select on Administration -> Log */
 
