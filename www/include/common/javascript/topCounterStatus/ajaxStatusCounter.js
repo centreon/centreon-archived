@@ -184,6 +184,6 @@ function reloadStatusCounter(_reload_time, _sid) {
 
 	xhrC.open("POST",_adrrsearchC,true);
 	xhrC.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhrC.send("&version="+_version+"&session_expire="+(_reload_time/1000));
+	xhrC.send("&session_expire="+(_reload_time/1000));
 	setTimeout('reloadStatusCounter("'+ _reload_time +'","'+ _sid +'")', _reload_time);
 }
