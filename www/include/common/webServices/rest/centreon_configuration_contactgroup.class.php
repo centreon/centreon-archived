@@ -76,7 +76,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
         $cg = new CentreonContactgroup($this->pearDB);
         $acl = new CentreonACL($centreon->user->user_id);
 
-        $cgAcl = $acl->getContactGroupAclConf(
+        $cgs = $acl->getContactGroupAclConf(
             array(
                 'fields'  => array('cg_id', 'cg_name'),
                 'get_row' => 'cg_name',
@@ -87,9 +87,6 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
                 'total' => true
             )
         );
-        //$cgLdap = $cg->getListContactgroup(true, true);
-        //$cgs = array_intersect_key($cgLdap, $cgAcl);
-        $cgs = $cgAcl;
         
         $contactgroupList = array();
         foreach ($cgs['items'] as $id => $contactgroup) {
