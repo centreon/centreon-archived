@@ -181,6 +181,7 @@ if (!is_null($host_id)) {
         $DBRESULT = $pearDBO->query($rq);
 
         $tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
+        $tab_class_service = array("ok" => 'service_ok', "warning" => 'service_warning', "critical" => 'service_critical', "unknown" => 'service_unknown', 'pending' => 'pending');
         while ($ndo = $DBRESULT->fetchRow()) {
             if (isset($ndo['performance_data'])) {
                 $ndo['performance_data'] = utf8_encode($ndo['performance_data']);
@@ -281,6 +282,10 @@ if (!is_null($host_id)) {
          */
         $oreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
         $service_status[$host_name."_".$svc_description]["status_color"] = $oreon->optGen["color_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])];
+        
+        $service_status[$host_name."_".$svc_description]["status_class"] = $tab_class_service[strtolower($service_status[$host_name."_".$svc_description]["current_state"])];
+        
+        
         $service_status[$host_name."_".$svc_description]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["last_check"]);
         $service_status[$host_name."_".$svc_description]["next_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_check"]);
         !$service_status[$host_name."_".$svc_description]["check_latency"] ? $service_status[$host_name."_".$svc_description]["check_latency"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_latency"] = $service_status[$host_name."_".$svc_description]["check_latency"] . " seconds";
