@@ -998,10 +998,10 @@ class CentreonACL {
         $tab = array();
         if ($this->admin) {
             $req = (!is_null($get_service_description)) ? ", s.service_description " : "";
-            $query = "SELECT h.host_id, s.service_id, " . $req
+            $query = "SELECT h.host_id, s.service_id " . $req
                 . "FROM host_service_relation hsr, host h, service s "
                 . "WHERE hsr.host_host_id = h.host_id "
-                . "AND h.host_activate = '1'"
+                . "AND h.host_activate = '1' "
                 . "AND hsr.service_service_id = s.service_id "
                 . "AND s.service_activate = '1' ";
             $DBRESULT = $pearDB->query($query);
