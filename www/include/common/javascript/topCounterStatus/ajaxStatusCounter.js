@@ -163,7 +163,7 @@ function reloadStatusCounter(_reload_time, _sid) {
 					}
 
 					if (_statistic_activity == 0) {
-						document.getElementById("activity").style.backgroundColor = "#ffffff";
+						document.getElementById("activity").style.backgroundColor = "##818285";
 					} else if (_statistic_activity == 1) {
 						document.getElementById("activity").style.backgroundColor = "#ff9a13";
 					} else if (_statistic_activity == 2) {
@@ -171,7 +171,7 @@ function reloadStatusCounter(_reload_time, _sid) {
 					}
 
 					if (_statistic_pollingState == 0) {
-						document.getElementById("pollingState").style.backgroundColor = "#ffffff";
+						document.getElementById("pollingState").style.backgroundColor = "#818285";
 					} else if (_statistic_pollingState == 1) {
 						document.getElementById("pollingState").style.backgroundColor = "#ff9a13";
 					} else if (_statistic_pollingState == 2) {
