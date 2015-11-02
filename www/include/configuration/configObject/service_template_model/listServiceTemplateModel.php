@@ -37,6 +37,8 @@ if (!isset($centreon)) {
 	exit();	
 }
 
+include_once("./class/centreonUtils.class.php");
+
 /*
  * Object init
  */
@@ -128,7 +130,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 	 * If the description of our Service Model is in the Template definition, we have to catch it, whatever the level of it :-)
 	 */
 	if (!$service["service_description"]) {
-		$service["service_description"] = getMyServiceName($service['service_template_model_stm_id']);		
+            $service["service_description"] = getMyServiceName($service['service_template_model_stm_id']);		
 	}
 
 	/*
@@ -183,17 +185,19 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 		$svc_icon = "./img/icons/service.png";
 	}
 
-	$elemArr[$i] = array("MenuClass" => "list_".$style,
-							"RowMenu_select" => $selectedElements->toHtml(),
-							"RowMenu_desc" => $service["service_description"],
-							"RowMenu_alias" => $service["service_alias"],
-							"RowMenu_parent" => $tplStr,
-							"RowMenu_icon" => $svc_icon,
-							"RowMenu_retry" => "$normal_check_interval $normal_units / $retry_check_interval $retry_units",
-							"RowMenu_attempts" => getMyServiceField($service['service_id'], "service_max_check_attempts"),
-							"RowMenu_link" => "?p=".$p."&o=c&service_id=".$service['service_id'],
-							"RowMenu_status" => $service["service_activate"] ? _("Enabled") : _("Disabled"),
-							"RowMenu_options" => $moptions);
+	$elemArr[$i] = array(
+            "MenuClass" => "list_".$style,
+            "RowMenu_select" => $selectedElements->toHtml(),
+            "RowMenu_desc" => CentreonUtils::escapeSecure($service["service_description"]),
+            "RowMenu_alias" => CentreonUtils::escapeSecure($service["service_alias"]),
+            "RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
+            "RowMenu_icon" => $svc_icon,
+            "RowMenu_retry" => CentreonUtils::escapeSecure("$normal_check_interval $normal_units / $retry_check_interval $retry_units"),
+            "RowMenu_attempts" => getMyServiceField($service['service_id'], "service_max_check_attempts"),
+            "RowMenu_link" => "?p=".$p."&o=c&service_id=".$service['service_id'],
+            "RowMenu_status" => $service["service_activate"] ? _("Enabled") : _("Disabled"),
+            "RowMenu_options" => $moptions
+        );
 	$style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
@@ -261,3 +265,4 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listServiceTemplateModel.ihtml");
+?>

@@ -39,6 +39,8 @@
 
 	require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
+        include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
+
 	include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 	include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
 	include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
@@ -222,32 +224,32 @@
 						}
 						$hg = $hg_name;
 						$obj->XML->startElement("hg");
-						$obj->XML->writeElement("hgn", $hg_name);
-						$obj->XML->writeElement("hgid", $tabHG[$hg_name]);
-                        $obj->XML->writeElement("action_url", $tabHGUrl[$hg_name]['action_url']);
-                        $obj->XML->writeElement("notes_url", $tabHGUrl[$hg_name]['notes_url']);
+                                                $obj->XML->writeElement("hgn", CentreonUtils::escapeSecure($hg_name));
+                                                $obj->XML->writeElement("hgid", CentreonUtils::escapeSecure($tabHG[$hg_name]));
+                                                $obj->XML->writeElement("action_url", $tabHGUrl[$hg_name]['action_url']);
+                                                $obj->XML->writeElement("notes_url", $tabHGUrl[$hg_name]['notes_url']);
 					}
 					$obj->XML->startElement("l");
 					$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 					if (isset($tabService[$host_name]["tab_svc"])) {
 						foreach ($tabService[$host_name]["tab_svc"] as $svc => $state) {
 							$obj->XML->startElement("svc");
-							$obj->XML->writeElement("sn", $svc);
-							$obj->XML->writeElement("snl", urlencode($svc));
+							$obj->XML->writeElement("sn", CentreonUtils::escapeSecure($svc));
+							$obj->XML->writeElement("snl", CentreonUtils::escapeSecure(urlencode($svc)));
 							$obj->XML->writeElement("sc", $obj->colorService[$state]);
 							$obj->XML->writeElement("svc_id", $svcObj->getServiceId($svc, $host_name));
 							$obj->XML->endElement();
 						}
 					}
 					$obj->XML->writeElement("o", $ct);
-					$obj->XML->writeElement("hn", $host_name, false);
+					$obj->XML->writeElement("hn", CentreonUtils::escapeSecure($host_name), false);
 					if (isset($tab["icon"]) && $tab["icon"]) {
 						$obj->XML->writeElement("hico", $tab["icon"]);
 					} else {
 						$obj->XML->writeElement("hico", "none");
 					}
-					$obj->XML->writeElement("hnl", urlencode($host_name));
-					$obj->XML->writeElement("hid", $tabH[$host_name]);
+					$obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
+					$obj->XML->writeElement("hid", CentreonUtils::escapeSecure($tabH[$host_name]));
 					$obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
 					$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
 					$obj->XML->writeElement("hcount", $count);

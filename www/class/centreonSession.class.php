@@ -90,6 +90,16 @@ class CentreonSession
         	return 0;
        	}
 	}
+    
+    public static function getUser($sessionId, $pearDB)
+    {
+        $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE `session_id` LIKE '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'");
+        $row = $DBRESULT->fetchRow();
+        if (!$row) {
+            return 0;
+        }
+        return $row['user_id'];
+    }
 
 } /* end class Session */
 ?>

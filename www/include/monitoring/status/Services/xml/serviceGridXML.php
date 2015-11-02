@@ -40,10 +40,12 @@
 
 	require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
-	include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
-	include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
-	include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
-    include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
+        include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
+
+        include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
+        include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
+        include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+        include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 
 	/*
 	 * Create XML Request Objects
@@ -183,8 +185,8 @@
 			if (isset($tab["tab_svc"])) {
 				foreach ($tab["tab_svc"] as $svc => $state) {
 					$obj->XML->startElement("svc");
-					$obj->XML->writeElement("sn", $svc, false);
-					$obj->XML->writeElement("snl", urlencode($svc));
+					$obj->XML->writeElement("sn", CentreonUtils::escapeSecure($svc), false);
+					$obj->XML->writeElement("snl", CentreonUtils::escapeSecure(urlencode($svc)));
 					$obj->XML->writeElement("sc", $obj->colorService[$state]);
 					$obj->XML->writeElement("svc_id", $svcObj->getServiceId($svc, $host_name));
 					$obj->XML->endElement();
@@ -194,7 +196,7 @@
 			$obj->XML->writeElement("ico", $tabIcone[$host_name]);
 			$obj->XML->writeElement("hn", $host_name, false);
 			$obj->XML->writeElement("hid", $tab["hid"], false);
-			$obj->XML->writeElement("hnl", urlencode($host_name));
+			$obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
 			$obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);
 			$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
 			$obj->XML->endElement();

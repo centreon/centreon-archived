@@ -286,17 +286,6 @@
 	           		<td>
 						<xsl:element name='input'>
 							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi); return false;</xsl:attribute>
-							<xsl:attribute name="name">split</xsl:attribute>
-							<xsl:attribute name="type">checkbox</xsl:attribute>
-							<xsl:if test="//splitvalue = 1">
-								<xsl:attribute name="checked">checked</xsl:attribute>
-							</xsl:if>
-						</xsl:element>
-						<xsl:value-of select="//lang/giv_split_component"/>
-	           		</td>
-	           		<td>
-						<xsl:element name='input'>
-							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi); return false;</xsl:attribute>
 							<xsl:attribute name="name">status</xsl:attribute>
 							<xsl:attribute name="type">checkbox</xsl:attribute>
 							<xsl:if test="//status = 1">

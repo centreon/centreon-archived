@@ -39,6 +39,7 @@ include_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonCriticality.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonMedia.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 
 /*
  * Create XML Request Objects
@@ -309,11 +310,11 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("hc", 	$obj->colorHost[$ndo["state"]]);
     $obj->XML->writeElement("f", 	$flag);
     $obj->XML->writeElement("hid",	$ndo["host_id"]);
-    $obj->XML->writeElement("hn",	$ndo["name"], false);
-    $obj->XML->writeElement("hnl",	urlencode($ndo["name"]));
-    $obj->XML->writeElement("a", 	($ndo["address"] ? $ndo["address"] : "N/A"));
-    $obj->XML->writeElement("ou", 	($ndo["output"] ? $ndo["output"] : "N/A"));
-    $obj->XML->writeElement("lc", 	($ndo["last_check"] != 0 ? $obj->GMT->getDate($dateFormat, $ndo["last_check"]) : "N/A"));
+    $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($ndo["name"]), false);
+    $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($ndo["name"])));
+    $obj->XML->writeElement("a", 	($ndo["address"] ? CentreonUtils::escapeSecure($ndo["address"]) : "N/A"));
+    $obj->XML->writeElement("ou", 	($ndo["output"] ? CentreonUtils::escapeSecure($ndo["output"]) : "N/A"));
+    $obj->XML->writeElement("lc", 	($ndo["last_check"] != 0 ? CentreonUtils::escapeSecure($obj->GMT->getDate($dateFormat, $ndo["last_check"])) : "N/A"));
     $obj->XML->writeElement("cs", 	_($obj->statusHost[$ndo["state"]]), false);
     $obj->XML->writeElement("pha", 	$ndo["acknowledged"]);
     $obj->XML->writeElement("pce", 	$ndo["passive_checks"]);
@@ -335,7 +336,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
         $obj->XML->writeElement("hci", 1); // has criticality
         $critData = $criticality->getData($critCache[$ndo['host_id']]);                    
         $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
-        $obj->XML->writeElement("cih", $critData['name']);
+        $obj->XML->writeElement("cih", CentreonUtils::escapeSecure($critData['name']));
     } else {
         $obj->XML->writeElement("hci", 0); // has no criticality
     }
@@ -357,7 +358,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
 
     $hostObj = new CentreonHost($obj->DB);
     if ($ndo["notes"] != "") {
-        $obj->XML->writeElement("hnn", $hostObj->replaceMacroInString($ndo["name"], str_replace("\$HOSTNAME\$", $ndo["name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes"]))));
+        $obj->XML->writeElement("hnn", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($ndo["name"], str_replace("\$HOSTNAME\$", $ndo["name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes"])))));
     } else {
         $obj->XML->writeElement("hnn", "none");
     }
@@ -373,7 +374,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
         $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$ndo['state']], $str);
 
         $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'), $str);
-        $obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["name"], $str));
+        $obj->XML->writeElement("hnu", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($ndo["name"], $str)));
     } else {
         $obj->XML->writeElement("hnu", "none");
     }
@@ -389,7 +390,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
         $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$ndo['state']], $str);
 
         $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'), $str);
-        $obj->XML->writeElement("hau", $hostObj->replaceMacroInString($ndo["name"], $str));
+        $obj->XML->writeElement("hau", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($ndo["name"], $str)));
     } else {
         $obj->XML->writeElement("hau", "none");
     }
