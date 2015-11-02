@@ -281,7 +281,7 @@ $form->addElement('select2', 'esc_hosts', _("Hosts"), $hosts, array('multiple' =
 $form->addElement('header', 'services', _("Implied Services"));
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
-    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultEscalationValues&q=' . $esc_id,
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultEscalationValues&id=' . $esc_id,
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
     'multiple' => true
 );

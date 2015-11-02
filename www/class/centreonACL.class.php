@@ -677,7 +677,6 @@ class CentreonACL {
     /*
      *  Service categories Getter
      */
-
     public function getServiceCategories() {
         return $this->serviceCategories;
     }
@@ -1163,14 +1162,14 @@ class CentreonACL {
                     if ($data['action'] == 'ADD') {
                         // Put new entries in the table with group_id
                         foreach ($groupIds as $group_id) {
-                            $request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('" . $host_id . "', NULL, '$host_name', NULL, " . $group_id . ")";
+                            $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) VALUES ('" . $host_id . "', NULL, " . $group_id . ")";
                             $pearDBO->query($request2);
                         }
 
                         // Insert services
                         $svc = getMyHostServices($data['id']);
                         foreach ($svc as $svc_id => $svc_name) {
-                            $request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('" . $data["id"] . "', $svc_id, '$host_name', '$svc_name', " . $group_id . ")";
+                            $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) VALUES ('" . $data["id"] . "', '" . $svc_id . "', " . $group_id . ")";
                             $pearDBO->query($request2);
                         }
                     } else if ($data['action'] == 'DUP' && isset($data['duplicate_host'])) {
@@ -1179,14 +1178,14 @@ class CentreonACL {
                         $DBRESULT = $pearDBO->query($request);
                         while ($row = $DBRESULT->fetchRow()) {
                             // Insert New Host
-                            $request1 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('" . $data["id"] . "', NULL, '$host_name', NULL, " . $row['group_id'] . ")";
+                            $request1 = "INSERT INTO centreon_acl (host_id, service_id, group_id) VALUES ('" . $data["id"] . "', NULL, " . $row['group_id'] . ")";
                             $pearDBO->query($request1);
 
                             // Insert services
-                            $request = "SELECT service_description, service_id, group_id FROM centreon_acl WHERE host_id = " . $data['duplicate_host'] . " AND service_id IS NOT NULL";
+                            $request = "SELECT service_id, group_id FROM centreon_acl WHERE host_id = " . $data['duplicate_host'] . " AND service_id IS NOT NULL";
                             $DBRESULT = $pearDBO->query($request);
                             while ($row = $DBRESULT->fetchRow()) {
-                                $request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('" . $data["id"] . "', " . getMyServiceID($row["service_description"], $data["id"]) . ", '$host_name', '" . $row["service_description"] . "', " . $row['group_id'] . ")";
+                                $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) VALUES ('" . $data["id"] . "', '" . $row["service_id"] . "', " . $row['group_id'] . ")";
                                 $pearDBO->query($request2);
                             }
                         }
@@ -1200,7 +1199,7 @@ class CentreonACL {
                         if ($data['action'] == 'ADD') {
                             // Put new entries in the table with group_id
                             foreach ($groupIds as $group_id) {
-                                $request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('" . $host_id . "', '" . $data["id"] . "', '$host_name', '$svc_name', " . $group_id . ")";
+                                $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) VALUES ('" . $host_id . "', '" . $data["id"] . "', " . $group_id . ")";
                                 $pearDBO->query($request2);
                             }
                         } else if ($data['action'] == 'DUP' && isset($data['duplicate_service'])) {
@@ -1208,7 +1207,7 @@ class CentreonACL {
                             $request = "SELECT group_id FROM centreon_acl WHERE host_id = $host_id AND service_id = " . $data['duplicate_service'];
                             $DBRESULT = $pearDBO->query($request);
                             while ($row = $DBRESULT->fetchRow()) {
-                                $request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('" . $host_id . "', '" . $data["id"] . "', '$host_name', '$svc_name', " . $row['group_id'] . ")";
+                                $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) VALUES ('" . $host_id . "', '" . $data["id"] . "', " . $row['group_id'] . ")";
                                 $pearDBO->query($request2);
                             }
                         }
@@ -1576,8 +1575,8 @@ class CentreonACL {
             $query = $request['select'] . $request['fields'] . " "
                 . "FROM host "
                 . $emptyJoin
-                . "WHERE host_activate = '1' "
-                . "AND host_register = '1' "
+                . "WHERE host_register = '1' "
+                . "AND host_activate = '1' "
                 . $searchCondition;
         } else {
             $groupIds = array_keys($this->accessGroups);
@@ -1585,13 +1584,14 @@ class CentreonACL {
                 $empty_join .= "AND $db_name_acl.centreon_acl.service_id IS NOT NULL ";
             }
             $query = $request['select'] . $request['fields'] . " "
-                . "FROM host, $db_name_acl.centreon_acl "
-                . $empty_join
-                . "WHERE host.host_activate = '1' "
-                . "AND host.host_register = '1' "
-                . $searchCondition
+                . "FROM host "
+                . "JOIN $db_name_acl.centreon_acl "
+                . "ON $db_name_acl.centreon_acl.host_id = host.host_id "
                 . "AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") "
-                . "AND $db_name_acl.centreon_acl.host_id = host.host_id ";
+                . $empty_join
+                . "WHERE host.host_register = '1' "
+                . "AND host.host_activate = '1' "
+                . $searchCondition;
         }
 
         $query .= $request['order'] . $request['pages'];
@@ -1631,7 +1631,8 @@ class CentreonACL {
                 . "AND hsr.service_service_id = s.service_id "
                 . "AND s.service_activate = '1' "
                 . ") UNION ALL ("
-                . $request['select'] . $request['fields'] . " FROM host h, hostgroup_relation hgr, service s, host_service_relation hsr "
+                . $request['select'] . $request['fields'] . " "
+                . "FROM host h, hostgroup_relation hgr, service s, host_service_relation hsr "
                 . "WHERE h.host_id = '" . CentreonDB::escape($host_id) . "' AND h.host_activate = '1' AND h.host_register = '1' "
                 . "AND h.host_id = hgr.host_host_id "
                 . "AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id "

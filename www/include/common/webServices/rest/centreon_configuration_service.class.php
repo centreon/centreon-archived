@@ -206,20 +206,20 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
     public function getDefaultEscalationValues()
     {
         $defaultValues = array();
-        
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
+
+        // Get Object targeted
+        if (isset($this->arguments['id']) && !empty($this->arguments['id'])) {
+            $id = $this->arguments['id'];
         } else {
-            $q = $this->arguments['q'];
+            throw new RestBadRequestException("Bad parameters id");
         }
-        
+
         $queryService = "SELECT distinct host_host_id, host_name, service_service_id, service_description
             FROM service s, escalation_service_relation esr, host h
             WHERE s.service_id = esr.service_service_id
             AND esr.host_host_id = h.host_id
             AND h.host_register = '1'
-            AND esr.escalation_esc_id = " . $q;
+            AND esr.escalation_esc_id = " . $id;
         $DBRESULT = $this->pearDB->query($queryService);
         
         while ($data = $DBRESULT->fetchRow()) {
