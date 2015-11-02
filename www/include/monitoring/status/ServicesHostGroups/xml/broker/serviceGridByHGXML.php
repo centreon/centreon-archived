@@ -94,7 +94,7 @@
 			" AND h.enabled = '1' AND hg.enabled = 1 ".
 			" AND h.name not like '_Module_%'";
 	if (!$obj->is_admin) {
-		$rq1 .= $obj->access->queryBuilder("AND", "h.name", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
+		$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
 	}
 	if ($instance != -1) {
 		$rq1 .= 	" AND h.instance_id = ".$instance;
@@ -121,7 +121,7 @@
 		$rq1 .= " AND hg.hostgroup_id IN (" . $hostgroups . ")";
 	}
 	$rq1 .= " AND h.enabled = 1 ";
-	$rq1 .= " ORDER BY $sort_type, host_name $order ";
+	$rq1 .= " ORDER BY $sort_type, hg.name $order ";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 	$tabH = array();
@@ -161,7 +161,7 @@
 			 " AND h.name NOT LIKE '_Module_%' ".
 			 " AND h.enabled = '1' " .
 			 " AND s.enabled = '1' ";
-	$rq1 .= $obj->access->queryBuilder("AND", "h.name", "centreon_acl.host_name") . $obj->access->queryBuilder("AND","s.description", "centreon_acl.service_description") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
+	$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") . $obj->access->queryBuilder("AND","s.service_id", "centreon_acl.service_id") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
 	if ($o == "svcgrid_pb" || $o == "svcOVHG_pb" || $o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
 		$rq1 .= " AND s.state != 0 AND s.state != 4 ";
 	}

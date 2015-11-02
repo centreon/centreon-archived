@@ -33,6 +33,7 @@
  *
  */
 
+
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
@@ -51,7 +52,6 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
     public function __construct()
     {
         parent::__construct();
-        $brk = new CentreonBroker($this->pearDB);
         $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
     
@@ -80,21 +80,34 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryHostgroup = "SELECT DISTINCT hg.hg_name, hg.hg_id "
+        $queryHostgroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.hg_name, hg.hg_id "
             . "FROM hostgroup hg "
             . "WHERE hg.hg_name LIKE '%$q%' "
             . $aclHostgroups
-            . "ORDER BY hg.hg_name";
+            . "ORDER BY hg.hg_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryHostgroup);
         
+        $total = $this->pearDB->numberRows();
+
         $hostgroupList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $hostgroupList[] = array('id' => htmlentities($data['hg_id']), 'text' => $data['hg_name']);
         }
         
-        return $hostgroupList;
+        return array(
+            'items' => $hostgroupList,
+            'total' => $total
+        );
     }
     
     public function getHostList(){
@@ -120,21 +133,36 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         } else {
             $hgid = $this->arguments['hgid'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryHostgroup = "SELECT DISTINCT h.host_name , h.host_id "
+        $queryHostgroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name , h.host_id "
             . "FROM hostgroup hg "
             . "INNER JOIN hostgroup_relation hgr ON hg.hg_id = hgr.hostgroup_hg_id "
             . "INNER JOIN host h ON  h.host_id = hgr.host_host_id "
             . "WHERE hg.hg_id IN (".$hgid.") "
-            . $aclHostgroups.$aclHosts;
+            . $aclHostgroups
+            . $aclHosts
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryHostgroup);
+
+        $total = $this->pearDB->numberRows();
+
         $hostList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $hostList[] = array('id' => htmlentities($data['host_id']), 'text' => $data['host_name']);
         }
-        
-        return $hostList;
+ 
+        return array(
+            'items' => $hostList,
+            'total' => $total
+        );       
     }
     
 }

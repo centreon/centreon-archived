@@ -39,18 +39,11 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationManufacturer extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type 
-     */
-    protected $pearDBMonitoring;
-
-    /**
      * 
      */
     public function __construct()
     {
         parent::__construct();
-        $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
     
     /**
@@ -65,19 +58,32 @@ class CentreonConfigurationManufacturer extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryTimeperiod = "SELECT id, name "
+        $queryTimeperiod = "SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name "
             . "FROM traps_vendor "
             . "WHERE name LIKE '%$q%' "
-            . "ORDER BY name";
+            . "ORDER BY name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryTimeperiod);
+
+        $total = $this->pearDB->numberRows();
         
         $manufacturerList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $manufacturerList[] = array('id' => $data['id'], 'text' => $data['name']);
         }
         
-        return $manufacturerList;
+        return array(
+            'items' => $manufacturerList,
+            'total' => $total
+        );
     }
 }
