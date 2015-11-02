@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
 	exit();
 }
 
@@ -88,22 +88,22 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		 */
 		$acldb = $oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO;
 		$hg = array();
-                    if ($oreon->user->access->admin) {
-                        $query = "SELECT hg_id, hg_name
-                                  FROM hostgroup
-                                  WHERE hg_activate = '1' 
-                                  ORDER BY hg_name";
-                    } else {
-                        $query = "SELECT DISTINCT hg.hg_id, hg.hg_name " .
-                                 "FROM hostgroup hg, acl_resources_hg_relations arhr " .
-                                 "WHERE hg.hg_id = arhr.hg_hg_id " .
-                                 "AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
-                                 "AND hg.hg_activate = '1' ".
-                                 "AND hg.hg_id in (SELECT hostgroup_hg_id
-                                                   FROM hostgroup_relation
-                                                   WHERE host_host_id IN (".$oreon->user->access->getHostsString("ID", $acldb).")) " .
-                                 "ORDER BY hg.hg_name";
-                    }
+        if ($oreon->user->access->admin) {
+            $query = "SELECT hg_id, hg_name
+                      FROM hostgroup
+                      WHERE hg_activate = '1' 
+                      ORDER BY hg_name";
+        } else {
+            $query = "SELECT DISTINCT hg.hg_id, hg.hg_name " .
+                     "FROM hostgroup hg, acl_resources_hg_relations arhr " .
+                     "WHERE hg.hg_id = arhr.hg_hg_id " .
+                     "AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
+                     "AND hg.hg_activate = '1' ".
+                     "AND hg.hg_id in (SELECT hostgroup_hg_id
+	                   FROM hostgroup_relation
+                       WHERE host_host_id IN (".$oreon->user->access->getHostsString("ID", $acldb).")) " .
+	                 "ORDER BY hg.hg_name";
+        }
 		$res = $pearDB->query($query);
 		while ($row = $res->fetchRow()) {
 		    $hg[$row['hg_id']] = $row['hg_name'];
@@ -257,7 +257,7 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		            }
 		        }
 		    }
-			require_once("viewHostDowntime.php");
+			require_once("listDowntime.php");
 	    } else {
 			/*
 			 * Smarty template Init

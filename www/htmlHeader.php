@@ -45,7 +45,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <title>Centreon - IT & Network Monitoring</title>
 <link rel="shortcut icon" href="./img/favicon.ico"/>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved." />
+<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2015 Open Source Matters. All rights reserved." />
 <meta name="robots" content="index, nofollow" />
 <link href="<?php echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?><?php echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
@@ -58,12 +58,12 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <link href="./include/common/javascript/jquery/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css"/>
 <?php
 
-    // == Declare CSS for modules
-    foreach ($oreon->modules as $module_name => $infos) {
-        if (file_exists(_CENTREON_PATH_."www/modules/".$module_name."/static/css/styles.css")) {
-            print "<link href='./modules/".$module_name."/static/css/styles.css' rel='stylesheet' type='text/css' />\n";
-        }
+// == Declare CSS for modules
+foreach ($oreon->modules as $module_name => $infos) {
+    if (file_exists(_CENTREON_PATH_."www/modules/".$module_name."/static/css/styles.css")) {
+        print "<link href='./modules/".$module_name."/static/css/styles.css' rel='stylesheet' type='text/css' />\n";
     }
+}
 
 ?>
 <script type="text/javascript" src="./include/common/javascript/scriptaculous/prototype.js"></script>
@@ -84,6 +84,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <script type="text/javascript" src="./include/common/javascript/centreon/notifier.js"></script>
 <script type="text/javascript" src="./include/common/javascript/centreon/multiselectResizer.js"></script>
 <script type="text/javascript" src="./include/common/javascript/centreon/popin.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/jquery.nicescroll.min.js"></script>
 <?php } ?>
 <script type="text/javascript" src="./class/centreonToolTip.js"></script>
 <?php
@@ -94,20 +95,13 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 if ($centreon->user->access->admin == 0) {
     $tabActionACL = $centreon->user->access->getActions();
     if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
-        print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js.php\"></script>\n";
+        print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
     }
     unset($tabActionACL);
 } else {
     if ($min != 1) {
-        print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js.php\"></script>\n";
+        print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
     }
-}
-
-/*
- * Add Template CSS for sysInfos Pages
- */
-if (isset($p) && strstr($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css")) {
-    echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
 }
 
 global $search, $search_service;
@@ -121,7 +115,7 @@ if (isset($centreon->historySearch[$url]) && !isset($_GET["search"]))
 $searchStrSVC = "";
 if (isset($_GET["search_service"])) {
     $searchStrSVC = "search_service=".htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8");
-    if($searchStr == ""){
+    if ($searchStr == ""){
         $searchStrSVC = "&".$searchStrSVC;
     }
     $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8");
@@ -130,16 +124,13 @@ if (isset($_GET["search_service"])) {
     $searchStr .= "search_service=".$centreon->historySearchService[$url];
 }
 
-print "<script type='text/javascript' src='./include/common/javascript/codebase/dhtmlxtree.php?".$searchStr.$searchStrSVC."'></script>\n";
-
 /*
  * include javascript
  */
-
 $res = null;
 $DBRESULT = $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 while ($topology_js = $DBRESULT->fetchRow()) {
-    if ($topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js" && $topology_js['PathName_js'] != "./include/common/javascript/codebase/dhtmlxtree.js") {
+    if ($topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js") {
         if ($topology_js['PathName_js'] != "") {
             echo "<script type='text/javascript' src='".$topology_js['PathName_js']."'></script>\n";
         }

@@ -271,8 +271,7 @@ if (($o == "c" || $o == "w") && $host_id) {
         $cmdId = "";
     }
 
-    $aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId);
-
+    $aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId, $_POST);
 }
 /*
  * Preset values of macros
@@ -502,15 +501,6 @@ $CentreonGMT = new CentreonGMT($pearDB);
 
 $GMTList = $CentreonGMT->getGMTList($pearDB);
 
-/*
-$form->addElement('select', 'host_location', _("Timezone / Location"), $GMTList);
-
-if ($o != "mc")
-    $form->setDefaults(array('host_location' => $oreon->optGen["gmt"]));
-if (!isset($host["host_location"]))
-    $host["host_location"] = NULL;
-unset($GMTList);
-*/
 $attrTimezones = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
@@ -569,13 +559,6 @@ $cloneSetMacro[] = $form->addElement(
 $cloneSetMacro[] = $form->addElement(
     'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
 );
-
-
-/*
-$cloneSetMacro[] = $form->addElement(
-    'button', 'reset[#index#]', _('Reset'), array('id' => 'resetMacro_#index#')
-);*/
-
 
 
 $cloneSetTemplate = array();

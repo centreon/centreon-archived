@@ -258,7 +258,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             . '%%DEFAULT_SELECTED_VALUES%%'
             . '</select>';
         if(!$this->_allowClear){
-            $strHtml .= '<span style="cursor:pointer;" class="clearAllSelect2">x</span>';
+            $strHtml .= '<span style="cursor:pointer;" class="clearAllSelect2" title="Clear field" ><img src="./img/icons/circle-cross.png" class="ico-14" /></span>';
         }
         
         $strHtml .= $this->getJsInit();
@@ -454,6 +454,31 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     {
         $strFrozenHtml = '';
         return $strFrozenHtml;
+    }
+    
+    function onQuickFormEvent($event, $arg, &$caller)
+    {
+        if ('updateValue' == $event) {
+            $value = $this->_findValue($caller->_constantValues);
+            if (null === $value) {
+                $value = $this->_findValue($caller->_submitValues);
+                // Fix for bug #4465 & #5269
+                // XXX: should we push this to element::onQuickFormEvent()?
+                if (null === $value && (!$caller->isSubmitted() || !$this->getMultiple())) {
+                    $value = $this->_findValue($caller->_defaultValues);
+                }
+            }
+            if (null !== $value) {
+                if (!is_array($value)) {
+                    $value = array($value);
+                }
+                $this->_defaultDataset = $value;
+                $this->setFixedDatas();
+            }
+            return true;
+        } else {
+            return parent::onQuickFormEvent($event, $arg, $caller);
+        }
     }
 }
 

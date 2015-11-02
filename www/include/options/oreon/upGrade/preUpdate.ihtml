@@ -1,9 +1,0 @@
-{if $msgErr != ''}
-	<div class="error">{$msgErr}</div>
-{/if}
-{if $output != ''}
-	<div class="update_output">{$output}</div>
-{/if}
-{if $readme != ''}
-	<div class="update_readme">{$readme}</div>
-{/if}

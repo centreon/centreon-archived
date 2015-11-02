@@ -634,6 +634,24 @@ class CentreonService
         }
     }
     
+    public function getMacroFromForm($form,$fromKey){
+     
+        $Macros = array();
+        if(!empty($form['macroInput'])){
+            foreach($form['macroInput'] as $key=>$macroInput){
+                if($form['macroFrom'][$key] == $fromKey){
+                    $macroTmp = array();
+                    $macroTmp['macroInput_#index#'] = $macroInput;
+                    $macroTmp['macroValue_#index#'] = $form['macroValue'][$key];
+                    $macroTmp['macroPassword_#index#'] = isset($form['is_password'][$key]) ? 1 : NULL;
+                    $macroTmp['macroDescription_#index#'] = isset($form['description'][$key]) ? $form['description'][$key] : NULL;
+                    $macroTmp['macroDescription'] = isset($form['description'][$key]) ? $form['description'][$key] : NULL;
+                    $Macros[] = $macroTmp;
+                }
+            }
+        }
+        return $Macros;
+    }
     
     /**
      * This method get the macro attached to the service
@@ -644,19 +662,21 @@ class CentreonService
      * 
      * @return array
      */
-    public function getMacros($iServiceId, $aListTemplate, $iIdCommande)
+    public function getMacros($iServiceId, $aListTemplate, $iIdCommande, $form = array())
     {
         
-        $aMacro = array();
-        $macroArray = array();
-        $aMacroInService = array();
+        //$aMacro = array();
+        //$macroArray = array();
+        //$aMacroInCommande = array();
+        //$aMacroInService = array();
+        //$aMacroTemplate = array();
         
-        //Get macro attached to the service
         $macroArray = $this->getCustomMacroInDb($iServiceId);
-        $iNb = count($macroArray);
-
-        //Get macro attached to the template
-        $aMacroTemplate = array();
+        
+        $macroArray = array_merge($macroArray,$this->getMacroFromForm($form,"direct"));
+        
+        $aMacroInService = $this->getMacroFromForm($form,"fromService");
+        //Get macro attached to the host
         
         // clear current template/service from the list.
         unset($aListTemplate[count($aListTemplate) - 1]);
@@ -665,6 +685,7 @@ class CentreonService
                 $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_id'],$template);
             }
         }
+        $aMacroTemplate[] = $this->getMacroFromForm($form,"fromTpl");
         
         if(empty($iIdCommande)){
             foreach($aListTemplate as $template){
@@ -678,20 +699,20 @@ class CentreonService
         //Get macro attached to the command        
         if (!empty($iIdCommande)) {
             $oCommand = new CentreonCommand($this->db);
-            $aMacroInService[] = $oCommand->getMacroByIdAndType($iIdCommande, 'service');
+            $aMacroInService = array_merge($aMacroInService,$oCommand->getMacroByIdAndType($iIdCommande, 'service'));
         }
         
         
 
         //filter a macro
         $aTempMacro = array();
-        $serv = current($aMacroInService);
+        //$serv = current($aMacroInService);
         if (count($aMacroInService) > 0) {
-            for ($i = 0; $i < count($serv); $i++) {
-                $serv[$i]['macroOldValue_#index#'] = $serv[$i]["macroValue_#index#"];
-                $serv[$i]['macroFrom_#index#'] = 'fromService';
-                $serv[$i]['source'] = 'fromService';
-                $aTempMacro[] = $serv[$i];
+            for ($i = 0; $i < count($aMacroInService); $i++) {
+                $aMacroInService[$i]['macroOldValue_#index#'] = $aMacroInService[$i]["macroValue_#index#"];
+                $aMacroInService[$i]['macroFrom_#index#'] = 'fromService';
+                $aMacroInService[$i]['source'] = 'fromService';
+                $aTempMacro[] = $aMacroInService[$i];
             }
         }
         

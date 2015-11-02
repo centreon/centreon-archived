@@ -6,8 +6,8 @@
 /* MySQL configuration file */
 define('_CENTREON_ETC_', '@CENTREON_ETC@');
 
-if (file_exists("@CENTREON_ETC@/centreon.conf.php")) {
-    include_once "@CENTREON_ETC@/centreon.conf.php";
+if (file_exists(_CENTREON_ETC_ . '/centreon.conf.php')) {
+    include_once _CENTREON_ETC_ . '/centreon.conf.php';
 
     define('_CENTREON_PATH_', $centreon_path);
     define('_CENTREON_LOG_', '@CENTREON_LOG@');

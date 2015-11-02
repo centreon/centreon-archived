@@ -335,22 +335,20 @@ jQuery(function() {
             dataType : "json",
             data: this.form.serialize(),
             success : function(json){
-                if(typeof sheepIt != "undefined"){
+                /*if(typeof sheepIt != "undefined"){
                     sheepIt.removeAllForms();
+                }*/
+                //jQuery('#macro_add').unbind();
+                //jQuery('.cloneremove').unbind();
+                jQuery("#clone-count-macro").data("clone-count-macro",json.count);
+                jQuery("#clone-values-macro").data("clone-values-macro",json.macros);
+                sheepIt.removeAllForms();
+                for (i = 0; i < jQuery("#clone-count-macro").data("clone-count-macro"); i++) {
+                    sheepIt.addForm();	
                 }
-                jQuery('#macro_add').unbind();
-                jQuery('.cloneremove').unbind();
-                sheepIt = jQuery("#macro").sheepIt({
-                    separator: '',
-                    allowRemoveLast: true,
-                    allowRemoveCurrent: true,
-                    allowRemoveAll: true,
-                    minFormsCount: 0,
-                    maxFormsCount: 200,
-                    continuousIndex : false,
-                    iniFormsCount: json.count,
-                    data: json.macros
-                });
+
+                sheepIt.inject(jQuery("#clone-values-macro").data("clone-values-macro"));
+
                 jQuery(".macroclone").sortable(
                     {
                        handle: ".clonehandle",
@@ -387,9 +385,22 @@ jQuery(function() {
 
                             tplValueField.after(jQuery('<img/>',{src : 'none'}).on('click',function(){
                                 jQuery(elem).find("input[name^='macroValue']").val(tplValue);
+                                jQuery(elem).find('input[name^=macroFrom]').val("fromTpl");
+                                jQuery(elem).find("input[name^='macroInput']").css("background","lightblue");
+                                jQuery(elem).find("input[name^='macroValue']").css("background","lightblue");
                             }));
                         }
                     }
+                    jQuery(elem).find("input[name^='macroInput']").on("change",function(){
+                        jQuery(elem).find('input[name^=macroFrom]').val("direct");
+                        jQuery(elem).find("input[name^='macroInput']").css("background","white");
+                        jQuery(elem).find("input[name^='macroValue']").css("background","white");
+                    });
+                    jQuery(elem).find("input[name^='macroValue']").on("change",function(){
+                        jQuery(elem).find('input[name^=macroFrom]').val("direct");
+                        jQuery(elem).find("input[name^='macroInput']").css("background","white");
+                        jQuery(elem).find("input[name^='macroValue']").css("background","white");
+                    });
 
                 });
             }
@@ -434,9 +445,24 @@ jQuery(function() {
 
                 tplValueField.after(jQuery('<img/>',{src : 'none'}).on('click',function(){
                     jQuery(elem).find("input[name^='macroValue']").val(tplValue);
+                    jQuery(elem).find('input[name^=macroFrom]').val("fromTpl");
+                    jQuery(elem).find("input[name^='macroInput']").css("background","lightblue");
+                    jQuery(elem).find("input[name^='macroValue']").css("background","lightblue");
                 }));
             }
         }
+
+        jQuery(elem).find("input[name^='macroInput']").on("change",function(){
+            jQuery(elem).find('input[name^=macroFrom]').val("direct");
+            jQuery(elem).find("input[name^='macroInput']").css("background","white");
+            jQuery(elem).find("input[name^='macroValue']").css("background","white");
+        });
+        jQuery(elem).find("input[name^='macroValue']").on("change",function(){
+            jQuery(elem).find('input[name^=macroFrom]').val("direct");
+            jQuery(elem).find("input[name^='macroInput']").css("background","white");
+            jQuery(elem).find("input[name^='macroValue']").css("background","white");
+        });
+
 
     });
 

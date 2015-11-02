@@ -31,9 +31,6 @@
  *
  * For more information : command@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 

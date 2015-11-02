@@ -115,7 +115,6 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
  * Add QuickSearch ToolBar
  */
 $FlagSearchService = 1;
-//include_once("./include/common/quickSearch.php");
 
 /*
  * Path to the configuration dir
@@ -286,7 +285,7 @@ $form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "class" => "
 $form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "class"=>"timepicker", "size"=>5));
 $form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>8));
 $form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepicker", "size"=>5));
-$form->addElement('text', 'output', _("Output"),  array("id"=>"output", "class"=>"", "size"=>15, "value" => $user_params['output']));
+$form->addElement('text', 'output', _("Output"),  array("id"=>"output", "style"=>"width: 203px;", "size"=>15, "value" => $user_params['output']));
 
 if($engine == "false"){
     $form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()","class"=>"btc bt_success"));
@@ -716,11 +715,8 @@ if($engine == 'false'){
                      }
                  });
              }
-            
-            
+
             return new Array(args,urlargs);
-            
-            
         }
 
 
@@ -758,7 +754,16 @@ if($engine == 'false'){
                     success : function(json){
                         json.each(function(elem){
                             if(jQuery.inArray(elem.id,host_value) === -1){
-                                jQuery("#host_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                                var existingOptions = jQuery("#host_filter").find('option');
+                                var existFlag = false;
+                                existingOptions.each(function(el){
+                                    if(jQuery(this).val() == elem.id){
+                                        existFlag = true;
+                                    }
+                                });
+                                if(!existFlag){
+                                    jQuery("#host_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                                }
                                 host_value.push(elem.id);
                             }    
                         });
@@ -770,9 +775,6 @@ if($engine == 'false'){
                 });    
 
             });
-
-
-
 
             jQuery("#setServiceGroup").click(function(){
                var service_value = jQuery("#service_filter").val();
@@ -788,7 +790,16 @@ if($engine == 'false'){
                     success : function(json){
                         json.each(function(elem){
                             if(jQuery.inArray(elem.id,service_value) === -1){
-                                jQuery("#service_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                                var existingOptions = jQuery("#service_filter option");
+                                var existFlag = false;
+                                existingOptions.each(function(){
+                                    if(jQuery(this).val() == elem.id){
+                                        existFlag = true;
+                                    }
+                                });
+                                if(!existFlag){
+                                    jQuery("#service_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                                }
                                 service_value.push(elem.id);
                             }    
                         });
@@ -800,32 +811,6 @@ if($engine == 'false'){
                 });    
 
             });
-/*
-            jQuery("#clearhostgroup").click(function(){
-                jQuery("#host_group_filter").val('');
-                jQuery("#host_group_filter").empty().append(jQuery('<option>'));
-                jQuery("#host_group_filter").trigger("change");
-            });    
-
-            jQuery("#clearservicegroup").click(function(){
-                jQuery("#service_group_filter").val('');
-                jQuery("#service_group_filter").empty().append(jQuery('<option>'));
-                jQuery("#service_group_filter").trigger("change");
-            });    
-
-            jQuery("#clearhost").click(function(){
-                jQuery("#host_filter").val('');
-                jQuery("#host_filter").empty().append(jQuery('<option>'));
-                jQuery("#host_filter").trigger("change");
-            });   
-
-            jQuery("#clearservice").click(function(){
-                jQuery("#service_filter").val('');
-                jQuery("#service_filter").empty().append(jQuery('<option>'));
-                jQuery("#service_filter").trigger("change");
-            });   */
-
-
 
             /// Initialise selection with Get params
             arrayHostValues = new Array();
@@ -912,13 +897,23 @@ if($engine == 'false'){
                 }
             ?>         
             jQuery("#poller_filter").val(arrayPollerValues).trigger("change");
-            
-            
-            
-            
-            
+
         }
     });
-    
+
+    // Nice scroll
+
+	jQuery(document).ready(
+          function() {
+            jQuery('ul.select2-selection__rendered').niceScroll({
+
+            	cursorcolor:"#818285",
+            	cursoropacitymax: 0.6,
+            	cursorwidth:3,
+            	horizrailenabled:false
+
+            	});
+          }
+        );
 
 </script>

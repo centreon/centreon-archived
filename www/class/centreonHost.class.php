@@ -788,6 +788,25 @@ class CentreonHost
         }
     }
     
+    public function getMacroFromForm($form,$fromKey){
+     
+        $Macros = array();
+        if(!empty($form['macroInput'])){
+            foreach($form['macroInput'] as $key=>$macroInput){
+                if($form['macroFrom'][$key] == $fromKey){
+                    $macroTmp = array();
+                    $macroTmp['macroInput_#index#'] = $macroInput;
+                    $macroTmp['macroValue_#index#'] = $form['macroValue'][$key];
+                    $macroTmp['macroPassword_#index#'] = isset($form['is_password'][$key]) ? 1 : NULL;
+                    $macroTmp['macroDescription_#index#'] = isset($form['description'][$key]) ? $form['description'][$key] : NULL;
+                    $macroTmp['macroDescription'] = isset($form['description'][$key]) ? $form['description'][$key] : NULL;
+                    $Macros[] = $macroTmp;
+                }
+            }
+        }
+        return $Macros;
+    }
+    
     /**
      * This method get the macro attached to the host
      * 
@@ -797,25 +816,26 @@ class CentreonHost
      * @param int $iIdCommande
      * @return array
      */
-    public function getMacros($iHostId, $bIsTemplate, $aListTemplate, $iIdCommande)
+    public function getMacros($iHostId, $bIsTemplate, $aListTemplate, $iIdCommande, $form = array())
     {
-        $aMacro = array();
-        $macroArray = array();
-        $aMacroInCommande = array();
-        $aMacroInService = array();
-        
+        //$aMacro = array();
+        //$macroArray = array();
+        //$aMacroInCommande = array();
+        //$aMacroInService = array();
+        //$aMacroTemplate = array();
+        $macroArray = $this->getMacroFromForm($form,"direct");
+        $aMacroTemplate[] = $this->getMacroFromForm($form,"fromTpl");        
+        $aMacroInCommande = $this->getMacroFromForm($form,"fromCommand");
         //Get macro attached to the host
-        $macroArray = $this->getCustomMacroInDb($iHostId);
+        $macroArray = array_merge($macroArray,$this->getCustomMacroInDb($iHostId));
 
         //Get macro attached to the template
-        $aMacroTemplate = array();
+        
         foreach ($aListTemplate as $template) {
             if (!empty($template['host_id'])) {
                 $aMacroTemplate[] = $this->getCustomMacroInDb($template['host_id'],$template);
             }
         }
-
-        
         if(empty($iIdCommande)){
             foreach($aListTemplate as $template){
                 if(!empty($template['command_command_id'])){
@@ -829,7 +849,7 @@ class CentreonHost
         //Get macro attached to the command        
         if (!empty($iIdCommande)) {
             $oCommand = new CentreonCommand($this->db);
-            $aMacroInCommande[] = $oCommand->getMacroByIdAndType($iIdCommande, 'host');
+            $aMacroInCommande = array_merge($aMacroInCommande,$oCommand->getMacroByIdAndType($iIdCommande, 'host'));
         }
         
         //filter a macro
@@ -854,18 +874,15 @@ class CentreonHost
                 }
             }
         }
-        
-        
+
         if (count($aMacroInCommande) > 0) {
-            $macroCommande = current($aMacroInCommande);
-            for ($i = 0; $i < count($macroCommande); $i++) {
-                $macroCommande[$i]['macroOldValue_#index#'] = $macroCommande[$i]["macroValue_#index#"];
-                $macroCommande[$i]['macroFrom_#index#'] = 'fromCommand';
-                $macroCommande[$i]['source'] = 'fromCommand';
-                $aTempMacro[] = $macroCommande[$i];
+            for ($i = 0; $i < count($aMacroInCommande); $i++) {
+                $aMacroInCommande[$i]['macroOldValue_#index#'] = $aMacroInCommande[$i]["macroValue_#index#"];
+                $aMacroInCommande[$i]['macroFrom_#index#'] = 'fromCommand';
+                $aMacroInCommande[$i]['source'] = 'fromCommand';
+                $aTempMacro[] = $aMacroInCommande[$i];
             }
         }
-
         $aFinalMacro = $this->macro_unique($aTempMacro);
         
         return $aFinalMacro;
@@ -1191,58 +1208,6 @@ class CentreonHost
         return false;
     }
     
-    
-    
-    
-    /**
-     * This method remove duplicate macro by her name
-     * 
-     * @param array $aTempMacro
-     * @return array
-     */
-    /*
-    function macro_unique($aTempMacro)
-    {
-        $aFinalMacro = array();
-        
-        
-        $x = 0;
-        foreach($aTempMacro as $keyTmp=>$TempMacro){
-            $sInput = $TempMacro['macroInput_#index#'];
-            $existe = null;
-            if (count($aFinalMacro) > 0) {
-                foreach($aFinalMacro as $keyFinal=>$FinalMacro){
-                //for ($j = 0; $j < count($aFinalMacro); $j++ ) 
-                    if ($FinalMacro['macroInput_#index#'] == $sInput) {
-                        
-                        //store the template value when it is overloaded with direct macro
-                        if(isset($aFinalMacro[$keyFinal]['source']) 
-                        && $aFinalMacro[$keyFinal]['source'] == 'direct' 
-                        && !isset($aFinalMacro[$keyFinal]['macroTplValue_#index#']) && $aTempMacro[$keyTmp]['source'] == "fromTpl"){    
-                            $aFinalMacro[$keyFinal]['macroTplValue_#index#'] = $aTempMacro[$keyTmp]['macroValue_#index#'];
-                            $aFinalMacro[$keyFinal]['macroTplValToDisplay_#index#'] = 1;
-                        }else{
-                            $aFinalMacro[$keyFinal]['macroTplValToDisplay_#index#'] = 0;
-                            $aFinalMacro[$keyFinal]['macroTplValue_#index#'] = "";
-                        }
-                        //
-                        
-                        $existe = $keyFinal;
-                        break;
-                    }
-                }
-                if (is_null($existe)) {
-                    $aFinalMacro[] = $TempMacro;
-                } else {
-                    //$aFinalMacro[$existe] = $TempMacro;
-                }
-            } else {
-                $aFinalMacro[] = $TempMacro;
-            }
-        }
-        return $aFinalMacro;
-    }*/
-    
     /**
      * 
      * @param integer $field
@@ -1474,6 +1439,39 @@ class CentreonHost
         $rq .= "('".$iHostId."', '".$iServiceId."')";
        
         $DBRESULT = $this->db->query($rq);
+    }
+    
+    /**
+     * 
+     * @param array $values
+     * @return array
+     */
+    public function getObjectForSelect2($values = array(), $register = '1')
+    {
+        $selectedHosts = '';
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        } else {
+            $selectedHosts .= "AND h.host_id IN ($explodedValues) ";
+        }
+        
+        $queryHost = "SELECT DISTINCT h.host_name, h.host_id "
+            . "FROM host h, service s, host_service_relation hsr "
+            . 'WHERE hsr.host_host_id = h.host_id '
+            . "AND hsr.service_service_id = s.service_id "
+            . "AND h.host_register = '$register' "
+            . $selectedHosts
+            . "ORDER BY h.host_name";
+        
+        $DBRESULT = $this->db->query($queryHost);
+        
+        $hostList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $hostList[] = array('id' => htmlentities($data['host_id']), 'text' => htmlentities($data['host_name']));
+        }
+        
+        return $hostList;
     }
 }
 

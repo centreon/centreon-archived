@@ -41,8 +41,8 @@ require_once("./class/centreonData.class.php");
 
 if (!$min) {
 ?>    
-        <div class="fullscreen-icon" title="Fullscreen" onclick="myToggleAll(0,true);saveFullScreenSetting();" >
-            <img class="ico-16" alt="FullScreen" src="./img/icons/fullscreen.png">
+        <div class="fullscreen-icon" title="Fullscreen" onclick="myToggleAll(0,true);" >
+            <img class="ico-16" id="fullscreenIcon" alt="FullScreen" src="./img/icons/fullscreen.png">
         </div>    
         <div id="footer">
 			<table cellpadding='0' cellspacing='0' width='100%' border='0' id="tfooter">
@@ -111,6 +111,7 @@ height: 100%;
                 document.msFullscreenElement
             ) {
                 jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
+                jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen.png");
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 } else if (document.msExitFullscreen) {
@@ -122,6 +123,7 @@ height: 100%;
                 }
             } else {
                 jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").addClass('tohide');
+                jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen_off.png");
                 // go full-screen
                 if (i.requestFullscreen) {
                     i.requestFullscreen();
@@ -158,6 +160,7 @@ height: 100%;
         var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement;
         var event = state ? 'FullscreenOn' : 'FullscreenOff';
         if (event === 'FullscreenOff') {
+            jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen.png");
             jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
         }
     }

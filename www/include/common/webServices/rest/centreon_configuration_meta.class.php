@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 
@@ -43,18 +40,11 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationMeta extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type 
-     */
-    protected $pearDBMonitoring;
-
-    /**
      * 
      */
     public function __construct()
     {
         parent::__construct();
-        $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
     
     /**

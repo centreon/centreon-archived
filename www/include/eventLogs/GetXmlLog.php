@@ -554,13 +554,16 @@ if (isset($req) && $req) {
     $limitReq2 = "";
     if($export !== "1"){
         $limitReq = " LIMIT " . $num * $limit . ", " . $limit;
-        $limitReq2 =" LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
+        
     }
     
     $DBRESULT = $pearDBO->query($req .$limitReq);
     $rows = $pearDBO->numberRows();
     
     if (!($DBRESULT->numRows()) && ($num != 0)) {
+        if($export !== "1"){
+            $limitReq2 =" LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
+        }
         $DBRESULT = $pearDBO->query($req . $limitReq2);
     }
 
