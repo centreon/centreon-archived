@@ -18,7 +18,7 @@
           <td class="FormRowField"><img class="helpTooltip" name="host">&nbsp;{t}Poller{/t}</td>
           <td class="FormRowValue">
             {$pollerName}
-            <input type="hidden" name="host" value="{$pollerId}">
+            <input type="hidden" id="nhost" name="nhost" value="{$pollerId}">
           </td>
         </tr>
 	 	<tr class="list_lvl_1">
