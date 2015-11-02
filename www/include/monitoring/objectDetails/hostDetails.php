@@ -59,6 +59,9 @@ $tab_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
 $tab_host_statusid = array("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2);
 
 $tab_color_host		= array('up' => 'host_up', 'down' => 'host_down', 'unreachable' => 'host_unreachable');
+$tab_color_service = array("OK" => 'service_ok', "WARNING" => 'service_warning', "CRITICAL" => 'service_critical', "UNKNOWN" => 'service_unknown', "PENDING" => 'pending');
+
+
 
 $en_acknowledge_text    = array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Host Problem"));
 $en_acknowledge         = array("1" => "0", "0" => "1");
@@ -173,8 +176,17 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             " AND s.enabled = 1 ";
         $DBRESULT = $pearDBO->query($rq);
         $services = array();
+        $class = 'list_one';
         while ($ndo = $DBRESULT->fetchRow()){
             $ndo["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $ndo["last_check"]);
+            $ndo["current_state"] = $tab_status_service[$ndo['current_state']];
+            $ndo["status_class"] = $tab_color_service[$ndo['current_state']];
+            $ndo['line_class'] = $class;
+            if($class == 'list_one'){
+                $class = 'list_two';
+            }else{
+                $class = 'list_one';
+            }
             $services[] = $ndo;
         }
         $DBRESULT->free();
@@ -307,6 +319,11 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 
         $tpl->assign("m_mon_host", _("Host"));
         $tpl->assign("m_mon_host_info", _("Status Details"));
+        $tpl->assign("m_mon_host_services", _("Services"));
+        $tpl->assign("header_service_description", _("Services"));
+        $tpl->assign("header_service_status", _("Status"));
+        $tpl->assign("header_service_last_check", _("Last check"));
+        $tpl->assign("header_service_output", _("Ouput"));
         $tpl->assign("m_mon_host_status", _("Host Status"));
         $tpl->assign("m_mon_host_status_info", _("Status information"));
         $tpl->assign("m_mon_performance_data", _("Performance Data"));

@@ -112,10 +112,49 @@
 				</tr>
 				{/if}
 			</table>
+                </td>
+            </tr>
+                    
+                    
+            <tr>
+                <td>
+                    <table class="ListTable">
+                            <tr class='list_lvl_1'>
+                                <td class="ListColHeaderLeft FormHeader" colspan="4"><h4>{$m_mon_host_services}</h4></td>
+                            </tr>
+                            <tr class='ListHeader'>
+                                <td class="ListColHeaderCenter">{$header_service_description}</td>
+                                <td class="ListColHeaderCenter">{$header_service_status}</td>
+                                <td class="ListColHeaderCenter">{$header_service_last_check}</td>
+                                <td class="ListColHeaderCenter">{$header_service_output}</td>
+                            </tr>
+                            {foreach item=hs from=$hosts_services}
+                                <tr class="{$hs.line_class}">
+                                    <td class="ListColCenter">
+                                        {$hs.service_description}
+                                    </td>
+                                    <td class="ListColCenter">    
+                                        <span class="badge {$hs.status_class}"  >{$hs.current_state}</span>
+                                    </td>
+                                    <td class="ListColCenter">
+                                        {$hs.last_check}
+                                    </td>
+                                    <td class="ListColCenter">
+                                        {$hs.plugin_output}
+                                    </td>
+                                    
+                                    
+                                </tr>
+                            {/foreach}
+                        
+                    </table>
+                </td>
+            </tr>
+                    
+                    
+                    
+                    </table>
                     </td>
-					</tr>
-					</table>
-					</td>
         <td style="width: 30%; vertical-align: top;" nowrap="nowrap">
 		<table>
 			<tr>
