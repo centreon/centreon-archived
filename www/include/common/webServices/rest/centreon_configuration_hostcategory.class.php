@@ -33,6 +33,7 @@
  *
  */
 
+
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
@@ -79,20 +80,33 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryHostcategory = "SELECT DISTINCT hc.hc_name, hc.hc_id "
+        $queryHostcategory = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hc.hc_name, hc.hc_id "
             . "FROM hostcategories hc "
             . "WHERE hc.hc_name LIKE '%$q%' "
             . $aclHostcategories
-            . "ORDER BY hc.hc_name";
+            . "ORDER BY hc.hc_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryHostcategory);
+
+        $total = $this->pearDB->numberRows();
         
         $hostcategoryList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $hostcategoryList[] = array('id' => htmlentities($data['hc_id']), 'text' => $data['hc_name']);
         }
         
-        return $hostcategoryList;
+        return array(
+            'items' => $hostcategoryList,
+            'total' => $total
+        );
     }
 }
