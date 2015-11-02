@@ -38,6 +38,8 @@
  
 	if (!isset($oreon))
 		exit();
+
+        include_once("./class/centreonUtils.class.php");
 		
 	include("./include/common/autoNumLimit.php");
 	$mnftr_id = NULL;
@@ -94,6 +96,7 @@
 	 */
 	$elemArr = array();
 	for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++) {
+                $trap = array_map(array("CentreonUtils","escapeSecure"),$trap);
 		$moptions = "";
 		$selectedElements = $form->addElement('checkbox', "select[".$trap['traps_id']."]");
 		$moptions .= "&nbsp;&nbsp;&nbsp;";

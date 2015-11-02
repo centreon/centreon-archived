@@ -2098,6 +2098,7 @@ class HTML_QuickForm extends HTML_Common
         }
     }
 
+
     // }}}
 } // end class HTML_QuickForm
 

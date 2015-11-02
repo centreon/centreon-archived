@@ -162,6 +162,7 @@
 {literal}
 
     jQuery("#StartDate").datepicker({
+        maxDate: '-1',
         onSelect : function(data){  
             jQuery( "select[name='period'] > option[value='']" ).prop('selected', true);
             jQuery( "input:[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
@@ -175,6 +176,7 @@
             jQuery( "input:[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
         }
     });
+
     jQuery( "select[name='period']" ).click(function() {
         jQuery( "input:not([value])[name='period_choice'][type='radio']").prop('checked', true);
     });
@@ -185,12 +187,12 @@
             data: {
                 // iris data from R
                 columns: [
-                    ['Ok', {/literal}{$servicegroup_ok}{literal}],
-                    ['Warning', {/literal}{$servicegroup_warning}{literal}],
-                    ['Critical', {/literal}{$servicegroup_critical}{literal}],
-                    ['Unknown', {/literal}{$servicegroup_unknown}{literal}],
-                    ['Downtime', {/literal}{$servicegroup_maintenance}{literal}],
-                    ['Undetermined', {/literal}{$servicegroup_undetermined}{literal}]
+                    ['Ok', {/literal}{$servicegroup_ok|number_format:2:".":""}{literal}],
+                    ['Warning', {/literal}{$servicegroup_warning|number_format:2:".":""}{literal}],
+                    ['Critical', {/literal}{$servicegroup_critical|number_format:2:".":""}{literal}],
+                    ['Unknown', {/literal}{$servicegroup_unknown|number_format:2:".":""}{literal}],
+                    ['Downtime', {/literal}{$servicegroup_maintenance|number_format:2:".":""}{literal}],
+                    ['Undetermined', {/literal}{$servicegroup_undetermined|number_format:2:".":""}{literal}]
                 ],
                 type : 'pie',
                 colors : {

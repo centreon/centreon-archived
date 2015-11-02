@@ -54,13 +54,15 @@ if (($o == "c" || $o == "w") && $host_id)	{
 		$host = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Host Notification Options
 		$tmp = explode(',', $host["host_notification_options"]);
-		foreach ($tmp as $key => $value)
-			$host["host_notifOpts"][trim($value)] = 1;
+		foreach ($tmp as $key => $value) {
+		    $host["host_notifOpts"][trim($value)] = 1;
+                }
 
 		# Set Stalking Options
 		$tmp = explode(',', $host["host_stalking_options"]);
-		foreach ($tmp as $key => $value)
-			$host["host_stalOpts"][trim($value)] = 1;
+		foreach ($tmp as $key => $value) {
+		    $host["host_stalOpts"][trim($value)] = 1;
+                }
 		$DBRESULT->free();
 
 		# Set Contact Group

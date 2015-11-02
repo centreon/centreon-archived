@@ -149,6 +149,7 @@
 <script>
 {literal}
     jQuery("#StartDate").datepicker({
+        maxDate: '-1',
         onSelect : function(data){  
             jQuery( "select[name='period'] > option[value='']" ).prop('selected', true);
             jQuery( "input:[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
@@ -162,6 +163,7 @@
             jQuery( "input:[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
         }
     });
+
     jQuery( "select[name='period']" ).click(function() {
         jQuery( "input:not([value])[name='period_choice'][type='radio']").prop('checked', true);
     });
@@ -172,11 +174,11 @@
             data: {
                 // iris data from R
                 columns: [
-                    ['Up', {/literal}{$hostgroup_up}{literal}],
-                    ['Down', {/literal}{$hostgroup_down}{literal}],
-                    ['Unreachable', {/literal}{$hostgroup_unreachable}{literal}],
-                    ['Downtime', {/literal}{$hostgroup_maintenance}{literal}],
-                    ['Undetermined', {/literal}{$hostgroup_undetermined}{literal}],
+                    ['Up', {/literal}{$hostgroup_up|number_format:2:".":""}{literal}],
+                    ['Down', {/literal}{$hostgroup_down|number_format:2:".":""}{literal}],
+                    ['Unreachable', {/literal}{$hostgroup_unreachable|number_format:2:".":""}{literal}],
+                    ['Downtime', {/literal}{$hostgroup_maintenance|number_format:2:".":""}{literal}],
+                    ['Undetermined', {/literal}{$hostgroup_undetermined|number_format:2:".":""}{literal}],
                 ],
                 type : 'pie',
                 colors : {

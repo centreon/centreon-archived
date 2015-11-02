@@ -196,6 +196,29 @@ class CentreonGMT {
         $DBRESULT->free();
         $this->myGMT = $info["contact_location"];
     }
+    
+    function getMyGTMFromUser($userId, $DB = null)
+    {
+        global $pearDB;
+        
+        if (!isset($pearDB) && isset($DB)) {
+            $pearDB = $DB;
+        }
+
+        if (!isset($sid)) {
+            return 0;
+        }
+        
+        $DBRESULT = $pearDB->query("SELECT `contact_location` FROM `contact` " .
+                "WHERE `contact`.`contact_id` = " . $userId .
+                " LIMIT 1");
+        if (PEAR::isError($DBRESULT)) {
+            $this->myGMT = 0;
+        }
+        $info = $DBRESULT->fetchRow();
+        $DBRESULT->free();
+        $this->myGMT = $info["contact_location"];
+    }
 
     function getHostCurrentDatetime($host_id, $date_format = 'c') {
         global $pearDB;

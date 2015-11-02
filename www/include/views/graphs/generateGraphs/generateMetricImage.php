@@ -124,3 +124,4 @@ $obj->setColor('SHADEB', '#FFFFFF');
  * Display Images Binary Data
  */
 $obj->displayImageFlow();
+?>

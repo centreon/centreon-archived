@@ -441,6 +441,11 @@ try {
              */
             $DBRESULT = $pearDBO->query("DELETE FROM `centreon_acl` WHERE `group_id` = '" . $acl_group_id . "'");
             
+            /*
+             * Delete old data for this group
+             */
+            $DBRESULT = $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '" . $acl_group_id . "'");
+
             /** ***********************************************
              * Select
              */
@@ -608,6 +613,41 @@ try {
                     }
                 }
                 
+                $str = "";
+                if (count($tabElem)) {
+                    $i = 0;
+                    foreach ($tabElem as $host => $svc_list) {
+                        $singleId = array_search($host, $hostCache);
+                        if ($singleId) {
+                            if ($str != "") {
+                                $str .= ", ";
+                            }
+                            $str .= " ('".$pearDBndo->escape($host)."', NULL, {$singleId}, NULL, {$acl_group_id}) ";
+                        }
+                        foreach ($svc_list as $desc => $t) {
+                            if ($str != "") {
+                                $str .= ', ';
+                            }
+                            $id_tmp = preg_split("/\,/", $t);
+                            $str .= "('" . $host . "', '" . addslashes($desc) . "', '" . $id_tmp[0] . "' , '" . $id_tmp[1] . "' , " . $acl_group_id . ") ";
+                            $i++;
+                            if ($i >= 1000) {
+                                $DBRESULTNDO = $pearDBndo->query($strBegin . $str);
+                                $str = "";
+                                $i = 0;
+                            }
+                        }
+                    }
+                    
+                    /*
+                     * Insert datas
+                     */
+                    if ($str != "") {
+                        $DBRESULTNDO = $pearDBndo->query($strBegin . $str);
+                        $str = "";
+                    }
+                }
+
                 /* ------------------------------------------------------------------
                  * reset Flags
                  */

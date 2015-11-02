@@ -163,7 +163,7 @@ function reloadStatusCounter(_reload_time, _sid) {
 					}
 
 					if (_statistic_activity == 0) {
-						document.getElementById("activity").style.backgroundColor = "##818285";
+						document.getElementById("activity").style.backgroundColor = "#818285";
 					} else if (_statistic_activity == 1) {
 						document.getElementById("activity").style.backgroundColor = "#ff9a13";
 					} else if (_statistic_activity == 2) {
