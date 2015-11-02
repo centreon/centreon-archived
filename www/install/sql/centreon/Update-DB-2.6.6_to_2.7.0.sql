@@ -612,7 +612,7 @@ update `contact` set contact_location = (select timezone_id from timezone where 
 update `host` set host_location = (select timezone_id from timezone where timezone_name= 'America/Argentina/Buenos_Aires') where host_location = -3;
 update `options` set `value` = (select timezone_id from timezone where timezone_name= 'America/Argentina/Buenos_Aires')  where `key` ='gmt' AND `value` = '-3';
 
---America/Guyana -04:00
+-- America/Guyana -04:00
 update `contact` set contact_location = (select timezone_id from timezone where timezone_name= 'America/Guyana') where contact_location = -4;
 update `host` set host_location = (select timezone_id from timezone where timezone_name= 'America/Guyana') where host_location = -4;
 update `options` set `value` = (select timezone_id from timezone where timezone_name= 'America/Guyana')  where `key` ='gmt' AND `value` = '-4';
@@ -652,7 +652,7 @@ update `contact` set contact_location = (select timezone_id from timezone where 
 update `host` set host_location = (select timezone_id from timezone where timezone_name= 'Pacific/Pago_Pago') where host_location = -11;
 update `options` set `value` = (select timezone_id from timezone where timezone_name= 'Pacific/Pago_Pago')  where `key` ='gmt' AND `value` = '-11';
 
---Migrate default timezone
+-- Migrate default timezone
 update `contact` set `contact_location` = (select `value` from `options` where `key` ='gmt')  where contact_location IS Null;
 update `host` set `host_location` = (select `value` from `options` where `key` ='gmt')  where host_location IS Null;
 
@@ -670,7 +670,7 @@ UPDATE topology SET topology_page = 20401, topology_parent = 204, topology_name 
 UPDATE topology SET topology_parent = 204 WHERE topology_page = 40204;
 UPDATE topology SET topology_page = 20404, topology_parent = 204 WHERE topology_page = 40204;
 UPDATE topology SET topology_page = 20405, topology_parent = 204 WHERE topology_page = 40205;
-UPDATE topology SET topology_parent = 204 WHERE topology_id = 402 AND topology_name 'Virtuals' AND topology_page IS NULL;
+UPDATE topology SET topology_parent = 204 WHERE topology_id = 402 AND topology_name = 'Virtuals' AND topology_page IS NULL;
 UPDATE topology SET topology_page = 20408, topology_parent = 204 WHERE topology_page = 40208;
 UPDATE topology_JS SET id_page = 20404 WHERE id_page = 40204;
 UPDATE topology_JS SET id_page = 20405 WHERE id_page = 40205;
