@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -13,7 +14,7 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <htcontact://www.gnu.org/licenses>.
+ * this program; if not, see <http://www.gnu.org/licenses>.
  *
  * Linking this program statically or dynamically with other modules is making a
  * combined work based on this program. Thus, the terms and conditions of the GNU
@@ -33,57 +34,23 @@
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonHost.class.php';
 
-class CentreonConfigurationGraphtemplate extends CentreonConfigurationObjects
+/*
+ *  Class that contains various methods for managing hosts
+ */
+
+class CentreonHosttemplates extends CentreonHost
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-    
-    /**
      * 
+     * @param array $values
      * @return array
      */
-    public function getList()
+    public function getObjectForSelect2($values = array())
     {
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
-            $q = $this->arguments['q'];
-        }
-
-        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
-        }
-        
-        $queryGraphtemplate = "SELECT SQL_CALC_FOUND_ROWS DISTINCT graph_id, name "
-            . "FROM giv_graphs_template "
-            . "WHERE name LIKE '%$q%' "
-            . "ORDER BY name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryGraphtemplate);
-
-        $total = $this->pearDB->numberRows();
-        
-        $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $serviceList[] = array('id' => $data['graph_id'], 'text' => $data['name']);
-        }
-        
-        return array(
-            'items' => $serviceList,
-            'total' => $total
-        );
+        return parent::getObjectForSelect2($values, '0');
     }
 }

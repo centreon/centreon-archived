@@ -118,7 +118,7 @@ $contact_id = check_session($sid, $pearDB);
 $is_admin = isUserAdmin($sid);
 if (isset($sid) && $sid){
     $access = new CentreonAcl($contact_id, $is_admin);
-    $lca = array("LcaHost" => $access->getHostServices($pearDBO, null, 1), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
+    $lca = array("LcaHost" => $access->getHostsServices($pearDBO, 1), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 }
 
 (isset($_GET["num"])) ? $num = htmlentities($_GET["num"]) : $num = "0";
@@ -554,13 +554,16 @@ if (isset($req) && $req) {
     $limitReq2 = "";
     if($export !== "1"){
         $limitReq = " LIMIT " . $num * $limit . ", " . $limit;
-        $limitReq2 =" LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
+        
     }
     
     $DBRESULT = $pearDBO->query($req .$limitReq);
     $rows = $pearDBO->numberRows();
     
     if (!($DBRESULT->numRows()) && ($num != 0)) {
+        if($export !== "1"){
+            $limitReq2 =" LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
+        }
         $DBRESULT = $pearDBO->query($req . $limitReq2);
     }
 

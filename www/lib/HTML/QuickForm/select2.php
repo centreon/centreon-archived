@@ -75,10 +75,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      * @var string 
      */
     var $_defaultDatasetRoute;
-    
+
     /**
      *
-     * @var type 
+     * @var string
      */
     var $_defaultDataset;
     
@@ -289,12 +289,11 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
              $mainJsInit .= 'disabled: true,';
         }
         
+        
         if ($this->_ajaxSource) {
             $mainJsInit .= $this->setAjaxSource() . ',';
-            if ($this->_defaultDatasetRoute && (count($this->_defaultDataset) == 0)) {
+            if ($this->_defaultDatasetRoute) {
                 $additionnalJs .= $this->setDefaultAjaxDatas();
-            } else {
-                $this->setDefaultFixedDatas();
             }
         } else {
             $mainJsInit .= $this->setFixedDatas() . ',';
@@ -325,6 +324,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 . 'jQuery("#' . $this->getName() . '").trigger("change", $currentValues);'
                 . ' });';
         }
+        
         $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $additionnalJs . $this->_jsCallback . $jsPost;
         
         return $finalJs;
@@ -357,9 +357,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         
         return $datas;
     }
-    
+
     /**
-     * 
+      * 
      */
     function setDefaultFixedDatas()
     {
@@ -369,7 +369,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 . $elementName . "</option>";
         }
     }
-    
+
     /**
      * 
      * @return string
@@ -377,20 +377,27 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     public function setAjaxSource()
     {
         $ajaxInit = 'ajax: { ';
+
         $ajaxInit .= 'url: "' . $this->_availableDatasetRoute . '",'
             . 'data: function (params) {
-                    var queryParameters = {
-                        q: params.term
-                    };
-                    
-                    return queryParameters;
-                },
-                processResults: function (data) {
                     return {
-                        results: data
+                        q: params.term,
+                        page_limit: 30,
+                        page: params.page || 1
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total
+                        }
                     };
                 }';
+
         $ajaxInit .= '} ';
+
         return $ajaxInit;
     }
     
@@ -447,6 +454,31 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     {
         $strFrozenHtml = '';
         return $strFrozenHtml;
+    }
+    
+    function onQuickFormEvent($event, $arg, &$caller)
+    {
+        if ('updateValue' == $event) {
+            $value = $this->_findValue($caller->_constantValues);
+            if (null === $value) {
+                $value = $this->_findValue($caller->_submitValues);
+                // Fix for bug #4465 & #5269
+                // XXX: should we push this to element::onQuickFormEvent()?
+                if (null === $value && (!$caller->isSubmitted() || !$this->getMultiple())) {
+                    $value = $this->_findValue($caller->_defaultValues);
+                }
+            }
+            if (null !== $value) {
+                if (!is_array($value)) {
+                    $value = array($value);
+                }
+                $this->_defaultDataset = $value;
+                $this->setFixedDatas();
+            }
+            return true;
+        } else {
+            return parent::onQuickFormEvent($event, $arg, $caller);
+        }
     }
 }
 

@@ -160,6 +160,7 @@ height: 100%;
         var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement;
         var event = state ? 'FullscreenOn' : 'FullscreenOff';
         if (event === 'FullscreenOff') {
+            jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen.png");
             jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
         }
     }

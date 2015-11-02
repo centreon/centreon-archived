@@ -33,6 +33,7 @@
  *
  */
 
+
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
@@ -58,19 +59,32 @@ class CentreonConfigurationTimeperiod extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryTimeperiod = "SELECT tp_id, tp_name "
+        $queryTimeperiod = "SELECT SQL_CALC_FOUND_ROWS DISTINCT tp_id, tp_name "
             . "FROM timeperiod "
             . "WHERE tp_name LIKE '%$q%' "
-            . "ORDER BY tp_name";
+            . "ORDER BY tp_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryTimeperiod);
+
+        $total = $this->pearDB->numberRows();
         
         $timeperiodList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $timeperiodList[] = array('id' => $data['tp_id'], 'text' => $data['tp_name']);
         }
-        
-        return $timeperiodList;
+
+        return array(
+            'items' => $timeperiodList,
+            'total' => $total
+        );
     }
 }
