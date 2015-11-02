@@ -314,7 +314,6 @@ class CentreonTraps
         }
     }
         
-<<<<<<< HEAD
     /**
      * Delete & insert service relations
      * 
@@ -341,34 +340,6 @@ class CentreonTraps
                     $first = false;
                 }
                 $insertStr .= "($trapId, $t[1])";
-=======
-        /**
-         * Delete & insert service relations
-         * 
-         * @param int $trapId
-         */
-        protected function _setServiceRelations($trapId) {
-            $this->_db->query("DELETE FROM traps_service_relation 
-                    WHERE traps_id = " . $this->_db->escape($trapId). "
-                    AND NOT EXISTS (SELECT s.service_id 
-                        FROM service s 
-                        WHERE s.service_register = '0'
-                        AND s.service_id = traps_service_relation.service_id)");
-            $services = CentreonUtils::mergeWithInitialValues($this->_form, 'services');
-            $insertStr = "";
-            $first = true;
-            $already = array();
-            foreach ($services as $id) {
-                $t = preg_split("/\-/", $id);
-                if (!isset($already[$t[1]])) {
-                    if (!$first) {
-                        $insertStr .= ",";
-                    } else {
-                        $first = false;
-                    }
-                    $insertStr .= "($trapId, $t[1])";
-                }
->>>>>>> 2.6.x
                 $already[$t[1]] = true;
             }
         }
