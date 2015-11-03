@@ -1864,6 +1864,26 @@ class CentreonACL {
 
         return $result;
     }
+    
+    /**
+     * 
+     * @param type $options
+     * @return type
+     */
+    public function getAclGroupAclConf($options = array())
+    {
+        $request = $this->constructRequest($options);
+        
+            $sql = $request['select'] . $request['fields']
+                . "FROM acl_groups "
+                . $request['conditions'];
+
+        $sql .= $request['order'] . $request['pages'];
+
+        $result = $this->constructResult($sql, $options);
+
+        return $result;
+    }
 
     /**
      * Duplicate Host ACL
