@@ -113,6 +113,38 @@ class CentreonContactgroup
     }
 
     /**
+     * Get the list of ldap contactgroups
+     *
+     * @return array
+     */
+    public function getLdapContactgroups($filter = '')
+    {
+        $cgs = array();
+
+        $query = "SELECT `value` FROM `options` WHERE `key` = 'ldap_auth_enable'";
+        $res = $this->db->query($query);
+        $row = $res->fetchRow();
+        if ($row['value'] == 1) {
+            $query = "SELECT ar_id, ar_name FROM auth_ressource WHERE ar_enable = '1'";
+            $ldapres = $this->db->query($query);
+            while ($ldaprow = $ldapres->fetchRow()) {
+                $ldap = new CentreonLDAP($this->db, null, $ldaprow['ar_id']);
+                $ldap->connect(null, $ldaprow['ar_id']);
+                $cg_ldap = $ldap->listOfGroups();
+
+                /* Merge contactgroup from ldap and from db */
+                foreach ($cg_ldap as $cg_name) {
+                    if (false === array_search($cg_name . " (LDAP : " . $ldaprow['ar_name'] . ")", $cgs) && preg_match('/' . $filter . '/i', $cg_name)) {
+                        $cgs["[" . $ldaprow['ar_id'] . "]" . $cg_name] = $cg_name . " (LDAP : " . $ldaprow['ar_name'] . ")";
+                    }
+                }
+            }
+        }
+
+        return $cgs;
+    }
+
+    /**
      * Insert the ldap groups in table contactgroups
      *
      * @param string $cg_name The ldap group name
@@ -275,12 +307,12 @@ class CentreonContactgroup
         foreach ($listCgs as $cg) {
             if (false === is_numeric($cg)) {
                 /* Parse the name */
-                if (false === preg_match('/\[(\d+)\](.*)/', $cg_name, $matches)) {
+                if (false === preg_match('/\[(\d+)\](.*)/', $cg, $matches)) {
                     return false;
                 }
                 $ar_id = $matches[1];
                 $cg_name = $matches[2];
-                
+
                 /* Query test if exists */
                 $query = "SELECT COUNT(*) as nb FROM contactgroup WHERE cg_name = '" . $pearDB->escape($cg_name) ."'";
                 $res = $pearDB->query($query);
@@ -288,7 +320,7 @@ class CentreonContactgroup
                     return false;
                 }
                 $row = $res->fetchRow();
-                if ($row['nb'] !== 0) {
+                if ($row['nb'] != 0) {
                     return false;
                 }
             }

@@ -65,15 +65,17 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
         }
 
         $filterContactgroup = array();
+        $ldapFilter = '';
         if (isset($this->arguments['q'])) {
             $filterContactgroup['cg_name'] = array('LIKE', '%' . $this->arguments['q'] . '%');
             $filterContactgroup['cg_alias'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+            $ldapFilter = $this->arguments['q'];
         }
 
         $cg = new CentreonContactgroup($this->pearDB);
         $acl = new CentreonACL($centreon->user->user_id);
 
-        $cgs = $acl->getContactGroupAclConf(
+        $aclCgs = $acl->getContactGroupAclConf(
             array(
                 'fields'  => array('cg_id', 'cg_name'),
                 'get_row' => 'cg_name',
@@ -84,15 +86,32 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
                 'total' => true
             )
         );
-        
+
         $contactgroupList = array();
-        foreach ($cgs['items'] as $id => $contactgroup) {
+        foreach ($aclCgs['items'] as $id => $contactgroup) {
             $contactgroupList['items'][] = array(
                 'id' => $id,
                 'text' => $contactgroup
             );
         }
-        $contactgroupList['total'] = $cgs['total'];
+        $contactgroupList['total'] = $aclCgs['total'];
+
+        # get Ldap contactgroups
+        $ldapCgs = array();
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $maxItem = $this->arguments['page_limit'] * $this->arguments['page'];
+            if ($aclCgs['total'] <= $maxItem) {
+                $ldapCgs = $cg->getLdapContactgroups($ldapFilter);
+            }
+        } else {
+            $ldapCgs = $cg->getLdapContactgroups($ldapFilter);
+        }
+        foreach ($ldapCgs as $key => $value) {
+            $contactgroupList['items'][] = array(
+                'id' => $key,
+                'text' => $value
+            );
+        }
         
         return $contactgroupList;
     }
