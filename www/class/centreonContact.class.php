@@ -162,6 +162,16 @@ class CentreonContact
                 $parameters['externalObject']['name'] = 'timezone_name';
                 $parameters['externalObject']['comparator'] = 'timezone_id';
                 break;
+            case 'contact_acl_groups':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'acl_groups';
+                $parameters['externalObject']['id'] = 'acl_group_id';
+                $parameters['externalObject']['name'] = 'acl_group_name';
+                $parameters['externalObject']['comparator'] = 'acl_group_id';
+                $parameters['relationObject']['table'] = 'acl_group_contacts_relations';
+                $parameters['relationObject']['field'] = 'acl_group_id';
+                $parameters['relationObject']['comparator'] = 'contact_contact_id';
+                break;
         }
         
         return $parameters;
