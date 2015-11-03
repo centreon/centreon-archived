@@ -52,8 +52,10 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
      */
     public function __construct()
     {
+        global $pearDBO;
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
+        $pearDBO = $this->pearDBMonitoring;
     }
     
     /**

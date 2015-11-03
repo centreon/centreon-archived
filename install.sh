@@ -302,9 +302,6 @@ fi
 # 1 = install
 # 2 = question in console
 [ -z $PROCESS_CENTREON_WWW ] && PROCESS_CENTREON_WWW="2"
-## For a moment, isn't possible to install standalone CentStorage daemon
-## without CentWeb
-[ -z $PROCESS_CENTSTORAGE ] && PROCESS_CENTSTORAGE="0"
 [ -z $PROCESS_CENTCORE ] && PROCESS_CENTCORE="2"
 [ -z $PROCESS_CENTREON_PLUGINS ] && PROCESS_CENTREON_PLUGINS="2"
 [ -z $PROCESS_CENTREON_SNMP_TRAPS ] && PROCESS_CENTREON_SNMP_TRAPS="2"
@@ -321,19 +318,6 @@ if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then
 	if [ "$?" -eq 0 ] ; then
 		PROCESS_CENTREON_WWW="1"
 		log "INFO" "$(gettext "You chose to install") : Centreon Web Front"
-		## CentStorage dependancy
-		PROCESS_CENTSTORAGE="1"
-	fi
-fi
-
-## resquest centreon_centstorage
-# CentWeb/CentStorage dependancy
-[ "$PROCESS_CENTREON_WWW" -eq 1 ] && PROCESS_CENTSTORAGE="1"
-if [ "$PROCESS_CENTSTORAGE" -eq 2 ] ; then 
-	yes_no_default "$(gettext "Do you want to install") : Centreon CentStorage"
-	if [ "$?" -eq 0 ] ; then
-		PROCESS_CENTSTORAGE="1"
-		log "INFO" "$(gettext "You chose to install") : Centreon CentStorage"
 	fi
 fi
 
@@ -380,21 +364,6 @@ if [ "$PROCESS_CENTREON_WWW" -eq 1 ] ; then
 		fi
 	fi
 	. $INSTALL_DIR/CentWeb.sh
-fi
-
-## Start CentStorage install
-if [ "$PROCESS_CENTSTORAGE" -eq 1 ] ; then
-	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentStorage.conf" ] ; then
-		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentStorage.conf"
-
-		. $inst_upgrade_dir/instCentStorage.conf
-		if [ -n "$NAGIOS_USER" ]; then
-			echo_info "$(gettext "Convert variables for upgrade:")"
-			MONITORINGENGINE_USER=$NAGIOS_USER
-			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
-		fi
-	fi
-	. $INSTALL_DIR/CentStorage.sh
 fi
 
 ## Start CentCore install
