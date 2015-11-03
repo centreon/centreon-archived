@@ -41,6 +41,8 @@
 	 */
 	require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
+        include_once $centreon_path . "www/class/centreonUtils.class.php";
+
 	/**
 	 * Include Monitoring Classes
 	 */
@@ -136,7 +138,7 @@
         $outputLines = explode("\n", $data['output']);
         $pluginShortOuput = $outputLines[0];
 
-		$obj->XML->writeElement("svc_name", $data["description"], false);
+		$obj->XML->writeElement("svc_name", CentreonUtils::escapeSecure($data["description"]), false);
 
 		if ($data["icon_image"] == "") {
 			$data["icon_image"] = "./img/icons/service.png ";
@@ -170,8 +172,8 @@
 		    $hostname = $data['name'];
 		    $service_desc = $data['description'];
 		}
-		$obj->XML->writeElement("service_description", $service_desc, false);
-		$obj->XML->writeElement("hostname", $hostname, false);
+		$obj->XML->writeElement("service_description", CentreonUtils::escapeSecure($service_desc), false);
+		$obj->XML->writeElement("hostname", CentreonUtils::escapeSecure($hostname), false);
 		$obj->XML->startElement("current_state");
 		$obj->XML->writeAttribute("color", $obj->colorService[$data["state"]]);
 		$obj->XML->text(_($obj->statusService[$data["state"]]), false);
@@ -179,7 +181,7 @@
 		$obj->XML->writeElement("current_state_name", _("Host Status"), 0);
 		$obj->XML->startElement("plugin_output");
 		$obj->XML->writeAttribute("name", _("Status Information"));
-        $obj->XML->text($pluginShortOuput, 0);
+        $obj->XML->text(CentreonUtils::escapeSecure($pluginShortOuput), 0);
 		$obj->XML->endElement();
 
 		/*
@@ -200,7 +202,7 @@
 		$tab_perf = preg_split("/\ /", $data["perfdata"]);
 		foreach ($tab_perf as $val) {
 			$obj->XML->startElement("performance_data");
-			$obj->XML->writeElement("perf_data", $val);
+			$obj->XML->writeElement("perf_data", CentreonUtils::escapeSecure($val));
 			$obj->XML->endElement();
 		}
 		$obj->XML->writeElement("performance_data_name", _("Performance Data"), 0);
@@ -266,7 +268,7 @@
 
 		$obj->XML->startElement("notes");
 		$obj->XML->writeAttribute("name", _("Notes"));
-		$obj->XML->text($data['notes']);
+		$obj->XML->text(CentreonUtils::escapeSecure($data['notes']));
 		$obj->XML->endElement();
 	} else {
 		$obj->XML->writeElement("infos", "none");

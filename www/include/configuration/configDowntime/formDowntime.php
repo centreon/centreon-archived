@@ -80,6 +80,27 @@
 	$attrsTextarea 			= array("rows"=>"5", "cols"=>"40");
 	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
+    $attrHosts = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+        'multiple' => true
+    );
+    $attrHostgroups = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+        'multiple' => true
+    );
+    $attrServices = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+        'multiple' => true
+    );
+    $attrServicegroups = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list',
+        'multiple' => true
+    );
+    
 	/*
 	 * Init QuickFrom
 	 */
@@ -117,77 +138,38 @@
 	 * Tab 2
 	 * Hosts
 	 */
-	$hosts = array();
-	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($host = $DBRESULT->fetchRow()) {
-		$hosts[$host["host_id"]] = $host["host_name"];
-	}
-	$DBRESULT->free();
-	$am_host = $form->addElement('advmultiselect', 'host_relation', array(_("Linked with Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
-	$am_host->setButtonAttributes('add', array('value' =>  _("Add")));
-	$am_host->setButtonAttributes('remove', array('value' => _("Remove")));
-	$am_host->setElementTemplate($eTemplate);
-	echo $am_host->getElementJs(false);
+    $attrHost1 = array_merge(
+        $attrHosts,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=downtime&field=host_relation&id=' . $downtime_id)
+    );
+    $form->addElement('select2', 'host_relation', _("Linked with Hosts"), array(), $attrHost1);
 
 	/*
 	 * Hostgroups
 	 */
-	$hgs = array();
-	$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	while ($hg = $DBRESULT->fetchRow()) {
-		$hgs[$hg["hg_id"]] = $hg["hg_name"];
-	}
-	$DBRESULT->free();
-	$am_hostgroup = $form->addElement('advmultiselect', 'hostgroup_relation', array(_("Linked with Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect_big, SORT_ASC);
-	$am_hostgroup->setButtonAttributes('add', array('value' =>  _("Add")));
-	$am_hostgroup->setButtonAttributes('remove', array('value' => _("Remove")));
-	$am_hostgroup->setElementTemplate($eTemplate);
-	echo $am_hostgroup->getElementJs(false);
+    $attrHostgroup1 = array_merge(
+        $attrHostgroups,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=downtime&field=hostgroup_relation&id=' . $downtime_id)
+    );
+    $form->addElement('select2', 'hostgroup_relation', _("Linked with Host Groups"), array(), $attrHostgroup1);
 
 	/*
 	 * Service
 	 */
-	$host4svc = array(-2 => "_"._("None")."_", -1 => "_"._("ALL")."_");
-	foreach ($hosts as $key => $hostname) {
-	    $host4svc[$key] = $hostname;
-	}
-	$form->addElement('select', 'host4svc', _('Host'), $host4svc, array('onchange' => "javascript:getServices(this.form.elements['host4svc'].value); return false;"));
-	$svcs = array();
-	if (isset($id) && $id != 0) {
-	    $query = "SELECT s.service_id, s.service_description, h.host_name, h.host_id
-	    	FROM service s, host h, downtime_service_relation dsr
-	    	WHERE 
-	    		dsr.dt_id = " . $id ." AND 
-	    		dsr.host_host_id = h.host_id AND 
-	    		dsr.service_service_id = s.service_id
-	    	ORDER BY h.host_name, s.service_description";
-	    $DBRESULT = $pearDB->query($query);
-	    while ($svc = $DBRESULT->fetchRow()) {
-	        $svc_id = $svc['host_id'] . '-' . $svc['service_id'];
-	        $svc_name = $svc['host_name'] . '/' . $svc['service_description'];
-	        $svcs[$svc_id] = $svc_name;
-	    }
-	}
-	$am_svc = $form->addElement('advmultiselect', 'svc_relation', array(_("Linked with Services"), _("Available"), _("Selected")), $svcs, $attrsAdvSelect_big, SORT_ASC);
-	$am_svc->setButtonAttributes('add', array('value' =>  _("Add")));
-	$am_svc->setButtonAttributes('remove', array('value' => _("Remove")));
-	$am_svc->setElementTemplate($eTemplate);
-	echo $am_svc->getElementJs(false);
+    $attrService1 = array_merge(
+        $attrServices,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=downtime&field=svc_relation&id=' . $downtime_id)
+    );
+    $form->addElement('select2', 'svc_relation', _("Linked with Services"), array(), $attrService1);
 
 	/*
 	 * Servicegroups
 	 */
-	$sgs = array();
-	$DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
-	while ($sg = $DBRESULT->fetchRow()) {
-		$sgs[$sg["sg_id"]] = $sg["sg_name"];
-	}
-	$DBRESULT->free();
-	$am_svcgroup = $form->addElement('advmultiselect', 'svcgroup_relation', array(_("Linked with Service Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect_big, SORT_ASC);
-	$am_svcgroup->setButtonAttributes('add', array('value' =>  _("Add")));
-	$am_svcgroup->setButtonAttributes('remove', array('value' => _("Remove")));
-	$am_svcgroup->setElementTemplate($eTemplate);
-	echo $am_svcgroup->getElementJs(false);
+    $attrServicegroup1 = array_merge(
+        $attrServicegroups,
+        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=downtime&field=svcgroup_relation&id=' . $downtime_id)
+    );
+    $form->addElement('select2', 'svcgroup_relation', _("Linked with Service Groups"), array(), $attrServicegroup1);
 
 	$form->addRule('downtime_name', _("Name"), 'required');
         $form->registerRule('exist', 'callback', 'testDowntimeNameExistence');

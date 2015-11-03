@@ -254,8 +254,11 @@ function cmdCallback(cmd) {
             }
         }
         
+        var url = './include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar;
         
-        Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title: '<?php echo _("External commands") ?>', width: 600});
+        var popin = jQuery('<div>');
+        popin.centreonPopin({open:true,url:url});
+        window.currentPopin = popin;
         return 0;
     }
 }
@@ -326,7 +329,8 @@ function send_the_command() {
 		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&start=" + start + "&end=" + end +  "&comment=" + comment + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
 	}
     xhr_cmd.send(null);
-	Modalbox.hide();
+    window.currentPopin.centreonPopin("close");
+	//Modalbox.hide();
 	unsetCheckboxes();
 }
 

@@ -40,9 +40,11 @@
 
 	require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
-	include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
-	include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
-	include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+        include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
+
+        include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
+        include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
+        include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 	/*
 	 * Create XML Request Objects
@@ -176,8 +178,8 @@
 		$obj->XML->startElement("l");
 		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 		$obj->XML->writeElement("o", $ct++);
-		$obj->XML->writeElement("hn", $host_name, false);
-		$obj->XML->writeElement("hnl", urlencode($host_name));
+		$obj->XML->writeElement("hn", CentreonUtils::escapeSecure($host_name), false);
+		$obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
 		$obj->XML->writeElement("hid", $tab["host_id"], false);
 		$obj->XML->writeElement("ico", $tabIcone[$host_name]);
 		$obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);

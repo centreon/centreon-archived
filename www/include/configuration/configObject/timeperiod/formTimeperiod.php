@@ -97,6 +97,11 @@ $attrsText 		= array("size"=>"35");
 $attrsTextLong	= array("size"=>"55", "maxlength" => "200");
 $attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
 $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrTimeperiods = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+    'multiple' => true
+);
 
 /*
  * Form begin
@@ -135,20 +140,20 @@ $form->addElement('text', 'tp_saturday', _("Saturday"), $attrsTextLong);
 /*
  * Include Timeperiod
  */
-$ams3 = $form->addElement('advmultiselect', 'tp_include', array(_("Include Timeperiods"), _("Available"), _("Selected")), $includeTP, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+$attrTimeperiod1 = array_merge(
+    $attrTimeperiods,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=timeperiodRenderer&field=tp_include&id=' . $tp_id)
+);
+$form->addElement('select2', 'tp_include', _("Include Timeperiods"), array(), $attrTimeperiod1);
 
 /*
  * Exclude Timeperiod
  */
-$ams3 = $form->addElement('advmultiselect', 'tp_exclude', array(_("Exclude Timeperiods"), _("Available"), _("Selected")), $excludeTP, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+$attrTimeperiod2 = array_merge(
+    $attrTimeperiods,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=timeperiodRenderer&field=tp_exclude&id=' . $tp_id)
+);
+$form->addElement('select2', 'tp_exclude', _("Exclude Timeperiods"), array(), $attrTimeperiod2);
 
 /*
  *  Multiple exceptions relations stored in DB

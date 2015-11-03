@@ -41,6 +41,8 @@
 	 */
 	require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
+        include_once $centreon_path . "www/class/centreonUtils.class.php";
+
 	/**
 	 * Include Monitoring Classes
 	 */
@@ -150,9 +152,9 @@
 			$next_notification = $data["next_host_notification"];
 		}
 
-		$obj->XML->writeElement("hostname", $data["name"], false);
-                $obj->XML->writeElement("hostalias", $data["alias"], false);
-		$obj->XML->writeElement("address", $data["address"]);
+		$obj->XML->writeElement("hostname", CentreonUtils::escapeSecure($data["name"]), false);
+                $obj->XML->writeElement("hostalias", CentreonUtils::escapeSecure($data["alias"]), false);
+		$obj->XML->writeElement("address", CentreonUtils::escapeSecure($data["address"]));
 		$obj->XML->startElement("current_state");
 		$obj->XML->writeAttribute("color", $obj->colorHost[$data["state"]]);
 		$obj->XML->text(_($obj->statusHost[$data["state"]]), false);
@@ -160,9 +162,9 @@
 		$obj->XML->writeElement("current_state_name", _("Host Status"), 0);
 		$obj->XML->startElement("plugin_output");
 		$obj->XML->writeAttribute("name", _("Status Information"));
-		$obj->XML->text($pluginShortOuput, 0);
+		$obj->XML->text(CentreonUtils::escapeSecure($pluginShortOuput), 0);
 		$obj->XML->endElement();
-		$obj->XML->writeElement("performance_data", $data["perfdata"]);
+		$obj->XML->writeElement("performance_data", CentreonUtils::escapeSecure($data["perfdata"]));
 		$obj->XML->writeElement("performance_data_name", _("Performance Data"), 0);
 		$obj->XML->startElement("current_attempt");
 		$obj->XML->writeAttribute("name", _("Current Attempt"));
@@ -213,7 +215,7 @@
 
 		$obj->XML->startElement("notes");
 		$obj->XML->writeAttribute("name", _("Notes"));
-		$obj->XML->text($data['notes']);
+		$obj->XML->text(CentreonUtils::escapeSecure($data['notes']));
 		$obj->XML->endElement();
 	} else {
 		$obj->XML->writeElement("infos", "none");

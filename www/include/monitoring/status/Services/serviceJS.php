@@ -265,8 +265,14 @@ var _criticality_id = 0;
                     }
                 }
 			}
-			Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title:'<?php echo _("External commands") ?>',width:600});
-			return 0;
+            
+            
+        var url = './include/monitoring/external_cmd/popup/popup.php?o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar;
+        
+        var popin = jQuery('<div>');
+        popin.centreonPopin({open:true,url:url});
+        window.currentPopin = popin;
+        return 0;
 		}
 	}
 
@@ -329,7 +335,7 @@ var _criticality_id = 0;
 			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&comment=" + comment + "&start="+ start + "&end=" + end + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
 		}
 		xhr_cmd.send(null);
-		Modalbox.hide();
+        window.currentPopin.centreonPopin("close");
 		unsetCheckboxes();
 	}
 

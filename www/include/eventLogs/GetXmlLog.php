@@ -118,7 +118,7 @@ $contact_id = check_session($sid, $pearDB);
 $is_admin = isUserAdmin($sid);
 if (isset($sid) && $sid){
     $access = new CentreonAcl($contact_id, $is_admin);
-    $lca = array("LcaHost" => $access->getHostServices($pearDBO, null, 1), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
+    $lca = array("LcaHost" => $access->getHostsServices($pearDBO, 1), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 }
 
 (isset($_GET["num"])) ? $num = htmlentities($_GET["num"]) : $num = "0";
@@ -503,7 +503,7 @@ if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
     $flag = 0;
     $str_unitSVC = "";
     $service_search_sql = "";
-    if (count($tab_svc) > 0 && ($ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
+    if (count($tab_svc) > 0 && ($up == 'true' || $down == 'true' || $unreachable == 'true' || $ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
         $req_append = "";
         foreach ($tab_svc as $host_name => $services) {
             $str = "";
@@ -528,12 +528,11 @@ if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
         }
     } else {
       $req .= "AND 0 ";
-    }   
-
-    
+    }    
     $req .= $host_search_sql . $service_search_sql;
     
 }
+
 /*
  * calculate size before limit for pagination
  */
@@ -546,21 +545,23 @@ if (isset($req) && $req) {
      */
     $req .= $suffix_order;
     
-    if ($num < 0)
+    if ($num < 0) {
         $num = 0;
-        
+    }
 
     $limitReq = "";
     $limitReq2 = "";
     if($export !== "1"){
         $limitReq = " LIMIT " . $num * $limit . ", " . $limit;
-        $limitReq2 =" LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
     }
     
     $DBRESULT = $pearDBO->query($req .$limitReq);
     $rows = $pearDBO->numberRows();
     
     if (!($DBRESULT->numRows()) && ($num != 0)) {
+        if($export !== "1"){
+            $limitReq2 =" LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
+        }
         $DBRESULT = $pearDBO->query($req . $limitReq2);
     }
 

@@ -487,7 +487,7 @@ if ($o != "mc") {
     $form->addElement('text', 'host_name', _("Host Name"), $attrsText);
     $form->addElement('text', 'host_alias', _("Alias"), $attrsText);
     $form->addElement('text', 'host_address', _("IP Address / DNS"), array_merge(array('id' => 'host_address'), $attrsText));
-    $form->addElement('button', 'host_resolve', _("Resolve"), array('onClick' => 'resolveHostNameToAddress(document.getElementById(\'host_address\').value, function(err, ip){if (!err) document.getElementById(\'host_address\').value = ip});', _("class='btc bt_info'")));
+    $form->addElement('button', 'host_resolve', _("Resolve"), array('onClick' => 'resolveHostNameToAddress(document.getElementById(\'host_address\').value, function(err, ip){if (!err) document.getElementById(\'host_address\').value = ip});', 'class' => 'btc bt_info'));
 }
 $form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
 $form->addElement('select', 'host_snmp_version', _("Version"), array(NULL => NULL, 1 => "1", "2c" => "2c", 3 => "3"));
@@ -501,15 +501,6 @@ $CentreonGMT = new CentreonGMT($pearDB);
 
 $GMTList = $CentreonGMT->getGMTList($pearDB);
 
-/*
-$form->addElement('select', 'host_location', _("Timezone / Location"), $GMTList);
-
-if ($o != "mc")
-    $form->setDefaults(array('host_location' => $oreon->optGen["gmt"]));
-if (!isset($host["host_location"]))
-    $host["host_location"] = NULL;
-unset($GMTList);
-*/
 $attrTimezones = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
@@ -568,13 +559,6 @@ $cloneSetMacro[] = $form->addElement(
 $cloneSetMacro[] = $form->addElement(
     'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
 );
-
-
-/*
-$cloneSetMacro[] = $form->addElement(
-    'button', 'reset[#index#]', _('Reset'), array('id' => 'resetMacro_#index#')
-);*/
-
 
 
 $cloneSetTemplate = array();

@@ -22,8 +22,8 @@ Features
 Security fixes
 ==============
 
-- #2979 : Secure the type of media which file can be uploaded
-- Fix some SQL injections
+- #2979 : Secure the type of media which file can be uploaded (ZSL-2015-5264)
+- Fix some SQL injections (ZSL-2015-5265)
 
 Bug fixes
 =========

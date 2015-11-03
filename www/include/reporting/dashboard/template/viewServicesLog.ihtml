@@ -136,18 +136,21 @@
 
 <script>
 {literal}
+    jQuery("#StartDate,#EndDate").datepicker({
+        maxDate: '-1'
+    });
     jQuery(function () {
         c3.generate({
             bindto: d3.select('#chart'),
             data: {
                 // iris data from R
                 columns: [
-                    ['Ok', {/literal}{$service_ok}{literal}],
-                    ['Warning', {/literal}{$service_warning}{literal}],
-                    ['Critical', {/literal}{$service_critical}{literal}],
-                    ['Unknown', {/literal}{$service_unknown}{literal}],
-                    ['Downtime', {/literal}{$service_maintenance}{literal}],
-                    ['Undetermined', {/literal}{$service_undetermined}{literal}]
+                    ['Ok', {/literal}{$service_ok|number_format:2:".":""}{literal}],
+                    ['Warning', {/literal}{$service_warning|number_format:2:".":""}{literal}],
+                    ['Critical', {/literal}{$service_critical|number_format:2:".":""}{literal}],
+                    ['Unknown', {/literal}{$service_unknown|number_format:2:".":""}{literal}],
+                    ['Downtime', {/literal}{$service_maintenance|number_format:2:".":""}{literal}],
+                    ['Undetermined', {/literal}{$service_undetermined|number_format:2:".":""}{literal}]
                 ],
                 type : 'pie',
                 colors : {

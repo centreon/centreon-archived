@@ -40,6 +40,8 @@
 
     require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
+    include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
+
     include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
     include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
     include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
@@ -106,10 +108,10 @@
 
     $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
         . "FROM servicegroups sg, services_servicegroups sgm, hosts h, services s "
-        . "WHERE sg.servicegroup_id = sgm.servicegroup_id AND sgm.host_id = h.host_id AND h.host_id = s.host_id ";
+        . "WHERE sg.servicegroup_id = sgm.servicegroup_id AND sgm.host_id = h.host_id AND h.host_id = s.host_id AND s.service_id = sgm.service_id ";
 
     /* Host ACL */
-    $query .= $obj->access->queryBuilder("", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
+    $query .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
 
     /* Service ACL */
     $query .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
@@ -202,7 +204,7 @@
                 $sg = $tab["sg_name"];
                 $h = "";
                 $obj->XML->startElement("sg");
-                $obj->XML->writeElement("sgn", $tab["sg_name"]);
+                $obj->XML->writeElement("sgn", CentreonUtils::escapeSecure($tab["sg_name"]));
                 $obj->XML->writeElement("o", $ct);
             }
             $ct++;
@@ -216,13 +218,13 @@
                 $hs = $tab["host_state"];
                 $obj->XML->startElement("h");
                 $obj->XML->writeAttribute("class", $obj->getNextLineClass());
-                $obj->XML->writeElement("hn", $tab["host_name"], false);
+                $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($tab["host_name"]), false);
                 if ($tab["icon_image"]) {
                     $obj->XML->writeElement("hico", $tab["icon_image"]);
                 } else {
                     $obj->XML->writeElement("hico", "none");
                 }
-                $obj->XML->writeElement("hnl", urlencode($tab["host_name"]));
+                $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($tab["host_name"])));
                 $obj->XML->writeElement("hid", $tab["host_id"]);
                 $obj->XML->writeElement("hcount", $count);
                 $obj->XML->writeElement("hs", _($obj->statusHost[$tab["host_state"]]));
@@ -230,8 +232,8 @@
                 $count++;
             }
             $obj->XML->startElement("svc");
-            $obj->XML->writeElement("sn", $tab['description']);
-            $obj->XML->writeElement("snl", urlencode($tab['description']));
+            $obj->XML->writeElement("sn", CentreonUtils::escapeSecure($tab['description']));
+            $obj->XML->writeElement("snl", CentreonUtils::escapeSecure(urlencode($tab['description'])));
             $obj->XML->writeElement("sc", $obj->colorService[$tab['state']]);
             $obj->XML->writeElement("svc_id", $tab['service_id']);
             $obj->XML->endElement();

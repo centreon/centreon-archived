@@ -40,6 +40,8 @@
  */
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
+include_once $centreon_path . "www/class/centreonUtils.class.php";
+
 /**
  * Require Sepecific XML / Ajax Class
  */
@@ -380,9 +382,9 @@ if (!PEAR::isError($DBRESULT)) {
             $obj->XML->writeElement("hc", "transparent");
             $obj->XML->startElement("hn");
             $obj->XML->writeAttribute("none", "1");
-            $obj->XML->text($data["name"]);
+            $obj->XML->text(CentreonUtils::escapeSecure($data["name"]));
             $obj->XML->endElement();
-            $obj->XML->writeElement("hnl", urlencode($data["name"]));
+            $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($data["name"])));
             $obj->XML->writeElement("hid", $data["host_id"]);
         } else {
             $host_prev = $data["name"];
@@ -392,10 +394,10 @@ if (!PEAR::isError($DBRESULT)) {
                 $obj->XML->writeElement("hc", $obj->general_opt['color_downtime']);
             }
 
-            $obj->XML->writeElement("hnl", urlencode($data["name"]));
+            $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($data["name"])));
             $obj->XML->startElement("hn");
             $obj->XML->writeAttribute("none", "0");
-            $obj->XML->text($data["name"], true, false);
+            $obj->XML->text(CentreonUtils::escapeSecure($data["name"]), true, false);
             $obj->XML->endElement();
 
             $hostNotesUrl = "none";
@@ -407,7 +409,7 @@ if (!PEAR::isError($DBRESULT)) {
                 $hostNotesUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostNotesUrl);
                 $hostNotesUrl = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data["instance_name"], "ns_ip_address"), $hostNotesUrl);
             }
-            $obj->XML->writeElement("hnu", $hostNotesUrl);
+            $obj->XML->writeElement("hnu", CentreonUtils::escapeSecure($hostNotesUrl));
 
             $hostActionUrl = "none";
             if ($data["h_action_url"]) {
@@ -418,11 +420,11 @@ if (!PEAR::isError($DBRESULT)) {
                 $hostActionUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostActionUrl);
                 $hostActionUrl = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data["instance_name"], "ns_ip_address"), $hostActionUrl);
             }
-            $obj->XML->writeElement("hau", $hostActionUrl);
+            $obj->XML->writeElement("hau", CentreonUtils::escapeSecure($hostActionUrl));
 
-            $obj->XML->writeElement("hnn", $data["h_notes"]);
+            $obj->XML->writeElement("hnn", CentreonUtils::escapeSecure($data["h_notes"]));
             $obj->XML->writeElement("hico", $data["h_icon_images"]);
-            $obj->XML->writeElement("hip", $data["address"]);
+            $obj->XML->writeElement("hip", CentreonUtils::escapeSecure($data["address"]));
             $obj->XML->writeElement("hdtm", $data["h_scheduled_downtime_depth"]);
             $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=" . $data['host_id']);
             $obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
@@ -437,23 +439,23 @@ if (!PEAR::isError($DBRESULT)) {
          * Add possibility to use display name
          */
         if (isset($data["display_name"]) && $data["display_name"]) {
-            $obj->XML->writeElement("sd", $data["display_name"], false);
+            $obj->XML->writeElement("sd", CentreonUtils::escapeSecure($data["display_name"]), false);
         } else {
-            $obj->XML->writeElement("sd", $data["description"], false);
+            $obj->XML->writeElement("sd", CentreonUtils::escapeSecure($data["description"]), false);
         }
         $obj->XML->writeElement("sico", $data["icon_image"]);
-        $obj->XML->writeElement("sdl", urlencode($data["description"]));
+        $obj->XML->writeElement("sdl", CentreonUtils::escapeSecure(urlencode($data["description"])));
         $obj->XML->writeElement("svc_id", $data["service_id"]);
         $obj->XML->writeElement("sc", $obj->colorService[$data["state"]]);
         $obj->XML->writeElement("cs", _($obj->statusService[$data["state"]]), false);
         $obj->XML->writeElement("ssc", $data["state"]);
-        $obj->XML->writeElement("po", $pluginShortOuput);
+        $obj->XML->writeElement("po", CentreonUtils::escapeSecure($pluginShortOuput));
         $obj->XML->writeElement("ca", $data["current_attempt"] . "/" . $data["max_check_attempts"] . " (" . $obj->stateType[$data["state_type"]] . ")");
         if (isset($data['criticality']) && $data['criticality'] != '' && isset($critCache[$data['service_id']])) {
             $obj->XML->writeElement("hci", 1); // has criticality
             $critData = $criticality->getData($critCache[$data['service_id']], true);
             $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
-            $obj->XML->writeElement("cih", $critData['name']);
+            $obj->XML->writeElement("cih", CentreonUtils::escapeSecure($critData['name']));
         } else {
             $obj->XML->writeElement("hci", 0); // has no criticality
         }
@@ -482,7 +484,7 @@ if (!PEAR::isError($DBRESULT)) {
                 $data["notes"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes']);
                 $data["notes"] = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $data["notes"]);
             }
-            $obj->XML->writeElement("snn", $data["notes"]);
+            $obj->XML->writeElement("snn", CentreonUtils::escapeSecure($data["notes"]));
         } else {
             $obj->XML->writeElement("snn", 'none');
         }
@@ -503,7 +505,7 @@ if (!PEAR::isError($DBRESULT)) {
                 $data["notes_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes_url']);
                 $data["notes_url"] = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $data["notes_url"]);
             }
-            $obj->XML->writeElement("snu", $data["notes_url"]);
+            $obj->XML->writeElement("snu", CentreonUtils::escapeSecure($data["notes_url"]));
         } else {
             $obj->XML->writeElement("snu", 'none');
         }
@@ -523,7 +525,7 @@ if (!PEAR::isError($DBRESULT)) {
                 $data["action_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['action_url']);
                 $data["action_url"] = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $data["action_url"]);
             }
-            $obj->XML->writeElement("sau", $data["action_url"]);
+            $obj->XML->writeElement("sau", CentreonUtils::escapeSecure($data["action_url"]));
         } else {
             $obj->XML->writeElement("sau", 'none');
         }
@@ -537,7 +539,7 @@ if (!PEAR::isError($DBRESULT)) {
             if (isset($data['address']) && $data['address']) {
                 $data["notes"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes"]);
             }
-            $obj->XML->writeElement("sn", $data["notes"]);
+            $obj->XML->writeElement("sn", CentreonUtils::escapeSecure($data["notes"]));
         } else {
             $obj->XML->writeElement("sn", 'none');
         }

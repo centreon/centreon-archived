@@ -33,6 +33,7 @@
  *
  */
 
+
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
@@ -50,10 +51,8 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
     public function __construct()
     {
         global $pearDBO;
-        
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
-        
         $pearDBO = $this->pearDBMonitoring;
     }
     
@@ -89,7 +88,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         } else {
             $t = $this->arguments['t'];
         }
-        
+
         // Check for service type
         $g = false;
         if (isset($this->arguments['g'])) {
@@ -98,15 +97,22 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                 $g = true;
             }
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
         
         switch ($t) {
             default:
             case 'host':
-                $serviceList = $this->getServicesByHost($q, $aclServices, $g);
+                $serviceList = $this->getServicesByHost($q, $aclServices, $range, $g);
                 break;
             case 'hostgroup':
-                $serviceList = $this->getServicesByHostgroup($q, $aclServices);
+                $serviceList = $this->getServicesByHostgroup($q, $aclServices, $range);
                 break;
         }
         
@@ -118,20 +124,22 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
      * @param type $q
      * @param type $aclServices
      */
-    private function getServicesByHost($q, $aclServices, $hasGraph = false)
+    private function getServicesByHost($q, $aclServices, $range = '', $hasGraph = false)
     {
-        $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
+        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
             . "FROM host h, service s, host_service_relation hsr "
             . 'WHERE hsr.host_host_id = h.host_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND h.host_register = '1' AND s.service_register = '1' "
-            . "AND s.service_description LIKE '%$q%' OR h.host_name LIKE '%$q%' "
+            . "AND s.service_description LIKE '%$q%' "
             . $aclServices
-            . "ORDER BY h.host_name";
+            . "ORDER BY h.host_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryService);
         
-        
+        $total = $this->pearDB->numberRows();
+
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
             if ($hasGraph) {
@@ -147,7 +155,10 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             }
         }
         
-        return $serviceList;
+        return array(
+            'items' => $serviceList,
+            'total' => $total
+        );
     }
     
     /**
@@ -155,18 +166,21 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
      * @param type $q
      * @param type $aclServices
      */
-    private function getServicesByHostgroup($q, $aclServices)
+    private function getServicesByHostgroup($q, $aclServices, $range = '')
     {
-        $queryService = "SELECT DISTINCT s.service_description, s.service_id, hg.hg_name, hg.hg_id "
+        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_description, s.service_id, hg.hg_name, hg.hg_id "
             . "FROM hostgroup hg, service s, host_service_relation hsr "
             . 'WHERE hsr.hostgroup_hg_id = hg.hg_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND s.service_register = '1' "
-            . "AND s.service_description LIKE '%$q%' OR hg.hg_name LIKE '%$q% "
+            . "AND s.service_description LIKE '%$q%' "
             . $aclServices
-            . "ORDER BY hg.hg_name, s.service_description";
+            . "ORDER BY hg.hg_name, s.service_description "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryService);
+
+        $total = $this->pearDB->numberRows();
         
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
@@ -175,8 +189,11 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             
             $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
-        
-        return $serviceList;
+
+        return array(
+            'items' => $serviceList,
+            'total' => $total
+        );
     }
 
 
@@ -188,20 +205,20 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
     public function getDefaultEscalationValues()
     {
         $defaultValues = array();
-        
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
+
+        // Get Object targeted
+        if (isset($this->arguments['id']) && !empty($this->arguments['id'])) {
+            $id = $this->arguments['id'];
         } else {
-            $q = $this->arguments['q'];
+            throw new RestBadRequestException("Bad parameters id");
         }
-        
+
         $queryService = "SELECT distinct host_host_id, host_name, service_service_id, service_description
             FROM service s, escalation_service_relation esr, host h
             WHERE s.service_id = esr.service_service_id
             AND esr.host_host_id = h.host_id
             AND h.host_register = '1'
-            AND esr.escalation_esc_id = " . $q;
+            AND esr.escalation_esc_id = " . $id;
         $DBRESULT = $this->pearDB->query($queryService);
         
         while ($data = $DBRESULT->fetchRow()) {

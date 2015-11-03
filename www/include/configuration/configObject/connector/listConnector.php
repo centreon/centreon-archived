@@ -34,6 +34,8 @@
  *
  */
 
+include_once("./class/centreonUtils.class.php");
+
 include_once "./include/common/autoNumLimit.php";
 
 // So what we get drunk; So what we don't sleep; We're just having Fun and we d'ont car who sees
@@ -127,9 +129,9 @@ try
 
             $elemArr[$j] = array("RowMenu_select"         => $selectedElements->toHtml(),
                                  "RowMenu_link"           => "?p=".$p."&o=c&id=".$result['id'],
-                                 "RowMenu_name"           => $result["name"],
-                                 "RowMenu_description"    => $result['description'],
-                                 "RowMenu_command_line"   => $result['command_line'],
+                                 "RowMenu_name"           => CentreonUtils::escapeSecure($result["name"]),
+                                 "RowMenu_description"    => CentreonUtils::escapeSecure($result['description']),
+                                 "RowMenu_command_line"   => CentreonUtils::escapeSecure($result['command_line']),
                                  "RowMenu_enabled"        => $result['enabled'],
                                  "RowMenu_options"        => $moptions
                                 );

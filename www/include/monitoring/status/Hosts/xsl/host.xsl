@@ -138,8 +138,8 @@
 				<xsl:element name="a">
 					<xsl:attribute name="class">infobulle</xsl:attribute>
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-					  	<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/technician.png</xsl:attribute>
+					  	<xsl:attribute name="class">infobulle link_generic_info_volante ico-20</xsl:attribute>
 						<xsl:attribute name="id">ackspan_<xsl:value-of select="hid"/></xsl:attribute>
 						<xsl:attribute name="name"><xsl:value-of select="hackXml"/>|<xsl:value-of select="hackXsl"/></xsl:attribute>					
 					</xsl:element>
@@ -147,12 +147,14 @@
 			</xsl:if>
 			<xsl:if test="hae = 0 and hpe = 1">
 				<xsl:element name="img">
-				  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+				  	<xsl:attribute name="src">./img/icons/passive_check.png</xsl:attribute>
+					<xsl:attribute name="class">ico-16</xsl:attribute>
 				</xsl:element>
 			</xsl:if>
 			<xsl:if test="hae = 0 and hpe = 0">
 				<xsl:element name="img">
-				  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+				  	<xsl:attribute name="src">./img/icons/never_checked.png</xsl:attribute>
+					<xsl:attribute name="class">ico-16</xsl:attribute>
 				</xsl:element>
 			</xsl:if>
 			<xsl:if test="ne = 0">

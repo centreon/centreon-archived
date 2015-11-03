@@ -119,7 +119,7 @@ $contact_id = check_session($sid, $pearDB);
 $is_admin = isUserAdmin($sid);
 $access = new CentreonACL($contact_id, $is_admin);
 
-$lca = $access->getHostServices($pearDBO);
+$lca = $access->getHostsServices($pearDBO);
 
 (isset($sid))                       ? $sid = $sid : $sid = "-1";
 (isset($_GET["template_id"]))       ? $template_id = htmlentities($_GET["template_id"], ENT_QUOTES, "UTF-8") : $template_id = "1";

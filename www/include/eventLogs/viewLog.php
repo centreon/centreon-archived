@@ -754,7 +754,16 @@ if($engine == 'false'){
                     success : function(json){
                         json.each(function(elem){
                             if(jQuery.inArray(elem.id,host_value) === -1){
-                                jQuery("#host_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                                var existingOptions = jQuery("#host_filter").find('option');
+                                var existFlag = false;
+                                existingOptions.each(function(el){
+                                    if(jQuery(this).val() == elem.id){
+                                        existFlag = true;
+                                    }
+                                });
+                                if(!existFlag){
+                                    jQuery("#host_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                                }
                                 host_value.push(elem.id);
                             }    
                         });
@@ -781,7 +790,16 @@ if($engine == 'false'){
                     success : function(json){
                         json.each(function(elem){
                             if(jQuery.inArray(elem.id,service_value) === -1){
-                                jQuery("#service_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                                var existingOptions = jQuery("#service_filter option");
+                                var existFlag = false;
+                                existingOptions.each(function(){
+                                    if(jQuery(this).val() == elem.id){
+                                        existFlag = true;
+                                    }
+                                });
+                                if(!existFlag){
+                                    jQuery("#service_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                                }
                                 service_value.push(elem.id);
                             }    
                         });

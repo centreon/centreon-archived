@@ -57,7 +57,7 @@ if (($o == "c" || $o == "w") && $service_id) {
     if (isset($lockedElements[$service_id])) {
         $o = "w";
     }            
-    $DBRESULT = $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM service LEFT JOIN extended_service_information esi ON esi.service_service_id = service_id WHERE service_id = '".$service_id."'  LIMIT 1");
     // Set base value
     $service_list = $DBRESULT->fetchRow();
     $service = array_map("myDecodeSvTP", $service_list);
@@ -359,6 +359,11 @@ $attrGraphtemplates= array(
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_graphtemplate&action=list',
     'multiple' => false
 );
+$attrHosttemplates = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=list',
+    'multiple' => true
+);
 
 #
 ## Form begin
@@ -392,11 +397,11 @@ $form->addElement('select2', 'service_template_model_stm_id', _("Service Templat
 
 $form->addElement('static', 'tplText', _("Using a Template Model allows you to have multi-level Template connections"));
 
-$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+$attrHosttemplate1 = array_merge(
+    $attrHosttemplates,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=defaultValues&target=service&field=service_hPars&id=' . $service_id)
+);
+$form->addElement('select2', 'service_hPars', _("Service Template"), array(), $attrHosttemplate1);
 
 #
 ## Check information
@@ -666,11 +671,11 @@ if ($o == "mc")	{
     $form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_Pars'=>'0'));
  }
-$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
+/*$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
 $ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 $ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 $ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+echo $ams3->getElementJs(false);*/
 
 ##
 ## Sort 3 - Data treatment

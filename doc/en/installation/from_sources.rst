@@ -729,7 +729,7 @@ End
   #                 Go to the URL : http://localhost.localdomain/centreon/      #
   #                   	     to finish the setup                                #
   #                                                                             #
-  #                  Report bugs at http://forge.centreon.com                   #
+  #          Report bugs at https://github.com/centreon/centreon/issues         #
   #                                                                             #
   #                         Thanks for using Centreon.                          #
   #                          -----------------------                            #

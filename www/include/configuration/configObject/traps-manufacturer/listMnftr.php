@@ -38,7 +38,9 @@
  
 	if (!isset($oreon))
 		exit();
-		
+
+        include_once("./class/centreonUtils.class.php");
+
 	include("./include/common/autoNumLimit.php");
 	$mnftr_id = NULL;
 		
@@ -95,9 +97,9 @@
 		$moptions = "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$mnftr['id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>myDecode($mnftr["name"]),
+						"RowMenu_name"=>CentreonUtils::escapeSecure(myDecode($mnftr["name"])),
 						"RowMenu_link"=>"?p=".$p."&o=c&id=".$mnftr['id'],
-						"RowMenu_alias"=>myDecode($mnftr["alias"]),
+						"RowMenu_alias"=>CentreonUtils::escapeSecure(myDecode($mnftr["alias"])),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}

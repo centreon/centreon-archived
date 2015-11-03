@@ -37,6 +37,8 @@ if (!isset($centreon)) {
     exit();
 }
 
+include_once("./class/centreonUtils.class.php");
+
 include_once "./class/centreonDB.class.php";
 include_once "./class/centreonHost.class.php";
 
@@ -58,14 +60,23 @@ $tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3
 $tab_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
 $tab_host_statusid = array("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2);
 
+$tab_color_host		= array('up' => 'host_up', 'down' => 'host_down', 'unreachable' => 'host_unreachable');
+$tab_color_service = array("OK" => 'service_ok', "WARNING" => 'service_warning', "CRITICAL" => 'service_critical', "UNKNOWN" => 'service_unknown', "PENDING" => 'pending');
+
+
+
 $en_acknowledge_text    = array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Host Problem"));
 $en_acknowledge         = array("1" => "0", "0" => "1");
 $en_inv                 = array("1" => "1", "0" => "0");
 $en_inv_text            = array("1" => _("Disable"), "0" => _("Enable"));
-$color_onoff            = array("1" => "#00ff00", "0" => "#ff0000");
-$color_onoff_inv        = array("0" => "#00ff00", "1" => "#00ff00");
+
+$color_onoff            = array("1" => "host_up", "0" => "host_down");
+$color_onoff_inv        = array("0" => "host_up", "1" => "host_up");
+
+
+
 $en_disable             = array("1" => _("Enabled"), "0" => _("Disabled"));
-$img_en                 = array("0" => "'./img/icones/16x16/element_next.gif'", "1" => "'./img/icones/16x16/element_previous.gif'");
+$img_en                 = array("0" => "'./img/icons/enabled.png'", "1" => "'./img/icons/disabled.png'");
 
 $allActions = false;
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
@@ -166,14 +177,22 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             " AND h.enabled = 1 " .
             " AND s.enabled = 1 ";
         $DBRESULT = $pearDBO->query($rq);
+        $services = array();
+        $class = 'list_one';
         while ($ndo = $DBRESULT->fetchRow()){
-            if (!isset($tab_status[$ndo["current_state"]])) {
-                $tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
+            $ndo["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $ndo["last_check"]);
+            $ndo["current_state"] = $tab_status_service[$ndo['current_state']];
+            $ndo["status_class"] = $tab_color_service[$ndo['current_state']];
+            $ndo['line_class'] = $class;
+            if($class == 'list_one'){
+                $class = 'list_two';
+            }else{
+                $class = 'list_one';
             }
-            $tab_status[$tab_status_service[$ndo["current_state"]]]++;
+            $services[] = $ndo;
         }
         $DBRESULT->free();
-
+        
         /*
          * Get host informations
          */
@@ -255,8 +274,13 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
         $DBRESULT->free();
         unset($data);
+       
+        $host_status[$host_name]["status_class"] = $tab_color_host[strtolower($host_status[$host_name]["current_state"])];
         
-        $host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])];
+        
+        
+        
+        
         $host_status[$host_name]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"]);
         $host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"]) : "";
         !$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_notification"]);
@@ -297,6 +321,11 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 
         $tpl->assign("m_mon_host", _("Host"));
         $tpl->assign("m_mon_host_info", _("Status Details"));
+        $tpl->assign("m_mon_host_services", _("Services"));
+        $tpl->assign("header_service_description", _("Services"));
+        $tpl->assign("header_service_status", _("Status"));
+        $tpl->assign("header_service_last_check", _("Last check"));
+        $tpl->assign("header_service_output", _("Ouput"));
         $tpl->assign("m_mon_host_status", _("Host Status"));
         $tpl->assign("m_mon_host_status_info", _("Status information"));
         $tpl->assign("m_mon_performance_data", _("Performance Data"));
@@ -355,6 +384,9 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("m_mon_flap_detection", _("Flap Detection"));
         $tpl->assign("m_mon_services_en_acknowledge", _("Acknowledged"));
         $tpl->assign("m_mon_submit_passive", _("Submit result for this host"));
+        
+        
+        
 
         /*
          * Strings are used by javascript command handler
@@ -403,6 +435,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("en_acknowledge", $en_acknowledge);
         $tpl->assign("admin", $is_admin);
         $tpl->assign("lcaTopo", $oreon->user->access->topology);
+        $tpl->assign("h", CentreonUtils::escapeSecure($hostDB));
         $tpl->assign("url_id", $url_id);
         $tpl->assign("m_mon_ticket", "Open Ticket");
 
@@ -411,7 +444,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
          */
         $tpl->assign("hostgroups_label", _("Member of Host Groups"));
         if (isset($hostGroups)) {
-            $tpl->assign("hostgroups", $hostGroups);
+            $tpl->assign("hostgroups", CentreonUtils::escapeSecure($hostGroups));
         }
 
         $tpl->assign("hostcategorie_label", _("Host Categories"));
@@ -419,21 +452,25 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             $tpl->assign("hostcategorie", $hostCategorie);
         }
         
+        $tpl->assign("hosts_services", $services);
+        
+        
+        
         /*
          * Contactgroups Display
          */
         $tpl->assign("contactgroups_label", _("Contact groups notified for this host"));
         if (isset($contactGroups)) {
-            $tpl->assign("contactgroups", $contactGroups);
+            $tpl->assign("contactgroups", CentreonUtils::escapeSecure($contactGroups));
         }
 
-        /*
-         * Contacts Display
-         */
-        $tpl->assign("contacts_label", _("Contacts notified for this host"));
-        if (isset($contacts)) {
-            $tpl->assign("contacts", $contacts);
-        }
+       /*
+        * Contacts Display
+        */
+       $tpl->assign("contacts_label", _("Contacts notified for this host"));
+       if (isset($contacts)) {
+           $tpl->assign("contacts", CentreonUtils::escapeSecure($contacts));
+       }
 
         /*
          * Macros
@@ -446,7 +483,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
 
         if (isset($tabCommentHosts)) {
-            $tpl->assign("tab_comments_host", $tabCommentHosts);
+            $tpl->assign("tab_comments_host", array_map(array("CentreonUtils","escapeSecure"),$tabCommentHosts));
         }
         $tpl->assign("host_data", $host_status[$host_name]);
 
@@ -461,8 +498,8 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $notesurl = str_replace("\$HOSTSTATE\$", $host_status[$host_name]["current_state"], $notesurl);
         $notesurl = str_replace("\$HOSTSTATEID\$", $tab_host_statusid[$host_status[$host_name]["current_state"]], $notesurl);
 
-        $tpl->assign("h_ext_notes_url", $notesurl);
-        $tpl->assign("h_ext_notes", getMyHostExtendedInfoField($host_id, "ehi_notes"));
+        $tpl->assign("h_ext_notes_url", CentreonUtils::escapeSecure($notesurl));
+        $tpl->assign("h_ext_notes", CentreonUtils::escapeSecure(getMyHostExtendedInfoField($host_id, "ehi_notes")));
         $tpl->assign("h_ext_notes_url_lang", _("URL Notes"));
         $tpl->assign("h_ext_action_url_lang", _("Action URL"));
 
@@ -473,7 +510,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
         $actionurl = str_replace("\$HOSTSTATE\$", $host_status[$host_name]["current_state"], $actionurl);
         $actionurl = str_replace("\$HOSTSTATEID\$", $tab_host_statusid[$host_status[$host_name]["current_state"]], $actionurl);
-        $tpl->assign("h_ext_action_url", $actionurl);
+        $tpl->assign("h_ext_action_url", CentreonUtils::escapeSecure($actionurl));
         $tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
         $tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
 
