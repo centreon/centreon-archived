@@ -99,7 +99,7 @@ if (isset($_GET["host_name"]) && $_GET["host_name"]) {
  * ACL
  */
 if (!$is_admin) {
-    $lcaHost["LcaHost"] = $centreon->user->access->getHostServicesName($pearDBO);
+    $lcaHost["LcaHost"] = $centreon->user->access->getHostsServicesName($pearDBO);
 }
 
 $tab_status = array();

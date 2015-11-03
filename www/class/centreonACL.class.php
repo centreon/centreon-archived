@@ -1049,7 +1049,7 @@ class CentreonACL {
 
     public function getHostServices($pearDBMonitoring, $host_id, $get_service_description = null) {
         if ($this->admin) {
-            $query = "SELECT h.host_id, s.service_id, s.service_description "
+            $query = "SELECT DISTINCT h.host_id, s.service_id, s.service_description "
                 . "FROM host_service_relation hsr, host h, service s "
                 . "WHERE h.host_activate = '1' "
                 . "AND hsr.host_host_id = h.host_id "
@@ -1063,7 +1063,7 @@ class CentreonACL {
             $DBRESULT->free();
 
             # Get Services attached to hostgroups
-            $query = "SELECT service_id, service_description "
+            $query = "SELECT DISTINCT service_id, service_description "
                 . "FROM hostgroup_relation hgr, service, host_service_relation hsr "
                 . "WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) . "' "
                 . "AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id "
@@ -1074,13 +1074,15 @@ class CentreonACL {
             }
             $DBRESULT->free();
         } else {
-            $query = "SELECT service_id, service_description "
-                . "FROM centreon_acl "
-                . "WHERE host_id = '" . CentreonDB::escape($host_id) . "' "
-                . "AND group_id IN (" . $this->getAccessGroupsString() . ") ";
+            $query = "SELECT DISTINCT s.service_id, s.description "
+                . "FROM services s "
+                . "JOIN centreon_acl ca "
+                . "ON s.service_id = ca.service_id "
+                . "AND ca.host_id = '" . CentreonDB::escape($host_id) . "' "
+                . "AND ca.group_id IN (" . $this->getAccessGroupsString() . ") ";
             $DBRESULT = $pearDBMonitoring->query($query);
             while ($row = $DBRESULT->fetchRow()) {
-                $tab[$row['service_id']] = $row['service_description'];
+                $tab[$row['service_id']] = $row['description'];
             }
             $DBRESULT->free();
         }
@@ -1093,31 +1095,57 @@ class CentreonACL {
      *  Otherwise, it returns all the services of a specific host
      *
      */
-    public function getHostServicesName($pearDBndo, $host_name = null) {
-        $tab = array();
-        if (!isset($host_name)) {
-            if ($this->admin) {
-                $query = "SELECT DISTINCT host_name, service_description FROM centreon_acl ORDER BY host_name";
-            } else {
-                $query = "SELECT host_name, service_description FROM centreon_acl WHERE group_id IN (" . $this->getAccessGroupsString() . ") ORDER BY host_name";
-            }
-            $DBRESULT = $pearDBndo->query($query);
-            while ($row = $DBRESULT->fetchRow()) {
-                $tab[$row['host_name']][$row['service_description']] = 1;
-            }
-            $DBRESULT->free();
-        } else {
-            if ($this->admin) {
-                $query = "SELECT service_id, service_description FROM centreon_acl WHERE host_name = '" . CentreonDB::escape($host_name) . "'";
-            } else {
-                $query = "SELECT service_id, service_description FROM centreon_acl WHERE host_name = '" . CentreonDB::escape($host_name) . "' AND group_id IN (" . $this->getAccessGroupsString() . ")";
-            }
-            $DBRESULT = $pearDBndo->query($query);
-            while ($row = $DBRESULT->fetchRow()) {
-                $tab[$row['service_id']] = $row['service_description'];
-            }
-            $DBRESULT->free();
+    public function getHostsServicesName($pearDBndo) {
+        $joinAcl = "";
+        if (!$this->admin) {
+            $joinAcl = "JOIN centreon_acl ca "
+                . "ON h.host_id = ca.host_id "
+                . "AND ca.group_id IN (" . $this->getAccessGroupsString() . ") ";
         }
+
+        $tab = array();
+        $query = "SELECT DISTINCT h.name, s.description "
+            . "FROM hosts h "
+            . "LEFT JOIN services s "
+            . "ON h.host_id = s.host_id "
+            . $joinAcl
+            . "ORDER BY h.name, s.description ";
+        $DBRESULT = $pearDBndo->query($query);
+        while ($row = $DBRESULT->fetchRow()) {
+            $tab[$row['name']][$row['description']] = 1;
+        }
+        $DBRESULT->free();
+
+        return $tab;
+    }
+
+    /*
+     *  Function that returns the pair host/service by NAME if $host_name is NULL
+     *  Otherwise, it returns all the services of a specific host
+     *
+     */
+    public function getHostServicesName($pearDBndo, $host_name) {
+        $joinAcl = "";
+        if (!$this->admin) {
+            $joinAcl = "JOIN centreon_acl ca "
+                . "ON h.host_id = ca.host_id "
+                . "AND ca.group_id IN (" . $this->getAccessGroupsString() . ") ";
+        }
+
+        $tab = array();
+        $query = "SELECT DISTINCT s.service_id, s.description "
+            . "FROM hosts h "
+            . "LEFT JOIN services s "
+            . "ON h.host_id = s.host_id "
+            . $joinAcl
+            . "WHERE h.name = '" . CentreonDB::escape($host_name) . "' "
+            . "AND s.service_id IS NOT NULL "
+            . "ORDER BY h.name, s.description ";
+        $DBRESULT = $pearDBndo->query($query);
+        while ($row = $DBRESULT->fetchRow()) {
+            $tab[$row['service_id']] = $row['description'];
+        }
+        $DBRESULT->free();
 
         return $tab;
     }
@@ -1130,7 +1158,7 @@ class CentreonACL {
         global $pearDB;
 
         $tab = array();
-        $query = "SELECT h.host_id, h.host_name "
+        $query = "SELECT DISTINCT h.host_id, h.host_name "
             . "FROM hostgroup_relation hgr, host h "
             . "WHERE hgr.hostgroup_hg_id = '" . CentreonDB::escape($hg_id) . "' "
             . "AND hgr.host_host_id = h.host_id "
