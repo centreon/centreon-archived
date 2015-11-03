@@ -311,7 +311,7 @@ function construct_HostGroupSelectList(id) {
 			unset($data);
 		}
 
-		$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroups.hostgroup_id FROM `hostgroups`, `hosts_hostgroups` WHERE hostgroups.enabled = 1 AND hostgroups.hostgroup_id = hosts_hostgroups.hostgroup_id AND name NOT LIKE 'meta\_%' AND enabled = 1 ORDER BY `name`");
+		$DBRESULT = $pearDBO->query("SELECT DISTINCT hg.name, hg.hostgroup_id FROM hostgroups hg, hosts_hostgroups hhg WHERE hg.hostgroup_id = hhg.hostgroup_id AND hg.name NOT LIKE 'meta\_%' ORDER BY hg.name");
 		while ($hostgroups = $DBRESULT->fetchRow()) {
 			if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
 			    if (!isset($tabHG)) {

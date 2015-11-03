@@ -67,10 +67,10 @@
 	 */
 	$convertTable = array();
     $convertID = array();
-    $DBRESULT = $obj->DBC->query("SELECT hostgroup_id, alias, name FROM hostgroups WHERE enabled = 1");
+    $DBRESULT = $obj->DBC->query("SELECT hostgroup_id, name FROM hostgroups");
     while ($hg = $DBRESULT->fetchRow()){
-		$convertTable[$hg["name"]] = $hg["alias"];
-	    $convertID[$hg["alias"]] = $hg["hostgroup_id"];
+		$convertTable[$hg["name"]] = $hg["name"];
+	    $convertID[$hg["name"]] = $hg["hostgroup_id"];
     }
     $DBRESULT->free();
 
@@ -111,10 +111,9 @@
 				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
                 "AND hhg.host_id = h.host_id " .
-                "AND h.enabled = 1 " . 
-                "AND hg.enabled = 1 " ;
+                "AND h.enabled = 1 "; 
 		if (isset($instance) && $instance > 0) {
-		    $rq1 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
+		    $rq1 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
 		}
 		$rq1 .= $searchStr .
 				"GROUP BY hg.name, h.state";
@@ -123,10 +122,9 @@
 				"FROM centreon_acl acl, hosts_hostgroups hhg, hosts h, hostgroups hg " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
                 "AND hhg.host_id = h.host_id " .
-                "AND h.enabled = 1 " . 
-                "AND hg.enabled = 1 " ;
+                "AND h.enabled = 1 "; 
 		if (isset($instance) && $instance > 0) {
-		    $rq1 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
+		    $rq1 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
 		}
         $rq1 .= $searchStr .
 				$obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")).
@@ -152,10 +150,9 @@
 					"AND hhg.host_id = h.host_id " .
                     "AND h.enabled = 1 " .
 					"AND h.host_id = s.host_id " .
-                    "AND s.enabled = 1 " . 
-                    "AND hg.enabled = 1 " ;
+                    "AND s.enabled = 1 "; 
 			if (isset($instance) && $instance > 0) {
-                $rq2 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
+                $rq2 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
 			}
             $rq2 .= $searchStr .
 					"GROUP BY hg.name, s.state";
@@ -166,10 +163,9 @@
 				"AND hhg.host_id = h.host_id " .
                 "AND h.enabled = 1 " .
 				"AND h.host_id = s.host_id " .
-                "AND s.enabled = 1 " . 
-                "AND hg.enabled = 1 " ;
+                "AND s.enabled = 1 ";
 	    if (isset($instance) && $instance > 0) {
-            $rq2 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
+            $rq2 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
 		}
         $rq2 .= $searchStr .
 			    $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")).
