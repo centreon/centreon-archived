@@ -581,6 +581,20 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTREON_BINDIR/import-mysql-indexes >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install import-mysql-indexes")"
 
+# Install Centreon CLAPI command line
+log "INFO" "$(gettext "Prepare clapi binary")"
+cp $TMP_DIR/src/bin/clapi \
+	$TMP_DIR/final/bin/centreon-clapi >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare clapi binary")"
+
+log "INFO" "$(gettext "Install clapi binary")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 755 \
+	$TMP_DIR/final/bin/centreon-clapi \
+	$CENTREON_BINDIR/centreon-clapi >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install clapi binary")"
+
+
 ## Install indexes schema
 #log "INFO" "$(gettext "Prepare indexes schema")"
 #cp $TMP_DIR/src/data/* \
@@ -622,6 +636,14 @@ check_result $? "$(gettext "Install import-mysql-indexes")"
     echo_success "$(gettext "Centreon Web Perl lib installed")" "$ok"
     log "INFO" "$(gettext "Centreon Web Perl lib installed")"
 # End
+
+# Install libraries for Centreon CLAPI
+$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+    $TMP_DIR/src/lib/Zend/ \
+    $INSTALL_DIR_CENTREON/lib/Zend/ >> $LOG_FILE 2>&1
+$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+    $TMP_DIR/src/lib/Centreon/ \
+    $INSTALL_DIR_CENTREON/lib/Centreon/ >> $LOG_FILE 2>&1
 
 ## Prepare to install all pear modules needed.
 # use check_pear.php script
