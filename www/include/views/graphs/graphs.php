@@ -183,7 +183,7 @@
 	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "class"=>"timepicker", "size"=>5));
 	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>10));
 	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepicker", "size"=>5));
-	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()", "class"=>"btc bt_success"));
+	$form->addElement('button', 'graph', _("Apply Period"), array("onclick"=>"apply_period()", "class"=>"btc bt_success"));
     $form->addElement('text', 'search', _('Host'));
     $form->addElement('text', 'search_service', _('Service'));
     
