@@ -1345,6 +1345,9 @@ class CentreonACL {
                 } else {
                     if (is_array($opvalue) && count($opvalue) == 3) {
                         list($clause, $op, $value) = $opvalue;
+                    } else if (is_array($opvalue) && count($opvalue) == 2) {
+                        $clause = ' AND ';
+                        list($op, $value) = $opvalue;
                     } else {
                         $clause = ' AND ';
                         $op = " = ";
@@ -1872,16 +1875,18 @@ class CentreonACL {
      * @return void
      */
     public function getContactGroupAclConf($options = array()) {
-        $request = $this->constructRequest($options);
+        $request = $this->constructRequest($options, true);
 
         if ($this->admin) {
             $sql = $request['select'] . $request['fields']
-                . "FROM contactgroup "
+                . "FROM contactgroup cg "
+                . "WHERE cg.cg_type = 'local' "
                 . $request['conditions'];
         } else {
             $sql = $request['select'] . $request['fields']
                 . "FROM acl_group_contactgroups_relations agccgr, contactgroup cg "
                 . "WHERE cg.cg_id = agccgr.cg_cg_id "
+                . "AND cg.cg_type = 'local' "
                 . "AND agccgr.acl_group_id IN (" . $this->getAccessGroupsString() . ") "
                 . $request['conditions'];
         }
