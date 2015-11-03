@@ -82,7 +82,7 @@ class CentreonConfigurationContact extends CentreonConfigurationObjects
             )
         );
 
-        $contactList = array();
+        $contactList['items'] = array();
         foreach ($contacts['items'] as $id => $contactName) {
             $contactList['items'][] = array(
                 'id' => $id,

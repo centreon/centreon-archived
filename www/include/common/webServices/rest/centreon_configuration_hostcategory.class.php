@@ -71,7 +71,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
-            $aclHostcategories .= 'AND hg.hg_id IN (' . $acl->getHostCategoriesString('ID') . ') ';
+            $aclHostcategories .= 'AND hc.hc_id IN (' . $acl->getHostCategoriesString('ID') . ') ';
         }
         
         // Check for select2 'q' argument

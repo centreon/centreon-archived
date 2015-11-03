@@ -479,25 +479,25 @@ class CentreonACL {
     public function getAccessGroupsString($flag = null, $escape = true) {
         $flag = strtoupper($flag);
 
-        $accessGroups = array();
+        $accessGroups = "";
         foreach ($this->accessGroups as $key => $value) {
             switch ($flag) {
                 case "NAME" :
                     if ($escape === true) {
-                        $accessGroups[] = "'" . CentreonDB::escape($value) . "'";
+                        $accessGroups .= "'" . CentreonDB::escape($value) . "',";
                     } else {
-                        $accessGroups[] = "'" . $value . "'";
+                        $accessGroups .= "'" . $value . "',";
                     }
                     break;
                 default :
-                    $accessGroups[] .= "'" . $key . "'";
+                    $accessGroups .= "'" . $key . "',";
                     break;
             }
         }
 
         $result = "'0'";
-        if (count($accessGroups)) {
-            $result = implode(', ', $accessGroups);
+        if (strlen($accessGroups)) {
+            $result = trim($accessGroups, ',');
         }
 
         return $result;
@@ -519,25 +519,25 @@ class CentreonACL {
     public function getResourceGroupsString($flag = null, $escape = true) {
         $flag = strtoupper($flag);
 
-        $resourceGroups = array();
+        $resourceGroups = "";
         foreach ($this->resourceGroups as $key => $value) {
             switch ($flag) {
                 case "NAME" :
                     if ($escape === true) {
-                        $resourceGroups[] = "'" . CentreonDB::escape($value) . "'";
+                        $resourceGroups .= "'" . CentreonDB::escape($value) . "',";
                     } else {
-                        $resourceGroups[] = "'" . $value . "'";
+                        $resourceGroups .= "'" . $value . "',";
                     }
                     break;
                 default :
-                    $resourceGroups[] = "'" . $key . "'";
+                    $resourceGroups .= "'" . $key . "',";
                     break;
             }
         }
 
         $result = "''";
-        if (count($resourceGroups)) {
-            $result = implode(', ', $resourceGroups);
+        if (strlen($resourceGroups)) {
+            $result = trim($resourceGroups, ',');
         }
 
         return $result;
@@ -549,7 +549,8 @@ class CentreonACL {
 
     public function getHostGroups($flag = null) {
         $this->checkUpdateACL();
-        if (isset($flag) && $flag == "ALIAS") {
+
+        if (isset($flag) && strtoupper($flag) == "ALIAS") {
             return $this->hostGroupsAlias;
         }
         return $this->hostGroups;
@@ -573,24 +574,24 @@ class CentreonACL {
     public function getHostGroupsString($flag = null) {
         $flag = strtoupper($flag);
 
-        $hostgroups = array();
+        $hostgroups = "";
         foreach ($this->hostGroups as $key => $value) {
             switch ($flag) {
                 case "NAME" :
-                    $hostgroups[] = "'" . $value . "'";
+                    $hostgroups .= "'" . $value . "',";
                     break;
                 case "ALIAS" :
-                    $hostgroups[] = "'" . addslashes($this->hostGroupsAlias[$key]) . "'";
+                    $hostgroups .= "'" . addslashes($this->hostGroupsAlias[$key]) . "',";
                     break;
                 default :
-                    $hostgroups[] = "'" . $key . "'";
+                    $hostgroups .= "'" . $key . "',";
                     break;
             }
         }
 
         $result = "''";
-        if (count($hostgroups)) {
-            $result = implode(', ', $hostgroups);
+        if (strlen($hostgroups)) {
+            $result = trim($hostgroups, ',');
         }
 
         return $result;
@@ -606,24 +607,25 @@ class CentreonACL {
     public function getPollerString($flag = null, $escape = true) {
         $flag = strtoupper($flag);
 
+        $pollers = "";
         foreach ($this->pollers as $key => $value) {
             switch ($flag) {
                 case "NAME" :
                     if ($escape === true) {
-                        $pollers[] = "'" . CentreonDB::escape($value) . "'";
+                        $pollers .= "'" . CentreonDB::escape($value) . "',";
                     } else {
-                        $pollers[] = "'" . $value . "'";
+                        $pollers .= "'" . $value . "',";
                     }
                     break;
                 default :
-                    $pollers[] = "'" . $key . "'";
+                    $pollers .= "'" . $key . "',";
                     break;
             }
         }
 
         $result = "''";
-        if (count($pollers)) {
-            $result = implode(', ', $pollers);
+        if (strlen($pollers)) {
+            $result = implode($pollers, ',');
         }
 
         return $result;
@@ -647,28 +649,28 @@ class CentreonACL {
     public function getServiceGroupsString($flag = null, $escape = true) {
         $flag = strtoupper($flag);
 
-        $servicegroups = array();
+        $servicegroups = "";
         foreach ($this->serviceGroups as $key => $value) {
             switch ($flag) {
                 case "NAME" :
                     if ($escape === true) {
-                        $servicegroups[] = "'" . CentreonDB::escape($value) . "'";
+                        $servicegroups .= "'" . CentreonDB::escape($value) . "',";
                     } else {
-                        $servicegroups[] = "'" . $value . "'";
+                        $servicegroups .= "'" . $value . "',";
                     }
                     break;
                 case "ALIAS" :
-                    $servicegroups[] = "'" . $this->serviceGroupsAlias[$key] . "'";
+                    $servicegroups .= "'" . $this->serviceGroupsAlias[$key] . "',";
                     break;
                 default :
-                    $servicegroups[] = "'" . $key . "'";
+                    $servicegroups .= "'" . $key . "',";
                     break;
             }
         }
 
         $result = "''";
-        if (count($servicegroups)) {
-            $result = implode(', ', $servicegroups);
+        if (strlen($servicegroups)) {
+            $result = trim($servicegroups, ',');
         }
 
         return $result;
@@ -698,28 +700,27 @@ class CentreonACL {
      *  - NAME => will return the names of the element
      */
     public function getServiceCategoriesString($flag = null, $escape = true) {
-        global $pearDB;
-
         $flag = strtoupper($flag);
 
+        $serviceCategories = "";
         foreach ($this->serviceCategories as $key => $value) {
             switch ($flag) {
                 case "NAME" :
                     if ($escape === true) {
-                        $serviceCategories[] = "'" . $pearDB->escape($value) . "'";
+                        $serviceCategories .= "'" . CentreonDB::escape($value) . "',";
                     } else {
-                        $serviceCategories[] = "'" . $value . "'";
+                        $serviceCategories .= "'" . $value . "',";
                     }
                     break;
                 default :
-                    $serviceCategories[] = "'" . $key . "'";
+                    $serviceCategories .= "'" . $key . "',";
                     break;
             }
         }
 
         $result = "''";
-        if (count($serviceCategories)) {
-            $result = implode(', ', $serviceCategories);
+        if (strlen($serviceCategories)) {
+            $result = trim($serviceCategories, ',');
         }
 
         return $result;
@@ -734,29 +735,27 @@ class CentreonACL {
      * @return void
      */
     public function getHostCategoriesString($flag = null, $escape = true) {
-        global $pearDB;
-
         $flag = strtoupper($flag);
 
-        $hostCategories = array();
+        $hostCategories = "";
         foreach ($this->hostCategories as $key => $value) {
             switch ($flag) {
                 case "NAME" :
                     if ($escape === true) {
-                        $hostCategories[] = "'" . $pearDB->escape($value) . "'";
+                        $hostCategories .= "'" . CentreonDB::escape($value) . "',";
                     } else {
-                        $hostCategories[] = "'" . $value . "'";
+                        $hostCategories .= "'" . $value . "',";
                     }
                     break;
                 default :
-                    $hostCategories[] = "'" . $key . "'";
+                    $hostCategories .= "'" . $key . "',";
                     break;
             }
         }
 
         $result = "''";
-        if (count($hostCategories)) {
-            $result = implode(', ', $hostCategories);
+        if (strlen($hostCategories)) {
+            $result = trim($hostCategories, ',');
         }
 
         return $result;
@@ -795,19 +794,19 @@ class CentreonACL {
                 break;
         }
 
-        $hosts = array();
+        $hosts = "";
         $DBRES = $pearDBndo->query($query);
         while ($row = $DBRES->fetchRow()) {
             if ($escape === true) {
-                $hosts[] = "'" . CentreonDB::escape($row[$fieldName]) . "'";
+                $hosts .= "'" . CentreonDB::escape($row[$fieldName]) . "',";
             } else {
-                $hosts[] = "'" . $row[$fieldName] . "'";
+                $hosts .= "'" . $row[$fieldName] . "',";
             }
         }
 
         $result = "''";
-        if (count($hosts)) {
-            $result = implode(', ', $hosts);
+        if (strlen($hosts)) {
+            $result = trim($hosts, ',');
         }
 
         return $result;
@@ -844,7 +843,7 @@ class CentreonACL {
                 break;
         }
 
-        $services = array();
+        $services = "";
 
         $DBRES = $pearDBndo->query($query);
         $items = array();
@@ -854,15 +853,15 @@ class CentreonACL {
             }
             $items[$row[$fieldName]] = true;
             if ($escape === true) {
-                $services[] = "'" . CentreonDB::escape($row[$fieldName]) . "'";
+                $services .= "'" . CentreonDB::escape($row[$fieldName]) . "',";
             } else {
-                $services[] = "'" . $row[$fieldName] . "'";
+                $services .= "'" . $row[$fieldName] . "',";
             }
         }
 
         $result = "''";
-        if (count($services)) {
-            $result = implode(', ', $services);
+        if (strlen($services)) {
+            $result = trim($services, ',');
         }
 
         return $result;
@@ -877,22 +876,24 @@ class CentreonACL {
     public function getHostServiceIds($db) {
         $this->checkUpdateACL();
 
-        $hostsServices = array();
-
         $groupIds = array_keys($this->accessGroups);
-        if (count($groupIds)) {
-            $query = "SELECT DISTINCT host_id, service_id "
-                . "FROM centreon_acl "
-                . "WHERE group_id IN (" . implode(',', $groupIds) . ") ";
-            $res = $db->query($query);
-            while ($row = $res->fetchRow()) {
-                $hostsServices[] = "'" . $row['host_id'] . "_" . $row['service_id'] . "'";
-            }
+        if (!count($groupIds)) {
+            return "''";
+        }
+
+        $hostsServices = "";
+
+        $query = "SELECT DISTINCT host_id, service_id "
+            . "FROM centreon_acl "
+            . "WHERE group_id IN (" . implode(',', $groupIds) . ") ";
+        $res = $db->query($query);
+        while ($row = $res->fetchRow()) {
+            $hostsServices .= "'" . $row['host_id'] . "_" . $row['service_id'] . "',";
         }
 
         $result = "''";
-        if (count($hostsServices)) {
-            $result = implode(', ', $hostsServices);
+        if (strlen($hostsServices)) {
+            $result = trim($hostsServices, ',');
         }
 
         return $result;
@@ -1433,21 +1434,23 @@ class CentreonACL {
                 . $empty_exists;
         } else {
             $groupIds = array_keys($this->accessGroups);
-            $query = "(" . $request['select'] . $request['fields'] . " "
+            $query = $request['select'] . $request['fields'] . " "
+                . "FROM ( "
+                . "SELECT " . $request['fields'] . " "
                 . "FROM hostgroup_relation, servicegroup_relation,servicegroup,  acl_res_group_relations, acl_resources_hg_relations "
                 . "WHERE acl_res_group_relations.acl_group_id  IN (" . implode(',', $groupIds) . ") "
                 . "AND acl_resources_hg_relations.acl_res_id = acl_res_group_relations.acl_res_id "
                 .  $searchCondition
                 . "AND servicegroup_relation.hostgroup_hg_id = hostgroup_relation.hostgroup_hg_id "
                 . "AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id "
-                . ") UNION ALL ("
-                . $request['select'] . $request['fields'] . " "
+                . "UNION "
+                . "SELECT " . $request['fields'] . " "
                 . "FROM servicegroup, acl_resources_sg_relations, acl_res_group_relations "
                 . "WHERE acl_res_group_relations.acl_group_id  IN (" . implode(',', $groupIds) . ") "
                 . "AND acl_resources_sg_relations.acl_res_id = acl_res_group_relations.acl_res_id "
                 . "AND acl_resources_sg_relations.sg_id = servicegroup.sg_id "
                 . $searchCondition
-                . ") ";
+                . ") as t ";
         }
 
         $query .= $request['order'] . $request['pages'];
@@ -1484,15 +1487,17 @@ class CentreonACL {
             $from_acl = ", $db_name_acl.centreon_acl";
             $where_acl = " AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") AND $db_name_acl.centreon_acl.host_id = host.host_id AND $db_name_acl.centreon_acl.service_id = service.service_id";
         }
-        $query = "(" . $request['select'] . $request['fields'] . " "
+        $query = $request['select'] . $request['fields'] . " "
+            . "FROM ( "
+            . "SELECT " . $request['fields'] . " "
             . "FROM servicegroup, servicegroup_relation, service, host " . $from_acl
             . "WHERE servicegroup.sg_id = '".CentreonDB::escape($sg_id)."'"
             . "AND service.service_activate='1' AND host.host_activate='1' AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id"
             . "AND servicegroup_relation.service_service_id = service.service_id"
             . "AND servicegroup_relation.host_host_id = host.host_id"
             . $where_acl
-            . ") UNION ALL ("
-            . $request['select'] . $request['fields'] . " "
+            . "UNION "
+            . "SELECT " . $request['fields'] . " "
             . "FROM servicegroup, servicegroup_relation, hostgroup_relation, service, host " . $from_acl
             . "WHERE servicegroup.sg_id = '" . CentreonDB::escape($sg_id) . "' "
             . "AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id "
@@ -1500,7 +1505,7 @@ class CentreonACL {
             . "AND hostgroup_relation.host_host_id = host.host_id "
             . "AND servicegroup_relation.service_service_id = service.service_id "
             . $where_acl
-            . ") ";
+            . ") as t ";
 
         $query .= $request['order'] . $request['pages'];
 
@@ -1606,7 +1611,9 @@ class CentreonACL {
         $request = $this->constructRequest($options);
 
         if ($this->admin) {
-            $query = "(" . $request['select'] . $request['fields'] . " "
+            $query = $request['select'] . $request['fields'] . " "
+                . "FROM ( "
+                . "SELECT " . $request['fields'] . " "
                 . "FROM host_service_relation hsr, host h, service s "
                 . "WHERE h.host_id = '" . CentreonDB::escape($host_id) . "' "
                 . "AND h.host_activate = '1' "
@@ -1614,16 +1621,18 @@ class CentreonACL {
                 . "AND h.host_id = hsr.host_host_id "
                 . "AND hsr.service_service_id = s.service_id "
                 . "AND s.service_activate = '1' "
-                . ") UNION ALL ("
-                . $request['select'] . $request['fields'] . " "
+                . "UNION "
+                . "SELECT " . $request['fields'] . " "
                 . "FROM host h, hostgroup_relation hgr, service s, host_service_relation hsr "
                 . "WHERE h.host_id = '" . CentreonDB::escape($host_id) . "' AND h.host_activate = '1' AND h.host_register = '1' "
                 . "AND h.host_id = hgr.host_host_id "
                 . "AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id "
                 . "AND hsr.service_service_id = s.service_id "
-                . ") ";
+                . ") as t ";
         } else {
             $query = "(" . $request['select'] . $request['fields'] . " "
+                . "FROM ( "
+                . "SELECT " . $request['fields'] . " "
                 . "FROM host_service_relation hsr, host h, service s, $db_name_acl.centreon_acl "
                 . "WHERE h.host_id = '" . CentreonDB::escape($host_id) . "' "
                 . "AND h.host_activate = '1' "
@@ -1634,8 +1643,8 @@ class CentreonACL {
                 . "AND $db_name_acl.centreon_acl.host_id = h.host_id "
                 . "AND $db_name_acl.centreon_acl.host_id = '" . CentreonDB::escape($host_id) . "' "
                 . "AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") "
-                . ") UNION ALL ("
-                . $request['select'] . $request['fields'] . " "
+                . "UNION "
+                . "SELECT " . $request['fields'] . " "
                 . "FROM host h, hostgroup_relation hgr, service s, host_service_relation hsr, $db_name_acl.centreon_acl "
                 . "WHERE h.host_id = '" . CentreonDB::escape($host_id) . "' "
                 . "AND h.host_activate = '1' "
@@ -1646,7 +1655,7 @@ class CentreonACL {
                 . "AND $db_name_acl.centreon_acl.host_id = h.host_id "
                 . "AND $db_name_acl.centreon_acl.host_id = '" . CentreonDB::escape($host_id) . "' "
                 . "AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") "
-                . ") ";
+                . ") as t ";
         }
 
         $query .= $request['order'] . $request['pages'];
@@ -1802,19 +1811,22 @@ class CentreonACL {
                 . $request['conditions'];
         } else {
             $sql = $request['select'] . $request['fields'] . " "
+                . "FROM ( "
+                . "SELECT " . $request['fields'] . " "
                 . "FROM acl_group_contacts_relations agcr, contact c "
                 . "WHERE c.contact_id = agcr.contact_contact_id "
                 . "AND c.contact_register = '1'"
                 . "AND agcr.acl_group_id IN (" . $this->getAccessGroupsString() . ") "
                 . $request['conditions']
                 . " UNION "
-                . $request['select'] . $request['fields'] . " "
+                . "SELECT " . $request['fields'] . " "
                 . "FROM acl_group_contactgroups_relations agccgr, contactgroup_contact_relation ccr, contact c "
                 . "WHERE c.contact_id = ccr.contact_contact_id "
                 . "AND c.contact_register = '1' "
                 . "AND ccr.contactgroup_cg_id = agccgr.cg_cg_id "
                 . "AND agccgr.acl_group_id IN (" . $this->getAccessGroupsString() . ") "
-                . $request['conditions'];
+                . $request['conditions']
+                . ") as t ";
         }
 
         $sql .= $request['order'] . $request['pages'];
