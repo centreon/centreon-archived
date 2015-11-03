@@ -13,6 +13,7 @@ class Hostgroup extends AbstractObject {
         hg_action_url as action_url
     ';
     protected $attributes_write = array(
+        'hostgroup_id',
         'hostgroup_name',
         'alias',
         'notes',
@@ -59,6 +60,7 @@ class Hostgroup extends AbstractObject {
             if (count($value['members']) == 0) {
                 continue;
             }
+            $value['hostgroup_id'] = $value['hg_id'];
             
             $this->generateObjectInFile($value, $id);
         }
