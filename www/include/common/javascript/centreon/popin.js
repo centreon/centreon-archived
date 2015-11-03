@@ -25,11 +25,11 @@
     self.initOverlay();
     
     if(self.settings.url !== null){
-        jQuery.ajax({
+        $.ajax({
            url : self.settings.url,
-           type: (typeof self.settings.ajaxType !== null) ? self.settings.ajaxType : "POST" ,
+           type: (self.settings.ajaxType !== null) ? self.settings.ajaxType : "POST" ,
            dataType : "html",
-           data: (typeof self.settings.postDatas !== null) ? self.settings.postDatas : "",
+           data: (self.settings.postDatas !== null) ? self.settings.postDatas : "",
            success : function(html){
                $elem.append(html);
                 if (self.settings.open) {
