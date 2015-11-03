@@ -138,6 +138,11 @@ $attrContacts = array(
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
     'multiple' => true
 );
+$attrAclgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list',
+    'multiple' => true
+);
 
 /*
  * form begin
@@ -172,11 +177,11 @@ $form->addElement('select2', 'cg_contacts', _("Linked Contacts"), array(), $attr
 /*
  * Acl group selection
  */
-$ams1 = $form->addElement('advmultiselect', 'cg_acl_groups', array(_("Linked ACL groups"), _("Available"), _("Selected")), $aclgroups, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);
+$attrAclgroup1 = array_merge(
+    $attrAclgroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=defaultValues&target=contactgroup&field=cg_acl_groups&id=' . $cg_id)
+);
+$form->addElement('select2', 'cg_acl_groups', _("Linked ACL groups"), array(), $attrAclgroup1);
 
 
 /*

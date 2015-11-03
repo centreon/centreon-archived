@@ -320,6 +320,16 @@ class CentreonContactgroup
                 $parameters['relationObject']['field'] = 'contact_contact_id';
                 $parameters['relationObject']['comparator'] = 'contactgroup_cg_id';
                 break;
+            case 'cg_acl_groups':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'acl_groups';
+                $parameters['externalObject']['id'] = 'acl_group_id';
+                $parameters['externalObject']['name'] = 'acl_group_name';
+                $parameters['externalObject']['comparator'] = 'acl_group_id';
+                $parameters['relationObject']['table'] = 'acl_group_contactgroups_relations';
+                $parameters['relationObject']['field'] = 'acl_group_id';
+                $parameters['relationObject']['comparator'] = 'cg_cg_id';
+                break;
         }
         
         return $parameters;
