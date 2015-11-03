@@ -103,18 +103,20 @@ class Broker extends AbstractObjectXML {
 
             # Failover parameters
             foreach ($object as &$subvalue) {
-                foreach ($subvalue as $config_type => &$flow) {
-                    if ($config_type == 'output' && isset($flow['name']) && !isset($flow['failover']) && isset($flow['type']) && $flow['type'] != 'file') {
-                        $flow['failover'] = $flow['name'] . '-' . $config_type . '-failover';
-                        $object[$flow_count][$config_type] = array(
-                            'type' => 'file',
-                            'name' => $flow['name'] . '-' . $config_type . '-failover',
-                            'path' => $retention_path . '/' . $config_name . '_' . $flow['name'] . '.retention',
-                            'protocol' => 'bbdo',
-                            'compression' => 'auto',
-                            'max_size' => '524288000'
-                        );
-                        $flow_count++;
+                if (is_array($subvalue)) {
+                    foreach ($subvalue as $config_type => &$flow) {
+                        if ($config_type == 'output' && isset($flow['name']) && !isset($flow['failover']) && isset($flow['type']) && $flow['type'] != 'file') {
+                            $flow['failover'] = $flow['name'] . '-' . $config_type . '-failover';
+                            $object[$flow_count][$config_type] = array(
+                                'type' => 'file',
+                                'name' => $flow['name'] . '-' . $config_type . '-failover',
+                                'path' => $retention_path . '/' . $config_name . '_' . $flow['name'] . '.retention',
+                                'protocol' => 'bbdo',
+                                'compression' => 'auto',
+                                'max_size' => '524288000'
+                            );
+                            $flow_count++;
+                        }
                     }
                 }
             }
