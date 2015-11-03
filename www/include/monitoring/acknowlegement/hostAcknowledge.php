@@ -67,7 +67,7 @@
 	$tpl = initSmartyTpl($path, $tpl, './templates/');
 
 	if (!$is_admin) {
-		$lcaHostByName = $oreon->user->access->getHostServicesName($pearDBndo);
+		$lcaHostByName = $oreon->user->access->getHostsServicesName($pearDBndo);
     }
 
 	if ($is_admin || (isset($lcaHostByName[$host_name]))) {
