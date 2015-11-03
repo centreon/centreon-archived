@@ -257,6 +257,11 @@ $attrContactgroups = array(
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
     'multiple' => true
 );
+$attrAclgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list',
+    'multiple' => true
+);
 
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a")
@@ -353,11 +358,12 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_cg, 'mc_mod_acl', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_acl' => '0'));
 }
-$ams3 = $form->addElement('advmultiselect', 'contact_acl_groups', array(_("Access list groups"), _("Available"), _("Selected")), $aclGroups, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+
+$attrAclgroup1 = array_merge(
+    $attrAclgroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=defaultValues&target=contact&field=contact_acl_groups&id=' . $contact_id)
+);
+$form->addElement('select2', 'contact_acl_groups', _("Access list groups"), array(), $attrAclgroup1);
 
 /**
  * Include GMT Class
@@ -365,15 +371,6 @@ echo $ams3->getElementJs(false);
 require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 $CentreonGMT = new CentreonGMT($pearDB);
-/*
-$GMTList = $CentreonGMT->getGMTList();
-$form->addElement('select', 'contact_location', _("Timezone / Location"), $GMTList);
-$form->setDefaults(array('contact_location' => '0'));
-if (!isset($cct["contact_location"])) {
-    $cct["contact_location"] = 0;
-}
-unset($GMTList);
- */
 
 $attrTimezones = array(
     'datasourceOrigin' => 'ajax',

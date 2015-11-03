@@ -217,8 +217,10 @@ class Generate {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
         }
-        foreach ($this->module_objects as $module_object) {
-            $module_object::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
+        if (is_array($this->module_objects)) {
+            foreach ($this->module_objects as $module_object) {
+                $module_object::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
+            }
         }
     }
 
@@ -226,8 +228,10 @@ class Generate {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
         }
-        foreach ($this->module_objects as $module_object) {
-            $module_object::getInstance()->reset();
+        if (is_array($this->module_objects)) {
+            foreach ($this->module_objects as $module_object) {
+                $module_object::getInstance()->reset();
+            }
         }
     }
 }

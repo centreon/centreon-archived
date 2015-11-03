@@ -14,6 +14,7 @@ class Servicegroup extends AbstractObject {
         sg_alias as alias
     ';
     protected $attributes_write = array(
+        'servicegroup_id',
         'servicegroup_name',
         'alias',
     );
@@ -134,6 +135,8 @@ class Servicegroup extends AbstractObject {
             if (count($value['members_cache']) == 0) {
                 continue;
             }
+            
+            $value['servicegroup_id'] = $value['sg_id'];
             
             foreach ($value['members_cache'] as $content) {
                 array_push($this->sg[$id]['members'], $content[0], $content[1]);

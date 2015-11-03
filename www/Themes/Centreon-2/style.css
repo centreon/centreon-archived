@@ -1527,3 +1527,9 @@ span.state_badge {
     color: #4ccaff;
 }
 
+/* Dividers */
+
+.horizontal_divider {
+    width: 1px;
+    background-color: #e7e7e8;
+}
