@@ -1077,6 +1077,7 @@ class CentreonService
                     $this->setTplValue($this->findTplValue($storedMacros[$sInput]),$finalMacro);
                     break;
                 case 'fromTpl' : 
+                    $this->setTplValue($this->findTplValue($storedMacros[$sInput]),$finalMacro);
                     break;
                 case 'fromService' :
                     break;
@@ -1114,7 +1115,7 @@ class CentreonService
     
     private function setTplValue($tplValue,&$finalMacro){
         
-        if($tplValue){
+        if($tplValue !== false){
             $finalMacro['macroTplValue_#index#'] = $tplValue;
             $finalMacro['macroTplValToDisplay_#index#'] = 1;
         }else{
