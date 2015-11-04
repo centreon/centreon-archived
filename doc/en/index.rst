@@ -21,6 +21,7 @@ Contents:
    guide_exploitation/index
    faq/index
    extendcentreon/index
+   clapi/index
 
 Additional online resource:
 
