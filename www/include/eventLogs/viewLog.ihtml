@@ -18,7 +18,7 @@
         <td class="log-select">{$form.host_filter.html}</td>
     </tr>
     <tr>
-        <td><h4>{$form.service_group_filter.label} <img id="setHostGroup" class="log-extend-icon ico-12" src="./img/icons/arrow-right.png" alt=""/></h4></td>
+        <td><h4>{$form.service_group_filter.label} <img id="setServiceGroup" class="log-extend-icon ico-12" src="./img/icons/arrow-right.png" alt=""/></h4></td>
         <td class="checkbox"><h4>{$form.service_filter.label}</h4></td>
     </tr>
     <tr>

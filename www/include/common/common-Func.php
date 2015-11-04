@@ -1566,16 +1566,18 @@ function getAllHostgroups() {
     return $hgs;
 }
 
-function service_has_graph($host, $service) {
+function service_has_graph($host, $service, $dbo = null) {
     global $pearDBO;
-
+    if(is_null($dbo)){
+        $dbo = $pearDBO;
+    }
     if (is_numeric($host) && is_numeric($service)) {
-        $DBRESULT = $pearDBO->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_id = '" . CentreonDB::escape($host) . "' AND i.service_id = '" . CentreonDB::escape($service) . "'");
+        $DBRESULT = $dbo->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_id = '" . CentreonDB::escape($host) . "' AND i.service_id = '" . CentreonDB::escape($service) . "'");
         if ($DBRESULT->numRows() > 0)
             return true;
     }
     if (!is_numeric($host) && !is_numeric($service)) {
-        $DBRESULT = $pearDBO->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_name = '" . CentreonDB::escape($host) . "' AND i.service_description = '" . CentreonDB::escape($service) . "'");
+        $DBRESULT = $dbo->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_name = '" . CentreonDB::escape($host) . "' AND i.service_description = '" . CentreonDB::escape($service) . "'");
 
         if ($DBRESULT->numRows() > 0)
             return true;
