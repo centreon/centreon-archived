@@ -1300,6 +1300,7 @@ class CentreonHost
                 break;
            case 'host_cgs':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonContactgroup';
                 $parameters['externalObject']['table'] = 'contactgroup';
                 $parameters['externalObject']['id'] = 'cg_id';
                 $parameters['externalObject']['name'] = 'cg_name';
