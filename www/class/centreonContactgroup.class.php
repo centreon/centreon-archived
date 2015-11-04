@@ -366,7 +366,7 @@ class CentreonContactgroup
         if (empty($explodedValues)) {
             $explodedValues = "''";
         }
-        $query = "SELECT cg.cg_id, cg.cg_name, cg.cg_ldap_dn, ar.ar_name FROM contactgroup cg "
+        $query = "SELECT cg.cg_id, cg.cg_name, cg.cg_ldap_dn, ar.ar_id, ar.ar_name FROM contactgroup cg "
             . "LEFT JOIN auth_ressource ar ON cg.ar_id = ar.ar_id "
             . "WHERE cg.cg_id IN (" . $explodedValues . ") "
             . "ORDER BY cg.cg_name ";
@@ -382,12 +382,14 @@ class CentreonContactgroup
         $resRetrieval = $this->db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
             if (isset($row['cg_ldap_dn']) && $row['cg_ldap_dn'] != "") {
+                $cgId = '[' . $row['ar_id'] . ']' . $row['cg_name'];
                 $cgName = $this->formatLdapContactgroupName($row['cg_name'], $row['ar_name']);
             } else {
+                $cgId = $row['cg_id'];
                 $cgName = $row['cg_name'];
             }
             $tmpValues[] = array(
-                'id' => $row['cg_id'],
+                'id' => $cgId,
                 'text' =>  htmlentities($cgName)
             );
         }
