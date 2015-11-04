@@ -95,7 +95,7 @@ include_once("./class/centreonDB.class.php");
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl, "template/");
+$tpl = initSmartyTpl('./include/monitoring/downtime/', $tpl, "template/");
 
 /*
  * Pear library
