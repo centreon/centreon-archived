@@ -1533,3 +1533,7 @@ span.state_badge {
     width: 1px;
     background-color: #e7e7e8;
 }
+
+.fixedDiv{
+    position: fixed;
+}
