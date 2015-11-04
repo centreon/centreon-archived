@@ -835,13 +835,7 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_nsid, 'mc_mod_nsid', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_nsid' => '0'));
 }
-/*
-  $ams3 = $form->addElement('advmultiselect', 'nagios_server_id', array(_("Monitored from"), _("Available"), _("Selected")), $nsServers, $attrsAdvSelectsmall);
-  $ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-  $ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-  $ams3->setElementTemplate($eTemplate);
-  echo $ams3->getElementJs(false);
- */
+
 #
 ## Sort 3 - Data treatment
 #
@@ -926,13 +920,15 @@ $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 
 if (!$oreon->user->admin && $o == "a") {
-    $aclGroups = $acl->getResourceGroups();
-    $ams = $form->addElement('advmultiselect', 'acl_groups', array(_("ACL Resource Groups"), _("Available"), _("Selected")), $aclGroups, $attrsAdvSelect, SORT_ASC);
-    $ams->setButtonAttributes('add', array('value' => _("Add")));
-    $ams->setButtonAttributes('remove', array('value' => _("Remove")));
-    $ams->setElementTemplate($eTemplate);
-    echo $ams->getElementJs(false);
+    $attrAclgroups = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list',
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=defaultValues&target=host&field=acl_groups&id=' . $host_id,
+        'multiple' => true
+    );
+    $form->addElement('select2', 'acl_groups', _("ACL Resource Groups"), array(), $attrAclgroups);
     $form->addRule('acl_groups', _("Mandatory field for ACL purpose."), 'required');
+    
 }
 
 /*
