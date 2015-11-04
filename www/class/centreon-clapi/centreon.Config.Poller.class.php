@@ -38,6 +38,7 @@
 
 require_once "centreonUtils.class.php";
 require_once "centreonClapiException.class.php";
+ require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 
 /**
  *
@@ -404,154 +405,18 @@ class CentreonConfigPoller {
      * @param $password
      */
     public function pollerGenerate($variables, $login, $password) {
-        require_once realpath(dirname(__FILE__)."/../../include/configuration/configGenerate/DB-Func.php");
-        require_once realpath(dirname(__FILE__)."/../../include/common/common-Func.php");
-
-        $this->testPollerId($variables);
-        $tab["localhost"] = $this->isPollerLocalhost($variables);
-
-        $centreon_path = $this->centreon_path;
-        global $pearDB, $pearDBO;
-        $pearDB = $this->_DB;
-        $pearDBO = $this->_DBC;
-
-        $nagiosCFGPath = $this->nagiosCFGPath;
-        $DebugPath = "filesGeneration/nagiosCFG/";
-
-        $ret["comment"] = 0;
-
-        /**
-         * Init environnement
-         */
-        if (strncmp($this->optGen["version"], "2.1", 3)) {
-            require_once $this->centreon_path."/www/class/centreon.class.php";
-        } else {
-            require_once $this->centreon_path."/www/class/Oreon.class.php";
-        }
-
-        require_once $this->centreon_path."/www/class/centreonDB.class.php";
-        require_once $this->centreon_path."/www/class/centreonAuth.class.php";
-        require_once $this->centreon_path."/www/class/centreonLog.class.php";
-        require_once $this->centreon_path."/www/class/centreonConfigCentreonBroker.php";
-
-        global $oreon, $centreon, $_SERVER;
-
-        $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
-
-        chdir("../../..");
-
-        $CentreonLog = new CentreonUserLog(-1, $pearDB);
-        $centreonAuth = new CentreonAuth($login, $password, 0, $this->_DB, $CentreonLog, NULL);
-        if (strncmp($this->optGen["version"], "2.1", 3)) {
-            $oreon = new Centreon((array)$centreonAuth->userInfos);
-            $oreon->user->version = 3;
-        } else {
-            $user = new User($centreonAuth->userInfos, $this->optGen["nagios_version"]);
-            $oreon = new Oreon($user);
-            $oreon->user->version = 3;
-        }
-        $centreon = $oreon;
-        if (is_numeric($variables)) {
-            $tab['id'] = $variables;
-        } else {
-            $tab['id'] = $this->getPollerId($variables);
-        }
-
-        $tab['monitoring_engine'] = $this->getMonitoringEngine($variables);
-
-        //chdir("./modules/centreon-clapi/core/");
-
-        /**
-         * Insert session in session table
-         */
-        session_id(1);
-        $pearDB->query(
-            "INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) 
-            VALUES ('1', '".$oreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')"
-        );
-
-        /**
-         * Generate dependancies tree.
-         */
-        global $gbArr;
-        $gbArr = manageDependencies();
-        $centreonBrokerPath = $this->centreon_path . "/filesGeneration/broker/";
-
-        /**
-         * Generate Configuration
-         */
-        //chdir("../../..");
-        $path = realpath(dirname(__FILE__)."/../../include/configuration/configGenerate/");
-
-        require $path."genCGICFG.php";
-        require $path."genNagiosCFG.php";
-        require $path."genNdomod.php";
-        require $path."genNdo2db.php";
-        require $path."genCentreonBroker.php";
-        require $path."genNagiosCFG-DEBUG.php";
-        require $path."genResourceCFG.php";
-        global $Period;
-        require $path."genTimeperiods.php";
-        require $path."genCommands.php";
-        require $path."genConnectors.php";
-        require $path."genContacts.php";
-        require $path."genContactTemplates.php";
-        require $path."genContactGroups.php";
-        require $path."genHostTemplates.php";
-        global $critCacheName;
-        require $path."genHosts.php";
-        require $path."genHostGroups.php";
-        require $path."genServiceTemplates.php";
-        require $path."genServices.php";
-        require $path."genServiceGroups.php";
-        require $path."genEscalations.php";
-        require $path."genDependencies.php";
-        require $path."centreon_pm.php";
-
-
-        if (isset($tab['localhost']) && $tab['localhost']) {
-            $flag_localhost = $tab['localhost'];
-            /*
-             * Meta Services Generation
-             */
-            if ($files = glob($path . "metaService/*.php")) {
-                foreach ($files as $filename) {
-                    require_once($filename);
-                }
-            }
-        }
-
-        /*
-         * Module Generation
-         */
-        foreach ($oreon->modules as $key => $value) {
-            $flag_localhost = $tab['localhost'];
-            if (file_exists("./modules/".$key."/core/common/functions.php")) {
-                require_once "./modules/".$key."/core/common/functions.php";
-            }
-            if ($value["gen"] && $files = glob("./modules/".$key."/generate_files/*.php")) {
-                foreach ($files as $filename) {
-                    require_once ($filename);
-                }
-            }
-        }
-
-        chdir("./modules/centreon-clapi/core/");
-        unset($generatedHG);
-        unset($generatedSG);
-        unset($generatedS);
-
-        if (file_exists($path."genIndexData.php")) {
-            require_once $path."genIndexData.php";
-        }
         
+        $config_generate = new Generate();
+        
+        $this->testPollerId($variables);
+        
+        if (!is_numeric($variables)) {
+            $config_generate->configPollerFromName($variables);
+        } else {
+            $config_generate->configPollerFromId($variables);
+        }    
+
         print "Configuration files generated for poller '".$variables."'\n";
-
-        /* free session */
-        $pearDB->query("DELETE FROM `session` 
-            WHERE `session_id` = '1' 
-            AND `user_id` = '".$oreon->user->user_id."'");
-
         return 0;
     }
 
@@ -566,7 +431,7 @@ class CentreonConfigPoller {
         $pearDB = $this->_DB;
         $pearDBO = $this->_DBC;
 
-        require_once "../../../include/configuration/configGenerate/DB-Func.php";
+        require_once _CENTREON_PATH_."www/include/configuration/configGenerate/DB-Func.php";
         if (!isset($variables)) {
             print "Cannot get poller";
             exit(1);
