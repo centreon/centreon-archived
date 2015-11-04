@@ -180,7 +180,7 @@
             $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
         }
     
-        $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.alias, h.name as host_name, h.state as host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id "
+        $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.name as alias, h.name as host_name, h.state as host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id "
             . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
             . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id "
             . $s_search

@@ -300,8 +300,15 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         }
         
         $mainJsInit .= 'multiple: ';
+        $scroll = "";
         if ($this->_multiple) {
             $mainJsInit .= 'true,';
+            $scroll = '$currentSelect2Object'. $this->getName() . '.next(".select2-container").find("ul.select2-selection__rendered").niceScroll({
+            	cursorcolor:"#818285",
+            	cursoropacitymax: 0.6,
+            	cursorwidth:3,
+            	horizrailenabled:false
+            	});';
         } else {
             $mainJsInit .= 'false,';
         }
@@ -322,10 +329,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 . 'jQuery("#' . $this->getName() . '").val("");'
                 . 'jQuery("#' . $this->getName() . '").empty().append(jQuery("<option>"));'
                 . 'jQuery("#' . $this->getName() . '").trigger("change", $currentValues);'
-                . ' });';
+                . ' }); ';
         }
         
-        $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $additionnalJs . $this->_jsCallback . $jsPost;
+        $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $scroll . $additionnalJs . $this->_jsCallback . $jsPost;
         
         return $finalJs;
     }

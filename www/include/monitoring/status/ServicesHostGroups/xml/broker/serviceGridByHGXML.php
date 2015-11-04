@@ -86,14 +86,14 @@
 	 * Get Host status
 	 *
 	 */
-	$rq1 =	" SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, hg.action_url, hg.notes_url, h.host_id id, h.name as host_name, hgm.hostgroup_id, h.state hs, h.icon_image ".
+	$rq1 =	" SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, h.host_id id, h.name as host_name, hgm.hostgroup_id, h.state hs, h.icon_image ".
 			" FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
 	}
 	$rq1 .= " WHERE h.host_id = hgm.host_id".
 			" AND hgm.hostgroup_id = hg.hostgroup_id".
-			" AND h.enabled = '1' AND hg.enabled = 1 ".
+			" AND h.enabled = '1' ".
 			" AND h.name not like '_Module_%'";
 	if (!$obj->is_admin) {
 		$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
@@ -128,7 +128,6 @@
 
 	$tabH = array();
 	$tabHG = array();
-    $tabHGUrl = array();
 	$tab_finalH = array();
 
 	$DBRESULT = $obj->DBC->query($rq1);
@@ -142,10 +141,6 @@
 		$tab_finalH[$ndo["alias"]][$ndo["host_name"]]["tab_svc"] = array();
 		$tabH[$ndo["host_name"]] = $ndo["id"];
 		$tabHG[$ndo["alias"]] = $ndo["hostgroup_id"];
-        $tabHGUrl[$ndo["alias"]] = array(
-            'action_url' => $ndo['action_url'],
-            'notes_url' => $ndo['notes_url']
-        );
 	}
 	$DBRESULT->free();
 
@@ -224,10 +219,8 @@
 						}
 						$hg = $hg_name;
 						$obj->XML->startElement("hg");
-                                                $obj->XML->writeElement("hgn", CentreonUtils::escapeSecure($hg_name));
-                                                $obj->XML->writeElement("hgid", CentreonUtils::escapeSecure($tabHG[$hg_name]));
-                                                $obj->XML->writeElement("action_url", $tabHGUrl[$hg_name]['action_url']);
-                                                $obj->XML->writeElement("notes_url", $tabHGUrl[$hg_name]['notes_url']);
+                        $obj->XML->writeElement("hgn", CentreonUtils::escapeSecure($hg_name));
+                        $obj->XML->writeElement("hgid", CentreonUtils::escapeSecure($tabHG[$hg_name]));
 					}
 					$obj->XML->startElement("l");
 					$obj->XML->writeAttribute("class", $obj->getNextLineClass());
