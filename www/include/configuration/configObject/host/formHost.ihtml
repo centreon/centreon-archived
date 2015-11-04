@@ -400,9 +400,9 @@ jQuery(function() {
             jQuery(elem).find("input[name^='macroValue']").css("background","#AED581");
         }
 
-        jQuery(elem).find("button[class='ResetMacroButton']").click(function(button){
+        /*jQuery(elem).find("button[class='ResetMacroButton']").click(function(button){
             jQuery(elem).find("input[name^='macroValue']").val(jQuery(elem).find("input[name^='macroOldValue']").val());
-        });
+        });*/
 
 
         if(typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined'){
@@ -419,12 +419,12 @@ jQuery(function() {
             }
         }
 
-        jQuery(elem).find("input[name^='macroInput']").on("change",function(){
+        jQuery(elem).find("input[name^='macroInput']").on("input",function(){
             jQuery(elem).find('input[name^=macroFrom]').val("direct");
             jQuery(elem).find("input[name^='macroInput']").css("background","white");
             jQuery(elem).find("input[name^='macroValue']").css("background","white");
         });
-        jQuery(elem).find("input[name^='macroValue']").on("change",function(){
+        jQuery(elem).find("input[name^='macroValue']").on("input",function(){
             jQuery(elem).find('input[name^=macroFrom]').val("direct");
             jQuery(elem).find("input[name^='macroInput']").css("background","white");
             jQuery(elem).find("input[name^='macroValue']").css("background","white");
@@ -515,9 +515,9 @@ jQuery(function() {
                             jQuery(elem).find("input[name^='macroValue']").css("background","#AED581");
                         }
 
-                        jQuery(elem).find("button[class='ResetMacroButton']").click(function(button){
+                        /*jQuery(elem).find("button[class='ResetMacroButton']").click(function(button){
                             jQuery(elem).find("input[name^='macroValue']").val(jQuery(elem).find("input[name^='macroOldValue']").val());
-                        });
+                        });*/
 
                         if(typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined'){
                             if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1"){
@@ -533,12 +533,12 @@ jQuery(function() {
                             }
                         }
 
-                        jQuery(elem).find("input[name^='macroInput']").on("change",function(){
+                        jQuery(elem).find("input[name^='macroInput']").on("input",function(){
                             jQuery(elem).find('input[name^=macroFrom]').val("direct");
                             jQuery(elem).find("input[name^='macroInput']").css("background","white");
                             jQuery(elem).find("input[name^='macroValue']").css("background","white");
                         });
-                        jQuery(elem).find("input[name^='macroValue']").on("change",function(){
+                        jQuery(elem).find("input[name^='macroValue']").on("input",function(){
                             jQuery(elem).find('input[name^=macroFrom]').val("direct");
                             jQuery(elem).find("input[name^='macroInput']").css("background","white");
                             jQuery(elem).find("input[name^='macroValue']").css("background","white");
