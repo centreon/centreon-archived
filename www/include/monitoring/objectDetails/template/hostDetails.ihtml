@@ -10,10 +10,8 @@
                                                 
 							<h3 style="color: #555;">
 								<img src='./img/icons/host.png' width="16px" {if $h_ext_icon_image_alt} alt='{$h_ext_icon_image_alt}'{/if}> 
-                                                                    {$host_data.alias} / {$host_data.name} <span>[{$host_data.address}]</span>
+                                                                    {$host_data.name} : {$host_data.alias} <span>[{$host_data.address}]</span>
 							</h3>
-							<p style="margin-left: 30px;">{$h.host_name}</p>
-
 							{if $sv_ext_notes_url}
 								<a href="{$sv_ext_notes_url}" target="_blank">
 								<img src='./img/icons/link.png' class="ico-14" title="{if $sv_ext_notes}{$sv_ext_notes}{else}{$sv_ext_notes_url}{/if}">
@@ -23,6 +21,47 @@
                     </tr>
             <tr>
 		<td style='vertical-align:top; padding-bottom: 8px !important;'>
+                </td>
+            </tr>
+                    
+                    
+            <tr>
+                <td>
+                    <table class="ListTable">
+                            <tr class='list_lvl_1'>
+                                <td class="ListColHeaderLeft FormHeader" colspan="4"><h4>{$m_mon_host_services}</h4></td>
+                            </tr>
+                            <tr class='ListHeader'>
+                                <td class="ListColHeaderCenter">{$header_service_description}</td>
+                                <td class="ListColHeaderCenter">{$header_service_status}</td>
+                                <td class="ListColHeaderCenter">{$header_service_last_check}</td>
+                                <td class="ListColHeaderCenter">{$header_service_output}</td>
+                            </tr>
+                            {foreach item=hs from=$hosts_services}
+                                <tr class="{$hs.line_class}">
+                                    <td class="ListColLeft ListColNoWrap ColPopup" style='white-space:nowrap'>
+                                        <a href="./main.php?p=20201&o=svcd&host_name={$hs.host_name}&service_description={$hs.service_description}">{$hs.service_description}</a>
+                                    </td>
+                                    <td class="ListColCenter ListColNoWrap">    
+                                        <span class="badge {$hs.status_class}">{$hs.current_state}</span>
+                                    </td>
+                                    <td class="ListColCenter ListColNoWrap">
+                                        {$hs.last_check}
+                                    </td>
+                                    <td class="ListColLeft">
+                                        {$hs.short_output}
+                                    </td>                                    
+                                </tr>
+                            {/foreach}
+                    </table>
+                </td>
+            </tr>
+                    
+                    
+                    
+                    </table>
+                    </td>
+        <td style="width: 30%; vertical-align: top;" nowrap="nowrap">
 			<table class="ListTable">
 				<tr class='list_lvl_1'>
 					<td class="ListColHeaderLeft FormHeader" colspan="2"><h4>{$m_mon_host_info}</h4></td>
@@ -45,11 +84,7 @@
 				</tr>
 				<tr class='list_two'>
 					<td class="ListColLeft ColPopup">{$m_mon_current_attempt}</td>
-					<td class="ListColLeft ListColNoWrap">{$host_data.current_attempt} / {$host_data.max_check_attempts}</td>
-				</tr>
-				<tr class='list_one'>
-					<td class="ListColLeft ColPopup">{$m_mon_state_type}</td>
-					<td class="ListColLeft ListColNoWrap">{$host_data.state_type}</td>
+					<td class="ListColLeft ListColNoWrap">{$host_data.current_attempt}/{$host_data.max_check_attempts} {$host_data.state_type}</td>
 				</tr>
 				<tr class='list_two'>
 					<td class="ListColLeft ColPopup">{$m_mon_host_last_check}</td>
@@ -89,11 +124,7 @@
 				</tr>
 				<tr class='list_one'>
 					<td class="ListColLeft ColPopup">{$m_mon_host_flapping}</td>
-					<td class="ListColLeft ListColNoWrap">{$host_data.is_flapping}</td>
-				</tr>
-				<tr class='list_two'>
-					<td class="ListColLeft ColPopup">{$m_mon_percent_state_change}</td>
-					<td class="ListColLeft ListColNoWrap">{$host_data.percent_state_change} % </td>
+					<td class="ListColLeft ListColNoWrap">{$host_data.is_flapping} ({$host_data.percent_state_change} %)</td>
 				</tr>
 				<tr class='list_one'>
 					<td class="ListColLeft ColPopup">{$m_mon_downtime_sc}</td>
@@ -101,10 +132,6 @@
                                             <span >{$en[$host_data.scheduled_downtime_depth]}</span>
                                         </td>
                                 </tr>
-				<tr class='list_two'>
-					<td class="ListColLeft ColPopup">{$m_mon_last_update}</td>
-					<td class="ListColLeft ListColNoWrap">{$host_data.last_update}</td>
-				</tr>
 				{if $host_data.comments}
 				<tr class='list_one'>
 					<td class="ListColLeft ColPopup">{$m_mon_host_comment}</td>
@@ -112,50 +139,7 @@
 				</tr>
 				{/if}
 			</table>
-                </td>
-            </tr>
-                    
-                    
-            <tr>
-                <td>
-                    <table class="ListTable">
-                            <tr class='list_lvl_1'>
-                                <td class="ListColHeaderLeft FormHeader" colspan="4"><h4>{$m_mon_host_services}</h4></td>
-                            </tr>
-                            <tr class='ListHeader'>
-                                <td class="ListColHeaderCenter">{$header_service_description}</td>
-                                <td class="ListColHeaderCenter">{$header_service_status}</td>
-                                <td class="ListColHeaderCenter">{$header_service_last_check}</td>
-                                <td class="ListColHeaderCenter">{$header_service_output}</td>
-                            </tr>
-                            {foreach item=hs from=$hosts_services}
-                                <tr class="{$hs.line_class}">
-                                    <td class="ListColCenter">
-                                        {$hs.service_description}
-                                    </td>
-                                    <td class="ListColCenter">    
-                                        <span class="badge {$hs.status_class}"  >{$hs.current_state}</span>
-                                    </td>
-                                    <td class="ListColCenter">
-                                        {$hs.last_check}
-                                    </td>
-                                    <td class="ListColCenter">
-                                        {$hs.plugin_output}
-                                    </td>
-                                    
-                                    
-                                </tr>
-                            {/foreach}
-                        
-                    </table>
-                </td>
-            </tr>
-                    
-                    
-                    
-                    </table>
-                    </td>
-        <td style="width: 30%; vertical-align: top;" nowrap="nowrap">
+			<br>
 		<table>
 			<tr>
 			<td style="vertical-align: top; padding-bottom: 8px !important; " nowrap="nowrap">
