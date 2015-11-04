@@ -42,6 +42,7 @@ require_once "centreonUtils.class.php";
 require_once "centreonTimePeriod.class.php";
 require_once "Centreon/Object/Contact/Contact.php";
 require_once "Centreon/Object/Command/Command.php";
+require_once "Centreon/Object/Timezone/Timezone.php";
 require_once "Centreon/Object/Relation/Contact/Command/Host.php";
 require_once "Centreon/Object/Relation/Contact/Command/Service.php";
 
@@ -65,6 +66,8 @@ class CentreonContact extends CentreonObject {
     const HOST_NOTIF_CMD = "hostnotifcmd";
     const SVC_NOTIF_CMD = "svcnotifcmd";
     const UNKNOWN_LOCALE = "Invalid locale";
+    const UNKNOWN_TIMEZONE = "Invalid timezone";
+    const CONTACT_LOCATION = "timezone";
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
 
     protected $register;
@@ -103,6 +106,12 @@ class CentreonContact extends CentreonObject {
      * @var CentreonTimePeriod
      */
     protected $tpObject;
+    
+    /**
+     *
+     * @var Timezone
+     */
+    protected $timezoneObject;
 
     /**
      * Constructor
@@ -113,6 +122,7 @@ class CentreonContact extends CentreonObject {
         parent::__construct();
         $this->tpObject = new CentreonTimePeriod();
         $this->object = new Centreon_Object_Contact();
+        $this->timezoneObject = new Centreon_Object_Timezone();
         $this->params = array('contact_host_notification_options' => 'n',
             'contact_service_notification_options' => 'n',
             'contact_location' => '0',
@@ -268,7 +278,16 @@ class CentreonContact extends CentreonObject {
             } elseif ($params[1] == self::HOST_NOTIF_CMD || $params[1] == self::SVC_NOTIF_CMD) {
                 $this->setNotificationCmd($params[1], $objectId, $params[2]);
                 $regularParam = false;
-            } elseif (!preg_match("/^contact_/", $params[1])) {
+            } elseif ($params[1] == self::CONTACT_LOCATION) {
+                $iIdTimezone = $this->timezoneObject->getIdByParameter($this->timezoneObject->getUniqueLabelField(), $params[2]);
+                if (count($iIdTimezone)) {
+                    $iIdTimezone = $iIdTimezone[0];
+                } else {
+                    throw new CentreonClapiException(self::UNKNOWN_TIMEZONE);
+                }
+                $params[1] = 'contact_location';
+                $params[2] = $iIdTimezone;
+           } elseif (!preg_match("/^contact_/", $params[1])) {
                 if ($params[1] == "access") {
                     $params[1] = "oreon";
                 } elseif ($params[1] == "template") {
@@ -411,6 +430,10 @@ class CentreonContact extends CentreonObject {
                         $parameter = "template";
                         $result = $this->object->getParameters($value, $this->object->getUniqueLabelField());
                         $value  = $result[$this->object->getUniqueLabelField()];
+                    } elseif ($parameter == "contact_location") {
+                        $parameter = self::CONTACT_LOCATION;
+                        $result = $this->timezoneObject->getParameters($value, $this->timezoneObject->getUniqueLabelField());
+                        $value  = $result[$this->timezoneObject->getUniqueLabelField()];
                     }
                     $value = CentreonUtils::convertLineBreak($value);
                     echo $this->action . $this->delim . "setparam" . $this->delim . $element[$this->object->getUniqueLabelField()] . $this->delim . $parameter . $this->delim . $value . "\n";

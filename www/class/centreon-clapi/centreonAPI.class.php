@@ -40,6 +40,8 @@
 
 require_once realpath(dirname(__FILE__)."/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__)."/../centreonXML.class.php");
+require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 
 if (file_exists(realpath(dirname(__FILE__)."/../centreonSession.class.php"))) {
     require_once realpath(dirname(__FILE__)."/../centreonSession.class.php");
@@ -132,10 +134,10 @@ class CentreonAPI {
             'module' => 'core',
             'class' => 'Host',
             'libs' => array(
-                './class/centreonService.class.php',
-                './class/centreonHostGroup.class.php',
-                './class/centreonContact.class.php',
-                './class/centreonContactGroup.class.php'
+                'centreonService.class.php',
+                'centreonHostGroup.class.php',
+                'centreonContact.class.php',
+                'centreonContactGroup.class.php'
             ),
             'export' => true
         );
@@ -143,7 +145,7 @@ class CentreonAPI {
             'module' => 'core',
             'class' => 'Service',
             'libs' => array(
-                './class/centreonHost.class.php'
+                'centreonHost.class.php'
             ),
             'export' => true
         );
@@ -190,7 +192,7 @@ class CentreonAPI {
             'module' => 'core',
             'class' => 'Contact',
             'libs' => array(
-                './class/centreonCommand.class.php'
+                'centreonCommand.class.php'
             ),
             'export' => true
         );
@@ -316,16 +318,17 @@ class CentreonAPI {
             'export' => false
         );
 
-
+         
         /* Get objects from modules */
         $objectsPath = array();
         $DBRESULT = $this->DB->query("SELECT name FROM modules_informations");
         while ($row = $DBRESULT->fetchRow()) {
-            $objectsPath = array_merge($objectsPath, glob('../../' . $row['name'] . '/centreon-clapi/class/*.php'));
+            $objectsPath = array_merge($objectsPath, glob(_CENTREON_PATH_.'www/modules/' . $row['name'] . '/centreon-clapi/class/*.php'));
         }
 
         foreach ($objectsPath as $objectPath) {
-            if (preg_match('/..\/..\/([\w-]+)\/centreon-clapi\/class\/centreon(\w+).class.php/', $objectPath, $matches)) {
+            if (preg_match('/([\w-]+)\/centreon-clapi\/class\/centreon(\w+).class.php/', $objectPath, $matches)) {
+               
                 if (isset($matches[1]) && isset($matches[2])) {
                     $this->relationObject[strtoupper($matches[2])] = array(
                         'module' => $matches[1],
@@ -335,7 +338,7 @@ class CentreonAPI {
                 }
             }
         }
-        
+  
         /*
          * Manage version
          */
@@ -363,7 +366,7 @@ class CentreonAPI {
                 if ($this->relationObject[$object]['module'] == 'core') {
                     require_once "centreon" . $this->relationObject[$object]['class'] . ".class.php";
                 } else {
-                    require_once "../../" . $this->relationObject[$object]['module'] . "/centreon-clapi/class/centreon" . $this->relationObject[$object]['class'] . ".class.php";
+                    require_once _CENTREON_PATH_."/www/modules/" . $this->relationObject[$object]['module'] . "/centreon-clapi/class/centreon" . $this->relationObject[$object]['class'] . ".class.php";
                 }
             }
 
@@ -374,9 +377,9 @@ class CentreonAPI {
             foreach ($this->relationObject as $sSynonyme => $oObjet) {
                     if (isset($oObjet['class']) && isset($oObjet['module']) && !class_exists("Centreon" . $oObjet['class'])) {
                     if ($oObjet['module'] == 'core') {
-                        require_once "./class/centreon" . $oObjet['class'] . ".class.php";
+                        require_once _CENTREON_PATH_."www/class/centreon-clapi/centreon" . $oObjet['class'] . ".class.php";
                     } else {
-                        require_once "../../" . $oObjet['module'] . "/centreon-clapi/class/centreon" . $oObjet['class'] . ".class.php";
+                        require_once _CENTREON_PATH_."/www/modules/" . $oObjet['module'] . "/centreon-clapi/class/centreon" . $oObjet['class'] . ".class.php";
                     }
                 }
 
@@ -713,6 +716,7 @@ class CentreonAPI {
         $this->sortClassExport();
         
         $this->initAllObjects();
+        
         // header
         echo "{OBJECT_TYPE}{$this->delim}{COMMAND}{$this->delim}{PARAMETERS}\n";        
         if (count($this->aExport) > 0) {

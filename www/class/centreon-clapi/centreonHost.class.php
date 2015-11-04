@@ -62,6 +62,7 @@ require_once "Centreon/Object/Relation/Instance/Host.php";
 require_once "Centreon/Object/Relation/Contact/Host.php";
 require_once "Centreon/Object/Relation/Contact/Group/Host.php";
 require_once "Centreon/Object/Relation/Host/Service.php";
+require_once "Centreon/Object/Timezone/Timezone.php";
 
 /**
  * Centreon Host objects
@@ -78,6 +79,14 @@ class CentreonHost extends CentreonObject {
     const ORDER_HOSTGROUP = 5;
     const MISSING_INSTANCE = "Instance name is mandatory";
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    const UNKNOWN_TIMEZONE = "Invalid timezone";
+    const HOST_LOCATION = "timezone";
+    
+    /**
+     *
+     * @var Timezone
+     */
+    protected $timezoneObject;
 
     public static $aDepends = array(
         'CMD',
@@ -107,6 +116,7 @@ class CentreonHost extends CentreonObject {
     public function __construct() {
         parent::__construct();
         $this->object = new Centreon_Object_Host();
+        $this->timezoneObject = new Centreon_Object_Timezone();
         $this->params = array('host_active_checks_enabled' => '2',
             'host_passive_checks_enabled' => '2',
             'host_checks_enabled' => '2',
@@ -144,7 +154,8 @@ class CentreonHost extends CentreonObject {
                 "timeperiod_tp_id" => "check_period",
                 "timeperiod_tp_id2" => "notification_period",
                 "command_command_id_arg1" => "check_command_arguments",
-                "command_command_id_arg2" => "event_handler_arguments");
+                "command_command_id_arg2" => "event_handler_arguments",
+                "host_location" => self::HOST_LOCATION);
         }
         if (preg_match("/^ehi_/", $columnName)) {
             return substr($columnName, strlen("ehi_"));
@@ -387,6 +398,16 @@ class CentreonHost extends CentreonObject {
                         }
                     }
                 break;
+                case self::HOST_LOCATION :
+                    $iIdTimezone = $this->timezoneObject->getIdByParameter($this->timezoneObject->getUniqueLabelField(), $params[2]);
+                    if (count($iIdTimezone)) {
+                        $iIdTimezone = $iIdTimezone[0];
+                    } else {
+                        throw new CentreonClapiException(self::UNKNOWN_TIMEZONE);
+                    }
+                    $params[1] = 'host_location';
+                    $params[2] = $iIdTimezone;
+                break;
                 default:
                     if (!preg_match("/^host_/", $params[1])) {
                         $params[1] = "host_" . $params[1];
@@ -513,10 +534,7 @@ class CentreonHost extends CentreonObject {
         }
         $macroObj = new Centreon_Object_Host_Macro_Custom();
         //$macroList = $macroObj->getList(array("host_macro_name", "host_macro_value", "is_password", "description"), -1, 0, null, null, array("host_host_id" => $hostId));
-        
-        
-        
-        
+               
         $aTemplates = $this->getTemplateChain($hostId, array(), -1, true,"host_name,host_id,command_command_id");
         if (!isset($cmdId)) {
             $cmdId = "";
@@ -833,6 +851,8 @@ class CentreonHost extends CentreonObject {
                         $tmpObj = $tpObj;
                     } elseif ($parameter == "command_command_id" || $parameter == "command_command_id2") {
                         $tmpObj = $commandObj;
+                    } elseif ($parameter == 'host_location') {
+                        $tmpObj = $this->timezoneObject;
                     }
                     if (isset($tmpObj)) {
                         $tmp = $tmpObj->getParameters($value, $tmpObj->getUniqueLabelField());
