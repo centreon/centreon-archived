@@ -901,19 +901,5 @@ if($engine == 'false'){
         }
     });
 
-    // Nice scroll
-
-	jQuery(document).ready(
-          function() {
-            jQuery('ul.select2-selection__rendered').niceScroll({
-
-            	cursorcolor:"#818285",
-            	cursoropacitymax: 0.6,
-            	cursorwidth:3,
-            	horizrailenabled:false
-
-            	});
-          }
-        );
 
 </script>
