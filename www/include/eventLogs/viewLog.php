@@ -166,6 +166,7 @@ $hostArray = array();
 $hostGrpArray = array();
 $serviceArray = array();
 $serviceGrpArray = array();
+$pollerArray = array();
 if(isset($_GET['h'])){
     $h = explode(",",$_GET['h']);
     $hostObj = new CentreonHost($pearDB);
@@ -752,7 +753,7 @@ if($engine == 'false'){
                     dataType : "json",
                     data: "hgid="+hg_value,
                     success : function(json){
-                        json.each(function(elem){
+                        json.items.each(function(elem){
                             if(jQuery.inArray(elem.id,host_value) === -1){
                                 var existingOptions = jQuery("#host_filter").find('option');
                                 var existFlag = false;
@@ -788,7 +789,7 @@ if($engine == 'false'){
                     dataType : "json",
                     data: "sgid="+sg_value,
                     success : function(json){
-                        json.each(function(elem){
+                        json.items.each(function(elem){
                             if(jQuery.inArray(elem.id,service_value) === -1){
                                 var existingOptions = jQuery("#service_filter option");
                                 var existFlag = false;
