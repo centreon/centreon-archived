@@ -100,7 +100,10 @@ $DBRESULT2 = $pearDB->query("SELECT css_name FROM `css_color_menu` WHERE menu_nb
 $menu_style = $DBRESULT2->fetchRow();
 
 ob_start();
-require_once _CENTREON_PATH_ . "/www/Themes/Centreon-2/Color/" . $menu_style['css_name'];
+if(isset($menu_style['css_name'])){
+    require_once _CENTREON_PATH_ . "/www/Themes/Centreon-2/Color/" . $menu_style['css_name'];
+}
+
 ob_end_clean();
 
 
