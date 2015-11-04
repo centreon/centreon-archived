@@ -355,13 +355,13 @@ $form->addElement('select2', 'host_group_filter', _("Hosts Groups"), array(), $a
 $attrPoller = array(
     'datasourceOrigin' => 'ajax',
     'allowClear' => false,
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_monitoring_poller&action=list',
     'multiple' => true
 );
 /* Host Parents */
 $attrPoller1 = array_merge(
     $attrPoller,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=defaultValues&target=host&field=host_parents&id=')
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_monitoring_poller&action=defaultValues&target=host&field=host_parents&id=')
 );
 $form->addElement('select2', 'poller_filter', _("Pollers"), array(), $attrPoller1);
 

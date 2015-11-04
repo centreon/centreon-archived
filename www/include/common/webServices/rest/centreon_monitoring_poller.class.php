@@ -36,19 +36,19 @@
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
-class CentreonConfigurationPoller extends CentreonConfigurationObjects
+class CentreonMonitoringPoller extends CentreonConfigurationObjects
 {
     /**
      *
      * @var type 
      */
-    protected $pearDB;
+    protected $pearDBMonitoring;
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->pearDB = new CentreonDB('centreon');
+        $this->pearDBMonitoring = new CentreonDB('centstorage');
         parent::__construct();
     }
     
@@ -72,19 +72,19 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
             $range = '';
         }
         
-        $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name "
-            . "FROM nagios_server "
+        $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name "
+            . "FROM instances "
             . "WHERE name LIKE '%$q%' "
             . "ORDER BY name "
             . $range;
         
-        $DBRESULT = $this->pearDB->query($queryPoller);
+        $DBRESULT = $this->pearDBMonitoring->query($queryPoller);
 
-        $total = $this->pearDB->numberRows();
+        $total = $this->pearDBMonitoring->numberRows();
         
         $pollerList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $pollerList[] = array('id' => $data['id'], 'text' => $data['name']);
+            $pollerList[] = array('id' => $data['instance_id'], 'text' => $data['name']);
         }
         
         return array(

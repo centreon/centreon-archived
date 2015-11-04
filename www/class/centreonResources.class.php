@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -13,7 +13,7 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <htcommand://www.gnu.org/licenses>.
+ * this program; if not, see <http://www.gnu.org/licenses>.
  *
  * Linking this program statically or dynamically with other modules is making a
  * combined work based on this program. Thus, the terms and conditions of the GNU
@@ -29,67 +29,52 @@
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
  *
- * For more information : command@centreon.com
+ * For more information : contact@centreon.com
+ *
+ * SVN : $URL$
+ * SVN : $Id$
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
-
-class CentreonConfigurationPoller extends CentreonConfigurationObjects
+/**
+ * 
+ */
+class CentreonResources
 {
-    /**
-     *
-     * @var type 
+    protected $_db;
+
+    /*
+     * constructor
      */
-    protected $pearDB;
-    /**
-     * Constructor
-     */
-    public function __construct()
+    public function __construct($pearDB)
     {
-        $this->pearDB = new CentreonDB('centreon');
-        parent::__construct();
+        $this->_db = $pearDB;
     }
     
     /**
      * 
+     * @param integer $field
      * @return array
      */
-    public function getList()
+    public static function getDefaultValuesParameters($field)
     {
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
-            $q = $this->arguments['q'];
-        }
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'cfg_resource';
+        $parameters['currentObject']['id'] = 'resource_id';
+        $parameters['currentObject']['name'] = 'resource_name';
+        $parameters['currentObject']['comparator'] = 'resource_id';
 
-        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+        switch ($field) {
+            case 'instance_id':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonInstance';
+                $parameters['relationObject']['table'] = 'cfg_resource_instance_relations';
+                $parameters['relationObject']['field'] = 'instance_id';
+                $parameters['relationObject']['comparator'] = 'resource_id';
+                break;
         }
         
-        $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name "
-            . "FROM nagios_server "
-            . "WHERE name LIKE '%$q%' "
-            . "ORDER BY name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryPoller);
-
-        $total = $this->pearDB->numberRows();
-        
-        $pollerList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $pollerList[] = array('id' => $data['id'], 'text' => $data['name']);
-        }
-        
-        return array(
-            'items' => $pollerList,
-            'total' => $total
-        );
+        return $parameters;
     }
 }
+?>

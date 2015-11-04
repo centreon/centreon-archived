@@ -167,4 +167,39 @@ class CentreonInstance {
             }
         }
     }
+    
+    /**
+     * 
+     * @param array $values
+     * @return array
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        $selectedInstances = '';
+        $aInstanceList = array();
+        
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        } else {
+            $selectedInstances .= "AND r.resource_id IN ($explodedValues) ";
+        }
+        
+        $queryInstance = "SELECT DISTINCT p.name as name, p.id  as id"
+            . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
+            . " WHERE r.resource_id = rel.resource_id "
+            . " AND p.id = rel.instance_id "
+            . $selectedInstances
+            . " ORDER BY p.name";
+        
+        $DBRESULT = $this->db->query($queryInstance);
+        while ($data = $DBRESULT->fetchRow()) {
+            $aInstanceList[] = array(
+                'id' => $data['id'],
+                'text' =>  htmlentities($data['name'])
+            );
+        }
+        
+        return $aInstanceList;
+    }
 }
