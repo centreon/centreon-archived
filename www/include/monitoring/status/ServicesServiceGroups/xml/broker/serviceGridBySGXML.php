@@ -139,7 +139,6 @@
     $query .= "ORDER BY sg.name " . $order . " "
         . "LIMIT " . ($num * $limit) . "," . $limit;
 
-         var_dump($query);
     $DBRESULT = $obj->DBC->query($query);
 
     $numRows = $obj->DBC->numberRows();
