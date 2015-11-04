@@ -88,7 +88,7 @@ class CentreonMonitoring {
 	 */
 	public function getServiceStatusCount($host_name, $objXMLBG, $o, $status, $obj)
 	{
-            $rq = "SELECT count(s.host_id) as count "
+            $rq = "SELECT count(distinct s.service_id) as count "
                 . "FROM services s, hosts h " . (!$objXMLBG->is_admin ? ", centreon_acl " : "")
                 . "WHERE s.state = '" . $status . "' "
                 . "AND s.host_id = h.host_id "
@@ -108,8 +108,6 @@ class CentreonMonitoring {
                     . "AND s.service_id = centreon_acl.service_id "
                     . "AND centreon_acl.group_id IN (" .  $obj->access->getAccessGroupsString() . ") ";
             }
-
-            $rq .= "GROUP BY s.host_id, s.service_id, s.state ";
 
             $DBRESULT = $objXMLBG->DBC->query($rq);
 
