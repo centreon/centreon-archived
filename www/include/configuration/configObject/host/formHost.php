@@ -66,18 +66,12 @@ $notifCs = $acl->getContactAclConf(array(
 ));
 
 /* notification contact groups */
-$notifCgs = array();
-$cg = new CentreonContactgroup($pearDB);
-if ($oreon->user->admin) {
-    $notifCgs = $cg->getListContactgroup(true);
-} else {
-    $cgAcl = $acl->getContactGroupAclConf(array('fields' => array('cg_id', 'cg_name'),
-        'get_row' => 'cg_name',
-        'keys' => array('cg_id'),
-        'order' => array('cg_name')));
-    $cgLdap = $cg->getListContactgroup(true, true);
-    $notifCgs = array_intersect_key($cgLdap, $cgAcl);
-}
+$notifCgs = $acl->getContactGroupAclConf(array(
+    'fields' => array('cg_id', 'cg_name'),
+    'get_row' => 'cg_name',
+    'keys' => array('cg_id'),
+    'order' => array('cg_name')
+), false);
 
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
