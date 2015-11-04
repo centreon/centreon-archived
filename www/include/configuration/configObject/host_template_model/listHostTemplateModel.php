@@ -33,7 +33,6 @@
  *
  */
 
-<<<<<<< HEAD
 if (!isset($centreon)) {
 	exit();
 }

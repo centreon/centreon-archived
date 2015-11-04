@@ -84,45 +84,57 @@
 	 * Get Host status
 	 *
 	 */
-	$rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name as host_name, hg.alias, hg.notes_url, hg.action_url, hg.name as hgname, hgm.hostgroup_id, h.host_id, h.state, h.icon_image ".
-			" FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
+	$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name as host_name, hg.name as hgname, hgm.hostgroup_id, h.host_id, h.state, h.icon_image "
+            . "FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
+
 	if (!$obj->is_admin) {
-		$rq1 .= ", centreon_acl ";
+            $rq1 .= ", centreon_acl ";
 	}
-	$rq1 .=	" WHERE h.host_id = hgm.host_id".
-			" AND hgm.hostgroup_id = hg.hostgroup_id".
-			" AND h.enabled = '1' AND hg.enabled = 1".
-			" AND h.name not like '_Module_%' ";
+
+	$rq1 .= "WHERE h.host_id = hgm.host_id "
+            . "AND hgm.hostgroup_id = hg.hostgroup_id "
+            . "AND h.enabled = '1' "
+            . "AND h.name not like '_Module_%' ";
+
 	if (!$obj->is_admin) {
-		$rq1 .= $obj->access->queryBuilder("AND", "h.name", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
+            $rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") . " "
+                . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " "
+                . $obj->access->queryBuilder("AND", "hg.hostgroup_id", $obj->access->getHostGroupsString("ID")) . " ";
 	}
+
 	if ($instance != -1) {
-		$rq1 .= " AND h.instance_id = ".$instance;
+		$rq1 .= "AND h.instance_id = " . $instance . " ";
 	}
-	if	($o == "svcgridHG_pb" || $o == "svcSumHG_pb") {
-		$rq1 .= " AND h.host_id IN (" .
-				" SELECT s.host_id FROM services s " .
-				" WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+
+	if ($o == "svcgridHG_pb" || $o == "svcSumHG_pb") {
+	    $rq1 .= " AND h.host_id IN ( "
+                . "SELECT s.host_id FROM services s "
+                . "WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
 	}
+
 	if ($o == "svcSumHG_ack_0") {
-		$rq1 .=	" AND h.host_id IN (" .
-				" SELECT s.host_id FROM services s " .
-				" WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+            $rq1 .= "AND h.host_id IN ( "
+                . "SELECT s.host_id FROM services s "
+                . "WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
 	}
-	if ($o == "svcSumHG_ack_1"){
-		$rq1 .= " AND h.host_id IN (" .
-				" SELECT s.host_id FROM services s " .
-				" WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+
+	if ($o == "svcSumHG_ack_1") {
+            $rq1 .= "AND h.host_id IN ( "
+                . "SELECT s.host_id FROM services s "
+                . "WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
 	}
+
 	if ($search != "") {
-		$rq1 .= " AND h.name like '%" . $search . "%' ";
+            $rq1 .= "AND h.name like '%" . $search . "%' ";
 	}
+
 	if ($hostgroups) {
-		$rq1 .= " AND hg.hostgroup_id IN (" . $hostgroups . ")";
+            $rq1 .= "AND hg.hostgroup_id IN (" . $hostgroups . ") ";
 	}
-	$rq1 .= " AND h.enabled = 1 ";
-	$rq1 .= " ORDER BY $sort_type, h.name $order ";
-	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+
+	$rq1 .= "AND h.enabled = 1 "
+            . "ORDER BY " . $sort_type . ", h.name " . $order . " "
+	    . "LIMIT " . ($num * $limit) . "," . $limit . " ";
 
 	$obj->XML = new CentreonXML();
 	$obj->XML->startElement("reponse");
@@ -160,10 +172,6 @@
 		$tab_final[$ndo["hgname"]][$ndo["host_name"]]["cs"] = $ndo["state"];
 		$tab_final[$ndo["hgname"]][$ndo["host_name"]]["hid"] = $ndo["host_id"];
 		$tab_final[$ndo["hgname"]][$ndo["host_name"]]["icon"] = $ndo["icon_image"];
-        $tabHGUrl[$ndo["hgname"]] = array(
-            'action_url' => $ndo['action_url'],
-            'notes_url' => $ndo['notes_url']
-        );
 	}
 	$DBRESULT->free();
 
@@ -179,8 +187,6 @@
 					$hg = $hg_name;
 					$obj->XML->startElement("hg");
 					$obj->XML->writeElement("hgn", CentreonUtils::escapeSecure($hg_name));
-                                        $obj->XML->writeElement("action_url", $tabHGUrl[$hg_name]['action_url']);
-                                        $obj->XML->writeElement("notes_url", $tabHGUrl[$hg_name]['notes_url']);
 				}
 				$obj->XML->startElement("l");
 				$obj->XML->writeAttribute("class", $obj->getNextLineClass());
