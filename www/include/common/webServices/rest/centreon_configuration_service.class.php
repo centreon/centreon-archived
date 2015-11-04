@@ -143,7 +143,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
             if ($hasGraph) {
-                if (service_has_graph($data['host_id'], $data['service_id'])) {
+                if (service_has_graph($data['host_id'], $data['service_id'], $this->pearDBMonitoring)) {
                     $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
                     $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
                     $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
