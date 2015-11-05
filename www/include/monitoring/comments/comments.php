@@ -31,53 +31,58 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit ();
-	}
+if (!isset($centreon)) {
+	exit ();
+}
 
-	isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = NULL;
-	isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = NULL;
-	$cG ? $contact_id = $cG : $contact_id = $cP;
+isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = NULL;
+isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = NULL;
+$cG ? $contact_id = $cG : $contact_id = $cP;
 
-	/*
-	 * Pear library
-	 */
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/advmultiselect.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 
-	/*
-	 * Path to the configuration dir
-	 */
-	$path = "./include/monitoring/comments/";
+/*
+ * Path to the configuration dir
+ */
+$path = "./include/monitoring/comments/";
 
-	/*
-	 * PHP functions
-	 */
-	require_once "./include/common/common-Func.php";
-	require_once "./include/monitoring/comments/common-Func.php";
-	require_once "./include/monitoring/external_cmd/functions.php";
+/*
+ * PHP functions
+ */
+require_once "./include/common/common-Func.php";
+require_once "./include/monitoring/comments/common-Func.php";
+require_once "./include/monitoring/external_cmd/functions.php";
 
-	switch ($o)	{
-		case "as" :
-			require_once($path."AddSvcComment.php");
-			break;
-		case "ds" :
-			DeleteComment("SVC",isset($_GET["select"]) ? $_GET["select"] : array());
-			require_once($path."viewServiceComment.php");
-			break;
-		case "vs" :
-			require_once($path."viewServiceComment.php");
-			break;
-		default :
-			require_once($path."viewServiceComment.php");
-			break;
-	}
-?>
+switch ($o)	{
+	case "ah" :
+		require_once($path."AddHostComment.php");
+		break;
+	case "dh" :
+		DeleteComment("HOST",isset($_GET["select"]) ? $_GET["select"] : array());
+		require_once($path."listComment.php");
+		break;
+	case "vh" :
+		require_once($path."listComment.php");
+		break;
+	case "as" :
+		require_once($path."AddSvcComment.php");
+		break;
+	case "ds" :
+		DeleteComment("SVC",isset($_GET["select"]) ? $_GET["select"] : array());
+		require_once($path."listComment.php");
+		break;
+	case "vs" :
+		require_once($path."listComment.php");
+		break;
+	default :
+		require_once($path."listComment.php");
+		break;
+}

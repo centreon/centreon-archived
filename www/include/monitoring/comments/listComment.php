@@ -33,11 +33,12 @@
  *
  */
 
-if (!isset($oreon)) {
-  exit();
+if (!isset($centreon)) {
+    exit();
 }
 
 include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
+
 include("./include/common/autoNumLimit.php");
 
 if (isset($_POST["search_service"]))
@@ -61,6 +62,15 @@ else if (isset($_GET["search_output"]))
 else
   $search_output = NULL;
 
+if (isset($_POST["hostgroup"]))
+  $hostgroup = $_POST["hostgroup"];
+else if (isset($_GET["hostgroup"]))
+   $hostgroup = $_GET["hostgroup"];
+else if (isset($centreon->hostgroup) && $centreon->hostgroup)
+   $hostgroup = $centreon->hostgroup;
+else
+   $hostgroup = "0";
+
 /*
  * Init GMT class
  */
@@ -74,11 +84,6 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl, "template/");
 
 include_once("./class/centreonDB.class.php");
-
-if ($oreon->broker->getBroker() == "ndo") {
-  $pearDBndo = new CentreonDB("ndo");
-  $ndo_base_prefix = getNDOPrefix();
-}
 
 /*
  * Pear library
@@ -96,18 +101,40 @@ $en = array("0" => _("No"), "1" => _("Yes"));
 /*
  * Service Comments
  */
-$rq2 = "SELECT SQL_CALC_FOUND_ROWS c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, c.service_id, h.name AS host_name, s.description AS service_description " .
+$rq2 = "SELECT SQL_CALC_FOUND_ROWS c.internal_id, c.entry_time, c.author, c.data, c.persistent, c.host_id, c.service_id, h.name AS host_name, s.description AS service_description " .
   "FROM comments c, hosts h, services s ";
+if (!$is_admin) {
+  $rq2 .= ", centreon_acl acl ";
+}
 $rq2 .= "WHERE c.host_id = h.host_id AND c.service_id = s.service_id AND h.host_id = s.host_id ";
 $rq2 .= " AND c.expires = '0' AND h.enabled = 1 AND s.enabled = 1 ";
 $rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
 if (!$is_admin) {
-  $rq2 .= " AND EXISTS(SELECT 1 FROM centreon_acl WHERE s.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id AND group_id IN (" . $oreon->user->access->getAccessGroupsString() . ")) ";
+  $rq2 .= " AND s.host_id = acl.host_id AND s.service_id = acl.service_id AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ")) ";
 }
+$rq2 .= (isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "");
+$rq2 .= (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "");
+$rq2 .= (isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
 
-$rq2 .= (isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "") .
-  (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "") .
-  (isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
+$rq2 .= ' UNION ';
+
+/*
+ * Host Comments
+ */
+$rq2 .= "SELECT c.internal_id, c.entry_time, c.author, c.data, c.persistent, c.host_id, c.service_id, h.name AS host_name, '-' AS service_description " .
+  "FROM comments c, hosts h, services s ";
+if (!$is_admin) {
+  $rq2 .= ", centreon_acl acl ";
+}
+$rq2 .= "WHERE c.host_id = h.host_id AND c.service_id = s.service_id AND h.host_id = s.host_id AND c.service_id IS NULL";
+$rq2 .= " AND c.expires = '0' AND h.enabled = 1 AND s.enabled = 1 ";
+$rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
+if (!$is_admin) {
+  $rq2 .= " AND s.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ")) ";
+}
+$rq2 .= (isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "");
+$rq2 .= (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "");
+$rq2 .= (isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
 
 $rq2 .= " ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
 
@@ -115,14 +142,13 @@ $DBRESULT = $pearDBO->query($rq2);
 $rows = $pearDBO->numberRows();
 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
   $tab_comments_svc[$i] = $data;
-  $tab_comments_svc[$i]["is_persistent"] = $en[$tab_comments_svc[$i]["is_persistent"]];
+  $tab_comments_svc[$i]["persistent"] = $en[$tab_comments_svc[$i]["persistent"]];
   $tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
   $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
-  $tab_comments_svc[$i]['comment_data'] = htmlentities($tab_comments_svc[$i]['comment_data']);
+  $tab_comments_svc[$i]['data'] = htmlentities($tab_comments_svc[$i]['data']);
 }
 unset($data);
 $DBRESULT->free();
-
 
 include("./include/common/checkPagination.php");
 
@@ -134,7 +160,7 @@ $tab = array ("p" => $p);
 $form->setDefaults($tab);
 
 if ($oreon->user->access->checkAction("service_comment")) {
-  $tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add a comment"), "delConfirm"=>_("Do you confirm the deletion ?")));
+  $tpl->assign('msgs', array("addL"=>"?p=".$p."&o=as", "addT"=>_("Add a Service comment"), "addL2"=>"?p=".$p."&o=ah", "addT2"=>_("Add a Host comment"), "delConfirm"=>_("Do you confirm the deletion ?")));
 }
 
 $tpl->assign("p", $p);
@@ -143,12 +169,6 @@ $tpl->assign("tab_comments_svc", $tab_comments_svc);
 $tpl->assign("nb_comments_svc", count($tab_comments_svc));
 $tpl->assign("no_svc_comments", _("No Comment for services."));
 
-$tpl->assign("cmt_host_name", _("Host Name"));
-$tpl->assign("cmt_service_descr", _("Services"));
-$tpl->assign("cmt_entry_time", _("Entry Time"));
-$tpl->assign("cmt_author", _("Author"));
-$tpl->assign("cmt_comment", _("Comments"));
-$tpl->assign("cmt_persistent", _("Persistent"));
 $tpl->assign("cmt_service_comment", _("Services Comments"));
 $tpl->assign("host_comment_link", "./main.php?p=".$p."&o=vh");
 $tpl->assign("view_host_comments", _("View comments of hosts"));
@@ -172,4 +192,4 @@ $form->accept($renderer);
 $tpl->assign('limit', $limit);
 $tpl->assign('form', $renderer->toArray());
 
-$tpl->display("serviceComments.ihtml");
+$tpl->display("comments.ihtml");
