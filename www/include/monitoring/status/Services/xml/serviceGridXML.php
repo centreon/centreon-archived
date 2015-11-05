@@ -123,7 +123,6 @@
 	    $rq1 .= " AND hosts.host_id = hg.host_id ";
 	    $rq1 .= " AND hg.hostgroup_id IN (".$hostgroups.") ";
 	    $rq1 .= " AND hg.hostgroup_id = hg2.hostgroup_id ";
-	    $rq1 .= " AND hg2.enabled = 1 ";
 	}
 	$rq1 .= " AND hosts.enabled = 1 ";
 
