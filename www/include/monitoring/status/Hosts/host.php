@@ -72,7 +72,6 @@ if (isset($_GET["hostgroups"]) && is_numeric($_GET["hostgroups"])) {
 }
 
 
-
 if ($o == "hpb" || $o == "h_unhandled") {
     if (!isset($_GET["sort_type"])) {
         $sort_type = $oreon->optGen["problem_sort_type"];
@@ -162,7 +161,7 @@ $tpl->assign("tab_order", $tab_order);
         document.forms['form'].elements['o1'].selectedIndex = 0;
         document.forms['form'].elements['o2'].selectedIndex = 0;
     }
-</SCRIPT>
+</script>
 <?php
 $action_list = array();
 $action_list[] = _("More actions...");

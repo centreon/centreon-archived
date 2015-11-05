@@ -229,8 +229,8 @@
 				$obj->XML->writeElement("suc", $obj->colorService[3]);
 				$obj->XML->writeElement("sp", $stat["s"][4]);
 				$obj->XML->writeElement("spc", $obj->colorService[4]);
-                                $obj->XML->writeElement("hgurl", CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=".$convertID[$convertTable[$name]]));
-                                $obj->XML->writeElement("hgurlhost", "main.php?p=20202&o=h&hostgroups=".$convertID[$convertTable[$name]]);
+                $obj->XML->writeElement("hgurl", CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=".$convertID[$convertTable[$name]]));
+                $obj->XML->writeElement("hgurlhost", "main.php?p=20202&o=h&hostgroups=".$convertID[$convertTable[$name]]);
 				$obj->XML->endElement();
 			}
 		}
