@@ -166,4 +166,4 @@ function goM(_time_reload, _sid, _o) {
 	_on = 1;
 	set_header_title();
 }
-</SCRIPT>
+</script>

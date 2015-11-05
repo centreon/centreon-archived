@@ -42,6 +42,7 @@ include_once("./class/centreonUtils.class.php");
 include_once "./class/centreonDB.class.php";
 include_once "./class/centreonHost.class.php";
 
+
 /*
  * Create Object env
  */
@@ -170,7 +171,10 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             " s.latency as check_latency," .
             " s.execution_time as check_execution_time," .
             " s.last_notification as last_notification," .
-            " h.name AS host_name," .
+            " s.process_perfdata, " .
+            " h.name AS host_name," . 
+            " h.host_id AS host_id," .
+            " s.service_id as service_id," .
             " s.description as service_description" .
             " FROM services s, hosts h" .
             " WHERE s.host_id = h.host_id AND h.name LIKE '".$host_name."' " .
@@ -180,20 +184,52 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $DBRESULT = $pearDBO->query($rq);
         $services = array();
         $class = 'list_one';
+        $graphs = array();
         while ($ndo = $DBRESULT->fetchRow()){
             $ndo["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $ndo["last_check"]);
             $ndo["current_state"] = $tab_status_service[$ndo['current_state']];
             $ndo["status_class"] = $tab_color_service[$ndo['current_state']];
             $ndo['line_class'] = $class;
-	    /* Split the plugin_output */
-	    $outputLines = explode("\n", $ndo['plugin_output']);
-	    $ndo['short_output'] = $outputLines[0]; 
+            /* Split the plugin_output */
+            $outputLines = explode("\n", $ndo['plugin_output']);
+            $ndo['short_output'] = $outputLines[0]; 
             if ($class == 'list_one') {
                 $class = 'list_two';
             } else {
                 $class = 'list_one';
             }
-            $services[] = $ndo;
+            $ndo["hnl"] = CentreonUtils::escapeSecure(urlencode($ndo["host_name"]));
+            $ndo["sdl"] = CentreonUtils::escapeSecure(urlencode($ndo["service_description"]));
+            $ndo["svc_id"] = $ndo["service_id"];
+            /**
+            * Get Service Graph index
+            */
+           if (!isset($graphs[$ndo["host_id"]]) || !isset($graphs[$ndo["host_id"]][$ndo["service_id"]])) {
+               $request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '" . $ndo["host_id"] . "' AND service_id = '" . $ndo["service_id"] . "' AND index_data.hidden = '0'";
+               $DBRESULT2 = $pearDBO->query($request2);
+               while ($dataG = $DBRESULT2->fetchRow()) {
+                   if (!isset($graphs[$ndo["host_id"]])) {
+                       $graphs[$ndo["host_id"]] = array();
+                   }
+                   $graphs[$ndo["host_id"]][$dataG["service_id"]] = $dataG["id"];
+               }
+               if (!isset($graphs[$ndo["host_id"]])) {
+                   $graphs[$ndo["host_id"]] = array();
+               }
+           }
+           $ndo["svc_index"] = (isset($graphs[$ndo["host_id"]][$ndo["service_id"]]) ? $graphs[$ndo["host_id"]][$ndo["service_id"]] : 0);
+           $ndo["ppd"] = $ndo["process_perfdata"];
+           
+           $duration = "";
+           if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
+               $duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
+           } else if ($ndo["last_state_change"] > 0) {
+               $duration = " - ";
+           }
+           $ndo["duration"] = $duration;
+           
+           
+           $services[] = $ndo;
         }
         $DBRESULT->free();
         
@@ -328,7 +364,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("m_mon_host_services", _("Services"));
         $tpl->assign("header_service_description", _("Services"));
         $tpl->assign("header_service_status", _("Status"));
-        $tpl->assign("header_service_last_check", _("Last check"));
+        $tpl->assign("header_service_duration", _("Duration"));
         $tpl->assign("header_service_output", _("Ouput"));
         $tpl->assign("m_mon_host_status", _("Host Status"));
         $tpl->assign("m_mon_host_status_info", _("Status information"));
@@ -550,6 +586,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 ?>
 <?php if (!is_null($host_id)) { ?>
 <script type="text/javascript">
+    
 	var glb_confirm = '<?php  echo _("Submit command?"); ?>';
 	var command_sent = '<?php echo _("Command sent"); ?>';
 	var command_failure = "<?php echo _("Failed to execute command");?>";

@@ -1048,6 +1048,9 @@ class CentreonACL {
     }
 
     public function getHostServices($pearDBMonitoring, $host_id, $get_service_description = null) {
+        global $pearDB;
+
+        $tab = array();
         if ($this->admin) {
             $query = "SELECT DISTINCT h.host_id, s.service_id, s.service_description "
                 . "FROM host_service_relation hsr, host h, service s "
