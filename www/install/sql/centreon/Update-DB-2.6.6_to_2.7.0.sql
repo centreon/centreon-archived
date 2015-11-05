@@ -87,9 +87,6 @@ CREATE TABLE `timezone` (
   UNIQUE KEY `name` (`timezone_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Move downtime page
-DELETE FROM topology WHERE topology_page IN ('20218', '20106', '60305');
-
 -- #3787
 DELETE FROM topology WHERE topology_page IN ('60902', '60903', '60707', '60804');
 DELETE FROM topology WHERE topology_page IS NULL AND topology_name LIKE 'Plugins' AND topology_url IS NULL;
@@ -675,12 +672,16 @@ UPDATE topology_JS SET id_page = 20404 WHERE id_page = 40204;
 UPDATE topology_JS SET id_page = 20405 WHERE id_page = 40205;
 SET foreign_key_checks = 1;
 
--- Reorganisation des menus
-
+-- Move downtime pages
+DELETE FROM topology WHERE topology_page IN ('20218', '20106', '60305');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtimes',NULL,2,210,60,1,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtime','./img/icones/16x16/warning.gif',210,21001,10,1,'./include/monitoring/downtime/listDowntime.php', NULL,'0','0','1',NULL,NULL,NULL,'1');
-UPDATE topology SET topology_name = 'Downtimes' WHERE topology_parent = 210; 
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtimes','./img/icones/16x16/warning.gif',210,21001,10,1,'./include/monitoring/downtime/downtime.php', NULL,'0','0','1',NULL,NULL,NULL,'1');
 
+-- Move comment pages
+UPDATE topology SET topology_page = '21002', topology_parent = '210', topology_name = 'Comments', topology_url = './include/monitoring/comments/comments.php', topology_url_opt = NULL, topology_group = '1', topology_order = 30 WHERE topology_page = '20107';
+DELETE FROM topology WHERE topology_page = 20219;
+
+-- Move service pages
 UPDATE topology SET topology_name = 'Status Details' WHERE topology_page = 202;
 UPDATE topology SET topology_name = 'Services' WHERE topology_name = 'All Services' AND topology_page = 20201;
 UPDATE topology SET topology_name = 'Services Grid', topology_group = 7 WHERE topology_name = 'Details' AND topology_page = 20204;
@@ -695,11 +696,6 @@ DELETE FROM topology_JS WHERE id_page = 20104;
 UPDATE topology SET topology_page = 20203, topology_group = 7, topology_parent = 202, topology_order = 120 WHERE topology_page = 20104;
 INSERT INTO topology_JS (id_page, PathName_js, Init) VALUES (20203, './include/common/javascript/ajaxMonitoring.js', 'initM');
 DELETE FROM topology WHERE topology_parent = '20203';
-
--- Move temporary comments
-update topology set topology_url = './include/monitoring/downtime/downtime.php' WHERE topology_page = 21001;
-update topology set topology_page = '21002', topology_name = 'Host comments', topology_parent = '210', topology_group = '30' WHERE topology_page = '20107';
-update topology set topology_page = '21003', topology_name = 'Service comments', topology_parent = '210', topology_group = '40' WHERE topology_page = '20219';
 
 -- Delete Host tab
 DELETE FROM topology WHERE topology_page = 201;
@@ -743,6 +739,5 @@ DELETE FROM topology WHERE topology_page = 607;
 UPDATE topology SET topology_name = "Pollers" WHERE topology_page = 609;
 SET foreign_key_checks = 1;
 
--- Comments
-UPDATE topology SET topology_url = './include/monitoring/comments/comments.php', topology_url_opt = NULL, topology_name = 'Comments', topology_group = '1', topology_order = 30 WHERE topology_page = 21002;
-DELETE FROM topology WHERE topology_page = 21003;
+-- Add option for number of groups per page
+INSERT INTO `options` (`key`, `value`) VALUES ('maxGraphPerformances','5');

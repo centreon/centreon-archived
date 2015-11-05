@@ -416,7 +416,6 @@ if ($flag_begin) {
 $tab_id = preg_split("/\,/", $openid);
 $tab_host_name = array();
 $tab_svc = array();
-//var_dump($lca["LcaHost"]);
 foreach ($tab_id as $openid) {
     $tab_tmp = preg_split("/\_/", $openid);
     $id = "";
@@ -478,7 +477,6 @@ $req = "SELECT SQL_CALC_FOUND_ROWS * FROM logs ".$innerJoinEngineLog." WHERE cti
 $str_unitH = "";
 $str_unitH_append = "";
 $host_search_sql = "";
-
 if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
     if($engine == "false"){
         $req .= " AND 1 = 0 ";
@@ -544,7 +542,6 @@ if (isset($req) && $req) {
      * Add Suffix for order
      */
     $req .= $suffix_order;
-    
     if ($num < 0) {
         $num = 0;
     }

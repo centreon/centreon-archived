@@ -109,6 +109,13 @@
 	$meta 	= getGetPostValue("meta");
     $search = getGetPostValue("search");
     $search_service = getGetPostValue("search_service");
+    
+    $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'maxGraphPerformances' LIMIT 1");
+    $data = $DBRESULT->fetchRow();
+    $graphsPerPage = $data['value'];
+    if (empty($graphsPerPage)) {
+        $graphsPerPage = '5';
+    }
 
 	if (isset($id_svc) && $id_svc){
 		$id = "";
@@ -416,9 +423,9 @@ function nextPeriod() {
 
 		// preg_split metric
 		var _split = 0;
-		/*if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
+		if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
 			_split = 1;
-		}*/
+		}
 
 
 
@@ -430,7 +437,6 @@ function nextPeriod() {
 
 		var $elem = jQuery('#displayStatus');
 		if($elem.prop('checked')) {
-			console.log($elem.prop('checked'));
 			_status = 1;
 		}
 
@@ -447,16 +453,8 @@ function nextPeriod() {
 		var proc = new Transformation();
 		var _addrXSL = "./include/views/graphs/graph.xsl";
 		var _addrXML = './include/views/graphs/GetXmlGraph.php?target='+target+'&multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if ($focusUrl) print "&focusUrl=".urlencode($focusUrl);?>';
-        /*if (search) {
-            _addrXML += '&search=' + search;
-        }
-        if (search_service) {
-            _addrXML += '&search_service=' + search_service;
-        }*/
-
 		proc.setXml(_addrXML);
 		proc.setXslt(_addrXSL);
-		// proc.transform("graphView4xml");
 		proc.transform(target);
 		list_img = new Hash();
 	}
@@ -504,8 +502,6 @@ function nextPeriod() {
     	}));
     	var parent = $(img_name).ancestors()[0];
     	parent.style.setProperty("margin", "0 auto", "");
-    	//parent.style.setProperty("margin-right", "auto", "");
-    	//parent.style.setProperty("margin-left", "auto", "");
     }
 
 
@@ -578,56 +574,54 @@ function nextPeriod() {
     }
 
 
-         function launchGraph() {
-             $hostsServicesForGraph = [];
-             $hostsServices = ''; console.log("lunchGraph");
+    function launchGraph() {
+        $hostsServicesForGraph = [];
+        $hostsServices = '';
 
-             getListOfServices();
-             getListOfHosts();
+        getListOfServices();
+        getListOfHosts();
 
-             $nbGraphs = 2;
-     		$nbPages = $hostsServicesForGraph.length / $nbGraphs;
+       $nbGraphs = <?php echo $graphsPerPage ?>;
+       $nbPages = $hostsServicesForGraph.length / $nbGraphs;
 
-     		insertGraph(2,0);
+       insertGraph($nbGraphs,0);
 
-     		jQuery("#graph_pagination").jPaginator({
-				nbPages:$nbPages,
-				selectedPage: 1,
-				overBtnLeft:'#test1_o_left',
-				nbVisible: 10,
-				length:1,
-				withSlider: true,
-				minSlidesForSlider: 1,
-				overBtnRight:'#test1_o_right',
-				maxBtnLeft:'#test1_m_left',
-				maxBtnRight:'#test1_m_right',
-				onPageClicked: function(a,num) {
-					$startGraph = ($nbGraphs * (num-1)); console.log($startGraph);
-					insertGraph(2,$startGraph);
-				}
-			});
-         }
+       jQuery("#graph_pagination").jPaginator({
+           nbPages:$nbPages,
+           selectedPage: 1,
+           overBtnLeft:'#test1_o_left',
+           nbVisible: 10,
+           length:1,
+           withSlider: true,
+           minSlidesForSlider: 1,
+           overBtnRight:'#test1_o_right',
+           maxBtnLeft:'#test1_m_left',
+           maxBtnRight:'#test1_m_right',
+           onPageClicked: function(a,num) {
+               $startGraph = ($nbGraphs * (num-1));
+               insertGraph($nbGraphs,$startGraph);
+           }
+       });
+    }
 
-         function insertGraph(nbGraphs, startGraph) {
-         	$parent = jQuery('.graphZone');
-			$parent.empty();
-			$cpt = 0;
-			$endGraph = startGraph + nbGraphs;
-			jQuery.each($hostsServicesForGraph, function(index, value) {
-				console.log($endGraph,startGraph,nbGraphs,$nbPages);
-
-				if(index >= startGraph && index < $endGraph) {
-					if ($cpt < nbGraphs) {
-						$cpt++;
-						$hostsServices = value;
-						$targetDiv = "graph_wrapper" + $cpt;
-						$a = jQuery('<div>').attr('id', $targetDiv);
-						$parent.append($a);
-						graph_4_host($hostsServices, 1, $targetDiv);
-					}
-				}
-			});
-         }
+    function insertGraph(nbGraphs, startGraph) {
+       $parent = jQuery('.graphZone');
+       $parent.empty();
+       $cpt = 0;
+       $endGraph = startGraph + nbGraphs;
+       jQuery.each($hostsServicesForGraph, function(index, value) {
+           if(index >= startGraph && index < $endGraph) {
+               if ($cpt < nbGraphs) {
+                   $cpt++;
+                   $hostsServices = value;
+                   $targetDiv = "graph_wrapper" + $cpt;
+                   $a = jQuery('<div>').attr('id', $targetDiv);
+                   $parent.append($a);
+                   graph_4_host($hostsServices, 1, $targetDiv);
+               }
+           }
+        });
+    }
 
     /* Display Status Checkbox */
 	$displayStatus = jQuery('#displayStatus');

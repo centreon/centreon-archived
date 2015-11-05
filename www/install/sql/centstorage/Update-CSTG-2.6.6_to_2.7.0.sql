@@ -23,7 +23,7 @@ ALTER TABLE `config` ADD COLUMN `len_storage_downtimes` int(11) DEFAULT NULL,  A
 
 UPDATE logs SET status = NULL WHERE status = 5;
 
-
+SET foreign_key_checks = 0;
 -- Modify table hostgroup / servicegroup for Centreon Broker 2.11.0
 DROP TABLE `hostgroups`;
 
@@ -41,3 +41,5 @@ CREATE TABLE `servicegroups` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`servicegroup_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+SET foreign_key_checks = 1;

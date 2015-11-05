@@ -671,12 +671,7 @@ if ($o == "mc")	{
     $form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_Pars'=>'0'));
  }
-/*$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);*/
-
+ 
 ##
 ## Sort 3 - Data treatment
 ##

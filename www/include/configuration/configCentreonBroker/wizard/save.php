@@ -41,7 +41,12 @@
     }
 
     require_once './class/centreonConfigCentreonBroker.php';
-
+/*
+    echo "<pre>";
+    var_dump($wizard);
+    echo $wizard->getValue(2, 'central_adress');
+    die;
+    */
     $central_module_configuration = array(
         'name' => $wizard->getValue(2, 'prefix_configname') . '-module-master',
         'filename' => 'central-module.xml',
@@ -86,7 +91,7 @@
     );
 
     $poller_module_configuration = array(
-        'name' => $wizard->getValue(2, 'prefix_configname') . '-module',
+        'name' => $wizard->getValue(2, 'configname') . '-module',
         'filename' => 'poller-module.xml',
         'activate' => array('activate' => 0),
         'write_timestamp' => array('write_timestamp' => 1),
@@ -112,7 +117,7 @@
                 'failover' => '',
                 'retry_interval' => '',
                 'buffering_timeout' => '',
-                'host' => '127.0.0.1',
+                'host' => $wizard->getValue(2, 'central_address'),
                 'protocol' => $wizard->getValue(2, 'protocol'),
                 'negociation' => array('negociation' => 'yes'),
                 'tls' => array ('tls' => 'no'),
