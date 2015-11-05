@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,15 +31,14 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
-if (!isset($oreon))
+
+if (!isset($centreon)) {
     exit();
+}
 
 function DeleteComment($type, $hosts = array()) {
-    global $oreon, $_GET, $pearDB;
+    global $pearDB;
 
     foreach ($hosts as $key => $value) {
         $res = preg_split("/\;/", $key);
@@ -49,19 +47,19 @@ function DeleteComment($type, $hosts = array()) {
 }
 
 function AddHostComment($host, $comment, $persistant) {
-    global $oreon, $pearDB;
+    global $centreon, $pearDB;
 
-    if (!isset($persistant) || !in_array($persistant, array('0', '1')))
+    if (!isset($persistant) || !in_array($persistant, array('0', '1'))) {
         $persistant = '0';
-    write_command(" ADD_HOST_COMMENT;" . getMyHostName($host) . ";" . $persistant . ";" . $oreon->user->get_alias() . ";" . trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
+    }
+    write_command(" ADD_HOST_COMMENT;" . getMyHostName($host) . ";" . $persistant . ";" . $centreon->user->get_alias() . ";" . trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
 }
 
 function AddSvcComment($host, $service, $comment, $persistant) {
-    global $oreon, $pearDB;
+    global $centreon, $pearDB;
 
-    if (!isset($persistant) || !in_array($persistant, array('0', '1')))
+    if (!isset($persistant) || !in_array($persistant, array('0', '1'))) {
         $persistant = '0';
-    write_command(" ADD_SVC_COMMENT;" . getMyHostName($host) . ";" . getMyServiceName($service) . ";" . $persistant . ";" . $oreon->user->get_alias() . ";" . trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
+    }
+    write_command(" ADD_SVC_COMMENT;" . getMyHostName($host) . ";" . getMyServiceName($service) . ";" . $persistant . ";" . $centreon->user->get_alias() . ";" . trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
 }
-
-?>
