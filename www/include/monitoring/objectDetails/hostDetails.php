@@ -175,18 +175,22 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             " FROM services s, hosts h" .
             " WHERE s.host_id = h.host_id AND h.name LIKE '".$host_name."' " .
             " AND h.enabled = 1 " .
-            " AND s.enabled = 1 ";
+            " AND s.enabled = 1 " . 
+	    " ORDER BY current_state DESC, service_description ASC";
         $DBRESULT = $pearDBO->query($rq);
         $services = array();
         $class = 'list_one';
         while ($ndo = $DBRESULT->fetchRow()){
-            $ndo["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $ndo["last_check"]);
+            $ndo["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $ndo["last_check"]);
             $ndo["current_state"] = $tab_status_service[$ndo['current_state']];
             $ndo["status_class"] = $tab_color_service[$ndo['current_state']];
             $ndo['line_class'] = $class;
-            if($class == 'list_one'){
+	    /* Split the plugin_output */
+	    $outputLines = explode("\n", $ndo['plugin_output']);
+	    $ndo['short_output'] = $outputLines[0]; 
+            if ($class == 'list_one') {
                 $class = 'list_two';
-            }else{
+            } else {
                 $class = 'list_one';
             }
             $services[] = $ndo;

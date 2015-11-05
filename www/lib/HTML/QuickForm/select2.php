@@ -112,14 +112,17 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      */
     var $_jsCallback;
     
-    
     /**
      *
      * @var boolean 
      */
     var $_allowClear;
     
-    
+    /**
+     *
+     * @var string 
+     */
+    var $_linkedObject;
     
     /**
      * 
@@ -184,6 +187,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         
         if (isset($attributes['defaultDataset'])) {
             $this->_defaultDataset = $attributes['defaultDataset'];
+        }
+        
+        if (isset($attributes['linkedObject'])) {
+            $this->_linkedObject = $attributes['linkedObject'];
         }
     }
     

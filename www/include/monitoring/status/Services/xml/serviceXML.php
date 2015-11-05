@@ -273,7 +273,7 @@ $request .= " AND h.name NOT LIKE '_Module_%' ";
  * HostGroup Filter
  */
 if (isset($hostgroups) && $hostgroups != 0) {
-    $request .= " AND hg.hostgroup_id = hg2.hostgroup_id AND hg2.enabled = 1 AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $hostgroups . ") ";
+    $request .= " AND hg.hostgroup_id = hg2.hostgroup_id AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $hostgroups . ") ";
 }
 
 /**

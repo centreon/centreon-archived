@@ -113,7 +113,7 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
 
     $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
 	$form->addElement('select', 'service_id', _("Service"), $services);
-    $form->addElement('checkbox', 'persistant', _("Fixed"), null, array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()'));
+    $chbx = $form->addElement('checkbox', 'persistant', _("Fixed"), null, array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()'));
     if (isset($oreon->optGen['monitoring_dwt_fixed']) && $oreon->optGen['monitoring_dwt_fixed']) {
         $chbx->setChecked(true);
     }
@@ -165,7 +165,7 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
             $_POST["comment"] = 0;
 	    $_POST["comment"] = str_replace("'", " ", $_POST['comment']);
 	    $duration = null;
-		if (isset($_POST['duration'])) {
+            if (isset($_POST['duration'])) {
             
             if (isset($_POST['duration_scale'])) {
                 $duration_scale = $_POST['duration_scale'];
@@ -173,7 +173,6 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
                 $duration_scale = 's';
             }
             
-<<<<<<< HEAD
             switch ($duration_scale)
             {
                 default:
@@ -224,93 +223,8 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
 		$tpl->display("AddSvcDowntime.ihtml");
     }
 } else {
-	require_once("../errors/alt_error.php");
+    require_once("../errors/alt_error.php");
 }
-=======
-			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
-
-			$form->addRule('host_id', _("Required Field"), 'required');
-			$form->addRule('service_id', _("Required Field"), 'required');
-			$form->addRule('end', _("Required Field"), 'required');
-			$form->addRule('start', _("Required Field"), 'required');
-                        $form->addRule('end_time', _("Required Field"), 'required');
-			$form->addRule('start_time', _("Required Field"), 'required');
-			$form->addRule('comment', _("Required Field"), 'required');
-
-			$form->setDefaults($data);
-
-			$subA = $form->addElement('submit', 'submitA', _("Save"));
-			$res = $form->addElement('reset', 'reset', _("Reset"));
-
-		  	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
-                            if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array('0', '1')))
-                                $_POST["persistant"] = '0';
-                            if (!isset($_POST["comment"]))
-                                $_POST["comment"] = 0;
-			    $_POST["comment"] = str_replace("'", " ", $_POST['comment']);
-			    $duration = null;
-				if (isset($_POST['duration'])) {
-                    
-                    if (isset($_POST['duration_scale'])) {
-                        $duration_scale = $_POST['duration_scale'];
-                    } else {
-                        $duration_scale = 's';
-                    }
-                    
-                    switch ($duration_scale)
-                    {
-                        default:
-                        case 's':
-                            $duration = $_POST['duration'];
-                            break;
-                        
-                        case 'm':
-                            $duration = $_POST['duration'] * 60;
-                            break;
-                        
-                        case 'h':
-                            $duration = $_POST['duration'] * 60 * 60;
-                            break;
-                        
-                        case 'd':
-                            $duration = $_POST['duration'] * 60 * 60 * 24;
-                            break;
-                    }
-			    }
-                $ecObj->AddSvcDowntime(
-                    $_POST["host_id"], 
-                    $_POST["service_id"],  
-                    $_POST["comment"], 
-                    $_POST["start"] . ' ' . $_POST['start_time'], 
-                    $_POST["end"] . ' ' . $_POST['end_time'], 
-                    $_POST["persistant"], 
-                    $duration
-                );
-		    	require_once("viewServiceDowntime.php");
-			} else {
-				/*
-				 * Smarty template Init
-				 */
-				$tpl = new Smarty();
-				$tpl = initSmartyTpl($path, $tpl, "template/");
-
-				/*
-				 * Apply a template definition
-				 */
-				$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-				$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-				$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-				$form->accept($renderer);
-				$tpl->assign('form', $renderer->toArray());
-				$tpl->assign('seconds', _("seconds"));
-				$tpl->assign('o', $o);
-				$tpl->display("AddSvcDowntime.ihtml");
-		    }
-		}
-	else {
-		require_once("../errors/alt_error.php");
-	}
->>>>>>> 2.6.x
 ?>
 <script type='text/javascript'>
 jQuery(function() {

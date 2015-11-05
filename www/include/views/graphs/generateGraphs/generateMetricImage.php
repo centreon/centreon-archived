@@ -37,23 +37,23 @@
  * Include config file
  */
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-
+require_once "$centreon_path/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_."/www/class/centreonGraph.class.php";
 /**
  * Create XML Request Objects
  */
 session_start();
 $sid = session_id();
-$obj = new CentreonGraph($sid, $_GET["index"], 0, 1);
+$pearDB = new CentreonDB();
 
-
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-	;
-} else {
-	$obj->displayError();
+if (!CentreonSession::checkSession($sid, $pearDB)) {
+    CentreonGraph::displayError();
 }
 
+
 require_once _CENTREON_PATH_."www/include/common/common-Func.php";
+$contactId = CentreonSession::getUser($sid, $pearDB);
+$obj = new CentreonGraph($contactId, $_GET["index"], 0, 1);
 
 /**
  * Set One curve
@@ -73,7 +73,7 @@ if (isset($_GET["metric"])) {
 $obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );
 $obj->setRRDOption("end",   $obj->checkArgument("end", $_GET, time()) );
 
-$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
+//$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
 
 /**
  * Template Management
