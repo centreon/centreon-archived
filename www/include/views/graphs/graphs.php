@@ -114,7 +114,7 @@
     $data = $DBRESULT->fetchRow();
     $graphsPerPage = $data['value'];
     if (empty($graphsPerPage)) {
-        $graphsPerPage = '0';
+        $graphsPerPage = '5';
     }
 
 	if (isset($id_svc) && $id_svc){

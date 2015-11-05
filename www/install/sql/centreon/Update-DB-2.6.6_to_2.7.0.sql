@@ -746,3 +746,6 @@ SET foreign_key_checks = 1;
 -- Comments
 UPDATE topology SET topology_url = './include/monitoring/comments/comments.php', topology_url_opt = NULL, topology_name = 'Comments', topology_group = '1', topology_order = 30 WHERE topology_page = 21002;
 DELETE FROM topology WHERE topology_page = 21003;
+
+-- Add option for number of groups epr page
+INSERT INTO `options` (`key`, `value`) VALUES ('maxGraphPerformances','5');
