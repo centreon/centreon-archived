@@ -25,25 +25,19 @@ UPDATE logs SET status = NULL WHERE status = 5;
 
 
 -- Modify table hostgroup / servicegroup for Centreon Broker 2.11.0
-SET foreign_key_checks = 0;
--- Hostgroups
-ALTER TABLE hostgroups DROP COLUMN action_url, DROP COLUMN alias, DROP COLUMN notes, DROP COLUMN notes_url, DROP COLUMN enabled;
-LOCK TABLES hostgroups WRITE;
-ALTER TABLE hostgroups DISABLE KEYS;
-DROP INDEX name ON hostgroups;
-DROP INDEX instance_id ON hostgroups;
-ALTER TABLE hostgroups DROP FOREIGN KEY hostgroups_ibfk_1;
-ALTER TABLE hostgroups DROP COLUMN instance_id;
-ALTER TABLE hostgroups ENABLE KEYS;
-UNLOCK TABLES;
--- Servicegroups
-ALTER TABLE servicegroups DROP COLUMN action_url, DROP COLUMN alias, DROP COLUMN notes, DROP COLUMN notes_url, DROP COLUMN enabled;
-LOCK TABLE servicegroups WRITE;
-ALTER TABLE servicegroups DISABLE KEYS;
-DROP INDEX name ON servicegroups;
-DROP INDEX instance_id ON servicegroups;
-ALTER TABLE servicegroups DROP FOREIGN KEY servicegroups_ibfk_1;
-ALTER TABLE servicegroups DROP COLUMN instance_id;
-ALTER TABLE servicegroups ENABLE KEYS;
-UNLOCK TABLES;
-SET foreign_key_checks = 1;
+DROP TABLE `hostgroups`;
+
+CREATE TABLE `hostgroups` (
+  `hostgroup_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`hostgroup_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE `servicegroups`;
+
+CREATE TABLE `servicegroups` (
+  `servicegroup_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`servicegroup_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

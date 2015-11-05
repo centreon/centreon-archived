@@ -239,12 +239,5 @@
 		</table>
 	</div>
 </div>
-<div style="display:none; ">
-	<xsl:element name="div">
-		<xsl:attribute name="id">openid</xsl:attribute>
-		<xsl:value-of select="//opid"/>
-	</xsl:element>
-	<xsl:text> </xsl:text>
-</div>
 </xsl:template>
 </xsl:stylesheet>

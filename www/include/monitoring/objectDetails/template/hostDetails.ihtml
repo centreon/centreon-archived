@@ -27,14 +27,16 @@
                     
             <tr>
                 <td>
+                    <div id="forAjax" >
                     <table class="ListTable">
                             <tr class='list_lvl_1'>
-                                <td class="ListColHeaderLeft FormHeader" colspan="4"><h4>{$m_mon_host_services}</h4></td>
+                                <td class="ListColHeaderLeft FormHeader" colspan="7"><h4>{$m_mon_host_services}</h4></td>
                             </tr>
                             <tr class='ListHeader'>
                                 <td class="ListColHeaderCenter">{$header_service_description}</td>
+                                <td></td>
                                 <td class="ListColHeaderCenter">{$header_service_status}</td>
-                                <td class="ListColHeaderCenter">{$header_service_last_check}</td>
+                                <td class="ListColHeaderCenter">{$header_service_duration}</td>
                                 <td class="ListColHeaderCenter">{$header_service_output}</td>
                             </tr>
                             {foreach item=hs from=$hosts_services}
@@ -42,11 +44,27 @@
                                     <td class="ListColLeft ListColNoWrap ColPopup" style='white-space:nowrap'>
                                         <a href="./main.php?p=20201&o=svcd&host_name={$hs.host_name}&service_description={$hs.service_description}">{$hs.service_description}</a>
                                     </td>
+                                    
+                                    <td>
+                                        {if $hs.ppd > 0 && $hs.svc_index > 0}
+                                        <a href="main.php?p=204&amp;mode=0&amp;svc_id={$hs.hnl};{$hs.sdl}">
+                                                <img id="{$hs.svc_index}-{$hs.svc_id}" class="graph-volant ico-18" src="./img/icons/chart.png"/>
+                                        </a>
+                                        {/if}
+                                        <a href="main.php?p=203&amp;svc={$hs.host_id}_{$hs.svc_id}">
+                                            Log
+                                        </a>
+                                        <a href="main.php?p=60201&o=c&service_id={$hs.svc_id}">
+                                            Config
+                                        </a>
+                                    </td>
+                                    
+                                    
                                     <td class="ListColCenter ListColNoWrap">    
                                         <span class="badge {$hs.status_class}">{$hs.current_state}</span>
                                     </td>
                                     <td class="ListColCenter ListColNoWrap">
-                                        {$hs.last_check}
+                                        {$hs.duration}
                                     </td>
                                     <td class="ListColLeft">
                                         {$hs.short_output}
@@ -54,6 +72,7 @@
                                 </tr>
                             {/foreach}
                     </table>
+                    </div>
                 </td>
             </tr>
                     

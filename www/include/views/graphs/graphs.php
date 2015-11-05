@@ -233,7 +233,7 @@
 	var multi 	= <?php echo $multi; ?>;
   	
 
-	// it's fake methode for using ajax system by default
+	// it's a fake method for using ajax system by default
 	function mk_pagination(){;}
 	function mk_paginationFF(){;}
 	function set_header_title(){;}
@@ -355,7 +355,7 @@ function nextPeriod() {
 		document.FormPeriod.EndTime.value = EndTime;
 	}
 
-	function graph_4_host(id, multi, l_mselect, pStart, pEnd, metrics)	{
+	function graph_4_host(id, multi, target, l_mselect, pStart, pEnd, metrics)	{
 		if (!multi)
 			multi = 0;
 		// no metric selection : default
@@ -416,12 +416,21 @@ function nextPeriod() {
 
 		// preg_split metric
 		var _split = 0;
-		if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
+		/*if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
 			_split = 1;
-		}
+		}*/
+
+
 
 		var _status = 0;
-		if (document.formu2 && document.formu2.status && document.formu2.status.checked)	{
+
+		/*if (document.formu2 && document.formu2.displayStatus && document.formu2.displayStatus.checked)	{
+			_status = 1;
+		}*/
+
+		var $elem = jQuery('#displayStatus');
+		if($elem.prop('checked')) {
+			console.log($elem.prop('checked'));
 			_status = 1;
 		}
 
@@ -437,7 +446,7 @@ function nextPeriod() {
 
 		var proc = new Transformation();
 		var _addrXSL = "./include/views/graphs/graph.xsl";
-		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if ($focusUrl) print "&focusUrl=".urlencode($focusUrl);?>';
+		var _addrXML = './include/views/graphs/GetXmlGraph.php?target='+target+'&multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if ($focusUrl) print "&focusUrl=".urlencode($focusUrl);?>';
         /*if (search) {
             _addrXML += '&search=' + search;
         }
@@ -447,7 +456,8 @@ function nextPeriod() {
 
 		proc.setXml(_addrXML);
 		proc.setXslt(_addrXSL);
-		proc.transform("graphView4xml");
+		// proc.transform("graphView4xml");
+		proc.transform(target);
 		list_img = new Hash();
 	}
 
@@ -472,7 +482,7 @@ function nextPeriod() {
      *
      * @var img_name The tag name
      */
-    function addGraphZoom(img_name) {
+    function addGraphZoom(img_name, target) {
         if ($(img_name).ancestors()[0].match('a')) {
         	$(img_name).ancestors()[0].setAttribute('onClick', 'return false;');
         }
@@ -504,7 +514,7 @@ function nextPeriod() {
 	 *
      * @var img_name The tag name
      */
-    function toGraphZoom(img_name) {
+    function toGraphZoom(img_name, target) {
         mutli = 0;
     	var s_multi = true;
         if ($$("img[id=" + img_name + "]").size() === 0) {
@@ -547,38 +557,84 @@ function nextPeriod() {
 		document.FormPeriod.EndTime.value = ctime2time(end);
 		if (img_name.indexOf('__M:') !== -1 && s_multi) {
             metrics = img_name.substring(img_name.indexOf('__M:') + 4);
-            graph_4_host(id, 0, null, "", "", metrics);
+            graph_4_host(id, 0, target, null, "", "", metrics);
             return false;
         }
-        graph_4_host(id, 0);
+
+        graph_4_host(id, 0, target);
         return false;
     }
 
-    function switchZoomGraph(tag_name) {
-        $("zoom_" + tag_name).setAttribute("onClick", "toGraphZoom('" + tag_name + "'); return false;");
+    function switchZoomGraph(tag_name, target) {
+        $("zoom_" + tag_name).setAttribute("onClick", "toGraphZoom('" + tag_name + "', '"+target+"'); return false;");
         if ($(tag_name) !== null) {
             if (list_img.get(tag_name) === undefined) {
-        		addGraphZoom(tag_name);
+        		addGraphZoom(tag_name, target);
             }
         	return false;
         }
-        $$("img[id^=" + tag_name + "]").each(function(el) { if (list_img.get(el.id) === undefined) { addGraphZoom(el.id); } });
+        $$("img[id^=" + tag_name + "]").each(function(el) { if (list_img.get(el.id) === undefined) { addGraphZoom(el.id, target); } });
         return false;
     }
-    
-    function launchGraph() {
-        $hostsServicesForGraph = [];
-        $hostsServices = '';
-        
-        getListOfServices();
-        getListOfHosts();
-        
-        jQuery.each($hostsServicesForGraph, function(index, value) {
-            $hostsServices += value + ',';
-        });
-        graph_4_host($hostsServices, 1);
-    };
-    
+
+
+         function launchGraph() {
+             $hostsServicesForGraph = [];
+             $hostsServices = ''; console.log("lunchGraph");
+
+             getListOfServices();
+             getListOfHosts();
+
+             $nbGraphs = 2;
+     		$nbPages = $hostsServicesForGraph.length / $nbGraphs;
+
+     		insertGraph(2,0);
+
+     		jQuery("#graph_pagination").jPaginator({
+				nbPages:$nbPages,
+				selectedPage: 1,
+				overBtnLeft:'#test1_o_left',
+				nbVisible: 10,
+				length:1,
+				withSlider: true,
+				minSlidesForSlider: 1,
+				overBtnRight:'#test1_o_right',
+				maxBtnLeft:'#test1_m_left',
+				maxBtnRight:'#test1_m_right',
+				onPageClicked: function(a,num) {
+					$startGraph = ($nbGraphs * (num-1)); console.log($startGraph);
+					insertGraph(2,$startGraph);
+				}
+			});
+         }
+
+         function insertGraph(nbGraphs, startGraph) {
+         	$parent = jQuery('.graphZone');
+			$parent.empty();
+			$cpt = 0;
+			$endGraph = startGraph + nbGraphs;
+			jQuery.each($hostsServicesForGraph, function(index, value) {
+				console.log($endGraph,startGraph,nbGraphs,$nbPages);
+
+				if(index >= startGraph && index < $endGraph) {
+					if ($cpt < nbGraphs) {
+						$cpt++;
+						$hostsServices = value;
+						$targetDiv = "graph_wrapper" + $cpt;
+						$a = jQuery('<div>').attr('id', $targetDiv);
+						$parent.append($a);
+						graph_4_host($hostsServices, 1, $targetDiv);
+					}
+				}
+			});
+         }
+
+    /* Display Status Checkbox */
+	$displayStatus = jQuery('#displayStatus');
+    $displayStatus.on('click',function(){
+    	launchGraph();
+    });
+
     function getListOfServices() {
         $selectedOptions = jQuery("#service_selector").val();
         
