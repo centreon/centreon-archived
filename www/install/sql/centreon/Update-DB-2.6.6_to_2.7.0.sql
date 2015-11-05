@@ -741,3 +741,5 @@ DELETE FROM topology WHERE topology_page = 607;
 UPDATE topology SET topology_name = "Pollers" WHERE topology_page = 609;
 SET foreign_key_checks = 1;
 
+-- Add option for number of groups per page
+INSERT INTO `options` (`key`, `value`) VALUES ('maxGraphPerformances','5');
