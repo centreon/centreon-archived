@@ -194,7 +194,8 @@
         'defaultDataset' => $defaultServicesForGraph,
         'multiple' => true,
     );
-    $form->addElement('select2', 'service_selector', _("Services"), array(), $attrServices);
+    $serviceSelector = $form->addElement('select2', 'service_selector', _("Services"), array(), $attrServices);
+    $serviceSelector->setDefaultFixedDatas();
     
     $attrHosts = array(
         'datasourceOrigin' => 'ajax',
@@ -202,7 +203,8 @@
         'defaultDataset' => $defaultHostsForGraph,
         'multiple' => true,
     );
-    $form->addElement('select2', 'host_selector', _("Hosts"), array(), $attrHosts);
+    $hostSelector = $form->addElement('select2', 'host_selector', _("Hosts"), array(), $attrHosts);
+    $hostSelector->setDefaultFixedDatas();
     
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
