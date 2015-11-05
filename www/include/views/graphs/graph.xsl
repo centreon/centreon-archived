@@ -22,7 +22,7 @@
 				    	<div id="imggraph">
 							<xsl:if test="splitvalue = 0">
 								<xsl:element name="a">
-									<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="service_id"/>', ''); return false;</xsl:attribute>
+									<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="service_id"/>','', '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 									<xsl:attribute name="href">#</xsl:attribute>
 									<xsl:element name="img">
 									  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImage.php?index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
@@ -32,7 +32,7 @@
 							<xsl:if test="splitvalue = 1">
 								<xsl:for-each select="//metric">
 									<xsl:element name="a">
-										<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="//service_id"/>', ''); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="//service_id"/>','', '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 										<xsl:attribute name="href">#</xsl:attribute>
 											<xsl:element name="img">
 										  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?cpt=1&amp;index=<xsl:value-of select="index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
@@ -98,7 +98,7 @@
 							</xsl:variable>
 							<xsl:if test="//split = 0">
 								<xsl:element name="a">
-									<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>', '', 0, '<xsl:value-of select="start"/>', '<xsl:value-of select="end"/>'); return false;</xsl:attribute>
+									<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>', '','<xsl:value-of select="//target"/>', 0, '<xsl:value-of select="start"/>', '<xsl:value-of select="end"/>'); return false;</xsl:attribute>
 									<xsl:attribute name="href">#</xsl:attribute>
 										<xsl:element name="img">
 											<xsl:attribute name="id"><xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/></xsl:attribute>
@@ -112,7 +112,7 @@
 									<tr>
 										<td style="vertical-align: top">
 										<xsl:element name="a">
-											<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>', '', 0,'<xsl:value-of select="../start"/>', '<xsl:value-of select="../end"/>'); return false;</xsl:attribute>
+											<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>', '','<xsl:value-of select="//target"/>', 0,'<xsl:value-of select="../start"/>', '<xsl:value-of select="../end"/>'); return false;</xsl:attribute>
 											<xsl:attribute name="href">#</xsl:attribute>
 											<xsl:element name="img">
 												<xsl:attribute name="id"><xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="../name"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
@@ -166,7 +166,7 @@
            		-->
            		<td>
 					<xsl:element name='input'>
-						<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>'); return false;</xsl:attribute>
+						<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>','','<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 						<xsl:attribute name="name">split</xsl:attribute>
 						<xsl:attribute name="type">checkbox</xsl:attribute>
 						<xsl:if test="//split = 1">
@@ -228,7 +228,7 @@
 							</xsl:if>
 							<xsl:element name="a">
 								<xsl:attribute name="href">#</xsl:attribute>
-								<xsl:attribute name="onclick">var host_search = '<xsl:value-of select="//opid"/>'.sub('SS', 'HS'); graph_4_host(host_search); return false;</xsl:attribute>
+								<xsl:attribute name="onclick">var host_search = '<xsl:value-of select="//opid"/>'.sub('SS', 'HS'); graph_4_host(host_search,'','<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 								<xsl:element name="img">
 									<xsl:attribute name="id"><xsl:value-of select="//opid"/></xsl:attribute>
 							  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImageZoom.php?<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>&amp;warn=<xsl:value-of select="//warning"/>&amp;crit=<xsl:value-of select="//critical"/></xsl:attribute>
@@ -243,7 +243,7 @@
 									<td style="vertical-align: top">
 										<xsl:element name="a">
 											<xsl:attribute name="href">#</xsl:attribute>
-											<xsl:attribute name="onclick">var host_search = '<xsl:value-of select="//opid"/>'.sub('SS', 'HS'); graph_4_host(host_search); return false;</xsl:attribute>
+											<xsl:attribute name="onclick">var host_search = '<xsl:value-of select="//opid"/>'.sub('SS', 'HS'); graph_4_host(host_search,'','<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 											<xsl:element name="img">
 												<xsl:attribute name="id"><xsl:value-of select="//opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
 											  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?template_id=<xsl:value-of select="//tpl"/>&amp;index=<xsl:value-of select="//index"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
@@ -346,7 +346,7 @@
 			    			<li style="list-style-type: none;">
 								<xsl:if test="split = 0">
 									<xsl:element name="a">
-										<xsl:attribute name="onClick">multi=0;graph_4_host('<xsl:value-of select="opid"/>', '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">multi=0;graph_4_host('<xsl:value-of select="opid"/>','', '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 										<xsl:attribute name="href">#</xsl:attribute>
 										<xsl:element name="img">
 											<xsl:attribute name="id"><xsl:value-of select="opid"/></xsl:attribute>
@@ -361,7 +361,7 @@
 										<xsl:if test="select = 1">
 											<td style="vertical-align: top">
 												<xsl:element name="a">
-													<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="../opid"/>', ''); return false;</xsl:attribute>
+													<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="../opid"/>', '', '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 													<xsl:attribute name="href">#</xsl:attribute>
 													<xsl:element name="img">
 														<xsl:attribute name="id"><xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
@@ -431,7 +431,7 @@
 <xsl:template match="metrics">
 	<td>
 		<xsl:element name='input'>
-		<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', '', 1); return false;</xsl:attribute>
+		<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', '', '<xsl:value-of select="//target"/>',1); return false;</xsl:attribute>
 		<xsl:attribute name="type">checkbox</xsl:attribute>
 		<xsl:attribute name="name">metric</xsl:attribute>
 		<xsl:attribute name="value"><xsl:value-of select="metric_id"/></xsl:attribute>

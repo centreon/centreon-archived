@@ -423,9 +423,9 @@ function nextPeriod() {
 
 		// preg_split metric
 		var _split = 0;
-		/*if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
+		if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
 			_split = 1;
-		}*/
+		}
 
 
 
