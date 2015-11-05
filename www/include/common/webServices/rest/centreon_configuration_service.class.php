@@ -131,7 +131,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             . 'WHERE hsr.host_host_id = h.host_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND h.host_register = '1' AND s.service_register = '1' "
-            . "AND s.service_description LIKE '%$q%' "
+            . "AND s.service_description LIKE '%$q%' OR h.host_name LIKE '%$q%' "
             . $aclServices
             . "ORDER BY h.host_name "
             . $range;
@@ -173,7 +173,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             . 'WHERE hsr.hostgroup_hg_id = hg.hg_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND s.service_register = '1' "
-            . "AND s.service_description LIKE '%$q%' "
+            . "AND s.service_description LIKE '%$q%' OR hg.hg_name LIKE '%$q%' "
             . $aclServices
             . "ORDER BY hg.hg_name, s.service_description "
             . $range;

@@ -36,7 +36,7 @@
  *
  */
 
-	if (!isset($oreon)) {
+        if (!isset($oreon)) {
 		exit();
 	}
 
@@ -136,6 +136,8 @@
 
 	function insertServerInDB ()	{
 		$id = insertServer();
+                
+		insertServerInCfgNagios($id);
 		addUserRessource($id);
 		return ($id);
 	}
@@ -278,4 +280,140 @@
 		}
 		return 0;
 	}
+        /**
+         * Insert the instance in cfg_nagios
+         * @param int $iId
+
+         */
+        function insertServerInCfgNagios($iId)
+        {
+            global $pearDB, $aInstanceDefaultValues;
+            
+            if (!isset($aInstanceDefaultValues) || !isset($iId)) {
+                return;
+            }
+            $rq = "INSERT INTO `cfg_nagios` (`nagios_server_id`, `log_file`, `cfg_dir`, `object_cache_file`, `temp_file`, `temp_path`, `status_file`, 
+            `p1_file`, `status_update_interval`, `nagios_user`, `nagios_group`, `enable_notifications`, `execute_service_checks`, `accept_passive_service_checks`, `execute_host_checks`, 
+            `accept_passive_host_checks`, `enable_event_handlers`, `log_rotation_method`, `log_archive_path`, `check_external_commands`, `external_command_buffer_slots`, 
+            `command_check_interval`, `command_file`, `lock_file`, `retain_state_information`, `state_retention_file`,`retention_update_interval`, `use_retained_program_state`, 
+            `use_retained_scheduling_info`, `use_syslog`, `log_notifications`, `log_service_retries`, `log_host_retries`, `log_event_handlers`, `log_initial_states`, 
+            `log_external_commands`, `log_passive_checks`, `sleep_time`, `service_inter_check_delay_method`, `host_inter_check_delay_method`, `service_interleave_factor`, 
+            `max_concurrent_checks`, `max_service_check_spread`, `max_host_check_spread`, `check_result_reaper_frequency`, `max_check_result_reaper_time`, `interval_length`, 
+            `auto_reschedule_checks`, `use_aggressive_host_checking`, `enable_flap_detection`, `low_service_flap_threshold`, `high_service_flap_threshold`, `low_host_flap_threshold`, 
+            `high_host_flap_threshold`, `soft_state_dependencies`, `service_check_timeout`, `host_check_timeout`, `event_handler_timeout`, `notification_timeout`, `ocsp_timeout`, 
+            `ochp_timeout`, `perfdata_timeout`, `obsess_over_services`, `obsess_over_hosts`, `process_performance_data`, `host_perfdata_file_mode`, `service_perfdata_file_mode`, 
+            `check_for_orphaned_services`, `check_for_orphaned_hosts`, `check_service_freshness`, `check_host_freshness`, `date_format`, `illegal_object_name_chars`, 
+            `illegal_macro_output_chars`, `use_regexp_matching`, `use_true_regexp_matching`, `admin_email`, `admin_pager`, `nagios_comment`, `nagios_activate`, 
+            `event_broker_options`, `translate_passive_host_checks`, `enable_predictive_host_dependency_checks`, `enable_predictive_service_dependency_checks`, `passive_host_checks_are_soft`, 
+            `use_large_installation_tweaks`, `free_child_process_memory`, `child_processes_fork_twice`, `enable_environment_macros`, `use_setpgid`, `enable_embedded_perl`, 
+            `use_embedded_perl_implicitly`, `debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, `daemon_dumps_core`, `cfg_file`, `use_check_result_path`) ";
+            $rq .= "VALUES (";
+            //$rq .= "'". $iId. "', '" . $aInstanceDefaultValues['log_file'] . "' , '" . $aInstanceDefaultValues['cfg_dir'] . "' , '" . $aInstanceDefaultValues['object_cache_file'] . "' , '" . $aInstanceDefaultValues['temp_file'] . "' , '" . $aInstanceDefaultValues['temp_path'] . "' , '" . $aInstanceDefaultValues['status_file'] . "' , '" . $aInstanceDefaultValues['check_result_path'] . "' , '" . $aInstanceDefaultValues['max_check_result_file_age'] . "' , '" . $aInstanceDefaultValues['p1_file'] . "' , '" . $aInstanceDefaultValues['status_update_interval'] . "' , '" . $aInstanceDefaultValues['nagios_user'] . "' , '" . $aInstanceDefaultValues['nagios_group'] . "' , '" . $aInstanceDefaultValues['enable_notifications'] . "' , '" . $aInstanceDefaultValues['execute_service_checks'] . "' , '" . $aInstanceDefaultValues['accept_passive_service_checks'] . "' , '" . $aInstanceDefaultValues['execute_host_checks'] . "' , '" . $aInstanceDefaultValues['accept_passive_host_checks'] . "' , '" . $aInstanceDefaultValues['enable_event_handlers'] . "' , '" . $aInstanceDefaultValues['log_rotation_method'] . "' , '" . $aInstanceDefaultValues['log_archive_path'] . "' , '" . $aInstanceDefaultValues['check_external_commands'] . "' , '" . $aInstanceDefaultValues['external_command_buffer_slots'] . "' , '" . $aInstanceDefaultValues['command_check_interval'] . "' , '" . $aInstanceDefaultValues['command_file'] . "' , '" . $aInstanceDefaultValues['downtime_file'] . "' , '" . $aInstanceDefaultValues['comment_file'] . "' , '" . $aInstanceDefaultValues['lock_file'] . "' , '" . $aInstanceDefaultValues['retain_state_information'] . "' , '" . $aInstanceDefaultValues['state_retention_file'] . "' , '" . $aInstanceDefaultValues['retention_update_interval'] . "' , '" . $aInstanceDefaultValues['use_retained_program_state'] . "' , '" . $aInstanceDefaultValues['use_retained_scheduling_info'] . "' , '" . $aInstanceDefaultValues['use_syslog'] . "' , '" . $aInstanceDefaultValues['log_notifications'] . "' , '" . $aInstanceDefaultValues['log_service_retries'] . "' , '" . $aInstanceDefaultValues['log_host_retries'] . "' , '" . $aInstanceDefaultValues['log_event_handlers'] . "' , '" . $aInstanceDefaultValues['log_initial_states'] . "' , '" . $aInstanceDefaultValues['log_external_commands'] . "' , '" . $aInstanceDefaultValues['log_passive_checks'] . "' , '" . $aInstanceDefaultValues['global_host_event_handler'] . "' , '" . $aInstanceDefaultValues['global_service_event_handler'] . "' , '" . $aInstanceDefaultValues['sleep_time'] . "' , '" . $aInstanceDefaultValues['service_inter_check_delay_method'] . "' , '" . $aInstanceDefaultValues['host_inter_check_delay_method'] . "' , '" . $aInstanceDefaultValues['service_interleave_factor'] . "' , '" . $aInstanceDefaultValues['max_concurrent_checks'] . "' , '" . $aInstanceDefaultValues['max_service_check_spread'] . "' , '" . $aInstanceDefaultValues['max_host_check_spread'] . "' , '" . $aInstanceDefaultValues['check_result_reaper_frequency'] . "' , '" . $aInstanceDefaultValues['interval_length'] . "' , '" . $aInstanceDefaultValues['auto_reschedule_checks'] . "' , '" . $aInstanceDefaultValues['auto_rescheduling_interval'] . "' , '" . $aInstanceDefaultValues['auto_rescheduling_window'] . "' , '" . $aInstanceDefaultValues['use_aggressive_host_checking'] . "' , '" . $aInstanceDefaultValues['enable_flap_detection'] . "' , '" . $aInstanceDefaultValues['low_service_flap_threshold'] . "' , '" . $aInstanceDefaultValues['high_service_flap_threshold'] . "' , '" . $aInstanceDefaultValues['low_host_flap_threshold'] . "' , '" . $aInstanceDefaultValues['high_host_flap_threshold'] . "' , '" . $aInstanceDefaultValues['soft_state_dependencies'] . "' , '" . $aInstanceDefaultValues['service_check_timeout'] . "' , '" . $aInstanceDefaultValues['host_check_timeout'] . "' , '" . $aInstanceDefaultValues['event_handler_timeout'] . "' , '" . $aInstanceDefaultValues['notification_timeout'] . "' , '" . $aInstanceDefaultValues['ocsp_timeout'] . "' , '" . $aInstanceDefaultValues['ochp_timeout'] . "' , '" . $aInstanceDefaultValues['perfdata_timeout'] . "' , '" . $aInstanceDefaultValues['obsess_over_services'] . "' , '" . $aInstanceDefaultValues['ocsp_command'] . "' , '" . $aInstanceDefaultValues['obsess_over_hosts'] . "' , '" . $aInstanceDefaultValues['ochp_command'] . "' , '" . $aInstanceDefaultValues['process_performance_data'] . "' , '" . $aInstanceDefaultValues['host_perfdata_command'] . "' , '" . $aInstanceDefaultValues['service_perfdata_command'] . "' , '" . $aInstanceDefaultValues['host_perfdata_file'] . "' , '" . $aInstanceDefaultValues['service_perfdata_file'] . "' , '" . $aInstanceDefaultValues['host_perfdata_file_template'] . "' , '" . $aInstanceDefaultValues['service_perfdata_file_template'] . "' , '" . $aInstanceDefaultValues['host_perfdata_file_mode'] . "' , '" . $aInstanceDefaultValues['service_perfdata_file_mode'] . "' , '" . $aInstanceDefaultValues['host_perfdata_file_processing_interval'] . "' , '" . $aInstanceDefaultValues['service_perfdata_file_processing_interval'] . "' , '" . $aInstanceDefaultValues['host_perfdata_file_processing_command'] . "' , '" . $aInstanceDefaultValues['service_perfdata_file_processing_command'] . "' , '" . $aInstanceDefaultValues['check_for_orphaned_services'] . "' , '" . $aInstanceDefaultValues['check_for_orphaned_hosts'] . "' , '" . $aInstanceDefaultValues['check_service_freshness'] . "' , '" . $aInstanceDefaultValues['service_freshness_check_interval'] . "' , '" . $aInstanceDefaultValues['freshness_check_interval'] . "' , '" . $aInstanceDefaultValues['check_host_freshness'] . "' , '" . $aInstanceDefaultValues['host_freshness_check_interval'] . "' , '" . $aInstanceDefaultValues['date_format'] . "' , '" . htmlentities($aInstanceDefaultValues['illegal_object_name_chars']) . "' , '" . htmlentities($aInstanceDefaultValues['illegal_macro_output_chars']) . "' , '" . $aInstanceDefaultValues['use_regexp_matching'] . "' , '" . $aInstanceDefaultValues['use_true_regexp_matching'] . "' , '" . $aInstanceDefaultValues['admin_email'] . "' , '" . $aInstanceDefaultValues['admin_pager'] . "' , '" . $aInstanceDefaultValues['nagios_comment'] . "' , '" . $aInstanceDefaultValues['nagios_activate'] . "' , '" . $aInstanceDefaultValues['event_broker_options'] . "' , '" . $aInstanceDefaultValues['translate_passive_host_checks'] . "' , '" . $aInstanceDefaultValues['enable_predictive_host_dependency_checks'] . "' , '" . $aInstanceDefaultValues['enable_predictive_service_dependency_checks'] . "' , '" . $aInstanceDefaultValues['cached_host_check_horizon'] . "' , '" . $aInstanceDefaultValues['cached_service_check_horizon'] . "' , '" . $aInstanceDefaultValues['passive_host_checks_are_soft'] . "' , '" . $aInstanceDefaultValues['use_large_installation_tweaks'] . "' , '" . $aInstanceDefaultValues['free_child_process_memory'] . "' , '" . $aInstanceDefaultValues['child_processes_fork_twice'] . "' , '" . $aInstanceDefaultValues['enable_environment_macros'] . "' , '" . $aInstanceDefaultValues['additional_freshness_latency'] . "' , '" . $aInstanceDefaultValues['enable_embedded_perl'] . "' , '" . $aInstanceDefaultValues['use_embedded_perl_implicitly'] . "' , '" . $aInstanceDefaultValues['debug_file'] . "' , '" . $aInstanceDefaultValues['debug_level'] . "' , '" . $aInstanceDefaultValues['debug_level_opt'] . "' , '" . $aInstanceDefaultValues['debug_verbosity'] . "' , '" . $aInstanceDefaultValues['max_debug_file_size'] . "' , '" . $aInstanceDefaultValues['cfg_file']."'";
+            $rq .= "'". $iId. "', '".$aInstanceDefaultValues['log_file'] ."', '" .
+            $aInstanceDefaultValues['cfg_dir'] ."', '" .
+            $aInstanceDefaultValues['object_cache_file'] ."', '" .
+            $aInstanceDefaultValues['temp_file'] ."', '" .
+            $aInstanceDefaultValues['temp_path'] ."', '" .
+            $aInstanceDefaultValues['status_file'] ."', '" .
+            $aInstanceDefaultValues['p1_file'] ."', '" .
+            $aInstanceDefaultValues['status_update_interval'] ."', '" .
+            $aInstanceDefaultValues['nagios_user'] ."', '" .
+            $aInstanceDefaultValues['nagios_group'] ."', '" .
+            $aInstanceDefaultValues['enable_notifications'] ."', '" .
+            $aInstanceDefaultValues['execute_service_checks'] ."', '" .
+            $aInstanceDefaultValues['accept_passive_service_checks'] ."', '" .
+            $aInstanceDefaultValues['execute_host_checks'] ."', '" .
+            $aInstanceDefaultValues['accept_passive_host_checks'] ."', '" .
+            $aInstanceDefaultValues['enable_event_handlers'] ."', '" .
+            $aInstanceDefaultValues['log_rotation_method'] ."', '" .
+            $aInstanceDefaultValues['log_archive_path'] ."', '" .
+            $aInstanceDefaultValues['check_external_commands'] ."', '" .
+            $aInstanceDefaultValues['external_command_buffer_slots'] ."', '" .
+            $aInstanceDefaultValues['command_check_interval'] ."', '" .
+            $aInstanceDefaultValues['command_file'] ."', '" .
+            $aInstanceDefaultValues['lock_file'] ."', '" .
+            $aInstanceDefaultValues['retain_state_information'] ."', '" .
+            $aInstanceDefaultValues['state_retention_file' ] ."', '" .
+            $aInstanceDefaultValues['retention_update_interval'] ."', '" .
+            $aInstanceDefaultValues['use_retained_program_state'] ."', '" .
+            $aInstanceDefaultValues['use_retained_scheduling_info'] ."', '" .
+            $aInstanceDefaultValues['use_syslog'] ."', '" .
+            $aInstanceDefaultValues['log_notifications'] ."', '" .
+            $aInstanceDefaultValues['log_service_retries'] ."', '" .
+            $aInstanceDefaultValues['log_host_retries'] ."', '" .
+            $aInstanceDefaultValues['log_event_handlers'] ."', '" .
+            $aInstanceDefaultValues['log_initial_states'] ."', '" .
+            $aInstanceDefaultValues['log_external_commands'] ."', '" .
+            $aInstanceDefaultValues['log_passive_checks'] ."', '" .
+            $aInstanceDefaultValues['sleep_time'] ."', '" .
+            $aInstanceDefaultValues['service_inter_check_delay_method'] ."', '" .
+            $aInstanceDefaultValues['host_inter_check_delay_method'] ."', '" .
+            $aInstanceDefaultValues['service_interleave_factor'] ."', '" .
+            $aInstanceDefaultValues['max_concurrent_checks'] ."', '" .
+            $aInstanceDefaultValues['max_service_check_spread'] ."', '" .
+            $aInstanceDefaultValues['max_host_check_spread'] ."', '" .
+            $aInstanceDefaultValues['check_result_reaper_frequency'] ."', '" .
+            $aInstanceDefaultValues['max_check_result_reaper_time'] ."', '" .
+            $aInstanceDefaultValues['interval_length'] ."', '" .
+            $aInstanceDefaultValues['auto_reschedule_checks'] ."', '" .
+            $aInstanceDefaultValues['use_aggressive_host_checking'] ."', '" .
+            $aInstanceDefaultValues['enable_flap_detection'] ."', '" .
+            $aInstanceDefaultValues['low_service_flap_threshold'] ."', '" .
+            $aInstanceDefaultValues['high_service_flap_threshold'] ."', '" .
+            $aInstanceDefaultValues['low_host_flap_threshold'] ."', '" .
+            $aInstanceDefaultValues['high_host_flap_threshold'] ."', '" .
+            $aInstanceDefaultValues['soft_state_dependencies'] ."', '" .
+            $aInstanceDefaultValues['service_check_timeout'] ."', '" .
+            $aInstanceDefaultValues['host_check_timeout'] ."', '" .
+            $aInstanceDefaultValues['event_handler_timeout'] ."', '" .
+            $aInstanceDefaultValues['notification_timeout'] ."', '" .
+            $aInstanceDefaultValues['ocsp_timeout'] ."', '" .
+            $aInstanceDefaultValues['ochp_timeout'] ."', '" .
+            $aInstanceDefaultValues['perfdata_timeout'] ."', '" .
+            $aInstanceDefaultValues['obsess_over_services'] ."', '" .
+            $aInstanceDefaultValues['obsess_over_hosts'] ."', '" .
+            $aInstanceDefaultValues['process_performance_data'] ."', '" .
+            $aInstanceDefaultValues['host_perfdata_file_mode'] ."', '" .
+            $aInstanceDefaultValues['service_perfdata_file_mode'] ."', '" .
+            $aInstanceDefaultValues['check_for_orphaned_services'] ."', '" .
+            $aInstanceDefaultValues['check_for_orphaned_hosts'] ."', '" .
+            $aInstanceDefaultValues['check_service_freshness'] ."', '" .
+            $aInstanceDefaultValues['check_host_freshness'] ."', '" .
+            $aInstanceDefaultValues['date_format'] ."', '" .
+            htmlentities($aInstanceDefaultValues['illegal_object_name_chars'], ENT_QUOTES, "UTF-8") ."', '" .
+            htmlentities($aInstanceDefaultValues['illegal_macro_output_chars'], ENT_QUOTES, "UTF-8") ."', '" .
+            $aInstanceDefaultValues['use_regexp_matching'] ."', '" .
+            $aInstanceDefaultValues['use_true_regexp_matching'] ."', '" .
+            $aInstanceDefaultValues['admin_email'] ."', '" .
+            $aInstanceDefaultValues['admin_pager'] ."', '" .
+            $aInstanceDefaultValues['nagios_comment'] ."', '" .
+            $aInstanceDefaultValues['nagios_activate'] ."', '" .
+            $aInstanceDefaultValues['event_broker_options'] ."', '" .
+            $aInstanceDefaultValues['translate_passive_host_checks'] ."', '" .
+            $aInstanceDefaultValues['enable_predictive_host_dependency_checks'] ."', '" .
+            $aInstanceDefaultValues['enable_predictive_service_dependency_checks'] ."', '" .
+            $aInstanceDefaultValues['passive_host_checks_are_soft'] ."', '" .
+            $aInstanceDefaultValues['use_large_installation_tweaks'] ."', '" .
+            $aInstanceDefaultValues['free_child_process_memory'] ."', '" .
+            $aInstanceDefaultValues['child_processes_fork_twice'] ."', '" .
+            $aInstanceDefaultValues['enable_environment_macros'] ."', '" .
+            $aInstanceDefaultValues['use_setpgid'] ."', '" .
+            $aInstanceDefaultValues['enable_embedded_perl'] ."', '" .
+            $aInstanceDefaultValues['use_embedded_perl_implicitly'] ."', '" .
+            $aInstanceDefaultValues['debug_file'] ."', '" .
+            $aInstanceDefaultValues['debug_level'] ."', '" .
+            $aInstanceDefaultValues['debug_level_opt'] ."', '" .
+            $aInstanceDefaultValues['debug_verbosity'] ."', '" .
+            $aInstanceDefaultValues['max_debug_file_size'] ."', '" .
+            $aInstanceDefaultValues['daemon_dumps_core'] ."', '" .
+            $aInstanceDefaultValues['cfg_file'] ."', '" .
+            $aInstanceDefaultValues['use_check_result_path'] ."'";
+            $rq .= ")";
+            
+            $res = $pearDB->query($rq);
+            
+            if (PEAR::isError($res)) {
+                return false;
+            }
+        }
 ?>
