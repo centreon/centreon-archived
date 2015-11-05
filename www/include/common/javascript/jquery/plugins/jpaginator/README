@@ -1,0 +1,43 @@
+Use this plugin with a unique element, don't forget the CSS page jPaginator.css.
+Dependencies : jQuery 1.3.2+, jQuery UI Slider
+
+New feature : Now you can reset the options with this snippet : $("#test1").trigger("reset",{nbPages:200,selectedPage:50})
+
+Demo page : http://remylab.github.com/jpaginator/
+
+Code sample :
+
+$("#test1").jPaginator({
+  nbPages:54,
+  overBtnLeft:'#test1_o_left',
+  overBtnRight:'#test1_o_right',
+  maxBtnLeft:'#test1_m_left',
+  maxBtnRight:'#test1_m_right',
+  onPageClicked: function(a,num) {
+      $("#page1").html("demo1 - page : "+num);
+  }
+});
+
+The HTML :
+
+  <div id="test1">
+
+      <!-- optional left control buttons-->
+      <a id="test1_m_left"></a><div id="test1_o_left"></div>
+
+      <div class='paginator_p_wrap'>
+        <div class='paginator_p_bloc'>
+          <!--<a class='paginator_p'></a> // page number : dynamically added -->
+        </div>
+      </div>
+
+      <!-- optional right control buttons-->
+      <div id="test1_o_right"></div><a id="test1_m_right"></a>
+
+
+      <!-- slider -->
+      <div class='paginator_slider' class='ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all'>
+        <a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>
+      </div>
+
+  </div>

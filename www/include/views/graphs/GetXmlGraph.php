@@ -132,12 +132,14 @@ $lca = $access->getHostsServices($pearDBO);
 (isset($_GET["StartTime"]))         ? $StartTime = htmlentities($_GET["StartTime"], ENT_QUOTES, "UTF-8") : $StartTime = "";
 (isset($_GET["EndTime"]))           ? $EndTime = htmlentities($_GET["EndTime"], ENT_QUOTES, "UTF-8") :$EndTime = "";
 (isset($_GET["multi"]))             ? $multi = htmlentities($_GET["multi"], ENT_QUOTES, "UTF-8") : $multi = "-1";
+(isset($_GET["target"]))            ? $target = htmlentities($_GET["target"], ENT_QUOTES, "UTF-8") : $target = "";
 (isset($_GET["id"]))                ? $openid = htmlentities($_GET["id"]) : $openid = "-1";
 (isset($_GET["period"]))            ? $auto_period = htmlentities($_GET["period"], ENT_QUOTES, "UTF-8") : $auto_period = "-1";
 (isset($_GET["search_service"]))    ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
 (isset($_GET["focusUrl"]))          ? $focusUrl = urldecode($_GET['focusUrl']) : $focusUrl = "";
 
     $buffer->writeElement('focusUrl', $focusUrl);
+    $buffer->writeElement('target', $target);
 
 /*
 	 * Get GMT for current user

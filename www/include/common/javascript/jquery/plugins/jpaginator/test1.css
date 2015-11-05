@@ -1,0 +1,61 @@
+	
+	#test1 {
+		height:40px;
+	}
+	#test1_o_left {
+    width:22px; height:15px;
+    float:left;
+    background:url(img/btn_precedent.bmp);
+    margin:4px 4px 0 0;
+	}
+	#test1_o_right {
+    width:22px; height:15px;
+    float:left;
+    background:url(img/btn_suivant.bmp);
+    margin:4px 0 0 4px;
+	}
+	#test1_m_left {
+    cursor:pointer;
+    width:22px; height:15px;
+    float:left;
+    background:url(img/btn_precedent_max.bmp);
+    margin:4px 2px 0 0;
+	}
+	#test1_m_right {
+    cursor:pointer;
+    width:22px; height:15px;
+    float:left;
+    background:url(img/btn_suivant_max.bmp);
+    margin:4px 0 0 2px;
+	}
+	/* must set border width with px */
+	#test1 .paginator_p {
+	  width:25px;
+		height:18px;
+		font-weight:bold;
+		color: #007edf;
+		background-color:transparent;
+		border:none;
+		padding:3px 0 2px 0;
+	} 
+	#test1 .paginator_p_bloc {
+	}
+	#test1 .paginator_p:hover {
+		color:white;
+		background-color:#25a29e;
+	}
+	#test1 .paginator_p.selected {
+		color:white;
+		background-color:#dd5c78;
+	}
+	#test1 .paginator_slider {
+		background-color:#f2d21b;
+		left:50px;
+	}
+	#test1 .paginator_slider .ui-slider-handle {
+		width: 4px;
+		height: 9px;
+		top: -4px;
+		background-color:#f18fa8;
+		border: solid 1px black ;
+	}

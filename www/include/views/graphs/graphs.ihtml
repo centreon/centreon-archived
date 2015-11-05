@@ -2,7 +2,7 @@
 <script src="./include/common/javascript/scriptaculous/scriptaculous.js?load=dragdrop" type="text/javascript"></script>
 <script language='javascript' src='./include/views/graphs/javascript/cropper/cropper.uncompressed.js'></script>
 <div id="div1">
-        <form {$form.attributes}>
+    <form {$form.attributes}>
         <table class="ajaxOption table">
             <tr>
                  <td> <h4>{$form.host_selector.label}</h4></td>
@@ -25,6 +25,38 @@
                 <td>{$form.graph.html}</td>
             </tr>
         </table>
-        </form>
+    </form>
+    <div id="graphs" class="graph_content">
+
+
+        <div id="StatusAction">
+            <input type="checkbox" name="Display Status" id="displayStatus"  /> Display Status
+
+             <div id="graph_pagination">
+
+                <!-- optional left control buttons -->
+                <div id="test1_m_left"></div><div id="test1_o_left"></div>
+
+                <div class='paginator_p_wrap'>
+                    <div class='paginator_p_bloc'>
+                        <!--<a class='paginator_p'></a> // page number : dynamically added -->
+                    </div>
+                </div>
+
+                <!-- optional right control buttons -->
+                <div id="test1_o_right"></div><div id="test1_m_right"></div>
+
+
+                <!-- slider -->
+                <div class='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all'>
+                    <a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>
+                </div>
+
+              </div>
+
+         </div>
+
+        <div class="graphZone"></div>
+
+    </div>
 </div>
-<div id="graphView4xml"></div>

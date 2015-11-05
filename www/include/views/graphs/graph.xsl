@@ -56,7 +56,7 @@
 				<tr>
 					<td>
 						<xsl:element name='input'>
-							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>',multi); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>',multi, '<xsl:value-of select="//target"/>' ); return false;</xsl:attribute>
 							<xsl:attribute name="name">split</xsl:attribute>
 							<xsl:attribute name="type">checkbox</xsl:attribute>
 							<xsl:if test="//split = 1">
@@ -76,7 +76,7 @@
 					<td style="text-align:right;width:70px;">	
 						<xsl:element name="a">
 							<xsl:attribute name="id">zoom_<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/></xsl:attribute>
-							<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/>"); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">switchZoomGraph('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/>', '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 							<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 							<img src="./img/icons/view.png" style="margin-right:5px;" />
 						</xsl:element>
@@ -194,7 +194,7 @@
 				<td style="text-align:right;width:65px;">
 					<xsl:element name="a">
 						<xsl:attribute name="id">zoom_<xsl:value-of select="//opid"/></xsl:attribute>
-						<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="//opid"/>");</xsl:attribute>
+						<xsl:attribute name="onClick">switchZoomGraph('<xsl:value-of select="//opid"/>', '<xsl:value-of select="//target"/>');</xsl:attribute>
 						<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 						<img src="./img/icons/view.png" style="margin-right:5px;" />
 					</xsl:element>
@@ -279,13 +279,14 @@
 	</div>
 </xsl:if>
 <xsl:if test="//multi_svc">
-	<div id="div2">
+
+	<!--<div id="div2">
 		<form name="formu2">
     	    <table class="ajaxOption">
 				<tr>
 	           		<td>
 						<xsl:element name='input'>
-							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi, '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 							<xsl:attribute name="name">status</xsl:attribute>
 							<xsl:attribute name="type">checkbox</xsl:attribute>
 							<xsl:if test="//status = 1">
@@ -306,7 +307,8 @@
 				</tr>
         	</table>
 		</form>
-    	</div>
+	</div>-->
+
 		<div>
 			<table class="ListTable">
 			<xsl:for-each select="//multi_svc">
@@ -314,7 +316,7 @@
 					<td style="text-align:right;width:42px;" colspan="3">
 						<xsl:element name="a">
 							<xsl:attribute name="id">zoom_<xsl:value-of select="opid"/></xsl:attribute>
-							<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="opid"/>");</xsl:attribute>
+							<xsl:attribute name="onClick">switchZoomGraph('<xsl:value-of select="opid"/>', '<xsl:value-of select="//target"/>');</xsl:attribute>
 							<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 							<img src="./img/icons/view.png" style="margin-right:5px;vertical-align:top;" />
 						</xsl:element>
@@ -344,7 +346,7 @@
 			    			<li style="list-style-type: none;">
 								<xsl:if test="split = 0">
 									<xsl:element name="a">
-										<xsl:attribute name="onClick">multi=0;graph_4_host('<xsl:value-of select="opid"/>', ''); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">multi=0;graph_4_host('<xsl:value-of select="opid"/>', '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 										<xsl:attribute name="href">#</xsl:attribute>
 										<xsl:element name="img">
 											<xsl:attribute name="id"><xsl:value-of select="opid"/></xsl:attribute>
@@ -409,7 +411,7 @@
 							</li>
 							</xsl:if>
 						</ul>
-					</div> 
+					</div>
 				</td>
 				<td class='ListColLeft' style="text-align:left;">
 					<xsl:element name='input'>
