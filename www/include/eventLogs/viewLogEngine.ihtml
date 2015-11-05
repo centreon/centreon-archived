@@ -35,3 +35,7 @@
 </table>
 </div>
 <div id="logView4xml"></div>
+<div style="display:none; ">
+    <div id="openid">
+    </div>
+</div>

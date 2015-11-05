@@ -675,7 +675,7 @@ if($engine == 'false'){
                          }else{
                              flagfirst = false;
                          }
-                         urlargs += val;
+                         urlargs += val.replace("-","_");
                          args += "HS_" + val;
                      }
                  });
@@ -723,6 +723,58 @@ if($engine == 'false'){
 
 	jQuery(function () {
         if(!_engine){
+            /// Initialise selection with Get params
+            arrayHostValues = new Array();
+            <?php 
+                foreach($hostArray as $host){
+                    ?>
+                    arrayHostValues.push(<?php echo $host['id']; ?>);
+                    jQuery("#host_filter").append(jQuery('<option>').val(<?php echo $host['id']; ?> ).html('<?php echo $host['name']; ?>'));        
+
+                    <?php         
+                }
+            ?>        
+
+
+            arrayServicesValues = new Array();
+            <?php 
+                foreach($serviceArray as $service){
+                    ?>
+                    arrayServicesValues.push('<?php echo $service['host_id'].'_'.$service['service_id']; ?>');
+                    jQuery("#service_filter").append(jQuery('<option>').val('<?php echo $service['host_id'].'_'.$service['service_id']; ?>').html('<?php echo $service['host_name']. ' - ' .$service['description']; ?>'));        
+
+                    <?php         
+                }
+            ?>
+                   
+
+
+            arrayServicesGrpValues = new Array();
+            <?php 
+                foreach($serviceGrpArray as $serviceGrp){
+                    ?>
+                    arrayServicesGrpValues.push('<?php echo $serviceGrp['id']; ?>');
+                    jQuery("#service_group_filter").append(jQuery('<option>').val('<?php echo $serviceGrp['id']; ?>').html('<?php echo $serviceGrp['name']; ?>'));        
+
+                    <?php         
+                }
+            ?>
+            
+
+            arrayHostsGrpValues = new Array();
+            <?php 
+                foreach($hostGrpArray as $hostGrp){
+                    ?>
+                    arrayHostsGrpValues.push('<?php echo $hostGrp['id']; ?>');
+                    jQuery("#host_group_filter").append(jQuery('<option>').val('<?php echo $hostGrp['id']; ?>').html('<?php echo $hostGrp['name']; ?>'));        
+
+                    <?php         
+                }
+            ?>
+
+            
+            
+            
             // Here is your precious function
             // You can call as many functions as you want here;
             jQuery("#service_group_filter, #host_filter, #service_filter, #host_group_filter").change(function(event,infos){
@@ -737,7 +789,7 @@ if($engine == 'false'){
                if (window.history.pushState) {
                    window.history.pushState("", "", "/centreon/main.php?p=203"+urlargs);
                }
-
+               document.getElementById('openid').innerHTML = args;
                log_4_host(args, '', false);
             });
             //setServiceGroup
@@ -813,57 +865,11 @@ if($engine == 'false'){
 
             });
 
-            /// Initialise selection with Get params
-            arrayHostValues = new Array();
-            <?php 
-                foreach($hostArray as $host){
-                    ?>
-                    arrayHostValues.push(<?php echo $host['id']; ?>);
-                    jQuery("#host_filter").append(jQuery('<option>').val(<?php echo $host['id']; ?> ).html('<?php echo $host['name']; ?>'));        
-
-                    <?php         
-                }
-            ?>
-            jQuery("#host_filter").val(arrayHostValues).trigger("change",[{origin:"select2defaultinit"}]);            
-
-
-            arrayServicesValues = new Array();
-            <?php 
-                foreach($serviceArray as $service){
-                    ?>
-                    arrayServicesValues.push('<?php echo $service['host_id'].'_'.$service['service_id']; ?>');
-                    jQuery("#service_filter").append(jQuery('<option>').val('<?php echo $service['host_id'].'_'.$service['service_id']; ?>').html('<?php echo $service['host_name']. ' - ' .$service['description']; ?>'));        
-
-                    <?php         
-                }
-            ?>
-            jQuery("#service_filter").val(arrayServicesValues).trigger("change",[{origin:"select2defaultinit"}]);       
-
-
-            arrayServicesGrpValues = new Array();
-            <?php 
-                foreach($serviceGrpArray as $serviceGrp){
-                    ?>
-                    arrayServicesGrpValues.push('<?php echo $serviceGrp['id']; ?>');
-                    jQuery("#service_group_filter").append(jQuery('<option>').val('<?php echo $serviceGrp['id']; ?>').html('<?php echo $serviceGrp['name']; ?>'));        
-
-                    <?php         
-                }
-            ?>
+            jQuery("#host_filter").val(arrayHostValues).trigger("change",[{origin:"select2defaultinit"}]);
+            jQuery("#service_filter").val(arrayServicesValues).trigger("change",[{origin:"select2defaultinit"}]);
             jQuery("#service_group_filter").val(arrayServicesGrpValues).trigger("change",[{origin:"select2defaultinit"}]);
-
-            arrayHostsGrpValues = new Array();
-            <?php 
-                foreach($hostGrpArray as $hostGrp){
-                    ?>
-                    arrayHostsGrpValues.push('<?php echo $hostGrp['id']; ?>');
-                    jQuery("#host_group_filter").append(jQuery('<option>').val('<?php echo $hostGrp['id']; ?>').html('<?php echo $hostGrp['name']; ?>'));        
-
-                    <?php         
-                }
-            ?>
-      
             jQuery("#host_group_filter").val(arrayHostsGrpValues).trigger("change");
+            
             jQuery( "#output" ).keypress(function(  event ) {
                 if ( event.which == 13 ) {
                     var argArray = getArgsForHost();
@@ -873,20 +879,9 @@ if($engine == 'false'){
                    event.preventDefault();
                 }
             });
-        }else{
-            jQuery("#poller_filter").change(function(event,infos){
-               if(typeof infos !== "undefined" && infos.origin === "select2defaultinit"){
-                return false;
-               }
-               log_4_engine();
-            });
             
-            jQuery( "#output" ).keypress(function(  event ) {
-                if ( event.which == 13 ) {
-                    log_4_engine();
-                   event.preventDefault();
-                }
-            });
+        }else{
+            
             arrayPollerValues = new Array();
             <?php 
                 foreach($pollerArray as $pollers){
@@ -897,7 +892,23 @@ if($engine == 'false'){
                     <?php         
                 }
             ?>         
+            
+            
+            
+            jQuery("#poller_filter").change(function(event,infos){
+               if(typeof infos !== "undefined" && infos.origin === "select2defaultinit"){
+                return false;
+               }
+               log_4_engine();
+            });
             jQuery("#poller_filter").val(arrayPollerValues).trigger("change");
+            jQuery( "#output" ).keypress(function(  event ) {
+                if ( event.which == 13 ) {
+                    log_4_engine();
+                   event.preventDefault();
+                }
+            });
+
 
         }
     });
