@@ -136,8 +136,7 @@
 	if ($hostgroups) {
 	    $rq1 .= " AND hosts.host_id = hg.host_id "
 	        . "AND hg.hostgroup_id IN (".$hostgroups.") "
-	        . "AND hg.hostgroup_id = hg2.hostgroup_id "
-	        . "AND hg2.enabled = 1 ";
+	        . "AND hg.hostgroup_id = hg2.hostgroup_id ";
 	}
 
         # ORDER BY
