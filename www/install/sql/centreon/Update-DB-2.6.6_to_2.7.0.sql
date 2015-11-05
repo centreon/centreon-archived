@@ -87,9 +87,6 @@ CREATE TABLE `timezone` (
   UNIQUE KEY `name` (`timezone_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Move downtime page
-DELETE FROM topology WHERE topology_page IN ('20218', '20106', '60305');
-
 -- #3787
 DELETE FROM topology WHERE topology_page IN ('60902', '60903', '60707', '60804');
 DELETE FROM topology WHERE topology_page IS NULL AND topology_name LIKE 'Plugins' AND topology_url IS NULL;
@@ -676,6 +673,7 @@ UPDATE topology_JS SET id_page = 20405 WHERE id_page = 40205;
 SET foreign_key_checks = 1;
 
 -- Move downtime pages
+DELETE FROM topology WHERE topology_page IN ('20218', '20106', '60305');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtimes',NULL,2,210,60,1,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtimes','./img/icones/16x16/warning.gif',210,21001,10,1,'./include/monitoring/downtime/downtime.php', NULL,'0','0','1',NULL,NULL,NULL,'1');
 
