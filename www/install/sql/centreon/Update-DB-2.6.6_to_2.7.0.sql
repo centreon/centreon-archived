@@ -679,7 +679,7 @@ SET foreign_key_checks = 1;
 -- Reorganisation des menus
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtimes',NULL,2,210,60,1,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtime','./img/icones/16x16/warning.gif',210,21001,10,1,'./include/monitoring/downtime/downtimeService.php','&o=vs','0','0','1',NULL,NULL,NULL,'1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtime','./img/icones/16x16/warning.gif',210,21001,10,1,'./include/monitoring/downtime/listDowntime.php','&o=vs','0','0','1',NULL,NULL,NULL,'1');
 UPDATE topology SET topology_name = 'Downtimes' WHERE topology_parent = 210; 
 
 UPDATE topology SET topology_name = 'Status Details' WHERE topology_page = 202;
