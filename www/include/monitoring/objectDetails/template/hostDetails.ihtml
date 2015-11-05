@@ -35,8 +35,6 @@
                             <tr class='ListHeader'>
                                 <td class="ListColHeaderCenter">{$header_service_description}</td>
                                 <td></td>
-                                <td></td>
-                                <td></td>
                                 <td class="ListColHeaderCenter">{$header_service_status}</td>
                                 <td class="ListColHeaderCenter">{$header_service_duration}</td>
                                 <td class="ListColHeaderCenter">{$header_service_output}</td>
@@ -53,13 +51,9 @@
                                                 <img id="{$hs.svc_index}-{$hs.svc_id}" class="graph-volant ico-18" src="./img/icons/chart.png"/>
                                         </a>
                                         {/if}
-                                    </td>
-                                    <td>
                                         <a href="main.php?p=203&amp;svc={$hs.host_id}_{$hs.svc_id}">
                                             Log
                                         </a>
-                                    </td>
-                                    <td>
                                         <a href="main.php?p=60201&o=c&service_id={$hs.svc_id}">
                                             Config
                                         </a>
