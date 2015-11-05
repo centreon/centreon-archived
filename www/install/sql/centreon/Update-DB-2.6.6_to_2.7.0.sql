@@ -742,3 +742,7 @@ DELETE FROM topology WHERE topology_parent = 607;
 DELETE FROM topology WHERE topology_page = 607;
 UPDATE topology SET topology_name = "Pollers" WHERE topology_page = 609;
 SET foreign_key_checks = 1;
+
+-- Comments
+UPDATE topology SET topology_url = './include/monitoring/comments/comments.php', topology_url_opt = NULL, topology_name = 'Comments', topology_group = '1', topology_order = 30 WHERE topology_page = 21002;
+DELETE FROM topology WHERE topology_page = 21003;
