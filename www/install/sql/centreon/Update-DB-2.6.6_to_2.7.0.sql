@@ -665,13 +665,12 @@ DELETE FROM topology WHERE topology_page IN ('20103', '20105', '20215', '20202',
 SET foreign_key_checks = 0;
 DELETE FROM topology_JS WHERE id_page = 40201;
 UPDATE topology SET topology_page = 204, topology_name = 'Performances', topology_parent = 2 WHERE topology_parent = 2 AND topology_page = 402;
-UPDATE topology SET topology_parent = 204 WHERE topology_page = 402 AND topology_page IS NULL;
 UPDATE topology SET topology_page = 20401, topology_parent = 204, topology_name = 'Graphs' WHERE topology_page = 40201;
-UPDATE topology SET topology_parent = 204 WHERE topology_page = 40204;
 UPDATE topology SET topology_page = 20404, topology_parent = 204 WHERE topology_page = 40204;
 UPDATE topology SET topology_page = 20405, topology_parent = 204 WHERE topology_page = 40205;
 UPDATE topology SET topology_parent = 204 WHERE topology_id = 402 AND topology_name = 'Virtuals' AND topology_page IS NULL;
 UPDATE topology SET topology_page = 20408, topology_parent = 204 WHERE topology_page = 40208;
+UPDATE topology SET topology_parent = 204 WHERE topology_parent = 402;
 UPDATE topology_JS SET id_page = 20404 WHERE id_page = 40204;
 UPDATE topology_JS SET id_page = 20405 WHERE id_page = 40205;
 SET foreign_key_checks = 1;
@@ -679,11 +678,9 @@ SET foreign_key_checks = 1;
 -- Reorganisation des menus
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtimes',NULL,2,210,60,1,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtime','./img/icones/16x16/warning.gif',210,21001,10,1,'./include/monitoring/downtime/downtimeService.php','&o=vs','0','0','1',NULL,NULL,NULL,'1');
-UPDATE topology SET topology_name = 'Downtimes' WHERE topology_parent = 210; 
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Downtimes','./img/icones/16x16/warning.gif',210,21001,10,1,'./include/monitoring/downtime/downtimeService.php','&o=vs','0','0','1',NULL,NULL,NULL,'1');
 
 UPDATE topology SET topology_name = 'Status Details' WHERE topology_page = 202;
-UPDATE topology SET topology_name = 'Status' WHERE topology_name = 'By Status' AND topology_page IS NULL; 
 UPDATE topology SET topology_name = 'Services' WHERE topology_name = 'All Services' AND topology_page = 20201;
 UPDATE topology SET topology_name = 'Services Grid', topology_group = 7 WHERE topology_name = 'Details' AND topology_page = 20204;
 UPDATE topology SET topology_name = 'Services by Hostgroup', topology_group = 7 WHERE topology_name = 'Details' AND topology_page = 20209;
@@ -695,7 +692,7 @@ UPDATE topology SET topology_page = 20202, topology_group = 7, topology_parent =
 
 DELETE FROM topology_JS WHERE id_page = 20104;
 UPDATE topology SET topology_page = 20203, topology_group = 7, topology_parent = 202, topology_order = 120 WHERE topology_page = 20104;
-insert into topology_JS (id_page, PathName_js, Init) VALUES ('20203', './include/common/javascript/ajaxMonitoring.js', 'initM');
+INSERT INTO topology_JS (id_page, PathName_js, Init) VALUES (20203, './include/common/javascript/ajaxMonitoring.js', 'initM');
 DELETE FROM topology WHERE topology_parent = '20203';
 
 -- Move temporary comments
