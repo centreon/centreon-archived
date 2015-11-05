@@ -47,6 +47,8 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2015 Open Source Matters. All rights reserved." />
 <meta name="robots" content="index, nofollow" />
+
+<link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?><?php echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
 <link href="./include/common/javascript/modalbox.css" rel="stylesheet" type="text/css" media="screen"/>
@@ -85,6 +87,7 @@ foreach ($oreon->modules as $module_name => $infos) {
 <script type="text/javascript" src="./include/common/javascript/centreon/multiselectResizer.js"></script>
 <script type="text/javascript" src="./include/common/javascript/centreon/popin.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jquery.nicescroll.min.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.js"></script>
 <?php } ?>
 <script type="text/javascript" src="./class/centreonToolTip.js"></script>
 <?php
