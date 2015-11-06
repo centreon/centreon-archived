@@ -37,6 +37,7 @@
  */
 
 require_once realpath(dirname(__FILE__) . "/centreonLDAP.class.php");
+require_once realpath(dirname(__FILE__) . "/centreonACL.class.php");
 
 /**
  * Manage contactgroups
@@ -362,19 +363,35 @@ class CentreonContactgroup
      */
     public function getObjectForSelect2($values = array())
     {
+        global $centreon;
+
+        # get list of authorized contactgroups
+        if (!$centreon->user->access->admin) {
+            $cgAcl = $centreon->user->access->getContactGroupAclConf(
+                array(
+                    'fields'  => array('cg_id'),
+                    'get_row' => 'cg_id',
+                    'keys' => array('cg_id')
+                ),
+                false
+            );
+        }
+
         $explodedValues = implode(',', $values);
         if (empty($explodedValues)) {
             $explodedValues = "''";
         }
+
+        # get list of selected contactgroups
         $query = "SELECT cg.cg_id, cg.cg_name, cg.cg_ldap_dn, ar.ar_id, ar.ar_name FROM contactgroup cg "
             . "LEFT JOIN auth_ressource ar ON cg.ar_id = ar.ar_id "
             . "WHERE cg.cg_id IN (" . $explodedValues . ") "
             . "ORDER BY cg.cg_name ";
 
-            $res = $this->db->query($query);
+        $res = $this->db->query($query);
         while ($contactgroup = $res->fetchRow()) {
                 $contactgroups[$contactgroup["cg_id"]] = $contactgroup["cg_name"];
-            if ($withLdap && isset($contactgroup['cg_ldap_dn']) && $contactgroup['cg_ldap_dn'] != "") {
+            if (isset($contactgroup['cg_ldap_dn']) && $contactgroup['cg_ldap_dn'] != "") {
                 $contactgroups[$contactgroup["cg_id"]] = $this->formatLdapContactgroupName($contactgroup['cg_name'], $contactgroup['ar_name']);
             }
         }
@@ -388,9 +405,17 @@ class CentreonContactgroup
                 $cgId = $row['cg_id'];
                 $cgName = $row['cg_name'];
             }
+
+            # hide unauthorized contactgroups
+            $hide = false;
+            if (!$centreon->user->access->admin && !in_array($cgId, $cgAcl)) {
+                $hide = true;
+            }
+
             $tmpValues[] = array(
                 'id' => $cgId,
-                'text' =>  htmlentities($cgName)
+                'text' =>  htmlentities($cgName),
+                'hide' => $hide
             );
         }
 
