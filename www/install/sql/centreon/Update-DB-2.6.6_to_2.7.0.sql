@@ -777,3 +777,6 @@ DELETE FROM topology WHERE topology_page = 50106;
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Media',NULL,501,NULL,15,11,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
 UPDATE topology SET topology_group = 11, topology_name = 'Images' WHERE topology_page = 50102;
 
+-- DELETE old links (Donate, Forum, Github)...
+DELETE FROM topology WHERE topology_page IN (50606, 50607, 50605, 50604, 50602, 50105, 5010501, 5010502, 5010503);
+
