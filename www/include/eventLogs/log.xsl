@@ -122,7 +122,7 @@
 			<xsl:attribute name="class"><xsl:value-of select="class"/></xsl:attribute>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="date"/></td>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="time"/></td>
-	   		<td style="padding-left:5px;"><xsl:value-of select="host_name"/></td>
+	   		<td style="padding-left:5px;"><a href="main.php?p=20202&o=hd&host_name=<xsl:value-of select="host_name"/>"><xsl:value-of select="host_name"/></a></td>
 	   		<td style="padding-left:5px;"><xsl:value-of select="service_description"/></td>
 	   		<td style="padding-left:5px;" class="ListColCenter">
               <xsl:element name="span">
