@@ -190,7 +190,7 @@
 	<div>
 		<table class="ListTable">
 			<tr class="list_one">
-				<td class='ListColLeft' valign="top" align='center' colspan="3"><xsl:value-of select="name"/></td>	
+				<td class='ListColLeft' valign="top" align='center' colspan="3"><xsl:value-of select="//name"/></td>	
 				<td style="text-align:right;width:65px;">
 					<xsl:element name="a">
 						<xsl:attribute name="id">zoom_<xsl:value-of select="//opid"/></xsl:attribute>

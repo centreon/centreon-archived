@@ -147,7 +147,7 @@
 									<h4>{$detailed_graph}</h4></td>
 								</tr>
 								<tr class='list_one'>
-									<td class="ListColCenter" colspan="2"><a href="./main.php?p=4&mode=0&svc_id={$host_name};{$svc_description}"><img src="./include/views/graphs/generateGraphs/generateImage.php?{$options2}"></a></td>
+									<td class="ListColCenter" colspan="2"><a href="./main.php?p=20401&mode=0&svc_id={$host_name};{$svc_description}"><img src="./include/views/graphs/generateGraphs/generateImage.php?{$options2}"></a></td>
 								</tr>
 							</table>
 							{/if}
@@ -231,7 +231,7 @@
 								<tr>
 									<td class="ColPopup">
 										{if $lcaTopo.4 || $admin == 1}
-											<a href='./main.php?p=4&mode=0&svc_id={$h.host_name}'>{$lnk_host_graphs}</a>
+											<a href='./main.php?p=20401&mode=0&svc_id={$h.host_name}'>{$lnk_host_graphs}</a>
 										{/if}
 									</td>
 									<td></td>
