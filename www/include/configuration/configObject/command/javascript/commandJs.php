@@ -82,9 +82,10 @@ function clearArgs() {
 function manageMacros()
 {
     var commandLine = document.Form.command_line.value;
+    var commandId = document.Form.command_id.value;
     var tmpStr = "";
 
-    Modalbox.show('./include/configuration/configObject/command/formMacros.php?cmd_line=' + commandLine + '&textArea=' + tmpStr, {title: 'Macro description', width:800});
+    Modalbox.show('./include/configuration/configObject/command/formMacros.php?cmd_line=' + commandLine + '&cmdId=' + commandId + '&textArea=' + tmpStr, {title: 'Macro description', width:800});
 }
 
 function setMacrosDescriptions() {
