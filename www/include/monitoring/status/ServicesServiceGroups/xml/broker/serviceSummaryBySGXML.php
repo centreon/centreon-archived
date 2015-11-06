@@ -164,10 +164,6 @@
     $obj->XML->writeElement("s", "1");
     $obj->XML->endElement();
     
-    
-    
-    
-
     /* Construct query for servigroups search */
     $sg_search = "";
     if ($numRows > 0) {
@@ -190,14 +186,16 @@
             $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
         }
 
-        $query2 = "SELECT SQL_CALC_FOUND_ROWS count(s.state) as count_state, sg.name AS sg_name, h.name as host_name, h.state as host_state, h.icon_image, h.host_id, s.state "
+        $query2 = "SELECT SQL_CALC_FOUND_ROWS count(s.state) as count_state, sg.name AS sg_name, h.name as host_name, "
+                . "h.state as host_state, h.icon_image, h.host_id, s.state, (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri  "
             . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
             . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id "
             . $s_search
             . $sg_search
             . $h_search
             . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
-            . "GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state ";
+            . "GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state order by tri asc ";
+        
         $DBRESULT = $obj->DBC->query($query2);
 
         $states = array(

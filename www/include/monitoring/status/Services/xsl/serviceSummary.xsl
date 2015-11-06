@@ -50,13 +50,13 @@
                     </xsl:element>
 		</td>
 		<td class="ListColLeft">
-                    <xsl:if test="sk >= 1">
+                    <xsl:if test="sc >= 1">
                         <xsl:element name="a">
-                            <xsl:attribute name="href">main.php?o=svc_ok&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
+                            <xsl:attribute name="href">main.php?o=svc_critical&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
                             <xsl:element name="span">
-                                <xsl:attribute name="class">state_badge <xsl:value-of select="skc"/></xsl:attribute>
+                                <xsl:attribute name="class">state_badge <xsl:value-of select="scc"/></xsl:attribute>
                             </xsl:element>
-                            <xsl:value-of select="sk"/>
+                            <xsl:value-of select="sc"/>
                         </xsl:element>
                     </xsl:if>
                     <xsl:if test="sw >= 1">
@@ -68,15 +68,6 @@
                             <xsl:value-of select="sw"/>
                         </xsl:element>
                     </xsl:if>
-                    <xsl:if test="sc >= 1">
-                        <xsl:element name="a">
-                            <xsl:attribute name="href">main.php?o=svc_critical&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
-                            <xsl:element name="span">
-                                <xsl:attribute name="class">state_badge <xsl:value-of select="scc"/></xsl:attribute>
-                            </xsl:element>
-                            <xsl:value-of select="sc"/>
-                        </xsl:element>
-                    </xsl:if>
                     <xsl:if test="su >= 1">
                         <xsl:element name="a">
                             <xsl:attribute name="href">main.php?o=svc_unknown&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
@@ -84,6 +75,15 @@
                                 <xsl:attribute name="class">state_badge <xsl:value-of select="suc"/></xsl:attribute>
                             </xsl:element>
                             <xsl:value-of select="su"/>
+                        </xsl:element>
+                    </xsl:if>
+                    <xsl:if test="sk >= 1">
+                        <xsl:element name="a">
+                            <xsl:attribute name="href">main.php?o=svc_ok&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
+                            <xsl:element name="span">
+                                <xsl:attribute name="class">state_badge <xsl:value-of select="skc"/></xsl:attribute>
+                            </xsl:element>
+                            <xsl:value-of select="sk"/>
                         </xsl:element>
                     </xsl:if>
                     <xsl:if test="sp >= 1">
