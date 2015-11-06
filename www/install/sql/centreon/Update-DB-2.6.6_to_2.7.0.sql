@@ -23,6 +23,14 @@ ALTER TABLE timeperiod_include_relations
 ADD FOREIGN KEY (timeperiod_include_id)
 REFERENCES timeperiod(tp_id) ON DELETE CASCADE;
 
+ALTER TABLE timperiod MODIFY COLUMN `tp_sunday` varchar(4096);
+ALTER TABLE timperiod MODIFY COLUMN `tp_monday` varchar(4096);
+ALTER TABLE timperiod MODIFY COLUMN `tp_tuesday` varchar(4096);
+ALTER TABLE timperiod MODIFY COLUMN `tp_wednesday` varchar(4096);
+ALTER TABLE timperiod MODIFY COLUMN `tp_thursday` varchar(4096);
+ALTER TABLE timperiod MODIFY COLUMN `tp_friday` varchar(4096);
+ALTER TABLE timperiod MODIFY COLUMN `tp_saturday` varchar(4096);
+
 ALTER TABLE on_demand_macro_host MODIFY COLUMN host_macro_value VARCHAR(4096);
 ALTER TABLE on_demand_macro_service MODIFY COLUMN svc_macro_value VARCHAR(4096);
 
