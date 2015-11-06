@@ -374,7 +374,7 @@ class CentreonContactgroup
             $res = $this->db->query($query);
         while ($contactgroup = $res->fetchRow()) {
                 $contactgroups[$contactgroup["cg_id"]] = $contactgroup["cg_name"];
-            if ($withLdap && isset($contactgroup['cg_ldap_dn']) && $contactgroup['cg_ldap_dn'] != "") {
+            if (isset($contactgroup['cg_ldap_dn']) && $contactgroup['cg_ldap_dn'] != "") {
                 $contactgroups[$contactgroup["cg_id"]] = $this->formatLdapContactgroupName($contactgroup['cg_name'], $contactgroup['ar_name']);
             }
         }
