@@ -681,6 +681,7 @@ foreach ($tab_real_id as $key => $openid) {
 		$buffer->writeElement("status", $status);
 		$buffer->writeElement("tpl", $template_id);
 		$buffer->writeElement("multi", $multi);
+        $buffer->writeElement("name", $name);
 
 		if (!$multi){
 			if ($split == 0){

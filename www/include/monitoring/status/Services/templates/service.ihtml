@@ -7,43 +7,38 @@
         <th colspan="6"><h5>{$filters}</h5></th>
     </tr>
     <tr>
-        <td><h4>{$hostStr}</h4></td>
-        <td><h4>{$hgStr}</h4></td>
-        <td><h4>{$serviceStr}</h4></td>
         <td><h4>{$statusService}</h4></td>
-    </tr>
-    <tr>
-        <td>
-            <input type='text' name='host_search' id='host_search'>
-	</td>
-        <td id="hostgroups_selected"></td>
-        <td>
-            <input type='text' name='search' id='input_search'>
-        </td>
-        <td>{$form.statusService.html}</td>
-    </tr>
-    <tr>
-	<td><h4>{$form.statusFilter.label}</h4></td>
+        <td><h4>{$form.statusFilter.label}</h4></td>
         {if $criticalityUsed}
-            <td><h4>{$form.criticality.label}</h4></td>
+        <td><h4>{$form.criticality.label}</h4></td>
         {/if}
-        <td><h4>{$outputStr}</h4></td>
-            {if $poller_listing}
-                <td><h4>{$pollerStr}</h4></td>
-            {/if}
-	</tr>
+        {if $poller_listing}
+        <td><h4>{$pollerStr}</h4></td>
+        {/if}
+    </tr>
     <tr>
+      <td>{$form.statusService.html}</td>
       <td>{$form.statusFilter.html}</td>
       {if $criticalityUsed}
       <td>{$form.criticality.html}</td>
       {/if}
-      <td><input type='text' name='output_search' id='output_search'></td>
       {if $poller_listing}
       <td><span id="instance_selected"></span></td>
       {/if}
     </tr>
+    <tr>
+        <td><h4>{$hostStr}</h4></td>
+        <td><h4>{$serviceStr}</h4></td>
+        <td><h4>{$hgStr}</h4></td>
+        <td><h4>{$outputStr}</h4></td>
+    </tr>
+    <tr>
+        <td><input type='text' name='host_search' id='host_search'></td>
+        <td><input type='text' name='search' id='input_search'></td>
+        <td id="hostgroups_selected"></td>
+        <td><input type='text' name='output_search' id='output_search'></td>
+    </tr>
 </table>
-
 <table class="ToolbarTable table">
     <tr class="ToolbarTR">
         <td>
@@ -77,7 +72,6 @@
     </tr>
 </table>
 <div id="forAjax"></div>
-
 <table class="ToolbarTable table">
     <tr class="ToolbarTR">
         <td class="Toolbar_TDSelectAction_Bottom" width="330">
@@ -88,7 +82,6 @@
         <td id="sel2" class="Toolbar_pagelimit"></td>
     </tr>
 </table>
-
 {if $host_name}
 <input type='hidden' name='host_name' value='{$host_name}'>
 {/if}

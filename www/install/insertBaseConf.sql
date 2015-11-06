@@ -682,10 +682,7 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (19, 'Syslog', 'syslog', 9),
 (20, 'Compressor', 'compressor', 11),
 (21, 'Failover', 'failover', 12),
-(22, 'Correlation', 'correlation', 13),
-(23, 'Statistics', 'stats', 14),
 (24, 'Monitoring', 'monitoring', 9),
-(25, 'File', 'file', 15),
 (28, 'Database configuration reader', 'db_cfg_reader', 17),
 (29, 'Database configuration writer', 'db_cfg_writer', 17);
 
@@ -815,8 +812,7 @@ INSERT INTO `cb_module_relation` (`cb_module_id`, `module_depend_id`, `inherit_c
 (7, 8, 0),
 (7, 12, 1),
 (8, 6, 0),
-(8, 12, 1),
-(13, 6, 0);
+(8, 12, 1);
 
 --
 -- Contenu de la table `cb_tag_type_relation`
@@ -835,10 +831,7 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (3, 17, 0),
 (3, 18, 0),
 (3, 19, 0),
-(4, 22, 1),
-(5, 23, 1),
 (3, 24, 0),
-(6, 25, 1),
 (1, 28, 1),
 (1, 29, 1);
 
@@ -905,11 +898,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (20, 26, 0, 102),
 (20, 27, 0, 103),
 (21, 28, 0, 2),
-(22, 29, 1, 1),
-(22, 30, 1, 2),
 (21, 31, 0, 2),
 (21, 32, 0, 2),
-(23, 33, 1, 1),
 (16, 34, 0, 7),
 (16, 35, 0, 8),
 (14, 34, 0, 9),
@@ -926,12 +916,6 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (14, 39, 0, 11),
 (16, 39, 0, 8),
 (14, 40, 0, 12),
-(25, 11, 1, 1),
-(25, 12, 1, 2),
-(25, 25, 1, 3),
-(25, 26, 0, 4),
-(25, 27, 0, 5),
-(25, 41, 0, 6),
 (13, 42, 1, 5),
 (13, 43, 1, 6),
 (13, 44, 1, 5),

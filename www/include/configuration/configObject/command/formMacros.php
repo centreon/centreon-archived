@@ -68,12 +68,13 @@ $nb_arg = 0;
 
 if (isset($_GET['cmd_line']) && $_GET['cmd_line']) {
     $str = $_GET['cmd_line'];
+    $iIdCmd = (int) $_GET['cmdId'];
     
     $oCommande = new CentreonCommand($pearDB);
     
-    $macrosHostDesc = $oCommande->match_object($str, '1');
-    $macrosServiceDesc = $oCommande->match_object($str, '2');
-   
+    $macrosHostDesc = $oCommande->match_object($iIdCmd, $str, '1');
+    $macrosServiceDesc = $oCommande->match_object($iIdCmd, $str, '2');
+    
     $nb_arg = count($macrosHostDesc) + count($macrosServiceDesc);
     
     $macros = array_merge($macrosServiceDesc, $macrosHostDesc);

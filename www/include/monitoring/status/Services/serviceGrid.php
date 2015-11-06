@@ -31,12 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -65,6 +62,7 @@ $rows = 10;
 
 include_once("./include/monitoring/status/Common/default_poller.php");
 include_once("./include/monitoring/status/Common/default_hostgroups.php");
+
 include_once($svc_path . "/serviceGridJS.php");
 $aTypeAffichageLevel1 = array(
     "svcOV" => _("Details"),
@@ -78,7 +76,9 @@ $aTypeAffichageLevel2 = array(
     "ack_0" => _("Not Acknowledged"),
 );
 
-# Smarty template Init
+/*
+ * Smarty template Init
+ */
 $tpl = new Smarty();
 $tpl = initSmartyTpl($svc_path, $tpl, "/templates/");
 
@@ -190,4 +190,3 @@ $tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing
 $tpl->assign('hgStr', _('Hostgroup'));
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("serviceGrid.ihtml");
-?>
