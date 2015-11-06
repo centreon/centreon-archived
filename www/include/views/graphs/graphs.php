@@ -573,7 +573,6 @@ function nextPeriod() {
         return false;
     }
 
-
     function launchGraph() {
         $hostsServicesForGraph = [];
         $hostsServices = '';
@@ -582,7 +581,7 @@ function nextPeriod() {
         getListOfHosts();
 
        $nbGraphs = <?php echo $graphsPerPage ?>;
-       $nbPages = $hostsServicesForGraph.length / $nbGraphs;
+       $nbPages = Math.ceil($hostsServicesForGraph.length / $nbGraphs);
 
        insertGraph($nbGraphs,0);
 
@@ -593,7 +592,7 @@ function nextPeriod() {
            nbVisible: 10,
            length:1,
            withSlider: true,
-           minSlidesForSlider: 1,
+           minSlidesForSlider: 2,
            overBtnRight:'#test1_o_right',
            maxBtnLeft:'#test1_m_left',
            maxBtnRight:'#test1_m_right',
