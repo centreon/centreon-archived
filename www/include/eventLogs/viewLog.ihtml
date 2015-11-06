@@ -2,8 +2,8 @@
 
 <div id="div1" style="position:relative;">
     <div style="position:absolute; right: 0;z-index:1;top:-27px;">
-    <a href="javascript:log_4_host(this, '', 'CSV')"><img src="./img/icons/csv.png" class="ico-20" alt="export CSV" title="Export CSV" target="_blank"/></a>
-    <a href="javascript:log_4_host(this, '', 'Xml')"><img src="./img/icons/xml.png" class="ico-20" title="export XML" alt="Export XML" target="_blank"/></a>
+    <a href="javascript:log_4_host(this, '', 'CSV')"><img src="./img/icons/csv.png" class="ico-20" alt="Export CSV" title="{t}Export CSV{/t}" target="_blank"/></a>
+    <a href="javascript:log_4_host(this, '', 'Xml')"><img src="./img/icons/xml.png" class="ico-20" title="{t}Export XML{/t}" alt="Export XML" target="_blank"/></a>
     </div>
 <table class="ajaxOption table">
     <tr>
