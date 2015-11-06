@@ -372,6 +372,20 @@ a.btc {
     background: #ff9a13 !important;
 }
 
+.bt_action {
+    background-color: #00ccbf;
+    color: #fff;
+    border: 1px solid #00a499;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 12px !important;
+}
+
+.bt_action:hover {
+    background-color: #00a499 !important;
+    border: 1px solid #007f77 !important;
+}
+
 .bt_default.ui-state-active,
 .bt_default.ui-state-hover{
     background: #919294 !important;
@@ -927,6 +941,7 @@ div.menuLeft {
     background-color: #e7e7e8;
     position: fixed;
     bottom: 0;
+    z-index: 10;
 }
 
 #footer table tr td{
@@ -1488,7 +1503,7 @@ span.state_badge {
   background-color: #58585a;
   padding: 6px;
   cursor: pointer;
-  z-index:2;
+  z-index:11;
   bottom:14px;
 }
 
@@ -1536,4 +1551,42 @@ span.state_badge {
 
 .fixedDiv{
     position: fixed;
+}
+
+/* -------- Graphs pagination -----------*/
+
+.displayStatus {
+    float: right;
+    margin: 6px 0;
+}
+.displayStatus label {
+    vertical-align: top;
+}
+#graph_pagination {
+    float: left;
+    width: 100%;
+}
+
+.paginator_p {
+    text-align: center;
+    float: left;
+    color: #58585a;
+    background-color: #e7e7e8;
+    cursor: pointer;
+    padding: 2px 0;
+    border-radius: 10px;
+}
+.paginator_p .over {
+    background-color: #597f00;
+}
+
+.paginator_p_wrap {
+    margin: 6px 0;
+}
+
+.paginator_p.selected {
+    background-color: #8ecc00;
+}
+.slider {
+    margin-bottom: 1em;
 }
