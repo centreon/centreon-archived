@@ -970,11 +970,12 @@ class CentreonHost
         $macroArray = $this->getCustomMacro(null,'realKeys');
         $this->purgeOldMacroToForm($macroArray,$form,'fromTpl');
         $aListTemplate = array();
-        foreach($form['tpSelect'] as $template){
-            $tmpTpl = array_merge(array(array('host_id' => $template, 'host_name' => $this->getOneHostName($template), 'command_command_id' => $this->getHostCommandId($template))),$this->getTemplateChain($template, array(), -1, true,"host_name,host_id,command_command_id"));
-            $aListTemplate = array_merge($aListTemplate,$tmpTpl);
+        if (isset($form['tpSelect']) && is_array($form['tpSelect'])) {
+            foreach($form['tpSelect'] as $template){
+                $tmpTpl = array_merge(array(array('host_id' => $template, 'host_name' => $this->getOneHostName($template), 'command_command_id' => $this->getHostCommandId($template))),$this->getTemplateChain($template, array(), -1, true,"host_name,host_id,command_command_id"));
+                $aListTemplate = array_merge($aListTemplate,$tmpTpl);
+            }
         }
-        
         
         $aMacroTemplate = array();
         foreach ($aListTemplate as $template) {
