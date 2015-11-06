@@ -1024,15 +1024,6 @@ if ($o != "mc") {
         $form->addRule('host_alias', _("Compulsory Alias"), 'required');
         $form->addRule('host_max_check_attempts', _("Required Field"), 'required');
         $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
-
-        if (!$form->getSubmitValue("host_cs"))
-            $form->addRule('host_cgs', _("Compulsory Contact Group"), 'required');
-        if (!$form->getSubmitValue("host_cgs"))
-            $form->addRule('host_cs', _("Compulsory Contact"), 'required');
-
-        $form->addRule('host_notification_interval', _("Required Field"), 'required');
-        $form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
-        $form->addRule('host_notifOpts', _("Compulsory Option"), 'required');
     }
 } else if ($o == "mc") {
     if ($form->getSubmitValue("submitMC"))
