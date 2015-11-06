@@ -34,7 +34,6 @@
  *
  */
 
-
 if (!isset($centreon)) {
     exit();
 }
@@ -154,9 +153,7 @@ if (($o == "c" || $o == "w") && $host_id) {
     /*
      * Set Contact Group
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id
-                                    FROM contactgroup_host_relation
-                                    WHERE host_host_id = '" . $host_id . "'");
+    $DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '" . $host_id . "'");
     for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
         if (!isset($notifCgs[$notifCg['contactgroup_cg_id']])) {
             $initialValues['host_cgs'][] = $notifCg['contactgroup_cg_id'];
@@ -169,9 +166,7 @@ if (($o == "c" || $o == "w") && $host_id) {
     /*
      * Set Contacts
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id
-                                    FROM contact_host_relation
-                                    WHERE host_host_id = '" . $host_id . "'");
+    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_host_relation WHERE host_host_id = '" . $host_id . "'");
     for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
         if (!isset($notifCs[$notifC['contact_id']])) {
             $initialValues['host_cs'][] = $notifC['contact_id'];
@@ -973,7 +968,6 @@ if (is_array($select)) {
     $select_pear->setValue($select_str);
 }
 
-
 /*
  * Form Rules
  */
@@ -1023,7 +1017,6 @@ if ($o != "mc") {
     if ($mustApplyFormRule) {
         $form->addRule('host_alias', _("Compulsory Alias"), 'required');
         $form->addRule('host_max_check_attempts', _("Required Field"), 'required');
-        $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
     }
 } else if ($o == "mc") {
     if ($form->getSubmitValue("submitMC"))
@@ -1049,8 +1042,9 @@ if ($o == "w") {
     /*
      * Just watch a host information
      */
-    if (!$min && $centreon->user->access->page($p) != 2)
+    if (!$min && $centreon->user->access->page($p) != 2) {
         $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&host_id=" . $host_id . "'", "class" => "btc bt_default"));
+    }
     $form->setDefaults($host);
     $form->freeze();
 } else if ($o == "c") {
@@ -1077,10 +1071,10 @@ if ($o == "w") {
 $tpl->assign('msg', array("nagios" => $oreon->user->get_version(), "tpl" => 0));
 $tpl->assign('min', $min);
 $tpl->assign("sort1", _("Host Configuration"));
-$tpl->assign("sort2", _("Relations"));
-$tpl->assign("sort3", _("Data Processing"));
-$tpl->assign("sort4", _("Host Extended Infos"));
-$tpl->assign("sort5", _("Macros"));
+$tpl->assign("sort2", _("Notification"));
+$tpl->assign("sort3", _("Relations"));
+$tpl->assign("sort4", _("Data Processing"));
+$tpl->assign("sort5", _("Host Extended Infos"));
 $tpl->assign('javascript', '
             <script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>
             <script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>
@@ -1088,7 +1082,9 @@ $tpl->assign('javascript', '
         ');
 $tpl->assign('accessgroups', _('Access groups'));
 
-# prepare help texts
+/* 
+ * prepare help texts 
+ */
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {

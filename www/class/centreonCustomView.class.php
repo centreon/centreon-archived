@@ -247,10 +247,15 @@ class CentreonCustomView
      */
     public function addCustomView($params)
     {
+        if (!isset($params['public']) || is_null($params['public'])) {
+            $public = 0;
+        } else {
+            $public = 1;
+        }
         $query = "INSERT INTO custom_views (name, layout, public)
         		  VALUES ('".$this->db->escape($params['name'])."', "
                 . "'".$this->db->escape($params['layout']['layout'])."', "
-                . "'".$this->db->escape($params['public'])."')";
+                . "'".$public."')";
         $this->db->query($query);
         $lastId = $this->getLastViewId();
 

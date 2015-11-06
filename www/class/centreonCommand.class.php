@@ -214,17 +214,20 @@ class CentreonCommand
    /**
     * This method search macro in commande by name and type 
     * 
+    * @param int $iIdCommande
     * @param array $aMacro
     * @param string $sType
     * 
     * @return array $aReturn
     */
-   function getMacrosCommand($aMacro, $sType)
+   function getMacrosCommand($iIdCommande, $aMacro, $sType)
    {
        $aReturn = array();
 
        if (count($aMacro) > 0 && array_key_exists($sType, $this->aTypeMacro)) {
-            $sRq = "SELECT * FROM `on_demand_macro_command` WHERE command_macro_type = '".$sType."' "
+            $sRq = "SELECT * FROM `on_demand_macro_command` WHERE "
+                    ." command_command_id = " . intval($iIdCommande)
+                    . " AND command_macro_type = '".$sType."' "
                     . " AND command_macro_name IN ('".  implode("', '", $aMacro)."') "; 
 
             $DBRESULT = $this->_db->query($sRq);
@@ -244,11 +247,13 @@ class CentreonCommand
    
    /**
     * 
+    * @param int $iIdCommande
     * @param string $sStr
     * @param string $sType
+    * 
     * @return array
     */
-    function match_object($sStr, $sType)
+    function match_object($iIdCommande, $sStr, $sType)
     {
         $macros = array();
         $macrosDesc = array();
@@ -262,7 +267,7 @@ class CentreonCommand
             }
 
             if (count($macros) > 0) {
-                $macrosDesc = $this->getMacrosCommand($macros, $sType);
+                $macrosDesc = $this->getMacrosCommand($iIdCommande, $macros, $sType);
 
                 $aNames = array_column($macrosDesc, 'name');
 
