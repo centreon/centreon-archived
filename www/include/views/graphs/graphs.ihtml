@@ -50,7 +50,7 @@
 
 
                 <!-- slider -->
-                <div class='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all'>
+                <div class='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all slider'>
                     <a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>
                 </div>
 

@@ -1587,3 +1587,6 @@ span.state_badge {
 .paginator_p.selected {
     background-color: #8ecc00;
 }
+.slider {
+    margin-bottom: 1em;
+}
