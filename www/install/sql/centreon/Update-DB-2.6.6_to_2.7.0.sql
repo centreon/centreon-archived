@@ -750,3 +750,30 @@ SET foreign_key_checks = 1;
 
 -- Add option for number of groups per page
 INSERT INTO `options` (`key`, `value`) VALUES ('maxGraphPerformances','5');
+
+-- Change Options informations 
+SET foreign_key_checks = 0;
+UPDATE topology SET topology_name = 'Parameters' WHERE topology_page = 501; 
+UPDATE topology SET topology_name = 'Centreon UI', topology_page = 50110, topology_parent = 501 WHERE topology_page = 5010101; 
+UPDATE topology SET topology_page = 50111, topology_parent = 501 WHERE topology_page = 5010102; 
+UPDATE topology SET topology_page = 50112, topology_parent = 501 WHERE topology_page = 5010103; 
+UPDATE topology_JS set id_page = 50112 WHERE id_page = 5010103;
+UPDATE topology SET topology_page = 50113, topology_parent = 501 WHERE topology_page = 5010105;
+UPDATE topology_JS set id_page = 50113 WHERE id_page = 5010103; 
+UPDATE topology SET topology_page = 50114, topology_parent = 501 WHERE topology_page = 5010106; 
+UPDATE topology SET topology_page = 50115, topology_parent = 501 WHERE topology_page = 5010107; 
+UPDATE topology SET topology_page = 50116, topology_parent = 501 WHERE topology_page = 5010109; 
+UPDATE topology SET topology_page = 50117, topology_parent = 501 WHERE topology_page = 5010110; 
+SET foreign_key_checks = 1;
+DELETE FROM topology WHERE topology_page = 50101; 
+
+-- Change Centstorage
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Performance Mgt',NULL,501,NULL,20,10,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
+UPDATE topology SET topology_name = 'Options', topology_page = 50118, topology_parent = 501, topology_order = 200, topology_group = 10 WHERE topology_page = 5010601;
+UPDATE topology SET topology_name = 'Data', topology_page = 50119, topology_parent = 501, topology_order = 210, topology_group = 10 WHERE topology_page = 5010602; 
+DELETE FROM topology WHERE topology_page = 50106;
+
+-- Change Media
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Media',NULL,501,NULL,15,11,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
+UPDATE topology SET topology_group = 11, topology_name = 'Images' WHERE topology_page = 50102;
+
