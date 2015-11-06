@@ -1,9 +1,32 @@
-<?php
-/* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/serviceComments.ihtml */
+/* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/comments.ihtml */
 _("Filters");
 
-/* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/hostComments.ihtml */
-_("Filters");
+/* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/comments.ihtml */
+_("Host name");
+
+/* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/comments.ihtml */
+_("Service");
+
+/* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/comments.ihtml */
+_("Output");
+
+/* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/comments.ihtml */
+_("Host Name");
+
+/* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/comments.ihtml */
+_("Service Description");
+
+/* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/comments.ihtml */
+_("Entry time");
+
+/* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/comments.ihtml */
+_("Authors");
+
+/* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/comments.ihtml */
+_("Comments");
+
+/* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/comments.ihtml */
+_("Persistent");
 
 /* /tmp/centreon-2.7.x/www//include/monitoring/downtime/template/listDowntime.ihtml */
 _("Filters");
@@ -518,4 +541,3 @@ _("seconds");
 /* /tmp/centreon-2.7.x/www//include/options/oreon/myAccount/formMyAccount.ihtml */
 _("UI notifications");
 
-?>
