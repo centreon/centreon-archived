@@ -573,7 +573,6 @@ function nextPeriod() {
         return false;
     }
 
-
     function launchGraph() {
         $hostsServicesForGraph = [];
         $hostsServices = '';
@@ -582,7 +581,7 @@ function nextPeriod() {
         getListOfHosts();
 
        $nbGraphs = <?php echo $graphsPerPage ?>;
-       $nbPages = $hostsServicesForGraph.length / $nbGraphs;
+       $nbPages = Math.ceil($hostsServicesForGraph.length / $nbGraphs);
 
        insertGraph($nbGraphs,0);
 
