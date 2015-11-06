@@ -72,9 +72,9 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
 }
 
 $index = isset($_GET['index']) ? $_GET['index'] : 0;
-
+$pearDBO = new CentreonDB("centstorage");
 if (isset($_GET["hostname"]) && isset($_GET["service"])) {
-    $pearDBO = new CentreonDB("centstorage");
+
     $DBRESULT = $pearDBO->query("SELECT `id`
                                  FROM index_data
     				 WHERE host_name = '".$pearDB->escape($_GET["hostname"])."'
@@ -117,7 +117,7 @@ if (!$isAdmin) {
     $hostId = $row['host_id'];
     $serviceId = $row['service_id'];
     $sql = "SELECT service_id FROM centreon_acl WHERE host_id = $hostId AND service_id = $serviceId AND group_id IN ($aclGroups)";
-    $res = $dbcentstorage->query($sql);
+    $res = $pearDBO->query($sql);
     if (!$res->numRows()) {
         die('Access denied');
     }

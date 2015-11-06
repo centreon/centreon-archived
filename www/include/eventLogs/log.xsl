@@ -122,8 +122,22 @@
 			<xsl:attribute name="class"><xsl:value-of select="class"/></xsl:attribute>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="date"/></td>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="time"/></td>
-	   		<td style="padding-left:5px;"><a href="main.php?p=20202&o=hd&host_name=<xsl:value-of select="host_name"/>"><xsl:value-of select="host_name"/></a></td>
-	   		<td style="padding-left:5px;"><xsl:value-of select="service_description"/></td>
+	   		<td style="padding-left:5px;">
+                            <xsl:element name="a">
+                                <xsl:attribute name="href">main.php?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="host_name" /></xsl:attribute>
+				<xsl:attribute name="target">_blank</xsl:attribute>
+                                <xsl:value-of select="host_name"/>
+                            </xsl:element>
+                            
+
+                        </td>
+	   		<td style="padding-left:5px;">
+                            <xsl:element name="a">
+                                <xsl:attribute name="href">main.php?p=20201&amp;o=svcd&amp;host_name=<xsl:value-of select="host_name" />&amp;service_description=<xsl:value-of select="service_description"/></xsl:attribute>
+				<xsl:attribute name="target">_blank</xsl:attribute>
+                                <xsl:value-of select="service_description"/>
+                            </xsl:element>
+                        </td>
 	   		<td style="padding-left:5px;" class="ListColCenter">
               <xsl:element name="span">
                 <xsl:attribute name="class">badge <xsl:value-of select="status/@color"/></xsl:attribute>
