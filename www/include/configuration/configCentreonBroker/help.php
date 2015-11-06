@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2014 Centreon
+ * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,55 +32,60 @@
  *
  * For more information : contact@centreon.com
  *
+ * SVN : $URL$
+ * SVN : $Id$
+ *
  */
-
-echo _("Port to listen on (empty host) or to connect to (with host filled).");
-echo _("IP address or hostname of the host to connect to (leave blank for listening mode).");
+ 
+echo _("Time in seconds to wait before launching failover.");
+echo _("Category filter for flux in output");
 echo _("Trusted CA's certificate.");
-echo _("Private key file path when TLS encryption is used.");
-echo _("Public certificate file path when TLS encryption is used.");
-echo _("Enable TLS encryption.");
-echo _("IP address or hostname of the database server.");
-echo _("Database user.");
-echo _("Password of database user.");
-echo _("Database name.");
-echo _("Path to the file.");
-echo _("Serialization protocol.");
-echo _("RRD file directory, for example /var/lib/centreon/metrics");
-echo _("RRD file directory, for example /var/lib/centreon/status");
-echo _("Target DBMS.");
-echo _("Interval length in seconds.");
-echo _("RRD storage duration in seconds.");
-echo _("Port on which the DB server listens");
-echo _("For a file logger this is the path to the file. For a standard logger, one of 'stdout' or 'stderr'.");
+echo _("When enabled, the broker engine will check whether or not the replication is up to date before attempting to update data.");
+echo _("Interval in seconds before delete data from deleted pollers.");
+echo _("File for external commands");
+echo _("Enable or not data stream compression.");
+echo _("The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution.");
+echo _("Ranges from 0 (no compression) to 9 (best compression). Default is -1 (zlib compression)");
 echo _("Enable or not configuration messages logging.");
+echo _("IP address or hostname of the database server.");
+echo _("Database name.");
+echo _("Password of database user.");
+echo _("Port on which the DB server listens");
+echo _("Target DBMS.");
+echo _("Database user.");
 echo _("Enable or not debug messages logging.");
 echo _("Enable or not error messages logging.");
-echo _("Enable or not informational messages logging.");
-echo _("How much messages must be logged.");
-echo _("Enable or not data stream compression.");
-echo _("Ranges from 0 (no compression) to 9 (best compression). Default is -1 (zlib compression)");
-echo _("The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution.");
 echo _("Name of the input or output object that will act as failover.");
-echo _("Path to the correlation file which holds host, services, dependencies and parenting definitions.");
-echo _("File where correlation state will be stored during correlation engine restart");
-echo _("Time in seconds to wait between each connection attempt.");
-echo _("Time in seconds to wait before launching failover.");
 echo _("File where Centreon Broker statistics will be stored");
+echo _("Path to the correlation file which holds host, services, dependencies and parenting definitions.");
+echo _("IP address or hostname of the host to connect to (leave blank for listening mode).");
+echo _("Enable or not informational messages logging.");
+echo _("Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they're doing");
+echo _("Interval in seconds before change status of resources from a disconnected poller");
+echo _("Interval length in seconds.");
+echo _("RRD storage duration in seconds.");
+echo _("How much messages must be logged.");
+echo _("Maximum size in bytes.");
+echo _("The maximum size of log file.");
+echo _("RRD file directory, for example /var/lib/centreon/metrics");
+echo _("For a file logger this is the path to the file. For a standard logger, one of 'stdout' or 'stderr'.");
+echo _("Enable negociation option (use only for version of Centren Broker >= 2.5)");
+echo _("This allows the retention to work even if the socket is listening");
+echo _("The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.");
+echo _("Path to the file.");
+echo _("Port to listen on (empty host) or to connect to (with host filled).");
+echo _("The TCP port used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.");
+echo _("Private key file path when TLS encryption is used.");
+echo _("Serialization protocol.");
+echo _("Public certificate file path when TLS encryption is used.");
 echo _("The maximum queries per transaction before commit.");
 echo _("The transaction timeout before running commit.");
-echo _("The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.");
-echo _("The TCP port used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.");
-echo _("The maximum size of log file.");
-echo _("When enabled, the broker engine will check whether or not the replication is up to date before attempting to update data.");
 echo _("The interval between check if some metrics must be rebuild. The default value is 300s");
-echo _("Maximum size in bytes.");
+echo _("File where correlation state will be stored during correlation engine restart");
+echo _("Time in seconds to wait between each connection attempt.");
+echo _("RRD file directory, for example /var/lib/centreon/status");
 echo _("It should be enabled to control whether or not Centreon Broker should insert performance data in the data_bin table.");
-echo _("Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they're doing");
+echo _("Enable TLS encryption.");
 echo _("This can be used to disable graph update and therefore reduce I/O");
 echo _("This can be used to disable graph update and therefore reduce I/O");
-echo _("Enable negociation option (use only for version of Centren Broker >= 2.5)");
-echo _("Category filter for flux in output");
-echo _("This allows the retention to work even if the socket is listening");
-
 ?>
