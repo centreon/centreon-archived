@@ -1029,15 +1029,14 @@ class CentreonACL {
                 $DBRESULT->free();
             }
         } else {
-            $req = (!is_null($get_service_description)) ? ", s.description " : "";
-            $query = " SELECT acl.host_id, acl.service_id " . $req
-                . " FROM centreon_acl acl "
-                . " INNER JOIN services s on acl.service_id = s.service_id "
-                . " WHERE group_id IN (" . $this->getAccessGroupsString() . ") ";
+            $req = (!is_null($get_service_description)) ? ", service_description " : "";
+            $query = "SELECT host_id, service_id " . $req
+                . "FROM centreon_acl "
+                . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") ";
             $DBRESULT = $pearDBMonitoring->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 if (!is_null($get_service_description)) {
-                    $tab[$row['host_id']][$row['service_id']] = $row['description'];
+                    $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
@@ -1359,7 +1358,15 @@ class CentreonACL {
                     }
                 }
 
-                $requests['conditions'] .= $clause . " " . $key . " " . $op . " '" . $pearDB->escape($value) . "' ";
+                if ($op == 'IN') {
+                    $inValues = "";
+                    if (is_array($value) && count($value)) {
+                        $inValues = implode("','", $value);
+                    }
+                    $requests['conditions'] .= $clause . " " . $key . " " . $op . " ('" . $inValues . "') ";
+                } else {
+                    $requests['conditions'] .= $clause . " " . $key . " " . $op . " '" . $pearDB->escape($value) . "' ";
+                }
             }
             if (!$first) {
                 $requests['conditions'] .= ') ';

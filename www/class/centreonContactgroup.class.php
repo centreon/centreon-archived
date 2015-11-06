@@ -371,7 +371,13 @@ class CentreonContactgroup
                 array(
                     'fields'  => array('cg_id'),
                     'get_row' => 'cg_id',
-                    'keys' => array('cg_id')
+                    'keys' => array('cg_id'),
+                    'conditions' => array(
+                        'cg_id' => array(
+                            'IN',
+                            $values
+                        )
+                    )
                 ),
                 false
             );
