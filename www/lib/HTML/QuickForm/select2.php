@@ -296,7 +296,6 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
              $mainJsInit .= 'disabled: true,';
         }
         
-        
         if ($this->_ajaxSource) {
             $mainJsInit .= $this->setAjaxSource() . ',';
             if ($this->_defaultDatasetRoute) {
@@ -316,6 +315,13 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             	cursorwidth:3,
             	horizrailenabled:false
             	});';
+
+                $mainJsInit .= 'templateSelection: function (data, container) {
+                    if (data.element.hidden === true) {
+                        $(container).hide();
+                    }
+                    return data.text;
+                },';
         } else {
             $mainJsInit .= 'false,';
         }
@@ -327,7 +333,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $mainJsInit .= 'false,';
         }
-        
+
         $strJsInitEnding = '});';
         
         if (!$this->_allowClear) {
@@ -442,7 +448,11 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 var item = data[d];
                 
                 // Create the DOM option that is pre-selected by default
-                var option = new Option(item.text, item.id, true, true);
+                var option = "<option selected=\"selected\" value=\"" + item.id + "\" ";
+                if (item.hide === true) {
+                    option += "hidden";
+                }
+                option += ">" + item.text + "</option>";
               
                 // Append it to the select
                 $currentSelect2Object'.$this->getName().'.append(option);

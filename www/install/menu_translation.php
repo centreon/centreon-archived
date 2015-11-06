@@ -159,6 +159,7 @@ echo _("Services by host");
 echo _("Services by host group");
 echo _("Services by Hostgroup");
 echo _("Services by Servicegroup");
+echo _("Status summarized by Hostgroups");
 echo _("Services Grid");
 echo _("Sessions");
 echo _("Setup");

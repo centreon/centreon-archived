@@ -119,7 +119,7 @@ if ($view_all == 1) {
 }
 /* --------------- Services ---------------*/
 $request = "(SELECT SQL_CALC_FOUND_ROWS d.internal_id as internal_downtime_id, d.entry_time, duration, d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name, s.description as service_description " . $extrafields .
-        "FROM downtimes d, services s, hosts h " . ($is_admin ? "" : ", centreon_acl acl") .
+        "FROM downtimes d, services s, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") .
         "WHERE d.host_id = s.host_id " .
         "AND d.service_id = s.service_id ". 
         "AND s.host_id = h.host_id ";
@@ -138,7 +138,7 @@ $request .= (isset($search_service) && $search_service != "" ? "AND s.descriptio
 
 /* --------------- Hosts --------------- */
 $request .=  ") UNION (SELECT d.internal_id as internal_downtime_id, d.entry_time, duration, d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name, '' as service_description " . $extrafields .
-        "FROM downtimes d, hosts h " . ($is_admin ? "" : ", centreon_acl acl") .
+        "FROM downtimes d, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") .
         "WHERE d.host_id = h.host_id AND d.service_id IS NULL ";
 if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
