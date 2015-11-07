@@ -176,4 +176,64 @@ class CentreonContact
         
         return $parameters;
     }
+
+    /**
+     *
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        global $centreon;
+
+        # get list of authorized contacts
+        if (!$centreon->user->access->admin) {
+            $cAcl = $centreon->user->access->getContactAclConf(
+                array(
+                    'fields'  => array('contact_id'),
+                    'get_row' => 'contact_id',
+                    'keys' => array('contact_id'),
+                    'conditions' => array(
+                        'cg_id' => array(
+                            'IN',
+                            $values
+                        )
+                    )
+                ),
+                false
+            );
+        }
+
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected contacts
+        $query = "SELECT contact_id, contact_name "
+                . "FROM contact "
+                . "WHERE contact_id IN (" . $explodedValues. ")";
+
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            # hide unauthorized contactgroups
+            $hide = false;
+            if (!$centreon->user->access->admin && !in_array($row['contact_id'], $cAcl)) {
+                $hide = true;
+            }
+
+            $tmpValues[] = array(
+                'id' => $row['contact_id'],
+                'text' => $row['contact_name'],
+                'hide' => $hide
+            );
+        }
+
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        return $tmpValues;
+    }
 }

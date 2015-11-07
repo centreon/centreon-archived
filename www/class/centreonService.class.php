@@ -827,6 +827,7 @@ class CentreonService
                 break;
             case 'service_cs':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonContact';
                 $parameters['externalObject']['table'] = 'contact';
                 $parameters['externalObject']['id'] = 'contact_id';
                 $parameters['externalObject']['name'] = 'contact_name';
@@ -837,6 +838,7 @@ class CentreonService
                 break;
             case 'service_cgs':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonContactgroup';
                 $parameters['externalObject']['table'] = 'contactgroup';
                 $parameters['externalObject']['id'] = 'cg_id';
                 $parameters['externalObject']['name'] = 'cg_name';

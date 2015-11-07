@@ -110,7 +110,7 @@ $rq2 .= "WHERE c.host_id = h.host_id AND c.service_id = s.service_id AND h.host_
 $rq2 .= " AND c.expires = '0' AND h.enabled = 1 AND s.enabled = 1 ";
 $rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
 if (!$is_admin) {
-  $rq2 .= " AND s.host_id = acl.host_id AND s.service_id = acl.service_id AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ")) ";
+  $rq2 .= " AND s.host_id = acl.host_id AND s.service_id = acl.service_id AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
 }
 $rq2 .= (isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "");
 $rq2 .= (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "");
@@ -130,7 +130,7 @@ $rq2 .= "WHERE c.host_id = h.host_id AND c.service_id = s.service_id AND h.host_
 $rq2 .= " AND c.expires = '0' AND h.enabled = 1 AND s.enabled = 1 ";
 $rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
 if (!$is_admin) {
-  $rq2 .= " AND s.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ")) ";
+  $rq2 .= " AND s.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
 }
 $rq2 .= (isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "");
 $rq2 .= (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "");

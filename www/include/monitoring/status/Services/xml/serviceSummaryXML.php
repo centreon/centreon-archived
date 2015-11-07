@@ -152,6 +152,7 @@
         # LIMIT
 	$rq1 .= "LIMIT " . ($num * $limit) . "," . $limit . " ";
 
+
 	/*
 	 * Execute request
 	 */
@@ -201,14 +202,14 @@
 		$obj->XML->writeElement("ico", $tabIcone[$host_name]);
 		$obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);
 		$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
+                $obj->XML->writeElement("sc", $tab["nb_service_c"]);
+		$obj->XML->writeElement("scc", $obj->colorService[2]);
+                $obj->XML->writeElement("sw", $tab["nb_service_w"]);
+		$obj->XML->writeElement("swc", $obj->colorService[1]);
+                $obj->XML->writeElement("su", $tab["nb_service_u"]);
+		$obj->XML->writeElement("suc", $obj->colorService[3]);
 		$obj->XML->writeElement("sk", $tab["nb_service_k"]);
 		$obj->XML->writeElement("skc", $obj->colorService[0]);
-		$obj->XML->writeElement("sw", $tab["nb_service_w"]);
-		$obj->XML->writeElement("swc", $obj->colorService[1]);
-		$obj->XML->writeElement("sc", $tab["nb_service_c"]);
-		$obj->XML->writeElement("scc", $obj->colorService[2]);
-		$obj->XML->writeElement("su", $tab["nb_service_u"]);
-		$obj->XML->writeElement("suc", $obj->colorService[3]);
 		$obj->XML->writeElement("sp", $tab["nb_service_p"]);
 		$obj->XML->writeElement("spc", $obj->colorService[4]);
 		$obj->XML->endElement();

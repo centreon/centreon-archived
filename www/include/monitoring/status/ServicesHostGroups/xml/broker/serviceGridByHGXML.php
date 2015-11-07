@@ -149,7 +149,8 @@
 	 * Get Services status
 	 *
 	 */
-	$rq1 = 	" SELECT DISTINCT s.service_id, h.name as host_name, s.description, s.state svcs " .
+	$rq1 = 	" SELECT DISTINCT s.service_id, h.name as host_name, s.description, s.state svcs,"
+                . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri " .
 		 	" FROM services s, hosts h ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
@@ -174,7 +175,8 @@
 	if ($instance != -1) {
 		$rq1 .= " AND h.instance_id = ".$instance;
 	}
-	$rq1 .= " ORDER BY s.description";
+	//$rq1 .= " ORDER BY s.description";
+        $rq1 .= " order by tri asc";
 
 	$tabService = array();
 	$tabHost = array();

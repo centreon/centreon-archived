@@ -371,7 +371,13 @@ class CentreonContactgroup
                 array(
                     'fields'  => array('cg_id'),
                     'get_row' => 'cg_id',
-                    'keys' => array('cg_id')
+                    'keys' => array('cg_id'),
+                    'conditions' => array(
+                        'cg_id' => array(
+                            'IN',
+                            $values
+                        )
+                    )
                 ),
                 false
             );
@@ -390,7 +396,7 @@ class CentreonContactgroup
 
         $res = $this->db->query($query);
         while ($contactgroup = $res->fetchRow()) {
-                $contactgroups[$contactgroup["cg_id"]] = $contactgroup["cg_name"];
+            $contactgroups[$contactgroup["cg_id"]] = $contactgroup["cg_name"];
             if (isset($contactgroup['cg_ldap_dn']) && $contactgroup['cg_ldap_dn'] != "") {
                 $contactgroups[$contactgroup["cg_id"]] = $this->formatLdapContactgroupName($contactgroup['cg_name'], $contactgroup['ar_name']);
             }

@@ -12,10 +12,12 @@
     <tr>
         <td style="width: 50%;"><h4>{$form.host_group_filter.label} <img id="setHostGroup" class="log-extend-icon ico-12" src="./img/icons/arrow-right.png" alt=""/></h4></td>
         <td class="checkbox"><h4>{$form.host_filter.label}</h4></td>
+        <td><h4>{$form.output.label}</h4></td>
     </tr>
     <tr>
         <td class="log-select">{$form.host_group_filter.html}</td>
         <td class="log-select">{$form.host_filter.html}</td>
+        <td class="log-select" colspan="2">{$form.output.html}</td>
     </tr>
     <tr>
         <td><h4>{$form.service_group_filter.label} <img id="setServiceGroup" class="log-extend-icon ico-12" src="./img/icons/arrow-right.png" alt=""/></h4></td>
@@ -26,10 +28,10 @@
         <td class="log-select">{$form.service_filter.html}</td>
     </tr>
     <tr>
-         <td colspan="2"><h4>{$form.output.label}</h4></td>
+
     </tr>
     <tr>
-       <td class="log-select" colspan="2">{$form.output.html}</td>
+
     </tr>
 
     <tr>
@@ -109,6 +111,7 @@
             <h4>{$To}</h4>
         </td>
         <td></td>
+    </tr>    
     <tr>
         <td></td>
         <td>

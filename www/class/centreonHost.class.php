@@ -1242,6 +1242,7 @@ class CentreonHost
                 break;
             case 'host_cs':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonContact';
                 $parameters['externalObject']['table'] = 'contact';
                 $parameters['externalObject']['id'] = 'contact_id';
                 $parameters['externalObject']['name'] = 'contact_name';

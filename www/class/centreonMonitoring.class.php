@@ -136,7 +136,8 @@ class CentreonMonitoring {
                 return array();
             }
 
-            $rq = "SELECT h.name, s.description as service_name, s.state, s.service_id "
+            $rq = "SELECT h.name, s.description as service_name, s.state, s.service_id, "
+                . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2  when 3 then 2 else s.state END) as tri "
                 . "FROM hosts h, services s ";
 
             if (!$objXMLBG->is_admin) {
@@ -169,6 +170,8 @@ class CentreonMonitoring {
                     . " ";
             }
 
+            $rq .= " order by tri asc";
+            
             $tab = array();
             $DBRESULT = $objXMLBG->DBC->query($rq);
             while ($svc = $DBRESULT->fetchRow()) {

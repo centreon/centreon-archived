@@ -676,7 +676,7 @@ if($engine == 'false'){
                              flagfirst = false;
                          }
                          urlargs += val.replace("-","_");
-                         args += "HS_" + val;
+                         args += "HS_" + val.replace("-","_");
                      }
                  });
              }

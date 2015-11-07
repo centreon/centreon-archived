@@ -114,7 +114,7 @@ $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
-$tpl->assign('pollerName', $name);
+$tpl->assign('pollerName', $_GET['poller']);
 $tpl->assign('pollerId', $pollerId);
 $tpl->assign('pollerListMsg', _('The list of pollers is <a href="./main.php?p=60901">here</a>.'));
 $tpl->display("formGenerateFiles.ihtml");
