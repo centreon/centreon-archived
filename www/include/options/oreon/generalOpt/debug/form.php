@@ -132,7 +132,7 @@ if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=debug'"));
+$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=debug'", 'class' => 'btc bt_info'));
 
     // prepare help texts
 $helptext = "";
