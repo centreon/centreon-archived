@@ -760,6 +760,72 @@ class CentreonACL {
 
         return $result;
     }
+    
+    
+    public function checkHost($hostId){
+        $pearDBO = new CentreonDB("centstorage");
+        $hostArray = $this->getHostsArray("ID",$pearDBO);
+        if(in_array($hostId,$hostArray)){
+            return true;
+        }
+        return false;
+    }
+    
+    public function checkService($serviceId){
+        $pearDBO = new CentreonDB("centstorage");
+        $serviceArray = $this->getServicesArray("ID",$pearDBO);
+        if(in_array($serviceId,$serviceArray)){
+            return true;
+        }
+        return false;
+    }
+    
+    
+    /*
+     *  Hosts array Getter / same as getHostsString function
+     *  Possible flags :
+     *  - ID => will return the id's of the element
+     *  - NAME => will return the names of the element
+     */
+    public function getHostsArray($flag = null, $pearDBndo, $escape = true) {
+        $this->checkUpdateACL();
+
+        $groupIds = array_keys($this->accessGroups);
+        if (!count($groupIds)) {
+            return "''";
+        }
+
+        $flag = strtoupper($flag);
+        switch ($flag) {
+            case "NAME" :
+                $query = "SELECT DISTINCT h.host_id, h.name "
+                    . "FROM centreon_acl ca, hosts h "
+                    . "WHERE ca.host_id = h.host_id "
+                    . "AND group_id IN (" . implode(',', $groupIds) . ") "
+                    . "GROUP BY h.name, h.host_id "
+                    . "ORDER BY h.name ASC ";
+                $fieldName = 'name';
+                break;
+            default :
+                $query = "SELECT DISTINCT host_id "
+                    . "FROM centreon_acl "
+                    . "WHERE group_id IN (" . implode(',', $groupIds) . ") ";
+                $fieldName = 'host_id';
+                break;
+        }
+
+        $hosts = array();
+        $DBRES = $pearDBndo->query($query);
+        while ($row = $DBRES->fetchRow()) {
+            if ($escape === true) {
+                $hosts[] = CentreonDB::escape($row[$fieldName]);
+            } else {
+                $hosts[] = $row[$fieldName];
+            }
+        }
+
+        return $hosts;
+    }
 
     /*
      *  Hosts string Getter
@@ -812,6 +878,58 @@ class CentreonACL {
         return $result;
     }
 
+    
+        /*
+     *  Services array Getter
+     *  Possible flags :
+     *  - ID => will return the id's of the element
+     *  - NAME => will return the names of the element
+     */
+    public function getServicesArray($flag = null, $pearDBndo, $escape = true) {
+        $this->checkUpdateACL();
+
+        $groupIds = array_keys($this->accessGroups);
+        if (!count($groupIds)) {
+            return "''";
+        }
+
+        $flag = strtoupper($flag);
+        switch ($flag) {
+            case "NAME" :
+                $query = "SELECT DISTINCT s.service_id, s.description "
+                    . "FROM centreon_acl ca, services s "
+                    . "WHERE ca.service_id = s.service_id "
+                    . "AND group_id IN (" . implode(',', $groupIds) . ") ";
+                $fieldName = 'description';
+                break;
+            default :
+                $query = "SELECT DISTINCT service_id "
+                    . "FROM centreon_acl "
+                    . "WHERE group_id IN (" . implode(',', $groupIds) . ") ";
+                $fieldName = 'service_id';
+                break;
+        }
+
+        $services = array();
+
+        $DBRES = $pearDBndo->query($query);
+        $items = array();
+        while ($row = $DBRES->fetchRow()) {
+            if (isset($items[$row[$fieldName]])) {
+                continue;
+            }
+            $items[$row[$fieldName]] = true;
+            if ($escape === true) {
+                $services[] =  CentreonDB::escape($row[$fieldName]);
+            } else {
+                $services[] = $row[$fieldName];
+            }
+        }
+        
+        return $services;
+    }
+    
+    
     /*
      *  Services string Getter
      *  Possible flags :
