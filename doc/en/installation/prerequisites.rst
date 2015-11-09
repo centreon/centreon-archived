@@ -2,11 +2,29 @@
 Prerequisites
 =============
 
+*********
+Softwares
+*********
+
+Operating System
+================
+
+If you **use CES v3.x the operating system will be CentOS v6**. If you prefer to use
+**Red Hat OS** you must install it in **v6 version**. Else you can use another GNU/Linux
+operating system but installation will be more complex and realised using software 
+sources.
+
+DBMS
+====
+
+**Centreon advises you to use MariaDB v5.5.x or later** instead of MySQL. But if you
+want to use MySQL please install at least a v5.1.x version.
+
 ***************************
 Select type of architecture
 ***************************
 
-The table below gives the prerequisites for the installation of CES 3.2:
+The table below gives the prerequisites for the installation of CES 3.x:
 
 +------------------------+--------------------------+----------------+---------------+
 |  Number of Services    |  Number of pollers       | Central        | Poller        |
@@ -34,8 +52,11 @@ Th space used for store collected and performance data depends on several criter
 * Number of controls
 * Retention time
 
-.. warning::
-    The following table provides an idea of the disk space need by monitoring servers based on that the data is collected every 5 minutes for a 6 month retention period.
+The following table provides an idea of the disk space needed for your platform with:
+
+* Data are collected every 5 minutes
+* The retention period is 6 month
+* Each performance graph have 2 curves
 
 +------------------------+----------------+-------------------+
 |  Number of Services    | /var/lib/mysql | /var/lib/centreon |
