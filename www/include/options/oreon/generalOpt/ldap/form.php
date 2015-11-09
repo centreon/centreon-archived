@@ -316,20 +316,23 @@ foreach ($help as $key => $text) {
 }
 $tpl->assign("helptext", $helptext);
 
-/*
- * Apply a template definition
- */
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-$form->accept($renderer);
-$tpl->assign('form', $renderer->toArray());
-$tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
-$tpl->assign('cloneSet', $cloneSet);
-$tpl->assign('o', $o);
-$tpl->assign("optGen_ldap_properties", _("LDAP Properties"));
-$tpl->assign('addNewHostLabel', _('LDAP servers'));
-$tpl->assign('manualImport', _('Import users manually'));
-$tpl->assign('valid', $valid);
-$tpl->display("form.ihtml");
-?>
+if ($valid) {
+    require_once $path . 'ldap/list.php';
+} else {
+    /*
+     * Apply a template definition
+     */
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+    $tpl->assign('cloneSet', $cloneSet);
+    $tpl->assign('o', $o);
+    $tpl->assign("optGen_ldap_properties", _("LDAP Properties"));
+    $tpl->assign('addNewHostLabel', _('LDAP servers'));
+    $tpl->assign('manualImport', _('Import users manually'));
+    $tpl->assign('valid', $valid);
+    $tpl->display("form.ihtml");
+}

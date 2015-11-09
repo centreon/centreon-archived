@@ -223,7 +223,7 @@ if (!$form->validate() && isset($_POST["gopt_id"]))	{
     print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
+$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."'", 'class' => 'btc bt_info'));
 
 /*
  * Send variable to template

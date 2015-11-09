@@ -30,17 +30,19 @@
 
 
         <div id="StatusAction">
-            <input type="checkbox" name="Display Status" id="displayStatus"  /> Display Status
 
              <div id="graph_pagination">
+
+                <div class="displayStatus">
+                                <input type="checkbox" name="displayStatus" id="displayStatus" />
+                                <label for="displayStatus">Display Status</label>
+                            </div>
 
                 <!-- optional left control buttons -->
                 <div id="test1_m_left"></div><div id="test1_o_left"></div>
 
                 <div class='paginator_p_wrap'>
-                    <div class='paginator_p_bloc'>
-                        <!--<a class='paginator_p'></a> // page number : dynamically added -->
-                    </div>
+                    <div class='paginator_p_bloc'></div>
                 </div>
 
                 <!-- optional right control buttons -->
@@ -48,7 +50,7 @@
 
 
                 <!-- slider -->
-                <div class='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all'>
+                <div class='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all slider'>
                     <a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>
                 </div>
 

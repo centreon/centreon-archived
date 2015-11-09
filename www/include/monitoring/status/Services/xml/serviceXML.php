@@ -139,6 +139,8 @@ CentreonDb::check_injection($search_type_host);
 CentreonDb::check_injection($search_type_service);
 CentreonDb::check_injection($criticality_id);
 
+/* Store in session the last type of call */
+$_SESSION['monitoring_service_status'] = $o;
 
 /** * *************************************************
  * Backup poller selection

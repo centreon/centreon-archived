@@ -56,8 +56,6 @@ function getActionList($domName) {
 }
 
 include "./include/common/autoNumLimit.php";
-$advanced_search = 0;
-include_once "./include/common/quickSearch.php";
 
 $labels = array('name'        => _('Name'),
                 'description' => _('Description'),
@@ -67,8 +65,8 @@ $labels = array('name'        => _('Name'),
 
 $ldapConf = new CentreonLdapAdmin($pearDB);
 $searchLdap = "";
-if (isset($search) && $search) {
-    $searchLdap = $search;
+if (isset($_POST['searchLdap']) && $_POST['searchLdap']) {
+    $searchLdap = $_POST['searchLdap'];
 }
 $list = $ldapConf->getLdapConfigurationList($searchLdap);
 $rows = count($list);
@@ -107,6 +105,8 @@ $form->accept($renderer);
 $tpl->assign('limit', $limit);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('labels', $labels);
+$tpl->assign('searchLdap', $searchLdap);
+$tpl->assign('p', $p);
 $tpl->display("list.ihtml");
 ?>
 <script type="text/javascript">

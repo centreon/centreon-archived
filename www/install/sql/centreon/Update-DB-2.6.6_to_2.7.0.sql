@@ -23,13 +23,13 @@ ALTER TABLE timeperiod_include_relations
 ADD FOREIGN KEY (timeperiod_include_id)
 REFERENCES timeperiod(tp_id) ON DELETE CASCADE;
 
-ALTER TABLE timperiod MODIFY COLUMN `tp_sunday` varchar(4096);
-ALTER TABLE timperiod MODIFY COLUMN `tp_monday` varchar(4096);
-ALTER TABLE timperiod MODIFY COLUMN `tp_tuesday` varchar(4096);
-ALTER TABLE timperiod MODIFY COLUMN `tp_wednesday` varchar(4096);
-ALTER TABLE timperiod MODIFY COLUMN `tp_thursday` varchar(4096);
-ALTER TABLE timperiod MODIFY COLUMN `tp_friday` varchar(4096);
-ALTER TABLE timperiod MODIFY COLUMN `tp_saturday` varchar(4096);
+ALTER TABLE timeperiod MODIFY COLUMN `tp_sunday` varchar(2048);
+ALTER TABLE timeperiod MODIFY COLUMN `tp_monday` varchar(2048);
+ALTER TABLE timeperiod MODIFY COLUMN `tp_tuesday` varchar(2048);
+ALTER TABLE timeperiod MODIFY COLUMN `tp_wednesday` varchar(2048);
+ALTER TABLE timeperiod MODIFY COLUMN `tp_thursday` varchar(2048);
+ALTER TABLE timeperiod MODIFY COLUMN `tp_friday` varchar(2048);
+ALTER TABLE timeperiod MODIFY COLUMN `tp_saturday` varchar(2048);
 
 ALTER TABLE on_demand_macro_host MODIFY COLUMN host_macro_value VARCHAR(4096);
 ALTER TABLE on_demand_macro_service MODIFY COLUMN svc_macro_value VARCHAR(4096);
@@ -691,14 +691,14 @@ DELETE FROM topology WHERE topology_page = 20219;
 
 -- Move service pages
 UPDATE topology SET topology_name = 'Status Details' WHERE topology_page = 202;
-UPDATE topology SET topology_name = 'Services' WHERE topology_name = 'All Services' AND topology_page = 20201;
+UPDATE topology SET topology_name = 'Services', topology_url_opt = NULL WHERE topology_name = 'All Services' AND topology_page = 20201;
 UPDATE topology SET topology_name = 'Services Grid', topology_group = 7 WHERE topology_name = 'Details' AND topology_page = 20204;
 UPDATE topology SET topology_name = 'Services by Hostgroup', topology_group = 7 WHERE topology_name = 'Details' AND topology_page = 20209;
 UPDATE topology SET topology_name = 'Services by Servicegroup', topology_group = 7, topology_order = 80 WHERE topology_name = 'Details' AND topology_page = 20212;
 
 -- Hosts pages
 DELETE FROM topology_JS WHERE id_page = 20102;
-UPDATE topology SET topology_page = 20202, topology_group = 7, topology_parent = 202, topology_order = 30 WHERE topology_page = 20102; 
+UPDATE topology SET topology_page = 20202, topology_group = 7, topology_parent = 202, topology_order = 30, topology_url_opt = NULL WHERE topology_page = 20102; 
 
 DELETE FROM topology_JS WHERE id_page = 20104;
 UPDATE topology SET topology_page = 20203, topology_group = 7, topology_parent = 202, topology_order = 120 WHERE topology_page = 20104;
@@ -750,3 +750,33 @@ SET foreign_key_checks = 1;
 
 -- Add option for number of groups per page
 INSERT INTO `options` (`key`, `value`) VALUES ('maxGraphPerformances','5');
+
+-- Change Options informations 
+SET foreign_key_checks = 0;
+UPDATE topology SET topology_name = 'Parameters' WHERE topology_page = 501; 
+UPDATE topology SET topology_name = 'Centreon UI', topology_page = 50110, topology_parent = 501 WHERE topology_page = 5010101; 
+UPDATE topology SET topology_page = 50111, topology_parent = 501 WHERE topology_page = 5010102; 
+UPDATE topology SET topology_page = 50112, topology_parent = 501 WHERE topology_page = 5010103; 
+UPDATE topology_JS set id_page = 50112 WHERE id_page = 5010103;
+UPDATE topology SET topology_page = 50113, topology_parent = 501 WHERE topology_page = 5010105;
+UPDATE topology_JS set id_page = 50113 WHERE id_page = 5010103; 
+UPDATE topology SET topology_page = 50114, topology_parent = 501 WHERE topology_page = 5010106; 
+UPDATE topology SET topology_page = 50115, topology_parent = 501 WHERE topology_page = 5010107; 
+UPDATE topology SET topology_page = 50116, topology_parent = 501 WHERE topology_page = 5010109; 
+UPDATE topology SET topology_page = 50117, topology_parent = 501 WHERE topology_page = 5010110; 
+SET foreign_key_checks = 1;
+DELETE FROM topology WHERE topology_page = 50101; 
+
+-- Change Centstorage
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Performance Mgt',NULL,501,NULL,20,10,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
+UPDATE topology SET topology_name = 'Options', topology_page = 50118, topology_parent = 501, topology_order = 200, topology_group = 10 WHERE topology_page = 5010601;
+UPDATE topology SET topology_name = 'Data', topology_page = 50119, topology_parent = 501, topology_order = 210, topology_group = 10 WHERE topology_page = 5010602; 
+DELETE FROM topology WHERE topology_page = 50106;
+
+-- Change Media
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Media',NULL,501,NULL,15,11,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
+UPDATE topology SET topology_group = 11, topology_name = 'Images' WHERE topology_page = 50102;
+
+-- DELETE old links (Donate, Forum, Github)...
+DELETE FROM topology WHERE topology_page IN (50606, 50607, 50605, 50604, 50602, 50105, 5010501, 5010502, 5010503);
+

@@ -1242,6 +1242,7 @@ class CentreonHost
                 break;
             case 'host_cs':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonContact';
                 $parameters['externalObject']['table'] = 'contact';
                 $parameters['externalObject']['id'] = 'contact_id';
                 $parameters['externalObject']['name'] = 'contact_name';
@@ -1252,6 +1253,7 @@ class CentreonHost
                 break;
             case 'host_parents':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonHost';
                 $parameters['externalObject']['table'] = 'host';
                 $parameters['externalObject']['id'] = 'host_id';
                 $parameters['externalObject']['name'] = 'host_name';
@@ -1262,6 +1264,7 @@ class CentreonHost
                 break;
             case 'host_childs':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonHost';
                 $parameters['externalObject']['table'] = 'host';
                 $parameters['externalObject']['id'] = 'host_id';
                 $parameters['externalObject']['name'] = 'host_name';
@@ -1272,6 +1275,7 @@ class CentreonHost
                 break;
             case 'host_hgs':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonHostgroups';
                 $parameters['externalObject']['table'] = 'hostgroup';
                 $parameters['externalObject']['id'] = 'hg_id';
                 $parameters['externalObject']['name'] = 'hg_name';
@@ -1451,30 +1455,58 @@ class CentreonHost
      */
     public function getObjectForSelect2($values = array(), $register = '1')
     {
-        $selectedHosts = '';
+        global $centreon;
+        $items = array();
+
+        # get list of authorized hosts
+        if (!$centreon->user->access->admin) {
+            $hAcl = $centreon->user->access->getHostAclConf(
+                null,
+                'broker',
+                array(
+                    'distinct' => true,
+                    'fields'  => array('host.host_id'),
+                    'get_row' => 'host_id',
+                    'keys' => array('host_id'),
+                    'conditions' => array(
+                        'host.host_id' => array(
+                            'IN',
+                            $values
+                        )
+                    )
+                ),
+                false
+            );
+        }
+
         $explodedValues = implode(',', $values);
         if (empty($explodedValues)) {
             $explodedValues = "''";
-        } else {
-            $selectedHosts .= "AND h.host_id IN ($explodedValues) ";
         }
-        
-        $queryHost = "SELECT DISTINCT h.host_name, h.host_id "
-            . "FROM host h, service s, host_service_relation hsr "
-            . 'WHERE hsr.host_host_id = h.host_id '
-            . "AND hsr.service_service_id = s.service_id "
-            . "AND h.host_register = '$register' "
-            . $selectedHosts
-            . "ORDER BY h.host_name";
-        
-        $DBRESULT = $this->db->query($queryHost);
-        
-        $hostList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $hostList[] = array('id' => htmlentities($data['host_id']), 'text' => htmlentities($data['host_name']));
+
+        # get list of selected hosts
+        $query = "SELECT host_id, host_name "
+            . "FROM host "
+            . "WHERE host_register = '" . $register . "' "
+            . "AND host_id IN (" . $explodedValues . ") "
+            . "ORDER BY host_name ";
+
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            # hide unauthorized hosts
+            $hide = false;
+            if (!$centreon->user->access->admin && !in_array($row['host_id'], $hAcl)) {
+                $hide = true;
+            }
+
+            $items[] = array(
+                'id' => $row['host_id'],
+                'text' => $row['host_name'],
+                'hide' => $hide
+            );
         }
-        
-        return $hostList;
+
+        return $items;
     }
 }
 

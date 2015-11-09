@@ -176,4 +176,61 @@ class CentreonContact
         
         return $parameters;
     }
+
+    /**
+     *
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        global $centreon;
+        $items = array();
+
+        # get list of authorized contacts
+        if (!$centreon->user->access->admin) {
+            $cAcl = $centreon->user->access->getContactAclConf(
+                array(
+                    'fields'  => array('contact_id'),
+                    'get_row' => 'contact_id',
+                    'keys' => array('contact_id'),
+                    'conditions' => array(
+                        'contact_id' => array(
+                            'IN',
+                            $values
+                        )
+                    )
+                ),
+                false
+            );
+        }
+
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected contacts
+        $query = "SELECT contact_id, contact_name "
+            . "FROM contact "
+            . "WHERE contact_id IN (" . $explodedValues. ") "
+            . "ORDER BY contact_name ";
+
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            # hide unauthorized contacts
+            $hide = false;
+            if (!$centreon->user->access->admin && !in_array($row['contact_id'], $cAcl)) {
+                $hide = true;
+            }
+
+            $items[] = array(
+                'id' => $row['contact_id'],
+                'text' => $row['contact_name'],
+                'hide' => $hide
+            );
+        }
+
+        return $items;
+    }
 }

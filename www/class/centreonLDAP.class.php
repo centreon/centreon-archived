@@ -1006,10 +1006,10 @@ class CentreonLdapAdmin {
      */
     public function getLdapConfigurationList($search = "", $offset = null, $limit = null) {
         $sql = "SELECT ar_id, ar_enable, ar_name, ar_description ";
-        if ($search != "") {
-            $sql .= "WHERE ar_name LIKE '%" . $this->db->escape($search) . "%' ";
-        }
         $sql .= "FROM auth_ressource ";
+        if ($search != "") {
+            $sql .= "WHERE ar_name LIKE '%" . $this->_db->escape($search) . "%' ";
+        }
         $sql .= "ORDER BY ar_name ";
         if (!is_null($offset) && !is_null($limit)) {
             $sql .= "LIMIT $offset,$limit";
