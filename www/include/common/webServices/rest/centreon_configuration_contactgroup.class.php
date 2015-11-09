@@ -87,7 +87,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
             )
         );
 
-        $contactgroupList = array();
+        $contactgroupList['items'] = array();
         foreach ($aclCgs['items'] as $id => $contactgroup) {
             $contactgroupList['items'][] = array(
                 'id' => $id,

@@ -88,7 +88,6 @@ class CentreonContactgroup
             $contactgroups = array_merge($contactgroups, $ldapContactgroups);
     	}
 
-    	asort($contactgroups);
     	return $contactgroups;
     }
 

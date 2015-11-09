@@ -288,6 +288,7 @@
     public function getObjectForSelect2($values = array())
     {
         global $centreon;
+        $items = array();
 
         # get list of authorized hostgroups
         if (!$centreon->user->access->admin) {
@@ -329,14 +330,14 @@
                 $hide = true;
             }
 
-            $tmpValues[] = array(
+            $items[] = array(
                 'id' => $row['hg_id'],
                 'text' => $row['hg_name'],
                 'hide' => $hide
             );
         }
 
-        return $tmpValues;
+        return $items;
     }
 }
 

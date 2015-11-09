@@ -83,5 +83,49 @@ class CentreonHostcategories
         
         return $parameters;
     }
+
+    /**
+     *
+     * @param array $values
+     * @return array
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        global $centreon;
+        $items = array();
+
+        # get list of authorized host categories
+        if (!$centreon->user->access->admin) {
+            $hcAcl = $centreon->user->access->getHostCategories();
+        }
+
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected host categories
+        $query = "SELECT hc_id, hc_name "
+            . "FROM hostcategories "
+            . "WHERE hc_id IN (" . $explodedValues . ") "
+            . "ORDER BY hc_name ";
+
+        $resRetrieval = $this->_db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            # hide unauthorized hostgroups
+            $hide = false;
+            if (!$centreon->user->access->admin && !in_array($row['hc_id'], array_keys($hcAcl))) {
+                $hide = true;
+            }
+
+            $items[] = array(
+                'id' => $row['hc_id'],
+                'text' => $row['hc_name'],
+                'hide' => $hide
+            );
+        }
+
+        return $items;
+    }
 }
 ?>
