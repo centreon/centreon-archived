@@ -361,6 +361,8 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 
         $tpl->assign("m_mon_host", _("Host"));
         $tpl->assign("m_mon_host_info", _("Status Details"));
+        $tpl->assign("m_mon_host_poller", _("Poller"));
+        $tpl->assign("m_mon_host_poller_name", _("Name"));
         $tpl->assign("m_mon_host_services", _("Services"));
         $tpl->assign("header_service_description", _("Services"));
         $tpl->assign("header_service_status", _("Status"));
