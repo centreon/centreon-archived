@@ -1147,14 +1147,21 @@ class CentreonACL {
                 $DBRESULT->free();
             }
         } else {
-            $req = (!is_null($get_service_description)) ? ", service_description " : "";
-            $query = "SELECT host_id, service_id " . $req
-                . "FROM centreon_acl "
-                . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") ";
+            if (!is_null($get_service_description)) {
+                $query = "SELECT acl.host_id, acl.service_id, s.description "
+                    . "FROM centreon_acl acl, services s "
+                    . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") "
+                    . "AND acl.service_id = s.service_id ";
+            } else {
+                $query = "SELECT host_id, service_id "
+                    . "FROM centreon_acl "
+                    . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") ";
+            }
+
             $DBRESULT = $pearDBMonitoring->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 if (!is_null($get_service_description)) {
-                    $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
+                    $tab[$row['host_id']][$row['service_id']] = $row['description'];
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
