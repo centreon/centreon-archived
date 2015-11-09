@@ -4,10 +4,6 @@
 From sources
 ============
 
-.. warning::
-
-  Before upgrading Centreon, please make a database backup.
-
 In order to upgrade Centreon from sources, :ref:`download <downloads>` the
 latest Centreon package.
 
@@ -40,7 +36,7 @@ go back to [Step 01] and install the prerequisites::
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.6.0                                   #
+  #                                    v2.6.6                                   #
   #                                                                             #
   #                               infos@centreon.com                            #
   #                                                                             #

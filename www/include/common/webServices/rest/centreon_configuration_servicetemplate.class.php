@@ -134,7 +134,10 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
             $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
             
-            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
+            $serviceList[] = array(
+                'id' => htmlentities($serviceCompleteId),
+                'text' => $serviceCompleteName
+            );
         }
 
         return array(

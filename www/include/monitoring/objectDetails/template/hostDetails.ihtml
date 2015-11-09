@@ -81,6 +81,18 @@
                     </table>
                     </td>
         <td style="width: 30%; vertical-align: top;" nowrap="nowrap">
+                        <table class="ListTable">
+				<tr class='list_lvl_1'>
+					<td class="ListColHeaderLeft FormHeader" colspan="2"><h4>{$m_mon_host_poller}</h4></td>
+				</tr>
+				<tr class='list_one'>
+					<td class="ListColLeft ColPopup">{$m_mon_host_poller_name}</td>
+                                        <td class="ListColLeft ColPopup">
+                                            <span>{$host_data.instance_name}</span>
+                                        </td>
+				</tr>
+			</table>
+                        <br>
 			<table class="ListTable">
 				<tr class='list_lvl_1'>
 					<td class="ListColHeaderLeft FormHeader" colspan="2"><h4>{$m_mon_host_info}</h4></td>
@@ -172,14 +184,14 @@
 				{if $aclAct.host_schedule_downtime || $admin == 1}	
 					<tr class='list_one'>
 						<td class="ListColLeft" id="host_downtime">
-							<a href='main.php?p=20106&o=ah&host_name={$h.host_name}'>{$m_mon_SCH_downtime}</a>
+							<a href='main.php?p=21001&host_name={$host_data.host_name}'>{$m_mon_SCH_downtime}</a>
 						</td>
 					</tr>
 				{/if}
 				{if $aclAct.host_comment || $admin == 1}						
 					<tr class='list_two'>
 						<td class="ListColLeft" id="host_comment">
-							<a href='main.php?p=20107&o=ah&host_name={$h.host_name}'>{$m_mon_add_comment}</a>
+							<a href='main.php?p=21002&host_name={$host_data.host_name}'>{$m_mon_add_comment}</a>
 						</td>
 					</tr>
 				{/if}
@@ -214,7 +226,7 @@
 				{if ($aclAct.host_submit_result || $admin == true) && $host_data.passive_checks_enabled}
 						<tr class='list_two'>
 							<td class="ListColLeft">
-								<a href='./main.php?p={$p}&o=hpc&cmd=16&host_name={$h.host_name}'>{$m_mon_submit_passive}</a>
+								<a href='./main.php?p={$p}&o=hpc&cmd=16&host_name={$host_data.host_name}'>{$m_mon_submit_passive}</a>
 							</td>
 						</tr>
 					{/if}
@@ -344,7 +356,7 @@
                                                                     <span class="badge {$color_onoff[$host_data.problem_has_been_acknowledged]}" >{$en[$host_data.problem_has_been_acknowledged]}</span>
                                                                 </td>
 					<td class="ListColRight ColPopup">
-                                	<a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name|urlencode}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
+                                	<a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$host_data.host_name|urlencode}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
                                     	<img src={$img_en[$host_data.problem_has_been_acknowledged]} class="ico-16"
                                     		alt="{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}">
     	                                </img>
@@ -370,25 +382,25 @@
 			{if $lcaTopo.70101 || $lcaTopo.20201 || $lcaTopo.40210}
 				{if $url_id && $lcaTopo.7}
 				<tr class='list_one'>
-					<td class="ListColLeft"><a href='./main.php?p=70101&o=t&host_id={$h.host_id}'>{$m_mon_view_identity_file} {$h.host_name}</a></td>
+					<td class="ListColLeft"><a href='./main.php?p=70101&o=t&host_id={$host_data.host_id}'>{$m_mon_view_identity_file} {$host_data.host_name}</a></td>
 				</tr>
 				{/if}
 				{if $url_id && $lcaTopo.20201}
 				<tr class='list_two'>
-					<td class="ListColLeft"><a href='./main.php?p=20201&o=svc&host_name={$h.host_name}'>{$m_mon_all_services} {$h.host_name}</a></td>
+					<td class="ListColLeft"><a href='./main.php?p=20201&o=svc&host_name={$host_data.host_name}'>{$m_mon_all_services} {$host_data.host_name}</a></td>
 				</tr>
 				{/if}
 				{if $url_id && $lcaTopo.40210}
 				<tr class='list_one'>
-					<td class="ListColLeft"><a href='./main.php?host_name={$h.host_name}&period=&start=&end=&o=&p=40210&min='>{$m_mon_all_graphs} {$h.host_name}</a></td>
+					<td class="ListColLeft"><a href='./main.php?host_name={$host_data.host_name}&period=&start=&end=&o=&p=40210&min='>{$m_mon_all_graphs} {$host_data.host_name}</a></td>
 				</tr>
 				{/if}
 			{/if}
 				<tr class='list_one'>
-					<td class="ListColLeft">&#9679;&nbsp;<a href="#ping" name="ping" onClick="window.open('main.php?p=201&host_id={$h.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_ping} {$h.host_name}</a></td>
+					<td class="ListColLeft">&#9679;&nbsp;<a href="#ping" name="ping" onClick="window.open('main.php?p=201&host_id={$host_data.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_ping} {$host_data.host_name}</a></td>
 				</tr>
 				<tr class='list_two'>
-					<td class="ListColLeft">&#9679;&nbsp;<a href="#tracert" name="tracert" onClick="window.open('main.php?p=201&host_id={$h.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_tracert} {$h.host_name}</a></td>
+					<td class="ListColLeft">&#9679;&nbsp;<a href="#tracert" name="tracert" onClick="window.open('main.php?p=201&host_id={$host_data.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_tracert} {$host_data.host_name}</a></td>
 				</tr>
 				{if $h_ext_action_url}
 				<tr class='list_one'>
@@ -499,7 +511,7 @@
 				</tr>
 				{if ($proc_warning && $proc_warning != NO_ACTION) || ($proc_critical && $proc_critical != NO_ACTION)}
 				<tr class='list_two'>
-                    <td class="ListColLeft"><a style='cursor:pointer' onClick="window.open('main.php?p=2020190&o=ticket&type=1&min=1&host_id={$h.host_id}&host_name={$h.host_name}&status={$host_data.current_state}&service_name={$svc_description}&output={$host_data.plugin_output}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');" style="cursor:pointer;">{$m_mon_ticket}</a></td>
+                    <td class="ListColLeft"><a style='cursor:pointer' onClick="window.open('main.php?p=2020190&o=ticket&type=1&min=1&host_id={$host_data.host_id}&host_name={$host_data.host_name}&status={$host_data.current_state}&service_name={$svc_description}&output={$host_data.plugin_output}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');" style="cursor:pointer;">{$m_mon_ticket}</a></td>
                 </tr>
                 {/if}
 			</table>

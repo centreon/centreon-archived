@@ -185,7 +185,7 @@ if(isset($_GET['svc'])){
 if(isset($_GET['svcg'])){
     $svcg = explode(",",$_GET['svcg']);
     $serviceGrpObj = new CentreonServicegroups($pearDB);
-    $serviceGrpArray = $serviceGrpObj->getSerivcesGroups($svcg);
+    $serviceGrpArray = $serviceGrpObj->getServicesGroups($svcg);
 }
 if(isset($_GET['poller'])){
     $poller = explode(",",$_GET['poller']);

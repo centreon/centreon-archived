@@ -702,7 +702,7 @@ UPDATE topology SET topology_page = 20202, topology_group = 7, topology_parent =
 
 DELETE FROM topology_JS WHERE id_page = 20104;
 UPDATE topology SET topology_page = 20203, topology_group = 7, topology_parent = 202, topology_order = 120 WHERE topology_page = 20104;
-UPDATE topology SET topology_name = 'Status summarized by Hostgroups' WHERE topology_page = 20203;
+UPDATE topology SET topology_name = 'Hostgroups Summary' WHERE topology_page = 20203;
 INSERT INTO topology_JS (id_page, PathName_js, Init) VALUES (20203, './include/common/javascript/ajaxMonitoring.js', 'initM');
 DELETE FROM topology WHERE topology_parent = '20203';
 
@@ -780,3 +780,8 @@ UPDATE topology SET topology_group = 11, topology_name = 'Images' WHERE topology
 -- DELETE old links (Donate, Forum, Github)...
 DELETE FROM topology WHERE topology_page IN (50606, 50607, 50605, 50604, 50602, 50105, 5010501, 5010502, 5010503);
 
+-- Set required value in field password
+update cb_type_field_relation set is_required = 0 where cb_type_id in (14, 16 , 28, 29, 30, 31) and cb_field_id = 9;
+
+--Set required field db_port, db_user, db_host and db_name
+update cb_type_field_relation set is_required = 1 where cb_type_id in (14, 16 , 28, 29, 30, 31) and cb_field_id in (7, 8, 10, 18);

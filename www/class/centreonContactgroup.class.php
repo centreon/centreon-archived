@@ -67,15 +67,17 @@ class CentreonContactgroup
     {
         /* Contactgroup from database */
         $contactgroups = array();
+
         $query = "SELECT a.cg_id, a.cg_name, a.cg_ldap_dn, b.ar_name FROM contactgroup a ";
         $query .= " LEFT JOIN auth_ressource b ON a.ar_id = b.ar_id";
         if (false === $withLdap) {
             $query .= " WHERE a.cg_type != 'ldap'";
         }
         $query .= " ORDER BY a.cg_name";
-	    $res = $this->db->query($query);
+
+	$res = $this->db->query($query);
     	while ($contactgroup = $res->fetchRow()) {
-    		$contactgroups[$contactgroup["cg_id"]] = $contactgroup["cg_name"];
+            $contactgroups[$contactgroup["cg_id"]] = $contactgroup["cg_name"];
             if ($withLdap && isset($contactgroup['cg_ldap_dn']) && $contactgroup['cg_ldap_dn'] != "") {
                 $contactgroups[$contactgroup["cg_id"]] = $this->formatLdapContactgroupName($contactgroup["cg_name"], $contactgroup['ar_name']);
             }
@@ -84,8 +86,7 @@ class CentreonContactgroup
 
         # Get ldap contactgroups
     	if ($withLdap && $dbOnly === false) {
-            $ldapContactgroups = $this->getLdapContactgroups();
-            $contactgroups = array_merge($contactgroups, $ldapContactgroups);
+            $contactgroups = $contactgroups + $this->getLdapContactgroups();
     	}
 
     	return $contactgroups;

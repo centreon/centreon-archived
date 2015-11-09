@@ -79,7 +79,10 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
         
         $metaList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $metaList[] = array('id' => $data['meta_id'], 'text' => $data['meta_name']);
+            $metaList[] = array(
+                'id' => $data['meta_id'],
+                'text' => $data['meta_name']
+            );
         }
         
         return array(

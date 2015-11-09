@@ -78,7 +78,10 @@ class CentreonConfigurationGraphtemplate extends CentreonConfigurationObjects
         
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $serviceList[] = array('id' => $data['graph_id'], 'text' => $data['name']);
+            $serviceList[] = array(
+                'id' => $data['graph_id'],
+                'text' => $data['name']
+            );
         }
         
         return array(

@@ -79,7 +79,10 @@ class CentreonConfigurationTimezone extends CentreonConfigurationObjects
         
         $timezoneList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $timezoneList[] = array('id' => $data['timezone_id'], 'text' => $data['timezone_name']);
+            $timezoneList[] = array(
+                'id' => $data['timezone_id'],
+                'text' => $data['timezone_name']
+            );
         }
 
         return array(

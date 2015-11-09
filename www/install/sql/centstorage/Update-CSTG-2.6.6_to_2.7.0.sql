@@ -12,7 +12,6 @@ ALTER TABLE log_action ENGINE=InnoDB;
 ALTER TABLE log_action_modification ENGINE=InnoDB;
 ALTER TABLE log_archive_last_status ENGINE=InnoDB;
 ALTER TABLE log_archive_service ENGINE=InnoDB;
-ALTER TABLE log_snmptt ENGINE=InnoDB;
 ALTER TABLE metrics ENGINE=InnoDB;
 ALTER TABLE statistics ENGINE=InnoDB;
 

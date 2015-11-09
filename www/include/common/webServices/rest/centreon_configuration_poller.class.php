@@ -84,7 +84,10 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
         
         $pollerList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $pollerList[] = array('id' => $data['id'], 'text' => $data['name']);
+            $pollerList[] = array(
+                'id' => $data['id'],
+                'text' => $data['name']
+            );
         }
         
         return array(

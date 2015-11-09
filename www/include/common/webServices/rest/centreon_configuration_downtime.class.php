@@ -82,18 +82,26 @@ class CentreonConfigurationDowntime extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
         
-        $queryDowntime = "SELECT DISTINCT dt.dt_name, dt.dt_id "
+        $queryDowntime = "SELECT SQL_CALC_FOUND_ROWS DISTINCT dt.dt_name, dt.dt_id "
             . "FROM downtime dt "
             . "WHERE dt.dt_name LIKE '%$q%' "
             . "ORDER BY dt.dt_name";
         
         $DBRESULT = $this->pearDB->query($queryDowntime);
+
+        $total = $this->pearDB->numberRows();
         
         $downtimeList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $downtimeList[] = array('id' => htmlentities($data['dt_id']), 'text' => $data['dt_name']);
+            $downtimeList[] = array(
+                'id' => htmlentities($data['dt_id']),
+                'text' => $data['dt_name']
+            );
         }
         
-        return $downtimeList;
+        return array(
+            'items' => $downtimeList,
+            'total' => $total
+        );
     }
 }

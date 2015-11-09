@@ -1118,21 +1118,21 @@ class CentreonACL {
         if ($this->admin) {
             $req = (!is_null($get_service_description)) ? ", s.service_description " : "";
             $query = "SELECT h.host_id, s.service_id " . $req
-                . "FROM host_service_relation hsr, host h, service s "
-                . "WHERE hsr.host_host_id = h.host_id "
-                . "AND h.host_activate = '1' "
-                . "AND hsr.service_service_id = s.service_id "
-                . "AND s.service_activate = '1' ";
+                . "FROM host h "
+                . "LEFT JOIN host_service_relation hsr on hsr.host_host_id = h.host_id "
+                . "LEFT JOIN service s on hsr.service_service_id = s.service_id "
+                . "WHERE h.host_activate = '1' "
+                . "AND (s.service_activate = '1' OR s.service_id is null) ";
             $DBRESULT = $pearDB->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 if (!is_null($get_service_description)) {
                     $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
+                    
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
             }
             $DBRESULT->free();
-
             # Used By EventLogs page Only
             if (!is_null($get_service_description)) {
                 # Get Services attached to hostgroups
@@ -1147,14 +1147,21 @@ class CentreonACL {
                 $DBRESULT->free();
             }
         } else {
-            $req = (!is_null($get_service_description)) ? ", service_description " : "";
-            $query = "SELECT host_id, service_id " . $req
-                . "FROM centreon_acl "
-                . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") ";
+            if (!is_null($get_service_description)) {
+                $query = "SELECT acl.host_id, acl.service_id, s.description "
+                    . "FROM centreon_acl acl "
+                    . "LEFT JOIN services s on acl.service_id = s.service_id "
+                    . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") ";
+            } else {
+                $query = "SELECT host_id, service_id "
+                    . "FROM centreon_acl "
+                    . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") ";
+            }
+
             $DBRESULT = $pearDBMonitoring->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 if (!is_null($get_service_description)) {
-                    $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
+                    $tab[$row['host_id']][$row['service_id']] = $row['description'];
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
@@ -1445,7 +1452,17 @@ class CentreonACL {
         }
 
         # Manage fields
-        $requests['fields'] = implode(', ', isset($options['fields']) ? $options['fields'] : array('*')) . " ";
+        if (isset($options['fields']) && is_array($options['fields'])) {
+            $requests['fields'] = implode(', ', $options['fields']);
+            $tmpFields = preg_replace('/\w+\.(\w+)/', '$1', $options['fields']);
+            $requests['simpleFields'] =  implode(', ', $tmpFields);
+        } else if (isset($options['fields'])) {
+            $requests['fields'] = $options['fields'];
+            $requests['simpleFields'] = preg_replace('/\w+\.(\w+)/', '$1', $options['fields']);
+        } else {
+            $requests['fields'] = '* ';
+            $requests['simpleFields'] = '* ';
+        }
 
         # Manage conditions
         $requests['conditions'] = '';
@@ -1596,7 +1613,7 @@ class CentreonACL {
                 . $empty_exists;
         } else {
             $groupIds = array_keys($this->accessGroups);
-            $query = $request['select'] . $request['fields'] . " "
+            $query = $request['select'] . $request['simpleFields'] . " "
                 . "FROM ( "
                 . "SELECT " . $request['fields'] . " "
                 . "FROM hostgroup_relation, servicegroup_relation,servicegroup,  acl_res_group_relations, acl_resources_hg_relations "
@@ -1649,7 +1666,7 @@ class CentreonACL {
             $from_acl = ", $db_name_acl.centreon_acl";
             $where_acl = " AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") AND $db_name_acl.centreon_acl.host_id = host.host_id AND $db_name_acl.centreon_acl.service_id = service.service_id";
         }
-        $query = $request['select'] . $request['fields'] . " "
+        $query = $request['select'] . $request['simpleFields'] . " "
             . "FROM ( "
             . "SELECT " . $request['fields'] . " "
             . "FROM servicegroup, servicegroup_relation, service, host " . $from_acl
@@ -1775,7 +1792,7 @@ class CentreonACL {
         $request = $this->constructRequest($options);
 
         if ($this->admin) {
-            $query = $request['select'] . $request['fields'] . " "
+            $query = $request['select'] . $request['simpleFields'] . " "
                 . "FROM ( "
                 . "SELECT " . $request['fields'] . " "
                 . "FROM host_service_relation hsr, host h, service s "
@@ -1794,7 +1811,7 @@ class CentreonACL {
                 . "AND hsr.service_service_id = s.service_id "
                 . ") as t ";
         } else {
-            $query = "(" . $request['select'] . $request['fields'] . " "
+            $query = "(" . $request['select'] . $request['simpleFields'] . " "
                 . "FROM ( "
                 . "SELECT " . $request['fields'] . " "
                 . "FROM host_service_relation hsr, host h, service s, $db_name_acl.centreon_acl "
@@ -1948,7 +1965,7 @@ class CentreonACL {
             $pollerfilter = $this->queryBuilder($request['conditions'] ? 'AND' : 'WHERE', 'id', $pollerstring);
         }
 
-        $sql = $request['select'] . $request['fields']
+        $sql = $request['select'] . $request['fields'] . " "
             . "FROM nagios_server "
             . $request['conditions']
             . $pollerfilter;
@@ -2019,12 +2036,12 @@ class CentreonACL {
         
 
         if ($this->admin) {
-            $sql = $request['select'] . $request['fields']
+            $sql = $request['select'] . $request['fields'] . " "
                 . "FROM contactgroup cg "
                 . "WHERE (cg.cg_type = 'local' " . $ldapCondition . ") "
                 . $request['conditions'];
         } else {
-            $sql = $request['select'] . $request['fields']
+            $sql = $request['select'] . $request['fields'] . " "
                 . "FROM acl_group_contactgroups_relations agccgr, contactgroup cg "
                 . "WHERE cg.cg_id = agccgr.cg_cg_id "
                 . "AND (cg.cg_type = 'local' " . $ldapCondition . ") "
@@ -2048,7 +2065,7 @@ class CentreonACL {
     {
         $request = $this->constructRequest($options);
         
-            $sql = $request['select'] . $request['fields']
+            $sql = $request['select'] . $request['fields'] . " "
                 . "FROM acl_groups "
                 . $request['conditions'];
 

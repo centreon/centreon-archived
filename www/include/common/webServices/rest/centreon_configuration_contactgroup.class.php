@@ -87,14 +87,13 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
             )
         );
 
-        $contactgroupList['items'] = array();
+        $contactgroupList = array();
         foreach ($aclCgs['items'] as $id => $contactgroup) {
-            $contactgroupList['items'][] = array(
+            $contactgroupList[] = array(
                 'id' => $id,
                 'text' => $contactgroup
             );
         }
-        $contactgroupList['total'] = $aclCgs['total'];
 
         # get Ldap contactgroups
         $ldapCgs = array();
@@ -107,12 +106,15 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
             $ldapCgs = $cg->getLdapContactgroups($ldapFilter);
         }
         foreach ($ldapCgs as $key => $value) {
-            $contactgroupList['items'][] = array(
+            $contactgroupList[] = array(
                 'id' => $key,
                 'text' => $value
             );
         }
         
-        return $contactgroupList;
+        return array(
+            'items' => $contactgroupList,
+            'total' => $aclCgs['total']
+        );
     }
 }
