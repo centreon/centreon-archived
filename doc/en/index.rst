@@ -21,7 +21,7 @@ Contents:
    exploitation_guide/index
    administration_guide/index
    faq/index
-   extendcentreon/index
+   developer/index
    api/index
 
 Additional online resource:
