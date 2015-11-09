@@ -80,5 +80,7 @@ $color_list_down_hover = "#dfbbbb";
 $bg_image_header = "../Images/bg_header_pink.gif";
 $menu1_bgimg = "../Images/menu_bg_purple.gif";
 
+$menu2_color = "#ffffff";
+
 require_once _CENTREON_PATH_ . "www/Themes/Centreon-2/color_css.php";
 ?>
