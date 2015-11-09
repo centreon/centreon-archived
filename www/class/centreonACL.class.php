@@ -1445,7 +1445,17 @@ class CentreonACL {
         }
 
         # Manage fields
-        $requests['fields'] = implode(', ', isset($options['fields']) ? $options['fields'] : array('*')) . " ";
+        if (isset($options['fields']) && is_array($options['fields'])) {
+            $requests['fields'] = implode(', ', $options['fields']);
+            $tmpFields = preg_replace('/\w+\.(\w+)/', '$1', $options['fields']);
+            $requests['simpleFields'] =  implode(', ', $tmpFields);
+        } else if (isset($options['fields'])) {
+            $requests['fields'] = $options['fields'];
+            $requests['simpleFields'] = preg_replace('/\w+\.(\w+)/', '$1', $options['fields']);
+        } else {
+            $requests['fields'] = '* ';
+            $requests['simpleFields'] = '* ';
+        }
 
         # Manage conditions
         $requests['conditions'] = '';
@@ -1596,7 +1606,7 @@ class CentreonACL {
                 . $empty_exists;
         } else {
             $groupIds = array_keys($this->accessGroups);
-            $query = $request['select'] . $request['fields'] . " "
+            $query = $request['select'] . $request['simpleFields'] . " "
                 . "FROM ( "
                 . "SELECT " . $request['fields'] . " "
                 . "FROM hostgroup_relation, servicegroup_relation,servicegroup,  acl_res_group_relations, acl_resources_hg_relations "

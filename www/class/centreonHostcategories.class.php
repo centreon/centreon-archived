@@ -112,9 +112,9 @@ class CentreonHostcategories
 
         $resRetrieval = $this->_db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
-            # hide unauthorized hostgroups
+            # hide unauthorized host categories
             $hide = false;
-            if (!$centreon->user->access->admin && !in_array($row['hc_id'], array_keys($hcAcl))) {
+            if (!$centreon->user->access->admin && count($hcAcl) && !in_array($row['hc_id'], array_keys($hcAcl))) {
                 $hide = true;
             }
 

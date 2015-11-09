@@ -849,6 +849,7 @@ class CentreonService
                 break;
             case 'service_hPars':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonHost';
                 $parameters['externalObject']['table'] = 'host';
                 $parameters['externalObject']['id'] = 'host_id';
                 $parameters['externalObject']['name'] = 'host_name';
@@ -869,6 +870,7 @@ class CentreonService
                 break;
             case 'service_sgs':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonServicegroups';
                 $parameters['externalObject']['table'] = 'servicegroup';
                 $parameters['externalObject']['id'] = 'sg_id';
                 $parameters['externalObject']['name'] = 'sg_name';

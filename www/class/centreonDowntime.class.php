@@ -925,6 +925,7 @@ class CentreonDowntime
         switch ($field) {
             case 'host_relation':
                 $parameters['type'] = 'relation';
+                $parameters['object'] = 'centreonHost';
                 $parameters['externalObject']['table'] = 'host';
                 $parameters['externalObject']['id'] = 'host_id';
                 $parameters['externalObject']['name'] = 'host_name';
@@ -935,6 +936,7 @@ class CentreonDowntime
                 break;
             case 'hostgroup_relation':
                 $parameters['type'] = 'relation';
+                $parameters['object'] = 'centreonHostgroups';
                 $parameters['externalObject']['table'] = 'hostgroup';
                 $parameters['externalObject']['id'] = 'hg_id';
                 $parameters['externalObject']['name'] = 'hg_name';
@@ -945,6 +947,7 @@ class CentreonDowntime
                 break;
             case 'svc_relation':
                 $parameters['type'] = 'relation';
+                $parameters['object'] = 'centreonService';
                 $parameters['externalObject']['table'] = 'service';
                 $parameters['externalObject']['id'] = 'service_id';
                 $parameters['externalObject']['name'] = 'service_description';
@@ -955,6 +958,7 @@ class CentreonDowntime
                 break;
             case 'svcgroup_relation':
                 $parameters['type'] = 'relation';
+                $parameters['object'] = 'centreonServicegroups';
                 $parameters['externalObject']['table'] = 'servicegroup';
                 $parameters['externalObject']['id'] = 'sg_id';
                 $parameters['externalObject']['name'] = 'sg_name';
