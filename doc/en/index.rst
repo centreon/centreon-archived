@@ -1,8 +1,3 @@
-.. Centreon documentation master file, created by
-   sphinx-quickstart on Wed Nov  7 16:30:34 2012.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to Centreon's documentation!
 ====================================
 
@@ -16,10 +11,10 @@ Contents:
    a_propos/index
    release_notes/index
    installation/index
-   upgrade/index
    configuration_guide/index
    exploitation_guide/index
    administration_guide/index
+   upgrade/index
    faq/index
    developer/index
    api/index
