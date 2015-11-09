@@ -782,3 +782,6 @@ DELETE FROM topology WHERE topology_page IN (50606, 50607, 50605, 50604, 50602, 
 
 -- Set required value in field password
 update cb_type_field_relation set is_required = 0 where cb_type_id in (14, 16 , 28, 29, 30, 31) and cb_field_id = 9;
+
+--Set required field db_port, db_user, db_host and db_name
+update cb_type_field_relation set is_required = 1 where cb_type_id in (14, 16 , 28, 29, 30, 31) and cb_field_id in (7, 8, 10, 18);
