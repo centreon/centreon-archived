@@ -13,7 +13,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   a_propose/index
+   a_propos/index
    release_notes/index
    architecture/index
    installation/index
