@@ -702,7 +702,7 @@ UPDATE topology SET topology_page = 20202, topology_group = 7, topology_parent =
 
 DELETE FROM topology_JS WHERE id_page = 20104;
 UPDATE topology SET topology_page = 20203, topology_group = 7, topology_parent = 202, topology_order = 120 WHERE topology_page = 20104;
-UPDATE topology SET topology_name = 'Status summarized by Hostgroups' WHERE topology_page = 20203;
+UPDATE topology SET topology_name = 'Hostgroups Summary' WHERE topology_page = 20203;
 INSERT INTO topology_JS (id_page, PathName_js, Init) VALUES (20203, './include/common/javascript/ajaxMonitoring.js', 'initM');
 DELETE FROM topology WHERE topology_parent = '20203';
 
