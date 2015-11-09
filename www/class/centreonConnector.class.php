@@ -511,4 +511,35 @@ class CentreonConnector
         
         return $parameters;
     }
+    
+    /**
+     * 
+     * @param array $values
+     * @return array
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        $items = array();
+        
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected connectors
+        $query = "SELECT id, name "
+            . "FROM connector "
+            . "WHERE id IN (" . $explodedValues . ") "
+            . "ORDER BY name ";
+        
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            $items[] = array(
+                'id' => $row['id'],
+                'text' => $row['name']
+            );
+        }
+
+        return $items;
+    }
 }

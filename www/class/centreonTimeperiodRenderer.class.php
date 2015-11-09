@@ -359,6 +359,7 @@ class CentreonTimeperiodRenderer
     /**
      * 
      * @param type $field
+     * @return string
      */
     public static function getDefaultValuesParameters($field)
     {

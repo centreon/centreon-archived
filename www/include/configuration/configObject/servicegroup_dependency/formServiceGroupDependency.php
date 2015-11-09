@@ -94,7 +94,8 @@ $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 $attrServicegroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonServicegroups'
 );
 
 /*

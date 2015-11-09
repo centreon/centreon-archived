@@ -299,27 +299,32 @@ $advancedSelectTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unsel
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonTimeperiod'
 );
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonContact'
 );
 $attrContactgroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonContactgroup'
 );
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonServicetemplates'
 );
 $attrHostcategories = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonHostcategories'
 );
 $attrCommands = array(
     'datasourceOrigin' => 'ajax',
