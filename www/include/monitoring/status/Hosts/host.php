@@ -114,11 +114,10 @@ if (isset($_GET["host_search"])) {
 $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
 
-
 $aStatusHost = array(
-    "h" => "All",
     "h_unhandled" => _("Unhandled Problems"),
-    "hpb" => _("Host Problems")
+    "hpb" => _("Host Problems"),
+    "h" => "All"
 );
 
 include_once("./include/monitoring/status/Common/default_poller.php");
@@ -150,6 +149,14 @@ $tpl->assign("mon_status_information", _("Status information"));
 $form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
 
 $form->addElement('select', 'statusHost', _('Host Status'), $aStatusHost, array('id' => 'statusHost', 'onChange' => "statusHosts(this.value);"));
+
+/* Get default host status by GET */
+if (isset($_GET['o']) && in_array($_GET['o'], array_keys($aStatusHost))) {
+    $form->setDefaults(array('statusHost' => $_GET['o']));
+/* Get default host status in SESSION */
+} elseif (isset($_SESSION['monitoring_host_status'])) {
+    $form->setDefaults(array('statusHost' => $_SESSION['monitoring_host_status']));
+}
 
 $tpl->assign("order", strtolower($order));
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
@@ -271,7 +278,6 @@ $tpl->display("host.ihtml");
 ?>
 <script type='text/javascript'>
     var _keyPrefix;
-    var _originalo = '<?php echo $o; ?>';
 
     jQuery(function () {
         preInit();
@@ -287,7 +293,7 @@ $tpl->display("host.ihtml");
 
     function filterStatus(value, isInit)
     {
-        _o = _originalo;
+        _o = jQuery('#statusHost').val();
         if (value) {
             _o = _keyPrefix + '_' + value;
         } else if (!isInit && _o != 'hpb') {
