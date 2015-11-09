@@ -156,7 +156,10 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
 
         $hostList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $hostList[] = array('id' => htmlentities($data['host_id']), 'text' => $data['host_name']);
+            $hostList[] = array(
+                'id' => htmlentities($data['host_id']),
+                'text' => $data['host_name']
+            );
         }
  
         return array(

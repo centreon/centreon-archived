@@ -101,7 +101,10 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         
         $hostcategoryList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $hostcategoryList[] = array('id' => htmlentities($data['hc_id']), 'text' => $data['hc_name']);
+            $hostcategoryList[] = array(
+                'id' => htmlentities($data['hc_id']),
+                'text' => $data['hc_name']
+            );
         }
         
         return array(

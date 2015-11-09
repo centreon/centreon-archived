@@ -154,7 +154,10 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
 
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $serviceList[] = array('id' => $data['host_id'] . '_' . $data['service_id'], 'text' => $data['host_name'] . ' - ' . $data['service_description']);
+            $serviceList[] = array(
+                'id' => $data['host_id'] . '_' . $data['service_id'],
+                'text' => $data['host_name'] . ' - ' . $data['service_description']
+            );
         }
 
         return array(
