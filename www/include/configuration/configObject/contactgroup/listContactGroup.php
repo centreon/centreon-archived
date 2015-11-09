@@ -130,7 +130,7 @@
 	/*
 	 * Different messages we put in the template
 	 */
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?"), "view_notif" => _("View contact group notifications")));
 
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
