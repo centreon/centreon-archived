@@ -780,3 +780,6 @@ UPDATE topology SET topology_group = 11, topology_name = 'Images' WHERE topology
 -- DELETE old links (Donate, Forum, Github)...
 DELETE FROM topology WHERE topology_page IN (50606, 50607, 50605, 50604, 50602, 50105, 5010501, 5010502, 5010503);
 
+-- Apply patch
+ALTER TABLE `traps`
+CHANGE COLUMN `traps_advanced_treatment_default` `traps_advanced_treatment_default` ENUM('0','1','2') NULL DEFAULT '0';

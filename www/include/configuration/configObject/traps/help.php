@@ -25,8 +25,7 @@ $help["traps_exec_interval_type"] = dgettext("help", "Whether execution interval
 $help["traps_exec_method"] = dgettext("help", "Defines the trap execution method");
 $help["traps_downtime"] = dgettext("help", "Skip trap if host or service is in downtime when centreontrapd proceeds. 'History' option is more accurate but needs more powers. The option works only with centreon-broker AND central mode.");
 $help["traps_output_transform"] = dgettext("help", "Regexp for removing or change some characters in output message (Example: s/\|/-/g).");
-$help["traps_advanced_treatment_default"] = dgettext("help", "Will not submit result in case no rules match");
+$help["traps_advanced_treatment_default"] = dgettext("help", "Submit or not the status to the monitoring engine, related to the rules");
 $help["traps_timeout"] = dgettext("help", "Maximum execution time of trap processing. This includes Preexec commands, submit command and special command");
 $help["traps_customcode"] = dgettext("help", "Custom Perl code. Will be executed with no change (security issue. Need to set centreontrapd secure_mode to '1')");
 // ?>
-

@@ -310,11 +310,7 @@ $form->addElement(
 
 $form->addElement('textarea', 'traps_customcode', _("Custom code"), $attrsTextarea);
 
-$form->addElement(
-        'checkbox',
-        'traps_advanced_treatment_default',
-        _('Disable submit result if no matched rules')
-        );
+$form->addElement('select', 'traps_advanced_treatment_default', _("Advanced matching behavior"), array(0=>_("If no match, submit default status"), 1=>_("If no match, disable submit"), 2=>_("If match, disable submit")), array('id' => 'traps_advanced_treatment'));
     
 $excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("None"), '0');
 $excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("By OID"), '1');
