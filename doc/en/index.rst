@@ -13,15 +13,16 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   a_propose/index
+   a_propos/index
    release_notes/index
    installation/index
    upgrade/index
-   user/index
-   guide_exploitation/index
+   configuration_guide/index
+   exploitation_guide/index
+   administration_guide/index
    faq/index
    extendcentreon/index
-   clapi/index
+   api/index
 
 Additional online resource:
 
