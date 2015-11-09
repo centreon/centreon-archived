@@ -1,6 +1,6 @@
-==========================
+########
 A propos
-==========================
+########
 
 Centreon est un logiciel libre de supervision Open Source, édité par la 
 société française Centreon. Il mesure la disponibilité et la performance 
