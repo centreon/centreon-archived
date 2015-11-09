@@ -1,24 +1,48 @@
 .. _upgrade_from_packages:
 
-=============
-From packages
-=============
+=================
+Upgrade using RPM
+=================
 
-.. warning::
+In order to update the Centreon monitoring interface, simply run the following command:
 
-   Before upgrading Centreon, please make a database backup.
+ ::
 
-********************************************
-Upgrade from Centreon version prior to 2.4.0
-********************************************
+ yum update centreon
 
-The RPM structure has changed between Centreon 2.3.x and Centreon 2.4.0.
+Then, if all is ok, go on the Centreon interface and log out and follow the steps :
 
-In order to upgrade Centreon, you must choose between two base templates:
-``Centreon Engine and Centreon Broker`` or ``Nagios and Ndo2db``.
+Presentation
+------------
 
-This choice is based on your monitoring engine.
+.. image:: /_static/images/upgrade/step01.png
+   :align: center
 
-Check the :ref:`Centreon Enterprise Server documentation
-<ces:upgrade>` to learn more about upgrading.
+Check dependencies
+------------------
+
+This step checks the dependencies on php modules.
+
+.. image:: /_static/images/upgrade/step02.png
+   :align: center
+
+Release notes
+-------------
+
+.. image:: /_static/images/upgrade/step03.png
+   :align: center
+
+Upgrade the database
+--------------------
+
+This step upgrades database model and data, version by version.
+
+.. image:: /_static/images/upgrade/step04.png
+   :align: center
+
+Finish
+------
+
+.. image:: /_static/images/upgrade/step05.png
+   :align: center
 
