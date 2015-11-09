@@ -364,6 +364,7 @@ class CentreonContactgroup
     public function getObjectForSelect2($values = array())
     {
         global $centreon;
+        $items = array();
 
         # get list of authorized contactgroups
         if (!$centreon->user->access->admin) {
@@ -394,14 +395,6 @@ class CentreonContactgroup
             . "WHERE cg.cg_id IN (" . $explodedValues . ") "
             . "ORDER BY cg.cg_name ";
 
-        $res = $this->db->query($query);
-        while ($contactgroup = $res->fetchRow()) {
-            $contactgroups[$contactgroup["cg_id"]] = $contactgroup["cg_name"];
-            if (isset($contactgroup['cg_ldap_dn']) && $contactgroup['cg_ldap_dn'] != "") {
-                $contactgroups[$contactgroup["cg_id"]] = $this->formatLdapContactgroupName($contactgroup['cg_name'], $contactgroup['ar_name']);
-            }
-        }
-
         $resRetrieval = $this->db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
             if (isset($row['cg_ldap_dn']) && $row['cg_ldap_dn'] != "") {
@@ -418,13 +411,13 @@ class CentreonContactgroup
                 $hide = true;
             }
 
-            $tmpValues[] = array(
+            $items[] = array(
                 'id' => $cgId,
                 'text' =>  htmlentities($cgName),
                 'hide' => $hide
             );
         }
 
-        return $tmpValues;
+        return $items;
     }
 }

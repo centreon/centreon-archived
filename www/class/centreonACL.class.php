@@ -1322,6 +1322,8 @@ class CentreonACL {
         $requests['select'] = 'SELECT ';
         if (isset($options['total']) && $options['total'] == true) {
             $requests['select'] .= 'SQL_CALC_FOUND_ROWS DISTINCT ';
+        } else if (isset($options['distinct']) && $options['distinct'] == true) {
+            $requests['select'] .= 'DISTINCT ';
         }
 
         # Manage fields
@@ -1586,7 +1588,7 @@ class CentreonACL {
             );
         }
 
-        $request = $this->constructRequest($options);
+        $request = $this->constructRequest($options, true);
 
         $searchCondition = "";
         if ($search != "") {
@@ -1608,6 +1610,7 @@ class CentreonACL {
                 . $emptyJoin
                 . "WHERE host_register = '1' "
                 . "AND host_activate = '1' "
+                . $request['conditions']
                 . $searchCondition;
         } else {
             $groupIds = array_keys($this->accessGroups);
@@ -1622,6 +1625,7 @@ class CentreonACL {
                 . $empty_join
                 . "WHERE host.host_register = '1' "
                 . "AND host.host_activate = '1' "
+                . $request['conditions']
                 . $searchCondition;
         }
 
