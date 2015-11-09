@@ -1,6 +1,8 @@
-##############################
-Release notes For Centreon 2.5
-##############################
+############
+Centreon 2.5
+############
+
+Please find here the release notes dedicated to the last 2.5.x version of Centreon. 
 
 .. toctree::
     :maxdepth: 1
@@ -12,4 +14,4 @@ Release notes For Centreon 2.5
     centreon-2.5.1
     centreon-2.5.0
 
-
+Note: higher versions are now available in download on our `download portal <https://download.centreon.com>`_. It's high recommanded to update your plateform in order to avoid bugs or security problems.
