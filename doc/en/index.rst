@@ -17,6 +17,7 @@ Contents:
    release_notes/index
    installation/index
    upgrade/index
+   configuration_guide/index
    user/index
    guide_exploitation/index
    faq/index
