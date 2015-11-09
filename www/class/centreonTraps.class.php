@@ -584,5 +584,36 @@ class CentreonTraps
         
         return $parameters;
     }
+    
+    /**
+     * 
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        $items = array();
+        
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected traps
+        $query = "SELECT traps_id, traps_name "
+            . "FROM traps "
+            . "WHERE traps_id IN (" . $explodedValues . ") "
+            . "ORDER BY traps_name ";
+        
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            $items[] = array(
+                'id' => $row['traps_id'],
+                'text' => $row['traps_name']
+            );
+        }
+
+        return $items;
+    }
 }
 ?>

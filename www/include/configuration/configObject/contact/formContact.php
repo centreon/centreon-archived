@@ -246,7 +246,8 @@ $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonTimeperiod'
 );
 $attrCommands = array(
     'datasourceOrigin' => 'ajax',
@@ -255,7 +256,8 @@ $attrCommands = array(
 $attrContactgroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonContactgroup'
 );
 $attrAclgroups = array(
     'datasourceOrigin' => 'ajax',

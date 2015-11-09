@@ -83,7 +83,8 @@
     $attrHosts = array(
         'datasourceOrigin' => 'ajax',
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
-        'multiple' => true
+        'multiple' => true,
+        'linkedObject' => 'centreonHost'
     );
     $attrHostgroups = array(
         'datasourceOrigin' => 'ajax',

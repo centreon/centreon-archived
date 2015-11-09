@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -37,50 +38,24 @@
  */
 
 /**
- *
- * Enter description here ...
- * @author jmathis
- *
+ *  
  */
-class CentreonServicecategories
+class CentreonTimeperiod
 {
-    protected $_db;
-
-    /*
-     * constructor
+    /**
+     *
+     * @var type 
      */
-    public function __construct($pearDB)
-    {
-        $this->_db = $pearDB;
-    }
+    protected $db;
     
     /**
-     * 
-     * @param integer $field
-     * @return array
+     *  Constructor
+     *
+     *  @param CentreonDB $db
      */
-    public static function getDefaultValuesParameters($field)
+    public function __construct($db)
     {
-        $parameters = array();
-        $parameters['currentObject']['table'] = 'service_categories';
-        $parameters['currentObject']['id'] = 'sc_id';
-        $parameters['currentObject']['name'] = 'sc_name';
-        $parameters['currentObject']['comparator'] = 'sc_id';
-
-        switch ($field) {
-            case 'sc_svcTpl':
-                $parameters['type'] = 'relation';
-                $parameters['externalObject']['table'] = 'service';
-                $parameters['externalObject']['id'] = 'service_id';
-                $parameters['externalObject']['name'] = 'service_description';
-                $parameters['externalObject']['comparator'] = 'service_id';
-                $parameters['relationObject']['table'] = 'service_categories_relation';
-                $parameters['relationObject']['field'] = 'service_service_id';
-                $parameters['relationObject']['comparator'] = 'sc_id';
-                break;
-        }
-        
-        return $parameters;
+        $this->db = $db;
     }
     
     /**
@@ -97,21 +72,22 @@ class CentreonServicecategories
             $explodedValues = "''";
         }
 
-        # get list of selected servicecategories
-        $query = "SELECT sc_id, sc_name "
-            . "FROM service_categories "
-            . "WHERE sc_id IN (" . $explodedValues . ") "
-            . "ORDER BY sc_name ";
+        # get list of selected timeperiods
+        $query = "SELECT tp_id, tp_name "
+            . "FROM timeperiod "
+            . "WHERE tp_id IN (" . $explodedValues . ") "
+            . "ORDER BY tp_name ";
         
         $resRetrieval = $this->db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
-                'id' => $row['sc_id'],
-                'text' => $row['sc_name']
+                'id' => $row['tp_id'],
+                'text' => $row['tp_name']
             );
         }
 
         return $items;
     }
 }
+
 ?>

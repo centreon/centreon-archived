@@ -286,4 +286,35 @@ class CentreonCommand
         
         return $macrosDesc;
     }
+    
+    /**
+     * 
+     * @param array $values
+     * @return array
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        $items = array();
+        
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected connectors
+        $query = "SELECT command_id, command_name "
+            . "FROM command "
+            . "WHERE command_id IN (" . $explodedValues . ") "
+            . "ORDER BY command_name ";
+        
+        $resRetrieval = $this->_db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            $items[] = array(
+                'id' => $row['command_id'],
+                'text' => $row['command_name']
+            );
+        }
+
+        return $items;
+    }
 }

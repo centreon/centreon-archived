@@ -109,12 +109,14 @@ $attrManufacturer= array(
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonService'
 );
 $attrServicetemplates = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonServicetemplates'
 );
 
 /*

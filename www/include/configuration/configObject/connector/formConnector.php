@@ -127,7 +127,8 @@ try {
         'datasourceOrigin' => 'ajax',
         'multiple' => true,
         'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=connector&field=command_id&id=' . $connector_id,
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list'
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list',
+        'linkedObject' => 'centreonCommand'
     );
 
     $form->addElement('text', 'connector_name', _("Connector Name"), $attrsText);

@@ -188,17 +188,20 @@ $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonService'
 );
 $attrServicetemplates = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list&l=1',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonServicetemplates'
 );
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonHostgroups'
 );
 
 #

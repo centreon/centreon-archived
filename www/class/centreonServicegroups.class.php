@@ -160,6 +160,37 @@
         
         return $parameters;
     }
+    
+    /**
+     * 
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        $items = array();
+        
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected servicegroups
+        $query = "SELECT sg_id, sg_name "
+            . "FROM servicegroup "
+            . "WHERE sg_id IN (" . $explodedValues . ") "
+            . "ORDER BY sg_name ";
+        
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            $items[] = array(
+                'id' => $row['sg_id'],
+                'text' => $row['sg_name']
+            );
+        }
+
+        return $items;
+    }
 }
 
 ?>
