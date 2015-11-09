@@ -12,6 +12,10 @@ In order to update the Centreon monitoring interface, simply run the following c
 
 Then, if all is ok, go on the Centreon interface and log out and follow the steps :
 
+****************
+Web installation
+****************
+
 Presentation
 ------------
 
