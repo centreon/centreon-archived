@@ -1448,9 +1448,13 @@ class CentreonHost
     {
         global $centreon;
         $items = array();
+        $useAcl = false;
+        if (!$centreon->user->access->admin && $register == '1') {
+            $useAcl = true;
+        }
 
         # get list of authorized hosts
-        if (!$centreon->user->access->admin) {
+        if ($useAcl) {
             $hAcl = $centreon->user->access->getHostAclConf(
                 null,
                 'broker',
@@ -1486,7 +1490,7 @@ class CentreonHost
         while ($row = $resRetrieval->fetchRow()) {
             # hide unauthorized hosts
             $hide = false;
-            if (!$centreon->user->access->admin && !in_array($row['host_id'], $hAcl)) {
+            if ($useAcl && !in_array($row['host_id'], $hAcl)) {
                 $hide = true;
             }
 
