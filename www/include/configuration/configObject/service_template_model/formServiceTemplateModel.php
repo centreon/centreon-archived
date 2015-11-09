@@ -399,9 +399,9 @@ $form->addElement('static', 'tplText', _("Using a Template Model allows you to h
 
 $attrHosttemplate1 = array_merge(
     $attrHosttemplates,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=defaultValues&target=service&field=service_hPars&id=' . $service_id)
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=defaultValues&target=servicetemplates&field=service_hPars&id=' . $service_id)
 );
-$form->addElement('select2', 'service_hPars', _("Service Template"), array(), $attrHosttemplate1);
+$form->addElement('select2', 'service_hPars', _("Linked to host templates"), array(), $attrHosttemplate1);
 
 #
 ## Check information

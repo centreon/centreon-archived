@@ -82,5 +82,49 @@ class CentreonServicecategories
         
         return $parameters;
     }
+
+    /**
+     *
+     * @param array $values
+     * @return array
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        global $centreon;
+        $items = array();
+
+        # get list of authorized service categories
+        if (!$centreon->user->access->admin) {
+            $scAcl = $centreon->user->access->getServiceCategories();
+        }
+
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected service categories
+        $query = "SELECT sc_id, sc_name "
+            . "FROM servicecategories "
+            . "WHERE sc_id IN (" . $explodedValues . ") "
+            . "ORDER BY sc_name ";
+
+        $resRetrieval = $this->_db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            # hide unauthorized service categories
+            $hide = false;
+            if (!$centreon->user->access->admin && count($scAcl) && !in_array($row['sc_id'], array_keys($scAcl))) {
+                $hide = true;
+            }
+
+            $items[] = array(
+                'id' => $row['sc_id'],
+                'text' => $row['sc_name'],
+                'hide' => $hide
+            );
+        }
+
+        return $items;
+    }
 }
 ?>

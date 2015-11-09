@@ -1,8 +1,8 @@
 .. _exploitationguide:
 
-##################
-Exploitation guide
-##################
+##############
+Administration
+##############
 
 .. toctree::
    :maxdepth: 2
