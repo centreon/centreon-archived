@@ -22,7 +22,7 @@ Contents:
    administration_guide/index
    faq/index
    extendcentreon/index
-   clapi/index
+   api/index
 
 Additional online resource:
 
