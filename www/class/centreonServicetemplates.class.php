@@ -53,6 +53,40 @@ class CentreonServicetemplates extends CentreonService
     {
         parent::__construct($db);
     }
+
+    /**
+     *
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'service';
+        $parameters['currentObject']['id'] = 'service_id';
+        $parameters['currentObject']['name'] = 'service_description';
+        $parameters['currentObject']['comparator'] = 'service_id';
+
+        switch ($field) {
+            case 'service_hPars':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonHosttemplates';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'host_service_relation';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            default:
+                $parameters = parent::getDefaultValuesParameters($field);
+                break;
+        }
+
+        return $parameters;
+    }
+
     /**
      * 
      * @param type $values
