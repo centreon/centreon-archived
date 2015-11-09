@@ -1275,6 +1275,7 @@ class CentreonHost
                 break;
             case 'host_hgs':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonHostgroups';
                 $parameters['externalObject']['table'] = 'hostgroup';
                 $parameters['externalObject']['id'] = 'hg_id';
                 $parameters['externalObject']['name'] = 'hg_name';
@@ -1455,6 +1456,7 @@ class CentreonHost
     public function getObjectForSelect2($values = array(), $register = '1')
     {
         global $centreon;
+        $items = array();
 
         # get list of authorized hosts
         if (!$centreon->user->access->admin) {
@@ -1497,14 +1499,14 @@ class CentreonHost
                 $hide = true;
             }
 
-            $tmpValues[] = array(
+            $items[] = array(
                 'id' => $row['host_id'],
                 'text' => $row['host_name'],
                 'hide' => $hide
             );
         }
 
-        return $tmpValues;
+        return $items;
     }
 }
 

@@ -1615,16 +1615,16 @@ class CentreonACL {
         } else {
             $groupIds = array_keys($this->accessGroups);
             if ($host_empty) {
-                $empty_join .= "AND $db_name_acl.centreon_acl.service_id IS NOT NULL ";
+                $emptyJoin .= "AND $db_name_acl.centreon_acl.service_id IS NOT NULL ";
             }
             $query = $request['select'] . $request['fields'] . " "
                 . "FROM host "
                 . "JOIN $db_name_acl.centreon_acl "
                 . "ON $db_name_acl.centreon_acl.host_id = host.host_id "
                 . "AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") "
-                . $empty_join
                 . "WHERE host.host_register = '1' "
                 . "AND host.host_activate = '1' "
+                . $emptyJoin
                 . $request['conditions']
                 . $searchCondition;
         }
@@ -1714,7 +1714,7 @@ class CentreonACL {
     /**
      * Get HostGroup from ACL and configuration DB
      */
-    public function getHostGroupAclConf($search = null, $broker = null, $options = null, $hg_empty = null) {
+    public function getHostGroupAclConf($search = null, $broker = null, $options = null, $hg_empty = false) {
         $hg = array();
 
         if (is_null($options)) {
@@ -1725,7 +1725,7 @@ class CentreonACL {
                 'get_row' => 'hg_name');
         }
 
-        $request = $this->constructRequest($options);
+        $request = $this->constructRequest($options, true);
 
         $searchCondition = "";
         if ($search != "") {
@@ -1733,13 +1733,14 @@ class CentreonACL {
         }
         if ($this->admin) {
             $empty_exists = "";
-            if (!is_null($hg_empty)) {
+            if ($hg_empty) {
                 $empty_exists = 'AND EXISTS (SELECT * FROM hostgroup_relation WHERE (hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup_relation.host_host_id IS NOT NULL)) ';
             }
             # We should check if host is activate (maybe)
             $query = $request['select'] . $request['fields'] . " "
                 . "FROM hostgroup "
                 . "WHERE hg_activate = '1' "
+                . $request['conditions']
                 . $searchCondition
                 . $empty_exists;
         } else {
@@ -1751,6 +1752,7 @@ class CentreonACL {
                 . "AND acl_res_group_relations.acl_group_id  IN (" . implode(',', $groupIds) . ") "
                 . "AND acl_res_group_relations.acl_res_id = acl_resources_hg_relations.acl_res_id "
                 . "AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id "
+                . $request['conditions']
                 . $searchCondition;
         }
 
