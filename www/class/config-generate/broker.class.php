@@ -36,6 +36,9 @@ class Broker extends AbstractObjectXML {
     protected $exclude_parameters = array(
         'blockId'
     );
+    protected $authorized_empty_field = array(
+        'db_password'
+    );
     protected $stmt_engine = null;
     protected $stmt_broker = null;
     protected $stmt_broker_parameters = null;
@@ -90,7 +93,9 @@ class Broker extends AbstractObjectXML {
             # Flow parameters
             foreach ($resultParameters as $key => $value) {
                 foreach ($value as $subvalue) {
-                    if (in_array($subvalue['config_key'], $this->exclude_parameters) || trim($subvalue['config_value']) == '') {
+                    if (in_array($subvalue['config_key'], $this->exclude_parameters)) {
+                        continue;
+                    } else if(trim($subvalue['config_value']) == '' && !in_array($subvalue['config_key'], $this->authorized_empty_field)) {
                         continue;
                     } else if ($subvalue['config_key'] == 'category') {
                         $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] = $subvalue['config_value'];
