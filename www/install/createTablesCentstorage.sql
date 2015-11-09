@@ -329,22 +329,6 @@ LOCK TABLES `log_archive_service` WRITE;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `log_snmptt` (
-  `trap_id` int(11) NOT NULL AUTO_INCREMENT,
-  `trap_oid` text,
-  `trap_ip` varchar(50) DEFAULT NULL,
-  `trap_community` varchar(50) DEFAULT NULL,
-  `trap_infos` text,
-  PRIMARY KEY (`trap_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-LOCK TABLES `log_snmptt` WRITE;
-/*!40000 ALTER TABLE `log_snmptt` DISABLE KEYS */;
-/*!40000 ALTER TABLE `log_snmptt` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `metrics` (
   `metric_id` int(11) NOT NULL AUTO_INCREMENT,
   `index_id` int(11) DEFAULT NULL,

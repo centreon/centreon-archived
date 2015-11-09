@@ -1118,21 +1118,21 @@ class CentreonACL {
         if ($this->admin) {
             $req = (!is_null($get_service_description)) ? ", s.service_description " : "";
             $query = "SELECT h.host_id, s.service_id " . $req
-                . "FROM host_service_relation hsr, host h, service s "
-                . "WHERE hsr.host_host_id = h.host_id "
-                . "AND h.host_activate = '1' "
-                . "AND hsr.service_service_id = s.service_id "
-                . "AND s.service_activate = '1' ";
+                . "FROM host h "
+                . "LEFT JOIN host_service_relation hsr on hsr.host_host_id = h.host_id "
+                . "LEFT JOIN service s on hsr.service_service_id = s.service_id "
+                . "WHERE h.host_activate = '1' "
+                . "AND (s.service_activate = '1' OR s.service_id is null) ";
             $DBRESULT = $pearDB->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 if (!is_null($get_service_description)) {
                     $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
+                    
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
             }
             $DBRESULT->free();
-
             # Used By EventLogs page Only
             if (!is_null($get_service_description)) {
                 # Get Services attached to hostgroups
@@ -1149,9 +1149,9 @@ class CentreonACL {
         } else {
             if (!is_null($get_service_description)) {
                 $query = "SELECT acl.host_id, acl.service_id, s.description "
-                    . "FROM centreon_acl acl, services s "
-                    . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") "
-                    . "AND acl.service_id = s.service_id ";
+                    . "FROM centreon_acl acl "
+                    . "LEFT JOIN services s on acl.service_id = s.service_id "
+                    . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") ";
             } else {
                 $query = "SELECT host_id, service_id "
                     . "FROM centreon_acl "
