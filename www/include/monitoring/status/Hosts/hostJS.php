@@ -345,5 +345,4 @@ function toggleFields(fixed)
 		dur.disabled = false;
 	}
 }
-
-</SCRIPT>
+</script>

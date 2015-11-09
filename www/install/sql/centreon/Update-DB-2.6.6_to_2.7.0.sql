@@ -698,7 +698,7 @@ UPDATE topology SET topology_name = 'Services by Servicegroup', topology_group =
 
 -- Hosts pages
 DELETE FROM topology_JS WHERE id_page = 20102;
-UPDATE topology SET topology_page = 20202, topology_group = 7, topology_parent = 202, topology_order = 30 WHERE topology_page = 20102; 
+UPDATE topology SET topology_page = 20202, topology_group = 7, topology_parent = 202, topology_order = 30, topology_url_opt = NULL WHERE topology_page = 20102; 
 
 DELETE FROM topology_JS WHERE id_page = 20104;
 UPDATE topology SET topology_page = 20203, topology_group = 7, topology_parent = 202, topology_order = 120 WHERE topology_page = 20104;
