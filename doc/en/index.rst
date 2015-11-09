@@ -18,8 +18,8 @@ Contents:
    installation/index
    upgrade/index
    configuration_guide/index
-   user/index
-   guide_exploitation/index
+   exploitation_guide/index
+   administration_guide/index
    faq/index
    extendcentreon/index
    clapi/index
