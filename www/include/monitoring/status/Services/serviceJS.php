@@ -350,4 +350,4 @@ var _criticality_id = 0;
 			dur.disabled = false;
 		}
 	}
-</SCRIPT>
+</script>

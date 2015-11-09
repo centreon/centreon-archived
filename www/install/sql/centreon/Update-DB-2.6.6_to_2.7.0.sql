@@ -691,7 +691,7 @@ DELETE FROM topology WHERE topology_page = 20219;
 
 -- Move service pages
 UPDATE topology SET topology_name = 'Status Details' WHERE topology_page = 202;
-UPDATE topology SET topology_name = 'Services' WHERE topology_name = 'All Services' AND topology_page = 20201;
+UPDATE topology SET topology_name = 'Services', topology_url_opt = NULL WHERE topology_name = 'All Services' AND topology_page = 20201;
 UPDATE topology SET topology_name = 'Services Grid', topology_group = 7 WHERE topology_name = 'Details' AND topology_page = 20204;
 UPDATE topology SET topology_name = 'Services by Hostgroup', topology_group = 7 WHERE topology_name = 'Details' AND topology_page = 20209;
 UPDATE topology SET topology_name = 'Services by Servicegroup', topology_group = 7, topology_order = 80 WHERE topology_name = 'Details' AND topology_page = 20212;

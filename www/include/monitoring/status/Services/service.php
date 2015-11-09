@@ -309,9 +309,9 @@ $statusList = array(
     "pending" => _("Pending"));
 
 $statusService = array(
-    "svc" => "All",
     "svc_unhandled" => _("Unhandled Problems"),
-    "svcpb" => _("Service Problems")
+    "svcpb" => _("Service Problems"),
+    "svc" => "All"
 );
 
 if ($o == "svc") {
@@ -336,6 +336,14 @@ if (isset($defaultStatus)) {
 }
 
 $form->addElement('select', 'statusService', _('Service Status'), $statusService, array('id' => 'statusService', 'onChange' => "statusServices(this.value);"));
+
+/* Get default host status by GET */
+if (isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService))) {
+    $form->setDefaults(array('statusService' => $_GET['o']));
+/* Get default host status in SESSION */
+} elseif (isset($_SESSION['monitoring_service_status'])) {
+    $form->setDefaults(array('statusService' => $_SESSION['monitoring_service_status']));
+}
 
 $criticality = new CentreonCriticality($pearDB);
 $crits = $criticality->getList(null, "level", 'ASC', null, null, true);
@@ -363,7 +371,6 @@ $tpl->display("service.ihtml");
 ?>
 <script type='text/javascript'>
     var _keyPrefix;
-    var _originalo = '<?php echo $o; ?>';
 
     jQuery(function () {
         preInit();
@@ -379,7 +386,7 @@ $tpl->display("service.ihtml");
 
     function filterStatus(value, isInit)
     {
-        _o = _originalo;
+        _o = jQuery('#statusService').val();
         if (value) {
             _o = _keyPrefix + '_' + value;
         } else if (!isInit && _o != 'svcpb') {
