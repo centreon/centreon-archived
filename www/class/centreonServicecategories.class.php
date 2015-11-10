@@ -105,7 +105,7 @@ class CentreonServicecategories
 
         # get list of selected service categories
         $query = "SELECT sc_id, sc_name "
-            . "FROM servicecategories "
+            . "FROM service_categories "
             . "WHERE sc_id IN (" . $explodedValues . ") "
             . "ORDER BY sc_name ";
 
