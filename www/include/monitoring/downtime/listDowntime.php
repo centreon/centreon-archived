@@ -146,7 +146,8 @@ if (!$view_all) {
 if (!$is_admin) {
     $request .= " AND h.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
 }
-$request .= (isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
+$request .= (isset($search_service) && $search_service != "" ? "AND 1 = 0 " : "") .
+            (isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
             (isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
             (isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
             (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ? " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .

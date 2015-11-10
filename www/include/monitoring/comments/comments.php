@@ -65,10 +65,6 @@ switch ($o)	{
 	case "ah" :
 		require_once($path."AddHostComment.php");
 		break;
-	case "dh" :
-		DeleteComment("HOST",isset($_GET["select"]) ? $_GET["select"] : array());
-		require_once($path."listComment.php");
-		break;
 	case "vh" :
 		require_once($path."listComment.php");
 		break;
@@ -76,9 +72,14 @@ switch ($o)	{
 		require_once($path."AddSvcComment.php");
 		break;
 	case "ds" :
-		DeleteComment("SVC",isset($_GET["select"]) ? $_GET["select"] : array());
-		require_once($path."listComment.php");
-		break;
+            if (isset($_GET["select"])) {
+                foreach ($_GET["select"] as $key => $value) {
+                    $res = explode(';', urldecode($key));
+                    DeleteComment($res[0], array($res[1] . ';' . $res[2] => 'on'));
+                }
+            }
+            require_once($path."listComment.php");
+            break;
 	case "vs" :
 		require_once($path."listComment.php");
 		break;

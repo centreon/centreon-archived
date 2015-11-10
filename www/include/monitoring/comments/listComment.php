@@ -121,18 +121,18 @@ $rq2 .= ' UNION ';
 /*
  * Host Comments
  */
-$rq2 .= "SELECT c.internal_id, c.entry_time, c.author, c.data, c.persistent, c.host_id, c.service_id, h.name AS host_name, '-' AS service_description " .
-  "FROM comments c, hosts h, services s ";
+$rq2 .= "SELECT c.internal_id, c.entry_time, c.author, c.data, c.persistent, c.host_id, '' as service_id, h.name AS host_name, '' AS service_description " .
+  "FROM comments c, hosts h ";
 if (!$is_admin) {
   $rq2 .= ", centreon_acl acl ";
 }
-$rq2 .= "WHERE c.host_id = h.host_id AND c.service_id = s.service_id AND h.host_id = s.host_id AND c.service_id IS NULL";
-$rq2 .= " AND c.expires = '0' AND h.enabled = 1 AND s.enabled = 1 ";
+$rq2 .= "WHERE c.host_id = h.host_id AND c.service_id IS NULL";
+$rq2 .= " AND c.expires = '0' AND h.enabled = 1 ";
 $rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
 if (!$is_admin) {
-  $rq2 .= " AND s.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
+  $rq2 .= " AND h.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
 }
-$rq2 .= (isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "");
+$rq2 .= (isset($search_service) && $search_service != "" ? " AND 1 = 0" : "");
 $rq2 .= (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "");
 $rq2 .= (isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
 
@@ -141,11 +141,18 @@ $rq2 .= " ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
 $DBRESULT = $pearDBO->query($rq2);
 $rows = $pearDBO->numberRows();
 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
-  $tab_comments_svc[$i] = $data;
-  $tab_comments_svc[$i]["persistent"] = $en[$tab_comments_svc[$i]["persistent"]];
-  $tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
-  $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
-  $tab_comments_svc[$i]['data'] = htmlentities($tab_comments_svc[$i]['data']);
+    $tab_comments_svc[$i] = $data;
+    $tab_comments_svc[$i]["persistent"] = $en[$tab_comments_svc[$i]["persistent"]];
+    $tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
+    $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
+    $tab_comments_svc[$i]['data'] = htmlentities($tab_comments_svc[$i]['data']);
+    if ($data['service_description'] != '') {
+        $tab_comments_svc[$i]['service_description'] = htmlentities($data['service_description']);
+        $tab_comments_svc[$i]['comment_type'] = 'SVC';
+    } else {
+        $tab_comments_svc[$i]['service_description'] = '-';
+        $tab_comments_svc[$i]['comment_type'] = 'HOST';
+    }
 }
 unset($data);
 $DBRESULT->free();
