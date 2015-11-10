@@ -1152,6 +1152,8 @@ if ($valid) {
     $tpl->assign("hostID", $host_id);
     $tpl->assign("add_mtp_label", _("Add a template"));
     $tpl->assign('custom_macro_label', _('Custom macros'));
+    $tpl->assign('template_inheritance', _('Template inheritance'));
+    $tpl->assign('command_inheritance', _('Command inheritance'));
     $tpl->assign('cloneSetMacro', $cloneSetMacro);
     $tpl->assign('cloneSetTemplate', $cloneSetTemplate);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
