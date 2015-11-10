@@ -1,6 +1,6 @@
 <tr class="list_lvl_1">
   <td class="ListColLvl1_name">{$tagBlock|capitalize} {$posBlock} - {$formBlock.header.typeName}</td>
-  <td class="ListColLvl1_name" style="text-align: right;"><a href="javascript:deleteRow('{$tagBlock}', {$posBlock});"><img src="./img/icons/circle-cross.png"/></a></td>
+  <td class="ListColLvl1_name" style="text-align: right;"><a href="javascript:deleteRow('{$tagBlock}', {$posBlock});"><img class="ico-14" src="./img/icons/circle-cross.png"/></a></td>
 </tr>
 {foreach from=$formBlock key=tagKey item=tagEl}
 {if $tagKey == $tagBlock}
