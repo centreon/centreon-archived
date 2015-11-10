@@ -41,8 +41,8 @@
 			<td class="FormRowValue">
 				{$form.service_template_model_stm_id.html}
 				{if $o == "a" || $o == "c"}
-					&nbsp;<img src='./img/icones/16x16/gear_information.gif' style='cursor:pointer' onClick="window.open('main.php?p=60206&service_id='+ document.Form.elements['service_template_model_stm_id'].options[document.Form.elements['service_template_model_stm_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
-					&nbsp;<img src='./img/icones/16x16/gear_new.gif' style='cursor:pointer' onClick="window.open('main.php?p=60206&service_id='+ document.Form.elements['service_template_model_stm_id'].options[document.Form.elements['service_template_model_stm_id'].selectedIndex].value + '&o=c&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
+					&nbsp;<img src='./img/icones/16x16/gear_information.gif' style='cursor:pointer;vertical-align:middle;' onClick="window.open('main.php?p=60206&service_id='+ document.Form.elements['service_template_model_stm_id'].options[document.Form.elements['service_template_model_stm_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
+					&nbsp;<img src='./img/icones/16x16/gear_new.gif' style='cursor:pointer;vertical-align:middle;' onClick="window.open('main.php?p=60206&service_id='+ document.Form.elements['service_template_model_stm_id'].options[document.Form.elements['service_template_model_stm_id'].selectedIndex].value + '&o=c&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
 				{/if}
 			</td>
 		</tr>
@@ -58,7 +58,7 @@
 			<td class="FormRowValue">
 				{$form.command_command_id.html}
 				{if $o == "a" || $o == "c"}
-				&nbsp;<img src='./img/icones/16x16/about.gif' style='cursor:help' onClick="window.open('main.php?p=60706&command_id='+ document.Form.elements['command_command_id'].options[document.Form.elements['command_command_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
+				&nbsp;<img class='ico-14' src='./img/icons/info.png' style='cursor:help;vertical-align:middle;' onClick="window.open('main.php?p=60706&command_id='+ document.Form.elements['command_command_id'].options[document.Form.elements['command_command_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
 				{/if}
 			</td>
 		</tr>
