@@ -818,11 +818,7 @@ class CentreonHost
      */
     public function getMacros($iHostId, $bIsTemplate, $aListTemplate, $iIdCommande, $form = array())
     {
-        //$aMacro = array();
-        //$macroArray = array();
-        //$aMacroInCommande = array();
-        //$aMacroInService = array();
-        //$aMacroTemplate = array();
+
         $macroArray = $this->getMacroFromForm($form,"direct");
         $aMacroTemplate[] = $this->getMacroFromForm($form,"fromTpl");        
         $aMacroInCommande = $this->getMacroFromForm($form,"fromCommand");
@@ -830,12 +826,17 @@ class CentreonHost
         $macroArray = array_merge($macroArray,$this->getCustomMacroInDb($iHostId));
 
         //Get macro attached to the template
-        
+        $serviceTemplates = array();
         foreach ($aListTemplate as $template) {
             if (!empty($template['host_id'])) {
                 $aMacroTemplate[] = $this->getCustomMacroInDb($template['host_id'],$template);
+                $tmpServiceTpl = $this->getServicesTemplates($template['host_id']);
+                foreach($tmpServiceTpl as $tmp){
+                    $serviceTemplates[] = $tmp;
+                }
             }
         }
+
         if(empty($iIdCommande)){
             foreach($aListTemplate as $template){
                 if(!empty($template['command_command_id'])){
@@ -846,12 +847,32 @@ class CentreonHost
         }
         
         
-        //Get macro attached to the command        
+        //Get macro attached to the command   
+        $oCommand = new CentreonCommand($this->db);
         if (!empty($iIdCommande)) {
-            $oCommand = new CentreonCommand($this->db);
-            $aMacroInCommande = array_merge($aMacroInCommande,$oCommand->getMacroByIdAndType($iIdCommande, 'host'));
+            $macrosCommande = $oCommand->getMacroByIdAndType($iIdCommande, 'host');
+            if(!empty($macrosCommande)){
+                foreach($macrosCommande as $macroscmd){
+                    $aMacroInCommande[] = $macroscmd;
+                }
+            }
+            
         }
         
+        foreach($serviceTemplates as $svctpl){
+            if(isset($svctpl['command_command_id']) && !empty($svctpl['command_command_id'])){
+                $macrosCommande = $oCommand->getMacroByIdAndType($svctpl['command_command_id'], 'host');
+                if(!empty($macrosCommande)){
+                    foreach($macrosCommande as $macroscmd){
+                        $aMacroInCommande[] = $macroscmd;
+                    }
+                }
+            }
+        }
+        /*
+        echo '<pre>';
+        var_dump($aMacroInCommande);
+        echo '</pre>';*/
         //filter a macro
         $aTempMacro = array();
         
@@ -876,11 +897,12 @@ class CentreonHost
         }
 
         if (count($aMacroInCommande) > 0) {
-            for ($i = 0; $i < count($aMacroInCommande); $i++) {
-                $aMacroInCommande[$i]['macroOldValue_#index#'] = $aMacroInCommande[$i]["macroValue_#index#"];
-                $aMacroInCommande[$i]['macroFrom_#index#'] = 'fromCommand';
-                $aMacroInCommande[$i]['source'] = 'fromCommand';
-                $aTempMacro[] = $aMacroInCommande[$i];
+            $macroCommande = $aMacroInCommande;
+            for ($i = 0; $i < count($macroCommande); $i++) {
+                $macroCommande[$i]['macroOldValue_#index#'] = $macroCommande[$i]["macroValue_#index#"];
+                $macroCommande[$i]['macroFrom_#index#'] = 'fromCommand';
+                $macroCommande[$i]['source'] = 'fromCommand';
+                $aTempMacro[] = $macroCommande[$i];
             }
         }
         $aFinalMacro = $this->macro_unique($aTempMacro);
@@ -965,11 +987,29 @@ class CentreonHost
         return $arr;
     }
     
+    public function getServicesTemplates($hostId){
+        $query = "SELECT s.service_id,s.command_command_id from host_service_relation hsr "
+            . " INNER JOIN service s on hsr.service_service_id = s.service_id and s.service_register = '0' "
+            . " WHERE hsr.host_host_id = " . $hostId;
+        //echo $query;
+        $DBRESULT = $this->db->query($query);
+        $arrayTemplate = array();
+        while ($row = $DBRESULT->fetchRow()) {
+            $aListTemplate = getListTemplates($this->db, $row['service_id']);
+            $aListTemplate = array_reverse($aListTemplate);
+            foreach($aListTemplate as $tpl){
+                $arrayTemplate[] = array('service_id' => $tpl['service_id'],'command_command_id' => $tpl['command_command_id']);
+            }
+        }
+        return $arrayTemplate;
+    }
+    
     public function ajaxMacroControl($form){
 
         $macroArray = $this->getCustomMacro(null,'realKeys');
         $this->purgeOldMacroToForm($macroArray,$form,'fromTpl');
         $aListTemplate = array();
+        $serviceTemplates = array();
         if (isset($form['tpSelect']) && is_array($form['tpSelect'])) {
             foreach($form['tpSelect'] as $template){
                 $tmpTpl = array_merge(array(array('host_id' => $template, 'host_name' => $this->getOneHostName($template), 'command_command_id' => $this->getHostCommandId($template))),$this->getTemplateChain($template, array(), -1, true,"host_name,host_id,command_command_id"));
@@ -981,6 +1021,10 @@ class CentreonHost
         foreach ($aListTemplate as $template) {
             if (!empty($template['host_id'])) {
                 $aMacroTemplate = array_merge($aMacroTemplate,$this->getCustomMacroInDb($template['host_id'],$template));
+                $tmpServiceTpl = $this->getServicesTemplates($template['host_id']);
+                foreach($tmpServiceTpl as $tmp){
+                    $serviceTemplates[] = $tmp;
+                }
             }
         }
         
@@ -995,19 +1039,30 @@ class CentreonHost
             }
         }
         
+        $this->purgeOldMacroToForm($macroArray,$form,'fromCommand');
         
         $aMacroInCommande = array();
-        //Get macro attached to the command        
+        //Get macro attached to the command  
+        $oCommand = new CentreonCommand($this->db);
         if (!empty($iIdCommande) && is_numeric($iIdCommande)) {
-            $oCommand = new CentreonCommand($this->db);
-            $aMacroInCommande[] = $oCommand->getMacroByIdAndType($iIdCommande, 'host');
+            $macrosCommande = $oCommand->getMacroByIdAndType($iIdCommande, 'host');
+            if(!empty($macrosCommande)){
+                foreach($macrosCommande as $macroscmd){
+                    $aMacroInCommande[] = $macroscmd;
+                }
+            }
         }
-    
-        
-        $this->purgeOldMacroToForm($macroArray,$form,'fromCommand',$aMacroInCommande);
-        
-        
-        
+
+        foreach($serviceTemplates as $svctpl){
+            if(isset($svctpl['command_command_id'])){
+                $macrosCommande = $oCommand->getMacroByIdAndType($svctpl['command_command_id'], 'host');
+                if(!empty($macrosCommande)){
+                    foreach($macrosCommande as $macroscmd){
+                        $aMacroInCommande[] = $macroscmd;
+                    }
+                }
+            }
+        }
 
         //filter a macro
         $aTempMacro = array();
@@ -1031,7 +1086,7 @@ class CentreonHost
         }
         
         if (count($aMacroInCommande) > 0) {
-            $macroCommande = current($aMacroInCommande);
+            $macroCommande = $aMacroInCommande;
             for ($i = 0; $i < count($macroCommande); $i++) {
                 $macroCommande[$i]['macroOldValue_#index#'] = $macroCommande[$i]["macroValue_#index#"];
                 $macroCommande[$i]['macroFrom_#index#'] = 'fromCommand';
