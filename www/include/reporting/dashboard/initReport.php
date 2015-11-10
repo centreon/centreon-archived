@@ -241,7 +241,7 @@ $formPeriod->addElement('select', 'period', "", $periodList, array("id" => "pres
 $formPeriod->addElement('hidden', 'timeline', "1");
 $formPeriod->addElement('text', 'StartDate', _("From"), array("id"=>"StartDate", "size"=>10, "class"=>"datepicker", "onClick" => "javascript: togglePeriodType();"));
 $formPeriod->addElement('text', 'EndDate', _("to"), array("id"=>"EndDate", "size"=>10, "class"=>"datepicker", "onClick" => "javascript: togglePeriodType();"));
-$formPeriod->addElement('submit', 'button', _("Apply"));
+$formPeriod->addElement('submit', 'button', _("Apply period"), array('class' => 'btc bt_success'));
 $formPeriod->setDefaults(array('period' => $period, "StartDate" => $get_date_start, "EndDate" => $get_date_end));
 
 ?>
