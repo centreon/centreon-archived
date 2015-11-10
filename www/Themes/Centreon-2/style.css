@@ -207,7 +207,7 @@ p.description a, p.description a:visited {
 
 .clearAllSelect2 {
      margin-left: 4px;
-    vertical-align: middle;
+    //vertical-align: middle;
  }
 
 .clearAllSelect2 img {
@@ -1078,6 +1078,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .ajaxOption td  {
     vertical-align: middle;
     padding: 2px 0px;
+    position: relative;
 }
 
 .ajaxOption h4 {
