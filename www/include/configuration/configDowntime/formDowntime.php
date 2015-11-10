@@ -89,17 +89,20 @@
     $attrHostgroups = array(
         'datasourceOrigin' => 'ajax',
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
-        'multiple' => true
+        'multiple' => true,
+        'linkedObject' => 'centreonHostgroups'
     );
     $attrServices = array(
         'datasourceOrigin' => 'ajax',
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
-        'multiple' => true
+        'multiple' => true,
+        'linkedObject' => 'centreonService'
     );
     $attrServicegroups = array(
         'datasourceOrigin' => 'ajax',
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list',
-        'multiple' => true
+        'multiple' => true,
+        'linkedObject' => 'centreonServicegroups'
     );
     
 	/*
