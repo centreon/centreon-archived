@@ -55,3 +55,23 @@ function deleteDowntimeFromDb($centreon, $select = array()) {
         }
 	}
 }
+
+function getDowntimes($internalId){
+    $pearDBO = new CentreonDB("centstorage");
+    $request = "Select host_id,service_id from downtimes WHERE internal_id = ".CentreonDB::escape($internalId)." ORDER BY downtime_id DESC LIMIT 0,1";
+    $res = $pearDBO->query($request);
+    $row = $res->fetchRow();
+    if(!empty($row)){
+        return $row;
+    }
+    return false;
+}
+
+function isDownTimeHost($internalId){
+    echo $internalId;
+    $downtime = getDowntimes($internalId);
+    if(!empty($downtime['host_id']) && !empty($downtime['service_id'])){
+        return false;
+    }
+    return true;
+}
