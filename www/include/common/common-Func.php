@@ -1530,7 +1530,7 @@ function return_image_list($mode = 0, $rep = NULL, $full = true, $origin_path = 
 }
 
 function getLangs() {
-    $langs = array('browser' => _("Browser detected"));
+    $langs = array('browser' => _("Detection by browser"));
     $chemintotal = "./locale/";
     $default = "en_US";
 
