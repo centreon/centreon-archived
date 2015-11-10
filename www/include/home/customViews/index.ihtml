@@ -1,6 +1,6 @@
 <div id='globalView'>
-  <div class="toggleEdit edit">
-    <a href="#" title="{$editMode}"><img src="./img/icons/edit-mode.png" class="ico-14"></a>
+  <div class="toggleEdit">
+    <a href="#" title="{$editMode}"><img src="./img/icons/edit_mode.png" class="ico-14"></a>
   </div>
   <!-- Action bar -->
   <div id='actionBar' style="display: none;">
@@ -231,18 +231,20 @@
   </div>
 
 </div>
-<div id="deleteViewConfirm">
-  <p>{t}Deleting this view might impact other users. Are you sure you want to do it?{/t}</p>
-  <div class="button_group_center">
-    <button type="button" class="btc bt_danger">{t}Delete{/t}</button>
-    <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
+<div hidden>
+  <div id="deleteViewConfirm">
+    <p>{t}Deleting this view might impact other users. Are you sure you want to do it?{/t}</p>
+    <div class="button_group_center">
+      <button type="button" class="btc bt_danger">{t}Delete{/t}</button>
+      <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
+    </div>
   </div>
-</div>
-<div id="setDefaultConfirm">
-  <p>{t}Set this view as your default view{/t}</p>
-  <div class="button_group_center">
-    <button type="button" class="btc bt_success">{t}Save{/t}</button>
-    <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
+  <div id="setDefaultConfirm">
+    <p>{t}Set this view as your default view{/t}</p>
+    <div class="button_group_center">
+      <button type="button" class="btc bt_success">{t}Save{/t}</button>
+      <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
+    </div>
   </div>
 </div>
 <script>  
@@ -531,10 +533,8 @@ function initColorbox(selector, url, w, h)
 function displayBtnToggleEdit() {
   if (jQuery('.tabs_header').children().length > 0
       && jQuery('.portlet').length > 0) {
-    jQuery('.toggleEdit').show();
     toggleEdit(modeEdit);
   } else {
-    jQuery('.toggleEdit').hide();
     toggleEdit(true);
   }
 }
@@ -554,8 +554,7 @@ function toggleEdit(forceShow) {
     $el.addClass('edit');
     jQuery('#actionBar').show();
     jQuery('.portlet-header').show();
-    $el.find('img').attr('src','./img/icons/no_edit_mode.png').append('Hide edit mode');
-
+    $el.find('img').attr('src','./img/icons/no_edit_mode.png');
 
     if (forceShow === undefined) {
       modeEdit = true;
@@ -840,9 +839,6 @@ jQuery(function () {
             jQuery('.viewBody').empty();
           },
           selected: -1,
-          load: function () {
-            displayBtnToggleEdit();
-          }
         });
       }
       jQuery("#tabs").tabs('select', getTabPos(data.current));
