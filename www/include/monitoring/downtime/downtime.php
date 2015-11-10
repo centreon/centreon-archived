@@ -72,13 +72,21 @@ switch ($o) {
         break;
     case "ds" :
         if (isset($_POST["select"])) {
-            $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
-            deleteDowntimeFromDb($oreon, $_POST['select']);
+            foreach ($_POST["select"] as $key => $value) {
+                $res = explode(';', urldecode($key));
+                $ecObj->DeleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
+                deleteDowntimeFromDb($oreon, array($res[1] . ';' . $res[2] => 'on'));
+            }
         }
         require_once($path . "listDowntime.php");
         break;
     case "cs" :
-        $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
+        if (isset($_POST["select"])) {
+            foreach ($_POST["select"] as $key => $value) {
+                $res = explode(';', urldecode($key));
+                $ecObj->DeleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
+            }
+        }
         require_once($path . "listDowntime.php");
         break;
     case "vs" :
@@ -86,17 +94,6 @@ switch ($o) {
         break;
     case "ah" :
         require_once($path."AddHostDowntime.php");
-        break;
-    case "dh" :
-        if (isset($_POST["select"])) {
-            $ecObj->DeleteDowntime("HOST", isset($_POST["select"]) ? $_POST["select"] : array());
-            deleteDowntimeFromDb($oreon, $_POST['select']);
-        }
-        require_once($path."listDowntime.php");
-        break;
-    case "ch" :
-        $ecObj->DeleteDowntime("HOST", isset($_POST["select"]) ? $_POST["select"] : array());
-        require_once($path."listDowntime.php");
         break;
     case "vh" :
         require_once($path."listDowntime.php");
