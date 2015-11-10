@@ -320,8 +320,8 @@ class CentreonConfigCentreonBroker
             if (!is_null($elementType)) {
                 if ($elementType == 'advmultiselect') {
                     $el = $qf->addElement($elementType, $elementName, $displayName, $elementAttr, $this->attrsAdvSelect, SORT_ASC);
-                    $el->setButtonAttributes('add', array('value' =>  _("Add")));
-                    $el->setButtonAttributes('remove', array('value' =>  _("Remove")));
+                    $el->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+                    $el->setButtonAttributes('remove', array('value' =>  _("Remove"), "class" => "btc bt_danger"));
                     $el->setElementTemplate($this->advMultiTemplate);
                 } else {
                     $el = $qf->addElement($elementType, $elementName, $displayName, $elementAttr);

@@ -35,7 +35,6 @@
 		{/if}
 
             {/foreach}
-            <img src="./img/icons/description.png" style='vertical-align: middle;cursor:pointer;' class="ico-14" onclick='javascript:loadDescription(#index#)' />
             <input type='hidden' id='macroTplValue_#index#' name='macroTplValue_#index#' value="" />
             <input type='hidden' id='macroTplValToDisplay_#index#' name='macroTplValToDisplay_#index#' value="0" />
             <input type='hidden' id='macroDescription_#index#' name='macroDescription_#index#' value="" />
@@ -44,6 +43,7 @@
             
 
         {if $isFrozen == 0}
+            <img src="./img/icons/description.png" style='vertical-align: middle;cursor:pointer;' class="ico-14" onclick='javascript:loadDescription(#index#)' />
 
             <span style="cursor:pointer;" class="clonehandle">
               <img src="./img/icons/move.png" class="ico-14" style="vertical-align:middle;">
