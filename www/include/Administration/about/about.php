@@ -71,22 +71,6 @@
 				<td>&nbsp;</td>
 				<td>Maximilien Bersoult</td>
 			</tr>
-            <tr>
-				<td>&nbsp;</td>
-				<td>Kevin Duret</td>
-			</tr>
-            <tr>
-				<td>&nbsp;</td>
-				<td>Toufik Mechouet</td>
-			</tr>
-            <tr>
-				<td>&nbsp;</td>
-				<td>Rabaa Ridene</td>
-			</tr>
-            <tr>
-				<td>&nbsp;</td>
-				<td>Benoït Sauveton</td>
-			</tr>
 			<tr>
 				<td>&nbsp;</td>
 				<td>Romain Bertholon</td>
