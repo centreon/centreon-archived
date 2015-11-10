@@ -294,7 +294,7 @@ $attrsText 		= array("size"=>"30");
 $attrsText2		= array("size"=>"6");
 $attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
 $attrsAdvSelect2 = array("style" => "width: 300px; height: 200px;");
-$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
+$attrsTextarea 	= array("rows" => "4", "cols" => "80");
 $advancedSelectTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
@@ -595,7 +595,7 @@ $hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Fl
 $hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"));
 $form->addGroup($hostNotifOpt, 'host_notifOpts', _("Notification Options"), '&nbsp;&nbsp;');
 
-$hostStalOpt[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"));
+$hostStalOpt[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Up"));
 $hostStalOpt[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
 $hostStalOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
 $form->addGroup($hostStalOpt, 'host_stalOpts', _("Stalking Options"), '&nbsp;&nbsp;');
@@ -675,7 +675,7 @@ if ($o != "mc")
 	$form->setDefaults(array('host_flap_detection_enabled' => '2'));
 
 $form->addElement('text', 'host_freshness_threshold', _("Freshness Threshold"), $attrsText2);
-$form->addElement('text', 'host_low_flap_threshold', _("Low Flap threshold"), $attrsText2);
+$form->addElement('text', 'host_low_flap_threshold', _("Low Flap Threshold"), $attrsText2);
 $form->addElement('text', 'host_high_flap_threshold', _("High Flap Threshold"), $attrsText2);
 
 $hostPPD[] = HTML_QuickForm::createElement('radio', 'host_process_perf_data', null, _("Yes"), '1');
@@ -829,10 +829,10 @@ $tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>1, "min
 $tpl->assign('min', $min);
 $tpl->assign('p', $p);
 $tpl->assign("sort1", _("Host Configuration"));
-$tpl->assign("sort2", _("Relations"));
-$tpl->assign("sort3", _("Data Processing"));
-$tpl->assign("sort4", _("Host Extended Infos"));
-$tpl->assign("sort5", _("Macros"));
+$tpl->assign("sort2", _("Notification"));
+$tpl->assign("sort3", _("Relations"));
+$tpl->assign("sort4", _("Data Processing"));
+$tpl->assign("sort5", _("Host Extended Infos"));
 $tpl->assign("initJS", "<script type='text/javascript'>
 						jQuery(function () {
 						init();
