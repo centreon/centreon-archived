@@ -108,8 +108,8 @@
 			<tr class="list_two">
 				<td class="FormRowField"><img class="helpTooltip" name="macro"> {$custom_macro_label} <br>
 					<div class="macro_legend">
-						<p><span class="state_badge" style="background-color: #ffcb6b;"></span>Template</p>
-						<p><span class="state_badge" style="background-color: #b6fca7;"></span>Command</p>
+						<p><span class="state_badge" style="background-color: #ffcb6b;"></span>{${$template_inheritance}}</p>
+						<p><span class="state_badge" style="background-color: #b6fca7;"></span>{$command_inheritance}</p>
 					</div>
 				</td>
 				<td class="FormRowValue">{include file="file:$centreon_path/www/include/common/templates/cloneMacro.ihtml" cloneId="macro" cloneSet=$cloneSetMacro}</td>
