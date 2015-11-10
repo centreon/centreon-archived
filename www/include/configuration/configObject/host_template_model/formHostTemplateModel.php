@@ -499,8 +499,8 @@ if ($o != "mc")
 /*
  * Additive
  */
-$form->addElement('checkbox', 'contact_additive_inheritance', _('Contact additive inheritance'));
-$form->addElement('checkbox', 'cg_additive_inheritance', _('Contact group additive inheritance'));
+$form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
+$form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
     
 if ($o == "mc")	{
 	$mc_mod_notifopt_first_notification_delay = array();
