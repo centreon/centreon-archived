@@ -72,6 +72,7 @@
 	 */
 	if (isset($_POST["search"])) {
 		$searchH = $_POST["searchH"];
+        $num = $_GET['num'] = 0;
 		$_POST["search"] = $_POST["searchH"];
 		$oreon->historySearch[$url] = $search;
 	} else if (isset($oreon->historySearch[$url])) {
@@ -82,6 +83,7 @@
 
 	if (isset($_POST["searchS"])) {
 		$searchS = $_POST["searchS"];
+        $num = $_GET['num'] = 0;
 		$oreon->historySearchService[$url] = $searchS;
 	} else if (isset($oreon->historySearchService[$url])) {
 		$searchS = $oreon->historySearchService[$url];
@@ -92,6 +94,7 @@
     /* Search for poller */
     if (isset($_POST['searchP']) && is_numeric($_POST['searchP'])) {
         $searchP = $_POST['searchP'];
+        $num = $_GET['num'] = 0;
     } else {
         $searchP = NULL;
     }
