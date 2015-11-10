@@ -10,40 +10,14 @@
         <th><h5>{t}Filters{/t}</h5>
     </tr>
     <tr>
-        <td style="width: 50%;"><h4>{$form.host_group_filter.label} <img id="setHostGroup" class="log-extend-icon ico-12" src="./img/icons/arrow-right.png" alt=""/></h4></td>
+        <td><h4>{$form.host_group_filter.label} <img id="setHostGroup" class="log-extend-icon ico-12" src="./img/icons/arrow-right.png" alt=""/></h4></td>
         <td class="checkbox"><h4>{$form.host_filter.label}</h4></td>
-        <td><h4>{$form.output.label}</h4></td>
+        <td><h4>{$lang.ty}</h4></td>
     </tr>
+    <form name="formu2">
     <tr>
         <td class="log-select">{$form.host_group_filter.html}</td>
         <td class="log-select">{$form.host_filter.html}</td>
-        <td class="log-select" colspan="2">{$form.output.html}</td>
-    </tr>
-    <tr>
-        <td><h4>{$form.service_group_filter.label} <img id="setServiceGroup" class="log-extend-icon ico-12" src="./img/icons/arrow-right.png" alt=""/></h4></td>
-        <td class="checkbox"><h4>{$form.service_filter.label}</h4></td>
-    </tr>
-    <tr>
-        <td class="log-select">{$form.service_group_filter.html}</td>
-        <td class="log-select">{$form.service_filter.html}</td>
-    </tr>
-    <tr>
-
-    </tr>
-    <tr>
-
-    </tr>
-
-    <tr>
-        <td class="divider" colspan="3"><hr></td>
-    </tr>
-
-    <form name="formu2">
-    <tr>
-        <td><h4>{$lang.ty}</h4></td>
-        <td><h4>{t}Status{/t}</h4></td>
-    </tr>
-    <tr>
         <td class="checkbox"  style="vertical-align : top;">
             <input name="alert" id="alertId" type="checkbox" onClick="{literal}if (!this.checked) {
                     document.getElementById('ohId').checked = false;
@@ -55,11 +29,20 @@
                 }
                 log_4_host(opid, this.form, ''); {/literal}" {if $user_params.log_filter_oh == 'true'} checked="checked" {/if}/> {$lang.oh} <br>
             <input name="notification" id="notifId" type="checkbox" onClick="{literal}checkAlertNotifCheckbox();
-		log_4_host(opid, this.form, '');
-		{/literal}" {if $user_params.log_filter_notif == 'true'} checked="checked" {/if}/> {$lang.n}<br>
+        log_4_host(opid, this.form, '');
+        {/literal}" {if $user_params.log_filter_notif == 'true'} checked="checked" {/if}/> {$lang.n}<br>
         </td>
+    </tr>
+    <tr>
+        <td><h4>{$form.service_group_filter.label} <img id="setServiceGroup" class="log-extend-icon ico-12" src="./img/icons/arrow-right.png" alt=""/></h4></td>
+        <td class="checkbox"><h4>{$form.service_filter.label}</h4></td>
+        <td><h4>{t}Status{/t}</h4></td>
+    </tr>
+    <tr>
+        <td class="log-select">{$form.service_group_filter.html}</td>
+        <td class="log-select">{$form.service_filter.html}</td>
         <td class="checkbox" style="vertical-align : top;">
-            <div style="width : 120px; float: left">
+            <div style="float: left;width: 110px;">
                 <input name="up" id="cb_up" type="checkbox" onClick="{literal}checkStatusCheckbox(this.checked);
                     log_4_host(opid, this.form, '');
                     {/literal}" {if $user_params.log_filter_host_up == "true"} checked="checked" {/if}/> {$lang.up} <br>
@@ -87,43 +70,35 @@
         </td>
     </tr>
     </form>
-
+    <form {$form.attributes}>
     <tr>
-        <td class="divider" colspan="3"><hr></td>
-    </tr>
-
-<form {$form.attributes}>
-    <tr>
-        <td><h4>{$form.period.label}</h4></td>
+        <td><h4>{$form.output.label}</h4></td>
         <td><h4>{$From}</h4></td>
+        <td><h4>{$form.period.label}</h4></td>
     </tr>
     <tr>
-        <td>{$form.period.html}</td>
+        <td class="log-select">{$form.output.html}</td>
         <td>
             {$form.StartDate.html}
             {$form.StartTime.html}
         </td>
-        <td style='white-space:nowrap; text-align:right;' colspan="2">{$form.graph.html}</td>
+         <td>{$form.period.html}</td>
     </tr>
     <tr>
         <td></td>
         <td>
             <h4>{$To}</h4>
         </td>
-        <td></td>
-    </tr>    
+    </tr>
     <tr>
         <td></td>
         <td>
             {$form.EndDate.html}
             {$form.EndTime.html}
         </td>
-        <td></td>
+        <td style='white-space:nowrap; text-align:left;' colspan="2">{$form.graph.html}</td>
     </tr>
-    <tr>
-
-    </tr>
-</form>
+    </form>
 </table>	
 </div>
 <div id="logView4xml"></div>
