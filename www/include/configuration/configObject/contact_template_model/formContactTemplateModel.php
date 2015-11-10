@@ -152,7 +152,8 @@ $attrTimeperiods = array(
 );
 $attrCommands = array(
     'datasourceOrigin' => 'ajax',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonCommand'
 );
 
 

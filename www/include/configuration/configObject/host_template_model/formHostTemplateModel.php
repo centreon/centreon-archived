@@ -328,7 +328,8 @@ $attrHostcategories = array(
 );
 $attrCommands = array(
     'datasourceOrigin' => 'ajax',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonCommand'
 );
 
 #
