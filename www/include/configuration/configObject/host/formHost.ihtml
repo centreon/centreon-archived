@@ -211,11 +211,23 @@
 		</tr>
         <tr class="list_one">
 			<td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.host_cs.label}</td>
-			<td class="FormRowValue">{$form.host_cs.html} {$form.contact_additive_inheritance.html} {$form.contact_additive_inheritance.label} <img class="helpTooltip" name="contact_additive_inheritance"></td>
+			<td class="FormRowValue">
+                            <p style='margin-bottom : 6px;'>
+                                {$form.contact_additive_inheritance.html} {$form.contact_additive_inheritance.label}
+                                <img class="helpTooltip" name="contact_additive_inheritance">
+                            </p>
+                            {$form.host_cs.html}
+                        </td>
 		</tr>
         <tr class="list_two">
 			<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td>
-			<td class="FormRowValue">{$form.host_cgs.html} {$form.cg_additive_inheritance.html} {$form.cg_additive_inheritance.label} <img class="helpTooltip" name="cg_additive_inheritance"></td>
+			<td class="FormRowValue">
+                            <p style='margin-bottom : 6px;'>
+                                {$form.cg_additive_inheritance.html} {$form.cg_additive_inheritance.label}
+                                <img class="helpTooltip" name="cg_additive_inheritance">
+                            </p>
+                            {$form.host_cgs.html}
+                        </td>
 		</tr>
 		
 	</table>
