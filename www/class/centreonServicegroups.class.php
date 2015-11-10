@@ -149,6 +149,7 @@
             case 'sg_tServices':
                 $parameters['type'] = 'relation';
                 $parameters['externalObject']['object'] = 'centreonServicetemplates';
+                $parameters['externalObject']['objectOptions'] = array('withHosttemplate' => true);
                 $parameters['relationObject']['table'] = 'servicegroup_relation';
                 $parameters['relationObject']['field'] = 'service_service_id';
                 $parameters['relationObject']['comparator'] = 'servicegroup_sg_id';
@@ -173,7 +174,7 @@
      * @param array $values
      * @return array
      */
-    public function getObjectForSelect2($values = array())
+    public function getObjectForSelect2($values = array(), $options = array())
     {
         global $centreon;
         $items = array();
