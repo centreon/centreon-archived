@@ -237,8 +237,8 @@
 	$form->addElement('header', 'contacts_infos', _("People linked to this Access list"));
 
 	$ams1 = $form->addElement('advmultiselect', 'acl_groups', array(_("Linked Groups"), _("Available"), _("Selected")), $groups, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_default"));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_default"));
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
@@ -253,8 +253,8 @@
 	 * Pollers
 	 */
 	$ams0 = $form->addElement('advmultiselect', 'acl_pollers', array(_("Poller Filter"), _("Available"), _("Selected")), $pollers, $attrsAdvSelect, SORT_ASC);
-	$ams0->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_default"));
-	$ams0->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_default"));
+	$ams0->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams0->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams0->setElementTemplate($eTemplate);
 	echo $ams0->getElementJs(false);
 
@@ -263,8 +263,8 @@
 	 */
 	$attrsAdvSelect['id'] = 'hostAdvancedSelect';
 	$ams2 = $form->addElement('advmultiselect', 'acl_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
-	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_default"));
-	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_default"));
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams2->setElementTemplate($eTemplate);
 	echo $ams2->getElementJs(false);
 
@@ -273,16 +273,16 @@
 	 */
 	$attrsAdvSelect['id'] = 'hostgroupAdvancedSelect';
 	$ams2 = $form->addElement('advmultiselect', 'acl_hostgroup', array(_("Host Groups"), _("Available"), _("Selected")), $hostgroups, $attrsAdvSelect, SORT_ASC);
-	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_default"));
-	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_default"));
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams2->setElementTemplate($eTemplate);
 	echo $ams2->getElementJs(false);
 
 	unset($attrsAdvSelect['id']);
 
 	$ams2 = $form->addElement('advmultiselect', 'acl_hostexclude', array(_("Exclude hosts from selected host groups"), _("Available"), _("Selected")), $hosttoexcludes, $attrsAdvSelect, SORT_ASC);
-	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_default"));
-	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_default"));
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams2->setElementTemplate($eTemplate);
 	echo $ams2->getElementJs(false);
 
@@ -290,8 +290,8 @@
 	 * Service Filters
 	 */
 	$ams2 = $form->addElement('advmultiselect', 'acl_sc', array(_("Service Category Filter"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect, SORT_ASC);
-	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_default"));
-	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_default"));
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams2->setElementTemplate($eTemplate);
 	echo $ams2->getElementJs(false);
 
@@ -299,8 +299,8 @@
 	 * Host Filters
 	 */
 	$ams2 = $form->addElement('advmultiselect', 'acl_hc', array(_("Host Category Filter"), _("Available"), _("Selected")), $host_categories, $attrsAdvSelect, SORT_ASC);
-	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_default"));
-	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_default"));
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams2->setElementTemplate($eTemplate);
 	echo $ams2->getElementJs(false);
 
@@ -310,8 +310,8 @@
 	 */
 	$attrsAdvSelect['id'] = 'servicegroupAdvancedSelect';
 	$ams2 = $form->addElement('advmultiselect', 'acl_sg', array(_("Service Groups"), _("Available"), _("Selected")), $service_groups, $attrsAdvSelect, SORT_ASC);
-	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_default"));
-	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_default"));
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams2->setElementTemplate($eTemplate);
 	echo $ams2->getElementJs(false);
     unset($attrsAdvSelect['id']);
@@ -320,8 +320,8 @@
 	 * Meta Services
 	 */
 	$ams2 = $form->addElement('advmultiselect', 'acl_meta', array(_("Meta Services"), _("Available"), _("Selected")), $meta_services, $attrsAdvSelect, SORT_ASC);
-	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_default"));
-	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_default"));
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams2->setElementTemplate($eTemplate);
 	echo $ams2->getElementJs(false);
 

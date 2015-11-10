@@ -18,7 +18,7 @@
 				<img class='uninstallBtn' src='./img/icones/16x16/garbage_empty.gif' style="cursor: pointer;">&nbsp;
 				{/if}
 				{if $elem.install}
-				<img class='installBtn' src='./img/icones/16x16/gear_run.gif' style="cursor: pointer;">&nbsp;
+				<img class='installBtn' src="./img/icons/generate_conf.png" class="ico-16" style="cursor: pointer;">&nbsp;
 				{/if}
 				{if $elem.upgrade}
 				<img class='upgradeBtn' src='./img/icones/16x16/gear_replace.gif' style="cursor: pointer;">&nbsp;
