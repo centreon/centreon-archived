@@ -75,7 +75,7 @@ $form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' =
 $form->addElement('checkbox', 'restart', _("Restart Monitoring Engine"), null, array('id' => 'nrestart'));
 $form->addElement('checkbox', 'postcmd', _('Post generation command'), null, array('id' => 'npostcmd'));
 
-$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 4 => _("Force Reload"), 3 => _("External Command"));
+$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"));
 $form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
 $form->setDefaults(array('restart_mode' => '1'));
 
