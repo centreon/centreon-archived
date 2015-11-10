@@ -386,7 +386,7 @@ jQuery('input[name=host_check_interval]').change(function(){
 });
 
 jQuery(function() {
-    setListener(jQuery('select[name^=tpSelect], select[name=command_command_id]' ));
+    setListener(jQuery('select[name=command_command_id]'));
 
     sheepIt = jQuery("#macro").sheepIt({
         separator: '',
@@ -465,7 +465,7 @@ jQuery(function() {
         });
     }
 
-    function clonerefreshListeber(el){
+    function clonerefreshListener(el){
         setListener(el.find('select[name^=tpSelect]'));
     }
 
