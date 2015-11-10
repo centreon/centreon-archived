@@ -944,32 +944,14 @@ sub checkMatchingRules {
         }    
     }
     
-    # Submit rules status if matching
-    if ($matching_boolean == 1 && $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment_default} == 0) {
-        $self->{logger}->writeLogDebug("Regexp matching, submiting status of the rule");
-        return 0;
-    }
-    # Submit rules status if matching
-    if ($matching_boolean == 1 && $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment_default} == 1) {
-        $self->{logger}->writeLogDebug("Regexp matching, submiting status of the rule");
-        return 0;
-    }
-    # Don't do submit if NO matching
-    elsif ($matching_boolean == 0 && $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment_default} == 1) {
-        $self->{logger}->writeLogDebug("NO regexp matching, skipping result submit to the engine ");
+    # Dont do submit if no matching
+    if ($matching_boolean == 0 && $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment_default} == 1) {
         return 1;
     }
-    # Don't do submit if matching, aka negate the regexp
-    elsif ($matching_boolean == 1 && $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment_default} == 2) {
-        $self->{logger}->writeLogDebug("Regexp matching, skipping result submit to the engine");
+    if ($matching_boolean == 1 && $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment_default} == 2) {
         return 1;
     }
-    # Else submit
-    else {
-        $self->{logger}->writeLogDebug("NO regexp matching, submiting default status");
-        return 0;
-    }
-
+    return 0;
 }
 
 ################################
