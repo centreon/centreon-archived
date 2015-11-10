@@ -161,7 +161,7 @@
 							<tr>
 								<td colspan="2">
 									<br /><?php print _("And many others..."); ?><br />
-									<?php print _("You can see the full list by visiting the Centreon's Forge"); ?>
+									<?php print _("You can see the full list by visiting the Centreon's Github"); ?>
 								</td>
 							</tr>
 						</table>

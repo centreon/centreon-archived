@@ -63,7 +63,7 @@ class CentreonTimeperiod
      * @param type $values
      * @return type
      */
-    public function getObjectForSelect2($values = array())
+    public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
         

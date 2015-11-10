@@ -125,6 +125,12 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     var $_linkedObject;
     
     /**
+     *
+     * @var type 
+     */
+    var $_defaultDatasetOptions;
+    
+    /**
      * 
      * @param string $elementName
      * @param string $elementLabel
@@ -146,6 +152,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->HTML_QuickForm_select($elementName, $elementLabel, $options, $attributes);
         $this->_elementHtmlName = $this->getName();
         $this->_defaultDataset = array();
+        $this->_defaultDatasetOptions = array();
         $this->_jsCallback = '';
         $this->_allowClear = false;
         $this->parseCustomAttributes($attributes);
@@ -187,6 +194,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         
         if (isset($attributes['defaultDataset'])) {
             $this->_defaultDataset = $attributes['defaultDataset'];
+        }
+        
+        if (isset($attributes['defaultDatasetOptions'])) {
+            $this->_defaultDatasetOptions = $attributes['defaultDatasetOptions'];
         }
         
         if (isset($attributes['linkedObject'])) {
@@ -390,7 +401,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $objectFinalName = ucfirst($this->_linkedObject);
 
             $myObject = new $objectFinalName($pearDB);
-            $finalDataset = $myObject->getObjectForSelect2($this->_defaultDataset);
+            $finalDataset = $myObject->getObjectForSelect2($this->_defaultDataset, $this->_defaultDatasetOptions);
 
             foreach ($finalDataset as $dataSet) {
                 $currentOption = '<option selected="selected" value="'

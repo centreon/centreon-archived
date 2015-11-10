@@ -168,8 +168,8 @@ $lca["lca_topos"] = array();
 	#
 	$form->addElement('header', 'cg', _("Implied Contact Groups"));
 	$ams1 = $form->addElement('advmultiselect', 'lca_cgs', array(_("Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
@@ -185,8 +185,8 @@ $lca["lca_topos"] = array();
 	$form->addElement('header', 'rs', _("Implied Resources"));
 
 	$ams1 = $form->addElement('advmultiselect', 'lca_hgs', array(_("Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 	$tab = array();
@@ -196,14 +196,14 @@ $lca["lca_topos"] = array();
 	$form->setDefaults(array('lca_hg_childs' => '1'));
 
 	$ams1 = $form->addElement('advmultiselect', 'lca_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
 	$ams1 = $form->addElement('advmultiselect', 'lca_sgs', array(_("Service Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 

@@ -1499,7 +1499,7 @@ class CentreonHost
      * @param array $values
      * @return array
      */
-    public function getObjectForSelect2($values = array(), $register = '1')
+    public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
         global $centreon;
         $items = array();

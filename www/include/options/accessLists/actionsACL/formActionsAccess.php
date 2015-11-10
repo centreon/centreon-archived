@@ -162,8 +162,8 @@
 	$form->addElement('header', 'global_access', _("Global Functionalities Access"));
 
     $ams1 = $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 

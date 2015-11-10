@@ -173,7 +173,7 @@ class CentreonInstance {
      * @param array $values
      * @return array
      */
-    public function getObjectForSelect2($values = array())
+    public function getObjectForSelect2($values = array(), $options = array())
     {
         $selectedInstances = '';
         $aInstanceList = array();

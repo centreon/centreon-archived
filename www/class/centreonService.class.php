@@ -919,7 +919,7 @@ class CentreonService
      * @param type $values
      * @return type
      */
-    public function getObjectForSelect2($values = array())
+    public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
         $selectedServices = '';
         $explodedValues = implode(',', $values);
@@ -933,7 +933,7 @@ class CentreonService
             . "FROM host h, service s, host_service_relation hsr "
             . 'WHERE hsr.host_host_id = h.host_id '
             . "AND hsr.service_service_id = s.service_id "
-            . "AND h.host_register = '1' AND s.service_register = '1' "
+            . "AND h.host_register = '$register' AND s.service_register = '$register' "
             . $selectedServices
             . "ORDER BY h.host_name";
         

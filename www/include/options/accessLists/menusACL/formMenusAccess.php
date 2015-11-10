@@ -100,8 +100,8 @@ $form->addElement('text',	'acl_topo_name', _("ACL Definition"), $attrsText);
 $form->addElement('text', 	'acl_topo_alias', _("Alias"), $attrsText);
 
 $ams1 = $form->addElement('advmultiselect', 'acl_groups', array(_("Linked Groups"), _("Available"), _("Selected")), $groups, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc"));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc"));
+$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
