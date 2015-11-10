@@ -37,68 +37,57 @@
  *
  */
 
-if (!isset($centreon)) {
-    exit();
+/**
+ *  
+ */
+class CentreonTimeperiod
+{
+    /**
+     *
+     * @var type 
+     */
+    protected $db;
+    
+    /**
+     *  Constructor
+     *
+     *  @param CentreonDB $db
+     */
+    public function __construct($db)
+    {
+        $this->db = $db;
+    }
+    
+    /**
+     * 
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array())
+    {
+        $items = array();
+        
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected timeperiods
+        $query = "SELECT tp_id, tp_name "
+            . "FROM timeperiod "
+            . "WHERE tp_id IN (" . $explodedValues . ") "
+            . "ORDER BY tp_name ";
+        
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            $items[] = array(
+                'id' => $row['tp_id'],
+                'text' => $row['tp_name']
+            );
+        }
+
+        return $items;
+    }
 }
 
-/*
- * External Command Object
- */
-$ecObj = new CentreonExternalCommand($centreon);
-
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
-
-/*
- * Path to the configuration dir
- */
-$path = "./include/monitoring/downtime/";
-
-/*
- * PHP functions
- */
-require_once "./include/common/common-Func.php";
-require_once "./include/monitoring/downtime/common-Func.php";
-require_once "./include/monitoring/external_cmd/functions.php";
-
-switch ($o) {
-    case "as" :
-        require_once($path . "AddSvcDowntime.php");
-        break;
-    case "ds" :
-        if (isset($_POST["select"])) {
-            foreach ($_POST["select"] as $key => $value) {
-                $res = explode(';', urldecode($key));
-                $ecObj->DeleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
-                deleteDowntimeFromDb($oreon, array($res[1] . ';' . $res[2] => 'on'));
-            }
-        }
-        require_once($path . "listDowntime.php");
-        break;
-    case "cs" :
-        if (isset($_POST["select"])) {
-            foreach ($_POST["select"] as $key => $value) {
-                $res = explode(';', urldecode($key));
-                $ecObj->DeleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
-            }
-        }
-        require_once($path . "listDowntime.php");
-        break;
-    case "vs" :
-        require_once($path . "listDowntime.php");
-        break;
-    case "ah" :
-        require_once($path."AddHostDowntime.php");
-        break;
-    case "vh" :
-        require_once($path."listDowntime.php");
-        break;
-    default :
-        require_once($path."listDowntime.php");
-        break;
-}
+?>

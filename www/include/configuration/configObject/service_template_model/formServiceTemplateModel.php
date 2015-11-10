@@ -313,17 +313,20 @@ $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonTimeperiod'
 );
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonContact'
 );
 $attrContactgroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonContactgroup'
 );
 $attrCommands = array(
     'datasourceOrigin' => 'ajax',
@@ -332,27 +335,32 @@ $attrCommands = array(
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonHost'
 );
 $attrServicetemplates = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonServicetemplates'
 );
 $attrServicegroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonServicegroups'
 );
 $attrServicecategories = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonServicecategories'
 );
 $attrTraps = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_trap&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonTraps'
 );
 $attrGraphtemplates= array(
     'datasourceOrigin' => 'ajax',
@@ -362,7 +370,8 @@ $attrGraphtemplates= array(
 $attrHosttemplates = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonHosttemplates'
 );
 
 #
@@ -661,7 +670,6 @@ $attrTrap1 = array_merge(
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_trap&action=defaultValues&target=service&field=service_traps&id=' . $service_id)
 );
 $form->addElement('select2', 'service_traps', _("Service Trap Relation"), array(), $attrTrap1);
-
 
 
 if ($o == "mc")	{

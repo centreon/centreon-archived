@@ -92,7 +92,8 @@ $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonHostgroups'
 );
 
 

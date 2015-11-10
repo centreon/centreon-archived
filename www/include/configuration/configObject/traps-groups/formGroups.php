@@ -75,6 +75,7 @@ $attrTraps = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_trap&action=list',
     'multiple' => true,
+    'linkedObject' => 'centreonTraps',
     'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_trap&action=defaultValues&target=Traps&field=groups&id=' . $id,
 );
 $form->addElement('select2', 'traps', _("Traps"), array(), $attrTraps);

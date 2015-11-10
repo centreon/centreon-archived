@@ -256,8 +256,6 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $strHtml = '';
         $readonly = '';
         
-        
-        
         $strHtml = '<select id="' . $this->getName()
             . '" name="' . $this->getElementHtmlName()
             . '" ' . $this->_multipleHtml . ' '
@@ -298,8 +296,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         
         if ($this->_ajaxSource) {
             $mainJsInit .= $this->setAjaxSource() . ',';
-            if ($this->_defaultDatasetRoute) {
+            if ($this->_defaultDatasetRoute && (count($this->_defaultDataset) == 0)) {
                 $additionnalJs .= $this->setDefaultAjaxDatas();
+            } else {
+                $this->setDefaultFixedDatas();
             }
         } else {
             $mainJsInit .= $this->setFixedDatas() . ',';
@@ -383,10 +383,34 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      */
     function setDefaultFixedDatas()
     {
-        foreach ($this->_defaultDataset as $elementName => $elementValue) {
-            $this->_defaultSelectedOptions .= '<option selected="selected" value="'
-                . $elementValue . '">'
-                . $elementName . "</option>";
+        global $pearDB;
+        
+        if (!is_null($this->_linkedObject)) {
+            require_once _CENTREON_PATH_ . '/www/class/' . $this->_linkedObject . '.class.php';
+            $objectFinalName = ucfirst($this->_linkedObject);
+
+            $myObject = new $objectFinalName($pearDB);
+            $finalDataset = $myObject->getObjectForSelect2($this->_defaultDataset);
+
+            foreach ($finalDataset as $dataSet) {
+                $currentOption = '<option selected="selected" value="'
+                    . $dataSet['id'] . '">'
+                    . $dataSet['text'] . "</option>";
+                
+                if (strpos($this->_defaultSelectedOptions, $currentOption) === false) {
+                    $this->_defaultSelectedOptions .= $currentOption;
+                }
+            }
+        } else {
+            foreach ($this->_defaultDataset as $elementName => $elementValue) {
+                $currentOption .= '<option selected="selected" value="'
+                    . $elementValue . '">'
+                    . $elementName . "</option>";
+                
+                if (strpos($this->_defaultSelectedOptions, $currentOption) === false) {
+                    $this->_defaultSelectedOptions .= $currentOption;
+                }
+            }
         }
     }
 
@@ -442,7 +466,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $ajaxDefaultDatas = '$request' . $this->getName() . ' = jQuery.ajax({
             url: "'. $this->_defaultDatasetRoute .'",
         });
-
+        
         $request' . $this->getName() . '.success(function (data) {
             for (var d = 0; d < data.length; d++) {
                 var item = data[d];
@@ -480,6 +504,13 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         return $strFrozenHtml;
     }
     
+    /**
+     * 
+     * @param type $event
+     * @param type $arg
+     * @param type $caller
+     * @return boolean
+     */
     function onQuickFormEvent($event, $arg, &$caller)
     {
         if ('updateValue' == $event) {
@@ -497,7 +528,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     $value = array($value);
                 }
                 $this->_defaultDataset = $value;
-                $this->setFixedDatas();
+                $this->setDefaultFixedDatas();
             }
             return true;
         } else {

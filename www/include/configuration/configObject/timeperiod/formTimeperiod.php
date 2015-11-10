@@ -100,7 +100,8 @@ $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonTimeperiod'
 );
 
 /*

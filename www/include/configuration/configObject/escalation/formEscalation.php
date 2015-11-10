@@ -273,7 +273,7 @@ $form->addElement('select2', 'esc_cgs', _("Linked Contact Groups"), $cgs, array(
 ## Sort 2
 #
 $form->addElement('header', 'hosts', _("Implied Hosts"));
-$form->addElement('select2', 'esc_hosts', _("Hosts"), $hosts, array('multiple' => true));
+$form->addElement('select2', 'esc_hosts', _("Hosts"), $hosts, array('multiple' => true, 'linkedObject' => 'centreonHost'));
 
 #
 ## Sort 3
@@ -283,7 +283,8 @@ $attrServices = array(
     'datasourceOrigin' => 'ajax',
     'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultEscalationValues&id=' . $esc_id,
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonService'
 );
 $form->addElement('select2', 'esc_hServices', _("Services by Host"), array(), $attrServices);
 
@@ -291,7 +292,7 @@ $form->addElement('select2', 'esc_hServices', _("Services by Host"), array(), $a
 ## Sort 4
 #
 $form->addElement('header', 'hgs', _("Implied Host Groups"));
-$form->addElement('select2', 'esc_hgs', _("Host Group"), $hgs, array('multiple' => true));
+$form->addElement('select2', 'esc_hgs', _("Host Group"), $hgs, array('multiple' => true, 'linkedObject' => 'centreonHostgroups'));
 
 #
 ## Sort 5
@@ -304,7 +305,7 @@ $form->addElement('select2', 'esc_metas', _("Meta Service"), $metas, array('mult
 ## Sort 6
 #
 $form->addElement('header', 'sgs', _("Implied Service Groups"));
-$form->addElement('select2', 'esc_sgs', _("Service Group"), $sgs, array('multiple' => true));
+$form->addElement('select2', 'esc_sgs', _("Service Group"), $sgs, array('multiple' => true, 'linkedObject' => 'centreonServicegroup'));
 
 $form->addElement('hidden', 'esc_id');
 $redirect = $form->addElement('hidden', 'o');

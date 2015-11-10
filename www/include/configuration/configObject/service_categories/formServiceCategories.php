@@ -74,22 +74,6 @@ if (($o == "c" || $o == "w") && $sc_id)	{
 }
 
 /*
- * Get Service Available
- */
-/*
-  $hServices = array();
-  $DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-  while ($elem = $DBRESULT->fetchRow())	{
-  $services = getMyHostServices($elem["host_id"]);
-  foreach ($services as $key => $index)	{
-  $index = str_replace('#S#', "/", $index);
-  $index = str_replace('#BS#', "\\", $index);
-  $hServices[$key] = $elem["host_name"]." / ".$index;
-  }
-  }
-*/
-
-/*
  * Get Service Template Available
  */
 $hServices = array();
@@ -114,7 +98,8 @@ $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 $attrServicetemplates = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonServicetemplates'
 );
 
 /*
