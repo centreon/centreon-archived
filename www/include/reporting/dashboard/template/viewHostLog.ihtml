@@ -31,7 +31,7 @@
 			</form>
 		</td>
 		<td>
-                    <a href="{$link_csv_url}"><img src="./img/icons/csv.png" alt="Export in CSV" /></a>
+                    <a href="{$link_csv_url}"><img src="./img/icons/csv.png" class="ico-20" alt="Export CSV" title="{t}Export CSV{/t}" target="_blank"/></a>
 		</td>
 	</tr>
 	<tr class='list_lvl_3'>

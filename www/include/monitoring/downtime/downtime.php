@@ -74,8 +74,16 @@ switch ($o) {
         if (isset($_POST["select"])) {
             foreach ($_POST["select"] as $key => $value) {
                 $res = explode(';', urldecode($key));
-                $ecObj->DeleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
-                deleteDowntimeFromDb($oreon, array($res[1] . ';' . $res[2] => 'on'));
+                $ishost = isDownTimeHost($res[2]);
+                if($oreon->user->access->admin || 
+                    ($ishost && $oreon->user->access->checkAction("host_schedule_downtime")) ||
+                    (!$ishost && $oreon->user->access->checkAction("service_schedule_downtime"))
+                ){
+                    echo 'test';
+                    $ecObj->DeleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
+                    deleteDowntimeFromDb($oreon, array($res[1] . ';' . $res[2] => 'on'));
+                }
+
             }
         }
         require_once($path . "listDowntime.php");
@@ -84,7 +92,14 @@ switch ($o) {
         if (isset($_POST["select"])) {
             foreach ($_POST["select"] as $key => $value) {
                 $res = explode(';', urldecode($key));
-                $ecObj->DeleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
+                $ishost = isDownTimeHost($res[2]);
+                if($oreon->user->access->admin || 
+                    ($ishost && $oreon->user->access->checkAction("host_schedule_downtime")) ||
+                    (!$ishost && $oreon->user->access->checkAction("service_schedule_downtime"))
+                ){
+                    $ecObj->DeleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
+                }
+                
             }
         }
         require_once($path . "listDowntime.php");
