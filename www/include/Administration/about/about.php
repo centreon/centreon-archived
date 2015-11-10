@@ -68,8 +68,24 @@
 				<td>Lionel Assepo</td>
 			</tr>
 			<tr>
-				<td width="25">&nbsp;</td>
+				<td>&nbsp;</td>
 				<td>Maximilien Bersoult</td>
+			</tr>
+            <tr>
+				<td>&nbsp;</td>
+				<td>Kevin Duret</td>
+			</tr>
+            <tr>
+				<td>&nbsp;</td>
+				<td>Toufik Mechouet</td>
+			</tr>
+            <tr>
+				<td>&nbsp;</td>
+				<td>Rabaa Ridene</td>
+			</tr>
+            <tr>
+				<td>&nbsp;</td>
+				<td>Benoït Sauveton</td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
