@@ -89,94 +89,6 @@ if (($o == "c" || $o == "w") && $esc_id) {
 
 	# Set base value
 	$esc = array_map("myDecode", $DBRESULT->fetchRow());
-
-	# Set Host Options
-	$esc["escalation_options1"] = explode(',', $esc["escalation_options1"]);
-	foreach ($esc["escalation_options1"] as $key => $value) {
-		$esc["escalation_options1"][trim($value)] = 1;
-    }
-
-	# Set Service Options
-	$esc["escalation_options2"] = explode(',', $esc["escalation_options2"]);
-	foreach ($esc["escalation_options2"] as $key => $value) {
-		$esc["escalation_options2"][trim($value)] = 1;
-    }
-
-	# Set Host Groups relations
-	$DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
-	for($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
-        if (!$oreon->user->admin && false === strpos($hgString, "'".$hg['hostgroup_hg_id']."'")) {
-            $initialValues['esc_hgs'][] = $hg["hostgroup_hg_id"];
-        } else {
-            $esc["esc_hgs"][$i] = $hg["hostgroup_hg_id"];
-        }
-    }
-	$DBRESULT->free();
-
-	# Set Service Groups relations
-	$DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM escalation_servicegroup_relation WHERE escalation_esc_id = '".$esc_id."'");
-	for($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
-        if (!$oreon->user->admin && false === strpos($sgString, "'".$sg['servicegroup_sg_id']."'")) {
-            $initialValues['esc_sgs'][] = $sg["servicegroup_sg_id"];
-        } else {
-            $esc["esc_sgs"][$i] = $sg["servicegroup_sg_id"];
-        }
-    }
-	$DBRESULT->free();
-
-	# Set Host relations
-	$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."'");
-	for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
-        if (!$oreon->user->admin && !isset($hosts[$host['host_host_id']])) {
-            $initialValues['esc_hosts'][] = $host['host_host_id'];
-        } else {
-            $esc["esc_hosts"][$i] = $host["host_host_id"];
-        }
-    }
-	$DBRESULT->free();
-
-	# Set Meta Service
-    $aclMetaService = $acl->getMetaServiceString();
-	$DBRESULT = $pearDB->query("SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = '".$esc_id."'");
-	for($i = 0; $metas = $DBRESULT->fetchRow(); $i++) {
-        if (!$oreon->user->admin && false === strpos($aclMetaService, "'".$metas['meta_service_meta_id']."'")) {
-            $initialValues['esc_metas'][] = $metas['meta_service_meta_id'];
-        } else {
-            $esc["esc_metas"][$i] = $metas["meta_service_meta_id"];
-        }
-    }
-	$DBRESULT->free();
-
-	# Set Host Service
-    $aclService = $acl->getServicesString('ID', $pearDBMonitoring);
-    $query = "SELECT distinct host_host_id, host_name, service_service_id, service_description
-        FROM service s, escalation_service_relation esr, host h
-        WHERE s.service_id = esr.service_service_id
-        AND esr.host_host_id = h.host_id
-        AND h.host_register = '1'
-        AND esr.escalation_esc_id = " . $esc_id;
-    $DBRESULT = $pearDB->query($query);
-	for ($i = 0; $services = $DBRESULT->fetchRow(); $i++) {
-        $key = $services["host_host_id"]."-".$services["service_service_id"];
-        if (!$oreon->user->admin && false === strpos($aclService, "'".$services['service_service_id']."'")) {
-            $initialValues['esc_hServices'][] = $key;
-        } else {
-            $hServices[$key] = $services["host_name"]."&nbsp;-&nbsp;".$services['service_description'];
-            $esc["esc_hServices"][$i] = $key;
-        }
-    }
-	$DBRESULT->free();
-
-	# Set Contact Groups relations
-	$DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
-	for ($i = 0; $cg = $DBRESULT->fetchRow(); $i++) {
-        if (!isset($oreon->user->admin) && !isset($notifCgs[$cg['contactgroup_cg_id']])) {
-            $initialValues["esc_cgs"][] = $cg["contactgroup_cg_id"];
-        } else {
-            $esc["esc_cgs"][$i] = $cg["contactgroup_cg_id"];
-        }
-    }
-	$DBRESULT->free();
 }
 
 
@@ -267,13 +179,27 @@ $tab[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"))
 $form->addGroup($tab, 'escalation_options2', _("Services Escalation Options"), '&nbsp;&nbsp;');
 $form->addElement('textarea', 'esc_comment', _("Comments"), $attrsTextarea);
 
-$form->addElement('select2', 'esc_cgs', _("Linked Contact Groups"), $cgs, array('multiple' => true));
+$attrContactgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=defaultValues&target=escalation&field=esc_cgs&id=' . $esc_id,
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+    'multiple' => true,
+    'linkedObject' => 'centreonContactgroup'
+);
+$form->addElement('select2', 'esc_cgs', _("Linked Contact Groups"), array(), $attrContactgroups);
 
 #
 ## Sort 2
 #
 $form->addElement('header', 'hosts', _("Implied Hosts"));
-$form->addElement('select2', 'esc_hosts', _("Hosts"), $hosts, array('multiple' => true, 'linkedObject' => 'centreonHost'));
+$attrHosts = array(
+    'datasourceOrigin' => 'ajax',
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=escalation&field=esc_hosts&id=' . $esc_id,
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'multiple' => true,
+    'linkedObject' => 'centreonHost'
+);
+$form->addElement('select2', 'esc_hosts', _("Hosts"), array(), $attrHosts);
 
 #
 ## Sort 3
@@ -281,7 +207,7 @@ $form->addElement('select2', 'esc_hosts', _("Hosts"), $hosts, array('multiple' =
 $form->addElement('header', 'services', _("Implied Services"));
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
-    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultEscalationValues&id=' . $esc_id,
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=escalation&field=esc_hServices&id=' . $esc_id,
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
     'multiple' => true,
     'linkedObject' => 'centreonService'
@@ -292,20 +218,41 @@ $form->addElement('select2', 'esc_hServices', _("Services by Host"), array(), $a
 ## Sort 4
 #
 $form->addElement('header', 'hgs', _("Implied Host Groups"));
-$form->addElement('select2', 'esc_hgs', _("Host Group"), $hgs, array('multiple' => true, 'linkedObject' => 'centreonHostgroups'));
+$attrHostgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=escalation&field=esc_hgs&id=' . $esc_id,
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+    'multiple' => true,
+    'linkedObject' => 'centreonHostgroups'
+);
+$form->addElement('select2', 'esc_hgs', _("Host Group"), array(), $attrHostgroups);
 
 #
 ## Sort 5
 #
 $form->addElement('header', 'metas', _("Implied Meta Services"));
-$form->addElement('select2', 'esc_metas', _("Meta Service"), $metas, array('multiple' => true));
+$attrMetas = array(
+    'datasourceOrigin' => 'ajax',
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_meta&action=defaultValues&target=escalation&field=esc_metas&id=' . $esc_id,
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_meta&action=list',
+    'multiple' => true,
+    'linkedObject' => 'centreonMeta'
+);
+$form->addElement('select2', 'esc_metas', _("Meta Service"), array(), $attrMetas);
 
 
 #
 ## Sort 6
 #
 $form->addElement('header', 'sgs', _("Implied Service Groups"));
-$form->addElement('select2', 'esc_sgs', _("Service Group"), $sgs, array('multiple' => true, 'linkedObject' => 'centreonServicegroup'));
+$attrServicegroups = array(
+    'datasourceOrigin' => 'ajax',
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=escalation&field=esc_sgs&id=' . $esc_id,
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list',
+    'multiple' => true,
+    'linkedObject' => 'centreonServicegroups'
+);
+$form->addElement('select2', 'esc_sgs', _("Service Group"), array(), $attrServicegroups);
 
 $form->addElement('hidden', 'esc_id');
 $redirect = $form->addElement('hidden', 'o');

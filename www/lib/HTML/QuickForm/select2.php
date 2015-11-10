@@ -338,7 +338,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         
         if (!$this->_allowClear) {
             $strJsInitEnding .= 'jQuery("#' . $this->getName() . '").nextAll(".clearAllSelect2").on("click",function(){ '
-                . '$currentValues = jQuery("#' . $this->getName() . '").val(); console.log($currentValues); '
+                . '$currentValues = jQuery("#' . $this->getName() . '").val(); '
                 . 'jQuery("#' . $this->getName() . '").val("");'
                 . 'jQuery("#' . $this->getName() . '").empty().append(jQuery("<option>"));'
                 . 'jQuery("#' . $this->getName() . '").trigger("change", $currentValues);'

@@ -256,8 +256,8 @@
 		$fields["last_notification"] = htmlentities($ret["last_notification"], ENT_QUOTES, "UTF-8");
 		$fields["notification_interval"] = htmlentities($ret["notification_interval"], ENT_QUOTES, "UTF-8");
 		$fields["escalation_period"] = htmlentities($ret["escalation_period"], ENT_QUOTES, "UTF-8");
-		$fields["escalation_options1"] = implode(",", array_keys($ret["escalation_options1"]));
-		$fields["escalation_options2"] = implode(",", array_keys($ret["escalation_options2"]));
+		/*$fields["escalation_options1"] = implode(",", array_keys($ret["escalation_options1"]));
+		$fields["escalation_options2"] = implode(",", array_keys($ret["escalation_options2"]));*/
 		$fields["esc_comment"] = htmlentities($ret["esc_comment"], ENT_QUOTES, "UTF-8");
 		$fields["esc_cgs"] = "";
 		if (isset($ret["esc_cgs"]))
