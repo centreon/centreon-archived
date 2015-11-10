@@ -40,12 +40,15 @@ class Command extends AbstractObject {
             return $this->commands[$command_id]['command_name'];
         }
         
-        # enable_shell is 0 we remove it
-        $command_line = $this->commands[$command_id]['command_line_base'];
-        if (!is_null($this->commands[$command_id]['enable_shell']) && $this->commands[$command_id]['enable_shell'] == 1) {
-            $command_line = '/bin/sh -c ' . escapeshellarg($this->commands[$command_id]['command_line_base']);
-        }
         
+        # enable_shell is 0 we remove it
+        $command_line = html_entity_decode($this->commands[$command_id]['command_line_base']);
+        $command_line = str_replace('#BR#', "\\n", $command_line);
+
+        if (!is_null($this->commands[$command_id]['enable_shell']) && $this->commands[$command_id]['enable_shell'] == 1) {
+            $command_line = '/bin/sh -c ' . escapeshellarg($command_line);
+        }
+
         $this->generateObjectInFile(array_merge($this->commands[$command_id], array('command_line' => $command_line)), $command_id);
         return $this->commands[$command_id]['command_name'];
     }
