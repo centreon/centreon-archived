@@ -15,8 +15,8 @@ jQuery(function() {
             iniFormsCount: jQuery("#clone-count-" + suffixid).data("clone-count-" + suffixid),
             data: jQuery("#clone-values-" + suffixid).data("clone-values-" + suffixid),
             afterAdd: function(source, clone) {
-                if (typeof clonerefreshListeber == 'function') { 
-                    clonerefreshListeber(clone); 
+                if (typeof clonerefreshListener == 'function') { 
+                    clonerefreshListener(clone); 
                 }
             }
          });
