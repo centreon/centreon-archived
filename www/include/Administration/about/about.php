@@ -42,180 +42,128 @@
 	$release = $DBRESULT->fetchRow();
 
 ?><center>
-<div style="width:100%;align:center;">
-	<div style="width:700px;padding:20px;background-color:#FFFFFF;border:1px #CDCDCD solid;-moz-border-radius:4px;">
-		<div style='float:left;width:270px;text-align:left;'>
-		<p align="center"><h3><u>Centreon <?php print $release["value"]; ?>&nbsp;</u></h3><br />
-			&nbsp;&nbsp;&nbsp;&nbsp;Developed by <a href="http://www.centreon.com">Centreon</a>
-		</p>
-		<br /><br />
-		<h3><b><?php echo _("Project Leaders"); ?> :</b></h3>
-		<br />
-		<table>
-			<tr>
-				<td width="25">&nbsp;</td>
-				<td>-&nbsp;<a href="mailto:jmathis@centreon.com">Julien Mathis</a></td>
-			</tr>
-			<tr>
-				<td width="25">&nbsp;</td>
-				<td>-&nbsp;<a href="mailto:rlemerlus@centreon.com">Romain Le Merlus</a></td>
-			</tr>
-		</table>
-		<br><br><h3><b><?php echo _("Developers"); ?> :</b></h3><br />
-		<table>
-            <tr>
-				<td width="25">&nbsp;</td>
-				<td>Lionel Assepo</td>
-			</tr>
-			<tr>
-				<td width="25">&nbsp;</td>
-				<td>Maximilien Bersoult</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Romain Bertholon</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Christophe Coraboeuf</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Nicolas Cordier</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Damien Duponchelle</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Cedrick Facon</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Nikolaus Filus</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Quentin Garnier</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Dorian Guillois</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Sylvestre Ho</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Matthieu Kermagoret</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Antoine Nguyen</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Laurent Pinsivy</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>David Porte</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Mathavarajan Sugumaran</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Cedric Temple</td>
-			</tr>
-            <tr>
-				<td>&nbsp;</td>
-				<td>Alexandru Vilau</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Guillaume Watteeux</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>Remi Werquin</td>
-			</tr>
-		</table>
-		</div>
-		<div style="padding-left: 30px;">
-			<img src="./img/Paris-Business.jpg" alt="Logo Join Community">
-		</div>
-		<br/><br/><br/><br/><br/><br/><br/>
-		<div style="margin-top:90px;text-align:left;width:100%;">
-			<table width="80%">
-				<thead><h3 style='text-align:left;'><b><?php echo _("Contributors"); ?> :</b></h3><br /></thead>
+	<div style="width:700px;padding:20px;border:1px #CDCDCD solid;">
+			<table class="table">
 				<tr>
-					<td style='padding-left:25px;'>Marisa Belijar</td>
-					<td>Tobias Boehnert</td>
+					<td>
+						<h3>Centreon <?php print $release["value"]; ?></h3> <br>
+
+					</td>
+					<td>
+						Developed by <a href="http://www.centreon.com">Centreon</a>
+					</td>
+					<td style="text-align: center" rowspan="3"><img src="./img/centreon.png" alt="logo centreon" /></td>
 				</tr>
 				<tr>
-					<td style='padding-left:25px;'>Duy-Huan BUI</td>
-					<td>Gaetan Lucas de Couville</td>
-				</tr>
-				<tr>
-					<td style='padding-left:25px;'>Vincent Carpentier</td>
-					<td>Christoph Ziemann</td>
-				</tr>
-				<tr>
-					<td style='padding-left:25px;'>Jean Marc Grisar</td>
-					<td>Florin Grosu</td>
-				</tr>
-				<tr>
-					<td style='padding-left:25px;'>Luiz Gustavo Costa</td>
-					<td>guigui2607</td>
-				</tr>
-				<tr>
-					<td style='padding-left:25px;'>Thomas Fisher</td>
-					<td>Jean Gabes</td>
-				</tr>
-				<tr>
-					<td style='padding-left:25px;'>Jay Lopez</td>
-					<td>Jan Kuipers</td>
-				</tr>
-				<tr>
-					<td style='padding-left:25px;'>Ira Janssen</td>
-					<td>Thomas Johansen</td>
-				</tr>
-				<tr>
-					<td style='padding-left:25px;'>Peeters Jan</td>
-					<td>Jan Kuipers</td>
-				</tr>
-				<tr>
-					<td style='padding-left:25px;'>Danil Makeyev</td>
-					<td>Camille N&eacute;ron</td>
-				</tr>
-				<tr>
-					<td style='padding-left:25px;'>Maxime Peccoux</td>
-					<td>Patrick Proy</td>
-				</tr>
-				<tr>
-					<td style='padding-left:25px;'>Joerg Steinlechner</td>
-					<td>Silvio Rodrigo Damasceno de Souza</td>
-				</tr>
-				<tr>
-					<td style='padding-left:25px;'>Thierry Van Acker</td>
-					<td>Felix Zingel</td>
-				</tr>
-				<tr>
-					<td style='padding-left:25px;'>Massimiliano Ziccardi</td>
+					<td style="vertical-align: top;">
+						<h3><?php echo _("Project Leaders"); ?></h3>
+					</td>
+					<td>
+						-&nbsp;<a href="mailto:jmathis@centreon.com">Julien Mathis</a> <br>
+						-&nbsp;<a href="mailto:rlemerlus@centreon.com">Romain Le Merlus</a> <br>
+					</td>
 					<td></td>
 				</tr>
 				<tr>
-					<td colspan="2" style='padding-left:25px;'>
-                        <br /><?php print _("And many others..."); ?><br />
-                        <?php print _("You can see the full list by visiting the Centreon's Forge"); ?>
-                    </td>
+					<td style="vertical-align: top;padding-top :10px;">
+						<h3><?php echo _("Developers"); ?></h3>
+					</td>
+					<td style="padding-top :10px;">
+						<p>Lionel Assepo</p>
+						<p>>Maximilien Bersoult</p>
+						<p>Romain Bertholon</p>
+						<p>Christophe Coraboeuf</p>
+						<p>Nicolas Cordier</p>
+						<p>Damien Duponchelle</p>
+						<p>Cedrick Facon</p>
+						<p>Nikolaus Filus</p>
+						<p>Quentin Garnier</p>
+						<p>Dorian Guillois</p>
+						<p>Sylvestre Ho</p>
+						<p>Matthieu Kermagoret</p>
+						<p>Antoine Nguyen</p>
+						<p>Matthieu Kermagoret</p>
+						<p>Antoine Nguyen</p>
+						<p>Laurent Pinsivy</p>
+						<p>David Porte</p>
+						<p>Mathavarajan Sugumaran</p>
+						<p>Cedric Temple</p>
+						<p>Alexandru Vilau</p>
+						<p>Guillaume Watteeux</p>
+						<p>Remi Werquin</p>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td  style="vertical-align: top;padding-top :10px;"><h3 style='text-align:left;'><?php echo _("Contributors"); ?></h3></td>
+					<td style="padding-top: 10px;" colspan="2">
+						<table class="table">
+							<tr>
+								<td>Marisa Belijar</td>
+								<td>Tobias Boehnert</td>
+							</tr>
+							<tr>
+								<td>Duy-Huan BUI</td>
+								<td>Gaetan Lucas de Couville</td>
+							</tr>
+							<tr>
+								<td>Vincent Carpentier</td>
+								<td>Christoph Ziemann</td>
+							</tr>
+							<tr>
+								<td>Jean Marc Grisar</td>
+								<td>Florin Grosu</td>
+							</tr>
+							<tr>
+								<td>Luiz Gustavo Costa</td>
+								<td>guigui2607</td>
+							</tr>
+							<tr>
+								<td>Thomas Fisher</td>
+								<td>Jean Gabes</td>
+							</tr>
+							<tr>
+								<td>Jay Lopez</td>
+								<td>Jan Kuipers</td>
+							</tr>
+							<tr>
+								<td>Ira Janssen</td>
+								<td>Thomas Johansen</td>
+							</tr>
+							<tr>
+								<td>Peeters Jan</td>
+								<td>Jan Kuipers</td>
+							</tr>
+							<tr>
+								<td>Danil Makeyev</td>
+								<td>Camille N&eacute;ron</td>
+							</tr>
+							<tr>
+								<td>Maxime Peccoux</td>
+								<td>Patrick Proy</td>
+							</tr>
+							<tr>
+								<td>Joerg Steinlechner</td>
+								<td>Silvio Rodrigo Damasceno de Souza</td>
+							</tr>
+							<tr>
+								<td>Thierry Van Acker</td>
+								<td>Felix Zingel</td>
+							</tr>
+							<tr>
+								<td>Massimiliano Ziccardi</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<br /><?php print _("And many others..."); ?><br />
+									<?php print _("You can see the full list by visiting the Centreon's Forge"); ?>
+								</td>
+							</tr>
+						</table>
+					</td>
+
 				</tr>
 			</table>
-		</div>
 	</div>
-</div>
 </center>
