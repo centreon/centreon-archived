@@ -75,7 +75,7 @@ The following table provides an idea of the disk space needed for your platform 
 +------------------------+----------------+-------------------+
 
 *******************
-Define fyles system
+Define files system
 *******************
 
 .. note::
@@ -84,7 +84,7 @@ Define fyles system
 Centreon server
 ===============
 
-Files system descrption:
+Files system description:
 
 * / (at least 20 GB)
 * swap (at least 1x RAM space)
@@ -96,7 +96,7 @@ Files system descrption:
 MariaDB DBMS
 ============
 
-Files system descrption:
+Files system description:
 
 * / (at least 10 GB)
 * swap (at least 1x RAM space)
@@ -107,7 +107,7 @@ Files system descrption:
 Monitoring poller
 =================
 
-Files system descrption:
+Files system description:
 
 * / (at least 20 GB)
 * swap (at least 1x RAM space)
