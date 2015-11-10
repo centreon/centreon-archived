@@ -96,71 +96,6 @@ if (($o == "c" || $o == "w") && $sg_id)	{
 
     // Set base value
     $sg = array_map("myDecode", $DBRESULT->fetchRow());
-
-    // Set ServiceGroup Childs
-    if (!$oreon->user->admin) {
-        $aclSql = "SELECT sgr.host_host_id, sgr.service_service_id
-            FROM servicegroup_relation sgr, $aclDbName.centreon_acl acl
-            WHERE sgr.servicegroup_sg_id = '".$sg_id."'
-                  AND sgr.host_host_id = acl.host_id
-                      AND acl.service_id = sgr.service_service_id
-                      AND acl.group_id IN (".$acl->getAccessGroupsString().")";
-        $aclRes = $pearDB->query($aclSql);
-        $aclHs = array();
-        while ($aclRow = $aclRes->fetchRow()) {
-            $aclHs[$aclRow['host_host_id']."-".$aclRow['service_service_id']] = true;
-        }
-    }
-    $DBRESULT = $pearDB->query("SELECT host_host_id, service_service_id 
-                                FROM servicegroup_relation, host 
-                                WHERE servicegroup_sg_id = '".$sg_id."' 
-                                      AND host_host_id IS NOT NULL AND host_host_id = host_id 
-                                      AND host_register = '1' ORDER BY service_service_id");
-    for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
-        $hkey = $host["host_host_id"]."-".$host["service_service_id"];
-        if (isset($aclHs) && !isset($aclHs[$hkey])) {
-            $initialValues['sg_hServices'][] = $hkey;
-        } else {
-            $sg["sg_hServices"][$i] = $hkey;
-        }
-    }
-    $DBRESULT->free();
-
-    $DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, service_service_id
-            FROM servicegroup_relation
-            WHERE servicegroup_sg_id = '".$sg_id."'
-            AND hostgroup_hg_id IS NOT NULL
-            ORDER BY service_service_id");
-    for ($i = 0; $services = $DBRESULT->fetchRow(); $i++) {
-        $hgkey = $services["hostgroup_hg_id"]."-".$services["service_service_id"];
-        if (!$oreon->user->admin && !isset($hgServices[$hgkey])) {
-            $initialValues['sg_hgServices'][] = $hgkey;
-        } else {
-            $sg["sg_hgServices"][$i] = $hgkey;
-        }
-    }
-    $DBRESULT->free();
-    
-    $DBRESULT = $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation, host WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL AND host_host_id = host_id AND host_register = '0' ORDER BY host_name");
-    for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
-        $sg["sg_tServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
-    }
-    $DBRESULT->free();
-    
-    $query = "SELECT host_id, host_name, service_id, service_description
-        FROM service s, servicegroup_relation sgr, host h
-        WHERE s.service_id = sgr.service_service_id
-        AND sgr.host_host_id = h.host_id
-        AND h.host_register = '1'
-        AND sgr.servicegroup_sg_id = "  . $sg_id;
-    $res = $pearDB->query($query);
-    while ($row = $res->fetchRow()) {
-        $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-        $k = $row['host_id']."-".$row['service_id'];
-        if (!in_array($k, $initialValues['sg_hServices']) && !in_array($k, $initialValues['sg_hgServices'])) {
-            $hServices[$k] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
-        }
-    }
 }
 
 $query = "SELECT host_id, host_name, service_id, service_description
@@ -195,7 +130,8 @@ $attrServicetemplates = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list&l=1',
     'multiple' => true,
-    'linkedObject' => 'centreonServicetemplates'
+    'linkedObject' => 'centreonServicetemplates',
+    'defaultDatasetOptions' => array('withHosttemplate' => true)
 );
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',

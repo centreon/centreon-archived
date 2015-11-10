@@ -49,8 +49,8 @@ class CentreonHosttemplates extends CentreonHost
      * @param array $values
      * @return array
      */
-    public function getObjectForSelect2($values = array())
+    public function getObjectForSelect2($values = array(), $options = array())
     {
-        return parent::getObjectForSelect2($values, '0');
+        return parent::getObjectForSelect2($values, $options, '0');
     }
 }

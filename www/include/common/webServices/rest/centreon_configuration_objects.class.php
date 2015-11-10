@@ -126,7 +126,6 @@ class CentreonConfigurationObjects extends CentreonWebService
      */
     private function retrieveExternalObjectDatas($externalObject, $values)
     {
-        
         $tmpValues = array();
         
         if (isset($externalObject['object'])) {
@@ -134,7 +133,13 @@ class CentreonConfigurationObjects extends CentreonWebService
             include_once _CENTREON_PATH_ . "/www/class/$classFile";
             $calledClass = ucfirst($externalObject['object']);
             $externalObjectInstance = new $calledClass($this->pearDB);
-            $tmpValues = $externalObjectInstance->getObjectForSelect2($values);
+            
+            $options = array();
+            if (isset($externalObject['objectOptions'])) {
+                $options = $externalObject['objectOptions'];
+            }
+            
+            $tmpValues = $externalObjectInstance->getObjectForSelect2($values, $options);
         } else {
             $explodedValues = implode(',', $values);
             if (empty($explodedValues)) {
@@ -191,7 +196,9 @@ class CentreonConfigurationObjects extends CentreonWebService
         $queryValuesRetrieval = "SELECT $relationObject[field] FROM $relationObject[table] WHERE $relationObject[comparator] = $id";
         $resRetrieval = $this->pearDB->query($queryValuesRetrieval);
         while ($row = $resRetrieval->fetchRow()) {
-            $tmpValues[] = $row[$relationObject['field']];
+            if (!empty($row[$relationObject['field']])) {
+                $tmpValues[] = $row[$relationObject['field']];
+            }
         }
         
         return $tmpValues;
