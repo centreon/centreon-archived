@@ -990,6 +990,8 @@ if ($valid) {
     $tpl->assign("topdoc", _("Documentation"));
     $tpl->assign("seconds", _("seconds"));
     $tpl->assign('custom_macro_label', _('Custom macros'));
+    $tpl->assign('template_inheritance', _('Template inheritance'));
+    $tpl->assign('command_inheritance', _('Command inheritance'));
     $tpl->assign('cloneSetMacro', $cloneSetMacro);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
     $tpl->assign('isServiceTemplate', 1);
