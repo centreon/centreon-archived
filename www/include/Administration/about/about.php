@@ -68,7 +68,7 @@
 				<td>Lionel Assepo</td>
 			</tr>
 			<tr>
-				<td width="25">&nbsp;</td>
+				<td>&nbsp;</td>
 				<td>Maximilien Bersoult</td>
 			</tr>
 			<tr>
