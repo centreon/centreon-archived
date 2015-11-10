@@ -14,14 +14,14 @@
 	<tr class='ListHeader'>
 		<td class="ListColHeaderLeft" style='white-space: nowrap;'>
 			<form {$formService.attributes} style="margin:0px;padding:0px;">
-				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">&nbsp;{$hostTitle}&nbsp;:&nbsp;&nbsp;<input type=text value="{$host_name}" name="host_name" disabled>
+				&nbsp;{$hostTitle}&nbsp;:&nbsp;&nbsp;<input type=text value="{$host_name}" name="host_name" disabled>
 				<b>{$formItem.item.label}:</b>&nbsp;&nbsp;{$formItem.item.html}
 				{$formItem.hidden}
 			&nbsp;&nbsp;&nbsp;{$from} {$date_start} {$to} {$date_end} - {$infosTitle}
 			</form>
 		</td>
 		<td>
-			<a href="{$link_csv_url}"><img src="./img/icones/16x16/text_binary_csv.gif" alt={$link_csv_name}/></a>
+			<a href="{$link_csv_url}">Export in CSV format</a>
 		</td>
 	</tr>
 	<tr class='list_lvl_3'>
@@ -43,7 +43,7 @@
 			<td style='padding:5px;vertical-align:top;'><form {$formPeriod.attributes}>
 					<table class="ajaxOption">
 						<tr>
-							<td>&nbsp;<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle} : </td>
+							<td>&nbsp;{$periodTitle} : </td>
 							<td>{$formPeriod.period.html}{$formPeriod.hidden}</td>
 							<td>&nbsp;{$periodORlabel}&nbsp;</td>
 							<td>
@@ -60,7 +60,7 @@
 				<td style='vertical-align:top;padding:5px;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td colspan=5>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$resumeTitle}</td>
+						<td colspan=5>&nbsp;{$resumeTitle}</td>
 					</tr>
 					<!-- headers -->
 						<tr class='list_lvl_1'>

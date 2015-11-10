@@ -289,9 +289,9 @@ $form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepi
 $form->addElement('text', 'output', _("Output"),  array("id"=>"output", "style"=>"width: 203px;", "size"=>15, "value" => $user_params['output']));
 
 if($engine == "false"){
-    $form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()","class"=>"btc bt_success"));
+    $form->addElement('button', 'graph', _("Apply period"), array("onclick"=>"apply_period()","class"=>"btc bt_success"));
 }else{
-    $form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period_engine()","class"=>"btc bt_success"));
+    $form->addElement('button', 'graph', _("Apply period"), array("onclick"=>"apply_period_engine()","class"=>"btc bt_success"));
 }
 
 

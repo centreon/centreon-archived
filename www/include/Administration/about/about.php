@@ -70,7 +70,11 @@
 					</td>
 					<td style="padding-top :10px;">
 						<p>Lionel Assepo</p>
-						<p>>Maximilien Bersoult</p>
+						<p>Maximilien Bersoult</p>
+						<p>Kevin Duret</p>
+						<p>Toufik Mechouet</p>
+						<p>Rabaa Ridene</p>
+						<p>Benoït Sauveton</p>
 						<p>Romain Bertholon</p>
 						<p>Christophe Coraboeuf</p>
 						<p>Nicolas Cordier</p>
