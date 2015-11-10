@@ -26,11 +26,11 @@
 		{/if}
             {/foreach}
         {if $isFrozen == 0}
-            <span>
-                <img src="./img/icons/move.png" class="clonehandle ico-16">
+            <span style="margin-left: 4px;cursor: pointer;">
+                <img src="./img/icons/move.png" class="clonehandle ico-14" style="vertical-align:middle;">
             </span>
-            <a id="{$cloneId}_remove_current" style='padding-right:5px;'>
-                <img src="./img/icons/circle-cross.png" class="ico-16">
+            <a id="{$cloneId}_remove_current" style="margin-right: 4px;">
+                <img src="./img/icons/circle-cross.png" class="ico-14" style="vertical-align:middle;">
             </a>
         {/if}
         </div>

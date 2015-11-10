@@ -84,7 +84,7 @@ input, select {
 /*input[type="text"] {
     width: 70%;
 }*/
-input[type="checkbox"] 	{border:0px;margin:0;padding:0px;}
+input[type="checkbox"] 	{border:0px;margin:0;padding:0px;vertical-align: middle}
 select {
     padding: 6px;
 }
@@ -1589,4 +1589,14 @@ span.state_badge {
 }
 .slider {
     margin-bottom: 1em;
+}
+
+.macro_legend {
+    padding: 10px;
+    background-color: #fff;
+    margin-top: 6px;
+    float: left;
+    margin-left: 15px;
+    color: #818285;
+    border-radius: 4px;
 }

@@ -527,13 +527,13 @@ $form->addElement('static', 'tplText', _("Using a Template allows you to have mu
 
 $cloneSetMacro = array();
 $cloneSetMacro[] = $form->addElement(
-    'text', 'macroInput[#index#]', _('Macro name'), array(
+    'text', 'macroInput[#index#]', _('Name'), array(
     'id' => 'macroInput_#index#',
     'size' => 25
     )
 );
 $cloneSetMacro[] = $form->addElement(
-    'text', 'macroValue[#index#]', _('Macro value'), array(
+    'text', 'macroValue[#index#]', _('Value'), array(
     'id' => 'macroValue_#index#',
     'size' => 25
     )

@@ -20,13 +20,22 @@
         <div class="clone-cell">
             {foreach from=$cloneSet item=v}
 		{if $v->isFrozen()}
-	   		<span style="padding-right: 10px;">{$v->getLabel()} : {$v->unfreeze()}{$v->setAttribute('disabled', 'disabled')}{$v->toHtml()}   </span>
+	   		<span>
+	   		    {$v->getLabel()} {$v->unfreeze()}
+	   		    {$v->setAttribute('disabled', 'disabled')}
+	   		    {$v->toHtml()}<br>
+	   		</span>
 		{else}
-                    <span style="padding-right: 10px;"> {if $v->getLabel() != ""}  {$v->getLabel()} : {/if}  {$v->toHtml()}</span>
+            <span>
+                {if $v->getLabel() != ""}
+                    {$v->getLabel()}
+                {/if}
+                {$v->toHtml()}
+           </span>
 		{/if}
 
             {/foreach}
-            <img src="./img/icones/16x16/text_view.gif" onclick='javascript:loadDescription(#index#)' />
+            <img src="./img/icons/description.png" style='vertical-align: middle;cursor:pointer;' class="ico-14" onclick='javascript:loadDescription(#index#)' />
             <input type='hidden' id='macroTplValue_#index#' name='macroTplValue_#index#' value="" />
             <input type='hidden' id='macroTplValToDisplay_#index#' name='macroTplValToDisplay_#index#' value="0" />
             <input type='hidden' id='macroDescription_#index#' name='macroDescription_#index#' value="" />
@@ -35,12 +44,14 @@
             
 
         {if $isFrozen == 0}
-            <span class="clonehandle">
-                <img src="./img/icones/16x16/move.png">
+
+            <span style="cursor:pointer;" class="clonehandle">
+              <img src="./img/icons/move.png" class="ico-14" style="vertical-align:middle;">
             </span>
-            <a id="{$cloneId}_remove_current" class="cloneremove" style='padding-right:5px;'>
-                <img src="./img/icones/16x16/delete.gif">
-            </a>
+
+            <span id="{$cloneId}_remove_current" style=''>
+                <img src="./img/icons/circle-cross.png" class='ico-14' style="vertical-align:middle;">
+            </span>
         {/if}
         </div>
         <input type="hidden" name="clone_order_{$cloneId}_#index#" id="clone_order_#index#" />
