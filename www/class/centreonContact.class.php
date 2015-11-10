@@ -182,7 +182,7 @@ class CentreonContact
      * @param type $values
      * @return type
      */
-    public function getObjectForSelect2($values = array())
+    public function getObjectForSelect2($values = array(), $options = array())
     {
         global $centreon;
         $items = array();

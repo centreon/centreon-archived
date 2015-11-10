@@ -92,32 +92,32 @@ class CentreonServicetemplates extends CentreonService
      * @param type $values
      * @return type
      */
-    public function getObjectForSelect2($values = array())
+    public function getObjectForSelect2($values = array(), $options = array())
     {
-        $selectedServices = '';
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
-        } else {
-            $selectedServices .= "AND hsr.service_service_id IN ($explodedValues) ";
-        }
-        
-        $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
-            . "FROM host h, service s, host_service_relation hsr "
-            . "WHERE hsr.host_host_id = h.host_id "
-            . "AND hsr.service_service_id = s.service_id "
-            . "AND h.host_register = '0' AND s.service_register = '0' "
-            . $selectedServices
-            . "ORDER BY h.host_name";
-        
-        $DBRESULT = $this->db->query($queryService);
-        
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
-            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
-            
-            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
+        if (isset($options['withHosttemplate']) && $options['withHosttemplate'] === true) {
+            $serviceList = parent::getObjectForSelect2($values, $options, '0');
+        } else {
+            $selectedServices = '';
+            $explodedValues = implode(',', $values);
+            if (empty($explodedValues)) {
+                $explodedValues = "''";
+            } else {
+                $selectedServices .= "AND s.service_id IN ($explodedValues) ";
+            }
+
+            $queryService = "SELECT DISTINCT s.service_id, s.service_description "
+                . "FROM service s "
+                . "WHERE s.service_register = '0' "
+                . $selectedServices
+                . "ORDER BY s.service_description ";
+
+            $DBRESULT = $this->db->query($queryService);
+
+
+            while ($data = $DBRESULT->fetchRow()) {
+                $serviceList[] = array('id' => htmlentities($data['service_id']), 'text' => htmlentities($data['service_description']));
+            }
         }
         
         return $serviceList;

@@ -57,7 +57,7 @@
                     <h4>{$tab.name}</h4>
                   </td>
                 </tr>
-				<tr class="list_one"><td class="FormRowField" colspan="2"><select id="block_{$tab.id}" onchange="checkTypeValidity(this)">{foreach from=$tab.blocks item=block}
+				<tr class="list_one"><td class="FormRowValue" colspan="2"><select id="block_{$tab.id}" onchange="checkTypeValidity(this)">{foreach from=$tab.blocks item=block}
 				<option value="{$block.id}">{$block.name}</option>
 				{/foreach}</select>&nbsp;<a id="add_{$tab.id}" href="javascript:addInfo('{$tab.id}')" class='btc bt_success'>{$tab.link}</a></td></tr>
 			</tbody>

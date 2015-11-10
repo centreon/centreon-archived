@@ -489,7 +489,7 @@ $cloneSetMacro = array();
 $cloneSetMacro[] = $form->addElement(
     'text', 
     'macroInput[#index#]',
-    _('Macro name'),
+    _('Name'),
     array(
         'id' => 'macroInput_#index#',
         'size' => 25
@@ -498,7 +498,7 @@ $cloneSetMacro[] = $form->addElement(
 $cloneSetMacro[] = $form->addElement(
     'text', 
     'macroValue[#index#]',
-    _('Macro value'),
+    _('Value'),
     array(
         'id' => 'macroValue_#index#',
         'size' => 25
@@ -826,15 +826,8 @@ if ($o == "a") {
 $form->addElement('header', 'macro', _("Macros"));
 
 $form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
-$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
-$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
-$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
-
-$form->addElement('header', 'macro', _("Macros"));
-
-$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
-$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
-$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
+$form->addElement('text', 'macroName', _("Name"), $attrsText2);
+$form->addElement('text', 'macroValue', _("Value"), $attrsText2);
 $form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
 
 $form->addElement('hidden', 'service_id');
