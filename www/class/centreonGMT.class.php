@@ -291,4 +291,35 @@ class CentreonGMT {
          
         return $aDatas;
     }
+    
+    /**
+     * 
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array(), $options = array())
+    {
+        $items = array();
+        
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected timezones
+        $query = "SELECT timezone_id, timezone_name "
+            . "FROM timezone "
+            . "WHERE timezone_id IN (" . $explodedValues . ") "
+            . "ORDER BY timezone_name ";
+        
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            $items[] = array(
+                'id' => $row['timezone_id'],
+                'text' => $row['timezone_name']
+            );
+        }
+
+        return $items;
+    }
 }
