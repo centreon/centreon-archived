@@ -58,26 +58,6 @@ if (($o == "c" || $o == "w") && $dep_id)	{
 	foreach ($dep["execution_failure_criteria"] as $key => $value)
 		$dep["execution_failure_criteria"][trim($value)] = 1;
 
-	# Set HostGroup Parents
-	$DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-	for($i = 0; $hgP = $DBRESULT->fetchRow(); $i++) {
-                if (!$oreon->user->admin && !isset($hgs[$hgP['hostgroup_hg_id']])) {
-                    $initialValues['dep_hgParents'][] = $hgP["hostgroup_hg_id"];
-                } else {
-                    $dep["dep_hgParents"][$i] = $hgP["hostgroup_hg_id"];
-                }
-            }
-	$DBRESULT->free();
-
-	# Set HostGroup Childs
-	$DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-	for($i = 0; $hgC = $DBRESULT->fetchRow(); $i++) {
-                if (!$oreon->user->admin && !isset($hgs[$hgC['hostgroup_hg_id']])) {
-                    $initialValues['dep_hgChilds'][] = $hgC["hostgroup_hg_id"];
-                } else {
-                    $dep["dep_hgChilds"][$i] = $hgC["hostgroup_hg_id"];
-                }
-            }
 	$DBRESULT->free();
 }
 
