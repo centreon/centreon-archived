@@ -108,33 +108,18 @@
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/d"/></td>
+			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/P"/></td>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/t"/></td>
-			<td class="ListColHeaderLeft" colspan="2"><xsl:value-of select="//lang/O"/></td>
-			<td class="ListColHeaderCenter" style='width:50px;'><xsl:value-of select="//lang/s"/></td>
-			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/T"/></td>
-			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/R"/></td>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/o"/></td>
-			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/c"/></td>
-			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/C"/></td>
 		</tr>
 		<xsl:for-each select="//line">
 		<tr>
 			<xsl:attribute name="class"><xsl:value-of select="class"/></xsl:attribute>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="date"/></td>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="time"/></td>
-	   		<td style="padding-left:5px;"><xsl:value-of select="host_name"/></td>
-	   		<td style="padding-left:5px;"><xsl:value-of select="service_description"/></td>
-	   		<td style="padding-left:5px;" class="ListColCenter">
-              <xsl:element name="span">
-                <xsl:attribute name="class">badge <xsl:value-of select="status/@color"/></xsl:attribute>
-                <xsl:value-of select="status"/>
-              </xsl:element>
-            </td>
-	   		<td style="padding-left:5px;padding-right:5px;" class="ListColCenter"><xsl:value-of select="type"/></td>
+	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="poller"/></td>
 	   		<td style="padding-left:5px;padding-right:5px;" class="ListColCenter"><xsl:value-of select="retry"/></td>
 	   		<td style="padding-left:5px;"><xsl:value-of select="output"/></td>
-	   		<td style="padding-left:5px;"><xsl:value-of select="contact"/></td>
-	   		<td style="padding-left:5px;"><xsl:value-of select="contact_cmd"/></td>
 		</tr>
 		</xsl:for-each>
 	</table>

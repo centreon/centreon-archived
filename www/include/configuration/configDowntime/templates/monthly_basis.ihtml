@@ -4,7 +4,7 @@ var period_id = {$period_tab};
 <table class="ListTable" style='padding-top:0px;margin-top:0px;'>
 <tr class="list_one">
 	<td class="FormRowField">{$days}</td>
-	<td class="FormRowField">
+	<td class="FormRowValue">
 	<table>
 		<tr>
 		{foreach from=$nbDays item=nbDay}
@@ -18,13 +18,13 @@ var period_id = {$period_tab};
 </tr>
 <tr class="list_two">
 	<td class="FormRowField">{$time_period}</td>
-	<td class="FormRowField">
+	<td class="FormRowValue">
 	<input type="text" id="start_period_{$period_tab}" name="periods[{$period_tab}][start_period]" size="6" class="timepicker"/>&nbsp;-&nbsp;<input id="stop_period_{$period_tab}" type="text" name="periods[{$period_tab}][end_period]" size="6" class="timepicker"/>
 	</td>
 </tr>
 <tr class="list_one">
 	<td class="FormRowField">{$downtime_type}</td>
-	<td class="FormRowField">
+	<td class="FormRowValue">
 	<input type="radio" name="periods[{$period_tab}][fixed]" value="1" checked="checked" />{$fixed}<br/>
 	<input type="radio" name="periods[{$period_tab}][fixed]" value="0" />{$flexible}&nbsp;
 	<input type="text" name="periods[{$period_tab}][duration]" size="6" />&nbsp;

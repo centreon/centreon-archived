@@ -262,7 +262,7 @@
 			$ret1 = CentreonUtils::mergeWithInitialValues($form, "dep_hSvPar");
 		}
 		for($i = 0; $i < count($ret1); $i++)	{
-			$exp = explode("_", $ret1[$i]);
+			$exp = explode("-", $ret1[$i]);
 			if (count($exp) == 2) {
 				$rq = "INSERT INTO dependency_serviceParent_relation ";
 				$rq .= "(dependency_dep_id, service_service_id, host_host_id) ";
@@ -289,7 +289,7 @@
 			$ret1 = CentreonUtils::mergeWithInitialValues($form, "dep_hSvChi");
 		}
 		for ($i = 0; $i < count($ret1); $i++)	{
-			$exp = explode("_", $ret1[$i]);
+			$exp = explode("-", $ret1[$i]);
 			if (count($exp) == 2) {
 				$rq = "INSERT INTO dependency_serviceChild_relation ";
 				$rq .= "(dependency_dep_id, service_service_id, host_host_id) ";

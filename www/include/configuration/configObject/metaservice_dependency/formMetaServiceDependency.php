@@ -41,35 +41,20 @@ $initialValues = array();
 
 if (($o == "c" || $o == "w") && $dep_id)	{
 	$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+
 	# Set base value
 	$dep = array_map("myDecode", $DBRESULT->fetchRow());
+
 	# Set Notification Failure Criteria
 	$dep["notification_failure_criteria"] = explode(',', $dep["notification_failure_criteria"]);
 	foreach ($dep["notification_failure_criteria"] as $key => $value)
 		$dep["notification_failure_criteria"][trim($value)] = 1;
+
 	# Set Execution Failure Criteria
 	$dep["execution_failure_criteria"] = explode(',', $dep["execution_failure_criteria"]);
 	foreach ($dep["execution_failure_criteria"] as $key => $value)
 		$dep["execution_failure_criteria"][trim($value)] = 1;
-	# Set Meta Service Parents
-	$DBRESULT = $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-	for ($i = 0; $msP = $DBRESULT->fetchRow(); $i++) {
-                if (!$oreon->user->admin && false === strpos($metastr, "'".$msP["meta_service_meta_id"]."'")) {
-                    $initialValues["dep_msParents"][] = $msP["meta_service_meta_id"];
-                } else {
-                    $dep["dep_msParents"][$i] = $msP["meta_service_meta_id"];
-                }
-            }
-	$DBRESULT->free();
-	# Set Meta Service Childs
-	$DBRESULT = $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-	for ($i = 0; $msC = $DBRESULT->fetchRow(); $i++) {
-                if (!$oreon->user->admin && false === strpos($metastr, "'".$msC["meta_service_meta_id"]."'")) {
-                    $initialValues['dep_msChilds'][] = $msC["meta_service_meta_id"];
-                } else {
-                    $dep["dep_msChilds"][$i] = $msC["meta_service_meta_id"];
-                }
-            }
+
 	$DBRESULT->free();
 }
 #

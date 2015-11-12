@@ -1609,3 +1609,21 @@ span.state_badge {
     color: #818285;
     border-radius: 4px;
 }
+
+/* Jquery Tabs */
+
+div#tabs_periods {
+    background: #fff;
+    border: 1px solid #e7e7e8;
+    border-radius: 4px;
+}
+
+.ui-widget-content  {
+    background: #fff;
+}
+.ui-widget-header {
+    background: #fff !important;
+    border: 0 !important;
+    border-bottom: 1px solid #e7e7e8 !important;
+    border-radius: 0 !important;
+}

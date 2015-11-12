@@ -271,58 +271,67 @@ function validPeriods()
     </tr>
 	<tr class="list_two">
 		<td class="FormRowField"><img class="helpTooltip" name="downtime_period"> {$periods}</td>
-		<td class="FormRowField"><table>
-			{if $period_err }<tr><td colspan="2" style="color: red;">{$period_err}</td></tr>{/if}
-			<tr>
-                        <td style="vertical-align: top">{if $o != "w"}<img src="./img/icones/16x16/navigate_plus.gif" onclick="addPeriods()" />{/if}</td>
-                        <td><div id="tabs_periods">
-                        <ul id="ul_tabs">
-                        {if $o == "w"}
-			{foreach item=period from=$periods_tab}
-			{assign var='nbperiod' value='1'}
-			{if $period.month_cycle == 'none'}
-			{assign var='type_string' value=$monthly_basis}
-			{elseif $period.month_cycle == 'all'}
-			{assign var='type_string' value=$weekly_basis}
-			{else}
-			{assign var='type_string' value=$specific_date}
-			{/if}
-			<table width="100%">
+		<td class="FormRowValue">
+			<table>
+				{if $period_err }<tr><td colspan="2" style="color: red;">{$period_err}</td></tr>{/if}
 				<tr>
-					<td colspan="2"><b>{$periods} {$nbperiod}</b></td>
+					<td class="FormRowValue">{if $o != "w"}<div style="cursor: pointer; color : #009fdf;"><img src="./img/icons/circle-plus.png" class="ico-14" style="vertical-align: middle;" onclick="addPeriods()" /> {$add}</div>{/if}</td>
 				</tr>
 				<tr>
-					<td>{$downtime_type} : </td><td>{$type_string}</td>
-				</tr>
-				<tr>
-					<td style="vertical-align: top;">{$days}</td><td>
-					{if $period.month_cycle == 'none'}
-					{assign var="nbDay" value="0"}
-					{foreach item=day from=$period.day_of_month}{$day}&nbsp;{if $nbDay % 7 == 0}<br/>{/if}{assign var="nbDay" value=$nbDay+1}{/foreach}
-					{elseif $period.month_cycle == 'all'}
-					{foreach item=day from=$period.day_of_week}{$week_days.$day}<br/>{/foreach}
-					{else}
-					{$period.month_cycle} {$period.day_of_week} {$of_month}
-					{/if}
-					<br/></td>
-				</tr>
-				<tr>
-					<td>{$time_period}</td>
-					<td>{$period.start_time} - {$period.end_time}</td>
-				</tr>
-				<tr>
-					<td>{$fixed}{if $period.fixed == '1'} (x) {/if}{$flexible}{if $period.fixed == '0'} (x){/if}</td>
-					<td>{if $period.fixed == '0'}{$period.duration} {$seconds}{/if}</td>
-				</tr>
-				<tr>
-					<td colspan="2"><hr/></td>
+					<td>
+						<div id="tabs_periods">
+							<ul id="ul_tabs">
+								{if $o == "w"}
+								{foreach item=period from=$periods_tab}
+								{assign var='nbperiod' value='1'}
+								{if $period.month_cycle == 'none'}
+								{assign var='type_string' value=$monthly_basis}
+								{elseif $period.month_cycle == 'all'}
+								{assign var='type_string' value=$weekly_basis}
+								{else}
+								{assign var='type_string' value=$specific_date}
+								{/if}
+
+								<table width="100%">
+									<tr>
+										<td colspan="2"><b>{$periods} {$nbperiod}</b></td>
+									</tr>
+									<tr>
+										<td>{$downtime_type} : </td><td>{$type_string}</td>
+									</tr>
+									<tr>
+										<td style="vertical-align: top;">{$days}</td><td>
+										{if $period.month_cycle == 'none'}
+										{assign var="nbDay" value="0"}
+										{foreach item=day from=$period.day_of_month}{$day}&nbsp;{if $nbDay % 7 == 0}<br/>{/if}{assign var="nbDay" value=$nbDay+1}{/foreach}
+										{elseif $period.month_cycle == 'all'}
+										{foreach item=day from=$period.day_of_week}{$week_days.$day}<br/>{/foreach}
+										{else}
+										{$period.month_cycle} {$period.day_of_week} {$of_month}
+										{/if}
+										<br/></td>
+									</tr>
+									<tr>
+										<td>{$time_period}</td>
+										<td>{$period.start_time} - {$period.end_time}</td>
+									</tr>
+									<tr>
+										<td>{$fixed}{if $period.fixed == '1'} (x) {/if}{$flexible}{if $period.fixed == '0'} (x){/if}</td>
+										<td>{if $period.fixed == '0'}{$period.duration} {$seconds}{/if}</td>
+									</tr>
+									<tr>
+										<td colspan="2"><hr/></td>
+									</tr>
+								</table>
+								{assign var="i" value=$i+1}
+								{/foreach}
+							</ul>
+							{/if}
+						</div>
+					</td>
 				</tr>
 			</table>
-			{assign var="i" value=$i+1}
-			{/foreach}
-                        </ul>
-			{/if}</div></td></tr>
-		</table></td>
+		</td>
 	</tr>
 	{if $o == "a" || $o == "c"}
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>

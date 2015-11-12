@@ -50,6 +50,7 @@ if (!$oreon->user->admin) {
     while ($row = $res->fetchRow()) {
         $hServices[$row['k']] = $row['v'];
     }
+    $res->free();
 }
 
 $dep = array();
@@ -73,47 +74,6 @@ if (($o == "c" || $o == "w") && $dep_id) {
 		$dep["execution_failure_criteria"][trim($value)] = 1;
 	}
 
-	// Set Host Parents
-	$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-	for($i = 0; $hostP = $DBRESULT->fetchRow(); $i++) {
-                if (!$oreon->user->admin && !isset($hosts[$hostP['host_host_id']])) {
-                    $initialValues['dep_hostParents'][] = $hostP["host_host_id"];
-                } else {
-                    $dep["dep_hostParents"][$i] = $hostP["host_host_id"];
-                }
-	}
-	$DBRESULT->free();
-
-	// Set Host Children
-	$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-	for($i = 0; $hostC = $DBRESULT->fetchRow(); $i++) {
-                if (!$oreon->user->admin && !isset($hosts[$hostC['host_host_id']])) {
-                    $initialValues['dep_hostParents'][] = $hostC["host_host_id"];
-                } else {
-                    $dep["dep_hostChilds"][$i] = $hostC["host_host_id"];
-                }
-	}
-	$DBRESULT->free();
-
-            // Set Service Children
-            $query = "SELECT host_id, host_name, service_id, service_description
-		  	  FROM service s, dependency_serviceChild_relation cr, host h
-		  	  WHERE s.service_id = cr.service_service_id
-		  	  AND cr.host_host_id = h.host_id
-		  	  AND cr.dependency_dep_id = "  . $pearDB->escape($dep_id);
-            $res = $pearDB->query($query);
-            $i = 0;
-            while ($row = $res->fetchRow()) {
-                $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-                $key = $row["host_id"]."_".$row['service_id'];
-                if (!$oreon->user->admin && !isset($hServices[$key])) {
-                    $initialValues['dep_hSvChi'][] = $key;
-                } else {
-                    $childServices[$key] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
-                    $dep['dep_hSvChi'][$i] = $key;
-                    $i++;
-                }
-            }
      }
 
 /*
