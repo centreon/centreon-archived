@@ -1535,11 +1535,13 @@ function getLangs() {
     $default = "en_US";
 
     $langs["en_US"] = "en_US";
-    if ($handle = opendir($chemintotal)) {
-        while ($file = readdir($handle))
-            if (is_dir("$chemintotal/$file") && strcmp($file, ".") && strcmp($file, ".."))
-                $langs[$file] = $file;
-        closedir($handle);
+    if (is_dir($chemintotal)) {
+        if ($handle = opendir($chemintotal)) {
+            while ($file = readdir($handle))
+                if (is_dir("$chemintotal/$file") && strcmp($file, ".") && strcmp($file, ".."))
+                    $langs[$file] = $file;
+            closedir($handle);
+        }
     }
     return $langs;
 }
