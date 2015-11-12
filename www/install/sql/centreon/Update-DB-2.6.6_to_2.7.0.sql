@@ -786,3 +786,7 @@ update cb_type_field_relation set is_required = 0 where cb_type_id in (14, 16 , 
 
 --Set required field db_port, db_user, db_host and db_name
 update cb_type_field_relation set is_required = 1 where cb_type_id in (14, 16 , 28, 29, 30, 31) and cb_field_id in (7, 8, 10, 18);
+
+--Change topology_Js for parameter ldap page
+insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/centreon/doClone.js',NULL);
+insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
