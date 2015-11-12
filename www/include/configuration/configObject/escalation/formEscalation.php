@@ -165,7 +165,16 @@ $form->addElement('text', 'esc_alias', _("Alias"), $attrsText);
 $form->addElement('text', 'first_notification', _("First Notification"), $attrsText2);
 $form->addElement('text', 'last_notification', _("Last Notification"), $attrsText2);
 $form->addElement('text', 'notification_interval', _("Notification Interval"), $attrsText2);
-$form->addElement('select2', 'escalation_period', _("Escalation Period"), $tps);
+
+$attrTimeperiods = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+    'multiple' => false,
+    'linkedObject' => 'centreonTimeperiod'
+);
+$form->addElement('select2', 'escalation_period', _("Escalation Period"), array(), $attrTimeperiods);
+
+
 $tab = array();
 $tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
 $tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
