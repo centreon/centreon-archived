@@ -146,18 +146,24 @@ class CentreonGMT {
                 if (count($this->listGTM) == 0) {
                     $this->getList();
                 }
+                
                 //$date += -1 * ($gmt * 60 * 60);
                 if (isset($this->listGTM[$gmt]) && !empty($this->listGTM[$gmt])) {
+                    
                     $sDate = new DateTime();
-                            
                     $sDate->setTimestamp($date);
+                    
                     $sDate->setTimezone(new DateTimeZone($this->listGTM[$gmt]));
-                    $sDate = $sDate->getTimestamp();
+                    $iTimestamp = $sDate->getTimestamp();
+
+                    $sOffset = $sDate->getOffset();
+                    
+                    $return = $iTimestamp + $sOffset;
+                    
                 } else {
-                    $sDate = $date;
+                    $return = $date;
                 }
                 
-                $return = $sDate;
             } else {
                 $return = "";
             }
@@ -247,7 +253,8 @@ class CentreonGMT {
         return $sReturn;
     }
 
-    function getUTCDateBasedOnHostGMT($date, $hostId, $dateFormat = 'c') {
+    function getUTCDateBasedOnHostGMT($date, $hostId, $dateFormat = 'c')
+    {
         global $pearDB;
         static $locations = null;
 
