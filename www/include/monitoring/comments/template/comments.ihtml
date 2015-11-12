@@ -23,17 +23,16 @@
 <br/>
 <table class="ToolbarTable table">
 	<tr class="ToolbarTR">
-		<td>
+	  <td>
           {if $msgs}<a href="{$msgs.addL}" class="btc bt_success">{$msgs.addT}</a>{/if}
           {if $msgs}<a href="{$msgs.addL2}" class="btc bt_success">{$msgs.addT2}</a>{/if}
           {if $nb_comments_svc}<input type="submit" name="submit2" value="{$delete}" class="btc bt_danger" onclick="return confirm('{$msgs.delConfirm}')">{/if}
-        </td>
+          </td>
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}
 	</tr>
 </table>
-{if $nb_comments_svc} 
 <table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -44,6 +43,7 @@
 		<td class="ListColHeaderCenter">{t}Comments{/t}</td>
 		<td class="ListColHeaderCenter" width="60">{t}Persistent{/t}</td>
 	</tr>
+{if $nb_comments_svc} 
 	{foreach item=tcs from=$tab_comments_svc}
 	<tr class={cycle values="list_two, list_one"}>
 		<td class="ListColPicker"><input type="checkbox" name='select[{$tcs.comment_type};{$tcs.host_name_link};{$tcs.internal_id}]'></td>
@@ -55,7 +55,6 @@
 		<td class="ListColCenter">{$tcs.persistent}</td>
 	</tr>
 	{/foreach}
-</table>	
 {else}
 <table class="ListTable">
   <tr>
@@ -63,15 +62,15 @@
       <center><b>{$no_svc_comments}</b></center>
     </td>
   </tr>
-</table>
 {/if}
+</table>
 <table class="ToolbarTable table">
 	<tr class="ToolbarTR">
-		<td>
+	  <td>
           {if $msgs}<a href="{$msgs.addL}" class="btc bt_success">{$msgs.addT}</a>{/if}
           {if $msgs}<a href="{$msgs.addL2}" class="btc bt_success">{$msgs.addT2}</a>{/if}
           {if $nb_comments_svc}<input type="submit" name="submit2" value="{$delete}" class="btc bt_danger" onclick="return confirm('{$msgs.delConfirm}')">{/if}
-        </td>
+          </td>
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}

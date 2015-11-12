@@ -51,15 +51,12 @@ if (!$min) {
 				        <?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
 				    </td>
  					<td align='center' class='copyRight'>
-
-					    <a href='http://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> 
-                        <a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
-                        <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a>
-                        <br />
+					    <a href='https://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> -
+                        <a href="https://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
+                        <a href="https://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a>
                          <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
-                        <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
+                        - <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
                          <?php } ?>
-                        <!-- - <a href="http://www.centreon.com">Centreon Web</a>-->
                     </td>
 
                       <td>

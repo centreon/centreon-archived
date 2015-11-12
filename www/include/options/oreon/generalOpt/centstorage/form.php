@@ -105,15 +105,12 @@ $form->addElement('header', 'retention', _("Retention durations"));
 $form->addElement('header', 'Purge', _("Purge options"));
 $form->addElement('header', 'Input', _("Input treatment options"));
 $form->addElement('header', 'coreOptions', _("Censtorage Core Options"));
-$form->addElement('header', 'Drop', _("Drop possibility after parsing performance data"));
-$form->addElement('header', 'logs', _("Logs Integration Properties"));
 $form->addElement('header', 'reporting', _("Dashboard Integration Properties"));
 $form->addElement('header', 'audit', _("Audit log activation"));
 
 /*
  * inputs declaration
  */
-$form->addElement('checkbox', 'enable_centstorage', _("Enable Centstorage Engine (require restart of centstorage)"));
 $form->addElement('text', 'RRDdatabase_path', _("Path to RRDTool Database For Metrics"), $attrsText);
 $form->addElement('text', 'RRDdatabase_status_path', _("Path to RRDTool Database For Status"), $attrsText);
 $form->addElement('text', 'RRDdatabase_nagios_stats_path', _("Path to RRDTool Database For Monitoring Engine Statistics"), $attrsText);
@@ -121,16 +118,15 @@ $form->addElement('text', 'len_storage_rrd', _("RRDTool database size"), $attrsT
 $form->addElement('text', 'len_storage_mysql', _("Retention Duration for Data in MySQL"), $attrsText2);
 $form->addElement('text', 'len_storage_downtimes', _("Retention Duration for Downtimes"), $attrsText2);
 $form->addElement('text', 'len_storage_comments', _("Retention Duration for Comments"), $attrsText2);
+$form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
+$form->addElement('text', 'reporting_retention', _("Reporting retention duration (dashboard)"), $attrsText2);
+
 $form->addElement('checkbox', 'autodelete_rrd_db', _("RRDTool auto delete"));
 $form->addElement('text', 'purge_interval', _("Purge check interval"), $attrsText2);
-$form->addElement('checkbox', 'centstorage_auto_drop', _("Drop Data in another file"));
-$form->addElement('text', 'centstorage_drop_file', _("Drop file"), $attrsText);
     
 $storage_type = array(0 => "RRDTool", 2 => _("RRDTool & MySQL"));
 $form->addElement('select', 'storage_type', _("Storage Type"), $storage_type);
 $form->addElement('checkbox', 'archive_log', _("Archive logs of monitoring engine"));
-$form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
-$form->addElement('text', 'reporting_retention', _("Reporting retention duration (dashboard)"), $attrsText2);
 $form->addElement('checkbox', 'audit_log_option', _("Enable/Disable audit logs"));
 
 $redirect = $form->addElement('hidden', 'o');

@@ -436,6 +436,8 @@ jQuery(function() {
             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
         }
 
+        {/literal}{if $form.frozen == false}{literal}
+        // Display undo button on template macro
         if (typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined'){
             if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1"){
                 var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
@@ -449,6 +451,7 @@ jQuery(function() {
                 }));
             }
         }
+        {/literal}{/if}{literal}
 
         jQuery(elem).find("input[name^='macroInput']").on("input",function(){
             jQuery(elem).find('input[name^=macroFrom]').val("direct");
@@ -534,6 +537,8 @@ jQuery(function() {
                             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
                         }
 
+                        {/literal}{if $form.frozen == false}{literal}
+                        // Display undo button on template macro
                         if (typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined'){
                             if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1"){
                                 var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
@@ -547,6 +552,7 @@ jQuery(function() {
                                 }));
                             }
                         }
+                        {/literal}{/if}{literal}
 
                         jQuery(elem).find("input[name^='macroInput']").on("input",function(){
                             jQuery(elem).find('input[name^=macroFrom]').val("direct");
