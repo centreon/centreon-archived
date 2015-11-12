@@ -130,7 +130,8 @@ if (isset($sid) && $sid){
 (isset($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
 (isset($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
 (isset($_GET["engine"])) ? $engine = htmlentities($_GET["engine"]) : $engine = "false";
-if($engine == "false"){
+
+if ($engine == "false"){
     (isset($_GET["up"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_up", htmlentities($_GET["up"])) : $up = "true";
     (isset($_GET["down"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_down", htmlentities($_GET["down"])) : $down = "true";
     (isset($_GET["unreachable"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_unreachable", htmlentities($_GET["unreachable"])) : $unreachable = "true";
@@ -141,7 +142,7 @@ if($engine == "false"){
     (isset($_GET["notification"])) ? set_user_param($contact_id, $pearDB, "log_filter_notif", htmlentities($_GET["notification"])) : $notification = "false";
     (isset($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
     (isset($_GET["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($_GET["oh"])) : $oh = "false";
-}else{
+} else {
     (isset($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
 }
 
@@ -338,7 +339,7 @@ if($engine == "true"){
     if(!isset($openid) || $openid == "undefined" || $openid == ""){
         $openid = "null";
     }
-    $innerJoinEngineLog = " inner join instance i on i.instance_id IN (".$openid.") AND i.instance_name = logs.instance_name ";
+    $innerJoinEngineLog = " inner join instances i on i.instance_id IN (".$openid.") AND i.name = logs.instance_name ";
 }
 
 if ($notification == 'true') {
@@ -407,7 +408,7 @@ if ($error == 'true') {
     } else{
         $msg_req .= " OR ";
     }
-    $msg_req .= " (`msg_type` IN ('4','5')) ";
+    $msg_req .= " `msg_type` IN ('4','5') ";
 }
 if ($flag_begin) {
     $msg_req = " AND (".$msg_req.") ";
@@ -699,6 +700,7 @@ if (isset($req) && $req) {
         }
         $buffer->text($displayStatus);
         $buffer->endElement();
+        
         if (!strncmp($log["host_name"], "_Module_Meta", strlen("_Module_Meta"))) {
             preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
             $DBRESULT2 = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$matches[1]."'");
@@ -715,6 +717,7 @@ if (isset($req) && $req) {
             $buffer->writeElement("service_description", $log["service_description"], false);
         }
         $buffer->writeElement("class", $tab_class[$cpts % 2]);
+        $buffer->writeElement("poller", $log["instance_name"]);
         $buffer->writeElement("date", $centreonGMT->getDate(_("Y/m/d"), $log["ctime"]));
         $buffer->writeElement("time", $centreonGMT->getDate(_("H:i:s"), $log["ctime"]));
         $buffer->writeElement("output", $log["output"]);
@@ -724,7 +727,6 @@ if (isset($req) && $req) {
         $cpts++;
     }
 } else {
-    
     $buffer->startElement("page");
     $buffer->writeElement("limit", $limit);
     $buffer->writeElement("selected", "1");
@@ -764,6 +766,7 @@ $buffer->writeElement("R", _("Retry"), 0);
 $buffer->writeElement("o", _("Output"), 0);
 $buffer->writeElement("c", _("Contact"), 0);
 $buffer->writeElement("C", _("Command"), 0);
+buffer->writeElement("P", _("Poller"), 0);
 
 $buffer->endElement();
 $buffer->endElement();
