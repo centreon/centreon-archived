@@ -501,7 +501,8 @@ $attrTimezones = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
     'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=defaultValues&target=host&field=host_location&id=' . $host_id,
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonGMT'
 );
 
 
