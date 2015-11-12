@@ -175,13 +175,19 @@
 	}
 	$tpl->assign("elemArr", $elemArr);
 
-	/*
-	 * Different messages we put in the template
-	 */
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"),"ldap_importL"=>"?p=".$p."&o=li", "ldap_importT"=>_("LDAP Import"), "view_notif" => _("View contact notifications")));
-	if ($centreon->optGen['ldap_auth_enable']) {
-		$tpl->assign('ldap', $centreon->optGen['ldap_auth_enable'] );
-	}
+    /*
+     * Different messages we put in the template
+     */
+    $tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"),"ldap_importL"=>"?p=".$p."&o=li", "ldap_importT"=>_("LDAP Import"), "view_notif" => _("View contact notifications")));
+
+    # Display import ldap users button if ldap is configured
+    $query = "SELECT count(ar_id) as count_ldap "
+        . "FROM auth_ressource ";
+    $res = $pearDB->query($query);
+    $row = $res->fetchRow();
+    if ($row['count_ldap'] > 0) {
+        $tpl->assign('ldap', '1');
+    }
 
 	/*
 	 * Toolbar select
