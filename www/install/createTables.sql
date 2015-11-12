@@ -2032,13 +2032,13 @@ CREATE TABLE `timeperiod` (
   `tp_id` int(11) NOT NULL AUTO_INCREMENT,
   `tp_name` varchar(200) DEFAULT NULL,
   `tp_alias` varchar(20) DEFAULT NULL,
-  `tp_sunday` varchar(4096) DEFAULT NULL,
-  `tp_monday` varchar(4096) DEFAULT NULL,
-  `tp_tuesday` varchar(4096) DEFAULT NULL,
-  `tp_wednesday` varchar(4096) DEFAULT NULL,
-  `tp_thursday` varchar(4096) DEFAULT NULL,
-  `tp_friday` varchar(4096) DEFAULT NULL,
-  `tp_saturday` varchar(4096) DEFAULT NULL,
+  `tp_sunday` varchar(2048) DEFAULT NULL,
+  `tp_monday` varchar(2048) DEFAULT NULL,
+  `tp_tuesday` varchar(2048) DEFAULT NULL,
+  `tp_wednesday` varchar(2048) DEFAULT NULL,
+  `tp_thursday` varchar(2048) DEFAULT NULL,
+  `tp_friday` varchar(2048) DEFAULT NULL,
+  `tp_saturday` varchar(2048) DEFAULT NULL,
   PRIMARY KEY (`tp_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

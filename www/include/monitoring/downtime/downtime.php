@@ -63,7 +63,7 @@ $path = "./include/monitoring/downtime/";
  * PHP functions
  */
 require_once "./include/common/common-Func.php";
-require_once "./include/monitoring/downtime/common-Func.php";
+require_once $path."common-Func.php";
 require_once "./include/monitoring/external_cmd/functions.php";
 
 switch ($o) {
@@ -79,13 +79,13 @@ switch ($o) {
                     ($ishost && $oreon->user->access->checkAction("host_schedule_downtime")) ||
                     (!$ishost && $oreon->user->access->checkAction("service_schedule_downtime"))
                 ){
-                    echo 'test';
                     $ecObj->DeleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
                     deleteDowntimeFromDb($oreon, array($res[1] . ';' . $res[2] => 'on'));
                 }
 
             }
         }
+        
         require_once($path . "listDowntime.php");
         break;
     case "cs" :

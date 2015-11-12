@@ -68,7 +68,6 @@ function getDowntimes($internalId){
 }
 
 function isDownTimeHost($internalId){
-    echo $internalId;
     $downtime = getDowntimes($internalId);
     if(!empty($downtime['host_id']) && !empty($downtime['service_id'])){
         return false;

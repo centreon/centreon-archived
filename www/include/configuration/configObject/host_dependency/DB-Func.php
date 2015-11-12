@@ -307,7 +307,7 @@
 			$ret = CentreonUtils::mergeWithInitialValues($form, 'dep_hSvChi');
 		}
 		for ($i = 0; $i < count($ret); $i++)	{
-		    $exp = explode("_", $ret[$i]);
+		    $exp = explode("-", $ret[$i]);
 			if (count($exp) == 2) {
 				$rq = "INSERT INTO dependency_serviceChild_relation ";
 				$rq .= "(dependency_dep_id, service_service_id, host_host_id) ";
