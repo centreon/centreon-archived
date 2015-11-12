@@ -273,7 +273,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             . ' style="width: 300px;" ' . $readonly . '><option></option>'
             . '%%DEFAULT_SELECTED_VALUES%%'
             . '</select>';
-        if(!$this->_allowClear){
+        if(!$this->_allowClear && !$this->_flagFrozen){
             $strHtml .= '<span style="cursor:pointer;" class="clearAllSelect2" title="Clear field" ><img src="./img/icons/circle-cross.png" class="ico-14" /></span>';
         }
         
