@@ -29,7 +29,7 @@
 	 	</tr>
 		{foreach item=d from=$data}
 		<tr class="{$d.class}">
-		 	<td class="ListColLeft"><input name="select[{$d.metric_id}]" value="1" type="checkbox"></td>
+		 	<td class="ListColCenter"><input name="select[{$d.metric_id}]" value="1" type="checkbox"></td>
 			<td class="ListColLeft">{$d.metric_name}</td>
 	 		<td class="ListColRight">{$d.unit_name}</td>
 	 		<td class="ListColCenter">{$d.warn}</td>

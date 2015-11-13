@@ -120,12 +120,14 @@
             </a>
             {/if}
 
+            | <a href="{$LogOutUrl}" class="red">{$Logout}</a> |
+
             {if $autoLoginEnable }
-                <a onClick='return false;' href='{$autoLoginUrl}' title='Centreon - IT and Network Monitoring'>
-                    <img src='./img/icones/16x16/lock_preferences.gif' title='{$CentreonAutologin}'>
-                </a>
-            {/if}
-            | <a href="{$LogOutUrl}" class="red">{$Logout}</a>
+				<a onClick='return false;' href='{$autoLoginUrl}' title='Centreon - IT and Network Monitoring'>
+					<img src='./img/icons/unlocked.png' class="ico-16" title='{$CentreonAutologin}'>
+				</a>
+			{/if}
+
     </div>
     <div class="container">
         <span id="date">{$Date}</span>

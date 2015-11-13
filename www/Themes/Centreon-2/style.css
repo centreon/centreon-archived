@@ -558,7 +558,8 @@ vertical-align: middle;
 
 .Resume_light_table td span img{
     display: inline-block;
-    padding: 4px 8px;
+    padding: 5px 6px;
+    vertical-align: middle;
 }
 
 .Resume_light_table th, .Resume_light_table td  {
@@ -794,7 +795,7 @@ div.menuLeft {
 }
 
 #addwdgt {
-    width: 486px;
+    max-width: 750px;
 }
 
 .table .FormHeader {
@@ -1288,7 +1289,7 @@ table.ListTableSmallArg td {
     width: 40%;
 }
 .ToolbarTR select {
-    height: 25px;
+    //height: 25px;
     line-height: 25px;
     float: left;
 }

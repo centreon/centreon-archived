@@ -30,27 +30,6 @@
   
   <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.Purge}</h4>
-      </td>
-    </tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdtool_auto_delete">{$form.autodelete_rrd_db.label}</td><td class="FormRowValue">{$form.autodelete_rrd_db.html}</td></tr>
-	
-	<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.coreOptions}</h4>
-      </td>
-    </tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_purge_check_interval">{$form.purge_interval.label}</td><td class="FormRowValue">{$form.purge_interval.html}({$ods_purge_interval_expl})</td></tr>
-	
-	<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.Input}</h4>
-      </td>
-    </tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_storage_type">{$form.storage_type.label}</td><td class="FormRowValue">{$form.storage_type.html}</td></tr>
-	  
-    <tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.audit}</h4>
       </td>
     </tr>
