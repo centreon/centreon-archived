@@ -39,7 +39,6 @@ Macros
 The **Macros** part serves to add customised macros. 
 The **macro name** and **macro value** fields allow us to define the name and value of the macro. The **Password** box can be used to hide the value of the macro.
 
-To add a description for the macro, click on |description|.
 To delete the macro, click on |delete|.
 To change the order of the macros, click on |move|.
 
