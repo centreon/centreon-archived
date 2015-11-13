@@ -83,16 +83,17 @@
 		}
 	}
 
-	function multipleServerInDB ($server = array(), $nbrDup = array())	{
+	function multipleServerInDB ($server = array(), $nbrDup = array())
+    {
 		global $pearDB;
-
+               
 		foreach ($server as $key => $value)	{
 			$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE id = '".$key."' LIMIT 1");
 			$rowServer = $DBRESULT->fetchRow();
 			$rowServer["id"] = '';
 			$rowServer["ns_activate"] = '0';
 			$rowServer["is_default"] = '0';
-			$rowServer["localhost"] = '0';
+			$rowServer["localhost"] = '0';      
 			$DBRESULT->free();
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
@@ -100,7 +101,7 @@
 					$key2 == "name" ? ($server_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2 != NULL ? (", '".$value2."'"):", NULL") : $val .= ($value2 != NULL ? ("'".$value2."'") : "NULL");
 				}
-				if (testExistence($server_name))	{
+				if (testExistence($server_name)) {
 					$val ? $rq = "INSERT INTO `nagios_server` VALUES (".$val.")" : $rq = null;
 					$DBRESULT = $pearDB->query($rq);
 					$queryGetId = 'SELECT id
@@ -121,6 +122,8 @@
 					        	    FROM poller_command_relations as b
                                                             WHERE b.poller_id = ' . $key;
 					        $pearDB->query($queryCmd);
+                            
+                            insertServerInCfgNagios($row['id'], $server_name);
 					    }
 					}
 				}
