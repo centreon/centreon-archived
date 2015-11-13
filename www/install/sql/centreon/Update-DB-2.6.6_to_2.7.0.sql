@@ -737,7 +737,7 @@ DELETE FROM topology_JS WHERE id_page = 20207;
 DELETE FROM topology WHERE topology_page = 20207; 
 DELETE FROM topology WHERE topology_parent = 202 AND topology_group = 33 AND topology_name = 'Monitoring Engine';
 
--- Change monitoring engine and centreon menu
+-- Change centreon tab menus
 SET foreign_key_checks = 0;
 UPDATE topology_JS SET id_page = 60902 WHERE id_page = 60701;
 UPDATE topology SET topology_page = 60902, topology_parent = 609, topology_group = 1, topology_show = '0' WHERE topology_page = 60701;
@@ -747,6 +747,8 @@ UPDATE topology SET topology_page = 60904, topology_parent = 609, topology_group
 DELETE FROM topology WHERE topology_parent = 607;
 DELETE FROM topology WHERE topology_page = 607;
 UPDATE topology SET topology_name = "Pollers" WHERE topology_page = 609;
+UPDATE topology SET topology_name = "Broker configuration", topology_order = 35, topology_group = 1 WHERE topology_page = 60909;
+DELETE FROM topology WHERE topology_name = "Centreon-Broker";
 SET foreign_key_checks = 1;
 
 -- Add option for number of groups per page
