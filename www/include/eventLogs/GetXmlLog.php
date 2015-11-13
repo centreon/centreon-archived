@@ -764,7 +764,7 @@ $buffer->writeElement("R", _("Retry"), 0);
 $buffer->writeElement("o", _("Output"), 0);
 $buffer->writeElement("c", _("Contact"), 0);
 $buffer->writeElement("C", _("Command"), 0);
-buffer->writeElement("P", _("Poller"), 0);
+$buffer->writeElement("P", _("Poller"), 0);
 
 $buffer->endElement();
 $buffer->endElement();

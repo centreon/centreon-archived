@@ -479,6 +479,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("lcaTopo", $oreon->user->access->topology);
         $tpl->assign("h", CentreonUtils::escapeSecure($hostDB));
         $tpl->assign("url_id", $url_id);
+        $tpl->assign("host_id", $host_id);
         $tpl->assign("m_mon_ticket", "Open Ticket");
 
         /*
