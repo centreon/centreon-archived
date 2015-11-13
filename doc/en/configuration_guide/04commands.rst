@@ -51,9 +51,6 @@ Configuration fields
 *       The **Argument Example** and **$HOSTADDRESS$** fields define examples of arguments (each argument starts with a ”!”) and a test IP address respectively. 
         These fields serve to execute the command line defined above via the web interface by clicking on the blue arrow : |bluearrow|.
 *       The **Describe arguments** button serves to add  a description to arguments of the “$ARGn$” type. This description will be visible when using the command in a host or service form.
- 
-.. image :: /images/user/configuration/04linkbetweencommandandservices.png
-      :align: center
 
 *       The **Clear arguments** button deletes the description of arguments defined
 * 	The **Describe macros** button serves to add  a description to all macros. This description will be visible when using the command in a host or service form.
