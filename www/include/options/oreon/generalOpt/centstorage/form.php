@@ -102,7 +102,6 @@ $form->addElement('header', 'enable', _("Engine Status"));
 $form->addElement('header', 'insert', _("Resources storage"));
 $form->addElement('header', 'folder', _("Storage folders"));
 $form->addElement('header', 'retention', _("Retention durations"));
-$form->addElement('header', 'Purge', _("Purge options"));
 $form->addElement('header', 'Input', _("Input treatment options"));
 $form->addElement('header', 'reporting', _("Dashboard Integration Properties"));
 $form->addElement('header', 'audit', _("Audit log activation"));
@@ -119,7 +118,6 @@ $form->addElement('text', 'len_storage_downtimes', _("Retention Duration for Dow
 $form->addElement('text', 'len_storage_comments', _("Retention Duration for Comments"), $attrsText2);
 $form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
 $form->addElement('text', 'reporting_retention', _("Reporting retention duration (dashboard)"), $attrsText2);
-$form->addElement('checkbox', 'autodelete_rrd_db', _("RRDTool auto delete"));
 $form->addElement('checkbox', 'archive_log', _("Archive logs of monitoring engine"));
 $form->addElement('checkbox', 'audit_log_option', _("Enable/Disable audit logs"));
 

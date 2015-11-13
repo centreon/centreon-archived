@@ -30,12 +30,6 @@
   
   <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.Purge}</h4>
-      </td>
-    </tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdtool_auto_delete">{$form.autodelete_rrd_db.label}</td><td class="FormRowValue">{$form.autodelete_rrd_db.html}</td></tr>
-	<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.audit}</h4>
       </td>
     </tr>
