@@ -50,6 +50,7 @@
 </xsl:if>
 
 <xsl:if test="svc">
+
 	<div id="div2">
 		<form name="formu2">
     	    <table class="ajaxOption">
@@ -69,6 +70,16 @@
         	</table>
 		</form>
    	</div>
+        <table class="ListTable">
+        <tr class="ListHeader">
+            <td class="ListColHeaderPicker" valign="top" align="center">
+                <xsl:value-of select="//name"/>
+            </td>
+            <td class="ListColRight">
+            </td>
+        </tr>
+        <tr >
+            <td colspan="2">
 		<table class="ListTable">
 	       <xsl:for-each select="//period">
 		        <tr class="list_one">
@@ -137,33 +148,16 @@
 				</tr>			
 			</xsl:for-each>
 	    </table>
+            </td>
+        </tr>
+            </table>
 </xsl:if>
 <xsl:if test="svc_zoom">
+
 	<div id="div3" valign="top" align='left'>
 		<table class="ajaxOption table">
 			<tr>
 				<form name="formu2">
-				<!--
-				<td>
-					<xsl:value-of select="//lang/giv_gg_tpl"/>
-           		</td>
-           		<td>
-           			<xsl:element name="select">
-						<xsl:attribute name="name">template_select</xsl:attribute>
-						<xsl:attribute name="onChange">graph_4_host('<xsl:value-of select="//opid"/>'); return false;</xsl:attribute>
-						<xsl:for-each select="//tpl">
-							<xsl:element name='option'>
-								<xsl:attribute name="value"><xsl:value-of select="tpl_id"/></xsl:attribute>
-								<xsl:if test="//tpl = tpl_id">
-									<xsl:attribute name="selected">selected</xsl:attribute>
-								</xsl:if>
-								<xsl:value-of select="tpl_name"/>
-							</xsl:element>
-						</xsl:for-each>
-
-					</xsl:element>
-           		</td>
-           		-->
 					<td>
 						<xsl:element name='input'>
 							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>','','<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
@@ -281,36 +275,6 @@
 	</div>
 </xsl:if>
 <xsl:if test="//multi_svc">
-
-	<!--<div id="div2">
-		<form name="formu2">
-    	    <table class="ajaxOption">
-				<tr>
-	           		<td>
-						<xsl:element name='input'>
-							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi, '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
-							<xsl:attribute name="name">status</xsl:attribute>
-							<xsl:attribute name="type">checkbox</xsl:attribute>
-							<xsl:if test="//status = 1">
-								<xsl:attribute name="checked">checked</xsl:attribute>
-							</xsl:if>
-						</xsl:element>
-						<xsl:value-of select="//lang/status"/>
-	           		</td>
-	           		<xsl:if test="//focusUrl != ''">
-	           		<td>
-	           			<xsl:element name='input'>
-	           				<xsl:attribute name='type'>button</xsl:attribute>
-	           				<xsl:attribute name='onClick'>location.href='main.php<xsl:value-of select="//focusUrl"/>&amp;start=<xsl:value-of select="//start"/>&amp;end=<xsl:value-of select="//end"/>'</xsl:attribute>
-	           				<xsl:attribute name='value'><xsl:value-of select="//lang/treeFocus"/></xsl:attribute>
-	           			</xsl:element>	           			
-	           		</td>
-	           		</xsl:if>
-				</tr>
-        	</table>
-		</form>
-	</div>-->
-
 		<div>
 			<table class="ListTable">
 			<xsl:for-each select="//multi_svc">
