@@ -52,7 +52,7 @@ $hosts = $acl->getHostAclConf(
 );
 
 /* services */
-if (!$oreon->user->admin) {
+/*if (!$oreon->user->admin) {
     $hServices = array();
     $sql = "SELECT DISTINCT CONCAT(host_id, '_', service_id) as k, 
                             CONCAT(host_name, ' / ', service_description) as v
@@ -62,7 +62,7 @@ if (!$oreon->user->admin) {
     while ($row = $res->fetchRow()) {
         $hServices[$row['k']] = $row['v'];
     }
-}
+}*/
 
         
 $initialValues = array();
@@ -90,7 +90,7 @@ if (($o == "c" || $o == "w") && $dep_id)	{
 /*
  * Services comes from DB -> Store in $hServices Array
  */
-    if ($oreon->user->admin) {
+    /*if ($oreon->user->admin) {
         $hServices = array();
         $DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
         while ($elem = $DBRESULT->fetchRow())	{
@@ -101,7 +101,7 @@ if (($o == "c" || $o == "w") && $dep_id)	{
                 $hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
             }
         }
-    }
+    }*/
 
 /*
  * Var information to format the element
