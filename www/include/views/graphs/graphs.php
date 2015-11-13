@@ -452,7 +452,7 @@ function nextPeriod() {
 
 		var proc = new Transformation();
 		var _addrXSL = "./include/views/graphs/graph.xsl";
-		var _addrXML = './include/views/graphs/GetXmlGraph.php?target='+target+'&multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if ($focusUrl) print "&focusUrl=".urlencode($focusUrl);?>';
+		var _addrXML = './include/views/graphs/GetXmlGraph.php?target='+target+'&multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'<?php if ($focusUrl) print "&focusUrl=".urlencode($focusUrl);?>';
 		proc.setXml(_addrXML);
 		proc.setXslt(_addrXSL);
 		proc.transform(target);
