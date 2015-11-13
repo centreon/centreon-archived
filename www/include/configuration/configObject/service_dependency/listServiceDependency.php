@@ -50,6 +50,9 @@ if (!$oreon->user->admin) {
     $aclCond = " AND dspr.host_host_id = acl.host_id 
                  AND acl.service_id = dspr.service_service_id 
                  AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+    $aclCond2 = " AND dscr.host_host_id = acl.host_id 
+             AND acl.service_id = dscr.service_service_id 
+             AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
 }
         
 $rq = "SELECT COUNT(*) FROM dependency dep";
@@ -59,7 +62,7 @@ $rq .= " WHERE ((SELECT DISTINCT COUNT(*)
 		OR (
 		SELECT DISTINCT COUNT(*) 
                     FROM dependency_serviceChild_relation dscr $aclFrom
-                    WHERE dscr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
+                    WHERE dscr.dependency_dep_id = dep.dep_id $aclCond2) > 0)";
 
 $search = '';
 if (isset($_POST['searchSD']) && $_POST['searchSD']) {
@@ -101,7 +104,7 @@ $rq .= " WHERE ((SELECT DISTINCT COUNT(*)
 		OR (
 		SELECT DISTINCT COUNT(*) 
                     FROM dependency_serviceChild_relation dscr $aclFrom
-                    WHERE dscr.dependency_dep_id = dep.dep_id $aclCond) > 0) ";
+                    WHERE dscr.dependency_dep_id = dep.dep_id $aclCond2) > 0) ";
 if ($search)
 	$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 $rq .= " ORDER BY dep_name, dep_description LIMIT ".$num * $limit.", ".$limit;
