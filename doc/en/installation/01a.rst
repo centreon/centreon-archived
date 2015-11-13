@@ -247,8 +247,7 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 |
 
 *       The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
-*       The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs.
-*       The **Views** menu serves to view and configure the performance graphics for each element in the  information system.
+*       The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
 *       The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
 *	The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
 *       The **Administration** menu serves to configure the Centreon web interface and to view the general status of the servers.
@@ -256,7 +255,7 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 Before going further
 ====================
 
-it is necessary update the CES 3.2 server. To do this:
+it is necessary update the CES 3.3 server. To do this:
 
  #.	Log in as a ‘root’ on the central server
  #.	Enter this command

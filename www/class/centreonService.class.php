@@ -739,7 +739,7 @@ class CentreonService
     }
     
     public function ajaxMacroControl($form){
-
+        $aMacroInService = array();
         $macroArray = $this->getCustomMacro(null,true);
         $this->purgeOldMacroToForm($macroArray,$form,'fromTpl');
         $aListTemplate = array();
