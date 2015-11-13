@@ -792,3 +792,5 @@ update cb_type_field_relation set is_required = 1 where cb_type_id in (14, 16 , 
 --Change topology_Js for parameter ldap page
 insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/centreon/doClone.js',NULL);
 insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
+
+DELETE FROM topology_JS WHERE PathName_js LIKE './include/common/javascript/codebase/dhtmlxcommon.js' OR PathName_js LIKE './include/common/javascript/codebase/dhtmlxtree.js';
