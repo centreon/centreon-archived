@@ -419,7 +419,7 @@ $attrTraps = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_trap&action=list',
     'multiple' => true,
-    'linkedObject' => 'centreontraps'
+    'linkedObject' => 'centreonTraps'
 );
 $attrGraphtemplates= array(
     'datasourceOrigin' => 'ajax',

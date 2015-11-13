@@ -11,24 +11,13 @@ Prerequisites
 CentOS
 ======
 
-.. warning::
-	This process has not been tested on versions 6.x of CentOS and RHEL environments. Nevertheless it should be compatible by changing the names of the packages to adapt them to version 6.
-
-
 CentOS and RHEL environments do not possess as standard on archives all the dependences necessary for the installation of Centreon. You should add the *RPM Forge* archive
-
-32-bit system:
-
- ::
-
-  $ wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.i386.rpm
-  $ wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
 
 64-bit system:
 
  ::
 
-  $ wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.x86_64.rpm
+  $ wget http://apt.sw.be/redhat/el6/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
   $ wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
 
 Use your favorite text editor and delete the first line of the RPM-GPG-KEY.dag.txt file. The first line should contain:
@@ -42,7 +31,7 @@ Then perform the following commands:
  ::
 
   $ rpm --import RPM-GPG-KEY.dag.txt
-  $ rpm -Uvh rpmforge-release-0.5.1-1.el5.rf.i386.rpm
+  $ rpm -Uvh rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
 
 You can now install the necessary prerequisites::
 
@@ -181,7 +170,7 @@ If the Prerequisites installation step has been run successfully you should have
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.6.1                                   #
+  #                                    v2.7.0                                   #
   #                                                                             #
   #                              infos@centreon.com                             #
   #                                                                             #

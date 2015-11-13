@@ -28,7 +28,6 @@
 	</tr>
   </tbody>
 </table>
-<br/>
 <hidden name="p" value='{$p}'>	
 <table class="ToolbarTable table">
 	<tr class="ToolbarTR">

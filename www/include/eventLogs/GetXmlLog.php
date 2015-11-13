@@ -415,7 +415,7 @@ if ($flag_begin) {
 }
 
 $tab_id = preg_split("/\,/", $openid);
-$tab_host_name = array();
+$tab_host_ids = array();
 $tab_svc = array();
 foreach ($tab_id as $openid) {
     $tab_tmp = preg_split("/\_/", $openid);
@@ -440,9 +440,9 @@ foreach ($tab_id as $openid) {
         $hosts = getMyHostGroupHosts($id);
         foreach ($hosts as $h_id) {
             if (isset($lca["LcaHost"][$h_id])) {
-                $host_name = getMyHostName($h_id);
-                $tab_host_name[] = $host_name;
-                $tab_svc[$host_name] = $lca["LcaHost"][$h_id];
+                //$host_name = getMyHostName($h_id);
+                $tab_host_ids[] = $h_id;
+                $tab_svc[$h_id] = $lca["LcaHost"][$h_id];
             }
         }
     } else if ($type == 'ST' && (isset($lca["LcaSG"][$id]) || $is_admin)){
@@ -454,16 +454,16 @@ foreach ($tab_id as $openid) {
             $tab = preg_split("/\:/", $svc_name);
             $host_name = $tab[3];
             if (isset($lca["LcaHost"][$tmp_host_id][$tmp_service_id])) {
-                $tab_svc[$host_name][$tmp_service_id] = $lca["LcaHost"][$tmp_host_id][$tmp_service_id];
+                $tab_svc[$hostId][$tmp_service_id] = $lca["LcaHost"][$tmp_host_id][$tmp_service_id];
             }
         }
     } else if ($type == "HH" && isset($lca["LcaHost"][$id])) {
-        $host_name = getMyHostName($id);
-        $tab_host_name[] = $host_name;
-        $tab_svc[$host_name] = $lca["LcaHost"][$id];
+        //$host_name = getMyHostName($id);
+        $tab_host_ids[] = $id;
+        $tab_svc[$id] = $lca["LcaHost"][$id];
     } else if ($type == "HS" && isset($lca["LcaHost"][$hostId][$id])) {
-        $host_name = getMyHostName($hostId);
-        $tab_svc[$host_name][$id] = $lca["LcaHost"][$hostId][$id];
+        //$host_name = getMyHostName($hostId);
+        $tab_svc[$hostId][$id] = $lca["LcaHost"][$hostId][$id];
     } else if ($type == "MS") {
         $tab_svc["_Module_Meta"][$id] = "meta_".$id;
     }
@@ -478,19 +478,18 @@ $req = "SELECT SQL_CALC_FOUND_ROWS * FROM logs ".$innerJoinEngineLog." WHERE cti
 $str_unitH = "";
 $str_unitH_append = "";
 $host_search_sql = "";
-if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
+if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     if($engine == "false"){
         $req .= " AND 1 = 0 ";
     }
 } else {
-
-    foreach ($tab_host_name as $host_name ) {
-        $str_unitH .= $str_unitH_append . "'$host_name'";
+    foreach ($tab_host_ids as $host_id ) {
+        $str_unitH .= $str_unitH_append . "'$host_id'";
         $str_unitH_append = ", ";
     }
     if ($str_unitH != "") {
 
-        $str_unitH = "(host_name IN ($str_unitH) AND service_id IS NULL)";
+        $str_unitH = "(host_id IN ($str_unitH) AND service_id IS NULL)";
         if (isset($search_host) && $search_host != "") {
             $host_search_sql = " AND host_name LIKE '%".$pearDBO->escape($search_host)."%' ";
         }
@@ -504,15 +503,15 @@ if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
     $service_search_sql = "";
     if (count($tab_svc) > 0 && ($up == 'true' || $down == 'true' || $unreachable == 'true' || $ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
         $req_append = "";
-        foreach ($tab_svc as $host_name => $services) {
+        foreach ($tab_svc as $host_id => $services) {
             $str = "";
             $str_append = "";
             foreach ($services as $svc_id => $svc_name) {
-                $str .= $str_append . "'$svc_name'";
+                $str .= $str_append . $svc_id;
                 $str_append = ", ";
             }
             if ($str != "") {
-                $str_unitSVC .= $req_append . " (host_name = '".$host_name."' AND service_description IN ($str)) ";
+                $str_unitSVC .= $req_append . " (host_id = '".$host_id."' AND service_id IN ($str)) ";
                 $req_append = " OR";
             }
         }
@@ -552,7 +551,6 @@ if (isset($req) && $req) {
     if($export !== "1"){
         $limitReq = " LIMIT " . $num * $limit . ", " . $limit;
     }
-    
     $DBRESULT = $pearDBO->query($req .$limitReq);
     $rows = $pearDBO->numberRows();
     

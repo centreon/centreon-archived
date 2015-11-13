@@ -49,9 +49,11 @@ if (($o == "c" || $o == "w") && $host_id)	{
         }
 	$DBRESULT = $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
 
+    
 	# Set base value
 	if ($DBRESULT->numRows())	{
 		$host = array_map("myDecode", $DBRESULT->fetchRow());
+        $cmdId = $host['command_command_id'];
 		# Set Host Notification Options
 		$tmp = explode(',', $host["host_notification_options"]);
 		foreach ($tmp as $key => $value) {
@@ -135,7 +137,7 @@ if (($o == "c" || $o == "w") && $host_id)	{
         $cmdId = "";
     }
 
-    $macroArray = $hostObj->getMacros($host_id, true, $aTemplates, $cmdId);
+    $macroArray = $hostObj->getMacros($host_id, true, $aTemplates, $cmdId, $_POST);
 
 }
 

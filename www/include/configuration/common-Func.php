@@ -99,7 +99,7 @@
 	'perfdata_timeout' => '5',
 	'obsess_over_services' => '0',
 	'obsess_over_hosts' => '0',
-	'process_performance_data' => '1',
+	'process_performance_data' => '0',
 	'host_perfdata_file_mode' => '2',
 	'service_perfdata_file_mode' => '2',
 	'check_for_orphaned_services' => '0',
