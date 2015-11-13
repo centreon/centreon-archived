@@ -21,13 +21,13 @@ General information
 * The **Description** field defined the name of the service.
 * The **Service template** field indicates the model of service to which the service is linked.
 
-Service status
-==============
+Service State
+=============
 
 * The field **Is Volatile** indicates if the service is volatile or not (normally only passive services are volatile).
 * The **Check Period** field defined the time period during which the scheduler checks the status of the service.
 * The **Check Command** field indicates the command use to check the availability of the service.
-* The **Argument** table defined the arguments given for the check command (the number of arguments varies according to the check command chosen).
+* The **Args** table defined the arguments given for the check command (the number of arguments varies according to the check command chosen).
 * The **Max Check Attempts** of the status field defined the number of checks to be carried out to confirm the status of the service. When the status is validated, the notification process is engaged
 * The **Normal Check Interval** field is expressed in minutes. It defined the interval between checks when the service status is OK.
 * The **Retry Check Interval** field is expressed in minutes. It defined the confirmation interval for the Not-OK service status
@@ -63,13 +63,13 @@ Relations tab
 Relations
 =========
 
-* The **Linked to hosts** list allows us to define the host(s) to which to link this service.
-* The **Linked to service groups** list allows us to link the service to one or more service groups.
+* The **Linked with Hosts** list allows us to define the host(s) to which to link this service.
+* The **Linked with Servicegroups** list allows us to link the service to one or more service groups.
 
 SNMP traps 
 ==========
 
-The **SNMP Traps linked to the service** field allows us to define the SNMP traps that will be able to change the behavior of the service.
+The **Service Trap Relation** field allows us to define the SNMP traps that will be able to change the behavior of the service.
 
 ***************
 Data processing
@@ -94,7 +94,7 @@ Additional information on the service
 Centreon
 ========
 
-* **Graphics template**: Defines the graphics model to be use to present the performance data linked to the service.
+* **Graph template**: Defines the graphics model to be use to present the performance data linked to the service.
 * **Categories**: Defines the category(s) to which the service belongs.
 
 Monitoring engine
@@ -102,9 +102,9 @@ Monitoring engine
 
 * The **URL** field defined a URL that can be used to give more information on the service.
 * The **Notes** field permits us to add  optional notes concerning the service.
-* The **Action** URL field defined a URL normally use for giving information on actions on the service (maintenance, etc.).
+* The **Action URL** field defined a URL normally use for giving information on actions on the service (maintenance, etc.).
 * The **Icon** field indicates the icon use for the service.
-* The **Alternative icon** field is the text use if the icon cannot be Displays.
+* The **Alt icon** field is the text use if the icon cannot be Displays.
 * The **Severity level** field indicates the criticality level of the service.
 
 Additional information 
