@@ -96,7 +96,8 @@ $attrPoller = array(
     'datasourceOrigin' => 'ajax',
     'allowClear' => false,
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonInstance'
 );
 /* Host Parents */
 $attrPoller1 = array_merge(
@@ -151,8 +152,9 @@ $tpl = initSmartyTpl($path, $tpl);
 
 // Just watch a Resources CFG information
 if ($o == "w") {
-    if ($centreon->user->access->page($p) != 2)
+    if ($centreon->user->access->page($p) != 2) {
         $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&resource_id=" . $resource_id . "'"));
+    }
     $form->setDefaults($rs);
     $form->freeze();
 }
@@ -177,11 +179,10 @@ if ($form->validate()) {
         updateResourceInDB($rsObj->getValue());
     $o = NULL;
     $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&resource_id=" . $rsObj->getValue() . "'"));
-    $form->freeze();
     $valid = true;
 }
 $action = $form->getSubmitValue("action");
-if ($valid && $action["action"])
+if ($valid)
     require_once($path . "listResources.php");
 else {
     // Apply a template definition
