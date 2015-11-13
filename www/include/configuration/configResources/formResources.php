@@ -177,11 +177,10 @@ if ($form->validate()) {
         updateResourceInDB($rsObj->getValue());
     $o = NULL;
     $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&resource_id=" . $rsObj->getValue() . "'"));
-    $form->freeze();
     $valid = true;
 }
 $action = $form->getSubmitValue("action");
-if ($valid && $action["action"])
+if ($valid)
     require_once($path . "listResources.php");
 else {
     // Apply a template definition
