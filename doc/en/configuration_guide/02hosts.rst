@@ -24,7 +24,8 @@ General information
 *	The **IP address / DNS** field defines IP address or DNS name of the host. The **Resolve** button enables us to resolve the domain name by questioning the DNS server configured on the central server.
 *	The **SNMP Community & Version** fields contain the name of the community and the SNMP version.
 *	The **Monitored from** field indicates which poller server is charged with monitoring this host.
-*	The **Host Templates** field enables us to associated one or more models of hosts with this object. To add  a host model, click on the button |navigate_plus|.
+*	The **Timezone / Location** field indicates the timezone location of the monitored hosts.
+*	The **Host Templates** field enables us to associated one or more models of hosts with this object.
 
 In case of conflicts of settings present on multiple models, the host model above overwrites the identical  properties defined in host models below.
 The button |move| enables us to change the order of host models. The button |delete| serves to delete the host model.
@@ -35,38 +36,40 @@ The button |move| enables us to change the order of host models. The button |del
 Monitoring properties of the host
 =================================
 
+*       The **Check Command** field indicates the command use to check the availability of the host.
+*       The **Args** field defines the arguments given to the check command (each argument starts with a ”!”).
+
+The Macros part serves to add custom macros.
+
+*       The **Macro name** and **Macro value** field enable us to define the name and value of the macro.
+*       The **Password** box enables the value of the macro to be hidden.
+
+To delete the macro, click on |delete|.
+To change the order of the macros, click on |move|.
+
+
+Scheduling options of the host
+==============================
+
 *	The **Check Period** field defines the time period during which the scheduler checks the status of the object.
-*	The **Check Command** field indicates the command use to check the availability of the host.
-*	The **Args** field defines the arguments given to the check command (each argument starts with a ”!”).
 *	The **Max Check Attempts** field defines the number of checks to be performed before confirming the status of the host: when the status is confirmed the notification process is triggered.
 *	The **Normal Check Interval** is expressed in minutes. It defined the interval between checks when the host status is OK.
 *	The **Retry Check Interval** is expressed in minutes. It defined the check interval of the Not-OK status of the host.
 *	The **Active Checks Enabled** and **Passive Checks Enabled** fields enable / disable the active and passive checks.
 
-Macros
-======
+****************
+Notification tab
+****************
 
-The Macros part serves to add custom macros.
-
-*	The **Macro name** and **Macro value** field enable us to define the name and value of the macro.
-*	The **Password** box enables the value of the macro to be hidden.
-*       To add a description for the macro, click on |description|.
-
-To delete the macro, click on |delete|.
-To change the order of the macros, click on |move|.
-
-Notification
-============
-
-*	The **Notification Enabled** field enables us to enable or disable the notifications concerning the object.
-*	If the **Contact additive inheritance** box is checked, Centreon does not overwrite the configuration of the parent host model but adds the contacts in addition to the contacts defined in the parent model.
-*	The list of **Linked contacts** indicates the contacts which will receive the notifications.
-*	If the **Contact group additive inheritance** box is checked, Centreon does not overwrite the configuration of the parent host template but adds the contact groups in addition to the contact groups defined in the parent template.
-*	Within the **Linked Contact Groups** list all the contacts belonging to the contact groups defined will receive the notifications.
-*	The **Notification Interval** is expressed in minutes. It indicates the time between sending each notifications when the status is Not-OK. If the value is defined as 0 the scheduler sends a single notification per status change.
-*	The **Notification Period** field indicates the time period during which the notifications will be enabled.
-*	The **Notification Options** define the statuses for which a notification will be sent.
-*	The **First notification delay** is expressed in minutes. It refers to the time delay to be respected before sending the first notification when a Not-OK status is validated.
+*       The **Notification Enabled** field enables us to enable or disable the notifications concerning the object.
+*       The **Notification Options** define the statuses for which a notification will be sent.
+*       The **Notification Interval** is expressed in minutes. It indicates the time between sending each notifications when the status is Not-OK. If the value is defined as 0 the scheduler sends a single notification per status change.
+*       The **Notification Period** field indicates the time period during which the notifications will be enabled.
+*       The **First notification delay** is expressed in minutes. It refers to the time delay to be respected before sending the first notification when a Not-OK status is validated.
+*       If the **Contact additive inheritance** box is checked, Centreon does not overwrite the configuration of the parent host model but adds the contacts in addition to the contacts defined in the parent model.
+*       The list of **Linked contacts** indicates the contacts which will receive the notifications.
+*       If the **Contact group additive inheritance** box is checked, Centreon does not overwrite the configuration of the parent host template but adds the contact groups in addition to the contact groups defined in the parent template.
+*       The list of **Linked contacts Groups** indicates the groups of contacts which will receive the notifications.
 
 *************
 Relations tab
