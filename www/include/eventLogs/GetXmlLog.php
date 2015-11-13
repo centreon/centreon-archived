@@ -484,8 +484,11 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     }
 } else {
     foreach ($tab_host_ids as $host_id ) {
-        $str_unitH .= $str_unitH_append . "'$host_id'";
-        $str_unitH_append = ", ";
+        if($host_id != ""){
+            $str_unitH .= $str_unitH_append . "'$host_id'";
+            $str_unitH_append = ", ";
+        }
+
     }
     if ($str_unitH != "") {
 
@@ -507,8 +510,10 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
             $str = "";
             $str_append = "";
             foreach ($services as $svc_id => $svc_name) {
-                $str .= $str_append . $svc_id;
-                $str_append = ", ";
+                if($svc_id != ""){
+                    $str .= $str_append . $svc_id;
+                    $str_append = ", ";
+                }
             }
             if ($str != "") {
                 $str_unitSVC .= $req_append . " (host_id = '".$host_id."' AND service_id IN ($str)) ";
