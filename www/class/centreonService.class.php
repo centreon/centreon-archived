@@ -1011,14 +1011,27 @@ class CentreonService
         # Construct host filter for query
         $selectedHosts = "";
         if (count($hostIdList)) {
-            $selectedHosts = "AND hsr.host_host_id IN (" . implode(',', $hostIdList) . ") ";
+            $selectedHosts = "AND hsr.host_host_id IN (";
+            $implodedValues = implode(',', $hostIdList);
+            if (trim($implodedValues) != "") {
+                $selectedHosts .= $implodedValues;
+            } else {
+                $selectedHosts .= "''";
+            }
+            $selectedHosts .= ") ";
         }
 
         # Construct service filter for query
-        $selectedServices = "";
+        $selectedServices = "AND hsr.service_service_id IN (";
         if (count($serviceIdList)) {
-            $selectedServices = "AND hsr.service_service_id IN (" . implode(',', $serviceIdList) . ") ";
+            $implodedValues = implode(',', $serviceIdList);
+            if (trim($implodedValues) != "") {
+                $selectedServices .= $implodedValues;
+            } else {
+                $selectedServices .= "''";
+            }
         }
+        $selectedServices .= ") ";
         
         $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
             . "FROM host h, service s, host_service_relation hsr "
@@ -1027,7 +1040,7 @@ class CentreonService
             . "AND h.host_register = '$register' AND s.service_register = '$register' "
             . $selectedHosts
             . $selectedServices
-            . "ORDER BY h.host_name";
+            . "ORDER BY h.host_name ";
         
         $DBRESULT = $this->db->query($queryService);
         

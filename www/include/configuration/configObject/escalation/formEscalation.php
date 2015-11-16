@@ -43,16 +43,11 @@ require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 /* Init connection to storage db */
 require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
 $brk = new CentreonBroker($pearDB);
-if ($brk->getBroker() == 'broker') {
-    $pearDBMonitoring = new CentreonDB('centstorage');
-} else {
-    $pearDBMonitoring = new CentreonDB('ndo');
-}
 
 /* hosts */
 $hosts = $acl->getHostAclConf(
     null,
-    $oreon->broker->getBroker(),
+    $centreon->broker->getBroker(),
     array(
         'fields'  => array('host.host_id', 'host.host_name'),
         'keys'    => array('host_id'),
@@ -141,7 +136,7 @@ $attrsText 		= array("size"=>"30");
 $attrsText2 	= array("size"=>"10");
 $attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
 $attrsAdvSelect2 = array("style" => "width: 300px; height: 400px;");
-$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
+$attrsTextarea 	= array("rows"=>"5", "cols"=>"80");
 $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 #
@@ -180,12 +175,14 @@ $tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
 $tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
 $tab[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
 $form->addGroup($tab, 'escalation_options1', _("Hosts Escalation Options"), '&nbsp;&nbsp;');
+
 $tab = array();
 $tab[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
 $tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
 $tab[] = HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
 $tab[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
 $form->addGroup($tab, 'escalation_options2', _("Services Escalation Options"), '&nbsp;&nbsp;');
+
 $form->addElement('textarea', 'esc_comment', _("Comments"), $attrsTextarea);
 
 $attrContactgroups = array(
@@ -197,10 +194,6 @@ $attrContactgroups = array(
 );
 $form->addElement('select2', 'esc_cgs', _("Linked Contact Groups"), array(), $attrContactgroups);
 
-#
-## Sort 2
-#
-$form->addElement('header', 'hosts', _("Implied Hosts"));
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
     'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=escalation&field=esc_hosts&id=' . $esc_id,
@@ -210,10 +203,6 @@ $attrHosts = array(
 );
 $form->addElement('select2', 'esc_hosts', _("Hosts"), array(), $attrHosts);
 
-#
-## Sort 3
-#
-$form->addElement('header', 'services', _("Implied Services"));
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
     'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=escalation&field=esc_hServices&id=' . $esc_id,
@@ -223,10 +212,6 @@ $attrServices = array(
 );
 $form->addElement('select2', 'esc_hServices', _("Services by Host"), array(), $attrServices);
 
-#
-## Sort 4
-#
-$form->addElement('header', 'hgs', _("Implied Host Groups"));
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
     'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=escalation&field=esc_hgs&id=' . $esc_id,
@@ -236,10 +221,6 @@ $attrHostgroups = array(
 );
 $form->addElement('select2', 'esc_hgs', _("Host Group"), array(), $attrHostgroups);
 
-#
-## Sort 5
-#
-$form->addElement('header', 'metas', _("Implied Meta Services"));
 $attrMetas = array(
     'datasourceOrigin' => 'ajax',
     'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_meta&action=defaultValues&target=escalation&field=esc_metas&id=' . $esc_id,
@@ -249,11 +230,6 @@ $attrMetas = array(
 );
 $form->addElement('select2', 'esc_metas', _("Meta Service"), array(), $attrMetas);
 
-
-#
-## Sort 6
-#
-$form->addElement('header', 'sgs', _("Implied Service Groups"));
 $attrServicegroups = array(
     'datasourceOrigin' => 'ajax',
     'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=escalation&field=esc_sgs&id=' . $esc_id,
@@ -284,10 +260,6 @@ $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('esc_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
-#
-##End of form definition
-#
-
 # Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
@@ -313,14 +285,7 @@ if ($o == "w")	{
 	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-$tpl->assign("sort1", _("Information"));
-$tpl->assign("sort2", _("Hosts Escalation"));
-$tpl->assign("sort3", _("Services Escalation"));
-$tpl->assign("sort4", _("Hostgroups Escalation"));
-$tpl->assign("sort5", _("Meta Services Escalation"));
-$tpl->assign("sort6", _("Servicegroups Escalation"));
-
-$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
+$tpl->assign('time_unit', " * ".$centreon->optGen["interval_length"]." "._("seconds"));
 
 $tpl->assign(
     "helpattr",
@@ -331,6 +296,7 @@ $tpl->assign(
 # prepare help texts
 $helptext = "";
 include_once("help.php");
+
 foreach ($help as $key => $text) {
 	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
@@ -347,6 +313,7 @@ if ($form->validate())	{
 	$o = NULL;
 	$valid = true;
 }
+
 if ($valid) {
 	require_once("listEscalation.php");
 } else {
@@ -359,4 +326,3 @@ if ($valid) {
 	$tpl->assign('o', $o);
 	$tpl->display("formEscalation.ihtml");
 }
-?>
