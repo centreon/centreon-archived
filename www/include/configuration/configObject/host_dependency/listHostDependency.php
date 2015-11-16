@@ -51,6 +51,8 @@
             $aclFrom = ", $dbmon.centreon_acl acl ";
             $aclCond = " AND dhpr.host_host_id = acl.host_id 
                          AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+            $aclCond2 = " AND dhcr.host_host_id = acl.host_id 
+                         AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
         }
         
 	$rq = "SELECT COUNT(*) FROM dependency dep";
@@ -59,13 +61,14 @@
 						WHERE dhpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
 			OR (SELECT DISTINCT COUNT(*)
 				FROM dependency_hostChild_relation dhcr $aclFrom
-				WHERE dhcr.dependency_dep_id = dep.dep_id $aclCond) > 0)	";
+				WHERE dhcr.dependency_dep_id = dep.dep_id $aclCond2) > 0)	";
 
     $search = '';
 	if (isset($_POST['searchHD']) && $_POST['searchHD']) {
         $search = $_POST['searchHD'];
 		$rq .= " AND (dep_name LIKE '%".CentreonDB::escape($search)."%' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";
     }
+
 	$DBRESULT = $pearDB->query($rq);
 	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -99,7 +102,7 @@
 						WHERE dhpr.dependency_dep_id = dep.dep_id $aclCond) > 0
 			OR (SELECT DISTINCT COUNT(*)
 				FROM dependency_hostChild_relation dhcr $aclFrom
-				WHERE dhcr.dependency_dep_id = dep.dep_id $aclCond) > 0)	";
+				WHERE dhcr.dependency_dep_id = dep.dep_id $aclCond2) > 0)	";
 
 	if ($search) {
 		$rq .= " AND (dep_name LIKE '%".CentreonDB::escape($search)."%' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";

@@ -279,7 +279,7 @@
 			<table class="ListTable">
 			<xsl:for-each select="//multi_svc">
 		        <tr class="ListHeader">
-					<td class='ListColHeaderPicker' valign="top" align='center'><xsl:value-of select="name"/></td>
+					<td class='ListColHeaderLeft' valign="top" align='center'><xsl:value-of select="name"/></td>
 					<td  class='ListColRight'>
 						<xsl:element name="a">
 							<xsl:attribute name="title">Select interval</xsl:attribute>

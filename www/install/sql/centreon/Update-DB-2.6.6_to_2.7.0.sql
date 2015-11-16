@@ -771,7 +771,7 @@ SET foreign_key_checks = 1;
 DELETE FROM topology WHERE topology_page = 50101; 
 
 -- Change Centstorage
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Performance Mgt',NULL,501,NULL,20,10,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Performance Management',NULL,501,NULL,20,10,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
 UPDATE topology SET topology_name = 'Options', topology_page = 50118, topology_parent = 501, topology_order = 200, topology_group = 10 WHERE topology_page = 5010601;
 UPDATE topology SET topology_name = 'Data', topology_page = 50119, topology_parent = 501, topology_order = 210, topology_group = 10 WHERE topology_page = 5010602; 
 DELETE FROM topology WHERE topology_page = 50106;
@@ -792,3 +792,5 @@ update cb_type_field_relation set is_required = 1 where cb_type_id in (14, 16 , 
 --Change topology_Js for parameter ldap page
 insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/centreon/doClone.js',NULL);
 insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
+
+DELETE FROM topology_JS WHERE PathName_js LIKE './include/common/javascript/codebase/dhtmlxcommon.js' OR PathName_js LIKE './include/common/javascript/codebase/dhtmlxtree.js';

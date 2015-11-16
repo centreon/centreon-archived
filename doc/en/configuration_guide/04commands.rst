@@ -12,6 +12,7 @@ There are three types of command:
 
 *       **Verification** commands are used by the schedulers to verify the status of a host or of a service.
 *       **Notification** commands are used by the schedulers to alert the contacts (via mail, SMS, etc.).
+*	**Discovery** commands are used by the schedulers to discover some elements on monitored node.
 *       **Miscellaneous** commands are used by the additional modules (to perform certain actions), by the scheduler for data processing, etc.
 
 All the commands can be configured in the menu: **Configuration ==> Commands**.
@@ -50,11 +51,10 @@ Configuration fields
 *       The **Argument Example** and **$HOSTADDRESS$** fields define examples of arguments (each argument starts with a ”!”) and a test IP address respectively. 
         These fields serve to execute the command line defined above via the web interface by clicking on the blue arrow : |bluearrow|.
 *       The **Describe arguments** button serves to add  a description to arguments of the “$ARGn$” type. This description will be visible when using the command in a host or service form.
- 
-.. image :: /images/user/configuration/04linkbetweencommandandservices.png
-      :align: center
 
 *       The **Clear arguments** button deletes the description of arguments defined
+* 	The **Describe macros** button serves to add  a description to all macros. This description will be visible when using the command in a host or service form.
+
 *       The **Connectors** field serves to link a Connector to the command. For more information on Connectors refer to the chapter entitled: `Perl Connector's documentation <http://documentation.centreon.com/docs/centreon-perl-connector/en/latest/>`_ and `SSH Connector's documentation <http://documentation.centreon.com/docs/centreon-ssh-connector/en/latest/>`_.
 *       The **Graph template** field serves to link the command to a graphic model.
 *       The **Comment** field can be used to make a comment on the command.
