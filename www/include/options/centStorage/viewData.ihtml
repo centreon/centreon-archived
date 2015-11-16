@@ -25,7 +25,7 @@
           <td><input type='submit' name='Search' value='{$Search}' class="btc bt_success" /></td>
         </tr>
       </tbody>
-	</table><br />
+	</table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
 			<td>
@@ -49,12 +49,11 @@
 			<td class="ListColCenter">{$Delete}</td>
 	 		<td class="ListColCenter">{$Hidden}</td>
 	 		<td class="ListColCenter">{$Locked}</td>
-	 		<td class="ListColCenter">{$StorageType}</td>
 	 	</tr>
 	 	{assign var='host_name' value=''}
 		{foreach item=d from=$data}
 		<tr class="{$d.class}">
-		 	<td class="ListColLeft"><input name="select[{$d.id}]" value="1" type="checkbox"></td>
+		 	<td class="ListColCenter"><input name="select[{$d.id}]" value="1" type="checkbox"></td>
 			<td class="ListColLeft">{if !$host_name || $host_name != $d.host_name}{$d.host_name}{/if}</td>
 	 		<td class="ListColLeft">{$d.service_description}</td>
 	 		<td class="ListColCenter">{$d.metrics_name}</td>
@@ -62,7 +61,6 @@
 			<td class="ListColCenter">{$d.to_delete}</td>
 	 		<td class="ListColCenter">{$d.hidden}</td>
 	 		<td class="ListColCenter">{$d.locked}</td>
-	 		<td class="ListColCenter">{$d.storage_type}</td>
 		</tr> 	
 	 	{assign var='host_name' value=$d.host_name}	
 		{/foreach}

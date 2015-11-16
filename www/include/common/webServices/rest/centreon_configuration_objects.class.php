@@ -53,8 +53,6 @@ class CentreonConfigurationObjects extends CentreonWebService
      */
     public function getDefaultValues()
     {
-        
-        
         // Get Object targeted
         if (isset($this->arguments['id']) && !empty($this->arguments['id'])) {
             $id = $this->arguments['id'];
@@ -110,7 +108,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             throw new RestBadRequestException("Bad parameters");
         }
         
-        // 
+        # Manage final data
         $finalDatas = array();
         if (count($selectedValues) > 0) {
             $finalDatas = $this->retrieveExternalObjectDatas($defaultValuesParameters['externalObject'], $selectedValues);
@@ -124,7 +122,7 @@ class CentreonConfigurationObjects extends CentreonWebService
      * @param array $externalObject
      * @param array $values
      */
-    private function retrieveExternalObjectDatas($externalObject, $values)
+    protected function retrieveExternalObjectDatas($externalObject, $values)
     {
         $tmpValues = array();
         
@@ -168,16 +166,28 @@ class CentreonConfigurationObjects extends CentreonWebService
      * @param string $field
      * @return array
      */
-    private function retrieveSimpleValues($currentObject, $id, $field)
+    protected function retrieveSimpleValues($currentObject, $id, $field)
     {
         $tmpValues = array();
-        
+
+        $fields = array();
+        $fields[] = $field;
+        if (isset($currentObject['additionalField'])) {
+            $fields[] = $currentObject['additionalField'];
+        }
+
         // Getting Current Values
-        $queryValuesRetrieval = "SELECT `$field` FROM $currentObject[table] WHERE $currentObject[id] = $id";
+        $queryValuesRetrieval = "SELECT " . implode(', ', $fields) . " "
+            . "FROM " . $currentObject['table'] . " "
+            . "WHERE " . $currentObject['id'] . " = " .  $id;
         
         $resRetrieval = $this->pearDB->query($queryValuesRetrieval);
         while ($row = $resRetrieval->fetchRow()) {
-            $tmpValues[] = $row[$field];
+            $tmpValue = $row[$field];
+            if (isset($currentObject['additionalField'])) {
+                $tmpValue .= '-' . $row[$currentObject['additionalField']];
+            }
+            $tmpValues[] = $tmpValue;
         }
         
         return $tmpValues;
@@ -189,7 +199,7 @@ class CentreonConfigurationObjects extends CentreonWebService
      * @param integer $id
      * @return array
      */
-    private function retrieveRelatedValues($relationObject, $id)
+    protected function retrieveRelatedValues($relationObject, $id)
     {
         $tmpValues = array();
         

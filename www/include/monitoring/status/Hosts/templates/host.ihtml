@@ -14,46 +14,45 @@
     <tr>
       <th colspan="{$nbCol}"><h5>Filters</h5></th>
     </tr>
-	<tr>
-            <td><h4>{$hostStr}</h4></td>
-            <td><h4>{$form.statusFilter.label}</h4></td>
-            {if $criticalityUsed}
-                <td><h4>{$form.criticality.label}</h4></td>
-            {/if}
-            {if $poller_listing}
-                <td><h4>{$pollerStr}</h4></td>
-            {/if}
-            <td><h4>{$hgStr}</h4></td>
-            <td><h4>{$statusHost}</h4></td>
+	  <tr>
+      <td><h4>{$statusHost}</h4></td>
+      <td><h4>{$hostStr}</h4></td>
+      <td><h4>{$form.statusFilter.label}</h4></td>
+      {if $criticalityUsed}
+          <td><h4>{$form.criticality.label}</h4></td>
+      {/if}
+      {if $poller_listing}
+          <td><h4>{$pollerStr}</h4></td>
+      {/if}
+      <td><h4>{$hgStr}</h4></td>
     </tr>
     <tr>
-		<td><input type='text' name='host_search' id='host_search'></td>
-		<td>{$form.statusFilter.html}</td>
-        {if $criticalityUsed}       
-        <td>{$form.criticality.html}</td>
-        {/if}
-		{if $poller_listing}
-		<td><span id="instance_selected"></span></td>
-		{/if}
-	    <td><span id="hostgroups_selected"></span></td>
-            <td>{$form.statusHost.html}</td>
-	</tr>
+      <td>{$form.statusHost.html}</td>
+  		<td><input type='text' name='host_search' id='host_search'></td>
+  		<td>{$form.statusFilter.html}</td>
+          {if $criticalityUsed}       
+          <td>{$form.criticality.html}</td>
+          {/if}
+  		{if $poller_listing}
+  		<td><span id="instance_selected"></span></td>
+  		{/if}
+      <td><span id="hostgroups_selected"></span></td>
+ 	  </tr>
   </tbody>
 </table>
-<br/>
 <table class="ToolbarTable table">
   <tbody>
 	<tr class="ToolbarTR">
 		<td>
-            <span class="consol_button">{$form.o1.html}</span>
-            <input name="p" value="{$p}" type="hidden">
-            <div class="Toolbar_TDSelectAction_Top">
-              <span class="consol_button"><div id="JS_monitoring_refresh" style="cursor:pointer" onclick="javascript:monitoring_refresh('');"><img src='./img/icons/refresh.png' alt='Refresh' title='Refresh'></div></span>
-              <span class="consol_button"><div id="JS_monitoring_play" class="cachediv" style="cursor:pointer" onclick="javascript:monitoring_play('');"><img src='./img/icons/media_play.png' alt='Play' title='Play'></div></span>
-              <span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icons/media_play_gray.png' alt='Play' title='Play'></span>
-              <span class="consol_button"><div class="" id="JS_monitoring_pause" style="cursor:pointer" onclick="javascript:monitoring_pause('');"><img src='./img/icons/media_pause.png' alt='Pause' title='Pause'></div></span>
-              <span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icons/media_pause_gray.png' alt='Pause' title='Pause'></span>
-            </div>
+        <span class="consol_button">{$form.o1.html}</span>
+        <input name="p" value="{$p}" type="hidden">
+        <div class="Toolbar_TDSelectAction_Top">
+          <span class="consol_button"><div id="JS_monitoring_refresh" style="cursor:pointer" onclick="javascript:monitoring_refresh('');"><img src='./img/icons/refresh.png' alt='Refresh' title='Refresh'></div></span>
+          <span class="consol_button"><div id="JS_monitoring_play" class="cachediv" style="cursor:pointer" onclick="javascript:monitoring_play('');"><img src='./img/icons/media_play.png' alt='Play' title='Play'></div></span>
+          <span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icons/media_play_gray.png' alt='Play' title='Play'></span>
+          <span class="consol_button"><div class="" id="JS_monitoring_pause" style="cursor:pointer" onclick="javascript:monitoring_pause('');"><img src='./img/icons/media_pause.png' alt='Pause' title='Pause'></div></span>
+          <span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icons/media_pause_gray.png' alt='Pause' title='Pause'></span>
+        </div>
 		</td>
 		<td id="pagination1" class="ToolbarPagination"></td>
 		<td id="sel1" class="Toolbar_pagelimit"></td>

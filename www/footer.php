@@ -41,33 +41,30 @@ require_once("./class/centreonData.class.php");
 
 if (!$min) {
 ?>    
-        <div class="fullscreen-icon" title="Fullscreen" onclick="myToggleAll(0,true);" >
-            <img class="ico-16" id="fullscreenIcon" alt="FullScreen" src="./img/icons/fullscreen.png">
-        </div>    
-        <div id="footer">
-			<table cellpadding='0' cellspacing='0' width='100%' border='0' id="tfooter">
- 				<tr>
-				    <td>
-				        <?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
-				    </td>
- 					<td align='center' class='copyRight'>
-					    <a href='https://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> -
-                        <a href="https://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
-                        <a href="https://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a>
-                         <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
-                        - <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
-                         <?php } ?>
-                    </td>
-
-                      <td>
-                         Copyright &copy; 2005-2015
-                     </td>
-                 </tr>
- 			</table>
- 		</div>
-
- <?php
- }
+<div class="fullscreen-icon" title="Fullscreen" onclick="myToggleAll(0,true);" >
+    <img class="ico-16" id="fullscreenIcon" alt="FullScreen" src="./img/icons/fullscreen.png">
+</div>    
+<div id="footer">
+	<table cellpadding='0' cellspacing='0' width='100%' border='0' id="tfooter">
+			<tr>
+		    <td>
+		        <?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
+		    </td>
+				<td align='center' class='copyRight'>
+			    <a href='https://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> |
+                <a href="https://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> | 
+                <a href="https://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon</a> | 
+                <a href="https://github.com/centreon/centreon.git" title='Follow and Fork us on Github' target='_blank'>Github Project</a>  
+                 <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
+                | <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
+                 <?php } ?>
+            </td>
+            <td>Copyright &copy; 2005 - 2015</td>
+         </tr>
+	</table>
+</div>
+<?php
+}
 ?>
 <style>
 html, body {

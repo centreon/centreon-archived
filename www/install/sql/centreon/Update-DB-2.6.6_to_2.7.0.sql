@@ -1,6 +1,3 @@
--- Change version of Centreon
-UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
-
 ALTER TABLE options ENGINE=InnoDB;
 ALTER TABLE css_color_menu ENGINE=InnoDB;
 
@@ -737,7 +734,7 @@ DELETE FROM topology_JS WHERE id_page = 20207;
 DELETE FROM topology WHERE topology_page = 20207; 
 DELETE FROM topology WHERE topology_parent = 202 AND topology_group = 33 AND topology_name = 'Monitoring Engine';
 
--- Change monitoring engine and centreon menu
+-- Change centreon tab menus
 SET foreign_key_checks = 0;
 UPDATE topology_JS SET id_page = 60902 WHERE id_page = 60701;
 UPDATE topology SET topology_page = 60902, topology_parent = 609, topology_group = 1, topology_show = '0' WHERE topology_page = 60701;
@@ -747,6 +744,8 @@ UPDATE topology SET topology_page = 60904, topology_parent = 609, topology_group
 DELETE FROM topology WHERE topology_parent = 607;
 DELETE FROM topology WHERE topology_page = 607;
 UPDATE topology SET topology_name = "Pollers" WHERE topology_page = 609;
+UPDATE topology SET topology_name = "Broker configuration", topology_order = 35, topology_group = 1 WHERE topology_page = 60909;
+DELETE FROM topology WHERE topology_name = "Centreon-Broker";
 SET foreign_key_checks = 1;
 
 -- Add option for number of groups per page
@@ -769,7 +768,7 @@ SET foreign_key_checks = 1;
 DELETE FROM topology WHERE topology_page = 50101; 
 
 -- Change Centstorage
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Performance Mgt',NULL,501,NULL,20,10,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Performance Management',NULL,501,NULL,20,10,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
 UPDATE topology SET topology_name = 'Options', topology_page = 50118, topology_parent = 501, topology_order = 200, topology_group = 10 WHERE topology_page = 5010601;
 UPDATE topology SET topology_name = 'Data', topology_page = 50119, topology_parent = 501, topology_order = 210, topology_group = 10 WHERE topology_page = 5010602; 
 DELETE FROM topology WHERE topology_page = 50106;
@@ -790,3 +789,15 @@ update cb_type_field_relation set is_required = 1 where cb_type_id in (14, 16 , 
 --Change topology_Js for parameter ldap page
 insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/centreon/doClone.js',NULL);
 insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
+
+DELETE FROM topology_JS WHERE PathName_js LIKE './include/common/javascript/codebase/dhtmlxcommon.js' OR PathName_js LIKE './include/common/javascript/codebase/dhtmlxtree.js';
+
+-- change Topology for modules pages
+UPDATE topology SET topology_name = 'Modules' WHERE topology_page = 50701 AND topology_url IS NOT NULL;
+UPDATE topology SET topology_name = 'Widgets', topology_group = 1 WHERE topology_page = 50703 AND topology_url IS NOT NULL;
+DELETE FROM topology WHERE topology_parent = 507 AND topology_group = 2 AND topology_url IS NULL;
+
+
+-- Change version of Centreon
+UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
+

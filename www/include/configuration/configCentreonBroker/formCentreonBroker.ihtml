@@ -89,6 +89,7 @@ span.v_required_star {
 }
 </style>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.js"></script>
+<script type="text/javascript" src="./lib/HTML/QuickForm/qfamsHandler-min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/centreon/jquery.centreonValidate.js"></script>
 <script type="text/javascript">
 function mk_paginationFF(){};

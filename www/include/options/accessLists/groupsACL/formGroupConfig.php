@@ -275,7 +275,6 @@ if ($o == "w") {
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
  }
 
-$valid = false;
 if ($form->validate())	{
     $groupObj = $form->getElement('acl_group_id');
     if ($form->getSubmitValue("submitA")) {
@@ -284,25 +283,20 @@ if ($form->validate())	{
         updateGroupInDB($groupObj->getValue());
     }
     $o = NULL;
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$groupObj->getValue()."'"));
-    $form->freeze();
-    $valid = true;
  }
 
 $action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+if ($action["action"]) {
     require_once($path."listGroupConfig.php");
 } else {
      /*
       * Apply a template definition
       */
-     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-     $form->accept($renderer);
-     $tpl->assign('form', $renderer->toArray());
-     $tpl->assign('o', $o);
-     $tpl->display("formGroupConfig.ihtml");
- }
-
-?>
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->assign('o', $o);
+    $tpl->display("formGroupConfig.ihtml");
+}

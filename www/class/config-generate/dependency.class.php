@@ -190,12 +190,12 @@ class Dependency extends AbstractObject {
                 continue;
             }
             foreach ($this->dependency_linked_service_parent_cache[$dp_id] as $value) {
+                if (!isset($this->dependency_linked_service_child_cache[$dp_id])) {
+                    continue;
+                }
                 if ($this->service_instance->checkGenerate($value['host_host_id'] . '.' . $value['service_service_id'])) {
                     $dependency['host_name'] = array($this->host_instance->getString($value['host_host_id'], 'host_name'));
                     $dependency['service_description'] = array($this->service_instance->getString($value['service_service_id'], 'service_description'));
-                    if (!isset($this->dependency_linked_service_child_cache[$dp_id])) {
-                        continue;
-                    }
                     
                     foreach ($this->dependency_linked_service_child_cache[$dp_id] as $value2) {
                         if ($this->service_instance->checkGenerate($value2['host_host_id'] . '.' . $value2['service_service_id'])) {
@@ -222,12 +222,12 @@ class Dependency extends AbstractObject {
                 continue;
             }
             foreach ($this->dependency_linked_meta_parent_cache[$dp_id] as $meta_id) {
+                if (!isset($this->dependency_linked_meta_child_cache[$dp_id])) {
+                    continue;
+                }
                 if ($meta_instance->checkGenerate($meta_id)) {
                     $dependency['host_name'] = array('_Module_Meta');
                     $dependency['service_description'] = array('meta_' . $meta_id);
-                    if (!isset($this->dependency_linked_meta_child_cache[$dp_id])) {
-                        continue;
-                    }
                     
                     foreach ($this->dependency_linked_meta_child_cache[$dp_id] as $meta_id2) {
                         if ($meta_instance->checkGenerate($meta_id2)) {

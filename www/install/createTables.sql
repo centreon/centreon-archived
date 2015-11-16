@@ -2195,10 +2195,21 @@ CREATE TABLE `traps_service_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `traps_group` (
   `traps_group_id` int(11) DEFAULT NULL,
-  `traps_id` int(11) DEFAULT NULL,
+  `traps_group_name` varchar(255) NOT NULL,
   KEY `traps_group_id` (`traps_group_id`),
   KEY `traps_id` (`traps_id`),
   CONSTRAINT `traps_group_ibfk_1` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `traps_group_relation` (
+  `traps_group_id` int(11) NOT NULL,
+  `traps_id` int(11) NOT NULL,
+  KEY `traps_group_id` (`traps_group_id`),
+  KEY `traps_id` (`traps_id`),
+  CONSTRAINT `traps_group_relation_ibfk_1` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE,
+  CONSTRAINT `traps_group_relation_ibfk_2` FOREIGN KEY (`traps_group_id`) REFERENCES `traps_group` (`traps_group_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

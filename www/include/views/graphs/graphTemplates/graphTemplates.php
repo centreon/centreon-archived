@@ -31,73 +31,69 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
- 
- 	if (!isset ($oreon))
-		exit ();
-	
-	isset($_GET["graph_id"]) ? $cG = $_GET["graph_id"] : $cG = NULL;
-	isset($_POST["graph_id"]) ? $cP = $_POST["graph_id"] : $cP = NULL;
-	$cG ? $graph_id = $cG : $graph_id = $cP;
 
-	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
-	$cG ? $select = $cG : $select = $cP;
+if (!isset($centreon)) {
+	exit ();
+}
 
-	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
-	$cG ? $dupNbr = $cG : $dupNbr = $cP;
-		
-	/*
-	 * Pear library
-	 */
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/select2.php';
-	require_once 'HTML/QuickForm/advmultiselect.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+isset($_GET["graph_id"]) ? $cG = $_GET["graph_id"] : $cG = NULL;
+isset($_POST["graph_id"]) ? $cP = $_POST["graph_id"] : $cP = NULL;
+$cG ? $graph_id = $cG : $graph_id = $cP;
+
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+$cG ? $select = $cG : $select = $cP;
+
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+$cG ? $dupNbr = $cG : $dupNbr = $cP;
 	
-	/*
-	 * Path to the configuration dir
-	 */
-	$path = "./include/views/graphs/graphTemplates/";
-	
-	/*
-	 * PHP functions
-	 */
-	require_once $path."DB-Func.php";
-	require_once "./include/common/common-Func.php";
-	
-	switch ($o)	{
-		case "a" : 
-			require_once $path."formGraphTemplate.php"; 
-			break; #Add a Graph Template
-		case "w" : 
-			require_once $path."formGraphTemplate.php"; 
-			break; #Watch aGraph Template
-		case "c" : 
-			require_once $path."formGraphTemplate.php"; 
-			break; #Modify a Graph Template
-		case "s" : 
-			enableGraphTemplateInDB($lca_id); 
-			require_once $path."listGraphTemplates.php"; 
-			break; #Activate a Graph Template
-		case "u" : 
-			disableGraphTemplateInDB($lca_id); 
-			require_once $path."listGraphTemplates.php"; 
-			break; #Desactivate a Graph Template
-		case "m" : 
-			multipleGraphTemplateInDB(isset($select) ? $select : array(), $dupNbr); 
-			require_once $path."listGraphTemplates.php"; 
-			break; #Duplicate n Graph Templates
-		case "d" : 
-			deleteGraphTemplateInDB(isset($select) ? $select : array()); 
-			require_once $path."listGraphTemplates.php"; 
-			break; #Delete n Graph Templates
-		default : 
-			require_once $path."listGraphTemplates.php" ; 
-			break;
-	}
-?>
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/select2.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+
+/*
+ * Path to the configuration dir
+ */
+$path = "./include/views/graphs/graphTemplates/";
+
+/*
+ * PHP functions
+ */
+require_once $path."DB-Func.php";
+require_once "./include/common/common-Func.php";
+
+switch ($o)	{
+	case "a" : 
+		require_once $path."formGraphTemplate.php"; 
+		break; #Add a Graph Template
+	case "w" : 
+		require_once $path."formGraphTemplate.php"; 
+		break; #Watch aGraph Template
+	case "c" : 
+		require_once $path."formGraphTemplate.php"; 
+		break; #Modify a Graph Template
+	case "s" : 
+		enableGraphTemplateInDB($lca_id); 
+		require_once $path."listGraphTemplates.php"; 
+		break; #Activate a Graph Template
+	case "u" : 
+		disableGraphTemplateInDB($lca_id); 
+		require_once $path."listGraphTemplates.php"; 
+		break; #Desactivate a Graph Template
+	case "m" : 
+		multipleGraphTemplateInDB(isset($select) ? $select : array(), $dupNbr); 
+		require_once $path."listGraphTemplates.php"; 
+		break; #Duplicate n Graph Templates
+	case "d" : 
+		deleteGraphTemplateInDB(isset($select) ? $select : array()); 
+		require_once $path."listGraphTemplates.php"; 
+		break; #Delete n Graph Templates
+	default : 
+		require_once $path."listGraphTemplates.php" ; 
+		break;
+}

@@ -52,7 +52,7 @@ $hosts = $acl->getHostAclConf(
 );
 
 /* services */
-if (!$oreon->user->admin) {
+/*if (!$oreon->user->admin) {
     $hServices = array();
     $sql = "SELECT DISTINCT CONCAT(host_id, '_', service_id) as k, 
                             CONCAT(host_name, ' / ', service_description) as v
@@ -62,7 +62,7 @@ if (!$oreon->user->admin) {
     while ($row = $res->fetchRow()) {
         $hServices[$row['k']] = $row['v'];
     }
-}
+}*/
 
         
 $initialValues = array();
@@ -84,73 +84,13 @@ if (($o == "c" || $o == "w") && $dep_id)	{
 		$dep["execution_failure_criteria"][trim($value)] = 1;
 	}
 
-	// Set Host Service Childs
-	$DBRESULT = $pearDB->query("SELECT host_host_id, service_service_id
-								FROM dependency_serviceChild_relation dscr
-								WHERE dscr.dependency_dep_id = '".$dep_id."'");
-	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-                $key = $service["host_host_id"]."_".$service["service_service_id"];
-                if (!$oreon->user->admin && !isset($hServices[$key])) {
-                    $initialValues["dep_hSvChi"][] = $key;
-                } else {
-                    $dep["dep_hSvChi"][$i] = $key;
-                }
-	}
-	$DBRESULT->free();
-
-	// Set Host Service Parents
-	$DBRESULT = $pearDB->query("SELECT host_host_id, service_service_id
-								FROM dependency_serviceParent_relation dspr
-								WHERE dspr.dependency_dep_id = '".$dep_id."'");
-	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-        $key = $service["host_host_id"]."_".$service["service_service_id"];
-        if (!$oreon->user->admin && !isset($hServices[$key])) {
-            $initialValues['dep_hSvPar'][] = $key;
-        } else {
-            $dep["dep_hSvPar"][$i] = $key;
-        }
-	}
-
-            // Set Host Children
-	$DBRESULT = $pearDB->query("SELECT host_host_id
-								FROM dependency_hostChild_relation dspr
-								WHERE dspr.dependency_dep_id = '".$dep_id."'");
-	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-        if (!$oreon->user->admin && !isset($hosts[$service['host_host_id']])) {
-            $initialValues['dep_hHostChi'][] = $service["host_host_id"];
-        } else {
-            $dep["dep_hHostChi"][$i] = $service["host_host_id"];
-        }
-	}
-	$DBRESULT->free();
-
-    $query = "SELECT host_id, host_name, service_id, service_description
-		  FROM service s, dependency_serviceParent_relation pr, host h
-		  WHERE s.service_id = pr.service_service_id
-		  AND pr.host_host_id = h.host_id
-		  AND pr.dependency_dep_id = "  . $pearDB->escape($dep_id);
-    $res = $pearDB->query($query);
-    while ($row = $res->fetchRow()) {
-        $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-        $parentServices[$row["host_id"]."_".$row['service_id']] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
-    }
-
-    $query = "SELECT host_id, host_name, service_id, service_description
-		  FROM service s, dependency_serviceChild_relation cr, host h
-		  WHERE s.service_id = cr.service_service_id
-		  AND cr.host_host_id = h.host_id
-		  AND cr.dependency_dep_id = "  . $pearDB->escape($dep_id);
-    $res = $pearDB->query($query);
-    while ($row = $res->fetchRow()) {
-        $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-        $childServices[$row["host_id"]."_".$row['service_id']] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
-    }
+        $DBRESULT->free();
 }
 
 /*
  * Services comes from DB -> Store in $hServices Array
  */
-    if ($oreon->user->admin) {
+    /*if ($oreon->user->admin) {
         $hServices = array();
         $DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
         while ($elem = $DBRESULT->fetchRow())	{
@@ -161,7 +101,7 @@ if (($o == "c" || $o == "w") && $dep_id)	{
                 $hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
             }
         }
-    }
+    }*/
 
 /*
  * Var information to format the element
@@ -181,7 +121,7 @@ $attrServices = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
     'multiple' => true,
-    'linkedObject' => 'centreonServices'
+    'linkedObject' => 'centreonService'
 );
 
 /*

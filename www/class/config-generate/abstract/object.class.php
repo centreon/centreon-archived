@@ -59,7 +59,7 @@ abstract class AbstractObject {
 "#         By " . sprintf("%-53s#\n", $this->backend_instance->getUserName()) .
 "#                                                                 #\n" .
 "###################################################################\n";
-        fwrite($this->fp, $header);
+        fwrite($this->fp, $this->toUTF8($header));
     }
     
     protected function createFile($dir) {
@@ -68,6 +68,14 @@ abstract class AbstractObject {
             throw new Exception("Cannot open file (writing permission) '" . $full_file ."'");
         }
         $this->setHeader();
+    }
+    
+    private function toUTF8($str) {
+        $finalString = $str;
+        if (mb_detect_encoding($finalString, 'UTF-8', true) !== 'UTF-8')  {
+            $finalString = utf8_encode($finalString);
+        }
+        return $finalString;
     }
     
     protected function writeObject($object) {
@@ -113,7 +121,7 @@ abstract class AbstractObject {
         }
         
         $object_file .= "}\n";
-        fwrite($this->fp, $object_file);
+        fwrite($this->fp, $this->toUTF8($object_file));
     }
     
     protected function generateObjectInFile($object, $id) {
@@ -128,7 +136,7 @@ abstract class AbstractObject {
         foreach ($this->attributes_array as &$attr) {
             if (isset($object[$attr]) && !is_null($object[$attr]) && is_array($object[$attr])) {
                 foreach ($object[$attr] as $v) {
-                    fwrite($this->fp, $attr . "=" . $v . "\n");
+                    fwrite($this->fp, $this->toUTF8($attr . "=" . $v . "\n"));
                 }
             }
         }
@@ -138,19 +146,19 @@ abstract class AbstractObject {
                 continue;
             }
             foreach ($object[$attr] as $key => &$value) {
-                fwrite($this->fp, $key . "=" . $value . "\n");
+                fwrite($this->fp, $this->toUTF8($key . "=" . $value . "\n"));
             }
         }
         
         foreach ($this->attributes_write as &$attr) {
             if (isset($object[$attr]) && !is_null($object[$attr]) && $object[$attr] != '') {
-                fwrite($this->fp, $attr . "=" . $object[$attr] . "\n");
+                fwrite($this->fp, $this->toUTF8($attr . "=" . $object[$attr] . "\n"));
             }
         }
         
         foreach ($this->attributes_default as &$attr) {
             if (isset($object[$attr]) && !is_null($object[$attr]) && $object[$attr] != 2) {
-                fwrite($this->fp, $attr . "=" . $object[$attr] . "\n");
+                fwrite($this->fp, $this->toUTF8($attr . "=" . $object[$attr] . "\n"));
             }
         }
     }

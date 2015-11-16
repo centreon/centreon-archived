@@ -170,6 +170,7 @@ p.description a, p.description a:visited {
 
 .select2-container .select2-search--inline .select2-search__field {
     margin-top: 0 !important;
+    width: 200px !important;
 }
 
 .select2-container--default .select2-selection--single {
@@ -558,7 +559,8 @@ vertical-align: middle;
 
 .Resume_light_table td span img{
     display: inline-block;
-    padding: 4px 8px;
+    padding: 5px 6px;
+    vertical-align: middle;
 }
 
 .Resume_light_table th, .Resume_light_table td  {
@@ -794,7 +796,7 @@ div.menuLeft {
 }
 
 #addwdgt {
-    width: 486px;
+    max-width: 750px;
 }
 
 .table .FormHeader {
@@ -1288,7 +1290,7 @@ table.ListTableSmallArg td {
     width: 40%;
 }
 .ToolbarTR select {
-    height: 25px;
+    //height: 25px;
     line-height: 25px;
     float: left;
 }
@@ -1608,4 +1610,22 @@ span.state_badge {
     margin-left: 15px;
     color: #818285;
     border-radius: 4px;
+}
+
+/* Jquery Tabs */
+
+div#tabs_periods {
+    background: #fff;
+    border: 1px solid #e7e7e8;
+    border-radius: 4px;
+}
+
+.ui-widget-content  {
+    background: #fff;
+}
+.ui-widget-header {
+    background: #fff !important;
+    border: 0 !important;
+    border-bottom: 1px solid #e7e7e8 !important;
+    border-radius: 0 !important;
 }

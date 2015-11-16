@@ -3,8 +3,8 @@
 <div class="headerTabContainer">
 <ul id="mainnav">
 	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$form.header.information}</a></li>
-	<li class="a" id='c2'><a href="#" onclick="javascript:montre('2');">{$form.header.centreon}</a></li>
-	<li class="a" id='c3'><a href="#" onclick="javascript:montre('3');">{$form.header.additional}</a></li>
+	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$form.header.centreon}</a></li>
+	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$form.header.additional}</a></li>
 </ul>
 <div id="validFormTop">
   {if $o == "a" || $o == "c" || $o == "mc"}

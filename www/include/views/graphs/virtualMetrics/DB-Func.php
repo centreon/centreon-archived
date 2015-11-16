@@ -136,13 +136,30 @@ function insertVirtualMetricInDB ()	{
 }
 
 function insertVirtualMetric() {
-    global $form, $pearDB, $centreon;
+    global $form, $pearDB, $pearDBO, $centreon;
     $h_id = NULL;
     $s_id = NULL;
     $ret = array();
     $ret = $form->getSubmitValues();
     $rq = "INSERT INTO `virtual_metrics` ( `vmetric_id` , `index_id`, `vmetric_name`, `def_type` , `rpn_function`, `unit_name` , `warn`, `crit`, `hidden` , `comment` , `vmetric_activate`, `ck_state`) ";
     $rq .= "VALUES ( NULL, ";
+
+    if (isset($ret["host_id"]) && preg_match('/\d+\-\d+/', $ret["host_id"])) {
+        # Get index_id
+        list($host_id, $service_id) = explode('-', $ret["host_id"]);
+        $query = "SELECT id "
+            . "FROM index_data "
+            . "WHERE host_id = " . $host_id . " "
+            . "AND service_id = " . $service_id . " ";
+        $result = $pearDBO->query($query);
+        if ($row = $result->fetchRow()) {
+            $rq .= "'" . $row['id'] . "', ";
+        } else {
+            $rq .= "NULL, ";
+        }
+    } else {
+        $rq .= "NULL, ";
+    }
     isset($ret["index_id"]) && $ret["index_id"] != NULL ? $rq .= "'".$ret["index_id"]."', ": $rq .= "NULL, ";
     isset($ret["vmetric_name"]) && $ret["vmetric_name"] != NULL ? $rq .= "'".htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
     isset($ret["def_type"]) && $ret["def_type"] != NULL ? $rq .= "'".$ret["def_type"]."', ": $rq .= "NULL, ";
@@ -167,12 +184,27 @@ function insertVirtualMetric() {
 
 function updateVirtualMetric($vmetric_id = null) {
     if (!$vmetric_id) return;
-    global $form, $pearDB;
+    global $form, $pearDB, $pearDBO;
     $ret = array();
     $ret = $form->getSubmitValues();
     $rq = "UPDATE virtual_metrics ";
     $rq .= "SET `index_id` = ";
-    isset($ret["index_id"]) && $ret["index_id"] != NULL ? $rq .= "'".$ret["index_id"]."', ": $rq .= "NULL, ";
+    if (isset($ret["host_id"]) && preg_match('/\d+\-\d+/', $ret["host_id"])) {
+        # Get index_id
+        list($host_id, $service_id) = explode('-', $ret["host_id"]);
+        $query = "SELECT id "
+            . "FROM index_data "
+            . "WHERE host_id = " . $host_id . " "
+            . "AND service_id = " . $service_id . " ";
+        $result = $pearDBO->query($query);
+        if ($row = $result->fetchRow()) {
+            $rq .= "'" . $row['id'] . "', ";
+        } else {
+            $rq .= "NULL, ";
+        }
+    } else {
+        $rq .= "NULL, ";
+    }
     $rq .=  "vmetric_name = ";
     isset($ret["vmetric_name"]) && $ret["vmetric_name"] != NULL ? $rq .= "'".htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
     $rq .=  "def_type = ";

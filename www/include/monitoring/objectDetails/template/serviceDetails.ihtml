@@ -6,11 +6,11 @@
 				<table class="table"> <!-- Left Table -->
 
 					<tr class='ListHeader'> <!-- Header -->
-						<td class="ListColHeaderLeft {$service_data.status_class}" >
-							<h3 style="color: #555;">
+						<td class="ListColHeaderLeft {$service_data.status_class}" style="padding-bottom: 4px !important;" >
+							<h3 style="color: #fff;">
 								<img src='./img/icons/service.png' style="vertical-align: middle;" class="ico-16"{if $sv_ext_icon_image_alt} alt='{$sv_ext_icon_image_alt}'{/if}> |
 								{$m_mon_services} {$svc_description}
-								<p style="padding-left: 26px; font-size: 12px;float:right;">
+								<p style="padding-left: 28px; font-size: 12px;float:right;">
 									{$h.host_alias} | {$h.host_address}
 								</p>
 							</h3>
@@ -18,7 +18,7 @@
 
 							{if $sv_ext_notes_url}
 								<a href="{$sv_ext_notes_url}" target="_blank">
-								<img src='./img/icons/link.png' class="ico-14" title="{if $sv_ext_notes}{$sv_ext_notes}{else}{$sv_ext_notes_url}{/if}">
+								<img src='./img/icons/link.png' class="ico-14"  style="vertical-align:middle;" title="{if $sv_ext_notes}{$sv_ext_notes}{else}{$sv_ext_notes_url}{/if}">
 								</a>
 							{/if}
 						</td>
@@ -289,7 +289,7 @@
 									{if $aclAct.service_comment || $admin == true}
 										<tr class='list_one'>
 											<td class="ListColLeft ColPopup">
-												<b><a href='./main.php?p=20219&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_comment}</a></b>
+												<b><a href='./main.php?p=21002&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_comment}</a></b>
 											</td>
 										</tr>
 									{/if}

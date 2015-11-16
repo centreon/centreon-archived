@@ -4,15 +4,13 @@ Administration options of the Centreon platform
 
 The following options enable us to change the settings of the Centreon architecture.
 
-********
-Centreon
-********
+***********
+Centreon UI
+***********
 
 This part covers the configuration of the general options of the Centreon web interface.
 
-#. Go into the menu: **Administration** ==> **Options**
-#. In the left menu, click on **Options**
-#. Click on **Centreon**
+#. Go into the menu: **Administration** ==> **Parameters** ==> **Centreon UI**
 
 The following window is displayed:
 
@@ -24,11 +22,8 @@ The following window is displayed:
 * **Limit per page (default)** field defines the number of objects displayed per **Configuration** page
 * **Limit per page for Monitoring** field defines the number of objects displayed per page in the **Monitoring** menu
 * **Sessions Expiration Time** field, expressed in minutes, indicates the maximum session duration
-* **Refresh Interval** field, expressed in seconds, indicates the Refreshment interval of the objects
 * **Refresh Interval for statistics** field, expressed in seconds, indicates the refreshment interval for the statistics page
 * **Refresh Interval for monitoring** field, expressed in seconds, indicates the refreshment interval for the objects on the monitoring page
-* **First Refresh delay for statistics** field, expressed in seconds, indicates the lead-time for the first refreshment to the statistics page
-* **First Refresh delay for monitoring** field, expressed in seconds, indicates the lead-time for the first refreshment for the supervision page
 * **Display Template** field indicates the theme to be used for the Centreon web interface
 * **Sort problems by** field is used to choose how to sort the incidents in the **Monitoring** menu
 * **Order sort problems** field indicates the display order for incidents, by rising or falling order of gravity
@@ -38,8 +33,7 @@ The following window is displayed:
 * **SSO mode** field indicates if the authentication should take place only by SSO or using local authentication as well (Mixed)
 * **SSO trusted client addresses** field indicates which are the trusted clients for SSO. The trusted clients are separated by commas
 * **SSO login header** field indicates the variables of the header that will be used as a login / pseudo
-* **Enable Timezone management** box enables the management of timezone
-* **Default host timezone** field serves to define a time zone by default
+* **Timezone** field indicates timezone of your monitoring server
 * If the **Enable strict mode for host parentship management** box is checked, the operator cannot define parental relationships of a host in objects supervised by different pollers.
 * **Centreon Support Email** field indicates the e-mail address of the **Customer’s service support centre** for the Centreon platform. This e-mail address will be displayed at the bottom of the page on the link **Centreon Support**
 
@@ -49,8 +43,7 @@ Monitoring
 
 This part covers the general options of the real time monitoring interface.
 
-#. Go into the menu: **Administration** ==> **Options**
-#. In the left menu, click on **Options**
+#. Go into the menu: **Administration** ==> **Parameters** ==> **Monitoring**
 #. Click on **Monitoring**
 
 .. image :: /images/guide_exploitation/esupervision.png
@@ -60,8 +53,8 @@ This part covers the general options of the real time monitoring interface.
 * **Interval Length** field indicates the time interval in seconds used to programme the checks and notifications
 * **Images Directory** field defines the image directory in which the medias are stored
 * **Plugins Directory** field defines the directory where monitoring plugins are stored
-* **Broker engine used by Centreon** field describes the broker used by the Centreon platform
 * **Start script for broker daemon** field contains the path to the init script of the broker
+* **Centreon Broker socket path** Centreon Broker socket path for send external command
 * **Directory + Mailer Binary** field contains the path to the executable file for sending  e-mails
 * **Maximum number of hosts to show** and **Maximum number of services to show** lists contain the maximum number of hosts or services to be displayed in the overall view (menu: **Home** ==> **Home**)
 * **Page refresh interval** field defines the data refreshment interval in the overall view 
@@ -74,15 +67,11 @@ CentCore
 
 This part can be used set the operation of the CentCore process.
 
-#. Go into the menu: **Administration** ==> **Options**
-#. In the left menu, click on **Options**
-#. Click on **CentCore**
+#. Go into the menu: **Administration** ==> **Parameters** ==> **Centcore**
 
 .. image :: /images/guide_exploitation/ecentcore.png
    :align: center
 
-* **Enable Perfdata Synchronisation** field enables the synchronisation of performance data between the central server and the satellite servers (deprecated with Centreon Broker)
-* **Enable Logs Synchronisation** field enables the synchronisation of logs between the central server and the satellite servers
 * **Enable Broker Statistics Collection** field enables the retrieval of statistics from the Centreon Broker by CentCore. This can be a blocking option because the reading of the pipe can be a blocking action
 * **Timeout value for Centcore commands** field can be used to define a timeout for local commands and commands via SSH process.
 
@@ -92,9 +81,7 @@ Colors
 
 This part can be used to set the colours used in the web interface to define the statuses of hosts and services.
 
-#. Go into the menu: **Administration** ==> **Options**
-#. In the left menu, click on **Options**
-#. Click on **Colors**
+#. Go into the menu: **Administration** ==> **Parameters** ==> **Colors**
 
 
 .. image :: /images/guide_exploitation/ecolors.png
@@ -115,9 +102,7 @@ This part can be used to configure the connection to LDAP directories.
 
 To add a new directory:
 
-#. Go into the menu: **Administration** ==> **Options**
-#. In the left menu, click on **Options**
-#. Click on **LDAP**
+#. Go into the menu: **Administration** ==> **Options** ==> **LDAP**
 #. Click on **Add**
 
 .. image :: /images/guide_exploitation/eldap.png
@@ -179,9 +164,7 @@ RRDTool
 
 This part can be used to configure the RRDTool graphs generation engine and the sizes of the typefaces used for their presentation.
 
-#. Go into the menu: **Administration** ==> **Options**
-#. In the left menu, click on **Options**
-#. Click on **RRDTool**
+#. Go into the menu: **Administration** ==> **Parameters** ==> **RRDTool**
 
 .. image :: /images/guide_exploitation/errdtool.png
    :align: center
@@ -201,9 +184,7 @@ Debug
 
 This part can be used to configure the enabling of the logging of activity on Centreon processes.
 
-#. Go into the menu: **Administration** ==> **Options**
-#. In the left menu, click on **Options**
-#. Click on **Debug**
+#. Go into the menu: **Administration** ==> **Parameters** ==> **Debug**
 
 .. image :: /images/guide_exploitation/edebug.png
    :align: center
@@ -215,7 +196,6 @@ This part can be used to configure the enabling of the logging of activity on Ce
 * **LDAP User Import debug** box enables logging of debugging of the import of LDAP users
 * **SQL debug** box enables the logging of SQL requests executed by the Centreon interface
 * **Centcore Engine debug** box enables logging of Centcore process debugging
-* **Centstorage debug** box enables the logging of the Centstorage process debugging
 * **Centreontrapd debug** box enables logging of the Centreontrapd process debugging
 
 ***
@@ -224,9 +204,7 @@ CSS
 
 This part can be used to configure the aspect of the Centreon interface menus.
 
-#. Go into the menu: **Administration** ==> **Options**
-#. In the left menu, click on **Options**
-#. Click on **CSS**
+#. Go into the menu: **Administration** ==> **Parameters** ==> **CSS**
 
 .. image :: /images/guide_exploitation/ecss.png
    :align: center

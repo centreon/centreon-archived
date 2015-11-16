@@ -172,6 +172,7 @@ class CentreonCommand
                         $arr[$i]['macroPassword_#index#'] = NULL;
                         $arr[$i]['macroDescription_#index#'] = $sDesc;
                         $arr[$i]['macroDescription'] = $sDesc;
+                        $arr[$i]['macroCommandFrom'] = $row['command_name'];
                         $i++;
                     }
                 }
