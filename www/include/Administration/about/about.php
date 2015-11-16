@@ -86,7 +86,6 @@
 						<p>Sylvestre Ho</p>
 						<p>Matthieu Kermagoret</p>
 						<p>Antoine Nguyen</p>
-						<p>Matthieu Kermagoret</p>
 						<p>Antoine Nguyen</p>
 						<p>Laurent Pinsivy</p>
 						<p>David Porte</p>
