@@ -21,6 +21,3 @@ $help["metaservice_name"] = dgettext("help", "Select the meta service(s) the esc
  * unsupported in centreon
  */
 $help["contacts"] = dgettext("help", "Select contacts that should be notified whenever there are problems (or recoveries) with this host. Useful if you want notifications to go to just a few people and don't want to configure contact groups. You must specify at least one contact or contact group in each host escalation definition.");
-
-?>
-
