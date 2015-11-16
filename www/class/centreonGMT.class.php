@@ -210,10 +210,6 @@ class CentreonGMT {
         if (!isset($pearDB) && isset($DB)) {
             $pearDB = $DB;
         }
-
-        if (!isset($sid)) {
-            return 0;
-        }
         
         $DBRESULT = $pearDB->query("SELECT `contact_location` FROM `contact` " .
                 "WHERE `contact`.`contact_id` = " . $userId .
