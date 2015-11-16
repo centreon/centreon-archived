@@ -193,15 +193,32 @@
 		}
 	}
 
+        function checkMetaHost() {
+            global $pearDB;
+
+            $query = "SELECT host_id "
+                    . "FROM host "
+                    . "WHERE host_register = '2' "
+                    . "AND host_name = '_Module_Meta' ";
+            $res = $pearDB->query($query);
+            if (!$res->numRows()) {
+                $query = "INSERT INTO host (host_name, host_register) "
+                    . "VALUES ('_Module_Meta', '2') ";
+    	        $pearDB->query($query);
+            }
+        }
+
 	function insertMetaService($ret = array())
 	{
 		global $form;
 		global $pearDB;
-		if (count($ret)) {
-			;
-		} else {
-			$ret = $form->getSubmitValues();
+
+                checkMetaHost();
+
+		if (!count($ret)) {
+                    $ret = $form->getSubmitValues();
 		}
+
 		$rq = "INSERT INTO meta_service " .
 				"(meta_name, meta_display, check_period, max_check_attempts, normal_check_interval, retry_check_interval, notification_interval, " .
 				"notification_period, notification_options, notifications_enabled, calcul_type, data_source_type, meta_select_mode, regexp_str, metric, warning, critical, " .
@@ -239,8 +256,12 @@
 		if (!$meta_id) {
 		    return;
 		}
+
 		global $form;
 		global $pearDB;
+
+                checkMetaHost();
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE meta_service SET " ;
