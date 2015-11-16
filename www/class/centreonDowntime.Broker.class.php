@@ -143,18 +143,23 @@ class CentreonDowntimeBroker extends CentreonDowntime
 	 * @param int $serviceId The second object id (service_id), is null if search a host
 	 * @return array
 	 */
-	public function isScheduled($dt_id, $hostId, $serviceId = null)
+	public function isScheduled($dt_id, $hostId, $serviceId = null, $currentHostDate = null)
 	{
 		static $downtimeHosts = array();
 		static $downtimeServices = array();
 
+        if(is_null($currentHostDate)){
+          $currentHostDate = "UNIX_TIMESTAMP()";
+        }
+        
 		if (!isset($downtimeHosts[$dt_id])) {
 			$downtimeHosts[$dt_id] = array();
 			$downtimeServices[$dt_id] = array();
 
+            
 			$query = "SELECT internal_id as internal_downtime_id, type as downtime_type, host_id, service_id
 				FROM downtimes
-				WHERE start_time > UNIX_TIMESTAMP()
+				WHERE start_time > ".$currentHostDate."
 				AND comment_data = '[Downtime cycle #" . $dt_id . "]'";
 			$res = $this->dbb->query($query);
 			while ($row = $res->fetchRow()) {
