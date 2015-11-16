@@ -49,8 +49,6 @@ abstract class AbstractHost extends AbstractObject {
         ehi_icon_image_alt as icon_image_alt,
         ehi_vrml_image as vrml_image_id,
         ehi_statusmap_image as statusmap_image_id,
-        ehi_2d_coords as 2d_coords,
-        ehi_3d_coords as 3d_coords,
         host_location
     ';
     protected $attributes_write = array(
@@ -84,8 +82,6 @@ abstract class AbstractHost extends AbstractObject {
         'icon_image_alt',
         'vrml_image',
         'statusmap_image',
-        '2d_coords',
-        '3d_coords',
         'timezone'
     );
     protected $attributes_default = array(
