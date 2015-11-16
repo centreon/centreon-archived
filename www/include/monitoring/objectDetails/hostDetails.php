@@ -336,6 +336,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $img_en 				= array("0" => "'./img/icones/16x16/element_next.gif'", "1" => "'./img/icones/16x16/element_previous.gif'");
 
         $oreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
+        $host_status[$host_name]["plugin_output"] = htmlentities($host_status[$host_name]["plugin_output"]);
         $host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])];
         $host_status[$host_name]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"]);
         $host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"]) : "";
