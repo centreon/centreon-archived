@@ -1024,7 +1024,7 @@ if ($o != "mc") {
     }
     if ($mustApplyFormRule) {
         $form->addRule('host_alias', _("Compulsory Alias"), 'required');
-        $form->addRule('host_max_check_attempts', _("Required Field"), 'required');
+        //$form->addRule('host_max_check_attempts', _("Required Field"), 'required');
     }
 } else if ($o == "mc") {
     if ($form->getSubmitValue("submitMC"))
