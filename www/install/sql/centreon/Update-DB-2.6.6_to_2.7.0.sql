@@ -1,6 +1,3 @@
--- Change version of Centreon
-UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
-
 ALTER TABLE options ENGINE=InnoDB;
 ALTER TABLE css_color_menu ENGINE=InnoDB;
 
@@ -794,3 +791,13 @@ insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./inc
 insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
 
 DELETE FROM topology_JS WHERE PathName_js LIKE './include/common/javascript/codebase/dhtmlxcommon.js' OR PathName_js LIKE './include/common/javascript/codebase/dhtmlxtree.js';
+
+-- change Topology for modules pages
+UPDATE topology SET topology_name = 'Modules' WHERE topology_page = 50701 AND topology_url IS NOT NULL;
+UPDATE topology SET topology_name = 'Widgets', topology_group = 1 WHERE topology_page = 50703 AND topology_url IS NOT NULL;
+DELETE FROM topology WHERE topology_parent = 507 AND topology_group = 2 AND topology_url IS NULL;
+
+
+-- Change version of Centreon
+UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
+
