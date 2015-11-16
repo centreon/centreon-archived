@@ -893,6 +893,7 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path2, $tpl);
 
+unset($service['service_template_model_stm_id']);
 # Just watch a host information
 if ($o == "w")	{
     if (!$min && $centreon->user->access->page($p) != 2 && !isset($lockedElements[$service_id])) {
