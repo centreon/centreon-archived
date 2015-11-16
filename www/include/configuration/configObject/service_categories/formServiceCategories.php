@@ -62,15 +62,6 @@ if (($o == "c" || $o == "w") && $sc_id)	{
     $sc['sc_severity_icon'] = $sc['icon_id'];
 
     $sc["sc_svc"] = array();
-    $sc["sc_svcTpl"] = array();
-    $DBRESULT = $pearDB->query("SELECT scr.service_service_id, s.service_register FROM service_categories_relation scr, service s WHERE s.service_id = scr.service_service_id AND scr.sc_id = '$sc_id'");
-    while ($res = $DBRESULT->fetchRow()) {
-        if ($res["service_register"] == 1)
-            $sc["sc_svc"][] = $res["service_service_id"];
-        if ($res["service_register"] == 0)
-            $sc["sc_svcTpl"][] = $res["service_service_id"];
-    }
-    $DBRESULT->free();
 }
 
 /*
@@ -143,6 +134,7 @@ $attrServicetemplate1 = array_merge(
     $attrServicetemplates,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=servicecategories&field=sc_svcTpl&id=' . $sc_id)
 );
+
 $form->addElement('select2', 'sc_svcTpl', _("Linked Service Templates"), array(), $attrServicetemplate1);
 
 $sc_activate[] = HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Enabled"), '1');
