@@ -168,15 +168,12 @@
 				" `ds_color_line` , `ds_color_line_mode`, `ds_color_area` , `ds_color_area_warn` , `ds_color_area_crit` , `ds_filled` , `ds_max` , `ds_min` , `ds_minmax_int`, `ds_average` , `ds_last` , `ds_total`, `ds_tickness` , `ds_transparency`, `ds_invert`," .
 				" `ds_legend` , `ds_jumpline` , `ds_stack`, `default_tpl1`, `comment` ) ";
 		$rq .= "VALUES ( NULL, ";
-		if ( $ret["index_id"] != NULL ) {
-			$sql_qy = $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$ret["index_id"]."' LIMIT 1;");
-			$hs_id = $sql_qy->fetchRow();
-			$sql_qy->free();
-			$rq .= "'".$hs_id["host_id"]."', ";
-			$rq .= "'".$hs_id["service_id"]."', ";
-		} else {
-			$rq .= "NULL, NULL, ";
-		}
+                if (isset($ret["host_id"]) && preg_match('/\d+\-\d+/', $ret["host_id"])) {
+                    list($host_id, $service_id) = explode('-', $ret["host_id"]);
+                    $rq .= "'" . $host_id . "', '" . $service_id . "', ";
+                } else {
+                    $rq .= "NULL, NULL, ";
+                }
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_hidecurve"]) && $ret["ds_hidecurve"] != NULL ? $rq .= "'".htmlentities($ret["ds_hidecurve"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
@@ -216,11 +213,14 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$hs_id = array();
-		if ( $ret["index_id"] != NULL ) {
-			$sql_qy = $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$ret["index_id"]."' LIMIT 1;");
-			$hs_id = $sql_qy->fetchRow();
-			$sql_qy->free();
-		}
+                if (isset($ret["host_id"]) && preg_match('/\d+\-\d+/', $ret["host_id"])) {
+                    list($host_id, $service_id) = explode('-', $ret["host_id"]);
+                    $host_id = "'" . $host_id . "'";
+                    $service_id = "'" . $service_id . "'";
+                } else {
+                    $host_id = 'NULL';
+                    $service_id = 'NULL';
+                }
 		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"]) {
 			noDefaultOreonGraph();
 		}
@@ -230,10 +230,8 @@
 		}
 
 		$rq = "UPDATE giv_components_template ";
-		$rq .= "SET `host_id` = ";
-		isset($hs_id["host_id"]) && $hs_id["host_id"] != NULL ? $rq .= "'".htmlentities($hs_id["host_id"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		$rq .= "`service_id` = ";
-		isset($hs_id["service_id"]) && $hs_id["service_id"] != NULL ? $rq .= "'".htmlentities($hs_id["service_id"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		$rq .= "SET `host_id` = " . $host_id . ", ";
+		$rq .= "`service_id` = " . $service_id . ", ";
 		$rq .= "`name` = ";
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "`ds_order` = ";

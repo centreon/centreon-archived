@@ -53,8 +53,6 @@ class CentreonConfigurationObjects extends CentreonWebService
      */
     public function getDefaultValues()
     {
-        
-        
         // Get Object targeted
         if (isset($this->arguments['id']) && !empty($this->arguments['id'])) {
             $id = $this->arguments['id'];
@@ -110,7 +108,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             throw new RestBadRequestException("Bad parameters");
         }
         
-        // 
+        # Manage final data
         $finalDatas = array();
         if (count($selectedValues) > 0) {
             $finalDatas = $this->retrieveExternalObjectDatas($defaultValuesParameters['externalObject'], $selectedValues);
@@ -171,13 +169,25 @@ class CentreonConfigurationObjects extends CentreonWebService
     private function retrieveSimpleValues($currentObject, $id, $field)
     {
         $tmpValues = array();
-        
+
+        $fields = array();
+        $fields[] = $field;
+        if (isset($currentObject['additionalField'])) {
+            $fields[] = $currentObject['additionalField'];
+        }
+
         // Getting Current Values
-        $queryValuesRetrieval = "SELECT `$field` FROM $currentObject[table] WHERE $currentObject[id] = $id";
+        $queryValuesRetrieval = "SELECT " . implode(', ', $fields) . " "
+            . "FROM " . $currentObject['table'] . " "
+            . "WHERE " . $currentObject['id'] . " = " .  $id;
         
         $resRetrieval = $this->pearDB->query($queryValuesRetrieval);
         while ($row = $resRetrieval->fetchRow()) {
-            $tmpValues[] = $row[$field];
+            $tmpValue = $row[$field];
+            if (isset($currentObject['additionalField'])) {
+                $tmpValue .= '-' . $row[$currentObject['additionalField']];
+            }
+            $tmpValues[] = $tmpValue;
         }
         
         return $tmpValues;
