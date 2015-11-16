@@ -25,7 +25,6 @@
 		</td>
 		<td id="td_list_hsr" class="FormRowValue">
 			{$form.host_id.html}
-			&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
 		</td>
 	</tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_def_type">{$form.def_type.label}</td><td class="FormRowValue">{$form.def_type.html}</td></tr>

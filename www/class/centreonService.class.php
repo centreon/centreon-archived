@@ -996,12 +996,28 @@ class CentreonService
      */
     public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
-        $selectedServices = '';
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
-        } else {
-            $selectedServices .= "AND hsr.service_service_id IN ($explodedValues) ";
+        $hostIdList = array();
+        $serviceIdList = array();
+        foreach ($values as $value) {
+            if (strpos($value, '-')) {
+                $tmpValue = explode('-', $value);
+                $hostIdList[] = $tmpValue[0];
+                $serviceIdList[] = $tmpValue[1];
+            } else {
+                $serviceIdList[] = $value;
+            }
+        }
+
+        # Construct host filter for query
+        $selectedHosts = "";
+        if (count($hostIdList)) {
+            $selectedHosts = "AND hsr.host_host_id IN (" . implode(',', $hostIdList) . ") ";
+        }
+
+        # Construct service filter for query
+        $selectedServices = "";
+        if (count($serviceIdList)) {
+            $selectedServices = "AND hsr.service_service_id IN (" . implode(',', $serviceIdList) . ") ";
         }
         
         $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
@@ -1009,6 +1025,7 @@ class CentreonService
             . 'WHERE hsr.host_host_id = h.host_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND h.host_register = '$register' AND s.service_register = '$register' "
+            . $selectedHosts
             . $selectedServices
             . "ORDER BY h.host_name";
         

@@ -82,24 +82,5 @@
 	}
     for ($i = strlen($s_datas[""]); $i != $mx_l; $i++)
 		$s_datas[""] .= "&nbsp;";
-
-	/*
-	 *  The first element of the select is empty
-	 */
-	$buffer = new CentreonXML();
-	$buffer->startElement("options_data");
-	$buffer->writeElement("td_id", "td_list_hsr");
-	$buffer->writeElement("select_id", "sl_list_services");
-
-	/*
-	 *  Now we fill out the select with templates id and names
-	 */
-	foreach ($s_datas as $o_id => $o_alias){
-		$buffer->startElement("option");
-		$buffer->writeElement("o_id", $o_id);
-		$buffer->writeElement("o_alias", $o_alias);
-		$buffer->endElement();
-	}
-	$buffer->endElement();
 	$buffer->output();
 ?>
