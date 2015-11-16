@@ -45,7 +45,7 @@
 	require_once "./include/common/common-Func.php";
 	require_once "./class/centreonMsg.class.php";
     session_start();
-	$sid = session_id();
+	$sid = $_GET['session'];
 	if (isset($_GET["o"]) && $_GET["o"] == "k"){
 		$pearDB->query("DELETE FROM session WHERE session_id = '".$pearDB->escape($sid)."'");
 		$msg = new CentreonMsg();
@@ -86,12 +86,16 @@
         } else {
 		    $session_data[$cpt]["topology_name"] = $rCP["topology_name"];
         }
-		if ($rCP["topology_icone"])
+		if ($rCP["topology_icone"]) {
 			$session_data[$cpt]["topology_icone"] = "<img src='".$rCP["topology_icone"]."'>";
-		else
+        } else {
 			$session_data[$cpt]["topology_icone"] = "&nbsp;";
-		$session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=k'><img src='./img/icones/16x16/flash.gif' border='0' alt='"._("Kick User")."' title='"._("Kick User")."'></a>";
-
+        }
+        if ($centreon->user->admin) {
+		  $session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=k&session=" . $r['session_id'] . "'><img src='./img/icones/16x16/flash.gif' border='0' alt='"._("Kick User")."' title='"._("Kick User")."'></a>";
+        } else {
+            $session_data[$cpt]["actions"] = "";
+        }
 	}
 	
 	if (isset($msg)) {
