@@ -134,7 +134,7 @@ $serviceTplId = null;
 $initialValues = array();
 if (($o == "c" || $o == "w") && $service_id) {
 
-    $DBRESULT = $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '" . $service_id . "' AND esi.service_service_id = service_id LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM service LEFT JOIN extended_service_information esi ON esi.service_service_id = service_id WHERE service_id = '" . $service_id . "' LIMIT 1");
     /*
      * Set base value
      */
