@@ -77,9 +77,42 @@ class CentreonGraphCurve
                 $parameters['externalObject']['name'] = 'service_description';
                 $parameters['externalObject']['comparator'] = 'service_id';
                 break;
+            case 'compo_id':
+                $parameters['type'] = 'simple';
+                break;
         }
 
         return $parameters;
+    }
+
+    /**
+     *
+     * @param array $values
+     * @return array
+     */
+    public function getObjectForSelect2($values = array(), $options = array())
+    {
+        $aInstanceList = array();
+
+        $selectedGraphCurves = "";
+        if (count($values)) {
+            $selectedGraphCurves = "WHERE compo_id IN (" . implode(',', $values) . ") ";
+        }
+
+        $queryGraphCurve = "SELECT DISTINCT compo_id as id, name"
+            . " FROM giv_components_template "
+            . $selectedGraphCurves
+            . " ORDER BY name";
+
+        $DBRESULT = $this->_db->query($queryGraphCurve);
+        while ($data = $DBRESULT->fetchRow()) {
+            $graphCurveList[] = array(
+                'id' => $data['id'],
+                'text' =>  htmlentities($data['name'])
+            );
+        }
+
+        return $graphCurveList;
     }
 }
 ?>

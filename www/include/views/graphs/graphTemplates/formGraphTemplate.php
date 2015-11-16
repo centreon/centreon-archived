@@ -66,7 +66,6 @@ $attrsText 	= array("size"=>"30");
 $attrsText2 	= array("size"=>"6");
 $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 $attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 #
 ## Form begin
@@ -134,16 +133,6 @@ $form->addElement('checkbox', 'split_component', _("Split Components"));
 $form->addElement('checkbox', 'scaled', _("Scale Graph Values"));
 $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 $form->addElement('checkbox', 'default_tpl1', _("Default Centreon Graph Template"));
-
-/*
- * Components linked with
- */
-$form->addElement('header', 'compos', _("Data Source Choice"));
-$ams1 = $form->addElement('advmultiselect', 'graph_compos', array(_("Data Source List"),_("Available"), _("Selected")), $compos, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams1->setElementTemplate($eTemplate);
-echo $ams1->getElementJs(false);
 
 $form->addElement('hidden', 'graph_id');
 $redirect = $form->addElement('hidden', 'o');
@@ -243,8 +232,8 @@ if ($form->validate())	{
 }
 
 $action = $form->getSubmitValue("action");
-if ($valid) {≈
-	require_once("listGraphTemplates.php");
+if ($valid) {
+    require_once("listGraphTemplates.php");
 } else {
 	// Apply a template definition
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
