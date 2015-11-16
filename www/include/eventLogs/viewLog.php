@@ -492,7 +492,7 @@ function log_4_engine(){
     }
     
     if (window.history.pushState) {
-        window.history.pushState("", "", "/centreon/main.php?p=203&engine=true"+urlargs);
+        window.history.pushState("", "", "/centreon/main.php?p=20302&engine=true"+urlargs);
     }
     
     
@@ -768,7 +768,7 @@ jQuery(function () {
            }
 
            if (window.history.pushState) {
-               window.history.pushState("", "", "/centreon/main.php?p=203"+urlargs);
+               window.history.pushState("", "", "/centreon/main.php?p=20301"+urlargs);
            }
            document.getElementById('openid').innerHTML = args;
            log_4_host(args, '', false);
