@@ -170,6 +170,7 @@ p.description a, p.description a:visited {
 
 .select2-container .select2-search--inline .select2-search__field {
     margin-top: 0 !important;
+    width: 200px !important;
 }
 
 .select2-container--default .select2-selection--single {

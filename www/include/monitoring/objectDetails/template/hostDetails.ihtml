@@ -8,13 +8,13 @@
                                             
 						<td class="ListColHeaderLeft {$host_data.status_class}" >
                                                 
-							<h3 style="color: #555;">
-								<img src='./img/icons/host.png' width="16px" {if $h_ext_icon_image_alt} alt='{$h_ext_icon_image_alt}'{/if}> 
+							<h3 style="color: #fff;">
+								<img src='./img/icons/host.png' width="16px" style="vertical-align:middle;" {if $h_ext_icon_image_alt} alt='{$h_ext_icon_image_alt}'{/if}>
                                                                     {$host_data.name} : {$host_data.alias} <span>[{$host_data.address}]</span>
 							</h3>
 							{if $sv_ext_notes_url}
 								<a href="{$sv_ext_notes_url}" target="_blank">
-								<img src='./img/icons/link.png' class="ico-14" title="{if $sv_ext_notes}{$sv_ext_notes}{else}{$sv_ext_notes_url}{/if}">
+								<img src='./img/icons/link.png' class="ico-14"  style="vertical-align:middle;" title="{if $sv_ext_notes}{$sv_ext_notes}{else}{$sv_ext_notes_url}{/if}">
 								</a>
 							{/if}
 						</td>

@@ -36,7 +36,7 @@
 				<xsl:if test="ha = 1">
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icons/technician.png</xsl:attribute>
-							<xsl:attribute name="class">ico-16</xsl:attribute>
+							<xsl:attribute name="class">ico-20</xsl:attribute>
 						</xsl:element>
 				</xsl:if>
 				<xsl:if test="hae = 0 and hpe = 1">
