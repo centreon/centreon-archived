@@ -45,13 +45,11 @@
 			$gsvs = $form->getSubmitValues();
 		$sql = "SELECT compo_id FROM giv_components_template WHERE ";
 		$sql .= "name = '".$gsvs["name"]."' ";
-		if ( $gsvs["index_id"] != NULL ) {
-			$sql_qy = $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$gsvs["index_id"]."' LIMIT 1;");
-			$hs_id = $sql_qy->fetchRow();
-			$sql_qy->free();
-			$sql .= "AND host_id = '".$hs_id["host_id"]."' AND service_id = '".$hs_id["service_id"]."'";
+		if ( $gsvs["host_id"] != NULL ) {
+                    list($host_id, $service_id) = explode('-', $gsvs["host_id"]);
+                    $sql .= "AND host_id = '" . $host_id . "' AND service_id = '" . $service_id . "'";
 		} else {
-			$sql .= "AND host_id iS NULL  AND service_id IS NULL";
+			$sql .= "AND host_id IS NULL  AND service_id IS NULL";
 		}
 		$DBRESULT = $pearDB->query($sql);
 		$compo = $DBRESULT->fetchRow();
@@ -73,13 +71,11 @@
 			$gsvs = $form->getSubmitValues();
 		$sql = "SELECT compo_id FROM giv_components_template WHERE ";
 		$sql .= "ds_name = '".$gsvs["ds_name"]."' ";
-		if ( $gsvs["index_id"] != NULL ) {
-			$sql_qy = $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$gsvs["index_id"]."' LIMIT 1;");
-			$hs_id = $sql_qy->fetchRow();
-			$sql_qy->free();
-			$sql .= "AND host_id = '".$hs_id["host_id"]."' AND service_id = '".$hs_id["service_id"]."'";
+		if ( $gsvs["host_id"] != NULL ) {
+                    list($host_id, $service_id) = explode('-', $gsvs["host_id"]);
+                    $sql .= "AND host_id = '" . $host_id . "' AND service_id = '" . $service_id . "'";
 		} else {
-			$sql .= "AND host_id iS NULL  AND service_id IS NULL";
+			$sql .= "AND host_id IS NULL  AND service_id IS NULL";
 		}
 		$DBRESULT = $pearDB->query($sql);
 		$compo = $DBRESULT->fetchRow();

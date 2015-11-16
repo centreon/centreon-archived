@@ -122,7 +122,7 @@ class CentreonConfigurationObjects extends CentreonWebService
      * @param array $externalObject
      * @param array $values
      */
-    private function retrieveExternalObjectDatas($externalObject, $values)
+    protected function retrieveExternalObjectDatas($externalObject, $values)
     {
         $tmpValues = array();
         
@@ -166,7 +166,7 @@ class CentreonConfigurationObjects extends CentreonWebService
      * @param string $field
      * @return array
      */
-    private function retrieveSimpleValues($currentObject, $id, $field)
+    protected function retrieveSimpleValues($currentObject, $id, $field)
     {
         $tmpValues = array();
 
@@ -199,7 +199,7 @@ class CentreonConfigurationObjects extends CentreonWebService
      * @param integer $id
      * @return array
      */
-    private function retrieveRelatedValues($relationObject, $id)
+    protected function retrieveRelatedValues($relationObject, $id)
     {
         $tmpValues = array();
         

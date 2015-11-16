@@ -105,6 +105,7 @@
         'datasourceOrigin' => 'ajax',
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
         'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_objects&action=defaultValues&target=graphCurve&field=host_id&id=' . $compo_id,
+        'linkedObject' => 'centreonService',
         'multiple' => false
     );
     

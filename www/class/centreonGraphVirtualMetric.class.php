@@ -42,7 +42,7 @@
  * @author jmathis
  *
  */
-class CentreonGraphCurve
+class CentreonGraphVirtualMetric
 {
     protected $_db;
 
@@ -62,57 +62,20 @@ class CentreonGraphCurve
     public static function getDefaultValuesParameters($field)
     {
         $parameters = array();
-        $parameters['currentObject']['table'] = 'giv_components_template';
-        $parameters['currentObject']['id'] = 'compo_id';
-        $parameters['currentObject']['name'] = 'name';
-        $parameters['currentObject']['comparator'] = 'compo_id';
+        $parameters['currentObject']['table'] = 'virtual_metrics';
+        $parameters['currentObject']['id'] = 'vmetric_id';
+        $parameters['currentObject']['name'] = 'vmetric_name';
+        $parameters['currentObject']['comparator'] = 'vmetric_id';
 
         switch ($field) {
             case 'host_id':
                 $parameters['type'] = 'simple';
                 $parameters['currentObject']['additionalField'] = 'service_id';
                 $parameters['externalObject']['object'] = 'centreonService';
-                $parameters['externalObject']['table'] = 'giv_components_template';
-                $parameters['externalObject']['id'] = 'service_id';
-                $parameters['externalObject']['name'] = 'service_description';
-                $parameters['externalObject']['comparator'] = 'service_id';
-                break;
-            case 'compo_id':
-                $parameters['type'] = 'simple';
                 break;
         }
 
         return $parameters;
-    }
-
-    /**
-     *
-     * @param array $values
-     * @return array
-     */
-    public function getObjectForSelect2($values = array(), $options = array())
-    {
-        $aInstanceList = array();
-
-        $selectedGraphCurves = "";
-        if (count($values)) {
-            $selectedGraphCurves = "WHERE compo_id IN (" . implode(',', $values) . ") ";
-        }
-
-        $queryGraphCurve = "SELECT DISTINCT compo_id as id, name"
-            . " FROM giv_components_template "
-            . $selectedGraphCurves
-            . " ORDER BY name";
-
-        $DBRESULT = $this->_db->query($queryGraphCurve);
-        while ($data = $DBRESULT->fetchRow()) {
-            $graphCurveList[] = array(
-                'id' => $data['id'],
-                'text' =>  htmlentities($data['name'])
-            );
-        }
-
-        return $graphCurveList;
     }
 }
 ?>
