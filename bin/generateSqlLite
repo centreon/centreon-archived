@@ -25,10 +25,11 @@ if (is_file($dbfilename)) {
 
 try {
     $mysql_host = $conf_centreon["hostCentreon"];
+    $mysql_port = $conf_centreon["port"];
     $mysql_database = $conf_centreon["db"];
     $mysql_user = $conf_centreon["user"];
     $mysql_password = $conf_centreon["password"];
-    $db_centreon = new PDO("mysql:dbname=pdo;host=" . $mysql_host . ";dbname=" . $mysql_database,
+    $db_centreon = new PDO("mysql:dbname=pdo;host=" . $mysql_host . ";port=" . $mysql_port . ";dbname=" . $mysql_database,
     $mysql_user, $mysql_password);
     $db_centreon->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

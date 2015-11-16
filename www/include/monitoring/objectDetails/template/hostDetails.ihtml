@@ -76,11 +76,54 @@
                 </td>
             </tr>
                     
-                    
-                    
+
                     </table>
                     </td>
         <td style="width: 30%; vertical-align: top;" nowrap="nowrap">
+            <table class="table linkList">
+                <tr class='list_lvl_1'>
+                    <td class="FormHeader" style="width: 50%;border-bottom:1px solid #d1d2d4;" colspan= "2">
+                        <h4>{$shortcut}</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ColPopup" colspan= "2">
+                        {if $lcaTopo.201 || $admin == 1}
+                        <a href='./main.php?p=20202&o=hd&host_name={$h.host_name}'>{$lnk_host_status}</a>
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ColPopup" colspan= "2">
+                        {if $lcaTopo.6 || $admin == 1}
+                                <a href='./main.php?p=60101&host_id={$host_id}&o=c'>{$lnk_host_config} {$h.host_name}</a>
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ColPopup" colspan= "2">
+                        {if $lcaTopo.20301 || $admin == 1}
+                            <a href='./main.php?p=20201&o=svc&host_search={$host_data.host_name}'>{$lnk_all_services}</a>
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ColPopup" colspan= "2">
+                        {if $lcaTopo.307 || $admin == 1}
+                                <a href='./main.php?p=307&host={$host_id}'>{$lnk_host_reports}</a>
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ColPopup" colspan= "2">
+                            {if $lcaTopo.4 || $admin == 1}
+                                    <a href='./main.php?p=20401&mode=0&svc_id={$host_data.host_name}'>{$lnk_host_graphs}</a>
+                            {/if}
+                    </td>
+                </tr>
+            </table>
+
+            <br />
                         <table class="ListTable">
 				<tr class='list_lvl_1'>
 					<td class="ListColHeaderLeft FormHeader" colspan="2"><h4>{$m_mon_host_poller}</h4></td>

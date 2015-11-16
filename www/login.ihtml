@@ -9,22 +9,16 @@
         <link rel="shortcut icon" href="./img/favicon.ico">
     </head>
     <body OnLoad="document.login.useralias.focus();">
-
         <form action="./index.php" method="post" name="login" style="height: 100%;">
-
                 <div class="login_wrapper">
                     <div class="LoginInvitLogo">
-
                         {foreach from=$loginMessages item=message}
                             <div class="error_msg"><span class='msg'>{$message}</span></div>
                         {/foreach}
-
                        <img src="img/centreon.png" alt="Centreon Logo" title="Centreon Logo" />
                     </div>
-
                     <div class="logintab">
                         <table id="logintab1" style="text-align:center;" align="center">
-
                            <tr>
                                 <td align='right'>
                                     {$form.useralias.label}
@@ -42,7 +36,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td  colspan="2" align='center'>
+                                <td colspan="2" align='center'>
                                     {$form.submitLogin.html}
                                 </td>
                             </tr>
@@ -50,7 +44,7 @@
                     </div>
                     <div class="LoginInvitVersion">
                         <span id="LoginInvitcpy">
-                            &copy; <a href="mailto:infos@centreon.com">Centreon</a> 2005-2015
+                            &copy; <a href="mailto:contact@centreon.com">Centreon</a> 2005 - 2015
                         </span>
                         <br>
                         <span>

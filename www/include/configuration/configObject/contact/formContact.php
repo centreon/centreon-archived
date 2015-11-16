@@ -263,7 +263,8 @@ $attrContactgroups = array(
 $attrAclgroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonAclGroup'
 );
 
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);

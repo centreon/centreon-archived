@@ -118,7 +118,6 @@
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="date"/></td>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="time"/></td>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="poller"/></td>
-	   		<td style="padding-left:5px;padding-right:5px;" class="ListColCenter"><xsl:value-of select="retry"/></td>
 	   		<td style="padding-left:5px;"><xsl:value-of select="output"/></td>
 		</tr>
 		</xsl:for-each>

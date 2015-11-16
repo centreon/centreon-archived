@@ -289,7 +289,7 @@
 									{if $aclAct.service_comment || $admin == true}
 										<tr class='list_one'>
 											<td class="ListColLeft ColPopup">
-												<b><a href='./main.php?p=20219&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_comment}</a></b>
+												<b><a href='./main.php?p=21002&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_comment}</a></b>
 											</td>
 										</tr>
 									{/if}

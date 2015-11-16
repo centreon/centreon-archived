@@ -40,7 +40,7 @@ $hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields' 
                                                                        'order'   => array('host.host_name')));
 
 /* services */
-if (!$oreon->user->admin) {
+/*if (!$oreon->user->admin) {
     $hServices = array();
     $sql = "SELECT DISTINCT CONCAT(host_id, '_', service_id) as k, 
                             CONCAT(host_name, ' / ', service_description) as v
@@ -51,7 +51,7 @@ if (!$oreon->user->admin) {
         $hServices[$row['k']] = $row['v'];
     }
     $res->free();
-}
+}*/
 
 $dep = array();
 $childServices = array();

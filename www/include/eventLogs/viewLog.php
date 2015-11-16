@@ -365,12 +365,6 @@ $attrPoller1 = array_merge(
 );
 $form->addElement('select2', 'poller_filter', _("Pollers"), array(), $attrPoller1);
 
-
-
-
-
-
-
 $form->setDefaults(array("period" => $user_params['log_filter_period']));
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -384,534 +378,517 @@ $tpl->assign('treeFocus', _('Tree Focus'));
 $tpl->assign('user_params', $user_params);
 $tpl->assign('lang', $lang);
 
-if($engine == 'false'){
+if ($engine == 'false'){
     $tpl->display("viewLog.ihtml");
-}else{
+} else {
     $tpl->display("viewLogEngine.ihtml");
 }
-
 
 ?>
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>
 
-	var css_file = './include/common/javascript/codebase/dhtmlxtree.css';
-	var headID = document.getElementsByTagName("head")[0];
-	var cssNode = document.createElement('link');
-	cssNode.type = 'text/css';
-	cssNode.rel = 'stylesheet';
-	cssNode.href = css_file;
-	cssNode.media = 'screen';
-	headID.appendChild(cssNode);
+	var multi = <?php echo $multi; ?>;
 
- 	var multi = <?php echo $multi; ?>;
+// it's fake methode for using ajax system by default
+function mk_pagination(){;}
+function mk_paginationFF(){;}
+function set_header_title(){;}
 
-
-
-	// it's fake methode for using ajax system by default
-	function mk_pagination(){;}
-	function mk_paginationFF(){;}
-	function set_header_title(){;}
-
-	function apply_period(){
-		var openid = document.getElementById('openid').innerHTML;
-		log_4_host(openid,'','');
-	}
+function apply_period(){
+	var openid = document.getElementById('openid').innerHTML;
+	log_4_host(openid,'','');
+}
 
 
-    function apply_period_engine(){
-		var openid = document.getElementById('openid').innerHTML;
-		log_4_engine(openid,'','');
-	}
+function apply_period_engine(){
+	var openid = document.getElementById('openid').innerHTML;
+	log_4_engine(openid,'','');
+}
 
-    var _limit = 30;
-    function setL(_this){
-        _limit = _this;
+var _limit = 30;
+function setL(_this){
+    _limit = _this;
+}
+
+var _num = 0;
+function log_4_host_page(id, formu, num)	{
+	_num = num;
+	log_4_host(id, formu, '');
+}
+
+function log_4_engine_page(id,formu,num){
+	_num = num;
+	log_4_engine(id, formu);
+}
+
+var _host 		= <?php echo $user_params["log_filter_host"]; ?>;
+var _service 	= <?php echo $user_params["log_filter_svc"]; ?>;
+var _engine     = <?php echo $engine; ?>;
+
+var _down 		= <?php echo $user_params["log_filter_host_down"]; ?>;
+var _up 		= <?php echo $user_params["log_filter_host_up"]; ?>;
+var _unreachable = <?php echo $user_params["log_filter_host_unreachable"]; ?>;
+
+var _ok 		= <?php echo $user_params["log_filter_svc_ok"]; ?>;
+var _warning 	= <?php echo $user_params["log_filter_svc_warning"]; ?>;
+var _critical 	= <?php echo $user_params["log_filter_svc_critical"]; ?>;
+var _unknown 	= <?php echo $user_params["log_filter_svc_unknown"]; ?>;
+
+var _notification = <?php echo $user_params["log_filter_notif"]; ?>;
+var _error 		= <?php echo $user_params["log_filter_error"]; ?>;
+var _alert 		= <?php echo $user_params["log_filter_alert"]; ?>;
+
+var _oh 		= <?php echo $user_params["log_filter_oh"]; ?>;
+
+var _search_H	= "<?php echo $user_params["search_H"]; ?>";
+var _search_S	= "<?php echo $user_params["search_S"]; ?>";
+var _output     = "<?php $output; ?>";
+// Period
+var currentTime = new Date();
+var period ='';
+
+var _zero_hour = '';
+var _zero_min = '';
+var StartDate='';
+var EndDate='';
+var StartTime='';
+var EndTime='';
+var opid='';
+
+if (document.FormPeriod && document.FormPeriod.period.value != "")	{
+	period = document.FormPeriod.period.value;
+}
+
+if (document.FormPeriod && document.FormPeriod.period.value == ""){
+	document.FormPeriod.StartDate.value = StartDate;
+	document.FormPeriod.EndDate.value = EndDate;
+	document.FormPeriod.StartTime.value = StartTime;
+	document.FormPeriod.EndTime.value = EndTime;
+}
+
+function log_4_engine(){
+    _output = jQuery( "#output" ).val();
+    var poller_value = jQuery("#poller_filter").val();
+    var args = "";
+    var urlargs = "";
+    if(poller_value !== null){
+        urlargs += "&poller=";
+        var flagfirst = true;
+        poller_value.each(function(val){
+            if(val !== " " && val !== ""){
+                if(args !== ""){
+                    args += ",";
+                }
+                if(!flagfirst){
+                    urlargs += ",";
+                }else{
+                    flagfirst = false;
+                }
+                urlargs += val;
+                args += val;
+            }
+        });
     }
-
-	var _num = 0;
-	function log_4_host_page(id, formu, num)	{
-		_num = num;
-		log_4_host(id, formu, '');
-	}
     
-    function log_4_engine_page(id,formu,num){
-		_num = num;
-		log_4_engine(id, formu);
+    if (window.history.pushState) {
+        window.history.pushState("", "", "/centreon/main.php?p=203&engine=true"+urlargs);
     }
-
-	var _host 		= <?php echo $user_params["log_filter_host"]; ?>;
-	var _service 	= <?php echo $user_params["log_filter_svc"]; ?>;
-    var _engine     = <?php echo $engine; ?>;
-
-	var _down 		= <?php echo $user_params["log_filter_host_down"]; ?>;
-	var _up 		= <?php echo $user_params["log_filter_host_up"]; ?>;
-	var _unreachable = <?php echo $user_params["log_filter_host_unreachable"]; ?>;
-
-	var _ok 		= <?php echo $user_params["log_filter_svc_ok"]; ?>;
-	var _warning 	= <?php echo $user_params["log_filter_svc_warning"]; ?>;
-	var _critical 	= <?php echo $user_params["log_filter_svc_critical"]; ?>;
-	var _unknown 	= <?php echo $user_params["log_filter_svc_unknown"]; ?>;
-
-	var _notification = <?php echo $user_params["log_filter_notif"]; ?>;
-	var _error 		= <?php echo $user_params["log_filter_error"]; ?>;
-	var _alert 		= <?php echo $user_params["log_filter_alert"]; ?>;
-
-	var _oh 		= <?php echo $user_params["log_filter_oh"]; ?>;
-
-	var _search_H	= "<?php echo $user_params["search_H"]; ?>";
-	var _search_S	= "<?php echo $user_params["search_S"]; ?>";
-    var _output     = "<?php $output; ?>";
-	// Period
-	var currentTime = new Date();
-	var period ='';
-
-	var _zero_hour = '';
-	var _zero_min = '';
-	var StartDate='';
-	var EndDate='';
-	var StartTime='';
-	var EndTime='';
-    var opid='';
-	if (document.FormPeriod && document.FormPeriod.period.value != "")	{
-		period = document.FormPeriod.period.value;
-	}
-
-	if (document.FormPeriod && document.FormPeriod.period.value == ""){
-		document.FormPeriod.StartDate.value = StartDate;
-		document.FormPeriod.EndDate.value = EndDate;
-		document.FormPeriod.StartTime.value = StartTime;
-		document.FormPeriod.EndTime.value = EndTime;
-	}
     
-    function log_4_engine(){
+    
+    controlTimePeriod();
+    var proc = new Transformation();
+	var _addrXSL = "./include/eventLogs/logEngine.xsl";
+    var _addr = './include/eventLogs/GetXmlLog.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
+                '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&num='+_num+'&limit='+_limit+'&id='+args;
+    proc.setXml(_addr)
+    proc.setXslt(_addrXSL)
+    proc.transform("logView4xml");
+}
+
+
+function controlTimePeriod(){
+    if (document.FormPeriod) {
+	    if (document.FormPeriod.period.value!="")	{
+			period = document.FormPeriod.period.value;
+	    } else {
+			period = '';
+			StartDate = document.FormPeriod.StartDate.value;
+			EndDate = document.FormPeriod.EndDate.value;
+			StartTime = document.FormPeriod.StartTime.value;
+			EndTime = document.FormPeriod.EndTime.value;
+	    }
+	}
+    if (document.FormPeriod && document.FormPeriod.StartDate.value != "")
+		StartDate = document.FormPeriod.StartDate.value;
+	if (document.FormPeriod && document.FormPeriod.EndDate.value != "")
+		EndDate = document.FormPeriod.EndDate.value;
+
+	if (document.FormPeriod && document.FormPeriod.StartTime.value != "")
+		StartTime = document.FormPeriod.StartTime.value;
+	if (document.FormPeriod && document.FormPeriod.EndTime.value != "")
+		EndTime = document.FormPeriod.EndTime.value;
+}
+
+function log_4_host(id, formu, type){
+    opid = id;
+    if(jQuery( "#output" ) !== "undefined"){
         _output = jQuery( "#output" ).val();
-        var poller_value = jQuery("#poller_filter").val();
+    }
+    
+    
+    controlTimePeriod();
+	// type
+	if (document.formu2 && document.formu2.notification)
+		_notification = document.formu2.notification.checked;
+	if (document.formu2 && document.formu2.error)
+		_error = document.formu2.error.checked;
+	if (document.formu2 && document.formu2.alert)
+		_alert = document.formu2.alert.checked;
+
+	if (document.formu2 && document.formu2.up)
+		_up = document.formu2.up.checked;
+	if (document.formu2 && document.formu2.down)
+		_down = document.formu2.down.checked;
+	if (document.formu2 && document.formu2.unreachable)
+		_unreachable = document.formu2.unreachable.checked;
+
+	if (document.formu2 && document.formu2.ok)
+		_ok = document.formu2.ok.checked;
+	if (document.formu2 && document.formu2.warning)
+		_warning = document.formu2.warning.checked;
+	if (document.formu2 && document.formu2.critical)
+		_critical = document.formu2.critical.checked;
+	if (document.formu2 && document.formu2.unknown)
+		_unknown = document.formu2.unknown.checked;
+
+	if (document.formu2 && document.formu2.oh)
+		_oh = document.formu2.oh.checked;
+
+	if (document.formu2 && document.formu2.search_H)
+		_search_H = document.formu2.search_H.checked;
+	if (document.formu2 && document.formu2.search_S)
+		_search_S = document.formu2.search_S.checked;
+
+	var proc = new Transformation();
+	var _addrXSL = "./include/eventLogs/log.xsl";
+
+	if (!type){
+		var _addr = './include/eventLogs/GetXmlLog.php?multi='+multi+'&output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+id+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
+		proc.setXml(_addr)
+		proc.setXslt(_addrXSL)
+		proc.transform("logView4xml");
+	} else {
+		var openid = document.getElementById('openid').innerHTML;
+		var _addr = './include/eventLogs/Get'+type+'Log.php?multi='+multi+'&output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
+		document.location.href = _addr;
+	}
+}
+
+    /**
+     * Javascript action depending on the status checkboxes 
+     *
+     * @param bool isChecked 
+     * @return void
+     */
+    function checkStatusCheckbox(isChecked) {
+            var alertCb = document.getElementById('alertId');
+
+            if (isChecked == true) {
+                alertCb.checked = true;
+            }
+    }
+
+    /**
+     * Javascript action depending on the alert/notif checkboxes
+     *
+     * @return void
+     */
+    function checkAlertNotifCheckbox() {
+        if (document.getElementById('alertId').checked == false && 
+            document.getElementById('notifId').checked == false) {
+            document.getElementById('cb_up').checked = false;
+            document.getElementById('cb_down').checked = false;
+            document.getElementById('cb_unreachable').checked = false;
+            document.getElementById('cb_ok').checked = false;
+            document.getElementById('cb_warning').checked = false;
+            document.getElementById('cb_critical').checked = false;
+            document.getElementById('cb_unknown').checked = false;
+        }
+    }
+
+    function getArgsForHost(){
+        var host_value = jQuery("#host_filter").val();
+        var service_value = jQuery("#service_filter").val();
+        var hg_value = jQuery("#host_group_filter").val();
+        var sg_value = jQuery("#service_group_filter").val();
+        
         var args = "";
         var urlargs = "";
-        if(poller_value !== null){
-            urlargs += "&poller=";
-            var flagfirst = true;
-            poller_value.each(function(val){
-                if(val !== " " && val !== ""){
-                    if(args !== ""){
-                        args += ",";
-                    }
-                    if(!flagfirst){
-                        urlargs += ",";
-                    }else{
-                        flagfirst = false;
-                    }
-                    urlargs += val;
-                    args += val;
-                }
-            });
-        }
-        
-        if (window.history.pushState) {
-            window.history.pushState("", "", "/centreon/main.php?p=203&engine=true"+urlargs);
-        }
-        
-        
-        controlTimePeriod();
-        var proc = new Transformation();
-		var _addrXSL = "./include/eventLogs/logEngine.xsl";
-        var _addr = './include/eventLogs/GetXmlLog.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
-                    '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&num='+_num+'&limit='+_limit+'&id='+args;
-        proc.setXml(_addr)
-        proc.setXslt(_addrXSL)
-        proc.transform("logView4xml");
+         if(host_value !== null){
+             urlargs += "&h=";
+             var flagfirst = true;
+             host_value.each(function(val){
+                 if(val !== " " && val !== ""){
+                     if(args !== ""){
+                         args += ",";
+                     }
+                     if(!flagfirst){
+                         urlargs += ",";
+                     }else{
+                         flagfirst = false;
+                     }
+                     urlargs += val;
+                     args += "HH_" + val;
+                 }
+             });
+         }
+         if(service_value !== null){
+             urlargs += "&svc=";
+             var flagfirst = true;
+             service_value.each(function(val){
+                 if(val !== " " && val !== ""){
+                     if(args !== ""){
+                         args += ",";
+                     }
+                     if(!flagfirst){
+                         urlargs += ",";
+                     }else{
+                         flagfirst = false;
+                     }
+                     urlargs += val.replace("-","_");
+                     args += "HS_" + val.replace("-","_");
+                 }
+             });
+         }
+         if(hg_value !== null){
+             urlargs += "&hg=";
+             var flagfirst = true;
+             hg_value.each(function(val){
+                 if(val !== " " && val !== ""){
+                     if(args !== ""){
+                         args += ",";
+                     }
+                     if(!flagfirst){
+                         urlargs += ",";
+                     }else{
+                         flagfirst = false;
+                     }
+                     urlargs += val;
+                     args += "HG_" + val;
+                 }
+             });
+         }
+         if(sg_value !== null){
+             urlargs += "&svcg=";
+             var flagfirst = true;
+             sg_value.each(function(val){
+                 if(val !== " " && val !== ""){
+                     if(args !== ""){
+                         args += ",";
+                     }
+                     if(!flagfirst){
+                         urlargs += ",";
+                     }else{
+                         flagfirst = false;
+                     }
+                     urlargs += val;
+                     args += "ST_" + val;
+                 }
+             });
+         }
+
+        return new Array(args,urlargs);
     }
 
 
-    function controlTimePeriod(){
-        if (document.FormPeriod) {
-		    if (document.FormPeriod.period.value!="")	{
-				period = document.FormPeriod.period.value;
-		    } else {
-				period = '';
-				StartDate = document.FormPeriod.StartDate.value;
-				EndDate = document.FormPeriod.EndDate.value;
-				StartTime = document.FormPeriod.StartTime.value;
-				EndTime = document.FormPeriod.EndTime.value;
-		    }
-		}
-        if (document.FormPeriod && document.FormPeriod.StartDate.value != "")
-			StartDate = document.FormPeriod.StartDate.value;
-		if (document.FormPeriod && document.FormPeriod.EndDate.value != "")
-			EndDate = document.FormPeriod.EndDate.value;
+jQuery(function () {
+    if(!_engine){
+        /// Initialise selection with Get params
+        arrayHostValues = new Array();
+        <?php 
+            foreach($hostArray as $host){
+                ?>
+                arrayHostValues.push(<?php echo $host['id']; ?>);
+                jQuery("#host_filter").append(jQuery('<option>').val(<?php echo $host['id']; ?> ).html('<?php echo $host['name']; ?>'));        
 
-		if (document.FormPeriod && document.FormPeriod.StartTime.value != "")
-			StartTime = document.FormPeriod.StartTime.value;
-		if (document.FormPeriod && document.FormPeriod.EndTime.value != "")
-			EndTime = document.FormPeriod.EndTime.value;
-    }
+                <?php         
+            }
+        ?>        
 
-	function log_4_host(id, formu, type){
-        opid = id;
-        if(jQuery( "#output" ) !== "undefined"){
-            _output = jQuery( "#output" ).val();
-        }
+
+        arrayServicesValues = new Array();
+        <?php 
+            foreach($serviceArray as $service){
+                ?>
+                arrayServicesValues.push('<?php echo $service['host_id'].'_'.$service['service_id']; ?>');
+                jQuery("#service_filter").append(jQuery('<option>').val('<?php echo $service['host_id'].'_'.$service['service_id']; ?>').html('<?php echo $service['host_name']. ' - ' .$service['description']; ?>'));        
+
+                <?php         
+            }
+        ?>
+               
+
+
+        arrayServicesGrpValues = new Array();
+        <?php 
+            foreach($serviceGrpArray as $serviceGrp){
+                ?>
+                arrayServicesGrpValues.push('<?php echo $serviceGrp['id']; ?>');
+                jQuery("#service_group_filter").append(jQuery('<option>').val('<?php echo $serviceGrp['id']; ?>').html('<?php echo $serviceGrp['name']; ?>'));        
+
+                <?php         
+            }
+        ?>
+        
+
+        arrayHostsGrpValues = new Array();
+        <?php 
+            foreach($hostGrpArray as $hostGrp){
+                ?>
+                arrayHostsGrpValues.push('<?php echo $hostGrp['id']; ?>');
+                jQuery("#host_group_filter").append(jQuery('<option>').val('<?php echo $hostGrp['id']; ?>').html('<?php echo $hostGrp['name']; ?>'));        
+
+                <?php         
+            }
+        ?>
+
         
         
-        controlTimePeriod();
-		// type
-		if (document.formu2 && document.formu2.notification)
-			_notification = document.formu2.notification.checked;
-		if (document.formu2 && document.formu2.error)
-			_error = document.formu2.error.checked;
-		if (document.formu2 && document.formu2.alert)
-			_alert = document.formu2.alert.checked;
+        
+        // Here is your precious function
+        // You can call as many functions as you want here;
+        jQuery("#service_group_filter, #host_filter, #service_filter, #host_group_filter").change(function(event,infos){
 
-		if (document.formu2 && document.formu2.up)
-			_up = document.formu2.up.checked;
-		if (document.formu2 && document.formu2.down)
-			_down = document.formu2.down.checked;
-		if (document.formu2 && document.formu2.unreachable)
-			_unreachable = document.formu2.unreachable.checked;
+           var argArray = getArgsForHost();
+           args = argArray[0];
+           urlargs = argArray[1];
+           if(typeof infos !== "undefined" && infos.origin === "select2defaultinit"){
+            return false;
+           }
 
-		if (document.formu2 && document.formu2.ok)
-			_ok = document.formu2.ok.checked;
-		if (document.formu2 && document.formu2.warning)
-			_warning = document.formu2.warning.checked;
-		if (document.formu2 && document.formu2.critical)
-			_critical = document.formu2.critical.checked;
-		if (document.formu2 && document.formu2.unknown)
-			_unknown = document.formu2.unknown.checked;
-
-		if (document.formu2 && document.formu2.oh)
-			_oh = document.formu2.oh.checked;
-
-		if (document.formu2 && document.formu2.search_H)
-			_search_H = document.formu2.search_H.checked;
-		if (document.formu2 && document.formu2.search_S)
-			_search_S = document.formu2.search_S.checked;
-
-		//tree.selectItem(id);
-
-		var proc = new Transformation();
-		var _addrXSL = "./include/eventLogs/log.xsl";
-
-		if (!type){
-			var _addr = './include/eventLogs/GetXmlLog.php?multi='+multi+'&output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+id+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
-			proc.setXml(_addr)
-			proc.setXslt(_addrXSL)
-			proc.transform("logView4xml");
-		} else {
-			var openid = document.getElementById('openid').innerHTML;
-			var _addr = './include/eventLogs/Get'+type+'Log.php?multi='+multi+'&output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
-			document.location.href = _addr;
-		}
-	}
-
-        /**
-         * Javascript action depending on the status checkboxes 
-         *
-         * @param bool isChecked 
-         * @return void
-         */
-        function checkStatusCheckbox(isChecked) {
-                var alertCb = document.getElementById('alertId');
-
-                if (isChecked == true) {
-                        alertCb.checked = true;
-                }
-        }
-
-        /**
-         * Javascript action depending on the alert/notif checkboxes
-         *
-         * @return void
-         */
-        function checkAlertNotifCheckbox() {
-                if (document.getElementById('alertId').checked == false && 
-                    document.getElementById('notifId').checked == false) {
-                        document.getElementById('cb_up').checked = false;
-                        document.getElementById('cb_down').checked = false;
-                        document.getElementById('cb_unreachable').checked = false;
-                        document.getElementById('cb_ok').checked = false;
-                        document.getElementById('cb_warning').checked = false;
-                        document.getElementById('cb_critical').checked = false;
-                        document.getElementById('cb_unknown').checked = false;
-                }
-        }
-
-        function getArgsForHost(){
-            var host_value = jQuery("#host_filter").val();
-            var service_value = jQuery("#service_filter").val();
+           if (window.history.pushState) {
+               window.history.pushState("", "", "/centreon/main.php?p=203"+urlargs);
+           }
+           document.getElementById('openid').innerHTML = args;
+           log_4_host(args, '', false);
+        });
+        //setServiceGroup
+        jQuery("#setHostGroup").click(function(){
             var hg_value = jQuery("#host_group_filter").val();
-            var sg_value = jQuery("#service_group_filter").val();
-            
-            var args = "";
-            var urlargs = "";
-             if(host_value !== null){
-                 urlargs += "&h=";
-                 var flagfirst = true;
-                 host_value.each(function(val){
-                     if(val !== " " && val !== ""){
-                         if(args !== ""){
-                             args += ",";
-                         }
-                         if(!flagfirst){
-                             urlargs += ",";
-                         }else{
-                             flagfirst = false;
-                         }
-                         urlargs += val;
-                         args += "HH_" + val;
-                     }
-                 });
-             }
-             if(service_value !== null){
-                 urlargs += "&svc=";
-                 var flagfirst = true;
-                 service_value.each(function(val){
-                     if(val !== " " && val !== ""){
-                         if(args !== ""){
-                             args += ",";
-                         }
-                         if(!flagfirst){
-                             urlargs += ",";
-                         }else{
-                             flagfirst = false;
-                         }
-                         urlargs += val.replace("-","_");
-                         args += "HS_" + val.replace("-","_");
-                     }
-                 });
-             }
-             if(hg_value !== null){
-                 urlargs += "&hg=";
-                 var flagfirst = true;
-                 hg_value.each(function(val){
-                     if(val !== " " && val !== ""){
-                         if(args !== ""){
-                             args += ",";
-                         }
-                         if(!flagfirst){
-                             urlargs += ",";
-                         }else{
-                             flagfirst = false;
-                         }
-                         urlargs += val;
-                         args += "HG_" + val;
-                     }
-                 });
-             }
-             if(sg_value !== null){
-                 urlargs += "&svcg=";
-                 var flagfirst = true;
-                 sg_value.each(function(val){
-                     if(val !== " " && val !== ""){
-                         if(args !== ""){
-                             args += ",";
-                         }
-                         if(!flagfirst){
-                             urlargs += ",";
-                         }else{
-                             flagfirst = false;
-                         }
-                         urlargs += val;
-                         args += "ST_" + val;
-                     }
-                 });
-             }
-
-            return new Array(args,urlargs);
-        }
-
-
-	jQuery(function () {
-        if(!_engine){
-            /// Initialise selection with Get params
-            arrayHostValues = new Array();
-            <?php 
-                foreach($hostArray as $host){
-                    ?>
-                    arrayHostValues.push(<?php echo $host['id']; ?>);
-                    jQuery("#host_filter").append(jQuery('<option>').val(<?php echo $host['id']; ?> ).html('<?php echo $host['name']; ?>'));        
-
-                    <?php         
-                }
-            ?>        
-
-
-            arrayServicesValues = new Array();
-            <?php 
-                foreach($serviceArray as $service){
-                    ?>
-                    arrayServicesValues.push('<?php echo $service['host_id'].'_'.$service['service_id']; ?>');
-                    jQuery("#service_filter").append(jQuery('<option>').val('<?php echo $service['host_id'].'_'.$service['service_id']; ?>').html('<?php echo $service['host_name']. ' - ' .$service['description']; ?>'));        
-
-                    <?php         
-                }
-            ?>
-                   
-
-
-            arrayServicesGrpValues = new Array();
-            <?php 
-                foreach($serviceGrpArray as $serviceGrp){
-                    ?>
-                    arrayServicesGrpValues.push('<?php echo $serviceGrp['id']; ?>');
-                    jQuery("#service_group_filter").append(jQuery('<option>').val('<?php echo $serviceGrp['id']; ?>').html('<?php echo $serviceGrp['name']; ?>'));        
-
-                    <?php         
-                }
-            ?>
-            
-
-            arrayHostsGrpValues = new Array();
-            <?php 
-                foreach($hostGrpArray as $hostGrp){
-                    ?>
-                    arrayHostsGrpValues.push('<?php echo $hostGrp['id']; ?>');
-                    jQuery("#host_group_filter").append(jQuery('<option>').val('<?php echo $hostGrp['id']; ?>').html('<?php echo $hostGrp['name']; ?>'));        
-
-                    <?php         
-                }
-            ?>
-
-            
-            
-            
-            // Here is your precious function
-            // You can call as many functions as you want here;
-            jQuery("#service_group_filter, #host_filter, #service_filter, #host_group_filter").change(function(event,infos){
-
-               var argArray = getArgsForHost();
-               args = argArray[0];
-               urlargs = argArray[1];
-               if(typeof infos !== "undefined" && infos.origin === "select2defaultinit"){
-                return false;
-               }
-
-               if (window.history.pushState) {
-                   window.history.pushState("", "", "/centreon/main.php?p=203"+urlargs);
-               }
-               document.getElementById('openid').innerHTML = args;
-               log_4_host(args, '', false);
-            });
-            //setServiceGroup
-            jQuery("#setHostGroup").click(function(){
-                var hg_value = jQuery("#host_group_filter").val();
-                var host_value = jQuery("#host_filter").val();
-                if(host_value === null){
-                    host_value = new Array();
-                }
-                jQuery.ajax({
-                    url: "./include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=hostList",
-                    type: "GET",
-                    dataType : "json",
-                    data: "hgid="+hg_value,
-                    success : function(json){
-                        json.items.each(function(elem){
-                            if(jQuery.inArray(elem.id,host_value) === -1){
-                                var existingOptions = jQuery("#host_filter").find('option');
-                                var existFlag = false;
-                                existingOptions.each(function(el){
-                                    if(jQuery(this).val() == elem.id){
-                                        existFlag = true;
-                                    }
-                                });
-                                if(!existFlag){
-                                    jQuery("#host_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+            var host_value = jQuery("#host_filter").val();
+            if(host_value === null){
+                host_value = new Array();
+            }
+            jQuery.ajax({
+                url: "./include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=hostList",
+                type: "GET",
+                dataType : "json",
+                data: "hgid="+hg_value,
+                success : function(json){
+                    json.items.each(function(elem){
+                        if(jQuery.inArray(elem.id,host_value) === -1){
+                            var existingOptions = jQuery("#host_filter").find('option');
+                            var existFlag = false;
+                            existingOptions.each(function(el){
+                                if(jQuery(this).val() == elem.id){
+                                    existFlag = true;
                                 }
-                                host_value.push(elem.id);
-                            }    
-                        });
-                        jQuery("#host_filter").val(host_value).trigger("change",[{origin:"select2defaultinit"}]);
-                        jQuery("#host_group_filter").val('');
-                        jQuery("#host_group_filter").empty().append(jQuery('<option>'));
-                        jQuery("#host_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
-                    }
-                });    
-
-            });
-
-            jQuery("#setServiceGroup").click(function(){
-               var service_value = jQuery("#service_filter").val();
-               var sg_value = jQuery("#service_group_filter").val();
-                if(service_value === null){
-                    service_value = new Array();
+                            });
+                            if(!existFlag){
+                                jQuery("#host_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                            }
+                            host_value.push(elem.id);
+                        }    
+                    });
+                    jQuery("#host_filter").val(host_value).trigger("change",[{origin:"select2defaultinit"}]);
+                    jQuery("#host_group_filter").val('');
+                    jQuery("#host_group_filter").empty().append(jQuery('<option>'));
+                    jQuery("#host_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
                 }
-                jQuery.ajax({
-                    url: "./include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=serviceList",
-                    type: "GET",
-                    dataType : "json",
-                    data: "sgid="+sg_value,
-                    success : function(json){
-                        json.items.each(function(elem){
-                            if(jQuery.inArray(elem.id,service_value) === -1){
-                                var existingOptions = jQuery("#service_filter option");
-                                var existFlag = false;
-                                existingOptions.each(function(){
-                                    if(jQuery(this).val() == elem.id){
-                                        existFlag = true;
-                                    }
-                                });
-                                if(!existFlag){
-                                    jQuery("#service_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+            });    
+
+        });
+
+        jQuery("#setServiceGroup").click(function(){
+           var service_value = jQuery("#service_filter").val();
+           var sg_value = jQuery("#service_group_filter").val();
+            if(service_value === null){
+                service_value = new Array();
+            }
+            jQuery.ajax({
+                url: "./include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=serviceList",
+                type: "GET",
+                dataType : "json",
+                data: "sgid="+sg_value,
+                success : function(json){
+                    json.items.each(function(elem){
+                        if(jQuery.inArray(elem.id,service_value) === -1){
+                            var existingOptions = jQuery("#service_filter option");
+                            var existFlag = false;
+                            existingOptions.each(function(){
+                                if(jQuery(this).val() == elem.id){
+                                    existFlag = true;
                                 }
-                                service_value.push(elem.id);
-                            }    
-                        });
-                        jQuery("#service_filter").val(service_value).trigger("change",[{origin:"select2defaultinit"}]);
-                        jQuery("#service_group_filter").val('');
-                        jQuery("#service_group_filter").empty().append(jQuery('<option>'));
-                        jQuery("#service_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
-                    }
-                });    
-
-            });
-
-            jQuery("#host_filter").val(arrayHostValues).trigger("change",[{origin:"select2defaultinit"}]);
-            jQuery("#service_filter").val(arrayServicesValues).trigger("change",[{origin:"select2defaultinit"}]);
-            jQuery("#service_group_filter").val(arrayServicesGrpValues).trigger("change",[{origin:"select2defaultinit"}]);
-            jQuery("#host_group_filter").val(arrayHostsGrpValues).trigger("change");
-            
-            jQuery( "#output" ).keypress(function(  event ) {
-                if ( event.which == 13 ) {
-                    var argArray = getArgsForHost();
-                    args = argArray[0];
-                    urlargs = argArray[1];
-                    log_4_host(args, '', false);
-                   event.preventDefault();
+                            });
+                            if(!existFlag){
+                                jQuery("#service_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                            }
+                            service_value.push(elem.id);
+                        }    
+                    });
+                    jQuery("#service_filter").val(service_value).trigger("change",[{origin:"select2defaultinit"}]);
+                    jQuery("#service_group_filter").val('');
+                    jQuery("#service_group_filter").empty().append(jQuery('<option>'));
+                    jQuery("#service_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
                 }
-            });
-            
-        }else{
-            
-            arrayPollerValues = new Array();
-            <?php 
-                foreach($pollerArray as $pollers){
-                    ?>
-                    arrayPollerValues.push('<?php echo $pollers['id']; ?>');
-                    jQuery("#poller_filter").append(jQuery('<option>').val('<?php echo $pollers['id']; ?>').html('<?php echo $pollers['name']; ?>'));        
+            });    
 
-                    <?php         
-                }
-            ?>         
-            
-            
-            
-            jQuery("#poller_filter").change(function(event,infos){
-               if(typeof infos !== "undefined" && infos.origin === "select2defaultinit"){
-                return false;
-               }
-               log_4_engine();
-            });
-            jQuery("#poller_filter").val(arrayPollerValues).trigger("change");
-            jQuery( "#output" ).keypress(function(  event ) {
-                if ( event.which == 13 ) {
-                    log_4_engine();
-                   event.preventDefault();
-                }
-            });
+        });
+
+        jQuery("#host_filter").val(arrayHostValues).trigger("change",[{origin:"select2defaultinit"}]);
+        jQuery("#service_filter").val(arrayServicesValues).trigger("change",[{origin:"select2defaultinit"}]);
+        jQuery("#service_group_filter").val(arrayServicesGrpValues).trigger("change",[{origin:"select2defaultinit"}]);
+        jQuery("#host_group_filter").val(arrayHostsGrpValues).trigger("change");
+        
+        jQuery( "#output" ).keypress(function(  event ) {
+            if ( event.which == 13 ) {
+                var argArray = getArgsForHost();
+                args = argArray[0];
+                urlargs = argArray[1];
+                log_4_host(args, '', false);
+               event.preventDefault();
+            }
+        });
+        
+    }else{
+        
+        arrayPollerValues = new Array();
+        <?php 
+            foreach($pollerArray as $pollers){
+                ?>
+                arrayPollerValues.push('<?php echo $pollers['id']; ?>');
+                jQuery("#poller_filter").append(jQuery('<option>').val('<?php echo $pollers['id']; ?>').html('<?php echo $pollers['name']; ?>'));        
+
+                <?php         
+            }
+        ?> 
+        
+        jQuery("#poller_filter").change(function(event,infos){
+           if(typeof infos !== "undefined" && infos.origin === "select2defaultinit"){
+            return false;
+           }
+           log_4_engine();
+        });
+        jQuery("#poller_filter").val(arrayPollerValues).trigger("change");
+        jQuery( "#output" ).keypress(function(  event ) {
+            if ( event.which == 13 ) {
+                log_4_engine();
+               event.preventDefault();
+            }
+        });
 
 
-        }
+    }
     });
-
-
 </script>

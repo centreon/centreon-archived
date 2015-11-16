@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -31,42 +32,62 @@
  *
  * For more information : contact@centreon.com
  *
+ * SVN : $URL$
+ * SVN : $Id$
+ *
  */
 
-if (!isset($centreon)) {
-	exit();
+/**
+ *  
+ */
+class CentreonManufacturer
+{
+    /**
+     *
+     * @var type 
+     */
+    protected $db;
+    
+    /**
+     *  Constructor
+     *
+     *  @param CentreonDB $db
+     */
+    public function __construct($db)
+    {
+        $this->db = $db;
+    }
+    
+    /**
+     * 
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array(), $options = array())
+    {
+        $items = array();
+        
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected timeperiods
+        $query = "SELECT id, name "
+            . "FROM traps_vendor "
+            . "WHERE id IN (" . $explodedValues . ") "
+            . "ORDER BY name ";
+        
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            $items[] = array(
+                'id' => $row['id'],
+                'text' => $row['name']
+            );
+        }
+
+        return $items;
+    }
 }
 
-include("./include/common/autoNumLimit.php");
-
-require_once './class/centreonDuration.class.php';
-include_once("./include/monitoring/common-Func.php");
-
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-/* 
- * Path to the option dir
- */
-$path = "./include/options/centStorage/";
-
-/*
- * PHP functions
- */
-require_once("./include/options/oreon/generalOpt/DB-Func.php");
-require_once("./include/common/common-Func.php");
-require_once("./class/centreonDB.class.php");
-
-$pearDBO = new CentreonDB("centstorage");
-
-switch ($o)	{
-	case "msvc" : 
-		require_once($path."viewMetrics.php"); 
-		break;
-	default : 
-		require_once($path."viewData.php"); 
-		break;
-}
+?>
