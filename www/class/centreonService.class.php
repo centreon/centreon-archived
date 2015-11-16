@@ -1009,27 +1009,22 @@ class CentreonService
         }
 
         # Construct host filter for query
-        $selectedHosts = "";
-        if (count($hostIdList)) {
-            $selectedHosts = "AND hsr.host_host_id IN (";
-            $implodedValues = implode(',', $hostIdList);
-            if (trim($implodedValues) != "") {
-                $selectedHosts .= $implodedValues;
-            } else {
-                $selectedHosts .= "''";
-            }
-            $selectedHosts .= ") ";
+        $selectedHosts = "AND hsr.host_host_id IN (";
+        $implodedValues = implode(',', $hostIdList);
+        if (trim($implodedValues) != "") {
+            $selectedHosts .= $implodedValues;
+        } else {
+            $selectedHosts .= "''";
         }
+        $selectedHosts .= ") ";
 
         # Construct service filter for query
         $selectedServices = "AND hsr.service_service_id IN (";
-        if (count($serviceIdList)) {
-            $implodedValues = implode(',', $serviceIdList);
-            if (trim($implodedValues) != "") {
-                $selectedServices .= $implodedValues;
-            } else {
-                $selectedServices .= "''";
-            }
+        $implodedValues = implode(',', $serviceIdList);
+        if (trim($implodedValues) != "") {
+            $selectedServices .= $implodedValues;
+        } else {
+            $selectedServices .= "''";
         }
         $selectedServices .= ") ";
         
