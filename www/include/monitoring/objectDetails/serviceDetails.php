@@ -524,7 +524,7 @@ if (!is_null($host_id)) {
         $tpl->assign("lcaTopo", $oreon->user->access->topology);
         $tpl->assign("count_comments_svc", count($tabCommentServices));
         $tpl->assign("tab_comments_svc", array_map(array("CentreonUtils","escapeSecure"),$tabCommentServices));
-        $centreonGraph = new CentreonGraph(session_id(), null, 0, null);
+        $centreonGraph = new CentreonGraph($oreon->user->user_id, null, 0, null);
         if (isset($host_id) && isset($service_id)){
             $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
             $tpl->assign("service_id", $service_id);
