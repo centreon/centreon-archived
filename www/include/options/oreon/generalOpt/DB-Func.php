@@ -267,8 +267,6 @@ function updateGeneralConfigData($gopt_id = null) {
     updateOption($pearDB, "maxGraphPerformances", isset($ret["maxGraphPerformances"]) && $ret["maxGraphPerformances"] != NULL ? htmlentities($ret["maxGraphPerformances"], ENT_QUOTES, "UTF-8"): "NULL");
     updateOption($pearDB, "AjaxTimeReloadMonitoring", isset($ret["AjaxTimeReloadMonitoring"]) && $ret["AjaxTimeReloadMonitoring"] != NULL ? htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES, "UTF-8"): "NULL");
     updateOption($pearDB, "AjaxTimeReloadStatistic", isset($ret["AjaxTimeReloadStatistic"]) && $ret["AjaxTimeReloadStatistic"] != NULL ? htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES, "UTF-8"): "NULL");
-    updateOption($pearDB, "AjaxFirstTimeReloadMonitoring", isset($ret["AjaxFirstTimeReloadMonitoring"]) && $ret["AjaxFirstTimeReloadMonitoring"] != NULL ? htmlentities($ret["AjaxFirstTimeReloadMonitoring"], ENT_QUOTES, "UTF-8"): "NULL");
-    updateOption($pearDB, "AjaxFirstTimeReloadStatistic", isset($ret["AjaxFirstTimeReloadStatistic"]) && $ret["AjaxFirstTimeReloadStatistic"] != NULL ? htmlentities($ret["AjaxFirstTimeReloadStatistic"], ENT_QUOTES, "UTF-8"): "NULL");
     updateOption($pearDB, "template", isset($ret["template"]) && $ret["template"] != NULL ? htmlentities($ret["template"], ENT_QUOTES, "UTF-8"): "NULL");
     updateOption($pearDB, "enable_gmt", isset($ret["enable_gmt"]["yes"]) && $ret["enable_gmt"]["yes"] != NULL ? htmlentities($ret["enable_gmt"]["yes"], ENT_QUOTES, "UTF-8"): "0");
     updateOption($pearDB, "gmt", isset($ret["gmt"]) && $ret["gmt"] != NULL ? htmlentities($ret["gmt"], ENT_QUOTES, "UTF-8"): "NULL");
@@ -282,7 +280,6 @@ function updateGeneralConfigData($gopt_id = null) {
     updateOption($pearDB, "sso_mode", isset($ret["sso_mode"]["sso_mode"]) && $ret["sso_mode"]["sso_mode"] != NULL ? $pearDB->escape($ret["sso_mode"]["sso_mode"]) : 1);
     updateOption($pearDB, "sso_trusted_clients", isset($ret["sso_trusted_clients"]) && $ret["sso_trusted_clients"] != NULL ? $pearDB->escape($ret["sso_trusted_clients"]) : "");
     updateOption($pearDB, "sso_header_username", isset($ret["sso_header_username"]) && $ret["sso_header_username"] != NULL ? $pearDB->escape($ret["sso_header_username"]) : "");
-    updateOption($pearDB, "strict_hostParent_poller_management", isset($ret["strict_hostParent_poller_management"]["yes"]) && $ret["strict_hostParent_poller_management"]["yes"] != NULL ? $ret["strict_hostParent_poller_management"]["yes"] : "");
     updateOption($pearDB, "centreon_support_email", isset($ret["centreon_support_email"]) && $ret["centreon_support_email"] != NULL ? htmlentities($ret["centreon_support_email"], ENT_QUOTES, "UTF-8"): "NULL");
         
     $oreon->initOptGen($pearDB);
