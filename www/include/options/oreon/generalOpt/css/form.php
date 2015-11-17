@@ -33,7 +33,7 @@
  * 
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
 	exit();		
 }
 
@@ -56,7 +56,7 @@ if ($handle  = @opendir($skin."Color"))	{
 }
 
 $css_default = $tab_file_css[0];
-$rq = "SELECT * FROM css_color_menu";
+$rq = "SELECT * FROM css_color_menu WHERE id_css_color_menu IN (SELECT topology_page FROM topology WHERE topology_page < 10)";
 $DBRESULT = $pearDB->query($rq);
 $tab_css = array();
 for ($i = 0; $DBRESULT->numRows() && $elem = $DBRESULT->fetchRow();$i++){
@@ -91,7 +91,7 @@ foreach ($tab_menu as $key => $val)	{
 /*
  * Get menu_css_bdd list
  */
-$rq = "SELECT * FROM css_color_menu";
+$rq = "SELECT * FROM css_color_menu WHERE id_css_color_menu IN (SELECT topology_page FROM topology WHERE topology_page < 10)";
 $DBRESULT = $pearDB->query($rq);
 $elemArr = array();
 /*
@@ -99,17 +99,15 @@ $elemArr = array();
  */
 $style = "one";
 
-if ($DBRESULT->numRows())
+if ($DBRESULT->numRows()) {
 	for ($i = 0; $elem = $DBRESULT->fetchRow();$i++)	{
 		$select_list =	'<select name="css_color_'. $elem["id_css_color_menu"] .'">';
-		for ($j=0 ; isset($tab_file_css[$j]) ; $j++){
-			
+		for ($j=0 ; isset($tab_file_css[$j]) ; $j++) {
 			if ($elem["css_name"] == $tab_file_css[$j]) {
 				$selected = "selected";
 			} else {
 				$selected = "";	
-			}
-			
+			}	
 			$select_list .= '<option value="'.$tab_file_css[$j].'" ' . $selected . '>'.$tab_file_css[$j].'</option>';
 		}
 		$select_list .= '</select>';
@@ -118,7 +116,8 @@ if ($DBRESULT->numRows())
 							 "menuName"=> _($tab_menu[$elem["menu_nb"]]["topology_name"]),
 							 "css_name"=> $elem["css_name"]);
 		$style != "two" ? $style = "two" : $style = "one";
-	}
+	}		
+}
 
 /*
  * Smarty template Init
@@ -129,7 +128,6 @@ $tpl = initSmartyTpl($path.'css/', $tpl);
 /*
  * Apply a template definition
  */
-
 $tpl->assign("elemArr", $elemArr);
 $tpl->assign('submitTitle', _("Save"));
 $tpl->assign('nameTitle', _("Menu"));
