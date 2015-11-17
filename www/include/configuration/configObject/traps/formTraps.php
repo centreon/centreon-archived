@@ -395,7 +395,7 @@ if ($o == "w")	{
 
 $valid = false;
 if ($form->validate())	{
-	$trapObj = new CentreonTraps($centreon, $pearDB, $form);
+	$trapObj = new CentreonTraps($pearDB, $centreon, $form);
             $trapParam = $form->getElement('traps_id');
 	if ($form->getSubmitValue("submitA"))
 		$trapParam->setValue($trapObj->insert());
