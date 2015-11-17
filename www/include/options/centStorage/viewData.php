@@ -192,14 +192,14 @@ for ($i = 0; $index_data = $DBRESULT->fetchRow(); $i++) {
 		if ($im) {
 			$metric .= " - ";
 		}
-		$metric .= "<a href='./main.php?p=50119&o=mmtrc&index_id=".$index_data["id"]."'>".$metrics["metric_name"]."</a>";
+		$metric .= $metrics["metric_name"]; // "<a href='./main.php?p=50119&o=mmtrc&index_id=".$index_data["id"]."'>".$metrics["metric_name"]."</a>";
 		if (isset($metrics["unit_name"]) && $metrics["unit_name"]) {
-			$metric .= " (".$metrics["unit_name"].") ";
+			$metric .= "(".$metrics["unit_name"].")";
 		}
 	}
 	$index_data["metrics_name"] = $metric;
 	$index_data["service_description"] = "<a href='./main.php?p=50119&o=msvc&index_id=".$index_data["id"]."'>".$index_data["service_description"]."</a>";
-	
+
 	$index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
 	$index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
     $index_data["to_delete"] = $yesOrNo[$index_data["to_delete"]];
