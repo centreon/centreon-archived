@@ -212,7 +212,10 @@ sub getBrokerStats($) {
         mkpath($destFile);
     }
 
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT cbi.config_value FROM cfg_centreonbroker_info as cbi, cfg_centreonbroker as cb WHERE cb.config_id = cbi.config_id AND cbi.config_group = 'stats' AND cbi.config_key = 'fifo' AND cb.ns_nagios_server = '".$poller_id."'");
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT config_name,retention_path "
+        . "FROM cfg_centreonbroker "
+        . "WHERE stats_activate='1' "
+        . "AND ns_nagios_server = '" . $poller_id . "'");
     if ($status == -1) {
         $self->{logger}->writeLogError("Error poller broker pipe");
         return -1;
@@ -224,14 +227,14 @@ sub getBrokerStats($) {
         $port = checkSSHPort($server_info->{ssh_port});
 
         # Copy the stat file into a buffer
-
-        $cmd = "$self->{ssh} -q $server_info->{ns_ip_address} -p $port 'cat \"$data->{config_value}\" > $statPipe'";
+        $statistics_file = $data->{retention_path} . "/" . $data->{config_name} . ".stats";
+        $cmd = "$self->{ssh} -q $server_info->{ns_ip_address} -p $port 'cat \"" . $statistics_file . "\" > $statPipe'";
         ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                               logger => $self->{logger},
                                                               timeout => $self->{cmd_timeout}
                                                               );
         if ($lerror == -1) {
-            $self->{logger}->writeLogError("Could not read pipe ".$data->{config_value}." on poller ".$server_info->{ns_ip_address});
+            $self->{logger}->writeLogError("Could not read pipe " . $statistics_file . " on poller ".$server_info->{ns_ip_address});
         }         
         if (defined($stdout) && $stdout) {
             $self->{logger}->writeLogInfo("Result : $stdout");
