@@ -388,6 +388,8 @@ function submitEditView() {
           }
         });
         jQuery('#formEditView').parents('.toggle_wrapper').hide();
+        /* Reload tabs for apply */
+        jQuery("#tabs").tabs('load', getTabPos(viewId));
       } else if (typeof(error) != 'undefined') {
         var errorMsg = error.item(0).firstChild.data;
       }
@@ -408,7 +410,7 @@ function submitAddWidget() {
       var error = response.getElementsByTagName('error');
       if (view !== undefined) {
         var viewId = view.item(0).firstChild.data;
-        window.top.location = './main.php?p=103&currentView='+viewId;
+        jQuery('#tabs').tabs('load', getTabPos(viewId));
       } else if (err !== undefined) {
         var errorMsg = err.item(0).firstChild.data;
         console.log(errorMsg);
@@ -434,7 +436,6 @@ function submitDeleteView() {
       var view = response.getElementsByTagName('custom_view_id');
       if (typeof(view) != 'undefined') {
         deleteTab(viewId);
-        //window.top.location = './main.php?p=103';
       } else if (typeof(error) != 'undefined') {
         var errorMsg = error.item(0).firstChild.data;
       }
