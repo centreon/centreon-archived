@@ -88,15 +88,22 @@
                 </tr>
                 <tr>
                     <td class="ColPopup" colspan= "2">
-                        {if $lcaTopo.201 || $admin == 1}
+                        {if $lcaTopo.20202 || $admin == 1}
                         <a href='./main.php?p=20202&o=hd&host_name={$h.host_name}'>{$lnk_host_status}</a>
                         {/if}
                     </td>
                 </tr>
                 <tr>
                     <td class="ColPopup" colspan= "2">
-                        {if $lcaTopo.6 || $admin == 1}
+                        {if $lcaTopo.60101 || $admin == 1}
                                 <a href='./main.php?p=60101&host_id={$host_id}&o=c'>{$lnk_host_config} {$h.host_name}</a>
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ColPopup" colspan= "2">
+                        {if $lcaTopo.20301 || $admin == 1}
+                            <a href='./main.php?p=20301&h={$host_id}'>{$lnk_host_logs}</a>
                         {/if}
                     </td>
                 </tr>
@@ -116,7 +123,7 @@
                 </tr>
                 <tr>
                     <td class="ColPopup" colspan= "2">
-                            {if $lcaTopo.4 || $admin == 1}
+                            {if $lcaTopo.20401 || $admin == 1}
                                     <a href='./main.php?p=20401&mode=0&svc_id={$host_data.host_name}'>{$lnk_host_graphs}</a>
                             {/if}
                     </td>

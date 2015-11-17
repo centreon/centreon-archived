@@ -52,15 +52,6 @@ function myDecodeMib($arg)	{
 }
 
 /*
- * Set base value
- */
-$mnftr = array(NULL => NULL);
-$DBRESULT = $pearDB->query("SELECT `id`, `alias` FROM `traps_vendor` ORDER BY `alias`");
-while ($rmnftr = $DBRESULT->fetchRow())
-	$mnftr[$rmnftr["id"]] = $rmnftr["alias"];
-$DBRESULT->free();
-
-/*
  * Init Formulary
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
@@ -72,7 +63,8 @@ $form->addElement('header', 'title', _("Import SNMP traps from MIB file"));
 $attrManufacturer= array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer&action=list',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonManufacturer'
 );
 $attrManufacturer1 = array_merge(
     $attrManufacturer,

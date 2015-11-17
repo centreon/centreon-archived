@@ -62,7 +62,7 @@ $path = "./include/configuration/configObject/traps/";
 require_once './class/centreonTraps.class.php';
 require_once "./include/common/common-Func.php";
 
-$trapObj = new CentreonTraps($oreon, $pearDB);
+$trapObj = new CentreonTraps($pearDB, $oreon);
 $acl = $oreon->user->access;
 $aclDbName = $acl->getNameDBAcl();
 $dbmon = new CentreonDB('centstorage');

@@ -251,7 +251,8 @@ function deleteWidget(element, viewId, widgetId)
 								var error = response.getElementsByTagName('error');
 								if (typeof(view) != 'undefined') {
 									var viewId = view.item(0).firstChild.data;
-									window.top.location = './main.php?p=103&currentView='+viewId;
+                                    jQuery('#tabs').tabs('load', getTabPos(viewId));
+									//window.top.location = './main.php?p=103&currentView='+viewId;
 								} else if (typeof(error) != 'undefined') {
 									var errorMsg = error.item(0).firstChild.data;
 								}
