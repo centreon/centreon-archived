@@ -52,16 +52,6 @@ function myDecodeMib($arg)	{
 }
 
 /*
- * Set base value
- *
-$mnftr = array(NULL => NULL);
-$DBRESULT = $pearDB->query("SELECT `id`, `alias` FROM `traps_vendor` ORDER BY `alias`");
-while ($rmnftr = $DBRESULT->fetchRow())
-	$mnftr[$rmnftr["id"]] = $rmnftr["alias"];
-$DBRESULT->free();
-*/
-
-/*
  * Init Formulary
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
