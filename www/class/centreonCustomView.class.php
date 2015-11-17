@@ -376,14 +376,14 @@ class CentreonCustomView
 
     public function loadCustomView($params)
     {
-        if(isset($params['wiewLoad']) && is_numeric($params['wiewLoad']) && $params['wiewLoad'] != -1 ){
+        if(isset($params['viewLoad']) && is_numeric($params['viewLoad']) && $params['viewLoad'] != -1 ){
             $is_owner = 0;
-            $res = $this->db->query("select * from custom_view_user_relation where custom_view_id = ".$this->db->escape($params['wiewLoad'])." and user_id = ".$this->db->escape($this->userId));
+            $res = $this->db->query("select * from custom_view_user_relation where custom_view_id = ".$this->db->escape($params['viewLoad'])." and user_id = ".$this->db->escape($this->userId));
             if ($row = $res->fetchRow()) {
                 $is_owner = $row['is_owner'];
             }
-            $this->db->query("delete from custom_view_user_relation where custom_view_id = ".$this->db->escape($params['wiewLoad'])." and user_id = ".$this->db->escape($this->userId));
-            $this->db->query("insert into custom_view_user_relation (custom_view_id,user_id,is_owner) VALUES (".$this->db->escape($params['wiewLoad']).", ".$this->db->escape($this->userId).", ".$is_owner.")");
+            $this->db->query("delete from custom_view_user_relation where custom_view_id = ".$this->db->escape($params['viewLoad'])." and user_id = ".$this->db->escape($this->userId));
+            $this->db->query("insert into custom_view_user_relation (custom_view_id,user_id,is_owner) VALUES (".$this->db->escape($params['viewLoad']).", ".$this->db->escape($this->userId).", ".$is_owner.")");
         }
     }
     

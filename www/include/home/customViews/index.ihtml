@@ -28,8 +28,8 @@
                 </td>
               </tr>
               <tr class="load_field" style="display:none;">
-                <td class="FormRowField">{$formAddView.wiewLoad.label}</td>
-                <td class="FormRowValue">{$formAddView.wiewLoad.html}</td>
+                <td class="FormRowField">{$formAddView.viewLoad.label}</td>
+                <td class="FormRowValue">{$formAddView.viewLoad.html}</td>
               </tr>
               <tr class="create_field">
                 <td class="FormRowField">{$formAddView.layout.label}</td>
@@ -333,9 +333,11 @@ function setTimerLabel() {
 
 /* Submit action for add a view */
 function submitAddView() {
-  if (jQuery("#formAddView input[name='name']").val().trim() === '') {
-    jQuery('.create_field .error-msg').show();
-    return false;
+  if(jQuery('input[name="create_load[create_load]"]:checked').val() === "create"){
+    if (jQuery("#formAddView input[name='name']").val().trim() === '') {
+      jQuery('.create_field .error-msg').show();
+      return false;
+    }
   }
   jQuery.ajax({
     type: "post",
@@ -388,6 +390,8 @@ function submitEditView() {
           }
         });
         jQuery('#formEditView').parents('.toggle_wrapper').hide();
+        /* Reload tabs for apply */
+        jQuery("#tabs").tabs('load', getTabPos(viewId));
       } else if (typeof(error) != 'undefined') {
         var errorMsg = error.item(0).firstChild.data;
       }
@@ -408,7 +412,7 @@ function submitAddWidget() {
       var error = response.getElementsByTagName('error');
       if (view !== undefined) {
         var viewId = view.item(0).firstChild.data;
-        window.top.location = './main.php?p=103&currentView='+viewId;
+        jQuery('#tabs').tabs('load', getTabPos(viewId));
       } else if (err !== undefined) {
         var errorMsg = err.item(0).firstChild.data;
         console.log(errorMsg);
@@ -434,7 +438,6 @@ function submitDeleteView() {
       var view = response.getElementsByTagName('custom_view_id');
       if (typeof(view) != 'undefined') {
         deleteTab(viewId);
-        //window.top.location = './main.php?p=103';
       } else if (typeof(error) != 'undefined') {
         var errorMsg = error.item(0).firstChild.data;
       }
@@ -839,6 +842,9 @@ jQuery(function () {
             jQuery('.viewBody').empty();
           },
           selected: -1,
+          load: function () {
+            displayBtnToggleEdit();
+          }
         });
       }
       jQuery("#tabs").tabs('select', getTabPos(data.current));

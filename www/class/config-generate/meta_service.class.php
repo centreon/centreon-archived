@@ -127,6 +127,7 @@ class MetaService extends AbstractObject {
             $meta_service['passive_checks_enabled'] = 0;
             $meta_service['host_name'] = '_Module_Meta';
             $meta_service['service_description'] = 'meta_' . $meta_id;
+            $meta_service['display_name'] = $meta_service['service_description'];
             $meta_service['check_command'] = 'check_meta!' . $meta_id;
             
             $this->generated_services[] = $meta_id;

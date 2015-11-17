@@ -193,6 +193,7 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 	border-color:<?php print $color10; ?>;
 	}
 
+
 .msg_loading{
 	position:absolute;
 	top:20px;
@@ -222,6 +223,9 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 
 .Toolbar_TableBottom {border-color:<?php print $menu1_bgcolor; ?>;}
 
-#mainnav li{	background-color: <?php print $bg_image_header ?>;border: 1px solid <?php print $bg_image_header ?>;}
-#mainnav li.a a{	color: <?php print $bg_image_header ?>; }
+.headerTabContainer {border-bottom: 1px solid <?php print $menu2_bgcolor ?>;}
+#mainnav li{	background-color: <?php print $menu2_bgcolor ?>;border: 1px solid <?php print $menu2_bgcolor ?>;}
+#mainnav li.a a{	color: <?php print $menu2_bgcolor ?>; }
 #mainnav li.b a{	color: <?php print $menu2_color ?>;}
+#mainnav li.b a{	color: <?php print $menu2_color ?>;}
+
