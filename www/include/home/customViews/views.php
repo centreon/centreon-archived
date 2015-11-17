@@ -87,6 +87,9 @@ try {
             } else {
                 $widgets[$widgetId]['column'] = 0;
             }
+            if(!$permission && $widgets[$widgetId]['title'] === ""){
+                $widgets[$widgetId]['title'] = "&nbsp;";
+            }
             $widgetNumber++;
         }
         $template->assign("columnClass", $columnClass);
@@ -95,7 +98,6 @@ try {
     $template->assign("widgetNumber", $widgetNumber);
     $template->assign("view_id", $viewId);
     $template->assign("error_msg", _("No widget configured in this view. Please add a new widget with the \"Add widget\" button."));
-    
     $template->display($columnClass.".ihtml");
 } catch (CentreonWidgetException $e) {
     echo $e->getMessage() . "<br/>";

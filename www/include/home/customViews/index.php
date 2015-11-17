@@ -93,15 +93,26 @@ try {
     $formAddView->addElement('header', 'information', _("General Information"));
 
 
-    $query = "select * from custom_views where public = 1";
+    $query =  "SELECT cv.*, '1' as from_public FROM custom_views cv where public = 1 "
+            . " UNION "
+            . " SELECT cv.*, '0' as from_public FROM custom_views cv "
+            . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
+            . " WHERE cvur.user_id = " . $db->escape($centreon->user->user_id). " AND cvur.is_consumed = 0 ";
     $DBRES = $db->query($query);
     $arrayView = array();
     $arrayView[-1] = "";
+    $arrayViewShared = array();
+    $arrayViewShared[-1] = "";
     while($row = $DBRES->fetchRow()) {
-        $arrayView[$row['custom_view_id']] = $row['name'];
+        if($row['from_public'] == '1'){
+            $arrayView[$row['custom_view_id']] = $row['name'];
+        }else{
+            $arrayViewShared[$row['custom_view_id']] = $row['name'];
+        }
     }
 
     $formAddView->addElement('select', 'viewLoad', _("Public views list"),$arrayView );
+    $formAddView->addElement('select', 'viewLoadShare', _("Shared views list"),$arrayViewShared );
     /**
      * Name
      */

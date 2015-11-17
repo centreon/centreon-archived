@@ -31,6 +31,10 @@
                 <td class="FormRowField">{$formAddView.viewLoad.label}</td>
                 <td class="FormRowValue">{$formAddView.viewLoad.html}</td>
               </tr>
+              <tr class="load_field" style="display:none;">
+                <td class="FormRowField">{$formAddView.viewLoadShare.label}</td>
+                <td class="FormRowValue">{$formAddView.viewLoadShare.html}</td>
+              </tr>
               <tr class="create_field">
                 <td class="FormRowField">{$formAddView.layout.label}</td>
                 <td class="FormRowValue">{$formAddView.layout.html}</td>
@@ -349,15 +353,32 @@ function submitAddView() {
       var error = response.getElementsByTagName('error');
       if (typeof(view) != 'undefined') {
         var viewId = view.item(0).firstChild.data;
-        addTab({
-          default: false,
-          name: jQuery("#formAddView input[name='name']").val(),
-          custom_view_id: viewId,
-          public: (jQuery('#formAddView input[name="public"]:checked').length ? true : false),
-          nbCols: jQuery('#formAddView input[name="layout[layout]"]:checked').val()
-        });
-        jQuery("#tabs").tabs('select', getTabPos(viewId));
-        jQuery('#formAddView').parents('.toggle_wrapper').hide();
+        var widgetName = "";
+        if(parseInt(viewId) && getTabPos(viewId) == -1){
+            if(jQuery('input[name="create_load[create_load]"]:checked').val() === "create"){
+                widgetName = jQuery("#formAddView input[name='name']").val();
+            }else if(jQuery('input[name="create_load[create_load]"]:checked').val() === "load"){
+                if(jQuery("#formAddView select[name='viewLoad']").val() != -1){
+                    widgetName = jQuery("#formAddView select[name='viewLoad']").find(":selected").text();
+                }else if(jQuery("#formAddView select[name='viewLoadShare']").val() != -1){
+                    widgetName = jQuery("#formAddView select[name='viewLoadShare']").find(":selected").text();
+                }
+            }
+
+
+
+            addTab({
+              default: false,
+              name: widgetName,
+              custom_view_id: viewId,
+              public: (jQuery('#formAddView input[name="public"]:checked').length ? true : false),
+              nbCols: jQuery('#formAddView input[name="layout[layout]"]:checked').val()
+            });
+            jQuery("#tabs").tabs('select', getTabPos(viewId));
+            jQuery('#formAddView').parents('.toggle_wrapper').hide();
+        }else{
+            jQuery('#formAddView').parents('.toggle_wrapper').hide();
+        }
       } else if (typeof(error) != 'undefined') {
         var errorMsg = error.item(0).firstChild.data;
       }
@@ -755,6 +776,15 @@ jQuery(function () {
         jQuery('.load_field').css('display','none');
         jQuery('.create_field').css('display','table-row');
     }
+  });
+  
+  
+  
+  jQuery("#formAddView select[name='viewLoad']").change(function (){
+      jQuery("#formAddView select[name='viewLoadShare']").val(-1);
+  });
+  jQuery("#formAddView select[name='viewLoadShare']").change(function (){
+      jQuery("#formAddView select[name='viewLoad']").val(-1);
   });
   
   /* Initialize tabs */

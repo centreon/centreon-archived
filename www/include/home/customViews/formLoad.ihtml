@@ -8,8 +8,8 @@
                 <td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td>
             </tr>
             <tr>
-                    <td class="FormRowField">{$form.wiewLoad.label}</td>
-                    <td class="FormRowValue">{$form.wiewLoad.html}</td>
+                    <td class="FormRowField">{$form.viewLoad.label}</td>
+                    <td class="FormRowValue">{$form.viewLoad.html}</td>
                 </tr>
 	</table>
 	{$form.hidden}
