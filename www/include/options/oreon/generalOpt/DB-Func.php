@@ -248,29 +248,6 @@ function updateLdapConfigData($gopt_id = null) {
     $oreon->initOptGen($pearDB);
 }
 
-function updateColorsConfigData($gopt_id = null) {
-    global $form, $pearDB, $oreon;
-
-    $ret = array();
-    $ret = $form->getSubmitValues();
-
-    updateOption($pearDB, "color_up", isset($ret["color_up"]) && $ret["color_up"] != NULL ? htmlentities($ret["color_up"], ENT_QUOTES, "UTF-8"): "NULL");
-    updateOption($pearDB, "color_down", isset($ret["color_down"]) && $ret["color_down"] != NULL ? htmlentities($ret["color_down"], ENT_QUOTES, "UTF-8"): "NULL");
-    updateOption($pearDB, "color_unreachable", isset($ret["color_unreachable"]) && $ret["color_unreachable"] != NULL ? htmlentities($ret["color_unreachable"], ENT_QUOTES, "UTF-8"): "NULL");
-    updateOption($pearDB, "color_ok", isset($ret["color_ok"]) && $ret["color_ok"] != NULL ? htmlentities($ret["color_ok"], ENT_QUOTES, "UTF-8"): "NULL");
-    updateOption($pearDB, "color_warning", isset($ret["color_warning"]) && $ret["color_warning"] != NULL ? htmlentities($ret["color_warning"], ENT_QUOTES, "UTF-8"): "NULL");
-    updateOption($pearDB, "color_critical", isset($ret["color_critical"]) && $ret["color_critical"] != NULL ? htmlentities($ret["color_critical"], ENT_QUOTES, "UTF-8"): "NULL");
-    updateOption($pearDB, "color_line_critical", isset($ret["color_line_critical"]) && $ret["color_line_critical"] != NULL ? htmlentities($ret["color_line_critical"], ENT_QUOTES, "UTF-8"): "NULL");
-    updateOption($pearDB, "color_pending", isset($ret["color_pending"]) && $ret["color_pending"] != NULL ? htmlentities($ret["color_pending"], ENT_QUOTES, "UTF-8"): "NULL");
-    updateOption($pearDB, "color_unknown", isset($ret["color_unknown"]) && $ret["color_unknown"] != NULL ? htmlentities($ret["color_unknown"], ENT_QUOTES, "UTF-8"): "NULL ");
-    updateOption($pearDB, "color_ack", isset($ret["color_ack"]) && $ret["color_ack"] != NULL ? htmlentities($ret["color_ack"], ENT_QUOTES, "UTF-8"): "NULL ");
-    updateOption($pearDB, "color_downtime", isset($ret["color_downtime"]) && $ret["color_downtime"] != NULL ? htmlentities($ret["color_downtime"], ENT_QUOTES, "UTF-8"): "NULL ");
-    updateOption($pearDB, "color_host_down", isset($ret["color_host_down"]) && $ret["color_host_down"] != NULL ? htmlentities($ret["color_host_down"], ENT_QUOTES, "UTF-8"): "NULL ");
-    updateOption($pearDB, "color_host_unreachable", isset($ret["color_host_unreachable"]) && $ret["color_host_unreachable"] != NULL ? htmlentities($ret["color_host_unreachable"], ENT_QUOTES, "UTF-8"): "NULL ");
-
-    $oreon->initOptGen($pearDB);
-}
-
 function updateGeneralConfigData($gopt_id = null) {
     global $form, $pearDB, $oreon;
 

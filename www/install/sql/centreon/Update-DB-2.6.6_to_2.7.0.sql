@@ -797,6 +797,8 @@ UPDATE topology SET topology_name = 'Modules' WHERE topology_page = 50701 AND to
 UPDATE topology SET topology_name = 'Widgets', topology_group = 1 WHERE topology_page = 50703 AND topology_url IS NOT NULL;
 DELETE FROM topology WHERE topology_parent = 507 AND topology_group = 2 AND topology_url IS NULL;
 
+-- Delete Colors Pages
+DELETE FROM topology WHERE topology_page = 50112;
 
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
