@@ -1008,5 +1008,27 @@ class CentreonConfigCentreonBroker
         }
         $sth = $this->db->query($query);
     }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function isExist($sName)
+    {
+        $bExist = 0;
+        if (empty($sName)) {
+            return $bExist;
+        }
+        
+        $query = "SELECT COUNT(config_id) as nb FROm cfg_centreonbroker WHERE config_name = '".$this->db->escape($sName)."'";
+        $res = $this->db->query($query);
+        $row = $res->fetchRow();
+        if ($row['nb'] > 0) {
+            $bExist = 1;
+        }
+
+        return $bExist;
+    }
+    
 }
 ?>

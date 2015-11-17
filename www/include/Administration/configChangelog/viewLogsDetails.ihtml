@@ -7,7 +7,6 @@
 		<td><input type='submit' name='SearchB' value='Search' /></td>
 	</tr>
 </table>
-<br />
 <table class="ListTable">
 	<tr class="ListHeader">
 		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$date}</td>
@@ -74,3 +73,4 @@
 </table>
 {$form.hidden}
 </form>
+<br>

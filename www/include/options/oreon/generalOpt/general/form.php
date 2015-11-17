@@ -156,9 +156,6 @@ $form->setDefaults(array('sso_header_username'=>'HTTP_AUTH_USER'));
 $options3[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp;&nbsp;');
 
-$options4[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
-$form->addGroup($options4, 'strict_hostParent_poller_management', _("Enable strict mode for host parentship management"), '&nbsp;&nbsp;');
-
 /*
  * Support Email
  */
@@ -240,7 +237,6 @@ $tpl->assign("genOpt_global_display", _("Display properties"));
 $tpl->assign("genOpt_problem_display", _("Problem display properties"));
 $tpl->assign("genOpt_time_zone", _("Time Zone"));
 $tpl->assign("genOpt_auth", _("Authentification properties"));
-$tpl->assign("configBehavior", _("Configuration UI behavior"));
 $tpl->assign("support", _("Support Information"));
 $tpl->assign('valid', $valid);
 

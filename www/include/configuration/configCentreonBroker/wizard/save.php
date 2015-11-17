@@ -41,12 +41,7 @@
     }
 
     require_once './class/centreonConfigCentreonBroker.php';
-/*
-    echo "<pre>";
-    var_dump($wizard);
-    echo $wizard->getValue(2, 'central_adress');
-    die;
-    */
+
     $central_module_configuration = array(
         'name' => $wizard->getValue(2, 'prefix_configname') . '-module-master',
         'filename' => 'central-module.xml',
@@ -287,15 +282,23 @@
             )
         )
     );
-
+    
     /*
      * Get values
      */
     $cBroker = new CentreonConfigCentreonBroker($pearDB);
     switch ($wizard->getValue(1, 'configtype'))  {
         case 'central':
+            $sName = $central_module_configuration['name'];
+            $iExist = $cBroker->isExist($sName);
+            
+            if ($iExist > 0) {
+                $msgErr[] = _("The config name already exists");
+                break;
+            }
             if (false === $cBroker->insertConfig($central_module_configuration)) {
                 $msgErr[] = _('Error while inserting central-module configuration');
+                break;
             }
             if (false === $cBroker->insertConfig($central_broker_configuration)) {
                 $msgErr[] = _('Error while inserting central-broker configuration');
@@ -303,11 +306,21 @@
             }
             if (false === $cBroker->insertConfig($central_rrd_configuration)) {
                 $msgErr[] = _('Error while inserting central-rrd configuration');
+                break;
             }
             break;
         case 'poller':
+            $sName = $poller_module_configuration['name'];
+            $iExist = $cBroker->isExist($sName);
+
+            if ($iExist > 0) {
+                $msgErr[] = _("The config name already exists") . ": ".$sName;
+                break;
+            }
+            
             if (false === $cBroker->insertConfig($poller_module_configuration)) {
                 $msgErr[] = _('Error while inserting poller-module configuration');
+                break;
             }
             break;
         default:

@@ -78,9 +78,6 @@ $color_list_up_hover = "#B2A867";
 $color_list_down = "#ffbbbb";
 $color_list_down_hover = "#dfbbbb";
 
-/* Tabs */
-$bg_image_header = "#009fdf";
-
 $menu1_bgimg = "#009fdf";
 
 $menu2_color = "#c1ecff";

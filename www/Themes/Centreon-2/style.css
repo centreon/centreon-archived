@@ -549,7 +549,7 @@ vertical-align: middle;
 .Resume_light_table th span a,
 .Resume_light_table td span a{
     display: inline-block;
-    padding: 4px 8px;
+    padding: 2px 8px;
     color: #fff;
  }
 
@@ -614,7 +614,6 @@ vertical-align: middle;
 
 .headerTabContainer {
     width: 100%;
-    border-bottom: 1px solid #009fdf;
     float: left;
     margin-bottom: 8px;
 }
@@ -948,7 +947,7 @@ div.menuLeft {
     background-color: #e7e7e8;
     position: fixed;
     bottom: 0;
-    z-index: 10;
+    z-index: 111;
 }
 
 #footer table tr td{
@@ -1123,7 +1122,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .line_ack td,.tab .line_ack td,
 .line_downtime td, .tab .line_downtime td,
 .list_unreachable td,.tab .list_unreachable td,
-.row_disabled td, .tab .row_disabled td {border-left-style:solid;border-top-style:solid;border-width:0.1px 0 0 0.1px;}
+.row_disabled td, .tab .row_disabled td {border-left-style:solid;border-top-style:solid;border-width:0;}
 
 .row_disabled {
     background-color:#f0f0f1;
@@ -1514,7 +1513,7 @@ span.state_badge {
   background-color: #58585a;
   padding: 6px;
   cursor: pointer;
-  z-index:11;
+  z-index:112;
   bottom:14px;
 }
 
@@ -1621,7 +1620,7 @@ div#tabs_periods {
 }
 
 .ui-widget-content  {
-    background: #fff;
+    background: transparent;
 }
 .ui-widget-header {
     background: #fff !important;

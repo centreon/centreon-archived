@@ -84,13 +84,6 @@
  	
   	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
-        <h4>{$configBehavior}</h4>
-      </td>
-    </tr>
- 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="strict_hostParent_poller_management">{$form.strict_hostParent_poller_management.label}</td><td class="FormRowValue">{$form.strict_hostParent_poller_management.html}</td></tr>
-
-  	<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
         <h4>{$support}</h4>
       </td>
     </tr>
