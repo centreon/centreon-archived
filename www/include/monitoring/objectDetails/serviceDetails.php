@@ -313,9 +313,9 @@ if (!is_null($host_id)) {
                 $i = 0;
                 while (isset($outputTmp[$i])) {
                     if (!$i) {
-                        $service_status[$hskey]["plugin_output"] = $outputTmp[$i] . "<br />";
+                        $service_status[$hskey]["plugin_output"] = htmlentities($outputTmp[$i]) . "<br />";
                     } else {
-                        $service_status[$hskey]["long_plugin_output"] .= $outputTmp[$i] . "<br />";
+                        $service_status[$hskey]["long_plugin_output"] .= htmlentities($outputTmp[$i]) . "<br />";
                     }
                     $i++;
                 }

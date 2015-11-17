@@ -276,6 +276,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $data = $DBRESULT->fetchRow();
 
         $host_status[$host_name] = $data;
+        $host_status[$host_name]["plugin_output"] = htmlentities($host_status[$host_name]["plugin_output"]);
         $host_status[$host_name]["current_state"] = $tab_host_status[$data["current_state"]];
         if (isset($host_status[$host_name]["notes_url"]) && $host_status[$host_name]["notes_url"]) {
             $host_status[$host_name]["notes_url"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes_url"]);
