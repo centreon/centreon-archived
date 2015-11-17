@@ -73,7 +73,7 @@ abstract class AbstractObject {
     private function toUTF8($str) {
         $finalString = $str;
         if (mb_detect_encoding($finalString, 'UTF-8', true) !== 'UTF-8')  {
-            $finalString = utf8_encode($finalString);
+            $finalString = mb_convert_encoding($finalString, 'UTF-8');
         }
         return $finalString;
     }
