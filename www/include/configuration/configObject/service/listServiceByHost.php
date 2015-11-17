@@ -136,7 +136,8 @@ $tmp_search_h = '';
 if (isset($_GET['search_h'])) {
 	$tmp_search_h = $_GET['search_h'];
     $oreon->svc_host_search = $tmp_search_h;
-} elseif (isset($_POST["searchH"])) {
+}
+if (isset($_POST["searchH"])) {
 	$tmp_search_h = $_POST["searchH"];
     $oreon->svc_host_search = $tmp_search_h;
 } elseif (isset($oreon->svc_host_search) && $oreon->svc_host_search != '')

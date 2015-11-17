@@ -155,13 +155,13 @@ class Backend {
         $mysql_user = $conf_centreon["user"];
         $mysql_password = $conf_centreon["password"];
         $this->db = new PDO("mysql:dbname=pdo;host=" . $mysql_host . ";dbname=" . $mysql_database,
-        $mysql_user, $mysql_password);
+        $mysql_user, $mysql_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
         $mysql_host_cs = $conf_centreon["hostCentstorage"];
         $mysql_database_cs = $conf_centreon["dbcstg"];
         $this->db_cs = new PDO("mysql:dbname=pdo;host=" . $mysql_host_cs . ";dbname=" . $mysql_database_cs,
-        $mysql_user, $mysql_password);
+        $mysql_user, $mysql_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
         $this->db_cs->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 }

@@ -68,7 +68,6 @@ $form->addElement('text', 'nagios_path_img', _("Images Directory"), $attrsText);
 $form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
 $form->addElement('text', 'interval_length', _("Interval Length"), $attrsText2);
 $form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
-$form->addElement('select', 'monitoring_engine', _("Default Engine"), array("CENGINE" => "Centreon Engine", "NAGIOS" => "Nagios"));
 
 /*
  * Correlation engine
@@ -113,6 +112,7 @@ $scaleChoices = array("s" => _("seconds"),
                     );
 $form->addElement('select', 'monitoring_dwt_duration_scale', _("Scale of time"), $scaleChoices);
 
+$form->addElement('hidden', 'monitoring_engine', "CENGINE");
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);

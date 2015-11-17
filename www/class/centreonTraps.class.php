@@ -48,16 +48,13 @@ class CentreonTraps
     /*
      * constructor
      */
-    public function __construct($centreon, $db, $form = null)
+    public function __construct($db, $centreon = null, $form = null)
     {
-        if (!isset($centreon)) {
-            throw new Exception('Centreon object is required');
-        }
         if (!isset($db)) {
             throw new Exception('Db connector object is required');
         }
-        $this->_centreon = $centreon;
         $this->_db = $db;
+        $this->_centreon = $centreon;
         $this->_form = $form;
     }
 
@@ -605,7 +602,7 @@ class CentreonTraps
             . "WHERE traps_id IN (" . $explodedValues . ") "
             . "ORDER BY traps_name ";
         
-        $resRetrieval = $this->db->query($query);
+        $resRetrieval = $this->_db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
                 'id' => $row['traps_id'],
