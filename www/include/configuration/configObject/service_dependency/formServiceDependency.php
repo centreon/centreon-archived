@@ -39,32 +39,6 @@ $dep = array();
 $parentServices = array();
 $childServices = array();
 
-/* hosts */
-$hosts = $acl->getHostAclConf(
-    null,
-    $oreon->broker->getBroker(),
-    array(
-        'fields'  => array('host.host_id', 'host.host_name'),
-        'keys'    => array('host_id'),
-        'get_row' => 'host_name',
-        'order'   => array('host.host_name')
-    )
-);
-
-/* services */
-/*if (!$oreon->user->admin) {
-    $hServices = array();
-    $sql = "SELECT DISTINCT CONCAT(host_id, '_', service_id) as k, 
-                            CONCAT(host_name, ' / ', service_description) as v
-            FROM $dbmon.centreon_acl 
-            WHERE group_id IN (".$acl->getAccessGroupsString().")";
-    $res = $pearDB->query($sql);
-    while ($row = $res->fetchRow()) {
-        $hServices[$row['k']] = $row['v'];
-    }
-}*/
-
-        
 $initialValues = array();
 if (($o == "c" || $o == "w") && $dep_id)	{
 	$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
@@ -87,25 +61,7 @@ if (($o == "c" || $o == "w") && $dep_id)	{
         $DBRESULT->free();
 }
 
-/*
- * Services comes from DB -> Store in $hServices Array
- */
-    /*if ($oreon->user->admin) {
-        $hServices = array();
-        $DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-        while ($elem = $DBRESULT->fetchRow())	{
-            $services = getMyHostServices($elem["host_id"]);
-            foreach ($services as $key=>$index)	{
-                $index = str_replace('#S#', "/", $index);
-                $index = str_replace('#BS#', "\\", $index);
-                $hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
-            }
-        }
-    }*/
-
-/*
- * Var information to format the element
- */
+# Var information to format the element
 $attrsText 		= array("size"=>"30");
 $attrsText2 	= array("size"=>"10");
 $attrsAdvSelect = array("style" => "width: 400px; height: 200px;");
@@ -124,9 +80,7 @@ $attrServices = array(
     'linkedObject' => 'centreonService'
 );
 
-/*
- * Form begin
- */
+# Form begin
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 if ($o == "a") {
 	$form->addElement('header', 'title', _("Add a Dependency"));
@@ -136,9 +90,7 @@ if ($o == "a") {
 	$form->addElement('header', 'title', _("View a Dependency"));
 }
 
-/*
- * Dependency basic information
- */
+# Dependency basic information
 $form->addElement('header', 'information', _("Information"));
 $form->addElement('text', 'dep_name', _("Name"), $attrsText);
 $form->addElement('text', 'dep_description', _("Description"), $attrsText);
