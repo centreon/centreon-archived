@@ -74,7 +74,7 @@ try {
                 $widgetObj->udpateViewWidgetRelations($customViewId, $_POST['widget_id']);
             }
         }else if(isset($_POST['create_load']['create_load']) && $_POST['create_load']['create_load'] == 'load'){
-            $viewObj->loadCustomView($_POST);
+            $customViewId = $viewObj->loadCustomView($_POST);
         }
     } elseif ($action == "edit" && $customViewId) {
         $viewObj->updateCustomView($_POST);
