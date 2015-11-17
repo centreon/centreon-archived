@@ -246,12 +246,10 @@ if ($oreon->broker->getBroker() == 'broker') {
     /*
      * Get the stats file name
      */
-    $queryStatName = 'SELECT cbi.config_value, cb.config_name
-    	    	FROM cfg_centreonbroker_info as cbi, cfg_centreonbroker as cb
-    	    	WHERE cb.config_id = cbi.config_id
-    	    		AND cbi.config_group = "stats"
-    	    		AND cbi.config_key = "fifo"
-    	    		AND cb.ns_nagios_server = ' . CentreonDB::escape($selectedPoller);
+    $queryStatName = "SELECT config_name,retention_path "
+        . "FROM cfg_centreonbroker "
+        . "WHERE stats_activate='1' "
+        . "AND ns_nagios_server = " . CentreonDB::escape($selectedPoller) . " ";
     $res = $pearDB->query($queryStatName);
     if (PEAR::isError($res)) {
         $tpl->assign('msg_err', _('Error in getting stats filename'));
@@ -262,7 +260,7 @@ if ($oreon->broker->getBroker() == 'broker') {
         $perf_info = array();
         $perf_err = array();
         while ($row = $res->fetchRow()) {
-            $statsfile = $row['config_value'];
+            $statsfile = $row['retention_path'] . '/' . $row['config_name'] . '.stats';
             if ($defaultPoller != $selectedPoller) {
                 $statsfile = '/var/lib/centreon/broker-stats/broker-stats-' . $selectedPoller . '.dat';
             }

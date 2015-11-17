@@ -151,7 +151,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
         if(is_null($currentHostDate)){
           $currentHostDate = "UNIX_TIMESTAMP()";
         }
-        
 		if (!isset($downtimeHosts[$dt_id])) {
 			$downtimeHosts[$dt_id] = array();
 			$downtimeServices[$dt_id] = array();
@@ -163,15 +162,14 @@ class CentreonDowntimeBroker extends CentreonDowntime
 				AND comment_data = '[Downtime cycle #" . $dt_id . "]'";
 			$res = $this->dbb->query($query);
 			while ($row = $res->fetchRow()) {
-				if (!isset($downtimes[$dt_id][$row['host_id']]) && is_null($row['service_id'])) {
+				if (!isset($downtimeHosts[$dt_id][$row['host_id']]) && ($row['service_id'] === "" || is_null($row['service_id']))) {
 					$downtimeHosts[$dt_id][$row['host_id']] = $row;
 				}
-				if (!is_null($row['service_id'])) {
+				if (($row['service_id'] !== "" || is_null($row['service_id']))) {
 					$downtimeServices[$dt_id][$row['host_id']][$row['service_id']] = $row;
 				}
 			}
 		}
-		
 		$arr = array();
 		if (!is_null($serviceId)) {
 			if (isset($downtimeServices[$dt_id]) 
@@ -181,7 +179,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
 		} elseif (isset($downtimeHosts[$dt_id]) && isset($downtimeHosts[$dt_id][$hostId])) {
 			$arr = $downtimeHosts[$dt_id][$hostId];
 		}
-
 		$listObj = array();
 		foreach ($arr as $row) {
 			$listObj[] = $row;

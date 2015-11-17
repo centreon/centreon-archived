@@ -77,9 +77,6 @@ $color_list_up_hover = "#B2A867";
 $color_list_down = "#ffbbbb";
 $color_list_down_hover = "#dfbbbb";
 
-
-
-$bg_image_header = "../Images/bg_header_red.gif";
 $menu1_bgimg = "#a5545b";
 
 $menu2_color = "#ffffff";
