@@ -92,7 +92,7 @@ $form->addElement('header', 'title', $title);
 $form->addElement('header', 'information', _("General Information"));
 
 
-$form->addElement('select', 'wiewLoad', _("Public views list"),$arrayView );
+$form->addElement('select', 'viewLoad', _("Public views list"),$arrayView );
 
 
 /**

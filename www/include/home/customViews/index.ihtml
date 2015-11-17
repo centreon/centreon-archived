@@ -28,8 +28,8 @@
                 </td>
               </tr>
               <tr class="load_field" style="display:none;">
-                <td class="FormRowField">{$formAddView.wiewLoad.label}</td>
-                <td class="FormRowValue">{$formAddView.wiewLoad.html}</td>
+                <td class="FormRowField">{$formAddView.viewLoad.label}</td>
+                <td class="FormRowValue">{$formAddView.viewLoad.html}</td>
               </tr>
               <tr class="create_field">
                 <td class="FormRowField">{$formAddView.layout.label}</td>
@@ -333,9 +333,11 @@ function setTimerLabel() {
 
 /* Submit action for add a view */
 function submitAddView() {
-  if (jQuery("#formAddView input[name='name']").val().trim() === '') {
-    jQuery('.create_field .error-msg').show();
-    return false;
+  if(jQuery('input[name="create_load[create_load]"]:checked').val() === "create"){
+    if (jQuery("#formAddView input[name='name']").val().trim() === '') {
+      jQuery('.create_field .error-msg').show();
+      return false;
+    }
   }
   jQuery.ajax({
     type: "post",
