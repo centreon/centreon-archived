@@ -947,7 +947,7 @@ div.menuLeft {
     background-color: #e7e7e8;
     position: fixed;
     bottom: 0;
-    z-index: 10;
+    z-index: 111;
 }
 
 #footer table tr td{
@@ -1513,7 +1513,7 @@ span.state_badge {
   background-color: #58585a;
   padding: 6px;
   cursor: pointer;
-  z-index:11;
+  z-index:112;
   bottom:14px;
 }
 
