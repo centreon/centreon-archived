@@ -193,6 +193,28 @@ sub moveCmdFile($){
     }
 }
 
+############################################
+## Get all broker statistics
+#
+sub getAllBrokerStats {
+    my $self = shift;
+
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `localhost` = '0' AND `ns_activate` = '1'");
+    if ($status == -1) {
+        $self->{logger}->writeLogError("Error when getting server properties");
+        return -1;
+    }
+    while (my $data = $sth->fetchrow_hashref()) {
+        if (!$self->{stop}) {
+            return ;
+        }
+        if ($self->{enable_broker_stats} == 1) {
+            $self->getBrokerStats($data->{id});
+        }
+    }
+    return 0;
+}
+
 ###########################################
 ## Get a instant copy of the broker stat 
 ## fifo
@@ -871,6 +893,8 @@ sub run {
             
             # Check debug Flag
             $self->checkDebugFlag();
+
+            $self->getAllBrokerStats();
                   
             $self->{timeSyncPerf} = time();
         }
