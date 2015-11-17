@@ -167,6 +167,8 @@ try {
     $dbh_sqlite = new PDO('sqlite:'.$dbfilename);
     $dbh_sqlite->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    $dbh_sqlite->beginTransaction();
+    
     $dbh_sqlite->exec("
             CREATE TABLE IF NOT EXISTS `nagios_server` (
                 `id` int(11) UNIQUE NOT NULL,
@@ -304,8 +306,8 @@ try {
                     `traps_id` int(11) DEFAULT NULL
                     );
                     
-            CREATE INDEX IF NOT EXISTS idx_tg_traps_id ON traps_group (traps_id);
-            CREATE INDEX IF NOT EXISTS idx_tg_traps_group_id ON traps_group (traps_group_id);
+            CREATE INDEX IF NOT EXISTS idx_tg_traps_id ON traps_group_relation (traps_id);
+            CREATE INDEX IF NOT EXISTS idx_tg_traps_group_id ON traps_group_relation (traps_group_id);
 
             CREATE TABLE IF NOT EXISTS `traps_vendor` (
                 `id` int(11) DEFAULT NULL,
@@ -324,8 +326,7 @@ try {
             
             ");
 
-            $dbh_sqlite->beginTransaction();
-
+            
             // Poller
             $stmt = $dbh_sqlite->prepare("INSERT INTO nagios_server (`id`, ns_ip_address) VALUES (
                     :id, :ns_ip_address)");
