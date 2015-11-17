@@ -1663,27 +1663,27 @@ class CentreonACL {
         $where_acl = "";
         if (!$this->admin) {
             $groupIds = array_keys($this->accessGroups);
-            $from_acl = ", $db_name_acl.centreon_acl";
-            $where_acl = " AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") AND $db_name_acl.centreon_acl.host_id = host.host_id AND $db_name_acl.centreon_acl.service_id = service.service_id";
+            $from_acl = ", $db_name_acl.centreon_acl ";
+            $where_acl = " AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") AND $db_name_acl.centreon_acl.host_id = host.host_id AND $db_name_acl.centreon_acl.service_id = service.service_id ";
         }
         $query = $request['select'] . $request['simpleFields'] . " "
             . "FROM ( "
             . "SELECT " . $request['fields'] . " "
-            . "FROM servicegroup, servicegroup_relation, service, host " . $from_acl
-            . "WHERE servicegroup.sg_id = '".CentreonDB::escape($sg_id)."'"
-            . "AND service.service_activate='1' AND host.host_activate='1' AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id"
-            . "AND servicegroup_relation.service_service_id = service.service_id"
-            . "AND servicegroup_relation.host_host_id = host.host_id"
-            . $where_acl
+            . "FROM servicegroup, servicegroup_relation, service, host " . $from_acl . " "
+            . "WHERE servicegroup.sg_id = '".CentreonDB::escape($sg_id)."' "
+            . "AND service.service_activate='1' AND host.host_activate='1' AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id "
+            . "AND servicegroup_relation.service_service_id = service.service_id "
+            . "AND servicegroup_relation.host_host_id = host.host_id "
+            . $where_acl . " "
             . "UNION "
             . "SELECT " . $request['fields'] . " "
-            . "FROM servicegroup, servicegroup_relation, hostgroup_relation, service, host " . $from_acl
+            . "FROM servicegroup, servicegroup_relation, hostgroup_relation, service, host " . $from_acl . " "
             . "WHERE servicegroup.sg_id = '" . CentreonDB::escape($sg_id) . "' "
             . "AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id "
             . "AND servicegroup_relation.hostgroup_hg_id = hostgroup_relation.hostgroup_hg_id "
             . "AND hostgroup_relation.host_host_id = host.host_id "
             . "AND servicegroup_relation.service_service_id = service.service_id "
-            . $where_acl
+            . $where_acl . " "
             . ") as t ";
 
         $query .= $request['order'] . $request['pages'];

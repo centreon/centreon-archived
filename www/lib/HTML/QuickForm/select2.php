@@ -405,7 +405,11 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
 
             foreach ($finalDataset as $dataSet) {
                 $currentOption = '<option selected="selected" value="'
-                    . $dataSet['id'] . '">'
+                    . $dataSet['id'] . '" ';
+                if (isset($dataSet['hide']) && $dataSet['hide'] === true) {
+                    $currentOption .= "hidden";
+                }
+                $currentOption .= '>'
                     . $dataSet['text'] . "</option>";
                 
                 if (strpos($this->_defaultSelectedOptions, $currentOption) === false) {

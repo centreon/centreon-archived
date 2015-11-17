@@ -33,62 +33,30 @@
  *
  */
 
-/* hosts */
-$hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields'  => array('host.host_id', 'host.host_name'),
-                                                                       'keys'    => array('host_id'),
-                                                                       'get_row' => 'host_name',
-                                                                       'order'   => array('host.host_name')));
-
-/* services */
-/*if (!$oreon->user->admin) {
-    $hServices = array();
-    $sql = "SELECT DISTINCT CONCAT(host_id, '_', service_id) as k, 
-                            CONCAT(host_name, ' / ', service_description) as v
-            FROM $dbmon.centreon_acl 
-            WHERE group_id IN (".$acl->getAccessGroupsString().")";
-    $res = $pearDB->query($sql);
-    while ($row = $res->fetchRow()) {
-        $hServices[$row['k']] = $row['v'];
-    }
-    $res->free();
-}*/
-
 $dep = array();
 $childServices = array();
-    $initialValues = array();
+$initialValues = array();
 if (($o == "c" || $o == "w") && $dep_id) {
-	$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 
-	// Set base value
-	$dep = array_map("myDecode", $DBRESULT->fetchRow());
+    # Set base value
+    $dep = array_map("myDecode", $DBRESULT->fetchRow());
 
-	// Set Notification Failure Criteria
-	$dep["notification_failure_criteria"] = explode(',', $dep["notification_failure_criteria"]);
-	foreach ($dep["notification_failure_criteria"] as $key => $value) {
-		$dep["notification_failure_criteria"][trim($value)] = 1;
-	}
+    # Set Notification Failure Criteria
+    $dep["notification_failure_criteria"] = explode(',', $dep["notification_failure_criteria"]);
+    foreach ($dep["notification_failure_criteria"] as $key => $value) {
+        $dep["notification_failure_criteria"][trim($value)] = 1;
+    }
 
-	// Set Execution Failure Criteria
-	$dep["execution_failure_criteria"] = explode(',', $dep["execution_failure_criteria"]);
-	foreach ($dep["execution_failure_criteria"] as $key => $value) {
-		$dep["execution_failure_criteria"][trim($value)] = 1;
-	}
+    # Set Execution Failure Criteria
+    $dep["execution_failure_criteria"] = explode(',', $dep["execution_failure_criteria"]);
+    foreach ($dep["execution_failure_criteria"] as $key => $value) {
+        $dep["execution_failure_criteria"][trim($value)] = 1;
+    }
 
-     }
+}
 
-/*
- *  Database retrieve information for differents elements list we need on the page
- */
-
-/*
- * Host comes from DB -> Store in $hosts Array
- */
-$hostFilter = array(null => null,
-                    0    => sprintf('__%s__', _('ALL'))) + $hosts;
-
-/*
- * Var information to format the element
- */
+# Var information to format the element
 $attrsText 		= array("size"=>"30");
 $attrsText2 	= array("size"=>"10");
 $attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
@@ -204,20 +172,20 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 # Just watch a Dependency information
-if ($o == "w")	{
+if ($o == "w") {
 	if ($centreon->user->access->page($p) != 2)
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$dep_id."'"));
     $form->setDefaults($dep);
 	$form->freeze();
 }
 # Modify a Dependency information
-else if ($o == "c")	{
+else if ($o == "c") {
 	$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
 	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($dep);
 }
 # Add a Dependency information
-else if ($o == "a")	{
+else if ($o == "a") {
 	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
 	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	$form->setDefaults(array('inherits_parent', '0'));
@@ -225,7 +193,7 @@ else if ($o == "a")	{
 $tpl->assign("nagios", $oreon->user->get_version());
 
 $valid = false;
-if ($form->validate())	{
+if ($form->validate()) {
 	$depObj = $form->getElement('dep_id');
 	if ($form->getSubmitValue("submitA"))
 		$depObj->setValue(insertHostDependencyInDB());

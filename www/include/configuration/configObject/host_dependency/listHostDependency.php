@@ -51,79 +51,60 @@
             $aclFrom = ", $dbmon.centreon_acl acl ";
             $aclCond = " AND dhpr.host_host_id = acl.host_id 
                          AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
-            $aclCond2 = " AND dhcr.host_host_id = acl.host_id 
-                         AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
         }
         
-	$rq = "SELECT COUNT(*) FROM dependency dep";
-	$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
-                        FROM dependency_hostParent_relation dhpr $aclFrom
-						WHERE dhpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
-			OR (SELECT DISTINCT COUNT(*)
-				FROM dependency_hostChild_relation dhcr $aclFrom
-				WHERE dhcr.dependency_dep_id = dep.dep_id $aclCond2) > 0)	";
+    $rq = "SELECT COUNT(DISTINCT dep.dep_id) as count_dep "
+        . "FROM dependency dep, dependency_hostParent_relation dhpr " . $aclFrom . " "
+        . "WHERE dhpr.dependency_dep_id = dep.dep_id " . $aclCond . " ";
 
     $search = '';
-	if (isset($_POST['searchHD']) && $_POST['searchHD']) {
+    if (isset($_POST['searchHD']) && $_POST['searchHD']) {
         $search = $_POST['searchHD'];
-		$rq .= " AND (dep_name LIKE '%".CentreonDB::escape($search)."%' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";
+        $rq .= " AND (dep_name LIKE '%".CentreonDB::escape($search)."%' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";
     }
 
-	$DBRESULT = $pearDB->query($rq);
-	$tmp = $DBRESULT->fetchRow();
-	$rows = $tmp["COUNT(*)"];
+    $DBRESULT = $pearDB->query($rq);
+    $tmp = $DBRESULT->fetchRow();
 
-	include("./include/common/checkPagination.php");
+    # Manage pagination
+    $rows = $tmp["count_dep"];
+    include("./include/common/checkPagination.php");
 
-	/*
-	 * Smarty template Init
-	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
+    # Smarty template Init
+    $tpl = new Smarty();
+    $tpl = initSmartyTpl($path, $tpl);
 
-	/* Access level */
-	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
-	$tpl->assign('mode_access', $lvl_access);
+    # Access level
+    ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+    $tpl->assign('mode_access', $lvl_access);
 
-	/*
-	 * start header menu
-	 */
-	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-	$tpl->assign("headerMenu_name", _("Name"));
-	$tpl->assign("headerMenu_description", _("Description"));
-	$tpl->assign("headerMenu_options", _("Options"));
+    # Start header menu
+    $tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
+    $tpl->assign("headerMenu_name", _("Name"));
+    $tpl->assign("headerMenu_description", _("Description"));
+    $tpl->assign("headerMenu_options", _("Options"));
 
-	/*
-	 * Dependcy list
-	 */
-	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-	$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
-                        FROM dependency_hostParent_relation dhpr $aclFrom
-						WHERE dhpr.dependency_dep_id = dep.dep_id $aclCond) > 0
-			OR (SELECT DISTINCT COUNT(*)
-				FROM dependency_hostChild_relation dhcr $aclFrom
-				WHERE dhcr.dependency_dep_id = dep.dep_id $aclCond2) > 0)	";
+    # Dependency list
+    $rq = "SELECT DISTINCT dep_id, dep_name, dep_description "
+        . "FROM dependency dep, dependency_hostParent_relation dhpr " . $aclFrom . " "
+        . "WHERE dhpr.dependency_dep_id = dep.dep_id " . $aclCond . " ";
 
-	if ($search) {
-		$rq .= " AND (dep_name LIKE '%".CentreonDB::escape($search)."%' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";
+    if ($search) {
+        $rq .= " AND (dep_name LIKE '%".CentreonDB::escape($search)."%' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";
     }
-	$rq .= " ORDER BY dep_name, dep_description LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT = $pearDB->query($rq);
+    $rq .= " ORDER BY dep_name, dep_description LIMIT ".$num * $limit.", ".$limit;
+    $DBRESULT = $pearDB->query($rq);
 
-	$search = tidySearchKey($search, $advanced_search);
+    $search = tidySearchKey($search, $advanced_search);
 
-	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
+    $form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
-	/*
-	 * Different style between each lines
-	 */
-	$style = "one";
+    # Different style between each lines
+    $style = "one";
 
-	/*
-	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
-	 */
-	$elemArr = array();
-	for ($i = 0; $dep = $DBRESULT->fetchRow(); $i++) {
+    # Fill a tab with a mutlidimensionnal Array we put in $tpl
+    $elemArr = array();
+    for ($i = 0; $dep = $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
 		$selectedElements = $form->addElement('checkbox', "select[".$dep['dep_id']."]");
 		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$dep['dep_id']."]'></input>";

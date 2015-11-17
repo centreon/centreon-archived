@@ -50,19 +50,11 @@ if (!$oreon->user->admin) {
     $aclCond = " AND dspr.host_host_id = acl.host_id 
                  AND acl.service_id = dspr.service_service_id 
                  AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
-    $aclCond2 = " AND dscr.host_host_id = acl.host_id 
-             AND acl.service_id = dscr.service_service_id 
-             AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
 }
         
-$rq = "SELECT COUNT(*) FROM dependency dep";
-$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
-                    FROM dependency_serviceParent_relation dspr $aclFrom
-                    WHERE dspr.dependency_dep_id = dep.dep_id $aclCond ) > 0 
-		OR (
-		SELECT DISTINCT COUNT(*) 
-                    FROM dependency_serviceChild_relation dscr $aclFrom
-                    WHERE dscr.dependency_dep_id = dep.dep_id $aclCond2) > 0)";
+$rq = "SELECT COUNT(DISTINCT dep.dep_id) as count_dep "
+    . "FROM dependency dep, dependency_serviceParent_relation dspr " . $aclFrom . " "
+    . "WHERE dspr.dependency_dep_id = dep.dep_id " . $aclCond . " ";
 
 $search = '';
 if (isset($_POST['searchSD']) && $_POST['searchSD']) {
@@ -72,7 +64,7 @@ if (isset($_POST['searchSD']) && $_POST['searchSD']) {
 $DBRESULT = $pearDB->query($rq);
 
 $tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+$rows = $tmp["count_dep"];
 
 include("./include/common/checkPagination.php");
 
@@ -86,25 +78,17 @@ $tpl = initSmartyTpl($path, $tpl);
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+# start header menu
 $tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_description", _("Description"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * Dependency list
- */
-$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
-                    FROM dependency_serviceParent_relation dspr $aclFrom
-                    WHERE dspr.dependency_dep_id = dep.dep_id $aclCond) > 0
-		OR (
-		SELECT DISTINCT COUNT(*) 
-                    FROM dependency_serviceChild_relation dscr $aclFrom
-                    WHERE dscr.dependency_dep_id = dep.dep_id $aclCond2) > 0) ";
+# Dependency list
+$rq = "SELECT DISTINCT dep_id, dep_name, dep_description "
+    . "FROM dependency dep, dependency_serviceParent_relation dspr " . $aclFrom . " "
+    . "WHERE dspr.dependency_dep_id = dep.dep_id " . $aclCond . " ";
+
 if ($search)
 	$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 $rq .= " ORDER BY dep_name, dep_description LIMIT ".$num * $limit.", ".$limit;
@@ -114,14 +98,10 @@ $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
-/*
- * Different style between each lines
- */
+# Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+# Fill a tab with a mutlidimensionnal Array we put in $tpl
 $elemArr = array();
 for ($i = 0; $dep = $DBRESULT->fetchRow(); $i++) {
 	$moptions = "";
