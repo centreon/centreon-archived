@@ -840,6 +840,9 @@ jQuery(function () {
             jQuery('.viewBody').empty();
           },
           selected: -1,
+          load: function () {
+            displayBtnToggleEdit();
+          }
         });
       }
       jQuery("#tabs").tabs('select', getTabPos(data.current));
