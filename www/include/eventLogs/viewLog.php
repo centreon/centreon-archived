@@ -51,7 +51,7 @@ function get_user_param($user_id, $pearDB) {
 		} else {
 			if (is_null($cache)) {
 				$cache = array();
-				$query = "SELECT cp_key, cp_value FROM contact_param WHERE cp_key in ('" . join("', '", $list_param) . "') AND cp_contact_id = " . $user_id;
+				$query = "SELECT cp_key, cp_value FROM contact_param WHERE cp_key in ('" . implode("', '", $list_param) . "') AND cp_contact_id = " . $user_id;
 				$DBRESULT = $pearDB->query($query);
 				while ($row = $DBRESULT->fetchRow()) {
 					$cache[$row['cp_key']] = $row['cp_value'];
@@ -68,31 +68,31 @@ function get_user_param($user_id, $pearDB) {
 $user_params = get_user_param($oreon->user->user_id, $pearDB);
 
 if (!isset($user_params["log_filter_host"]))
-	$user_params["log_filter_host"] = 1;
+	$user_params["log_filter_host"] = true;
 if (!isset($user_params["log_filter_svc"]))
-	$user_params["log_filter_svc"] = 1;
+	$user_params["log_filter_svc"] = true;
 if (!isset($user_params["log_filter_host_down"]))
-	$user_params["log_filter_host_down"] = 1;
+	$user_params["log_filter_host_down"] = true;
 if (!isset($user_params["log_filter_host_up"]))
-	$user_params["log_filter_host_up"] = 1;
+	$user_params["log_filter_host_up"] = true;
 if (!isset($user_params["log_filter_host_unreachable"]))
-	$user_params["log_filter_host_unreachable"] = 1;
+	$user_params["log_filter_host_unreachable"] = true;
 if (!isset($user_params["log_filter_svc_ok"]))
-	$user_params["log_filter_svc_ok"] = 1;
+	$user_params["log_filter_svc_ok"] = true;
 if (!isset($user_params["log_filter_svc_warning"]))
-	$user_params["log_filter_svc_warning"] = 1;
+	$user_params["log_filter_svc_warning"] = true;
 if (!isset($user_params["log_filter_svc_critical"]))
-	$user_params["log_filter_svc_critical"] = 1;
+	$user_params["log_filter_svc_critical"] = true;
 if (!isset($user_params["log_filter_svc_unknown"]))
-	$user_params["log_filter_svc_unknown"] = 1;
+	$user_params["log_filter_svc_unknown"] = true;
 if (!isset($user_params["log_filter_notif"]))
-	$user_params["log_filter_notif"] = 1;
+	$user_params["log_filter_notif"] = true;
 if (!isset($user_params["log_filter_error"]))
-	$user_params["log_filter_error"] = 1;
+	$user_params["log_filter_error"] = true;
 if (!isset($user_params["log_filter_alert"]))
-	$user_params["log_filter_alert"] = 1;
+	$user_params["log_filter_alert"] = true;
 if (!isset($user_params["log_filter_oh"]))
-	$user_params["log_filter_oh"] = 1;
+	$user_params["log_filter_oh"] = true;
 
 if (!isset($user_params["search_H"]))
 	$user_params["search_H"] = "";
@@ -100,7 +100,7 @@ if (!isset($user_params["search_S"]))
 	$user_params["search_S"] = "";
 
 if (!isset($user_params['log_filter_period']))
-	$user_params['log_filter_period'] = "";
+	$user_params['log_filter_period'] = "86400";
 
 if (!isset($user_params['output']))
 	$user_params['output'] = "";

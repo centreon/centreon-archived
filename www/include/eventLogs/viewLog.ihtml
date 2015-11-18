@@ -59,10 +59,10 @@
                     {/literal}" {if $user_params.log_filter_svc_ok == "true"} checked="checked" {/if}/> {$lang.ok}<br>
                 <input name="warning" id="cb_warning" type="checkbox" onClick="{literal}checkStatusCheckbox(this.checked);
                     log_4_host(opid, this.form, '');
-                    {/literal}" {if $user_params.log_filter_alert == "true"} checked="checked" {/if}/> {$lang.w}<br>
+                    {/literal}" {if $user_params.log_filter_svc_warning == "true"} checked="checked" {/if}/> {$lang.w}<br>
                 <input name="critical" id="cb_critical" type="checkbox" onClick="{literal}checkStatusCheckbox(this.checked);
                     log_4_host(opid, this.form, '');
-                    {/literal}" {if $user_params.log_filter_svc_warning == "true"} checked="checked" {/if}/> {$lang.cr}<br>
+                    {/literal}" {if $user_params.log_filter_svc_critical == "true"} checked="checked" {/if}/> {$lang.cr}<br>
                 <input name="unknown" id="cb_unknown" type="checkbox" onClick="{literal}checkStatusCheckbox(this.checked);
                     log_4_host(opid, this.form, '');
                     {/literal}" {if $user_params.log_filter_svc_unknown == "true"} checked="checked" {/if}/> {$lang.uk}
