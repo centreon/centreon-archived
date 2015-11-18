@@ -53,24 +53,32 @@ $labels['actions'] = _("Actions");
 
 $handle = opendir(_CENTREON_PATH_ . 'www/widgets/');
 $widgets = array();
-while (($currentDir = readdir($handle)) != false)	{
+
+# Retrive widget directories
+$widgetDirs = array();
+while (($currentDir = readdir($handle)) != false){
     if ($currentDir != "." && $currentDir != ".." && $currentDir != ".SVN" && $currentDir != ".svn" && $currentDir != ".CSV") {
-        $configFile = _CENTREON_PATH_ . 'www/widgets/' . $currentDir . '/configs.xml';
-        if (is_file($configFile)) {
-            $tab = $widgetObj->readConfigFile($configFile);
-            $dbTab = $widgetObj->getWidgetInfoByDirectory($currentDir);
-            if (isset($dbTab)) {
-                $dbTab['is_installed'] = 1;
-                if ($dbTab['version'] != $tab['version']) {
-                    $dbTab['upgrade'] = 1;
-                }
-                $widgets[] = $dbTab;
-            } else {
-                $tab['is_installed'] = 0;
-                $tab['install'] = 1;
-                $tab['directory'] = $currentDir;
-                $widgets[] = $tab;
+        $widgetDirs[] = $currentDir;
+    }
+}
+sort($widgetDirs);
+
+foreach ($widgetDirs as $currentDir) {
+    $configFile = _CENTREON_PATH_ . 'www/widgets/' . $currentDir . '/configs.xml';
+    if (is_file($configFile)) {
+        $tab = $widgetObj->readConfigFile($configFile);
+        $dbTab = $widgetObj->getWidgetInfoByDirectory($currentDir);
+        if (isset($dbTab)) {
+            $dbTab['is_installed'] = 1;
+            if ($dbTab['version'] != $tab['version']) {
+                $dbTab['upgrade'] = 1;
             }
+            $widgets[] = $dbTab;
+        } else {
+            $tab['is_installed'] = 0;
+            $tab['install'] = 1;
+            $tab['directory'] = $currentDir;
+            $widgets[] = $tab;
         }
     }
 }
