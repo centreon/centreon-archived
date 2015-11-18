@@ -22,7 +22,7 @@
 		{section name=elem loop=$elemArr}
 		{assign var=host value=$elemArr[elem].RowMenu_host}
 		<tr class={$elemArr[elem].MenuClass}>
-			<td class="ListColLeft">{if $host != $hostOld}<img src='{$elemArr[elem].RowMenu_hico}'>&nbsp;&nbsp;<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_host}{else}&nbsp;{/if}</a></td>
+			<td class="ListColLeft">{if $host != $hostOld}<img src='{$elemArr[elem].RowMenu_hico}' class="ico-18">&nbsp;&nbsp;<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_host}{else}&nbsp;{/if}</a></td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_service}</a></td>
 		</tr>
 		{assign var=hostOld value=$elemArr[elem].RowMenu_host}
