@@ -115,9 +115,9 @@ $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
 
 $aStatusHost = array(
+    "h" => _("All"),
     "h_unhandled" => _("Unhandled Problems"),
-    "hpb" => _("Host Problems"),
-    "h" => "All"
+    "hpb" => _("Host Problems")
 );
 
 include_once("./include/monitoring/status/Common/default_poller.php");
