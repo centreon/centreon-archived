@@ -309,9 +309,9 @@ $statusList = array(
     "pending" => _("Pending"));
 
 $statusService = array(
+    "svc" => _("All"),
     "svc_unhandled" => _("Unhandled Problems"),
-    "svcpb" => _("Service Problems"),
-    "svc" => "All"
+    "svcpb" => _("Service Problems")
 );
 
 if ($o == "svc") {
