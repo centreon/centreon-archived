@@ -84,6 +84,9 @@ while ($index_data = $DBRESULT->fetchRow()){
     }
 }
 
+# Order by timestamp
+ksort($datas);
+
 print "time;humantime";
 if (count($listMetric)) {
     print ";" . implode(';', $listMetric);
