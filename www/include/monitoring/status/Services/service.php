@@ -309,9 +309,9 @@ $statusList = array(
     "pending" => _("Pending"));
 
 $statusService = array(
+    "svc"   => _("All"),
     "svc_unhandled" => _("Unhandled Problems"),
-    "svcpb" => _("Service Problems"),
-    "svc" => "All"
+    "svcpb" => _("Service Problems")
 );
 
 if ($o == "svc") {
@@ -330,6 +330,7 @@ if ($o == "svc") {
     }
 }
 
+
 $form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
 if (isset($defaultStatus)) {
     $form->setDefaults(array('statusFilter' => $defaultStatus));
@@ -339,7 +340,7 @@ $form->addElement('select', 'statusService', _('Service Status'), $statusService
 
 /* Get default host status by GET */
 if (isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService))) {
-    $form->setDefaults(array('statusService' => $_GET['o']));
+    $form->setDefaults(array('statusService' => "svc_unhandled"));
 /* Get default host status in SESSION */
 } elseif (isset($_SESSION['monitoring_service_status'])) {
     $form->setDefaults(array('statusService' => $_SESSION['monitoring_service_status']));

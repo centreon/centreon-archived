@@ -115,9 +115,9 @@ $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
 
 $aStatusHost = array(
+    "h" => _("All"),
     "h_unhandled" => _("Unhandled Problems"),
-    "hpb" => _("Host Problems"),
-    "h" => "All"
+    "hpb" => _("Host Problems")
 );
 
 include_once("./include/monitoring/status/Common/default_poller.php");
@@ -152,7 +152,7 @@ $form->addElement('select', 'statusHost', _('Host Status'), $aStatusHost, array(
 
 /* Get default host status by GET */
 if (isset($_GET['o']) && in_array($_GET['o'], array_keys($aStatusHost))) {
-    $form->setDefaults(array('statusHost' => $_GET['o']));
+    $form->setDefaults(array('statusHost' => "h_unhandled"));
 /* Get default host status in SESSION */
 } elseif (isset($_SESSION['monitoring_host_status'])) {
     $form->setDefaults(array('statusHost' => $_SESSION['monitoring_host_status']));

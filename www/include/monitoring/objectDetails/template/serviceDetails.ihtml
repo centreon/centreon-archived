@@ -173,7 +173,7 @@
 				<table> <!-- Right Table -->
 					<tr>
 						<td style="vertical-align: top; padding-bottom: 8px !important; " nowrap="nowrap">
-							<table class="table linkList">
+							<table class="table ListTable linkList">
 								<tr class='list_lvl_1'>
 									<td class="FormHeader" style="width: 50%;border-bottom:1px solid #d1d2d4;">
 										<h4>{$host_shortcut}</h4>
