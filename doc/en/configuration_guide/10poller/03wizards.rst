@@ -4,38 +4,19 @@
 Centreon Broker configuration via wizard
 ========================================
 
-You can create configurations of Centreon Broker via the wizard:
+You can create configurations of Centreon Broker via the wizard, to do this:
+#. Go to the menu **Configuration ==> Pollers ==> Centreon-Broker ==> Configuration**
+#. Click on Add with wizard
 
-.. image:: /images/user/configuration/10poller/centreon_broker_add_wizard.png
-   :align: center
 
-Three choices are available:
+Two choices are available:
 
 .. image:: /images/user/configuration/10poller/centreon_broker_wizard.png
    :align: center
 
-***********************************************
-Configuration with an standalone central server
-***********************************************
-
-.. image:: /images/user/configuration/10poller/centreon_broker_wizard_01_schema.png
-   :align: center
-   :alt: Central only schema
-
-.. note::
-    Standalone Centreon server
-
-.. image:: /images/user/configuration/10poller/centreon_broker_wizard_01_step01.png
-   :align: center
-
-#. Enter a name for the configuration
-
-.. image:: /images/user/configuration/10poller/centreon_broker_wizard_02_step02.png
-   :align: center
-
-**************************************************************
-Configuration of central server for a distributed architecture
-**************************************************************
+*******************************
+Configuration of central server
+*******************************
 
 .. image:: /images/user/configuration/10poller/centreon_broker_wizard_02_schema.png
    :align: center
@@ -44,9 +25,7 @@ Configuration of central server for a distributed architecture
 .. note::
    Distributed monitoring schema
 
-.. image:: /images/user/configuration/10poller/centreon_broker_wizard_02_step01.png
-   :align: center
-
+#. Choose **Central**
 #. Enter a name for the configuration
 
 .. image:: /images/user/configuration/10poller/centreon_broker_wizard_02_step02.png
@@ -66,9 +45,7 @@ Configuration of a poller for a distributed architecture
 .. note::
    :alt: Schema distributed monitoring
 
-.. image:: /images/user/configuration/10poller/centreon_broker_wizard_03_step01.png
-   :align: center
-
+#. Choose **Simple poller**
 #. Enter a name for the configuration
 #. Select  a poller
 #. Enter the IP address or the **FQDN** DNS name of the central server

@@ -3,8 +3,8 @@ Configuration of the scheduler
 
 Once the installation is completed, it is necessary to integrate this remote server into the Centreon configuration.
 
-#. Go into the menu: **Configuration** ==> **Centreon**
-#. Duplicate the configuration file of the central server and edit it
+#. Go into the menu: **Configuration** ==> **Pollers**
+#. Click on **Add**
 #. Change the following settings, and save:
 
 *	Change the name of the **Poller Name**.
@@ -14,19 +14,10 @@ Once the installation is completed, it is necessary to integrate this remote ser
 .. image:: /images/user/configuration/10advanced_configuration/07addpoller.png
    :align: center
 
-Now, it is necessary to generate a configuration file for Centreon Engine:
 
-1. Go into the menu: **Configuration** ==> **Monitoring Engines**
-2. In the left menu, click on **main.cfg**
-3. Duplicate the configuration file of the **Central** poller and change it
-4. Change the following settings, and save:
-
-*	Change the name of the **Configuration Name**.
-*	Enable the configuration file of the scheduler by clicking on **Enabled** in the field **Status**.
-*	Choose the new poller in the **Linked poller** field.
-
-.. image:: /images/user/configuration/10advanced_configuration/07mainconffile.png
-   :align: center 
+#. Go into the menu: **Configuration** ==> **Pollers** ==> **Engine configuration**
+#. Select your last added configuration.
+#. Change the following settings, and save:
 
 *	In the **Data** tab - **Multiple broker module** field change the name of the of Centreon Broker configuration file **central-module.xml** to for example: poller1-module.xml.
 
@@ -38,23 +29,15 @@ Centreon Broker configuration
 
 It is necessary to generate a configuration file for Centreon Broker:
 
-#.  Go into the menu: **Configuration** ==> **Centreon**
-#.  In the left menu, click on **Configuration** (below Centreon Broker)
-#.  Duplicate configuration files of the module of your central server and edit it
-#.  Change the following settings, and save:
+#. Go into the menu: **Configuration ==> Pollers ==> Centreon-Broker ==> Configuration**
+#. Use **Add with wizard**
+#. Choose **Simple Poller**
+#. Indicates a configuration name and the Central monitoring server address
+#. Click on Finish
 
-* Change the configuration **name**.
-* Change the **Config file name** which should correspond to the name of the xml file defined in the configuration file of the poller.
-* Enable the configuration file by clicking on **Enabled** in the **Status** field.
-* Change the **Requester** field by selecting your new poller.
+.. image:: /images/user/configuration/10advanced_configuration/07brokerconfwizzard.png
+   :align: center
 
-.. image:: /images/user/configuration/10advanced_configuration/07brokerconf.png
-   :align: center 
-
-* In the **Output** tab, change the **Host to connect to** field by entering the IP address of the server containing your MySQL base (in our case the central server).
-
-.. image:: /images/user/configuration/10advanced_configuration/07brokerconfoutput.png
-   :align: center 
 
 Centreontrapd Configuration
 ===========================

@@ -35,17 +35,6 @@ It is possible of define two settings:
 .. note::
    All the parents of a host must be in a Not-OK status for the host itself to be considered impossible to reach. If only one access path is down (physical dependencies link), the scheduler will continue to monitor this host.
 
-In the situation where family relationships have been defined between hosts supervised by different schedulers, it is possible:
-
-* To prevent the establishment of a parental relationship, when changing the host form, between two hosts monitored by two different pollers.
-* To authorise the establishment of this parental relationship. In this case the dependencies will not be managed by the Monitoring engine engines but by the Centreon Broker which will take into account this relationship in its correlation engine.
-
-To prevent the establishment of this parental relationship, it is necessary to check **Enable strict mode for host parentship management** box in the menu: **Administration ==> Options**.
-
-Conversely, if this box is not checked the parental links between hosts belonging to two different pollers can be established.
-
-.. note:: To avoid receiving this type of notification don’t check the “Unreachable” notification filter on the hosts or on the contacts 
-
 ********************
 Logical dependencies
 ********************

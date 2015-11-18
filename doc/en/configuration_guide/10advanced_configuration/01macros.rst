@@ -71,7 +71,7 @@ In general, these macros are used to make reference to paths containing supervis
 
 To add a resources macro:
 
-* Go into the menu: **Configuration ==> Monitoring engines**
+* Go into the menu: **Configuration ==> Pollers ==> Ressources**
 * Click on **Add**
  
 .. image:: /images/user/configuration/10advanced_configuration/01macrosressources.png

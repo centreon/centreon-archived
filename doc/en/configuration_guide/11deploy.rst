@@ -16,8 +16,8 @@ On creation/deletion/change of objects via the configuration interface, the chan
 First step
 ==========
 
-#. Go into the menu: **Configuration** ==> **Monitoring Engines** ==> **Generate**
-#. Select the **Poller** in the drop-down list.
+#. Go into the menu: **Configuration** ==> **Pollers**
+#. Click on the Generate action icon for the poller
 #. Check the boxes: **Generate Configuration Files** and **Run monitoring engine debug (-v)**
 #. Click on **Export**
 
