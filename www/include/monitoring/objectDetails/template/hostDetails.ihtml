@@ -447,10 +447,10 @@
 				{/if}
 			{/if}
 				<tr class='list_one'>
-					<td class="ListColLeft">&#9679;&nbsp;<a href="#ping" name="ping" onClick="window.open('main.php?p=201&host_id={$host_data.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_ping} {$host_data.host_name}</a></td>
+					<td class="ListColLeft">&#9679;&nbsp;<a href="#ping" name="ping" onClick="window.open('main.php?p=20202&host_id={$host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_ping} {$host_data.host_name}</a></td>
 				</tr>
 				<tr class='list_two'>
-					<td class="ListColLeft">&#9679;&nbsp;<a href="#tracert" name="tracert" onClick="window.open('main.php?p=201&host_id={$host_data.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_tracert} {$host_data.host_name}</a></td>
+					<td class="ListColLeft">&#9679;&nbsp;<a href="#tracert" name="tracert" onClick="window.open('main.php?p=20202&host_id={$host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_tracert} {$host_data.host_name}</a></td>
 				</tr>
 				{if $h_ext_action_url}
 				<tr class='list_one'>
