@@ -152,7 +152,7 @@ $form->addElement('select', 'statusHost', _('Host Status'), $aStatusHost, array(
 
 /* Get default host status by GET */
 if (isset($_GET['o']) && in_array($_GET['o'], array_keys($aStatusHost))) {
-    $form->setDefaults(array('statusHost' => $_GET['o']));
+    $form->setDefaults(array('statusHost' => "h_unhandled"));
 /* Get default host status in SESSION */
 } elseif (isset($_SESSION['monitoring_host_status'])) {
     $form->setDefaults(array('statusHost' => $_SESSION['monitoring_host_status']));
