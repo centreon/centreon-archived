@@ -321,19 +321,8 @@ if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then
 	if [ "$?" -eq 0 ] ; then
 		PROCESS_CENTREON_WWW="1"
 		log "INFO" "$(gettext "You chose to install") : Centreon Web Front"
-		## CentStorage dependancy
+		## CentStorage dependency
 		PROCESS_CENTSTORAGE="1"
-	fi
-fi
-
-## resquest centreon_centstorage
-# CentWeb/CentStorage dependancy
-[ "$PROCESS_CENTREON_WWW" -eq 1 ] && PROCESS_CENTSTORAGE="1"
-if [ "$PROCESS_CENTSTORAGE" -eq 2 ] ; then 
-	yes_no_default "$(gettext "Do you want to install") : Centreon CentStorage"
-	if [ "$?" -eq 0 ] ; then
-		PROCESS_CENTSTORAGE="1"
-		log "INFO" "$(gettext "You chose to install") : Centreon CentStorage"
 	fi
 fi
 
