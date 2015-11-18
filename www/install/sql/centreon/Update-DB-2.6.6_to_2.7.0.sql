@@ -734,6 +734,9 @@ DELETE FROM topology_JS WHERE id_page = 20207;
 DELETE FROM topology WHERE topology_page = 20207; 
 DELETE FROM topology WHERE topology_parent = 202 AND topology_group = 33 AND topology_name = 'Monitoring Engine';
 
+-- Rename Monitoring Engine Statistics menu
+UPDATE topology SET topology_name = 'Poller Statistics' WHERE topology_page = 102;
+
 -- Change centreon tab menus
 SET foreign_key_checks = 0;
 UPDATE topology_JS SET id_page = 60902 WHERE id_page = 60701;
