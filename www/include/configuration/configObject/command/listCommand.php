@@ -48,16 +48,25 @@ if ($type) {
 }
 
 $search = '';
-if (isset($_POST['searchC']) && $_POST['searchC']){
+if (isset($_POST['searchC'])){
     $search = $_POST['searchC'];
-	if ($type_str) {
-		$type_str = " AND " . $type_str;
-	}
-	$req = "SELECT COUNT(*) FROM `command` WHERE `command_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' $type_str";
-} else if ($type) {
-	$req = "SELECT COUNT(*) FROM `command` WHERE $type_str";
+    $oreon->command_search = $search;
+    if ($type_str) {
+        $type_str = " AND " . $type_str;
+    }
+    $req = "SELECT COUNT(*) FROM `command` WHERE `command_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' $type_str";
 } else {
-	$req ="SELECT COUNT(*) FROM `command`";
+    if (isset($oreon->command_search)) {
+        $search = $oreon->command_search;
+    }
+    if ($type) {
+        $req = "SELECT COUNT(*) FROM `command` WHERE $type_str";
+    } else {
+        $req ="SELECT COUNT(*) FROM `command`";
+    }
+    if ($type_str) {
+        $type_str = " AND " . $type_str;
+    }
 }
 
 $DBRESULT = $pearDB->query($req);
