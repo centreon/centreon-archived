@@ -52,8 +52,9 @@ $monitoring_engines =
                              "nagios_bin" => "/usr/sbin/centengine",
                              "nagiostats_bin" => "/usr/sbin/centenginestats",
                              "init_script" => "/etc/init.d/centengine",
-                             "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata"))
-          );
+                             "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata")
+        );
+          
 
 function monitoring_engine_names($me) {
     return $me["name"];
