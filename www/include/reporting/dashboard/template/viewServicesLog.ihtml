@@ -154,12 +154,12 @@
                 ],
                 type : 'pie',
                 colors : {
-                    'Ok' : '#13EB3A',
-                    'Warning' : '#F8C706',
-                    'Critical' : '#F91D05',
-                    'Unknown' : '#DCDADA',
-                    'Downtime' : '#CC99FF',
-                    'Undetermined' : '#F0F0F0'
+                    'Ok' : '#{/literal}{$colors.ok}{literal}',
+                    'Warning' : '#{/literal}{$colors.warning}{literal}',
+                    'Critical' : '#{/literal}{$colors.critical}{literal}',
+                    'Unknown' : '#{/literal}{$colors.unknown}{literal}',
+                    'Downtime' : '#{/literal}{$colors.maintenance}{literal}',
+                    'Undetermined' : '#{/literal}{$colors.undetermined}{literal}'
                 }
             },
             size: {

@@ -205,11 +205,11 @@
                 ],
                 type : 'pie',
                 colors : {
-                    'Up' : '#13EB3A',
-                    'Down' : '#F91D05',
-                    'Unreachable' : '#82CFD8',
-                    'Downtime' : '#CC99FF',
-                    'Undetermined' : '#F0F0F0'
+                    'Up' : '#{/literal}{$colors.up}{literal}',
+                    'Down' : '#{/literal}{$colors.down}{literal}',
+                    'Unreachable' : '#{/literal}{$colors.unreachable}{literal}',
+                    'Downtime' : '#{/literal}{$colors.maintenance}{literal}',
+                    'Undetermined' : '#{/literal}{$colors.undetermined}{literal}'
                 }
             },
            size: {
