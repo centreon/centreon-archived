@@ -434,9 +434,9 @@ function submitAddWidget() {
       if (view !== undefined) {
         var viewId = view.item(0).firstChild.data;
         jQuery('#tabs').tabs('load', getTabPos(viewId));
+        jQuery('#addwdgt').hide();
       } else if (err !== undefined) {
         var errorMsg = err.item(0).firstChild.data;
-        console.log(errorMsg);
       }
     }
   });
