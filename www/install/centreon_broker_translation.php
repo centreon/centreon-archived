@@ -50,7 +50,7 @@ echo _("Yes");
 echo _("Private key file.");
 echo _("Public certificate");
 echo _("Trusted CA's certificate");
-echo _("Enable negociation");
+echo _("Enable negotiation");
 echo _("One peer retention");
 echo _("Filter category");
 echo _("Available");
