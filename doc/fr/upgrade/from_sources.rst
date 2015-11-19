@@ -4,9 +4,6 @@
 A partir des sources
 ====================
 
-.. warning::
-    Avant de mettre à jour Centreon, veuillez sauvegarder vos bases de données.
-
 Pour mettre à jour Centreon depuis les sources, :ref:`télécharger <downloads>` la dernière version de Centreon.
 
 ******************
@@ -463,7 +460,7 @@ Présentation
 Contrôle des dépendances
 ------------------------
 
-This step checks the dependencies on php modules.
+Cette étape contrôle la liste des dépendances PHP.
 
 .. image:: /_static/images/upgrade/step02.png
    :align: center
@@ -475,8 +472,8 @@ Notes de version
    :align: center
 
 
-Mise à jour des bases
----------------------
+Mise à jour des bases de donéées
+--------------------------------
 
 Cette étape met à jour le modèle des bases de données ainsi que les données, version par version.
 

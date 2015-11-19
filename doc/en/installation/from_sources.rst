@@ -376,7 +376,7 @@ If you use Centreon Broker:
 
 
 Monitoring logs directory
-------------------------
+-------------------------
 
 If you use Centreon Engine:
 
