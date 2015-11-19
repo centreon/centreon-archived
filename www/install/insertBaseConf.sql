@@ -723,7 +723,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (30, 'retention', 'Retention file', 'File where correlation state will be stored during correlation engine restart', 'text', NULL),
 (31, 'retry_interval', 'Retry interval', 'Time in seconds to wait between each connection attempt.', 'int', NULL),
 (32, 'buffering_timeout', 'Buffering timeout', 'Time in seconds to wait before launching failover.', 'int', NULL),
-(33, 'fifo', 'File for Centeron Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL),
+(33, 'fifo', 'File for Centreon Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL),
 (34, 'queries_per_transaction', 'Maximum queries per transaction', 'The maximum queries per transaction before commit.', 'int', NULL),
 (35, 'read_timeout', 'Transaction commit timeout', 'The transaction timeout before running commit.', 'int', NULL),
 (36, 'path', 'Unix socket', 'The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.', 'text', 'T=options:C=value:CK=key:K=rrdcached_unix_path'),
