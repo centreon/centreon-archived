@@ -882,7 +882,7 @@ if ($o != "mc")
 $hostRSI[] = HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, _("Yes"), '1');
 $hostRSI[] = HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, _("No"), '0');
 $hostRSI[] = HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, _("Default"), '2');
-$form->addGroup($hostRSI, 'host_retain_status_information', _("Retain Satus Information"), '&nbsp;');
+$form->addGroup($hostRSI, 'host_retain_status_information', _("Retain Status Information"), '&nbsp;');
 if ($o != "mc")
     $form->setDefaults(array('host_retain_status_information' => '2'));
 
