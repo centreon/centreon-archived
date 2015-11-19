@@ -50,11 +50,10 @@ Les champs de configuration
 *	Les champs **Exemple d'arguments** et **$HOSTADDRESS$** définissent respectivement des exemples d'arguments (chaque argument commence par un "!") et une adresse IP de test.
 	Ces champs permettent d'exécuter la ligne de commande définie au-dessus via l'interface web en cliquant sur la flèche bleue : |bluearrow|.
 *	Le bouton **Description des arguments** permet d'ajouter une description aux arguments de type "$ARGn$". Cette description sera visible lors de l'utilisation de la commande dans un formulaire d'hôte ou de service.
- 
-.. image :: /images/guide_utilisateur/configuration/04linkbetweencommandandservices.png
-   :align: center 
- 
 *	Le bouton **Effacer les arguments** efface la description des arguments définie
+
+*	Le bouton **Description des macros** permet d'ajouter une description aux macros personalisées. Ces descriptions seront visibles lors de l'ajout de la commande sur un host ou un service.
+
 *	Le champ **Connecteurs** permet de lier un connecteur à la commande. Pour davantage d'informations sur les connecteurs reportez-vous aux chapitres `Documentation connecteurs Perl <http://documentation.centreon.com/docs/centreon-perl-connector/en/latest/>`_ et `Documentation connecteurs SSH <http://documentation.centreon.com/docs/centreon-ssh-connector/en/latest/>`_.
 *	Le champ **Modèle de graphique** permet de lier la commande à un modèle de graphique.
 *	Le champ **Commentaire** permet de commenter la commande.

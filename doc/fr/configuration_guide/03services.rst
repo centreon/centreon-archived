@@ -41,9 +41,13 @@ La partie **Macros** permet d'ajouter des macros personnalisées.
 Les champs **Nom de la macro** et **Valeur de la macro** permettent respectivement de définir le nom et la valeur de la macro.
 La case **Mot de passe** permet de cacher la valeur de la macro.
 
+Pour réinitialiser la valeur de la macro (issue du template), cliquez sur |undo|.
+
+Pour ajouter une description à votre macro, cliquez sur |description|.
+
 Pour supprimer la macro, cliquez sur |delete|.
+
 Pour déplacer l'ordre des macros, cliquez sur |move|.
-* Pour ajouter une description à votre macro, cliquez sur |description|.
 
 Notification
 ============
@@ -129,4 +133,5 @@ Il existe maintenant un service unique par hôte.
 
 .. |delete|    image:: /images/delete.png
 .. |move|    image:: /images/move.png
-.. |description| image:: /images/text_view.gif
+.. |description| image:: /images/description.png
+.. |undo| image:: /images/undo.png

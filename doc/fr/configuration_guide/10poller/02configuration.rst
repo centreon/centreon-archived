@@ -3,7 +3,7 @@ Configuration de l'ordonnanceur
 
 Une fois l'installation réalisée, il faut intégrer ce satellite dans la configuration Centreon.
 
-#. Rendez-vous dans le menu **Configuration** ==> **Centreon**
+#. Rendez-vous dans le menu **Configuration** ==> **Collecteurs**
 #. Dupliquez le fichier de configuration du serveur Central et éditez-le
 #. Modifiez les paramètres suivants, puis sauvegardez :
 
@@ -14,19 +14,9 @@ Une fois l'installation réalisée, il faut intégrer ce satellite dans la confi
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07addpoller.png
    :align: center
 
-Maintenant, il est nécessaire de générer un fichier de configuration pour l'ordonnanceur Centreon Engine :
-
-#. Rendez-vous dans le menu **Configuration** ==> **Moteurs de supervision**
-#. Dans le menu de gauche, cliquez sur **main.cfg**
-#. Dupliquez le fichier de configuration du collecteur **Central** et modifiez-le
+#. Rendez-vous dans le menu **Configuration** ==> **Collecteur** ==> **Moteur de supervision**
+#. Selectionnez la configuration qui correspond au dernier poller ajouté
 #. Modifiez les paramètres suivants, puis sauvegardez :
-
-* Changez le **Nom de la configuration**.
-* Activez le fichier de configuration de l'ordonnanceur en cliquant sur **Activé** dans le champ **Statut**.
-* Choisissez le nouveau collecteur dans le champ **Collecteur lié**.
-
-.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07mainconffile.png
-   :align: center 
 
 * Dans l'onglet **Données** - Champ **Multiple module broker** modifiez le nom du fichier de configuration de Centreon Broker **central-module.xml**. Par exemple : poller1-module.xml.
 
@@ -38,23 +28,15 @@ Configuration de Centreon Broker
 
 Il est nécessaire de générer un fichier de configuration pour le broker Centreon Broker :
 
-#. Rendez-vous dans le menu **Configuration** ==> **Centreon**
-#. Dans le menu de gauche, cliquez sur **Configuration** (en dessous de Centreon Broker)
-#. Dupliquez le fichier de configuration du module de votre serveur central et éditez-le
-#. Modifiez les paramètres suivants, puis sauvegardez :
+#. Rendez-vous dans le menu **Configuration** ==> **Collecteurs** ==> **Centreon-Broker** ==> **Configuration**
+#. Utilisez **Ajouter avec l'assistant**
+#. Choisissez **Collecteur uniquement**
+#. Indiquez un nom de configuration ainsi que l'adresse du serveur central de supervision
+#. Cliquez sur **Finish**
 
-* Changez le **Nom** de la configuration.
-* Modifiez le **Nom du fichier de configuration** qui doit correspondre au nom du fichier xml définit dans le fichier de configuration de l'ordonnanceur.
-* Activez le fichier de configuration en cliquant sur **Activé** dans le champ **Statut**.
-* Modifiez le champ **Collecteur** en sélectionnant votre nouveau collecteur.
+.. image:: /images/user/configuration/10advanced_configuration/07brokerconfwizzard.png
+   :align: center
 
-.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07brokerconf.png
-   :align: center 
-
-* Dans l'onglet **Output**, modifiez le champ **Hôte distant** en entrant l'adresse IP du serveur contenant votre base MySQL (dans notre cas le serveur central).
-
-.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07brokerconfoutput.png
-   :align: center 
 
 Configuration de Centreontrapd
 ==============================

@@ -24,48 +24,53 @@ Informations générales
 *	Le champ **Adresse IP/DNS** : Adresse IP ou nom DNS de l'hôte. Le bouton **Résoudre** permet de résoudre le nom de domaine en interrogeant le serveur DNS configuré sur le serveur central.
 *	Les champs **Communauté SNMP & Version** contiennent respectivement le nom de la communauté ainsi que la version SNMP.
 *	Le champ **Surveillé depuis le collecteur** indique quel est le serveur de supervision chargé de superviser cet hôte.
-*	Le champ **Modèles d'hôte** permet d'associer un ou plusieurs modèles d'hôtes à cet objet. Pour ajouter un modèle d'hôte, cliquez sur le bouton |navigate_plus|.
+*	Le champ **Modèles d'hôte** permet d'associer un ou plusieurs modèles d'hôtes à cet objet.
  
  En cas de conflits de paramètres présents sur plusieurs modèles, le modèle d'hôte au-dessus écrase les propriétés identiques définies dans modèles d'hôtes en dessous.
  Le bouton |move| permet de déplacer l'ordre des modèles d'hôte. Le bouton |delete| permet de supprimer le modèle d'hôte.
  
 *	Si le champ **Créer aussi les services liés au modèle** est définit à **Oui**, Centreon génère automatiquement les services en se basant sur les modèles de services liés aux modèles d'hôtes définis au-dessus (voir chapitre :ref:`hosttemplates`). 
 
-Propriétés du contrôle de l'hôte
-================================
+Propriétés du supervison de l'hôte
+==================================
+
+*       Le champ **Commande de vérification** indique la commande utilisée pour vérifier la disponibilité de l'hôte.
+*       Le champ **Arguments** définit les arguments donnés à la commande de vérification (chaque argument commence avec un "!").
+
+La partie **Macros** permet d'ajouter des macros personnalisées.
+
+*       Les champs **Nom de la macro** et **Valeur de la macro** permettent respectivement de définir le nom et la valeur de la macro.
+*       La case **Mot de passe** permet de cacher la valeur de la macro.
+
+Pour réinitialiser la macro avec sa valeur par défaut (définie dans le templae) cliquez sur |undo|.
+
+Pour afficher la description de la macro, cliquez sur |description|.
+
+Pour supprimer la macro, cliquez sur |delete|.
+
+Pour déplacer l'ordre des macros, cliquez sur |move|.
+
+
+Propriété d'ordonancement de l'hôte
+===================================
 
 *	Le champ **Période de contrôle** définit la période temporelle durant laquelle l'ordonnanceur vérifie le statut de l'objet.
-*	Le champ **Commande de vérification** indique la commande utilisée pour vérifier la disponibilité de l'hôte.
-*	Le champ **Arguments** définit les arguments donnés à la commande de vérification (chaque argument commence avec un "!").
 *	Le champ **Nombre de contrôles avant validation de l'état** définit le nombre de contrôle à effectuer avant de valider le statut de l'hôte : lorsque le statut est validé, le processus de notification est enclenché.
 *	Le champ **Intervalle normal de contrôle** est exprimé en minutes. Il définit l'intervalle entre chaque vérification lorsque le statut de l'hôte est OK.
 *	Le champ **Intervalle non-régulier de contrôle** est exprimé en minutes. Il définit l'intervalle de validation du statut non-OK de l'hôte.
 *	Les champs **Contrôles actifs activés** et **Contrôles passifs activés** activent/désactivent les contrôles actifs et passifs.
 
-Macros
-======
 
-La partie **Macros** permet d'ajouter des macros personnalisées.
+Onglet Notification
+===================
 
-* Les champs **Nom de la macro** et **Valeur de la macro** permettent respectivement de définir le nom et la valeur de la macro.
-* La case **Mot de passe** permet de cacher la valeur de la macro.
-* Pour ajouter une description à votre macro, cliquez sur |description|.
-
-Pour supprimer la macro, cliquez sur |delete|.
-Pour déplacer l'ordre des macros, cliquez sur |move|.
-
-Notification
-============
-
-*	Le champ **Notification activée** permet d'activer ou de désactiver les notifications concernant l'objet.
-*	Si la case **Contacts en complément de ceux hérités** est cochée, alors Centreon n'écrase pas la configuration du modèle d'hôte parent mais ajoute les contacts en complément des contacts définis au niveau du modèle parent.
-*	La liste **Contacts liés** indique les contacts qui recevront les notifications.
-*	Si la case **Groupes de contacts en complément de ceux hérités** est cochée, alors Centreon n'écrase pas la configuration du modèle d'hôte parent mais ajoute les groupes de contacts en complément des groupes de contacts définis au niveau du modèle parent.
-*	Au sein de la liste **Groupe de contacts liés** tous les contacts appartenant aux groupes de contacts définis recevront les notifications.
-*	Le champ **Intervalle de notification** est exprimé en minutes. Il indique la durée entre chaque envoi de notification lorsque le statut est non-OK. Si la valeur est définie à 0 alors l'ordonnanceur envoie une seule notification par changement de statut.
-*	Le champ **Période de notification** indique la période temporelle durant laquelle les notifications seront activées.
-*	Les **Options de notifications** définissent les statuts pour lesquels une notification sera envoyée.
-*	Le **Délai de première notification** est exprimé en minutes. Il fait référence au délai à respecter avant l'envoi d'une première notification lorsqu'un statut non-OK est validé.
+*       Le champ **Notification activée** permet d'activer ou de désactiver les notifications concernant l'objet.
+*       Les **Options de notifications** définissent les statuts pour lesquels une notification sera envoyée.
+*       Le champ **Intervalle de notification** est exprimé en minutes. Il indique la durée entre chaque envoi de notification lorsque le statut est non-OK. Si la valeur est définie à 0 alors l'ordonnanceur envoie une seule notification par changement de statut.
+*       Le champ **Période de notification** indique la période temporelle durant laquelle les notifications seront activées.
+*       Le **Délai de première notification** est exprimé en minutes. Il fait référence au délai à respecter avant l'envoi d'une première notification lorsqu'un statut non-OK est validé.
+*       La liste **Contacts liés** indique les contacts qui recevront les notifications.
+*       Au sein de la liste **Groupe de contacts liés** tous les contacts appartenant aux groupes de contacts définis recevront les notifications.
 
 ****************
 Onglet Relations
@@ -126,4 +131,6 @@ Informations supplémentaires
 .. |delete|    image:: /images/delete.png
 .. |move|    image:: /images/move.png
 .. |navigate_plus|    image:: /images/navigate_plus.png
-.. |description| image:: /images/text_view.gif
+.. |undo|    image:: /images/undo.png
+.. |description|    image:: /images/description.png
+

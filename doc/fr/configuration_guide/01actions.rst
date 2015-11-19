@@ -102,4 +102,4 @@ Il est également possible d'activer ou de désactiver un objet via le champ "St
 *	|disabled| pour désactiver
 
 .. |enabled|    image:: /images/enabled.png
-.. |disabled|    image:: /images/enabled.png
+.. |disabled|    image:: /images/disabled.png
