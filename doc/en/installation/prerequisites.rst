@@ -49,7 +49,7 @@ The table below gives the prerequisites for the installation of CES 3.x:
 Define space disk
 *****************
 
-Th space used for store collected and performance data depends on several criteria:
+The space used for store collected and performance data depends on several criteria:
 
 * Frequency of controls
 * Number of controls
