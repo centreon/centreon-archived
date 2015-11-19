@@ -6,21 +6,25 @@
         <table class="ajaxOption table">
             <tr>
                  <td> <h4>{$form.host_selector.label}</h4></td>
+                 <td></td>
                  <td><h4>{$from}</h4></td>
                  <td> <h4>{$form.period.label}</h4></td>
 
             </tr>
             <tr>
                 <td>{$form.host_selector.html}</td>
-                 <td>{$form.StartDate.html} {$form.StartTime.html}</td>
-                  <td>{$form.period.html}</td>
+                <td></td>
+                <td>{$form.StartDate.html} {$form.StartTime.html}</td>
+                <td>{$form.period.html}</td>
             </tr>
             <tr>
                 <td><h4>{$form.service_selector.label}</h4></td>
-                <td><h4> {$to}</h4></td>
+                <td><h4>{$form.metaservice_selector.label}</h4></td>
+                <td><h4>{$to}</h4></td>
             </tr>
             <tr>
                 <td>{$form.service_selector.html}</td>
+                <td>{$form.metaservice_selector.html}</td>
                 <td>{$form.EndDate.html} {$form.EndTime.html}</td>
                 <td>{$form.graph.html}</td>
             </tr>
