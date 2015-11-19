@@ -114,7 +114,7 @@ Files system description:
 
 * / (at least 20 GB)
 * swap (at least 1x RAM space)
-* /var/log ( at least 10 GB)
+* /var/log (at least 10 GB)
 * /var/lib/centreon-broker (at least 5 GB)
 * /var/backup (use to backup you server)
 
