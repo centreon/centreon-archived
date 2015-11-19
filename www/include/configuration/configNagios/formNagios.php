@@ -652,7 +652,7 @@
 	$form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');
 	$form->setDefaults($nagios_d);
         
-	$form->setDefaults($aInstanceDefauktValues);
+	$form->setDefaults($aInstanceDefaultValues);
 
 	$form->setDefaults(array('action' => '1'));
 
