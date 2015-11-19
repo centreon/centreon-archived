@@ -35,11 +35,6 @@
  * SVN : $Id$
  *
  */
-/*
-echo "<pre>";
-var_dump($_GET);
-die;
-*/
 	if (!isset($oreon))
 		exit();
 

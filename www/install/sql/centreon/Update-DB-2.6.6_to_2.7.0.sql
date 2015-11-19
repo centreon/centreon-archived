@@ -812,6 +812,18 @@ UPDATE css_color_menu SET css_name = 'red_css.php' WHERE menu_nb = 4;
 UPDATE css_color_menu SET css_name = 'blue_css.php' WHERE menu_nb = 5;
 UPDATE css_color_menu SET css_name = 'blue_css.php' WHERE menu_nb = 6;
 
+-- Remove Escalation Pages
+DELETE FROM topology WHERE topology_page = 60402;
+DELETE FROM topology_JS WHERE id_page = 60402;
+DELETE FROM topology WHERE topology_page = 60403;
+DELETE FROM topology_JS WHERE id_page = 60403;
+DELETE FROM topology WHERE topology_page = 60404;
+DELETE FROM topology_JS WHERE id_page = 60404;
+DELETE FROM topology WHERE topology_page = 60405;
+DELETE FROM topology_JS WHERE id_page = 60405;
+DELETE FROM topology WHERE topology_page = 60406;
+DELETE FROM topology_JS WHERE id_page = 60406;
+
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
 

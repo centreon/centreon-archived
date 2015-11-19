@@ -161,7 +161,7 @@
                 foreach ($ids as $id => $value)	{
                     $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
-                    $query = "SELECT config_name, config_filename, config_activate, ns_nagios_server, event_queue_max_size "
+                    $query = "SELECT config_name, config_filename, config_activate, ns_nagios_server, event_queue_max_size, retention_path, stats_activate, correlation_activate "
                         . "FROM cfg_centreonbroker "
                         . "WHERE config_id = " . $id . " ";
                     $DBRESULT = $pearDB->query($query);
@@ -173,6 +173,9 @@
                     $values['activate']['activate'] = '0';
                     $values['ns_nagios_server'] = $row['ns_nagios_server'];
                     $values['event_queue_max_size'] = $row['event_queue_max_size'];
+                    $values['retention_path'] = $row['retention_path'];
+                    $values['stats_activate'] = $row['stats_activate'];
+                    $values['correlation_activate'] = $row['correlation_activate'];
                     $query = "SELECT config_key, config_value, config_group, config_group_id "
                         . "FROM cfg_centreonbroker_info "
                         . "WHERE config_id = " . $id . " ";
