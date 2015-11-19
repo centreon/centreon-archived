@@ -16,7 +16,6 @@ Sommaire :
 
    a_propos/index
    release_notes/index
-   architecture/index
    installation/index
    upgrade/index
    guide_utilisateur/index
