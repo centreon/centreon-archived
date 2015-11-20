@@ -58,7 +58,7 @@ $elemArr = array(1 => array(), 2 => array(), 3 => array(), 4 => array());
 
 /*
  * Special Case
- * Put the authentification in the URL
+ * Put the authentication in the URL
  */
 $auth = NULL;
 

@@ -92,7 +92,7 @@ To add a new directory:
    :align: center
 
 * **Configuration name** and **Description** fields define the name and the description of the LDAP server
-* **Enable LDAP authentification** field serves to enable authentication via the LDAP server
+* **Enable LDAP authentication** field serves to enable authentication via the LDAP server
 * **Store LDAP password** field can be used to store user passwords in the database, useful to authenticate users in the event of loss of connection with the LDAP
 * **Auto import users** field serves to import the users of the LDAP directory automatically into Centreon. By clicking on **Import users manually**, you can chose the users that you want to import
 
