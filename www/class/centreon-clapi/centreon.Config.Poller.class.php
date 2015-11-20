@@ -77,12 +77,11 @@ class CentreonConfigPoller {
      * Get General option of Centreon
      */
     private function getOptGen() {
-        $DBRESULT =& $this->_DB->query("SELECT * FROM options");
-        while ($row =& $DBRESULT->fetchRow()) {
+        $DBRESULT = $this->_DB->query("SELECT * FROM options");
+        while ($row = $DBRESULT->fetchRow()) {
             $this->optGen[$row["key"]] = $row["value"];
         }
         $DBRESULT->free();
-        unset($row);
     }
     /**
      * 
@@ -97,7 +96,7 @@ class CentreonConfigPoller {
             $sQuery = "SELECT id FROM nagios_server WHERE `name` = '".$this->_DB->escape($poller)."'";
         }
         
-        $DBRESULT =& $this->_DB->query($sQuery);
+        $DBRESULT = $this->_DB->query($sQuery);
         if ($DBRESULT->numRows() != 0)
             return;
         else {
@@ -119,8 +118,8 @@ class CentreonConfigPoller {
             $sQuery = "SELECT localhost FROM nagios_server WHERE `name` = '".$this->_DB->escape($poller)."'";
         }
         
-        $DBRESULT =& $this->_DB->query($sQuery);
-        if ($data =& $DBRESULT->fetchRow())
+        $DBRESULT = $this->_DB->query($sQuery);
+        if ($data = $DBRESULT->fetchRow())
             return $data["localhost"];
         else {
             print "ERROR: Unknown poller...\n";
@@ -159,15 +158,14 @@ class CentreonConfigPoller {
      */
     public function getPollerList($format)
     {
-        $DBRESULT =& $this->_DB->query("SELECT id,name FROM nagios_server WHERE ns_activate = '1' ORDER BY id");
+        $DBRESULT = $this->_DB->query("SELECT id,name FROM nagios_server WHERE ns_activate = '1' ORDER BY id");
         if ($format == "xml") {
             print "";
         }
-        while ($data =& $DBRESULT->fetchRow()) {
+        while ($data = $DBRESULT->fetchRow()) {
             print $data["id"]."\t".$data["name"]."\n";
         }
         $DBRESULT->free();
-        unset($data);
         return 0;
     }
 
@@ -211,13 +209,13 @@ class CentreonConfigPoller {
         /*
          * Get Init Script
          */
-        $DBRESULT =& $this->_DB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
-        $serveurs =& $DBRESULT->fetchrow();
+        $DBRESULT = $this->_DB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
+        $serveurs = $DBRESULT->fetchrow();
         $DBRESULT->free();
         (isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "/etc/init.d/nagios";
         unset($serveurs);
 
-        $DBRESULT =& $this->_DB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$this->_DB->escape($variables)."'  LIMIT 1");
+        $DBRESULT = $this->_DB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$this->_DB->escape($variables)."'  LIMIT 1");
         $host = $DBRESULT->fetchRow();
         $DBRESULT->free();
 
@@ -229,7 +227,7 @@ class CentreonConfigPoller {
             $msg_restart .= _("OK: A reload signal has been sent to '".$host["name"]."'");
         }
         print $msg_restart."\n";
-        $DBRESULT =& $this->_DB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$this->_DB->escape($variables)."' LIMIT 1");
+        $this->_DB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$this->_DB->escape($variables)."' LIMIT 1");
         return $return_code;
     }
 
@@ -297,13 +295,13 @@ class CentreonConfigPoller {
         /*
          * Get Init Script
          */
-        $DBRESULT =& $this->_DB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
-        $serveurs =& $DBRESULT->fetchrow();
+        $DBRESULT = $this->_DB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
+        $serveurs = $DBRESULT->fetchrow();
         $DBRESULT->free();
         (isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "/etc/init.d/nagios";
         unset($serveurs);
 
-        $DBRESULT =& $this->_DB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$this->_DB->escape($variables)."'  LIMIT 1");
+        $DBRESULT = $this->_DB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$this->_DB->escape($variables)."'  LIMIT 1");
         $host = $DBRESULT->fetchRow();
         $DBRESULT->free();
 
@@ -315,7 +313,7 @@ class CentreonConfigPoller {
             $msg_restart = _("OK: A restart signal has been sent to '".$host["name"]."'");
         }
         print $msg_restart."\n";
-        $DBRESULT =& $this->_DB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$this->_DB->escape($variables)."' LIMIT 1");
+        $DBRESULT = $this->_DB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$this->_DB->escape($variables)."' LIMIT 1");
         return $return_code;
     }
 
@@ -343,7 +341,7 @@ class CentreonConfigPoller {
         /**
          * Get Nagios Bin
          */
-        $DBRESULT_Servers =& $this->_DB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY `ns_activate` DESC LIMIT 1");
+        $DBRESULT_Servers = $this->_DB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY `ns_activate` DESC LIMIT 1");
         $nagios_bin = $DBRESULT_Servers->fetchRow();
         $DBRESULT_Servers->free();
 
@@ -451,11 +449,11 @@ class CentreonConfigPoller {
         /**
          * Move files.
          */
-        $DBRESULT_Servers =& $this->_DB->query("SELECT `cfg_dir` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$this->_DB->escape($variables)."' LIMIT 1");
+        $DBRESULT_Servers = $this->_DB->query("SELECT `cfg_dir` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$this->_DB->escape($variables)."' LIMIT 1");
         $Nagioscfg = $DBRESULT_Servers->fetchRow();
         $DBRESULT_Servers->free();
 
-        $DBRESULT_Servers =& $this->_DB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$this->_DB->escape($variables)."'  LIMIT 1");
+        $DBRESULT_Servers = $this->_DB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$this->_DB->escape($variables)."'  LIMIT 1");
         $host = $DBRESULT_Servers->fetchRow();
         $DBRESULT_Servers->free();
         if (isset($host['localhost']) && $host['localhost'] == 1) {
@@ -550,10 +548,10 @@ class CentreonConfigPoller {
             $sQuery = "SELECT id FROM nagios_server WHERE `name` = '".$this->_DB->escape($poller)."'";
         }
         
-        $DBRESULT =& $this->_DB->query($sQuery);
-        if ($DBRESULT->numRows() != 1)
+        $DBRESULT = $this->_DB->query($sQuery);
+        if ($DBRESULT->numRows() != 1) {
             return;
-        else {
+        } else {
             $row = $DBRESULT->fetchRow();
             return $row['id'];
         }

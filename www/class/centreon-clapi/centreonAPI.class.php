@@ -400,12 +400,11 @@ class CentreonAPI {
      * Get General option of Centreon
      */
     private function getOptGen() {
-        $DBRESULT = & $this->DB->query("SELECT * FROM options");
-        while ($row = & $DBRESULT->fetchRow()) {
+        $DBRESULT = $this->DB->query("SELECT * FROM options");
+        while ($row = $DBRESULT->fetchRow()) {
             $this->optGen[$row["key"]] = $row["value"];
         }
         $DBRESULT->free();
-        unset($row);
     }
 
     /**
