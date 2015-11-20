@@ -7,7 +7,7 @@ $help["mc_update"] = dgettext("help", "Choose the update mode for the below fiel
  */
 $help["contact_name"] = dgettext("help", "The full name is used to identify the contact in contact group definitions and in notifications.");
 $help["alias"] = dgettext("help", "The alias is a short name used as login name in Centreon.");
-$help["email"] = dgettext("help", "Specify the primary email address for the contact here. Additional (email) addresses can be defined under additional informations of the contact. Depending on the notification command used, the email address can be used to send out email notifications.");
+$help["email"] = dgettext("help", "Specify the primary email address for the contact here. Additional (email) addresses can be defined under additional information of the contact. Depending on the notification command used, the email address can be used to send out email notifications.");
 $help["pager"] = dgettext("help", "Specify a pager number or an address at a pager gateway here. Any format is possible as long as it is supported by the notification command.");
 $help["contactgroups"] = dgettext("help", "Link the contact to the contactgroup(s) the user should belong to. This is an alternative way to specifying the members in contactgroup definitions.");
 
