@@ -824,6 +824,9 @@ DELETE FROM topology_JS WHERE id_page = 60405;
 DELETE FROM topology WHERE topology_page = 60406;
 DELETE FROM topology_JS WHERE id_page = 60406;
 
+-- Update topology JS for page monitoring
+UPDATE topology_JS SET Init = NULL WHERE id_page = 202 AND PathName_js = './include/common/javascript/ajaxMonitoring.js';
+
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
 
