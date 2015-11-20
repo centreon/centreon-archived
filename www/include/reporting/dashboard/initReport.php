@@ -88,44 +88,64 @@ $tpl->assign('o', $o);
  */
 $tpl->assign("centreon_path", _CENTREON_PATH_);
 
+# Status colors
+$colors = array(
+    'up' => '88b917',
+    'down' => 'e00b3d',
+    'unreachable' => '818285',
+    'maintenance' => 'cc99ff',
+    'downtime' => 'cc99ff',
+    'ok' => '88b917',
+    'warning' => 'ff9a13',
+    'critical' => 'e00b3d',
+    'unknown' => 'bcbdc0',
+    'undetermined' => 'd1d2d4'
+);
+$tpl->assign('colors', $colors);
+
+$color = array();
+$color["UNKNOWN"] = $colors['unknown'];
+$color["UP"] = $colors['up'];
+$color["DOWN"] = $colors['down'];
+$color["UNREACHABLE"] = $colors['unreachable'];
+$tpl->assign('color', $color);
+
 /*
  * Translations and styles
  */
-$oreon->optGen["color_undetermined"] = "#F0F0F0";
-$oreon->optGen["color_maintenance"] = "#CC99FF";
 
-$tpl->assign('style_ok', 		"class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");
-$tpl->assign('style_ok_top', 		" style='color:" . $oreon->optGen["color_ok"]."'");
-$tpl->assign('style_ok_alert', 		"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_ok"]."'");
-$tpl->assign('style_warning' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_warning"]."'");
-$tpl->assign('style_warning_top' , 		"style='color:" . $oreon->optGen["color_warning"]."'");
-$tpl->assign('style_warning_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_warning"]."'");
-$tpl->assign('style_critical' , 	"class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'");
-$tpl->assign('style_critical_top' , 	"style='color:" . $oreon->optGen["color_critical"]."'");
-$tpl->assign('style_critical_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_critical"]."'");
-$tpl->assign('style_unknown' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'");
-$tpl->assign('style_unknown_top' , 		"style='color:" . $oreon->optGen["color_unknown"]."'");
-$tpl->assign('style_unknown_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_unknown"]."'");
-$tpl->assign('style_pending' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'");
-$tpl->assign('style_pending_top' , 		"style='color:" . $oreon->optGen["color_undetermined"]."'");
-$tpl->assign('style_pending_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_undetermined"]."'");
-$tpl->assign('style_maintenance' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_maintenance"]."'");
-$tpl->assign('style_maintenance_top' , 		"style='color:" . $oreon->optGen["color_maintenance"]."'");
+$tpl->assign('style_ok', 		"class='ListColCenter' style='padding:5px;background:#" . $colors['ok'] . "'");
+$tpl->assign('style_ok_top', 		" style='color:#" . $colors['ok'] . "'");
+$tpl->assign('style_ok_alert', 		"class='ListColCenter' style='width: 25px; background:#" . $colors['ok'] . "'");
+$tpl->assign('style_warning' , 		"class='ListColCenter' style='padding:5px;background:#" . $colors['warning'] . "'");
+$tpl->assign('style_warning_top' , 		"style='color:#" . $colors['warning'] . "'");
+$tpl->assign('style_warning_alert' , 	"class='ListColCenter' style='width: 25px; background:#" . $colors['warning'] . "'");
+$tpl->assign('style_critical' , 	"class='ListColCenter' style='padding:5px;background:#" . $colors['critical'] . "'");
+$tpl->assign('style_critical_top' , 	"style='color:#" . $colors['critical'] . "'");
+$tpl->assign('style_critical_alert' , 	"class='ListColCenter' style='width: 25px; background:#" . $colors['critical'] . "'");
+$tpl->assign('style_unknown' , 		"class='ListColCenter' style='padding:5px;background:#" . $colors['unknown'] . "'");
+$tpl->assign('style_unknown_top' , 		"");
+$tpl->assign('style_unknown_alert' , 	"class='ListColCenter' style='width: 25px; background:#" . $colors['unknown'] . "'");
+$tpl->assign('style_pending' , 		"class='ListColCenter' style='padding:5px;background:#" . $colors['undetermined'] . "'");
+$tpl->assign('style_pending_top' , 		"");
+$tpl->assign('style_pending_alert' , 	"class='ListColCenter' style='width: 25px; background:#" . $colors['undetermined'] . "'");
+$tpl->assign('style_maintenance' , 		"class='ListColCenter' style='padding:5px;background:#" . $colors['maintenance'] . "'");
+$tpl->assign('style_maintenance_top' , 		"style='color:#" . $colors['maintenance'] . "'");
 
 
-$tpl->assign('badge_UP', 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_up"]."'");
-$tpl->assign('badge_DOWN' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_down"]."'");
-$tpl->assign('badge_UNREACHABLE' , 	"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_unreachable"]."'");
-$tpl->assign('badge_UNDETERMINED' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_undetermined"]."'");
-$tpl->assign('badge_MAINTENANCE' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_maintenance"]."'");
+$tpl->assign('badge_UP', 		"class='ListColCenter state_badge host_up'");
+$tpl->assign('badge_DOWN' , 		"class='ListColCenter state_badge host_down'");
+$tpl->assign('badge_UNREACHABLE' , 	"class='ListColCenter state_badge host_unreachable'");
+$tpl->assign('badge_UNDETERMINED' , 		"class='ListColCenter state_badge badge_undetermined'");
+$tpl->assign('badge_MAINTENANCE' , 		"class='ListColCenter state_badge badge_downtime'");
 
 
-$tpl->assign('badge_ok', 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_ok"]."'");
-$tpl->assign('badge_warning' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_warning"]."'");
-$tpl->assign('badge_critical' , 	"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_critical"]."'");
-$tpl->assign('badge_unknown' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_unknown"]."'");
-$tpl->assign('badge_pending' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_undetermined"]."'");
-$tpl->assign('badge_maintenance' , 		"class='ListColCenter state_badge' style='background:" . $oreon->optGen["color_maintenance"]."'");
+$tpl->assign('badge_ok', 		"class='ListColCenter state_badge service_ok'");
+$tpl->assign('badge_warning' , 		"class='ListColCenter state_badge service_warning'");
+$tpl->assign('badge_critical' , 	"class='ListColCenter state_badge service_critical'");
+$tpl->assign('badge_unknown' , 		"class='ListColCenter state_badge service_unknown'");
+$tpl->assign('badge_pending' , 		"class='ListColCenter state_badge badge_undetermined'");
+$tpl->assign('badge_maintenance' , 		"class='ListColCenter state_badge badge_downtime'");
 
 $tpl->assign('actualTitle', _("Actual"));
 
@@ -170,16 +190,16 @@ $tpl->assign('svcTitle', _("State Breakdowns For Host Services"));
  /*
   * CSS Definition for status colors
   */
-$style["UP"] = "style='padding:5px;color:" . $oreon->optGen["color_up"]."'";
-$style["UP_BOTTOM"] = "style='padding:5px;background-color:" . $oreon->optGen["color_up"]."'";
-$style["DOWN"] = "style='padding:5px;color:" . $oreon->optGen["color_down"]."'";
-$style["DOWN_BOTTOM"] = "style='padding:5px;background-color:" . $oreon->optGen["color_down"]."'";
-$style["UNREACHABLE"] = "style='padding:5px;color:" . $oreon->optGen["color_unreachable"]."'";
-$style["UNREACHABLE_BOTTOM"] = "style='padding:5px;background-color:" . $oreon->optGen["color_unreachable"]."'";
-$style["UNDETERMINED"] = "style='padding:5px;color:" . $oreon->optGen["color_undetermined"]."'";
-$style["UNDETERMINED_BOTTOM"] = "style='padding:5px;background-color:" . $oreon->optGen["color_undetermined"]."'";
-$style["MAINTENANCE"] = "style='padding:5px;color:" . $oreon->optGen["color_maintenance"]."'";
-$style["MAINTENANCE_BOTTOM"] = "style='padding:5px;background-color:" . $oreon->optGen["color_maintenance"]."'";
+$style["UP"] = "style='padding:5px;color:#" . $colors['up'] . "'";
+$style["UP_BOTTOM"] = "style='padding:5px;background-color:#" . $colors['up'] . "'";
+$style["DOWN"] = "style='padding:5px;color:#" . $colors['down'] . "'";
+$style["DOWN_BOTTOM"] = "style='padding:5px;background-color:#" . $colors['down'] . "'";
+$style["UNREACHABLE"] = "style='padding:5px'";
+$style["UNREACHABLE_BOTTOM"] = "style='padding:5px;background-color:#" . $colors['unreachable'] . "'";
+$style["UNDETERMINED"] = "style='padding:5px'";
+$style["UNDETERMINED_BOTTOM"] = "style='padding:5px;background-color:#" . $colors['undetermined'] . "'";
+$style["MAINTENANCE"] = "style='padding:5px;color:#" . $colors['maintenance'] . "'";
+$style["MAINTENANCE_BOTTOM"] = "style='padding:5px;background-color:#" . $colors['maintenance'] . "'";
 $tpl->assign('style', $style);
 
 /*
@@ -190,13 +210,6 @@ $tpl->assign('style', $style);
  * Getting period table list to make the form period selection (today, this week etc.)
  */
 $periodList = getPeriodList();
-
-$color = array();
-$color["UNKNOWN"] =  substr($oreon->optGen["color_unknown"], 1);
-$color["UP"] =  substr($oreon->optGen["color_up"], 1);
-$color["DOWN"] =  substr($oreon->optGen["color_down"], 1);
-$color["UNREACHABLE"] =  substr($oreon->optGen["color_unreachable"], 1);
-$tpl->assign('color', $color);
 
 /*
  * Getting timeperiod by day (example : 9:30 to 19:30 on monday,tue,wed,thu,fri)

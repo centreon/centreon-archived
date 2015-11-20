@@ -65,8 +65,8 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
 }
 
 if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != ""){
-    $host_name = utf8_decode($_GET["host_name"]);
-    $svc_description = utf8_decode($_GET["service_description"]);
+    $host_name = $_GET["host_name"];
+    $svc_description = $_GET["service_description"];
 } else {
     foreach ($_GET["select"] as $key => $value) {
         $tab_data = preg_split("/\;/", $key);
@@ -186,7 +186,7 @@ if (!is_null($host_id)) {
         $tab_class_service = array("ok" => 'service_ok', "warning" => 'service_warning', "critical" => 'service_critical', "unknown" => 'service_unknown', 'pending' => 'pending');
         while ($ndo = $DBRESULT->fetchRow()) {
             if (isset($ndo['performance_data'])) {
-                $ndo['performance_data'] = utf8_encode($ndo['performance_data']);
+                $ndo['performance_data'] = $ndo['performance_data'];
             }
             if ($ndo["service_description"] == $svc_description) {
                 $service_status[$host_name."_".$svc_description] = $ndo;
@@ -197,7 +197,7 @@ if (!is_null($host_id)) {
             $tab_status[$tab_status_service[$ndo["current_state"]]]++;
         }
         $DBRESULT->free();
-
+        
         $service_status[$host_name."_".$svc_description]["current_stateid"] = $service_status[$host_name."_".$svc_description]["current_state"];
         $service_status[$host_name."_".$svc_description]["current_state"] = $tab_status_service[$service_status[$host_name."_".$svc_description]["current_state"]];
 
@@ -261,9 +261,9 @@ if (!is_null($host_id)) {
                 $DBRESULT = $pearDBO->query($rq2);
                 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
                     $tabCommentServices[$i] = $data;
-                    $tabCommentServices[$i]['host_name'] = utf8_encode($data['host_name']);
-                    $tabCommentServices[$i]['service_description'] = utf8_encode($data['service_description']);
-                    $tabCommentServices[$i]['comment_data'] = utf8_encode($data['comment_data']);
+                    $tabCommentServices[$i]['host_name'] = $data['host_name'];
+                    $tabCommentServices[$i]['service_description'] = $data['service_description'];
+                    $tabCommentServices[$i]['comment_data'] = $data['comment_data'];
                     $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
                 }
                 $DBRESULT->free();
@@ -335,7 +335,6 @@ if (!is_null($host_id)) {
             $service_status[$host_name."_".$svc_description]["long_plugin_output"] = str_replace("<b>", "", $service_status[$host_name."_".$svc_description]["long_plugin_output"]);
             $service_status[$host_name.'_'.$svc_description]["long_plugin_output"] = str_replace("</b>", "", $service_status[$host_name."_".$svc_description]["long_plugin_output"]);
             $service_status[$host_name."_".$svc_description]["long_plugin_output"] = str_replace("<br>", "", $service_status[$host_name."_".$svc_description]["long_plugin_output"]);
-            $service_status[$host_name."_".$svc_description]["long_plugin_output"] = utf8_encode($service_status[$host_name."_".$svc_description]["long_plugin_output"]);
             $service_status[$host_name.'_'.$svc_description]["long_plugin_output"] = str_replace("'", "", $service_status[$host_name.'_'.$svc_description]["long_plugin_output"]);
             $service_status[$host_name.'_'.$svc_description]["long_plugin_output"] = str_replace("\"", "", $service_status[$host_name.'_'.$svc_description]["long_plugin_output"]);
             $service_status[$host_name.'_'.$svc_description]["long_plugin_output"] = str_replace('\n', '<br />', $service_status[$host_name.'_'.$svc_description]["long_plugin_output"]);
@@ -374,7 +373,6 @@ if (!is_null($host_id)) {
             $service_status[$host_name."_".$svc_description]["long_plugin_output"] = str_replace("<b>", "", $service_status[$host_name."_".$svc_description]["long_plugin_output"]);
             $service_status[$host_name.'_'.$svc_description]["long_plugin_output"] = str_replace("</b>", "", $service_status[$host_name."_".$svc_description]["long_plugin_output"]);
             $service_status[$host_name."_".$svc_description]["long_plugin_output"] = str_replace("<br>", "", $service_status[$host_name."_".$svc_description]["long_plugin_output"]);
-            $service_status[$host_name."_".$svc_description]["long_plugin_output"] = utf8_encode($service_status[$host_name."_".$svc_description]["long_plugin_output"]);
             $service_status[$host_name.'_'.$svc_description]["long_plugin_output"] = str_replace("'", "", $service_status[$host_name.'_'.$svc_description]["long_plugin_output"]);
             $service_status[$host_name.'_'.$svc_description]["long_plugin_output"] = str_replace("\"", "", $service_status[$host_name.'_'.$svc_description]["long_plugin_output"]);
             $service_status[$host_name.'_'.$svc_description]["long_plugin_output"] = str_replace('\n', '<br />', $service_status[$host_name.'_'.$svc_description]["long_plugin_output"]);
@@ -531,8 +529,8 @@ if (!is_null($host_id)) {
         }
         $tpl->assign("host_data", $host_status[$host_name]);
         $tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
-        $tpl->assign("host_name", CentreonUtils::escapeSecure(utf8_encode($host_name)));
-        $tpl->assign("svc_description", CentreonUtils::escapeSecure(utf8_encode($svc_description)));
+        $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));
+        $tpl->assign("svc_description", CentreonUtils::escapeSecure($svc_description));
         $tpl->assign("status_str", _("Status Graph"));
         $tpl->assign("detailed_graph", _("Detailed Graph"));
 

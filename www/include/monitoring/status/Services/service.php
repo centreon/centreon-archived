@@ -311,7 +311,7 @@ $statusList = array(
 $statusService = array(
     "svc_unhandled" => _("Unhandled Problems"),
     "svcpb" => _("Service Problems"),
-    "svc" => "All"
+    "svc"   => _("All")
 );
 
 if ($o == "svc") {
@@ -330,6 +330,7 @@ if ($o == "svc") {
     }
 }
 
+
 $form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
 if (isset($defaultStatus)) {
     $form->setDefaults(array('statusFilter' => $defaultStatus));
@@ -337,10 +338,10 @@ if (isset($defaultStatus)) {
 
 $form->addElement('select', 'statusService', _('Service Status'), $statusService, array('id' => 'statusService', 'onChange' => "statusServices(this.value);"));
 
-/* Get default host status by GET */
+/* Get default service status by GET */
 if (isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService))) {
-    $form->setDefaults(array('statusService' => $_GET['o']));
-/* Get default host status in SESSION */
+    $form->setDefaults(array('statusService' => "svc_unhandled"));
+/* Get default service status in SESSION */
 } elseif (isset($_SESSION['monitoring_service_status'])) {
     $form->setDefaults(array('statusService' => $_SESSION['monitoring_service_status']));
 }
@@ -393,17 +394,20 @@ $tpl->display("service.ihtml");
             _o = _keyPrefix;
         }
         window.clearTimeout(_timeoutID);
+        console.log("FilterStatus");
         initM(_tm, _sid, _o);
     }
 
     function filterCrit(value) {
         window.clearTimeout(_timeoutID);
+        console.log("FilterCrit");
         initM(_tm, _sid, _o);
     }
     function statusServices(value, isInit)
     {
         _o = value;
         window.clearTimeout(_timeoutID);
+        console.log("ServiceStatus");
         initM(_tm, _sid, _o);
     }
 </script>

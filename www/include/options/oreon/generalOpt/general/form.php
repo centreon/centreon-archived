@@ -236,7 +236,7 @@ $tpl->assign("genOpt_display_options", _("Display Options"));
 $tpl->assign("genOpt_global_display", _("Display properties"));
 $tpl->assign("genOpt_problem_display", _("Problem display properties"));
 $tpl->assign("genOpt_time_zone", _("Time Zone"));
-$tpl->assign("genOpt_auth", _("Authentification properties"));
+$tpl->assign("genOpt_auth", _("Authentication properties"));
 $tpl->assign("support", _("Support Information"));
 $tpl->assign('valid', $valid);
 

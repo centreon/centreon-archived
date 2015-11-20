@@ -815,7 +815,9 @@ class CentreonWidget
                         } else {
                             $str  = " field_type_id = " . $types[$attr['type']] . ", ";
                             $str .= " parameter_name = '" . $this->db->escape($attr['label']) . "', ";
-                            $str .= " default_value = '" . $this->db->escape($attr['defaultValue']) . "', ";
+                            if (isset($attr['defaultValue'])) {
+                                $str .= " default_value = '" . $this->db->escape($attr['defaultValue']) . "', ";
+                            }
                             $str .= " parameter_order = " . $order . ", ";
                             if (!isset($attr['requirePermission'])) {
                                 $attr['requirePermission'] = 0;

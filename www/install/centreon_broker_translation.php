@@ -50,7 +50,7 @@ echo _("Yes");
 echo _("Private key file.");
 echo _("Public certificate");
 echo _("Trusted CA's certificate");
-echo _("Enable negociation");
+echo _("Enable negotiation");
 echo _("One peer retention");
 echo _("Filter category");
 echo _("Available");
@@ -87,7 +87,7 @@ echo _("Replication enabled");
 echo _("Rebuild check interval in seconds");
 echo _("Store performance data in data_bin");
 echo _("Insert in index data");
-echo _("File for Centeron Broker statistics");
+echo _("File for Centreon Broker statistics");
 echo _("Store in performance data in data_bin");
 
 ?>

@@ -80,6 +80,7 @@
     
     $defaultServicesForGraph = array();
     $defaultHostsForGraph = array();
+    $defaultMetasForGraph = array();
 
 	if (isset($_GET["openid"])){
 		$openid = $_GET["openid"];
@@ -117,39 +118,40 @@
         $graphsPerPage = '5';
     }
 
-	if (isset($id_svc) && $id_svc){
-		$id = "";
+    if (isset($id_svc) && $id_svc){
+        $id = "";
         $grId = '';
-		$tab_svcs = explode(",", $id_svc);
-		foreach($tab_svcs as $svc){
-			$tmp = explode(";", $svc);
-			if (!isset($tmp[1])) {
-				$id .= "HH_" . getMyHostID($tmp[0]).",";
+        $tab_svcs = explode(",", $id_svc);
+        foreach($tab_svcs as $svc){
+            $tmp = explode(";", $svc);
+            if (!isset($tmp[1])) {
+                $id .= "HH_" . getMyHostID($tmp[0]).",";
                 $grId .= getMyHostID($tmp[0]);
-			}
-			if ((isset($tmp[0]) && $tmp[0] == "") || $meta == 1) {
-				$DBRESULT = $pearDB->query("SELECT `meta_id` FROM meta_service WHERE meta_name = '".$tmp[1]."'");
-				$res = $DBRESULT->fetchRow();
-				$DBRESULT->free();
-				$id .= "MS_".$res["meta_id"].",";
-				$meta = 1;
+            }
+            if ((isset($tmp[0]) && $tmp[0] == "") || $meta == 1) {
+                $DBRESULT = $pearDB->query("SELECT `meta_id` FROM meta_service WHERE meta_name = '".$tmp[1]."'");
+                $res = $DBRESULT->fetchRow();
+                $DBRESULT->free();
+                $id .= "MS_".$res["meta_id"].",";
+                $meta = 1;
+                $svc = $tmp[1];
                 $grId .= $res["meta_id"];
-			} else {
-				if (isset($tmp[1])) {
-					$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
+            } else {
+                if (isset($tmp[1])) {
+                    $id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
                     $grId .= getMyHostID($tmp[0]) . '-' .  getMyServiceID($tmp[1], getMyHostID($tmp[0]));
                 }
-			}
+            }
             
             if (strpos($grId, '-')) {
                 $defaultServicesForGraph[$svc] = $grId;
             } elseif ($meta == 1) {
-                
+                $defaultMetasForGraph[$svc] = $grId;
             } else {
                 $defaultHostsForGraph[$svc] = $grId;
             }
-		}
-	}
+        }
+    }
     
 	/* Get Period if is in url */
 	$period_start = 'undefined';
@@ -212,6 +214,15 @@
     );
     $hostSelector = $form->addElement('select2', 'host_selector', _("Hosts"), array(), $attrHosts);
     $hostSelector->setDefaultFixedDatas();
+
+    $attrMetas = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_meta&action=list',
+        'defaultDataset' => $defaultMetasForGraph,
+        'multiple' => true,
+    );
+    $metaSelector = $form->addElement('select2', 'metaservice_selector', _("Metaservices"), array(), $attrMetas);
+    $metaSelector->setDefaultFixedDatas();
     
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -362,7 +373,7 @@ function nextPeriod() {
 		document.FormPeriod.EndTime.value = EndTime;
 	}
 
-	function graph_4_host(id, multi, target, l_mselect, pStart, pEnd, metrics)	{
+	function graph_4_host(id, multi, target, l_mselect, pStart, pEnd, metrics) {
 		if (!multi)
 			multi = 0;
 		// no metric selection : default
@@ -579,6 +590,7 @@ function nextPeriod() {
 
         getListOfServices();
         getListOfHosts();
+        getListOfMetaservices();
 
        $nbGraphs = <?php echo $graphsPerPage ?>;
        $nbPages = Math.ceil($hostsServicesForGraph.length / $nbGraphs);
@@ -663,6 +675,19 @@ function nextPeriod() {
             });
         }
     }
+
+    function getListOfMetaservices() {
+        $selectedOptions = jQuery("#metaservice_selector").val();
+
+        if ($selectedOptions !== null) {
+            jQuery.each($selectedOptions, function(index, value) {
+                finalValue = 'MS_' + value;
+                if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
+                    $hostsServicesForGraph.push(finalValue);
+                }
+            });
+        }
+    }
     
     jQuery("#service_selector").on("change", function() {
         launchGraph();
@@ -673,6 +698,11 @@ function nextPeriod() {
         launchGraph();
     });
     jQuery("#host_selector").trigger("change");
+
+    jQuery("#metaservice_selector").on("change", function() {
+        launchGraph();
+    });
+    jQuery("#metaservice_selector").trigger("change");
     
     function resetFields(fields)
     {

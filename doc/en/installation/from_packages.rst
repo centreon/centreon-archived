@@ -6,7 +6,7 @@ Using packages
 
 Centreon supplies RPM for its products via the Centreon Enterprise Server (CES) solution Open Sources version available free of charge on our repository.
 
-These packages have been successfully tested on CentOS and Red Hat environments in 5.x and 6.x versions
+These packages have been successfully tested on CentOS and Red Hat environments in 6.x version.
 
 *************
 Prerequisites
@@ -18,7 +18,7 @@ Perform the following command from a user with sufficient rights:
 
  ::
 
- $ wget http://yum.centreon.com/standard/3.0/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+  $ wget http://yum.centreon.com/standard/3.0/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
 
 The repository is now installed.
 
@@ -28,14 +28,14 @@ Any operating system
 SELinux should be disabled; for this, you have to modify the file "/etc/sysconfig/selinux" and replace "enforcing" by "disabled":
 
  ::
- 
- SELINUX=disabled
+    
+  SELINUX=disabled
 
 PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line : 
 
  ::
- 
- date.timezone = Europe/Paris
+	   
+  date.timezone = Europe/Paris
 
 After saving the file, please don't forget to restart apache server. 
 
@@ -71,7 +71,7 @@ Perform the command:
 
  ::
 
-  $ yum install centreon-poller-centreon-engine
+ $ yum install centreon-poller-centreon-engine
 
 
 Base configuration of a poller
@@ -85,14 +85,14 @@ If you don’t have any private SSH keys on the central server for the Centreon 
 
  ::
 
-  $ su - centreon
-  $ ssh-keygen -t rsa
+ $ su - centreon
+ $ ssh-keygen -t rsa
 
 Copy this key on the collector:
-
+ 
  ::
 
-  $ ssh-copy-id centreon@your_poller_ip
+ $ ssh-copy-id centreon@your_poller_ip
 
 
 .. _installation_web:
@@ -102,78 +102,76 @@ Web Installation
 
 .. note::
 
-   Make sure that your Apache and MySQL servers are up and running before continuing.
+Make sure that your Apache and MySQL servers are up and running before continuing.
 
 Open your favorite web browser and go to the address:
 
- ::
+::
 
-  http://SERVER_ADDRESS/centreon
+ http://SERVER_ADDRESS/centreon
 
 You should see the following page:
 
 .. image:: /_static/images/installation/setup_1.png
-   :align: center
+    :align: center
 
 Click on the **Next** button:
 
 .. image:: /_static/images/installation/setup_2.png
-   :align: center
+    :align: center
 
 If a package is missing install it and click on the **Refresh** button. Click on the **Next** button as soon as everything is **OK**:
 
 .. image:: /_static/images/installation/setup_3_1.png
-   :align: center
+    :align: center
 
 Select your monitoring engine. Depending on the selection, the settings are different.
 
 For Centreon Engine:
 
 .. image:: /_static/images/installation/setup_3_2.png
-   :align: center
+    :align: center
 
 Click on the **Next** button as soon as all the fields are filled.
 
 .. image:: /_static/images/installation/setup_4.png
-   :align: center
+    :align: center
 
 Select your Stream Multiplexer. Depending on the selection, the settings are different.
 
 For Centreon Broker:
 
 .. image:: /_static/images/installation/setup_4_2.png
-   :align: center
+    :align: center
 
 Click on the **Next** button when all parameters are filled.
 
 .. image:: /_static/images/installation/setup_5.png
-   :align: center
+    :align: center
 
 Fill the form with your data. Be sure to remember your password. Click on the **next** button.
 
-
 .. image:: /_static/images/installation/setup_6.png
-   :align: center
+    :align: center
 
 Fill the form with information about your database. Click on the **Next** button.
 
 .. image:: /_static/images/installation/setup_7.png
-   :align: center
+    :align: center
 
 The database structure will be installed during this process. All must be validated by **OK**.
 
 .. note::
-
- The installation process may ask you to change the settings of the MySQL server to **add innodb_file_per_table=1** in the configuration file.
+    The installation process may ask you to change the settings of the MySQL server to **add innodb_file_per_table=1** in the configuration file.
 
 Click on the **Next** button.
 
 .. image:: /_static/images/installation/setup_8.png
-   :align: center
+    :align: center
 
 The installation is now finished, click on the ``Finish`` button, you will be redirected to the login screen:
 
 .. image:: /images/user/aconnection.png
-   :align: center
+    :align: center
 
 Enter your credentials to log in.

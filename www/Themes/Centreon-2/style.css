@@ -308,6 +308,12 @@ p.description a, p.description a:visited {
     border-radius: 4px;
     display: inline-block;
 }
+.badge_undetermined {
+    padding: 2px;
+    background-color: #D1D2D4;
+    border-radius: 4px;
+    display: inline-block;
+}
 
 /*------- START : Size icons --------*/
 

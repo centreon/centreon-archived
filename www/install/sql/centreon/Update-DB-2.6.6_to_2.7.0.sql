@@ -734,6 +734,9 @@ DELETE FROM topology_JS WHERE id_page = 20207;
 DELETE FROM topology WHERE topology_page = 20207; 
 DELETE FROM topology WHERE topology_parent = 202 AND topology_group = 33 AND topology_name = 'Monitoring Engine';
 
+-- Rename Monitoring Engine Statistics menu
+UPDATE topology SET topology_name = 'Poller Statistics' WHERE topology_page = 102;
+
 -- Change centreon tab menus
 SET foreign_key_checks = 0;
 UPDATE topology_JS SET id_page = 60902 WHERE id_page = 60701;
@@ -783,10 +786,10 @@ DELETE FROM topology WHERE topology_page IN (50606, 50607, 50605, 50604, 50602, 
 -- Set required value in field password
 update cb_type_field_relation set is_required = 0 where cb_type_id in (14, 16 , 28, 29, 30, 31) and cb_field_id = 9;
 
---Set required field db_port, db_user, db_host and db_name
+-- Set required field db_port, db_user, db_host and db_name
 update cb_type_field_relation set is_required = 1 where cb_type_id in (14, 16 , 28, 29, 30, 31) and cb_field_id in (7, 8, 10, 18);
 
---Change topology_Js for parameter ldap page
+-- Change topology_Js for parameter ldap page
 insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/centreon/doClone.js',NULL);
 insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
 
@@ -799,6 +802,30 @@ DELETE FROM topology WHERE topology_parent = 507 AND topology_group = 2 AND topo
 
 -- Delete Colors Pages
 DELETE FROM topology WHERE topology_page = 50112;
+DELETE FROM topology WHERE topology_page = 50116;
+
+-- Init Page Colors
+UPDATE css_color_menu SET css_name = 'blue_css.php' WHERE menu_nb = 1;
+UPDATE css_color_menu SET css_name = 'green_css.php' WHERE menu_nb = 2;
+UPDATE css_color_menu SET css_name = 'yellow_css.php' WHERE menu_nb = 3;
+UPDATE css_color_menu SET css_name = 'red_css.php' WHERE menu_nb = 4;
+UPDATE css_color_menu SET css_name = 'blue_css.php' WHERE menu_nb = 5;
+UPDATE css_color_menu SET css_name = 'blue_css.php' WHERE menu_nb = 6;
+
+-- Remove Escalation Pages
+DELETE FROM topology WHERE topology_page = 60402;
+DELETE FROM topology_JS WHERE id_page = 60402;
+DELETE FROM topology WHERE topology_page = 60403;
+DELETE FROM topology_JS WHERE id_page = 60403;
+DELETE FROM topology WHERE topology_page = 60404;
+DELETE FROM topology_JS WHERE id_page = 60404;
+DELETE FROM topology WHERE topology_page = 60405;
+DELETE FROM topology_JS WHERE id_page = 60405;
+DELETE FROM topology WHERE topology_page = 60406;
+DELETE FROM topology_JS WHERE id_page = 60406;
+
+-- Update topology JS for page monitoring
+UPDATE topology_JS SET Init = NULL WHERE id_page = 202 AND PathName_js = './include/common/javascript/ajaxMonitoring.js';
 
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;

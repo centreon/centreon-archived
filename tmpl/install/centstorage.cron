@@ -7,9 +7,6 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 # rewrite file with new cron line
 CRONTAB_EXEC_USER=""
 
-# Cron for log parsor
-* * * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/logAnalyser --config=@CENTREON_ETC@/conf.pm >> @CENTREON_LOG@/logAnalyser.log 2>&1
-
 # Cron for tracing Nagios Poller Performances
 */5 * * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/nagiosPerfTrace --config=@CENTREON_ETC@/conf.pm >> @CENTREON_LOG@/nagiosPerfTrace.log 2>&1
 

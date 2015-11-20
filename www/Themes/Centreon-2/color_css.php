@@ -174,7 +174,6 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 	}
 
 .limitPage{
-	background-image:url(<?php print $bg_image_header; ?>);
 	color:<?php print $color9; ?>;
 	background-position:top left;
 	background-repeat:repeat-x;
@@ -182,7 +181,6 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 	}
 
 .pageNumber{
-	background-image:url(<?php print $bg_image_header; ?>);
 	color:<?php print $color9; ?>;
 	background-position:top left;
 	background-repeat:repeat-x;

@@ -480,7 +480,7 @@ $str_unitH_append = "";
 $host_search_sql = "";
 if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     if($engine == "false"){
-        $req .= " AND 1 = 0 ";
+        $req .= " AND `msg_type` NOT IN ('4','5') ";
     }
 } else {
     foreach ($tab_host_ids as $host_id ) {
