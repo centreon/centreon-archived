@@ -299,7 +299,7 @@ if ($form->validate()) {
 if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>" . _("Impossible to validate, one or more field is incorrect") . "</div>");
 } elseif (false === $filterValid) {
-    print("<div class='msg' align='center'>" . _("Bad ldap filter : missing %s pattern. Check user or group filter") . "</div>");
+    print("<div class='msg' align='center'>" . _("Bad ldap filter: missing %s pattern. Check user or group filter") . "</div>");
 } elseif (false === $allHostsOk) {
     print("<div class='msg' align='center'>" . _("Invalid LDAP Host parameters") . "</div>");
 }
