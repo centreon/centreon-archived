@@ -18,7 +18,7 @@ $help["retry_interval"] = dgettext("help", "Define the number of minutes to wait
 
 $help["notifications_enabled"] = dgettext("help", "Specify whether or not notifications for this meta service are enabled.");
 $help["contact_groups"] = dgettext("help", "This is a list of contact groups that should be notified whenever there are problems (or recoveries) with this service.");
-$help["notification_interval"] = dgettext("help", "Define the number of minutes to wait before re-notifying a contact that this service is still in a non-OK condition. A value of 0 disables re-notififications of contacts about problems for this service - only one problem notification will be sent out.");
+$help["notification_interval"] = dgettext("help", "Define the number of minutes to wait before re-notifying a contact that this service is still in a non-OK condition. A value of 0 disables re-notifications of contacts about problems for this service - only one problem notification will be sent out.");
 $help["notification_period"] = dgettext("help", "Specify the time period during which notifications of events for this service can be sent out to contacts. If a state change occurs during a time which is not covered by the time period, no notifications will be sent out.");
 $help["notification_options"] = dgettext("help", "Define the states of the service for which notifications should be sent out. If you do not specify any notification options, Centreon will assume that you want notifications to be sent out for all possible states.");
 

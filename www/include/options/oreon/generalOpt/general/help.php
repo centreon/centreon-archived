@@ -48,7 +48,7 @@ $help['tip_sort_problems_by'] = dgettext('help', 'Default sort in monitoring con
 $help['tip_order_sort_problems'] = dgettext('help', 'Default order in monitoring consoles.');
 
 /**
- * Authentification properties
+ * Authentication properties
  */
 
 $help['tip_enable_autologin'] = dgettext('help', 'Enables Autologin.');

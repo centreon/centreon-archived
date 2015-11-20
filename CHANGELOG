@@ -1875,7 +1875,7 @@ Fixes a lot of wordings
 => Bugfix #417
 => Bugfix #436
 => Reporting : CSV export now takes correct timeperiod parameters
-=> Reporting : fixes bug that occured when hosts/services were renamed
+=> Reporting : fixes bug that occurred when hosts/services were renamed
 => ACL : ServiceGroups are no longer restrictions, they grant access to resources instead
 => Enhanced generation of configuration files
 => New Centreon logo
@@ -2007,7 +2007,7 @@ Fixes a lot of wordings
 => Bugfix : remove errors in SQL install
 => Bugfix : remove errors in PHP install
 => Bugfix : remove problem with SHELL install : chmod on module directory
-=> Feature : Add possibilty to link host/service with contactgroups and contacts.
+=> Feature : Add possibility to link host/service with contactgroups and contacts.
 => Bugfix : optimize XML for EventLogs
 
 ## Centreon 2.0-b6

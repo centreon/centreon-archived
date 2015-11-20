@@ -147,9 +147,9 @@
 	$form->addElement('checkbox', 'poller_stats', _("Display Top Counter pollers statistics"));
 	$form->addElement('checkbox', 'poller_listing', _("Display Poller Listing"));
 
-    $form->addElement('checkbox', 'all_service', _(""));
-    $form->addElement('checkbox', 'all_host', _(""));
-    $form->addElement('checkbox', 'all_engine', _(""));
+    $form->addElement('checkbox', 'all_service', "");
+    $form->addElement('checkbox', 'all_host', "");
+    $form->addElement('checkbox', 'all_engine', "");
     
     
 	$form->setDefaults(array("hostComment" => 1 ));

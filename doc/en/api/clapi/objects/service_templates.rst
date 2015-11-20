@@ -197,7 +197,7 @@ service_notification_options       Notification options (w,u,c,r,f,s)
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
 
 Addhosttemplate and Sethosttemplate
--------------------
+-----------------------------------
 
 You may want to tie a service template to an extra host template. In order to do so, use the **ADDHOSTTEMPLATE** or **SETHOSTTEMPLATE** actions where *add* will append and *set* will overwrite previous definitions::
 
@@ -209,7 +209,7 @@ You may want to tie a service template to an extra host template. In order to do
 
 
 Delhosttemplate
---------
+---------------
 
 In order to remove the relation between a host template and a service template, use the **DELHOSTTEMPLATE** action::
 

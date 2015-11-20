@@ -44,8 +44,14 @@ The Macros part serves to add custom macros.
 *       The **Macro name** and **Macro value** field enable us to define the name and value of the macro.
 *       The **Password** box enables the value of the macro to be hidden.
 
+To reinitialize to the default value (defined in template) click on |undo|.
+
+To view the description of the macro, click on |description|.
+
 To delete the macro, click on |delete|.
+
 To change the order of the macros, click on |move|.
+
 
 
 Scheduling options of the host
@@ -130,4 +136,5 @@ Additional Information
 .. |delete|    image:: /images/delete.png
 .. |move|    image:: /images/move.png
 .. |navigate_plus|    image:: /images/navigate_plus.png
-.. |description| image:: /images/text_view.gif
+.. |undo|    image:: /images/undo.png
+.. |description|    image:: /images/description.png

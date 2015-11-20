@@ -58,7 +58,7 @@
     	<td class="ListColHeaderCenter">{t}Started{/t}</td>
     	<td class="ListColHeaderCenter">{t}Fixed{/t}</td>
     	{if $view_all == '1'}
-        <td class="ListColHeaderCenter">{t}Started{/t}</td>
+        <td class="ListColHeaderCenter">{t}Cancelled{/t}</td>
         <td class="ListColHeaderCenter">{t}Actual End{/t}</td>
         {/if}
     </tr>
