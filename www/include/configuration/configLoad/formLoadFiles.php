@@ -106,7 +106,7 @@
 	$tab[] = HTML_QuickForm::createElement('radio', 'cmdType', null, _("Notification Command"), '1');
 	$form->addGroup($tab, 'cmdType', _("Command Type"), '&nbsp;');
 	$form->setDefaults(array('cmdType' => array("cmdType"=>"2")));
-	$form->addElement('header', 'fileCmt1', _("It is recommanded to upload all the Command definitions first by specifying their types."));
+	$form->addElement('header', 'fileCmt1', _("It is recommended to upload all the Command definitions first by specifying their types."));
 	$form->addElement('header', 'fileCmt2', _("Indeed, it's the only way to make a difference between Check and Notification Commands."));
 
 	$file = $form->addElement('file', 'filename', _("File (zip, tar or cfg)"));

@@ -136,6 +136,5 @@ Additional Information
 .. |delete|    image:: /images/delete.png
 .. |move|    image:: /images/move.png
 .. |navigate_plus|    image:: /images/navigate_plus.png
-.. |description| image:: /images/text_view.gif
 .. |undo|    image:: /images/undo.png
 .. |description|    image:: /images/description.png

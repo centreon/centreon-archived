@@ -786,10 +786,10 @@ DELETE FROM topology WHERE topology_page IN (50606, 50607, 50605, 50604, 50602, 
 -- Set required value in field password
 update cb_type_field_relation set is_required = 0 where cb_type_id in (14, 16 , 28, 29, 30, 31) and cb_field_id = 9;
 
---Set required field db_port, db_user, db_host and db_name
+-- Set required field db_port, db_user, db_host and db_name
 update cb_type_field_relation set is_required = 1 where cb_type_id in (14, 16 , 28, 29, 30, 31) and cb_field_id in (7, 8, 10, 18);
 
---Change topology_Js for parameter ldap page
+-- Change topology_Js for parameter ldap page
 insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/centreon/doClone.js',NULL);
 insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
 
@@ -823,6 +823,9 @@ DELETE FROM topology WHERE topology_page = 60405;
 DELETE FROM topology_JS WHERE id_page = 60405;
 DELETE FROM topology WHERE topology_page = 60406;
 DELETE FROM topology_JS WHERE id_page = 60406;
+
+-- Update topology JS for page monitoring
+UPDATE topology_JS SET Init = NULL WHERE id_page = 202 AND PathName_js = './include/common/javascript/ajaxMonitoring.js';
 
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;

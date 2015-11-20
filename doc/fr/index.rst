@@ -17,9 +17,10 @@ Sommaire :
    a_propos/index
    release_notes/index
    installation/index
+   configuration_guide/index
+   exploitation_guide/index
+   administration_guide/index
    upgrade/index
-   guide_utilisateur/index
-   guide_exploitation/index
    faq/index
    extendcentreon/index
 
