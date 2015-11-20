@@ -92,8 +92,8 @@
     /**
      * Adding validation rule
      */
-    $form->addRule('useralias', _("You must specifiy a username"), 'required');
-    $form->addRule('password', _("You must specifiy a password"), 'required');
+    $form->addRule('useralias', _("You must specify a username"), 'required');
+    $form->addRule('password', _("You must specify a password"), 'required');
     
     /**
      * Form parameters

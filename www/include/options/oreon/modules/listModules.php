@@ -99,7 +99,7 @@ $tpl = initSmartyTpl($path, $tpl);
 $tpl->assign("headerMenu_name", 		 _("Name"));
 $tpl->assign("headerMenu_rname", 		 _("Real name"));
 $tpl->assign("headerMenu_release", 		 _("Release"));
-$tpl->assign("headerMenu_infos", 		 _("Informations"));
+$tpl->assign("headerMenu_infos", 		 _("Information"));
 $tpl->assign("headerMenu_moduleStatus",  _("Status"));
 $tpl->assign("headerMenu_author", 		 _("Author"));
 $tpl->assign("headerMenu_licenseExpire", _("Expiration date"));

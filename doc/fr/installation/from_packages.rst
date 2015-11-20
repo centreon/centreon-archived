@@ -8,7 +8,7 @@ Centreon fournit RPM pour ses produits au travers de la solution Centreon
 Entreprise Server (CES) en version Open Sources et disponible gratuitement 
 sur notre dépôt.
 
-Ces paquets ont été testés avec succès sur les environnements CentOS et Red Hat en version 5.x et 6.x.
+Ces paquets ont été testés avec succès sur les environnements CentOS et Red Hat en version 6.x.
 
 **********
 Prérequis

@@ -69,7 +69,7 @@ echo _("Maximum size in bytes.");
 echo _("The maximum size of log file.");
 echo _("RRD file directory, for example /var/lib/centreon/metrics");
 echo _("For a file logger this is the path to the file. For a standard logger, one of 'stdout' or 'stderr'.");
-echo _("Enable negociation option (use only for version of Centren Broker >= 2.5)");
+echo _("Enable negotiation option (use only for version of Centren Broker >= 2.5)");
 echo _("This allows the retention to work even if the socket is listening");
 echo _("The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.");
 echo _("Path to the file.");
