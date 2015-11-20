@@ -364,6 +364,8 @@ insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./inc
 insert into topology_JS (id_page,o,PathName_js,Init) VALUES (50113,'ldap','./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
 
 INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60903,'./include/common/javascript/changetab.js','initChangeTab');
+INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60903,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60903,'./include/common/javascript/centreon/doClone.js',NULL);
 
 /*!40000 ALTER TABLE `topology_JS` ENABLE KEYS */;
 UNLOCK TABLES;
