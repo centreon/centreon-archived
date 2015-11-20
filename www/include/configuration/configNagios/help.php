@@ -31,6 +31,35 @@ $help["state_retention_file"] = dgettext("help", "This is the file that Monitori
 $help["retention_update_interval"] = dgettext("help", "This setting determines how often (in minutes) that Monitoring Engine will automatically save retention data during normal operation. If you set this value to 0, Monitoring Engine will not save retention data at regular intervals, but it will still save retention data before shutting down or restarting. If you have disabled state retention (with the retain_state_information option), this option has no effect.");
 $help["use_retained_program_state"] = dgettext("help", "This setting determines whether or not Monitoring Engine will set various program-wide state variables based on the values saved in the retention file. Some of these program-wide state variables that are normally saved across program restarts if state retention is enabled include the enable_notifications, enable_flap_detection, enable_event_handlers, execute_service_checks, and accept_passive_service_checks options. If you do not have state retention enabled, this option has no effect. This option is enabled by default.");
 $help["use_retained_scheduling_info"] = dgettext("help", "This setting determines whether or not Monitoring Engine will retain scheduling info (next check times) for hosts and services when it restarts. If you are adding a large number (or percentage) of hosts and services, I would recommend disabling this option when you first restart Monitoring Engine, as it can adversely skew the spread of initial checks. Otherwise you will probably want to leave it enabled.");
+
+
+
+$help["retained_service_attribute_mask"] = dgettext("help", "These options determine which service attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
+$help["retained_host_attribute_mask"] = dgettext("help", "These options determine which host attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
+$help["retained_process_service_attribute_mask"] = dgettext("help", "These options determine which service process attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
+$help["retained_process_host_attribute_mask"] = dgettext("help", "These options determine which host process attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
+$help["retained_contact_service_attribute_mask"] = dgettext("help", "These options determine which service contact attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
+$help["retained_contact_host_attribute_mask"] = dgettext("help", "These options determine which host contact attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 $help["use_syslog"] = dgettext("help", "This option determines whether messages are logged to the syslog facility on your local host.");
 $help["log_notifications"] = dgettext("help", "This option determines whether or not notification messages are logged. If you have a lot of contacts or regular service failures your log file will grow relatively quickly. Use this option to keep contact notifications from being logged.");
 $help["log_service_retries"] = dgettext("help", "This option determines whether or not service check retries are logged. Service check retries occur when a service check results in a non-OK state, but you have configured Monitoring Engine to retry the service more than once before responding to the error. Services in this situation are considered to be in \"soft\" states. Logging service check retries is mostly useful when attempting to debug Monitoring Engine or test out service event handlers.");
