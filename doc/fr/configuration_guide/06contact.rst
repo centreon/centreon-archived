@@ -34,9 +34,9 @@ Informations générales
 *	Le champ **Période de notification d'hôte/de service** permet de choisir la période temporelle pour laquelle il y a envoi de notification.
 *	Le champ **Commande de notification d'hôte/de service** permet de choisir la commande de notification pour un hôte ou pour un service.
 
-*************************
-Authentification Centreon
-*************************
+************************
+Authenticationg Centreon
+************************
 
 *	Le champ **Autoriser l'utilisateur à se connecter à l'interface web** permet d'autoriser l'utilisateur à accéder à l'interface web de Centreon.
 *	Les champs **Mot de passe** et **Confirmation du mot de passe** contiennent le mot de passe utilisateur.
