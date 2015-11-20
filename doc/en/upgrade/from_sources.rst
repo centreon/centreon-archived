@@ -168,7 +168,7 @@ The path to monitoring engine log directory.
 
 For example:
 
-* Centeron Engine : */var/log/centreon-engine*
+* Centreon Engine : */var/log/centreon-engine*
 * Nagios : */var/log/nagios*
 
 ::

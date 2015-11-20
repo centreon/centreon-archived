@@ -184,7 +184,7 @@ Par exemple :
 
 Le chemin vers les journaux. Par exmeple :
 
-* Centeron Engine : */var/log/centreon-engine*
+* Centreon Engine : */var/log/centreon-engine*
 
 Le chemin vers les sondes de supervision :
 
