@@ -435,7 +435,6 @@ jQuery(function() {
         });
     });
 
-
     sheepIt = jQuery("#macro").sheepIt({
         separator: '',
         allowRemoveLast: true,
@@ -445,7 +444,10 @@ jQuery(function() {
         maxFormsCount: 200,
         continuousIndex : false,
         iniFormsCount: jQuery("#clone-count-macro").data("clone-count-macro"),
-        data: jQuery("#clone-values-macro").data("clone-values-macro")
+        data: jQuery("#clone-values-macro").data("clone-values-macro"),
+        afterAdd: function(source, newForm) {
+            jQuery(newForm).find("input[id^='macroPassword_']").parent().show();
+        }
     });
 
     jQuery(".onemacro").each(function(idx,elem){
