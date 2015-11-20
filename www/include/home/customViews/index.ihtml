@@ -573,6 +573,8 @@ function toggleEdit(forceShow) {
         var widgetTitle = jQuery(this).find('.widgetTitle').text().trim();
         if (widgetTitle == 'Click to edit' || widgetTitle == '') {
             jQuery(this).hide();
+        } else {
+            jQuery(this).find('.ui-icon').hide();
         }
     });
     $img1 = $el.find('img').attr('src','./img/icons/edit_mode.png');
@@ -582,7 +584,10 @@ function toggleEdit(forceShow) {
   } else {
     $el.addClass('edit');
     jQuery('#actionBar').show();
-    jQuery('.portlet-header').show();
+    jQuery('.portlet-header').each(function(index) {
+        jQuery(this).show();
+        jQuery(this).find('.ui-icon').show();
+    });
     $el.find('img').attr('src','./img/icons/no_edit_mode.png');
 
     if (forceShow === undefined) {
