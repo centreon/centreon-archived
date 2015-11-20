@@ -70,7 +70,7 @@ $form->addElement('textarea', 'ar_description', _('Description'), $attrsTextarea
 
 $ldapEnable[] = HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, _("Yes"), '1');
 $ldapEnable[] = HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, _("No"), '0');
-$form->addGroup($ldapEnable, 'ldap_auth_enable', _("Enable LDAP authentification"), '&nbsp;');
+$form->addGroup($ldapEnable, 'ldap_auth_enable', _("Enable LDAP authentication"), '&nbsp;');
 
 $ldapStorePassword[] = HTML_QuickForm::createElement('radio', 'ldap_store_password', null, _("Yes"), '1');
 $ldapStorePassword[] = HTML_QuickForm::createElement('radio', 'ldap_store_password', null, _("No"), '0');
@@ -299,7 +299,7 @@ if ($form->validate()) {
 if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>" . _("Impossible to validate, one or more field is incorrect") . "</div>");
 } elseif (false === $filterValid) {
-    print("<div class='msg' align='center'>" . _("Bad ldap filter : missing %s pattern. Check user or group filter") . "</div>");
+    print("<div class='msg' align='center'>" . _("Bad ldap filter: missing %s pattern. Check user or group filter") . "</div>");
 } elseif (false === $allHostsOk) {
     print("<div class='msg' align='center'>" . _("Invalid LDAP Host parameters") . "</div>");
 }

@@ -6,7 +6,7 @@ $help = array();
  */
 $help['ar_name'] = dgettext('help', 'Name of configuration');
 $help['ar_description'] = dgettext('help', 'Short description of configuration');
-$help['ldap_auth_enable'] = dgettext('help', 'Enable LDAP authentification');
+$help['ldap_auth_enable'] = dgettext('help', 'Enable LDAP authentication');
 $help['ldap_store_password'] = dgettext('help', 'Whether or not the password should be stored in database');
 $help['ldap_auto_import'] = dgettext('help', 'Can connect with LDAP without import');
 $help['ldap_contact_tmpl'] = dgettext('help', 'The contact template for auto imported user.<br/>This template is applied for Monitoring Engine contact configuration and ACLs');

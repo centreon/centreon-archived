@@ -760,7 +760,7 @@ jQuery(function () {
   });
   jQuery('.addWidget').button({ icons : { primary: 'ui-icon-plus'}});
   jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
-  jQuery('.setDefault').button({ icons : { primary: 'ui-icon-star'}}).on('click', function () {
+  jQuery('.setDefault').button({ icons : { primary: 'ui-icon-arrowreturnthick-1-w'}}).on('click', function () {
     jQuery("#setDefaultConfirm").centreonPopin("open");
   });
   
