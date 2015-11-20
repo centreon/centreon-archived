@@ -1875,7 +1875,7 @@ Fixes a lot of wordings
 => Bugfix #417
 => Bugfix #436
 => Reporting : CSV export now takes correct timeperiod parameters
-=> Reporting : fixes bug that occured when hosts/services were renamed
+=> Reporting : fixes bug that occurred when hosts/services were renamed
 => ACL : ServiceGroups are no longer restrictions, they grant access to resources instead
 => Enhanced generation of configuration files
 => New Centreon logo

@@ -338,6 +338,27 @@ _("Timeperiod");
 /* /tmp/centreon-2.7.x/www//include/configuration/configObject/timeperiod/listTimeperiod.ihtml */
 _("Search");
 
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("General Information");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("Notifications");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("Relations");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("Data Processing");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("Service Extended Info");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("Service Check Options");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("Service Scheduling Options");
+
 /* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/listService.ihtml */
 _("Filters");
 

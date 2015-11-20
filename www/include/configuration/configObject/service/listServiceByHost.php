@@ -284,7 +284,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 	$tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
 	if (count($tplArr)) {
 		foreach($tplArr as $key => $value) {
-			$tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
+			$tplStr .= "&nbsp;|&nbsp;<a href='main.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
 		}		
 	}
 

@@ -242,7 +242,7 @@
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
-	$form->addElement('header', 'Host_infos', _("Shared Resouces"));
+	$form->addElement('header', 'Host_infos', _("Shared Resources"));
 	$form->addElement('header', 'help', _("Help"));
 	$form->addElement('header', 'HSharedExplain', _("<b><i>Help :</i></b> Select hosts and hostgroups that can be seen by associated users. You also have the possibility to exclude host(s) from selected hostgroup(s)."));
         $form->addElement('header', 'SSharedExplain', _("<b><i>Help :</i></b> Select services that can be seen by associated users."));

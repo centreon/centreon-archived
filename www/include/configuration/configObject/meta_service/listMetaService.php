@@ -118,7 +118,7 @@
 		$moptions = "";
 		$selectedElements = $form->addElement('checkbox', "select[".$ms['meta_id']."]");
 		if ($ms["meta_select_mode"] == 1)
-			$moptions = "<a href='main.php?p=".$p."&meta_id=".$ms['meta_id']."&o=ci&search=".$search."'><img src='img/icones/16x16/signpost.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
+			$moptions = "<a href='main.php?p=".$p."&meta_id=".$ms['meta_id']."&o=ci&search=".$search."'><img src='img/icons/redirect.png' class='ico-16' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
 		else
 			$moptions = "";
 
