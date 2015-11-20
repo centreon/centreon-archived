@@ -14,6 +14,9 @@ $help['tip_centreon_web_directory'] = dgettext('help', 'Centreon Web URI.');
 
 $help['tip_limit_per_page'] = dgettext('help', 'Default number of displayed elements in listing pages.');
 $help['tip_limit_per_page_for_monitoring'] = dgettext('help', 'Default number of displayed elements in monitoring consoles.');
+$help['tip_graph_per_page_for_performances'] = dgettext('help', 'Number of performance graphs displayed per page.');
+
+
 
 /**
  * Sessions Properties
