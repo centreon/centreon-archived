@@ -400,7 +400,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Set host 
      *
-     * @param string $parameters | downtime name; host names seperated by "|" character
+     * @param string $parameters | downtime name; host names separated by "|" character
      */
     public function sethost($parameters)
     {
@@ -430,7 +430,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add host group to downtime
      *
-     * @param string $parameters | downtime name; host group names seperated by "|" character
+     * @param string $parameters | downtime name; host group names separated by "|" character
      */
     public function addhostgroup($parameters)
     {
