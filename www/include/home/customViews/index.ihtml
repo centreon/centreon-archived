@@ -665,7 +665,7 @@ jQuery(function () {
     jQuery('#formAddView input[name="layout[layout]"][value="column_1"]').prop('checked', true);
     jQuery('#formAddView input[name="public"]').prop('checked', false);
   });
-  jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}});
+  jQuery('.editView').button({ icons : { primary: 'ui-icon-pencil'}});
   jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
     jQuery("#deleteViewConfirm").centreonPopin("open");
   });
@@ -750,7 +750,7 @@ jQuery(function () {
   });
   jQuery('.addWidget').button({ icons : { primary: 'ui-icon-plus'}});
   jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
-  jQuery('.setDefault').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
+  jQuery('.setDefault').button({ icons : { primary: 'ui-icon-arrowreturnthick-1-w'}}).on('click', function () {
     jQuery("#setDefaultConfirm").centreonPopin("open");
   });
   
