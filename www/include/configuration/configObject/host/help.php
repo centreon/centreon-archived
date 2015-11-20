@@ -13,7 +13,7 @@ $help["poller"] = dgettext("help", "In a distributed monitoring environment, the
 $help["host_location"] = dgettext("help", "Define the timezone of the host's location.");
 
 $help["use"] = dgettext("help", "This is where you specify the template that you want to inherit properties/variables from. Inherited properties doesn't need to be specified again. \"Local\" object variables always take precedence over variables defined in the template object. Objects can inherit properties/variables from multiple levels of template objects. When defining multiple sources, the first template specified takes precedence over the later one, in the case where a property is defined in both.");
-$help["create_linked_services"] = dgettext("help", "By enabling this option, the services linked to the template will be created independant of the template and attached to this service.");
+$help["create_linked_services"] = dgettext("help", "By enabling this option, the services linked to the template will be created independent of the template and attached to this service.");
 
 $help["check_period"] = dgettext("help", "This directive is used to specify the time period during which active checks of this host can be executed.");
 $help["check_command"] = dgettext("help", "Specify the command that should be used to check if the host is up or down. Typically, this command would try and ping the host to see if it is \"alive\". On a non-OK state monitoring engine will assume the host is down. A blank argument disables active checks for the host status and Monitoring Engine will always assume the host is up. This is useful if you are monitoring printers or other devices that are frequently turned off.");
