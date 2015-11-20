@@ -34,12 +34,12 @@ $help["use_retained_scheduling_info"] = dgettext("help", "This setting determine
 
 
 
-$help["retained_service_attribute_mask"] = dgettext("help", "These options determine which service attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
-$help["retained_host_attribute_mask"] = dgettext("help", "These options determine which host attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
-$help["retained_process_service_attribute_mask"] = dgettext("help", "These options determine which service process attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
-$help["retained_process_host_attribute_mask"] = dgettext("help", "These options determine which host process attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
-$help["retained_contact_service_attribute_mask"] = dgettext("help", "These options determine which service contact attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
-$help["retained_contact_host_attribute_mask"] = dgettext("help", "These options determine which host contact attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
+$help["retained_service_attribute_mask"] = dgettext("help", "This is an advanced feature. You'll need to read the Centreon Engine source code to use this option effectively. These options determine which service attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
+$help["retained_host_attribute_mask"] = dgettext("help", "This is an advanced feature. You'll need to read the Centreon Engine source code to use this option effectively. These options determine which host attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
+$help["retained_process_service_attribute_mask"] = dgettext("help", "This is an advanced feature. You'll need to read the Centreon Engine source code to use this option effectively.  These options determine which service process attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
+$help["retained_process_host_attribute_mask"] = dgettext("help", "This is an advanced feature. You'll need to read the Centreon Engine source code to use this option effectively. These options determine which host process attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
+$help["retained_contact_service_attribute_mask"] = dgettext("help", "This is an advanced feature. You'll need to read the Centreon Engine source code to use this option effectively. These options determine which service contact attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
+$help["retained_contact_host_attribute_mask"] = dgettext("help", "This is an advanced feature. You'll need to read the Centreon Engine source code to use this option effectively. These options determine which host contact attributes are NOT retained across program restarts. By default, all host and service attributes are retained.");
 
 
 
