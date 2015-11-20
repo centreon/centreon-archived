@@ -110,9 +110,9 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl')
                 rename(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl", _CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl");
                 clearstatcache(true, _CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl");
                 if (zend_loader_install_license(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl", true)) {
-                    echo _("The license has been sucessfully installed");
+                    echo _("The license has been successfully installed");
                 } else {
-                    echo _("An error occured");
+                    echo _("An error occurred");
                 }
             }
             else
