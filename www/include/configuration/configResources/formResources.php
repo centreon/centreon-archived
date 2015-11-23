@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,12 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!$oreon->user->admin && isset($resource_id) && count($allowedResourceConf) && !isset($allowedResourceConf[$resource_id])) {
+if (!$centreon->user->admin && isset($resource_id) && count($allowedResourceConf) && !isset($allowedResourceConf[$resource_id])) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
     $msg->setTextStyle("bold");
@@ -181,6 +177,7 @@ if ($form->validate()) {
     $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&resource_id=" . $rsObj->getValue() . "'"));
     $valid = true;
 }
+
 $action = $form->getSubmitValue("action");
 if ($valid)
     require_once($path . "listResources.php");
@@ -194,4 +191,3 @@ else {
     $tpl->assign('o', $o);
     $tpl->display("formResources.ihtml");
 }
-?>
