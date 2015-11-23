@@ -802,15 +802,6 @@ DELETE FROM topology WHERE topology_parent = 507 AND topology_group = 2 AND topo
 
 -- Delete Colors Pages
 DELETE FROM topology WHERE topology_page = 50112;
-DELETE FROM topology WHERE topology_page = 50116;
-
--- Init Page Colors
-UPDATE css_color_menu SET css_name = 'blue_css.php' WHERE menu_nb = 1;
-UPDATE css_color_menu SET css_name = 'green_css.php' WHERE menu_nb = 2;
-UPDATE css_color_menu SET css_name = 'yellow_css.php' WHERE menu_nb = 3;
-UPDATE css_color_menu SET css_name = 'red_css.php' WHERE menu_nb = 4;
-UPDATE css_color_menu SET css_name = 'blue_css.php' WHERE menu_nb = 5;
-UPDATE css_color_menu SET css_name = 'blue_css.php' WHERE menu_nb = 6;
 
 -- Remove Escalation Pages
 DELETE FROM topology WHERE topology_page = 60402;
