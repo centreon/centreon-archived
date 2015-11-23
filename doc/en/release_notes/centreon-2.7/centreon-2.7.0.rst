@@ -65,7 +65,7 @@ Secutiry fixes
 * Removing PHP session ID in the URL of the Ajax flow of certain pages.
 * Integration of a CSRF token in all forms to prevent "Man in the middle" effect.
 
-Removeed Features
+Removed Features
 -----------------
 
 * Support for Nagios and NDOutils is no longer effective on Centreon web. Only Centreon Engine and Centreon Broker are supported from version 2.7.0

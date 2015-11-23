@@ -192,19 +192,3 @@ Cette partie permet de configurer l'activation de la journalisation de l'activit
 * La case **Débogage processus Centcore** active la journalisation du débogage du processus Centcore
 * La case **Débogage du processus Centstorage** active la journalisation du débogage du processus Centstorage
 * La case **Débogage du moteur de traitement des traps SNMP (centreontrapd)** active la journalisation du débogage du processus Centreontrapd
-
-***
-CSS
-***
-
-Cette partie permet de configurer l'aspect des différents menus de l'interface Centreon.
-
-#. Rendez-vous dans le menu **Administration** ==> **Options**
-#. Dans le menu de gauche, cliquez sur **Options**
-#. Cliquez sur **CSS**
-
-.. image :: /images/guide_exploitation/ecss.png
-   :align: center
-
-Pour chaque menu, il est possible de définir une feuille de style CSS.
-Exemples : Le fichier blue_css.php rendra le menu bleu. Le fichier green_css.php rendra le menu vert et ainsi de suite.

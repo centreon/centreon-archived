@@ -180,17 +180,3 @@ This part can be used to configure the enabling of the logging of activity on Ce
 * **SQL debug** box enables the logging of SQL requests executed by the Centreon interface
 * **Centcore Engine debug** box enables logging of Centcore process debugging
 * **Centreontrapd debug** box enables logging of the Centreontrapd process debugging
-
-***
-CSS
-***
-
-This part can be used to configure the aspect of the Centreon interface menus.
-
-#. Go into the menu: **Administration** ==> **Parameters** ==> **CSS**
-
-.. image :: /images/guide_exploitation/ecss.png
-   :align: center
-
-For each menu, it is possible to define a CSS style sheet. 
-E.g.: the blue_css.php file makes the menu blue. The green_css.php file makes the menu green and so on.
