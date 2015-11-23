@@ -1,9 +1,9 @@
 function loadDescription(id)
 {  
     var text = jQuery("#macroDescription_"+id).val();
-
-
-    var popDescription = '<div class="MB_alert"><p><textarea rows="4" cols="80">'+text+'</textarea></p><input type="button" onclick="closePop('+id+')" value="OK" /></div>';
+    var isFrozen = jQuery("#isFrozen_"+id).val();
+    
+    var popDescription = '<div class="MB_alert"><p><textarea rows="4" cols="80" class="desc">'+text+'</textarea></p><input type="button" onclick="closePop('+id+')" value="OK" /></div>';
     if(typeof jQuery("#macroTpl_"+id) != 'undefined'){
         var fromTpl  = jQuery("#macroTpl_"+id).val();
         popDescription += '<div>'+ fromTpl +'</div>';
@@ -15,6 +15,9 @@ function loadDescription(id)
     jQuery("#macroDescription_"+id)[0].myPopin = popin;
     popin.centreonPopin("open");
     popin.parent().addClass('fixedDiv');
+    if (isFrozen == '1') {
+        jQuery(".desc").attr('readonly','readonly').prop("readonly", true);
+    }
 }
 
 function closePop(id)

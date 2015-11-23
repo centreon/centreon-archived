@@ -54,7 +54,7 @@
 	if ($gmtObj->checkGMTStatus($pearDB)) {
         $useGmt = 1;
 	    $userGmt = $oreon->user->getMyGMT();
-	    $currentServerMicroTime += $userGmt * 60 * 60 * 1000;
+        $currentServerMicroTime = intval($gmtObj->getDate('U', time(), $userGmt) * 1000);
 	}
 
 	/*

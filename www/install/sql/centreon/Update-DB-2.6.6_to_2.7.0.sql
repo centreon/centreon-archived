@@ -821,4 +821,15 @@ UPDATE topology_JS SET Init = NULL WHERE id_page = 202 AND PathName_js = './incl
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
 
+-- Purge Graphs Templates
+ALTER TABLE giv_graphs_template DROP bg_grid_color;
+ALTER TABLE giv_graphs_template DROP bg_color;
+ALTER TABLE giv_graphs_template DROP police_color;
+ALTER TABLE giv_graphs_template DROP grid_main_color;
+ALTER TABLE giv_graphs_template DROP grid_sec_color;
+ALTER TABLE giv_graphs_template DROP contour_cub_color;
+ALTER TABLE giv_graphs_template DROP col_arrow;
+ALTER TABLE giv_graphs_template DROP col_top;
+ALTER TABLE giv_graphs_template DROP col_bot;
+
 ALTER TABLE custom_view_user_relation ADD COLUMN is_consumed int(1) NOT NULL DEFAULT 1;
