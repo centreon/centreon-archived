@@ -80,6 +80,10 @@ $hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $search 	= $obj->checkArgument("search", $_GET, "");
 $order 		= $obj->checkArgument("order", $_GET, "ASC");
 $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+
+$statusHost = $obj->checkArgument("statusHost", $_GET, "");
+$statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
+
 if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
     $sort_type = "name";
 } else {
@@ -163,34 +167,25 @@ if (!$obj->is_admin) {
 if ($search != "") {
     $rq1 .= " AND (h.name LIKE '%" . CentreonDB::escape($search) . "%' OR h.alias LIKE '%" . CentreonDB::escape($search) . "%' OR h.address LIKE '%" . CentreonDB::escape($search) . "%') ";
 }
-if ($o == "hpb") {
-    $rq1 .= " AND (h.state != 0 AND h.state != 4) ";
-} elseif ($o == "h_up") {
-    $rq1 .= " AND h.state = 0 ";
-} elseif ($o == "h_down") {
-    $rq1 .= " AND h.state = 1 ";
-} elseif ($o == "h_unreachable") {
-    $rq1 .= " AND h.state = 2 ";
-} elseif ($o == "h_pending") {
-    $rq1 .= " AND h.state = 4 ";
-}        
 
-if (preg_match("/^h_unhandled/", $o)) {
-    if (preg_match("/^h_unhandled_(down|unreachable)\$/", $o, $matches)) {
-        if (isset($matches[1]) && $matches[1] == 'down') {
-            $rq1 .= " AND h.state = 1 ";
-        } elseif (isset($matches[1]) && $matches[1] == 'unreachable') {
-            $rq1 .= " AND h.state = 2 ";
-        } elseif (isset($matches[1]) && $matches[1] == 'pending') {
-            $rq1 .= " AND h.state = 4 ";
-        }
-    } else {
-        $rq1 .= " AND (h.state != 0 AND h.state != 4) ";
-    }
+if ($statusHost == "h_unhandled") {
+    $rq1 .= " AND h.state = 1 ";
     $rq1 .= " AND h.state_type = '1'";
     $rq1 .= " AND h.acknowledged = 0";
     $rq1 .= " AND h.scheduled_downtime_depth = 0";
+} elseif ($statusHost == "hpb") {
+     $rq1 .= " AND (h.state != 0 AND h.state != 4) ";
 }
+
+if ($statusFilter == "up") {
+    $rq1 .= " AND h.state = 0 ";
+} elseif ($statusFilter == "down") {
+    $rq1 .= " AND h.state = 1 ";
+} elseif ($statusFilter == "unreachable") {
+    $rq1 .= " AND h.state = 2 ";
+} elseif ($statusFilter == "pending") {
+    $rq1 .= " AND h.state = 4 ";
+} 
 
 if ($hostgroups) {
     $rq1 .= " AND h.host_id = hhg.host_id AND hg.hostgroup_id IN ($hostgroups) AND hhg.hostgroup_id = hg.hostgroup_id";

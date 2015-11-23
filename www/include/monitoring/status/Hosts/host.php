@@ -277,10 +277,42 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->display("host.ihtml");
 ?>
 <script type='text/javascript'>
+    var up = '<?php echo _("Up");?>';
+    var down = '<?php echo _("Down");?>';
+    var unreachable = '<?php echo _("Unreachable");?>';
+    var pending = '<?php echo _("Pending");?>';
+    
     var _keyPrefix;
+    
+    jQuery('#statusHost').change(function() {
+        upadteSelect();
+    });
+    
+    function upadteSelect()
+    {
+        var oldStatus = jQuery('#statusFilter').val();
+        var opts = document.getElementById('statusFilter').options;
+        if (jQuery('#statusHost').val() == 'hpb' || jQuery('#statusHost').val() == 'h_unhandled') {
+            opts.length = 0;
+            opts[opts.length] = new Option("", "");
+            opts[opts.length] = new Option(down, "down");
+            opts[opts.length] = new Option(unreachable, "unreachable");
+        } else {
+            opts.length = 0;
+            opts[opts.length] = new Option("", "");
+            opts[opts.length] = new Option(up, "up");
+            opts[opts.length] = new Option(down, "down");
+            opts[opts.length] = new Option(unreachable, "unreachable");
+            opts[opts.length] = new Option(pending, "pending");
+        }
+        if (jQuery("#statusFilter option[value='"+oldStatus+"']").length > 0) {
+            jQuery("#statusFilter option[value='"+oldStatus+"']").prop('selected', true);
+        }
+    }
 
     jQuery(function () {
         preInit();
+        upadteSelect();
     });
 
     function preInit()
