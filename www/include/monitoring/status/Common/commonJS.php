@@ -852,10 +852,10 @@ var func_displayPOPUP = function(event) {
     var proc_popup = new Transformation();
     proc_popup.setCallback(func_popupXsltCallback);
     if (elements[0] == "host") {
-            proc_popup.setXml(_addrXMLSpanHost+"?"+'&sid='+_sid+'&host_id=' + elements[1]);
+            proc_popup.setXml(_addrXMLSpanHost+"?"+'&host_id=' + elements[1]);
             proc_popup.setXslt(_addrXSLSpanhost);
     } else {
-            proc_popup.setXml(_addrXMLSpanSvc+"?"+'&sid='+_sid+'&svc_id=' + elements[1] + '_' + elements[2]);
+            proc_popup.setXml(_addrXMLSpanSvc+"?"+'&svc_id=' + elements[1] + '_' + elements[2]);
             proc_popup.setXslt(_addrXSLSpanSvc);
     }
     proc_popup.transform('popup-container-display-' + $(self).id);
