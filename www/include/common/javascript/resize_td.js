@@ -17,24 +17,25 @@
 
 
 function setOverflowDivToTitle(elemA,separator){
-	var tmp = jQuery('<span></span>').html(separator).css('display','inline-block').css('visibility','hidden');
-	jQuery(elemA).append(tmp);
-	var sepWidth = tmp.width();
-	tmp.remove();
-	jQuery(elemA).each(function(idx, elem){
-		var elementWith = jQuery(elem).width();
-		var elementContentWith = elem.scrollWidth;
-		var newHtml = '';
-		var tmpWidth = 0;
-		if(elementWith < elementContentWith){
-			jQuery(elem).children().each(function (idx, el) {
-				tmpWidth += sepWidth + jQuery(el).width();
-				if (tmpWidth < elementWith) {
-						newHtml += separator + jQuery(el).html();
-				}
-			});
-			newHtml += '<span style="cursor:pointer;" title="' + jQuery(elem).text() + '">...</span>';
-			jQuery(elem).empty().html(newHtml);
-		}
-	});
+    jQuery(elemA).each(function(idx, elem){
+        var tmp = jQuery('<span></span>');
+        tmp.html(separator).css('display','inline-block').addClass('toto').css('visibility','hidden');
+        jQuery(elem).append(tmp);
+        var sepWidth = tmp.width();
+        tmp.remove();
+        var elementWith = jQuery(elem).width();
+        var elementContentWith = elem.scrollWidth;
+        var newHtml = '';
+        var tmpWidth = 0;
+        if(elementWith < elementContentWith){
+            jQuery(elem).children().each(function (idx, el) {
+                tmpWidth += sepWidth + jQuery(el).width();
+                if (tmpWidth < elementWith) {
+                                newHtml += separator + jQuery(el).html();
+                }
+            });
+            newHtml += '<span style="cursor:pointer;" title="' + jQuery(elem).text() + '">...</span>';
+            jQuery(elem).empty().html(newHtml);
+        }
+    });
 }
