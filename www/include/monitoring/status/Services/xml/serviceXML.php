@@ -122,6 +122,9 @@ $search_type_host = $obj->checkArgument("search_type_host", $_GET, 1);
 $search_type_service = $obj->checkArgument("search_type_service", $_GET, 1);
 $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
+$statusService = $obj->checkArgument("statusService", $_GET, "");
+$statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
+
 CentreonDb::check_injection($o);
 CentreonDb::check_injection($p);
 CentreonDb::check_injection($nc);
@@ -235,8 +238,8 @@ if ($searchOutput) {
 }
 $request .= $instance_filter;
 
-if (preg_match("/^svc_unhandled/", $o)) {
-    if (preg_match("/^svc_unhandled_(warning|critical|unknown)\$/", $o, $matches)) {
+if (preg_match("/^svc_unhandled/", $statusService)) {
+    if (preg_match("/^svc_unhandled_(warning|critical|unknown)\$/", $statusService, $matches)) {
         if (isset($matches[1]) && $matches[1] == 'warning') {
             $request .= " AND s.state = '1' ";
         }
@@ -256,19 +259,22 @@ if (preg_match("/^svc_unhandled/", $o)) {
     $request .= " AND s.acknowledged = 0";
     $request .= " AND s.scheduled_downtime_depth = 0";
     $request .= " AND h.acknowledged = 0 AND h.scheduled_downtime_depth = 0 ";
-} else if ($o == "svcpb") {
+} else if ($statusService == "svcpb") {
     $request .= " AND s.state != 0 AND s.state != 4 ";
-} else if ($o == "svc_ok") {
+}
+
+if ($statusFilter == "ok") {
     $request .= " AND s.state = 0";
-} else if ($o == "svc_warning") {
+} else if ($statusFilter == "warning") {
     $request .= " AND s.state = 1";
-} else if ($o == "svc_critical") {
+} else if ($statusFilter == "critical") {
     $request .= " AND s.state = 2";
-} else if ($o == "svc_unknown") {
+} else if ($statusFilter == "unknown") {
     $request .= " AND s.state = 3";
-} else if ($o == "svc_pending") {
+} else if ($statusFilter == "pending") {
     $request .= " AND s.state = 4";
 }
+
 $request .= " AND h.name NOT LIKE '_Module_%' ";
 
 /**
