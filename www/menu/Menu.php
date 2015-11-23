@@ -249,8 +249,7 @@ for ($i = 0; $elem = $DBRESULT->fetchRow();$i++) {
     if (($pageAccess == "1") || ($pageAccess == "2")) {
         $Menu3Url = "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
         $elemArr[3][$elem["topology_group"]]["title"] = $title;
-        $elemArr[3][$elem["topology_group"]]["tab"][$i] = array("Menu3Icone" => $elem["topology_icone"],
-							"Menu3Url" => $Menu3Url,
+        $elemArr[3][$elem["topology_group"]]["tab"][$i] = array("Menu3Url" => $Menu3Url,
 							"Menu3ID" => $elem["topology_page"],
 							"MenuStyleClass" => $elem["topology_style_class"],
 							"MenuStyleID" => $elem["topology_style_id"],
