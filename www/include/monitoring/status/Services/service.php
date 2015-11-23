@@ -309,9 +309,9 @@ $statusList = array(
     "pending" => _("Pending"));
 
 $statusService = array(
-    "svc"   => _("All"),
     "svc_unhandled" => _("Unhandled Problems"),
-    "svcpb" => _("Service Problems")
+    "svcpb" => _("Service Problems"),
+    "svc"   => _("All")
 );
 
 if ($o == "svc") {
@@ -338,10 +338,10 @@ if (isset($defaultStatus)) {
 
 $form->addElement('select', 'statusService', _('Service Status'), $statusService, array('id' => 'statusService', 'onChange' => "statusServices(this.value);"));
 
-/* Get default host status by GET */
+/* Get default service status by GET */
 if (isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService))) {
     $form->setDefaults(array('statusService' => "svc_unhandled"));
-/* Get default host status in SESSION */
+/* Get default service status in SESSION */
 } elseif (isset($_SESSION['monitoring_service_status'])) {
     $form->setDefaults(array('statusService' => $_SESSION['monitoring_service_status']));
 }
@@ -369,14 +369,52 @@ $criticality = new CentreonCriticality($pearDB);
 $tpl->assign('criticalityUsed', count($criticality->getList()));
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("service.ihtml");
+
 ?>
 <script type='text/javascript'>
+    
+    var ok = '<?php echo _("OK");?>';
+    var warning = '<?php echo _("Warning");?>';
+    var critical = '<?php echo _("Critical");?>';
+    var unknown= '<?php echo _("Unknown");?>';
+    var pending= '<?php echo _("Pending");?>';
+    
+    jQuery('#statusService').change(function() {
+        upadteSelect();
+    });
+    
+    function upadteSelect()
+    {
+        var oldStatus = jQuery('#statusFilter').val();
+        var opts = document.getElementById('statusFilter').options;
+        if (jQuery('#statusService').val() == 'svcpb' || jQuery('#statusService').val() == 'svc_unhandled') {
+            opts.length = 0;
+            opts[opts.length] = new Option("", "");
+            opts[opts.length] = new Option(warning, "warning");
+            opts[opts.length] = new Option(critical, "critical");
+            opts[opts.length] = new Option(unknown, "unknown");
+        } else {
+            opts.length = 0;
+            opts[opts.length] = new Option("", "");
+            opts[opts.length] = new Option(ok, "ok");
+            opts[opts.length] = new Option(warning, "warning");
+            opts[opts.length] = new Option(critical, "critical");
+            opts[opts.length] = new Option(unknown, "unknown");
+            opts[opts.length] = new Option(pending, "pending");
+        }
+        
+        if (jQuery("#statusFilter option[value='"+oldStatus+"']").length > 0) {
+            jQuery("#statusFilter option[value='"+oldStatus+"']").prop('selected', true);
+        }
+    }
+    
+    
     var _keyPrefix;
 
     jQuery(function () {
         preInit();
+        upadteSelect();
     });
-
     function preInit()
     {
         _keyPrefix = '<?php echo $keyPrefix; ?>';
@@ -394,17 +432,20 @@ $tpl->display("service.ihtml");
             _o = _keyPrefix;
         }
         window.clearTimeout(_timeoutID);
+        console.log("FilterStatus");
         initM(_tm, _sid, _o);
     }
 
     function filterCrit(value) {
         window.clearTimeout(_timeoutID);
+        console.log("FilterCrit");
         initM(_tm, _sid, _o);
     }
     function statusServices(value, isInit)
     {
         _o = value;
         window.clearTimeout(_timeoutID);
+        console.log("ServiceStatus");
         initM(_tm, _sid, _o);
     }
 </script>

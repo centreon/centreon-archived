@@ -86,14 +86,6 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('ldap_search_limit','60'),
 ('ldap_last_acl_update', '0'),
 ('ldap_contact_tmpl', '0'),
-('color_up','#88b917'),
-('color_down','#e00b3d'),
-('color_unreachable','#818285'),
-('color_ok','#88b917'),
-('color_warning','#ff9a13'),
-('color_critical','#e00b3d'),
-('color_pending','#2AD1D4'),
-('color_unknown','#bcbdc0'),
 ('oreon_path','@INSTALL_DIR_CENTREON@/'),
 ('oreon_web_path','/centreon/'),
 ('session_expire','120'),
@@ -127,20 +119,6 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('debug_rrdtool','0'),
 ('debug_ldap_import','0'),
 ('debug_inventory','0'),
-('color_ack','#FAED60'),
-('color_host_down','#'),
-('color_host_unreachable','#9CD9F1'),
-('color_line_critical','#F96461'),
-('color_downtime','#FBC5E8'),
-('patch_type_RC','Y'),
-('patch_type_stable','Y'),
-('patch_type_RC','Y'),
-('patch_type_patch','Y'),
-('patch_type_secu','Y'),
-('patch_type_beta','Y'),
-('patch_url_service','http://update.centreon.com/version.php'),
-('patch_url_download','http://update.centreon.com/patch/'),
-('patch_path_download','/tmp/'),
 ('enable_autologin','0'),
 ('display_autologin_shortcut','1'),
 ('monitoring_ack_svc', '1'),
@@ -181,14 +159,14 @@ INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`
 -- Contenu de la table `giv_graphs_template`
 --
 
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(1, 'Default_Graph', 'Value', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, '1', NULL, NULL, '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(2, 'Latency', 'Latency', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, NULL, NULL, NULL, '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(3, 'Storage', 'Storage', 550, 140, 1024, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, NULL, NULL, NULL, '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(4, 'Memory', 'Memory', 550, 140, 1024, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, NULL, NULL, NULL, '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(5, 'CPU', 'Processor Use', 550, 140, 1000, 0, 110, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, '0', NULL, '1', '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(6, 'Uptime', 'Uptime', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, NULL, NULL, NULL, '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(7, 'Traffic', 'Traffic', 550, 140, 1000, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, NULL, NULL, NULL, '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(8, 'Load_Average', 'Load_Average', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, NULL, NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(1, 'Default_Graph', 'Value', 550, 140, 1000, 0, NULL, NULL, '1', NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(2, 'Latency', 'Latency', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(3, 'Storage', 'Storage', 550, 140, 1024, 0, NULL, NULL, NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(4, 'Memory', 'Memory', 550, 140, 1024, 0, NULL, NULL, NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(5, 'CPU', 'Processor Use', 550, 140, 1000, 0, 110, NULL, '0', NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(6, 'Uptime', 'Uptime', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(7, 'Traffic', 'Traffic', 550, 140, 1000, NULL, NULL, NULL, NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(8, 'Load_Average', 'Load_Average', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, '1', NULL);
 
 --
 -- Contenu de la table `host`

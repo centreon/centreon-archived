@@ -1,4 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type="text/javascript" src="./include/common/javascript/resize_td.js"></script>
 <form name='form' method='POST'>
 	<table class="ajaxOption table">
       <tbody>
@@ -63,7 +64,7 @@
 			</td>
 			<td class="ListColLeft">{if $elemArr[elem].RowMenu_sicon != ""}<img src="{$elemArr[elem].RowMenu_sicon}" class="ico-14"/>{/if}<a href="{$elemArr[elem].RowMenu_link2}">{$elemArr[elem].RowMenu_desc}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_retry}</td>
-			<td class="ListColLeft">{$elemArr[elem].RowMenu_parent}</td>
+			<td class="ListColLeft resizeTitle">{$elemArr[elem].RowMenu_parent}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 			<td class="ListColRight" align="right" style="min-width: 80px;">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
@@ -91,6 +92,7 @@
 </form>
 {literal}
 <script type='text/javascript'>
-	setDisabledRowStyle();
+    setDisabledRowStyle();
+    setOverflowDivToTitle(('.resizeTitle'),"&nbsp;|&nbsp;");
 </script>
 {/literal}

@@ -802,15 +802,6 @@ DELETE FROM topology WHERE topology_parent = 507 AND topology_group = 2 AND topo
 
 -- Delete Colors Pages
 DELETE FROM topology WHERE topology_page = 50112;
-DELETE FROM topology WHERE topology_page = 50116;
-
--- Init Page Colors
-UPDATE css_color_menu SET css_name = 'blue_css.php' WHERE menu_nb = 1;
-UPDATE css_color_menu SET css_name = 'green_css.php' WHERE menu_nb = 2;
-UPDATE css_color_menu SET css_name = 'yellow_css.php' WHERE menu_nb = 3;
-UPDATE css_color_menu SET css_name = 'red_css.php' WHERE menu_nb = 4;
-UPDATE css_color_menu SET css_name = 'blue_css.php' WHERE menu_nb = 5;
-UPDATE css_color_menu SET css_name = 'blue_css.php' WHERE menu_nb = 6;
 
 -- Remove Escalation Pages
 DELETE FROM topology WHERE topology_page = 60402;
@@ -824,7 +815,21 @@ DELETE FROM topology_JS WHERE id_page = 60405;
 DELETE FROM topology WHERE topology_page = 60406;
 DELETE FROM topology_JS WHERE id_page = 60406;
 
+-- Update topology JS for page monitoring
+UPDATE topology_JS SET Init = NULL WHERE id_page = 202 AND PathName_js = './include/common/javascript/ajaxMonitoring.js';
+
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
+
+-- Purge Graphs Templates
+ALTER TABLE giv_graphs_template DROP bg_grid_color;
+ALTER TABLE giv_graphs_template DROP bg_color;
+ALTER TABLE giv_graphs_template DROP police_color;
+ALTER TABLE giv_graphs_template DROP grid_main_color;
+ALTER TABLE giv_graphs_template DROP grid_sec_color;
+ALTER TABLE giv_graphs_template DROP contour_cub_color;
+ALTER TABLE giv_graphs_template DROP col_arrow;
+ALTER TABLE giv_graphs_template DROP col_top;
+ALTER TABLE giv_graphs_template DROP col_bot;
 
 ALTER TABLE custom_view_user_relation ADD COLUMN is_consumed int(1) NOT NULL DEFAULT 1;

@@ -49,8 +49,9 @@ if (!isset($_SESSION)) {
     session_start();
 }
 $sid = session_id();
-if (!isset($sid) || !isset($_GET["menu"]))
+if (!isset($sid) || !isset($_GET["menu"])) {
 	exit();
+}
 
 /*
  * Create MySQL connector
@@ -62,19 +63,22 @@ global $pearDB;
  * Check Session existence
  */
 $session = $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".$pearDB->escape($sid)."'");
-if (!$session->numRows()){
+if (!$session->numRows()) {
+	
 	$buffer = new CentreonXML();
 	$buffer->startElement("root");
 	$buffer->endElement();
+	
 	header('Content-Type: text/xml');
 	header('Cache-Control: no-cache');
+	
 	$buffer->output();
 	exit;
 }
 
-$oreon = $_SESSION['centreon'];
+$centreon = $_SESSION['centreon'];
 
-$centreonLang = new CentreonLang(_CENTREON_PATH_, $oreon);
+$centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 $centreonMenu = new CentreonMenu($centreonLang);
 
@@ -100,7 +104,7 @@ $DBRESULT2 = $pearDB->query("SELECT css_name FROM `css_color_menu` WHERE menu_nb
 $menu_style = $DBRESULT2->fetchRow();
 
 ob_start();
-if(isset($menu_style['css_name'])){
+if (isset($menu_style['css_name'])){
     require_once _CENTREON_PATH_ . "/www/Themes/Centreon-2/Color/" . $menu_style['css_name'];
 }
 
@@ -113,7 +117,7 @@ $buffer->writeElement("Menu2ID", $menu2_bgcolor);
 $buffer->writeElement("Menu1Color", "menu_1");
 $buffer->writeElement("Menu2Color", "menu_2");
 
-$rq = 	"SELECT * FROM topology WHERE topology_parent IS NULL ".$access->queryBuilder("AND", "topology_page", $topoStr) . " AND topology_show = '1' ORDER BY topology_order";
+$rq = 	"SELECT topology_name, topology_page, topology_url_opt, topology_modules, topology_popup, topology_url FROM topology WHERE topology_parent IS NULL ".$access->queryBuilder("AND", "topology_page", $topoStr) . " AND topology_show = '1' ORDER BY topology_order";
 $DBRESULT = $pearDB->query($rq);
 $buffer->startElement("level_1");
 while ($elem = $DBRESULT->fetchRow()) {
