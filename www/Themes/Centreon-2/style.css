@@ -1634,3 +1634,10 @@ div#tabs_periods {
     border-bottom: 1px solid #e7e7e8 !important;
     border-radius: 0 !important;
 }
+
+.resizeTitle{
+    overflow-x:hidden;
+    white-space:nowrap;
+    max-width:350px;
+}
+
