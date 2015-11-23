@@ -17,6 +17,19 @@
 }
 .invisible-portlet { margin: 0; padding: 0; width: 0; height: 0; }
 
+iframe {
+    border: none;
+    display: block;
+}
+.portlet-content {
+    padding : 6px;
+    width: auto;
+}
+.ToolbarTable {
+    margin: 0px 0px 6px !important;
+    padding : 0px;
+}
+
 .styleTable { border-collapse: separate; width: 100%; }
 .styleTable TD { font-weight: normal !important; padding: .2em; border-width: 0px !important; white-space: nowrap; }
 .styleTable TH { text-align: center; font-size: 12px;}
