@@ -275,7 +275,7 @@ function validPeriods()
 			<table>
 				{if $period_err }<tr><td colspan="2" style="color: red;">{$period_err}</td></tr>{/if}
 				<tr>
-					<td class="FormRowValue">{if $o != "w"}<div style="cursor: pointer; color : #009fdf;"><img src="./img/icons/circle-plus.png" class="ico-14" style="vertical-align: middle;" onclick="addPeriods()" /> {$add}</div>{/if}</td>
+                  <td class="FormRowValue">{if $o != "w"}<div style="cursor: pointer; color : #009fdf;"><img src="./img/icons/circle-plus.png" class="ico-14" style="vertical-align: middle;" onclick="addPeriods()" /> <a href="javascript:addPeriods()" style="color: #4ccaff; text-decoration: none;">{$add}</a></div>{/if}</td>
 				</tr>
 				<tr>
 					<td>
