@@ -2,18 +2,6 @@
 Centreon 2.7.0
 ##############
 
-Risks
------
-
-* Dependency problems with Centreon Engine and Centreon Broker
-* Problems in database schemas updates
-* Temporary and failover are defined by defaukt for Centreon Broker
-* Browser cache issue
-* Problem with PHP dependency (intl)
-* Compatibility issue with the installed modules
-* Configuration do not normaly generates
-* Automatic switch from NDOutils to Centreon Broker when update to version 2.7.0
-
 Features and Bug Fixes
 ----------------------
 

@@ -818,9 +818,6 @@ DELETE FROM topology_JS WHERE id_page = 60406;
 -- Update topology JS for page monitoring
 UPDATE topology_JS SET Init = NULL WHERE id_page = 202 AND PathName_js = './include/common/javascript/ajaxMonitoring.js';
 
--- Change version of Centreon
-UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
-
 -- Purge Graphs Templates
 ALTER TABLE giv_graphs_template DROP bg_grid_color;
 ALTER TABLE giv_graphs_template DROP bg_color;
@@ -833,3 +830,6 @@ ALTER TABLE giv_graphs_template DROP col_top;
 ALTER TABLE giv_graphs_template DROP col_bot;
 
 ALTER TABLE custom_view_user_relation ADD COLUMN is_consumed int(1) NOT NULL DEFAULT 1;
+
+-- Change version of Centreon
+UPDATE `informations` SET `value` = '2.7.0-rc1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
