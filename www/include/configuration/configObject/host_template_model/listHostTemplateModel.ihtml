@@ -36,12 +36,12 @@
 	<table class="ListTable">
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-			<td class="ListColHeaderLeft">&nbsp;{$headerMenu_name}</td>
-			<td class="ListColHeaderLeft">&nbsp;{$headerMenu_desc}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_svChilds}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_parent}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_status}</td>
-			<td class="ListColHeaderRight">&nbsp;{$headerMenu_options}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
+			<td class="ListColHeaderCenter" width="62">{$headerMenu_svChilds}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_parent}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
+			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
 		{assign var=pattern_mode value=0}
 		{section name=elem loop=$elemArr}
@@ -59,7 +59,7 @@
 				<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 				<td class="ListColLeft">
 					{if $elemArr[elem].pattern}&nbsp;&nbsp;&nbsp;&nbsp;{/if}
-					<img src="{$elemArr[elem].RowMenu_icone}" style='width:16px;height:16px;' />&nbsp;<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
+					<a href="{$elemArr[elem].RowMenu_link}"> <img src="{$elemArr[elem].RowMenu_icone}" class="ico-16 margin_right" />{$elemArr[elem].RowMenu_name}</a>
 				</td>
 				<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 				<td class="ListColCenter">{$elemArr[elem].RowMenu_svChilds}</td>
