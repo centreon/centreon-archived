@@ -16,26 +16,45 @@
 // JavaScript Document
 
 
-function setOverflowDivToTitle(elemA,separator){
+function setOverflowDivToTitle(elemA){
+
+    jQuery(elemA).contents().filter(function() {
+        return this.nodeType === 3;
+    }).each(function() {
+        //this.nodeValue = jQuery.trim(this.nodeValue); code here if you want to apply some modification to the node value
+    }).wrap('<span class="unWrapedElement"></span>');
+    
+    
     jQuery(elemA).each(function(idx, elem){
-        var tmp = jQuery('<span></span>');
-        tmp.html(separator).css('display','inline-block').addClass('toto').css('visibility','hidden');
-        jQuery(elem).append(tmp);
-        var sepWidth = tmp.width();
-        tmp.remove();
         var elementWith = jQuery(elem).width();
         var elementContentWith = elem.scrollWidth;
-        var newHtml = '';
-        var tmpWidth = 0;
         if(elementWith < elementContentWith){
+            var elemOldText = jQuery(elem).text();
+            var elemOldHtml = jQuery(elem).html();
+            var newHtml = jQuery('<div></div>');
+            var popin = jQuery('<div></div>',{html : elemOldHtml, style : 'position:relative;width:700px;word-wrap:break-word;'}).appendTo(jQuery(elem));
+            var newSpan = jQuery('<span></span>',{
+                html : '...',
+                style : 'cursor:pointer;visibility:hidden',
+                title : elemOldText}
+            );
+            jQuery(elem).append(newSpan);
+            var tmpWidth = newSpan.width();
+            newSpan.click(function(){
+                popin.centreonPopin("open");
+            });
+            
+            newSpan.css('visibility','inherit');
+
             jQuery(elem).children().each(function (idx, el) {
-                tmpWidth += sepWidth + jQuery(el).width();
+                tmpWidth += jQuery(el).outerWidth(true);
                 if (tmpWidth < elementWith) {
-                                newHtml += separator + jQuery(el).html();
+                    newHtml.append(jQuery(el).clone());
                 }
             });
-            newHtml += '<span style="cursor:pointer;" title="' + jQuery(elem).text() + '">...</span>';
-            jQuery(elem).empty().html(newHtml);
+            newHtml.append(newSpan);
+            jQuery(elem).empty().append(newHtml);
         }
     });
+
 }
