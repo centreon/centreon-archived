@@ -188,7 +188,7 @@
     });
 
     jQuery( "select[name='period']" ).click(function() {
-        jQuery( "input:not([value])[name='period_choice'][type='radio']").prop('checked', true);
+        jQuery( "input:[value='preset'][name='period_choice'][type='radio']").prop('checked', true);
     });
 
     jQuery(function () {

@@ -336,10 +336,11 @@ if(isset($output) && $output != "" ){
     $whereOutput = " AND logs.output like '%".$pearDBO->escape($output)."%' ";
 }
 if($engine == "true"){
-    if(!isset($openid) || $openid == "undefined" || $openid == ""){
-        $openid = "null";
+    $openid = "";
+    if(isset($openid) && $openid != "undefined" && $openid != ""){
+        $openid = " AND i.instance_id IN (".$openid.")";
     }
-    $innerJoinEngineLog = " inner join instances i on i.instance_id IN (".$openid.") AND i.name = logs.instance_name ";
+    $innerJoinEngineLog = " inner join instances i on i.name = logs.instance_name ".$openid;
 }
 
 if ($notification == 'true') {

@@ -403,7 +403,7 @@ function apply_period(){
 
 function apply_period_engine(){
 	var openid = document.getElementById('openid').innerHTML;
-	log_4_engine(openid,'','');
+	log_4_engine();
 }
 
 var _limit = 30;
@@ -419,7 +419,7 @@ function log_4_host_page(id, formu, num)	{
 
 function log_4_engine_page(id,formu,num){
 	_num = num;
-	log_4_engine(id, formu);
+	log_4_engine();
 }
 
 var _host 		= <?php echo $user_params["log_filter_host"]; ?>;
@@ -467,7 +467,7 @@ if (document.FormPeriod && document.FormPeriod.period.value == ""){
 	document.FormPeriod.EndTime.value = EndTime;
 }
 
-function log_4_engine(){
+function log_4_engine(type){
     _output = jQuery( "#output" ).val();
     var poller_value = jQuery("#poller_filter").val();
     var args = "";
@@ -499,11 +499,19 @@ function log_4_engine(){
     controlTimePeriod();
     var proc = new Transformation();
 	var _addrXSL = "./include/eventLogs/logEngine.xsl";
-    var _addr = './include/eventLogs/GetXmlLog.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
+    
+    if (!type){
+        var _addr = './include/eventLogs/GetXmlLog.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
                 '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&num='+_num+'&limit='+_limit+'&id='+args;
-    proc.setXml(_addr)
-    proc.setXslt(_addrXSL)
-    proc.transform("logView4xml");
+        proc.setXml(_addr)
+        proc.setXslt(_addrXSL)
+        proc.transform("logView4xml");
+	} else {
+		var _addr = './include/eventLogs/Get'+type+'Log.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
+                '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&num='+_num+'&limit='+_limit+'&id='+args+'&export=1';
+		document.location.href = _addr;
+	}
+
 }
 
 
