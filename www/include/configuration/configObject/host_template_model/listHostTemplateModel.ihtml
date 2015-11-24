@@ -93,7 +93,7 @@
 {literal}
 <script type='text/javascript'>
     setDisabledRowStyle();
-    setOverflowDivToTitle(('.resizeTitle'),"&nbsp;|&nbsp;");
+    setOverflowDivToTitle(('.resizeTitle'));
         
 </script>
 {/literal}
