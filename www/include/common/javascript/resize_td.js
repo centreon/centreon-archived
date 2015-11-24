@@ -39,7 +39,7 @@ function setOverflowDivToTitle(elemA){
                 title : elemOldText}
             );
             jQuery(elem).append(newSpan);
-            var tmpWidth = newSpan.width();
+            var tmpWidth = newSpan.outerWidth(true);
             newSpan.click(function(){
                 popin.centreonPopin("open");
             });
