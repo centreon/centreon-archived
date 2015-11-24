@@ -33,8 +33,9 @@
  *
  */
 
-if (!isset($centreon))
+if (!isset($centreon)) {
 	exit();
+}
 
 $tp = array();
 if (($o == "c" || $o == "w") && $tp_id)	{
@@ -125,10 +126,7 @@ $form->addElement('text', 'tp_alias', _("Alias"), $attrsTextLong);
 /*
  * Notification informations
  */
-$form->addElement('header', 'notification', _("Time Range"));
-$form->addElement('header', 'notification_base', _("Basic Settings"));
 $form->addElement('header', 'include', _("Extended Settings"));
-$form->addElement('header', 'exception', _("Time Range exceptions"));
 
 $form->addElement('text', 'tp_sunday', _("Sunday"), $attrsTextLong);
 $form->addElement('text', 'tp_monday', _("Monday"), $attrsTextLong);
@@ -146,15 +144,6 @@ $attrTimeperiod1 = array_merge(
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=timeperiodRenderer&field=tp_include&id=' . $tp_id)
 );
 $form->addElement('select2', 'tp_include', _("Include Timeperiods"), array(), $attrTimeperiod1);
-
-/*
- * Exclude Timeperiod
- */
-$attrTimeperiod2 = array_merge(
-    $attrTimeperiods,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=timeperiodRenderer&field=tp_exclude&id=' . $tp_id)
-);
-$form->addElement('select2', 'tp_exclude', _("Exclude Timeperiods"), array(), $attrTimeperiod2);
 
 /*
  *  Multiple exceptions relations stored in DB
