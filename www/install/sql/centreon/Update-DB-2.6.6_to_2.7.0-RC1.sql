@@ -832,4 +832,4 @@ ALTER TABLE giv_graphs_template DROP col_bot;
 ALTER TABLE custom_view_user_relation ADD COLUMN is_consumed int(1) NOT NULL DEFAULT 1;
 
 -- Change version of Centreon
-UPDATE `informations` SET `value` = '2.7.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
+UPDATE `informations` SET `value` = '2.7.0-rc1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
