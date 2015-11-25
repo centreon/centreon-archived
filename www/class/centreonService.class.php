@@ -1039,15 +1039,18 @@ class CentreonService
         }
 
         # Construct host filter for query
-        $selectedHosts = "AND hsr.host_host_id IN (";
-        $implodedValues = implode(',', $hostIdList);
-        if (trim($implodedValues) != "") {
-            $selectedHosts .= $implodedValues;
-        } else {
-            $selectedHosts .= "''";
+        $selectedHosts = '';
+        if (count($hostIdList) > 0) {
+            $selectedHosts .= "AND hsr.host_host_id IN (";
+            $implodedValues = implode(',', $hostIdList);
+            if (trim($implodedValues) != "") {
+                $selectedHosts .= $implodedValues;
+            } else {
+                $selectedHosts .= "''";
+            }
+            $selectedHosts .= ") ";
         }
-        $selectedHosts .= ") ";
-
+        
         # Construct service filter for query
         $selectedServices = "AND hsr.service_service_id IN (";
         $implodedValues = implode(',', $serviceIdList);
