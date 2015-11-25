@@ -174,8 +174,11 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 	  $lastUpdateTimeFlag = 1;
 	}
 
+	/* 	
+	 * Get cfg_id
+	 */
 	$request = "SELECT nagios_id FROM cfg_nagios WHERE nagios_server_id = ".$config["id"]."";
-	$DBRESULT2 = $pearDB->query($rq);
+	$DBRESULT2 = $pearDB->query($request);
 	if ($DBRESULT2->numRows()) {
 		$cfg_id = $DBRESULT2->fetchRow();
 	} else {
