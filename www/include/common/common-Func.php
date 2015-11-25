@@ -1889,4 +1889,18 @@ function str2db($string) {
             }
 
         }
+
+/**
+ * Get current Centreon version
+ */
+function getCentreonVersion($pearDB)
+{
+    $query = 'SELECT `value` FROM `informations` WHERE `key` = "version"';
+    $res = $pearDB->query($query);
+    if (PEAR::isError($res)) {
+        return null;
+    }
+    $row = $res->fetchRow();
+    return $row['value'];
+}
 ?>
