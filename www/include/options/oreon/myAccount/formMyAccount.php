@@ -124,6 +124,15 @@
         $form->addElement('select', 'monitoring_sound_svc_notification_1', _("Sound for Warning status"), $sounds);
         $form->addElement('select', 'monitoring_sound_svc_notification_2', _("Sound for Critical status"), $sounds);
         $form->addElement('select', 'monitoring_sound_svc_notification_3', _("Sound for Unknown status"), $sounds);
+        
+        $attrTimezones = array(
+            'datasourceOrigin' => 'ajax',
+            'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
+            'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=defaultValues&target=contact&field=contact_location&id=' . $oreon->user->get_id(),
+            'multiple' => false,
+            'linkedObject' => 'centreonGMT'
+        );
+        $form->addElement('select2', 'contact_location', _("Timezone / Location"), array(), $attrTimezones);
 
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
