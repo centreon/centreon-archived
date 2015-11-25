@@ -280,7 +280,7 @@ Advanced configuration of the traps
 
 It is possible to determine the status of a service from the value of a setting of the SNMP trap rather than from the Root OID. Previously the manufacturer defined an SNMP trap (Root OID) by type of event to be sent (linkUp / linkDown). Today, the tendency is to define a Root OID by category of events and then to define the event via a set of settings.
 
-To do this, it is possible of define **Advanced Matching mode** by clicking on the button |navigate_plus| and by creating as many rules as necessary.
+To do this, it is possible of define **Advanced Matching mode** by clicking on **Add a new entry** and by creating as many rules as necessary.
 For each rule, define the settings:
 
 * **String** defines the element on which the search will be applied (@OUTPUT@ defined all the **Output messages** translated).
@@ -305,7 +305,7 @@ The **Advanced** tab serves to configure the behavior of the handling process of
 * **Enable routing** is used to enable the routing of information.
 * **Route definition** is used to define the command to be used for routing.
 
-Before performing the processing of the event (translation of the **Output message**), it is possible to execute a command called PREEXEC. To do this, it is possible to define **PREEXEC command (SNMPTT type)** by clicking on the button |navigate_plus| and create as many rules as necessary.
+Before performing the processing of the event (translation of the **Output message**), it is possible to execute a command called PREEXEC. To do this, it is possible to define **PREEXEC command (SNMPTT type)** by clicking on **Add a new entry** and create as many rules as necessary.
 
 * **PREEXEC command** defines the command to be executed.
 

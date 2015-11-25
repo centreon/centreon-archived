@@ -400,12 +400,11 @@ class CentreonAPI {
      * Get General option of Centreon
      */
     private function getOptGen() {
-        $DBRESULT = & $this->DB->query("SELECT * FROM options");
-        while ($row = & $DBRESULT->fetchRow()) {
+        $DBRESULT = $this->DB->query("SELECT * FROM options");
+        while ($row = $DBRESULT->fetchRow()) {
             $this->optGen[$row["key"]] = $row["value"];
         }
         $DBRESULT->free();
-        unset($row);
     }
 
     /**
@@ -909,10 +908,11 @@ class CentreonAPI {
                 $key = key($oObjet);
                 if (isset($oObjet[$key]['class']) && $oObjet[$key]['export'] === true && !in_array($key, $this->aExport)) {
                     $objName = "centreon" . $oObjet[$key]['class'];
+                    $objVars = get_class_vars($objName);
                    
-                    if (isset($objName::$aDepends)) {
+                    if (isset($objVars['aDepends'])) {
                         $bInsert = true;
-                        foreach ($objName::$aDepends as $oDependence) {
+                        foreach ($objVars['aDepends'] as $oDependence) {
                             $keyDep = strtoupper($oDependence);
                             if (!in_array($keyDep, $this->aExport)) {
                                 $bInsert = false;

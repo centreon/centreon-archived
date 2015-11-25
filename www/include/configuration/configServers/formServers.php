@@ -116,7 +116,6 @@ $form->addElement('header', 'SSH_Informations', _("SSH Information"));
 $form->addElement('header', 'Nagios_Informations', _("Monitoring Engine Information"));
 $form->addElement('header', 'Misc', _("Miscelleneous"));
 $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
-$form->addElement('select', 'monitoring_engine', _("Engine"), array_map("monitoring_engine_names", $monitoring_engines));
 
 /*
  * Nagios Configuration basic information

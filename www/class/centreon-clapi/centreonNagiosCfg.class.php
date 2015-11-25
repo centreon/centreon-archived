@@ -99,10 +99,10 @@ class CentreonNagiosCfg extends CentreonObject
                                 'log_initial_states'                      => '1',
                                 'log_external_commands'                   => '1',
                                 'log_passive_checks'                      => '2',
-                                'sleep_time'                              => '1',
+                                'sleep_time'                              => '0.2',
                                 'service_inter_check_delay_method'        => 's',
                                 'service_interleave_factor'               => 's',
-                                'max_concurrent_checks'                   => '200',
+                                'max_concurrent_checks'                   => '400',
                                 'max_service_check_spread'                => '5',
                                 'check_result_reaper_frequency'           => '5',
                                 'interval_length'                         => '60',
@@ -148,7 +148,8 @@ class CentreonNagiosCfg extends CentreonObject
                                 'use_embedded_perl_implicitly'            => '2',
                                 'debug_level'                             => '0',
                                 'debug_level_opt'                         => '0',
-                                'debug_verbosity'                         => '2'
+                                'debug_verbosity'                         => '2',
+                                'cached_host_check_horizon'               => '60'
                             );
         $this->nbOfCompulsoryParams = 3;
         $this->activateField = "nagios_activate";

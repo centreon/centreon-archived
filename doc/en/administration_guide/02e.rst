@@ -75,23 +75,6 @@ This part can be used set the operation of the CentCore process.
 * **Enable Broker Statistics Collection** field enables the retrieval of statistics from the Centreon Broker by CentCore. This can be a blocking option because the reading of the pipe can be a blocking action
 * **Timeout value for Centcore commands** field can be used to define a timeout for local commands and commands via SSH process.
 
-******
-Colors
-******
-
-This part can be used to set the colours used in the web interface to define the statuses of hosts and services.
-
-#. Go into the menu: **Administration** ==> **Parameters** ==> **Colors**
-
-
-.. image :: /images/guide_exploitation/ecolors.png
-   :align: center
-
-You can change a colour by entering its HTML code or by clicking on **Modify**. A new window will open to select the desired colour.
-
-.. image :: /images/guide_exploitation/ecolorspopup.png
-   :align: center
-
 .. _ldapconfiguration:
 
 ****
@@ -109,7 +92,7 @@ To add a new directory:
    :align: center
 
 * **Configuration name** and **Description** fields define the name and the description of the LDAP server
-* **Enable LDAP authentification** field serves to enable authentication via the LDAP server
+* **Enable LDAP authentication** field serves to enable authentication via the LDAP server
 * **Store LDAP password** field can be used to store user passwords in the database, useful to authenticate users in the event of loss of connection with the LDAP
 * **Auto import users** field serves to import the users of the LDAP directory automatically into Centreon. By clicking on **Import users manually**, you can chose the users that you want to import
 
@@ -197,17 +180,3 @@ This part can be used to configure the enabling of the logging of activity on Ce
 * **SQL debug** box enables the logging of SQL requests executed by the Centreon interface
 * **Centcore Engine debug** box enables logging of Centcore process debugging
 * **Centreontrapd debug** box enables logging of the Centreontrapd process debugging
-
-***
-CSS
-***
-
-This part can be used to configure the aspect of the Centreon interface menus.
-
-#. Go into the menu: **Administration** ==> **Parameters** ==> **CSS**
-
-.. image :: /images/guide_exploitation/ecss.png
-   :align: center
-
-For each menu, it is possible to define a CSS style sheet. 
-E.g.: the blue_css.php file makes the menu blue. The green_css.php file makes the menu green and so on.

@@ -44,7 +44,7 @@ You can now install the necessary prerequisites::
       dmidecode lm_sensors perl-Net-SNMP net-snmp-perl fping cpp gcc gcc-c++ libstdc++ glib2-devel \
       php-pear
 
-Additionnal commands are necessary to configure the environment correctly:
+Additional commands are necessary to configure the environment correctly:
 
  ::
 
@@ -376,7 +376,7 @@ If you use Centreon Broker:
 
 
 Monitoring logs directory
-------------------------
+-------------------------
 
 If you use Centreon Engine:
 

@@ -177,7 +177,7 @@ $form->registerRule('rrdcached_has_option', 'callback', 'rrdcached_has_option');
 $form->registerRule('rrdcached_valid', 'callback', 'rrdcached_valid');
 $form->addRule(array('rrdcached_enable', 'rrdcached_port', 'rrdcached_unix_path'), _('The rrdcached configuration must have a option.'), 'rrdcached_has_option');
 $form->addRule(array('rrdcached_port', 'rrdcached_unix_path'), _('Only one option must be set.'), 'rrdcached_valid');
-$form->addRule('rrdcached_port', _('The port must be a numeric'), 'numeric');
+$form->addRule('rrdcached_port', _('The port must be numeric'), 'numeric');
 
 $form->addRule('rrdtool_path_bin', _("Can't execute binary"), 'is_executable_binary');
 $form->addRule('oreon_rrdbase_path', _("Can't write in directory"), 'is_writable_path');

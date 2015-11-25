@@ -347,7 +347,7 @@ Cropper.Img = Class.create({
 		this.ratioY = 0;
 		/**
 		 * @var boolean
-		 * Whether we've attached sucessfully
+		 * Whether we've attached successfully
 		 */
 		this.attached = false;
 		/**

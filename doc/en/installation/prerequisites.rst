@@ -49,7 +49,7 @@ The table below gives the prerequisites for the installation of CES 3.x:
 Define space disk
 *****************
 
-Th space used for store collected and performance data depends on several criteria:
+The space used for store collected and performance data depends on several criteria:
 
 * Frequency of controls
 * Number of controls
@@ -114,7 +114,7 @@ Files system description:
 
 * / (at least 20 GB)
 * swap (at least 1x RAM space)
-* /var/log ( at least 10 GB)
+* /var/log (at least 10 GB)
 * /var/lib/centreon-broker (at least 5 GB)
 * /var/backup (use to backup you server)
 

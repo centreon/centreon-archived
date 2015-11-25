@@ -105,6 +105,10 @@ label {
     vertical-align: middle;
 }
 
+.margin_right {
+    margin-right: 6px;
+}
+
 .table{
     width: 100%;
     //white-space: nowrap;
@@ -1152,7 +1156,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 }
 .ListHeader td,
 .ListHeader th {
-    padding: 8px !important;
+    padding: 8px 4px !important;
     font-weight:700;
     height:18px;
     vertical-align:middle;
@@ -1175,7 +1179,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 * html #ListTable td,#ListTableMedium td,#ListTableSmall td,.ListTable td,.ListTableMedium td,.ListTableSmall td {margin:0;padding:0 4px;}
 .ListTableSmall a,.ListTable a,.ListTableMedium a,.ListTableSmall a, .ListTableSmallArg a {color:#666;z-index:5;}
 .ListTable td a {
-    margin: 0px 6px;
+    /*margin: 0px 6px;*/
 }
 .ListTableMedium 		{width:60%;}
 .ListTableSmall 		{width:40%;}
@@ -1190,7 +1194,7 @@ table.ListTableSmallArg td {
 .ListTable,.ListTableMedium,.ListTableSmall,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
 .ListTable,.ListTableMedium,.ListTableSmall {border-width:1px;}
 .ListTable td,.ListTableMedium td,.ListTableSmall td,.ListTableSmallArg {padding-bottom:2px;padding-top:2px;}
-.ListTable td {padding: 4px 0;}
+.ListTable td {padding: 4px;}
 .tab .ListTableMedium {
     margin-top:21px;
 }
@@ -1634,3 +1638,10 @@ div#tabs_periods {
     border-bottom: 1px solid #e7e7e8 !important;
     border-radius: 0 !important;
 }
+
+.resizeTitle{
+    overflow-x:hidden;
+    white-space:nowrap;
+    max-width:350px;
+}
+

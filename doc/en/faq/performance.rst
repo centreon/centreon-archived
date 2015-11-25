@@ -159,4 +159,4 @@ Centreon web interface
 RRDCacheD don't update performence's graphs in real time. If a blanc range aapear on right of performence's graphs it means that cache are not yet written to disk.
 
 .. warning::
-    If the **RRDCacheD process crash** (in theory because it's a stable process) data will be lost! It is not possible to get data unless rebuild all graphs from Centeron web.
+    If the **RRDCacheD process crash** (in theory because it's a stable process) data will be lost! It is not possible to get data unless rebuild all graphs from Centreon web.

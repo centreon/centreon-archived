@@ -41,7 +41,7 @@ class MetaService extends AbstractObject {
     protected $object_name = 'service';
     protected $attributes_select = '
         meta_id,
-        meta_display as display_name,
+        meta_name as display_name,
         check_period as check_period_id,
         max_check_attempts,
         normal_check_interval,
