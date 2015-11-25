@@ -84,8 +84,19 @@ if (($o == "c" || $o == "w") && $esc_id) {
 
 	# Set base value
 	$esc = array_map("myDecode", $DBRESULT->fetchRow());
+    
+    # Set Host Options
+    $esc["escalation_options1"] = explode(',', $esc["escalation_options1"]);
+    foreach ($esc["escalation_options1"] as $key => $value) {
+        $esc["escalation_options1"][trim($value)] = 1;
+    }
+    
+    # Set Service Options
+    $esc["escalation_options2"] = explode(',', $esc["escalation_options2"]);
+    foreach ($esc["escalation_options2"] as $key => $value) {
+        $esc["escalation_options2"][trim($value)] = 1;
+    }
 }
-
 
 /*
  * Database retrieve information for differents elements list we need on the page
