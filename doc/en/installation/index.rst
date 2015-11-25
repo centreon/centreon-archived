@@ -19,6 +19,7 @@ The third part exaplins how to install your platform.
     :maxdepth: 2
 
     prerequisites
+    architecture/index
     installation/index
     downloads
     01a
