@@ -28,7 +28,8 @@
                         <xsl:if test="hd >= 1">	
                             <xsl:element name="a">
                                 <xsl:attribute name="href">
-                                    <xsl:value-of select="hgurlhost"/>&amp;o=h_down</xsl:attribute>			
+                                    <xsl:value-of select="hgurlhost"/>&amp;o=h_down</xsl:attribute>
+                                    <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="hdc"/>
@@ -38,7 +39,8 @@
                             </xsl:element>
                         </xsl:if>
                         <xsl:if test="hu >= 1">	
-                            <xsl:element name="a">	
+                            <xsl:element name="a">
+                                <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hgurlhost"/>&amp;o=h_up</xsl:attribute>
                                 <span>
@@ -50,9 +52,10 @@
                             </xsl:element>    
                         </xsl:if>
                         <xsl:if test="hur >= 1">
-                            <xsl:element name="a">	
+                            <xsl:element name="a">
+                                <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
-                                    <xsl:value-of select="hgurlhost"/>&amp;o=h_unreachable</xsl:attribute>				
+                                    <xsl:value-of select="hgurlhost"/>&amp;o=h_unreachable</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="hurc"/>
@@ -65,6 +68,7 @@
                     <td class="ListColLeft">
                         <xsl:if test="sc >= 1">
                             <xsl:element name="a">
+                                <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hgurl"/>&amp;o=svc_critical</xsl:attribute>
                                 <span>
@@ -77,6 +81,7 @@
                         </xsl:if>
                         <xsl:if test="sw >= 1">
                             <xsl:element name="a">
+                                <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hgurl"/>&amp;o=svc_warning</xsl:attribute>
                                 <span>
@@ -89,6 +94,7 @@
                         </xsl:if>
                         <xsl:if test="su >= 1">
                             <xsl:element name="a">
+                                <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hgurl"/>&amp;o=svc_unknown</xsl:attribute>
                                 <span>
@@ -101,6 +107,7 @@
                         </xsl:if>
                         <xsl:if test="sk >= 1">
                             <xsl:element name="a">
+                                <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hgurl"/>&amp;o=svc_ok</xsl:attribute>
                                 <span>
@@ -113,6 +120,7 @@
                         </xsl:if>
                         <xsl:if test="sp >= 1">
                             <xsl:element name="a">
+                                <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hgurl"/>&amp;o=svc_pending</xsl:attribute>
                                 <span>

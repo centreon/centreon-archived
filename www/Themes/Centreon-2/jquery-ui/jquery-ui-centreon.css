@@ -25,9 +25,9 @@ iframe {
     padding : 6px;
     width: auto;
 }
-.ToolbarTable {
-    margin: 0px 0px 6px !important;
-    padding : 0px;
+
+#toolBar {
+    overflow: hidden;
 }
 
 .styleTable { border-collapse: separate; width: 100%; }
