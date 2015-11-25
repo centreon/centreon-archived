@@ -268,10 +268,10 @@ p.description a, p.description a:visited {
 /* ------------ Badge -----------*/
 
 .badge              {   display: inline-block;
-                        border-radius: 7px;
+                        border-radius: 18px;
                         color: #fff;
-                        padding: 2px 4px;
-                        font-size: 11px;
+                        padding: 2px 6px;
+                        font-size: 10px;
                         font-weight: bold;
                         text-transform: uppercase;
                     }
@@ -509,7 +509,7 @@ form#AjaxBankBasic {
 #Tcontener {
     height: 100%;
     position: relative;
-    margin-bottom: 16px;
+    margin-bottom: 36px;
 }
 
 .GlobalContainer tr {

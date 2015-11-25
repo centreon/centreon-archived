@@ -66,6 +66,7 @@
                     <xsl:if test="sc >= 1">
                         <xsl:element name="a">
                             <xsl:attribute name="href">main.php?o=svc_critical&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
+                            <xsl:attribute name="class">margin_right</xsl:attribute>
                             <xsl:element name="span">
                                 <xsl:attribute name="class">state_badge <xsl:value-of select="//sc" /></xsl:attribute>
                             </xsl:element>
@@ -75,6 +76,7 @@
                     <xsl:if test="sw >= 1">
                         <xsl:element name="a">
                             <xsl:attribute name="href">main.php?o=svc_warning&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
+                            <xsl:attribute name="class">margin_right</xsl:attribute>
                             <xsl:element name="span">
                                 <xsl:attribute name="class">state_badge <xsl:value-of select="//sw" /></xsl:attribute>
                             </xsl:element>
@@ -84,6 +86,7 @@
                     <xsl:if test="su >= 1">
                         <xsl:element name="a">
                             <xsl:attribute name="href">main.php?o=svc_unknown&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
+                            <xsl:attribute name="class">margin_right</xsl:attribute>
                             <xsl:element name="span">
                                 <xsl:attribute name="class">state_badge <xsl:value-of select="//su" /></xsl:attribute>
                             </xsl:element>
@@ -93,6 +96,7 @@
                     <xsl:if test="sk >= 1">
                         <xsl:element name="a">
                             <xsl:attribute name="href">main.php?o=svc_ok&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
+                            <xsl:attribute name="class">margin_right</xsl:attribute>
                             <xsl:element name="span">
                                 <xsl:attribute name="class">state_badge <xsl:value-of select="//sk" /></xsl:attribute>
                             </xsl:element>
@@ -102,6 +106,7 @@
                     <xsl:if test="sp >= 1">
                         <xsl:element name="a">
                             <xsl:attribute name="href">main.php?o=svc_pending&amp;p=20201&amp;host_search=<xsl:value-of select="hn"/></xsl:attribute>
+                            <xsl:attribute name="class">margin_right</xsl:attribute>
                             <xsl:element name="span">
                                 <xsl:attribute name="class">state_badge <xsl:value-of select="//sp" /></xsl:attribute>
                             </xsl:element>
