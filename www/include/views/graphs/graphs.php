@@ -56,8 +56,10 @@
 	    $userGmt = $oreon->user->getMyGMT();
         $gmtObj->setMyGMT($userGmt);
         $sMyTimezone = $gmtObj->getMyTimezone();
-        $sMyOffset = $gmtObj->getMyOffset();
         $sDate = new DateTime();
+        if (empty($sMyTimezone)) {
+            $sMyTimezone = date_default_timezone_get();
+        }
         $sDate->setTimezone(new DateTimeZone($sMyTimezone));
         $currentServerMicroTime = $sDate->getTimestamp();
 	}
@@ -250,7 +252,6 @@
     var gmt = <?php echo $userGmt ? $userGmt : 0;?>;
     var useGmt = <?php echo $useGmt;?>;
     var sMyTimezone  = '<?php echo $sMyTimezone;?>';
-    var sMyOffset  = '<?php echo $sMyOffset;?>';
     var currentMicroTime = <?php echo $currentServerMicroTime;?>;
     var $hostsServicesForGraph = [];
 

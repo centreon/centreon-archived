@@ -104,7 +104,11 @@ class CentreonGMT {
     function getMyTimezone()
     {
         if (is_null($this->myTimezone)) {
-            $this->myTimezone = $this->listGTM[$this->myGMT];
+            if (isset($this->listGTM[$this->myGMT])) {
+                $this->myTimezone = $this->listGTM[$this->myGMT];
+            } else {
+                $this->myTimezone = date_default_timezone_get();
+            }
         }
         return $this->myTimezone;
     }
