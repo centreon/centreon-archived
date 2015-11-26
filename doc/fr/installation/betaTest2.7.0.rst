@@ -44,8 +44,9 @@ Mise en place du repo testing
 Nous avons mis en place un repository yum testing dans lequel nous avons mis les RPM de Centreon 2.7, Centreon Engine 1.5 et Centreon Broker 2.11. Une série de widgets est également disponible dans ce repo.
 Pour mettre en place votre fichier repo spécifique testing lancez les commandes suivantes : 
 
-# cd /etc/yum.repos.d
-# wget http://yum.centreon.com/standard/3.0/testing/ces-standard-testing.repo -O /etc/yum.repos.d/ces-standard-testing.repo
+::
+   # cd /etc/yum.repos.d
+   # wget http://yum.centreon.com/standard/3.0/testing/ces-standard-testing.repo -O /etc/yum.repos.d/ces-standard-testing.repo
 
 Arrêt des instances de collecte
 ===============================
@@ -54,21 +55,24 @@ Avant de commencer la mise à jour, assurez vous de ne pas avoir de fichier de r
 actif pour Centreon-Broker.
 
 Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
-
-# /etc/init.d/centengine stop
-# /etc/init.d/cbd stop
+ 
+::
+   # /etc/init.d/centengine stop
+   # /etc/init.d/cbd stop
 
 Mise à jour l’ensemble des paquets
 ====================================
 
-# yum update centreon
+::
+   # yum update centreon
 
 Redémarrez le serveur Apache 
 ============================
 
 Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serveur apache afin de prendre en compte la nouvelle extension.
 
-# /etc/init.d/httpd restart
+::
+   # /etc/init.d/httpd restart
 
 Réalisez la mise à jour Web de Centreon 2.7.0
 =============================================
@@ -85,8 +89,9 @@ Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des 
 
 Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le service en place. Pour ceci, lancez les commandes suivantes : 
 
-# /etc/init.d/centengine start
-# /etc/init.d/cbd start
+::
+   # /etc/init.d/centengine start
+   # /etc/init.d/cbd start
 
 *********************************************
 Les risques identifiés lors de la mise à jour
