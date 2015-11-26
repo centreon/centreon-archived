@@ -25,3 +25,5 @@ La dernière partie vous propose de mettre en oeuvre votre plate-forme.
    01a
    from_packages
    from_sources
+
+Vous faites partie du programme de beta test de Centreon 2.7. Cliquez `ici <betaTest2.7.0>`_
