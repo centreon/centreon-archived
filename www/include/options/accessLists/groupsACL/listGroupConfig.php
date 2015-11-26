@@ -91,9 +91,9 @@ for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[".$group['acl_group_id']."]");
     
     if ($group["acl_group_activate"]) {
-        $moptions = "<a href='main.php?p=".$p."&acl_group_id=".$group['acl_group_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+        $moptions = "<a href='main.php?p=".$p."&acl_group_id=".$group['acl_group_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
     } else {
-        $moptions = "<a href='main.php?p=".$p."&acl_group_id=".$group['acl_group_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+        $moptions = "<a href='main.php?p=".$p."&acl_group_id=".$group['acl_group_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
     }
     
     $moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
