@@ -350,7 +350,7 @@
 														<xsl:attribute name="title">Select interval</xsl:attribute>
 														<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 														<xsl:attribute name="id">zoom_<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
-														<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/>");</xsl:attribute>
+														<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/>", '<xsl:value-of select="//target"/>');</xsl:attribute>
 														<img src="./img/icons/target.png" class="ico-16" />
 													</xsl:element>
 												</td>
