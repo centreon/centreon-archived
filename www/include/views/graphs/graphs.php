@@ -247,8 +247,6 @@
 <script type="text/javascript" src="./include/common/javascript/moment-with-locales.js"></script>
 <script type="text/javascript" src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
 <script type="text/javascript">
-    
-    
     var gmt = <?php echo $userGmt ? $userGmt : 0;?>;
     var useGmt = <?php echo $useGmt;?>;
     var sMyTimezone  = '<?php echo $sMyTimezone;?>';
@@ -261,7 +259,6 @@
 
 	var multi 	= <?php echo $multi; ?>;
   	
-
 	// it's a fake method for using ajax system by default
 	function mk_pagination(){;}
 	function mk_paginationFF(){;}
@@ -271,39 +268,30 @@
         launchGraph();
 	}
 
-function form2ctime(dpart, tpart)
-{
-    // dpart : MM/DD/YYYY
-    // tpart : HH:mm
-    var dparts = dpart.split("/");
-    var tparts = tpart.split(":");
-    //return new Date(dparts[2], dparts[0]-1, dparts[1], tparts[0], tparts[1], 0).getTime() - (new Date().getTimezoneOffset() * 60 * 1000);
-    return moment.tz(dparts[2]+"-"+dparts[0]-1+"-"+dparts[1]+" "+tpart, sMyTimezone).unix();
+    function form2ctime(dpart, tpart)
+    {
+        // dpart : MM/DD/YYYY
+        // tpart : HH:mm
+        var dparts = dpart.split("/");
+        return moment.tz(dparts[2]+"-"+dparts[0]-1+"-"+dparts[1]+" "+tpart, sMyTimezone).unix();
 
-}
+    }
 
-function ctime2date(ctime)
-{
-    //var date = new Date(ctime + (new Date().getTimezoneOffset() * 60 * 1000));
-    
-    //return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear();
-    return moment.tz(moment.unix(ctime), sMyTimezone).format("MM/DD/YYYY");
-}
+    function ctime2date(ctime)
+    {
+        return moment.tz(moment.unix(ctime), sMyTimezone).format("MM/DD/YYYY");
+    }
 
-function ctime2time(ctime) {
-    //var date = new Date(ctime + (new Date().getTimezoneOffset() * 60 * 1000));
-    return moment.tz(moment.unix(ctime), sMyTimezone).format("HH:mm");
-    /*
-	if (date.getHours() <= 9) { _zero_hour = '0'; }
-	if (date.getMinutes() <= 9) { _zero_min = '0'; }
-        return _zero_hour + date.getHours() + ":" + _zero_min + date.getMinutes();
-        */
-}
+    function ctime2time(ctime) 
+    {
+        return moment.tz(moment.unix(ctime), sMyTimezone).format("HH:mm");
+    }
 
-function prevPeriod() {
-	if (!document.FormPeriod) {
-	    return;
-	}
+    function prevPeriod() 
+    {
+        if (!document.FormPeriod) {
+            return;
+        }
         var start;
         var end;
         var period;
@@ -321,13 +309,13 @@ function prevPeriod() {
         end = start;
         start = start - period;
 
-		document.FormPeriod.period.value = "";
+        document.FormPeriod.period.value = "";
         document.FormPeriod.StartDate.value = ctime2date(start);
         document.FormPeriod.StartTime.value = ctime2time(start);
         document.FormPeriod.EndDate.value = ctime2date(end);
         document.FormPeriod.EndTime.value = ctime2time(end);
         apply_period();
-}
+    }
 
     function nextPeriod()
     {
@@ -371,16 +359,10 @@ function prevPeriod() {
 	var EndTime = '';
 	var ms_per_hour = 60 * 60 * 1000;
 
-	if (document.FormPeriod.period.value !== "")	{
+	if (document.FormPeriod.period.value !== "") {
 		period = document.FormPeriod.period.value;
 	} else if (period_start !== undefined && period_end !== undefined) {
-		/*
-        StartDate = ctime2date(period_start * 1000);
-		StartTime = ctime2time(period_start * 1000);
-		EndDate = ctime2date(period_end * 1000);
-		EndTime = ctime2time(period_end * 1000);
-        */
-       StartDate = ctime2date(period_start);
+        StartDate = ctime2date(period_start);
 		StartTime = ctime2time(period_start);
 		EndDate = ctime2date(period_end);
 		EndTime = ctime2time(period_end);
@@ -464,13 +446,7 @@ function prevPeriod() {
 			_split = 1;
 		}
 
-
-
 		var _status = 0;
-
-		/*if (document.formu2 && document.formu2.displayStatus && document.formu2.displayStatus.checked)	{
-			_status = 1;
-		}*/
 
 		var $elem = jQuery('#displayStatus');
 		if($elem.prop('checked')) {
@@ -497,8 +473,6 @@ function prevPeriod() {
 	}
 
 	jQuery(function () {
-	    // Here is your precious function
-	    // You can call as many functions as you want here;
 	    myOnloadFunction1();
 	});
 
@@ -530,7 +504,6 @@ function prevPeriod() {
         			return(matches[1] + "__M:");
     			});
 
-console.log(list_img);
     			$$("img[id^='" + basename + "']").each(function(el) {
         			if (el.id !== self) {
             			var elHeight = el.height;
@@ -550,7 +523,8 @@ console.log(list_img);
 	 *
      * @var img_name The tag name
      */
-    function toGraphZoom(img_name, target) {
+    function toGraphZoom(img_name, target)
+    {
         mutli = 0;
     	var s_multi = true;
         if ($$("img[id=" + img_name + "]").size() === 0) {
@@ -597,7 +571,8 @@ console.log(list_img);
         return false;
     }
 
-    function switchZoomGraph(tag_name, target) {
+    function switchZoomGraph(tag_name, target)
+    {
         $("zoom_" + tag_name).setAttribute("onClick", "toGraphZoom('" + tag_name + "', '"+target+"'); return false;");
         if ($(tag_name) !== null) {
             if (list_img.get(tag_name) === undefined) {
