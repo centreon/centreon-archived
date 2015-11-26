@@ -788,7 +788,10 @@ jQuery(function () {
     }
   });
   
-  
+  jQuery('.addWidget').on('click', function (event) {
+      jQuery("#formAddWidget input[name='widget_title']").val('');
+      jQuery("#formAddWidget").find(':radio').prop('checked', false);
+  });
   
   jQuery("#formAddView select[name='viewLoad']").change(function (){
       jQuery("#formAddView select[name='viewLoadShare']").val(-1);
