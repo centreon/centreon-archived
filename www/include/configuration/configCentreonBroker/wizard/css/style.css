@@ -9,15 +9,15 @@ body {
 #wizard {
   position: relative;
   margin-top: 20px;
-  background-color: #d0f2ff;
-  height: 223px;
-  width: 500px;
+  background-color: #F7FAFF;
+  height: 400px;
+  width: 700px;
   margin-right: auto;
   margin-left: auto;
   border: 1px solid #BFD0E2;
-  border-radius: 6px;
-  box-shadow: 4px 4px 1px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+  overflow: hidden; 
   -webkit-user-select: none;
   margin-bottom: 20px;
 }
