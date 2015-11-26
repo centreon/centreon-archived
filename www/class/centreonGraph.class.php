@@ -1243,7 +1243,7 @@ class CentreonGraph {
         foreach ($this->_arguments as $arg) {
             $commandLine .= " ".$arg." ";
         }
-
+        $gmt_export = "";
         $commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
         $timezone = $this->GMT->getMyTimezone();
         if (!empty($timezone)){  

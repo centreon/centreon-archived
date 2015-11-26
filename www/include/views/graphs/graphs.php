@@ -296,14 +296,13 @@
         var end;
         var period;
         if (document.FormPeriod.period.value) {
-                var now = currentMicroTime;
-                //period = document.FormPeriod.period.value * 1000;
-                period = document.FormPeriod.period.value;
-                start = now - period;
+            var now = currentMicroTime;
+            period = document.FormPeriod.period.value;
+            start = now - period;
         } else {
-                end   = form2ctime(document.FormPeriod.EndDate.value, document.FormPeriod.EndTime.value);
-                start = form2ctime(document.FormPeriod.StartDate.value, document.FormPeriod.StartTime.value);
-                period = end - start;
+            end   = form2ctime(document.FormPeriod.EndDate.value, document.FormPeriod.EndTime.value);
+            start = form2ctime(document.FormPeriod.StartDate.value, document.FormPeriod.StartTime.value);
+            period = end - start;
         }
 
         end = start;
@@ -327,7 +326,6 @@
         var period;
         if (document.FormPeriod.period.value) {
             var now = currentMicroTime;
-            //period = document.FormPeriod.period.value * 1000;
             period = document.FormPeriod.period.value;
             end = now;
         } else {
@@ -351,13 +349,10 @@
 	var currentTime = currentMicroTime;
 	var period ='';
 
-	var _zero_hour = '';
-	var _zero_min = '';
 	var StartDate = '';
 	var EndDate = '';
 	var StartTime = '';
 	var EndTime = '';
-	var ms_per_hour = 60 * 60 * 1000;
 
 	if (document.FormPeriod.period.value !== "") {
 		period = document.FormPeriod.period.value;
