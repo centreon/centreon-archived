@@ -91,9 +91,9 @@
 	for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {		
 		$selectedElements = $form->addElement('checkbox', "select[".$topo['acl_topo_id']."]");	
 		 if ($topo["acl_topo_activate"])
-			$moptions = "<a href='main.php?p=".$p."&acl_topo_id=".$topo['acl_topo_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+			$moptions = "<a href='main.php?p=".$p."&acl_topo_id=".$topo['acl_topo_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
-			$moptions = "<a href='main.php?p=".$p."&acl_topo_id=".$topo['acl_topo_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+			$moptions = "<a href='main.php?p=".$p."&acl_topo_id=".$topo['acl_topo_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$topo['acl_topo_id']."]'></input>";
 		/* Contacts */
