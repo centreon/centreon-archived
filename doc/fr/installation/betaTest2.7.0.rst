@@ -26,8 +26,8 @@ Procédure de mise à jour
 
 Nous avons recensé ici les différentes étapes nécessaires pour pouvoir passer une plate-forme existante en version 2.7. Il est important de prendre en compte que la version proposée reste une version de validation. Il est vivement recommandé de ne pas installer une version RC de Centreon 2.7 en production.
 
-.. note::
-	Attention : cette procédure est réalisée dans le contexte d’une CES. Toutes les commandes et les mises à jours seront basées sur de l’environnement CentOS / RedHat et yum.
+.. warning::
+	Cette procédure est réalisée dans le contexte d’une CES. Toutes les commandes et les mises à jours seront basées sur de l’environnement CentOS / RedHat et yum.
 
 
 Mise en place du repo testing
