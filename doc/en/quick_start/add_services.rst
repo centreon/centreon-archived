@@ -25,7 +25,7 @@ To add a service to a host you have to define only three fields:
 .. image:: /_static/images/quick_start/add_service_form.png
     :align: center
 
-Save the modification by clicking on Save button.
+Save the modification by clicking on **Save** button.
 
 .. image:: /_static/images/quick_start/add_service_list.png
     :align: center
