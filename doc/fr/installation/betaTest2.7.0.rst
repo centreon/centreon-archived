@@ -11,13 +11,21 @@ Pré-requis
 Le pré-requis nécessaire au fonctionnement de Centreon 2.7 ont évolué par rapport à précédentes versions. Il est important de suivre les recommandations suivantes pour pouvoir avoir une plate-forme fonctionnelle :
 
 Apache = 2.2
+
 Centreon Engine >= 1.5.0
+
 Centreon Broker >= 2.11.0
+
 CentOS = 6.x ou RedHat >= 6.x
+
 MariaDB = 5.5.35 ou MySQL = 5.1.73
+
 Net-SNMP = 5.5
+
 PHP >= 5.3.0
+
 Qt = 4.7.4
+
 RRDtools = 1.4.7
 
 ************************
