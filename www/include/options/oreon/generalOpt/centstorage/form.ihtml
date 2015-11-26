@@ -4,7 +4,7 @@
 <table class="formTable table">
  	<tr class="ListHeader">
     <td class="FormHeader" colspan="2">
-      <h3>| {$genOpt_ODS_config}</h3>
+      <h3>| {t}Performance Data Management{/t}</h3>
     </td>
   </tr>	
  	<tr class="list_lvl_1">
