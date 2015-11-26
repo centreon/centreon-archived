@@ -37,7 +37,7 @@ var pickRecentProgID = function (idList){
         };
     };
     if (!bFound)
-		throw ("Aucun ActiveXObject n'est valide sur votre ordinateur, pensez � mettre � jour votre navigateur");
+		throw ("Aucun ActiveXObject n'est valide sur votre ordinateur, pensez ï¿½ mettre ï¿½ jour votre navigateur");
     idList = null;
     return o2Store;
 }
@@ -87,7 +87,7 @@ function loadXML(url) {
     var xmlDoc;
     /* chargement du fichier XML */
     try {
-      // navigateur bas� sur Gecko
+      // navigateur basï¿½ sur Gecko
       if (document.implementation && document.implementation.createDocument) {
         xmlDoc = document.implementation.createDocument('', '', null);
         xmlDoc.load(url);
@@ -101,7 +101,7 @@ function loadXML(url) {
         xmlDoc.async = false;
         xmlDoc.load(url);
       } else if (window.XMLHttpRequest) {
-		// � l'aide de lobjet XMLHTTPRequest
+		// ï¿½ l'aide de lobjet XMLHTTPRequest
       	xmlDoc = new XMLHttpRequest();
 		xmlDoc.overrideMimeType('text/xml');
 		xmlDoc.open('GET', url, false);
@@ -145,7 +145,7 @@ function Transformation() {
      * @return the XML document
      */
     this.getXmlDocument = function() {
-        return xmlDoc
+        return xmlDoc;
     }
 
     /**
@@ -260,32 +260,56 @@ function Transformation() {
 		}
 		
 		var change = function() {
-            if (xmlRequest.readyState == 4 && xmlRequest.responseXML && xsltRequest.status == 200 && xsltRequest.readyState == 4 && xsltRequest.statusText == "OK" && xsltRequest.responseText ) {
-                    if (transformed) {
-                            return;
+                    if (xmlRequest.readyState == 4 && xmlRequest.responseXML && xsltRequest.status == 200 && xsltRequest.readyState == 4 && xsltRequest.statusText == "OK" && xsltRequest.responseText ) {
+                            if (transformed) {
+                                    return;
+                            }
+                            xsltDoc = xsltRequest.responseXML;
+                            xmlDoc = xmlRequest.responseXML;
+                            if (window.ActiveXObject || document.hasOwnProperty.call(window, "ActiveXObject")) {            
+                                document.getElementById(target).innerHTML = xmlDoc.transformNode(xsltDoc);                    	
+                            } else {
+                                var resultDoc;
+                                                var processor = new XSLTProcessor();
+                                                document.getElementById(target).innerHTML = '';
+                                                processor.importStylesheet(xsltDoc);
+                                                resultDoc = processor.transformToFragment(xmlDoc, document);    					
+                                                document.getElementById(target).appendChild(resultDoc);
+                            }
+                            if (callback) {
+                                callback(t);
+                            }
+                            transformed = true;
+                            if (typeof _clear == 'function') {
+                                _clear("centreonMsg");
+                            }
+                            xsltRequest.onreadystatechange = new Function;
+                            xsltRequest = null;
+                            xmlRequest.onreadystatechange = new Function;
+                            xmlRequest = null;
+                            resultDoc = null;
+                            xsltDoc = null;
+                            xmlDoc = null;
+                            callback = null;
+                            delete xmlRequest;
+                            delete xsltRequest;
+                            processor = null;
                     }
-                    xsltDoc = xsltRequest.responseXML;
-                    xmlDoc = xmlRequest.responseXML;
-                    if (window.ActiveXObject || document.hasOwnProperty.call(window, "ActiveXObject")) {            
-                    	document.getElementById(target).innerHTML = xmlDoc.transformNode(xsltDoc);                    	
-                    } else {
-                    	var resultDoc;
-    					var processor = new XSLTProcessor();
-    					document.getElementById(target).innerHTML = '';
-    					processor.importStylesheet(xsltDoc);
-    					resultDoc = processor.transformToFragment(xmlDoc, document);    					
-    					document.getElementById(target).appendChild(resultDoc);
-                    }
-                    if (callback) {
-                    	callback(t);
-                    }
-                    transformed = true;
-                    if (typeof _clear == 'function') {
-                    	_clear("centreonMsg");
-                    }
-            }
+
 		}
-		
+                
+                if(xsltRequest != null){
+                    xsltRequest.onreadystatechange = new Function;
+                    xsltRequest = null;
+                    delete xsltRequest;
+                }
+                
+                if(xmlRequest != null){
+                    xmlRequest.onreadystatechange = new Function;
+                    xmlRequest = null;
+                    delete xmlRequest;
+                }
+
 		var xmlRequest;
 		var xsltRequest;
                 if (window.ActiveXObject || document.hasOwnProperty.call(window, "ActiveXObject")) {
@@ -299,9 +323,9 @@ function Transformation() {
 		xmlRequest.onreadystatechange = change;
 		xmlRequest.send(null);		
 		if (xsltRequest.readyState != 4) {
-            xsltRequest.open("GET", xslt);
-            xsltRequest.onreadystatechange = change;
-            xsltRequest.send(null);
+                    xsltRequest.open("GET", xslt);
+                    xsltRequest.onreadystatechange = change;
+                    xsltRequest.send(null);
 		}
 	}
 	
