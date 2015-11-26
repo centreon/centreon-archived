@@ -10,7 +10,7 @@ But the templates of host in Centreon web offer more than just a pre definition 
 In Centreon web you can :ref:`link templates of service to template of host<hosttemplates>`.
 With this process you can deploy easily a new host and their service in one time.
 
-In this example we will use a template of host provided by **Centreon plugin packs** to monitore a Linux server.
+In this example we will use a template of host provided by **Centreon plugin packs** to monitor a Linux server.
 This template of host allows to deploy the following services:
 
 * CPU
@@ -18,7 +18,7 @@ This template of host allows to deploy the following services:
 * Memory
 * Swap
 
-First :ref:`connect<centreon_login>` to your Centreon web interface with an administrator account or an account which allow to manager monitored object.
+First :ref:`connect<centreon_login>` to your Centreon web interface with an administrator account or an account which allow to manage monitored object.
 
 Go to the **Configuration > Hosts > Hosts** menu and click on **Add** button:
 

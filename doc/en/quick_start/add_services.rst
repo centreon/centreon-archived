@@ -16,11 +16,11 @@ To add a service to a host you have to define only three fields:
 
 * Select the host in **Linked with Hosts** field
 * Define the name of the service in **Description** entry field
-* Select a predifined template of service, for example Base-Ping-LAN, in **Service Template** field
+* Select a predefined template of service, for example Base-Ping-LAN, in **Service Template** field
 
 .. note::
     After selecting a template of service new field appear. This values describe arguments use to monitor your service.
-    Most often it is the alert thresholds. You can use the defaut values or overwrite those.
+    Most often it is the alert thresholds. You can use the default values or overwrite those.
 
 .. image:: /_static/images/quick_start/add_service_form.png
     :align: center

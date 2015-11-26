@@ -10,11 +10,11 @@ using the **OS-Linux-SNMP** template. This template of host deployed the followi
 * Memory
 * Swap
 
-But somes indicators aren't yet monitored because they depend of the server itself,
+But some indicators aren't yet monitored because they depend of the server itself,
 for example name of files system, name of network interfaces, etc.
 
 First :ref:`connect<centreon_login>` to your Centreon web interface with an 
-administrator account or an account which allow to manager monitored object.
+administrator account or an account which allow to manage monitored object.
 
 Go to the **Configuration  >  Services  >  Services by host** menu and click on **Add** button:
 
@@ -24,12 +24,12 @@ Go to the **Configuration  >  Services  >  Services by host** menu and click on 
 To add a service to a host you have to define only three fields:
 
 * Select the host in **Linked with Hosts** field
-* Define the name of the service in **Description** entry field, for example **Traffic-eth0** to monitor the traffic bandewith usage of interface eth0
-* Select a predifined template of service, for example **OS-Linux-Traffic-Generic-Name-SNMP**, in **Service Template** field
+* Define the name of the service in **Description** entry field, for example **Traffic-eth0** to monitor the traffic bandwidth usage of interface eth0
+* Select a predefined template of service, for example **OS-Linux-Traffic-Generic-Name-SNMP**, in **Service Template** field
 
 .. note::
     After selecting a template of service new field appear. This values describe arguments use to monitor your service.
-    Most often it is the alert thresholds. You can use the defaut values or overwrite those.
+    Most often it is the alert thresholds. You can use the default values or overwrite those.
 
 Modify the value of macro **INTERFACENAME** to enter the name of network interface to monitor, for example **eth0**
 
