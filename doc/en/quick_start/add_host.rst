@@ -5,7 +5,7 @@ Add a host
 
 Your platform is now ready to monitor your first servers or network equipment but you don’t know how to. Don't worry! It is simple to start monitoring.
 
-First :ref:`connect<centreon_login>` to your Centreon web interface with an administrator account or an account which allow to manager monitored object.
+First :ref:`connect<centreon_login>` to your Centreon web interface with an administrator account or an account which allow to manage monitored object.
 
 Go to the **Configuration > Hosts > Hosts** menu and click on **Add** button:
 
