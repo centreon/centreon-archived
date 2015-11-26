@@ -54,7 +54,14 @@
 	if ($gmtObj->checkGMTStatus($pearDB)) {
         $useGmt = 1;
 	    $userGmt = $oreon->user->getMyGMT();
-        $currentServerMicroTime = intval($gmtObj->getDate('U', time(), $userGmt) * 1000);
+        $gmtObj->setMyGMT($userGmt);
+        $sMyTimezone = $gmtObj->getMyTimezone();
+        $sDate = new DateTime();
+        if (empty($sMyTimezone)) {
+            $sMyTimezone = date_default_timezone_get();
+        }
+        $sDate->setTimezone(new DateTimeZone($sMyTimezone));
+        $currentServerMicroTime = $sDate->getTimestamp();
 	}
 
 	/*
@@ -162,7 +169,7 @@
 	if (isset($_REQUEST['end']) && is_numeric($_REQUEST['end'])) {
 	    $period_end = $_REQUEST['end'];
 	}
-
+ 
 	/*
 	 * Form begin
 	 */
@@ -237,11 +244,13 @@
     
     $multi = 1;
 ?>
+<script type="text/javascript" src="./include/common/javascript/moment-with-locales.js"></script>
+<script type="text/javascript" src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
 <script type="text/javascript">
-    
     var gmt = <?php echo $userGmt ? $userGmt : 0;?>;
     var useGmt = <?php echo $useGmt;?>;
-    var currentMicroTime = <?php echo number_format($currentServerMicroTime, 15, '.', '');?>;
+    var sMyTimezone  = '<?php echo $sMyTimezone;?>';
+    var currentMicroTime = <?php echo $currentServerMicroTime;?>;
     var $hostsServicesForGraph = [];
 
     /* Period if in URL */
@@ -250,7 +259,6 @@
 
 	var multi 	= <?php echo $multi; ?>;
   	
-
 	// it's a fake method for using ajax system by default
 	function mk_pagination(){;}
 	function mk_paginationFF(){;}
@@ -260,40 +268,37 @@
         launchGraph();
 	}
 
-function form2ctime(dpart, tpart)
-{
-    // dpart : MM/DD/YYYY
-    // tpart : HH:mm
-    var dparts = dpart.split("/");
-    var tparts = tpart.split(":");
-    return new Date(dparts[2], dparts[0]-1, dparts[1], tparts[0], tparts[1], 0).getTime() - (new Date().getTimezoneOffset() * 60 * 1000);
-}
+    function form2ctime(dpart, tpart)
+    {
+        // dpart : MM/DD/YYYY
+        // tpart : HH:mm
+        var dparts = dpart.split("/");
+        return moment.tz(dparts[2]+"-"+dparts[0]-1+"-"+dparts[1]+" "+tpart, sMyTimezone).unix();
 
-function ctime2date(ctime)
-{
-    var date = new Date(ctime + (new Date().getTimezoneOffset() * 60 * 1000));
-    return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear();
-}
+    }
 
-function ctime2time(ctime) {
-	var _zero_hour = '';
-	var _zero_min = '';
-    var date = new Date(ctime + (new Date().getTimezoneOffset() * 60 * 1000));
-	if (date.getHours() <= 9) { _zero_hour = '0'; }
-	if (date.getMinutes() <= 9) { _zero_min = '0'; }
-        return _zero_hour + date.getHours() + ":" + _zero_min + date.getMinutes();
-}
+    function ctime2date(ctime)
+    {
+        return moment.tz(moment.unix(ctime), sMyTimezone).format("MM/DD/YYYY");
+    }
 
-function prevPeriod() {
-	if (!document.FormPeriod) {
-	    return;
-	}
+    function ctime2time(ctime) 
+    {
+        return moment.tz(moment.unix(ctime), sMyTimezone).format("HH:mm");
+    }
+
+    function prevPeriod() 
+    {
+        if (!document.FormPeriod) {
+            return;
+        }
         var start;
         var end;
         var period;
         if (document.FormPeriod.period.value) {
                 var now = currentMicroTime;
-                period = document.FormPeriod.period.value * 1000;
+                //period = document.FormPeriod.period.value * 1000;
+                period = document.FormPeriod.period.value;
                 start = now - period;
         } else {
                 end   = form2ctime(document.FormPeriod.EndDate.value, document.FormPeriod.EndTime.value);
@@ -304,41 +309,43 @@ function prevPeriod() {
         end = start;
         start = start - period;
 
-		document.FormPeriod.period.value = "";
+        document.FormPeriod.period.value = "";
         document.FormPeriod.StartDate.value = ctime2date(start);
         document.FormPeriod.StartTime.value = ctime2time(start);
         document.FormPeriod.EndDate.value = ctime2date(end);
         document.FormPeriod.EndTime.value = ctime2time(end);
         apply_period();
-}
+    }
 
-function nextPeriod() {
-	if (!document.FormPeriod) {
-	    return;
-	}
+    function nextPeriod()
+    {
+        if (!document.FormPeriod) {
+            return;
+        }
         var start;
         var end;
         var period;
         if (document.FormPeriod.period.value) {
-                var now = currentMicroTime;
-                period = document.FormPeriod.period.value * 1000;
-                end = now;
+            var now = currentMicroTime;
+            //period = document.FormPeriod.period.value * 1000;
+            period = document.FormPeriod.period.value;
+            end = now;
         } else {
-                end   = form2ctime(document.FormPeriod.EndDate.value, document.FormPeriod.EndTime.value);
-                start = form2ctime(document.FormPeriod.StartDate.value, document.FormPeriod.StartTime.value);
-                period = end - start;
+            end   = form2ctime(document.FormPeriod.EndDate.value, document.FormPeriod.EndTime.value);
+            start = form2ctime(document.FormPeriod.StartDate.value, document.FormPeriod.StartTime.value);
+            period = end - start;
         }
 
         start = end;
         end = end + period;
 
-	document.FormPeriod.period.value = "";
+        document.FormPeriod.period.value = "";
         document.FormPeriod.StartDate.value = ctime2date(start);
         document.FormPeriod.StartTime.value = ctime2time(start);
         document.FormPeriod.EndDate.value = ctime2date(end);
         document.FormPeriod.EndTime.value = ctime2time(end);
         apply_period();
-}
+    }
 
 	// Period
 	var currentTime = currentMicroTime;
@@ -352,18 +359,19 @@ function nextPeriod() {
 	var EndTime = '';
 	var ms_per_hour = 60 * 60 * 1000;
 
-	if (document.FormPeriod.period.value !== "")	{
+	if (document.FormPeriod.period.value !== "") {
 		period = document.FormPeriod.period.value;
 	} else if (period_start !== undefined && period_end !== undefined) {
-		StartDate = ctime2date(period_start * 1000);
-		StartTime = ctime2time(period_start * 1000);
-		EndDate = ctime2date(period_end * 1000);
-		EndTime = ctime2time(period_end * 1000);
+        StartDate = ctime2date(period_start);
+		StartTime = ctime2time(period_start);
+		EndDate = ctime2date(period_end);
+		EndTime = ctime2time(period_end);
 	} else {
 		EndDate   = ctime2date(currentTime);
 		EndTime   = ctime2time(currentTime);
-		StartDate = ctime2date(currentTime-12*ms_per_hour);
-		StartTime = ctime2time(currentTime-12*ms_per_hour);
+
+        StartDate = ctime2date(moment(moment.unix(currentTime)).subtract(12, 'hours').unix());
+        StartTime = ctime2time(moment(moment.unix(currentTime)).subtract(12, 'hours').unix());
 	}
 
 	if (document.FormPeriod) {
@@ -373,14 +381,14 @@ function nextPeriod() {
 		document.FormPeriod.EndTime.value = EndTime;
 	}
 
-	function graph_4_host(id, multi, target, l_mselect, pStart, pEnd, metrics) {
+	function graph_4_host(id, multi, target, l_mselect, pStart, pEnd, metrics)
+    {
 		if (!multi)
 			multi = 0;
 		// no metric selection : default
 		if (l_mselect === undefined) {
 			l_select = 0;
 		}
-
 
 		if (pStart && pEnd){
 			period = pEnd - pStart;
@@ -438,13 +446,7 @@ function nextPeriod() {
 			_split = 1;
 		}
 
-
-
 		var _status = 0;
-
-		/*if (document.formu2 && document.formu2.displayStatus && document.formu2.displayStatus.checked)	{
-			_status = 1;
-		}*/
 
 		var $elem = jQuery('#displayStatus');
 		if($elem.prop('checked')) {
@@ -471,8 +473,6 @@ function nextPeriod() {
 	}
 
 	jQuery(function () {
-	    // Here is your precious function
-	    // You can call as many functions as you want here;
 	    myOnloadFunction1();
 	});
 
@@ -503,10 +503,12 @@ function nextPeriod() {
     			var basename = self.gsub(/(.*)__M:.*/, function(matches){
         			return(matches[1] + "__M:");
     			});
-    			$$("img[id^=" + basename + "]").each(function(el) {
+
+    			$$("img[id^='" + basename + "']").each(function(el) {
         			if (el.id !== self) {
             			var elHeight = el.height;
-            			list_img.get(el.id).setArea(coords.x1, 0, coords.x2, elHeight);
+                        if (list_img.get(el.id) !== undefined)
+                            list_img.get(el.id).setArea(coords.x1, 0, coords.x2, elHeight);
         			}
     			});
         	}
@@ -521,7 +523,8 @@ function nextPeriod() {
 	 *
      * @var img_name The tag name
      */
-    function toGraphZoom(img_name, target) {
+    function toGraphZoom(img_name, target)
+    {
         mutli = 0;
     	var s_multi = true;
         if ($$("img[id=" + img_name + "]").size() === 0) {
@@ -534,7 +537,8 @@ function nextPeriod() {
         }
         var coords = list_img.get(img_name).areaCoords;
         var img_url = $(img_name).src.parseQuery();
-        var period = (img_url.end * 1000) - (img_url.start * 1000);
+
+        var period = (img_url.end) - (img_url.start);
         var zoneGraph = $(img_name).width - margeLeftGraph - margeRightGraph;
         if (coords.x1 < margeLeftGraph || coords.x1 > ($(img_name).width - margeRightGraph)) {
             return(false);
@@ -542,18 +546,13 @@ function nextPeriod() {
         if (coords.x2 < margeLeftGraph || coords.x2 > ($(img_name).width - margeRightGraph)) {
             return(false);
         }
-        var start = parseInt((img_url.start * 1000) + ((coords.x1 - margeLeftGraph) * period / ($(img_name).width - margeLeftGraph - margeRightGraph)));
-        var end = parseInt((img_url.start * 1000) + ((coords.x2 - margeLeftGraph) * period / ($(img_name).width - margeLeftGraph - margeRightGraph)));
 
-        if (useGmt) {
-            start += gmt * 60 * 60 * 1000;
-            end += gmt * 60 * 60 * 1000;
-        }
-        //@todo: this is a quick & dirty fix for countering ctime2date()
-        gmtSec = new Date().getTimezoneOffset() * 60 * 1000 * -1;
-        start += gmtSec;
-        end += gmtSec;
+        var start = parseInt(parseInt(img_url.start) + ((parseInt(coords.x1) - margeLeftGraph) * period / (parseInt($(img_name).width) - margeLeftGraph - margeRightGraph)));
+        var end = parseInt(parseInt(img_url.start) + (parseInt(coords.x2) - margeLeftGraph) * period / (parseInt($(img_name).width) - margeLeftGraph - margeRightGraph));
 
+        start = moment.tz(moment.unix(start), sMyTimezone).unix();
+        end = moment.tz(moment.unix(end), sMyTimezone).unix();
+           
         var id = img_name.split('__')[0];
         id = id.replace('HS_', 'SS_');
 
@@ -572,7 +571,8 @@ function nextPeriod() {
         return false;
     }
 
-    function switchZoomGraph(tag_name, target) {
+    function switchZoomGraph(tag_name, target)
+    {
         $("zoom_" + tag_name).setAttribute("onClick", "toGraphZoom('" + tag_name + "', '"+target+"'); return false;");
         if ($(tag_name) !== null) {
             if (list_img.get(tag_name) === undefined) {

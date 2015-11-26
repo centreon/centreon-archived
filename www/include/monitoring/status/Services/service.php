@@ -405,6 +405,8 @@ $tpl->display("service.ihtml");
         
         if (jQuery("#statusFilter option[value='"+oldStatus+"']").length > 0) {
             jQuery("#statusFilter option[value='"+oldStatus+"']").prop('selected', true);
+        } else {
+            jQuery("#statusFilter option[value='']").prop('selected', true);
         }
     }
     

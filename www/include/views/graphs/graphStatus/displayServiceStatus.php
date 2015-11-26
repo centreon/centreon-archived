@@ -272,8 +272,13 @@
 		/*
 		 * Add Timezone for current user.
 		 */
-		if ($CentreonGMT->used())
-			$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
+		$timezone = $CentreonGMT->getMyTimezone();
+        $timezone = trim($timezone);
+        if (empty($timezone)){
+            $timezone = date_default_timezone_get();
+        }
+        
+		$command_line = "export TZ='".$timezone."' ; ".$command_line;
 
 		/*
 		 * Escale special char
