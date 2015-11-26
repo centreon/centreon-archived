@@ -1245,13 +1245,14 @@ class CentreonGraph {
         }
 
         $commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
-        $gmt_export = "";
         $timezone = $this->GMT->getMyTimezone();
         $timezone = trim($timezone);
-        if ($this->GMT->used() && !empty($timezone)){
+        if (empty($timezone)){
+            $timezone = date_default_timezone_get();
+        }
+        if (empty($timezone)){  
             $gmt_export = "export TZ='".$timezone."'; " ;
         }
-
         $this->_log($commandLine);
         /*
          * Send Binary Data
@@ -1656,6 +1657,7 @@ class CentreonGraph {
         }
         return false;
     }
+    
 }
 
 ?>

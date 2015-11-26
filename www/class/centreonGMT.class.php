@@ -124,11 +124,6 @@ class CentreonGMT {
     }
     function getMyGMTForRRD()
     {
-        /*
-        $gmt = (-1 * $this->myGMT);
-        if ($gmt > 0)
-            $gmt = "+$gmt";
-        */
         $sOffset = '';
         if (count($this->listGTM) == 0) {
             $this->getList();
