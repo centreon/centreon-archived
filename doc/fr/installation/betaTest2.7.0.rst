@@ -8,7 +8,7 @@ Mise à jour vers la version 2.7.0 de Centreon
 Prérequis
 *********
 
-Le prérequis nécessaire au fonctionnement de Centreon 2.7 ont évolué par rapport à précédentes versions. Il est important de suivre les recommandations suivantes pour pouvoir avoir une plate-forme fonctionnelle :
+Les prérequis nécessaires au fonctionnement de Centreon 2.7 ont évolué par rapport aux précédentes versions. Il est important de suivre les recommandations suivantes pour pouvoir avoir une plate-forme fonctionnelle :
 
 * Apache = 2.2
 * Centreon Engine >= 1.5.0
