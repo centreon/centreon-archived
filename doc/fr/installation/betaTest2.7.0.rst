@@ -20,9 +20,9 @@ Les prérequis nécessaires au fonctionnement de Centreon 2.7 ont évolué par r
 * Qt = 4.7.4
 * RRDtools = 1.4.7
 
-************************
-Procédure de mise à jour
-************************
+******************************************
+Procédure d'installation et de mise à jour
+******************************************
 
 Nous avons recensé ici les différentes étapes nécessaires pour pouvoir passer une plate-forme existante en version 2.7. Il est important de prendre en compte que la version proposée reste une version de validation. Il est vivement recommandé de ne pas installer une version RC de Centreon 2.7 en production.
 
@@ -33,13 +33,26 @@ Nous avons recensé ici les différentes étapes nécessaires pour pouvoir passe
 Mise en place du repo testing
 =============================
 
-Nous avons mis en place un repository yum testing dans lequel nous avons mis les RPM de Centreon 2.7, Centreon Engine 1.5 et Centreon Broker 2.11. Une série de widgets est également disponible dans ce repo.
+Nous avons mis en place un repository yum testing dans lequel nous avons mis les RPM de Centreon 2.7, Centreon Engine 1.5 et Centreon Broker 2.11. Une série de widgets est également disponible dans ce repo. Que vous installiez une plateforme depuis 0 ou que vous repartiez d'une plateforme existante, vous aurez besoin de ce fichier.
 Pour mettre en place votre fichier repo spécifique testing lancez les commandes suivantes : 
 
    ::
 
    # cd /etc/yum.repos.d
    # wget http://yum.centreon.com/standard/3.0/testing/ces-standard-testing.repo -O /etc/yum.repos.d/ces-standard-testing.repo
+
+
+1. Installation
+===============
+
+Si vous partez d'une machine fraîchement installée, reportez vous à la documentation d'installation traditionnelle. 
+
+
+2. Mise à jour
+==============
+
+Vous partez d'un serveur déjà existant : nous vous donnons ici toutes les étapes pour faire une migration sans perte de données.
+
 
 Arrêt des instances de collecte
 ===============================
