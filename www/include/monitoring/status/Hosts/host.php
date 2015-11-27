@@ -285,10 +285,10 @@ $tpl->display("host.ihtml");
     var _keyPrefix;
     
     jQuery('#statusHost').change(function() {
-        upadteSelect();
+        updateSelect();
     });
     
-    function upadteSelect()
+    function updateSelect()
     {
         var oldStatus = jQuery('#statusFilter').val();
         var opts = document.getElementById('statusFilter').options;
@@ -312,7 +312,7 @@ $tpl->display("host.ihtml");
 
     jQuery(function () {
         preInit();
-        upadteSelect();
+        updateSelect();
     });
 
     function preInit()
@@ -320,7 +320,32 @@ $tpl->display("host.ihtml");
         _keyPrefix = '<?php echo $keyPrefix; ?>';
         _sid = '<?php echo $sid ?>';
         _tm = <?php echo $tM ?>;
+        _o = '<?php echo $o; ?>';
+        
+        
+        if (_o == 'h') {
+            jQuery("#statusHost option[value='h']").prop('selected', true);
+            jQuery("#statusFilter option[value='']").prop('selected', true);
+        } else if (_o == 'h_up') {
+            jQuery("#statusHost option[value='h']").prop('selected', true);
+            jQuery("#statusFilter option[value='up']").prop('selected', true);
+        } else if (_o == 'h_down') {
+            jQuery("#statusHost option[value='h']").prop('selected', true);
+            jQuery("#statusFilter option[value='down']").prop('selected', true);
+        } else if (_o == 'h_unreachable') {
+            jQuery("#statusHost option[value='h']").prop('selected', true);
+            jQuery("#statusFilter option[value='unreachable']").prop('selected', true);
+        } else if (_o == 'h_unhandled') {
+            jQuery("#statusHost option[value='h_unhandled']").prop('selected', true);
+            jQuery("#statusFilter option[value='']").prop('selected', true);
+        } else {
+            jQuery("#statusHost option[value='h']").prop('selected', true);
+            jQuery("#statusFilter option[value='pending']").prop('selected', true);
+        }
         filterStatus(document.getElementById('statusFilter').value, 1);
+
+        window.clearTimeout(_timeoutID);
+        initM(_tm, _sid, _o);
     }
 
     function filterStatus(value, isInit)
