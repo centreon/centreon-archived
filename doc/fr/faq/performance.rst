@@ -83,7 +83,7 @@ RRDCacheD
 
 RRDCacheD est un processus qui permet de limiter les E/S disque lors de la mise à jour des graphiques
 de performance et/ou des graphiques de statut (fichiers RRDs).
-Pour cela, le processus RRDCacheD est appelé par le module Centreon Broker et mutualise les écriture 
+Pour cela, le processus RRDCacheD est appelé par le module Centreon Broker et mutualise les écritures 
 sur disque plutôt que d'enregistrer une à une les données issues de la collecte.
 
 Installation
@@ -104,7 +104,7 @@ Options générales
     RRDC_USER=rrdcached
 
 .. note::
-    L'ordre des options est très important, si l'option ** -m 664** est placé eaprès l'option **-l unix:/var/rrdtool/rrdcached/rrdcached.sock** alors la socket sera créée avec les mauvais droits.
+    L'ordre des options est très important, si l'option ** -m 664** est placée après l'option **-l unix:/var/rrdtool/rrdcached/rrdcached.sock** alors la socket sera créée avec les mauvais droits.
 
 Concernant les autres options importantes :
 
@@ -117,7 +117,7 @@ Concernant les autres options importantes :
 |        | aléatoire dans l'intervalle [0:-z] pour décaler l'écriture d'un fichier afin      |
 |        | d'éviter que trop d'écritures soient mises en attente simultanément.              |
 +--------+-----------------------------------------------------------------------------------+
-| -f     | Correspond à un temps maximum de mise à jour (tilmeout). Si dans le cache des     |
+| -f     | Correspond à un temps maximum de mise à jour (timeout). Si dans le cache des      |
 |        | valeurs sont supérieures ou égales au nombre de secondes définies, alors celle-ci |
 |        | sont automatiquement écrite sur le disque.                                        |
 +--------+-----------------------------------------------------------------------------------+

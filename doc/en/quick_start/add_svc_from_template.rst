@@ -16,7 +16,7 @@ for example name of files system, name of network interfaces, etc.
 First :ref:`connect<centreon_login>` to your Centreon web interface with an 
 administrator account or an account which allow to manage monitored object.
 
-Go to the **Configuration  >  Services  >  Services by host** menu and click on **Add** button:
+Go to the **Configuration > Services > Services by host** menu and click on **Add** button:
 
 .. image:: /_static/images/quick_start/add_service_menu.png
     :align: center

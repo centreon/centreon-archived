@@ -1,8 +1,10 @@
 .. _betaTest2_7_0: 
 
-=============================================
-Mise à jour vers la version 2.7.0 de Centreon
-=============================================
+==================================
+Installation la version 3.3 de CES
+==================================
+
+La version 3.3 de CES est l'ensemble Centreon web 2.7, Centreon Engine 1.5, Centreon Broker 2.11 basé sur une distribution CentOS 6. 
 
 .. warning::
    Attention cette version n'est pas supportée par le support Centreon. Nous vous déconseillons de mettre cette version "Release Candidate" en production. Nous ne sommes pas responsable des dommages que cela pourrait provoquer en cas d'utilisation sur une plateforme de production.
@@ -12,7 +14,7 @@ Mise à jour vers la version 2.7.0 de Centreon
 Prérequis
 *********
 
-Le prérequis nécessaire au fonctionnement de Centreon 2.7 ont évolué par rapport à précédentes versions. Il est important de suivre les recommandations suivantes pour pouvoir avoir une plate-forme fonctionnelle :
+Les prérequis nécessaires au fonctionnement de Centreon 2.7 ont évolué par rapport aux précédentes versions. Il est important de suivre les recommandations suivantes pour pouvoir avoir une plate-forme fonctionnelle :
 
 * Apache = 2.2
 * Centreon Engine >= 1.5.0
@@ -24,20 +26,20 @@ Le prérequis nécessaire au fonctionnement de Centreon 2.7 ont évolué par rap
 * Qt = 4.7.4
 * RRDtools = 1.4.7
 
-************************
-Procédure de mise à jour
-************************
+******************************************
+Procédure d'installation et de mise à jour
+******************************************
 
-Nous avons recensé ici les différentes étapes nécessaires pour pouvoir passer une plate-forme existante en version 2.7. Il est important de prendre en compte que la version proposée reste une version de validation. Il est vivement recommandé de ne pas installer une version RC de Centreon 2.7 en production.
+Nous avons recensé ici les différentes étapes nécessaires pour pouvoir passer une plate-forme existante en version 2.7. Il est important de prendre en compte que la version proposée reste **une version de validation. Il est vivement recommandé de ne pas installer une version RC de Centreon 2.7 en production.**
 
 .. warning::
 	Cette procédure est réalisée dans le contexte d’une CES. Toutes les commandes et les mises à jours seront basées sur de l’environnement CentOS / RedHat et yum.
 
 
-Mise en place du repo testing
-=============================
+Mise en place du dépôt testing
+==============================
 
-Nous avons mis en place un repository yum testing dans lequel nous avons mis les RPM de Centreon 2.7, Centreon Engine 1.5 et Centreon Broker 2.11. Une série de widgets est également disponible dans ce repo.
+Nous avons mis en place un dépôt yum de tests dans lequel nous avons mis les RPM de Centreon 2.7, Centreon Engine 1.5 et Centreon Broker 2.11. Une série de widgets est également disponible dans ce repo. Que vous installiez une plateforme depuis 0 ou que vous repartiez d'une plateforme existante, vous aurez besoin de ce fichier.
 Pour mettre en place votre fichier repo spécifique testing lancez les commandes suivantes : 
 
    ::
@@ -45,8 +47,21 @@ Pour mettre en place votre fichier repo spécifique testing lancez les commandes
    # cd /etc/yum.repos.d
    # wget http://yum.centreon.com/standard/3.0/testing/ces-standard-testing.repo -O /etc/yum.repos.d/ces-standard-testing.repo
 
-Arrêt des instances de collecte
-===============================
+
+1. Installation
+===============
+
+Si vous partez d'une machine fraîchement installée, reportez vous à la documentation d'installation traditionnelle. 
+
+
+2. Mise à jour
+==============
+
+Vous partez d'un serveur déjà existant : nous vous donnons ici toutes les étapes pour faire une migration sans perte de données.
+
+
+2.1. Arrêt des instances de collecte
+====================================
 
 Avant de commencer la mise à jour, assurez vous de ne pas avoir de fichier de rétention 
 actif pour Centreon-Broker.
@@ -58,15 +73,15 @@ Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
    # /etc/init.d/centengine stop
    # /etc/init.d/cbd stop
 
-Mise à jour l’ensemble des paquets
-====================================
+2.2. Mise à jour l’ensemble des paquets
+=======================================
 
    ::
 
    # yum update centreon
 
-Redémarrez le serveur Apache 
-============================
+2.3. Redémarrez le serveur Apache 
+=================================
 
 Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serveur apache afin de prendre en compte la nouvelle extension.
 
@@ -74,18 +89,18 @@ Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serv
 
    # /etc/init.d/httpd restart
 
-Réalisez la mise à jour Web de Centreon 2.7.0
-=============================================
+2.4. Réalisez la mise à jour Web de Centreon 2.7.0
+==================================================
 
 Suivez le wizard de mise à jour Web afin de terminer les mises à jours pour les modifications au niveau de la base SQL soient appliquées. Durant cette phase, un nouveau fichier de configuration va être également créé.
 
-Exportez la configuration vers l’ensemble des pollers
-=====================================================
+2.5. Exportez la configuration vers l’ensemble des pollers
+==========================================================
 
 Pour terminer l’installation, il est nécessaire de générer une première fois les configurations de Centreon Engine et Centreon Broker. Pour cela, allez dans Configuration > Poller et cliquer sur l’icone de génération (attention la page de génération a été supprimée).
  
-Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des pollers
-====================================================================================
+2.6. Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des pollers
+=========================================================================================
 
 Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le service en place. Pour ceci, lancez les commandes suivantes : 
 

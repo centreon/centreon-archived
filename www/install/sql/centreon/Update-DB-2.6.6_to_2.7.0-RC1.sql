@@ -833,3 +833,6 @@ ALTER TABLE custom_view_user_relation ADD COLUMN is_consumed int(1) NOT NULL DEF
 
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.7.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.6.6' LIMIT 1;
+
+update topology set topology_url_opt ='&o=h_unhandled' where topology_page = 20202;
+update topology set topology_url_opt ='&o=svc_unhandled' where topology_page = 20201;
