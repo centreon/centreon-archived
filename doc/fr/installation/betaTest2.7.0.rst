@@ -7,7 +7,7 @@ Installation la version 3.3 de CES
 La version 3.3 de CES est l'ensemble Centreon web 2.7, Centreon Engine 1.5, Centreon Broker 2.11 basé sur une distribution CentOS 6. 
 
 .. warning::
-   Attention cette version n'est pas supportée par le support Centreon. Nous vous déconseillons de mettre cette version "Release Candidate" en production. Nous ne sommes pas responsable des dommages que cela pourrait provoquer en cas d'utilisation sur une plateforme de production.
+   Attention cette version n'est pas supportée par le support Centreon. Nous vous déconseillons de mettre cette version "Release Candidate" en production. Nous ne sommes pas responsables des dommages que cela pourrait provoquer en cas d'utilisation sur une plateforme de production.
 
 
 *********
