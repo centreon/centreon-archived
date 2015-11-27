@@ -775,7 +775,7 @@ class CentreonHost extends CentreonObject {
                     $relationTable = array();
                     foreach ($relations as $rel) {
                         if ($matches[2] == "contact") {
-                            $tab = $obj->getIdByParameter("contact_name", array($rel));
+                            $tab = $obj->getIdByParameter("contact_alias", array($rel));
                         } else {
                             $tab = $obj->getIdByParameter($obj->getUniqueLabelField(), array($rel));
                         }
@@ -886,9 +886,9 @@ class CentreonHost extends CentreonObject {
             echo $this->action . $this->delim . "addcontactgroup" . $this->delim . $element[$this->object->getUniqueLabelField()] . $this->delim . $element['cg_name'] . "\n";
         }
         $contactRel = new Centreon_Object_Relation_Contact_Host();
-        $elements = $contactRel->getMergedParameters(array("contact_name"), array($this->object->getUniqueLabelField()), -1, 0, null, null, array("host_register" => $this->register), "AND");
+        $elements = $contactRel->getMergedParameters(array("contact_alias"), array($this->object->getUniqueLabelField()), -1, 0, null, null, array("host_register" => $this->register), "AND");
         foreach ($elements as $element) {
-            echo $this->action . $this->delim . "addcontact" . $this->delim . $element[$this->object->getUniqueLabelField()] . $this->delim . $element['contact_name'] . "\n";
+            echo $this->action . $this->delim . "addcontact" . $this->delim . $element[$this->object->getUniqueLabelField()] . $this->delim . $element['contact_alias'] . "\n";
         }
         $htplRel = new Centreon_Object_Relation_Host_Template_Host();
         $elements = $htplRel->getMergedParameters(array("host_name as host"), array("host_name as template"), -1, 0, "host,`order`", "ASC", array("h.host_register" => $this->register), "AND");

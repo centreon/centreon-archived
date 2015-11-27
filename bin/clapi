@@ -78,7 +78,12 @@ if (isset($options['s'])) {
 if ($debug) {
     print_r($options);
 } else {
-    error_reporting(E_ALL ^ E_NOTICE);
+    // Set logging options                                                                                                                                                                                                                                                    
+	if (defined("E_DEPRECATED")) {
+		ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
+	} else {
+		ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT);
+	}
 }
 
 
