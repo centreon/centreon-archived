@@ -54,7 +54,7 @@ Si vous partez d'une machine fraîchement installée, reportez vous à la docume
 Vous partez d'un serveur déjà existant : nous vous donnons ici toutes les étapes pour faire une migration sans perte de données.
 
 
-Arrêt des instances de collecte
+2.1. Arrêt des instances de collecte
 ===============================
 
 Avant de commencer la mise à jour, assurez vous de ne pas avoir de fichier de rétention 
@@ -67,14 +67,14 @@ Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
    # /etc/init.d/centengine stop
    # /etc/init.d/cbd stop
 
-Mise à jour l’ensemble des paquets
+2.2. Mise à jour l’ensemble des paquets
 ====================================
 
    ::
 
    # yum update centreon
 
-Redémarrez le serveur Apache 
+2.3. Redémarrez le serveur Apache 
 ============================
 
 Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serveur apache afin de prendre en compte la nouvelle extension.
@@ -83,17 +83,17 @@ Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serv
 
    # /etc/init.d/httpd restart
 
-Réalisez la mise à jour Web de Centreon 2.7.0
+2.4. Réalisez la mise à jour Web de Centreon 2.7.0
 =============================================
 
 Suivez le wizard de mise à jour Web afin de terminer les mises à jours pour les modifications au niveau de la base SQL soient appliquées. Durant cette phase, un nouveau fichier de configuration va être également créé.
 
-Exportez la configuration vers l’ensemble des pollers
+2.5. Exportez la configuration vers l’ensemble des pollers
 =====================================================
 
 Pour terminer l’installation, il est nécessaire de générer une première fois les configurations de Centreon Engine et Centreon Broker. Pour cela, allez dans Configuration > Poller et cliquer sur l’icone de génération (attention la page de génération a été supprimée).
  
-Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des pollers
+2.6. Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des pollers
 ====================================================================================
 
 Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le service en place. Pour ceci, lancez les commandes suivantes : 
