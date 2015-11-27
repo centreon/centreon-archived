@@ -2,6 +2,14 @@
 Prérequis
 =========
 
+L'interface Centreon web est compatible avec les navigateurs web suivants :
+
+* Internet Explorer IE 11+
+* Firefox 5+
+* Chrome 39+
+* Safari 6+
+* Opera 31+
+
 *********
 Logiciels
 *********
@@ -17,9 +25,40 @@ sera plus complexe à partir des fichiers sources de chaque composants.
 SGBD
 ====
 
-**Centreon vous recommande d'utiliser MariaDB v5.5.x ou une version supérieur** plutôt
-que le moteur MySQL. Cependant si vous souhaitez rester sous MySQL, une version v5.1.x
-ou supérieure sera requise.
+**Centreon vous recommande d'utiliser MariaDB** plutôt que le moteur MySQL.
+
++----------+-----------+
+| Logiciel | Version   |
++==========+===========+
+| MariaDB  | >= 5.5.35 |
++----------+-----------+
+| MySQL    | >= 5.1.73 |
++----------+-----------+
+
+Dépendances logicielles
+=======================
+
+Le tableau suivant dérit les dépendances logicielles :
+
++----------+-----------+
+| Logiciel | Version   |
++==========+===========+
+| Apache   | 2.2       |
++----------+-----------+
+| GnuTLS   | >= 2.0    |
++----------+-----------+
+| Net-SNMP | 5.5       |
++----------+-----------+
+| openssl  | >= 1.0.1e |
++----------+-----------+
+| PHP      | >= 5.3.0  |
++----------+-----------+
+| Qt       | >= 4.7.4  |
++----------+-----------+
+| RRDtools | 1.4.7     |
++----------+-----------+
+| zlib     | 1.2.3     |
++----------+-----------+
 
 *******************************
 Sélectionner votre architecture
