@@ -17,7 +17,7 @@ There are 3 kinds of modules:
 
 To install a module:
 
-1. Install the module from the associated documentation (most often in the directory: /usr/share/Centreon/www/modules on the central server)
+1. Install the module from the associated documentation (most often in the directory: **/usr/share/centreon/www/modules** on the central server)
 2. Go into the menu: **Administration** ==> **Extensions**
 
 .. image :: /images/guide_exploitation/cextensions.png
@@ -66,7 +66,7 @@ Widgets enable us to construct customised views, dealt with in the chapter cover
 
 To install a widget:
 
-#. Install the widget from the associated documentation (most commonly in the directory entitled: **/usr/share/Centreon/www/modules** on the central server)
+#. Install the widget from the associated documentation (most commonly in the directory entitled: **/usr/share/centreon/www/widgets** on the central server)
 #. Go into the menu: **Administration** ==> **Extensions**
 #. In the left menu, click on **Setup** under **Widgets**
 #. Click on |install| to start the installation of the widget

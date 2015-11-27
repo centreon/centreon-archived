@@ -1243,17 +1243,12 @@ class CentreonGraph {
         foreach ($this->_arguments as $arg) {
             $commandLine .= " ".$arg." ";
         }
-
-	$commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
-	$gmt_export = "";
-        if ($this->GMT->used()){
-            $offset = -1 * ($this->GMT->getMyGMT() + date('Z') / 60 / 60);
-            if($offset > 0){
-                $offset = '+' . $offset;
-            }
-            $gmt_export = "export TZ='GMT" . $offset . "' ; ";
+        $gmt_export = "";
+        $commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
+        $timezone = $this->GMT->getMyTimezone();
+        if (!empty($timezone)){  
+            $gmt_export = "export TZ='".$timezone."'; " ;
         }
-
         $this->_log($commandLine);
         /*
          * Send Binary Data
@@ -1658,6 +1653,7 @@ class CentreonGraph {
         }
         return false;
     }
+    
 }
 
 ?>

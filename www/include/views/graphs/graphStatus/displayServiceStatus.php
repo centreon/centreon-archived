@@ -126,7 +126,7 @@
 			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE `id` = '".$pearDB->escape($_GET["index"])."' LIMIT 1");
 		} else {
 			$pearDBO->query("SET NAMES 'utf8'");
-			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".$pearDB->escape(utf8_encode($_GET["host_name"]))."' AND `service_description` = '".$pearDB->escape(utf8_encode($_GET["service_description"]))."' LIMIT 1");
+			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".$pearDB->escape($_GET["host_name"])."' AND `service_description` = '".$pearDB->escape($_GET["service_description"])."' LIMIT 1");
 		}
 
 		$index_data_ODS = $DBRESULT->fetchRow();
@@ -272,8 +272,13 @@
 		/*
 		 * Add Timezone for current user.
 		 */
-		if ($CentreonGMT->used())
-			$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
+		$timezone = $CentreonGMT->getMyTimezone();
+        $timezone = trim($timezone);
+        if (empty($timezone)){
+            $timezone = date_default_timezone_get();
+        }
+        
+		$command_line = "export TZ='".$timezone."' ; ".$command_line;
 
 		/*
 		 * Escale special char

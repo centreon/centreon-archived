@@ -42,6 +42,11 @@ class CentreonGMT {
     var $listGTM;
     var $myGMT;
     var $use;
+    /**
+     *
+     * @var array
+     */
+    var $aListTimezone;
         
     /**
      *
@@ -49,6 +54,17 @@ class CentreonGMT {
      */
     protected $db;
     
+    /**
+     * 
+     * @param string $myTimezone
+     */
+    var $myTimezone;
+    
+    /**
+     * 
+     * @param string $myOffset
+     */
+    var $myOffset;
 
     public function __construct($DB)
     {
@@ -72,9 +88,9 @@ class CentreonGMT {
         return $this->use;
     }
 
-    function setMyGMT($value) {
-        if (!isset($value))
-            $this->myGMT = $value;
+    function setMyGMT($value)
+    {
+        $this->myGMT = $value;
     }
 
     function getGMTList() {
@@ -85,11 +101,38 @@ class CentreonGMT {
         return $this->myGMT;
     }
 
-    function getMyGMTForRRD() {
-        $gmt = (-1 * $this->myGMT);
-        if ($gmt > 0)
-            $gmt = "+$gmt";
-        return $gmt;
+    function getMyTimezone()
+    {
+        if (is_null($this->myTimezone)) {
+            if (isset($this->listGTM[$this->myGMT])) {
+                $this->myTimezone = $this->listGTM[$this->myGMT];
+            } else {
+                $this->myTimezone = date_default_timezone_get();
+            }
+        }
+        return $this->myTimezone;
+    }
+    function getMyOffset()
+    {
+        if (is_null($this->myOffset)) {
+            if (count($this->aListTimezone) == 0) {
+                $this->getList();
+            }
+            $this->myOffset = $this->aListTimezone[$this->myGMT]['timezone_offset'];
+        }
+        return $this->myOffset;
+    }
+    function getMyGMTForRRD()
+    {
+        $sOffset = '';
+        if (count($this->listGTM) == 0) {
+            $this->getList();
+        }
+
+        if (isset($this->aListTimezone[$this->myGMT]['timezone_offset'])) {
+           $sOffset = $this->aListTimezone[$this->myGMT]['timezone_offset'];
+        }
+        return $sOffset;
     }
 
     function getDate($format, $date, $gmt = NULL)
@@ -147,7 +190,6 @@ class CentreonGMT {
                     $this->getList();
                 }
                 
-                //$date += -1 * ($gmt * 60 * 60);
                 if (isset($this->listGTM[$gmt]) && !empty($this->listGTM[$gmt])) {
                     
                     $sDate = new DateTime();
@@ -290,6 +332,7 @@ class CentreonGMT {
         $aDatas[null] = null;
         while ($row = $res->fetchRow()) {
             $aDatas[$row['timezone_id']] =  $row['timezone_name'];
+            $this->aListTimezone[$row['timezone_id']] = $row;
         }
          
         return $aDatas;

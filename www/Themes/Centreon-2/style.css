@@ -268,10 +268,10 @@ p.description a, p.description a:visited {
 /* ------------ Badge -----------*/
 
 .badge              {   display: inline-block;
-                        border-radius: 7px;
+                        border-radius: 18px;
                         color: #fff;
-                        padding: 2px 4px;
-                        font-size: 11px;
+                        padding: 2px 6px;
+                        font-size: 10px;
                         font-weight: bold;
                         text-transform: uppercase;
                     }
@@ -509,7 +509,7 @@ form#AjaxBankBasic {
 #Tcontener {
     height: 100%;
     position: relative;
-    margin-bottom: 16px;
+    margin-bottom: 36px;
 }
 
 .GlobalContainer tr {
@@ -1303,7 +1303,7 @@ table.ListTableSmallArg td {
     line-height: 25px;
     float: left;
 }
-.ToolbarTR a.btc { display: inline-block; height: 25px; line-height: 25px; padding: 0 10px; }
+.ToolbarTR a.btc { display: inline-block; height: 28px; line-height: 28px; padding: 0 10px; }
 
 .Toolbar_TDSelectAction_Top {
     border: 1px solid #bcbdc0;

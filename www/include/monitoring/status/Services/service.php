@@ -380,10 +380,10 @@ $tpl->display("service.ihtml");
     var pending= '<?php echo _("Pending");?>';
     
     jQuery('#statusService').change(function() {
-        upadteSelect();
+        updateSelect();
     });
     
-    function upadteSelect()
+    function updateSelect()
     {
         var oldStatus = jQuery('#statusFilter').val();
         var opts = document.getElementById('statusFilter').options;
@@ -405,6 +405,8 @@ $tpl->display("service.ihtml");
         
         if (jQuery("#statusFilter option[value='"+oldStatus+"']").length > 0) {
             jQuery("#statusFilter option[value='"+oldStatus+"']").prop('selected', true);
+        } else {
+            jQuery("#statusFilter option[value='']").prop('selected', true);
         }
     }
     
@@ -413,13 +415,39 @@ $tpl->display("service.ihtml");
 
     jQuery(function () {
         preInit();
-        upadteSelect();
+        updateSelect();
     });
     function preInit()
     {
         _keyPrefix = '<?php echo $keyPrefix; ?>';
         _sid = '<?php echo $sid ?>';
-        _tm = <?php echo $tM ?>;
+        _tm = <?php echo $tM ?>;    
+        _o = '<?php echo $o; ?>';
+        
+        
+        if (_o == 'svc') {
+            jQuery("#statusService option[value='svc']").prop('selected', true);
+            jQuery("#statusFilter option[value='']").prop('selected', true);
+        } else if (_o == 'svc_ok') {
+            jQuery("#statusService option[value='svc']").prop('selected', true);
+            jQuery("#statusFilter option[value='ok']").prop('selected', true);
+        } else if (_o == 'svc_warning') {
+            jQuery("#statusService option[value='svc']").prop('selected', true);
+            jQuery("#statusFilter option[value='warning']").prop('selected', true);
+        } else if (_o == 'svc_critical') {
+            jQuery("#statusService option[value='svc']").prop('selected', true);
+            jQuery("#statusFilter option[value='critical']").prop('selected', true);
+        } else if (_o == 'svc_unknown') {
+            jQuery("#statusService option[value='svc']").prop('selected', true);
+            jQuery("#statusFilter option[value='unknown']").prop('selected', true);
+        } else if (_o == 'svc_unhandled') {
+            jQuery("#statusService option[value='svc_unhandled']").prop('selected', true);
+            jQuery("#statusFilter option[value='']").prop('selected', true);
+        } else {
+            jQuery("#statusService option[value='svc']").prop('selected', true);
+            jQuery("#statusFilter option[value='pending']").prop('selected', true);
+        }
+        
         filterStatus(document.getElementById('statusFilter').value, 1);
     }
 
@@ -432,20 +460,17 @@ $tpl->display("service.ihtml");
             _o = _keyPrefix;
         }
         window.clearTimeout(_timeoutID);
-        console.log("FilterStatus");
         initM(_tm, _sid, _o);
     }
 
     function filterCrit(value) {
         window.clearTimeout(_timeoutID);
-        console.log("FilterCrit");
         initM(_tm, _sid, _o);
     }
     function statusServices(value, isInit)
     {
         _o = value;
         window.clearTimeout(_timeoutID);
-        console.log("ServiceStatus");
         initM(_tm, _sid, _o);
     }
 </script>

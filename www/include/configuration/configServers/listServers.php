@@ -149,11 +149,11 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 	$moptions = "";
 	$selectedElements = $form->addElement('checkbox', "select[".$config['id']."]");
 	if ($config["ns_activate"]) {
-		$moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+		$moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>";
 	} else {
-		$moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+		$moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>";
 	}
-	$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$config['id']."]'></input>";
+	$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$config['id']."]'></input>";
 
 	if (!isset($nagiosInfo[$config["name"]]["is_currently_running"])) {
 	  $nagiosInfo[$config["name"]]["is_currently_running"] = 0;
@@ -174,8 +174,11 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 	  $lastUpdateTimeFlag = 1;
 	}
 
+	/* 	
+	 * Get cfg_id
+	 */
 	$request = "SELECT nagios_id FROM cfg_nagios WHERE nagios_server_id = ".$config["id"]."";
-	$DBRESULT2 = $pearDB->query($rq);
+	$DBRESULT2 = $pearDB->query($request);
 	if ($DBRESULT2->numRows()) {
 		$cfg_id = $DBRESULT2->fetchRow();
 	} else {
