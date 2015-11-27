@@ -1,8 +1,10 @@
 .. _betaTest2_7_0: 
 
-=============================================
-Mise à jour vers la version 2.7.0 de Centreon
-=============================================
+==================================
+Installation la version 3.3 de CES
+==================================
+
+La version 3.3 de CES est l'ensemble Centreon web 2.7, Centreon Engine 1.5, Centreon Broker 2.11 basé sur une distribution CentOS 6. 
 
 *********
 Prérequis
