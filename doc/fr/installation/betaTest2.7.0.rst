@@ -4,6 +4,10 @@
 Mise à jour vers la version 2.7.0 de Centreon
 =============================================
 
+.. warning::
+   Attention cette version n'est pas supportée par le support Centreon. Nous vous déconseillons de mettre cette version "Release Candidate" en production. Nous ne sommes pas responsable des dommages que cela pourrait provoquer en cas d'utilisation sur une plateforme de production.
+
+
 *********
 Prérequis
 *********
