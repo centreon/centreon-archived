@@ -155,7 +155,7 @@ Centreon est compatible avec :
 
 * :ref:`Centreon Broker <centreon-broker:user_installation_using_sources>`
 
-Installez ce multiplexeurs de flux avant de poursuivre l'installation.
+Installez ce multiplexeur de flux avant de poursuivre l'installation.
 
 ********
 Centreon
