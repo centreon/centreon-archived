@@ -472,7 +472,7 @@ Notes de version
    :align: center
 
 
-Mise à jour des bases de donéées
+Mise à jour des bases de données
 --------------------------------
 
 Cette étape met à jour le modèle des bases de données ainsi que les données, version par version.
