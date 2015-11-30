@@ -145,6 +145,9 @@ Centreon est testé et validé uniquement pour le moteur de supervision :ref:`Ce
 
 Installez ce moteur avant de poursuivre l'installation. N'oubliez pas d'installer les `Plugins Nagios <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
 
+.. warning::
+  Centreon Web n'est pas compatible avec le moteur de supervision Nagios.
+
 ********************
 Multiplexeur de flux
 ********************
@@ -162,7 +165,7 @@ Téléchargez la dernière version de Centreon `<https://download.centreon.com/>
 Installation shell
 ==================
 
-Extraire Centreon de l'archive :
+Extrayez Centreon de l'archive :
 
  ::
     
@@ -181,13 +184,13 @@ Exécutez le script d'installation :
     $ ./install.sh -i
 
 .. note::
-    Le script d'installation permet une configuration personnalisée, cette procédure vous montrera les meilleurs chemins à utiliser. En outre, les questions rapides Yes/No peuvent être répondu par [y] la plupart du temps.
+    Le script d'installation permet une configuration personnalisée, cette procédure vous montrera les meilleurs chemins à utiliser. En outre, les questions rapides Yes/No peuvent être répondues par [y] la plupart du temps.
 
 Contrôle de prérequis
 ---------------------
 
-Si l'étape d'installation des prérequis s'est déroulée avec succès vous devriez 
-avoir aucun problème lors de cette étape. Sinon reprendre la procédure 
+Si l'étape d'installation des prérequis s'est déroulée avec succès, vous ne devriez 
+avoir aucun problème lors de cette étape. Sinon, reprennez la procédure 
 d'installation des prérequis :
   ::
 
@@ -196,7 +199,7 @@ d'installation des prérequis :
     #                         Centreon (www.centreon.com)                         #
     #                          Thanks for using Centreon                          #
     #                                                                             #
-    #                                    v2.6.1                                   #
+    #                                    v2.6.6                                   #
     #                                                                             #
     #                              infos@centreon.com                             #
     #                                                                             #
@@ -238,7 +241,7 @@ Acceptation de la licence
 Composants principaux
 ---------------------
 
-Répondre [y] à toutes les questions
+Répondez [y] à toutes les questions
 
 ::
 
@@ -365,10 +368,10 @@ Utilisez les commandes suivantes :
   Finding Apache group :                                     apache
 
 
-Utilisateur et group centreon
------------------------------
+Utilisateur et groupe centreon
+------------------------------
 
-Le groupe d'applications **centreon**: Ce groupe est utilisé pour les droits d'accès
+Le groupe d'applications **centreon** est utilisé pour les droits d'accès
 entre les différents logiciels Centreon::
 
   What is the Centreon group ? [centreon]
@@ -383,16 +386,16 @@ entre les différents logiciels Centreon::
 Utilisateur de la supervision
 -----------------------------
 
-Cet utilisateur exécute le moteur de supervision :
+Cet utilisateur exécute le moteur de supervision Centreon Engine : 
 
-Si vous utilisez Centreon Engine::
+ ::
 
   What is the Monitoring engine user ?
   > centreon-engine
 
-Cet utilisateur exécute le multiplexeur de flux :
+Cet utilisateur exécute le multiplexeur de flux Centreon Broker :
 
-Si vous utilisez Centreon Broker::
+ ::
 
   What is the Broker user ? (optional)
   > centreon-broker
@@ -444,7 +447,7 @@ Configuration des droits sudo
   What is the Monitoring engine configuration directory ?
   > /etc/centreon-engine
 
-Si vous utilisez Centreon Broker::
+Si vous utilisez Centreon Broker ::
 
   Where is the configuration directory for broker module ?
   > /etc/centreon-broker
@@ -452,7 +455,7 @@ Si vous utilisez Centreon Broker::
   Where is the init script for broker module daemon ?
   > /etc/init.d/cbd
 
-Configuration des droits::
+Configuration des droits ::
 
   Do you want me to reconfigure your sudo ? (WARNING) 
   [y/n], default to [n]:
@@ -740,13 +743,13 @@ Fin de l'installation
 Pour tous les OS
 ----------------
 
-SELinux doit être désactivé. Pour cela vous devez modifier le fichier "/etc/sysconfig/selinux" et remplacer "enforcing" par "disabled" comme dans l'exemple suivant :
+SELinux doit être désactivé. Pour cela, vous devez modifier le fichier "/etc/sysconfig/selinux" et remplacer "enforcing" par "disabled" comme dans l'exemple suivant :
 
  ::
  
  SELINUX=disabled
 
-La timezone par défaut de PHP doit être configurée. Pour cela, aller dans le répertoire /etc/php.d et créer un fichier nommé php-timezone.ini contenant la ligne suivante : 
+La timezone par défaut de PHP doit être configurée. Pour cela, allez dans le répertoire /etc/php.d et créez un fichier nommé php-timezone.ini contenant la ligne suivante : 
 
  ::
  
@@ -754,6 +757,6 @@ La timezone par défaut de PHP doit être configurée. Pour cela, aller dans le 
 
 Après avoir sauvegardé le fichier, n'oubliez pas de redémarrer le service apache de votre serveur.
 
-La base de données MySQL doit être disponible pour pouvoir continuer l'installation (localement ou non). Pour information nous recommandons MariaDB.
+La base de données MySQL doit être disponible pour pouvoir continuer l'installation (localement ou non). Pour information, nous recommandons MariaDB.
 
 Suivez la procédure d'installation web :ref:`ici <installation_web_ces>`. 

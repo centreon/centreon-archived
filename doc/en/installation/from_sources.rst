@@ -131,6 +131,9 @@ Centreon is tested and approved only for the monitoring engine :ref:`Centreon En
 
 You can install it following the procedure in documentation. Don’t forget to install the `Nagios plugins <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
 
+.. warning::
+  Centreon Web is not compatible with Nagios monitoring engine.
+
 ******************
 Stream Multiplexer
 ******************
@@ -177,7 +180,7 @@ If the Prerequisites installation step has been run successfully you should have
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.6.1                                   #
+  #                                    v2.6.6                                   #
   #                                                                             #
   #                              infos@centreon.com                             #
   #                                                                             #
