@@ -188,6 +188,7 @@ $tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change " . $o
 $tabOrder["last_check"] = " ORDER BY s.last_check " . $order . ", h.name, s.description";
 $tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $order . ", h.name, s.description";
 $tabOrder["output"] = " ORDER BY s.output " . $order . ", h.name, s.description";
+$tabOrder["plugin_output"] = $tabOrder["output"];
 $tabOrder["default"] = $tabOrder['criticality_id'];
 
 $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
