@@ -141,9 +141,7 @@ Sauvegardez le fichier et redémarrez apache :
 Moteur de supervision
 *********************
 
-Centreon est compatible avec :
-
-* :ref:`Centreon Engine <centreon-engine:user_installation_using_sources>`
+Centreon est testé et validé uniquement pour le moteur de supervision :ref:`Centreon Engine <centreon-engine:user_installation_using_sources>`.
 
 Installez ce moteur avant de poursuivre l'installation. N'oubliez pas d'installer les `Plugins Nagios <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
 
@@ -151,9 +149,7 @@ Installez ce moteur avant de poursuivre l'installation. N'oubliez pas d'installe
 Multiplexeur de flux
 ********************
 
-Centreon est compatible avec :
-
-* :ref:`Centreon Broker <centreon-broker:user_installation_using_sources>`
+Centreon est testé et validé uniquement pour le multiplexeur de flux :ref:`Centreon Broker <centreon-broker:user_installation_using_sources>`.
 
 Installez ce multiplexeurs de flux avant de poursuivre l'installation.
 
