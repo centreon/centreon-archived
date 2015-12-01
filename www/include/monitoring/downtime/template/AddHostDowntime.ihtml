@@ -24,6 +24,10 @@ Event.observe(window, "load", function() { toggleParams('host'); });
 				<td  class="ListColLeft">{$form.host_or_hg.label}</td>
 				<td  class="ListColLeft">{$form.host_or_hg.html}</td>
 			</tr>
+			<tr class="list_one">
+				<td  class="ListColLeft">{$form.host_or_centreon_time.label}</td>
+				<td  class="ListColLeft">{$form.host_or_centreon_time.html}</td>
+			</tr>
 			<tr class="list_two" id="host_input">
 				<td  class="ListColLeft">{$form.host_id.label}</td>
 				<td  class="ListColLeft">{$form.host_id.html}</td>

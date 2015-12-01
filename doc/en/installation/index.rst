@@ -25,3 +25,5 @@ The third part exaplins how to install your platform.
     01a
     from_packages
     from_sources
+
+If you are part of the beta test program please click :ref:`here<betaTest2_7_0>`.
