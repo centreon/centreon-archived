@@ -17,7 +17,11 @@ Afin de pouvoir appliquer les modifications effectuées, il est nécessaire de s
 Première étape
 ==============
  #.	Rendez-vous dans le menu **Configuration** ==> **Collecteurs**
- #.	Cliquez sur l'icône de générationd de la configuration du collecteur.
+ #.	Cliquez sur l'icône de génération de la configuration du collecteur.
+
+ .. image :: /images/guide_utilisateur/configuration/icone.png
+    :align: center
+
  #.	Cochez les cases **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
  #. Cliquez sur **Exporter**
  
