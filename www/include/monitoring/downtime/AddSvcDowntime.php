@@ -124,6 +124,14 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
 	$form->addElement('text', 'end_time', '', array('size' => 5, 'class' => 'timepicker'));
 	$form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
 
+    // uncomment this section : the user can choose to set a downtime based on the host time or the centreon user time.
+    /*
+    $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
+    $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
+    $form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');        
+    $form->setDefaults(array('host_or_centreon_time' => '0'));   
+    */
+    
 	$defaultDuration = 3600;
     if (isset($oreon->optGen['monitoring_dwt_duration']) && $oreon->optGen['monitoring_dwt_duration']) {
         $defaultDuration = $oreon->optGen['monitoring_dwt_duration'];
@@ -161,6 +169,8 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
         if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array('0', '1'))) {
             $_POST["persistant"] = '0';
         }
+        isset($_POST['host_or_centreon_time']['host_or_centreon_time']) && $_POST['host_or_centreon_time']['host_or_centreon_time'] ? $host_or_centreon_time = $_POST['host_or_centreon_time']['host_or_centreon_time'] : $host_or_centreon_time = "0";
+            
         if (!isset($_POST["comment"]))
             $_POST["comment"] = 0;
 	    $_POST["comment"] = str_replace("'", " ", $_POST['comment']);
@@ -200,7 +210,8 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
             $_POST["start"] . ' ' . $_POST['start_time'], 
             $_POST["end"] . ' ' . $_POST['end_time'], 
             $_POST["persistant"], 
-            $duration
+            $duration,
+            $host_or_centreon_time
         );
     	require_once("listDowntime.php");
 	} else {

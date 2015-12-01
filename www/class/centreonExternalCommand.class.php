@@ -331,7 +331,7 @@ class CentreonExternalCommand {
      * @param string $end
      * @param int $persistant
      */
-    public function AddHostDowntime($host, $comment, $start, $end, $persistant, $duration = null, $with_services = false) {
+    public function AddHostDowntime($host, $comment, $start, $end, $persistant, $duration = null, $with_services = false, $host_or_centreon_time = "0") {
         global $centreon;
 
         if (is_null($centreon)) {
@@ -343,14 +343,19 @@ class CentreonExternalCommand {
             $persistant = '0';
         }
 
-        $start_time = $this->GMT->getUTCDate($this->getDate($start));
-        $end_time = $this->GMT->getUTCDate($this->getDate($end));
+        if($host_or_centreon_time == "0"){
+            $start_time = $this->GMT->getUTCDateFromString($start);
+            $end_time = $this->GMT->getUTCDateFromString($end);
+        }else{
+            $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
+            $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getUTCLocationHost($host));
+        }    
 
         /*
          * Get poller for this host
          */
         $poller_id = $this->getPollerID($host);
-
+        
         /*
          * Send command
          */
@@ -374,7 +379,7 @@ class CentreonExternalCommand {
      * @param string $end
      * @param int $persistant
      */
-    public function AddSvcDowntime($host, $service, $comment, $start, $end, $persistant, $duration = null) {
+    public function AddSvcDowntime($host, $service, $comment, $start, $end, $persistant, $duration = null, $host_or_centreon_time = "0") {
         global $centreon;
 
         if (is_null($centreon)) {
@@ -387,8 +392,13 @@ class CentreonExternalCommand {
             $persistant = '0';
         }
 
-        $start_time = $this->GMT->getUTCDate($this->getDate($start));
-        $end_time = $this->GMT->getUTCDate($this->getDate($end));
+        if($host_or_centreon_time == "0"){
+            $start_time = $this->GMT->getUTCDateFromString($start);
+            $end_time = $this->GMT->getUTCDateFromString($end);
+        }else{
+            $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
+            $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getUTCLocationHost($host));
+        }   
 
         /*
          * Get poller for this host
