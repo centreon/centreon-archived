@@ -16,16 +16,17 @@ Afin de pouvoir appliquer les modifications effectuées, il est nécessaire de s
    
 Première étape
 ==============
- #.	Rendez-vous dans le menu **Configuration** ==> **Collecteurs**
- #.	Cliquez sur l'icône de génération de la configuration du collecteur.
 
- .. image :: /images/guide_utilisateur/configuration/icone.png
+#. Rendez-vous dans le menu **Configuration** ==> **Collecteurs**
+#. Cliquez sur l'icône de génération de la configuration du collecteur.
+
+.. image:: /images/guide_utilisateur/configuration/poller_menu_generate.png
     :align: center
 
- #.	Cochez les cases **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
- #. Cliquez sur **Exporter**
+#. Cochez les cases **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
+#. Cliquez sur **Exporter**
  
-.. image :: /images/guide_utilisateur/configuration/11step1.png
+.. image:: /images/guide_utilisateur/configuration/poller_generate_1.png
    :align: center 
 
 Vérifier qu'aucune erreur n'apparait lors de la génération. 
@@ -39,7 +40,7 @@ Deuxième étape
  #.	Puis cochez les cases **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
  #.	Cliquez sur **Exporter**
  
-.. image :: /images/guide_utilisateur/configuration/11step2.png
+.. image:: /images/guide_utilisateur/configuration/poller_generate_2.png
    :align: center 
 
 .. note::
@@ -55,4 +56,4 @@ Au sein de la page de génération de la configuration, plusieurs options sont d
  #.	**Lancer le débogage du moteur de supervision (-v)** : Permet à l'ordonnanceur de vérifier la configuration générée
  #.	**Déplacer les fichiers générés** : Déplace les fichiers de configuration du répertoire temporaire vers le répertoire de l'ordonnanceur
  #.	**Redémarrer l'ordonnanceur** : Redémarre l'ordonnanceur afin d'appliquer les nouveaux fichiers de configuration
- #. 	**Commande exécutée post-génération** : Exécute la commande post-génération paramétrée au niveau de la configuration de l'ordonnanceur 
+ #. **Commande exécutée post-génération** : Exécute la commande post-génération paramétrée au niveau de la configuration de l'ordonnanceur 
