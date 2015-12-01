@@ -98,6 +98,12 @@ function multipleServerInDB ($server = array(), $nbrDup = array())
 		$rowServer["localhost"] = '0';      
 		$DBRESULT->free();
 
+        
+        $DBRESULT2 = $pearDB->query("SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$key."'");
+        while ($rowBk = $DBRESULT2->fetchRow())
+            $rowBks[] = $rowBk;
+        $DBRESULT2->free();
+        
 		for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 			$val = null;
 			foreach ($rowServer as $key2=>$value2)	{
@@ -125,8 +131,19 @@ function multipleServerInDB ($server = array(), $nbrDup = array())
 				        	    FROM poller_command_relations as b
                                                         WHERE b.poller_id = ' . $key;
 				        $pearDB->query($queryCmd);
-                        
+
                         insertServerInCfgNagios($row['id'], $server_name);
+                        $DBRESULT = $pearDB->query("SELECT MAX(nagios_id) as nagios_id FROM cfg_nagios");
+                        $nagios_id = $DBRESULT->fetchRow();
+                        foreach ($rowBks as $keyBk=>$valBk){
+                            if ($valBk["broker_module"]) {
+                                $rqBk = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id['nagios_id']."', '".$valBk["broker_module"]."')";
+                            }
+                            $DBRESULT = $pearDB->query($rqBk);
+                        }
+                        
+                        
+                        
 				    }
 				}
 			}
