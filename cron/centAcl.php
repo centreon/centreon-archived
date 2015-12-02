@@ -232,6 +232,7 @@ try {
         "AND acl_groups.acl_group_activate = '1' " .
         "AND (acl_groups.acl_group_changed = '1' " .
         "OR acl_resources.changed = '1')";
+
     $DBRESULT1 = $pearDB->query($query);
     while ($result = $DBRESULT1->fetchRow()) {
         $tabGroups[$result["acl_group_id"]] = 1;
@@ -553,15 +554,6 @@ try {
                         $tabElem[$value][$desc] = $key . "," . $id;
                     }
                     unset($tab);
-                }
-
-                // Purge all elements not visible
-                foreach ($tabElem as $key => $value) {
-                    if (isset($Host[$hostNameCache[$key]])) {
-                        ;
-                    } else {
-                        unset($tabElem[$key]);
-                    }
                 }
                 unset($Host);
                     
