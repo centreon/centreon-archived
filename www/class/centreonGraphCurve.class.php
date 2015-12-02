@@ -108,7 +108,7 @@ class CentreonGraphCurve
         while ($data = $DBRESULT->fetchRow()) {
             $graphCurveList[] = array(
                 'id' => $data['id'],
-                'text' =>  htmlentities($data['name'])
+                'text' => $data['name']
             );
         }
 
