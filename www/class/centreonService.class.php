@@ -1077,7 +1077,7 @@ class CentreonService
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
             $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
             
-            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
+            $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
         }
         
         return $serviceList;
