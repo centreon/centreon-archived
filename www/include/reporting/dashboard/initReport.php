@@ -231,7 +231,7 @@ $lcaSvcstr 	= $oreon->user->access->getServicesString("ID", $pearDBO);
 /*
  * setting variables for link with services
  */
-$period_choice = (isset($_POST["period_choice"])) ? $_POST["period_choice"] : "on";
+$period_choice = (isset($_POST["period_choice"])) ? $_POST["period_choice"] : "preset";
 $period = (isset($_POST["period"])) ? $_POST["period"] : "";
 $period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 $get_date_start = (isset($_POST["StartDate"])) ? $_POST["StartDate"] : "";
