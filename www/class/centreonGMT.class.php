@@ -214,6 +214,40 @@ class CentreonGMT {
         }
         return $return;
     }
+    
+    function getUTCDateFromString($date, $gmt = NULL){
+        /*
+         * Specify special GMT
+         */
+
+        
+        $return = "";
+        if (!isset($gmt))
+            $gmt = $this->myGMT;
+        if ($this->use) {
+            if (isset($date) && isset($gmt)) {
+                if (count($this->listGTM) == 0) {
+                    $this->getList();
+                }
+                
+                if (isset($this->listGTM[$gmt]) && !empty($this->listGTM[$gmt])) {
+                    
+                    $sDate = new DateTime($date,new DateTimeZone($this->listGTM[$gmt]));
+                    $iTimestamp = $sDate->getTimestamp();
+                    $return = $iTimestamp;
+                } else {
+                    $return = $date;
+                }
+                
+            } else {
+                $return = "";
+            }
+        } else {
+            $return = $date;
+        }
+        return $return;
+    }
+    
 
     function getDelaySecondsForRRD($gmt) {
         $str = "";
@@ -313,6 +347,48 @@ class CentreonGMT {
         return date($dateFormat, $date);
     }
 
+    function getUTCTimestampBasedOnHostGMT($date, $hostId, $dateFormat = 'c')
+    {
+        global $pearDB;
+        static $locations = null;
+
+        if ($this->use) {
+            /* Load host location */
+            if (is_null($locations)) {
+                $locations = array();
+                $query = "SELECT host_id, host_location FROM host WHERE host_id";
+                $res = $pearDB->query($query);
+                while ($row = $res->fetchRow()) {
+                    $locations[$row['host_id']] = $row['host_location'];
+                }
+            }
+            if (isset($locations[$hostId])) {
+                $date = $this->getUTCDate($date, $locations[$hostId]);
+            }
+        }
+        return $date;
+    }
+    
+    function getUTCLocationHost($hostId){
+        global $pearDB;
+        static $locations = null;
+
+        if ($this->use) {
+            /* Load host location */
+            if (is_null($locations)) {
+                $locations = array();
+                $query = "SELECT host_id, host_location FROM host WHERE host_id";
+                $res = $pearDB->query($query);
+                while ($row = $res->fetchRow()) {
+                    $locations[$row['host_id']] = $row['host_location'];
+                }
+            }
+            if (isset($locations[$hostId])) {
+                return $locations[$hostId];
+            }
+        }
+        return null;
+    }
     
     /**
      * Get the list of timezone

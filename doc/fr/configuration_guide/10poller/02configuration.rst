@@ -20,7 +20,7 @@ Une fois l'installation réalisée, il faut intégrer ce satellite dans la confi
 
 * Dans l'onglet **Données** - Champ **Multiple module broker** modifiez le nom du fichier de configuration de Centreon Broker **central-module.xml**. Par exemple : poller1-module.xml.
 
-.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07mainconffilebrokerconf.png
+.. image:: /images/guide_utilisateur/configuration/10advanced_configuration/07mainconffilebrokerconf.png
    :align: center 
 
 Configuration de Centreon Broker
@@ -34,7 +34,7 @@ Il est nécessaire de générer un fichier de configuration pour le broker Centr
 #. Indiquez un nom de configuration ainsi que l'adresse du serveur central de supervision
 #. Cliquez sur **Finish**
 
-.. image:: /images/user/configuration/10advanced_configuration/07brokerconfwizzard.png
+.. image:: /images/guide_utilisateur/configuration/10advanced_configuration/07brokerconfwizzard.png
    :align: center
 
 

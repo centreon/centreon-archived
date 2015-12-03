@@ -116,7 +116,7 @@ class CentreonServicetemplates extends CentreonService
 
 
             while ($data = $DBRESULT->fetchRow()) {
-                $serviceList[] = array('id' => htmlentities($data['service_id']), 'text' => htmlentities($data['service_description']));
+                $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
             }
         }
         

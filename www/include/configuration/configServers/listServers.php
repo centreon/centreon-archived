@@ -56,7 +56,7 @@ $LCASearch = "";
 $search = '';
 if (isset($_POST['searchP']) && $_POST['searchP']) {
   $search = $_POST['searchP'];
-  $LCASearch = " WHERE name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
+  $LCASearch = " AND name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
 }
 
 /*
@@ -125,10 +125,11 @@ $tpl->assign("headerMenu_options", _("Options"));
  * Nagios list
  */
 $rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default
-       FROM `nagios_server` $LCASearch ". $centreon->user->access->queryBuilder('AND', 'id', $pollerstring).
+       FROM `nagios_server` ". $centreon->user->access->queryBuilder('WHERE', 'id', $pollerstring)." $LCASearch ".
        " ORDER BY name
        LIMIT ".$num * $limit.", ".$limit;
 $DBRESULT = $pearDB->query($rq);
+
 
 $rows = $pearDB->numberRows();
 

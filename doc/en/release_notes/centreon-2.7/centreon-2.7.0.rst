@@ -56,7 +56,7 @@ Secutiry fixes
 Removed Features
 -----------------
 
-* Support for Nagios and NDOutils is no longer effective on Centreon web. Only Centreon Engine and Centreon Broker are supported from version 2.7.0
+* Nagios and NDOutils are no longer compatible with Centreon web. Only Centreon Engine and Centreon Broker are compatible from version 2.7.0
 * Removing centstorage and logAnalyser executables.
 * Removing the Nagios configurations load module.
 * Removing the ability to configure the colors of graphics templates

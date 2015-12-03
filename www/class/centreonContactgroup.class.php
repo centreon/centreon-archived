@@ -413,7 +413,7 @@ class CentreonContactgroup
 
             $items[] = array(
                 'id' => $cgId,
-                'text' =>  htmlentities($cgName),
+                'text' => $cgName,
                 'hide' => $hide
             );
         }

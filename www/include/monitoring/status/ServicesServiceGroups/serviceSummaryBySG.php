@@ -104,16 +104,22 @@
 	$tpl->assign("mon_status_information", _("Status information"));
     
     
-    /*
-    * Get servicegroups list
-    */
-    $query = "SELECT DISTINCT sg.sg_name FROM servicegroup sg";
-    $DBRESULT = $pearDB->query($query);
+    # Get servicegroups list
     $sgSearchSelect = '<select id="sg_search" name="sg_search"><option value=""></option>';
-    while ($row = $DBRESULT->fetchRow()) {
-        $sgSearchSelect .= '<option value="' . $row['sg_name'] . '">' . $row['sg_name'] .'</option>';
+    $servicegroups = array();
+    if (!$oreon->user->access->admin) {
+        $servicegroups = $oreon->user->access->getServiceGroups();
+    } else {
+        $query = "SELECT DISTINCT sg.sg_name FROM servicegroup sg";
+        $DBRESULT = $pearDB->query($query);
+        while ($row = $DBRESULT->fetchRow()) {
+            $servicegroups[] = $row['sg_name'];
+        }
+        $DBRESULT->free();
     }
-    $DBRESULT->free();
+    foreach ($servicegroups as $servicegroup_name) {
+        $sgSearchSelect .= '<option value="' . $servicegroup_name . '">' . $servicegroup_name .'</option>';
+    }
     $sgSearchSelect .= '</select>';
     $tpl->assign("sgSearchSelect", $sgSearchSelect);
 

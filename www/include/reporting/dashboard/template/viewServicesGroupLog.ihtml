@@ -22,7 +22,7 @@
 		</td>
 		<td style='padding:5px;vertical-align:top;'>
 			<form {$formPeriod.attributes} style="padding-bottom : 0px;">
-			<input type="radio" value="preset" name="period_choice" {if $period_choice == "on" } checked="checked" {/if}/>
+			<input type="radio" value="preset" name="period_choice" {if $period_choice == "preset" } checked="checked" {/if}/>
 					{$periodTitle} : {$formPeriod.period.html}{$formPeriod.hidden}{$periodORlabel}
 					<input type="radio" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
 							{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;

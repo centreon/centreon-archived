@@ -88,6 +88,7 @@
         $form->addElement('text', 'start_time', '', array('id'=>'start_time', 'size' => 5, 'class' => 'timepicker'));
         $form->addElement('text', 'end_time', '', array('id'=>'end_time', 'size' => 5, 'class' => 'timepicker'));
         
+        
 	$form->setDefaults(
                 array(
                     "start" => $centreonGMT->getDate("m/d/Y" , time() + 120), 
@@ -96,6 +97,16 @@
                     "end_time" => $centreonGMT->getDate("G:i" , time() + 7320)
 		)
         );
+    
+    
+    // uncomment this section : the user can choose to set a downtime based on the host time or the centreon user time.
+    /*
+    $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
+    $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
+    $form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');        
+    $form->setDefaults(array('host_or_centreon_time' => '0'));   
+    */
+    
 	$form->addElement('text', 'duration', _('Duration'), array('id'=>'duration', 'width'=>'30', 'disabled'=>'true'));
 	$defaultDuration = 3600;
 	if (isset($oreon->optGen['monitoring_dwt_duration']) && $oreon->optGen['monitoring_dwt_duration']) {

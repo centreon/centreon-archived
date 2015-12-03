@@ -334,7 +334,12 @@ var _criticality_id = 0;
 			var author = document.getElementById('author').value;
 			var duration = document.getElementById('duration').value;
             var duration_scale = document.getElementById('duration_scale').value;
-			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&comment=" + comment + "&start="+ start + "&end=" + end + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
+            var tmp = document.querySelector('input[name="host_or_centreon_time[host_or_centreon_time]"]:checked');
+            var host_or_centreon_time = "0";
+            if(tmp !== null && typeof tmp !== "undefined" ){
+                host_or_centreon_time = tmp.value;
+            }
+			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&comment=" + comment + "&start="+ start + "&end=" + end + "&host_or_centreon_time=" + host_or_centreon_time +  "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
 		}
 		xhr_cmd.send(null);
         window.currentPopin.centreonPopin("close");

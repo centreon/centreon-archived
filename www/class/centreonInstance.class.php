@@ -196,7 +196,7 @@ class CentreonInstance {
         while ($data = $DBRESULT->fetchRow()) {
             $aInstanceList[] = array(
                 'id' => $data['id'],
-                'text' =>  htmlentities($data['name'])
+                'text' => $data['name']
             );
         }
         
