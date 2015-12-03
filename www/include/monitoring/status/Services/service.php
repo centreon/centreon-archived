@@ -332,8 +332,8 @@ if ($o == "svc") {
 
 
 $form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
-if (isset($defaultStatus)) {
-    $form->setDefaults(array('statusFilter' => $defaultStatus));
+if (isset($_SESSION['monitoring_service_status_filter'])) {
+    $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_service_status_filter']));
 }
 
 $form->addElement('select', 'statusService', _('Service Status'), $statusService, array('id' => 'statusService', 'onChange' => "statusServices(this.value);"));
@@ -424,7 +424,7 @@ $tpl->display("service.ihtml");
         _tm = <?php echo $tM ?>;    
         _o = '<?php echo $o; ?>';
         
-        
+        /*
         if (_o == 'svc') {
             jQuery("#statusService option[value='svc']").prop('selected', true);
             jQuery("#statusFilter option[value='']").prop('selected', true);
@@ -446,7 +446,7 @@ $tpl->display("service.ihtml");
         } else {
             jQuery("#statusService option[value='svc']").prop('selected', true);
             jQuery("#statusFilter option[value='pending']").prop('selected', true);
-        }
+        }*/
         
         filterStatus(document.getElementById('statusFilter').value, 1);
     }
