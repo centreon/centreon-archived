@@ -195,23 +195,24 @@ We use Smarty, it's an engine and template'php compiler (http://smarty.net).
 
 
 To use Smarty you need to :
-.. code_block:: php
+
+.. code-block::
 	require_once $centreon_path . 'GPL_LIB/Smarty/libs/Smarty.class.php';
 
-configuration of smarty:
-.. code_block:: php	
+1.configuration of smarty:
+.. code-block::	
 	$path = $centreon_path . "www/widgets/Dummy/src/";
 	$template = new Smarty();
 	$template = initSmartyTplForPopup($path, $template, "./", $centreon_path);
 
-creating php template to be use in html:
-.. code_block:: php
+2.creating php template to be use in html:
+.. code-block::
  	$template->assign('widgetId', $widgetId);
 	$template->assign('autoRefresh', $autoRefresh);
 	$template->assign('data', $data);
 
-apportionment of html's file to execute:
-.. code_block:: php 
+3.apportionment of html's file to execute:
+.. code-block:: 
 	$template->display('dummy.ihtml');
 
 
@@ -221,7 +222,7 @@ To do request in database:
 
 initialization of databases's centreon, centreon storage and recovering preferences:
 
-.. code_block:: php 
+.. code-block:: 
 	try {
     		global $pearDB;
 
