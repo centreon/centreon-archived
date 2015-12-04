@@ -11,7 +11,7 @@ Contents:
    a_propos/index
    release_notes/index
    installation/index
-   migration/nagiostocentreon
+   migration/index
    quick_start/index
    configuration_guide/index
    exploitation_guide/index
