@@ -11,19 +11,9 @@ Prérequis
 CentOS
 ======
 
-.. warning::
-    Cette procédure n'a pas été testée sur les versions 6.x des environnements CentOS et RHEL. Cependant cette dernière doit être compatible en modifiant les noms des paquets pour les adapter à la version 6.
-
 Les environnements CentOS et RHEL ne possèdent pas en standard sur
 dépôts l'intégralité des dépendances nécessaires à l'installation
 de Centreon. Vous devez ajouter le dépôt *RPM Forge*
-
-Système 32-bits :
-
-  ::
-
-    $ wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.i386.rpm
-    $ wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
 
 Système 64-bits :
 
