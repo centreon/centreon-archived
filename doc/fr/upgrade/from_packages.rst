@@ -1,36 +1,51 @@
 .. _upgrade_from_packages:
 
-====================
-A partir des paquets
-====================
+===============
+Mise à jour RPM
+===============
 
-.. warning::
-    Avant de mettre à jour Centreon, veuillez sauvegarder vos bases de données.
+Pour mettre à jour votre interface Centreon, il suffit d'entrer la commande suivante
 
-************************************************************
-Mise à jour depuis une version antérieure à la version 2.4.0
-************************************************************
+ ::
 
-La structure des RPM a changé entre la version Centreon 2.3.x et la version 2.4.x.
+ yum update centreon
 
-Avant de mettre à jour Centreon vous devez choisir entre deux modèles :
-``Centreon Engine and Centreon Broker`` ou ``Nagios and Ndo2db``.
+Si tout se passe correctement, loguez vous sur l'interface Centreon et suivez les différentes étapes.
 
-Ce choix est dépendant de votre moteur de supervision.
+***************
+Mise à jour Web
+***************
 
-Modèle Centreon Engine
-**********************
+Présentation
+------------
 
-Lancer la commande :
-  ::
+.. image:: /_static/images/upgrade/step01.png
+   :align: center
 
-    # yum update centreon centreon-base-config-centreon-engine
+Contrôle des dépendances
+------------------------
 
-Modèle Nagios
-*************
+Cette étape contrôle la liste des dépendances PHP.
 
-Lancer la commande :
-  ::
+.. image:: /_static/images/upgrade/step02.png
+   :align: center
 
-     # yum update centreon centreon-base-config-nagios
+Notes de version
+----------------
 
+.. image:: /_static/images/upgrade/step03.png
+   :align: center
+
+Mise à jour des bases de données
+--------------------------------
+
+Cette étape met à jour le modèle des bases de données ainsi que les données, version par version.
+
+.. image:: /_static/images/upgrade/step04.png
+   :align: center
+
+Finalisation
+------------
+
+.. image:: /_static/images/upgrade/step05.png
+   :align: center

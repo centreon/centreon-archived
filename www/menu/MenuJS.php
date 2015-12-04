@@ -32,6 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 if (!isset($centreon)) {
 	exit();
 }
@@ -61,8 +62,7 @@ $sid = session_id();
 			proc.transform("forMenuAjax");
 			_lock_menu = 0;
 			_previous_click = p;
-		}
-		else {
+		} else {
 			window.location.replace("./main.php?p="+p);
 		}
 	}

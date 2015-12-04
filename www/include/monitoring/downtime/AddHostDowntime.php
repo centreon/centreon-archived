@@ -133,6 +133,17 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
         $host_or_hg[] = HTML_QuickForm::createElement('radio', 'host_or_hg', null, _("Hostgroup"), '0', array('id' => 'host_or_hg_hg', 'onclick' => "toggleParams('hostgroup');"));
         $form->addGroup($host_or_hg, 'host_or_hg', _("Select a downtime type"), '&nbsp;');
 
+        
+        // uncomment this section : the user can choose to set a downtime based on the host time or the centreon user time.
+        /*
+        $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
+        $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
+        $form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');        
+        $form->setDefaults(array('host_or_centreon_time' => '0'));   
+        */
+        
+        
+        
 	    $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts);
 	    $selHg = $form->addElement('select', 'hostgroup_id', _("Hostgroup"), $hg);
 	    $chbx = $form->addElement('checkbox', 'persistant', _("Fixed"), null, array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()'));
@@ -218,6 +229,7 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
                         break;
                 }
 		    }
+            isset($_POST['host_or_centreon_time']['host_or_centreon_time']) && $_POST['host_or_centreon_time']['host_or_centreon_time'] ? $host_or_centreon_time = $_POST['host_or_centreon_time']['host_or_centreon_time'] : $host_or_centreon_time = "0";
             
 		    $dt_w_services = false;
 		    if ($values['with_services']['with_services'] == 1) {
@@ -234,7 +246,8 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
                         $_POST["end"].' '.$_POST['end_time'], 
                         $_POST["persistant"], 
                         $duration, 
-                        $dt_w_services
+                        $dt_w_services,
+                        $host_or_centreon_time
                 );
 		    } else {
 		        /*
@@ -252,7 +265,8 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 							$_POST["end"] . ' ' . $_POST["end_time"], 
 							$_POST["persistant"], 
 							$duration, 
-							$dt_w_services
+							$dt_w_services,
+                            $host_or_centreon_time
 						);
 		            }
 		        }

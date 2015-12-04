@@ -221,9 +221,12 @@ var _criticality_id = 0;
 			document.getElementById("output_search").value = _output_search;
 			_counter += 1;
 		}
-
+        
+        var statusService = jQuery.trim(jQuery('#statusService').val());
+        var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
+               
 		proc.setCallback(monitoringCallBack);
-		proc.setXml(_addrXML+"?"+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc+'&criticality='+_criticality_id);
+		proc.setXml(_addrXML+"?"+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc+'&criticality='+_criticality_id+'&statusService='+statusService+'&statusFilter='+statusFilter);
 		proc.setXslt(_addrXSL);
 		proc.transform("forAjax");
 
@@ -331,7 +334,12 @@ var _criticality_id = 0;
 			var author = document.getElementById('author').value;
 			var duration = document.getElementById('duration').value;
             var duration_scale = document.getElementById('duration_scale').value;
-			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&comment=" + comment + "&start="+ start + "&end=" + end + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
+            var tmp = document.querySelector('input[name="host_or_centreon_time[host_or_centreon_time]"]:checked');
+            var host_or_centreon_time = "0";
+            if(tmp !== null && typeof tmp !== "undefined" ){
+                host_or_centreon_time = tmp.value;
+            }
+			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&comment=" + comment + "&start="+ start + "&end=" + end + "&host_or_centreon_time=" + host_or_centreon_time +  "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
 		}
 		xhr_cmd.send(null);
         window.currentPopin.centreonPopin("close");

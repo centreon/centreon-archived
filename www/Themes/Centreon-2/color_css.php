@@ -31,24 +31,21 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 
-    $pearDB = new CentreonDB();
+$pearDB = new CentreonDB();
 
-    /*
-     * Get Options colors
-     */
-    $options = array();
-    $DBRESULT = $pearDB->query("SELECT * FROM options");
-    while ($res = $DBRESULT->fetchRow())
-            $options[$res["key"]] = $res["value"];
-    unset($res);
+/*
+ * Get Options colors
+ */
+$options = array();
+$DBRESULT = $pearDB->query("SELECT * FROM options");
+while ($res = $DBRESULT->fetchRow())
+        $options[$res["key"]] = $res["value"];
+unset($res);
 
 ?>
 
@@ -130,8 +127,8 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 .list_down 			{	background-color: #ffaec1;}
 .list_down:hover 	{	background-color: #e17790;}
 
-.list_unreachable 			{	background-color:<?php print $options["color_host_unreachable"]; ?>;}
-.list_unreachable:hover 	{	background-color:<?php print $options["color_host_unreachable"]; ?>;}
+.list_unreachable 			{	background-color:#818285;}
+.list_unreachable:hover 	{	background-color:#818285;}
 
 .line_downtime		{	background-color: #f1dfff;}
 .line_downtime:hover{	background-color: #e7c9ff;}

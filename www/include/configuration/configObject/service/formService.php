@@ -441,11 +441,9 @@ if ($o == "a") {
     $form->addElement('header', 'title', _("Massive Change"));
 }
 
-# Sort 1
 #
 ## Service basic information
 #
-$form->addElement('header', 'information', _("General Information"));
 
 /*
  * - No possibility to change name and alias, because there's no interest
@@ -906,7 +904,7 @@ $attrServicecategory1 = array_merge(
 $form->addElement('select2', 'service_categories', _("Categories"), array(), $attrServicecategory1);
 
 /*
- * Sort 5 - Macros - Nagios 3
+ * Sort 5 
  */
 if ($o == "a") {
     $form->addElement('header', 'title5', _("Add macros"));
@@ -1034,11 +1032,6 @@ if ($o == "w") {
 }
 
 $tpl->assign('msg', array("nagios" => $oreon->user->get_version(), "tpl" => 0));
-$tpl->assign("sort1", _("Service Configuration"));
-$tpl->assign("sort2", _("Relations"));
-$tpl->assign("sort3", _("Data Processing"));
-$tpl->assign("sort4", _("Service Extended Info"));
-$tpl->assign("sort5", _("Macros"));
 $tpl->assign('javascript',
     '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>'
     . '<script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>'

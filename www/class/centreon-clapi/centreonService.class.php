@@ -793,7 +793,7 @@ class CentreonService extends CentreonObject {
                             throw new CentreonClapiException(self::OBJECTALREADYEXISTS);
                         }
                         if ($matches[2] == "contact") {
-                            $tab = $obj->getIdByParameter("contact_name", array($rel));
+                            $tab = $obj->getIdByParameter("contact_alias", array($rel));
                         } else {
                             $tab = $obj->getIdByParameter($obj->getUniqueLabelField(), array($rel));
                         }
@@ -890,9 +890,9 @@ class CentreonService extends CentreonObject {
                 echo $this->action . $this->delim . "addcontactgroup" . $this->delim . $element['host_name'] . $this->delim . $cgelement['service_description'] . $this->delim . $cgelement['cg_name'] . "\n";
             }
             $contactRel = new Centreon_Object_Relation_Contact_Service();
-            $celements = $contactRel->getMergedParameters(array("contact_name"), array('service_description'), -1, 0, null, null, array("service_register" => $this->register, "service_id" => $element['service_id']), "AND");
+            $celements = $contactRel->getMergedParameters(array("contact_alias"), array('service_description'), -1, 0, null, null, array("service_register" => $this->register, "service_id" => $element['service_id']), "AND");
             foreach ($celements as $celement) {
-                echo $this->action . $this->delim . "addcontact" . $this->delim . $element['host_name'] . $this->delim . $celement['service_description'] . $this->delim . $celement['contact_name'] . "\n";
+                echo $this->action . $this->delim . "addcontact" . $this->delim . $element['host_name'] . $this->delim . $celement['service_description'] . $this->delim . $celement['contact_alias'] . "\n";
             }
             $trapRel = new Centreon_Object_Relation_Trap_Service();
             $telements = $trapRel->getMergedParameters(array("traps_name"), array('service_description'), -1, 0, null, null, array("service_register" => $this->register, "service.service_id" => $element['service_id']), "AND");

@@ -1,4 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type="text/javascript" src="./include/common/javascript/resize_td.js"></script>
 
 <form name='form' method='POST'>
     <table class="ajaxOption table">
@@ -35,12 +36,12 @@
 	<table class="ListTable">
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-			<td class="ListColHeaderLeft">&nbsp;{$headerMenu_name}</td>
-			<td class="ListColHeaderLeft">&nbsp;{$headerMenu_desc}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_svChilds}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_parent}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_status}</td>
-			<td class="ListColHeaderRight">&nbsp;{$headerMenu_options}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
+			<td class="ListColHeaderCenter" width="62">{$headerMenu_svChilds}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_parent}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
+			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
 		{assign var=pattern_mode value=0}
 		{section name=elem loop=$elemArr}
@@ -58,11 +59,11 @@
 				<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 				<td class="ListColLeft">
 					{if $elemArr[elem].pattern}&nbsp;&nbsp;&nbsp;&nbsp;{/if}
-					<img src="{$elemArr[elem].RowMenu_icone}" style='width:16px;height:16px;' />&nbsp;<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
+					<a href="{$elemArr[elem].RowMenu_link}"> <img src="{$elemArr[elem].RowMenu_icone}" class="ico-16 margin_right" />{$elemArr[elem].RowMenu_name}</a>
 				</td>
 				<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 				<td class="ListColCenter">{$elemArr[elem].RowMenu_svChilds}</td>
-				<td class="ListColRight">{$elemArr[elem].RowMenu_parent}</td>
+				<td class="ListColCenter resizeTitle">{$elemArr[elem].RowMenu_parent}</td>
 				<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 				<td class="ListColRight" align="right">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 			</tr>
@@ -72,7 +73,7 @@
 		<tr class="ToolbarTR">	
 			{ if $mode_access == 'w' }
 			<td>
-				{$msg.options} {$form.o1.html}
+				{$msg.options} {$form.o2.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 			</td>
@@ -91,6 +92,8 @@
 </form>
 {literal}
 <script type='text/javascript'>
-	setDisabledRowStyle();
+    setDisabledRowStyle();
+    setOverflowDivToTitle(('.resizeTitle'));
+        
 </script>
 {/literal}

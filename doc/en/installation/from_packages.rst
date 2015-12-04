@@ -6,7 +6,7 @@ Using packages
 
 Centreon supplies RPM for its products via the Centreon Enterprise Server (CES) solution Open Sources version available free of charge on our repository.
 
-These packages have been successfully tested on CentOS and Red Hat environments in 5.x and 6.x versions
+These packages have been successfully tested on CentOS and Red Hat environments in 6.x version.
 
 *************
 Prerequisites

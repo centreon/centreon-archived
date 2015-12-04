@@ -99,10 +99,10 @@ class CentreonNagiosCfg extends CentreonObject
                                 'log_initial_states'                      => '1',
                                 'log_external_commands'                   => '1',
                                 'log_passive_checks'                      => '2',
-                                'sleep_time'                              => '1',
+                                'sleep_time'                              => '0.2',
                                 'service_inter_check_delay_method'        => 's',
                                 'service_interleave_factor'               => 's',
-                                'max_concurrent_checks'                   => '200',
+                                'max_concurrent_checks'                   => '400',
                                 'max_service_check_spread'                => '5',
                                 'check_result_reaper_frequency'           => '5',
                                 'interval_length'                         => '60',
@@ -148,7 +148,8 @@ class CentreonNagiosCfg extends CentreonObject
                                 'use_embedded_perl_implicitly'            => '2',
                                 'debug_level'                             => '0',
                                 'debug_level_opt'                         => '0',
-                                'debug_verbosity'                         => '2'
+                                'debug_verbosity'                         => '2',
+                                'cached_host_check_horizon'               => '60'
                             );
         $this->nbOfCompulsoryParams = 3;
         $this->activateField = "nagios_activate";
@@ -357,8 +358,9 @@ class CentreonNagiosCfg extends CentreonObject
     {
         $brokerModuleArray = explode("|", $brokerModule);
         foreach ($brokerModuleArray as $bkModule) {
-            $tab = $this->brokerModuleObj->getIdByParameter('broker_module', array($bkModule)) ;
-            if (count($tab)) {
+            $$res = $this->db->query('SELECT COUNT(*) as nbBroker FROM cfg_nagios_broker_module WHERE cfg_nagios_id = ? AND broker_module = ?', array($objectId, $bkModule));
+            $row = $res->fetch();
+            if ($row['nbBroker'] > 0) {
                 throw new CentreonClapiException(self::OBJECTALREADYEXISTS.":".$bkModule);
             } else {
                 $this->db->query("INSERT INTO cfg_nagios_broker_module (cfg_nagios_id, broker_module) VALUES (?, ?)", array($objectId, $bkModule));

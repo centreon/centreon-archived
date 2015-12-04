@@ -116,9 +116,9 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         $selectedElements->setAttribute('disabled', 'disabled');
     } else {
         if ($host["host_activate"]) {
-            $moptions .= "<a href='main.php?p=".$p."&host_id=".$host['host_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+            $moptions .= "<a href='main.php?p=".$p."&host_id=".$host['host_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
         } else {
-            $moptions .= "<a href='main.php?p=".$p."&host_id=".$host['host_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+            $moptions .= "<a href='main.php?p=".$p."&host_id=".$host['host_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
         }
         $moptions .= "&nbsp;";
         $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$host['host_id']."]'></input>";
@@ -215,7 +215,7 @@ $attrs2 = array(
 			" 	setO(this.form.elements['o2'].value); submit();} " .
 			"else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4 ||this.form.elements['o2'].selectedIndex == 5){" .
 			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"this.form.elements['o1'].selectedIndex = 0");
+			"this.form.elements['o2'].selectedIndex = 0");
 $form->addElement('select', 'o2', null, array(null => _("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
 $form->setDefaults(array('o2' => null));
 

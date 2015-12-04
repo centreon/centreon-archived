@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.0');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.0-RC1');
 
 --
 -- Contenu de la table `contact`
@@ -86,14 +86,6 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('ldap_search_limit','60'),
 ('ldap_last_acl_update', '0'),
 ('ldap_contact_tmpl', '0'),
-('color_up','#88b917'),
-('color_down','#e00b3d'),
-('color_unreachable','#818285'),
-('color_ok','#88b917'),
-('color_warning','#ff9a13'),
-('color_critical','#e00b3d'),
-('color_pending','#2AD1D4'),
-('color_unknown','#bcbdc0'),
 ('oreon_path','@INSTALL_DIR_CENTREON@/'),
 ('oreon_web_path','/centreon/'),
 ('session_expire','120'),
@@ -127,20 +119,6 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('debug_rrdtool','0'),
 ('debug_ldap_import','0'),
 ('debug_inventory','0'),
-('color_ack','#FAED60'),
-('color_host_down','#'),
-('color_host_unreachable','#9CD9F1'),
-('color_line_critical','#F96461'),
-('color_downtime','#FBC5E8'),
-('patch_type_RC','Y'),
-('patch_type_stable','Y'),
-('patch_type_RC','Y'),
-('patch_type_patch','Y'),
-('patch_type_secu','Y'),
-('patch_type_beta','Y'),
-('patch_url_service','http://update.centreon.com/version.php'),
-('patch_url_download','http://update.centreon.com/patch/'),
-('patch_path_download','/tmp/'),
 ('enable_autologin','0'),
 ('display_autologin_shortcut','1'),
 ('monitoring_ack_svc', '1'),
@@ -181,14 +159,14 @@ INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`
 -- Contenu de la table `giv_graphs_template`
 --
 
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(1, 'Default_Graph', 'Value', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, '1', NULL, NULL, '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(2, 'Latency', 'Latency', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, NULL, NULL, NULL, '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(3, 'Storage', 'Storage', 550, 140, 1024, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, NULL, NULL, NULL, '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(4, 'Memory', 'Memory', 550, 140, 1024, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, NULL, NULL, NULL, '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(5, 'CPU', 'Processor Use', 550, 140, 1000, 0, 110, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, '0', NULL, '1', '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(6, 'Uptime', 'Uptime', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, NULL, NULL, NULL, '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(7, 'Traffic', 'Traffic', 550, 140, 1000, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, NULL, NULL, NULL, '1', NULL);
-INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `bg_grid_color`, `bg_color`, `police_color`, `grid_main_color`, `grid_sec_color`, `contour_cub_color`, `col_arrow`, `col_top`, `col_bot`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(8, 'Load_Average', 'Load_Average', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#FF0000', NULL, NULL, NULL, NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(1, 'Default_Graph', 'Value', 550, 140, 1000, 0, NULL, '1', NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(2, 'Latency', 'Latency', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(3, 'Storage', 'Storage', 550, 140, 1024, 0, NULL, NULL, NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(4, 'Memory', 'Memory', 550, 140, 1024, 0, NULL, NULL, NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(5, 'CPU', 'Processor Use', 550, 140, 1000, 0, 110, '0', NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(6, 'Uptime', 'Uptime', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(7, 'Traffic', 'Traffic', 550, 140, 1000, NULL, NULL, NULL, NULL, NULL, '1', NULL);
+INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`, `height`, `base`, `lower_limit`, `upper_limit`, `default_tpl1`, `stacked`, `split_component`, `scaled`, `comment`) VALUES(8, 'Load_Average', 'Load_Average', 550, 140, 1000, 0, NULL, NULL, NULL, NULL, '1', NULL);
 
 --
 -- Contenu de la table `host`
@@ -723,7 +701,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (30, 'retention', 'Retention file', 'File where correlation state will be stored during correlation engine restart', 'text', NULL),
 (31, 'retry_interval', 'Retry interval', 'Time in seconds to wait between each connection attempt.', 'int', NULL),
 (32, 'buffering_timeout', 'Buffering timeout', 'Time in seconds to wait before launching failover.', 'int', NULL),
-(33, 'fifo', 'File for Centeron Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL),
+(33, 'fifo', 'File for Centreon Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL),
 (34, 'queries_per_transaction', 'Maximum queries per transaction', 'The maximum queries per transaction before commit.', 'int', NULL),
 (35, 'read_timeout', 'Transaction commit timeout', 'The transaction timeout before running commit.', 'int', NULL),
 (36, 'path', 'Unix socket', 'The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.', 'text', 'T=options:C=value:CK=key:K=rrdcached_unix_path'),
@@ -733,10 +711,10 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (40, 'rebuild_check_interval', 'Rebuild check interval in seconds', 'The interval between check if some metrics must be rebuild. The default value is 300s', 'int', NULL),
 (41, 'max_size', 'Maximum size of file', 'Maximum size in bytes.', 'int', NULL),
 (42, 'store_in_data_bin', 'Store in performance data in data_bin', 'It should be enabled to control whether or not Centreon Broker should insert performance data in the data_bin table.', 'radio', NULL),
-(43, 'insert_in_index_data', 'Insert in index data', 'Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing', 'text', 'T=options:C=value:CK=key:K=index_data'),
+(43, 'insert_in_index_data', 'Insert in index data', `Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing`, 'text', 'T=options:C=value:CK=key:K=index_data'),
 (44, 'write_metrics', 'Write metrics', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
 (45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
-(46, 'negociation', 'Enable negociation', 'Enable negociation option (use only for version of Centren Broker >= 2.5)', 'radio', NULL),
+(46, 'negotiation', 'Enable negotiation', 'Enable negotiation option (use only for version of Centren Broker >= 2.5)', 'radio', NULL),
 (48, "one_peer_retention_mode", "One peer retention", "This allows the retention to work even if the socket is listening", "radio", NULL),
 (49, 'cleanup_check_interval', "Cleanup check interval", "Interval in seconds before delete data from deleted pollers.", 'int', NULL),
 (50, 'instance_timeout', "Instance timeout", "Interval in seconds before change status of resources from a disconnected poller", "int", NULL);

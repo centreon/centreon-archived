@@ -53,7 +53,7 @@
 	$tpl->assign("headerMenu_release_from", _("Base release"));
 	$tpl->assign("headerMenu_release_to", _("Final release"));
 	$tpl->assign("headerMenu_author", _("Author"));
-	$tpl->assign("headerMenu_infos", _("Additionnal Information"));
+	$tpl->assign("headerMenu_infos", _("Additional Information"));
 	$tpl->assign("headerMenu_isinstalled", _("Installed"));
 	$tpl->assign("headerMenu_isvalid", _("Valid for an upgrade"));
     

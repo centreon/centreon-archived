@@ -96,25 +96,44 @@ header("Pragma: public");
 /**
  * Read flow
  */
+
 $xml = new SimpleXMLElement($flow);
+if($engine == "false"){
+    echo _("Begin date")."; "._("End date").";\n";
+    echo date('d/m/y (H:i:s)', intval($xml->infos->start)).";".date('d/m/y (H:i:s)', intval($xml->infos->end))."\n";
+    echo "\n";
 
-echo _("Begin date")."; "._("End date").";\n";
-echo date('d/m/y (H:i:s)', intval($xml->infos->start)).";".date('d/m/y (H:i:s)', intval($xml->infos->end))."\n";
-echo "\n";
+    echo _("Type").";"._("Notification").";"._("Alert").";"._("error")."\n";
+    echo ";".$xml->infos->notification.";".$xml->infos->alert.";".$xml->infos->error."\n";
+    echo "\n";
 
-echo _("Type").";"._("Notification").";"._("Alert").";"._("error")."\n";
-echo ";".$xml->infos->notification.";".$xml->infos->alert.";".$xml->infos->error."\n";
-echo "\n";
+    echo _("Host").";"._("Up").";"._("Down").";"._("Unreachable")."\n";
+    echo ";".$xml->infos->up.";".$xml->infos->down.";".$xml->infos->unreachable."\n";
+    echo "\n";
 
-echo _("Host").";"._("Up").";"._("Down").";"._("Unreachable")."\n";
-echo ";".$xml->infos->up.";".$xml->infos->down.";".$xml->infos->unreachable."\n";
-echo "\n";
+    echo _("Service").";"._("Ok").";"._("Warning").";"._("Critical").";"._("Unknown")."\n";
+    echo ";".$xml->infos->ok.";".$xml->infos->warning.";".$xml->infos->critical.";".$xml->infos->unknown."\n";
+    echo "\n";
 
-echo _("Service").";"._("Ok").";"._("Warning").";"._("Critical").";"._("Unknown")."\n";
-echo ";".$xml->infos->ok.";".$xml->infos->warning.";".$xml->infos->critical.";".$xml->infos->unknown."\n";
-echo "\n";
+    echo _("Day").";"._("Time").";"._("Host").";"._("Address").";"._("Service").";"._("Status").";"._("Type").";"._("Retry").";"._("Output").";"._("Contact").";"._("Cmd")."\n";
+    foreach ($xml->line as $line) {
+        echo $line->date.";".$line->time.";".$line->host_name.";".$line->address.";".$line->service_description.";".$line->status.";".$line->type.";".$line->retry.";".$line->output.";".$line->contact.";".$line->contact_cmd."\n";
+    }
 
-echo _("Day").";"._("Time").";"._("Host").";"._("Address").";"._("Service").";"._("Status").";"._("Type").";"._("Retry").";"._("Output").";"._("Contact").";"._("Cmd")."\n";
-foreach ($xml->line as $line) {
-    echo $line->date.";".$line->time.";".$line->host_name.";".$line->address.";".$line->service_description.";".$line->status.";".$line->type.";".$line->retry.";".$line->output.";".$line->contact.";".$line->contact_cmd."\n";
+}else{
+    echo _("Begin date")."; "._("End date").";\n";
+    echo date('d/m/y (H:i:s)', intval($xml->infos->start)).";".date('d/m/y (H:i:s)', intval($xml->infos->end))."\n";
+    echo "\n";
+    echo _("Type").";"._("Notification").";"._("Alert").";"._("error")."\n";
+    echo ";".$xml->infos->notification.";".$xml->infos->alert.";".$xml->infos->error."\n";
+    echo "\n";
+    echo _("Day").";"._("Time").";"._("Output").";"."\n";
+    foreach ($xml->line as $line) {
+        echo "\"".$line->date."\";\"".$line->time."\";\"".$line->output."\";"."\n";
+    }
 }
+
+
+
+
+

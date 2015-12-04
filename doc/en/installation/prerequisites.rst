@@ -2,6 +2,14 @@
 Prerequisites
 =============
 
+The Centreon web interface is compatible with the following list of web broswer:
+
+* Internet Explorer IE 11+ 
+* Firefox 5+ 
+* Chrome 39+ 
+* Safari 6+
+* Opera 31+ 
+
 *********
 Softwares
 *********
@@ -17,8 +25,40 @@ sources.
 DBMS
 ====
 
-**Centreon advises you to use MariaDB v5.5.x or later** instead of MySQL. But if you
-want to use MySQL please install at least a v5.1.x version.
+**Centreon advises you to use MariaDB** instead of MySQL. 
+
++----------+-----------+
+| Software | Version   |
++==========+===========+ 
+| MariaDB  | >= 5.5.35 |
++----------+-----------+
+| MySQL    | >= 5.1.73 |
++----------+-----------+
+
+Dependent software
+==================
+
+The following table describes the dependent software:
+
++----------+-----------+
+| Software | Version   |
++==========+===========+
+| Apache   | 2.2       |
++----------+-----------+
+| GnuTLS   | >= 2.0    |
++----------+-----------+
+| Net-SNMP | 5.5       |
++----------+-----------+
+| openssl  | >= 1.0.1e |
++----------+-----------+
+| PHP      | >= 5.3.0  |
++----------+-----------+
+| Qt       | >= 4.7.4  |
++----------+-----------+
+| RRDtools | 1.4.7     |
++----------+-----------+
+| zlib     | 1.2.3     |
++----------+-----------+
 
 ***************************
 Select type of architecture
@@ -49,7 +89,7 @@ The table below gives the prerequisites for the installation of CES 3.x:
 Define space disk
 *****************
 
-Th space used for store collected and performance data depends on several criteria:
+The space used for store collected and performance data depends on several criteria:
 
 * Frequency of controls
 * Number of controls
@@ -114,7 +154,7 @@ Files system description:
 
 * / (at least 20 GB)
 * swap (at least 1x RAM space)
-* /var/log ( at least 10 GB)
+* /var/log (at least 10 GB)
 * /var/lib/centreon-broker (at least 5 GB)
 * /var/backup (use to backup you server)
 

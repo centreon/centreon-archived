@@ -89,11 +89,11 @@
 							<xsl:attribute name="id">zoom_<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/></xsl:attribute>
 							<xsl:attribute name="onClick">switchZoomGraph('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/>', '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 							<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
-							<img src="./img/icons/target.png" class="ico-16"/>
+							<img src="./img/icons/target.png" class="ico-16 margin_right"/>
 						</xsl:element>
 						<xsl:element name="a">
 							<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
-							<img src="./img/icons/picture.png" class="ico-16" />
+							<img src="./img/icons/picture.png" class="ico-16  margin_right" />
 						</xsl:element>
 						<xsl:element name="a">
 							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
@@ -194,7 +194,7 @@
 						<xsl:attribute name="id">zoom_<xsl:value-of select="//opid"/></xsl:attribute>
 						<xsl:attribute name="onClick">switchZoomGraph('<xsl:value-of select="//opid"/>', '<xsl:value-of select="//target"/>');</xsl:attribute>
 						<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
-						<img src="./img/icons/target.png" class="ico-16"/>
+						<img src="./img/icons/target.png" class="ico-16 margin_right"/>
 					</xsl:element>
 					<xsl:element name="a">
 						<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImageZoom.php?<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>&amp;warn=<xsl:value-of select="//warning"/>&amp;crit=<xsl:value-of select="//critical"/></xsl:attribute>
@@ -202,7 +202,7 @@
 					</xsl:element>
 					<xsl:element name="a">
 						<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-						<img src="./img/icons/csv.png" class="ico-16"/>
+						<img src="./img/icons/csv.png" class="ico-16 margin_right"/>
 					</xsl:element>
 				</td>
 			</tr>
@@ -286,12 +286,12 @@
 							<xsl:attribute name="id">zoom_<xsl:value-of select="opid"/></xsl:attribute>
 							<xsl:attribute name="onClick">switchZoomGraph('<xsl:value-of select="opid"/>', '<xsl:value-of select="//target"/>');</xsl:attribute>
 							<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
-							<img src="./img/icons/target.png" class="ico-16" />
+							<img src="./img/icons/target.png" class="ico-16 margin_right" />
 						</xsl:element>
 						<xsl:element name="a">
 							<xsl:attribute name="title">Export graph</xsl:attribute>
 							<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
-							<img src="./img/icons/picture.png" class="ico-16"/>
+							<img src="./img/icons/picture.png" class="ico-16 margin_right"/>
 						</xsl:element>
 						<xsl:element name="a">
 							<xsl:attribute name="title">Export CSV</xsl:attribute>
@@ -342,7 +342,7 @@
 													<xsl:element name="a">
 														<xsl:attribute name="title">Export graph</xsl:attribute>
 														<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateMetricImage.php?cpt=1&amp;index=<xsl:value-of select="../index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-														<img src="./img/icons/picture.png" class="ico-16" />
+														<img src="./img/icons/picture.png" class="ico-16 margin_right" />
 													</xsl:element>
 												</td>
 												<td style="vertical-align: top;width: 16px;">
@@ -350,7 +350,7 @@
 														<xsl:attribute name="title">Select interval</xsl:attribute>
 														<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 														<xsl:attribute name="id">zoom_<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
-														<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/>");</xsl:attribute>
+														<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/>", '<xsl:value-of select="//target"/>');</xsl:attribute>
 														<img src="./img/icons/target.png" class="ico-16" />
 													</xsl:element>
 												</td>

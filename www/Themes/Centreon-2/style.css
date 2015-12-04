@@ -85,6 +85,7 @@ input, select {
     width: 70%;
 }*/
 input[type="checkbox"] 	{border:0px;margin:0;padding:0px;vertical-align: middle}
+input[type="radio"] {vertical-align: middle;}
 select {
     padding: 6px;
 }
@@ -103,6 +104,10 @@ iframe {
 
 label {
     vertical-align: middle;
+}
+
+.margin_right {
+    margin-right: 6px;
 }
 
 .table{
@@ -264,10 +269,10 @@ p.description a, p.description a:visited {
 /* ------------ Badge -----------*/
 
 .badge              {   display: inline-block;
-                        border-radius: 7px;
+                        border-radius: 18px;
                         color: #fff;
-                        padding: 2px 4px;
-                        font-size: 11px;
+                        padding: 2px 6px;
+                        font-size: 10px;
                         font-weight: bold;
                         text-transform: uppercase;
                     }
@@ -349,6 +354,10 @@ p.description a, p.description a:visited {
 .ico-20 {
     width: 20px;
     height: 20px;
+}
+.ico-22 {
+    width: 22px;
+    height: 22px;
 }
 /* ------ END : Size icons
 /* ------ START : Buttons -----*/
@@ -505,7 +514,7 @@ form#AjaxBankBasic {
 #Tcontener {
     height: 100%;
     position: relative;
-    margin-bottom: 16px;
+    margin-bottom: 36px;
 }
 
 .GlobalContainer tr {
@@ -1152,7 +1161,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 }
 .ListHeader td,
 .ListHeader th {
-    padding: 8px !important;
+    padding: 8px 4px !important;
     font-weight:700;
     height:18px;
     vertical-align:middle;
@@ -1175,7 +1184,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 * html #ListTable td,#ListTableMedium td,#ListTableSmall td,.ListTable td,.ListTableMedium td,.ListTableSmall td {margin:0;padding:0 4px;}
 .ListTableSmall a,.ListTable a,.ListTableMedium a,.ListTableSmall a, .ListTableSmallArg a {color:#666;z-index:5;}
 .ListTable td a {
-    margin: 0px 6px;
+    /*margin: 0px 6px;*/
 }
 .ListTableMedium 		{width:60%;}
 .ListTableSmall 		{width:40%;}
@@ -1190,7 +1199,7 @@ table.ListTableSmallArg td {
 .ListTable,.ListTableMedium,.ListTableSmall,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
 .ListTable,.ListTableMedium,.ListTableSmall {border-width:1px;}
 .ListTable td,.ListTableMedium td,.ListTableSmall td,.ListTableSmallArg {padding-bottom:2px;padding-top:2px;}
-.ListTable td {padding: 4px 0;}
+.ListTable td {padding: 4px;}
 .tab .ListTableMedium {
     margin-top:21px;
 }
@@ -1299,7 +1308,7 @@ table.ListTableSmallArg td {
     line-height: 25px;
     float: left;
 }
-.ToolbarTR a.btc { display: inline-block; height: 25px; line-height: 25px; padding: 0 10px; }
+.ToolbarTR a.btc { display: inline-block; height: 28px; line-height: 28px; padding: 0 10px; }
 
 .Toolbar_TDSelectAction_Top {
     border: 1px solid #bcbdc0;
@@ -1633,4 +1642,38 @@ div#tabs_periods {
     border: 0 !important;
     border-bottom: 1px solid #e7e7e8 !important;
     border-radius: 0 !important;
+}
+
+.resizeTitle{
+    overflow-x:hidden;
+    white-space:nowrap;
+    max-width:350px;
+}
+
+/* ----- Jquery Datepicker ---------*/
+
+.ui-datepicker {
+    background: #fff !important;
+    border-radius: 4px !important;
+}
+.ui-datepicker .ui-datepicker-title {
+    color: #005a7f;
+}
+.ui-datepicker td span,.ui-datepicker td a {
+    border: 1px solid #d1d2d4 !important;
+    background: #f3f3f4 !important;
+    font-weight: bold !important;
+    color: #009fdf !important;
+}
+
+.ui-datepicker .ui-datepicker-next.ui-state-disabled.ui-state-hover,
+.ui-datepicker .ui-datepicker-prev.ui-state-disabled.ui-state-hover{
+    border: 0;
+    background-color: #818285;
+}
+
+.ui-datepicker .ui-datepicker-prev.ui-state-hover,
+.ui-datepicker .ui-datepicker-next.ui-state-hover {
+    border: 0;
+    background: #4ccaff !important;
 }

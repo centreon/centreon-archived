@@ -465,11 +465,21 @@ class CentreonService
                 if (preg_match('/\$_SERVICE(.*)\$$/', $row['svc_macro_name'], $matches)) {
                     $arr[$i]['macroInput_#index#'] = $matches[1];
                     $arr[$i]['macroValue_#index#'] = $row['svc_macro_value'];
-                    $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : NULL;
+                    
+                    $valPassword = '0';
+                    if (isset($row['is_password'])) {
+                        if ($row['is_password'] === '1') {
+                            $valPassword = '1';
+                        } else {
+                           $valPassword = null;
+                        }
+                    }
+                    $arr[$i]['macroPassword_#index#'] = $valPassword;
+
                     $arr[$i]['macroDescription_#index#'] = $row['description'];
                     $arr[$i]['macroDescription'] = $row['description'];
                     if(!is_null($template)){
-                        $arr[$i]['macroTpl_#index#'] = "Serivce template : ".$template['service_description'];
+                        $arr[$i]['macroTpl_#index#'] = "Service template : ".$template['service_description'];
                     }
                     $i++;
                 }
@@ -499,7 +509,17 @@ class CentreonService
                 if (preg_match('/\$_SERVICE(.*)\$$/', $row['svc_macro_name'], $matches)) {
                     $arr[$i]['macroInput_#index#'] = $matches[1];
                     $arr[$i]['macroValue_#index#'] = $row['svc_macro_value'];
-                    $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : NULL;
+                    
+                    $valPassword = '0';
+                    if (isset($row['is_password'])) {
+                        if ($row['is_password'] === '1') {
+                            $valPassword = '1';
+                        } else {
+                           $valPassword = null;
+                        }
+                    }
+                    $arr[$i]['macroPassword_#index#'] = $valPassword;
+                    
                     $arr[$i]['macroDescription_#index#'] = $row['description'];
                     $arr[$i]['macroDescription'] = $row['description'];
                     $i++;
@@ -513,7 +533,17 @@ class CentreonService
                 }
                 $arr[$index]['macroInput_#index#'] = $val;
                 $arr[$index]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
-                $arr[$index]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;                
+                
+                $valPassword = '0';
+                if (isset($_REQUEST['is_password'][$key])) {
+                    if ($_REQUEST['is_password'][$key] === '1') {
+                        $valPassword = '1';
+                    } else {
+                       $valPassword = null;
+                    }
+                }
+                $arr[$i]['macroPassword_#index#'] = $valPassword;
+                          
                 $arr[$index]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
                 $arr[$index]['macroDescription'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
                 $i++;
@@ -1009,15 +1039,18 @@ class CentreonService
         }
 
         # Construct host filter for query
-        $selectedHosts = "AND hsr.host_host_id IN (";
-        $implodedValues = implode(',', $hostIdList);
-        if (trim($implodedValues) != "") {
-            $selectedHosts .= $implodedValues;
-        } else {
-            $selectedHosts .= "''";
+        $selectedHosts = '';
+        if (count($hostIdList) > 0) {
+            $selectedHosts .= "AND hsr.host_host_id IN (";
+            $implodedValues = implode(',', $hostIdList);
+            if (trim($implodedValues) != "") {
+                $selectedHosts .= $implodedValues;
+            } else {
+                $selectedHosts .= "''";
+            }
+            $selectedHosts .= ") ";
         }
-        $selectedHosts .= ") ";
-
+        
         # Construct service filter for query
         $selectedServices = "AND hsr.service_service_id IN (";
         $implodedValues = implode(',', $serviceIdList);
@@ -1044,7 +1077,7 @@ class CentreonService
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
             $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
             
-            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
+            $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
         }
         
         return $serviceList;

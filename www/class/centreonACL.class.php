@@ -603,32 +603,36 @@ class CentreonACL {
      *  - ID => will return the id's of the element
      *  - NAME => will return the names of the element
      */
-
     public function getPollerString($flag = null, $escape = true) {
         $flag = strtoupper($flag);
 
         $pollers = "";
+        $flagFirst = true;
         foreach ($this->pollers as $key => $value) {
             switch ($flag) {
                 case "NAME" :
+                    if(!$flagFirst){
+                        $pollers .= ",";
+                    }
+                    $flagFirst = false;
                     if ($escape === true) {
-                        $pollers .= "'" . CentreonDB::escape($value) . "',";
+                        $pollers .= "'" . CentreonDB::escape($value) . "'";
                     } else {
-                        $pollers .= "'" . $value . "',";
+                        $pollers .= "'" . $value . "'";
                     }
                     break;
                 default :
-                    $pollers .= "'" . $key . "',";
+                    if(!$flagFirst){
+                        $pollers .= ",";
+                    }
+                    $flagFirst = false;
+                    $pollers .= "'" . $key . "'";
+                    
+                    
                     break;
             }
         }
-
-        $result = "''";
-        if (strlen($pollers)) {
-            $result = implode($pollers, ',');
-        }
-
-        return $result;
+        return $pollers;
     }
 
     /*

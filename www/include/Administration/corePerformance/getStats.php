@@ -269,8 +269,13 @@
 		 * Add Timezone for current user.
 		 */
 
-        if ($CentreonGMT->used())
-            $command_line = "export TZ='GMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
+        $timezone = $CentreonGMT->getMyTimezone();
+        $timezone = trim($timezone);
+        if (empty($timezone)){
+            $timezone = date_default_timezone_get();
+        }
+      
+        $command_line = "export TZ='".$timezone."' ; ".$command_line;
 
 		$command_line = escape_command("$command_line");
 

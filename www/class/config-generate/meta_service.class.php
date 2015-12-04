@@ -41,7 +41,7 @@ class MetaService extends AbstractObject {
     protected $object_name = 'service';
     protected $attributes_select = '
         meta_id,
-        meta_display as display_name,
+        meta_name as display_name,
         check_period as check_period_id,
         max_check_attempts,
         normal_check_interval,
@@ -127,7 +127,6 @@ class MetaService extends AbstractObject {
             $meta_service['passive_checks_enabled'] = 0;
             $meta_service['host_name'] = '_Module_Meta';
             $meta_service['service_description'] = 'meta_' . $meta_id;
-            $meta_service['display_name'] = $meta_service['service_description'];
             $meta_service['check_command'] = 'check_meta!' . $meta_id;
             
             $this->generated_services[] = $meta_id;

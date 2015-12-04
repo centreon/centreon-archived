@@ -9,6 +9,10 @@
 				<td  class="ListColLeft">{$form.host_id.label}</td>
 				<td  class="ListColLeft">{$form.host_id.html}</td>
 			</tr>
+                        <tr class="list_one">
+				<td  class="ListColLeft">{$form.host_or_centreon_time.label}</td>
+				<td  class="ListColLeft">{$form.host_or_centreon_time.html}</td>
+			</tr>
 			<tr class="list_two">
 				<td  class="ListColLeft">{$form.service_id.label}</td>
 				<td  class="ListColLeft">{$form.service_id.html}</td>

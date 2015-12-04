@@ -118,7 +118,6 @@ $form->addElement('text', 'len_storage_downtimes', _("Retention Duration for Dow
 $form->addElement('text', 'len_storage_comments', _("Retention Duration for Comments"), $attrsText2);
 $form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
 $form->addElement('text', 'reporting_retention', _("Reporting retention duration (dashboard)"), $attrsText2);
-$form->addElement('checkbox', 'archive_log', _("Archive logs of monitoring engine"));
 $form->addElement('checkbox', 'audit_log_option', _("Enable/Disable audit logs"));
 
 $redirect = $form->addElement('hidden', 'o');
@@ -143,7 +142,7 @@ $form->applyFilter('RRDdatabase_nagios_stats_path', 'slash');
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path.'centstorage/', $tpl);
 $form->setDefaults($gopt);
-		$centreon->initOptGen($pearDB);
+$centreon->initOptGen($pearDB);
 
 $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
 $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
@@ -176,10 +175,7 @@ $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 
-$tpl->assign("genOpt_ODS_config", _("Centstorage Configuration"));
 $tpl->assign("ods_log_retention_unit", _("days"));
-$tpl->assign("ods_sleep_time_expl", _("in seconds - Must be higher than 10"));
-$tpl->assign("ods_purge_interval_expl", _("in seconds - Must be higher than 2"));
 
     // prepare help texts
 $helptext = "";

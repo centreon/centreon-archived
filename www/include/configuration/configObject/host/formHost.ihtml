@@ -97,7 +97,7 @@
 					{$form.command_command_id.html}
 					{if $o == "a" || $o == "c"}
 					<span style="cursor:help; margin-left: 4px;">
-						<img src='./img/icons/info.png' class='ico-14' style='vertical-align:middle;' onclick="window.open('main.php?p=60706&command_id='+ document.Form.elements['command_command_id'].options[document.Form.elements['command_command_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=200');">
+						<img src='./img/icons/info.png' class='ico-14' style='vertical-align:middle;' onclick="window.open('main.php?p=60801&command_id='+ document.Form.elements['command_command_id'].options[document.Form.elements['command_command_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=200');">
 					</span>
 					{/if}
 					<br>
@@ -343,7 +343,7 @@
 		<td class="FormRowValue">
 			{$form.command_command_id2.html}
 			{if $o == "a" || $o == "c"}
-				&nbsp;<img class="ico-14" src='./img/icons/info.png' style='cursor:help;vertical-align:middle;' onclick="window.open('main.php?p=60706&command_id='+ document.Form.elements['command_command_id2'].options[document.Form.elements['command_command_id2'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
+				&nbsp;<img class="ico-14" src='./img/icons/info.png' style='cursor:help;vertical-align:middle;' onclick="window.open('main.php?p=60801&command_id='+ document.Form.elements['command_command_id2'].options[document.Form.elements['command_command_id2'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
 			{/if}
 		</td>
 	</tr>
@@ -421,7 +421,11 @@ jQuery(function() {
         maxFormsCount: 200,
         continuousIndex : false,
         iniFormsCount: jQuery("#clone-count-macro").data("clone-count-macro"),
-        data: jQuery("#clone-values-macro").data("clone-values-macro")
+        data: jQuery("#clone-values-macro").data("clone-values-macro"),
+        afterAdd: function(source, newForm) {
+            jQuery(newForm).find("input[id^='macroPassword_']").parent().show();
+        }
+
     });
     jQuery(".onemacro").each(function(idx,elem){
         var from = jQuery(elem).find('input[name^=macroFrom]').val();
@@ -434,6 +438,12 @@ jQuery(function() {
         } else {
             jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
+        }
+
+        jQuery(elem).find("input[id^='macroPassword_']").parent().hide();
+
+        if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
+            jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
         }
 
         {/literal}{if $form.frozen == false}{literal}
@@ -536,6 +546,12 @@ jQuery(function() {
                             jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
                             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
                         }
+                        
+                        jQuery(elem).find("input[id^='macroPassword_']").parent().hide();
+
+                        if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
+                            jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
+                        }
 
                         {/literal}{if $form.frozen == false}{literal}
                         // Display undo button on template macro
@@ -543,9 +559,13 @@ jQuery(function() {
                             if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1"){
                                 var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
                                 var tplValue = tplValueField.val();
+                                
+                                var tplInputField = jQuery(elem).find("input[name^='macroInput']");
+                                var tplInput = tplInputField.val();
 
                                 tplValueField.after(jQuery('<img/>',{src : './img/icons/undo.png', class : 'ico-14', style : 'vertical-align : middle;'}).on('click',function(){
                                     jQuery(elem).find("input[name^='macroValue']").val(tplValue);
+                                    jQuery(elem).find("input[name^='macroInput']").val(tplInput);
                                     jQuery(elem).find('input[name^=macroFrom]').val("fromTpl");
                                     jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
                                     jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
@@ -565,7 +585,7 @@ jQuery(function() {
                             jQuery(elem).find("input[name^='macroValue']").css("background","white");
                         });
 
-
+                        jQuery(elem).find("input[id^='macroPassword_']").parent().hide();
                     });
                 }
             });

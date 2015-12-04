@@ -18,10 +18,14 @@ First step
 
 #. Go into the menu: **Configuration** ==> **Pollers**
 #. Click on the Generate action icon for the poller
+
+.. image:: /images/user/configuration/poller_menu_generate.png
+   :align: center
+
 #. Check the boxes: **Generate Configuration Files** and **Run monitoring engine debug (-v)**
 #. Click on **Export**
 
-.. image:: /images/user/configuration/11step1.png
+.. image:: /images/user/configuration/poller_generate_1.png
    :align: center 
 
 Check that no error appears during generation.
@@ -36,7 +40,7 @@ Second step
 #. Then check the boxes: **Move Export Files** and **Restart Monitoring Engine**
 #. Click on **Export**
 
-.. image:: /images/user/configuration/11step2.png
+.. image:: /images/user/configuration/poller_generate_2.png
    :align: center 
 
 .. note::

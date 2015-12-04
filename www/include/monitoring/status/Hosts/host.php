@@ -115,9 +115,9 @@ $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
 
 $aStatusHost = array(
-    "h" => _("All"),
     "h_unhandled" => _("Unhandled Problems"),
-    "hpb" => _("Host Problems")
+    "hpb" => _("Host Problems"),
+    "h" => _("All")
 );
 
 include_once("./include/monitoring/status/Common/default_poller.php");
@@ -277,10 +277,42 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->display("host.ihtml");
 ?>
 <script type='text/javascript'>
+    var up = '<?php echo _("Up");?>';
+    var down = '<?php echo _("Down");?>';
+    var unreachable = '<?php echo _("Unreachable");?>';
+    var pending = '<?php echo _("Pending");?>';
+    
     var _keyPrefix;
+    
+    jQuery('#statusHost').change(function() {
+        updateSelect();
+    });
+    
+    function updateSelect()
+    {
+        var oldStatus = jQuery('#statusFilter').val();
+        var opts = document.getElementById('statusFilter').options;
+        if (jQuery('#statusHost').val() == 'hpb' || jQuery('#statusHost').val() == 'h_unhandled') {
+            opts.length = 0;
+            opts[opts.length] = new Option("", "");
+            opts[opts.length] = new Option(down, "down");
+            opts[opts.length] = new Option(unreachable, "unreachable");
+        } else {
+            opts.length = 0;
+            opts[opts.length] = new Option("", "");
+            opts[opts.length] = new Option(up, "up");
+            opts[opts.length] = new Option(down, "down");
+            opts[opts.length] = new Option(unreachable, "unreachable");
+            opts[opts.length] = new Option(pending, "pending");
+        }
+        if (jQuery("#statusFilter option[value='"+oldStatus+"']").length > 0) {
+            jQuery("#statusFilter option[value='"+oldStatus+"']").prop('selected', true);
+        }
+    }
 
     jQuery(function () {
         preInit();
+        updateSelect();
     });
 
     function preInit()
@@ -288,7 +320,32 @@ $tpl->display("host.ihtml");
         _keyPrefix = '<?php echo $keyPrefix; ?>';
         _sid = '<?php echo $sid ?>';
         _tm = <?php echo $tM ?>;
+        _o = '<?php echo $o; ?>';
+        
+        
+        if (_o == 'h') {
+            jQuery("#statusHost option[value='h']").prop('selected', true);
+            jQuery("#statusFilter option[value='']").prop('selected', true);
+        } else if (_o == 'h_up') {
+            jQuery("#statusHost option[value='h']").prop('selected', true);
+            jQuery("#statusFilter option[value='up']").prop('selected', true);
+        } else if (_o == 'h_down') {
+            jQuery("#statusHost option[value='h']").prop('selected', true);
+            jQuery("#statusFilter option[value='down']").prop('selected', true);
+        } else if (_o == 'h_unreachable') {
+            jQuery("#statusHost option[value='h']").prop('selected', true);
+            jQuery("#statusFilter option[value='unreachable']").prop('selected', true);
+        } else if (_o == 'h_unhandled') {
+            jQuery("#statusHost option[value='h_unhandled']").prop('selected', true);
+            jQuery("#statusFilter option[value='']").prop('selected', true);
+        } else {
+            jQuery("#statusHost option[value='h']").prop('selected', true);
+            jQuery("#statusFilter option[value='pending']").prop('selected', true);
+        }
         filterStatus(document.getElementById('statusFilter').value, 1);
+
+        window.clearTimeout(_timeoutID);
+        initM(_tm, _sid, _o);
     }
 
     function filterStatus(value, isInit)

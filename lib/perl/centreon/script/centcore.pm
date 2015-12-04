@@ -407,7 +407,7 @@ sub waitPipe($) {
 }
 
 ##
-# Checks if rotation occured,
+# Checks if rotation occurred,
 #
 sub checkRotation($$$$$) {
     my $self = shift;

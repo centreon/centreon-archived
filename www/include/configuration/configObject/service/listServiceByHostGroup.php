@@ -261,7 +261,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 		foreach ($tplArr as $key =>$value){
 			$value = str_replace('#S#', "/", $value);
 			$value = str_replace('#BS#', "\\", $value);
-			$tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
+			$tplStr .= "&nbsp;>&nbsp;<a href='main.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
 		}
 	}
 

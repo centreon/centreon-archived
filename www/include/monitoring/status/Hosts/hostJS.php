@@ -213,8 +213,11 @@ function goM(_time_reload, _sid, _o) {
 		_counter += 1;
 	}
 
+    var statusHost = jQuery.trim(jQuery('#statusHost').val());
+    var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
+        
 	proc.setCallback(monitoringCallBack);
-	proc.setXml(_addrXML+"?"+'search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id);
+	proc.setXml(_addrXML+"?"+'search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id+'&statusHost='+statusHost+'&statusFilter='+statusFilter);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
 
@@ -326,7 +329,12 @@ function send_the_command() {
 		var author = document.getElementById('author').value;
 		var duration = document.getElementById('duration').value;
         var duration_scale = document.getElementById('duration_scale').value;
-		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&start=" + start + "&end=" + end +  "&comment=" + comment + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
+        var tmp = document.querySelector('input[name="host_or_centreon_time[host_or_centreon_time]"]:checked');
+        var host_or_centreon_time = "0";
+        if(tmp !== null && typeof tmp !== "undefined" ){
+            host_or_centreon_time = tmp.value;
+        }
+		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&start=" + start + "&end=" + end +  "&comment=" + comment + "&fixed=" + fixed + "&host_or_centreon_time=" + host_or_centreon_time + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
 	}
     xhr_cmd.send(null);
     window.currentPopin.centreonPopin("close");

@@ -1,17 +1,11 @@
 {$form.javascript}
 <form {$form.attributes}>
-	<div class="headerTabContainer">
-	<ul id="mainnav">
-		<li class="a" id='c1'><a href="#"  onclick="javascript:montre('1');">{$form.header.notification_base}</a></li>
-		<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$form.header.include}</a></li>
-	</ul>
-    <div id="validFormTop">
+	<div id="validFormTop">
 	{if $o == "a" || $o == "c"}
 		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
 		<p class="oreonbutton">{$form.change.html}</p>
 	{/if}
-	</div>
 	</div>
 	<div id='tab1' class='tab'>
 		 <table class="formTable table">
@@ -22,14 +16,14 @@
             </tr>
 		 	<tr class="list_lvl_1">
               <td class="ListColLvl1_name" colspan="2">
-                <h4>{$form.header.information}</h4>
+                <h4>{t}Time Range{/t}</h4>
               </td>
             </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="timeperiod_name"> {$form.tp_name.label}</td><td class="FormRowValue">{$form.tp_name.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.tp_alias.label}</td><td class="FormRowValue">{$form.tp_alias.html}</td></tr>
 		 	<tr class="list_lvl_1">
               <td class="ListColLvl1_name" colspan="2">
-                <h4>{$form.header.notification}</h4>
+                <h4>{t}Basic Settings{/t}</h4>
               </td>
             </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_sunday.label}</td><td class="FormRowValue">{$form.tp_sunday.html}</td></tr>
@@ -39,16 +33,24 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_thursday.label}</td><td class="FormRowValue">{$form.tp_thursday.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_friday.label}</td><td class="FormRowValue">{$form.tp_friday.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_saturday.label}</td><td class="FormRowValue">{$form.tp_saturday.html}</td></tr>
+
 			<tr class="list_lvl_1">
               <td class="ListColLvl1_name" colspan="2">
-                <h4>{$form.header.exception}</h4>
+                <h4>{t}Inclusion{/t}</h4>
+              </td>
+            </tr>			
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="include"> {$form.tp_include.label}</td><td class="FormRowValue">{$form.tp_include.html}</td></tr>
+
+			<tr class="list_lvl_1">
+              <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}Time Range exceptions{/t}</h4>
               </td>
             </tr>			
 			{if $gmtUsed}
 				<tr class='list_one'><td colspan='2'><img src='./img/icons/warning.png' class="ico-16">&nbsp; {$noExceptionMessage}</td></tr>
 			{/if}
 			<tr class="list_two">
-				<td class='FormRowField'><img class="helpTooltip" name="exception">{$exceptionLabel}<input type="hidden" name="nbOfExceptions" id="hiddenExInput" style='display:none'></td>								
+				<td class='FormRowField'><img class="helpTooltip" name="exception">{$exceptionLabel}<input type="hidden" name="nbOfExceptions" id="hiddenExInput" style='display:none'></td>
 				<td class='FormRowValue'>
 					<table id="exceptionTable" class="ListTableSmall" style='padding-top:0px'>
 						<tr class="ListHeader">
@@ -61,20 +63,6 @@
 					</table>
 				</td>
 			</tr>
-			{if $o == "a" || $o == "c"}
-				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
-			{/if}
-		 </table>
-	</div>
-	<div id='tab2' class='tab'>
-		 <table class="formTable table">
-		 	<tr class="ListHeader">
-              <td class="FormHeader" colspan="2">
-                <h3>| {$form.header.title}</h3>
-              </td>
-            </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="include"> {$form.tp_include.label}</td><td class="FormRowValue">{$form.tp_include.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="exclude"> {$form.tp_exclude.label}</td><td class="FormRowValue">{$form.tp_exclude.html}</td></tr>
 			{if $o == "a" || $o == "c"}
 				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 			{/if}

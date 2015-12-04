@@ -99,7 +99,8 @@ bindtextdomain("messages",  _CENTREON_PATH_ . "www/locale/");;
 bind_textdomain_codeset("messages", "UTF-8");
 textdomain("messages");
 
-function getMyHostIDService($svc_id = NULL)	{
+function getMyHostIDService($svc_id = NULL)
+{
 	global $pearDB;
 
 	if (!$svc_id)
@@ -138,15 +139,18 @@ $lca = $access->getHostsServices($pearDBO);
 (isset($_GET["search_service"]))    ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
 (isset($_GET["focusUrl"]))          ? $focusUrl = urldecode($_GET['focusUrl']) : $focusUrl = "";
 
-    $buffer->writeElement('focusUrl', $focusUrl);
-    $buffer->writeElement('target', $target);
+$buffer->writeElement('focusUrl', $focusUrl);
+$buffer->writeElement('target', $target);
 
 /*
-	 * Get GMT for current user
-	 */
-	$CentreonGMT = new CentreonGMT($pearDB);
-	$CentreonGMT->getMyGMTFromSession($sid, $pearDB);
+* Get GMT for current user
+*/
+$CentreonGMT = new CentreonGMT($pearDB);
+$CentreonGMT->getMyGMTFromSession($sid, $pearDB);
 $gmt = $CentreonGMT->getMyGMTForRRD();
+
+date_default_timezone_set($CentreonGMT->getMyTimezone());
+
 /*
  * Check if period is a period by duration or a time range.
  */
@@ -165,16 +169,12 @@ if ($StartDate !=  "" && $StartTime != ""){
 	preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
 	preg_match("/^([0-9]*):([0-9]*)/", $StartTime, $matchesT);
 	$start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
-	if ($CentreonGMT->used())
-		$start += $gmt * 60 * 60;
 }
 
 if ($EndDate !=  "" && $EndTime != ""){
 	preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $EndDate, $matchesD);
 	preg_match("/^([0-9]*):([0-9]*)/", $EndTime, $matchesT);
 	$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
-	if ($CentreonGMT->used())
-		$end += $gmt * 60 * 60;
 }
 
 /*
@@ -186,9 +186,15 @@ $period = 86400;
  * Adjust default date picker.
  */
 if ($auto_period > 0){
-	$period = $auto_period;
-	$start = time() - ($period);
-	$end = time();
+
+    $period = $auto_period;
+
+    $sDate = new DateTime();
+    $sDate->setTimezone(new DateTimeZone($CentreonGMT->getMyTimezone()));
+    $end = $sDate->getTimestamp();
+    
+    $sDate->sub(new DateInterval('PT'.$auto_period.'S'));
+    $start = $sDate->getTimestamp();
 }
 
 /*

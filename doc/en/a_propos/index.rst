@@ -1,38 +1,38 @@
-########
-A propos
-########
-
-Centreon est un logiciel libre de supervision Open Source, édité par la 
-société française Centreon. Il mesure la disponibilité et la performance 
-des couches applicatives, du service utilisateur jusqu’aux ressources matérielles.
+#####
+About
+#####
 
 
-Centreon est un puissant outillage destiné aux administrateurs et exploitants 
-du service de supervision. Il intègre depuis 
-2012 son propre moteur de collecte (Centreon Engine) et gestionnaire d’événements 
+Centreon is a free Open Source monitoring software, published by the
+Centreon French society. It measures the availability and performance of
+the application layers, the user experience to the hardware resources.
+
+Centreon is a powerful tool for the monitoring administrators and operators. 
+It integrates since 2012 his own scheduler engine (Centreon Engine) and Event Manager
 (Centreon Broker).
 
 
-Au-delà des concepts de configuration qui sont les plus évolués dans l’écosystème 
-Nagios, Centreon apporte de nombreuses fonctionnalités telles que la consultation 
-de l'état des services et des machines supervisés, la métrologie, le reporting, 
-l'accès aux évènements de supervision, la gestion avancée des utilisateurs via des 
-listes de contrôle d’accès (ACL), etc.
+Beyond configuration concepts that are the most advanced in the Nagios ecosystem
+, Centreon provides many features such as consultation
+of services state of monitored equipment, metrology, reporting,
+access to monitoring events, users advanced management via
+access control lists (ACLs), etc.
 
 
-Des modules complémentaires issus de la communauté et de l’éditeur permettent 
-également d’étendre les fonctions. On trouve par exemple un outil de BI, de la 
-cartographie et de nombreuses API permettant d’interagir avec Centreon, comme 
-l’automatisation de la gestion de configuration.
+Additional extensions from the community and Centreonr
+also expand the functions. Found for example a BI tool, the
+mapping and many API for interacting with Centreon as
+automated configuration management.
 
 
-Solution mature, fiable et innovante, Centreon se démarque notamment par sa capacité 
-à offrir un socle de fonctions adaptées à la vision « métier » exigée par les 
-responsables, en structurant des données IT essentielles et stratégiques (disponibilité, 
-capacité, maintenabilité, fiabilité).
+
+Mature, reliable and innovative Centreon stands out by its ability
+to offer a platform tailored to the "trade" vision required by the
+responsible, while structuring and strategic IT core data (availability,
+ability, maintainability, reliability).
 
 
-La distribution sans limite et la performance du système de collecte de données sont 
-également des points forts de la suite logicielle. Centreon répond aux contraintes 
-de montée en charge, de cloisonnement réseau, de sites géographiquement éclatés et 
-de bande passantes limitées.
+The unlimited distribution and performance of the data collection system are
+also of the strengths of the software suite. Centreon meets the constraints
+of scalability, network partitioning, geographically fragmented sites and
+limited pass-band.
