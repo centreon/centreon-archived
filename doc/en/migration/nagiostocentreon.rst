@@ -11,7 +11,7 @@ Prerequisites
 =============
 
 First of all you need a CES server installed and ready to use. Please see the
-document on document.centreon.com to install a Centreon server based on CES.
+documentation :ref:`to install a Centreon server<firststepsces3>` based on CES.
 
 Installation
 ============
@@ -62,7 +62,7 @@ To run the script please use the following command::
 
 Export the file /tmp/centreon_clapi_import_commands.txt on your CES server.
 
-Run the following commandd to import configuration into Centreon on your CES server::
+Run the following command to import configuration into Centreon on your CES server::
 
   $ /usr/share/centreon/www/modules/centreon-clapi/core/centreon -u admin -p @PASSWORD -i /tmp/centreon_clapi_import_commands.txt
 
