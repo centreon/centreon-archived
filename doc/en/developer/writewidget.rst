@@ -189,44 +189,56 @@ The preference window would look like this as a result:
 Code
 ****
 
-Now, let's see how you could retrieve the parameter values in your PHP code.
+All langages are separated in differents files, one file for each langage. The file "configs.xml" call the php's file and the php's file call html's file etc...
 
-*widgets/dummy/index.php*:
+We use Smarty, it's an engine and template'php compiler (http://smarty.net).
 
-.. sourcecode:: php
 
-  <?php
-  // required classes
-  require_once "/etc/centreon/centreon.conf.php";
-  require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-  require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
-  require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-  require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
-   
-  // check if session is alive
-  session_start();
-  if (!isset($_SESSION['centreon'])) {
-     echo "Session expired";
-     exit;
-  }
-  $centreon = $_SESSION['centreon'];
-  
-  // variable initialization
-  $db = new CentreonDB();
-  $widget = new CentreonWidget($centreon, $db);
-  
-  // retrieve widget preferences
-  $preferences = $widget->getWidgetPreferences($_GET['widgetId']);
-  // print the retrieved preferences
-  print_r($preferences);
-  ?>
+To use Smarty you need to :
+.. code_block:: php
+	require_once $centreon_path . 'GPL_LIB/Smarty/libs/Smarty.class.php';
 
-The result::
+configuration of smarty:
+.. code_block:: php	
+	$path = $centreon_path . "www/widgets/Dummy/src/";
+	$template = new Smarty();
+	$template = initSmartyTplForPopup($path, $template, "./", $centreon_path);
 
-  Array ( [text preference] => default value 
-         [boolean preference] => 1 
-         [date] => 
-         [host preference] => 
-         [list preference] => none 
-         [range preference] => 5 
-         [host search] => notlike _Module_% )
+creating php template to be use in html:
+.. code_block:: php
+ 	$template->assign('widgetId', $widgetId);
+	$template->assign('autoRefresh', $autoRefresh);
+	$template->assign('data', $data);
+
+apportionment of html's file to execute:
+.. code_block:: php 
+	$template->display('dummy.ihtml');
+
+
+To call template php's variable in the html look dummy.ihtml
+
+To do request in database: 
+
+initialization of databases's centreon, centreon storage and recovering preferences:
+
+.. code_block:: php 
+	try {
+    		global $pearDB;
+
+    		$db_centreon = new CentreonDB("centreon");
+    		$db = new CentreonDB("centstorage");
+   		$pearDB = $db_centreon;
+
+    		$widgetObj = new CentreonWidget($centreon, $db_centreon);
+    		$preferences = $widgetObj->getWidgetPreferences($widgetId);
+    		$autoRefresh = 0;
+    		if (isset($preferences['refresh_interval'])) {
+        		$autoRefresh = $preferences['refresh_interval'];
+    		}
+	} catch (Exception $e) {
+    	echo $e->getMessage() . "<br/>";
+    	exit;
+	}
+
+then request in database with class' methods.
+
