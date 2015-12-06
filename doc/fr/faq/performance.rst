@@ -130,10 +130,10 @@ Configuration des groupes
 
 Créer les groupes en exécutant les commandes suivantes ::
 
-    # usermod -a -g rrdcached centreon-broker
-    # usermod -a -g rrdcached apache
-    # usermod -a -g centreon rrdcached
-    # usermod -a -g centreon-broker rrdcached
+    # usermod -a -G rrdcached centreon-broker
+    # usermod -a -G rrdcached apache
+    # usermod -a -G centreon rrdcached
+    # usermod -a -G centreon-broker rrdcached
 
 Redémarrer le processus Apache pour prendre en compte les modifications ::
 
