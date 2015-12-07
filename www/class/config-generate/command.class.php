@@ -35,6 +35,7 @@
 
 class Command extends AbstractObject {
     private $commands = null;
+    private $mail_bin = null;
     protected $generate_filename = 'commands.cfg';
     protected $object_name = 'command';
     protected $attributes_select = '
@@ -59,6 +60,20 @@ class Command extends AbstractObject {
         $stmt->execute();
         $this->commands = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
     }
+
+    private function getMailBin() {
+        $stmt = $this->backend_instance->db->prepare("SELECT
+              options.value
+            FROM options
+                WHERE options.key = 'mailer_path_bin'
+            ");
+        $stmt->execute();
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $this->mail_bin = $row['value'];
+        } else {
+            $this->mail_bin = '';
+        }
+    }
     
     public function generateFromCommandId($command_id) {
         $name = null;
@@ -72,11 +87,15 @@ class Command extends AbstractObject {
         if ($this->checkGenerate($command_id)) {
             return $this->commands[$command_id]['command_name'];
         }
-        
-        
+
+        if (is_null($this->mail_bin)) {
+            $this->getMailBin();
+        }
+
         # enable_shell is 0 we remove it
         $command_line = html_entity_decode($this->commands[$command_id]['command_line_base']);
         $command_line = str_replace('#BR#', "\\n", $command_line);
+        $command_line = str_replace("@MAILER@", $this->mail_bin, $command_line);
 
         if (!is_null($this->commands[$command_id]['enable_shell']) && $this->commands[$command_id]['enable_shell'] == 1) {
             $command_line = '/bin/sh -c ' . escapeshellarg($command_line);
