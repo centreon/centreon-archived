@@ -1,6 +1,6 @@
-===============================================
-Comment développer des extensions pour Centreon
-===============================================
+==========
+Developper
+==========
 
 Ce chapitre est une reprise sans traduction de la documentation anglaise.
 
@@ -9,3 +9,6 @@ Ce chapitre est une reprise sans traduction de la documentation anglaise.
 
    writemodule
    writewidget
+   develop-a-plugin
+
+
