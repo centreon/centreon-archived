@@ -24,7 +24,7 @@ Sommaire :
    administration_guide/index
    upgrade/index
    faq/index
-   extendcentreon/index
+   developper/index
    api/clapi/index
 
 Ressources en ligne supplémentaires:
