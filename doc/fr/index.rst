@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Bienvenue dans la documentation Centreon!
-=========================================
+Bienvenue dans la documentation Centreon !
+==========================================
 
 Centreon est un logiciel open source qui vous permet de superviser
 l'ensemble des éléments appartenant à votre système d'informations.
@@ -25,6 +25,7 @@ Sommaire :
    upgrade/index
    faq/index
    extendcentreon/index
+   api/clapi/index
 
 Ressources en ligne supplémentaires:
 
