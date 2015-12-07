@@ -1,20 +1,16 @@
 .. _install:
 
-#############################################
-Installation de la plate-forme de supervision
-#############################################
+############
+Installation
+############
 
-Ce chapitre décrit la mise en place d'une plate-forme de supervision.
+Ce chapitre décrit les différentes étapes de mise en place d'une plate-forme de supervision basée sur Centreon.
 
-La plate-forme de supervision peut-être installée de plusieurs manières.
-Cependant, **nous vous recommandons d'utiliser CES pour installer votre plate-forme**.
-L'installation d'une plate-forme à partir des sources (tar.gz) est complexe et sera supportée par la communauté.
+La plate-forme de supervision peut-être installée de plusieurs manières. Cependant, **nous vous recommandons vivement d'utiliser Centreon ISO (ex CES) pour installer votre plate-forme**. Profitez ainsi de nos travaux d'industrialisation de l'installation et de la mise à jour de l'environnement. Profitez également des optimisations installées en standard par le système.
+L'installation de Centreon peut être effectuée à partir des sources (tar.gz) mais le travail est plus complexe. De plus l'installeur ne sera supporté que par la communauté.
 
-La première partie de ce chapitre décrit le dimensionnement des serveurs : ressources CPU, mémoire, disques, partitionnement, etc.
-
-La seconde partie présente différentes architectures possibles.
-
-La dernière partie vous propose de mettre en oeuvre votre plate-forme.
+Avant toute installation, veillez à bien suivre les pré-requis d'installation et de dimensionnement (ressources CPU, mémoire, disques, partitionnement, etc...). Prenez également soin de bien choisir le type d'architecture qu'il convient de mettre en place pour vos besoins. 
+Enfin, vous pourrez procéder à l'installation de la plate-forme.
 
 .. toctree::
    :maxdepth: 2
