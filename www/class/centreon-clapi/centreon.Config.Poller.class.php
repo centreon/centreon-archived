@@ -38,7 +38,7 @@
 
 require_once "centreonUtils.class.php";
 require_once "centreonClapiException.class.php";
- require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
+require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 
 /**
  *
@@ -363,18 +363,22 @@ class CentreonConfigPoller {
                 /**
                  * Detect Errors
                  */
-                if (preg_match("/Total Warnings: ([0-9])*/", $line, $matches))
+                if (preg_match("/Total Warnings: ([0-9])*/", $line, $matches)) {
                     if (isset($matches[1])) {
                         $this->resultTest["warning"] = $matches[1];
                     }
-                if (preg_match("/Total Errors: ([0-9])*/", $line, $matches))
+                }
+                if (preg_match("/Total Errors: ([0-9])*/", $line, $matches)) {
                     if (isset($matches[1])) {
                         $this->resultTest["errors"] = $matches[1];
                     }
-                if (preg_match("/^Error:/", $line, $matches))
+                }
+                if (preg_match("/^Error:/", $line, $matches)) {
                     $this->resultTest["errors"]++;
-                if (preg_match("/^Errors:/", $line, $matches))
+                }
+                if (preg_match("/^Errors:/", $line, $matches)) {
                     $this->resultTest["errors"]++;
+                }
             }
         }
         if ($this->resultTest["errors"] != 0) {
@@ -414,6 +418,26 @@ class CentreonConfigPoller {
             $config_generate->configPollerFromId($variables);
         }    
 
+        /* Change files owner */
+        $apacheUser = $this->getApacheUser();
+        $setFilesOwner = 1;
+        if ($apacheUser != "") {
+            foreach (glob($this->centreon_path."/filesGeneration/nagiosCFG/".$tab['id']."/*.cfg") as $file) {
+                chown($file, $apacheUser);
+            }
+            foreach (glob($this->centreon_path."/filesGeneration/broker/".$tab['id']."/*.cfg") as $file) {
+                chown($file, $apacheUser);
+            }
+        } else {
+            $setFilesOwner = 0;
+        }
+
+        if ($setFilesOwner == 0) {
+            print "We can set configuration file owner after the generation. \n";
+            print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/nagiosCFG/".$tab['id']."/\n";
+            print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/broker/".$tab['id']."/\n";
+        }
+
         print "Configuration files generated for poller '".$variables."'\n";
         return 0;
     }
@@ -428,6 +452,9 @@ class CentreonConfigPoller {
 
         $pearDB = $this->_DB;
         $pearDBO = $this->_DBC;
+
+        /* Get Apache user name */
+        $apacheUser = $this->getApacheUser();
 
         require_once _CENTREON_PATH_."www/include/configuration/configGenerate/DB-Func.php";
         if (!isset($variables)) {
@@ -467,6 +494,15 @@ class CentreonConfigPoller {
                 }
             }
 
+            /* Change files owner */
+            if ($apacheUser != "") {
+                foreach (glob($Nagioscfg["cfg_dir"]."/*.cfg") as $file) {
+                    chown($file, $apacheUser);
+                }
+            } else {
+                print "Please check that files in the followings directory are writable by apache user : ".$Nagioscfg["cfg_dir"]."\n";
+            }
+
             /*
              * Centreon Broker configuration
              */
@@ -487,6 +523,15 @@ class CentreonConfigPoller {
                         }
                     }
                 }
+
+                /* Change files owner */
+                if ($apacheUser != "") {
+                    foreach (glob(rtrim($centreonBrokerDirCfg, "/") . "/" . "/*") as $file) {
+                        chown($file, $apacheUser);
+                    }
+                } else {
+                    print "Please check that files in the followings directory are writable by apache user : ".rtrim($centreonBrokerDirCfg, "/")."/\n";
+                }
             }
 
 
@@ -502,6 +547,32 @@ class CentreonConfigPoller {
         }
         print $msg_copy."\n";
         return $return;
+    }
+
+    /**
+     * Get apache user to set file access
+     *
+     * @return string
+     */
+    function getApacheUser() {
+        /* Change files owner */
+        $setFilesOwner = 1;
+        $installFile = "@CENTREON_ETC@/instCentWeb.conf";
+        if (file_exists($installFile)) {
+            $stream = file_get_contents($installFile);
+            $lines = preg_split("/\n/", $stream);
+            foreach ($lines as $line) {
+                if (preg_match('/WEB\_USER\=([a-zA-Z\_\-]*)/', $line, $tabUser)) {
+                    if (isset($tabUser[1])) {
+                        return $tabUser[1];
+                    } else {
+                        return "";
+                    }
+                }
+            }    
+        } else {
+            return "";
+        }
     }
 
     /**
