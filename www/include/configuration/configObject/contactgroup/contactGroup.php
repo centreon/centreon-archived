@@ -36,6 +36,7 @@
 if (!isset($centreon)) {
 	exit ();		
 }	
+
 isset($_GET["cg_id"]) ? $cG = $_GET["cg_id"] : $cG = NULL;
 isset($_POST["cg_id"]) ? $cP = $_POST["cg_id"] : $cP = NULL;
 $cG ? $cg_id = $cG : $cg_id = $cP;
