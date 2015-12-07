@@ -1,8 +1,8 @@
 .. _firststepsces3:
 
-===============
-A partir de CES
-===============
+========================
+A partir de Centreon ISO
+========================
 
 ************
 Installation
