@@ -502,9 +502,20 @@ if ($o != "mc")
 /*
  * Additive
  */
-$form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
-$form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
+if ($o == "mc")	{
+    $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
+    $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
+    $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
+    $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"), '&nbsp;');
     
+    $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Yes"), '1');
+    $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("No"), '0');
+    $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Default"), '2');
+    $form->addGroup($contactGroupAdditive, 'mc_cg_additive_inheritance', _("Contact group additive inheritance"), '&nbsp;');
+} else {
+    $form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
+    $form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
+ }   
 if ($o == "mc")	{
 	$mc_mod_notifopt_first_notification_delay = array();
 	$mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Incremental"), '0');
