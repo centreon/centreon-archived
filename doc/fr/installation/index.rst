@@ -16,6 +16,7 @@ Enfin, vous pourrez procéder à l'installation de la plate-forme.
    :maxdepth: 2
 
    prerequisites
+   architecture/index
    installation/index
    downloads
    01a
