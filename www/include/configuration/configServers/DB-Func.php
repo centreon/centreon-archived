@@ -82,7 +82,23 @@ function deleteServerInDB ($server = array())	{
 	foreach($server as $key => $value)	{
 		$pearDB->query("DELETE FROM `nagios_server` WHERE id = '".$key."'");
         $pearDBO->query("UPDATE `instances` SET deleted = '1' WHERE instance_id = '".$key."'");
+        deleteCentreonBrokerByPollerId($key);
 	}
+}
+
+/**
+ * Delete Centreon Broker configurations
+ *
+ * @param int $id The Id poller
+ */
+function deleteCentreonBrokerByPollerId($id)
+{
+    if (empty($id)) {
+        return;
+    }
+    
+    global $pearDB;
+    $pearDB->query("DELETE FROM cfg_centreonbroker WHERE ns_nagios_server = ".$id);
 }
 
 function multipleServerInDB ($server = array(), $nbrDup = array())
