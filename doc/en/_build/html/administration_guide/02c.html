@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Extensions &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="Administration" href="index.html" />
+    <link rel="next" title="Medias" href="02d.html" />
+    <link rel="prev" title="Access control list" href="02b.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="02d.html" title="Medias"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="02b.html" title="Access control list"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Administration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="extensions">
+<h1>Extensions<a class="headerlink" href="#extensions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<p>The modules can be used to add additional functionalities to Centreon.
+It is possible to install modules using the YUM utility or source files (*.tar.gz).</p>
+<p>There are 3 kinds of modules:</p>
+<ul class="simple">
+<li><strong>Community</strong> modules, under licence GPL v2, developed by the Centreon community</li>
+<li><strong>Core</strong> modules, under licence GPL v2, developed by the Centreon team</li>
+<li><strong>Proprietary</strong> modules, subject to a licence, developed by <a class="reference external" href="http://www.centreon.com">Centreon</a></li>
+</ul>
+<p>To install a module:</p>
+<ol class="arabic simple">
+<li>Install the module from the associated documentation (most often in the directory: <strong>/usr/share/centreon/www/modules</strong> on the central server)</li>
+<li>Go into the menu: <strong>Administration</strong> ==&gt; <strong>Extensions</strong></li>
+</ol>
+<img alt="../_images/cextensions.png" class="align-center" src="../_images/cextensions.png" />
+<ol class="arabic simple" start="3">
+<li>Click on the <img alt="install" src="../_images/install.png" /> icon to start installation of the module</li>
+<li>Click now on Install to install the module</li>
+</ol>
+<p>The table below summarises the columns of the page:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Name</td>
+<td>Contains module name</td>
+</tr>
+<tr class="row-odd"><td>Real name</td>
+<td>Contains module complete name</td>
+</tr>
+<tr class="row-even"><td>Informations</td>
+<td>Contains information about the module</td>
+</tr>
+<tr class="row-odd"><td>Release</td>
+<td>Indicates the module version</td>
+</tr>
+<tr class="row-even"><td>Author</td>
+<td>Indicates the module author</td>
+</tr>
+<tr class="row-odd"><td>Expiration date</td>
+<td>Indicates licence expiration date</td>
+</tr>
+<tr class="row-even"><td>Installed</td>
+<td>Indicates if the module is installed or not</td>
+</tr>
+<tr class="row-odd"><td>Status</td>
+<td>Indicates the module status : installed, installed but without license, unknown etc.</td>
+</tr>
+<tr class="row-even"><td>Actions</td>
+<td><p class="first">Serves to perform actions on a module :</p>
+<p>To install a module, click on <img alt="install" src="../_images/install.png" /></p>
+<p>To configure a module, click on <img alt="configure" src="../_images/configure.png" /></p>
+<p>To delete a module, click on <img alt="delete" src="../_images/garbage_empty.png" />, and then confirm the deletion</p>
+<p class="last">To update a module, click on <img alt="update" src="../_images/cupdate.png" /> and then follow the process</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="widgets">
+<h2>Widgets<a class="headerlink" href="#widgets" title="Permalink to this headline">¶</a></h2>
+<p>Widgets enable us to construct customised views, dealt with in the chapter covering <a class="reference internal" href="../exploitation_guide/01customview.html#leswidgets"><span>widgets</span></a>.</p>
+<p>To install a widget:</p>
+<ol class="arabic simple">
+<li>Install the widget from the associated documentation (most commonly in the directory entitled: <strong>/usr/share/centreon/www/widgets</strong> on the central server)</li>
+<li>Go into the menu: <strong>Administration</strong> ==&gt; <strong>Extensions</strong></li>
+<li>In the left menu, click on <strong>Setup</strong> under <strong>Widgets</strong></li>
+<li>Click on <img alt="install" src="../_images/install.png" /> to start the installation of the widget</li>
+</ol>
+<p>The table below summarises the columns of the page:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Title</td>
+<td>Contains widget name</td>
+</tr>
+<tr class="row-odd"><td>Description</td>
+<td>Contains information about the widget</td>
+</tr>
+<tr class="row-even"><td>Version</td>
+<td>Indicates widget version</td>
+</tr>
+<tr class="row-odd"><td>Author</td>
+<td>Indicates widget author</td>
+</tr>
+<tr class="row-even"><td>Actions</td>
+<td><p class="first">Serves to perform actions on a widget:</p>
+<p>To install a widget, click on <img alt="install" src="../_images/install.png" /></p>
+<p>To delete a widget, click on <img alt="delete" src="../_images/garbage_empty.png" />,  and then confirm the deletion</p>
+<p class="last">To update a widget, click on <img alt="update" src="../_images/cupdate.png" /> and then follow the process</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Extensions</a><ul>
+<li><a class="reference internal" href="#modules">Modules</a></li>
+<li><a class="reference internal" href="#widgets">Widgets</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="02b.html"
+                        title="previous chapter">Access control list</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="02d.html"
+                        title="next chapter">Medias</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/administration_guide/02c.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="02d.html" title="Medias"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="02b.html" title="Access control list"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Administration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

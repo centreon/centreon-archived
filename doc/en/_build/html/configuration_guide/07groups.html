@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Groups &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="Configuration" href="index.html" />
+    <link rel="next" title="Categories" href="08category.html" />
+    <link rel="prev" title="Contacts" href="06contact.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="08category.html" title="Categories"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="06contact.html" title="Contacts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Configuration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="groups">
+<h1>Groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h1>
+<p>A group allows us to group together one or more objects. There are three kinds of groups: hosts, services and contacts.</p>
+<p>The hosts groups and services groups serve mainly for viewing graphics or to group the objects.
+Contact groups are used mainly for the configuration of ACLs.</p>
+<div class="section" id="host-groups">
+<span id="hostgroups"></span><h2>Host Groups<a class="headerlink" href="#host-groups" title="Permalink to this headline">¶</a></h2>
+<p>To add  a host group:</p>
+<ol class="arabic simple">
+<li>Go to the menu: <strong>Configuration</strong> ==&gt; <strong>Hosts</strong></li>
+<li>In the left menu, click on <strong>Host Groups</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../_images/07hostgroup.png" class="align-center" src="../_images/07hostgroup.png" />
+<ul class="simple">
+<li>The <strong>Host Group Name</strong> and <strong>Alias</strong> defines the name and the alias of the host group.</li>
+<li>The <strong>Linked Hosts</strong> list allows us to add hosts in the hostgroup.</li>
+<li>The <strong>Notes</strong> field allows us to add optional notes concerning the host group.</li>
+<li>The <strong>Notes URL</strong> field defined a URL which can be used to give more information on the hostgroup.</li>
+<li>The <strong>Action URL</strong> field defined a URL normally use to give information on actions on the hostgroup (maintenance, etc.).</li>
+<li>The <strong>Icon</strong> field indicates the icon to be use for the host group.</li>
+<li>The <strong>Map Icon</strong> is the icon use for mapping.</li>
+<li>The <strong>RRD retention</strong> field is expressed in days, it serves to define the duration of retention of the services belonging to this hostgroup in the RRD database. It will be the default duration defined in the menu: “ <strong>Administration</strong> ==&gt; <strong>Options</strong> ==&gt; <strong>CentStorage</strong> ” if this value is not defined.</li>
+<li>The <strong>Status</strong> and <strong>Comments</strong> fields allow to enable or disable the host group and to make comments on it.</li>
+</ul>
+</div>
+<div class="section" id="service-groups">
+<span id="servicegroups"></span><h2>Service Groups<a class="headerlink" href="#service-groups" title="Permalink to this headline">¶</a></h2>
+<p>To add a service group:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Configuration</strong> ==&gt; <strong>Services</strong></li>
+<li>In the left menu, click on <strong>Service Groups</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../_images/07servicegroup.png" class="align-center" src="../_images/07servicegroup.png" />
+<ul class="simple">
+<li>The <strong>Service Group Name</strong> and <strong>Description</strong> fields describes the name and the description of the service group.</li>
+<li>The <strong>Linked Host Services</strong> list allows us to choose the various services that will be included in this group.</li>
+<li>The <strong>Linked Host Group Services</strong> list allows us to choose the services linked to a host group that will be part of this group.</li>
+<li>The <strong>Linked Service Templates</strong> list allows to deploy a service based on this template on all hosts linked to this group.</li>
+<li>The <strong>Status</strong> and <strong>Comments</strong> fields allow to enable or disable the service group and to make comment on it.</li>
+</ul>
+</div>
+<div class="section" id="contact-groups">
+<span id="contactgroups"></span><h2>Contact Groups<a class="headerlink" href="#contact-groups" title="Permalink to this headline">¶</a></h2>
+<p>To add a group of contacts:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Configuration</strong> ==&gt; <strong>Users</strong></li>
+<li>In the left menu, click on <strong>Contact Groups</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../_images/07contactgroup.png" class="align-center" src="../_images/07contactgroup.png" />
+<ul class="simple">
+<li>The <strong>Contact Group Name</strong> and <strong>Alias</strong> fields define the name and the description of the contact group.</li>
+<li>The <strong>Linked Contacts</strong> list allows us to add contacts to the contact group.</li>
+<li>The <strong>Status</strong> and <strong>Comment</strong> fields allow to enable or disable the group of contacts and to make comment on it.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For more information refer to the associated chapter covering <a class="reference internal" href="../administration_guide/02j.html#categoriesandgroups"><span>groups</span></a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Groups</a><ul>
+<li><a class="reference internal" href="#host-groups">Host Groups</a></li>
+<li><a class="reference internal" href="#service-groups">Service Groups</a></li>
+<li><a class="reference internal" href="#contact-groups">Contact Groups</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="06contact.html"
+                        title="previous chapter">Contacts</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="08category.html"
+                        title="next chapter">Categories</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/configuration_guide/07groups.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="08category.html" title="Categories"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="06contact.html" title="Contacts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Configuration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

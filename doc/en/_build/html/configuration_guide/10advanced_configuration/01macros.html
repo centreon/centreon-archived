@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Macros &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="Advanced configuration" href="index.html" />
+    <link rel="next" title="Meta-services" href="02metaservices.html" />
+    <link rel="prev" title="Advanced configuration" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="02metaservices.html" title="Meta-services"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Advanced configuration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Configuration</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">Advanced configuration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="macros">
+<span id="id1"></span><h1>Macros<a class="headerlink" href="#macros" title="Permalink to this headline">¶</a></h1>
+<p>A macro is a variable used to retrieve certain values.
+A macro always starts and finishes by the “$” sign.</p>
+<div class="section" id="standard-macros">
+<h2>Standard macros<a class="headerlink" href="#standard-macros" title="Permalink to this headline">¶</a></h2>
+<p>Standard macros are macros predefined in the source code of the monitoring engines. These different macros allow us to retrieve the value of various objects from commands.</p>
+<p>E.g.:
+* The macro called <strong>$HOSTADDRESS$</strong> enables us to retrieve the IP address of a host
+* The macro called <strong>$CONTACTEMAIL$</strong> enables us to retrieve the e-mail address of the contact</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A complete list of macros is available at the following address: <a class="reference external" href="http://nagios.sourceforge.net/docs/3_0/macrolist.html">List of macros</a></p>
+</div>
+</div>
+<div class="section" id="custom-macros">
+<span id="custommacros"></span><h2>Custom macros<a class="headerlink" href="#custom-macros" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="definition">
+<h3>Definition<a class="headerlink" href="#definition" title="Permalink to this headline">¶</a></h3>
+<p>Customised macros are macros defined by the user at the creation of a host or a service. They are used in check commands. Customised macros start with $_HOST for customised macros of hosts and by $_SERVICE for customised macros of services.</p>
+<p>There are several advantages to using customised macros instead of arguments:</p>
+<ul class="simple">
+<li>The function of the macro is defined in its name. The macro $_HOSTMOTDEPASSEINTRANET$ is easier to read than $ARG1$</li>
+<li>The macros inherit models of hosts and of services, the hence it is possible to modify a single macro for a host or a service. On the other hand, the arguments all need to be redefined if a single argument is changed</li>
+<li>The number of arguments is limited to 32, unlike customised macros which are unlimited</li>
+</ul>
+<p>A macro of a host is used to define a variable that is specific to the host and which will not change regardless of the service questioned: host connection identifiers, a port of connection to a particular service, an SNMP community, etc.
+A macro of a service is used more to define settings specific to a service: a WARNING / CRITICAL threshold, a partition to be questioned, etc.</p>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>During the definition of a host, the following macros are created:</p>
+<img alt="../../_images/01hostmacros.png" class="align-center" src="../../_images/01hostmacros.png" />
+<p>To retrieve these macros in a check command, you need to call it using the following variables: $_HOSTUSERLOGIN$, $_HOSTUSERPASSWORD$.</p>
+<p>On definition of a service, the following macros are created:</p>
+<img alt="../../_images/01servicemacros.png" class="align-center" src="../../_images/01servicemacros.png" />
+<p>To retrieve these macros in a check command, you need to invoke them using the following variables:  $_SERVICEPARTITION$, $_SERVICEWARNING$, $_SERVICECRITICAL$.</p>
+</div>
+<div class="section" id="a-special-case">
+<h3>A special case<a class="headerlink" href="#a-special-case" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>Community SNMP &amp; Version</strong> fields in a host form automatically generates the following customised macros: $_HOSTSNMPCOMMUNITY$ and $_HOSTSNMPVERSION$.</p>
+</div>
+</div>
+<div class="section" id="resource-macros">
+<h2>Resource macros<a class="headerlink" href="#resource-macros" title="Permalink to this headline">¶</a></h2>
+<p>Macros of resources are global macros that are used by the monitoring engine. These macros can be invoked by any type of command. They come in the form: $USERn$ where ‘n’ lies between 1 and 256.</p>
+<p>In general, these macros are used to make reference to paths containing supervision probes. By default the $USER1$ macro is created, and its value is the following: /usr/lib/nagios/plugins.</p>
+<p>To add a resources macro:</p>
+<ul class="simple">
+<li>Go into the menu: <strong>Configuration ==&gt; Pollers ==&gt; Ressources</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ul>
+<img alt="../../_images/01macrosressources.png" class="align-center" src="../../_images/01macrosressources.png" />
+<ul class="simple">
+<li>The <strong>Resource Name</strong> field defines the name of the resource macro. E.g.: $USER3$</li>
+<li>The <strong>MACRO Expression</strong> field defines the value of the macro.</li>
+<li>The <strong>Linked Instances</strong> list allows us to define which monitoring poller will be able to access this macro.</li>
+<li>The <strong>Status</strong> and <strong>Comment</strong> fields serve to enable / disable the macro and to comment on it.</li>
+</ul>
+</div>
+<div class="section" id="environment-macros">
+<h2>Environment macros<a class="headerlink" href="#environment-macros" title="Permalink to this headline">¶</a></h2>
+<p>Environment macros (also called “to the demand” or “on demand” in English) allow us to retrieve information from all the objects obtained from the supervision. They are used to retrieve, at given moment, the value of an object.</p>
+<p>They are complementary to standard macros. E.g.:</p>
+<ul class="simple">
+<li>The standard macro $CONTACTEMAIL$ makes reference to the e-mail address of the contact who uses the command of notification</li>
+<li>The  environment macro $CONTACTEMAIL:centreon$ returns the e-mail address of the user: “centreon”</li>
+</ul>
+<p>The complete documentation on macros “on demand” is available at this address: <a class="reference external" href="http://nagios.sourceforge.net/docs/3_0/macrolist.html">macro list</a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The use of these macros is not recommended because the search for a value of a setting of an object from another object is a consumer in terms of resources.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The enabling of the setting <strong>Use large installation tweaks</strong> makes it impossible to use environment macros.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Macros</a><ul>
+<li><a class="reference internal" href="#standard-macros">Standard macros</a></li>
+<li><a class="reference internal" href="#custom-macros">Custom macros</a><ul>
+<li><a class="reference internal" href="#definition">Definition</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#a-special-case">A special case</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resource-macros">Resource macros</a></li>
+<li><a class="reference internal" href="#environment-macros">Environment macros</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Advanced configuration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="02metaservices.html"
+                        title="next chapter">Meta-services</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/configuration_guide/10advanced_configuration/01macros.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="02metaservices.html" title="Meta-services"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Advanced configuration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Configuration</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >Advanced configuration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

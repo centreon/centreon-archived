@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Contact Groups &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Object management" href="index.html" />
+    <link rel="next" title="Dependencies" href="dependencies.html" />
+    <link rel="prev" title="Contact templates" href="contact_templates.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="dependencies.html" title="Dependencies"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="contact_templates.html" title="Contact templates"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" accesskey="U">Object management</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="contact-groups">
+<h1>Contact Groups<a class="headerlink" href="#contact-groups" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Object name: <strong>CG</strong></p>
+</div>
+<div class="section" id="show">
+<h2>Show<a class="headerlink" href="#show" title="Permalink to this headline">¶</a></h2>
+<p>In order to list available contact groups, use the <strong>SHOW</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -o CG -a show
+id;name;alias;members
+Guest;Guests Group;gest-user1,guest-user2
+Supervisors;Centreon supervisors;Admin
+</pre></div>
+</div>
+<p>Columns are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Name</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>Alias</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>Members</td>
+<td>List of contacts that are in the contact group</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="add">
+<h2>Add<a class="headerlink" href="#add" title="Permalink to this headline">¶</a></h2>
+<p>In order to add a contact group, use the <strong>ADD</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -o CG -a ADD -v &quot;Windows;Windows admins&quot;
+</pre></div>
+</div>
+<p>Required fields are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="35%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Name</td>
+<td>Name</td>
+</tr>
+<tr class="row-odd"><td>Alias</td>
+<td>Alias</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="del">
+<h2>Del<a class="headerlink" href="#del" title="Permalink to this headline">¶</a></h2>
+<p>In order to delete one contact group, use the <strong>DEL</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -o CG -a DEL -v &quot;Windows&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="setparam">
+<h2>Setparam<a class="headerlink" href="#setparam" title="Permalink to this headline">¶</a></h2>
+<p>In order to change the name or the alias of a contactgroup, use the <strong>SETPARAM</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -o CG -a setparam -v &quot;Windows;name;Windows-2K&quot;
+[root@centreon core]# ./centreon -u admin -p centreon -o CG -a setparam -v &quot;Cisco;alias;Cisco-Routers&quot;
+</pre></div>
+</div>
+<p>Parameters that you can change are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>Name</td>
+</tr>
+<tr class="row-odd"><td>alias</td>
+<td>Alias</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="enable">
+<h2>Enable<a class="headerlink" href="#enable" title="Permalink to this headline">¶</a></h2>
+<p>In order to enable a contact group, use the <strong>ENABLE</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -o CG -a enable -v &quot;Guest&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="disable">
+<h2>Disable<a class="headerlink" href="#disable" title="Permalink to this headline">¶</a></h2>
+<p>In order to disable a contact group, use the <strong>DISABLE</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -o CG -a disable -v &quot;Guest&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="getcontact">
+<h2>Getcontact<a class="headerlink" href="#getcontact" title="Permalink to this headline">¶</a></h2>
+<p>In order to view the contact list of a contact group, use the <strong>GETCONTACT</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -o CG -a getcontact -v &quot;Guest&quot;
+id;name
+1;User1
+2;User2
+</pre></div>
+</div>
+<p>Columns are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ID</td>
+<td>Id of contact</td>
+</tr>
+<tr class="row-odd"><td>Name</td>
+<td>Name of contact</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="addcontact-and-setcontact">
+<h2>Addcontact and Setcontact<a class="headerlink" href="#addcontact-and-setcontact" title="Permalink to this headline">¶</a></h2>
+<p>In order to add a contact to a contact group, use the <strong>ADDCONTACT</strong> or <strong>SETCONTACT</strong> action where &#8216;add&#8217; will append and &#8216;set&#8217; will overwrite previous definitions:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -o CG -a addcontact -v &quot;Guest;User1&quot;
+[root@centreon core]# ./centreon -u admin -p centreon -o CG -a setcontact -v &quot;Guest;User1|User2&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="delcontact">
+<h2>Delcontact<a class="headerlink" href="#delcontact" title="Permalink to this headline">¶</a></h2>
+<p>In order to remove a contact from a contact group, use the <strong>DELCONTACT</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -o CG -a delcontact -v &quot;Guest;User1&quot;
+[root@centreon core]# ./centreon -u admin -p centreon -o CG -a delcontact -v &quot;Guest;User2&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Contact Groups</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#show">Show</a></li>
+<li><a class="reference internal" href="#add">Add</a></li>
+<li><a class="reference internal" href="#del">Del</a></li>
+<li><a class="reference internal" href="#setparam">Setparam</a></li>
+<li><a class="reference internal" href="#enable">Enable</a></li>
+<li><a class="reference internal" href="#disable">Disable</a></li>
+<li><a class="reference internal" href="#getcontact">Getcontact</a></li>
+<li><a class="reference internal" href="#addcontact-and-setcontact">Addcontact and Setcontact</a></li>
+<li><a class="reference internal" href="#delcontact">Delcontact</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="contact_templates.html"
+                        title="previous chapter">Contact templates</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="dependencies.html"
+                        title="next chapter">Dependencies</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/api/clapi/objects/contact_groups.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="dependencies.html" title="Dependencies"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="contact_templates.html" title="Contact templates"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" >Object management</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

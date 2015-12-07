@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Administration &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="FAQ" href="index.html" />
+    <link rel="next" title="Performance" href="performance.html" />
+    <link rel="prev" title="FAQ" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="performance.html" title="Performance"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="FAQ"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">FAQ</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="administration">
+<h1>Administration<a class="headerlink" href="#administration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="how-does-the-empty-all-services-data-action-work">
+<h2>How does the <em>Empty all services data</em> action work?<a class="headerlink" href="#how-does-the-empty-all-services-data-action-work" title="Permalink to this headline">¶</a></h2>
+<p>In order to preserve global performance, this action won&#8217;t remove all
+data from the database right after you launched it. Entries will be
+removed from <code class="docutils literal"><span class="pre">index_data</span></code> and <code class="docutils literal"><span class="pre">metrics</span></code> tables but not from
+<code class="docutils literal"><span class="pre">data_bin</span></code>.</p>
+<p>The main reason for that is <code class="docutils literal"><span class="pre">data_bin</span></code> quickly stores a huge amount
+of data and uses the <code class="docutils literal"><span class="pre">MyISAM</span></code> engine which doesn&#8217;t support per-row
+locking. If you try to remove too many entries simultaneously, you
+could block all your database for several hours.</p>
+<p>Anyway, it doesn&#8217;t mean the data will stay into your database
+indefinitely. It will be removed in the future, depending on you data
+retention policy.</p>
+</div>
+<div class="section" id="no-graph-seems-to-be-generated-what-should-i-look-into">
+<h2>No graph seems to be generated, what should I look into?<a class="headerlink" href="#no-graph-seems-to-be-generated-what-should-i-look-into" title="Permalink to this headline">¶</a></h2>
+<p>There are various things to check when RRDs don&#8217;t seem to be generated.</p>
+<div class="section" id="disk-space">
+<h3>Disk space<a class="headerlink" href="#disk-space" title="Permalink to this headline">¶</a></h3>
+<p>By default, the graph files (.rrd) are stored in <code class="docutils literal"><span class="pre">/var/lib/centreon/metrics</span></code>,
+it is obviously necessary to have enough space in your filesystem.</p>
+</div>
+<div class="section" id="permissions">
+<h3>Permissions<a class="headerlink" href="#permissions" title="Permalink to this headline">¶</a></h3>
+<p>Can the .rrd files be written in the <code class="docutils literal"><span class="pre">/var/lib/centreon/metrics</span></code> directory?
+Process that usally writes in this directory is either <code class="docutils literal"><span class="pre">centstorage</span></code> or <code class="docutils literal"><span class="pre">cbd</span></code>.</p>
+</div>
+<div class="section" id="plugins">
+<h3>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h3>
+<p>Does your plugin return the correct output? Refer to the
+<a class="reference external" href="http://documentation.centreon.com/docs/centreon-engine/en/latest/user/configuration/advanced/centengine_plugin_api.html#centengine-plugin-api" title="(in Centreon Engine v1.4)"><span class="xref std std-ref">Plugin API documentation</span></a>
+for more information</p>
+</div>
+<div class="section" id="if-you-are-using-ndoutils">
+<h3>If you are using NDOUtils<a class="headerlink" href="#if-you-are-using-ndoutils" title="Permalink to this headline">¶</a></h3>
+<p>Make sure that <code class="docutils literal"><span class="pre">centstorage</span></code> is running:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ /etc/init.d/centstorage status
+centstorage (pid  30276) is running...
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">service-perfdata</span></code> path of your poller must be correctly set in
+<code class="docutils literal"><span class="pre">Configuration</span></code> &gt; <code class="docutils literal"><span class="pre">Centreon</span></code></p>
+<p>Also this path must match with the one in the <em>process-service-perfdata</em> plugin:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ head -43 plugin_path/process-service-perfdata | tail -1
+PERFFILE=&quot;/var/log/centreon-engine/service-perfdata&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="if-you-are-using-centreon-broker">
+<h3>If you are using Centreon Broker<a class="headerlink" href="#if-you-are-using-centreon-broker" title="Permalink to this headline">¶</a></h3>
+<p>Centreon Broker must be configured properly, refer to this
+<a class="reference internal" href="../configuration_guide/10poller/03wizards.html#centreon-broker-wizards"><span>documentation</span></a> for more information.</p>
+<p>The cbd rrd daemon must be running:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ /etc/init.d/cbd status
+ * cbd_central-rrd is running
+</pre></div>
+</div>
+<p>Make sure to have the <em>Start script for broker daemon</em> parameter filled in
+<code class="docutils literal"><span class="pre">Administration</span></code> &gt; <code class="docutils literal"><span class="pre">Options</span></code> &gt; <code class="docutils literal"><span class="pre">Monitoring</span></code>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Administration</a><ul>
+<li><a class="reference internal" href="#how-does-the-empty-all-services-data-action-work">How does the <em>Empty all services data</em> action work?</a></li>
+<li><a class="reference internal" href="#no-graph-seems-to-be-generated-what-should-i-look-into">No graph seems to be generated, what should I look into?</a><ul>
+<li><a class="reference internal" href="#disk-space">Disk space</a></li>
+<li><a class="reference internal" href="#permissions">Permissions</a></li>
+<li><a class="reference internal" href="#plugins">Plugins</a></li>
+<li><a class="reference internal" href="#if-you-are-using-ndoutils">If you are using NDOUtils</a></li>
+<li><a class="reference internal" href="#if-you-are-using-centreon-broker">If you are using Centreon Broker</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">FAQ</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="performance.html"
+                        title="next chapter">Performance</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/faq/administration.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="performance.html" title="Performance"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="FAQ"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >FAQ</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

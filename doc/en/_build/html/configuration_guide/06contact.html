@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Contacts &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="Configuration" href="index.html" />
+    <link rel="next" title="Groups" href="07groups.html" />
+    <link rel="prev" title="Time periods" href="05timeperiod.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="07groups.html" title="Groups"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="05timeperiod.html" title="Time periods"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Configuration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="contacts">
+<span id="contactconfiguration"></span><h1>Contacts<a class="headerlink" href="#contacts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="definition">
+<h2>Definition<a class="headerlink" href="#definition" title="Permalink to this headline">¶</a></h2>
+<p>The contacts in Centreon are used to:</p>
+<ul class="simple">
+<li>Log in to the Centreon web interface: each contact has its own rights of connection to the web interface.</li>
+<li>Be warned in case of necessity (notification).</li>
+</ul>
+<p>To add  a contact, simply go to the menu: <strong>Configuration ==&gt; Users ==&gt; Add</strong>.</p>
+<img alt="../_images/06useradd.png" class="align-center" src="../_images/06useradd.png" />
+<p>To display the matrix of notification of a contact, click on <strong>View contact notifications</strong> next to the <strong>Add</strong> menu).</p>
+</div>
+<div class="section" id="general-information">
+<h2>General information<a class="headerlink" href="#general-information" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The <strong>Alias/Login</strong> field defined the login to access the web interface.</li>
+<li>The <strong>Full Name</strong> field contains the name and first name of the user.</li>
+<li>The <strong>EMail</strong> and <strong>Pager</strong> fields contain respectively the e-mail address and the telephone number of the user (in the case of a notification by SMS or call for instance).</li>
+<li>The field <strong>Contact template used</strong> allows us to link the contact to a Model of contact.</li>
+<li>The <strong>Linked to Contact Groups</strong> list associated the contact to one or more groups of contacts.</li>
+<li>The <strong>Enable Notifications</strong> field allows us to enable the sending of notifications to the user.</li>
+<li>The <strong>Host / Service Notification Options</strong> field serves to define the statuses to which notifications are sent.</li>
+<li>The <strong>Host / Service Notification Period</strong> field serves to choose the time period in which notifications are sent.</li>
+<li>The <strong>Host / Service Notification Command</strong> field serves to choose the notification command to a host or a service.</li>
+</ul>
+</div>
+<div class="section" id="centreon-authentication">
+<h2>Centreon authentication<a class="headerlink" href="#centreon-authentication" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">The <strong>Reach Centreon Front-end</strong> field serves to authorize the user to access the Centreon web interface.</p>
+</li>
+<li><p class="first">The <strong>Password</strong> and <strong>Confirm Password</strong> fields contain the user password.</p>
+</li>
+<li><p class="first">The <strong>Default Language</strong> field serves to define the language of the Centreon interface for this user.</p>
+</li>
+<li><p class="first">The <strong>Admin</strong> field defined if this user is the administrator of the supervision platform or not.</p>
+</li>
+<li><p class="first">The <strong>Autologin key</strong> serves to define a connection key for the user. The user will no longer need to enter his / her login and password but will use this key to log in directly. Connection syntax:</p>
+<div class="highlight-python"><div class="highlight"><pre>http://[IP_DU_SERVER_CENTRAL]/index.php?autologin=1&amp;useralias=[login_user]&amp;token=[value_autologin]
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The Possibility of automatic connection (auto login) should be enabled in the menu: <strong>Administration ==&gt; Options</strong>.</p>
+</div>
+<ul class="simple">
+<li>The <strong>Authentication Source</strong> field specifies if the connection information comes from an LDAP directory or information stored locally on the server.</li>
+<li>The <strong>Access list groups</strong> field serves to define an access group to a user (group use for access control (ACL)).</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A Administrative user is never concerned by access control even linked to an access group.</p>
+</div>
+</div>
+<div class="section" id="additional-information">
+<h2>Additional information<a class="headerlink" href="#additional-information" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The <strong>Address</strong> fields allow us to specify the data of additional contacts (other e-mails, other telephone numbers, etc.).</li>
+<li>The <strong>Status</strong> and <strong>Comment</strong> fields serve to enable or disable the contact and to make comments on it.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Contacts</a><ul>
+<li><a class="reference internal" href="#definition">Definition</a></li>
+<li><a class="reference internal" href="#general-information">General information</a></li>
+<li><a class="reference internal" href="#centreon-authentication">Centreon authentication</a></li>
+<li><a class="reference internal" href="#additional-information">Additional information</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="05timeperiod.html"
+                        title="previous chapter">Time periods</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="07groups.html"
+                        title="next chapter">Groups</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/configuration_guide/06contact.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="07groups.html" title="Groups"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="05timeperiod.html" title="Time periods"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Configuration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

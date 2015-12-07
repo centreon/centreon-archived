@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Notification escalation &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="Advanced configuration" href="index.html" />
+    <link rel="next" title="Recurrent downtimes" href="05recurrent_downtimes.html" />
+    <link rel="prev" title="Dependencies" href="03dependancy.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="05recurrent_downtimes.html" title="Recurrent downtimes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="03dependancy.html" title="Dependencies"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Configuration</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">Advanced configuration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="notification-escalation">
+<span id="notifications-escalation"></span><h1>Notification escalation<a class="headerlink" href="#notification-escalation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="definition">
+<h2>Definition<a class="headerlink" href="#definition" title="Permalink to this headline">¶</a></h2>
+<p>Generally, if an alert is triggered, a notification serves to contact one or more contacts (or groups of contacts). In the same way it is possible to send multiple notifications at regular time intervals.</p>
+<p>An escalation of notifications serves to contact various groups of contacts during the notifications process or to change the means of notification (replace mails by an SMS).
+The definition of a notification escalation to a host, a host group, a service, a service group or a meta-service overwrites the normal configuration of notifications for this object.</p>
+<p>E.g.: a service A is set to send notifications to a group of contacts “A” in case of Not-OK status. These notifications are sent every 5 minutes. If during a certain number of notifications sent the status of the service is still Not-OK, it is possible to contact the individuals of the group of contacts “B” etc...</p>
+<p>Escalations of notification are convenient in the situation where level 1, level 2, level 3, etc., support level teams exist within a company. When a problem appears the level 1 support team is contacted. If after a certain time the level 1 team has not succeeded in solving the problem, the level 2 team is alerted, etc.</p>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>To add an escalation of notification:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Configuration</strong> ==&gt; <strong>Notifications</strong> ==&gt; <strong>Escalations</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../../_images/04notificationsescalation.png" class="align-center" src="../../_images/04notificationsescalation.png" />
+<ul class="simple">
+<li>The <strong>Escalation Name</strong> and <strong>Alias</strong> fields serve to define a name and an alias for the notification escalation.</li>
+<li>The <strong>First Notification</strong> field allows us to choose the notification number as of which the group of contacts is alerted.</li>
+<li>The <strong>Last Notification</strong> allows us to choose the last notification number at which the group of contacts is alerted. If the group of contacts is the last level of the escalation the value of this field is 0.</li>
+<li>The <strong>Notification Interval</strong> field defines the notification interval between alerts.</li>
+<li>The <strong>Escalation Period</strong> field defines the notification time period.</li>
+<li>The <strong>Hosts Escalation Options</strong> and <strong>Services Escalation Options</strong> service escalation fields define the statuses of hosts and of services for which the escalation is used.</li>
+<li>The <strong>Linked Contact Groups</strong> defines the group of contacts to be contacted on triggering the escalation.</li>
+<li>The <strong>Comments</strong> field can be used to comment on the escalation.</li>
+</ul>
+<div class="section" id="application-of-the-escalation">
+<h3>Application of the escalation<a class="headerlink" href="#application-of-the-escalation" title="Permalink to this headline">¶</a></h3>
+<p>To select the various objects that will be concerned by this escalation, the <strong>Hosts Escalation</strong>, <strong>Services Escalation</strong>, <strong>Hostgroups Escalation</strong>, <strong>Meta Service Escalation</strong> and <strong>Servicegroups Escalation</strong> tabs serve to choose the objects to which the escalations are applied.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Notification escalation</a><ul>
+<li><a class="reference internal" href="#definition">Definition</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="#application-of-the-escalation">Application of the escalation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="03dependancy.html"
+                        title="previous chapter">Dependencies</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="05recurrent_downtimes.html"
+                        title="next chapter">Recurrent downtimes</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/configuration_guide/10advanced_configuration/04notifications_escalation.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="05recurrent_downtimes.html" title="Recurrent downtimes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="03dependancy.html" title="Dependencies"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Configuration</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >Advanced configuration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Categories &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="Configuration" href="index.html" />
+    <link rel="next" title="Templates" href="09models.html" />
+    <link rel="prev" title="Groups" href="07groups.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="09models.html" title="Templates"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="07groups.html" title="Groups"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Configuration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="categories">
+<h1>Categories<a class="headerlink" href="#categories" title="Permalink to this headline">¶</a></h1>
+<p>Categories are used to define ACLs on the hosts and the services. The aim is to be able to classify the hosts or the services within a category.</p>
+<p>Centreon 2.4 includes a new functionality called “Severity”. As from version 2.5, the levels of criticality are linked to a category, they have become a type of category. A criticality level is an indicator for defining the criticality of a host or a service. The aim is to be able to handle the problems of hosts or services by order of priority. By this system, it is thus possible to filter the objects in the “Supervision” views by criticality.</p>
+<div class="section" id="host-categories">
+<span id="hostcategory"></span><h2>Host categories<a class="headerlink" href="#host-categories" title="Permalink to this headline">¶</a></h2>
+<p>To add a category of hosts:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Configuration ==&gt; Hosts</strong></li>
+<li>In the left menu, click on <strong>Categories</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../_images/08hostcategory.png" class="align-center" src="../_images/08hostcategory.png" />
+<ul class="simple">
+<li>The <strong>Host Category Name</strong> and <strong>Alias</strong> fields contain respectively the name and the alias of the category of host.</li>
+<li>The <strong>Linked hosts</strong> list allows us to add hosts to the category.</li>
+<li>If a host template is added to <strong>Linked host template</strong> list all the hosts which inherit from this Model belong to this category.</li>
+<li>The <strong>Severity type</strong> box signifies that the category of hosts has a criticality level.</li>
+<li>The <strong>Level</strong> and <strong>Icon</strong> fields define a criticality level and an associated icon respectively.</li>
+<li>The <strong>Status</strong> and <strong>Comment</strong> fields allow us to enable or disable the category of host and to comment on it.</li>
+</ul>
+</div>
+<div class="section" id="categories-of-services">
+<h2>Categories of services<a class="headerlink" href="#categories-of-services" title="Permalink to this headline">¶</a></h2>
+<p>To add a category of services:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Configuration ==&gt; Services</strong></li>
+<li>In the left menu, click on <strong>Categories</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../_images/08servicecategory.png" class="align-center" src="../_images/08servicecategory.png" />
+<ul class="simple">
+<li>The <strong>Name</strong> and <strong>Description</strong> fields define the name and the description of the category of service.</li>
+<li>if a service template is added to <strong>Service Template Descriptions</strong> list all the services which inherit from this Model belong to this category.</li>
+<li>The <strong>Severity type</strong> box signifies that the category of service has a criticality level.</li>
+<li>The <strong>Level</strong> and <strong>Icon</strong> fields define a criticality level and an associated icon respectively.</li>
+<li>The <strong>Status</strong> field allows us to enable or disable the category of services.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For more information refer to the associated chapter covering <a class="reference internal" href="../administration_guide/02j.html#categoriesandgroups"><span>categories</span></a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Categories</a><ul>
+<li><a class="reference internal" href="#host-categories">Host categories</a></li>
+<li><a class="reference internal" href="#categories-of-services">Categories of services</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="07groups.html"
+                        title="previous chapter">Groups</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="09models.html"
+                        title="next chapter">Templates</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/configuration_guide/08category.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="09models.html" title="Templates"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="07groups.html" title="Groups"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Configuration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

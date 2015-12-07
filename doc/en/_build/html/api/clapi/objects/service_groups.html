@@ -1,0 +1,277 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Service groups &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Object management" href="index.html" />
+    <link rel="next" title="Service categories" href="service_categories.html" />
+    <link rel="prev" title="Services" href="services.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="service_categories.html" title="Service categories"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="services.html" title="Services"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" accesskey="U">Object management</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="service-groups">
+<h1>Service groups<a class="headerlink" href="#service-groups" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Object name: <strong>SG</strong></p>
+</div>
+<div class="section" id="show">
+<h2>Show<a class="headerlink" href="#show" title="Permalink to this headline">¶</a></h2>
+<p>In order to list available servicegroups, use the <strong>SHOW</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o SG -a show
+id;name;alias
+11;Alfresco;Alfresco Services
+</pre></div>
+</div>
+</div>
+<div class="section" id="add">
+<h2>Add<a class="headerlink" href="#add" title="Permalink to this headline">¶</a></h2>
+<p>In order to add a servicegroup, use the <strong>ADD</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o SG -a ADD -v &quot;Alfresco;Alfresco Services&quot;
+</pre></div>
+</div>
+<p>Required fields are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Name of service group</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Alias of service group</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="del">
+<h2>Del<a class="headerlink" href="#del" title="Permalink to this headline">¶</a></h2>
+<p>In order to remove a servicegroup, use the <strong>DEL</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o SG -a del -v &quot;Alfresco&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="setparam">
+<h2>Setparam<a class="headerlink" href="#setparam" title="Permalink to this headline">¶</a></h2>
+<p>In order to change parameters for a servciegroup, use the <strong>SETPARAM</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o SG -a setparam -v &quot;SG1;name;Web Service&quot;
+</pre></div>
+</div>
+<p>You can change the following parameters:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>activate</td>
+<td><em>1</em> when service is enabled, 0 otherwise</td>
+</tr>
+<tr class="row-odd"><td>name</td>
+<td>Name of service group</td>
+</tr>
+<tr class="row-even"><td>alias</td>
+<td>Alias of service group</td>
+</tr>
+<tr class="row-odd"><td>comment</td>
+<td>Comments regarding service group</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="getservice-and-gethostgroupservice">
+<h2>Getservice and Gethostgroupservice<a class="headerlink" href="#getservice-and-gethostgroupservice" title="Permalink to this headline">¶</a></h2>
+<p>In order to view the members of a service group, use the <strong>GETSERVICE</strong> or <strong>GETHOSTGROUPSERVICE</strong> actions:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o SG -a getservice -v &quot;Web-Access&quot;
+host id;host name;service id;service description
+14;Centreon-Server;28;http
+14;Centreon-Server;29;TCP-80
+
+[root@centreon ~]# ./centreon -u admin -p centreon -o SG -a gethostgroupservice -v &quot;Web-Access&quot;
+hostgroup id;hostgroup name;service id;service description
+22;Web group;31;mysql
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><em>hostgroupservice</em> is a service by hostgroup</p>
+</div>
+</div>
+<div class="section" id="addservice-setservice-addhostgroupservice-and-sethostgroupservice">
+<h2>Addservice, Setservice, Addhostgroupservice and Sethostgroupservice<a class="headerlink" href="#addservice-setservice-addhostgroupservice-and-sethostgroupservice" title="Permalink to this headline">¶</a></h2>
+<p>In order to add a new element to a specific service group, you can use <strong>ADDSERVICE</strong>, <strong>SETSERVICE</strong>, <strong>ADDHOSTGROUPSERVICE</strong>, <strong>SETHOSTGROUPSERVICE</strong> where <em>add</em> will append and <em>set</em> will overwrite previous definitions:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o SG -a addservice -v &quot;Web-Access;www.centreon.com,http&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o SG -a setservice -v &quot;Web-Access;www.centreon.com,TCP-80|www.centreon.com,http|www.centreon.com,mysql&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o SG -a sethostgroupservice -v &quot;Web-Access;web group,TCP-80&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><em>hostgroupservice</em> is a service by hostgroup</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="delservice-and-delhostgroupservice">
+<h2>Delservice and Delhostgroupservice<a class="headerlink" href="#delservice-and-delhostgroupservice" title="Permalink to this headline">¶</a></h2>
+<p>In order to remove a service from a service group, use the <strong>DELSERVICE</strong> or <strong>DELHOSTGROUPSERVICE</strong> actions:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o SG -a delservice -v &quot;Web-Access;www.centreon.com,http&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o SG -a delhostgroupservice -v &quot;Web-Access;Web group,mysql&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><em>hostgroupservice</em> is a service by hostgroup</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Service groups</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#show">Show</a></li>
+<li><a class="reference internal" href="#add">Add</a></li>
+<li><a class="reference internal" href="#del">Del</a></li>
+<li><a class="reference internal" href="#setparam">Setparam</a></li>
+<li><a class="reference internal" href="#getservice-and-gethostgroupservice">Getservice and Gethostgroupservice</a></li>
+<li><a class="reference internal" href="#addservice-setservice-addhostgroupservice-and-sethostgroupservice">Addservice, Setservice, Addhostgroupservice and Sethostgroupservice</a></li>
+<li><a class="reference internal" href="#delservice-and-delhostgroupservice">Delservice and Delhostgroupservice</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="services.html"
+                        title="previous chapter">Services</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="service_categories.html"
+                        title="next chapter">Service categories</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/api/clapi/objects/service_groups.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="service_categories.html" title="Service categories"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="services.html" title="Services"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" >Object management</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

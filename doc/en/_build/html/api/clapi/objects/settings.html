@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Settings &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Object management" href="index.html" />
+    <link rel="next" title="Time periods" href="time_periods.html" />
+    <link rel="prev" title="Service categories" href="service_categories.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="time_periods.html" title="Time periods"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="service_categories.html" title="Service categories"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" accesskey="U">Object management</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="settings">
+<h1>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Object name: <strong>Settings</strong></p>
+</div>
+<div class="section" id="show">
+<h2>Show<a class="headerlink" href="#show" title="Permalink to this headline">¶</a></h2>
+<p>In order to list editable settings, use the <strong>SHOW</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o SETTINGS -a show
+parameter;value
+broker;ndo
+broker_correlator_script;
+centstorage;1
+debug_auth;0
+debug_ldap_import;0
+debug_nagios_import;0
+debug_path;/var/log/centreon/
+debug_rrdtool;0
+enable_autologin;1
+enable_gmt;0
+enable_logs_sync;1
+enable_perfdata_sync;1
+gmt;1
+interval_length;60
+mailer_path_bin;/bin/mail
+nagios_path_img;/usr/share/nagios/html/images/logos/
+perl_library_path;/usr/local/lib
+rrdtool_path_bin;/usr/bin/rrdtool
+snmpttconvertmib_path_bin;/usr/share/centreon/bin/snmpttconvertmib
+snmptt_unknowntrap_log_file;snmptrapd.log
+</pre></div>
+</div>
+</div>
+<div class="section" id="setparam">
+<h2>Setparam<a class="headerlink" href="#setparam" title="Permalink to this headline">¶</a></h2>
+<p>If you want to change a specific parameter of a Vendor, use the <strong>SETPARAM</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o SETTINGS -a setparam -v &quot;;&quot;
+</pre></div>
+</div>
+<p>Arguments are composed of the following columns:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Column description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Parameter name</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Parameter value</td>
+</tr>
+</tbody>
+</table>
+<p>Parameters that you may change are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="41%" />
+<col width="38%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+<th class="head">Possible values and examples</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>broker</td>
+<td>Broker engine</td>
+<td>&#8216;broker&#8217; for Centreon Broker, &#8216;ndo&#8217; for NDOUtils</td>
+</tr>
+<tr class="row-odd"><td>broker_correlator_script</td>
+<td>This parameter is misleading (subject to changes)
+Refers to the Centreon Broker init script</td>
+<td>i.e: /etc/init.d/cbd</td>
+</tr>
+<tr class="row-even"><td>centstorage</td>
+<td>Enable/disable CentStorage</td>
+<td>Enable: &#8216;1&#8217;, Disable: &#8216;0&#8217;</td>
+</tr>
+<tr class="row-odd"><td>debug_auth</td>
+<td>Enable/disable authentication debug</td>
+<td>Enable: &#8216;1&#8217;, Disable: &#8216;0&#8217;</td>
+</tr>
+<tr class="row-even"><td>debug_ldap_import</td>
+<td>Enable/disable LDAP debug</td>
+<td>Enable: &#8216;1&#8217;, Disable: &#8216;0&#8217;</td>
+</tr>
+<tr class="row-odd"><td>debug_nagios_import</td>
+<td>Enable/disable Nagios configuration import</td>
+<td>Enable: &#8216;1&#8217;, Disable: &#8216;0&#8217;</td>
+</tr>
+<tr class="row-even"><td>debug_path</td>
+<td>Debug log files directory</td>
+<td>i.e: /var/log/centreon/</td>
+</tr>
+<tr class="row-odd"><td>debug_rrdtool</td>
+<td>Enable/disable RRDTool debug</td>
+<td>Enable: &#8216;1&#8217;, Disable: &#8216;0&#8217;</td>
+</tr>
+<tr class="row-even"><td>enable_autologin</td>
+<td>Enable/disable autologin</td>
+<td>Enable: &#8216;1&#8217;, Disable: &#8216;0&#8217;</td>
+</tr>
+<tr class="row-odd"><td>enable_gmt</td>
+<td>Enable/disable GMT management</td>
+<td>Enable: &#8216;1&#8217;, Disable: &#8216;0&#8217;</td>
+</tr>
+<tr class="row-even"><td>enable_logs_sync</td>
+<td>Enable/disable CentCore log synchronization
+(not necessary when using Centreon Broker)</td>
+<td>Enable: &#8216;1&#8217;, Disable: &#8216;0&#8217;</td>
+</tr>
+<tr class="row-odd"><td>enable_perfdata_sync</td>
+<td>Enable/disable Centcore PerfData synchronization
+(not necessary when using Centreon Broker)</td>
+<td>Enable: &#8216;1&#8217;, Disable: &#8216;0&#8217;</td>
+</tr>
+<tr class="row-even"><td>gmt</td>
+<td>GMT timezone of monitoring system</td>
+<td>i.e: 2 (for GMT+2)</td>
+</tr>
+<tr class="row-odd"><td>interval_length</td>
+<td>Monitoring interval length in seconds
+(default: 60)</td>
+<td>i.e: 120</td>
+</tr>
+<tr class="row-even"><td>mailer_path_bin</td>
+<td>Mail client bin path</td>
+<td>i.e: /bin/mail</td>
+</tr>
+<tr class="row-odd"><td>nagios_path_img</td>
+<td>Nagios image path</td>
+<td>i.e: /usr/share/nagios/html/images/logos/</td>
+</tr>
+<tr class="row-even"><td>perl_library_path</td>
+<td>Perl library path</td>
+<td>i.e: /usr/local/lib</td>
+</tr>
+<tr class="row-odd"><td>rrdtool_path_bin</td>
+<td>RRDTool bin path</td>
+<td>i.e: /usr/bin/rrdtool</td>
+</tr>
+<tr class="row-even"><td>snmpttconvertmib_path_bin</td>
+<td>SNMPTT mib converter bin path</td>
+<td>i.e: /usr/share/centreon/bin/snmpttconvertmib</td>
+</tr>
+<tr class="row-odd"><td>snmptt_unknowntrap_log_file</td>
+<td>SNMPTT unknown trap log file</td>
+<td>i.e: snmptrapd.log</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Settings</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#show">Show</a></li>
+<li><a class="reference internal" href="#setparam">Setparam</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="service_categories.html"
+                        title="previous chapter">Service categories</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="time_periods.html"
+                        title="next chapter">Time periods</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/api/clapi/objects/settings.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="time_periods.html" title="Time periods"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="service_categories.html" title="Service categories"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" >Object management</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

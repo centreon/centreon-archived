@@ -1,0 +1,496 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Access control list &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="Administration" href="index.html" />
+    <link rel="next" title="Extensions" href="02c.html" />
+    <link rel="prev" title="Administration" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="02c.html" title="Extensions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Administration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Administration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="access-control-list">
+<span id="acl"></span><h1>Access control list<a class="headerlink" href="#access-control-list" title="Permalink to this headline">¶</a></h1>
+<p>Access control lists (ACL) serve to limit users&#8217; access to the web interface Centreon via miscellaneous rules.
+The ACL are also used to create multiple user profiles making possible to focalise on a precise set of resources.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The management of access checks is a function specific to Centreon, the export of the configuration to the monitoring engine is not necessary to enable them.</p>
+</div>
+<p>Access groups are groups containing the Centreon users. For each access group, it is possible to define three types of access:</p>
+<ul class="simple">
+<li>Access filters to resources serve to limit access to Centreon objects (hosts, services, etc.)</li>
+<li>Access filters to menus serve to limit access to Centreon menus</li>
+<li>Access filters on actions serve to limit access to actions that the user can undertake on a monitoring engine or on the resources themselves (program a downtime, stop a monitoring engine, etc.)</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A user can belong to several access groups thus making it possible to add together all the access authorisations.</p>
+</div>
+<p>The ACLs respect very strict rules:</p>
+<ul class="simple">
+<li>Centreon administrators are not subject to ACLs (property of the contact).</li>
+<li>A user (non-administrator) who does not belong to any access group has no right on the monitoring platform (screen empty after logging in).</li>
+<li>The ACLs are recalculated every minute; this why it is sometimes necessary to wait a few seconds before seeing the change applied to the profile.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The addition of additional modules to Centreon sometimes makes it possible to add additional filters to the access groups. E.g.: Centreon modules BI, BAM and MAP can be subjected to filters.</p>
+</div>
+<div class="section" id="access-groups">
+<h2>Access groups<a class="headerlink" href="#access-groups" title="Permalink to this headline">¶</a></h2>
+<p>To add an access group:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Administration</strong> ==&gt; <strong>ACL</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../_images/baccess_group.png" class="align-center" src="../_images/baccess_group.png" />
+<div class="section" id="general-information">
+<h3>General information<a class="headerlink" href="#general-information" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <strong>Group Name</strong> and <strong>Alias</strong> fields define the name and the alias of the group</li>
+<li>The <strong>Linked Contacts</strong> list can be used to link contacts to the access group</li>
+<li>The <strong>Linked Contact Groups</strong> list can be used to link groups of contacts to the access group</li>
+<li>The <strong>Status</strong> field can be used to enable or disable the access group</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The contact group can be groups coming from the LDAP directory connected to the Centreon interface.</p>
+</div>
+</div>
+<div class="section" id="authorizations-information">
+<h3>Authorizations information<a class="headerlink" href="#authorizations-information" title="Permalink to this headline">¶</a></h3>
+<p>The lists presented in this tab can be used to link the various types of access already created to the access group.</p>
+</div>
+</div>
+<div class="section" id="resources-access">
+<h2>Resources Access<a class="headerlink" href="#resources-access" title="Permalink to this headline">¶</a></h2>
+<p>The access filters for the resources serve to limit the viewing of objects (hosts, host groups, services and service groups) to a user profile.</p>
+<p>To add resources access filter:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Administration</strong> ==&gt; <strong>ACL</strong></li>
+<li>In the left menu, click on <strong>Resources Access</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../_images/bressources_filter.png" class="align-center" src="../_images/bressources_filter.png" />
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Once the filters on the resources are set, you can to view the result via the menu: <strong>Check User View</strong>, next to the add option.</p>
+</div>
+<div class="section" id="id1">
+<h3>General information<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <strong>Access list name</strong> and <strong>Description</strong> fields define the name and the description of the filter</li>
+<li>The <strong>Linked groups</strong> list can be used to link access groups to this resource filter</li>
+<li>The <strong>Status</strong> and <strong>Comments</strong> fields serve to enable / disable the filter and to comment on it</li>
+</ul>
+</div>
+<div class="section" id="hosts-resources">
+<h3>Hosts Resources<a class="headerlink" href="#hosts-resources" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>Hosts Resources</strong> tab enables us to add:</p>
+<ul class="simple">
+<li>Hosts</li>
+<li>Host groups</li>
+</ul>
+<p>If the <strong>Include all hosts</strong> or <strong>Include all hostgroups</strong> box is checked, all newly created objects will be added to the filter automatically.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is possible to explicitly exclude hosts from the filter (useful in cases where only 1 or 2 hosts must not be part of the filter) if <em>Include all hosts*</em> or <strong>Include all hostgroups</strong> options are checked.</p>
+</div>
+</div>
+<div class="section" id="services-resources">
+<h3>Services Resources<a class="headerlink" href="#services-resources" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>Services Resources</strong> tab can be used to add service groups to the filter.</p>
+</div>
+<div class="section" id="meta-services">
+<h3>Meta Services<a class="headerlink" href="#meta-services" title="Permalink to this headline">¶</a></h3>
+<p>The Meta-Services tab can be used to add meta-services to the filter.</p>
+</div>
+<div class="section" id="filters">
+<h3>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <strong>Poller Filter</strong> list can be used to select the hosts according to monitoring poller (if none is selected all the pollers are taken into account)</li>
+<li>The <strong>Host Category Filter</strong> list can be used to filter the hosts by category</li>
+<li>The <strong>Service Category Filter</strong> list can be used to filter the services by category</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The filters by poller or by category of object are inclusion filters (UNION). Only the objects belonging to these filters in addition to groups of objects (hosts and services) will be visible.</p>
+</div>
+</div>
+</div>
+<div class="section" id="menus-access">
+<h2>Menus Access<a class="headerlink" href="#menus-access" title="Permalink to this headline">¶</a></h2>
+<p>The access filters to the menu serve to limiter the access to various menus of the Centreon interface.
+The menus are ranked as follows:</p>
+<ul class="simple">
+<li>Level 1 menus (Home, Monitoring, Views, etc.)</li>
+<li>Level 2 menus (Monitoring ==&gt; Hosts, Monitoring ==&gt; Services, etc.)</li>
+<li>Level 3 context menus (Monitoring ==&gt; Services ==&gt; By Hosts / Details)</li>
+<li>Level 4  context menus (Monitoring ==&gt; Services ==&gt; By Hosts / Details ==&gt; Problems)</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To access to a level of menu ‘n-1’, the user must have access to the menu of level ‘n’ otherwise he will not be able to view the menu via the interface. If this is not the case the user will have to access directly to the page concerned via a direct link (autologin, etc.).</p>
+</div>
+<p>To add an access filter to the menus:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Administration</strong> ==&gt; <strong>ACL</strong></li>
+<li>In the left menu, click on <strong>Menus Access</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../_images/bmenu_filter.png" class="align-center" src="../_images/bmenu_filter.png" />
+<ul class="simple">
+<li>The <strong>ACL Definition</strong> and <strong>Alias</strong> fields define the name and the alias of the access filter</li>
+<li>The <strong>Status</strong> field is used to enable or disable the filter</li>
+<li>The <strong>Linked Groups</strong> list can be used to associate an access group to the filter</li>
+<li>The <strong>Accessible Pages</strong> can be used to associate menus to the filter (The parent menu should be checked to be able to access the child menu)</li>
+<li>The <strong>Comments</strong> field gives indications on the filter</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">On the access definition to the <strong>Configuration</strong> ==&gt; <strong>Hosts</strong> and <strong>Configuration</strong> ==&gt; <strong>Service</strong> menus, it is possible to give read only or read / write access to various objects.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">At each addition of a new Centreon module possessing a web interface accessible via a new menu, it should be added in the access groups so that the users can access.</p>
+</div>
+</div>
+<div class="section" id="actions-access">
+<h2>Actions Access<a class="headerlink" href="#actions-access" title="Permalink to this headline">¶</a></h2>
+<p>Filters on actions enable us to limit access to actions that can be performed on resources (hosts and services) and on monitoring engines (stopping notifications, restarting the scheduler, etc.).</p>
+<p>To add an access filter to the actions:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Administration</strong> ==&gt; <strong>ACL</strong></li>
+<li>In the left menu, click on <strong>Actions Access</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../_images/baction_filter.png" class="align-center" src="../_images/baction_filter.png" />
+<ul class="simple">
+<li>The <strong>Action Name</strong> and <strong>Description</strong> fields contain the name of the filter and its description</li>
+<li>The <strong>Linked Groups</strong> list serves to associate an access group to the filter</li>
+</ul>
+<p>The table below describes the general access functionalities:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Associated actions</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Display Top Counter</td>
+<td>The monitoring overview will be displayed at the top of all pages</td>
+</tr>
+<tr class="row-odd"><td>Display Top Counter pollers statistics</td>
+<td>The monitoring poller status overview will be displayed
+at the top of all pages.</td>
+</tr>
+<tr class="row-even"><td>Display Poller Listing</td>
+<td>The poller filter will be available to users
+in the monitoring consoles</td>
+</tr>
+</tbody>
+</table>
+<p>The table below describes all the actions that can be authorised on the scheduler:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Associated actions</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Shutdown Monitoring Engine</td>
+<td>Allows users to stop the monitoring systems</td>
+</tr>
+<tr class="row-odd"><td>Restart Monitoring Engine</td>
+<td>Allows users to restart the monitoring systems</td>
+</tr>
+<tr class="row-even"><td>Enable/Disable notifications</td>
+<td>Allows users to enable or disable notifications</td>
+</tr>
+<tr class="row-odd"><td>Enable/Disable service checks</td>
+<td>Allows users to enable or disable service checks</td>
+</tr>
+<tr class="row-even"><td>Enable/Disable passive service checks</td>
+<td>Allows users to enable or disable passive service checks</td>
+</tr>
+<tr class="row-odd"><td>Enable/Disable passive host checks</td>
+<td>Allows users to enable or disable passive host checks</td>
+</tr>
+<tr class="row-even"><td>Enable/Disable Event Handlers</td>
+<td>Allows users to enable or disable event handlers</td>
+</tr>
+<tr class="row-odd"><td>Enable/Disable Flap Detection</td>
+<td>Allows users to enable or disable flap detection</td>
+</tr>
+<tr class="row-even"><td>Enable/Disable Obsessive service checks</td>
+<td>Allows users to enable or disable obsessive service checks</td>
+</tr>
+<tr class="row-odd"><td>Enable/Disable Obsessive host checks</td>
+<td>Allows users to enable or disable obsessive host checks</td>
+</tr>
+<tr class="row-even"><td>Enable/Disable Performance Data</td>
+<td>Allows users to enable or disable performance data processing</td>
+</tr>
+</tbody>
+</table>
+<p>The table below describes all the actions that can be authorised on services:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Associated actions</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Enable/Disable Checks for a service</td>
+<td>Allows users to enable or disable checks of a service</td>
+</tr>
+<tr class="row-odd"><td>Enable/Disable Notifications
+for a service</td>
+<td>Allows users to enable or disable notifications of a service</td>
+</tr>
+<tr class="row-even"><td>Acknowledge a service</td>
+<td>Allows users to acknowledge a service</td>
+</tr>
+<tr class="row-odd"><td>Re-schedule the next check
+for a service</td>
+<td>Allows users to re-schedule next check of a service</td>
+</tr>
+<tr class="row-even"><td>Re-schedule the next check
+for a service (Forced)</td>
+<td>Allows users to re-schedule next check of a service by placing
+its priority to the top</td>
+</tr>
+<tr class="row-odd"><td>Schedule downtime for a service</td>
+<td>Allows users to schedule downtime on a service</td>
+</tr>
+<tr class="row-even"><td>Add/Delete a comment for a service</td>
+<td>Allows users to add or delete a comment of a service</td>
+</tr>
+<tr class="row-odd"><td>Enable/Disable Event Handler
+for a service</td>
+<td>Allows users to enable or disable the event handler
+processing of a service</td>
+</tr>
+<tr class="row-even"><td>Allows users to enable or disable flap
+detection of a service</td>
+<td>Allows users to enable or disable flap detection of a service</td>
+</tr>
+<tr class="row-odd"><td>Enable/Disable passive checks
+of a service</td>
+<td>Allows users to enable or disable passive checks of a service</td>
+</tr>
+<tr class="row-even"><td>Submit result for a service</td>
+<td>Allows users to submit result to a service</td>
+</tr>
+</tbody>
+</table>
+<p>The table below describes the all the actions that can be authorised on hosts:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Associated actions</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Enable/Disable Checks for a host</td>
+<td>Allows users to enable or disable checks of a host</td>
+</tr>
+<tr class="row-odd"><td>Enable/Disable Notifications for a host</td>
+<td>Allows users to enable or disable notifications of a host</td>
+</tr>
+<tr class="row-even"><td>Acknowledge a host</td>
+<td>Allows users to acknowledge a host</td>
+</tr>
+<tr class="row-odd"><td>Disaknowledge a host</td>
+<td>Allows users to disacknowledge a host</td>
+</tr>
+<tr class="row-even"><td>Schedule the check for a host</td>
+<td>Allows users to re-schedule next check of a host</td>
+</tr>
+<tr class="row-odd"><td>Schedule the check for a host (Forced)</td>
+<td>Allows users to re-schedule next check of a host
+by placing its priority to the top</td>
+</tr>
+<tr class="row-even"><td>Schedule downtime for a host</td>
+<td>Allows users to schedule downtime on a host</td>
+</tr>
+<tr class="row-odd"><td>Add/Delete a comment for a host</td>
+<td>Allows users to add or delete a comment of a host</td>
+</tr>
+<tr class="row-even"><td>Enable/Disable Event Handler for a host</td>
+<td>Allows users to enable or disable the event handler
+processing of a host</td>
+</tr>
+<tr class="row-odd"><td>Enable/Disable Flap Detection
+for a host</td>
+<td>Allows users to enable or disable flap detection of a host</td>
+</tr>
+<tr class="row-even"><td>Enable/Disable Checks services
+of a host</td>
+<td>Allows users to enable or disable all service checks of a host</td>
+</tr>
+<tr class="row-odd"><td>Enable/Disable Notifications services
+of a host</td>
+<td>Allows users to enable or disable service notifications of a host</td>
+</tr>
+<tr class="row-even"><td>Submit result for a host</td>
+<td>Allows users to submit result to a host</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li>The <strong>Status</strong> field is used to enable or disable the filter</li>
+</ul>
+</div>
+<div class="section" id="reload-acl">
+<h2>Reload ACL<a class="headerlink" href="#reload-acl" title="Permalink to this headline">¶</a></h2>
+<p>It is possible of reload the ACLs manually:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Administration</strong> ==&gt; <strong>ACL</strong></li>
+<li>In the left menu, click on <strong>Reload ACL</strong></li>
+<li>Select the user(s) you want to reload the ACL</li>
+<li>In the <strong>More actions</strong> menu, click on <strong>Reload ACL</strong></li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Access control list</a><ul>
+<li><a class="reference internal" href="#access-groups">Access groups</a><ul>
+<li><a class="reference internal" href="#general-information">General information</a></li>
+<li><a class="reference internal" href="#authorizations-information">Authorizations information</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resources-access">Resources Access</a><ul>
+<li><a class="reference internal" href="#id1">General information</a></li>
+<li><a class="reference internal" href="#hosts-resources">Hosts Resources</a></li>
+<li><a class="reference internal" href="#services-resources">Services Resources</a></li>
+<li><a class="reference internal" href="#meta-services">Meta Services</a></li>
+<li><a class="reference internal" href="#filters">Filters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#menus-access">Menus Access</a></li>
+<li><a class="reference internal" href="#actions-access">Actions Access</a></li>
+<li><a class="reference internal" href="#reload-acl">Reload ACL</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Administration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="02c.html"
+                        title="next chapter">Extensions</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/administration_guide/02b.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="02c.html" title="Extensions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Administration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Administration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using CES &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="Set up your monitoring platform" href="index.html" />
+    <link rel="next" title="Using packages" href="from_packages.html" />
+    <link rel="prev" title="Downloads" href="downloads.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="from_packages.html" title="Using packages"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="downloads.html" title="Downloads"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Set up your monitoring platform</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-ces">
+<span id="firststepsces3"></span><h1>Using CES<a class="headerlink" href="#using-ces" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-1-start">
+<h3>Step 1 : Start<a class="headerlink" href="#step-1-start" title="Permalink to this headline">¶</a></h3>
+<p>To install, start your server on the support (created from the ISO file) of the Centreon Enterprise Server.
+Start with the <strong>Install or upgrade an existing system</strong> option</p>
+<a class="reference internal image-reference" href="../_images/abootmenu.png"><img alt="../_images/abootmenu.png" class="align-center" src="../_images/abootmenu.png" /></a>
+<p>Click on <strong>Next</strong></p>
+<a class="reference internal image-reference" href="../_images/adisplayicon.png"><img alt="../_images/adisplayicon.png" class="align-center" src="../_images/adisplayicon.png" /></a>
+</div>
+<div class="section" id="step-2-choice-of-language">
+<h3>Step 2 : Choice of language<a class="headerlink" href="#step-2-choice-of-language" title="Permalink to this headline">¶</a></h3>
+<p>Choose your language and click on <strong>Next</strong>.</p>
+<a class="reference internal image-reference" href="../_images/ainstalllanguage.png"><img alt="../_images/ainstalllanguage.png" class="align-center" src="../_images/ainstalllanguage.png" /></a>
+<p>Select the keyboard used by your system and click on <strong>Next</strong>.</p>
+<a class="reference internal image-reference" href="../_images/akeyboard.png"><img alt="../_images/akeyboard.png" class="align-center" src="../_images/akeyboard.png" /></a>
+</div>
+<div class="section" id="step-3-general-configuration">
+<h3>Step 3 : General configuration<a class="headerlink" href="#step-3-general-configuration" title="Permalink to this headline">¶</a></h3>
+<p>Depending on the type of storage required, choose the options necessary to obtain the partitioning that suits you best.</p>
+<a class="reference internal image-reference" href="../_images/adatastore1.png"><img alt="../_images/adatastore1.png" class="align-center" src="../_images/adatastore1.png" /></a>
+<p>A warning message may appear</p>
+<a class="reference internal image-reference" href="../_images/adatastore2.png"><img alt="../_images/adatastore2.png" class="align-center" src="../_images/adatastore2.png" /></a>
+<p>Choose your hostname and click on <strong>Configure network</strong> in order to modify your network card configuration.</p>
+<p>Select the network card that you want to use and go into &#8220;IPv4 Settings&#8221; or &#8220;IPv6 Settings&#8221; tab (depending on the requirement) to configure the IP address of the interfaces. Click on <strong>Apply</strong> to save the changes.</p>
+<a class="reference internal image-reference" href="../_images/anetworkconfig.png"><img alt="../_images/anetworkconfig.png" class="align-center" src="../_images/anetworkconfig.png" /></a>
+<p>Click on <strong>Close</strong> and  <strong>Next</strong> to continue.</p>
+<p>Select your time zone and click on <strong>Next</strong>.</p>
+<a class="reference internal image-reference" href="../_images/afuseauhoraire.png"><img alt="../_images/afuseauhoraire.png" class="align-center" src="../_images/afuseauhoraire.png" /></a>
+<p>Enter the desired root password, and click on <strong>Next</strong>.</p>
+<p>Select the partitioning options that suit you best. Then validate.</p>
+<a class="reference internal image-reference" href="../_images/apartitionning.png"><img alt="../_images/apartitionning.png" class="align-center" src="../_images/apartitionning.png" /></a>
+</div>
+<div class="section" id="step-4-component-selection">
+<h3>Step 4 : Component selection<a class="headerlink" href="#step-4-component-selection" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="choose-the-server-type">
+<h4>Choose the server type<a class="headerlink" href="#choose-the-server-type" title="Permalink to this headline">¶</a></h4>
+<p>It is possible to choose different options in answer to the question: <strong>Which server type would you like to install?</strong>:</p>
+<a class="reference internal image-reference" href="../_images/aservertoinstall.png"><img alt="../_images/aservertoinstall.png" class="align-center" src="../_images/aservertoinstall.png" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ul class="simple">
+<li>Central server with database : Install Centreon (web interface and database), monitoring engine and broker</li>
+<li>Central server without database : Install Centreon (web interface only), monitoring engine and broker</li>
+<li>Poller server : Install poller (monitoring engine and broker only)</li>
+<li>Database server : Install database server (use with <strong>Central server without database</strong> option)</li>
+</ul>
+<p>In our box, we shall choose the <strong>Centreon Server with database</strong> option.</p>
+<p>Once all these options have been selected, the installation starts.</p>
+<a class="reference internal image-reference" href="../_images/arpminstall.png"><img alt="../_images/arpminstall.png" class="align-center" src="../_images/arpminstall.png" /></a>
+<p>When the installation is finished, click on <strong>Restart</strong>.</p>
+<a class="reference internal image-reference" href="../_images/arestartserver.png"><img alt="../_images/arestartserver.png" class="align-center" src="../_images/arestartserver.png" /></a>
+</div>
+</div>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="via-the-web-interface">
+<span id="installation-web-ces"></span><h3>Via the web interface<a class="headerlink" href="#via-the-web-interface" title="Permalink to this headline">¶</a></h3>
+<p>Log into web interface via : <a class="reference external" href="http://[SERVER_IP]/centreon">http://[SERVER_IP]/centreon</a>.
+The End of installation wizard of Centreon is displayed, click on <strong>Next</strong>.</p>
+<a class="reference internal image-reference" href="../_images/acentreonwelcome.png"><img alt="../_images/acentreonwelcome.png" class="align-center" src="../_images/acentreonwelcome.png" /></a>
+<p>The End of installation wizard of Centreon checks the availability of the modules, click on <strong>Next</strong>.</p>
+<a class="reference internal image-reference" href="../_images/acentreoncheckmodules.png"><img alt="../_images/acentreoncheckmodules.png" class="align-center" src="../_images/acentreoncheckmodules.png" /></a>
+<p>Choose the <strong>centreon-engine</strong> option.</p>
+<a class="reference internal image-reference" href="../_images/amonitoringengine1.png"><img alt="../_images/amonitoringengine1.png" class="align-center" src="../_images/amonitoringengine1.png" /></a>
+<p>Click on <strong>Next</strong>.</p>
+<a class="reference internal image-reference" href="../_images/amonitoringengine2.png"><img alt="../_images/amonitoringengine2.png" class="align-center" src="../_images/amonitoringengine2.png" /></a>
+<p>For the choice of broker, choose <strong>Centreon-broker</strong>.</p>
+<a class="reference internal image-reference" href="../_images/abrokerinfo1.png"><img alt="../_images/abrokerinfo1.png" class="align-center" src="../_images/abrokerinfo1.png" /></a>
+<p>Click on <strong>Next</strong>.</p>
+<a class="reference internal image-reference" href="../_images/abrokerinfo2.png"><img alt="../_images/abrokerinfo2.png" class="align-center" src="../_images/abrokerinfo2.png" /></a>
+<p>Define the data concerning the admin user, click on <strong>Next</strong>.</p>
+<a class="reference internal image-reference" href="../_images/aadmininfo.png"><img alt="../_images/aadmininfo.png" class="align-center" src="../_images/aadmininfo.png" /></a>
+<p>By default, the ‘localhost’ server is defined and the root password is empty. If you use a remote database server, these two data entries must be changed. In our box, we only need to define a password for the user accessing the Centreon databases, i.e. ‘Centreon’, click on <strong>Next</strong>.</p>
+<a class="reference internal image-reference" href="../_images/adbinfo.png"><img alt="../_images/adbinfo.png" class="align-center" src="../_images/adbinfo.png" /></a>
+<p>If the following error message appears: <strong>Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.</strong> Perform the following operation:</p>
+<ol class="arabic simple">
+<li>Log-on to the ‘root’ user on your server</li>
+<li>Modify this file</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre>/etc/my.cnf
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li>Add these lines to the file</li>
+</ol>
+<ol class="arabic simple" start="4">
+<li>Restart mysql service</li>
+</ol>
+<ol class="arabic simple" start="5">
+<li>click on <strong>Refresh</strong></li>
+</ol>
+<p>The End of installation wizard configures the databases, click on <strong>Next</strong>.</p>
+<a class="reference internal image-reference" href="../_images/adbconf.png"><img alt="../_images/adbconf.png" class="align-center" src="../_images/adbconf.png" /></a>
+<p>The installation is finished, click on Finish.</p>
+<a class="reference internal image-reference" href="../_images/aendinstall.png"><img alt="../_images/aendinstall.png" class="align-center" src="../_images/aendinstall.png" /></a>
+<p>You can now log in.</p>
+<a class="reference internal image-reference" href="../_images/aconnection.png"><img alt="../_images/aconnection.png" class="align-center" src="../_images/aconnection.png" /></a>
+</div>
+<div class="section" id="start-monitoring">
+<h3>Start monitoring<a class="headerlink" href="#start-monitoring" title="Permalink to this headline">¶</a></h3>
+<p>To start monitoring engine :</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>On web interface, go to <strong>Configuration</strong> ==&gt; <strong>Monitoring engines</strong></li>
+<li>Leave the default options and click on <strong>Export</strong></li>
+<li>Uncheck <strong>Generate Configuration Files</strong> and <strong>Run monitoring engine debug (-v)</strong></li>
+<li>Check <strong>Move Export Files</strong> and <strong>Restart Monitoring Engine</strong></li>
+<li>Click on <strong>Export</strong> again</li>
+<li>Log into the ‘root’ user on your server</li>
+<li>Start Centreon Broker</li>
+</ol>
+</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre>/etc/init.d/cbd start
+</pre></div>
+</div>
+<p>Monitoring is now working.</p>
+</div>
+<div class="section" id="introduction-to-the-web-interface">
+<h3>Introduction to the web interface<a class="headerlink" href="#introduction-to-the-web-interface" title="Permalink to this headline">¶</a></h3>
+<p>Centreon web interface is made up of several menus, each menu has a specific function:</p>
+<img alt="../_images/amenu.png" class="align-center" src="../_images/amenu.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ul class="simple">
+<li>The <strong>Home</strong> menu enables access to the first home screen after logging in. It summarises the general status of the supervision.</li>
+<li>The <strong>Monitoring</strong> menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.</li>
+<li>The <strong>Reporting</strong> menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.</li>
+<li>The <strong>Configuration</strong> menu serves to configure all monitored objects and the supervision infrastructure.</li>
+<li>The <strong>Administration</strong> menu serves to configure the Centreon web interface and to view the general status of the servers.</li>
+</ul>
+</div>
+<div class="section" id="before-going-further">
+<h3>Before going further<a class="headerlink" href="#before-going-further" title="Permalink to this headline">¶</a></h3>
+<p>it is necessary update the CES 3.3 server. To do this:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Log in as a ‘root’ on the central server</li>
+<li>Enter this command</li>
+</ol>
+</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre>yum -y update
+</pre></div>
+</div>
+<p>Allow the update to run fully and then restart the server in case of a kernel update.</p>
+<p>Start your configuration by clicking <cite>here&lt;configuration_start&gt;&gt;</cite>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Using CES</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a><ul>
+<li><a class="reference internal" href="#step-1-start">Step 1 : Start</a></li>
+<li><a class="reference internal" href="#step-2-choice-of-language">Step 2 : Choice of language</a></li>
+<li><a class="reference internal" href="#step-3-general-configuration">Step 3 : General configuration</a></li>
+<li><a class="reference internal" href="#step-4-component-selection">Step 4 : Component selection</a><ul>
+<li><a class="reference internal" href="#choose-the-server-type">Choose the server type</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="#via-the-web-interface">Via the web interface</a></li>
+<li><a class="reference internal" href="#start-monitoring">Start monitoring</a></li>
+<li><a class="reference internal" href="#introduction-to-the-web-interface">Introduction to the web interface</a></li>
+<li><a class="reference internal" href="#before-going-further">Before going further</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="downloads.html"
+                        title="previous chapter">Downloads</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="from_packages.html"
+                        title="next chapter">Using packages</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/installation/01a.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="from_packages.html" title="Using packages"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="downloads.html" title="Downloads"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Set up your monitoring platform</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

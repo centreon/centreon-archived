@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using packages &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="Set up your monitoring platform" href="index.html" />
+    <link rel="next" title="Using sources" href="from_sources.html" />
+    <link rel="prev" title="Using CES" href="01a.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="from_sources.html" title="Using sources"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="01a.html" title="Using CES"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Set up your monitoring platform</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-packages">
+<span id="install-from-packages"></span><h1>Using packages<a class="headerlink" href="#using-packages" title="Permalink to this headline">¶</a></h1>
+<p>Centreon supplies RPM for its products via the Centreon Enterprise Server (CES) solution Open Sources version available free of charge on our repository.</p>
+<p>These packages have been successfully tested on CentOS and Red Hat environments in 6.x version.</p>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>To install Centreon software from the CES repository, you should first install the file linked to the repository.</p>
+<p>Perform the following command from a user with sufficient rights:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre>$ wget http://yum.centreon.com/standard/3.0/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+</pre></div>
+</div>
+</div></blockquote>
+<p>The repository is now installed.</p>
+<div class="section" id="any-operating-system">
+<h3>Any operating system<a class="headerlink" href="#any-operating-system" title="Permalink to this headline">¶</a></h3>
+<p>SELinux should be disabled; for this, you have to modify the file &#8220;/etc/sysconfig/selinux&#8221; and replace &#8220;enforcing&#8221; by &#8220;disabled&#8221;:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">SELINUX</span><span class="o">=</span><span class="n">disabled</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line :</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">date</span><span class="o">.</span><span class="n">timezone</span> <span class="o">=</span> <span class="n">Europe</span><span class="o">/</span><span class="n">Paris</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>After saving the file, please don&#8217;t forget to restart apache server.</p>
+<p>The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.</p>
+</div>
+</div>
+<div class="section" id="centreon-installation">
+<h2>Centreon installation<a class="headerlink" href="#centreon-installation" title="Permalink to this headline">¶</a></h2>
+<p>You should choose between one of the two configuration processes of your monitoring platform. Centreon recommends the first choice based on the “Centreon Engine” scheduler and the “Centreon Broker” stream multiplexer.</p>
+<div class="section" id="install-a-central-server">
+<h3>Install a central server<a class="headerlink" href="#install-a-central-server" title="Permalink to this headline">¶</a></h3>
+<p>The chapter describes the installation of a Centreon central server.</p>
+<p>Perform the command:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre>$ yum install centreon-base-config-centreon-engine centreon
+</pre></div>
+</div>
+</div></blockquote>
+<p>After this step you should connect to Centreon to finalise the installation process.
+This step is described <a class="reference internal" href="01a.html#installation-web-ces"><span>here</span></a>.</p>
+</div>
+<div class="section" id="installing-a-poller">
+<h3>Installing a poller<a class="headerlink" href="#installing-a-poller" title="Permalink to this headline">¶</a></h3>
+<p>This chapter describes the installation of a collector.</p>
+<p>Perform the command:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre>$ yum install centreon-poller-centreon-engine
+</pre></div>
+</div>
+</div></blockquote>
+<div class="section" id="base-configuration-of-a-poller">
+<h4>Base configuration of a poller<a class="headerlink" href="#base-configuration-of-a-poller" title="Permalink to this headline">¶</a></h4>
+<p>The communication between a central server and a poller server is by SSH.</p>
+<p>You should exchange the SSH keys between the servers.</p>
+<p>If you don’t have any private SSH keys on the central server for the Centreon user:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre>$ su - centreon
+$ ssh-keygen -t rsa
+</pre></div>
+</div>
+</div></blockquote>
+<p>Copy this key on the collector:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre>$ ssh-copy-id centreon@your_poller_ip
+</pre></div>
+</div>
+</div></blockquote>
+<div class="section" id="web-installation">
+<span id="installation-web"></span><h5>Web Installation<a class="headerlink" href="#web-installation" title="Permalink to this headline">¶</a></h5>
+<p>Make sure that your Apache and MySQL servers are up and running before continuing.</p>
+<p>Open your favorite web browser and go to the address:</p>
+<div class="highlight-python"><div class="highlight"><pre>http://SERVER_ADDRESS/centreon
+</pre></div>
+</div>
+<p>You should see the following page:</p>
+<img alt="../_images/setup_1.png" class="align-center" src="../_images/setup_1.png" />
+<p>Click on the <strong>Next</strong> button:</p>
+<img alt="../_images/setup_2.png" class="align-center" src="../_images/setup_2.png" />
+<p>If a package is missing install it and click on the <strong>Refresh</strong> button. Click on the <strong>Next</strong> button as soon as everything is <strong>OK</strong>:</p>
+<img alt="../_images/setup_3_1.png" class="align-center" src="../_images/setup_3_1.png" />
+<p>Select your monitoring engine. Depending on the selection, the settings are different.</p>
+<p>For Centreon Engine:</p>
+<img alt="../_images/setup_3_2.png" class="align-center" src="../_images/setup_3_2.png" />
+<p>Click on the <strong>Next</strong> button as soon as all the fields are filled.</p>
+<img alt="../_images/setup_4.png" class="align-center" src="../_images/setup_4.png" />
+<p>Select your Stream Multiplexer. Depending on the selection, the settings are different.</p>
+<p>For Centreon Broker:</p>
+<img alt="../_images/setup_4_2.png" class="align-center" src="../_images/setup_4_2.png" />
+<p>Click on the <strong>Next</strong> button when all parameters are filled.</p>
+<img alt="../_images/setup_5.png" class="align-center" src="../_images/setup_5.png" />
+<p>Fill the form with your data. Be sure to remember your password. Click on the <strong>next</strong> button.</p>
+<img alt="../_images/setup_6.png" class="align-center" src="../_images/setup_6.png" />
+<p>Fill the form with information about your database. Click on the <strong>Next</strong> button.</p>
+<img alt="../_images/setup_7.png" class="align-center" src="../_images/setup_7.png" />
+<p>The database structure will be installed during this process. All must be validated by <strong>OK</strong>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The installation process may ask you to change the settings of the MySQL server to <strong>add innodb_file_per_table=1</strong> in the configuration file.</p>
+</div>
+<p>Click on the <strong>Next</strong> button.</p>
+<img alt="../_images/setup_8.png" class="align-center" src="../_images/setup_8.png" />
+<p>The installation is now finished, click on the <code class="docutils literal"><span class="pre">Finish</span></code> button, you will be redirected to the login screen:</p>
+<img alt="../_images/aconnection.png" class="align-center" src="../_images/aconnection.png" />
+<p>Enter your credentials to log in.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Using packages</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li><a class="reference internal" href="#any-operating-system">Any operating system</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#centreon-installation">Centreon installation</a><ul>
+<li><a class="reference internal" href="#install-a-central-server">Install a central server</a></li>
+<li><a class="reference internal" href="#installing-a-poller">Installing a poller</a><ul>
+<li><a class="reference internal" href="#base-configuration-of-a-poller">Base configuration of a poller</a><ul>
+<li><a class="reference internal" href="#web-installation">Web Installation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="01a.html"
+                        title="previous chapter">Using CES</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="from_sources.html"
+                        title="next chapter">Using sources</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/installation/from_packages.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="from_sources.html" title="Using sources"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="01a.html" title="Using CES"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Set up your monitoring platform</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

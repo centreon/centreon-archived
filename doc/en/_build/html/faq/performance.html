@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Performance &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="FAQ" href="index.html" />
+    <link rel="next" title="Developer" href="../developer/index.html" />
+    <link rel="prev" title="Administration" href="administration.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../developer/index.html" title="Developer"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="administration.html" title="Administration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">FAQ</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="performance">
+<span id="id1"></span><h1>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h1>
+<p>This is a guide on improving Centreon&#8217;s performance</p>
+<div class="section" id="databases">
+<h2>Databases<a class="headerlink" href="#databases" title="Permalink to this headline">¶</a></h2>
+<p>The database server is one of the central components of Centreon. Its
+performance has a direct impact on the end user application&#8217;s speed. Centreon
+uses two or three databases depending on your monitoring broker:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">centreon</span></code> &#8211; Storing metadata</li>
+<li><code class="docutils literal"><span class="pre">centreon_storage</span></code> &#8211; Real-time monitoring and history</li>
+<li><code class="docutils literal"><span class="pre">centreon_status</span></code> &#8211; Real-time monitoring for <code class="docutils literal"><span class="pre">ndo2db</span></code></li>
+</ul>
+</div></blockquote>
+<p>The database <code class="docutils literal"><span class="pre">centreon_status</span></code> is installed even if you don&#8217;t use <code class="docutils literal"><span class="pre">ndo2db</span></code>.</p>
+<div class="section" id="indexes">
+<h3>Indexes<a class="headerlink" href="#indexes" title="Permalink to this headline">¶</a></h3>
+<p>Databases use indexes to speed up queries. In case indexes are missing queries
+are executed slower.</p>
+<div class="section" id="synchronizing-indexes">
+<span id="id2"></span><h4>Synchronizing indexes<a class="headerlink" href="#synchronizing-indexes" title="Permalink to this headline">¶</a></h4>
+<p>Starting with Centreon <code class="docutils literal"><span class="pre">2.4.0</span></code> for each release, index information files are
+generated. They are found in <code class="docutils literal"><span class="pre">data</span></code> folder usually located next to the
+<code class="docutils literal"><span class="pre">bin</span></code> or <code class="docutils literal"><span class="pre">www</span></code> folders. They are JSON files and there is one for each database:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">centreonIndexes.json</span></code> &#8211; Indexes for <code class="docutils literal"><span class="pre">centreon</span></code> database</li>
+<li><code class="docutils literal"><span class="pre">centreonStorageIndexes.json</span></code> &#8211; Indexes for <code class="docutils literal"><span class="pre">centreon_storage</span></code> database</li>
+<li><code class="docutils literal"><span class="pre">centreonStatusIndexes.json</span></code> &#8211; Indexes for <code class="docutils literal"><span class="pre">centreon_status</span></code> database</li>
+</ul>
+</div></blockquote>
+<p>Check if your database is desynchronized:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ cd CENTREONBINDIR
+$ ./import-mysql-indexes -d centreon -i ../data/centreonIndexes.json
+</pre></div>
+</div>
+<p>If any differences are detected you can synchronize your database. The process
+usually takes several minutes BUT <strong>if your database contains a lot of data and no
+index exists the process may take up to 2 hours</strong>. Make sure you have enough free
+space on the disk because indexes may require a lot of space:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ ./import-mysql-indexes -d centreon -i ../data/centreonIndexes.json -s
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p><strong>Indexes used by foreign keys cannot be synchronized.</strong></p>
+<p class="last"><code class="docutils literal"><span class="pre">-s</span></code> or <code class="docutils literal"><span class="pre">--sync</span></code> options should be used in order to alter the
+database. If you need to specify the username and/or password you can use <code class="docutils literal"><span class="pre">-u</span></code> and
+<code class="docutils literal"><span class="pre">-p</span></code> options respectively.</p>
+</div>
+</div>
+</div>
+<div class="section" id="innodb-optimizations">
+<h3>InnoDB optimizations<a class="headerlink" href="#innodb-optimizations" title="Permalink to this headline">¶</a></h3>
+<p>This section is not documented yet.</p>
+</div>
+<div class="section" id="databases-schema">
+<h3>Databases schema<a class="headerlink" href="#databases-schema" title="Permalink to this headline">¶</a></h3>
+<p>Centreon database schema can be view here :</p>
+<img alt="../_images/centreon.png" src="../_images/centreon.png" />
+<p>Centreon storage database schema can be view here :</p>
+<img alt="../_images/centreon-storage.png" src="../_images/centreon-storage.png" />
+</div>
+</div>
+<div class="section" id="rrdcached">
+<h2>RRDCacheD<a class="headerlink" href="#rrdcached" title="Permalink to this headline">¶</a></h2>
+<p>RRDCacheD is a process to reduce disk I/O during the update of performance&#8217;s graphs and status&#8217; graphs.
+The RRDCacheD process is loaded by the Centreon Broker module and mutualise I/O disques instead of recording
+one by one the data from the collect.</p>
+<div class="section" id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<p>The RRDCacheD process is available in <strong>rrdtool</strong> package and already installed on your server.</p>
+</div>
+<div class="section" id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="main-settings">
+<h4>Main settings<a class="headerlink" href="#main-settings" title="Permalink to this headline">¶</a></h4>
+<p>Edit the <strong>/etc/sysconfig/rrdcached</strong> file and complete informaiton:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Settings for rrdcached</span>
+<span class="n">OPTIONS</span><span class="o">=</span><span class="s">&quot;-m 664 -l unix:/var/rrdtool/rrdcached/rrdcached.sock -s rrdcached -b   /var/rrdtool/rrdcached -w 3600 -z 3600 -f 7200&quot;</span>
+<span class="n">RRDC_USER</span><span class="o">=</span><span class="n">rrdcach</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The order of setting is pretty important. If <strong>-m 664</strong> is define before <strong>-l unix:/var/rrdtool/rrdcached/rrdcached.sock</strong> option then rights will be inccorrect on socket.</p>
+</div>
+<p>Options are following one:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>-w</td>
+<td>Data are written every x seconds on disk (3600s in example reopresent 1h)</td>
+</tr>
+<tr class="row-odd"><td>-z</td>
+<td>Should be less than <strong>-w</strong> option. RRDCacheD uses a range value from [0:-z] to do
+not write in RRDs in same time.</td>
+</tr>
+<tr class="row-even"><td>-f</td>
+<td>Timeout in cache before write data to disk.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Please modify values with you needs.</p>
+</div>
+</div>
+<div class="section" id="groups-configuration">
+<h4>Groups configuration<a class="headerlink" href="#groups-configuration" title="Permalink to this headline">¶</a></h4>
+<p>Create groups using commands:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># usermod -a -g rrdcached centreon-broker</span>
+<span class="c"># usermod -a -g rrdcached apache</span>
+<span class="c"># usermod -a -g centreon rrdcached</span>
+<span class="c"># usermod -a -g centreon-broker rrdcached</span>
+</pre></div>
+</div>
+<p>Restart Apache process:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># /etc/init.d/httpd restart</span>
+</pre></div>
+</div>
+<p>Start RRDCacheD processus:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># /etc/init.d/rrdcached start</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="centreon-web-configuration">
+<h4>Centreon web configuration<a class="headerlink" href="#centreon-web-configuration" title="Permalink to this headline">¶</a></h4>
+<p>Go to <strong>Administration -&gt; Options -&gt; RRDTool</strong> menu, enable processus and set unix socket path:</p>
+<img alt="../_images/rrdcached_config.png" class="align-center" src="../_images/rrdcached_config.png" />
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Instread of configuration was made into <strong>Administration</strong> you need to generate and export configuration of central server and restart cbd process to apply changes.</p>
+</div>
+<img alt="../_images/rrd_file_generator.png" class="align-center" src="../_images/rrd_file_generator.png" />
+</div>
+<div class="section" id="centreon-web-interface">
+<h4>Centreon web interface<a class="headerlink" href="#centreon-web-interface" title="Permalink to this headline">¶</a></h4>
+<p>RRDCacheD don&#8217;t update performence&#8217;s graphs in real time. If a blanc range aapear on right of performence&#8217;s graphs it means that cache are not yet written to disk.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If the <strong>RRDCacheD process crash</strong> (in theory because it&#8217;s a stable process) data will be lost! It is not possible to get data unless rebuild all graphs from Centreon web.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Performance</a><ul>
+<li><a class="reference internal" href="#databases">Databases</a><ul>
+<li><a class="reference internal" href="#indexes">Indexes</a><ul>
+<li><a class="reference internal" href="#synchronizing-indexes">Synchronizing indexes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#innodb-optimizations">InnoDB optimizations</a></li>
+<li><a class="reference internal" href="#databases-schema">Databases schema</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rrdcached">RRDCacheD</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="#main-settings">Main settings</a></li>
+<li><a class="reference internal" href="#groups-configuration">Groups configuration</a></li>
+<li><a class="reference internal" href="#centreon-web-configuration">Centreon web configuration</a></li>
+<li><a class="reference internal" href="#centreon-web-interface">Centreon web interface</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="administration.html"
+                        title="previous chapter">Administration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../developer/index.html"
+                        title="next chapter">Developer</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/faq/performance.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../developer/index.html" title="Developer"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="administration.html" title="Administration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >FAQ</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

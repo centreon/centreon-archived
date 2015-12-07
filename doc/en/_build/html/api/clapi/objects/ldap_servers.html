@@ -1,0 +1,432 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>LDAP configuration &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Object management" href="index.html" />
+    <link rel="next" title="Nagios CFG" href="nagios_cfg.html" />
+    <link rel="prev" title="Instances (Pollers)" href="instances.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="nagios_cfg.html" title="Nagios CFG"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="instances.html" title="Instances (Pollers)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" accesskey="U">Object management</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ldap-configuration">
+<h1>LDAP configuration<a class="headerlink" href="#ldap-configuration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Object name: <strong>LDAP</strong></p>
+</div>
+<div class="section" id="show">
+<h2>Show<a class="headerlink" href="#show" title="Permalink to this headline">¶</a></h2>
+<p>In order to list available LDAP configurations, use the <strong>SHOW</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a show
+id;name;description;status
+3;ad;my ad conf;1
+2;openldap;my openldap conf;1
+[...]
+</pre></div>
+</div>
+<p>Columns are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>ID</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Configuration name</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Configuration description</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>1 when enabled, 0 when disabled</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="add">
+<h2>Add<a class="headerlink" href="#add" title="Permalink to this headline">¶</a></h2>
+<p>In order to add an LDAP configuration, use the <strong>ADD</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a add -v &quot;my new configuration;my description&quot;
+</pre></div>
+</div>
+<p>Required fields are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Configuration name</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Configuration description</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="del">
+<h2>Del<a class="headerlink" href="#del" title="Permalink to this headline">¶</a></h2>
+<p>If you want to remove an LDAP configuration, use the <strong>DEL</strong> action. The Configuration Name is used for identifying the LDAP configuration to delete:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a del -v &quot;my new configuration&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="setparam">
+<h2>Setparam<a class="headerlink" href="#setparam" title="Permalink to this headline">¶</a></h2>
+<p>If you want to change a specific parameter of an LDAP configuration, use the <strong>SETPARAM</strong> action. The Configuration Name is used for identifying the LDAP configuration to update:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a SETPARAM -v &quot;my new configuration;description;my new desc&quot;
+</pre></div>
+</div>
+<p>Parameters use the following order:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Configuration to update</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Parameter key</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Parameter value</td>
+</tr>
+</tbody>
+</table>
+<p>Parameters that you may change are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="37%" />
+<col width="63%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>Configuration name</td>
+</tr>
+<tr class="row-odd"><td>description</td>
+<td>Configuration description</td>
+</tr>
+<tr class="row-even"><td>enable</td>
+<td>1 when enabled, 0 when disabled</td>
+</tr>
+<tr class="row-odd"><td>alias</td>
+<td>Alias</td>
+</tr>
+<tr class="row-even"><td>bind_dn</td>
+<td>Bind DN</td>
+</tr>
+<tr class="row-odd"><td>bind_pass</td>
+<td>Bind password</td>
+</tr>
+<tr class="row-even"><td>group_base_search</td>
+<td>Group base search</td>
+</tr>
+<tr class="row-odd"><td>group_filter</td>
+<td>Group filter</td>
+</tr>
+<tr class="row-even"><td>group_member</td>
+<td>Group member</td>
+</tr>
+<tr class="row-odd"><td>group_name</td>
+<td>Group name</td>
+</tr>
+<tr class="row-even"><td>ldap_auto_import</td>
+<td>Enable or disable auto import (0 or 1)</td>
+</tr>
+<tr class="row-odd"><td>ldap_contact_tmpl</td>
+<td>Contact template to use on import</td>
+</tr>
+<tr class="row-even"><td>ldap_dns_use_domain</td>
+<td>Use domain or not (0 or 1)</td>
+</tr>
+<tr class="row-odd"><td>ldap_search_limit</td>
+<td>Search size limit</td>
+</tr>
+<tr class="row-even"><td>ldap_search_timeout</td>
+<td>Timeout delay (in seconds)</td>
+</tr>
+<tr class="row-odd"><td>ldap_srv_dns</td>
+<td>DNS server (only used when
+ldap_dns_use_domain is set to 1)</td>
+</tr>
+<tr class="row-even"><td>ldap_store_password</td>
+<td>Store password in database or not (0 or 1)</td>
+</tr>
+<tr class="row-odd"><td>ldap_template</td>
+<td>Possible values: Posix, Active Directory</td>
+</tr>
+<tr class="row-even"><td>protocol_version</td>
+<td>Protocl version (2 or 3)</td>
+</tr>
+<tr class="row-odd"><td>user_base_search</td>
+<td>User base search</td>
+</tr>
+<tr class="row-even"><td>user_email</td>
+<td>User email</td>
+</tr>
+<tr class="row-odd"><td>user_filter</td>
+<td>User filter</td>
+</tr>
+<tr class="row-even"><td>user_firstname</td>
+<td>User firstname</td>
+</tr>
+<tr class="row-odd"><td>user_lastname</td>
+<td>User lastname</td>
+</tr>
+<tr class="row-even"><td>user_name</td>
+<td>User name</td>
+</tr>
+<tr class="row-odd"><td>user_pager</td>
+<td>User phone number</td>
+</tr>
+<tr class="row-even"><td>user_group</td>
+<td>User group</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="showserver">
+<h2>Showserver<a class="headerlink" href="#showserver" title="Permalink to this headline">¶</a></h2>
+<p>In order to show the server list of an LDAP configuration, use the <strong>SHOWSERVER</strong> action. The Configuration Name is used for identifying the LDAP configuration to query:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a SHOWSERVER -v &quot;openldap&quot;
+id;address;port;ssl;tls;order
+2;10.30.2.3;389;0;0;1
+</pre></div>
+</div>
+</div>
+<div class="section" id="addserver">
+<h2>Addserver<a class="headerlink" href="#addserver" title="Permalink to this headline">¶</a></h2>
+<p>In order to add a server to an LDAP configuration, use the <strong>ADDSERVER</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a ADDSERVER -v &quot;openldap;10.30.2.15;389;0;1&quot;
+</pre></div>
+</div>
+<p>Required parameters are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Configuration name</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Server address</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Server port</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>Use SSL or not</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>Use TLS or not</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="delserver">
+<h2>Delserver<a class="headerlink" href="#delserver" title="Permalink to this headline">¶</a></h2>
+<p>In order to remove a server from an LDAP configuration, use the <strong>DELSERVER</strong> action. The server ID is used for identifying the server to delete:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a DELSERVER -v 2
+</pre></div>
+</div>
+</div>
+<div class="section" id="setparamserver">
+<h2>Setparamserver<a class="headerlink" href="#setparamserver" title="Permalink to this headline">¶</a></h2>
+<p>In order to update the server parameters of an LDAP configuration, use the <strong>SETPARAMSERVER</strong> action. The server ID is used for identifying the server to update:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a SETPARAMSERVER -v &quot;2;use_ssl;1&quot;
+</pre></div>
+</div>
+<p>Parameters that you may update are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="39%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Description</th>
+<th class="head">Possible values</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>host_address</td>
+<td>Address of the server</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>host_port</td>
+<td>Port of the server</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>host_order</td>
+<td>Priority order
+in case of failover</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>use_ssl</td>
+<td>Use SSL or not</td>
+<td>0 or 1</td>
+</tr>
+<tr class="row-even"><td>use_tls</td>
+<td>Use TLS or not</td>
+<td>0 or 1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">LDAP configuration</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#show">Show</a></li>
+<li><a class="reference internal" href="#add">Add</a></li>
+<li><a class="reference internal" href="#del">Del</a></li>
+<li><a class="reference internal" href="#setparam">Setparam</a></li>
+<li><a class="reference internal" href="#showserver">Showserver</a></li>
+<li><a class="reference internal" href="#addserver">Addserver</a></li>
+<li><a class="reference internal" href="#delserver">Delserver</a></li>
+<li><a class="reference internal" href="#setparamserver">Setparamserver</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="instances.html"
+                        title="previous chapter">Instances (Pollers)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="nagios_cfg.html"
+                        title="next chapter">Nagios CFG</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/api/clapi/objects/ldap_servers.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="nagios_cfg.html" title="Nagios CFG"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="instances.html" title="Instances (Pollers)"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" >Object management</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

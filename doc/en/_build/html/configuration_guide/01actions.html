@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Generic actions &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="Configuration" href="index.html" />
+    <link rel="next" title="Hosts" href="02hosts.html" />
+    <link rel="prev" title="Configuration" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="02hosts.html" title="Hosts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Configuration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Configuration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="generic-actions">
+<h1>Generic actions<a class="headerlink" href="#generic-actions" title="Permalink to this headline">¶</a></h1>
+<p>In the Configuration menu it is possible to perform certain “generic” actions on the various objects.</p>
+<div class="section" id="add-delete">
+<h2>Add / Delete<a class="headerlink" href="#add-delete" title="Permalink to this headline">¶</a></h2>
+<p>The addition of a new object is done via the <strong>Add</strong> instruction next to the <strong>More actions menu...</strong>.</p>
+<p>To delete an object :</p>
+<ol class="arabic simple">
+<li>Select the object(s) that you want to delete by checking the box(s) next to its name.</li>
+<li>In the <strong>More actions...</strong> menu click on <strong>Delete</strong>.</li>
+</ol>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Deletion of an object is final. If you delete an object by accident, you will need to re-create it.
+In the same way, deletion of an object automatically deletes all the objects linked to it and which cannot live without it.
+E.g.: Deletion of a host results in the deletion of all the services associated with this host.</p>
+</div>
+<p>To modify an object, click on its name.</p>
+</div>
+<div class="section" id="duplication">
+<h2>Duplication<a class="headerlink" href="#duplication" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="principle">
+<h3>Principle<a class="headerlink" href="#principle" title="Permalink to this headline">¶</a></h3>
+<p>Duplication of an object enables it to be copied / cloned to be able to re-use its Attributes for the creation of a new object.
+E.g.: I have 10 identical web servers to supervise:</p>
+<ul class="simple">
+<li>I add the first web server with all the necessary Attributes</li>
+<li>I duplicate this host 9 times</li>
+<li>It only remains for me to change the host names and the IP addresses of each duplication to adapt it to the 9 other web servers to be monitored</li>
+</ul>
+<p>Thanks to this method, it is no longer necessary to create each host individually.</p>
+</div>
+<div class="section" id="practice">
+<h3>Practice<a class="headerlink" href="#practice" title="Permalink to this headline">¶</a></h3>
+<p>To duplicate a host:</p>
+<ol class="arabic simple">
+<li>Select  the host that you want to duplicate</li>
+<li>In the <strong>Options column</strong>, enter the number of duplications that you want to obtain</li>
+</ol>
+<img alt="../_images/01duplicate.png" class="align-center" src="../_images/01duplicate.png" />
+<ol class="arabic simple" start="3">
+<li>In the <strong>More actions...</strong> menu click on <strong>Duplicate</strong></li>
+</ol>
+<img alt="../_images/01duplicateobjects.png" class="align-center" src="../_images/01duplicateobjects.png" />
+</div>
+</div>
+<div class="section" id="massive-change">
+<h2>Massive Change<a class="headerlink" href="#massive-change" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Principle<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Massive change enable us to apply a change to multiple objects.</p>
+<p>E.g.: All the web servers previously created change SNMP communities.
+A massive change enables us to change this community without it being necessary to change each sheet of each host individually.</p>
+</div>
+<div class="section" id="id2">
+<h3>Practice<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>To perform a massive change:</p>
+<ol class="arabic simple">
+<li>Select the objects you want change</li>
+<li>In the <strong>More Actions...</strong> menu click on <strong>Massive Change</strong></li>
+</ol>
+<p>The change menu opens, there are 2 types to change :</p>
+<ul class="simple">
+<li>Incremental: signifies that the change will be added to the existing options</li>
+<li>Replacement: signifies that the change will overwrite the existing options</li>
+</ul>
+</div>
+</div>
+<div class="section" id="enable-disable">
+<h2>Enable / disable<a class="headerlink" href="#enable-disable" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>Principle<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>The enabling and disenabling of objects enables us to take the object into account or not during configuration generation.
+The main advantage is to be able to keep the configuration of an object without applying it.</p>
+</div>
+<div class="section" id="id4">
+<h3>Practice<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>To enable / disable an object:</p>
+<ol class="arabic simple">
+<li>Select the objects you want change</li>
+<li>In the <strong>more actions...</strong>  menu click on <strong>Enable / disable</strong></li>
+</ol>
+<p>It is also possible to enable or disable an object via the “Status” field of the object detail sheet or by using the following icons:</p>
+<ul class="simple">
+<li><img alt="enabled" src="../_images/enabled.png" /> to enable</li>
+<li><img alt="disabled" src="../_images/disabled.png" /> to disable</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Generic actions</a><ul>
+<li><a class="reference internal" href="#add-delete">Add / Delete</a></li>
+<li><a class="reference internal" href="#duplication">Duplication</a><ul>
+<li><a class="reference internal" href="#principle">Principle</a></li>
+<li><a class="reference internal" href="#practice">Practice</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#massive-change">Massive Change</a><ul>
+<li><a class="reference internal" href="#id1">Principle</a></li>
+<li><a class="reference internal" href="#id2">Practice</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#enable-disable">Enable / disable</a><ul>
+<li><a class="reference internal" href="#id3">Principle</a></li>
+<li><a class="reference internal" href="#id4">Practice</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Configuration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="02hosts.html"
+                        title="next chapter">Hosts</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/configuration_guide/01actions.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="02hosts.html" title="Hosts"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Configuration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Configuration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

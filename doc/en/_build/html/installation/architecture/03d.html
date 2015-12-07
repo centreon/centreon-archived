@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Distributed architecture with failover &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="Example of architectures" href="index.html" />
+    <link rel="next" title="Distributed architecture with failover and web GUI for remote server" href="03e.html" />
+    <link rel="prev" title="Distributed architecture with remote DBMS" href="03c.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="03e.html" title="Distributed architecture with failover and web GUI for remote server"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="03c.html" title="Distributed architecture with remote DBMS"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Set up your monitoring platform</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">Example of architectures</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="distributed-architecture-with-failover">
+<h1>Distributed architecture with failover<a class="headerlink" href="#distributed-architecture-with-failover" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>The distributed architecture with remote DBMS is to have three types of entities:</p>
+<ul class="simple">
+<li>A central Centreon server to display information</li>
+<li>One or more remote servers to collect data</li>
+</ul>
+<p>In order to have a failover the centreon central server is duplicated.</p>
+<p>The central Centreon server includes the following items:</p>
+<ul class="simple">
+<li>Centreon web interface</li>
+<li>Monitoring Engine</li>
+<li>Broker</li>
+<li>Databases (MySQL + RRD)</li>
+</ul>
+<p>The remote servers include the following items:</p>
+<ul class="simple">
+<li>Monitoring Engine</li>
+<li>Broker module to forward collected data to a central broker</li>
+</ul>
+<p>This architecture is used for:</p>
+<ul class="simple">
+<li>Enable load balancing across multiple remote monitoring servers</li>
+<li>Network streams isolation: if your monitoring architecture has to monitor a DMZ area, it is easier (and safe) to place a remote server in the DMZ network</li>
+<li>Have a failover system: if the master centreon server is DOWN the other one allows to continue to display data.</li>
+</ul>
+</div>
+<div class="section" id="components">
+<h2>Components<a class="headerlink" href="#components" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="central-centreon-server">
+<h3>Central Centreon server<a class="headerlink" href="#central-centreon-server" title="Permalink to this headline">¶</a></h3>
+<p>There is two types of Centreon central server:</p>
+<ul class="simple">
+<li>A master server</li>
+<li>A slave server which is configured as the master one but with only MySQL and Centreon Broker RRD monitoring processes started.</li>
+</ul>
+<p>Many components are used to build a master Centreon server:</p>
+<ul class="simple">
+<li>Apache web server for Centreon web interface</li>
+<li>The central Centreon server get configuration and collected data from DBMS server</li>
+<li>The Centcore process is used to send monitoring configuration to the remote server and to manage it</li>
+<li>A monitoring engine to collect data</li>
+<li>Collected data are sent to Centreon Broker SQL using cbmod by monitoring engine</li>
+<li>Centreon Broker SQL allows to store information into MariaDB databases and forward them to the two Centreon Broker RRD (master and slave)</li>
+<li>Centreon Broker RRD generates and updates RRD files with data in order to display performance graphs</li>
+</ul>
+<p>A bidirectional MySQL replication allows to store in both databases Centreon configuration and collected data.</p>
+<p>The slave server is used in regular mode to generate and to update RRD files with data in order to display performance graphs.</p>
+<p>In case of failure, the operator has to start the following process on slave server: Apache, CentCore, Centreon Engine and Centreon Broker SQL.
+The slave server becomes master.</p>
+<p>The failover and the management of components are made by Corosync / Pacemaker system.</p>
+</div>
+<div class="section" id="remote-monitoring-server">
+<h3>Remote monitoring server<a class="headerlink" href="#remote-monitoring-server" title="Permalink to this headline">¶</a></h3>
+<p>Many components are used to build a remote server:</p>
+<ul class="simple">
+<li>A monitoring engine to collect data</li>
+<li>Collected data are sent to Centreon Broker SQL using cbmod by monitoring engine</li>
+<li>Centreon Broker SQL allows to store information into MariaDB databases and forward them to Centreon Broker RRD</li>
+<li>Centreon Broker RRD generates and updates RRD files with data in order to display performance graphs</li>
+</ul>
+</div>
+</div>
+<div class="section" id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h2>
+<p>The diagram below summarizes the architecture:</p>
+<img alt="../../_images/dschema.png" class="align-center" src="../../_images/dschema.png" />
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Distributed architecture with failover</a><ul>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#components">Components</a><ul>
+<li><a class="reference internal" href="#central-centreon-server">Central Centreon server</a></li>
+<li><a class="reference internal" href="#remote-monitoring-server">Remote monitoring server</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#architecture">Architecture</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="03c.html"
+                        title="previous chapter">Distributed architecture with remote DBMS</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="03e.html"
+                        title="next chapter">Distributed architecture with failover and web GUI for remote server</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/installation/architecture/03d.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="03e.html" title="Distributed architecture with failover and web GUI for remote server"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="03c.html" title="Distributed architecture with remote DBMS"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Set up your monitoring platform</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >Example of architectures</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

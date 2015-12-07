@@ -1,0 +1,702 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Hosts &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Object management" href="index.html" />
+    <link rel="next" title="Host categories" href="host_categories.html" />
+    <link rel="prev" title="Host templates" href="host_templates.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="host_categories.html" title="Host categories"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="host_templates.html" title="Host templates"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" accesskey="U">Object management</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hosts">
+<span id="id1"></span><h1>Hosts<a class="headerlink" href="#hosts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Object name: HOST</p>
+</div>
+<div class="section" id="show">
+<h2>Show<a class="headerlink" href="#show" title="Permalink to this headline">¶</a></h2>
+<p>In order to list available hosts, use the <strong>SHOW</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a show
+id;name;alias;address;activate
+82;sri-dev1;dev1;192.168.2.1;1
+83;sri-dev2;dev2;192.168.2.2;1
+84;sri-dev3;dev3;192.168.2.3;0
+85;sri-dev4;dev4;192.168.2.4;1
+86;sri-dev5;dev5;192.168.2.5;1
+87;sri-dev6;dev6;192.168.2.6;1
+94;sri-dev7;dev7;192.168.2.7;1
+95;sri-dev8;dev8;192.168.2.8;1
+</pre></div>
+</div>
+<p>Columns are the following :</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ID</td>
+<td>ID of host</td>
+</tr>
+<tr class="row-odd"><td>Name</td>
+<td>Host name</td>
+</tr>
+<tr class="row-even"><td>Alias</td>
+<td>Host alias</td>
+</tr>
+<tr class="row-odd"><td>IP/Address</td>
+<td>IP of host</td>
+</tr>
+<tr class="row-even"><td>Activate</td>
+<td>1 when enabled, 0 when disabled</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="add">
+<h2>Add<a class="headerlink" href="#add" title="Permalink to this headline">¶</a></h2>
+<p>In order to add a host, use the <strong>ADD</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a ADD -v &quot;test;Test host;127.0.0.1;generic-host;central;Linux&quot;
+</pre></div>
+</div>
+<p>Required parameters:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Host name</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Host alias</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Host IP address</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>Host templates; for multiple
+definitions, use delimiter <strong>|</strong></td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>Instance name (poller)</td>
+</tr>
+<tr class="row-odd"><td>6</td>
+<td>Hostgroup; for multiple
+definitions, use delimiter <strong>|</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="del">
+<h2>Del<a class="headerlink" href="#del" title="Permalink to this headline">¶</a></h2>
+<p>In order to delete one host, use the <strong>DEL</strong> action. You have to list the available hosts in order to identify the one you want to delete:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a DEL -v &quot;test&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="setparam">
+<h2>Setparam<a class="headerlink" href="#setparam" title="Permalink to this headline">¶</a></h2>
+<p>In order to change parameters on a host configuration, use the <strong>SETPARAM</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v &quot;test;alias;Development test &quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v &quot;test;address;192.168.1.68&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v &quot;test;check_period;24x7&quot;
+</pre></div>
+</div>
+<p>You may edit the following parameters:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>2d_coords</td>
+<td>2D coordinates (used by statusmap)</td>
+</tr>
+<tr class="row-odd"><td>3d_coords</td>
+<td>3D coordinates (used by statusmap)</td>
+</tr>
+<tr class="row-even"><td>action_url</td>
+<td>Action URL</td>
+</tr>
+<tr class="row-odd"><td>activate</td>
+<td>Whether or not host is enabled</td>
+</tr>
+<tr class="row-even"><td>active_checks_enabled</td>
+<td>Whether or not active checks are enabled</td>
+</tr>
+<tr class="row-odd"><td>address</td>
+<td>Host IP Address</td>
+</tr>
+<tr class="row-even"><td>alias</td>
+<td>Alias</td>
+</tr>
+<tr class="row-odd"><td>check_command</td>
+<td>Check command</td>
+</tr>
+<tr class="row-even"><td>check_command_arguments</td>
+<td>Check command arguments</td>
+</tr>
+<tr class="row-odd"><td>check_interval</td>
+<td>Normal check interval</td>
+</tr>
+<tr class="row-even"><td>check_freshness</td>
+<td>Check freshness (in seconds)</td>
+</tr>
+<tr class="row-odd"><td>check_period</td>
+<td>Check period</td>
+</tr>
+<tr class="row-even"><td>checks_enabled</td>
+<td>Whether or not checks are enabled</td>
+</tr>
+<tr class="row-odd"><td>contact_additive_inheritance</td>
+<td>Enables contact additive inheritance</td>
+</tr>
+<tr class="row-even"><td>cg_additive_inheritance</td>
+<td>Enables contactgroup additive inheritance</td>
+</tr>
+<tr class="row-odd"><td>event_handler</td>
+<td>Event handler command</td>
+</tr>
+<tr class="row-even"><td>event_handler_arguments</td>
+<td>Event handler command arguments</td>
+</tr>
+<tr class="row-odd"><td>event_handler_enabled</td>
+<td>Whether or not event handler is enabled</td>
+</tr>
+<tr class="row-even"><td>first_notification_delay</td>
+<td>First notification delay (in seconds)</td>
+</tr>
+<tr class="row-odd"><td>flap_detection_enabled</td>
+<td>Whether or not flap detection is enabled</td>
+</tr>
+<tr class="row-even"><td>flap_detection_options</td>
+<td>Flap detection options</td>
+</tr>
+<tr class="row-odd"><td>icon_image</td>
+<td>Icon image</td>
+</tr>
+<tr class="row-even"><td>icon_image_alt</td>
+<td>Icon image text</td>
+</tr>
+<tr class="row-odd"><td>max_check_attempts</td>
+<td>Maximum number of attempt before a HARD state is declared</td>
+</tr>
+<tr class="row-even"><td>name</td>
+<td>Host name</td>
+</tr>
+<tr class="row-odd"><td>normal_check_interval</td>
+<td>value in minutes</td>
+</tr>
+<tr class="row-even"><td>notes</td>
+<td>Notes</td>
+</tr>
+<tr class="row-odd"><td>notes_url</td>
+<td>Notes URL</td>
+</tr>
+<tr class="row-even"><td>notifications_enabled</td>
+<td>Whether or not notification is enabled</td>
+</tr>
+<tr class="row-odd"><td>notification_interval</td>
+<td>Notification interval</td>
+</tr>
+<tr class="row-even"><td>notification_options</td>
+<td>Notification options</td>
+</tr>
+<tr class="row-odd"><td>notification_period</td>
+<td>Notification period</td>
+</tr>
+<tr class="row-even"><td>obsess_over_host</td>
+<td>Whether or not obsess over host option is enabled</td>
+</tr>
+<tr class="row-odd"><td>passive_checks_enabled</td>
+<td>Whether or not passive checks are enabled</td>
+</tr>
+<tr class="row-even"><td>process_perf_data</td>
+<td>Process performance data command</td>
+</tr>
+<tr class="row-odd"><td>retain_nonstatus_information</td>
+<td>Whether or not there is non-status retention</td>
+</tr>
+<tr class="row-even"><td>retain_status_information</td>
+<td>Whether or not there is status retention</td>
+</tr>
+<tr class="row-odd"><td>retry_check_interval</td>
+<td>Retry check interval</td>
+</tr>
+<tr class="row-even"><td>snmp_community</td>
+<td>Snmp Community</td>
+</tr>
+<tr class="row-odd"><td>snmp_version</td>
+<td>Snmp version</td>
+</tr>
+<tr class="row-even"><td>stalking_options</td>
+<td>Comma separated options: &#8216;o&#8217; for OK, &#8216;d&#8217; for Down, &#8216;u&#8217; for Unreachable</td>
+</tr>
+<tr class="row-odd"><td>statusmap_image</td>
+<td>Status map image (used by statusmap</td>
+</tr>
+<tr class="row-even"><td>vrml_image</td>
+<td>VRML image</td>
+</tr>
+<tr class="row-odd"><td>host_notification_options</td>
+<td>Notification options (d,u,r,f,s)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="setinstance">
+<h2>Setinstance<a class="headerlink" href="#setinstance" title="Permalink to this headline">¶</a></h2>
+<p>In order to set the instance from which a host will be monitored, use the <strong>SETINSTANCE</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setinstance -v &quot;Centreon-Server;Poller 1&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="getmacro">
+<h2>Getmacro<a class="headerlink" href="#getmacro" title="Permalink to this headline">¶</a></h2>
+<p>In order to view the custom macro list of a host, use the <strong>GETMACRO</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getmacro -v &quot;Centreon-Server&quot;
+macro name;macro value;is_password;description
+$_HOSTMACADDRESS$;00:08:C7:1B:8C:02;0;description of macro
+</pre></div>
+</div>
+</div>
+<div class="section" id="setmacro">
+<h2>Setmacro<a class="headerlink" href="#setmacro" title="Permalink to this headline">¶</a></h2>
+<p>In order to set a custom host macro, use the <strong>SETMACRO</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setmacro -v &quot;Centreon-Server;warning;80;0;description of macro&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setmacro -v &quot;Centreon-Server;critical;90;0;description of macro&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the macro already exists, this action will only update the macro value. Otherwise, macro will be created.</p>
+</div>
+</div>
+<div class="section" id="delmacro">
+<h2>Delmacro<a class="headerlink" href="#delmacro" title="Permalink to this headline">¶</a></h2>
+<p>In order to delete a macro host, use the <strong>DELMACRO</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a delmacro -v &quot;Centreon-Server;warning&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a delmacro -v &quot;Centreon-Server;critical&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="gettemplate">
+<h2>Gettemplate<a class="headerlink" href="#gettemplate" title="Permalink to this headline">¶</a></h2>
+<p>In order to view the template list of a host, use the <strong>GETTEMPLATE</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a gettemplate -v &quot;Centreon-Server&quot;
+id;name
+2;generic-host
+12;Linux-Servers
+</pre></div>
+</div>
+</div>
+<div class="section" id="addtemplate-and-settemplate">
+<h2>Addtemplate and Settemplate<a class="headerlink" href="#addtemplate-and-settemplate" title="Permalink to this headline">¶</a></h2>
+<p>In order to add a host template to an existing host, use the <strong>ADDTEMPLATE</strong> or the <strong>SETTEMPLATE</strong> action, where <em>add</em> will append and <em>set</em> will overwrite previous definitions:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a addtemplate -v &quot;Centreon-Server;srv-Linux&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a settemplate -v &quot;Centreon-Server;hardware-Dell&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All service templates linked to the new host template will be automatically deployed on the existing host. (no longer the case with version later than 1.3.0, use the &#8216;applytpl&#8217; action manually)</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="deltemplate">
+<h2>Deltemplate<a class="headerlink" href="#deltemplate" title="Permalink to this headline">¶</a></h2>
+<p>In order to remove a host template to an existing host, use the <strong>DELTEMPLATE</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a deltemplate -v &quot;test;srv-Linux|hardware-Dell&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="applytpl">
+<h2>Applytpl<a class="headerlink" href="#applytpl" title="Permalink to this headline">¶</a></h2>
+<p>When a template host undergoes modified link-level service template, the change is not automatically reflected in hosts belonging to that template. For the change to take effect, it must then re-apply the template on this host. For this, use the <strong>APPLYTPL</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a applytpl -v &quot;test&quot;
+All new services are now created.
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="getparent">
+<h2>Getparent<a class="headerlink" href="#getparent" title="Permalink to this headline">¶</a></h2>
+<p>In order to view the parents of a host, use the <strong>GETPARENT</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getparent -v &quot;Centreon-Server&quot;
+id;name
+43;server-parent1
+44;server-parent2
+</pre></div>
+</div>
+</div>
+<div class="section" id="addparent-and-setparent">
+<h2>Addparent and Setparent<a class="headerlink" href="#addparent-and-setparent" title="Permalink to this headline">¶</a></h2>
+<p>In order to add a host parent to an host, use the <strong>ADDPARENT</strong> or <strong>SETPARENT</strong> actions where <em>add</em> will append and <em>set</em> will overwrite the previous definitions:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a addparent -v &quot;host;hostParent1&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparent -v &quot;host;hostParent1|hostParent2&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="delparent">
+<h2>Delparent<a class="headerlink" href="#delparent" title="Permalink to this headline">¶</a></h2>
+<p>In order to remove a parent, use the <strong>DELPARENT</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a delparent -v &quot;Centreon-Server;server-parent1|server-parent2&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="getcontactgroup">
+<h2>Getcontactgroup<a class="headerlink" href="#getcontactgroup" title="Permalink to this headline">¶</a></h2>
+<p>In order to view the notification contact groups of a host, use the <strong>GETCONTACTGROUP</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getcontactgroup -v &quot;Centreon-Server&quot;
+id;name
+17;Administrators
+</pre></div>
+</div>
+</div>
+<div class="section" id="addcontactgroup-and-setcontactgroup">
+<h2>Addcontactgroup and Setcontactgroup<a class="headerlink" href="#addcontactgroup-and-setcontactgroup" title="Permalink to this headline">¶</a></h2>
+<p>If you want to add notification contactgroups to a host, use the <strong>ADDCONTACTGROUP</strong> or <strong>SETCONTACTGROUP</strong> actions where <em>add</em> will append and <em>set</em> will overwrite previous definitions:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a addcontactgroup -v &quot;Centreon-Server;Contactgroup1&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setcontactgroup -v &quot;Centreon-Server;Contactgroup1|Contactgroup2&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="delcontactgroup">
+<h2>Delcontactgroup<a class="headerlink" href="#delcontactgroup" title="Permalink to this headline">¶</a></h2>
+<p>If you want to remove notification contactgroups from a host, use the <strong>DELCONTACTGROUP</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a delcontactgroup -v &quot;Centreon-Server;Contactgroup2&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="getcontact">
+<h2>Getcontact<a class="headerlink" href="#getcontact" title="Permalink to this headline">¶</a></h2>
+<p>In order to view the notification contacts of a host, use the <strong>GETCONTACT</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getcontact -v &quot;Centreon-Server&quot;
+id;name
+11;guest
+</pre></div>
+</div>
+</div>
+<div class="section" id="addcontact-and-setcontact">
+<h2>Addcontact and Setcontact<a class="headerlink" href="#addcontact-and-setcontact" title="Permalink to this headline">¶</a></h2>
+<p>If you want to add notification contacts to a host, use the <strong>ADDCONTACT</strong> or <strong>SETCONTACT</strong> actions where <em>add</em> will append and <em>set</em> will overwrite previous definitions:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a addcontact -v &quot;Centreon-Server;Contact1&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setcontact -v &quot;Centreon-Server;Contact1|Contact2&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="delcontact">
+<h2>Delcontact<a class="headerlink" href="#delcontact" title="Permalink to this headline">¶</a></h2>
+<p>If you want to remove a notification contacts from a host, use the <strong>DELCONTACT</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a delcontact -v &quot;Centreon-Server;Contact2&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="gethostgroup">
+<h2>Gethostgroup<a class="headerlink" href="#gethostgroup" title="Permalink to this headline">¶</a></h2>
+<p>In order to view the hostgroups that are tied to a host, use the <strong>GETHOSTGROUP</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a gethostgroup -v &quot;Centreon-Server&quot;
+id;name
+9;Linux-Servers
+</pre></div>
+</div>
+</div>
+<div class="section" id="addhostgroup-and-sethostgroup">
+<h2>Addhostgroup and Sethostgroup<a class="headerlink" href="#addhostgroup-and-sethostgroup" title="Permalink to this headline">¶</a></h2>
+<p>If you want to tie hostgroups to a host, use the <strong>ADDHOSTGROUP</strong> or <strong>SETHOSTGROUP</strong> actions where <em>add</em> will append and <em>set</em> will overwrite previous definitions:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a addhostgroup -v &quot;Centreon-Server;Hostgroup1&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a sethostgroup -v &quot;Centreon-Server;Hostgroup1|Hostgroup2&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="delhostgroup">
+<h2>Delhostgroup<a class="headerlink" href="#delhostgroup" title="Permalink to this headline">¶</a></h2>
+<p>If you want to remove hostgroups from a host, use the <strong>DELHOSTGROUP</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a delhostgroup -v &quot;Centreon-Server;Hostgroup2&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="setseverity">
+<h2>Setseverity<a class="headerlink" href="#setseverity" title="Permalink to this headline">¶</a></h2>
+<p>In order to associate a severity to a host, use the <strong>SETSEVERITY</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setseverity -v &quot;Centreon-Server;Critical&quot;
+</pre></div>
+</div>
+<p>Required parameters:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Host name</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Severity name</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="unsetseverity">
+<h2>Unsetseverity<a class="headerlink" href="#unsetseverity" title="Permalink to this headline">¶</a></h2>
+<p>In order to remove the severity from a host, use the <strong>UNSETSEVERITY</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a unsetseverity -v &quot;Centreon-Server&quot;
+</pre></div>
+</div>
+<p>Required parameters:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Host name</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="enable">
+<h2>Enable<a class="headerlink" href="#enable" title="Permalink to this headline">¶</a></h2>
+<p>In order to enable an host, use the <strong>ENABLE</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a enable -v &quot;test&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+<div class="section" id="disable">
+<h2>Disable<a class="headerlink" href="#disable" title="Permalink to this headline">¶</a></h2>
+<p>In order to disable a host, use the <strong>DISABLE</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a disable -v &quot;test&quot;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to generate your configuration file and restart monitoring engine in order to apply changes.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Hosts</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#show">Show</a></li>
+<li><a class="reference internal" href="#add">Add</a></li>
+<li><a class="reference internal" href="#del">Del</a></li>
+<li><a class="reference internal" href="#setparam">Setparam</a></li>
+<li><a class="reference internal" href="#setinstance">Setinstance</a></li>
+<li><a class="reference internal" href="#getmacro">Getmacro</a></li>
+<li><a class="reference internal" href="#setmacro">Setmacro</a></li>
+<li><a class="reference internal" href="#delmacro">Delmacro</a></li>
+<li><a class="reference internal" href="#gettemplate">Gettemplate</a></li>
+<li><a class="reference internal" href="#addtemplate-and-settemplate">Addtemplate and Settemplate</a></li>
+<li><a class="reference internal" href="#deltemplate">Deltemplate</a></li>
+<li><a class="reference internal" href="#applytpl">Applytpl</a></li>
+<li><a class="reference internal" href="#getparent">Getparent</a></li>
+<li><a class="reference internal" href="#addparent-and-setparent">Addparent and Setparent</a></li>
+<li><a class="reference internal" href="#delparent">Delparent</a></li>
+<li><a class="reference internal" href="#getcontactgroup">Getcontactgroup</a></li>
+<li><a class="reference internal" href="#addcontactgroup-and-setcontactgroup">Addcontactgroup and Setcontactgroup</a></li>
+<li><a class="reference internal" href="#delcontactgroup">Delcontactgroup</a></li>
+<li><a class="reference internal" href="#getcontact">Getcontact</a></li>
+<li><a class="reference internal" href="#addcontact-and-setcontact">Addcontact and Setcontact</a></li>
+<li><a class="reference internal" href="#delcontact">Delcontact</a></li>
+<li><a class="reference internal" href="#gethostgroup">Gethostgroup</a></li>
+<li><a class="reference internal" href="#addhostgroup-and-sethostgroup">Addhostgroup and Sethostgroup</a></li>
+<li><a class="reference internal" href="#delhostgroup">Delhostgroup</a></li>
+<li><a class="reference internal" href="#setseverity">Setseverity</a></li>
+<li><a class="reference internal" href="#unsetseverity">Unsetseverity</a></li>
+<li><a class="reference internal" href="#enable">Enable</a></li>
+<li><a class="reference internal" href="#disable">Disable</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="host_templates.html"
+                        title="previous chapter">Host templates</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="host_categories.html"
+                        title="next chapter">Host categories</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/api/clapi/objects/hosts.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="host_categories.html" title="Host categories"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="host_templates.html" title="Host templates"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" >Object management</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

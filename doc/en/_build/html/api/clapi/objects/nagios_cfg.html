@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Nagios CFG &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Object management" href="index.html" />
+    <link rel="next" title="Ndo2db CFG" href="ndo2db_cfg.html" />
+    <link rel="prev" title="LDAP configuration" href="ldap_servers.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ndo2db_cfg.html" title="Ndo2db CFG"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ldap_servers.html" title="LDAP configuration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" accesskey="U">Object management</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="nagios-cfg">
+<h1>Nagios CFG<a class="headerlink" href="#nagios-cfg" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Object name: <strong>NAGIOSCFG</strong></p>
+</div>
+<div class="section" id="show">
+<h2>Show<a class="headerlink" href="#show" title="Permalink to this headline">¶</a></h2>
+<p>In order to list available Nagios conf, use the <strong>SHOW</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a show
+nagios id;nagios name;instance;nagios comment
+1;Nagios CFG 1;Central;Default Nagios.cfg
+[...]
+</pre></div>
+</div>
+<p>Columns are the following :</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Nagios ID</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Nagios configuration name</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Instance that is linked to nagios.cfg</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>Comments regarding the configuration file</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="add">
+<h2>Add<a class="headerlink" href="#add" title="Permalink to this headline">¶</a></h2>
+<p>In order to add a Nagios conf, use the <strong>ADD</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a add -v &quot;Nagios cfg for poller test;Poller test;Just a small comment&quot;
+</pre></div>
+</div>
+<p>Required fields are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Nagios configuration name</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Instance that is linked to nagios.cfg</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Comment regarding the configuration file</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="del">
+<h2>Del<a class="headerlink" href="#del" title="Permalink to this headline">¶</a></h2>
+<p>If you want to remove a Nagios conf, use the <strong>DEL</strong> action. The name is used for identifying the configuration to delete:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a del -v &quot;Nagios cfg for poller test&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="setparam">
+<h2>Setparam<a class="headerlink" href="#setparam" title="Permalink to this headline">¶</a></h2>
+<p>If you want to change a specific parameter of a Nagios conf, use the <strong>SETPARAM</strong> action. The name is used for identifying the configuration to update:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a setparam -v &quot;Nagios cfg for poller test;cfg_dir;/usr/local/nagios/etc&quot;
+</pre></div>
+</div>
+<p>Arguments are composed of the following columns:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Column description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Name of Nagios configuration</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Parameter name</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Parameter value</td>
+</tr>
+</tbody>
+</table>
+<p>Parameters that you may change are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>nagios_name</td>
+<td>Name</td>
+</tr>
+<tr class="row-odd"><td>instance</td>
+<td>Instance that is linked to nagios.cfg</td>
+</tr>
+<tr class="row-even"><td>broker_module</td>
+<td>example: [...] -v &#8220;Nagios CFG 1;broker_module;/usr/local/nagios/bin/ndomod.o config_file=/usr/local/nagios/etc/ndomod.cfg&#8221;,
+you can use a | delimiter for defining multiple broker modules</td>
+</tr>
+<tr class="row-odd"><td>nagios_activate</td>
+<td><em>1</em> if activated, <em>0</em> otherwise</td>
+</tr>
+<tr class="row-even"><td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Centreon CLAPI handles pretty much all the options available in a nagios configuration file.
+Because the list is quite long, it is best to refer to the official documentation of Nagios</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="addbrokermodule">
+<h2>Addbrokermodule<a class="headerlink" href="#addbrokermodule" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>If you want to add new broker module without removing existing modules, use the <strong>ADDBROKERMODULE</strong>::</dt>
+<dd>[<a class="reference external" href="mailto:root&#37;&#52;&#48;centreon">root<span>&#64;</span>centreon</a> ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a addbrokermodule -v &#8220;Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so&#8221;</dd>
+</dl>
+<p>Arguments are composed of the following columns:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Column description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Name of Nagios configuration</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Module name</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>To add multiple modules in one line, it will put the separator &#8220;|&#8221; between the name of the modules</dt>
+<dd>[<a class="reference external" href="mailto:root&#37;&#52;&#48;centreon">root<span>&#64;</span>centreon</a> ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a addbrokermodule -v &#8220;Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml&#8221;</dd>
+</dl>
+</div>
+<div class="section" id="delbrokermodule">
+<h2>Delbrokermodule<a class="headerlink" href="#delbrokermodule" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>If you want to delete broker module, use the <strong>DELBROKERMODULE</strong>::</dt>
+<dd>[<a class="reference external" href="mailto:root&#37;&#52;&#48;centreon">root<span>&#64;</span>centreon</a> ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a delbrokermodule -v &#8220;Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so&#8221;</dd>
+</dl>
+<p>Arguments are composed of the following columns:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Column description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Name of Nagios configuration</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Module name</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>To delete multiple modules in one line, it will put the separator &#8220;|&#8221; between the name of the modules</dt>
+<dd>[<a class="reference external" href="mailto:root&#37;&#52;&#48;centreon">root<span>&#64;</span>centreon</a> ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a delbrokermodule -v &#8220;Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml&#8221;</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Nagios CFG</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#show">Show</a></li>
+<li><a class="reference internal" href="#add">Add</a></li>
+<li><a class="reference internal" href="#del">Del</a></li>
+<li><a class="reference internal" href="#setparam">Setparam</a></li>
+<li><a class="reference internal" href="#addbrokermodule">Addbrokermodule</a></li>
+<li><a class="reference internal" href="#delbrokermodule">Delbrokermodule</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ldap_servers.html"
+                        title="previous chapter">LDAP configuration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ndo2db_cfg.html"
+                        title="next chapter">Ndo2db CFG</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/api/clapi/objects/nagios_cfg.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ndo2db_cfg.html" title="Ndo2db CFG"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ldap_servers.html" title="LDAP configuration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" >Object management</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

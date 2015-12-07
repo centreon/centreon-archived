@@ -1,0 +1,409 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Poller management &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="CLAPI" href="index.html" />
+    <link rel="next" title="Object management" href="objects/index.html" />
+    <link rel="prev" title="Overview" href="overview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="objects/index.html" title="Object management"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">CLAPI</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="poller-management">
+<h1>Poller management<a class="headerlink" href="#poller-management" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="list-available-pollers">
+<h2>List available pollers<a class="headerlink" href="#list-available-pollers" title="Permalink to this headline">¶</a></h2>
+<p>In order to list available pollers, use the <strong>POLLERLIST</strong> command:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a POLLERLIST
+1       Local Poller
+2       Remote Poller
+</pre></div>
+</div>
+<p>Where 1 is the id of &#8220;Local Poller&#8221; and 2 is the id of &#8220;Remote Poller&#8221;.</p>
+</div>
+<div class="section" id="generate-local-configuration-files-for-a-poller">
+<h2>Generate local configuration files for a poller<a class="headerlink" href="#generate-local-configuration-files-for-a-poller" title="Permalink to this headline">¶</a></h2>
+<p>In order to generate configuration files for poller &#8220;Local Poller&#8221; of id 1, use the <strong>POLLERGENERATE</strong> command:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a POLLERGENERATE -v 1
+Configuration files generated for poller 1
+</pre></div>
+</div>
+<p>You can generate the configuration using the poller name:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a POLLERGENERATE -v &quot;Local Poller&quot;
+Configuration files generated for poller &#39;Local Poller&#39;
+</pre></div>
+</div>
+</div>
+<div class="section" id="test-monitoring-engine-configuration-of-a-poller">
+<h2>Test monitoring engine configuration of a poller<a class="headerlink" href="#test-monitoring-engine-configuration-of-a-poller" title="Permalink to this headline">¶</a></h2>
+<p>In order to test configuration files for poller &#8220;Remote Poller&#8221; of id 2, use the <strong>POLLERTEST</strong> command:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a POLLERTEST -v 1
+OK: Nagios Poller 2 can restart without problem...
+</pre></div>
+</div>
+<p>You can test the configuration using the poller name:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a POLLERTEST -v &quot;Local Poller&quot;
+Warning: Nagios Poller poller can restart but configuration is not optimal. Please see debug bellow :
+---------------------------------------------------------------------------------------------------
+[1440681047] [15559] Reading main configuration file &#39;/usr/share/centreon//filesGeneration/nagiosCFG/5/nagiosCFG.DEBUG&#39;.
+[1440681047] [15559] Warning: temp_path variable ignored
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/hosts.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/hostTemplates.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/serviceTemplates.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/services.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/misccommands.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/checkcommands.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/contactgroups.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/contactTemplates.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/contacts.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/hostgroups.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/servicegroups.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/timeperiods.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/escalations.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/dependencies.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/connectors.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-command.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-contact.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-contactgroup.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-dependencies.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-escalations.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-host.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-services.cfg&#39;
+[1440681047] [15559] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-timeperiod.cfg&#39;
+[1440681047] [15559] Reading resource file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/resource.cfg&#39;
+[1440681047] [15559] Checking global event handlers...
+[1440681047] [15559] Checking obsessive compulsive processor commands...
+[1440681047] [15559]
+[1440681047] [15559] Checked 55 commands.
+[1440681047] [15559] Checked 0 connectors.
+[1440681047] [15559] Checked 7 contacts.
+[1440681047] [15559] Checked 0 host dependencies.
+[1440681047] [15559] Checked 0 host escalations.
+[1440681047] [15559] Checked 0 host groups.
+[1440681047] [15559] Checked 1 hosts.
+[1440681047] [15559] Checked 0 service dependencies.
+[1440681047] [15559] Checked 0 service escalations.
+[1440681047] [15559] Checked 0 service groups.
+[1440681047] [15559] Checked 1 services.
+[1440681047] [15559] Checked 5 time periods.
+[1440681047] [15559]
+[1440681047] [15559] Total Warnings: 1
+[1440681047] [15559] Total Errors:   0
+
+---------------------------------------------------------------------------------------------------
+Return code end : 0
+</pre></div>
+</div>
+</div>
+<div class="section" id="move-monitoring-engine-configuration-files">
+<h2>Move monitoring engine configuration files<a class="headerlink" href="#move-monitoring-engine-configuration-files" title="Permalink to this headline">¶</a></h2>
+<p>In order to move configuration files for poller &#8220;Local Poller&#8221; of id 1 to the final engine directory, use the <strong>CFGMOVE</strong> command:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a CFGMOVE -v 2
+OK: All configuration will be send to &#39;Remote Poller&#39; by centcore in several minutes.
+Return code end : 1
+</pre></div>
+</div>
+<p>You can move the configuration files using the poller name:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a CFGMOVE -v &quot;Remote Poller&quot;
+OK: All configuration will be send to &#39;Remote Poller&#39; by centcore in several minutes.
+Return code end : 1
+</pre></div>
+</div>
+</div>
+<div class="section" id="restart-monitoring-engine-of-a-poller">
+<h2>Restart monitoring engine of a poller<a class="headerlink" href="#restart-monitoring-engine-of-a-poller" title="Permalink to this headline">¶</a></h2>
+<p>In order to restart the monitoring process on poller &#8220;Local Poller&#8221; of id 1, use the the <strong>POLLERRESTART</strong> command:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a POLLERRESTART -v 2
+OK: A restart signal has been sent to &#39;Remote Poller&#39;
+Return code end : 1
+</pre></div>
+</div>
+<p>You can restart the poller using its name:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u Remote Poller -p centreon -a POLLERRESTART -v &quot;Remote Poller&quot;
+OK: A restart signal has been sent to &#39;Remote Poller&#39;
+Return code end : 1
+</pre></div>
+</div>
+</div>
+<div class="section" id="all-in-one-command">
+<h2>All in one command<a class="headerlink" href="#all-in-one-command" title="Permalink to this headline">¶</a></h2>
+<p>Use the <strong>APPLYCFG</strong> command in order to execute all of the above with one single command:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a APPLYCFG -v 1
+</pre></div>
+</div>
+<p>You can execute using the poller name:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a APPLYCFG -v &quot;Remote Poller&quot;
+</pre></div>
+</div>
+<p>This will execute <strong>POLLERGENERATE</strong>, <strong>POLLERTEST</strong>, <strong>CFGMOVE</strong> and <strong>POLLERRESTART</strong>.</p>
+</div>
+<div class="section" id="reload-monitoring-engine-of-a-poller">
+<h2>Reload monitoring engine of a poller<a class="headerlink" href="#reload-monitoring-engine-of-a-poller" title="Permalink to this headline">¶</a></h2>
+<p>In order to reload the monitoring process on poller &#8220;Remote Poller&#8221; of id 2, use the <strong>POLLERRELOAD</strong> command:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a POLLERRELOAD -v 2
+OK: A reload signal has been sent to Remote Pollerpoller&#39;
+Return code end : 1
+</pre></div>
+</div>
+<p>You can reload poller using its name:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a POLLERRELOAD -v &quot;Remote Poller&quot;
+OK: A reload signal has been sent to &#39;Remote Poller&#39;
+Return code end : 1
+</pre></div>
+</div>
+</div>
+<div class="section" id="execute-post-generation-commands-of-a-poller">
+<h2>Execute post generation commands of a poller<a class="headerlink" href="#execute-post-generation-commands-of-a-poller" title="Permalink to this headline">¶</a></h2>
+<p>In order to execute post generation commands of a poller, use the <strong>POLLEREXECCMD</strong> command:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a POLLEREXECCMD -v 2
+Running configuration check...done.
+Reloading nagios configuration...done
+</pre></div>
+</div>
+<p>You can execute post generation commands of a poller using its name:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a POLLEREXECCMD -v &quot;Remote Poller&quot;
+Running configuration check...done.
+Reloading nagios configuration...done
+</pre></div>
+</div>
+</div>
+<div class="section" id="perform-an-all-in-one-command">
+<h2>Perform an all-in-one command<a class="headerlink" href="#perform-an-all-in-one-command" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to perform the following commands all at the same time: POLLERGENERATE, POLLERTEST, CFGMOVE, POLLERRESTART and POLLEREXECCMD.</p>
+<p>In order to do that, use the <strong>APPLYCFG</strong> command:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a APPLYCFG -v 5
+2015-08-27 16:52:32 - APPLYCFG
+Configuration files generated for poller &#39;5&#39;
+
+Warning: Nagios Poller 5 can restart but configuration is not optimal. Please see debug bellow :
+---------------------------------------------------------------------------------------------------
+[1440687152] [18827] Reading main configuration file &#39;/usr/share/centreon//filesGeneration/nagiosCFG/5/nagiosCFG.DEBUG&#39;.
+[1440687152] [18827] Warning: temp_path variable ignored
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/hosts.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/hostTemplates.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/serviceTemplates.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/services.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/misccommands.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/checkcommands.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/contactgroups.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/contactTemplates.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/contacts.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/hostgroups.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/servicegroups.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/timeperiods.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/escalations.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/dependencies.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/connectors.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-command.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-contact.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-contactgroup.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-dependencies.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-escalations.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-host.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-services.cfg&#39;
+[1440687152] [18827] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-timeperiod.cfg&#39;
+[1440687152] [18827] Reading resource file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/resource.cfg&#39;
+[1440687152] [18827] Checking global event handlers...
+[1440687152] [18827] Checking obsessive compulsive processor commands...
+[1440687152] [18827]
+[1440687152] [18827] Checked 55 commands.
+[1440687152] [18827] Checked 0 connectors.
+[1440687152] [18827] Checked 7 contacts.
+[1440687152] [18827] Checked 0 host dependencies.
+[1440687152] [18827] Checked 0 host escalations.
+[1440687152] [18827] Checked 0 host groups.
+[1440687152] [18827] Checked 1 hosts.
+[1440687152] [18827] Checked 0 service dependencies.
+[1440687152] [18827] Checked 0 service escalations.
+[1440687152] [18827] Checked 0 service groups.
+[1440687152] [18827] Checked 1 services.
+[1440687152] [18827] Checked 5 time periods.
+[1440687152] [18827]
+[1440687152] [18827] Total Warnings: 1
+[1440687152] [18827] Total Errors:   0
+
+---------------------------------------------------------------------------------------------------
+
+OK: All configuration will be send to &#39;Remote Poller&#39; by centcore in several minutes.
+</pre></div>
+</div>
+<p>You can perform poller using its name:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon core]# ./centreon -u admin -p centreon -a APPLYCFG -v &quot;Remote Poller&quot;
+2015-08-27 16:54:46 - APPLYCFG
+Configuration files generated for poller &#39;Remote Poller&#39;
+
+Warning: Nagios Poller poller can restart but configuration is not optimal. Please see debug bellow :
+---------------------------------------------------------------------------------------------------
+[1440687287] [18877] Reading main configuration file &#39;/usr/share/centreon//filesGeneration/nagiosCFG/5/nagiosCFG.DEBUG&#39;.
+[1440687287] [18877] Warning: temp_path variable ignored
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/hosts.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/hostTemplates.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/serviceTemplates.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/services.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/misccommands.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/checkcommands.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/contactgroups.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/contactTemplates.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/contacts.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/hostgroups.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/servicegroups.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/timeperiods.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/escalations.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/dependencies.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/connectors.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-command.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-contact.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-contactgroup.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-dependencies.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-escalations.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-host.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-services.cfg&#39;
+[1440687287] [18877] Processing object config file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/centreon-bam-timeperiod.cfg&#39;
+[1440687287] [18877] Reading resource file &#39;/usr/share/centreon/filesGeneration/nagiosCFG/5/resource.cfg&#39;
+[1440687287] [18877] Checking global event handlers...
+[1440687287] [18877] Checking obsessive compulsive processor commands...
+[1440687287] [18877]
+[1440687287] [18877] Checked 55 commands.
+[1440687287] [18877] Checked 0 connectors.
+[1440687287] [18877] Checked 7 contacts.
+[1440687287] [18877] Checked 0 host dependencies.
+[1440687287] [18877] Checked 0 host escalations.
+[1440687287] [18877] Checked 0 host groups.
+[1440687287] [18877] Checked 1 hosts.
+[1440687287] [18877] Checked 0 service dependencies.
+[1440687287] [18877] Checked 0 service escalations.
+[1440687287] [18877] Checked 0 service groups.
+[1440687287] [18877] Checked 1 services.
+[1440687287] [18877] Checked 5 time periods.
+[1440687287] [18877]
+[1440687287] [18877] Total Warnings: 1
+[1440687287] [18877] Total Errors:   0
+
+---------------------------------------------------------------------------------------------------
+
+OK: All configuration will be send to &#39;Remote Poller&#39; by centcore in several minutes.
+
+Return code end : 1
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Poller management</a><ul>
+<li><a class="reference internal" href="#list-available-pollers">List available pollers</a></li>
+<li><a class="reference internal" href="#generate-local-configuration-files-for-a-poller">Generate local configuration files for a poller</a></li>
+<li><a class="reference internal" href="#test-monitoring-engine-configuration-of-a-poller">Test monitoring engine configuration of a poller</a></li>
+<li><a class="reference internal" href="#move-monitoring-engine-configuration-files">Move monitoring engine configuration files</a></li>
+<li><a class="reference internal" href="#restart-monitoring-engine-of-a-poller">Restart monitoring engine of a poller</a></li>
+<li><a class="reference internal" href="#all-in-one-command">All in one command</a></li>
+<li><a class="reference internal" href="#reload-monitoring-engine-of-a-poller">Reload monitoring engine of a poller</a></li>
+<li><a class="reference internal" href="#execute-post-generation-commands-of-a-poller">Execute post generation commands of a poller</a></li>
+<li><a class="reference internal" href="#perform-an-all-in-one-command">Perform an all-in-one command</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="overview.html"
+                        title="previous chapter">Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="objects/index.html"
+                        title="next chapter">Object management</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/api/clapi/engine_management.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="objects/index.html" title="Object management"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >CLAPI</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

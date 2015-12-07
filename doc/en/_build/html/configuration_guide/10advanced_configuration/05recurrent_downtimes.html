@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Recurrent downtimes &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="Advanced configuration" href="index.html" />
+    <link rel="next" title="SNMP traps" href="06traps.html" />
+    <link rel="prev" title="Notification escalation" href="04notifications_escalation.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="06traps.html" title="SNMP traps"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="04notifications_escalation.html" title="Notification escalation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Configuration</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">Advanced configuration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="recurrent-downtimes">
+<h1>Recurrent downtimes<a class="headerlink" href="#recurrent-downtimes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="definition">
+<h2>Definition<a class="headerlink" href="#definition" title="Permalink to this headline">¶</a></h2>
+<p>A downtime period is a time period during which the notifications to a host or a service are disabled. Downtime periods are convenient during maintenance operations on a host or a service: they allow us to avoid receiving false positive.</p>
+<p>Recurrent Downtime periods are Downtime periods that recurs repetitively.</p>
+<p>E.g.: A back-up of the virtual machines is performed every day from 20h00 to midnight. This type of back-up has a tendency to saturate the CPU use of all the virtual machines. It is necessary to program recurrent Downtime periods on the services concerned to avoid receiving notifications from 20h00 to midnight.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The Downtime periods are taken into account in the calculation of the availability ratio of the resource in the menu: &#8220;Dashboard&#8221;.</p>
+</div>
+</div>
+<div class="section" id="types-of-downtime-periods">
+<h2>Types of Downtime periods<a class="headerlink" href="#types-of-downtime-periods" title="Permalink to this headline">¶</a></h2>
+<p>There are two types of Downtime periods:</p>
+<ul class="simple">
+<li>The <strong>fixed</strong> downtime period: This means that the downtime period takes place during exactly the time period defined.</li>
+<li>The <strong>flexible</strong> downtime period: This means that if during the time period defined the service or the host returns a Not-OK status the downtime period lasts a certain number of seconds (to be defined in the form) from the moment when the host or the status returns a Not-OK status.</li>
+</ul>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>To add a recurrent downtime period:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Configuration ==&gt; Hosts</strong> (or <strong>Services</strong> depending on the type of object on which the downtime period is to be implemented)</li>
+<li>In the left menu, click on <strong>Downtimes</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../../_images/05recurrentdowntimes.png" class="align-center" src="../../_images/05recurrentdowntimes.png" />
+<div class="section" id="configuration-of-downtime-periods">
+<h3>Configuration of Downtime periods<a class="headerlink" href="#configuration-of-downtime-periods" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <strong>Name</strong> and <strong>Description</strong> fields serve to give a name and describe the recurrent downtime period.</li>
+<li>The <strong>Enable</strong> field serves to enable or disable the downtime period.</li>
+<li>The <strong>Periods</strong> field serves to define one or more periods of recurrent downtime periods. To add a period, click on the symbol.</li>
+</ul>
+<p>It is possible to choose three types of period:</p>
+<ul class="simple">
+<li>Weekly: to choose the days of the week</li>
+<li>Monthly: to choose the days of the month</li>
+<li>Specific date: to choose specific dates</li>
+<li>The <strong>Days</strong> field defines the day(s) concerned.</li>
+<li>The <strong>Time period</strong> field contains the time period concerned (expressed in HH:MM - HH:MM).</li>
+<li>The <strong>Downtime type</strong> field defines the type of downtime period desired.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is possible to combine several types of periods within the same downtime period.</p>
+</div>
+</div>
+<div class="section" id="relations">
+<h3>Relations<a class="headerlink" href="#relations" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <strong>Linked with Hosts</strong> list can be used to choose the host(s) concerned by the recurrent downtime period.</li>
+<li>If <strong>Linked with Host Groups</strong> is chosen with the list Linked with the host group all the hosts belonging to this group are concerned by the recurrent downtime period.</li>
+<li>The <strong>Linked with Services</strong> list can be used to choose the service(s) concerned by the recurrent downtime period.</li>
+<li>If a service group is chosen with the list <strong>Linked with Service Groups</strong> all the services belonging to this group are concerned by the recurrent downtime period.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Recurrent downtimes</a><ul>
+<li><a class="reference internal" href="#definition">Definition</a></li>
+<li><a class="reference internal" href="#types-of-downtime-periods">Types of Downtime periods</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="#configuration-of-downtime-periods">Configuration of Downtime periods</a></li>
+<li><a class="reference internal" href="#relations">Relations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="04notifications_escalation.html"
+                        title="previous chapter">Notification escalation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="06traps.html"
+                        title="next chapter">SNMP traps</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/configuration_guide/10advanced_configuration/05recurrent_downtimes.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="06traps.html" title="SNMP traps"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="04notifications_escalation.html" title="Notification escalation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Configuration</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >Advanced configuration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

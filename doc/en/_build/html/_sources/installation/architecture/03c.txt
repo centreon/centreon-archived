@@ -1,0 +1,74 @@
+=========================================
+Distributed architecture with remote DBMS
+=========================================
+
+***********
+Description
+***********
+
+The distributed architecture with remote DBMS is to have three types of entities:
+
+* A central Centreon server to display information
+* A DBMS server to store collected data
+* One or more remote servers to collect data
+
+The central Centreon server includes the following items:
+
+* Centreon web interface
+* Monitoring Engine
+* Broker
+* RRD files
+
+The DBMS server store information into MySQL databases.
+
+The remote servers include the following items:
+
+* Monitoring Engine
+* Broker module to forward collected data to a central broker
+
+This architecture is used for:
+
+* Enable load balancing across multiple remote monitoring servers
+* Network streams isolation: if your monitoring architecture have to monitor a DMZ area, it is easier (and safe) to place a remote server in the DMZ network
+* Have a remote DBMS
+
+**********
+Components
+**********
+
+DBMS server
+===========
+
+The DBMS server is used only to store Centreon configuration parameters as well as monitoring and performance data into MariaDB databases
+
+Central Centreon server
+=======================
+
+Many components are used to build a central Centreon server:
+
+* Apache web server for Centreon web interface
+* The central Centreon server get configuration and collected data from DBMS server
+* The Centcore process is used to send monitoring configuration to the remote server and to manage it
+* A monitoring engine to collect data
+* Collected data are sent to Centreon Broker SQL using cbmod by monitoring engine
+* Centreon Broker SQL allows to store information into MariaDB databases and forward them to Centreon Broker RRD
+* Centreon Broker RRD generates and updates RRD files with data in order to display performance graphs
+
+Remote monitoring server
+========================
+
+Many components are used to build a remote server:
+
+* A monitoring engine to collect data
+* Collected data are sent to Centreon Broker SQL using cbmod by monitoring engine
+* Centreon Broker SQL allows to store information into MariaDB databases and forward them to Centreon Broker RRD
+* Centreon Broker RRD generates and updates RRD files with data in order to display performance graphs
+
+************
+Architecture
+************
+
+The diagram below summarizes the architecture:
+
+.. image:: /images/architecture/cschema.png
+   :align: center

@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Dependencies &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="Advanced configuration" href="index.html" />
+    <link rel="next" title="Notification escalation" href="04notifications_escalation.html" />
+    <link rel="prev" title="Meta-services" href="02metaservices.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="04notifications_escalation.html" title="Notification escalation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="02metaservices.html" title="Meta-services"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Configuration</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">Advanced configuration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="dependencies">
+<span id="dependancy"></span><h1>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="principle">
+<h2>Principle<a class="headerlink" href="#principle" title="Permalink to this headline">¶</a></h2>
+<p>Dependencies are used to satisfy two main requirements :</p>
+<ul class="simple">
+<li>Limit the sending of notifications</li>
+<li>Target the alerts</li>
+</ul>
+<p>The dependencies of objects are of two types:</p>
+<ul class="simple">
+<li><strong>Physical</strong> dependencies between objects: a load balancing switch is situated upstream of a set of servers and downstream of a router</li>
+<li><strong>Logical</strong> dependencies between objects: the access to a website with authentication LDAP depends on the status of the LDAP directory itself</li>
+</ul>
+</div>
+<div class="section" id="physical-dependencies">
+<h2>Physical dependencies<a class="headerlink" href="#physical-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Physical dependencies consist of taking into account physical links between equipment. This link can only be defined for objects of the “Host” type.</p>
+<p>The configuration of a physical dependencies takes place in the <strong>Relations</strong> tab of a configuration sheet of a host (<strong>Configuration ==&gt; Hosts ==&gt; Add</strong>).</p>
+<p>It is possible of define two settings:</p>
+<ul class="simple">
+<li>Parent hosts: signifies that the hosts selected are parents of this host (situated upstream). If all the parent hosts selected become unavailable or impossible to reach the host itself will be considered by the scheduler as impossible to reach.</li>
+<li>Child hosts: signifies that the host becomes the parent of all the child hosts selected.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All the parents of a host must be in a Not-OK status for the host itself to be considered impossible to reach. If only one access path is down (physical dependencies link), the scheduler will continue to monitor this host.</p>
+</div>
+</div>
+<div class="section" id="logical-dependencies">
+<h2>Logical dependencies<a class="headerlink" href="#logical-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Logical dependencies consist of installing logical links between multiple objects that may or not be of different types.
+E.g.: a service is in charge of supervising the access to a web page requiring an authentication based on a LDAP. It is logical that if the LDAP server is down, the access to the web page will be difficult or even impossible. In this situation, the notification issued should only be communicated to the LDAP directory and not to the website.</p>
+<div class="section" id="hosts">
+<h3>Hosts<a class="headerlink" href="#hosts" title="Permalink to this headline">¶</a></h3>
+<p>To configure a logical dependencies:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Configuration ==&gt; Notifications</strong></li>
+<li>In the left menu, under the title: <strong>Dependencies</strong>, click on <strong>Hosts</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../../_images/03hostdependance.png" class="align-center" src="../../_images/03hostdependance.png" />
+<p>In this case, we have two types of host that come into play: one or more hosts (called master hosts) of which the status controls the execution and notification of other hosts (called dependent hosts). If you use the Centreon Broker, it is also possible to control the execution and notification of services (called dependent services) from master hosts.</p>
+<ul class="simple">
+<li>The <strong>Name</strong> and <strong>Description</strong> fields indicate the name and the description of the dependencies</li>
+<li>The <strong>Parent relationship</strong> field should be ignored if you use the Centreon Engine. If it is enabled, and if the dependencies links of the master host become unavailable, the dependencies in the process of creation is not taken into account.</li>
+<li>The <strong>Execution Failure Criteria</strong> field indicates the statuses of the master host(s) preventing the check of the hosts or the dependent services</li>
+<li>The <strong>Notification Failure Criteria</strong> field indicates the statuses of the master host(s) preventing the sending of notifications to the hosts or the dependent services</li>
+<li>The <strong>Hostnames</strong> list defines the master host(s)</li>
+<li>The <strong>Dependent Host Names</strong> list defines the dependent hosts</li>
+<li>The <strong>Dependent Services</strong> list defines the dependent services</li>
+<li>The <strong>Comments</strong> field can be used to comment on the dependencies</li>
+</ul>
+</div>
+<div class="section" id="services">
+<h3>Services<a class="headerlink" href="#services" title="Permalink to this headline">¶</a></h3>
+<p>To add a dependencies at the services level:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Configuration ==&gt; Notifications</strong></li>
+<li>In the left menu, under the title: <strong>Dependencies</strong>, click on <strong>Services</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../../_images/03servicedependance.png" class="align-center" src="../../_images/03servicedependance.png" />
+<p>In this case, we have two entities that come into play: the (“master”) services which control the execution and the notification of other (“dependent”) services. If you use Centreon Broker, it is also possible of control the execution and the notification of other hosts.</p>
+<ul class="simple">
+<li>The <strong>Name</strong> and <strong>Description</strong> fields indicate the name and description of the dependencies</li>
+<li>The <strong>Parent relationship</strong> field should be ignored if you use the Centreon Engine. If it is enabled, and if the links of dependencies of the master service become unavailable the dependencies in the process of creation is no longer taken into account.</li>
+<li>The <strong>Execution Failure Criteria</strong> field indicates the statuses of the master service(s) preventing the check of the hosts or the dependent services</li>
+<li>The <strong>Notification Failure Criteria</strong> field indicates the statuses of the master service(s) preventing the sending of notifications to the hosts or the dependent services</li>
+<li>The <strong>Services</strong> list defines the master service(s)</li>
+<li>The <strong>Dependent services</strong> list defines the dependent services</li>
+<li>The <strong>Dependent hosts</strong> list defines the dependent hosts</li>
+<li>The <strong>Comments</strong> field can be used to comment on the dependencies</li>
+</ul>
+</div>
+<div class="section" id="host-groups">
+<h3>Host groups<a class="headerlink" href="#host-groups" title="Permalink to this headline">¶</a></h3>
+<p>To add a dependencies at the host groups level:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Configuration ==&gt; Notifications</strong></li>
+<li>In the left menu, under the title: <strong>Dependencies</strong>, click on <strong>Host Groups</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../../_images/03hostgroupdependance.png" class="align-center" src="../../_images/03hostgroupdependance.png" />
+<p>Two types of host groups: a host group is called a master if it controls the execution and the notification of other (“dependent”) host groups.</p>
+<ul class="simple">
+<li>The <strong>Name</strong> and <strong>Description</strong> fields indicate the name and the description of the dependencies</li>
+<li>The <strong>Parent relationship</strong> field should be ignored if you use the Centreon Engine. If it is enabled, and if the links of dependencies of the master host group become unavailable the dependencies in the process of creation is no longer taken into account.</li>
+<li>The <strong>Execution Failure Criteria</strong> field indicates the statuses of the master host group(s) preventing the check of the dependent host groups</li>
+<li>The <strong>Notification Failure Criteria</strong> field indicates the statuses of the master host(s) preventing the sending of notifications to the dependent host groups</li>
+<li>The <strong>Host groups name</strong> list defines the master host group(s)</li>
+<li>The <strong>Dependent host group name</strong> list defines the dependent host group(s)</li>
+<li>The <strong>Comments</strong> field can be used to comment on the dependencies</li>
+</ul>
+</div>
+<div class="section" id="service-groups">
+<h3>Service groups<a class="headerlink" href="#service-groups" title="Permalink to this headline">¶</a></h3>
+<p>To add a dependencies at the service groups level:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Configuration ==&gt; Notifications</strong></li>
+<li>In the left menu, under the title: <strong>Dependencies</strong>, click on <strong>Service Groups</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../../_images/03servicegroupdependance.png" class="align-center" src="../../_images/03servicegroupdependance.png" />
+<p>Two types of service group: a service group is called a “master” if it controls the execution and the notification of other (“dependent”) service groups.</p>
+<ul class="simple">
+<li>The <strong>Name</strong> and <strong>Description</strong> fields indicate the name and the description of the dependencies</li>
+<li>The <strong>Parent relationship</strong> field should be ignored if you use the Centreon Engine. If it is enabled, and if the links of dependencies of the master service group become unavailable the dependencies in the process of creation is no longer taken into account.</li>
+<li>The <strong>Execution Failure Criteria</strong> field indicates the statuses of the master service group(s) preventing the check of the dependent service groups</li>
+<li>The <strong>Notification Failure Criteria</strong> field indicates the statuses of the master host(s) preventing the sending of notifications to the dependent service groups</li>
+<li>The <strong>Service group names</strong> list defines the group(s) of master services</li>
+<li>The <strong>Dependent service group names</strong> list defines the group(s) of dependent services</li>
+<li>The <strong>Comments</strong> field can be used to comment on the dependencies</li>
+</ul>
+</div>
+<div class="section" id="meta-services">
+<h3>Meta-services<a class="headerlink" href="#meta-services" title="Permalink to this headline">¶</a></h3>
+<p>To add a dependencies at the meta-services level:</p>
+<ol class="arabic simple">
+<li>Go into the menu: <strong>Configuration ==&gt; Notifications</strong></li>
+<li>In the left menu, under the title: <strong>Dependencies</strong>, click on <strong>Meta Services</strong></li>
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../../_images/03metaservicedependance.png" class="align-center" src="../../_images/03metaservicedependance.png" />
+<p>Two types of meta-services: a meta-service is called a “master” if it controls the execution and the notification of other (“dependent”) meta-services.</p>
+<ul class="simple">
+<li>The <strong>Name</strong> and <strong>Description</strong> fields indicate the name and description of the dependencies</li>
+<li>The <strong>Parent relationship</strong> field should be ignored if you use the Centreon Engine. If it is enabled, and if the links of dependencies of the master meta-service become unavailable the dependencies in the process of creation is no longer taken into account.</li>
+<li>The <strong>Execution Failure Criteria</strong> field Indicates which are the statuses of the meta-master service(s) that will prevent the check of the meta-dependent services</li>
+<li>The <strong>Notification Failure Criteria</strong> field indicates the statuses of the meta-service(s) preventing the sending of notifications to meta-dependent services</li>
+<li>The <strong>Meta-service name</strong> list defines the master meta-service(s)</li>
+<li>The <strong>Dependent meta-service</strong> names list defines the dependent meta-service(s)</li>
+<li>The <strong>Comments</strong> field can be used to comment on the dependencies</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Dependencies</a><ul>
+<li><a class="reference internal" href="#principle">Principle</a></li>
+<li><a class="reference internal" href="#physical-dependencies">Physical dependencies</a></li>
+<li><a class="reference internal" href="#logical-dependencies">Logical dependencies</a><ul>
+<li><a class="reference internal" href="#hosts">Hosts</a></li>
+<li><a class="reference internal" href="#services">Services</a></li>
+<li><a class="reference internal" href="#host-groups">Host groups</a></li>
+<li><a class="reference internal" href="#service-groups">Service groups</a></li>
+<li><a class="reference internal" href="#meta-services">Meta-services</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="02metaservices.html"
+                        title="previous chapter">Meta-services</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="04notifications_escalation.html"
+                        title="next chapter">Notification escalation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/configuration_guide/10advanced_configuration/03dependancy.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="04notifications_escalation.html" title="Notification escalation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="02metaservices.html" title="Meta-services"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Configuration</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >Advanced configuration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

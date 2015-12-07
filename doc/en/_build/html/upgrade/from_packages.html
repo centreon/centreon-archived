@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Upgrade using RPM &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="Upgrade" href="index.html" />
+    <link rel="next" title="From sources" href="from_sources.html" />
+    <link rel="prev" title="Upgrade" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="from_sources.html" title="From sources"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Upgrade"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Upgrade</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="upgrade-using-rpm">
+<span id="upgrade-from-packages"></span><h1>Upgrade using RPM<a class="headerlink" href="#upgrade-using-rpm" title="Permalink to this headline">¶</a></h1>
+<p>In order to update the Centreon monitoring interface, simply run the following command:</p>
+<blockquote>
+<div>yum update centreon</div></blockquote>
+<p>Then, if all is ok, go on the Centreon interface and log out and follow the steps :</p>
+<div class="section" id="web-installation">
+<h2>Web installation<a class="headerlink" href="#web-installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="presentation">
+<h3>Presentation<a class="headerlink" href="#presentation" title="Permalink to this headline">¶</a></h3>
+<img alt="../_images/step01.png" class="align-center" src="../_images/step01.png" />
+</div>
+<div class="section" id="check-dependencies">
+<h3>Check dependencies<a class="headerlink" href="#check-dependencies" title="Permalink to this headline">¶</a></h3>
+<p>This step checks the dependencies on php modules.</p>
+<img alt="../_images/step02.png" class="align-center" src="../_images/step02.png" />
+</div>
+<div class="section" id="release-notes">
+<h3>Release notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h3>
+<img alt="../_images/step03.png" class="align-center" src="../_images/step03.png" />
+</div>
+<div class="section" id="upgrade-the-database">
+<h3>Upgrade the database<a class="headerlink" href="#upgrade-the-database" title="Permalink to this headline">¶</a></h3>
+<p>This step upgrades database model and data, version by version.</p>
+<img alt="../_images/step04.png" class="align-center" src="../_images/step04.png" />
+</div>
+<div class="section" id="finish">
+<h3>Finish<a class="headerlink" href="#finish" title="Permalink to this headline">¶</a></h3>
+<img alt="../_images/step05.png" class="align-center" src="../_images/step05.png" />
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Upgrade using RPM</a><ul>
+<li><a class="reference internal" href="#web-installation">Web installation</a><ul>
+<li><a class="reference internal" href="#presentation">Presentation</a></li>
+<li><a class="reference internal" href="#check-dependencies">Check dependencies</a></li>
+<li><a class="reference internal" href="#release-notes">Release notes</a></li>
+<li><a class="reference internal" href="#upgrade-the-database">Upgrade the database</a></li>
+<li><a class="reference internal" href="#finish">Finish</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Upgrade</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="from_sources.html"
+                        title="next chapter">From sources</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/upgrade/from_packages.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="from_sources.html" title="From sources"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Upgrade"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Upgrade</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

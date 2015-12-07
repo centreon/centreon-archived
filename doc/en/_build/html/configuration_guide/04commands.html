@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Commands &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="Configuration" href="index.html" />
+    <link rel="next" title="Time periods" href="05timeperiod.html" />
+    <link rel="prev" title="Services" href="03services.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="05timeperiod.html" title="Time periods"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="03services.html" title="Services"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Configuration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="commands">
+<h1>Commands<a class="headerlink" href="#commands" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="definition">
+<h2>Definition<a class="headerlink" href="#definition" title="Permalink to this headline">¶</a></h2>
+<p>A command is the definition of a line of command which uses a script or an application to perform an action. It is possible execute this command by specifying arguments.</p>
+<p>There are three types of command:</p>
+<ul class="simple">
+<li><strong>Verification</strong> commands are used by the schedulers to verify the status of a host or of a service.</li>
+<li><strong>Notification</strong> commands are used by the schedulers to alert the contacts (via mail, SMS, etc.).</li>
+<li><strong>Discovery</strong> commands are used by the schedulers to discover some elements on monitored node.</li>
+<li><strong>Miscellaneous</strong> commands are used by the additional modules (to perform certain actions), by the scheduler for data processing, etc.</li>
+</ul>
+<p>All the commands can be configured in the menu: <strong>Configuration ==&gt; Commands</strong>.</p>
+<img alt="../_images/04commandlist.png" class="align-center" src="../_images/04commandlist.png" />
+</div>
+<div class="section" id="adding-a-command">
+<h2>Adding a command<a class="headerlink" href="#adding-a-command" title="Permalink to this headline">¶</a></h2>
+<p>Before adding a command:</p>
+<ol class="arabic simple">
+<li>In the left menu select the type of command that you want to add  (Checks, Notifications or Miscellaneous).</li>
+</ol>
+<img alt="../_images/04leftmenu.png" class="align-center" src="../_images/04leftmenu.png" />
+<ol class="arabic simple" start="2">
+<li>Click on <strong>Add</strong></li>
+</ol>
+<img alt="../_images/04command.png" class="align-center" src="../_images/04command.png" />
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The configuration fields of a command are the same regardless of the type of command chosen.</p>
+</div>
+</div>
+<div class="section" id="configuration-fields">
+<h2>Configuration fields<a class="headerlink" href="#configuration-fields" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The <strong>command Name</strong> field defined the name of the command.</li>
+<li>The <strong>Command Type</strong> field allows us to choose the type of command.</li>
+<li>The <strong>Command Line</strong> field indicates the application or the script use with the command.</li>
+<li>The <strong>Enable shell</strong> box allows us to enable functions that are specific to a shell such as the pipe, etc.</li>
+<li>The <strong>Argument Example</strong> and <strong>$HOSTADDRESS$</strong> fields define examples of arguments (each argument starts with a ”!”) and a test IP address respectively.
+These fields serve to execute the command line defined above via the web interface by clicking on the blue arrow : <img alt="bluearrow" src="../_images/bluearrow.png" />.</li>
+<li>The <strong>Describe arguments</strong> button serves to add  a description to arguments of the “$ARGn$” type. This description will be visible when using the command in a host or service form.</li>
+<li>The <strong>Clear arguments</strong> button deletes the description of arguments defined</li>
+<li>The <strong>Describe macros</strong> button serves to add  a description to all macros. This description will be visible when using the command in a host or service form.</li>
+<li>The <strong>Connectors</strong> field serves to link a Connector to the command. For more information on Connectors refer to the chapter entitled: <a class="reference external" href="http://documentation.centreon.com/docs/centreon-perl-connector/en/latest/">Perl Connector&#8217;s documentation</a> and <a class="reference external" href="http://documentation.centreon.com/docs/centreon-ssh-connector/en/latest/">SSH Connector&#8217;s documentation</a>.</li>
+<li>The <strong>Graph template</strong> field serves to link the command to a graphic model.</li>
+<li>The <strong>Comment</strong> field can be used to make a comment on the command.</li>
+</ul>
+</div>
+<div class="section" id="arguments-and-macros">
+<h2>Arguments and macros<a class="headerlink" href="#arguments-and-macros" title="Permalink to this headline">¶</a></h2>
+<p>In the <strong>Command Line</strong> field it is possible to import macros and arguments.</p>
+<p>The arguments are used to be able to pass various settings to the scripts called up by the commands. During execution of the command by the scheduler, each of the arguments and macros are replaced by their respective values.
+Each argument appears in the form <strong>$ARGn$</strong> where n is naturel whole number greater than 0.</p>
+<p>E.g.: order line using the arguments : $USER1$/check-bench-process-DB -w $ARG1$ -c $ARG2$ -n $ARG3$</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Good practice requires replacing the arguments by <a class="reference internal" href="10advanced_configuration/01macros.html#custommacros"><span>custom macros</span></a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Commands</a><ul>
+<li><a class="reference internal" href="#definition">Definition</a></li>
+<li><a class="reference internal" href="#adding-a-command">Adding a command</a></li>
+<li><a class="reference internal" href="#configuration-fields">Configuration fields</a></li>
+<li><a class="reference internal" href="#arguments-and-macros">Arguments and macros</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="03services.html"
+                        title="previous chapter">Services</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="05timeperiod.html"
+                        title="next chapter">Time periods</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/configuration_guide/04commands.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="05timeperiod.html" title="Time periods"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="03services.html" title="Services"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Configuration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Object management &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../../index.html" />
+    <link rel="up" title="CLAPI" href="../index.html" />
+    <link rel="next" title="ACL" href="acl.html" />
+    <link rel="prev" title="Poller management" href="../engine_management.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="acl.html" title="ACL"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../engine_management.html" title="Poller management"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" accesskey="U">CLAPI</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="object-management">
+<h1>Object management<a class="headerlink" href="#object-management" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="acl.html">ACL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="acl.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl.html#reload">Reload</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl.html#lastreload">Lastreload</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="acl_action.html">Action ACL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="acl_action.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_action.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_action.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_action.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_action.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_action.html#getaclgroup">Getaclgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_action.html#grant-and-revoke">Grant and Revoke</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="acl_group.html">ACL Groups</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#getmenu">Getmenu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#getaction">Getaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#getresource">Getresource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#getcontact-and-getcontactgroup">Getcontact and Getcontactgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#setmenu-setaction-setresource-addmenu-addaction-addresource">Setmenu, Setaction, Setresource, Addmenu, Addaction, Addresource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#delmenu-delaction-delresource">Delmenu, Delaction, Delresource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#setcontact-setcontactgroup-addcontact-addcontactgroup">Setcontact, Setcontactgroup, Addcontact, Addcontactgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_group.html#delcontact-delcontactgroup">Delcontact, Delcontactgroup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="acl_menu.html">Menu ACL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="acl_menu.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_menu.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_menu.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_menu.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_menu.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_menu.html#getaclgroup">Getaclgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_menu.html#grant-and-revoke">Grant and Revoke</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="acl_resource.html">Resource ACL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="acl_resource.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_resource.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_resource.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_resource.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_resource.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_resource.html#getaclgroup">Getaclgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acl_resource.html#grant-and-revoke">Grant and revoke</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="broker_cfg.html">Centreon broker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="broker_cfg.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="broker_cfg.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="broker_cfg.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="broker_cfg.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="broker_cfg.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="broker_cfg.html#listinput-listoutput-listlogger-listcorrelation-listtemporary-and-liststats">Listinput, Listoutput, Listlogger, Listcorrelation, Listtemporary and Liststats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="broker_cfg.html#getinput-getoutput-getlogger-getcorrelation-gettemporary-and-getstats">Getinput, Getoutput, Getlogger, Getcorrelation, Gettemporary and Getstats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="broker_cfg.html#addinput-addoutput-addlogger-addcorrelation-addtemporary-and-addstats">Addinput, Addoutput, Addlogger, Addcorrelation, Addtemporary and Addstats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="broker_cfg.html#delinput-deloutput-dellogger-delcorrelation-deltemporary-and-delstats">Delinput, Deloutput, Dellogger, Delcorrelation, Deltemporary and Delstats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="broker_cfg.html#setintput-setoutput-setlogger-setcorrelation-settemporary-and-setstats">Setintput, Setoutput, Setlogger, Setcorrelation, Settemporary and Setstats</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="broker_cfg.html#correlation">correlation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="broker_cfg.html#input">input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="broker_cfg.html#logger">logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="broker_cfg.html#output">output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="broker_cfg.html#stats">stats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="broker_cfg.html#temporary">temporary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cgi_cfg.html">CGI CFG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cgi_cfg.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cgi_cfg.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cgi_cfg.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cgi_cfg.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cgi_cfg.html#setparam">Setparam</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#setparam">Setparam</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contacts.html">Contacts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contacts.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contacts.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contacts.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contacts.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contacts.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contacts.html#enable">Enable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contacts.html#disable">Disable</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contact_templates.html">Contact templates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contact_templates.html#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contact_groups.html">Contact Groups</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contact_groups.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contact_groups.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contact_groups.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contact_groups.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contact_groups.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contact_groups.html#enable">Enable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contact_groups.html#disable">Disable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contact_groups.html#getcontact">Getcontact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contact_groups.html#addcontact-and-setcontact">Addcontact and Setcontact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contact_groups.html#delcontact">Delcontact</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dependencies.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies.html#listdep">Listdep</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies.html#addparent-and-addchild">Addparent and Addchild</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies.html#delparent-and-delchild">Delparent and Delchild</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="downtimes.html">Downtimes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="downtimes.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downtimes.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downtimes.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downtimes.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downtimes.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downtimes.html#listperiods">Listperiods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downtimes.html#addweeklyperiod">Addweeklyperiod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downtimes.html#addmonthlyperiod">Addmonthlyperiod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downtimes.html#addspecificperiod">Addspecificperiod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downtimes.html#addhost-addhostgroup-addservice-addservicegroup">Addhost, addhostgroup, addservice, addservicegroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downtimes.html#delhost-delhostgroup-delservice-delservicegroup">Delhost, delhostgroup, delservice, delservicegroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downtimes.html#sethost-sethostgroup-setservice-setservicegroup">Sethost, sethostgroup, setservice, setservicegroup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="host_templates.html">Host templates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="host_templates.html#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hosts.html">Hosts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#setinstance">Setinstance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#getmacro">Getmacro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#setmacro">Setmacro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#delmacro">Delmacro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#gettemplate">Gettemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#addtemplate-and-settemplate">Addtemplate and Settemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#deltemplate">Deltemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#applytpl">Applytpl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#getparent">Getparent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#addparent-and-setparent">Addparent and Setparent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#delparent">Delparent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#getcontactgroup">Getcontactgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#addcontactgroup-and-setcontactgroup">Addcontactgroup and Setcontactgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#delcontactgroup">Delcontactgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#getcontact">Getcontact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#addcontact-and-setcontact">Addcontact and Setcontact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#delcontact">Delcontact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#gethostgroup">Gethostgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#addhostgroup-and-sethostgroup">Addhostgroup and Sethostgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#delhostgroup">Delhostgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#setseverity">Setseverity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#unsetseverity">Unsetseverity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#enable">Enable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hosts.html#disable">Disable</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="host_categories.html">Host categories</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="host_categories.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_categories.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_categories.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_categories.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_categories.html#getmember">Getmember</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_categories.html#addmember-and-setmember">Addmember and Setmember</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_categories.html#setseverity">Setseverity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_categories.html#unsetseverity">Unsetseverity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_categories.html#delmember">Delmember</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="host_groups.html">Host groups</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="host_groups.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_groups.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_groups.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_groups.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_groups.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_groups.html#getmember">Getmember</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_groups.html#addmember-and-setmember">Addmember and Setmember</a></li>
+<li class="toctree-l2"><a class="reference internal" href="host_groups.html#delmember">Delmember</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="host_group_services.html">Host group services</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="host_group_services.html#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="instances.html">Instances (Pollers)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="instances.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instances.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instances.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instances.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instances.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instances.html#gethosts">Gethosts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ldap_servers.html">LDAP configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ldap_servers.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ldap_servers.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ldap_servers.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ldap_servers.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ldap_servers.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ldap_servers.html#showserver">Showserver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ldap_servers.html#addserver">Addserver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ldap_servers.html#delserver">Delserver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ldap_servers.html#setparamserver">Setparamserver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nagios_cfg.html">Nagios CFG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nagios_cfg.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nagios_cfg.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nagios_cfg.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nagios_cfg.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nagios_cfg.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nagios_cfg.html#addbrokermodule">Addbrokermodule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nagios_cfg.html#delbrokermodule">Delbrokermodule</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ndo2db_cfg.html">Ndo2db CFG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ndo2db_cfg.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ndo2db_cfg.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ndo2db_cfg.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ndo2db_cfg.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ndo2db_cfg.html#setparam">Setparam</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ndomod_cfg.html">Ndomod CFG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ndomod_cfg.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ndomod_cfg.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ndomod_cfg.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ndomod_cfg.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ndomod_cfg.html#setparam">Setparam</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="resource_cfg.html">Resource CFG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="resource_cfg.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resource_cfg.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resource_cfg.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resource_cfg.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resource_cfg.html#setparam">Setparam</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="service_templates.html">Service templates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#addhosttemplate-and-sethosttemplate">Addhosttemplate and Sethosttemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#delhosttemplate">Delhosttemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#getmacro">Getmacro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#setmacro">Setmacro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#delmacro">Delmacro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#getcontact">Getcontact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#addcontact-and-setcontact">Addcontact and Setcontact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#delcontact">Delcontact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#getcontactgroup">Getcontactgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#setcontactgroup">Setcontactgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#delcontactgroup">Delcontactgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#gettrap">Gettrap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#settrap">Settrap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_templates.html#deltrap">Deltrap</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">Services</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="services.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#addhost-and-sethost">Addhost and Sethost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#delhost">Delhost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#getmacro">Getmacro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#setmacro">Setmacro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#delmacro">Delmacro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#setseverity">Setseverity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#unsetseverity">Unsetseverity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#getcontact">Getcontact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#addcontact-and-setcontact">Addcontact and Setcontact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#delcontact">Delcontact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#getcontactgroup">Getcontactgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#addcontactgroup-and-setcontactgroup">Addcontactgroup and Setcontactgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#delcontactgroup">Delcontactgroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#gettrap">Gettrap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#addtrap-and-settrap">Addtrap and Settrap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#deltrap">Deltrap</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="service_groups.html">Service groups</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="service_groups.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_groups.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_groups.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_groups.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_groups.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_groups.html#getservice-and-gethostgroupservice">Getservice and Gethostgroupservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_groups.html#addservice-setservice-addhostgroupservice-and-sethostgroupservice">Addservice, Setservice, Addhostgroupservice and Sethostgroupservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_groups.html#delservice-and-delhostgroupservice">Delservice and Delhostgroupservice</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="service_categories.html">Service categories</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="service_categories.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_categories.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_categories.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_categories.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_categories.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_categories.html#getservice-and-getservicetemplate">Getservice and Getservicetemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_categories.html#addservice-setservice-addservicetemplate-and-setservicetemplate">Addservice, Setservice , Addservicetemplate and Setservicetemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_categories.html#delservice-and-delservicetemplate">Delservice and Delservicetemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_categories.html#setseverity">Setseverity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_categories.html#unsetseverity">Unsetseverity</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">Settings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#setparam">Setparam</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="time_periods.html">Time periods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="time_periods.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time_periods.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time_periods.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time_periods.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time_periods.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time_periods.html#getexception">Getexception</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time_periods.html#setexception">Setexception</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time_periods.html#delexception">Delexception</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="traps.html">Traps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="traps.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traps.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traps.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traps.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traps.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traps.html#getmatching">Getmatching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traps.html#addmatching">Addmatching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traps.html#delmatching">Delmatching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traps.html#updatematching">Updatematching</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vendors.html">Vendors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vendors.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vendors.html#show">Show</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vendors.html#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vendors.html#del">Del</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vendors.html#setparam">Setparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vendors.html#generatetraps">Generatetraps</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../engine_management.html"
+                        title="previous chapter">Poller management</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="acl.html"
+                        title="next chapter">ACL</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/api/clapi/objects/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="acl.html" title="ACL"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../engine_management.html" title="Poller management"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

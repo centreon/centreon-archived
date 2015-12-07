@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Set up your monitoring platform &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="next" title="Prerequisites" href="prerequisites.html" />
+    <link rel="prev" title="Centreon 2.4" href="../release_notes/centreon-2.4/centreon-2.4.0.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="prerequisites.html" title="Prerequisites"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../release_notes/centreon-2.4/centreon-2.4.0.html" title="Centreon 2.4"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="set-up-your-monitoring-platform">
+<span id="install"></span><h1>Set up your monitoring platform<a class="headerlink" href="#set-up-your-monitoring-platform" title="Permalink to this headline">¶</a></h1>
+<p>This chapter describes how to install your Centreon monitoring platform.</p>
+<p>There are many possibilities to perform this operation but <strong>we advise you to use only CES to set up a new monitoring platform</strong>.
+Installation from Centreon sources (tar.gz) is complex and will be supported only by community.</p>
+<p>The first part will help you to define the sizing of servers: server&#8217;s ressources, space disk, fyles system, etc.</p>
+<p>The second part shows you different kind of architecture.</p>
+<p>The third part exaplins how to install your platform.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prerequisites.html">Prerequisites</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="prerequisites.html#softwares">Softwares</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prerequisites.html#select-type-of-architecture">Select type of architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prerequisites.html#define-space-disk">Define space disk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prerequisites.html#define-files-system">Define files system</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="architecture/index.html">Example of architectures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture/03a.html">Simple architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture/03b.html">Distributed architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture/03c.html">Distributed architecture with remote DBMS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture/03d.html">Distributed architecture with failover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture/03e.html">Distributed architecture with failover and web GUI for remote server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="downloads.html">Downloads</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="downloads.html#formats">Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="01a.html">Using CES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="01a.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01a.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="from_packages.html">Using packages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="from_packages.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="from_packages.html#centreon-installation">Centreon installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="from_sources.html">Using sources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="from_sources.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="from_sources.html#monitoring-engine">Monitoring engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="from_sources.html#stream-multiplexer">Stream Multiplexer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="from_sources.html#centreon">Centreon</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>If you are part of the beta test program please click <a class="reference internal" href="betaTest2.7.0.html#betatest2-7-0"><span>here</span></a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../release_notes/centreon-2.4/centreon-2.4.0.html"
+                        title="previous chapter">Centreon 2.4</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="prerequisites.html"
+                        title="next chapter">Prerequisites</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/installation/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="prerequisites.html" title="Prerequisites"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../release_notes/centreon-2.4/centreon-2.4.0.html" title="Centreon 2.4"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

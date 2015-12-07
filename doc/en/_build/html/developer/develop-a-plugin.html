@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Centreon Engine Plugin API &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="Developer" href="index.html" />
+    <link rel="next" title="API" href="../api/index.html" />
+    <link rel="prev" title="How to write a widget" href="writewidget.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../api/index.html" title="API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="writewidget.html" title="How to write a widget"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Developer</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="centreon-engine-plugin-api">
+<span id="centengine-plugin-api"></span><h1>Centreon Engine Plugin API<a class="headerlink" href="#centreon-engine-plugin-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="other-resources">
+<h2>Other Resources<a class="headerlink" href="#other-resources" title="Permalink to this headline">¶</a></h2>
+<p>If you&#8217;re looking at writing your own plugins for Centreon Engine,
+please make sure to visit these other resources:</p>
+<blockquote>
+<div><ul class="simple">
+<li>The official <a class="reference external" href="http://sourceforge.net/projects/nagiosplug/">Nagios plugin project website</a></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="plugin-overview">
+<h2>Plugin Overview<a class="headerlink" href="#plugin-overview" title="Permalink to this headline">¶</a></h2>
+<p>Scripts and executables must do two things (at a minimum) in order to
+function as Centreon Engine plugins:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Exit with one of several possible return values</li>
+<li>Return at least one line of text output to STDOUT</li>
+</ul>
+</div></blockquote>
+<p>The inner workings of your plugin are unimportant to Centreon
+Engine. Your plugin could check the status of a TCP port, run a database
+query, check disk free space, or do whatever else it needs to check
+something. The details will depend on what needs to be checked - that&#8217;s
+up to you.</p>
+</div>
+<div class="section" id="return-code">
+<h2>Return Code<a class="headerlink" href="#return-code" title="Permalink to this headline">¶</a></h2>
+<p>Centreon Engine determines the status of a host or service by evaluating
+the return code from plugins. The following tables shows a list of valid
+return codes, along with their corresponding service or host states.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="25%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Plugin Return Code</th>
+<th class="head">Service State</th>
+<th class="head">Host State</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>OK</td>
+<td>UP</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>WARNING</td>
+<td>UP</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>CRITICAL</td>
+<td>DOWN/UNREACHABLE</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>UNKNOWN</td>
+<td>DOWN/UNREACHABLE</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="plugin-output-spec">
+<h2>Plugin Output Spec<a class="headerlink" href="#plugin-output-spec" title="Permalink to this headline">¶</a></h2>
+<p>At a minimum, plugins should return at least one of text
+output. Beginning with Centreon Engine 3, plugins can optionally return
+multiple lines of output. Plugins may also return optional performance
+data that can be processed by external applications. The basic format
+for plugin output is shown below:</p>
+<div class="highlight-python"><div class="highlight"><pre>TEXT OUTPUT | OPTIONAL PERFDATA LONG TEXT LINE 1 LONG TEXT LINE 2 ... LONG TEXT LINE N | PERFDATA LINE 2 PERFDATA LINE 3 ... PERFDATA LINE N
+</pre></div>
+</div>
+<p>The performance data (shown in orange) is optional. If a plugin returns
+performance data in its output, it must separate the performance data
+from the other text output using a pipe (|) symbol. Additional lines of
+long text output (shown in blue) are also optional.</p>
+</div>
+<div class="section" id="plugin-output-examples">
+<h2>Plugin Output Examples<a class="headerlink" href="#plugin-output-examples" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s see some examples of possible plugin output...</p>
+<blockquote>
+<div><ul>
+<li><p class="first">Case 1: One line of output (text only)
+Assume we have a plugin that returns one line of output that looks like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>DISK OK - free space: / 3326 MB (56%);
+</pre></div>
+</div>
+<p>If this plugin was used to perform a service check, the entire line
+of output will be stored in the
+<a class="reference external" href="http://documentation.centreon.com/docs/centreon-engine/en/latest/user/configuration/basics/standard_macros.html#user-configuration-macros-service" title="(in Centreon Engine v1.4)"><span class="xref std std-ref">SERVICEOUTPUT</span></a> macro.</p>
+</li>
+<li><p class="first">Case 2: One line of output (text and perfdata)
+A plugin can return optional performance data for use by external
+applications. To do this, the performance data must be separated
+from the text output with a pipe | symbol like such:</p>
+<div class="highlight-python"><div class="highlight"><pre>DISK OK - free space: / 3326 MB (56%);|/=2643MB;5948;5958;0;5968
+</pre></div>
+</div>
+<p>If this plugin was used to perform a service check, the first
+portion of output (left of the pipe separator) will be stored in the
+<a class="reference external" href="http://documentation.centreon.com/docs/centreon-engine/en/latest/user/configuration/basics/standard_macros.html#user-configuration-macros-service" title="(in Centreon Engine v1.4)"><span class="xref std std-ref">SERVICEOUTPUT</span></a> macro and
+the second portion of output (right of the pipe separator) will be
+stored in the
+<a class="reference external" href="http://documentation.centreon.com/docs/centreon-engine/en/latest/user/configuration/basics/standard_macros.html#user-configuration-macros-service" title="(in Centreon Engine v1.4)"><span class="xref std std-ref">SERVICEPERFDATA</span></a> macro.</p>
+</li>
+<li><p class="first">Case 3: Multiple lines of output (text and perfdata)
+A plugin optionally return multiple lines of both text output and
+perfdata, like such:</p>
+<div class="highlight-python"><div class="highlight"><pre>DISK OK - free space: / 3326 MB (56%);|/=2643MB;5948;5958;0;5968
+/ 15272 MB (77%);
+/boot 68 MB (69%);
+/home 69357 MB (27%);
+/var/log 819 MB (84%);|/boot=68MB;88;93;0;98
+/home=69357MB;253404;253409;0;253414
+/var/log=818MB;970;975;0;980
+</pre></div>
+</div>
+<p>If this plugin was used to perform a service check, the red portion
+of first line of output (left of the pipe separator) will be stored
+in the <a class="reference external" href="http://documentation.centreon.com/docs/centreon-engine/en/latest/user/configuration/basics/standard_macros.html#user-configuration-macros-service" title="(in Centreon Engine v1.4)"><span class="xref std std-ref">SERVICEOUTPUT</span></a>
+macro.</p>
+</li>
+</ul>
+</div></blockquote>
+<p>The orange portions of the first and subsequent lines are concatenated
+(with spaces) are stored in the
+<a class="reference external" href="http://documentation.centreon.com/docs/centreon-engine/en/latest/user/configuration/basics/standard_macros.html#user-configuration-macros-service" title="(in Centreon Engine v1.4)"><span class="xref std std-ref">SERVICEPERFDATA</span></a> macro. The
+blue portions of the 2nd - 5th lines of output will be concatenated
+(with escaped newlines) and stored in
+<a class="reference external" href="http://documentation.centreon.com/docs/centreon-engine/en/latest/user/configuration/basics/standard_macros.html#user-configuration-macros-service" title="(in Centreon Engine v1.4)"><span class="xref std std-ref">LONGSERVICEOUTPUT</span></a> the macro.</p>
+<p>The final contents of each macro are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Macro</th>
+<th class="head">Value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>$SERVICEOUTPUT$</td>
+<td>DISK OK - free space: / 3326 MB (56%);</td>
+</tr>
+<tr class="row-odd"><td>$SERVICEPERFDATA$</td>
+<td>/=2643MB;5948;5958;0;5968 /boot=68MB;88;93;0;98 /home=69357MB;253404;253409;0;253414 /var/log=818MB;970;975;0;980</td>
+</tr>
+<tr class="row-even"><td>$LONGSERVICEOUTPUT$</td>
+<td>/ 15272 MB (77%);\  /boot 68 MB (69%);\  /var/log 819 MB (84%);</td>
+</tr>
+</tbody>
+</table>
+<p>With regards to multiple lines of output, you have the following options
+for returning performance data:</p>
+<blockquote>
+<div><ul class="simple">
+<li>You can choose to return no performance data whatsoever</li>
+<li>You can return performance data on the first line only</li>
+<li>You can return performance data only in subsequent lines (after the
+first)</li>
+<li>You can return performance data in both the first line and
+subsequent lines (as shown above)</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="plugin-output-length-restrictions">
+<h2>Plugin Output Length Restrictions<a class="headerlink" href="#plugin-output-length-restrictions" title="Permalink to this headline">¶</a></h2>
+<p>Centreon Engine will only read the first 4 KB of data that a plugin
+returns. This is done in order to prevent runaway plugins from dumping
+megs or gigs of data back to Centreon Engine. This 4 KB output limit is
+fairly easy to change if you need. Simply edit the value of the
+MAX_PLUGIN_OUTPUT_LENGTH definition in the <code class="docutils literal"><span class="pre">include/centengine.h.in</span></code>
+file of the source code distribution and recompile Centreon
+Engine. There&#8217;s nothing else you need to change!</p>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>If you&#8217;re looking for some example plugins to study, I would recommend
+that you download the official Centreon Engine plugins and look through
+the code for various C, Perl, and shell script plugins. Information on
+obtaining the official Centreon Engine plugins can be found
+<a class="reference external" href="http://documentation.centreon.com/docs/centreon-engine/en/latest/exploit/plugins.html#exploit-plugins" title="(in Centreon Engine v1.4)"><span class="xref std std-ref">here</span></a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Centreon Engine Plugin API</a><ul>
+<li><a class="reference internal" href="#other-resources">Other Resources</a></li>
+<li><a class="reference internal" href="#plugin-overview">Plugin Overview</a></li>
+<li><a class="reference internal" href="#return-code">Return Code</a></li>
+<li><a class="reference internal" href="#plugin-output-spec">Plugin Output Spec</a></li>
+<li><a class="reference internal" href="#plugin-output-examples">Plugin Output Examples</a></li>
+<li><a class="reference internal" href="#plugin-output-length-restrictions">Plugin Output Length Restrictions</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="writewidget.html"
+                        title="previous chapter">How to write a widget</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../api/index.html"
+                        title="next chapter">API</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developer/develop-a-plugin.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../api/index.html" title="API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="writewidget.html" title="How to write a widget"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Developer</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

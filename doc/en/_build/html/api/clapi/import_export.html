@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Import/Export &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="CLAPI" href="index.html" />
+    <link rel="prev" title="Vendors" href="objects/vendors.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="objects/vendors.html" title="Vendors"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">CLAPI</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="import-export">
+<h1>Import/Export<a class="headerlink" href="#import-export" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="export">
+<h2>Export<a class="headerlink" href="#export" title="Permalink to this headline">¶</a></h2>
+<p>At some point, you might need to export all of the object configuration parameters into a plain text file, either for synchronizing or backuping purpose.
+This export feature is ran like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -e &gt; /tmp/clapi-export.txt
+</pre></div>
+</div>
+<p>This will generate CLAPI commands and redirect them to the <em>/tmp/clapi-export.txt</em> file.</p>
+<p>This file can now be read by the import command.</p>
+<p>With this, you can also build your own CLAPI command file if you know the straight forward syntax.</p>
+<p>For instance::</p>
+<div class="highlight-python"><div class="highlight"><pre>HOST;ADD;Host-Test1;Test host;127.0.0.1;generic-host;Local Poller;Linux
+HOST;ADD;Host-Test2;Test host;127.0.0.1;generic-host;Local Poller;Linux
+HOST;ADD;Host-Test3;Test host;127.0.0.1;generic-host;Local Poller;Linux
+HOST;ADD;Host-Test4;Test host;127.0.0.1;generic-host;Local Poller;Linux
+HOST;ADD;Host-Test5;Test host;127.0.0.1;generic-host;Local Poller;Linux
+</pre></div>
+</div>
+</div>
+<div class="section" id="import">
+<h2>Import<a class="headerlink" href="#import" title="Permalink to this headline">¶</a></h2>
+<p>You can import configuration from the exported file <em>/tmp/clapi-export</em></p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -i /tmp/clapi-export.txt
+</pre></div>
+</div>
+<p>In case you have a very large export file, it is advised to redirect the output of the above command to a file.
+Indeed, when errors occur during the import process, CLAPI will print out an error message along with the line number of the file, you might need to store those output message for troubleshooting later on.</p>
+<p>You can build your own CLAPI command file if you know the straight forward syntax.
+You can use parameter described in Object Management with the syntax you can see in export files</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">OBJECT</span><span class="p">;</span><span class="n">AACTION</span><span class="p">;</span><span class="n">Parameter1</span><span class="p">;</span><span class="n">Parameter2</span><span class="p">;</span><span class="n">Parameter3</span><span class="p">;</span><span class="o">...</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Import/Export</a><ul>
+<li><a class="reference internal" href="#export">Export</a></li>
+<li><a class="reference internal" href="#import">Import</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="objects/vendors.html"
+                        title="previous chapter">Vendors</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/api/clapi/import_export.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="objects/vendors.html" title="Vendors"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >CLAPI</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuration &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="next" title="Generic actions" href="01actions.html" />
+    <link rel="prev" title="Add a user" href="../quick_start/add_user.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="01actions.html" title="Generic actions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../quick_start/add_user.html" title="Add a user"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="01actions.html">Generic actions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="01actions.html#add-delete">Add / Delete</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01actions.html#duplication">Duplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01actions.html#massive-change">Massive Change</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01actions.html#enable-disable">Enable / disable</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="02hosts.html">Hosts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="02hosts.html#configuration-of-the-host">Configuration of the host</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02hosts.html#notification-tab">Notification tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02hosts.html#relations-tab">Relations tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02hosts.html#data-processing-tab">Data processing tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02hosts.html#host-extended-infos-tab">Host Extended Infos tab</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="03services.html">Services</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="03services.html#configuration-of-the-service">Configuration of the service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03services.html#relations-tab">Relations tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03services.html#data-processing">Data processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03services.html#additional-information-on-the-service">Additional information on the service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03services.html#detachment-of-a-service">Detachment of a service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="04commands.html">Commands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="04commands.html#definition">Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04commands.html#adding-a-command">Adding a command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04commands.html#configuration-fields">Configuration fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04commands.html#arguments-and-macros">Arguments and macros</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="05timeperiod.html">Time periods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="05timeperiod.html#definition">Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05timeperiod.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="06contact.html">Contacts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="06contact.html#definition">Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06contact.html#general-information">General information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06contact.html#centreon-authentication">Centreon authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06contact.html#additional-information">Additional information</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="07groups.html">Groups</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="07groups.html#host-groups">Host Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07groups.html#service-groups">Service Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07groups.html#contact-groups">Contact Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="08category.html">Categories</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="08category.html#host-categories">Host categories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08category.html#categories-of-services">Categories of services</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="09models.html">Templates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="09models.html#definition">Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09models.html#host-templates">Host Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09models.html#services-templates">Services Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09models.html#best-practice">Best practice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09models.html#contact-templates">Contact Templates</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="10advanced_configuration/index.html">Advanced configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="10advanced_configuration/01macros.html">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10advanced_configuration/02metaservices.html">Meta-services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10advanced_configuration/03dependancy.html">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10advanced_configuration/04notifications_escalation.html">Notification escalation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10advanced_configuration/05recurrent_downtimes.html">Recurrent downtimes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10advanced_configuration/06traps.html">SNMP traps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="10poller/index.html">Poller</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="10poller/01installation.html">Remote servers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10poller/02configuration.html">Configuration of the scheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10poller/02configuration.html#centreon-broker-configuration">Centreon Broker configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10poller/02configuration.html#centreontrapd-configuration">Centreontrapd Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10poller/02configuration.html#plugins-synchronisation">Plugins synchronisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10poller/02configuration.html#exchanging-ssh-keys">Exchanging SSH keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10poller/02configuration.html#export-the-configuration">Export the configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10poller/03wizards.html">Centreon Broker configuration via wizard</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="11deploy.html">Deploying a configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="11deploy.html#procedure">Procedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11deploy.html#explanations">Explanations</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../quick_start/add_user.html"
+                        title="previous chapter">Add a user</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="01actions.html"
+                        title="next chapter">Generic actions</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/configuration_guide/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="01actions.html" title="Generic actions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../quick_start/add_user.html" title="Add a user"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

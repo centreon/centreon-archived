@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Hosts &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../index.html" />
+    <link rel="up" title="Configuration" href="index.html" />
+    <link rel="next" title="Services" href="03services.html" />
+    <link rel="prev" title="Generic actions" href="01actions.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="03services.html" title="Services"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="01actions.html" title="Generic actions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Configuration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hosts">
+<span id="hostconfiguration"></span><h1>Hosts<a class="headerlink" href="#hosts" title="Permalink to this headline">¶</a></h1>
+<p>A host is any entity having an IP address corresponding to a resource of the information system.
+E.g.: A server, network printer, a NAS server, a temperature sensor, an IP camera, etc.</p>
+<p>All these host additions take place in the menu: <strong>Configuration</strong> ==&gt; <strong>Hosts</strong> ==&gt; <strong>Add</strong>.</p>
+<img alt="../_images/02addhost.png" class="align-center" src="../_images/02addhost.png" />
+<div class="section" id="configuration-of-the-host">
+<h2>Configuration of the host<a class="headerlink" href="#configuration-of-the-host" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="general-information">
+<h3>General information<a class="headerlink" href="#general-information" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <strong>Host Name</strong> field defines the host name that will be used by the Monitoring Engine.</li>
+<li>The <strong>Alias</strong> field shows the alias of the host.</li>
+<li>The <strong>IP address / DNS</strong> field defines IP address or DNS name of the host. The <strong>Resolve</strong> button enables us to resolve the domain name by questioning the DNS server configured on the central server.</li>
+<li>The <strong>SNMP Community &amp; Version</strong> fields contain the name of the community and the SNMP version.</li>
+<li>The <strong>Monitored from</strong> field indicates which poller server is charged with monitoring this host.</li>
+<li>The <strong>Timezone / Location</strong> field indicates the timezone location of the monitored hosts.</li>
+<li>The <strong>Host Templates</strong> field enables us to associated one or more models of hosts with this object.</li>
+</ul>
+<p>In case of conflicts of settings present on multiple models, the host model above overwrites the identical  properties defined in host models below.
+The button <img alt="move" src="../_images/move.png" /> enables us to change the order of host models. The button <img alt="delete" src="../_images/delete.png" /> serves to delete the host model.</p>
+<ul class="simple">
+<li>If the <strong>Create Services linked to the Template too</strong> field is defined as <strong>Yes</strong>, Centreon automatically generates the services based their self on the service templates linked to the host templates defined above (see the chapter <a class="reference internal" href="09models.html#hosttemplates"><span>Templates</span></a>).</li>
+</ul>
+</div>
+<div class="section" id="monitoring-properties-of-the-host">
+<h3>Monitoring properties of the host<a class="headerlink" href="#monitoring-properties-of-the-host" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <strong>Check Command</strong> field indicates the command use to check the availability of the host.</li>
+<li>The <strong>Args</strong> field defines the arguments given to the check command (each argument starts with a ”!”).</li>
+</ul>
+<p>The Macros part serves to add custom macros.</p>
+<ul class="simple">
+<li>The <strong>Macro name</strong> and <strong>Macro value</strong> field enable us to define the name and value of the macro.</li>
+<li>The <strong>Password</strong> box enables the value of the macro to be hidden.</li>
+</ul>
+<p>To reinitialize to the default value (defined in template) click on <img alt="undo" src="../_images/undo.png" />.</p>
+<p>To view the description of the macro, click on <img alt="description" src="../_images/description.png" />.</p>
+<p>To delete the macro, click on <img alt="delete" src="../_images/delete.png" />.</p>
+<p>To change the order of the macros, click on <img alt="move" src="../_images/move.png" />.</p>
+</div>
+<div class="section" id="scheduling-options-of-the-host">
+<h3>Scheduling options of the host<a class="headerlink" href="#scheduling-options-of-the-host" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <strong>Check Period</strong> field defines the time period during which the scheduler checks the status of the object.</li>
+<li>The <strong>Max Check Attempts</strong> field defines the number of checks to be performed before confirming the status of the host: when the status is confirmed the notification process is triggered.</li>
+<li>The <strong>Normal Check Interval</strong> is expressed in minutes. It defined the interval between checks when the host status is OK.</li>
+<li>The <strong>Retry Check Interval</strong> is expressed in minutes. It defined the check interval of the Not-OK status of the host.</li>
+<li>The <strong>Active Checks Enabled</strong> and <strong>Passive Checks Enabled</strong> fields enable / disable the active and passive checks.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="notification-tab">
+<h2>Notification tab<a class="headerlink" href="#notification-tab" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The <strong>Notification Enabled</strong> field enables us to enable or disable the notifications concerning the object.</li>
+<li>The <strong>Notification Options</strong> define the statuses for which a notification will be sent.</li>
+<li>The <strong>Notification Interval</strong> is expressed in minutes. It indicates the time between sending each notifications when the status is Not-OK. If the value is defined as 0 the scheduler sends a single notification per status change.</li>
+<li>The <strong>Notification Period</strong> field indicates the time period during which the notifications will be enabled.</li>
+<li>The <strong>First notification delay</strong> is expressed in minutes. It refers to the time delay to be respected before sending the first notification when a Not-OK status is validated.</li>
+<li>If the <strong>Contact additive inheritance</strong> box is checked, Centreon does not overwrite the configuration of the parent host model but adds the contacts in addition to the contacts defined in the parent model.</li>
+<li>The list of <strong>Linked contacts</strong> indicates the contacts which will receive the notifications.</li>
+<li>If the <strong>Contact group additive inheritance</strong> box is checked, Centreon does not overwrite the configuration of the parent host template but adds the contact groups in addition to the contact groups defined in the parent template.</li>
+<li>The list of <strong>Linked contacts Groups</strong> indicates the groups of contacts which will receive the notifications.</li>
+</ul>
+</div>
+<div class="section" id="relations-tab">
+<h2>Relations tab<a class="headerlink" href="#relations-tab" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The <strong>Parent Host Groups</strong> list defined the host groups to which the host belongs.</li>
+<li>The <strong>Parent Host Categories</strong> list defined the categories to which the host belongs.</li>
+<li>The <strong>Parent Hosts</strong> list enables us to define the physical family relationships between objects.</li>
+<li>The <strong>Child Hosts</strong> list enables us to define the physical family relationships between objects.</li>
+</ul>
+</div>
+<div class="section" id="data-processing-tab">
+<h2>Data processing tab<a class="headerlink" href="#data-processing-tab" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>If <strong>Obsess Over Host</strong> is enabled, the host check feedback command will be enabled.</li>
+<li>The <strong>Check Freshness</strong> field allows us to enable or disable the result freshness check.</li>
+<li>The <strong>Freshness Threshold</strong> is expressed in seconds. if during this period no host status change request (passive command) is received the active check command is executed.</li>
+<li>The <strong>Flap Detection Enabled</strong> field allows us to enable or disable the detection flapping in the statuses (status value changing too often on a given period).</li>
+<li>The <strong>Low Flap Threshold</strong> and <strong>High Flap Threshold</strong> fields define the high and low thresholds for the detection of flapping in percentage of status change.</li>
+<li>The <strong>Process Perf Data</strong> field allows us to enable or disable performance data processing (and so the generation of performance graphics). This option is not necessary when Centreon Broker is use.</li>
+<li>The <strong>Retain Status Information</strong> and <strong>Retain Non Status Information</strong> fields indicate if the information concerning the status is saved after every time the check command is repeated.</li>
+<li>The <strong>Stalking Options</strong> field defined the options to be recorded if retention is enabled.</li>
+<li>The <strong>Event Handler Enabled</strong> field allows us to enable or disable the events handler.</li>
+<li>The <strong>Event Handler</strong> field defined the command to be executed if the event handler is enabled.</li>
+<li>The <strong>Args</strong> field defined the arguments of the events handler command.</li>
+</ul>
+</div>
+<div class="section" id="host-extended-infos-tab">
+<h2>Host Extended Infos tab<a class="headerlink" href="#host-extended-infos-tab" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="monitoring-engine">
+<h3>Monitoring engine<a class="headerlink" href="#monitoring-engine" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <strong>URL</strong> field defined a URL that can be used to give more information on the host.</li>
+<li>The <strong>Notes</strong> field permits us to add  optional notes concerning the host.</li>
+<li>The <strong>Action URL</strong> field defined a URL normally use for giving information on actions on the host (maintenance, etc.).</li>
+<li>The <strong>Icon</strong> field indicates the icon use for the host.</li>
+<li>The <strong>Alt Icon</strong> field is the text use if the icon cannot be Display.</li>
+<li>The <strong>Severity level</strong> field indicates the severity level of the host.</li>
+</ul>
+<p>The fields presented below are fields that are only use by the CGI of the scheduler (usually Nagios). Consequently, they do not present much interest if Centreon Engine and Centreon Broker are in use.</p>
+<ul class="simple">
+<li>The <strong>VRML image</strong> field defined the logo for the 3D engine of the host (not compatible with Centreon Engine).</li>
+<li>The <strong>Status Map Image</strong> field defined the logo for the scheduler CGI.</li>
+<li>The <strong>2d Coords</strong> and <strong>3d Coords</strong> fields indicates the 2D and 3D coordinates use by the CGI.</li>
+</ul>
+</div>
+<div class="section" id="access-groups">
+<h3>Access groups<a class="headerlink" href="#access-groups" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <strong>ACL Resource Groups</strong> (only displayed for non administrator) allows to link this host to an hostgroup in order to visualise it (See <a class="reference internal" href="../administration_guide/02b.html#acl"><span>Access control list</span></a> chapter).</li>
+</ul>
+</div>
+<div class="section" id="additional-information">
+<h3>Additional Information<a class="headerlink" href="#additional-information" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <strong>Status</strong> field allows us to enable or disable the host.</li>
+<li>The <strong>Comments</strong> field can be used to add a comment concerning the host.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Hosts</a><ul>
+<li><a class="reference internal" href="#configuration-of-the-host">Configuration of the host</a><ul>
+<li><a class="reference internal" href="#general-information">General information</a></li>
+<li><a class="reference internal" href="#monitoring-properties-of-the-host">Monitoring properties of the host</a></li>
+<li><a class="reference internal" href="#scheduling-options-of-the-host">Scheduling options of the host</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#notification-tab">Notification tab</a></li>
+<li><a class="reference internal" href="#relations-tab">Relations tab</a></li>
+<li><a class="reference internal" href="#data-processing-tab">Data processing tab</a></li>
+<li><a class="reference internal" href="#host-extended-infos-tab">Host Extended Infos tab</a><ul>
+<li><a class="reference internal" href="#monitoring-engine">Monitoring engine</a></li>
+<li><a class="reference internal" href="#access-groups">Access groups</a></li>
+<li><a class="reference internal" href="#additional-information">Additional Information</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="01actions.html"
+                        title="previous chapter">Generic actions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="03services.html"
+                        title="next chapter">Services</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/configuration_guide/02hosts.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="03services.html" title="Services"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="01actions.html" title="Generic actions"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Configuration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

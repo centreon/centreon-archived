@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Centreon 2.4 &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="Centreon 2.4" href="index.html" />
+    <link rel="next" title="Set up your monitoring platform" href="../../installation/index.html" />
+    <link rel="prev" title="Centreon 2.4.1" href="centreon-2.4.1.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../installation/index.html" title="Set up your monitoring platform"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="centreon-2.4.1.html" title="Centreon 2.4.1"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Release notes</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">Centreon 2.4</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="centreon-2-4">
+<h1>Centreon 2.4<a class="headerlink" href="#centreon-2-4" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-s-new">
+<h2>What&#8217;s new?<a class="headerlink" href="#what-s-new" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="better-integration-with-centreon-engine-and-centreon-broker">
+<h3>Better integration with Centreon Engine and Centreon Broker<a class="headerlink" href="#better-integration-with-centreon-engine-and-centreon-broker" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="../../installation/from_sources.html#centreon-install"><span>installation</span></a> process has been reviewed:
+it is now possible to specify the monitoring engine (Centreon Engine or Nagios)
+and the event broker module (Centreon Broker or NDOUtils). All you
+need to do right after a fresh installation is export your configuration files, then reload your
+monitoring engine and the monitoring system should be up and running!</p>
+<p>This version offers the possibility to define the <a class="reference external" href="http://documentation.centreon.com/docs/centreon-engine/en/latest/user/configuration/basics/object_definitions.html#obj-def-connector" title="(in Centreon Engine v1.4)"><span class="xref std std-ref">connectors</span></a>
+for Centreon Engine. Obviously, you do not need to configure these connectors if you are still using Nagios.</p>
+<p>It&#8217;s been said that Centreon Broker can be cumbersome to configure, especially if you are not
+familiar with its functioning. Centreon 2.4 offers a configuration wizard now!</p>
+</div>
+<div class="section" id="custom-views">
+<h3>Custom views<a class="headerlink" href="#custom-views" title="Permalink to this headline">¶</a></h3>
+<p>This new page enables users to make their own views with various
+widgets and they are able to share their custom views with their
+colleagues!</p>
+<p>See the <span class="xref std std-ref">user guide</span> to learn more about
+this feature.</p>
+</div>
+<div class="section" id="support-for-multiple-ldap-servers">
+<h3>Support for multiple LDAP servers<a class="headerlink" href="#support-for-multiple-ldap-servers" title="Permalink to this headline">¶</a></h3>
+<p>The LDAP authentication system is much more robust than before.
+Indeed, it is now possible to have <span class="xref std std-ref">multiple LDAP configurations</span> on
+top of the failover system. The LDAP import form will let you choose the
+LDAP server to import from.</p>
+<p>Make sure that all your LDAP parameters are correctly imported after an upgrade.</p>
+</div>
+<div class="section" id="new-autologin-mechanism">
+<h3>New <em>autologin</em> mechanism<a class="headerlink" href="#new-autologin-mechanism" title="Permalink to this headline">¶</a></h3>
+<p>A better <span class="xref std std-ref">autologin</span> mechanism has been introduced in
+this version. Now using randomly generated keys, it allows you to
+access specific pages without being prompted for a username and a
+password.</p>
+</div>
+<div class="section" id="database-indexes-verification-tool">
+<h3>Database indexes verification tool<a class="headerlink" href="#database-indexes-verification-tool" title="Permalink to this headline">¶</a></h3>
+<p>If you upgrade from an old version of Centreon, now you can <a class="reference internal" href="../../faq/performance.html#synchronizing-indexes"><span>check the
+existence of all database indexes</span></a> to ensure maximum performance</p>
+</div>
+</div>
+<div class="section" id="important-notes">
+<h2>Important notes<a class="headerlink" href="#important-notes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="administration">
+<h3>Administration<a class="headerlink" href="#administration" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="communication-with-pollers">
+<h4>Communication with pollers<a class="headerlink" href="#communication-with-pollers" title="Permalink to this headline">¶</a></h4>
+<p>The default system user used by <em>Centcore</em> to communicate with pollers
+has changed from <code class="docutils literal"><span class="pre">nagios</span></code> to <code class="docutils literal"><span class="pre">centreon</span></code>. See
+<span class="xref std std-ref">ces:pollers_basic_conf</span> for more information.</p>
+</div>
+<div class="section" id="plugins">
+<h4>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h4>
+<p>For better performances, we advise you to use <code class="docutils literal"><span class="pre">check_icmp</span></code>
+instead of <code class="docutils literal"><span class="pre">check_ping</span></code> if you are in an IPv4 network, that is
+(check_icmp is not yet compatible with IPv6). Switching from <code class="docutils literal"><span class="pre">check_ping</span></code> to
+<code class="docutils literal"><span class="pre">check_icmp</span></code> should be quite simple as the plugins take the same parameters.
+All you have to do is change the check commands: <code class="docutils literal"><span class="pre">check_centreon_ping</span></code>,
+<code class="docutils literal"><span class="pre">check_host_alive</span></code> and all the commands that call <code class="docutils literal"><span class="pre">check_ping</span></code>.</p>
+</div>
+</div>
+<div class="section" id="web-interface">
+<h3>Web interface<a class="headerlink" href="#web-interface" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="autologin">
+<h4>Autologin<a class="headerlink" href="#autologin" title="Permalink to this headline">¶</a></h4>
+<p>A <span class="xref std std-ref">new autologin mechanism</span> has been added in
+Centreon 2.4. More secured than the previous one, it will soon replace
+it. If you currently use this feature, we recommend upgrading to the
+new one as soon as you can.</p>
+</div>
+<div class="section" id="centreon-broker-init-script">
+<h4>Centreon Broker init script<a class="headerlink" href="#centreon-broker-init-script" title="Permalink to this headline">¶</a></h4>
+<p>If you are using <em>Centreon Broker</em>, make sure to fill the <em>Start script for broker daemon</em>
+parameter in <code class="docutils literal"><span class="pre">Administration</span></code> &gt; <code class="docutils literal"><span class="pre">Options</span></code> &gt; <code class="docutils literal"><span class="pre">Monitoring</span></code>. RRD graphs cannot be rebuilt
+if this parameter is omitted!</p>
+</div>
+<div class="section" id="centcore-options">
+<h4>Centcore options<a class="headerlink" href="#centcore-options" title="Permalink to this headline">¶</a></h4>
+<p>Two parameters have been added into the <code class="docutils literal"><span class="pre">Administration</span></code> &gt; <code class="docutils literal"><span class="pre">Options</span></code> &gt; <code class="docutils literal"><span class="pre">Monitoring</span></code> page:</p>
+<ul class="simple">
+<li>Enable Perfdata Synchronisation (Centcore)</li>
+<li>Enable Logs Synchronisation (Centcore)</li>
+</ul>
+<p>For performance issues, these options must be disabled if your monitoring system is running
+with Centreon Broker.</p>
+</div>
+<div class="section" id="resource-cfg-and-cgi-cfg">
+<h4>Resource.cfg and CGI.cfg<a class="headerlink" href="#resource-cfg-and-cgi-cfg" title="Permalink to this headline">¶</a></h4>
+<p>The resource and CGI configuration objects are now specific to each monitoring poller. The
+values of $USERx$ macros can be different from one poller to another.</p>
+</div>
+<div class="section" id="interval-length">
+<h4>Interval length<a class="headerlink" href="#interval-length" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal"><span class="pre">interval_length</span></code> is now a global parameter that you have to set in <code class="docutils literal"><span class="pre">Administration</span></code> &gt; <code class="docutils literal"><span class="pre">Options</span></code>
+&gt; <code class="docutils literal"><span class="pre">Monitoring</span></code>, although it should be left at <code class="docutils literal"><span class="pre">60</span> <span class="pre">seconds</span></code> in most cases.</p>
+</div>
+</div>
+<div class="section" id="centstorage">
+<h3>Centstorage<a class="headerlink" href="#centstorage" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="supported-data-source-types">
+<h4>Supported data source types<a class="headerlink" href="#supported-data-source-types" title="Permalink to this headline">¶</a></h4>
+<p><em>Centreon Broker</em> now supports all of the RRDtool data source types
+(COUNTER, GAUGE, DERIVE and ABSOLUTE). This support will not be added
+to <em>Centstorage</em> as it will soon be replaced by <em>Centreon Broker</em>.</p>
+<p>See the <a class="reference external" href="http://documentation.centreon.com/docs/centreon-broker/en/latest/exploit/graph_types.html#graphic-types" title="(in Centreon Broker v3.0)"><span class="xref std std-ref">Centreon Broker documentation</span></a> to learn how you can
+convert your existing plugins.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Centreon 2.4</a><ul>
+<li><a class="reference internal" href="#what-s-new">What&#8217;s new?</a><ul>
+<li><a class="reference internal" href="#better-integration-with-centreon-engine-and-centreon-broker">Better integration with Centreon Engine and Centreon Broker</a></li>
+<li><a class="reference internal" href="#custom-views">Custom views</a></li>
+<li><a class="reference internal" href="#support-for-multiple-ldap-servers">Support for multiple LDAP servers</a></li>
+<li><a class="reference internal" href="#new-autologin-mechanism">New <em>autologin</em> mechanism</a></li>
+<li><a class="reference internal" href="#database-indexes-verification-tool">Database indexes verification tool</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#important-notes">Important notes</a><ul>
+<li><a class="reference internal" href="#administration">Administration</a><ul>
+<li><a class="reference internal" href="#communication-with-pollers">Communication with pollers</a></li>
+<li><a class="reference internal" href="#plugins">Plugins</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#web-interface">Web interface</a><ul>
+<li><a class="reference internal" href="#autologin">Autologin</a></li>
+<li><a class="reference internal" href="#centreon-broker-init-script">Centreon Broker init script</a></li>
+<li><a class="reference internal" href="#centcore-options">Centcore options</a></li>
+<li><a class="reference internal" href="#resource-cfg-and-cgi-cfg">Resource.cfg and CGI.cfg</a></li>
+<li><a class="reference internal" href="#interval-length">Interval length</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#centstorage">Centstorage</a><ul>
+<li><a class="reference internal" href="#supported-data-source-types">Supported data source types</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="centreon-2.4.1.html"
+                        title="previous chapter">Centreon 2.4.1</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../../installation/index.html"
+                        title="next chapter">Set up your monitoring platform</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/release_notes/centreon-2.4/centreon-2.4.0.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../installation/index.html" title="Set up your monitoring platform"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="centreon-2.4.1.html" title="Centreon 2.4.1"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Release notes</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >Centreon 2.4</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

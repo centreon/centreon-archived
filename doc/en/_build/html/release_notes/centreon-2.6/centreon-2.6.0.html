@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Centreon 2.6.0 &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="Centreon 2.6" href="index.html" />
+    <link rel="next" title="Centreon 2.5" href="../centreon-2.5/index.html" />
+    <link rel="prev" title="Centreon 2.6.1" href="centreon-2.6.1.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../centreon-2.5/index.html" title="Centreon 2.5"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="centreon-2.6.1.html" title="Centreon 2.6.1"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Release notes</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">Centreon 2.6</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="centreon-2-6-0">
+<h1>Centreon 2.6.0<a class="headerlink" href="#centreon-2-6-0" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="notice">
+<h2>Notice<a class="headerlink" href="#notice" title="Permalink to this headline">¶</a></h2>
+<p>If you are upgrading from a version prior to 2.5.4, make sure to go through all the release notes available
+<a class="reference external" href="http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html">here</a>.</p>
+</div>
+<div class="section" id="what-s-new">
+<h2>What&#8217;s new?<a class="headerlink" href="#what-s-new" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="compatibility-with-php-5-4-x">
+<h3>Compatibility with PHP 5.4.x<a class="headerlink" href="#compatibility-with-php-5-4-x" title="Permalink to this headline">¶</a></h3>
+<p>Centreon is now compatible with PHP in version 5.4.x. So, you do not need to downgrade to PHP 5.3.x version when you install it on Debian 6, Ubuntu 13.04, Redhat 7 and CentOS 7.</p>
+<p>Centreon proprietary module (Centreon BAM, Centreon BI, Centreon MAP, Centreon KB) is not compatible as yet with this PHP version.</p>
+</div>
+<div class="section" id="new-options-for-centreontrapd">
+<h3>New options for Centreontrapd<a class="headerlink" href="#new-options-for-centreontrapd" title="Permalink to this headline">¶</a></h3>
+<p>It&#8217;s now possible with Centreontrapd to :</p>
+<ul class="simple">
+<li>Filter services on same host ;</li>
+<li>Transform output (to remove pipe for example) ;</li>
+<li>Skip trap for hosts in downtime ;</li>
+<li>Add custom code execution ;</li>
+<li>Put unknown trap in another file.</li>
+</ul>
+</div>
+<div class="section" id="acl-and-configuration-modification-with-admin-users">
+<h3>ACL and configuration modification with admin users<a class="headerlink" href="#acl-and-configuration-modification-with-admin-users" title="Permalink to this headline">¶</a></h3>
+<p>ACL management has been improved to allow for a greater number of simultaneous sysadmin users to work on the same monitoring platform.</p>
+<p>The synchronisation is more efficient in configuration page between admin and normal users.</p>
+</div>
+<div class="section" id="partial-rebuild-of-events-information">
+<h3>Partial rebuild of events information<a class="headerlink" href="#partial-rebuild-of-events-information" title="Permalink to this headline">¶</a></h3>
+<p>It&#8217;s now possible to partially rebuild events information with eventsRebuild script. You can now use option &#8216;-s&#8217; when rebuilding and the rebuild will start from this date.</p>
+<p>Before, you had to rebuild from the beginning of the related data.</p>
+</div>
+<div class="section" id="criticality-inheritance">
+<h3>Criticality inheritance<a class="headerlink" href="#criticality-inheritance" title="Permalink to this headline">¶</a></h3>
+<p>Centreon 2.6 introduces a capability for the dependent services of a host to automatically inherit its configured criticality.  It’s also possible to define the levels of global criticality of a particular host and dependent services cluster thanks to the use of templates.</p>
+</div>
+<div class="section" id="integration-of-centreon-new-logo">
+<h3>Integration of Centreon new logo<a class="headerlink" href="#integration-of-centreon-new-logo" title="Permalink to this headline">¶</a></h3>
+<p>The new Centreon logo has been integrated into this new version.</p>
+</div>
+</div>
+<div class="section" id="changelog">
+<h2>CHANGELOG<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="bug-fixes">
+<h3>Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>#5655: Changing Host Templates doesn&#8217;t delete services</li>
+<li>#5782: Warning daemon_dumps_core variable ignored</li>
+<li>#5795: ACL and configuration modification with admin users</li>
+<li>#5868: Generation of services groups isn&#8217;t correct for poller</li>
+<li>#6052: Month_cycle option in recurring downtime is not properly set</li>
+<li>#6119: Filter doesn&#8217;t work on many pages in Administration -&gt; Log</li>
+<li>#6163: A template should not be able to inherit from itself</li>
+<li>#6336: Problem with schedule downtime when using different timezones</li>
+</ul>
+</div>
+<div class="section" id="features">
+<h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>#3239: PHP-5.4 Compatibility</li>
+<li>#5238: Criticality inheritance</li>
+<li>#5334, #6114, #6120 : Optimisation and customization on Centreontrapd</li>
+<li>#5952: Add possibility to rebuild partially Events information</li>
+<li>#6160: New Centreon logo</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Centreon 2.6.0</a><ul>
+<li><a class="reference internal" href="#notice">Notice</a></li>
+<li><a class="reference internal" href="#what-s-new">What&#8217;s new?</a><ul>
+<li><a class="reference internal" href="#compatibility-with-php-5-4-x">Compatibility with PHP 5.4.x</a></li>
+<li><a class="reference internal" href="#new-options-for-centreontrapd">New options for Centreontrapd</a></li>
+<li><a class="reference internal" href="#acl-and-configuration-modification-with-admin-users">ACL and configuration modification with admin users</a></li>
+<li><a class="reference internal" href="#partial-rebuild-of-events-information">Partial rebuild of events information</a></li>
+<li><a class="reference internal" href="#criticality-inheritance">Criticality inheritance</a></li>
+<li><a class="reference internal" href="#integration-of-centreon-new-logo">Integration of Centreon new logo</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#changelog">CHANGELOG</a><ul>
+<li><a class="reference internal" href="#bug-fixes">Bug fixes</a></li>
+<li><a class="reference internal" href="#features">Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="centreon-2.6.1.html"
+                        title="previous chapter">Centreon 2.6.1</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../centreon-2.5/index.html"
+                        title="next chapter">Centreon 2.5</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/release_notes/centreon-2.6/centreon-2.6.0.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../centreon-2.5/index.html" title="Centreon 2.5"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="centreon-2.6.1.html" title="Centreon 2.6.1"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Release notes</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >Centreon 2.6</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

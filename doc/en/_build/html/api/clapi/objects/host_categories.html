@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Host categories &mdash; Centreon 2.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Centreon 2.7.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Object management" href="index.html" />
+    <link rel="next" title="Host groups" href="host_groups.html" />
+    <link rel="prev" title="Hosts" href="hosts.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="host_groups.html" title="Host groups"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="hosts.html" title="Hosts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" accesskey="U">Object management</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="host-categories">
+<h1>Host categories<a class="headerlink" href="#host-categories" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Object name: <strong>HC</strong></p>
+</div>
+<div class="section" id="show">
+<h2>Show<a class="headerlink" href="#show" title="Permalink to this headline">¶</a></h2>
+<p>In order to list available host categories, use the <strong>SHOW</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HC -a show
+id;name;alias;members
+1;Linux;Linux Servers;host1
+2;Windows;Windows Server;host2
+3;AS400;AS400 systems;host3,host4
+</pre></div>
+</div>
+<p>Columns are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Name</td>
+<td>Name of host category</td>
+</tr>
+<tr class="row-odd"><td>Alias</td>
+<td>Alias of host category</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="add">
+<h2>Add<a class="headerlink" href="#add" title="Permalink to this headline">¶</a></h2>
+<p>In order to add a host category, use the <strong>ADD</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HC -a add -v &quot;Databases;Databases servers&quot;
+</pre></div>
+</div>
+<p>Required parameters are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Name of host category</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Alias of host category</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="del">
+<h2>Del<a class="headerlink" href="#del" title="Permalink to this headline">¶</a></h2>
+<p>In order to delete a host category, use the <strong>DEL</strong> action. The name is used for identifying the  host category you want to delete:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HC -a DEL -v &quot;Databases&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="getmember">
+<h2>Getmember<a class="headerlink" href="#getmember" title="Permalink to this headline">¶</a></h2>
+<p>In order to view the list hosts in a host category, use the <strong>GETMEMBER</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HC -a getmember -v &quot;Linux&quot;
+id;name
+14;Centreon-Server
+15;srv-test
+</pre></div>
+</div>
+</div>
+<div class="section" id="addmember-and-setmember">
+<h2>Addmember and Setmember<a class="headerlink" href="#addmember-and-setmember" title="Permalink to this headline">¶</a></h2>
+<p>In order to add a host or a host template into a host category, use the <strong>ADDMEMBER</strong> or <strong>SETMEMBER</strong> action where <em>add</em> will append and <em>set</em> will overwrite previous definitions:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HC -a addmember -v &quot;Linux;host7&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o HC -a setmember -v &quot;Windows;host7|host8|host9&quot;
+</pre></div>
+</div>
+<p>The needed parameters are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Host category name</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Host names to add/set.
+For multiple definitions, use the <em>|</em> delimiter</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="setseverity">
+<h2>Setseverity<a class="headerlink" href="#setseverity" title="Permalink to this headline">¶</a></h2>
+<p>In order to turn a host category into a severity, use the <strong>SETSEVERITY</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HC -a setseverity -v &quot;Critical;3;16x16/critical.gif&quot;
+</pre></div>
+</div>
+<p>The needed parameters are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Host category name</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Severity level - must be a number</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Icon that represents the severity</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="unsetseverity">
+<h2>Unsetseverity<a class="headerlink" href="#unsetseverity" title="Permalink to this headline">¶</a></h2>
+<p>In order to turn a severity into a regular host category, use the <strong>UNSETSEVERITY</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HC -a unsetseverity -v &quot;Critical&quot;
+</pre></div>
+</div>
+<p>The needed parameters are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Host category name</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="delmember">
+<h2>Delmember<a class="headerlink" href="#delmember" title="Permalink to this headline">¶</a></h2>
+<p>In order to remove a host or a host template from a host category, use the <strong>DELMEMBER</strong> action:</p>
+<div class="highlight-python"><div class="highlight"><pre>[root@centreon ~]# ./centreon -u admin -p centreon -o HC -a delmember -v &quot;Linux;host7&quot;
+[root@centreon ~]# ./centreon -u admin -p centreon -o HC -a delmember -v &quot;Windows;host8&quot;
+</pre></div>
+</div>
+<p>The needed parameters are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Order</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Host category name</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Host names to remove from host category</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Host categories</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#show">Show</a></li>
+<li><a class="reference internal" href="#add">Add</a></li>
+<li><a class="reference internal" href="#del">Del</a></li>
+<li><a class="reference internal" href="#getmember">Getmember</a></li>
+<li><a class="reference internal" href="#addmember-and-setmember">Addmember and Setmember</a></li>
+<li><a class="reference internal" href="#setseverity">Setseverity</a></li>
+<li><a class="reference internal" href="#unsetseverity">Unsetseverity</a></li>
+<li><a class="reference internal" href="#delmember">Delmember</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="hosts.html"
+                        title="previous chapter">Hosts</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="host_groups.html"
+                        title="next chapter">Host groups</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/api/clapi/objects/host_categories.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="host_groups.html" title="Host groups"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="hosts.html" title="Hosts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Centreon 2.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../index.html" >CLAPI</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="index.html" >Object management</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Centreon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>
