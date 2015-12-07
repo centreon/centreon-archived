@@ -1121,8 +1121,7 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
     if (!isset($server_id) || $server_id == "" || $server_id == 0) {
         $server_id = null;
     }
-    
-    
+        
     if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL) {
         $ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
         $ret["command_command_id_arg1"] = str_replace("\t", "#T#", $ret["command_command_id_arg1"]);
@@ -1521,13 +1520,15 @@ function updateHost_MC($host_id = null) {
         $rq .= "host_notifications_enabled = '" . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', ";
         $fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
     }
-    if (isset($ret["contact_additive_inheritance"])) {
-        $rq .= "contact_additive_inheritance = '" . $ret["contact_additive_inheritance"] . "', ";
-        $fields["contact_additive_inheritance"] = $ret["contact_additive_inheritance"];
+    
+    if (isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"]) && in_array($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"], array('0', '1'))) {
+        $rq .= "contact_additive_inheritance = '" . $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"] . "', ";
+        $fields["contact_additive_inheritance"] = $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"];
     }
-    if (isset($ret["cg_additive_inheritance"])) {
-        $rq .= "cg_additive_inheritance = '" . $ret["cg_additive_inheritance"] . "', ";
-        $fields["cg_additive_inheritance"] = $ret["cg_additive_inheritance"];
+
+    if (isset($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"]) && in_array($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"], array('0', '1'))) {
+        $rq .= "cg_additive_inheritance = '" . $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"] . "', ";
+        $fields["cg_additive_inheritance"] = $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"];
     }
     if (isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != NULL) {
         $rq .= "host_stalking_options = '" . implode(",", array_keys($ret["host_stalOpts"])) . "', ";
