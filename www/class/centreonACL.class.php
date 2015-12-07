@@ -616,9 +616,9 @@ class CentreonACL {
                     }
                     $flagFirst = false;
                     if ($escape === true) {
-                        $pollers .= "'" . CentreonDB::escape($value) . "',";
+                        $pollers .= "'" . CentreonDB::escape($value) . "'";
                     } else {
-                        $pollers .= "'" . $value . "',";
+                        $pollers .= "'" . $value . "'";
                     }
                     break;
                 default :
@@ -632,8 +632,6 @@ class CentreonACL {
                     break;
             }
         }
-
-        $result = "''";
         return $pollers;
     }
 
