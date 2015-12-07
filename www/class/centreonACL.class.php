@@ -1515,7 +1515,14 @@ class CentreonACL {
         }
 
         # Manage order by
-        $requests['order'] = implode(', ', isset($options['order']) ? $options['order'] : array());
+        $requests['order'] = '';
+        if (isset($options['order'])) {
+            if (is_array($options['order'])) {
+                $requests['order'] = implode(', ', $options['order']);
+            } else if (!empty($options['order'])) {
+                $requests['order'] = $options['order'];
+            }
+        }
         if ($requests['order'] != '') {
             $requests['order'] = ' ORDER BY ' . $requests['order'];
         }
