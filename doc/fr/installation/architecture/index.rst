@@ -7,7 +7,7 @@ Centreon permet plusieurs choix dans la composition de l'architecture de votre o
 Vous trouverez ici toutes les architectures supportées par cette version 2.7 de l'interface.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :glob:
 
    03a
