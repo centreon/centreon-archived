@@ -75,9 +75,10 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
  }
 
 $acl = $oreon->user->access;
-$serverString = $acl->getPollerString();
+$serverString = trim($acl->getPollerString());
 $allowedBrokerConf = array();
-if ($serverString != "''") {
+
+if ($serverString != "''" && !empty($serverString)) {
     $sql = "SELECT config_id
                 FROM cfg_centreonbroker
                 WHERE ns_nagios_server IN (".$serverString.")";
