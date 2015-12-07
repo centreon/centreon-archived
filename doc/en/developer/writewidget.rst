@@ -196,13 +196,13 @@ We use Smarty, it's an engine and template'php compiler (http://smarty.net).
 
 To use Smarty you need to :
 
-.. sourcecode:: php
+.. source-code:: php
 
 	require_once $centreon_path . 'GPL_LIB/Smarty/libs/Smarty.class.php';
 
 1.configuration of smarty:
 
-.. sourcecode::	php
+.. source-code:: php
 
 	$path = $centreon_path . "www/widgets/Dummy/src/";
 	$template = new Smarty();
@@ -216,7 +216,7 @@ To use Smarty you need to :
 	$template->assign('autoRefresh', $autoRefresh);
 	$template->assign('data', $data);
 
-3.apportionment of html's file to execute:
+3.affectation of html's file to execute:
 
 .. source-code:: php
 
