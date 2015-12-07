@@ -124,6 +124,7 @@
                       FROM cfg_centreonbroker 
                       WHERE config_id = " . $id;
 	    $res = $pearDB->query($query);
+        
 	    if (PEAR::isError($res)) {
 	        return array(
         		"name" => '',
@@ -161,18 +162,19 @@
                 foreach ($ids as $id => $value)	{
                     $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
-                    $query = "SELECT config_name, config_filename, config_activate, ns_nagios_server, event_queue_max_size "
+                    $query = "SELECT config_name, config_filename, config_activate, ns_nagios_server, event_queue_max_size, retention_path "
                         . "FROM cfg_centreonbroker "
                         . "WHERE config_id = " . $id . " ";
                     $DBRESULT = $pearDB->query($query);
                     $row = $DBRESULT->fetchRow();
                     $DBRESULT->free();
-
+                    
                     # Prepare values
                     $values = array();
                     $values['activate']['activate'] = '0';
                     $values['ns_nagios_server'] = $row['ns_nagios_server'];
                     $values['event_queue_max_size'] = $row['event_queue_max_size'];
+                    $values['retention_path'] = $row['retention_path'];
                     $query = "SELECT config_key, config_value, config_group, config_group_id "
                         . "FROM cfg_centreonbroker_info "
                         . "WHERE config_id = " . $id . " ";
@@ -191,7 +193,7 @@
                         }
                     }
                     $DBRESULT->free();
-
+                    
                     # Convert values radio button
                     foreach ($values as $group => $groups) {
                         foreach ($groups as $gid => $infos) {
