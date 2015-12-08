@@ -69,11 +69,11 @@ function transformForm()
  */
 function changeCommand(value)
 {
-	_cmdId = value;
+    _cmdId = value;
     if(document.getElementById('svcTemplate') != null){
         _templateId = document.getElementById('svcTemplate').value;
     }
-	transformForm();
+    transformForm();
 }
 
 /**
@@ -81,11 +81,10 @@ function changeCommand(value)
  */
 function changeServiceTemplate(value)
 {
-	_svcTplId = value;
+    _svcTplId = value;
     if(document.getElementById('checkCommand') != null){
         _cmdId = document.getElementById('checkCommand').value;
-        transformForm();
     }
-	
+    transformForm();
 }
 </script>
