@@ -77,21 +77,27 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
 
         $aclCgs = $acl->getContactGroupAclConf(
             array(
-                'fields'  => array('cg_id', 'cg_name'),
-                'get_row' => 'cg_name',
+                'fields'  => array('cg_id', 'cg_name', 'cg_type', 'ar_name'),
+                'get_row' => null,
                 'keys' => array('cg_id'),
                 'conditions' => $filterContactgroup,
                 'order' => array('cg_name'),
                 'pages' => $range,
                 'total' => true
-            )
+            ),
+            false
         );
+       
 
         $contactgroupList = array();
         foreach ($aclCgs['items'] as $id => $contactgroup) {
+            $sText = $contactgroup['cg_name'];
+            if ($contactgroup['cg_type'] == 'ldap') {
+                $sText .= " (LDAP : ".$contactgroup['ar_name'].")";
+            }
             $contactgroupList[] = array(
-                'id' => $id,
-                'text' => $contactgroup
+                'id' => $contactgroup['cg_id'],
+                'text' => $sText
             );
         }
 
@@ -105,16 +111,32 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
         } else {
             $ldapCgs = $cg->getLdapContactgroups($ldapFilter);
         }
+ 
         foreach ($ldapCgs as $key => $value) {
-            $contactgroupList[] = array(
-                'id' => $key,
-                'text' => $value
-            );
+            $sTemp = $value;
+            if (!$this->unique_key($sTemp, $contactgroupList)) {
+                $contactgroupList[] = array(
+                    'id' => $key,
+                    'text' => $value
+                );
+            }
         }
         
         return array(
             'items' => $contactgroupList,
             'total' => $aclCgs['total']
         );
+    }
+    
+    protected function unique_key($val, &$array)
+    {
+        if (!empty($val) && count($array) > 0) {
+            foreach ($array as $key => $value) {
+                if ($value['text'] == $val) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
