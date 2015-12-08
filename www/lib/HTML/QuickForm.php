@@ -2073,9 +2073,7 @@ class HTML_QuickForm extends HTML_Common
             $error = true;
         } else {
             $error = array('centreon_token' => 'The Token is invalid');
-            $errorTitle = _("The CSRF * token is invalid, please click");
-            $errorDetails = _("* Cross-Site Request Forgery : unauthorized commands are transmitted");
-            echo "<div class='msg' align='center'>$errorTitle<a href='' OnLoad = windows.location(); alt='reload'> here</a><br><small>$errorDetails</small></div>";
+            echo "<div class='msg' align='center'>" . _("The form has not been submitted since 15 minutes. Please retry to resubmit") ."<a href='' OnLoad = windows.location(); alt='reload'> ". _("here")."</a></div>";
         }
         
         $this->purgeToken();
