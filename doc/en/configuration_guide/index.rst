@@ -6,19 +6,18 @@ Ce chapitre vous permettra de connaître tous les mécanismes de configuration d
 
 .. toctree::
    :maxdepth: 2
-   :glob:
 
-   01actions
-   02hosts
-   03services
-   04commands
-   05timeperiod
-   06contact
-   07groups
-   08category
-   09models
-   10advanced_configuration/index
-   10poller/index 
-   11deploy
+   actions
+   hosts
+   services
+   commands
+   timeperiod
+   contact
+   groups
+   category
+   models
+   advanced_configuration/index
+   poller/index 
+   deploy
 
 Une fois configurée, la supervision vous permettra de remonter des informations relatives à l'état de santé de votre Système d'informations. Pour connaître le fonctionnement de l'interface d'exploitation de ces résultats, référez vous au guide d'exploitation.
