@@ -77,7 +77,7 @@
     $acl = $oreon->user->access;
     $serverString = $acl->getPollerString();
     $allowedResourceConf = array();
-    if ($serverString != "''") {
+    if ($serverString != "''" && !empty($serverString)) {
         $sql = "SELECT resource_id
                 FROM cfg_resource_instance_relations
                 WHERE instance_id IN (".$serverString.")";
