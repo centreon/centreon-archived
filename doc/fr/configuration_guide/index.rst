@@ -1,5 +1,5 @@
 ======================
-Guide de Configuration
+Guide de configuration
 ======================
 
 Vous trouverez dans ce chapitre toutes les informations nécessaire sà la prise en main de l'interface de configuration de Centreon. Sachez que la configuration est une étape importante dans la prise en main de votre système. 
