@@ -22,7 +22,7 @@
                 	<td>
                 		<div  class="headerTabContainer">
 	                		<ul id="mainnav">
-					            <li class="a" id='c1'><a href="#"  style='cursor:pointer' onclick="javascript:montre('1');">{t}Service Statuses{/t}</a></li>
+					            <li class="a" id='c1'><a href="#" style='cursor:pointer' onclick="javascript:montre('1');">{t}Service Statuses{/t}</a></li>
 					            <li class="b" id='c2'><a href="#" style='cursor:pointer' onclick="javascript:montre('2');">{t}Performances{/t}</a></li>
 					            <li class="b" id='c3'><a href="#" style='cursor:pointer' onclick="javascript:montre('3');">{t}Host Informations{/t}</a></li>
 					            <li class="b" id='c4'><a href="#" style='cursor:pointer' onclick="javascript:montre('4');">{t}Comments{/t}</a></li>
@@ -70,6 +70,18 @@
 		                    </div>
 		                </div>
 		                <div id='tab2' class='tab'>
+			               	<table class="ListTable">
+	                            <tr class='list_lvl_1'>
+	                                <td class="ListColHeaderLeft FormHeader"><h4>{t}Graphs{/t}</h4></td>
+	                            </tr>
+				                {foreach item=graphId from=$graphs}
+								<tr>
+									<td class="ListColLeft ColPopup" style='text-align:center;'>
+									<a href='#'><img src='./include/views/graphs/generateGraphs/generateImage.php?index={$graphId}&end=1449590280&start=1449547080'></a>
+									</td>
+								</tr>
+								{/foreach}
+							</table>
 		                </div>
 		                <div id='tab3' class='tab'>
 		                	<table class="ListTable">
@@ -137,6 +149,152 @@
 								</tr>
 								{/if}
 							</table>
+							<br />
+							<table width='100%'>
+								<tr>
+									<td style="vertical-align:top;">
+										<table class="ListTable table linkList">
+										    <tr class='list_lvl_1'>
+										        <td class="ListColHeaderLeft FormHeader" colspan="3">
+										            <h4>{$options}</h4>
+										        </td>
+										    </tr>
+											<tr class='list_one'>
+												<td class="ListColLeft">{$m_mon_host_checks_active}</td>
+												<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.active_checks_enabled]}"  >{$en_disable[$host_data.active_checks_enabled]}</span>
+										        </td>
+												<td class="ListColRight ColPopup" id="host_checks">
+												{if $aclAct.host_checks || $admin == 1}	
+													<a href="#" onClick="send_command('host_checks', '{$en_inv[$host_data.active_checks_enabled]}');"><img src={$img_en[$host_data.active_checks_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.active_checks_enabled]} {$m_mon_check_this_host}"></img></a>
+												{/if}
+												</td>
+											</tr>
+											<tr class='list_two'>
+												<td class="ListColLeft">{$m_mon_host_checks_passive}</td>
+												<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.passive_checks_enabled]}"  >{$en_disable[$host_data.passive_checks_enabled]}</span>
+										        </td>
+												<td class="ListColRight ColPopup">
+													{if $aclAct.host_checks || $admin == 1}	
+													<a href="#" onClick="send_command('host_passive_checks', '{$en_inv[$host_data.passive_checks_enabled]}');">
+													<img src={$img_en[$host_data.passive_checks_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.passive_checks_enabled]} {$m_mon_passive_check_this_host}"></img></a>
+												{/if}
+												</td>
+											</tr>
+											{if $aclAct.host_notifications || $admin == true}
+											<tr class='list_one'>
+												<td class="ListColLeft">{$m_mon_host_notification}</td>
+												<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.notifications_enabled]}"  >{$en_disable[$host_data.notifications_enabled]}</span>
+										        </td>
+												<td class="ListColRight ColPopup" id="host_notifications">
+												{if $aclAct.host_notifications || $admin == 1}
+													<a href="#" onClick="send_command('host_notifications', '{$en_inv[$host_data.notifications_enabled]}');"><img src={$img_en[$host_data.notifications_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.notifications_enabled]} {$m_mon_notify_this_host}"></img></a>
+												{/if}
+												</td>
+											</tr>
+											{/if}
+											{if $admin == true}
+											<tr class='list_two'>
+												<td class="ListColLeft">{$m_mon_obsess_over_host}</td>
+												<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.obsess_over_host]}"  >{$en_disable[$host_data.obsess_over_host]}</span>
+												</td>
+												<td class="ListColRight ColPopup" id="host_obsess">
+												{if $aclAct.obsess_over_host || $admin == 1}	
+													<a href="#" onClick="send_command('host_obsess', '{$en_inv[$host_data.obsess_over_host]}');"><img src={$img_en[$host_data.obsess_over_host]} class="ico-16" alt="{$en_inv_text[$host_data.obsess_over_host]} {$m_mon_obsess_over_host}"></img></a>
+												{/if}
+												</td>
+										    </tr>
+											{/if}
+											{if $aclAct.host_event_handler || $admin == true}
+											<tr class='list_one'>
+												<td class="ListColLeft">{$m_mon_event_handler}</td>
+												<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.event_handler_enabled]}"  >{$en_disable[$host_data.event_handler_enabled]}</span>
+										        </td>
+												<td class="ListColRight ColPopup" id="host_event_handler">
+												{if $aclAct.host_event_handler || $admin == 1}	
+													<a href="#" onClick="send_command('host_event_handler', '{$en_inv[$host_data.event_handler_enabled]}');"><img src={$img_en[$host_data.event_handler_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.event_handler_enabled]} {$m_mon_ed_event_handler}"></img></a>
+												{/if}
+												</td>
+											</tr>
+											{/if}
+											{if $aclAct.host_flap_detection || $admin == true}
+										    <tr class='list_two'>
+												<td class="ListColLeft">{$m_mon_flap_detection}</td>
+												<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.flap_detection_enabled]}" >{$en_disable[$host_data.flap_detection_enabled]}</span>
+										        </td>
+											    <td class="ListColRight ColPopup" id="host_flap_detection">
+												{if $aclAct.host_flap_detection || $admin == 1}
+												<a href="#" onClick="send_command('host_flap_detection', '{$en_inv[$host_data.flap_detection_enabled]}');">
+												<img src={$img_en[$host_data.flap_detection_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.flap_detection_enabled]} {$m_mon_ed_flapping_detect}"></img></a>
+												{/if}	
+											    </td>
+										    </tr>
+											{/if}
+											{if $host_data.current_state != UP}
+											{if $aclAct.host_acknowledgement && !$host_data.problem_has_been_acknowledged || $aclAct.host_disacknowledgement && $host_data.problem_has_been_acknowledged || $admin == true}
+											<tr class='list_one'>
+												<td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
+												<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.problem_has_been_acknowledged]}" >{$en[$host_data.problem_has_been_acknowledged]}</span>
+										        </td>
+												<td class="ListColRight ColPopup">
+										        	<a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$host_data.host_name|urlencode}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'><img src={$img_en[$host_data.problem_has_been_acknowledged]} class="ico-16" alt="{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}"></img></a>
+												</td>
+											</tr>
+											{/if}
+											{/if}
+										</table>
+									</td>
+									<td style='padding:5px;'></td>
+									<td>
+										<table class="ListTable table linkList">
+				                            <tr class='list_lvl_1'  >
+				                                <td class="ListColHeaderLeft FormHeader" colspan="2">
+				                                    <h4>{$links}</h4>
+				                                </td>
+				                            </tr>
+											<tr class='list_one'>
+												<td class="ListColLeft ColPopup">{$hostgroups_label}:</td>
+							                    <td class="ListColLeft ColPopup">
+												{foreach item=hg from=$hostgroups}
+													&nbsp;&nbsp;&nbsp;-&nbsp;{$hg}<br>
+												{/foreach}
+												</td>
+											</tr>
+										    <tr class='list_one'>
+												<td class="ListColLeft ColPopup">{$hostcategorie_label}:</td>
+				                                <td class="ListColLeft ColPopup">
+												{foreach item=hc from=$hostcategorie}
+													&nbsp;&nbsp;&nbsp;-&nbsp;{$hc}<br>
+												{/foreach}
+												</td>
+											</tr>
+										</table>
+										<br>
+										<table class="ListTable table linkList">
+							                <tr class='list_lvl_1' >
+							                    <td class="ListColHeaderLeft FormHeader" colspan="2">
+							                        <h4>{$notifications}</h4>
+							                    </td>
+							                </tr>
+							                <tr class='list_one' >
+							                    <td class="ListColLeft ColPopup">{$contactgroups_label}:</td>
+							                    <td class="ListColLeft ColPopup">
+							                    {foreach item=cg from=$contactgroups}
+							                            &nbsp;&nbsp;&nbsp;-&nbsp;{$cg}<br>
+							                    {/foreach}
+							                    </td>
+							                </tr>
+							                <tr class='list_two'>
+							                    <td class="ListColLeft ColPopup">{$contacts_label}:</td>
+							                    <td class="ListColLeft ColPopup">
+							                    {foreach item=c from=$contacts}
+							                            &nbsp;&nbsp;&nbsp;-&nbsp;{$c}<br>
+							                    {/foreach}
+							                    </td>
+							                </tr>
+							            </table>
+									</td>
+								</tr>
+							</table>
 		                </div>
 		                <div id='tab4' class='tab'>
 						<table class="ListTable">
@@ -163,7 +321,7 @@
 	        </table>
         </td>
         <td style="width: 30%; vertical-align: top;" nowrap="nowrap">
-			<table class="ListTable">
+			<table class="table ListTable linkList">
 				<tr class='list_lvl_1'>
 					<td class="ListColHeaderLeft FormHeader" colspan="2"><h4>{$m_mon_host_info}</h4></td>
 				</tr>
@@ -195,36 +353,36 @@
                         <h4>{t}Host commands and shortcuts{/t}</h4>
                     </td>
                 </tr>
-                <tr>
-                    <td class="ColPopup list_one">
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup">
                         {if $lcaTopo.60101 || $admin == 1}
                             <a href='./main.php?p=60101&host_id={$host_id}&o=c'>{$lnk_host_config} {$h.host_name}</a>
                         {/if}
                     </td>
                 </tr>
-                <tr>
-                    <td class="ColPopup list_two">
+                <tr class='list_one'>
+                    <td class="ListColLeft ColPopup">
                         {if $lcaTopo.20301 || $admin == 1}
                             <a href='./main.php?p=20301&h={$host_id}'>{$lnk_host_logs}</a>
                         {/if}
                     </td>
                 </tr>
-                <tr>
-                    <td class="ColPopup list_one">
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup">
                         {if $lcaTopo.20301 || $admin == 1}
                             <a href='./main.php?p=20201&o=svc&host_search={$host_data.host_name}&statusService=svc'>{$lnk_all_services}</a>
                         {/if}
                     </td>
                 </tr>
-                <tr>
-                    <td class="ColPopup list_two">
+                <tr class='list_one'>
+                    <td class="ListColLeft ColPopup">
                     {if $lcaTopo.307 || $admin == 1}
                         <a href='./main.php?p=307&host={$host_id}'>{$lnk_host_reports}</a>
                     {/if}
                     </td>
                 </tr>
-                <tr>
-                    <td class="ColPopup list_one">
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup">
                     {if $lcaTopo.20401 || $admin == 1}
                         <a href='./main.php?p=20401&mode=0&svc_id={$host_data.host_name}'>{$lnk_host_graphs}</a>
                     {/if}
@@ -232,70 +390,70 @@
                 </tr>
 				{if $aclAct.host_schedule_downtime || $admin == 1}	
 				<tr class='list_one'>
-					<td class="ListColLeft" id="host_downtime">
+					<td class="ListColLeft ColPopup" id="host_downtime">
 						<a href='main.php?p=21001&host_name={$host_data.host_name}'>{$m_mon_SCH_downtime}</a>
 					</td>
 				</tr>
 				{/if}
 				{if $aclAct.host_comment || $admin == 1}						
 				<tr class='list_two'>
-					<td class="ListColLeft" id="host_comment">
+					<td class="ListColLeft ColPopup" id="host_comment">
 						<a href='main.php?p=21002&host_name={$host_data.host_name}'>{$m_mon_add_comment}</a>
 					</td>
 				</tr>
 				{/if}
 				{if $aclAct.host_notifications_for_services || $admin == 1}	
 				<tr class='list_one'>
-					<td class="ListColLeft" id="host_notifications_for_services">
+					<td class="ListColLeft ColPopup" id="host_notifications_for_services">
 						<a href="#" onClick="send_command('host_notifications_for_services', '1');">{$m_mon_disable_not_all_services}</a>
 					</td>
 				</tr>
 				{/if}
 				{if $aclAct.host_notifications_for_services || $admin == 1}
 				<tr class='list_two'>
-					<td class="ListColLeft" id="host_notifications_for_services">
+					<td class="ListColLeft ColPopup" id="host_notifications_for_services">
 						<a href="#" onClick="send_command('host_notifications_for_services', '0');">{$m_mon_enable_not_all_services}</a>
 					</td>
 				</tr>
 				{/if}
 				{if $aclAct.service_schedule_check || $admin == 1}						
 				<tr class='list_one'>
-					<td class="ListColLeft" id ="host_schedule_check">
+					<td class="ListColLeft ColPopup" id ="host_schedule_check">
 						<a href="#" onClick="send_command('host_schedule_check', '0');">{$m_mon_SCH_immediate_check}</a>
 					</td>
 				</tr>
 				{/if}
 				{if $aclAct.service_schedule_forced_check || $admin == 1}					
 				<tr class='list_two'>
-					<td class="ListColLeft" id="host_schedule_check">
+					<td class="ListColLeft ColPopup" id="host_schedule_check">
 						<a href="#" onClick="send_command('host_schedule_check', '1');">{$m_mon_SCH_immediate_check_f}</a>
 					</td>
 				</tr>
 				{/if}
 				{if ($aclAct.host_submit_result || $admin == true) && $host_data.passive_checks_enabled}
-					<tr class='list_two'>
-						<td class="ListColLeft">
+					<tr class='list_one'>
+						<td class="ListColLeft ColPopup">
 							<a href='./main.php?p={$p}&o=hpc&cmd=16&host_name={$host_data.host_name}'>{$m_mon_submit_passive}</a>
 						</td>
 					</tr>
 				{/if}
 				{if $aclAct.host_checks_for_services || $admin == 1}	
-				<tr class='list_one'>
-					<td class="ListColLeft" id="host_checks_for_services">
+				<tr class='list_two'>
+					<td class="ListColLeft ColPopup" id="host_checks_for_services">
 						<a href="#" onClick="send_command('host_checks_for_services', '1');">{$m_mon_diable_check_all_svc}</a>
 					</td>
 				</tr>
 				{/if}
 				{if $aclAct.host_checks_for_services || $admin == 1}	
-				<tr class='list_two'>
-					<td class="ListColLeft" id="host_checks_for_services">
+				<tr class='list_one'>
+					<td class="ListColLeft ColPopup" id="host_checks_for_services">
 						<a href="#" onClick="send_command('host_checks_for_services', '0');">{$m_mon_enable_check_all_svc}</a>
 					</td>
 				</tr>
 				{/if}
 				{section name=tool loop=$tools}
-				<tr class='list_one'>
-					<td class="ListColLeft">
+				<tr class='list_two'>
+					<td class="ListColLeft ColPopup">
 					{if $tools[tool].popup == ""}
 						<a href="{$tools[tool].url}" target="{$tools[tool].target}">
 					{else}
@@ -304,161 +462,6 @@
 					&#9679;&nbsp;{$tools[tool].name}</a></td>
 				</tr>
 				{/section}
-			</table>
-			<br>
-			<table>
-				<tr>
-					<td style="vertical-align: top; padding-bottom: 8px !important; " nowrap="nowrap">
-						<table class="ListTable table linkList">
-                            <tr class='list_lvl_1'>
-                                <td class="ListColHeaderLeft FormHeader" colspan="3">
-                                    <h4>{$options}</h4>
-                                </td>
-                            </tr>
-							<tr class='list_one'>
-								<td class="ListColLeft">{$m_mon_host_checks_active}</td>
-								<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.active_checks_enabled]}"  >{$en_disable[$host_data.active_checks_enabled]}</span>
-			                    </td>
-								<td class="ListColRight ColPopup" id="host_checks">
-								{if $aclAct.host_checks || $admin == 1}	
-									<a href="#" onClick="send_command('host_checks', '{$en_inv[$host_data.active_checks_enabled]}');"><img src={$img_en[$host_data.active_checks_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.active_checks_enabled]} {$m_mon_check_this_host}"></img></a>
-								{/if}
-								</td>
-							</tr>
-							<tr class='list_two'>
-								<td class="ListColLeft">{$m_mon_host_checks_passive}</td>
-								<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.passive_checks_enabled]}"  >{$en_disable[$host_data.passive_checks_enabled]}</span>
-			                    </td>
-								<td class="ListColRight ColPopup">
-									{if $aclAct.host_checks || $admin == 1}	
-									<a href="#" onClick="send_command('host_passive_checks', '{$en_inv[$host_data.passive_checks_enabled]}');">
-									<img src={$img_en[$host_data.passive_checks_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.passive_checks_enabled]} {$m_mon_passive_check_this_host}"></img></a>
-								{/if}
-								</td>
-							</tr>
-							{if $aclAct.host_notifications || $admin == true}
-							<tr class='list_one'>
-								<td class="ListColLeft">{$m_mon_host_notification}</td>
-								<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.notifications_enabled]}"  >{$en_disable[$host_data.notifications_enabled]}</span>
-	                            </td>
-								<td class="ListColRight ColPopup" id="host_notifications">
-								{if $aclAct.host_notifications || $admin == 1}
-									<a href="#" onClick="send_command('host_notifications', '{$en_inv[$host_data.notifications_enabled]}');"><img src={$img_en[$host_data.notifications_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.notifications_enabled]} {$m_mon_notify_this_host}"></img></a>
-								{/if}
-								</td>
-							</tr>
-							{/if}
-							{if $admin == true}
-							<tr class='list_two'>
-								<td class="ListColLeft">{$m_mon_obsess_over_host}</td>
-								<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.obsess_over_host]}"  >{$en_disable[$host_data.obsess_over_host]}</span>
-								</td>
-								<td class="ListColRight ColPopup" id="host_obsess">
-								{if $aclAct.obsess_over_host || $admin == 1}	
-									<a href="#" onClick="send_command('host_obsess', '{$en_inv[$host_data.obsess_over_host]}');"><img src={$img_en[$host_data.obsess_over_host]} class="ico-16" alt="{$en_inv_text[$host_data.obsess_over_host]} {$m_mon_obsess_over_host}"></img></a>
-								{/if}
-								</td>
-						    </tr>
-							{/if}
-							{if $aclAct.host_event_handler || $admin == true}
-							<tr class='list_one'>
-								<td class="ListColLeft">{$m_mon_event_handler}</td>
-								<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.event_handler_enabled]}"  >{$en_disable[$host_data.event_handler_enabled]}</span>
-	                            </td>
-								<td class="ListColRight ColPopup" id="host_event_handler">
-								{if $aclAct.host_event_handler || $admin == 1}	
-									<a href="#" onClick="send_command('host_event_handler', '{$en_inv[$host_data.event_handler_enabled]}');"><img src={$img_en[$host_data.event_handler_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.event_handler_enabled]} {$m_mon_ed_event_handler}"></img></a>
-								{/if}
-								</td>
-							</tr>
-							{/if}
-							{if $aclAct.host_flap_detection || $admin == true}
-						    <tr class='list_two'>
-								<td class="ListColLeft">{$m_mon_flap_detection}</td>
-								<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.flap_detection_enabled]}" >{$en_disable[$host_data.flap_detection_enabled]}</span>
-	                            </td>
-							    <td class="ListColRight ColPopup" id="host_flap_detection">
-								{if $aclAct.host_flap_detection || $admin == 1}
-								<a href="#" onClick="send_command('host_flap_detection', '{$en_inv[$host_data.flap_detection_enabled]}');">
-								<img src={$img_en[$host_data.flap_detection_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.flap_detection_enabled]} {$m_mon_ed_flapping_detect}"></img></a>
-								{/if}	
-							    </td>
-						    </tr>
-							{/if}
-							{if $host_data.current_state != UP}
-								{if $aclAct.host_acknowledgement && !$host_data.problem_has_been_acknowledged || $aclAct.host_disacknowledgement && $host_data.problem_has_been_acknowledged || $admin == true}
-								<tr class='list_one'>
-									<td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
-									<td class="ListColLeft"><span class="badge {$color_onoff[$host_data.problem_has_been_acknowledged]}" >{$en[$host_data.problem_has_been_acknowledged]}</span>
-	                                </td>
-									<td class="ListColRight ColPopup">
-	                                	<a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$host_data.host_name|urlencode}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'><img src={$img_en[$host_data.problem_has_been_acknowledged]} class="ico-16" alt="{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}"></img></a>
-									</td>
-								</tr>
-								{/if}
-							{/if}
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td style="vertical-align: top; padding-bottom: 8px !important; " nowrap="nowrap">
-						<table class="ListTable table linkList">
-                            <tr class='list_lvl_1'  >
-                                <td class="ListColHeaderLeft FormHeader" colspan="2">
-                                    <h4>{$links}</h4>
-                                </td>
-                            </tr>
-							<tr class='list_one'>
-								<td class="ListColLeft ColPopup">{$hostgroups_label}</td>
-			                    <td class="ListColLeft ColPopup">
-								{foreach item=hg from=$hostgroups}
-									&nbsp;&nbsp;&nbsp;-&nbsp;{$hg}<br>
-								{/foreach}
-								</td>
-							</tr>
-						    <tr class='list_one'>
-								<td class="ListColLeft ColPopup">{$hostcategorie_label}:</td>
-                                <td class="ListColLeft ColPopup">
-								{foreach item=hc from=$hostcategorie}
-									&nbsp;&nbsp;&nbsp;-&nbsp;{$hc}<br>
-								{/foreach}
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td style="vertical-align: top; padding-bottom: 8px !important; " nowrap="nowrap">
-		            	<table class="ListTable table linkList">
-			                <tr class='list_lvl_1' >
-			                    <td class="ListColHeaderLeft FormHeader" colspan="2">
-			                        <h4>{$notifications}</h4>
-			                    </td>
-			                </tr>
-
-			                <tr class='list_one' >
-			                    <td class="ListColLeft ColPopup">
-			                    {$contactgroups_label} 
-			                    </td>
-			                    <td class="ListColLeft ColPopup">
-			                    {foreach item=cg from=$contactgroups}
-			                            &nbsp;&nbsp;&nbsp;-&nbsp;{$cg}<br>
-			                    {/foreach}
-			                    </td>
-			                </tr>
-			                <tr class='list_two'>
-			                    <td class="ListColLeft ColPopup" >
-			                    {$contacts_label} 
-			                    </td>
-			                    <td class="ListColLeft ColPopup">
-			                    {foreach item=c from=$contacts}
-			                            &nbsp;&nbsp;&nbsp;-&nbsp;{$c}<br>
-			                    {/foreach}
-			                    </td>
-			                </tr>
-			            </table>
-					</td>
-				</tr>
 			</table>
 		</td>	
 	</tr>
