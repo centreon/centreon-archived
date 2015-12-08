@@ -28,7 +28,7 @@ Directory structure
 Widgets work pretty much like Modules. They have to be placed in
 the following directory::
 
-  # centreon/www/widgets/nameOfYourWidget/
+  # centreon/www/widgets/name-of-your-widget/
 
 Your widget must contain one mandatory file named **configs.xml** at its root.
 
