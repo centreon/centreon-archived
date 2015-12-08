@@ -1,7 +1,7 @@
 .. _centengine_plugin_api:
 
-Centreon Engine Plugin API
-**************************
+Centreon Plugin API
+*******************
 
 Other Resources
 ===============
@@ -150,3 +150,4 @@ that you download the official Centreon Engine plugins and look through
 the code for various C, Perl, and shell script plugins. Information on
 obtaining the official Centreon Engine plugins can be found
 :ref:`here <exploit_plugins>`.
+

@@ -212,27 +212,48 @@
 		<tr class="list_lvl_1">
 		    <td class="ListColLvl1_name" colspan="2"><h4>{t}Notification receivers{/t}</h4></td>
 		</tr>
-        <tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.host_cs.label}</td>
-			<td class="FormRowValue">
-                            <p style='margin-bottom : 6px;'>
-                                {$form.contact_additive_inheritance.html} {$form.contact_additive_inheritance.label}
-                                <img class="helpTooltip" name="contact_additive_inheritance">
-                            </p>
-                            {$form.host_cs.html}
-                        </td>
-		</tr>
-        <tr class="list_two">
+                {if $o == "mc"}
+                    <tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="cg_additive_inheritance"> {$form.mc_cg_additive_inheritance.label}</td>
+			<td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
+                    </tr>
+                    <tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cs.label}</td>
+			<td class="FormRowValue">{$form.host_cs.html}</td>
+                    </tr>
+		{else}
+                    <tr class="list_one">
+                            <td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.host_cs.label}</td>
+                            <td class="FormRowValue">
+                                <p style='margin-bottom : 6px;'>
+                                    {$form.contact_additive_inheritance.html} {$form.contact_additive_inheritance.label}
+                                    <img class="helpTooltip" name="contact_additive_inheritance">
+                                </p>
+                                {$form.host_cs.html}
+                            </td>
+                    </tr>
+                {/if}
+                {if $o == "mc"}
+                    <tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="contact_additive_inheritance"> {$form.mc_contact_additive_inheritance.label}</td>
+			<td class="FormRowValue">{$form.mc_contact_additive_inheritance.html}</td>
+                    </tr>
+                    <tr class="list_one">
 			<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td>
-			<td class="FormRowValue">
+			<td class="FormRowValue">{$form.host_cgs.html}</td>
+                    </tr>
+		{else}
+                    <tr class="list_two">
+                        <td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td>
+                        <td class="FormRowValue">
                             <p style='margin-bottom : 6px;'>
                                 {$form.cg_additive_inheritance.html} {$form.cg_additive_inheritance.label}
                                 <img class="helpTooltip" name="cg_additive_inheritance">
                             </p>
                             {$form.host_cgs.html}
                         </td>
-		</tr>
-		
+                    </tr>
+		{/if}
 	</table>
 </div>
 <div id='tab3' class='tab'>
