@@ -94,9 +94,12 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
             $sText = $contactgroup['cg_name'];
             if ($contactgroup['cg_type'] == 'ldap') {
                 $sText .= " (LDAP : ".$contactgroup['ar_name'].")";
+                $id = "[1]".$contactgroup['cg_name'];
+            } else {
+                $id = $contactgroup['cg_id'];
             }
             $contactgroupList[] = array(
-                'id' => $contactgroup['cg_id'],
+                'id' => $id,
                 'text' => $sText
             );
         }
