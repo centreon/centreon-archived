@@ -11,6 +11,8 @@ UPDATE on_demand_macro_host SET host_macro_value = REPLACE(host_macro_value, '&a
 UPDATE on_demand_macro_service SET svc_macro_value = REPLACE(svc_macro_value, '&quot;', '"');
 UPDATE on_demand_macro_service SET svc_macro_value = REPLACE(svc_macro_value, '&apos;', '\'');
 
+-- Add changetab for hostDetails page in Monitoring
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (NULL,20202,NULL,'./include/common/javascript/changetab.js','initChangeTab');
 
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.7.0-RC2' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.0-RC1' LIMIT 1;
