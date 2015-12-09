@@ -59,7 +59,9 @@ if (isset($_POST['searchC'])){
     if (isset($oreon->command_search)) {
         $search = $oreon->command_search;
     }
-    if ($type) {
+    if (isset($search) && $search) {
+        $req = "SELECT COUNT(*) FROM `command` WHERE `command_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
+    } else if ($type) {
         $req = "SELECT COUNT(*) FROM `command` WHERE $type_str";
     } else {
         $req ="SELECT COUNT(*) FROM `command`";
