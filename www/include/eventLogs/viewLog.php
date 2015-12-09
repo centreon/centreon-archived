@@ -66,7 +66,6 @@ function get_user_param($user_id, $pearDB) {
 }
 
 $user_params = get_user_param($oreon->user->user_id, $pearDB);
-
 if (!isset($user_params["log_filter_host"]))
 	$user_params["log_filter_host"] = true;
 if (!isset($user_params["log_filter_svc"]))
@@ -86,13 +85,13 @@ if (!isset($user_params["log_filter_svc_critical"]))
 if (!isset($user_params["log_filter_svc_unknown"]))
 	$user_params["log_filter_svc_unknown"] = true;
 if (!isset($user_params["log_filter_notif"]))
-	$user_params["log_filter_notif"] = true;
+	$user_params["log_filter_notif"] = false;
 if (!isset($user_params["log_filter_error"]))
 	$user_params["log_filter_error"] = true;
 if (!isset($user_params["log_filter_alert"]))
 	$user_params["log_filter_alert"] = true;
 if (!isset($user_params["log_filter_oh"]))
-	$user_params["log_filter_oh"] = true;
+	$user_params["log_filter_oh"] = false;
 
 if (!isset($user_params["search_H"]))
 	$user_params["search_H"] = "";
@@ -100,7 +99,7 @@ if (!isset($user_params["search_S"]))
 	$user_params["search_S"] = "";
 
 if (!isset($user_params['log_filter_period']))
-	$user_params['log_filter_period'] = "86400";
+	$user_params['log_filter_period'] = "10800";
 
 if (!isset($user_params['output']))
 	$user_params['output'] = "";
