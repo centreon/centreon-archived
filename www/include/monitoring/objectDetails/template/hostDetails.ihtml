@@ -74,10 +74,10 @@
 	                            <tr class='list_lvl_1'>
 	                                <td class="ListColHeaderLeft FormHeader"><h4>{t}Graphs{/t}</h4></td>
 	                            </tr>
-				                {foreach item=graphId from=$graphs}
+				                {foreach key=graphId item=HS from=$graphs}
 								<tr>
 									<td class="ListColLeft ColPopup" style='text-align:center;'>
-									<a href='#'><img src='./include/views/graphs/generateGraphs/generateImage.php?index={$graphId}&end=1449590280&start=1449547080'></a>
+									<a href='./main.php?p=204&mode=0&svc_id={$HS}'><img src='./include/views/graphs/generateGraphs/generateImage.php?index={$graphId}&start={$start}&end={$end}'></a>
 									</td>
 								</tr>
 								{/foreach}
