@@ -56,7 +56,7 @@ Specify the path to the main configuration file (default: /etc/centreon/conf.pm)
 
 =item B<--config-extra>
 
-Specify the path to the centreontrapd configuration file (default: /etc/centreon/centreontrapd.pm.pm).
+Specify the path to the centreontrapd configuration file (default: /etc/centreon/centreontrapd.pm).
 
 =item B<--help>
 
