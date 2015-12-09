@@ -67,14 +67,17 @@ $DBRESULT = $pearDB->query("SELECT session_id FROM session WHERE session.session
 if (!$DBRESULT->numRows()){
     exit();
 }
-if (!$centreon->user->access->checkAction($cmd)){
-    exit();
-}
-if(!$centreon->user->access->checkHost($host_id)){
-    exit();
-}
-if(!$centreon->user->access->checkService($svc_id)){
-    exit();
+
+if ($centreon->user->is_admin() === 0) {
+    if (!$centreon->user->access->checkAction($cmd)){
+        exit();
+    }
+    if(!$centreon->user->access->checkHost($host_id)){
+        exit();
+    }
+    if(!$centreon->user->access->checkService($svc_id)){
+        exit();
+    }
 }
 
 
