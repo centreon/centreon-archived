@@ -34,4 +34,4 @@ Centreon is distributed under GNU GPL v2 license, see LICENSE.
 ### Contacts ###
 
 You can report bugs or suggest features by using the 
-[issue tracker](https://forge.centreon.com/projects/centreon/issues).
+[issue tracker](https://github.com/centreon/centreon/issues).
