@@ -40,13 +40,6 @@
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_statistics">{$form.AjaxTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_monitoring">{$form.AjaxTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr>
  	
- 	<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$genOpt_display_options}</h4>
-      </td>
-    </tr>
- 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_template">{$form.template.label}</td><td class="FormRowValue">{$form.template.html}</td></tr>
- 	
     <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$genOpt_global_display}</h4>
