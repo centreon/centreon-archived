@@ -1666,18 +1666,12 @@ div#tabs_periods {
     color: #009fdf !important;
 }
 
-
-
-
 td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
     border: 1px solid #d1d2d4 !important;
     background: #f3f3f4 !important;
     font-weight: bold !important;
     color: #009fdf !important;
 }
-
-
-
 
 .ui-datepicker .ui-datepicker-next.ui-state-disabled.ui-state-hover,
 .ui-datepicker .ui-datepicker-prev.ui-state-disabled.ui-state-hover,
