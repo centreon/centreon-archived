@@ -147,7 +147,7 @@
                                 $trapdPath = $tab['snmp_trapd_path_conf'];
                             }
 			}
-			if (isset($ret["generate"]["generate"]) && $ret["generate"]["generate"]) {
+			if (isset($ret["generate"]) && $ret["generate"]) {
                             $msg_generate .= sprintf("<strong>%s</strong><br/>", _('Database generation'));
                             $stdout = "";
                             foreach ($tab_server as $host) {
