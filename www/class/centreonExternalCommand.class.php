@@ -86,7 +86,7 @@ class CentreonExternalCommand {
      * Write command in Nagios or Centcore Pipe.
      */
     public function write() {
-        global $oreon;
+        global $centreon;
 
         if (!defined('_CENTREON_VARLIB_')) {
             $varlib = "/var/lib/centreon";
@@ -112,7 +112,7 @@ class CentreonExternalCommand {
         }
 
         if ($str_local != "") {
-            $str_local = "echo " . $str_local . " >> " . $oreon->Nagioscfg["command_file"];
+            $str_local = "echo " . $str_local . " >> " . $centreon->Nagioscfg["command_file"];
             if ($this->debug) {
                 print "COMMAND BEFORE SEND: $str_local";
             }
