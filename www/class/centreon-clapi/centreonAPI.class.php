@@ -769,7 +769,7 @@ class CentreonAPI {
         $DBRESULT = & $this->DB->query("SELECT * FROM informations WHERE `key` = 'version'");
         $data = & $DBRESULT->fetchRow();
         print "Centreon version " . $data["value"] . " - ";
-        print "Copyright Merethis - www.centreon.com\n";
+        print "Copyright Centreon - www.centreon.com\n";
         unset($data);
     }
 

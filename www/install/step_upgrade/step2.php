@@ -74,6 +74,20 @@ foreach ($requiredLib as $line) {
     $contents .= "</td>";
     $contents .= "</tr>";
 }
+
+/* Test if timezone is set */
+if (!ini_get('date.timezone')) {
+    $contents .= "<tr>";
+    $contents .= "<td>Timezone</td>";
+    $contents .= "<td>"._("Set the default timezone in php.ini file") ."</td>";
+    $contents .= "<td>";    
+
+    $libMessage = '<span style="color:#f91e05; font-weight:bold;">'._('Not initialized').'</span>';
+    $allClear = 0;
+    $contents .= $libMessage;
+    $contents .= "</td>";
+    $contents .= "</tr>";
+}
 $contents .= "</table>";
 
 /**
