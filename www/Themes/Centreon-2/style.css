@@ -1652,28 +1652,45 @@ div#tabs_periods {
 
 /* ----- Jquery Datepicker ---------*/
 
-.ui-datepicker {
+.ui-datepicker, .ui-timepicker {
     background: #fff !important;
     border-radius: 4px !important;
 }
-.ui-datepicker .ui-datepicker-title {
+.ui-datepicker .ui-datepicker-title , .ui-timepicker .ui-datepicker-title{
     color: #005a7f;
 }
-.ui-datepicker td span,.ui-datepicker td a {
+.ui-datepicker td span,.ui-datepicker td a, .ui-timepicker td span, .ui-timepicker td a{
     border: 1px solid #d1d2d4 !important;
     background: #f3f3f4 !important;
     font-weight: bold !important;
     color: #009fdf !important;
 }
 
+
+
+
+td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
+    border: 1px solid #d1d2d4 !important;
+    background: #f3f3f4 !important;
+    font-weight: bold !important;
+    color: #009fdf !important;
+}
+
+
+
+
 .ui-datepicker .ui-datepicker-next.ui-state-disabled.ui-state-hover,
-.ui-datepicker .ui-datepicker-prev.ui-state-disabled.ui-state-hover{
+.ui-datepicker .ui-datepicker-prev.ui-state-disabled.ui-state-hover,
+.ui-timepicker .ui-timepicker-next.ui-state-disabled.ui-state-hover,
+.ui-timepicker .ui-timepicker-prev.ui-state-disabled.ui-state-hover{
     border: 0;
     background-color: #818285;
 }
 
 .ui-datepicker .ui-datepicker-prev.ui-state-hover,
-.ui-datepicker .ui-datepicker-next.ui-state-hover {
+.ui-datepicker .ui-datepicker-next.ui-state-hover,
+.ui-timepicker .ui-timepicker-prev.ui-state-hover,
+.ui-timepicker .ui-timepicker-next.ui-state-hover {
     border: 0;
     background: #4ccaff !important;
 }
