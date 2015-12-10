@@ -147,7 +147,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('tactical_service_limit', '100'),
 ('tactical_refresh_interval', '20'), 
 ('index_data', '0'), 
-('interval_length', '60');
+('interval_length', '60'),
+('nagios_path_img','@INSTALL_DIR_CENTREON@/www/img/media/');
 
 --
 -- Contenu de la table `giv_components_template`
