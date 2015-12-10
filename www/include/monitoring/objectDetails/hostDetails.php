@@ -649,7 +649,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 		var commands = new Array("host_checks", "host_notifications", "host_event_handler", "host_flap_detection", "host_obsess");
 
 		var state = items_state.item(0).firstChild.data;
-		if (state == "0") {
+		if (state == "1") {
 			 msg_result = command_sent;
 			 for (var i = 0;i < commands.length; i++)
 				 mycmd = commands[i];

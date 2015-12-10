@@ -738,7 +738,7 @@ if (!is_null($host_id)) {
 		var executed_command = received_command.item(0).firstChild.data;
 		var commands = new Array("service_checks", "service_notifications", "service_event_handler", "service_flap_detection", "service_passive_checks", "service_obsess");
 
-		if (state == "0") {
+		if (state == "1") {
 			msg_result = command_sent;
 			for (var i = 0;i < commands.length; i++)
 				mycmd = commands[i];
