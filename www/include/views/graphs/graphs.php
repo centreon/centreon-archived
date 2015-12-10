@@ -273,7 +273,7 @@
         // dpart : MM/DD/YYYY
         // tpart : HH:mm
         var dparts = dpart.split("/");
-        return moment.tz(dparts[2]+"-"+dparts[0]-1+"-"+dparts[1]+" "+tpart, sMyTimezone).unix();
+        return moment.tz(dparts[2]+"-"+dparts[0]+"-"+dparts[1]+" "+tpart, sMyTimezone).unix();
 
     }
 

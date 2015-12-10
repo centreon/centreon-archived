@@ -73,7 +73,7 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
             $range = '';
         }
         
-        $queryCommand = "SELECT command_id, command_name "
+        $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name "
             . "FROM command "
             . "WHERE command_name LIKE '%$q%' ";
         

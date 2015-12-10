@@ -384,7 +384,24 @@ class CentreonContactgroup
             );
         }
 
-        $explodedValues = implode(',', $values);
+        $aElement = array();
+        if (is_array($values)) {
+            foreach ($values as $value) {
+                if (preg_match_all('/\[(\w+)\]/', $value, $matches, PREG_SET_ORDER)) {
+                    foreach ($matches as $match) {
+                        if (!in_array($match[1], $aElement)) {
+                            $aElement[] = $match[1];
+                        }
+                    }
+                } else {
+                    if (!in_array($value, $aElement)) {
+                        $aElement[] = $value;
+                    }
+                }
+            }
+        }
+
+        $explodedValues = implode(',', $aElement);
         if (empty($explodedValues)) {
             $explodedValues = "''";
         }

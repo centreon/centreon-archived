@@ -333,24 +333,6 @@ class CentreonGraph {
             $this->setRRDOption("slope-mode");
         }
 
-        if ($this->general_opt["rrdtool_version"] == "1.3") {
-            if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"])) {
-                $this->setFont("TITLE:", $this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]);
-            }
-            if (isset($this->general_opt["rrdtool_unit_font"]) && isset($this->general_opt["rrdtool_unit_fontsize"])) {
-                $this->setFont("UNIT:", $this->general_opt["rrdtool_unit_fontsize"].":".$this->general_opt["rrdtool_unit_font"]);
-            }
-            if (isset($this->general_opt["rrdtool_axis_font"]) && isset($this->general_opt["rrdtool_axis_fontsize"])) {
-                $this->setFont("AXIS:", $this->general_opt["rrdtool_axis_fontsize"].":".$this->general_opt["rrdtool_axis_font"]);
-            }
-            if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"])) {
-                $this->setFont("WATERMARK:", $this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]);
-            }
-            if (isset($this->general_opt["rrdtool_legend_title"]) && isset($this->general_opt["rrdtool_legend_fontsize"])) {
-                $this->setFont("LEGEND:", $this->general_opt["rrdtool_legend_fontsize"].":".$this->general_opt["rrdtool_legend_title"]);
-            }
-        }
-
         if (isset($this->templateInformations["base"]) && $this->templateInformations["base"]) {
             $this->setRRDOption("base", $this->templateInformations["base"]);
         }
@@ -364,31 +346,6 @@ class CentreonGraph {
         /*
          * Init Graph Template Value
          */
-        if (isset($this->templateInformations["bg_grid_color"]) && $this->templateInformations["bg_grid_color"]) {
-            $this->setColor("CANVAS", $this->templateInformations["bg_grid_color"]);
-        }
-
-        if (isset($this->templateInformations["bg_color"]) && $this->templateInformations["bg_color"]) {
-            $this->setColor("BACK", $this->templateInformations["bg_color"]);
-        } else {
-            $this->setColor("BACK", "#F0F0F0");
-        }
-
-        if (isset($this->templateInformations["police_color"]) && $this->templateInformations["police_color"])
-            $this->setColor("FONT", $this->templateInformations["police_color"]);
-        if (isset($this->templateInformations["grid_main_color"]) && $this->templateInformations["grid_main_color"])
-            $this->setColor("MGRID", $this->templateInformations["grid_main_color"]);
-        if (isset($this->templateInformations["grid_sec_color"]) && $this->templateInformations["grid_sec_color"])
-            $this->setColor("GRID", $this->templateInformations["grid_sec_color"]);
-        if (isset($this->templateInformations["contour_cub_color"]) && $this->templateInformations["contour_cub_color"])
-            $this->setColor("FRAME", $this->templateInformations["contour_cub_color"]);
-        if (isset($this->templateInformations["col_arrow"]) && $this->templateInformations["col_arrow"])
-            $this->setColor("ARROW", $this->templateInformations["col_arrow"]);
-        if (isset($this->templateInformations["col_top"]) && $this->templateInformations["col_top"])
-            $this->setColor("SHADEA", $this->templateInformations["col_top"]);
-        if (isset($this->templateInformations["col_bot"]) && $this->templateInformations["col_bot"])
-            $this->setColor("SHADEB", $this->templateInformations["col_bot"]);
-
         if (isset($this->templateInformations["lower_limit"]) && $this->templateInformations["lower_limit"] != NULL)
             $this->setRRDOption("lower-limit", $this->templateInformations["lower_limit"]);
         if (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != "") {
@@ -555,7 +512,7 @@ class CentreonGraph {
                             break;
                         }
 
-                        # Check regular
+                        /* Check regular */
                         if (is_null($ds_data_regular) && preg_match('/^' . preg_quote($ds_val['ds_name'], '/') . '$/i', $metric["metric_name"])) {
                                 $ds_data_regular = $ds_val;
                         }
@@ -709,14 +666,16 @@ class CentreonGraph {
                         $l_CMP = "," . $this->get_cmp_operator($tm) . ",";
                         $this->addArgument("CDEF:ok".$cpt."=v".$cpt.",".$tm["warn"].$l_CMP.$tm["warn"].",v".$cpt.",IF");
                         $this->addArgument("CDEF:oc".$cpt."=v".$cpt.",".$tm["crit"].$l_CMP."v".$cpt.",".$tm["crit"].",-,0,IF");
-			$this->addArgument("CDEF:ow".$cpt."=v".$cpt.",".$tm["warn"].$l_CMP."v".$cpt.",".$tm["warn"].",-,oc".$cpt.",-,0,IF");
-			$this->areaNb = $cpt;
+			            $this->addArgument("CDEF:ow".$cpt."=v".$cpt.",".$tm["warn"].$l_CMP."v".$cpt.",".$tm["warn"].",-,oc".$cpt.",-,0,IF");
+			            $this->areaNb = $cpt;
                     }
                     $this->vname[$tm["metric"]] = "v".$cpt;
                     $cpt++;
                 }
-                if ($tm["legend_len"] > $this->longer)
-                    $this->longer = $tm["legend_len"];
+                if (!isset($tm["virtual"])){
+                    if ($tm["legend_len"] > $this->longer)
+                        $this->longer = $tm["legend_len"];
+                }
             }
         }
         $deftype = array(0 => "CDEF", 1 => "VDEF");
@@ -1655,5 +1614,3 @@ class CentreonGraph {
     }
     
 }
-
-?>

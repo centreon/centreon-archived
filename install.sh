@@ -50,7 +50,7 @@
 # -- on upgrade, overwrite existing ? backup ? 
 
 # Define centreon version
-version="2.7.0-rc1"
+version="2.7.0-RC2"
 
 # Debug
 #set -x

@@ -74,7 +74,7 @@
     $acl = $oreon->user->access;
     $serverString = $acl->getPollerString();
     $allowedMainConf = array();
-    if ($serverString != "''") {
+    if ($serverString != "''" && !empty($serverString)) {
         $sql = "SELECT nagios_id
                 FROM cfg_nagios
                 WHERE nagios_server_id IN (".$serverString.")";

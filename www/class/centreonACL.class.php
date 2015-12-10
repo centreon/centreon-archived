@@ -616,9 +616,9 @@ class CentreonACL {
                     }
                     $flagFirst = false;
                     if ($escape === true) {
-                        $pollers .= "'" . CentreonDB::escape($value) . "',";
+                        $pollers .= "'" . CentreonDB::escape($value) . "'";
                     } else {
-                        $pollers .= "'" . $value . "',";
+                        $pollers .= "'" . $value . "'";
                     }
                     break;
                 default :
@@ -632,8 +632,6 @@ class CentreonACL {
                     break;
             }
         }
-
-        $result = "''";
         return $pollers;
     }
 
@@ -1517,7 +1515,14 @@ class CentreonACL {
         }
 
         # Manage order by
-        $requests['order'] = implode(', ', isset($options['order']) ? $options['order'] : array());
+        $requests['order'] = '';
+        if (isset($options['order'])) {
+            if (is_array($options['order'])) {
+                $requests['order'] = implode(', ', $options['order']);
+            } else if (!empty($options['order'])) {
+                $requests['order'] = $options['order'];
+            }
+        }
         if ($requests['order'] != '') {
             $requests['order'] = ' ORDER BY ' . $requests['order'];
         }
@@ -2036,27 +2041,31 @@ class CentreonACL {
         $request = $this->constructRequest($options, true);
 
         $ldapCondition = "";
+        $sJointure = "";
+        $sCondition = "";
+        
         if (!$localOnly) {
             $ldapCondition = "OR cg.cg_type = 'ldap' ";
+            $sJointure = " LEFT JOIN  auth_ressource auth ON cg.ar_id =  auth.ar_id  ";
         }
         
 
         if ($this->admin) {
             $sql = $request['select'] . $request['fields'] . " "
-                . "FROM contactgroup cg "
+                . "FROM contactgroup cg ".$sJointure
                 . "WHERE (cg.cg_type = 'local' " . $ldapCondition . ") "
+                . $sCondition
                 . $request['conditions'];
         } else {
             $sql = $request['select'] . $request['fields'] . " "
-                . "FROM acl_group_contactgroups_relations agccgr, contactgroup cg "
+                . "FROM acl_group_contactgroups_relations agccgr, contactgroup cg ".$sJointure
                 . "WHERE cg.cg_id = agccgr.cg_cg_id "
                 . "AND (cg.cg_type = 'local' " . $ldapCondition . ") "
                 . "AND agccgr.acl_group_id IN (" . $this->getAccessGroupsString() . ") "
                 . $request['conditions'];
         }
-
+        
         $sql .= $request['order'] . $request['pages'];
-
         $result = $this->constructResult($sql, $options);
 
         return $result;

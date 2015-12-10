@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.0-RC1');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.0-RC2');
 
 --
 -- Contenu de la table `contact`
@@ -96,6 +96,19 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('AjaxTimeReloadStatistic','15'),
 ('template','Centreon-2'),
 ('gmt','1'),
+('color_up','#88b917'),
+('color_down','#e00b3d'),
+('color_unreachable','#818285'),
+('color_ok','#88b917'),
+('color_warning','#ff9a13'),
+('color_critical','#e00b3d'),
+('color_pending','#2AD1D4'),
+('color_unknown','#bcbdc0'),
+('color_ack','#FAED60'),
+('color_host_down','#'),
+('color_host_unreachable','#9CD9F1'),
+('color_line_critical','#F96461'),
+('color_downtime','#FBC5E8'),
 ('global_sort_type','host_name'),
 ('global_sort_order','ASC'),
 ('problem_sort_type','last_state_change'),
@@ -134,7 +147,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('tactical_service_limit', '100'),
 ('tactical_refresh_interval', '20'), 
 ('index_data', '0'), 
-('interval_length', '60');
+('interval_length', '60'),
+('nagios_path_img','@INSTALL_DIR_CENTREON@/www/img/media/');
 
 --
 -- Contenu de la table `giv_components_template`
@@ -711,7 +725,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (40, 'rebuild_check_interval', 'Rebuild check interval in seconds', 'The interval between check if some metrics must be rebuild. The default value is 300s', 'int', NULL),
 (41, 'max_size', 'Maximum size of file', 'Maximum size in bytes.', 'int', NULL),
 (42, 'store_in_data_bin', 'Store in performance data in data_bin', 'It should be enabled to control whether or not Centreon Broker should insert performance data in the data_bin table.', 'radio', NULL),
-(43, 'insert_in_index_data', 'Insert in index data', `Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing`, 'text', 'T=options:C=value:CK=key:K=index_data'),
+(43, 'insert_in_index_data', 'Insert in index data', "Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing", 'text', 'T=options:C=value:CK=key:K=index_data'),
 (44, 'write_metrics', 'Write metrics', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
 (45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
 (46, 'negotiation', 'Enable negotiation', 'Enable negotiation option (use only for version of Centren Broker >= 2.5)', 'radio', NULL),

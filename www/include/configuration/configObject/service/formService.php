@@ -458,7 +458,8 @@ $attrServicetemplate1 = array_merge(
     $attrServicetemplates,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=service&field=service_template_model_stm_id&id=' . $service_id)
 );
-$form->addElement('select2', 'service_template_model_stm_id', _("Service Template"), array(), $attrServicetemplate1);
+$serviceTplSelect = $form->addElement('select2', 'service_template_model_stm_id', _("Service Template"), array(), $attrServicetemplate1);
+$serviceTplSelect->addJsCallback('change', 'changeServiceTemplate(jQuery(this))');
 
 $form->addElement('static', 'tplText', _("Using a Template exempts you to fill required fields"));
 
@@ -606,8 +607,21 @@ if ($o != "mc") {
 /*
  * Additive
  */
-$form->addElement('checkbox', 'contact_additive_inheritance', _('Contact additive inheritance'));
-$form->addElement('checkbox', 'cg_additive_inheritance', _('Contact group additive inheritance'));
+
+if ($o == "mc")	{
+    $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
+    $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
+    $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
+    $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"), '&nbsp;');
+    
+    $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Yes"), '1');
+    $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("No"), '0');
+    $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Default"), '2');
+    $form->addGroup($contactGroupAdditive, 'mc_cg_additive_inheritance', _("Contact group additive inheritance"), '&nbsp;');
+} else {
+    $form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
+    $form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
+ }
 
 /*
  *  Contacts
