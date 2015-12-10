@@ -527,6 +527,12 @@ form#AjaxBankBasic {
 vertical-align: middle;
 }
 
+.ListTableSmall {
+    border: 1px #e7e7e8 solid;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
 .ToolbarPagination img {
     vertical-align: bottom;
     width: 12px;
@@ -1187,7 +1193,6 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
     /*margin: 0px 6px;*/
 }
 .ListTableMedium 		{width:60%;}
-.ListTableSmall 		{width:40%;}
 .ListTableSmallArg 		{
     width: 100%;
     border-width: 0px;;
@@ -1313,7 +1318,7 @@ table.ListTableSmallArg td {
 .Toolbar_TDSelectAction_Top {
     border: 1px solid #bcbdc0;
     border-radius: 4px;
-    padding: 2px;
+    padding: 3px 2px;
     margin-left: 6px;
     overflow: hidden;
     float: left;
