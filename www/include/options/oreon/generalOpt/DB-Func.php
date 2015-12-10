@@ -267,7 +267,6 @@ function updateGeneralConfigData($gopt_id = null) {
     updateOption($pearDB, "maxGraphPerformances", isset($ret["maxGraphPerformances"]) && $ret["maxGraphPerformances"] != NULL ? htmlentities($ret["maxGraphPerformances"], ENT_QUOTES, "UTF-8"): "NULL");
     updateOption($pearDB, "AjaxTimeReloadMonitoring", isset($ret["AjaxTimeReloadMonitoring"]) && $ret["AjaxTimeReloadMonitoring"] != NULL ? htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES, "UTF-8"): "NULL");
     updateOption($pearDB, "AjaxTimeReloadStatistic", isset($ret["AjaxTimeReloadStatistic"]) && $ret["AjaxTimeReloadStatistic"] != NULL ? htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES, "UTF-8"): "NULL");
-    updateOption($pearDB, "template", isset($ret["template"]) && $ret["template"] != NULL ? htmlentities($ret["template"], ENT_QUOTES, "UTF-8"): "NULL");
     updateOption($pearDB, "enable_gmt", isset($ret["enable_gmt"]["yes"]) && $ret["enable_gmt"]["yes"] != NULL ? htmlentities($ret["enable_gmt"]["yes"], ENT_QUOTES, "UTF-8"): "0");
     updateOption($pearDB, "gmt", isset($ret["gmt"]) && $ret["gmt"] != NULL ? htmlentities($ret["gmt"], ENT_QUOTES, "UTF-8"): "NULL");
     updateOption($pearDB, "global_sort_type", isset($ret["global_sort_type"]) && $ret["global_sort_type"] != NULL ? htmlentities($ret["global_sort_type"], ENT_QUOTES, "UTF-8"): "NULL");
