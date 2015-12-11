@@ -63,6 +63,7 @@ class CentreonACL {
     public $topologyStr = "";
     private $metaServices = array();
     private $metaServiceStr = "";
+    private $tempTableArray = array();
 
     /*
      *  Constructor that takes the user_id
@@ -489,6 +490,9 @@ class CentreonACL {
                         $accessGroups .= "'" . $value . "',";
                     }
                     break;
+                case "ID" : 
+                    $accessGroups .=  $key . ",";
+                    break;
                 default :
                     $accessGroups .= "'" . $key . "',";
                     break;
@@ -528,6 +532,9 @@ class CentreonACL {
                     } else {
                         $resourceGroups .= "'" . $value . "',";
                     }
+                    break;
+                case "ID" : 
+                    $resourceGroups .= $key . ",";
                     break;
                 default :
                     $resourceGroups .= "'" . $key . "',";
@@ -583,6 +590,9 @@ class CentreonACL {
                 case "ALIAS" :
                     $hostgroups .= "'" . addslashes($this->hostGroupsAlias[$key]) . "',";
                     break;
+                case "ID" : 
+                    $hostgroups .= $value . ",";
+                    break;
                 default :
                     $hostgroups .= "'" . $key . "',";
                     break;
@@ -621,14 +631,19 @@ class CentreonACL {
                         $pollers .= "'" . $value . "'";
                     }
                     break;
+                case "ID" :
+                    if(!$flagFirst){
+                        $pollers .= ",";
+                    }
+                    $flagFirst = false;
+                    $pollers .= $key ;
+                    break;
                 default :
                     if(!$flagFirst){
                         $pollers .= ",";
                     }
                     $flagFirst = false;
                     $pollers .= "'" . $key . "'";
-                    
-                    
                     break;
             }
         }
@@ -665,6 +680,9 @@ class CentreonACL {
                     break;
                 case "ALIAS" :
                     $servicegroups .= "'" . $this->serviceGroupsAlias[$key] . "',";
+                    break;
+                case "ID" : 
+                    $servicegroups .= $key . ",";
                     break;
                 default :
                     $servicegroups .= "'" . $key . "',";
@@ -716,6 +734,9 @@ class CentreonACL {
                         $serviceCategories .= "'" . $value . "',";
                     }
                     break;
+                case "ID" : 
+                    $serviceCategories .= $key . ",";
+                    break;
                 default :
                     $serviceCategories .= "'" . $key . "',";
                     break;
@@ -750,6 +771,9 @@ class CentreonACL {
                     } else {
                         $hostCategories .= "'" . $value . "',";
                     }
+                    break;
+                case "ID" : 
+                    $hostCategories .= $key . ",";
                     break;
                 default :
                     $hostCategories .= "'" . $key . "',";
@@ -831,6 +855,148 @@ class CentreonACL {
         return $hosts;
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    private static function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+    
+    private function fillTemporaryTable($tmpName,$db,$rows,$fields){
+        $queryInsert = "INSERT INTO ".$tmpName.' (';
+        $queryValues = "";
+        foreach($fields as $field){
+            $queryInsert .= $field['key'].',';
+            $queryValues .= '?,';
+        }
+        $queryInsert = trim($queryInsert, ',');
+        $queryValues = trim($queryValues, ',');
+        $queryInsert .= ') VALUES ('.$queryValues.');';
+
+        $db->autoCommit(false);
+        $stmt = $db->autoPrepare($queryInsert);
+        $arrayValues = array();
+        foreach($rows as $row){
+            $arrayValue = array();
+            foreach($fields as $field){
+                $arrayValue[] = $row[$field['key']];
+            }
+            $arrayValues[] = $arrayValue;
+            
+        }
+        $db->executeMultiple($stmt,$arrayValues);
+        $db->commit();
+        $db->autoCommit(true);
+    }
+    
+    private function getRowFields($db,$rows,$originTable = 'centreon_acl'){
+        if(empty($rows)){
+           return array(); 
+        }
+
+        $row = $rows[0];
+        $fieldsArray = array();
+        
+        foreach($row as $fieldKey=>$field){
+            $fieldDef = $this->getField($originTable,$fieldKey,$db);
+            $options = ($fieldDef['Null'] == 'NO' ? ' Not Null ' : ' Null ')
+//                .' Default '.$fieldDef['Default'].' '
+                .($fieldDef['Key'] == 'PRI' ? ' PRIMARY KEY ' : ' ');
+            $fieldsArray[] = array('key' => $fieldKey, 'type' => $fieldDef['Type'], 'options' => $options );
+        }
+        return $fieldsArray;
+    }
+    
+    
+    private function createTemporaryTable($name,$db,$rows,$originTable = 'centreon_acl', $fields = array()){
+        $tempTableName = 'tmp_'.$name.'_'.self::generateRandomString(5);
+        if(empty($fields)){
+            $fields = $this->getRowFields($db,$rows,$originTable);
+        }
+        $query = "CREATE TEMPORARY TABLE IF NOT EXISTS  ".$tempTableName." (";
+        foreach($fields as $field){
+            $query .= $field['key'].' '.$field['type'].' '.$field['options'].',';
+        }
+        $query = trim($query, ',').');';
+        $db->query($query);
+        $this->tempTableArray[$name] = $tempTableName;
+        $this->fillTemporaryTable($tempTableName,$db,$rows,$fields);
+        return $tempTableName;
+    }
+    
+    private function getField($table, $field, $db) {
+        $query = "SHOW COLUMNS FROM `$table` WHERE Field = '$field'";
+        $DBRES = $db->query($query);
+        $row = $DBRES->fetchRow();
+        return $row;
+    }
+
+    public function getACLTemporaryTable($tmpTableName, $db, $rows, $originTable = 'centreon_acl', $force = false, $fields = array()){
+        if(!empty($this->tempTableArray[$tmpTableName]) && !$force){
+            return $this->tempTableArray[$tmpTableName];
+        }
+        if($force){
+            $this->destroyTemporaryTable($tmpTableName);
+        }
+        $this->createTemporaryTable($tmpTableName,$db,$rows,$originTable,$fields);
+        return $this->tempTableArray[$tmpTableName];
+    }
+    
+    public function destroyTemporaryTable($db,$name = false){
+        if(!$name){
+            foreach($this->tempTableArray as $tmpTable){
+                $query = 'DROP TEMPORARY TABLE IF EXISTS '.$tmpTable;
+                $db->query($query);
+            }
+        }else{
+            $query = 'DROP TEMPORARY TABLE IF EXISTS '.$this->tempTableArray[$name];
+            $db->query($query);
+        }
+    }
+    
+    public function getACLHostsTemporaryTableJoin($db, $fieldToJoin, $force = false){
+        $this->checkUpdateACL();
+        $groupIds = array_keys($this->accessGroups);
+        if (!count($groupIds)) {
+            return false;
+        }
+        $query = "SELECT DISTINCT host_id "
+            . "FROM centreon_acl "
+            . "WHERE group_id IN (" . implode(',', $groupIds) . ") ";
+        $DBRES = $db->query($query);
+        $rows = array();
+        while ($row = $DBRES->fetchRow()) {
+            $rows[] = $row;
+        }
+        $tableName = $this->getACLTemporaryTable('hosts', $db, $rows, 'centreon_acl', $force);
+        $join = ' INNER JOIN '.$tableName.' ON '.$tableName.'.host_id = '.$fieldToJoin.' ';
+        return $join;
+    }
+
     /*
      *  Hosts string Getter
      *  Possible flags :
@@ -870,7 +1036,12 @@ class CentreonACL {
             if ($escape === true) {
                 $hosts .= "'" . CentreonDB::escape($row[$fieldName]) . "',";
             } else {
-                $hosts .= "'" . $row[$fieldName] . "',";
+                if($flag == "ID"){
+                    $hosts .= $row[$fieldName] . ",";
+                }else{
+                    $hosts .= "'" . $row[$fieldName] . "',";
+                }
+                
             }
         }
 
@@ -977,7 +1148,12 @@ class CentreonACL {
             if ($escape === true) {
                 $services .= "'" . CentreonDB::escape($row[$fieldName]) . "',";
             } else {
-                $services .= "'" . $row[$fieldName] . "',";
+                if($flag == "ID"){
+                    $services .= $row[$fieldName] . ",";
+                }else{
+                    $services .= "'" . $row[$fieldName] . "',";  
+                }
+                
             }
         }
 

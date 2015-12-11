@@ -134,6 +134,31 @@ class CentreonDB
             }
         }
     }
+    
+    public function autoCommit($val){
+        $this->db->autoCommit($val);
+    }
+    
+    public function prepare($query){
+        return $this->db->prepare($query);
+    }
+    
+    public function executeMultiple($stmt,$arrayValues){
+        return $this->db->executeMultiple($stmt,$arrayValues);
+    }
+    
+    public function autoPrepare($query){
+        return $this->db->autoPrepare($query);
+    }
+    
+    public function commit(){
+        $this->db->commit();
+    }
+    
+    public function execute($stmt,$arrayValues){
+        return $this->db->execute($stmt,$arrayValues);
+    }
+    
 
     /**
      * Display error page
