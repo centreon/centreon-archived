@@ -503,7 +503,7 @@ class CentreonGraph {
                     $ds_data_regular = null;
                     foreach ($components_ds_cache as $ds_val) {
                         /* Prepare pattern for metrics */
-                        $metricPattern = '/' . str_replace('*', '.*', $ds_val['ds_name']) . '/';
+                        $metricPattern = '/^' . str_replace('*', '.*', $ds_val['ds_name']) . '$/i';
                         # Check associated
                         if (($ds_val['host_id'] == $metric['host_id'] || $ds_val['host_id'] == '') &&
                             ($ds_val['service_id'] == $metric['service_id'] || $ds_val['service_id'] == '') &&
@@ -514,7 +514,7 @@ class CentreonGraph {
 
                         /* Check regular */
                         if (is_null($ds_data_regular) && preg_match('/^' . preg_quote($ds_val['ds_name'], '/') . '$/i', $metric["metric_name"])) {
-                                $ds_data_regular = $ds_val;
+                            $ds_data_regular = $ds_val;
                         }
                     }
 
