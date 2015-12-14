@@ -436,34 +436,39 @@ foreach ($tab_id as $openid) {
     $type = $tab_tmp[0];
     
     
-    if ($type == "HG" && (isset($lca["LcaHostGroup"][$id]) || $is_admin)){
+    if ($type == "HG" && (isset($lca["LcaHostGroup"][$id]) || $is_admin)) {
         // Get hosts from hostgroups
         $hosts = getMyHostGroupHosts($id);
-        foreach ($hosts as $h_id) {
-            if (isset($lca["LcaHost"][$h_id])) {
-                //$host_name = getMyHostName($h_id);
-                $tab_host_ids[] = $h_id;
-                $tab_svc[$h_id] = $lca["LcaHost"][$h_id];
+        if (count($hosts) == 0) {
+            $tab_host_ids[] = "-1";
+        } else {
+            foreach ($hosts as $h_id) {
+                if (isset($lca["LcaHost"][$h_id])) {
+                    $tab_host_ids[] = $h_id;
+                    $tab_svc[$h_id] = $lca["LcaHost"][$h_id];
+                }
             }
         }
     } else if ($type == 'ST' && (isset($lca["LcaSG"][$id]) || $is_admin)){
         $services = getMyServiceGroupServices($id);
-        foreach ($services as $svc_id => $svc_name) {
-            $tab_tmp = preg_split("/\_/", $svc_id);
-            $tmp_host_id = $tab_tmp[0];
-            $tmp_service_id = $tab_tmp[1];
-            $tab = preg_split("/\:/", $svc_name);
-            $host_name = $tab[3];
-            if (isset($lca["LcaHost"][$tmp_host_id][$tmp_service_id])) {
-                $tab_svc[$hostId][$tmp_service_id] = $lca["LcaHost"][$tmp_host_id][$tmp_service_id];
+        if (count($services) == 0) {
+            $tab_svc[] = "-1";
+        } else {
+            foreach ($services as $svc_id => $svc_name) {
+                $tab_tmp = preg_split("/\_/", $svc_id);
+                $tmp_host_id = $tab_tmp[0];
+                $tmp_service_id = $tab_tmp[1];
+                $tab = preg_split("/\:/", $svc_name);
+                $host_name = $tab[3];
+                if (isset($lca["LcaHost"][$tmp_host_id][$tmp_service_id])) {
+                    $tab_svc[$hostId][$tmp_service_id] = $lca["LcaHost"][$tmp_host_id][$tmp_service_id];
+                }
             }
         }
     } else if ($type == "HH" && isset($lca["LcaHost"][$id])) {
-        //$host_name = getMyHostName($id);
         $tab_host_ids[] = $id;
         $tab_svc[$id] = $lca["LcaHost"][$id];
     } else if ($type == "HS" && isset($lca["LcaHost"][$hostId][$id])) {
-        //$host_name = getMyHostName($hostId);
         $tab_svc[$hostId][$id] = $lca["LcaHost"][$hostId][$id];
     } else if ($type == "MS") {
         $tab_svc["_Module_Meta"][$id] = "meta_".$id;
