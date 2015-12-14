@@ -12,7 +12,6 @@
 
 <table class="ListTable">
 	<tr class="ListHeader">
-		<td class="ListColHeaderPicker">&nbsp;</td>
 		<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 		<td class="ListColHeaderLeft">{$headerMenu_rname}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_infos}</td>
@@ -25,7 +24,6 @@
 	</tr>
 	{section name=elem loop=$elemArr}
 	<tr class={$elemArr[elem].MenuClass}>
-		<td class="ListColLeft"><img src="{$elemArr[elem].RowMenu_picture}" style='width:16px;height:16px;'></td>
 		<td class="ListColLeft">
 			{if $elemArr[elem].RowMenu_link}
 				<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
@@ -90,17 +88,14 @@
         });
     }
     
-    function displayResults(moduleList)
-    {
-        for (var i = 0; i < moduleList.length; i++)
-        {
+    function displayResults(moduleList) {
+        for (var i = 0; i < moduleList.length; i++) {
             module = moduleList[i];
             moduleMessages = module.children;
             myModuleStatusSpan = jQuery('#'+module["name"]);
             myModuleStatusSpan.empty();
             
-            if (module["status"] === "critical")
-            {
+            if (module["status"] === "critical") {
                 modalBoxId = 'criticalBox_' + module["name"];
                 jQuery('#' + modalBoxId).remove();
                 var criticalModalBox = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-resizable" ';
@@ -113,16 +108,12 @@
                 
                 statusMessage = "";
                 solution = "";
-                if (module["message"] instanceof Array)
-                {
-                    for (var j = 0; j < module["message"].length; j++)
-                    {
+                if (module["message"] instanceof Array) {
+                    for (var j = 0; j < module["message"].length; j++) {
                         statusMessage += module["message"][j]['ErrorMessage'] + '<br />';
                         solution += module["message"][j]['Solution']+ '<br />';
                     }
-                }
-                else
-                {
+                } else {
                     statusMessage = module["message"]['ErrorMessage'];
                     solution = module["message"]['Solution']+ '<br /><br />';
                 }
@@ -131,29 +122,22 @@
                 criticalModalBox += '</div>';
                 statusMessage += '<br />Click to check available actions to fix it.';
                 tooltipReferer = '#img_critical_'+ module["name"];
-                //jQuery('#action'+ module["name"]).empty();
                 jQuery('body').append(criticalModalBox);
                 jQuery('#' + modalBoxId).dialog({ autoOpen: false });
                 jQuery('#' + modalBoxId).dialog( "option", "show", { effect: 'drop', direction: "up" } );
                 jQuery('#' + modalBoxId).dialog( "option", "hide", { effect: 'drop', direction: "down" } );
                 jQuery('#' + modalBoxId).dialog( "option", "modal", true );
-            }
-            else if (module["status"] === "warning")
-            {
+            } else if (module["status"] === "warning") {
                 myModuleStatusSpan.append('<img id="img_ok_'+ module["name"] + '" src="img/icones/16x16/rrdgraph_rpn_valid.png" />');
                 statusMessage = 'The module is fully functional';
                 statusStyle = 'ui-tooltip-red ui-tooltip-shadow';
                 tooltipReferer = '#img_ok_'+ module["name"];
-            }
-            else if (module["status"] === "ok")
-            {
+            } else if (module["status"] === "ok") {
                 myModuleStatusSpan.append('<img id="img_ok_'+ module["name"] + '" src="img/icones/16x16/rrdgraph_rpn_valid.png" />');
                 statusStyle = 'ui-tooltip-green ui-tooltip-shadow';
                 statusMessage = 'The module is fully functional';
                 tooltipReferer = '#img_ok_'+ module["name"];
-            }
-            else
-            {
+            } else {
                 myModuleStatusSpan.append('<img id="img_warning_'+ module["name"] + '" src="img/icones/16x16/help_button.png" />');
                 statusStyle = 'ui-tooltip-red ui-tooltip-shadow';
                 statusMessage = "Can't check module dependencies";
