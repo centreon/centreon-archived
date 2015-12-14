@@ -226,7 +226,7 @@ var _criticality_id = 0;
         var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
                
 		proc.setCallback(monitoringCallBack);
-		proc.setXml(_addrXML+"?"+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc+'&criticality='+_criticality_id+'&statusService='+statusService+'&statusFilter='+statusFilter);
+		proc.setXml(_addrXML+"?"+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc+'&criticality='+_criticality_id+'&statusService='+statusService+'&statusFilter='+statusFilter+"&sSetOrderInMemory="+sSetOrderInMemory);
 		proc.setXslt(_addrXSL);
 		proc.transform("forAjax");
 

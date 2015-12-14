@@ -217,7 +217,7 @@ function goM(_time_reload, _sid, _o) {
     var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
         
 	proc.setCallback(monitoringCallBack);
-	proc.setXml(_addrXML+"?"+'search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id+'&statusHost='+statusHost+'&statusFilter='+statusFilter);
+	proc.setXml(_addrXML+"?"+'search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id+'&statusHost='+statusHost+'&statusFilter='+statusFilter+"&sSetOrderInMemory="+sSetOrderInMemory);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
 

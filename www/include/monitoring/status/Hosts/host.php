@@ -145,6 +145,13 @@ $tpl->assign("mon_last_check", _("Last Check"));
 $tpl->assign("mon_duration", _("Duration"));
 $tpl->assign("mon_status_information", _("Status information"));
 
+if (!isset($_GET['o'])) {
+    $sSetOrderInMemory = "1";
+} else {
+    $sSetOrderInMemory = "0";
+}
+
+$sDefaultOrder = false;
 
 $form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
 
@@ -154,8 +161,9 @@ $form->addElement('select', 'statusHost', _('Host Status'), $aStatusHost, array(
 if (isset($_GET['o']) && in_array($_GET['o'], array_keys($aStatusHost))) {
     $form->setDefaults(array('statusHost' => "h_unhandled"));
 /* Get default host status in SESSION */
-} elseif (isset($_SESSION['monitoring_host_status'])) {
+} elseif (!isset($_GET['o']) && isset($_SESSION['monitoring_host_status'])) {
     $form->setDefaults(array('statusHost' => $_SESSION['monitoring_host_status']));
+    $sDefaultOrder = true;
 }
 
 $tpl->assign("order", strtolower($order));
@@ -251,8 +259,9 @@ if ($o == "h") {
 }
 
 $form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
-if (isset($_SESSION['monitoring_host_status_filter'])) {
+if (!isset($_GET['o']) && isset($_SESSION['monitoring_host_status_filter'])) {
     $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_host_status_filter']));
+    $sDefaultOrder = true;
 }
 
 $criticality = new CentreonCriticality($pearDB);
@@ -321,27 +330,30 @@ $tpl->display("host.ihtml");
         _sid = '<?php echo $sid ?>';
         _tm = <?php echo $tM ?>;
         _o = '<?php echo $o; ?>';
+        _sDefaultOrder = '<?php echo $sDefaultOrder; ?>';
+        sSetOrderInMemory = '<?php echo $sSetOrderInMemory; ?>';
         
-        
-        /*if (_o == 'h') {
-            jQuery("#statusHost option[value='h']").prop('selected', true);
-            jQuery("#statusFilter option[value='']").prop('selected', true);
-        } else if (_o == 'h_up') {
-            jQuery("#statusHost option[value='h']").prop('selected', true);
-            jQuery("#statusFilter option[value='up']").prop('selected', true);
-        } else if (_o == 'h_down') {
-            jQuery("#statusHost option[value='h']").prop('selected', true);
-            jQuery("#statusFilter option[value='down']").prop('selected', true);
-        } else if (_o == 'h_unreachable') {
-            jQuery("#statusHost option[value='h']").prop('selected', true);
-            jQuery("#statusFilter option[value='unreachable']").prop('selected', true);
-        } else if (_o == 'h_unhandled') {
-            jQuery("#statusHost option[value='h_unhandled']").prop('selected', true);
-            jQuery("#statusFilter option[value='']").prop('selected', true);
-        } else {
-            jQuery("#statusHost option[value='h']").prop('selected', true);
-            jQuery("#statusFilter option[value='pending']").prop('selected', true);
-        }*/
+        if (!_sDefaultOrder) {
+            if (_o == 'h') {
+                jQuery("#statusHost option[value='h']").prop('selected', true);
+                jQuery("#statusFilter option[value='']").prop('selected', true);
+            } else if (_o == 'h_up') {
+                jQuery("#statusHost option[value='h']").prop('selected', true);
+                jQuery("#statusFilter option[value='up']").prop('selected', true);
+            } else if (_o == 'h_down') {
+                jQuery("#statusHost option[value='h']").prop('selected', true);
+                jQuery("#statusFilter option[value='down']").prop('selected', true);
+            } else if (_o == 'h_unreachable') {
+                jQuery("#statusHost option[value='h']").prop('selected', true);
+                jQuery("#statusFilter option[value='unreachable']").prop('selected', true);
+            } else if (_o == 'h_pending') {
+                jQuery("#statusHost option[value='h']").prop('selected', true);
+                jQuery("#statusFilter option[value='pending']").prop('selected', true);
+            } else {
+                jQuery("#statusHost option[value='h_unhandled']").prop('selected', true);
+                jQuery("#statusFilter option[value='']").prop('selected', true);
+            }
+        }
         filterStatus(document.getElementById('statusFilter').value, 1);
 
         window.clearTimeout(_timeoutID);
