@@ -4,7 +4,7 @@
 	<table class="ListTable table">
 		<tr class='ListHeader'>
 			<xsl:attribute name="style">
-				background-color:<xsl:value-of select="current_state/@color"/>;
+				background-color:<xsl:value-of select="color"/>;
 				white-space:normal;
 			</xsl:attribute>
 			<td class="ColPopup FormHeader" colspan="2">

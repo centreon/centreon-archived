@@ -3,11 +3,15 @@
 <xsl:template match="//reponse">
 	<table class="ListTable table">
 		<tr class='ListHeader'>
-			<xsl:attribute name="class"><xsl:value-of select="color"/></xsl:attribute>
-
+			<xsl:attribute name="style">
+				background-color:<xsl:value-of select="color"/>;
+				color:#FFFFFF;
+			</xsl:attribute>
 			<td class="ColPopup FormHeader" colspan="2">
 				<xsl:element name="h3">
-					<xsl:attribute name="class"><xsl:value-of select="current_state/@color"/></xsl:attribute>
+					<xsl:attribute name="style">
+						color: #ffffff;
+					</xsl:attribute>
 					<xsl:element name="img">
 						<xsl:attribute name="src"><xsl:value-of select="ico"/></xsl:attribute>
 						<xsl:attribute name="class">ico-16</xsl:attribute>

@@ -35,7 +35,7 @@
 								<tr class='list_two'>
 									<td class="ColPopup ListColLeft">{$m_mon_services_status}</td>
 									<td class="ListColLeft ColPopup">
-									<span class="badge {$service_data.status_class}"  >{$service_data.current_state}</span>
+									<span class="badge {$service_data.status_class}">{$service_data.current_state}</span>
 									</td>
 								</tr>
 								<tr class='list_one'>

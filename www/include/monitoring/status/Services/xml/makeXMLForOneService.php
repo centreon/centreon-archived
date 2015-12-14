@@ -174,6 +174,7 @@ if ($data = $DBRESULT->fetchRow()) {
 	}
 	$obj->XML->writeElement("service_description", CentreonUtils::escapeSecure($service_desc), false);
 	$obj->XML->writeElement("hostname", CentreonUtils::escapeSecure($hostname), false);
+	$obj->XML->writeElement("color", $obj->backgroundService[$data["state"]]);
 	$obj->XML->startElement("current_state");
 	$obj->XML->writeAttribute("color", $obj->colorService[$data["state"]]);
 	$obj->XML->text(_($obj->statusService[$data["state"]]), false);
