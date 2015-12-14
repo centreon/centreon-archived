@@ -251,8 +251,8 @@ if ($o == "h") {
 }
 
 $form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
-if (isset($defaultStatus)) {
-    $form->setDefaults(array('statusFilter' => $defaultStatus));
+if (isset($_SESSION['monitoring_host_status_filter'])) {
+    $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_host_status_filter']));
 }
 
 $criticality = new CentreonCriticality($pearDB);
@@ -323,7 +323,7 @@ $tpl->display("host.ihtml");
         _o = '<?php echo $o; ?>';
         
         
-        if (_o == 'h') {
+        /*if (_o == 'h') {
             jQuery("#statusHost option[value='h']").prop('selected', true);
             jQuery("#statusFilter option[value='']").prop('selected', true);
         } else if (_o == 'h_up') {
@@ -341,7 +341,7 @@ $tpl->display("host.ihtml");
         } else {
             jQuery("#statusHost option[value='h']").prop('selected', true);
             jQuery("#statusFilter option[value='pending']").prop('selected', true);
-        }
+        }*/
         filterStatus(document.getElementById('statusFilter').value, 1);
 
         window.clearTimeout(_timeoutID);

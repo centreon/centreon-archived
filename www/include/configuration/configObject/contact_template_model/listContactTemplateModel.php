@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -31,6 +32,9 @@
  *
  * For more information : contact@centreon.com
  *
+ * SVN : $URL$
+ * SVN : $Id$
+ *
  */
 
 if (!isset($centreon)) {
@@ -41,7 +45,7 @@ include_once("./class/centreonUtils.class.php");
 
 include("./include/common/autoNumLimit.php");
 
-$contactTypeIcone = array(1 => "./img/icons/admin.png", 2 => "./img/icons/user.png", 3 => "./img/icons/user.png");
+$contactTypeIcone = array(1 => "./img/icons/admin.png", 2 => "./img/icons/user.png", 3 => "./img/icons/user_template.png");
 
 /*
  * Create Timeperiod Cache
@@ -86,6 +90,7 @@ $tpl->assign('mode_access', $lvl_access);
 /*
  * start header menu
  */
+$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 $tpl->assign("headerMenu_name", _("Full Name"));
 $tpl->assign("headerMenu_desc", _("Alias / Login"));
 $tpl->assign("headerMenu_email", _("Email"));
@@ -224,3 +229,4 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listContactTemplateModel.ihtml");
+?>
