@@ -119,7 +119,7 @@ $form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
  * Different style between each lines
  */
 $style = "one";
-$contactTypeIcone = array(1 => "./img/icons/admin.png", 2 => "./img/icons/user.png", 3 => "./img/icones/16x16/user1_information.png");
+$contactTypeIcone = array(1 => "./img/icons/admin.png", 2 => "./img/icons/user.png", 3 => "./img/icons/user_template.png");
 $contactTypeIconeTitle = array(1 => _("This user is an administrator."), 2 => _("This user is a simple user."), 3 => _("This is a contact template."));
 
 /*

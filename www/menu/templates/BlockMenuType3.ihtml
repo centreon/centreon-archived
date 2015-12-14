@@ -43,12 +43,12 @@
 		  	            {foreach item=user from=$tab_user}
 		  	            	<li>
 								{if $user.admin == 1}
-								<img src='./img/icons/admin.png' class="ico-18" title='{$user.ip}'>
+								<img src='./img/icons/admin.png' style="vertical-align: middle;" class="ico-18" title='{$user.ip}'>
 								{else}
-								<img src='./img/icons/user.png' class="ico-18" title='{$user.ip}'>
+								<img src='./img/icons/user.png' class="ico-18" style="vertical-align: middle;" title='{$user.ip}'>
 								{/if}
 								{if $user.alias == $UserName}
-								<a href="{$UserInfoUrl}">{$user.alias}</a>
+								<a href="{$UserInfoUrl}" style="vertical-align: middle;">{$user.alias}</a>
 								{else}
 								{$user.alias}
 								{/if}

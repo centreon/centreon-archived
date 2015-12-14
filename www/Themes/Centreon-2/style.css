@@ -367,11 +367,13 @@ p.description a, p.description a:visited {
     border: none !important;
     outline: none !important;
     color: #fff;
+    cursor: pointer;
 }
 a.btc {
     color: #fff !important;
     padding: 4px 10px;
     margin : 0px 4px;
+    cursor: pointer;
 }
 .bt_default {
     background: #a7a9ac !important;
