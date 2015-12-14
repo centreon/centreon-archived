@@ -410,6 +410,7 @@ function setL(_this){
     _limit = _this;
 }
 
+
 var _num = 0;
 function log_4_host_page(id, formu, num)	{
 	_num = num;
@@ -421,24 +422,24 @@ function log_4_engine_page(id,formu,num){
 	log_4_engine();
 }
 
-var _host 		= <?php echo $user_params["log_filter_host"]; ?>;
-var _service 	= <?php echo $user_params["log_filter_svc"]; ?>;
+var _host 		= <?php echo !empty($user_params["log_filter_host"]) ? $user_params["log_filter_host"]: 'false'; ?>;
+var _service 	= <?php echo !empty($user_params["log_filter_svc"]) ? $user_params["log_filter_svc"]: 'false'; ?>;
 var _engine     = <?php echo $engine; ?>;
 
-var _down 		= <?php echo $user_params["log_filter_host_down"]; ?>;
-var _up 		= <?php echo $user_params["log_filter_host_up"]; ?>;
-var _unreachable = <?php echo $user_params["log_filter_host_unreachable"]; ?>;
+var _down 		= <?php echo $user_params["log_filter_host_down"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
+var _up 		= <?php echo $user_params["log_filter_host_up"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
+var _unreachable = <?php echo $user_params["log_filter_host_unreachable"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
 
-var _ok 		= <?php echo $user_params["log_filter_svc_ok"]; ?>;
-var _warning 	= <?php echo $user_params["log_filter_svc_warning"]; ?>;
-var _critical 	= <?php echo $user_params["log_filter_svc_critical"]; ?>;
-var _unknown 	= <?php echo $user_params["log_filter_svc_unknown"]; ?>;
+var _ok 		= <?php echo $user_params["log_filter_svc_ok"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
+var _warning 	= <?php echo $user_params["log_filter_svc_warning"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
+var _critical 	= <?php echo $user_params["log_filter_svc_critical"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
+var _unknown 	= <?php echo $user_params["log_filter_svc_unknown"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
 
-var _notification = <?php echo $user_params["log_filter_notif"]; ?>;
-var _error 		= <?php echo $user_params["log_filter_error"]; ?>;
-var _alert 		= <?php echo $user_params["log_filter_alert"]; ?>;
+var _notification = <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
+var _error 		= <?php echo !empty($user_params["log_filter_error"]) ? $user_params["log_filter_error"]: 'false'; ?>;
+var _alert 		= <?php echo !empty($user_params["log_filter_alert"]) ? $user_params["log_filter_alert"]: 'false'; ?>;
 
-var _oh 		= <?php echo $user_params["log_filter_oh"]; ?>;
+var _oh 		= <?php echo !empty($user_params["log_filter_oh"]) ? $user_params["log_filter_oh"]: 'false'; ?>;
 
 var _search_H	= "<?php echo $user_params["search_H"]; ?>";
 var _search_S	= "<?php echo $user_params["search_S"]; ?>";
