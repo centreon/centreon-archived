@@ -96,9 +96,10 @@ if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
 $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
 /* Store in session the last type of call */
-$_SESSION['monitoring_host_status'] = $statusHost;
-$_SESSION['monitoring_host_status_filter'] = $statusFilter;
-
+if (isset($_GET['sSetOrderInMemory']) && $_GET['sSetOrderInMemory'] == "1") {
+    $_SESSION['monitoring_host_status'] = $statusHost;
+    $_SESSION['monitoring_host_status_filter'] = $statusFilter;
+}
 
         
 /*

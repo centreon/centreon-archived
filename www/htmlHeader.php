@@ -149,7 +149,11 @@ $sid = session_id();
 
 $tS = $centreon->optGen["AjaxTimeReloadStatistic"] * 1000;
 $tM = $centreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
-$centreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $centreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+if (!isset($centreon->optGen["AjaxFirstTimeReloadStatistic"]) || $centreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
+    $tFS = 10;
+} else {
+    $tFS = $centreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+}
 
 ?>
 <script type='text/javascript'>

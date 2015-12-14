@@ -143,8 +143,10 @@ CentreonDb::check_injection($search_type_service);
 CentreonDb::check_injection($criticality_id);
 
 /* Store in session the last type of call */
-$_SESSION['monitoring_service_status'] = $statusService;
-$_SESSION['monitoring_service_status_filter'] = $statusFilter;
+if (isset($_GET['sSetOrderInMemory']) && $_GET['sSetOrderInMemory'] == "1") {
+    $_SESSION['monitoring_service_status'] = $statusService;
+    $_SESSION['monitoring_service_status_filter'] = $statusFilter;
+}
 
 
 
