@@ -201,11 +201,12 @@ class CentreonWebService
      */
     protected static function updateTokenTtl()
     {
+        global $pearDB;
         if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
             $query = "UPDATE ws_token SET generate_date = NOW() WHERE token = '" .
-                $this->pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) ."'";
+                $pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) ."'";
             try {
-                $this->pearDB->query($query);
+                $pearDB->query($query);
             } catch (Exception $e) {
                 self::sendJson("Internal error", 500);
             }

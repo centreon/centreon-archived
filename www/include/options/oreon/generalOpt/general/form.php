@@ -232,7 +232,6 @@ $tpl->assign("genOpt_expiration_properties", _("Sessions Properties"));
 $tpl->assign("time_min", _("minutes"));
 $tpl->assign("genOpt_refresh_properties", _("Refresh Properties"));
 $tpl->assign("time_sec", _("seconds"));
-$tpl->assign("genOpt_display_options", _("Display Options"));
 $tpl->assign("genOpt_global_display", _("Display properties"));
 $tpl->assign("genOpt_problem_display", _("Problem display properties"));
 $tpl->assign("genOpt_time_zone", _("Time Zone"));

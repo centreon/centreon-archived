@@ -236,7 +236,9 @@ class CentreonGMT {
                     $iTimestamp = $sDate->getTimestamp();
                     $return = $iTimestamp;
                 } else {
-                    $return = $date;
+                    $sDate = new DateTime($date);
+                    $iTimestamp = $sDate->getTimestamp();
+                    $return = $iTimestamp;
                 }
                 
             } else {

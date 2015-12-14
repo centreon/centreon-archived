@@ -38,6 +38,9 @@
  *
  * @author Maximilien Bersoult <mbersoult@centreon.com>
  */
+
+require_once _CENTREON_PATH_."www/include/configuration/common-Func.php";
+
 class CentreonConfigCentreonBroker
 {
     public $nbSubGroup = 1;
@@ -427,7 +430,12 @@ class CentreonConfigCentreonBroker
 	    if (PEAR::isError($this->db->query($query))) {
 	        return false;
 	    }
-
+        
+        $iIdServer = $values['ns_nagios_server'];
+        $iId = insertServerInCfgNagios($iIdServer, $values['name']);
+        if (!empty($iId)) {
+            insertBrokerDefaultDirectives($iId, 'wizard');
+        }
 	    /*
 	     * Get the ID
 	     */

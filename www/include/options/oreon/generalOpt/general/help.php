@@ -77,4 +77,4 @@ $help['strict_hostParent_poller_management'] = dgettext('help', 'This option ena
 /*
  * Support Informations
  */
-$help['tip_centreon_support_email'] = dgettext('help', 'Company Support email: this email is uses in the Centreon footer in order to have a quick link in order to open an issue to your help desk.');
+$help['tip_centreon_support_email'] = dgettext('help', 'Centreon Support email: this email is uses in the Centreon footer in order to have a quick link in order to open an issue to your help desk.');

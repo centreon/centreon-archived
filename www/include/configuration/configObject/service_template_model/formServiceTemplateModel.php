@@ -405,7 +405,7 @@ $attrServicetemplate1 = array_merge(
 );
 
 $serviceTplSelect = $form->addElement('select2', 'service_template_model_stm_id', _("Service Template"), array(), $attrServicetemplate1);
-$serviceTplSelect->addJsCallback('change', 'changeServiceTemplate(jQuery(this))');
+$serviceTplSelect->addJsCallback('change', 'changeServiceTemplate(this.value)');
 
 $form->addElement('static', 'tplText', _("Using a Template Model allows you to have multi-level Template connections"));
 

@@ -527,6 +527,12 @@ form#AjaxBankBasic {
 vertical-align: middle;
 }
 
+.ListTableSmall {
+    border: 1px #e7e7e8 solid;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
 .ToolbarPagination img {
     vertical-align: bottom;
     width: 12px;
@@ -1187,7 +1193,6 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
     /*margin: 0px 6px;*/
 }
 .ListTableMedium 		{width:60%;}
-.ListTableSmall 		{width:40%;}
 .ListTableSmallArg 		{
     width: 100%;
     border-width: 0px;;
@@ -1313,7 +1318,7 @@ table.ListTableSmallArg td {
 .Toolbar_TDSelectAction_Top {
     border: 1px solid #bcbdc0;
     border-radius: 4px;
-    padding: 2px;
+    padding: 3px 2px;
     margin-left: 6px;
     overflow: hidden;
     float: left;
@@ -1652,14 +1657,21 @@ div#tabs_periods {
 
 /* ----- Jquery Datepicker ---------*/
 
-.ui-datepicker {
+.ui-datepicker, .ui-timepicker {
     background: #fff !important;
     border-radius: 4px !important;
 }
-.ui-datepicker .ui-datepicker-title {
+.ui-datepicker .ui-datepicker-title , .ui-timepicker .ui-datepicker-title{
     color: #005a7f;
 }
-.ui-datepicker td span,.ui-datepicker td a {
+.ui-datepicker td span,.ui-datepicker td a, .ui-timepicker td span, .ui-timepicker td a{
+    border: 1px solid #d1d2d4 !important;
+    background: #f3f3f4 !important;
+    font-weight: bold !important;
+    color: #009fdf !important;
+}
+
+td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
     border: 1px solid #d1d2d4 !important;
     background: #f3f3f4 !important;
     font-weight: bold !important;
@@ -1667,13 +1679,17 @@ div#tabs_periods {
 }
 
 .ui-datepicker .ui-datepicker-next.ui-state-disabled.ui-state-hover,
-.ui-datepicker .ui-datepicker-prev.ui-state-disabled.ui-state-hover{
+.ui-datepicker .ui-datepicker-prev.ui-state-disabled.ui-state-hover,
+.ui-timepicker .ui-timepicker-next.ui-state-disabled.ui-state-hover,
+.ui-timepicker .ui-timepicker-prev.ui-state-disabled.ui-state-hover{
     border: 0;
     background-color: #818285;
 }
 
 .ui-datepicker .ui-datepicker-prev.ui-state-hover,
-.ui-datepicker .ui-datepicker-next.ui-state-hover {
+.ui-datepicker .ui-datepicker-next.ui-state-hover,
+.ui-timepicker .ui-timepicker-prev.ui-state-hover,
+.ui-timepicker .ui-timepicker-next.ui-state-hover {
     border: 0;
     background: #4ccaff !important;
 }

@@ -69,6 +69,9 @@
          $mainCfg = new CentreonConfigEngine($pearDB);
          $cdata = CentreonData::getInstance();
          $dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
+         if (is_null($nagios_id)) {
+             $dirArray[0]['in_broker_#index#'] = "/usr/lib64/centreon-engine/externalcmd.so";
+         }
          $cdata->addJsData('clone-values-broker', htmlspecialchars(
             json_encode($dirArray), 
             ENT_QUOTES
@@ -524,7 +527,7 @@
 	 * Event Broker Option
 	 */
 	$form->addElement('text', 'multiple_broker_module', _("Multiple Broker Module"), $attrsText2);
-	$form->addElement('static', 'bkTextMultiple', _("This directive can be used multiple times, see nagios documentation.<BR>NDO use the broker module directive."));
+	$form->addElement('static', 'bkTextMultiple', _("This directive can be used multiple times, see nagios documentation."));
         $cloneSet = array();
         $cloneSet[] = $form->addElement(
                 'text', 
