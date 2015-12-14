@@ -329,7 +329,7 @@ LOCK TABLES `log_archive_service` WRITE;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `metrics2` (
+CREATE TABLE `metrics` (
   `metric_id` int(11) NOT NULL AUTO_INCREMENT,
   `index_id` int(11) DEFAULT NULL,
   `metric_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
