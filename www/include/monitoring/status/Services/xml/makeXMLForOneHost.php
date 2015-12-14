@@ -150,8 +150,9 @@ if ($data = $DBRESULT->fetchRow()) {
 	}
 
 	$obj->XML->writeElement("hostname", CentreonUtils::escapeSecure($data["name"]), false);
-            $obj->XML->writeElement("hostalias", CentreonUtils::escapeSecure($data["alias"]), false);
+    $obj->XML->writeElement("hostalias", CentreonUtils::escapeSecure($data["alias"]), false);
 	$obj->XML->writeElement("address", CentreonUtils::escapeSecure($data["address"]));
+	$obj->XML->writeElement("color", $obj->colorHost[$data["state"]]);
 	$obj->XML->startElement("current_state");
 	$obj->XML->writeAttribute("color", $obj->colorHost[$data["state"]]);
 	$obj->XML->text(_($obj->statusHost[$data["state"]]), false);

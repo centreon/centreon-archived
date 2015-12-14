@@ -3,15 +3,11 @@
 <xsl:template match="//reponse">
 	<table class="ListTable table">
 		<tr class='ListHeader'>
-			<xsl:attribute name="style">
-				background-color:<xsl:value-of select="current_state/@color"/>;
-			</xsl:attribute>
+			<xsl:attribute name="class"><xsl:value-of select="color"/></xsl:attribute>
 
 			<td class="ColPopup FormHeader" colspan="2">
 				<xsl:element name="h3">
-					<xsl:attribute name="style">
-						color: #ffffff;
-					</xsl:attribute>
+					<xsl:attribute name="class"><xsl:value-of select="current_state/@color"/></xsl:attribute>
 					<xsl:element name="img">
 						<xsl:attribute name="src"><xsl:value-of select="ico"/></xsl:attribute>
 						<xsl:attribute name="class">ico-16</xsl:attribute>
@@ -33,7 +29,6 @@
 				<h4><xsl:value-of select="plugin_output"/></h4>
 			</td>
 		</tr>
-
 		<xsl:if test="notes != ''">
 		<tr class='list_lvl_1'>
 			<td colspan='2' class="ListColLvl1_name"><xsl:value-of select='tr4'></xsl:value-of></td>
