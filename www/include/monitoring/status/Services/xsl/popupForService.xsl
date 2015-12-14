@@ -25,7 +25,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="ColPopup" colspan="2">
+			<td class="ColPopupNoWrap" colspan="2">
 				<h4><xsl:value-of select="plugin_output"/></h4>
 			</td>
 		</tr>
@@ -38,22 +38,11 @@
 			<td class="ColPopup"><xsl:value-of select="notes"/></td>
 		</tr>
 		</xsl:if>
-
 		<tr class="list_lvl_1">
 			<td class='ListColLvl1_name' colspan='2'>
 				<h4><xsl:value-of select='tr5'></xsl:value-of></h4>
 			</td>
 		</tr>
-		<tr class='list_one'>
-			<td class="ColPopup" style='vertical-align:top;'>&#160;<xsl:value-of select="long_name" /></td>
-            <td class="ColPopup">
-                <ul>
-	                <xsl:for-each select="long_output_data">
-	                	&#160;&#186;&#160;<xsl:value-of select="lo_data" /><br />
-	            	</xsl:for-each>
-            	</ul>
-        	</td>
-        </tr>
 		<tr class='list_two'>
 			<td class="ColPopup">&#160;<xsl:value-of select="last_state_change_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="last_state_change"/></td>
@@ -62,7 +51,6 @@
 			<td class="ColPopup">&#160;<xsl:value-of select="duration_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="duration"/> s</td>
 		</tr>
-		
 		<tr class='list_two'>
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type"/></td>
