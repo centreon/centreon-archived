@@ -42,11 +42,9 @@ while ($opt = $DBRESULT->fetchRow()) {
 	$data[$opt["key"]] = myDecode($opt["value"]);
 }
 
-$skin = "./Themes/".$data["template"]."/";
-
 $tab_file_css = array();
 $i = 0;
-if ($handle  = @opendir($skin."Color"))	{
+if ($handle  = @opendir("./Themes/Centreon-2/Color"))	{
 	while ($file = @readdir($handle)){
 		if (is_file($skin."Color"."/$file"))	{
 			$tab_file_css[$i++] = $file;
@@ -133,7 +131,6 @@ $tpl->assign('submitTitle', _("Save"));
 $tpl->assign('nameTitle', _("Menu"));
 $tpl->assign('fileTitle', _("CSS File"));
 $tpl->assign('o', $o);
-$tpl->assign("CSS_configuration", _("CSS configuration"));
 $tpl->assign("CSS_File", _("CSS File"));
 $tpl->assign("Menu", _("Menu"));
 $tpl->assign('p', $p);
