@@ -135,7 +135,7 @@ foreach ($contacts as $contact) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => html_entity_decode($contact["contact_name"], ENT_QUOTES, "UTF-8"),
-        "RowMenu_ico" => './img/icones/16x16/user1_information.png',
+        "RowMenu_ico" => './img/icons/user_template.png',
         "RowMenu_ico_title" => _('This is a contact template.'),
         "RowMenu_link" => "?p=" . $p . "&o=c&contact_id=" . $contact['contact_id'],
         "RowMenu_desc" => CentreonUtils::escapeSecure(html_entity_decode($contact["contact_alias"], ENT_QUOTES, "UTF-8")),
