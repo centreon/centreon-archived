@@ -109,7 +109,7 @@
     </div>
     <div class="container">
         <span id="date">{$Date}</span>
-        <img id="sound_status" src="./img/icones/24x24/speaker_{$sound_status}.png" style="cursor:pointer;vertical-align: bottom;" onClick="{$sound_action}">
+        <img id="sound_status" src="./img/icons/speaker_{$sound_status}.png" style="cursor:pointer;vertical-align: bottom;" onClick="{$sound_action}">
     </div>
 	<div id="centreonMsg"></div>
 </div>
