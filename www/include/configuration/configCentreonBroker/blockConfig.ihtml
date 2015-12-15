@@ -5,7 +5,6 @@
 {foreach from=$formBlock key=tagKey item=tagEl}
 {if $tagKey == $tagBlock}
 {foreach from=$tagEl key=posKey item=posEl}
-{if $posKey == $posBlock}
 {foreach from=$posEl item=element name=elementFor}
 {if $smarty.foreach.elementFor.index % 2 == 0}
 {assign var='classEl' value='list_one'}
@@ -26,7 +25,6 @@
   <td class="FormRowValue">{$element.html}</td>
 </tr>
 {/foreach}
-{/if}
 {/foreach} 
 {/if}
 {/foreach}
