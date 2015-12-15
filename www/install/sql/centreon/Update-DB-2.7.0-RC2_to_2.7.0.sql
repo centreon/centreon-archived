@@ -5,3 +5,6 @@ WHERE NOT EXISTS (SELECT `key` FROM `options` WHERE `key` = 'nagios_path_img' ) 
 
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.7.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.0-RC2' LIMIT 1;
+
+--Delete multiple topology, exept once
+DELETE FROM `topology` WHERE `topology_page` = '60807' AND topology_id in (SELECT * FROM (SELECT topology_id FROM `topology` WHERE `topology_page` = '60807' LIMIT 1, 100) as t);
