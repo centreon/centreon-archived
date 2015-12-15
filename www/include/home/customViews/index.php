@@ -111,7 +111,8 @@ try {
         }
     }
 
-    $formAddView->addElement('select', 'viewLoad', _("Public views list"),$arrayView );
+    $attrsText      = array("size"=>"30");
+    $formAddView->addElement('select', 'viewLoad', _("Public views list"), $arrayView);
     $formAddView->addElement('select', 'viewLoadShare', _("Shared views list"),$arrayViewShared );
     /**
      * Name
@@ -133,7 +134,7 @@ try {
     $formAddView->addGroup($layouts, 'layout', _("Layout"), '&nbsp;');
     $formAddView->setDefaults(array('layout[layout]' => 'column_1'));
 
-    $formAddView->addElement('checkbox', 'public', _("Public"), $attrsText);
+    $formAddView->addElement('checkbox', 'public', _("Public"));
 
     /**
      * Submit button

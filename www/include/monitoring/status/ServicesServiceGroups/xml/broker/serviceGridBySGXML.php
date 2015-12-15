@@ -163,6 +163,7 @@
     $obj->XML->endElement();
 
     /* Construct query for servigroups search */
+    $aTab = array();
     $sg_search = "";
     $aTab = array();
     if ($numRows > 0) {
@@ -250,7 +251,7 @@
         }
         
     }
-    
+
     foreach ($aTab as $key => $element) {
         $obj->XML->startElement("sg");
             $obj->XML->writeElement("sgn", $element['sgn']);

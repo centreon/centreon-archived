@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2013 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,37 +31,25 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . '/webService.class.php';
-require_once dirname(__FILE__) . '/exceptions.php';
+# Manage timezone
+if (isset($pearDB)) {
 
+    $timezone = date_default_timezone_get();
 
-$pearDB = new CentreonDB();
-ini_set("session.gc_maxlifetime", "31536000");
+    $query1 = "select timezone_id from timezone where timezone_name= '" . $timezone . "'";
+    $res1 = $pearDB->query($query1);
+    if ($row = $res1->fetchRow()) {
+        $timezoneId = $row['timezone_id'];
+    } else {
+        $timezoneId = '334'; # Europe/London timezone
+    }
 
-CentreonSession::start();
+    $query2 = "INSERT INTO `options` (`key`, `value`) VALUES ('gmt','" . $timezoneId . "')";
+    $pearDB->query($query2);
 
-if (false === isset($_SESSION["centreon"])) {
-    CentreonWebService::sendJson("Unauthorized", 401);
 }
 
-$pearDB = new CentreonDB();
-
-/*
- * Define Oreon var alias
- */
-if (isset($_SESSION["centreon"])) {
-    $centreon = $_SESSION["centreon"];
-    $oreon = $centreon;
-}
-
-if (false === isset($centreon) || false === is_object($centreon)) {
-    CentreonWebService::sendJson("Unauthorized", 401);
-}
-
-CentreonWebService::router();
+?>

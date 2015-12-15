@@ -133,7 +133,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             . "AND h.host_register = '1' AND s.service_register = '1' "
             . "AND (s.service_description LIKE '%$q%' OR h.host_name LIKE '%$q%') "
             . $aclServices
-            . "ORDER BY h.host_name "
+            . "ORDER BY h.host_name, s.service_description "
             . $range;
         
         $DBRESULT = $this->pearDB->query($queryService);

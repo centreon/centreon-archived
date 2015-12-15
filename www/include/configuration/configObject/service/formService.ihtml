@@ -135,8 +135,8 @@
 		{/if}                
                 {if $o == "mc"}
                     <tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="cg_additive_inheritance"> {$form.mc_cg_additive_inheritance.label}</td>
-			<td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
+			<td class="FormRowField"><img class="helpTooltip" name="contact_additive_inheritance"> {$form.mc_contact_additive_inheritance.label}</td>
+			<td class="FormRowValue">{$form.mc_contact_additive_inheritance.html}</td>
                     </tr>
                     <tr class="list_one">
 			<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.service_cs.label}</td>
@@ -156,8 +156,8 @@
                 {/if}
                 {if $o == "mc"}
                     <tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="contact_additive_inheritance"> {$form.mc_contact_additive_inheritance.label}</td>
-			<td class="FormRowValue">{$form.mc_contact_additive_inheritance.html}</td>
+			<td class="FormRowField"><img class="helpTooltip" name="cg_additive_inheritance"> {$form.mc_cg_additive_inheritance.label}</td>
+			<td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
                     </tr>
                     <tr class="list_one">
 			<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.service_cgs.label}</td>

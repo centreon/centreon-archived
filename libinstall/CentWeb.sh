@@ -438,12 +438,6 @@ check_result $? "$(gettext "Change macros for downtimeManager.php")"
 cp -f $TMP_DIR/work/cron/downtimeManager.php \
 	$TMP_DIR/final/cron/downtimeManager.php >> "$LOG_FILE" 2>&1
 
-#cp -f $TMP_DIR/work/cron/eventReportBuilder \
-#	$TMP_DIR/final/cron/eventReportBuilder >> "$LOG_FILE" 2>&1
-
-#cp -f $TMP_DIR/work/cron/dashboardBuilder \
-#	$TMP_DIR/final/cron/dashboardBuilder >> "$LOG_FILE" 2>&1
-
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
@@ -536,12 +530,6 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTREON_BINDIR/centreonSyncArchives >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install centreonSyncArchives")"
 
-## Install generateSqlLite
-#log "INFO" "$(gettext "Prepare generateSqlLite")"
-#cp $TMP_DIR/src/bin/generateSqlLite \
-#	$TMP_DIR/final/bin/generateSqlLite >> "$LOG_FILE" 2>&1
-#check_result $? "$(gettext "Prepare generateSqlLite")"
-
 log "INFO" "$(gettext "Install generateSqlLite")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-m 755 \
@@ -583,15 +571,15 @@ check_result $? "$(gettext "Install import-mysql-indexes")"
 
 # Install Centreon CLAPI command line
 log "INFO" "$(gettext "Prepare clapi binary")"
-cp $TMP_DIR/src/bin/clapi \
-	$TMP_DIR/final/bin/centreon-clapi >> "$LOG_FILE" 2>&1
+cp $TMP_DIR/src/bin/centreon \
+	$TMP_DIR/final/bin/centreon >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Prepare clapi binary")"
 
 log "INFO" "$(gettext "Install clapi binary")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-m 755 \
-	$TMP_DIR/final/bin/centreon-clapi \
-	$CENTREON_BINDIR/centreon-clapi >> $LOG_FILE 2>&1
+	$TMP_DIR/final/bin/centreon \
+	$CENTREON_BINDIR/centreon >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install clapi binary")"
 
 

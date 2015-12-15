@@ -4,9 +4,9 @@
 	<table class="ListTable table">
 		<tr class='ListHeader'>
 			<xsl:attribute name="style">
-				background-color:<xsl:value-of select="current_state/@color"/>;
+				background-color:<xsl:value-of select="color"/>;
+				color:#FFFFFF;
 			</xsl:attribute>
-
 			<td class="ColPopup FormHeader" colspan="2">
 				<xsl:element name="h3">
 					<xsl:attribute name="style">
@@ -33,7 +33,6 @@
 				<h4><xsl:value-of select="plugin_output"/></h4>
 			</td>
 		</tr>
-
 		<xsl:if test="notes != ''">
 		<tr class='list_lvl_1'>
 			<td colspan='2' class="ListColLvl1_name"><xsl:value-of select='tr4'></xsl:value-of></td>

@@ -330,17 +330,15 @@ if ($unknown == 'true')
     array_push($svc_msg_status_set, "'".STATUS_UNKNOWN."'");
 
 $flag_begin = 0;
-$innerJoinEngineLog = "";
+
 $whereOutput = "";
 if(isset($output) && $output != "" ){
     $whereOutput = " AND logs.output like '%".$pearDBO->escape($output)."%' ";
 }
-if($engine == "true"){
-    $openid = "";
-    if(isset($openid) && $openid != "undefined" && $openid != ""){
-        $openid = " AND i.instance_id IN (".$openid.")";
-    }
-    $innerJoinEngineLog = " inner join instances i on i.name = logs.instance_name ".$openid;
+
+$innerJoinEngineLog = "";
+if($engine == "true" && isset($openid) && $openid != ""){
+    $innerJoinEngineLog = " inner join instances i on i.name = logs.instance_name AND i.instance_id IN (" . $pearDBO->escape($openid) . ") ";
 }
 
 if ($notification == 'true') {
@@ -418,6 +416,7 @@ if ($flag_begin) {
 $tab_id = preg_split("/\,/", $openid);
 $tab_host_ids = array();
 $tab_svc = array();
+$filters = false;
 foreach ($tab_id as $openid) {
     $tab_tmp = preg_split("/\_/", $openid);
     $id = "";
@@ -437,35 +436,45 @@ foreach ($tab_id as $openid) {
     
     
     if ($type == "HG" && (isset($lca["LcaHostGroup"][$id]) || $is_admin)){
+        $filters = true;
         // Get hosts from hostgroups
         $hosts = getMyHostGroupHosts($id);
-        foreach ($hosts as $h_id) {
-            if (isset($lca["LcaHost"][$h_id])) {
-                //$host_name = getMyHostName($h_id);
-                $tab_host_ids[] = $h_id;
-                $tab_svc[$h_id] = $lca["LcaHost"][$h_id];
+        if (count($hosts) == 0) {
+            $tab_host_ids[] = "-1";
+        } else {
+            foreach ($hosts as $h_id) {
+                if (isset($lca["LcaHost"][$h_id])) {
+                    $tab_host_ids[] = $h_id;
+                    $tab_svc[$h_id] = $lca["LcaHost"][$h_id];
+                }
             }
         }
     } else if ($type == 'ST' && (isset($lca["LcaSG"][$id]) || $is_admin)){
+        $filters = true;
         $services = getMyServiceGroupServices($id);
-        foreach ($services as $svc_id => $svc_name) {
-            $tab_tmp = preg_split("/\_/", $svc_id);
-            $tmp_host_id = $tab_tmp[0];
-            $tmp_service_id = $tab_tmp[1];
-            $tab = preg_split("/\:/", $svc_name);
-            $host_name = $tab[3];
-            if (isset($lca["LcaHost"][$tmp_host_id][$tmp_service_id])) {
-                $tab_svc[$hostId][$tmp_service_id] = $lca["LcaHost"][$tmp_host_id][$tmp_service_id];
+        if (count($services) == 0) {
+            $tab_svc[] = "-1";
+        } else {
+            foreach ($services as $svc_id => $svc_name) {
+                $tab_tmp = preg_split("/\_/", $svc_id);
+                $tmp_host_id = $tab_tmp[0];
+                $tmp_service_id = $tab_tmp[1];
+                $tab = preg_split("/\:/", $svc_name);
+                $host_name = $tab[3];
+                if (isset($lca["LcaHost"][$tmp_host_id][$tmp_service_id])) {
+                    $tab_svc[$hostId][$tmp_service_id] = $lca["LcaHost"][$tmp_host_id][$tmp_service_id];
+                }
             }
         }
     } else if ($type == "HH" && isset($lca["LcaHost"][$id])) {
-        //$host_name = getMyHostName($id);
+        $filters = true;
         $tab_host_ids[] = $id;
         $tab_svc[$id] = $lca["LcaHost"][$id];
     } else if ($type == "HS" && isset($lca["LcaHost"][$hostId][$id])) {
-        //$host_name = getMyHostName($hostId);
+        $filters = true;
         $tab_svc[$hostId][$id] = $lca["LcaHost"][$hostId][$id];
     } else if ($type == "MS") {
+        $filters = true;
         $tab_svc["_Module_Meta"][$id] = "meta_".$id;
     }
 }
@@ -480,8 +489,18 @@ $str_unitH = "";
 $str_unitH_append = "";
 $host_search_sql = "";
 if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
-    if($engine == "false"){
+    if($engine == "false") {
         $req .= " AND `msg_type` NOT IN ('4','5') ";
+        if (!$is_admin && !$filters) {
+            if (!$filters) {
+                $req .= " AND ( ";
+                $req .= " (host_id IN (" . $access->getHostsString(null, $pearDBO) . ") AND service_id IS NULL) ";
+                $req .= " OR (host_id IN (" . $access->getHostsString(null, $pearDBO) . ") AND service_id IN (" . $access->getServicesString(null, $pearDBO) . ")) ";
+                $req .= " ) ";
+            } else if ($filters) {
+                $req .= " AND 1 = 0 ";
+            }
+        }
     }
 } else {
     foreach ($tab_host_ids as $host_id ) {
@@ -531,7 +550,7 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
             $req .= " AND (".$str_unitH.$str_unitSVC.")";
         }
     } else {
-      $req .= "AND 0 ";
+        $req .= "AND 0 ";
     }    
     $req .= $host_search_sql . $service_search_sql;
     

@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.0-RC2');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.0');
 
 --
 -- Contenu de la table `contact`
@@ -95,7 +95,6 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('AjaxTimeReloadMonitoring','15'),
 ('AjaxTimeReloadStatistic','15'),
 ('template','Centreon-2'),
-('gmt','1'),
 ('color_up','#88b917'),
 ('color_down','#e00b3d'),
 ('color_unreachable','#818285'),
