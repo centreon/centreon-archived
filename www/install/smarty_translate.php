@@ -1,3 +1,16 @@
+<?php
+/* /tmp/centreon-2.7.x/www//include/reporting/dashboard/template/viewServicesGroupLog.ihtml */
+_("Export CSV");
+
+/* /tmp/centreon-2.7.x/www//include/reporting/dashboard/template/viewHostGroupLog.ihtml */
+_("Export CSV");
+
+/* /tmp/centreon-2.7.x/www//include/reporting/dashboard/template/viewServicesLog.ihtml */
+_("Export CSV");
+
+/* /tmp/centreon-2.7.x/www//include/reporting/dashboard/template/viewHostLog.ihtml */
+_("Export CSV");
+
 /* /tmp/centreon-2.7.x/www//include/monitoring/comments/template/comments.ihtml */
 _("Filters");
 
@@ -62,7 +75,7 @@ _("Started");
 _("Fixed");
 
 /* /tmp/centreon-2.7.x/www//include/monitoring/downtime/template/listDowntime.ihtml */
-_("Started");
+_("Cancelled");
 
 /* /tmp/centreon-2.7.x/www//include/monitoring/downtime/template/listDowntime.ihtml */
 _("Actual End");
@@ -93,6 +106,12 @@ _("Filters");
 
 /* /tmp/centreon-2.7.x/www//include/eventLogs/viewLogEngine.ihtml */
 _("Filters");
+
+/* /tmp/centreon-2.7.x/www//include/eventLogs/viewLog.ihtml */
+_("Export CSV");
+
+/* /tmp/centreon-2.7.x/www//include/eventLogs/viewLog.ihtml */
+_("Export XML");
 
 /* /tmp/centreon-2.7.x/www//include/eventLogs/viewLog.ihtml */
 _("Filters");
@@ -202,6 +221,15 @@ _("Contact");
 /* /tmp/centreon-2.7.x/www//include/configuration/configObject/contact/listContact.ihtml */
 _("Search");
 
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/escalation/formEscalation.ihtml */
+_("Informations");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/escalation/formEscalation.ihtml */
+_("Impacted Resources");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/escalation/formEscalation.ihtml */
+_("Resources");
+
 /* /tmp/centreon-2.7.x/www//include/configuration/configObject/escalation/listEscalation.ihtml */
 _("Filters");
 
@@ -310,6 +338,27 @@ _("Timeperiod");
 /* /tmp/centreon-2.7.x/www//include/configuration/configObject/timeperiod/listTimeperiod.ihtml */
 _("Search");
 
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("General Information");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("Notifications");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("Relations");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("Data Processing");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("Service Extended Info");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("Service Check Options");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/formService.ihtml */
+_("Service Scheduling Options");
+
 /* /tmp/centreon-2.7.x/www//include/configuration/configObject/service/listService.ihtml */
 _("Filters");
 
@@ -351,6 +400,18 @@ _("Search");
 
 /* /tmp/centreon-2.7.x/www//include/configuration/configObject/host/listHost.ihtml */
 _("Filters");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/host/formHost.ihtml */
+_("Host basic information");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/host/formHost.ihtml */
+_("Host check options");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/host/formHost.ihtml */
+_("Scheduling options");
+
+/* /tmp/centreon-2.7.x/www//include/configuration/configObject/host/formHost.ihtml */
+_("Notification receivers");
 
 /* /tmp/centreon-2.7.x/www//include/configuration/configDowntime/listDowntime.ihtml */
 _("Filters");
@@ -464,6 +525,9 @@ _("Author");
 _("Rotation");
 
 /* /tmp/centreon-2.7.x/www//include/home/customViews/index.ihtml */
+_("Apply");
+
+/* /tmp/centreon-2.7.x/www//include/home/customViews/index.ihtml */
 _("Deleting this view might impact other users. Are you sure you want to do it?");
 
 /* /tmp/centreon-2.7.x/www//include/home/customViews/index.ihtml */
@@ -538,6 +602,16 @@ _("Centcore Options");
 /* /tmp/centreon-2.7.x/www//include/options/oreon/generalOpt/centcore/centcore.ihtml */
 _("seconds");
 
+/* /tmp/centreon-2.7.x/www//include/options/oreon/generalOpt/ldap/list.ihtml */
+_("Filters");
+
+/* /tmp/centreon-2.7.x/www//include/options/oreon/generalOpt/ldap/list.ihtml */
+_("LDAP Server");
+
+/* /tmp/centreon-2.7.x/www//include/options/oreon/generalOpt/ldap/list.ihtml */
+_("Search");
+
 /* /tmp/centreon-2.7.x/www//include/options/oreon/myAccount/formMyAccount.ihtml */
 _("UI notifications");
 
+?>
