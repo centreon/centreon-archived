@@ -2,7 +2,7 @@
 Configuration
 =============
 
-Ce chapitre vous permettra de connaître tous les mécanismes de configuration de la supervision. Cette étape de mise en place de la supervision doit être réflechie afin de mettre en place une stratégie de déploiement de la supervision. N'oubliez pas, le but est d'avoir un système évolutif et maintenable. 
+This chapter will allow you to know all the configuration mechanisms of your supervision system. This stage of implementation of the supervision must be reflected to set up a supervision deployment strategy. Remember, the goal is to have a scalable and maintainable system. 
 
 .. toctree::
    :maxdepth: 2
@@ -20,4 +20,4 @@ Ce chapitre vous permettra de connaître tous les mécanismes de configuration d
    poller/index 
    deploy
 
-Une fois configurée, la supervision vous permettra de remonter des informations relatives à l'état de santé de votre Système d'informations. Pour connaître le fonctionnement de l'interface d'exploitation de ces résultats, référez vous au guide d'exploitation.
+Once setup is finished, supervision will allow you to get informations on the health status of your IT systems. For having more information regarding the operation interface, please refer to the exploitation guide.
