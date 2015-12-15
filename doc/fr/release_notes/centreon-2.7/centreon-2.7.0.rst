@@ -79,3 +79,35 @@ Problèmes connus
  * Monitoring > Comments
  * Monitoring > Eventlogs > System logs
 
+Mise à jour
+-----------
+
+*********
+Prérequis
+*********
+
+Les prérequis nécessaires au fonctionnement de Centreon 2.7 ont évolué par rapport aux précédentes versions. Il est important de suivre les recommandations suivantes pour pouvoir avoir une plate-forme fonctionnelle :
+
+* Centreon Engine 1.5
+* Centreon Broker 2.11
+
+* Apache = 2.2
+* Centreon Engine >= 1.5.0
+* Centreon Broker >= 2.11.0
+* CentOS = 6.x ou RedHat >= 6.x
+* MariaDB = 5.5.35 ou MySQL = 5.1.73
+* Net-SNMP = 5.5
+* PHP >= 5.3.0
+* Qt = 4.7.4
+* RRDtools = 1.4.7
+
+******************************************
+Procédure d'installation et de mise à jour
+******************************************
+
+Nous avons recensé ici les différentes étapes nécessaires pour pouvoir passer une plate-forme existante en version 2.7. Il est important de prendre en compte que la version proposée reste **une version de validation. Il est vivement recommandé de ne pas installer une version RC de Centreon 2.7 en production.**
+
+.. warning::
+	Cette procédure est réalisée dans le contexte d’une CES. Toutes les commandes et les mises à jours seront basées sur de l’environnement CentOS / RedHat et yum.
+
+
