@@ -1,19 +1,15 @@
 .. _install:
 
-###############################
-Set up your monitoring platform
-###############################
+############
+Installation
+############
 
 This chapter describes how to install your Centreon monitoring platform.
 
-There are many possibilities to perform this operation but **we advise you to use only CES to set up a new monitoring platform**.
-Installation from Centreon sources (tar.gz) is complex and will be supported only by community.
-
-The first part will help you to define the sizing of servers: server's ressources, space disk, fyles system, etc.
-
-The second part shows you different kind of architecture.
-
-The third part exaplins how to install your platform.
+The monitoring platform may be installed in several ways. However, **we strongly recommend using Centreon ISO (eg CES) to install your platform**. Enjoy of our work of industrialization durinf install and update steps of your the environment. Also enjoy optimizations installed by default on the system.
+Centreon Installation can be performed from source (tar.gz) but the work is more complex. In addition the installer shall be supported by the community.
+Before installation, be sure to follow the prerequisites installation and sizing (resources CPU, memory, disks, partitioning, etc ...). Also take care to choose the type of architecture that should be set up for your needs.
+Finally, you can install the platform.
 
 .. toctree::
     :maxdepth: 2
@@ -26,4 +22,3 @@ The third part exaplins how to install your platform.
     from_packages
     from_sources
 
-If you are part of the beta test program please click :ref:`here<betaTest2_7_0>`.

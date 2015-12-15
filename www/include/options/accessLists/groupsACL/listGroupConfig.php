@@ -59,7 +59,6 @@ include("./include/common/checkPagination.php");
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Description"));
 $tpl->assign("headerMenu_contacts", _("Contacts"));
