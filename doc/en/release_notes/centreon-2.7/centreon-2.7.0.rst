@@ -2,7 +2,7 @@
 Centreon 2.7.0
 ##############
 
-The 2.7.0 release for Centreon Web is now available for `download <https://download.centreon.com`_. The full release notes for 2.7.0 follow:
+The 2.7.0 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.0 follow:
 
 Features and Bug Fixes
 ----------------------
