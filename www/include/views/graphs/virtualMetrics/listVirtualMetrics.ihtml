@@ -59,9 +59,9 @@
                     <img style="margin: 0px; padding-left: 4px; padding-right: 4px; padding-top: 2px;" src="./img/icons/checked.png" class="ico-14">
 				{else}
 					{if $elemArr[elem].RowMenu_ckstate == 2}
-						<img style="margin: 0px; padding-left: 4px; padding-right: 4px; padding-top: 2px;" src="./img/icones/16x16/rrdgraph_rpn_error.png">
+						<img style="margin: 0px; padding-left: 4px; padding-right: 4px; padding-top: 2px;" src="./img/icons/checked.png" class='ico-16' />
 					{else}
-						<img style="margin: 0px; padding-left: 4px; padding-right: 4px; padding-top: 2px;" src="./img/icones/16x16/rrdgraph_rpn_warning.png">
+						<img style="margin: 0px; padding-left: 4px; padding-right: 4px; padding-top: 2px;" src="./img/icons/deleted.png" class='ico-16' />
 					{/if}
 				{/if}
             </td>
