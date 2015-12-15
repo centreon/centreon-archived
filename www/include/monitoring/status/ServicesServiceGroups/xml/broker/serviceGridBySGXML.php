@@ -107,17 +107,18 @@
     }
 
     $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
-        . "FROM servicegroups sg, services_servicegroups sgm, hosts h, services s "
+        . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
+        . $obj->access->getACLHostsTemporaryTableJoin($obj->DBC,"h.host_id") 
         . "WHERE sg.servicegroup_id = sgm.servicegroup_id AND sgm.host_id = h.host_id AND h.host_id = s.host_id AND s.service_id = sgm.service_id ";
 
     # Servicegroup ACL
     $query .= $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"));
 
     /* Host ACL */
-    $query .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
+    //$query .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC,false));
 
     /* Service ACL */
-    $query .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
+    $query .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC,false));
 
     /* Servicegroup search */    
     if ($sgSearch != ""){
@@ -163,6 +164,7 @@
 
     /* Construct query for servigroups search */
     $sg_search = "";
+    $aTab = array();
     if ($numRows > 0) {
         $sg_search .= "AND (";
         $servicegroups = array();
@@ -201,7 +203,6 @@
         $h = "";
         $flag = 0;
         $count = 0;
-        $aTab = array();
     
         while ($tab = $DBRESULT->fetchRow()) {
              
