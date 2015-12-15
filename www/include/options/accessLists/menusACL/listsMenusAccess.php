@@ -62,7 +62,6 @@
 	/*
 	 * start header menu
 	 */
-	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_alias", _("Description"));
 	$tpl->assign("headerMenu_status", _("Status"));
