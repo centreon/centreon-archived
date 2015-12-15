@@ -43,7 +43,7 @@ Vous pouvez maintenant installer les dépendances nécessaires :
 
     $ yum update
     $ yum upgrade
-    $ yum install httpd gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD \
+    $ yum install httpd gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD perl-DateTime \
         openssl-devel perl-DBD-MySQL mysql-server mysql-devel php php-mysql php-gd php-ldap php-xml php-mbstring \
         perl-Config-IniFiles perl-DBI perl-DBD-MySQL rrdtool perl-rrdtool perl-Crypt-DES perl-Digest-SHA1 \
         perl-Digest-HMAC net-snmp-utils perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs php-snmp \
@@ -76,10 +76,10 @@ Installez les dépendances nécessaires :
 
   ::
 
-    $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient15-dev libdatetime-perl \
-        apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-ldap php5-snmp php5-gd php5-sqlite \
-        rrdtool librrds-perl libconfig-inifiles-perl libcrypt-des-perl libdigest-hmac-perl \
-        libdigest-sha1-perl libgd-gd2-perl snmp snmpd libnet-snmp-perl libsnmp-perl
+  $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient18 libdatetime-perl \
+      apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-intl php5-ldap php5-snmp php5-gd php5-sqlite \
+      rrdtool librrds-perl libconfig-inifiles-perl libcrypt-des-perl libdigest-hmac-perl \
+      libdigest-sha-perl libgd-perl snmp snmpd libnet-snmp-perl libsnmp-perl
 
 Pour finir, vous devez installer des MIBs SNMP. En raison d'un problème de licence,
 les fichiers MIBs ne sont pas disponibles par défaut sous Debian. Pour les ajouter, 
@@ -100,7 +100,7 @@ Installez les dépendances nécessaires :
   ::
 
     $ yast -i gcc gcc-c++ make automake apache2 php5 php5-mysql apache2-mod_php5 php5-pear \
-        php5-ldap php5-snmp php5-gd php5-soap php5-posix php5-gettext php5-mbstring mysql \
+        php5-ldap php5-snmp php5-gd php5-soap php5-posix php5-intl php5-gettext php5-mbstring mysql \
         libmysqlclient-devel perl-DBD-mysql mysql-community-server rrdtool perl-Config-IniFiles \
         net-snmp perl-Net-SNMP perl-SNMP gd libjpeg-devel libpng-devel fontconfig-devel \
         freetype2-devel sudo mailx fping iputils dos2unix cron dejavu
@@ -525,13 +525,7 @@ Installation des modules pear
   Archive_Tar                     1.1         1.3.1          OK
   Auth_SASL                       1.0.1       1.0.6          OK
   Console_Getopt                  1.2         1.2            OK
-  Net_SMTP                        1.2.8       1.6.1          OK
-  Net_Socket                      1.0.1       1.0.10         OK
-  Net_Traceroute                  0.21        0.21.3         OK
-  Net_Ping                        2.4.1       2.4.5          OK
   Validate                        0.6.2       0.8.5          OK
-  XML_RPC                         1.4.5       1.5.5          OK
-  SOAP                            0.10.1      0.13.0         OK
   Log                             1.9.11      1.12.7         OK
   Archive_Zip                     0.1.2       0.1.2          OK
   All PEAR modules                                           OK
