@@ -103,7 +103,7 @@
                 criticalModalBox += 'style="margin-right: auto; margin-left: auto;" title="Module Error">';
                 
                 
-                myModuleStatusSpan.append('<a href="#" onclick="jQuery(\'#'+modalBoxId+'\').dialog(\'open\');" ><img id="img_critical_'+ module["name"] +'" src="img/icons/cross.png" class='ico-18' /></a>');
+                myModuleStatusSpan.append('<a href="#" onclick="jQuery(\'#'+modalBoxId+'\').dialog(\'open\');" ><img id="img_critical_'+ module["name"] +'" src="img/icons/cross.png" class="ico-16" /></a>');
                 statusStyle = 'ui-tooltip-red ui-tooltip-shadow';
                 
                 statusMessage = "";
@@ -128,17 +128,17 @@
                 jQuery('#' + modalBoxId).dialog( "option", "hide", { effect: 'drop', direction: "down" } );
                 jQuery('#' + modalBoxId).dialog( "option", "modal", true );
             } else if (module["status"] === "warning") {
-                myModuleStatusSpan.append('<img id="img_ok_'+ module["name"] + '" src="./img/icons/enabled.png" class='ico-16' />');
+                myModuleStatusSpan.append('<img id="img_ok_'+ module["name"] + '" src="img/icons/warning.png" class="ico-16" />');
                 statusMessage = 'The module is fully functional';
                 statusStyle = 'ui-tooltip-red ui-tooltip-shadow';
                 tooltipReferer = '#img_ok_'+ module["name"];
             } else if (module["status"] === "ok") {
-                myModuleStatusSpan.append('<img id="img_ok_'+ module["name"] + '" src="./img/icons/enabled.png" class='ico-16' />');
+                myModuleStatusSpan.append('<img id="img_ok_'+ module["name"] + '" src="img/icons/checked.png" class="ico-16" />');
                 statusStyle = 'ui-tooltip-green ui-tooltip-shadow';
                 statusMessage = 'The module is fully functional';
                 tooltipReferer = '#img_ok_'+ module["name"];
             } else {
-                myModuleStatusSpan.append('<img id="img_warning_'+ module["name"] + '" src="./img/icons/help.png" class='ico-16' />');
+                myModuleStatusSpan.append('<img id="img_warning_'+ module["name"] + '" src="img/icons/help.png" class="ico-16" />');
                 statusStyle = 'ui-tooltip-red ui-tooltip-shadow';
                 statusMessage = "Can't check module dependencies";
                 tooltipReferer = '#img_warning_'+ module["name"];
@@ -153,7 +153,7 @@
                 customActionModalBox += 'style="margin-right: auto; margin-left: auto;" title="'+module["customActionName"]+'">';
                 customActionModalBox += module["customAction"];
                 customActionModalBox += '</div>';
-                customActionIcon = '<span id="customActionIcon_'+module["name"]+'"><a href="#" onclick="jQuery(\'#'+modalBoxId+'\').dialog(\'open\');" ><img id="custom_action_'+ module["name"] + '" src="img/icons/wrench.gif" class='ico-16' /></a></span>';
+                customActionIcon = '<span id="customActionIcon_'+module["name"]+'"><a href="#" onclick="jQuery(\'#'+modalBoxId+'\').dialog(\'open\');" ><img id="custom_action_'+ module["name"] + '" src="img/icons/wrench.gif" class="ico-16" /></a></span>';
                 jQuery('body').append(customActionModalBox);
                 jQuery('#' + modalBoxId).dialog({ autoOpen: false });
                 jQuery('#' + modalBoxId).dialog( "option", "show", { effect: 'drop', direction: "up" } );
