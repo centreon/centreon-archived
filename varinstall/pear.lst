@@ -7,12 +7,6 @@ Date::1.4.6
 Archive_Tar::1.1
 Auth_SASL::1.0.1
 Console_Getopt::1.2
-Net_SMTP::1.2.8
-Net_Socket::1.0.1
-Net_Traceroute::0.21::alpha
-Net_Ping::2.4.1
 Validate::0.6.2::beta
-XML_RPC::1.4.5
-SOAP::0.10.1::beta
 Log::1.9.11
 Archive_Zip::0.1.2::beta
