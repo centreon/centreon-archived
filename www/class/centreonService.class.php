@@ -1052,14 +1052,13 @@ class CentreonService
         }
         
         # Construct service filter for query
-        $selectedServices = "AND hsr.service_service_id IN (";
+        $selectedServices = '';
         $implodedValues = implode(',', $serviceIdList);
-        if (trim($implodedValues) != "") {
+        if ((trim($implodedValues)) != "" && (trim($implodedValues) != "-")) {
+            $selectedServices .= "AND hsr.service_service_id IN (";
             $selectedServices .= $implodedValues;
-        } else {
-            $selectedServices .= "''";
+            $selectedServices .= ") ";
         }
-        $selectedServices .= ") ";
         
         $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
             . "FROM host h, service s, host_service_relation hsr "
