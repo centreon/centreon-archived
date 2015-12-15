@@ -63,36 +63,17 @@ $pear_module[11]["version"] = "1.1";
 $pear_module[11]["file"] = "Archive_Tar-1.1.tgz";
 $pear_module[11]["path"] = "Archive/Tar.php";
 
-$pear_module[12]["name"] = "Auth_SASL";
-$pear_module[12]["version"] = "1.0.1";
-$pear_module[12]["file"] = "Auth_SASL-1.0.1.tgz";
-$pear_module[12]["path"] = "Auth/SASL.php";
-
 $pear_module[13]["name"] = "Console_Getopt";
 $pear_module[13]["version"] = "1.2";
 $pear_module[13]["file"] = "Console_Getopt-1.2.tgz";
 $pear_module[13]["path"] = "Console/Getopt.php";
-
-$pear_module[22]["name"] = "Net_Socket";
-$pear_module[22]["version"] = "1.0.1";
-$pear_module[22]["file"] = "Net_Socket-1.0.1.tgz";
-$pear_module[22]["path"] = "Net/Socket.php";
-
-$pear_module[23]["name"] = "Net_Traceroute";
-$pear_module[23]["version"] = "0.21";
-$pear_module[23]["file"] = "Net_Traceroute-0.21";
-$pear_module[23]["path"] = "Net/Traceroute.php";
-
-$pear_module[24]["name"] = "Net_Ping";
-$pear_module[24]["version"] = "2.4.1";
-$pear_module[24]["file"] = "Net_Ping-2.4.1.tgz";
-$pear_module[24]["path"] = "Net/Ping.php";
 
 $pear_module[25]["name"] = "Validate";
 $pear_module[25]["version"] = "0.6.2";
 $pear_module[25]["file"] = "Validate-0.6.2.tgz";
 $pear_module[25]["path"] = "Validate.php";
 
+/*
 $pear_module[27]["name"] = "XML_RPC";
 $pear_module[27]["version"] = "1.4.5";
 $pear_module[27]["file"] = "XML_RPC-1.4.5.tgz";
@@ -102,3 +83,4 @@ $pear_module[28]["name"] = "SOAP";
 $pear_module[28]["version"] = "0.10.1";
 $pear_module[28]["file"] = "SOAP-0.10.1.tgz";
 $pear_module[28]["path"] = "SOAP/Client.php";
+*/
