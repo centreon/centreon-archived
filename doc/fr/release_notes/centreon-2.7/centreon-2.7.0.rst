@@ -2,6 +2,8 @@
 Centreon 2.7.0
 ##############
 
+La version 2.7.0 de Centreon Web est maintenant téléchargeable sur notre `portail <https://download.centreon.com`_. La liste complète des changements opérés dans la version 2.7.0 sont ci-dessous : 
+
 Améliorations et corrections
 ----------------------------
 
@@ -69,7 +71,11 @@ Fonctions supprimées
 
 Problèmes connus
 ----------------
+* La migration de la configuration des ACL d'accès aux pages de Centreon n'est pas complètement gérée durant le passage à la version 2.7.0. Ainsi, merci de vérifier vos configuration après la mise à jour. Les pages impactées sont : 
+ * Monitoring > Hosts
+ * Monitoring > Services
+ * Monitoring > Performances (new page)
+ * Monitoring > Downtimes
+ * Monitoring > Comments
+ * Monitoring > Eventlogs > System logs
 
-
-.. toctree::
-    :maxdepth: 1
