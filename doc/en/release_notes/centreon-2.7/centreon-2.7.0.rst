@@ -2,6 +2,8 @@
 Centreon 2.7.0
 ##############
 
+The 2.7.0 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.0 follow:
+
 Features and Bug Fixes
 ----------------------
 
@@ -69,7 +71,12 @@ Removed Features
 
 Known Bugs
 ----------
+* ACL of pages is not fully updated during the upgrade process. So please check all your ACL pages after the migration. You may have problems with the followings pages:
+ * Monitoring > Hosts
+ * Monitoring > Services
+ * Monitoring > Performances (new page)
+ * Monitoring > Downtimes
+ * Monitoring > Comments
+ * Monitoring > Eventlogs > System logs
 
 
-.. toctree::
-    :maxdepth: 1
