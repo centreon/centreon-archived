@@ -89,7 +89,7 @@ for ($cpt = 0;$r = $res->fetchRow();$cpt++){
 		$session_data[$cpt]["topology_icone"] = "&nbsp;";
     }
     if ($centreon->user->admin) {
-	  $session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=k&session=" . $r['session_id'] . "'><img src='./img/icones/16x16/flash.gif' border='0' alt='"._("Kick User")."' title='"._("Kick User")."'></a>";
+	  $session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=k&session=" . $r['session_id'] . "'><img src='./img/icons/delete.png' border='0' alt='"._("Kick User")."' title='"._("Kick User")."'></a>";
     } else {
         $session_data[$cpt]["actions"] = "";
     }

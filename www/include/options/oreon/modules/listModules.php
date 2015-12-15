@@ -149,7 +149,6 @@ while (false !== ($filename = readdir($handle))) {
                                     "RowMenu_author" => $moduleinfo["author"],
                                     "RowMenu_licenseExpire" => $license_expires,
                                     "RowMenu_upgrade" => 0,
-                                    "RowMenu_picture" => (file_exists("./modules/$filename/icone.gif") ? "./modules/$filename/icone.gif" : "./img/icones/16x16/component_green.gif"),
                                     "RowMenu_isinstalled" => _("Yes"),
                                     "RowMenu_link" => "?p=".$p."&o=w&id=".$moduleinfo["id"],
                                     "RowMenu_link_install" => NULL,
@@ -259,5 +258,3 @@ $tpl->assign("action_upgrade", _("Upgrade"));
  */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $tpl->display("listModules.ihtml");
-    
-?>

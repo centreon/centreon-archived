@@ -275,6 +275,27 @@
 	</div>
 </xsl:if>
 <xsl:if test="//multi_svc">
+    	<div id="div2"   valign="top" align='left'>
+		<form name="formu2">
+    	    <table class="ajaxOption">
+				<tr>
+	           		<td>
+						<xsl:element name='input'>
+							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi,'<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
+							<xsl:attribute name="name">split</xsl:attribute>
+							<xsl:attribute name="type">checkbox</xsl:attribute>
+							<xsl:if test="//splitvalue = 1">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</xsl:element>
+						<xsl:value-of select="//lang/giv_split_component"/>
+	           		</td>
+				</tr>
+        	</table>
+		</form>
+    	</div>
+    
+    
 		<div>
 			<table class="ListTable">
 			<xsl:for-each select="//multi_svc">
