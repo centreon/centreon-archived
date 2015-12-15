@@ -147,7 +147,9 @@
 							</xsl:element>
 						</xsl:if>
 						<xsl:if test="hs = 2">
-							<xsl:attribute name="class">state_badge host_unreachable</xsl:attribute>
+                                                        <xsl:element name="span">
+								<xsl:attribute name="class">state_badge host_unreachable</xsl:attribute>
+							</xsl:element>
 						</xsl:if>
 					</xsl:if>
 					<xsl:if test="hdtm != 0">
