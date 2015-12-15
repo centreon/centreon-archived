@@ -22,5 +22,3 @@ Enfin, vous pourrez procéder à l'installation de la plate-forme.
    01a
    from_packages
    from_sources
-
-Vous faites partie du programme de beta test de Centreon 2.7. Cliquez :ref:`ici <betaTest2_7_0>`
