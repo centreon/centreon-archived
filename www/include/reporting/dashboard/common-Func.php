@@ -184,24 +184,6 @@ function my_getTimeTamps($dateSTR)	{
 	return (mktime(0,0,0,$m,$d,$y));
 }
 
-function getLogData($time_event, $host, $service, $status, $output, $type){
-	$tab_img = array("UP" => './img/icones/12x12/recovery.gif',
-					"DOWN" => './img/icones/12x12/alert.gif',
-					"UNREACHABLE" => './img/icones/12x12/queue.gif',
-					"NONE" => './img/icones/12x12/info.gif',
-					);
-
-	$tab["time"] = date(_("Y/m/d G:i"), $time_event);
-	$tab["timeb"] = $time_event;
-	$tab["host"] = $host;
-	$tab["service"] = $service;
-	$tab["status"] = $status;
-	$tab["output"] = $output;
-	$tab["type"] = $type;
-	$tab["img"] = $tab_img[$status];
-	return $tab ;
-}
-
 function getPeriodList(){
 
 	$periodList = array();
