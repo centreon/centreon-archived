@@ -62,10 +62,8 @@ if (isset($pearDB)) {
     }
 
     # Delete old failover output
-    $query = "DELETE FROM cfg_centreonbroker_info
-        WHERE (config_id,config_group,config_group_id) IN
-            (SELECT config_id,config_group,config_group_id FROM
-                (SELECT cbi2.config_id,cbi2.config_group,cbi2.config_group_id 
+    $query = "SELECT config_id,config_group,config_group_id FROM
+                (SELECT cbi2.config_id,cbi2.config_group,cbi2.config_group_id
                 FROM cfg_centreonbroker_info cbi1, cfg_centreonbroker_info cbi2, cfg_centreonbroker_info cbi3
                 WHERE cbi1.config_id = cbi2.config_id and cbi1.config_group = cbi2.config_group
                 AND cbi2.config_id = cbi3.config_id AND cbi2.config_group = cbi3.config_group AND cbi2.config_group_id = cbi3.config_group_id
@@ -77,9 +75,17 @@ if (isset($pearDB)) {
                 AND cbi1.config_value = cbi2.config_value
                 AND cbi3.config_key='type'
                 AND cbi3.config_value='file'
-                ) as q
-            )";
-    $pearDB->query($query);
+                ) as q";
+    $result = $pearDB->query($query);
+    while ($row = $result->fetchRow()) {
+        if (!is_null($row['config_id']) && !is_null($row['config_group']) && !is_null($row['config_group_id'])) {
+            $query = "DELETE FROM cfg_centreonbroker_info
+                      WHERE config_id = '" . $row['config_id'] . "'
+                      AND config_group = '" . $row['config_group'] . "'
+                      AND config_group_id = '" . $row['config_group_id'] . "'";
+            $pearDB->query($query);
+        }
+    }
 
     # Delete failover names which join to non existing failover
     $query ="UPDATE cfg_centreonbroker_info
