@@ -6,11 +6,6 @@ Upgrade using RPM
 
 The CES v3.3 includes Centreon web 2.7, Centreon Engine 1.5, Centreon Broker 2.11 and are based on CentOS 6 operating system.
 
-.. warning::
-    **This version is not yet supported by Centreon helpdesk!!!**. Do not install
-    this Release Candidate in production. We are not responsible for damages 
-   that may result when used it on a production platform.
-
 Prerequisites
 =============
 

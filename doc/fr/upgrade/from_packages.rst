@@ -7,9 +7,6 @@ Mise à jour RPM
 
 La version 3.3 de CES est l'ensemble Centreon web 2.7, Centreon Engine 1.5, Centreon Broker 2.11 basé sur une distribution CentOS 6. 
 
-.. warning::
-   Attention cette version n'est pas supportée par le support Centreon. Nous vous déconseillons de mettre cette version "Release Candidate" en production. Nous ne sommes pas responsables des dommages que cela pourrait provoquer en cas d'utilisation sur une plateforme de production.
-
 *********
 Prérequis
 *********
@@ -29,7 +26,7 @@ Les prérequis nécessaires au fonctionnement de Centreon 2.7 ont évolué par r
 Vous partez d'un serveur déjà existant : nous vous donnons ici toutes les étapes pour faire une migration sans perte de données.
 
 1. Arrêt des instances de collecte
-====================================
+==================================
 
 Avant de commencer la mise à jour, assurez vous de ne pas avoir de fichier de rétention 
 actif pour Centreon-Broker.
@@ -42,14 +39,14 @@ Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
    # /etc/init.d/cbd stop
 
 2. Mise à jour l’ensemble des paquets
-=======================================
+=====================================
 
    ::
 
    # yum update centreon
 
 3. Redémarrez le serveur Apache 
-=================================
+===============================
 
 Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serveur apache afin de prendre en compte la nouvelle extension.
 
@@ -58,7 +55,7 @@ Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serv
    # /etc/init.d/httpd restart
 
 4. Réalisez la mise à jour Web de Centreon 2.7.0
-==================================================
+================================================
 
 Suivez le wizard de mise à jour Web afin de terminer les mises à jours pour les modifications au niveau de la base SQL soient appliquées. Durant cette phase, un nouveau fichier de configuration va être également créé.
 
@@ -97,12 +94,12 @@ Finalisation
    :align: center
 
 5. Exportez la configuration vers l’ensemble des pollers
-==========================================================
+========================================================
 
 Pour terminer l’installation, il est nécessaire de générer une première fois les configurations de Centreon Engine et Centreon Broker. Pour cela, allez dans Configuration > Poller et cliquer sur l’icone de génération (attention la page de génération a été supprimée).
  
 6. Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des pollers
-=========================================================================================
+=======================================================================================
 
 Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le service en place. Pour ceci, lancez les commandes suivantes : 
 
