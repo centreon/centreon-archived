@@ -134,11 +134,15 @@
         function displayingLevel1(val)
         {
             _o = val;
-            if (_o == 'svcOVSG') {
-                _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceGridBySGXML.php";
+            var sel2 = document.getElementById("typeDisplay2").value;
+            if (sel2 != '') {
+                _o = _o + "_" + sel2;
+            }
+            if (val == 'svcOVSG') {
+                _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/broker/serviceGridBySGXML.php";
                 _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceGridBySG.xsl";
             } else {
-               _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceSummaryBySGXML.php";
+               _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/broker/serviceSummaryBySGXML.php";
                 _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceSummaryBySG.xsl";
             }
             monitoring_refresh();
@@ -150,6 +154,7 @@
             if (val != '') {
                 _o = _o + "_" + val;
             }
+                
             monitoring_refresh();
         }
 	</script>

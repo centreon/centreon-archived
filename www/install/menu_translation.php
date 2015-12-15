@@ -185,4 +185,3 @@ echo _("Web Site");
 echo _("Widgets");
 echo _("Wizard");
 echo _("WizardAjax");
-?>

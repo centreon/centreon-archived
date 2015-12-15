@@ -162,6 +162,7 @@
     $obj->XML->endElement();
 
     /* Construct query for servigroups search */
+    $aTab = array();
     $sg_search = "";
     if ($numRows > 0) {
         $sg_search .= "AND (";
@@ -201,7 +202,6 @@
         $h = "";
         $flag = 0;
         $count = 0;
-        $aTab = array();
     
         while ($tab = $DBRESULT->fetchRow()) {
              
@@ -249,7 +249,7 @@
         }
         
     }
-    
+
     foreach ($aTab as $key => $element) {
         $obj->XML->startElement("sg");
             $obj->XML->writeElement("sgn", $element['sgn']);
