@@ -1,11 +1,11 @@
 .. _install:
 
-##################################################
-Migration from a monitoring platform to Centreonon
-##################################################
+###################################
+Migration from Nagios to Centreonon
+###################################
 
 This chapter describes procedures to migrate from a Nagios based platform to
-a Centreon (CES platform.
+a Centreon (CES) platform.
 
 .. toctree::
    :maxdepth: 1
