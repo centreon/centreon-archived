@@ -10,6 +10,8 @@ L'interface Centreon web est compatible avec les navigateurs web suivants :
 * Safari 6+
 * Opera 31+
 
+Votre résolution doit être au minimum à 1280 x 768.
+
 *********
 Logiciels
 *********

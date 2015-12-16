@@ -69,6 +69,7 @@ Removed Features
 * Transformation of the tactical overview in widget
 * Transformation of the Monitoring Engine statistics Page in widget
 * Deleting the Server Status page (phpsysinfo) become incompatible with the PHP version recommended for Centreon
+* Remove timeperiod exclusions in the UI. This function don't work very fine whether with Centreon Engine 1.x or Nagios. We prefer removing the function in order to avoid problems.
 
 Known Bugs
 ----------
@@ -83,4 +84,4 @@ Known Bugs
 How to Install ?
 ----------------
 
-Now that you are aware about all specifiities of this version, you can install it. If you install from zero your system, please follow the :ref:`installation guide <install>`_. Else you can refer to the `upgrade guide <upgrade>`_. Take care about prerequisits and all upgrade steps in order to avoid data loss.
+Now that you are aware about all specifiities of this version, you can install it. If you install from zero your system, please follow the :ref:`installation guide <install>`. Else you can refer to the :ref:`upgrade guide <upgrade>`. Take care about prerequisits and all upgrade steps in order to avoid data loss.
