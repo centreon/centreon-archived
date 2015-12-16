@@ -145,7 +145,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('tactical_host_limit', '100'),
 ('tactical_service_limit', '100'),
 ('tactical_refresh_interval', '20'), 
-('index_data', '0'), 
+('index_data', '1'), 
 ('interval_length', '60'),
 ('nagios_path_img','@INSTALL_DIR_CENTREON@/www/img/media/');
 
