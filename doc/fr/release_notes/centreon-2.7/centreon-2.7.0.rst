@@ -7,7 +7,7 @@ La version 2.7.0 de Centreon Web est maintenant téléchargeable sur notre `port
 Améliorations et corrections
 ----------------------------
 
-* Changement de la charte graphiques pour être en accord avec le nouveau logo de Centreon
+* Changement de la charte graphique pour être en accord avec le nouveau logo de Centreon
 * Passage en design Flat (CSS + icones)
 * Amélioration de la custom view : 
  * Ajout d'un mode édition ou visualisation
@@ -85,4 +85,4 @@ Comment l'installer ?
 ---------------------
 
 Maintenant que vous avez pris connaissance de toutes spécificités de cette nouvelles version, vous pouvez l'installer. Si vous parter sur une installation depuis zero, reportez vous au :ref:`guide d'installation <install>`. 
-Sinon si vous souhaitez mettre à jour une plateforme existante, veuillez vous référer au :ref:`guide de mise à jour <upgrade>`. Prenez soin de suivre scrupulesement les pré-requis et les étapes de mise à jour afin de ne pas perdre de données durant votre mise à jour. 
+Sinon si vous souhaitez mettre à jour une plateforme existante, veuillez vous référer au :ref:`guide de mise à jour <upgrade>. Prenez soin de suivre scrupulesement les pré-requis et les étapes de mise à jour afin de ne pas perdre de données durant votre mise à jour. 
