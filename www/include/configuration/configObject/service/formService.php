@@ -1016,6 +1016,10 @@ if ($o != "mc") {
     }
 }
 
+if (isset($service['service_template_model_stm_id']) && ($service['service_template_model_stm_id'] === '')) {
+    unset($service['service_template_model_stm_id']);
+}
+
 #
 ##End of form definition
 #

@@ -96,7 +96,7 @@ class MetaService extends AbstractObject {
                 service_id
             FROM service
             WHERE service_register = '2'
-            AND display_name = :meta_name");
+            AND service_description = :meta_name");
         $stmt->bindParam(':meta_name', $meta_name);
         $stmt->execute();
 
@@ -129,7 +129,7 @@ class MetaService extends AbstractObject {
         
     }
     
-    private function getMetaServices() {
+    private function buildCacheMetaServices() {
         $stmt = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
             FROM meta_service
@@ -143,7 +143,7 @@ class MetaService extends AbstractObject {
     }
     
     public function generateObjects() {
-        $this->getMetaServices();
+        $this->buildCacheMetaServices();
         if (count($this->meta_services) == 0) {
             return 0;
         }
@@ -174,7 +174,11 @@ class MetaService extends AbstractObject {
             $this->generateObjectInFile($meta_service, $meta_id);
         }
     }
-    
+
+    public function getMetaServices() {
+        return $this->meta_services;
+    }
+
     public function hasMetaServices() {
         return $this->has_meta_services;
     }
