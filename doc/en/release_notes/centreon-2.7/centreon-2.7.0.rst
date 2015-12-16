@@ -48,7 +48,7 @@ Changes
 * Switching to InnoDB all Centreon tables (except logs and data_bin too big for an automatic update).
 * PHP 5.1 no longer supported
 * Browser compatibility : IE 11, FF 5 et Chrome 39 at least
-* Shared views in custom views are not atomaticaly loaded in views of others users. Now views are able to be public and user can load them during the creation step.@
+* Shared views in custom views are not atomaticaly loaded in views of others users. Now views are able to be public and user can load them during the creation step.
 
 Secutiry fixes
 --------------
@@ -80,4 +80,7 @@ Known Bugs
  * Monitoring > Comments
  * Monitoring > Eventlogs > System logs
 
+How to Install ?
+----------------
 
+Now that you are aware about all specifiities of this version, you can install it. If you install from zero your system, please follow the :ref:`installation guide <install>`_. Else you can refer to the upgrade guide. Take care about prerequisits and all upgrade steps in order to avoid data loss.
