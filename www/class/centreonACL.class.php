@@ -982,7 +982,7 @@ class CentreonACL {
         $this->checkUpdateACL();
         $groupIds = array_keys($this->accessGroups);
         if (!count($groupIds)) {
-            return false;
+            return "''";
         }
         $query = "SELECT DISTINCT host_id "
             . "FROM centreon_acl "
