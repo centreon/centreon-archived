@@ -947,7 +947,8 @@ div.menuLeft {
 }
 
 .formTable .list_lvl_1 .ListColLvl1_name,
-.table .list_lvl_1 .ListColLvl1_name {
+.table .list_lvl_1 .ListColLvl1_name,
+.ListTable .list_lvl_1 .ListColLvl1_name {
     padding: 6px 0;
     background-color: #f4f4f4;
     border-bottom: 1px solid #e7e7e8;
@@ -955,7 +956,8 @@ div.menuLeft {
 }
 
 .formTable .list_lvl_1 h4,
-.table .list_lvl_1 h4 {
+.table .list_lvl_1 h4,
+.ListTable .list_lvl_1 h4{
     font-weight: normal;
     color: #009fdf;
     /*margin-left: 12px;*/

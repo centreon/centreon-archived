@@ -51,7 +51,6 @@ unset($res);
 
 .ListTable a:link, #ListTable a:link			{color:<?php print $color2; ?>;}
 .ListTable a:visited, #ListTable a:visited		{color:<?php print $color2; ?>;}
-.ListTable a:hover, #ListTable a:hover			{color:<?php print $color3; ?>;}
 
 .list_lvl_1{	background-color:<?php print $color4; ?>;}
 .list_lvl_2{	background-color:<?php print $color5; ?>;}
