@@ -85,4 +85,4 @@ Comment l'installer ?
 ---------------------
 
 Maintenant que vous avez pris connaissance de toutes spécificités de cette nouvelles version, vous pouvez l'installer. Si vous parter sur une installation depuis zero, reportez vous au :ref:`guide d'installation <install>`. 
-Sinon si vous souhaitez mettre à jour une plateforme existante, veuillez vous référer au :ref:`guide de mise à jour <upgrade>. Prenez soin de suivre scrupulesement les pré-requis et les étapes de mise à jour afin de ne pas perdre de données durant votre mise à jour. 
+Sinon si vous souhaitez mettre à jour une plateforme existante, veuillez vous référer au :ref:`guide de mise à jour <upgrade>`. Prenez soin de suivre scrupulesement les pré-requis et les étapes de mise à jour afin de ne pas perdre de données durant votre mise à jour. 
