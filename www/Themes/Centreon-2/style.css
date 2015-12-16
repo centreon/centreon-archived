@@ -525,6 +525,8 @@ form#AjaxBankBasic {
 
 /* ------- START : Table ------- */
 
+
+
 .ListTable tr{
 vertical-align: middle;
 }
@@ -1021,6 +1023,30 @@ div.pagination 		{margin-left:40%;}
     //top: 139px;
 }
 
+/* Widget pagination */
+
+.pagination .current {
+    background: #009fdf;
+    color: #fff;
+    border: 1px solid #009fdf;
+}
+
+.pagination a {
+    border: 1px solid #009fdf;
+    color: #009fdf;
+    text-decoration: none;
+}
+
+.pagination a, .pagination span {
+    display: block;
+    float: left;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    padding: 0.3em 0.8em;
+
+    border-radius: 4px;
+}
+
 /* Warning */
 .msg 	{
     background-color: #ffe6ec;
@@ -1334,6 +1360,10 @@ td,a.infobulle:hover td {padding:0px;}
 
 #Tcontener,#Tmainpage,#tabLegend,div.tab,.Tmenu3 .center,.ListTable {width:100%;}
 
+.ListTable {
+    font-size: 11px;
+}
+
 #Tmainpage {
     vertical-align: top;
 }
@@ -1453,7 +1483,7 @@ span.state_badge {
     height: 10px;
     width: 10px;
     display: inline-block;
-    margin-right: 6px;
+    margin-right: 3px;
     border-radius: 2px;
     padding: 0;
 }
