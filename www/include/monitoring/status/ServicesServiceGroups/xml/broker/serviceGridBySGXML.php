@@ -107,18 +107,16 @@
     }
 
     $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
-        . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
-        . $obj->access->getACLHostsTemporaryTableJoin($obj->DBC,"h.host_id") 
-        . "WHERE sg.servicegroup_id = sgm.servicegroup_id AND sgm.host_id = h.host_id AND h.host_id = s.host_id AND s.service_id = sgm.service_id ";
+        . "FROM servicegroups sg "
+        . "INNER JOIN services_servicegroups sgm ON sg.servicegroup_id = sgm.servicegroup_id "
+        . "INNER JOIN services s ON s.service_id = sgm.service_id "
+        . "INNER JOIN  hosts h ON sgm.host_id = h.host_id AND h.host_id = s.host_id "
+        . $obj->access->getACLHostsTableJoin($obj->DBC,"h.host_id") 
+        . $obj->access->getACLServicesTableJoin($obj->DBC,"s.service_id") 
+        . "WHERE 1 = 1  ";
 
     # Servicegroup ACL
     $query .= $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"));
-
-    /* Host ACL */
-    //$query .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC,false));
-
-    /* Service ACL */
-    $query .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC,false));
 
     /* Servicegroup search */    
     if ($sgSearch != ""){
@@ -142,7 +140,7 @@
 
     $query .= "ORDER BY sg.name " . $order . " "
         . "LIMIT " . ($num * $limit) . "," . $limit;
-
+    
     $DBRESULT = $obj->DBC->query($query);
 
     $numRows = $obj->DBC->numberRows();
