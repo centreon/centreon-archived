@@ -855,27 +855,6 @@ class CentreonACL {
         return $hosts;
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     private static function generateRandomString($length = 10) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
@@ -898,7 +877,7 @@ class CentreonACL {
         $queryInsert .= ') VALUES ('.$queryValues.');';
 
         $db->autoCommit(false);
-        $stmt = $db->autoPrepare($queryInsert);
+        $stmt = $db->prepare($queryInsert);
         $arrayValues = array();
         foreach($rows as $row){
             $arrayValue = array();
@@ -982,7 +961,7 @@ class CentreonACL {
         $this->checkUpdateACL();
         $groupIds = array_keys($this->accessGroups);
         if (!count($groupIds)) {
-            return false;
+            return "''";
         }
         $query = "SELECT DISTINCT host_id "
             . "FROM centreon_acl "
@@ -996,6 +975,48 @@ class CentreonACL {
         $join = ' INNER JOIN '.$tableName.' ON '.$tableName.'.host_id = '.$fieldToJoin.' ';
         return $join;
     }
+    
+    public function getACLServicesTemporaryTableJoin($db, $fieldToJoin, $force = false){
+        $this->checkUpdateACL();
+        $groupIds = array_keys($this->accessGroups);
+        if (!count($groupIds)) {
+            return false;
+        }
+        $query = "SELECT DISTINCT service_id "
+            . "FROM centreon_acl "
+            . "WHERE group_id IN (" . implode(',', $groupIds) . ") ";
+        $DBRES = $db->query($query);
+        $rows = array();
+        while ($row = $DBRES->fetchRow()) {
+            $rows[] = $row;
+        }
+        $tableName = $this->getACLTemporaryTable('services', $db, $rows, 'centreon_acl', $force);
+        $join = ' INNER JOIN '.$tableName.' ON '.$tableName.'.service_id = '.$fieldToJoin.' ';
+        return $join;
+    }
+    
+    public function getACLHostsTableJoin($db, $fieldToJoin, $force = false){
+        $this->checkUpdateACL();
+        $groupIds = array_keys($this->accessGroups);
+        if (!count($groupIds)) {
+            return "";
+        }
+        $tempTableName = 'centreon_acl_'.self::generateRandomString(5);
+        $join = ' INNER JOIN centreon_acl '.$tempTableName.' ON '.$tempTableName.'.host_id = '.$fieldToJoin.' and '.$tempTableName.'.group_id IN ('.implode(",", $groupIds).') ';
+        return $join;
+    }
+    
+    public function getACLServicesTableJoin($db, $fieldToJoin, $force = false){
+        $this->checkUpdateACL();
+        $groupIds = array_keys($this->accessGroups);
+        if (!count($groupIds)) {
+            return "";
+        }
+        $tempTableName = 'centreon_acl_'.self::generateRandomString(5);
+        $join = ' INNER JOIN centreon_acl '.$tempTableName.' ON '.$tempTableName.'.service_id = '.$fieldToJoin.' and '.$tempTableName.'.group_id IN ('.implode(",", $groupIds).') ';
+        return $join;
+    }
+    
 
     /*
      *  Hosts string Getter

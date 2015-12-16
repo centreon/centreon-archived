@@ -185,21 +185,21 @@ var _criticality_id = 0;
 		if (document.getElementById("host_search") && document.getElementById("host_search").value) {
 			_host_search = document.getElementById("host_search").value;
 			viewDebugInfo('host search: '+document.getElementById("host_search").value);
-		} else if (document.getElementById("host_search").lenght == 0) {
+		} else if (document.getElementById("host_search").length == 0) {
 			_host_search = "";
 		}
 
 		if (document.getElementById("output_search") && document.getElementById("output_search").value) {
 			_output_search = document.getElementById("output_search").value;
 			viewDebugInfo('Output search: '+document.getElementById("output_search").value);
-		} else if (document.getElementById("output_search").lenght == 0) {
+		} else if (document.getElementById("output_search").length == 0) {
 			_output_search = "";
 		}
 
 		if (document.getElementById("input_search") && document.getElementById("input_search").value) {
 			_search = document.getElementById("input_search").value;
 			viewDebugInfo('service search: '+document.getElementById("input_search").value);
-		} else if (document.getElementById("input_search").lenght == 0) {
+		} else if (document.getElementById("input_search").length == 0) {
 			_search = "";
 		}
         
