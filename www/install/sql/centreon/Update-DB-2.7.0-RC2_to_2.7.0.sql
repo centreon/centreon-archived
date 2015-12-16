@@ -14,5 +14,8 @@ UPDATE `topology` SET `topology_url_opt` = NULL WHERE `topology_page` = '20201' 
 
 DELETE FROM `topology` WHERE `topology_page` = '60807' AND topology_id in (SELECT * FROM (SELECT topology_id FROM `topology` WHERE `topology_page` = '60807' LIMIT 1, 100) as t);
 
+-- Force index data generation
+UPDATE options SET value = '1' WHERE `key` LIKE 'index_data';
+
 -- Add Filter for Service Grid in Topology
 UPDATE topology SET topology_url_opt = '&o=svcOV_pb' WHERE topology_page = 20204;
