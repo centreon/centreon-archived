@@ -31,15 +31,14 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
-	if (!isset($oreon))
-		exit();
 
-	$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
-	$release = $DBRESULT->fetchRow();
+if (!isset($centreon)) {
+	exit();
+}
+
+$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+$release = $DBRESULT->fetchRow();
 
 ?><center>
 	<div style="width:700px;padding:20px;border:1px #CDCDCD solid;">
@@ -86,7 +85,6 @@
 						<p>Sylvestre Ho</p>
 						<p>Matthieu Kermagoret</p>
 						<p>Antoine Nguyen</p>
-						<p>Antoine Nguyen</p>
 						<p>Laurent Pinsivy</p>
 						<p>David Porte</p>
 						<p>Mathavarajan Sugumaran</p>
@@ -110,20 +108,32 @@
 								<td>Gaetan Lucas de Couville</td>
 							</tr>
 							<tr>
+								<td>Sebastien Boulianne</td>
+								<td>Bertrand Cournaud</td>
+							</tr>
+							<tr>
 								<td>Vincent Carpentier</td>
 								<td>Christoph Ziemann</td>
 							</tr>
 							<tr>
-								<td>Jean Marc Grisar</td>
-								<td>Florin Grosu</td>
+								<td>Mathieu Chateau</td>
+								<td>Eric Coquard</td>
 							</tr>
 							<tr>
 								<td>Luiz Gustavo Costa</td>
-								<td>guigui2607</td>
+								<td>Guillaume HALBITTE</td>
 							</tr>
 							<tr>
 								<td>Thomas Fisher</td>
-								<td>Jean Gabes</td>
+								<td>Loïc Fontaine</td>
+							</tr>
+							<tr>
+								<td>Jean Gabès</td>
+								<td>Claire Gizard</td>
+							</tr>
+							<tr>
+								<td>Jean Marc Grisar</td>
+								<td>Florin Grosu</td>
 							</tr>
 							<tr>
 								<td>Jay Lopez</td>
@@ -146,16 +156,16 @@
 								<td>Patrick Proy</td>
 							</tr>
 							<tr>
+								<td>Matthieu Robin</td>
 								<td>Joerg Steinlechner</td>
+							</tr>
+							<tr>
 								<td>Silvio Rodrigo Damasceno de Souza</td>
-							</tr>
-							<tr>
 								<td>Thierry Van Acker</td>
-								<td>Felix Zingel</td>
 							</tr>
 							<tr>
+								<td>Felix Zingel</td>
 								<td>Massimiliano Ziccardi</td>
-								<td></td>
 							</tr>
 							<tr>
 								<td colspan="2">
