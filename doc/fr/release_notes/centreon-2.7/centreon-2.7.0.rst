@@ -11,14 +11,14 @@ Améliorations et corrections
 * Passage en design Flat (CSS + icones)
 * Amélioration de la custom view : 
  * Ajout d'un mode édition ou visualisation
- * Alégement graphique des widgets afin de pouvoir en mettre plus sur une page
+ * Alègement graphique des widgets afin de pouvoir en mettre plus sur une page
 * Ajout d'un mode plein écran
 * Revue des menus pour une amélioration de la navigation et une simplification des actions utilisateurs
 * Refonte des pages dédiées hôtes et services dans le monitoring pour y intégrer plus d'informations
 * Refonte graphique de la page de reporting
 * Refonte des barres de recherches et des filtres dans chaque page de Centreon
-* Refonte de la page des logs (suppresion de la treeview + Ajout d'un système de recherche + Amélioration des performances)
-* Refonte de la page des graphiques (suppresion de la treeview + Ajout d'un système de recherche + ajout d'une pagination)
+* Refonte de la page des logs (suppression de la treeview + Ajout d'un système de recherche + Amélioration des performances)
+* Refonte de la page des graphiques (suppression de la treeview + Ajout d'un système de recherche + ajout d'une pagination)
 * Fusion des pages de downtimes pour les hôtes et les services
 * Fusion des pages de commentaires pour les hôtes et les services
 * Intégration d'un module graphique pour remplacer un composant QuickForm non performant (amélioration des formulaires sur la multiselection d'éléments)
@@ -34,7 +34,7 @@ Améliorations et corrections
 * Amélioration du système des ACL (Gain de performance)
 * Intégration de Centreon CLAPI de manière native
 * Amélioration de la documentaton : 
- * refonte la partie exploitation 
+ * refonte de la partie exploitation 
  * refonte de la partie user
  * intégration d'une partie API
 
@@ -54,7 +54,7 @@ Corrections de sécurité
 -----------------------
 
 * Suppression des sessionID PHP dans les url des flux Ajax de certaines pages. 
-* Intégration d'un tocken CSRF dans tous les formulaires afin d'éviter un effe "Man in the middle".
+* Intégration d'un tocken CSRF dans tous les formulaires afin d'éviter un effet "Man in the middle".
 
 Fonctions supprimées
 --------------------
@@ -66,10 +66,10 @@ Fonctions supprimées
 * Suppression des choix des couleurs pour les menus
 * Suppression des choix des couleurs pour les statuts du monitoring
 * Suppression de la possibilité de configurer les CGI de Nagios
-* Transformation de la tactical overview en widget
+* Transformation de la "tactical overview" en widget
 * Transformation de la page des statuts des pollers en widget
 * Suppression de la page de statut du serveur (PHPSysInfo) devenu non compatible avec la version cible de PHP conseillée pour Centreon
-* Suppression des exclusions au niveau des timeperiods (les exclusions n'ont jamais bien fonctionné avec Centreon Engine 1.x et Nagios 3.x). Nous préférons ne pas laisser cette fonction dans l'interface. 
+* Suppression des exclusions au niveau des "timeperiods" (les exclusions n'ont jamais "bien" fonctionné avec Centreon Engine 1.x et Nagios 3.x). Nous préférons ne pas laisser cette fonction dans l'interface. 
 
 Problèmes connus
 ----------------
@@ -85,4 +85,4 @@ Comment l'installer ?
 ---------------------
 
 Maintenant que vous avez pris connaissance de toutes spécificités de cette nouvelles version, vous pouvez l'installer. Si vous parter sur une installation depuis zero, reportez vous au :ref:`guide d'installation <install>`. 
-Sinon si vous souhaitez mettre à jour une plateforme existante, veuillez vous référer au :ref:`guide de mise à jour <upgrade>. Prenez soin de suivre scrupulesement les pré-requis et les étapes de mise à jour afin de ne pas perdre de données durant votre mise à jour. 
+Sinon si vous souhaitez mettre à jour une plateforme existante, veuillez vous référer au :ref:`guide de mise à jour <upgrade>`. Prenez soin de suivre scrupulesement les pré-requis et les étapes de mise à jour afin de ne pas perdre de données durant votre mise à jour. 
