@@ -1,3 +1,5 @@
+.. _architectures:
+
 =======================
 Architectures possibles
 =======================
