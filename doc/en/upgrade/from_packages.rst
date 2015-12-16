@@ -11,15 +11,40 @@ Prerequisites
 
 The prerequisites for Centreon web 2.7 are evolved. It is strongly recommended 
 to follow the instructions to set up your platform:
-* Apache = 2.2
-* Centreon Engine >= 1.5.0
-* Centreon Broker >= 2.11.0
-* CentOS = 6.x ou RedHat >= 6.x
-* MariaDB = 5.5.35 ou MySQL = 5.1.73
-* Net-SNMP = 5.5
-* PHP >= 5.3.0
-* Qt = 4.7.4
-* RRDtools = 1.4.7
+**Centreon advises you to use MariaDB** instead of MySQL. 
+
++----------+-----------+
+| Software | Version   |
++==========+===========+ 
+| MariaDB  | >= 5.5.35 |
++----------+-----------+
+| MySQL    | >= 5.1.73 |
++----------+-----------+
+
+Dependent software
+==================
+
+The following table describes the dependent software:
+
++----------+-----------+
+| Software | Version   |
++==========+===========+
+| Apache   | 2.2       |
++----------+-----------+
+| GnuTLS   | >= 2.0    |
++----------+-----------+
+| Net-SNMP | 5.5       |
++----------+-----------+
+| openssl  | >= 1.0.1e |
++----------+-----------+
+| PHP      | >= 5.3.0  |
++----------+-----------+
+| Qt       | >= 4.7.4  |
++----------+-----------+
+| RRDtools | 1.4.7     |
++----------+-----------+
+| zlib     | 1.2.3     |
++----------+-----------+
 
 *******
 Upgrade

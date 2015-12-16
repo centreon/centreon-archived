@@ -69,7 +69,7 @@ Removed Features
 * Transformation of the tactical overview in widget
 * Transformation of the Monitoring Engine statistics Page in widget
 * Deleting the Server Status page (phpsysinfo) become incompatible with the PHP version recommended for Centreon
-* Remove timeperiods exclusion in the UI. This function don't work very fine whether with Centreon Engine 1.x or Nagios. We prefer removing the function in order to avoid problems.
+* Remove timeperiod exclusions in the UI. This function don't work very fine whether with Centreon Engine 1.x or Nagios. We prefer removing the function in order to avoid problems.
 
 Known Bugs
 ----------
