@@ -56,7 +56,7 @@ if ($handle = opendir($varPath)) {
     closedir($handle);
 }
 
-$selectedEngine = "";
+$selectedEngine = "centreon-engine";
 if (isset($_SESSION['MONITORING_ENGINE'])) {
     $selectedEngine = $_SESSION['MONITORING_ENGINE'];
 }

@@ -55,7 +55,7 @@ if ($handle = opendir('../var/brokers')) {
     closedir($handle);
 }
 
-$selectedBroker = "";;
+$selectedBroker = "centreon-broker";;
 if (isset($_SESSION['BROKER_MODULE'])) {
     $selectedBroker = $_SESSION['BROKER_MODULE'];
 }
