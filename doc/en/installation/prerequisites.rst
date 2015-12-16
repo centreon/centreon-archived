@@ -10,6 +10,8 @@ The Centreon web interface is compatible with the following list of web broswer:
 * Safari 6+
 * Opera 31+ 
 
+Your screen resolution must be at least 1280 x 768.
+
 *********
 Softwares
 *********
