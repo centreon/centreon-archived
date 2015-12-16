@@ -151,6 +151,7 @@ if ($continue) {
             require_once($svc_path . "serviceGrid.php");
             break;
         case "svcOV" :
+        case "svcOV_pb" :
             require_once($svc_path . "serviceGrid.php");
             break;
         case "svcSum" :
