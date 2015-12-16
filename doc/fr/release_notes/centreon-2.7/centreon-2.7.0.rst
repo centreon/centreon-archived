@@ -48,6 +48,7 @@ Changements
 * Passage en InnoDB de toutes les tables de Centreon (sauf data_bin et logs du fait de leur taille qui peut demander trop de temps de changement - Action Manuelle à faire suite à la migration).
 * PHP 5.1 non supporté
 * Compatibilité Browser IE 11, FF 5 et Chrome 39 minimum
+* Les vues partagées la partie "custom views" ne sont plus automatiquement ajoutées dans les vues de utilisateurs. C'est aux utilisateurs de les charger lors de la création d'une vue à partir d'une liste de vues rendues publiques.
 
 Corrections de sécurité
 -----------------------

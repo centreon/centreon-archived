@@ -48,6 +48,7 @@ Changes
 * Switching to InnoDB all Centreon tables (except logs and data_bin too big for an automatic update).
 * PHP 5.1 no longer supported
 * Browser compatibility : IE 11, FF 5 et Chrome 39 at least
+* Shared views in custom views are not atomaticaly loaded in views of others users. Now views are able to be public and user can load them during the creation step.@
 
 Secutiry fixes
 --------------
