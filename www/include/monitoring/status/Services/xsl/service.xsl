@@ -47,18 +47,18 @@
 				</xsl:attribute>
 			</xsl:element>
 		</td>
-                <xsl:if test = "//i/use_criticality = 1">
-                    <td class="ListColCenter">
-                    <xsl:if test = "hci = 1">
-                        <xsl:element name="img">
-                            <xsl:attribute name="src">img/media/<xsl:value-of select="ci"/></xsl:attribute>
-                            <xsl:attribute name="width">16</xsl:attribute>
-                            <xsl:attribute name="height">16</xsl:attribute>
-                            <xsl:attribute name="title"><xsl:value-of select='cih'/></xsl:attribute>
-                        </xsl:element>
-                    </xsl:if>                
-                    </td>
-                </xsl:if>
+        <xsl:if test = "//i/use_criticality = 1">
+            <td class="ListColCenter">
+            <xsl:if test = "hci = 1">
+                <xsl:element name="img">
+                    <xsl:attribute name="src">img/media/<xsl:value-of select="ci"/></xsl:attribute>
+                    <xsl:attribute name="width">16</xsl:attribute>
+                    <xsl:attribute name="height">16</xsl:attribute>
+                    <xsl:attribute name="title"><xsl:value-of select='cih'/></xsl:attribute>
+                </xsl:element>
+            </xsl:if>                
+            </td>
+        </xsl:if>
 		<td class="ListColLeft" style="white-space:nowrap;">
 			<xsl:if test="hn/@none = 0">
 				<xsl:if test="hnu != 'none'">
@@ -160,6 +160,7 @@
 							<xsl:attribute name="width">16</xsl:attribute>
 							<xsl:attribute name="height">16</xsl:attribute>
 							<xsl:attribute name="style">vertical-align:middle;</xsl:attribute>
+							<xsl:attribute name="class">margin_right</xsl:attribute>
 						</xsl:element>
 					</xsl:if>
                 <xsl:element name="a">
