@@ -79,13 +79,16 @@ Le tableau suivant présente les prérequis pour une installation de CES v3.x :
 +----------------------+-----------------------------+---------------------------+----------------+---------------+
 |     10000 - 20000    |         1000 - 2000         | 1 central + 1 collecteur  |  4 vCPU / 8 GB | 2 vCPU / 2 GB |
 +----------------------+-----------------------------+---------------------------+----------------+---------------+
-|     20000 - 50000    |         2000 - 5000         | 1 central + 2 collecteurs | 4 vCPU / 8 GB  | 4 vCPU / 2 GB |
+|     20000 - 50000    |         2000 - 5000         | 1 central + 2 collecteurs |  4 vCPU / 8 GB | 4 vCPU / 2 GB |
 +----------------------+-----------------------------+---------------------------+----------------+---------------+
-|     50000 - 100000   |         5000 - 10000        | 1 central + 3 collecteurs | 4 vCPU / 8 GB  | 4 vCPU / 2 GB |
+|     50000 - 100000   |         5000 - 10000        | 1 central + 3 collecteurs |  4 vCPU / 8 GB | 4 vCPU / 2 GB |
 +----------------------+-----------------------------+---------------------------+----------------+---------------+
 
 .. note::
     Les vCPU doivent avoir une fréquence avoisinant les 3 GHz
+
+Ces informations sont à mettre en corrélation avec vos besoins techniques liés au découpage géographique ou topologiques. Pour voir ce qu'il est possible de faire avec centreon à ce sujet, reportez vous au chapitre :ref:`Architectures possibles <architectures>`.
+
 
 *****************************
 Définition de l'espace disque

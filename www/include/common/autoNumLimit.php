@@ -54,13 +54,14 @@ if (isset($_POST["limit"]) && $_POST["limit"]) {
 		$limit = myDecode($gopt["value"]);
 	}
 }
-
-if (isset($_POST["num"]) && $_POST["num"]) {
+if ($limit != $oreon->historyLimit[$url]) {
+    $num = 0;
+} else if (isset($_POST["num"]) && $_POST["num"]) {
 	$num = $_POST["num"];
 } else if (isset($_GET["num"]) && $_GET["num"]) {
 	$num = $_GET["num"];
-} else if (!isset($_POST["num"]) && !isset($_GET["num"]) && isset($oreon->historyPage[$url])){ 
-	$num = $oreon->historyPage[$url];
+} else if (!isset($_POST["num"]) && !isset($_GET["num"]) && isset($oreon->historyPage[$url])) {
+    $num = $oreon->historyPage[$url];
 } else {
 	$num = 0;
 } 
