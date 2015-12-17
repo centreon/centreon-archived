@@ -92,45 +92,44 @@
 
     $s_search = "";
     /* Display service problems */
-    if ($o == "svcSumSG_pb" || $o == "svcOVSG_pb") {
+    if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb") {
         $s_search .= " AND s.state != 0 AND s.state != 4 " ;
     }
 
     /* Display acknowledged services */
-    if ($o == "svcSumSG_ack_1" || $o == "svcOVSG_ack_1") {
+    if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
         $s_search .= " AND s.acknowledged = '1' ";
     }
 
     /* Display not acknowledged services */
-    if ($o == "svcSumSG_ack_0" || $o == "svcOVSG_ack_0") {
+    if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
         $s_search .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0 " ;
     }
 
     $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
-        . "FROM servicegroups sg, services_servicegroups sgm, hosts h, services s "
-        . "WHERE sg.servicegroup_id = sgm.servicegroup_id AND sgm.host_id = h.host_id AND h.host_id = s.host_id AND s.service_id = sgm.service_id ";
+        . "FROM servicegroups sg "
+        . "INNER JOIN services_servicegroups sgm ON sg.servicegroup_id = sgm.servicegroup_id "
+        . "INNER JOIN services s ON s.service_id = sgm.service_id "
+        . "INNER JOIN  hosts h ON sgm.host_id = h.host_id AND h.host_id = s.host_id "
+        . $obj->access->getACLHostsTableJoin($obj->DBC,"h.host_id") 
+        . $obj->access->getACLServicesTableJoin($obj->DBC,"s.service_id") 
+        . "WHERE 1 = 1  ";
 
     # Servicegroup ACL
     $query .= $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"));
 
-    /* Host ACL */
-    $query .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
-
-    /* Service ACL */
-    $query .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
-
-    /* Servicegroup search */
+    /* Servicegroup search */    
     if ($sgSearch != ""){
         $query .= "AND sg.name = '" . $sgSearch . "' ";
     }
-
+    
     /* Host search */
     $h_search = '';
     if ($hSearch != ""){
         $h_search .= "AND h.name like '%" . $hSearch . "%' ";
     }
     $query .= $h_search;
-    
+
     /* Service search */
     $query .= $s_search;
 
@@ -138,7 +137,7 @@
     if ($instance != -1) {
         $query .= " AND h.instance_id = " . $instance . " ";
     }
-    
+
     $query .= "ORDER BY sg.name " . $order . " "
         . "LIMIT " . ($num * $limit) . "," . $limit;
     
