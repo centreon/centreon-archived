@@ -80,6 +80,13 @@ Problèmes connus
  * Monitoring > Downtimes
  * Monitoring > Comments
  * Monitoring > Eventlogs > System logs
+* Le système de split des graphiques de performance ne fonctionne pas.
+* La pagination peut ne pas fonctionner sur l'ensemble de l'application si nous nous baladons dans les x pages de la liste puis selectionnons la valeur maximum dans le selecteur du nombre de ligne. Cela provoque alors une page vide.
+* Un problème lors de la migration bloque le système d'upgrade SQL : si des timeperiods ont été configurée dans le passé dans le système d'exclusion ou d'inclusion et ensuite supprimée, elle reste dans la base de données. Cela créé alors un blocage lors d'un ajout de contrainte sur une table MySQL.
+  ::
+
+  mysql> DELETE FROM timeperiod_exclude_relations WHERE timeperiod_id NOT IN (SELECT tp_id FROM timeperiod) OR timeperiod_exclude_id NOT IN (SELECT tp_id FROM timeperiod);
+
 
 Comment l'installer ?
 ---------------------

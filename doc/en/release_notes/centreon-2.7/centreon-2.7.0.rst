@@ -80,6 +80,14 @@ Known Bugs
  * Monitoring > Downtimes
  * Monitoring > Comments
  * Monitoring > Eventlogs > System logs
+* Graph slip not working
+* Pagination is broker when you go on the last page, change the number of line to the Max. Page become empty.
+* If you have timeperiods used in exception or inclusion of timeperiod and now deleted, their ids stays in the database in relation table. During the sql update process, this blocks an addition of constraint on this relation table. To fix it, you have to remove old timeperiod id.
+  ::
+
+  mysql> DELETE FROM timeperiod_exclude_relations WHERE timeperiod_id NOT IN (SELECT tp_id FROM timeperiod) OR timeperiod_exclude_id NOT IN (SELECT tp_id FROM timeperiod);
+  mysql> DELETE FROM timeperiod_include_relations WHERE timeperiod_id NOT IN (SELECT tp_id FROM timeperiod) OR timeperiod_exclude_id NOT IN (SELECT tp_id FROM timeperiod);
+
 
 How to Install ?
 ----------------
