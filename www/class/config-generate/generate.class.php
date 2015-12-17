@@ -100,13 +100,13 @@ class Generate {
             
             # Meta services
             if ($localhost == 1) {
-                $meta_services = &MetaService::getInstance()->getGeneratedServices();
+                $meta_services = &MetaService::getInstance()->getMetaServices();
                 $host_id = MetaHost::getInstance()->getHostIdByHostName('_Module_Meta');
-                foreach ($meta_services as $meta_id) {
+                foreach ($meta_services as $meta_id => $meta_service) {
                     $stmt->bindValue(':host_name', '_Module_Meta', PDO::PARAM_STR);
-                    $stmt->bindValue(':service_description', '_meta_' . $meta_id, PDO::PARAM_STR);
+                    $stmt->bindValue(':service_description', 'meta_' . $meta_id, PDO::PARAM_STR);
                     $stmt->bindParam(':host_id', $host_id, PDO::PARAM_INT);
-                    $stmt->bindParam(':service_id', $meta_id, PDO::PARAM_INT);
+                    $stmt->bindParam(':service_id', $meta_service['service_id'], PDO::PARAM_INT);
                     $stmt->execute();
                 }
             }
