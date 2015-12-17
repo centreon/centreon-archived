@@ -274,7 +274,7 @@ if ($o == "w") {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
  }
-
+$valid = false;
 if ($form->validate())	{
     $groupObj = $form->getElement('acl_group_id');
     if ($form->getSubmitValue("submitA")) {
@@ -283,10 +283,11 @@ if ($form->validate())	{
         updateGroupInDB($groupObj->getValue());
     }
     $o = NULL;
+    $valid = true;
  }
 
 $action = $form->getSubmitValue("action");
-if ($action["action"]) {
+if ($valid) {
     require_once($path."listGroupConfig.php");
 } else {
      /*

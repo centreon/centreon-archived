@@ -591,7 +591,7 @@ class CentreonACL {
                     $hostgroups .= "'" . addslashes($this->hostGroupsAlias[$key]) . "',";
                     break;
                 case "ID" : 
-                    $hostgroups .= $value . ",";
+                    $hostgroups .= $key . ",";
                     break;
                 default :
                     $hostgroups .= "'" . $key . "',";
