@@ -495,16 +495,6 @@ $host_search_sql = "";
 if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     if($engine == "false") {
         $req .= " AND `msg_type` NOT IN ('4','5') ";
-        /*if (!$is_admin && !$filters) {
-            if (!$filters) {
-                $req .= " AND ( ";
-                $req .= " (host_id IN (" . $access->getHostsString(null, $pearDBO) . ") AND service_id IS NULL) ";
-                $req .= " OR (host_id IN (" . $access->getHostsString(null, $pearDBO) . ") AND service_id IN (" . $access->getServicesString(null, $pearDBO) . ")) ";
-                $req .= " ) ";
-            } else if ($filters) {
-                $req .= " AND 1 = 0 ";
-            }
-        }*/
     }
 } else {
     foreach ($tab_host_ids as $host_id ) {
