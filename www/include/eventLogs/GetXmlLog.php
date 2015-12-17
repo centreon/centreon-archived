@@ -480,7 +480,11 @@ foreach ($tab_id as $openid) {
 }
 
 // Build final request
-$req = "SELECT SQL_CALC_FOUND_ROWS * FROM logs ".$innerJoinEngineLog." WHERE ctime > '$start' AND ctime <= '$end' $whereOutput $msg_req";
+$req = "SELECT SQL_CALC_FOUND_ROWS * FROM logs ".$innerJoinEngineLog.
+    ((!$is_admin) ? 
+     " inner join centreon_acl acl on ((logs.host_id = acl.host_id AND logs.service_id IS NULL) OR "
+    . " (logs.host_id = acl.host_id AND acl.service_id = logs.service_id))" : "") 
+    . " WHERE ctime > '$start' AND ctime <= '$end' $whereOutput $msg_req";
 
 /*
  * Add Host
@@ -491,7 +495,7 @@ $host_search_sql = "";
 if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     if($engine == "false") {
         $req .= " AND `msg_type` NOT IN ('4','5') ";
-        if (!$is_admin && !$filters) {
+        /*if (!$is_admin && !$filters) {
             if (!$filters) {
                 $req .= " AND ( ";
                 $req .= " (host_id IN (" . $access->getHostsString(null, $pearDBO) . ") AND service_id IS NULL) ";
@@ -500,7 +504,7 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
             } else if ($filters) {
                 $req .= " AND 1 = 0 ";
             }
-        }
+        }*/
     }
 } else {
     foreach ($tab_host_ids as $host_id ) {
