@@ -121,7 +121,7 @@ $release = $DBRESULT->fetchRow();
 							</tr>
 							<tr>
 								<td>Luiz Gustavo Costa</td>
-								<td>Guillaume HALBITTE</td>
+								<td>Guillaume Halbitte</td>
 							</tr>
 							<tr>
 								<td>Thomas Fisher</td>
