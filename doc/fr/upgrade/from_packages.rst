@@ -41,9 +41,22 @@ Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
 2. Mise à jour l’ensemble des paquets
 =====================================
 
+Pour installer la nouvelle version de centreon depuis une CES 3.2, lancez la commande suivante : 
+
    ::
 
    # yum update centreon
+
+.. warning::
+   Si vous rencontrez des problèmes de dépendances avec le package centreon-engine-webservices, merci de le supprimer car il est maintenant obsolète. Lancez la commande suivante :  
+   # yum remove centreon-engine-webservices
+
+Si vous venez de la version 2.7.0-RC2 de Centreon, pour contourner le problème de nom des RPM qui vous provoque des problème de dépendances RPM, tappez la commande suivante : 
+
+  ::
+
+  # yum downgrade centreon-2.7.0 centreon-plugins-2.7.0 centreon-base-config-centreon-engine-2.7.0 centreon-plugin-meta-2.7.0 centreon-common-2.7.0 centreon-web-2.7.0 centreon-trap-2.7.0 centreon-perl-libs-2.7.0
+
 
 3. Redémarrez le serveur Apache 
 ===============================
