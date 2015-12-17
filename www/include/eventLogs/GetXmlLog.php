@@ -480,11 +480,11 @@ foreach ($tab_id as $openid) {
 }
 
 // Build final request
-$req = "SELECT SQL_CALC_FOUND_ROWS * FROM logs ".$innerJoinEngineLog.
+$req = "SELECT SQL_CALC_FOUND_ROWS logs.* FROM logs ".$innerJoinEngineLog.
     ((!$is_admin) ? 
      " inner join centreon_acl acl on ((logs.host_id = acl.host_id AND logs.service_id IS NULL) OR "
     . " (logs.host_id = acl.host_id AND acl.service_id = logs.service_id))" : "") 
-    . " WHERE ctime > '$start' AND ctime <= '$end' $whereOutput $msg_req";
+    . " WHERE logs.ctime > '$start' AND logs.ctime <= '$end' $whereOutput $msg_req";
 
 /*
  * Add Host
@@ -506,9 +506,9 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     }
     if ($str_unitH != "") {
 
-        $str_unitH = "(host_id IN ($str_unitH) AND service_id IS NULL)";
+        $str_unitH = "(logs.host_id IN ($str_unitH) AND logs.service_id IS NULL)";
         if (isset($search_host) && $search_host != "") {
-            $host_search_sql = " AND host_name LIKE '%".$pearDBO->escape($search_host)."%' ";
+            $host_search_sql = " AND logs.host_name LIKE '%".$pearDBO->escape($search_host)."%' ";
         }
     }
     
@@ -530,12 +530,12 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
                 }
             }
             if ($str != "") {
-                $str_unitSVC .= $req_append . " (host_id = '".$host_id."' AND service_id IN ($str)) ";
+                $str_unitSVC .= $req_append . " (logs.host_id = '".$host_id."' AND logs.service_id IN ($str)) ";
                 $req_append = " OR";
             }
         }
         if (isset($search_service) && $search_service != "") {
-            $service_search_sql = " AND service_description LIKE '%".$pearDBO->escape($search_service)."%' ";
+            $service_search_sql = " AND logs.service_description LIKE '%".$pearDBO->escape($search_service)."%' ";
         }
         if ($str_unitH != "" && $str_unitSVC != "") {
             $str_unitSVC = " OR " . $str_unitSVC;
