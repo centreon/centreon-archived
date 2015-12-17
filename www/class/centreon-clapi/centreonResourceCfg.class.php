@@ -192,6 +192,51 @@ class CentreonResourceCfg extends CentreonObject {
             parent::setparam($objectId, $updateParams);
         }
     }
+    
+    /**
+     * Add poller to cfg file
+     *
+     * @param string $parameters
+     * @return void
+     * @throws Exception
+     */
+    public function addPoller($parameters){
+        $params = explode($this->delim, $parameters);
+        if (count($params) < self::NB_UPDATE_PARAMS) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+
+        if (is_numeric($params[0])) {
+            $objectId = $params[0];
+        } else {
+            $object = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($params[0]));
+            if (isset($object[0][$this->object->getPrimaryKey()])) {
+                $objectId = $object[0][$this->object->getPrimaryKey()];
+            } else {
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0]);
+            }
+        }
+        if ($params[1] == "instance") {
+            $instanceNames = explode("|", $params[2]);
+            $instanceIds = array();
+            foreach ($instanceNames as $instanceName) {
+                $instanceId = $this->instanceObj->getInstanceId($instanceName);
+                $stmt = $this->db->query("SELECT instance_id
+                      FROM cfg_resource_instance_relations
+                      WHERE instance_id = ?
+                      AND resource_id = ?",array($instanceId,$objectId));
+                $results = $stmt->fetchAll();
+                $oldInstanceIds = array();
+                foreach($results as $result){
+                    $oldInstanceIds[] = $result['instance_id'];
+                }
+                if(!in_array($instanceId,$oldInstanceIds)){
+                    $instanceIds[] = $instanceId;
+                }
+            }
+            $this->addRelations($objectId, $instanceIds);
+        }
+    }
 
     /**
      * Del Action
