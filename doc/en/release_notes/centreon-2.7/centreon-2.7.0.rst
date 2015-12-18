@@ -14,7 +14,7 @@ Features and Bug Fixes
  * Graphic widgets relief to be able to put more on a page
 * Adding a fullscreen mode
 * Menu Review for improved navigation and simplified user actions
-* Review og pages dedicated hosts and services pages in monitoring to include to include more informations.
+* Review og pages dedicated hosts and services pages in monitoring to include more informations.
 * Redesign of the reporting page
 * Recasting bar searches and filters in each page of Centreon
 * Redesign Event Logs page (removing treeview + Added search system + Improved performances)
@@ -23,7 +23,7 @@ Features and Bug Fixes
 * Merging comments pages for hosts and services
 * Integration of a graphics module to replace a non-performing component QuickForm (Improved forms on multi element selection)
 * Simplifying the configuration of Centreon Broker (Temporary and Failover are automatically configured + enhanced best practices)
-* Ergonomic improvement of the congigurations objects:
+* Ergonomic improvement of the configurations objects:
  * Improved hosts form
  * Improved services form
  * Improved management macros: dynamic form system that provides the necessary inherited macros templates for proper operation of the configuration
@@ -48,7 +48,7 @@ Changes
 * Switching to InnoDB all Centreon tables (except logs and data_bin too big for an automatic update).
 * PHP 5.1 no longer supported
 * Browser compatibility : IE 11, FF 5 et Chrome 39 at least
-* Shared views in custom views are not atomaticaly loaded in views of others users. Now views are able to be public and user can load them during the creation step.
+* Shared views in custom views are not automaticaly loaded in views of others users. Now views are able to be public and user can load them during the creation step.
 
 Secutiry fixes
 --------------
@@ -92,4 +92,4 @@ Known Bugs
 How to Install ?
 ----------------
 
-Now that you are aware about all specifiities of this version, you can install it. If you install from zero your system, please follow the :ref:`installation guide <install>`. Else you can refer to the :ref:`upgrade guide <upgrade>`. Take care about prerequisits and all upgrade steps in order to avoid data loss.
+Now that you are aware about all specificities of this version, you can install it. If you install from zero your system, please follow the :ref:`installation guide <install>`. Else you can refer to the :ref:`upgrade guide <upgrade>`. Take care about prerequisits and all upgrade steps in order to avoid data loss.
