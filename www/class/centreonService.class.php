@@ -466,7 +466,7 @@ class CentreonService
                     $arr[$i]['macroInput_#index#'] = $matches[1];
                     $arr[$i]['macroValue_#index#'] = $row['svc_macro_value'];
                     
-                    $valPassword = '0';
+                    $valPassword = null;
                     if (isset($row['is_password'])) {
                         if ($row['is_password'] === '1') {
                             $valPassword = '1';
@@ -510,7 +510,7 @@ class CentreonService
                     $arr[$i]['macroInput_#index#'] = $matches[1];
                     $arr[$i]['macroValue_#index#'] = $row['svc_macro_value'];
                     
-                    $valPassword = '0';
+                    $valPassword = null;
                     if (isset($row['is_password'])) {
                         if ($row['is_password'] === '1') {
                             $valPassword = '1';
@@ -534,7 +534,7 @@ class CentreonService
                 $arr[$index]['macroInput_#index#'] = $val;
                 $arr[$index]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
                 
-                $valPassword = '0';
+                $valPassword = null;
                 if (isset($_REQUEST['is_password'][$key])) {
                     if ($_REQUEST['is_password'][$key] === '1') {
                         $valPassword = '1';
