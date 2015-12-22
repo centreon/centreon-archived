@@ -494,9 +494,9 @@ function updateContact($contact_id = null, $from_MC = false) {
     # If we are doing a MC, we don't have to set name and alias field
     if (!$from_MC) {
         $rq .= "contact_name = ";
-        isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'" . htmlentities($ret["contact_name"], ENT_QUOTES, "UTF-8") . "', " : $rq .= "NULL, ";
+        isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'" . $ret["contact_name"] . "', " : $rq .= "NULL, ";
         $rq .= "contact_alias = ";
-        isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'" . htmlentities($ret["contact_alias"], ENT_QUOTES, "UTF-8") . "', " : $rq .= "NULL, ";
+        isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'" . $ret["contact_alias"] . "', " : $rq .= "NULL, ";
         $rq.= "contact_autologin_key = ";
         isset($ret["contact_autologin_key"]) && $ret["contact_autologin_key"] != NULL ? $rq .= "'" . htmlentities($ret["contact_autologin_key"], ENT_QUOTES, "UTF-8") . "', " : $rq .= "NULL, ";
     }
