@@ -576,7 +576,7 @@ class CentreonHost
         $cnt = 0;
         $macros = $macroInput;
         $macrovalues = $macroValue;
-        $this->hasMacroFromHostChanged($hostId,$macros,$macrovalues,$cmdId);
+        $this->hasMacroFromHostChanged($hostId,$macros,$macrovalues,$macroPassword,$cmdId);
         foreach ($macros as $key => $value) {
             if ($value != "" &&
                     !isset($stored[strtolower($value)])) {
@@ -769,7 +769,7 @@ class CentreonHost
         }
     }   
     
-    public function hasMacroFromHostChanged($host_id,&$macroInput,&$macroValue,$cmdId = false)
+    public function hasMacroFromHostChanged($host_id,&$macroInput,&$macroValue,&$macroPassword,$cmdId = false)
     {
         $aTemplates = $this->getTemplateChain($host_id, array(), -1, true,"host_name,host_id,command_command_id");
 
@@ -780,7 +780,7 @@ class CentreonHost
         foreach($aMacros as $macro){
             foreach($macroInput as $ind=>$input){
                 
-                if($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"]){
+                if($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"] && $macroPassword[$ind] == $macro['macroPassword_#index#']){
                     unset($macroInput[$ind]);
                     unset($macroValue[$ind]);
                 }

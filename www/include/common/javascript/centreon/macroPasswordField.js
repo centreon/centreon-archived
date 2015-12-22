@@ -1,6 +1,6 @@
 jQuery(function() {
     jQuery("input[id^='macroPassword_']").each(function(id, el) {
-        change_macro_input_type(el, true);
+        change_macro_input_type(el, false);
     });
 });
 

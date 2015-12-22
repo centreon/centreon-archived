@@ -461,8 +461,6 @@ jQuery(function() {
             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
         }
 
-        jQuery(elem).find("input[id^='macroPassword_']").parent().hide();
-
         if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
             jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
         }
@@ -568,7 +566,6 @@ jQuery(function() {
                             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
                         }
                         
-                        jQuery(elem).find("input[id^='macroPassword_']").parent().hide();
 
                         if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
                             jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
@@ -606,7 +603,6 @@ jQuery(function() {
                             jQuery(elem).find("input[name^='macroValue']").css("background","white");
                         });
 
-                        jQuery(elem).find("input[id^='macroPassword_']").parent().hide();
                     });
                 }
             });
