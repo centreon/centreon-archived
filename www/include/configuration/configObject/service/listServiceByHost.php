@@ -64,10 +64,14 @@ if (isset($_POST["template"])) {
 
 if (isset($_POST["hostgroups"])) {
 	$hostgroups = $_POST["hostgroups"];
+    $_SESSION['configuration_default_hostgroups'] = $hostgroups;
 } else if (isset($_GET["hostgroups"])) {
 	$hostgroups = $_GET["hostgroups"];
+    $_SESSION['configuration_default_hostgroups'] = $hostgroups;
+} else if(isset($_SESSION['configuration_default_hostgroups'])){
+	$hostgroups = $_SESSION['configuration_default_hostgroups'];
 } else {
-	$hostgroups = NULL;
+    $hostgroups = NULL;
 }
 
 if (isset($_POST["status"])) {
