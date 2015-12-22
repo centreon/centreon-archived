@@ -39,7 +39,6 @@
 if (!isset($centreon)) {
     exit();
 }
-
 /*
  * ACL Actions
  */
@@ -73,7 +72,24 @@ $gopt[$data['key']] = myDecode($data['key']);
 !isset($_GET["host_name"]) ? $host_name = "" : $host_name = $_GET["host_name"];
 !isset($_GET["strict"]) ? $hostSearchStrict = 0 : $hostSearchStrict = 1;
 
-if ($o == "svcpb" || $o == "svc_unhandled") {
+$problem_sort_type = 'host_name';
+if (!empty($oreon->optGen["problem_sort_type"])) {
+    $problem_sort_type = $oreon->optGen["problem_sort_type"];
+}
+$problem_sort_order = 'asc';
+if (!empty($oreon->optGen["problem_sort_type"])) {
+    $problem_sort_order = $oreon->optGen["problem_sort_order"];
+}
+$global_sort_type = 'host_name';
+if (!empty($_SESSION['centreon']->optGen["global_sort_type"])) {
+    $global_sort_type = $_SESSION['centreon']->optGen["global_sort_type"];
+}
+$global_sort_order = 'asc';
+if (!empty($_SESSION['centreon']->optGen["global_sort_order"])) {
+    $global_sort_order = $_SESSION['centreon']->optGen["global_sort_order"];
+}
+
+if ($o == "svcpb" || $o == "svc_unhandled" || empty($o)) {
     if (!isset($_GET["sort_type"])) {
         $sort_type = $oreon->optGen["problem_sort_type"];
     } else {
@@ -184,7 +200,7 @@ $tpl->assign("mon_ip", _("IP"));
 $tpl->assign("mon_last_check", _("Last Check"));
 $tpl->assign("mon_duration", _("Duration"));
 $tpl->assign("mon_status_information", _("Status information"));
-$sDefaultOrder = false;
+$sDefaultOrder = "0";
 
 if (!isset($_GET['o'])) {
     $sSetOrderInMemory = "1";
@@ -338,20 +354,21 @@ if ($o == "svc") {
 }
 
 $form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
-if (!isset($_GET['o']) && isset($_SESSION['monitoring_service_status_filter'])) {
+if ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_service_status_filter'])) {
     $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_service_status_filter']));
-    $sDefaultOrder = true;
+    $sDefaultOrder = "1";
 }
 
 $form->addElement('select', 'statusService', _('Service Status'), $statusService, array('id' => 'statusService', 'onChange' => "statusServices(this.value);"));
 
 /* Get default service status by GET */
 if (isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService))) {
-    $form->setDefaults(array('statusService' => "svc_unhandled"));
+    $form->setDefaults(array('statusService' => $_GET['o']));
 /* Get default service status in SESSION */
-} elseif (!isset($_GET['o']) &&  isset($_SESSION['monitoring_service_status'])) {
+} elseif ((!isset($_GET['o']) || empty($_GET['o'])) &&  isset($_SESSION['monitoring_service_status'])) {
+    $o = $_SESSION['monitoring_service_status'];
     $form->setDefaults(array('statusService' => $_SESSION['monitoring_service_status']));
-    $sDefaultOrder = true;
+    $sDefaultOrder = "1";
 }
 
 $criticality = new CentreonCriticality($pearDB);
@@ -380,7 +397,14 @@ $tpl->display("service.ihtml");
 
 ?>
 <script type='text/javascript'>
-    
+   var tabSortPb = [];
+   tabSortPb['champ'] = '<?php echo $problem_sort_type;?>';
+   tabSortPb['ordre'] = '<?php echo $problem_sort_order;?>';
+
+   var tabSortAll = [];
+   tabSortAll['champ'] = '<?php echo $global_sort_type;?>'; 
+   tabSortAll['ordre'] = '<?php echo $global_sort_order;?>';
+   
     var ok = '<?php echo _("OK");?>';
     var warning = '<?php echo _("Warning");?>';
     var critical = '<?php echo _("Critical");?>';
@@ -401,6 +425,7 @@ $tpl->display("service.ihtml");
             opts[opts.length] = new Option(warning, "warning");
             opts[opts.length] = new Option(critical, "critical");
             opts[opts.length] = new Option(unknown, "unknown");
+            change_type_order(tabSortPb['champ']);
         } else {
             opts.length = 0;
             opts[opts.length] = new Option("", "");
@@ -409,6 +434,7 @@ $tpl->display("service.ihtml");
             opts[opts.length] = new Option(critical, "critical");
             opts[opts.length] = new Option(unknown, "unknown");
             opts[opts.length] = new Option(pending, "pending");
+            change_type_order(tabSortAll['champ']);
         }
         
         if (jQuery("#statusFilter option[value='"+oldStatus+"']").length > 0) {
@@ -434,7 +460,7 @@ $tpl->display("service.ihtml");
         _sDefaultOrder = '<?php echo $sDefaultOrder; ?>';
         sSetOrderInMemory = '<?php echo $sSetOrderInMemory; ?>';
     
-        if (!_sDefaultOrder) {
+        if (_sDefaultOrder == "0") {
             if (_o == 'svc') {
                 jQuery("#statusService option[value='svc']").prop('selected', true);
                 jQuery("#statusFilter option[value='']").prop('selected', true);

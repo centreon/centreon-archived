@@ -164,6 +164,7 @@ if ($continue) {
             require_once($sg_path . "serviceGridBySG.php");
             break;
         case "svcOVSG" :
+        case "svcOVSG_pb" :
             require_once($sg_path . "serviceGridBySG.php");
             break;
         case "svcSumSG" :
@@ -177,6 +178,7 @@ if ($continue) {
             require_once($hg_path . "serviceGridByHG.php");
             break;
         case "svcOVHG" :
+        case "svcOVHG_pb" :
             require_once($hg_path . "serviceGridByHG.php");
             break;
         case "svcSumHG" :

@@ -39,7 +39,7 @@
 
 	require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
-        include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
+    include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 
 	include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 	include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
@@ -60,6 +60,11 @@
             print "Bad Session ID";
             exit();
 	}
+    
+    /* Store in session the last type of call */
+    $_SESSION['monitoring_serviceByHg_status'] = $statusService;
+    $_SESSION['monitoring_serviceByHg_status_filter'] = $statusFilter;
+
 
 	/*
 	 * Set Default Poller
@@ -75,7 +80,7 @@
 	$num 		= $obj->checkArgument("num", $_GET, 0);
 	$limit 		= $obj->checkArgument("limit", $_GET, 20);
 	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-	$hostgroups     = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
+	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 	$search 	= $obj->checkArgument("search", $_GET, "");
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");

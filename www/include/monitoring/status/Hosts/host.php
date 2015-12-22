@@ -72,7 +72,25 @@ if (isset($_GET["hostgroups"]) && is_numeric($_GET["hostgroups"])) {
 }
 
 
-if ($o == "hpb" || $o == "h_unhandled") {
+$problem_sort_type = 'host_name';
+if (!empty($oreon->optGen["problem_sort_type"])) {
+    $problem_sort_type = $oreon->optGen["problem_sort_type"];
+}
+$problem_sort_order = 'asc';
+if (!empty($oreon->optGen["problem_sort_type"])) {
+    $problem_sort_order = $oreon->optGen["problem_sort_order"];
+}
+$global_sort_type = 'host_name';
+if (!empty($_SESSION['centreon']->optGen["global_sort_type"])) {
+    $global_sort_type = $_SESSION['centreon']->optGen["global_sort_type"];
+}
+$global_sort_order = 'asc';
+if (!empty($_SESSION['centreon']->optGen["global_sort_order"])) {
+    $global_sort_order = $_SESSION['centreon']->optGen["global_sort_order"];
+}
+
+
+if ($o == "hpb" || $o == "h_unhandled" || empty($o)) {
     if (!isset($_GET["sort_type"])) {
         $sort_type = $oreon->optGen["problem_sort_type"];
     } else {
@@ -151,7 +169,7 @@ if (!isset($_GET['o'])) {
     $sSetOrderInMemory = "0";
 }
 
-$sDefaultOrder = false;
+$sDefaultOrder = "0";
 
 $form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
 
@@ -159,11 +177,11 @@ $form->addElement('select', 'statusHost', _('Host Status'), $aStatusHost, array(
 
 /* Get default host status by GET */
 if (isset($_GET['o']) && in_array($_GET['o'], array_keys($aStatusHost))) {
-    $form->setDefaults(array('statusHost' => "h_unhandled"));
+    $form->setDefaults(array('statusHost' => $_GET['o']));
 /* Get default host status in SESSION */
-} elseif (!isset($_GET['o']) && isset($_SESSION['monitoring_host_status'])) {
+} elseif ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_host_status'])) {
     $form->setDefaults(array('statusHost' => $_SESSION['monitoring_host_status']));
-    $sDefaultOrder = true;
+    $sDefaultOrder = "1";
 }
 
 $tpl->assign("order", strtolower($order));
@@ -261,7 +279,7 @@ if ($o == "h") {
 $form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
 if (!isset($_GET['o']) && isset($_SESSION['monitoring_host_status_filter'])) {
     $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_host_status_filter']));
-    $sDefaultOrder = true;
+    $sDefaultOrder = "1";
 }
 
 $criticality = new CentreonCriticality($pearDB);
@@ -286,6 +304,14 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->display("host.ihtml");
 ?>
 <script type='text/javascript'>
+    var tabSortPb = [];
+    tabSortPb['champ'] = '<?php echo $problem_sort_type;?>';
+    tabSortPb['ordre'] = '<?php echo $problem_sort_order;?>';
+
+    var tabSortAll = [];
+    tabSortAll['champ'] = '<?php echo $global_sort_type;?>'; 
+    tabSortAll['ordre'] = '<?php echo $global_sort_order;?>';
+   
     var up = '<?php echo _("Up");?>';
     var down = '<?php echo _("Down");?>';
     var unreachable = '<?php echo _("Unreachable");?>';
@@ -306,6 +332,7 @@ $tpl->display("host.ihtml");
             opts[opts.length] = new Option("", "");
             opts[opts.length] = new Option(down, "down");
             opts[opts.length] = new Option(unreachable, "unreachable");
+            change_type_order(tabSortPb['champ']);
         } else {
             opts.length = 0;
             opts[opts.length] = new Option("", "");
@@ -313,6 +340,7 @@ $tpl->display("host.ihtml");
             opts[opts.length] = new Option(down, "down");
             opts[opts.length] = new Option(unreachable, "unreachable");
             opts[opts.length] = new Option(pending, "pending");
+            change_type_order(tabSortAll['champ']);
         }
         if (jQuery("#statusFilter option[value='"+oldStatus+"']").length > 0) {
             jQuery("#statusFilter option[value='"+oldStatus+"']").prop('selected', true);
@@ -333,7 +361,7 @@ $tpl->display("host.ihtml");
         _sDefaultOrder = '<?php echo $sDefaultOrder; ?>';
         sSetOrderInMemory = '<?php echo $sSetOrderInMemory; ?>';
         
-        if (!_sDefaultOrder) {
+        if (_sDefaultOrder == "0") {
             if (_o == 'h') {
                 jQuery("#statusHost option[value='h']").prop('selected', true);
                 jQuery("#statusFilter option[value='']").prop('selected', true);
