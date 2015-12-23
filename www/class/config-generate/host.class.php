@@ -124,10 +124,11 @@ class Host extends AbstractHost {
             $this->stmt_service_sg = $this->backend_instance->db->prepare("SELECT 
                     service_service_id
                 FROM host_service_relation
-                WHERE hostgroup_hg_id IN (:hg_ids)
+                    JOIN hostgroup_relation ON (hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id)
+                WHERE hostgroup_relation.host_host_id = :host_id
                 ");
         }
-        $this->stmt_service_sg->bindParam(':hg_ids', join(',', $host['hg']));
+        $this->stmt_service_sg->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
         $this->stmt_service_sg->execute();
         $host['services_hg_cache'] = $this->stmt_service_sg->fetchAll(PDO::FETCH_COLUMN);
         
