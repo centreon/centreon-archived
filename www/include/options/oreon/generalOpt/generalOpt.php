@@ -33,8 +33,8 @@
  * 
  */
  
-if (!isset($oreon)) {
-	exit ();		
+if (!isset($centreon)) {
+	exit();		
 } 
 
 isset($_GET["gopt_id"]) ? $cG = $_GET["gopt_id"] : $cG = NULL;
