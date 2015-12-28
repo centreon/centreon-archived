@@ -117,6 +117,7 @@ var permission = <?php echo ($permission === true) ? 1 : 0; ?>;
 var ownership = <?php echo ($ownership === true) ? 1 : 0; ?>;
 var wrenchSpan = '<span class="ui-icon ui-icon-wrench"></span>';
 var trashSpan = '<span class="ui-icon ui-icon-trash"></span>';
+var idUser = "<?php echo $centreon->user->user_id;?>";
 
 jQuery(function() {
 	if (columnClass) {
@@ -156,10 +157,8 @@ jQuery(function() {
 
     	if (!ownership) {
     		jQuery('.shareView').button('disable');
-    		jQuery('.deleteView').button('disable');
 		} else {
 			jQuery('.shareView').button('enable');
-        	jQuery('.deleteView').button('enable');
 		}
 
     	jQuery(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")

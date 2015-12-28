@@ -243,6 +243,13 @@
       <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
     </div>
   </div>
+    <div id="dissociateViewConfirm">
+    <p>{t}Dissociate this view ?{/t}</p>
+    <div class="button_group_center">
+      <button type="button" class="btc bt_danger">{t}Dissociate{/t}</button>
+      <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
+    </div>
+  </div>
   <div id="setDefaultConfirm">
     <p>{t}Set this view as your default view{/t}</p>
     <div class="button_group_center">
@@ -501,7 +508,6 @@ function submitRotation() {
         jQuery('#rotation_timer').parents('.toggle_wrapper').hide();
       } else if (typeof(err) != 'undefined') {
         var errorMsg = err.item(0).firstChild.data;
-        console.log(errorMsg);
       }
     }
   });
@@ -609,6 +615,7 @@ function toggleEdit(forceShow) {
 /* Share view functions */
   
 function removeUserFromView(user_id) {
+    
   var viewId = jQuery(
     jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
   ).data('cvId');
@@ -677,7 +684,11 @@ jQuery(function () {
   });
   jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}});
   jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
-    jQuery("#deleteViewConfirm").centreonPopin("open");
+    if (ownership) {
+        jQuery("#deleteViewConfirm").centreonPopin("open");
+    } else {
+        jQuery("#dissociateViewConfirm").centreonPopin("open");
+    }
   });
   jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}}).on('click', function () {
     /* Get default information for a share view */
@@ -841,6 +852,15 @@ jQuery(function () {
   });
   jQuery('#deleteViewConfirm button.bt_danger').on('click', function () {
     submitDeleteView();
+  });
+  
+  jQuery('#dissociateViewConfirm').centreonPopin();
+  jQuery('#dissociateViewConfirm button.btc').on('click', function () {
+    jQuery('#dissociateViewConfirm').centreonPopin("close");
+  });
+  jQuery('#dissociateViewConfirm button.bt_danger').on('click', function () {
+    removeUserFromView(idUser);
+    window.top.location = './main.php?p=103';
   });
   
   jQuery('#setDefaultConfirm').centreonPopin();

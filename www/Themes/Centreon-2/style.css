@@ -1009,7 +1009,7 @@ a.infobulle 		{position:relative;text-decoration:none;z-index:24;}
 a.infobulle:hover 	{z-index:25;}
 
 /* Pagination */
-div.pagination 		{margin-left:40%;}
+
 .otherPageNumber 	{
     color:#4ccaff;
 }
