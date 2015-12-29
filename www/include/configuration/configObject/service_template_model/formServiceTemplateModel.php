@@ -366,7 +366,8 @@ $attrTraps = array(
 $attrGraphtemplates= array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_graphtemplate&action=list',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonGraphTemplate'
 );
 $attrHosttemplates = array(
     'datasourceOrigin' => 'ajax',
