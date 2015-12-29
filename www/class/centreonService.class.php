@@ -1026,6 +1026,7 @@ class CentreonService
      */
     public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
+        
         $hostIdList = array();
         $serviceIdList = array();
         foreach ($values as $value) {
@@ -1050,7 +1051,7 @@ class CentreonService
             }
             $selectedHosts .= ") ";
         }
-        
+
         # Construct service filter for query
         $selectedServices = '';
         $implodedValues = implode(',', $serviceIdList);
@@ -1060,25 +1061,25 @@ class CentreonService
             $selectedServices .= ") ";
         }
         
-        $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
-            . "FROM host h, service s, host_service_relation hsr "
-            . 'WHERE hsr.host_host_id = h.host_id '
-            . "AND hsr.service_service_id = s.service_id "
-            . "AND h.host_register = '$register' AND s.service_register = '$register' "
-            . $selectedHosts
-            . $selectedServices
-            . "ORDER BY h.host_name ";
-        
-        $DBRESULT = $this->db->query($queryService);
-        
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
-            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
-            
-            $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
+        if(!empty($selectedHosts) && !empty($selectedServices)){
+            $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
+                . "FROM host h, service s, host_service_relation hsr "
+                . 'WHERE hsr.host_host_id = h.host_id '
+                . "AND hsr.service_service_id = s.service_id "
+                . "AND h.host_register = '$register' AND s.service_register = '$register' "
+                . $selectedHosts
+                . $selectedServices
+                . "ORDER BY h.host_name ";
+
+            $DBRESULT = $this->db->query($queryService);
+            while ($data = $DBRESULT->fetchRow()) {
+                $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
+                $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+
+                $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
+            }
         }
-        
         return $serviceList;
     }
     
