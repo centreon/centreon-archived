@@ -204,7 +204,7 @@ class CentreonCustomView
     public function getCustomViews()
     {
         if (!isset($this->customViews)) {
-            $query = "SELECT cv.custom_view_id, name, layout, is_owner, locked, user_id, usergroup_id
+            $query = "SELECT cv.custom_view_id, name, layout, is_owner, locked, user_id, usergroup_id, public
             		  FROM custom_views cv, custom_view_user_relation cvur
             		  WHERE cv.custom_view_id = cvur.custom_view_id
                       AND cvur.is_consumed = 1 
@@ -220,6 +220,7 @@ class CentreonCustomView
             while ($row = $res->fetchRow()) {
                 $cvid = $row['custom_view_id'];
                 $tmp[$cvid]['name'] = $row['name'];
+                $tmp[$cvid]['public'] = $row['public'];
                 if (!isset($tmp[$cvid]['is_owner']) || !$tmp[$cvid]['is_owner'] || $row['user_id']) {
                     $tmp[$cvid]['is_owner'] = $row['is_owner'];
                 }

@@ -98,11 +98,14 @@ try {
             . " SELECT cv.*, '0' as from_public FROM custom_views cv "
             . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
             . " WHERE cvur.user_id = " . $db->escape($centreon->user->user_id). " AND cvur.is_consumed = 0 ";
+    
+
     $DBRES = $db->query($query);
     $arrayView = array();
     $arrayView[-1] = "";
     $arrayViewShared = array();
     $arrayViewShared[-1] = "";
+    
     while($row = $DBRES->fetchRow()) {
         if($row['from_public'] == '1'){
             $arrayView[$row['custom_view_id']] = $row['name'];
@@ -134,7 +137,7 @@ try {
     $formAddView->addGroup($layouts, 'layout', _("Layout"), '&nbsp;');
     $formAddView->setDefaults(array('layout[layout]' => 'column_1'));
 
-    $formAddView->addElement('checkbox', 'public', _("Public"));
+    $formAddView->addElement('checkbox', 'public', '', _("Public"));
 
     /**
      * Submit button
@@ -177,8 +180,7 @@ try {
     $formEditView->addGroup($layouts, 'layout', _("Layout"), '&nbsp;');
     $formEditView->setDefaults(array('layout[layout]' => 'column_1'));
 
-    $formEditView->addElement('checkbox', 'public', _("Public"), $attrsText);
-
+    $formEditView->addElement('checkbox', 'public', '', _("Public"));
     /**
      * Submit button
      */

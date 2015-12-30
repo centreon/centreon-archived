@@ -63,7 +63,7 @@ class CentreonWscustomview extends CentreonWebService {
                 'default' => false,
                 'name' => $tab['name'],
                 'custom_view_id' => $tab['custom_view_id'],
-                'public' => false,
+                'public' => $tab['public'],
                 'nbCols' => $tab['layout']
             );
         }

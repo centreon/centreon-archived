@@ -413,7 +413,7 @@ function submitEditView() {
           if (jQuery(elem).data('cvId') == viewId) {
             jQuery(elem).data('name', jQuery("#formEditView input[name='name']").val());
             jQuery(elem).data('nbCols', jQuery('#formEditView input[name="layout[layout]"]:checked').val());
-            jQuery(elem).data('public', (jQuery('#formAddView input[name="public"]:checked').length ? true : false));
+            jQuery(elem).data('public', (jQuery('#formEditView input[name="public"]:checked').length ? true : false));
             jQuery(elem).find('a').text(jQuery("#formEditView input[name='name']").val());
           }
         });
@@ -839,10 +839,15 @@ jQuery(function () {
     var tabActive = jQuery(
       jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
     );
+
     jQuery('#formEditView input[name="custom_view_id"]').val(tabActive.data('cvId'));
     jQuery('#formEditView input[name="name"]').val(tabActive.data('name'));
     jQuery('#formEditView input[name="layout[layout]"][value="' + tabActive.data('nbCols') + '"]').prop('checked', true);
-    jQuery('#formEditView input[name="public"]').prop('checked', true);
+    if (tabActive.data('public') == '1') {
+        jQuery('#formEditView input[name="public"]').prop('checked', true);
+    } else {
+        jQuery('#formEditView input[name="public"]').prop('checked', false);
+    }
   });
   
   /* Initialize popin */
