@@ -818,7 +818,7 @@ class CentreonDowntime
 			 * If start time is 00:00 check with tomorrow
 			 */
 			$timeTest = $time;
-			if ($period['start_time'] == '00:00' && ($time + $delay) > (strtotime('00:00') + 3600 + 24)) {
+			if ($period['start_time'] == '00:00' && ($time + $delay) > (strtotime('00:00'." UTC") + 3600 + 24)) {
 			    $timeTest = $time + $delay;
 			}
 			if ($period['month_cycle'] == 'none') {
@@ -843,7 +843,7 @@ class CentreonDowntime
 					$monthName = date('F', $timeTest);
 					$year = date('Y', $timeTest);
 					$dayShortName = date('D', $timeTest);
-					$dayInMonth = date('d', strtotime($period['month_cycle'] . ' ' . $dayShortName . ' ' . $monthName . ' ' . $year));
+					$dayInMonth = date('d', strtotime($period['month_cycle'] . ' ' . $dayShortName . ' ' . $monthName . ' ' . $year." UTC"));
 					if ($dayInMonth == date('d', $timeTest)) {
 						$add = true;
 					}
@@ -855,16 +855,16 @@ class CentreonDowntime
 			     */
 			    $tomorrow = false;
 			    if ($period['start_time'] == '00:00') {
-				    $timestamp_start = strtotime($period['start_time']) + 3600 * 24;
+				    $timestamp_start = strtotime($period['start_time']." UTC") + 3600 * 24;
 				    $tomorrow = true;
 			    } else {
-				    $timestamp_start = strtotime($period['start_time']);
+				    $timestamp_start = strtotime($period['start_time']." UTC");
 			    }
 				if ($time < $timestamp_start && ($time + $delay) > $timestamp_start) {
 				    if ($period['end_time'] == '24:00') {
-				        $timestamp_stop = strtotime('00:00') + 3600 * 24;
+				        $timestamp_stop = strtotime('00:00'." UTC") + 3600 * 24;
 				    } else {
-					    $timestamp_stop = strtotime($period['end_time']);
+					    $timestamp_stop = strtotime($period['end_time']." UTC");
 				    }
 				    if ($tomorrow) {
 				        $timestamp_stop = $timestamp_stop + 3600 * 24;
