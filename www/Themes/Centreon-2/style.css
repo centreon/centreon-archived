@@ -1027,11 +1027,19 @@ a.infobulle:hover 	{z-index:25;}
 /* Widget css */ 
 .manageMoreViews {
    display: block;
-   height: 20px;
-   width: 20px;
+   height: 16px;
+   width: 16px;
+   border: 1px solid #009fdf;
+   border-radius: 4px;
+   margin: 9px 4px;
+   float: left;
+   cursor: pointer;
 }
-.more_views_disable {padding:2px 2px 3px 3px; background: url("../../img/icons/circle-down.png") no-repeat center scroll;}
-.more_views_enable  {padding:2px 2px 3px 3px; background: url("../../img/icons/circle-up.png") no-repeat center scroll;}
+.manageMoreViews:hover {
+   border: 1px solid #005a7f;
+}
+.more_views_disable {padding:2px 2px 3px 3px; background: url("../../img/icons/circle-down.png") no-repeat center scroll;background-size: 12px 12px;}
+.more_views_enable  {padding:2px 2px 3px 3px; background: url("../../img/icons/circle-up.png") no-repeat center scroll;background-size: 12px 12px;}
 
 /* Widget pagination */
 
