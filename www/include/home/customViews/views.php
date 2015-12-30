@@ -160,6 +160,7 @@ jQuery(function() {
 		} else {
 			jQuery('.shareView').button('enable');
 		}
+        jQuery('.deleteView').button('enable');
 
     	jQuery(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
     		.find(".portlet-header")
