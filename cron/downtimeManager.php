@@ -127,7 +127,7 @@ foreach ($list as $type => $periods) {
 					foreach ($dts as $dt) {
 						if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 							foreach ($ext_cmd_add['host'] as $cmd) {
-								$cmd = sprintf($cmd, $unix_time, $period['obj_name'], $gmt->getUTCDateBasedOnHostGMT($dt[0], $period['obj_id'], 'U'), $gmt->getUTCDateBasedOnHostGMT($dt[1], $period['obj_id'], 'U'), $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
+								$cmd = sprintf($cmd, $unix_time, $period['obj_name'], $gmt->getUTCDateBasedOnHostGMT($dt[0], $period['obj_id'], 'U', -1), $gmt->getUTCDateBasedOnHostGMT($dt[1], $period['obj_id'], 'U', -1), $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
                                 if (!in_array($cmd, $existingDowntime)) {
                                     $downtime->setCommand($period['obj_id'], $cmd);
                                     $existingDowntime[] = $cmd;

@@ -176,7 +176,7 @@ class CentreonGMT {
         }
     }
 
-    function getUTCDate($date, $gmt = NULL) {
+    function getUTCDate($date, $gmt = NULL, $reverseOffset = 1) {
         /*
          * Specify special GMT
          */
@@ -200,7 +200,7 @@ class CentreonGMT {
 
                     $sOffset = $sDate->getOffset();
                     
-                    $return = $iTimestamp + $sOffset;
+                    $return = $iTimestamp + ($sOffset * $reverseOffset);
                     
                 } else {
                     $return = $date;
@@ -327,7 +327,7 @@ class CentreonGMT {
         return $sReturn;
     }
 
-    function getUTCDateBasedOnHostGMT($date, $hostId, $dateFormat = 'c')
+    function getUTCDateBasedOnHostGMT($date, $hostId, $dateFormat = 'c', $reverseOffset = 1)
     {
         global $pearDB;
         static $locations = null;
@@ -343,7 +343,7 @@ class CentreonGMT {
                 }
             }
             if (isset($locations[$hostId])) {
-                $date = $this->getUTCDate($date, $locations[$hostId]);
+                $date = $this->getUTCDate($date, $locations[$hostId],$reverseOffset);
             }
         }
         return date($dateFormat, $date);
