@@ -922,8 +922,7 @@ class CentreonWidget
            	      FROM widget_preferences pref, widget_parameters param, widget_views wv
            	      WHERE param.parameter_id = pref.parameter_id
            	      AND pref.widget_view_id = wv.widget_view_id
-           	      AND wv.widget_id = ".$this->db->escape($widgetId) . "
-           	      AND pref.user_id = " . $this->userId;
+           	      AND wv.widget_id = ".$this->db->escape($widgetId);
         $res = $this->db->query($query);
         while ($row = $res->fetchRow()) {
             $tab[$row['parameter_code_name']] = $row['preference_value'];
