@@ -66,27 +66,27 @@ require_once("./menu/MenuJS.php");
 require_once _CENTREON_PATH_ . 'www/class/centreonMenu.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
 
-$centreonMenu = new CentreonMenu(new CentreonLang(_CENTREON_PATH_, $oreon));
+$centreonMenu = new CentreonMenu(new CentreonLang(_CENTREON_PATH_, $centreon));
 
 /*
  * block headerHTML
  */
-$version = $oreon->user->get_version();
+$version = $centreon->user->get_version();
 
-$fileStatus = $oreon->Nagioscfg["status_file"];
-$fileCentreonConf = $oreon->optGen["oreon_path"];
+$fileStatus = $centreon->Nagioscfg["status_file"];
+$fileCentreonConf = $centreon->optGen["oreon_path"];
 
 $color = array();
 
-$color["OK"] = 			$oreon->optGen["color_ok"];
-$color["CRITICAL"] = 	$oreon->optGen["color_critical"];
-$color["WARNING"] = 	$oreon->optGen["color_warning"];
-$color["PENDING"] =  	$oreon->optGen["color_pending"];
-$color["UNKNOWN"] =  	$oreon->optGen["color_unknown"];
+$color["OK"] = 			$centreon->optGen["color_ok"];
+$color["CRITICAL"] = 	$centreon->optGen["color_critical"];
+$color["WARNING"] = 	$centreon->optGen["color_warning"];
+$color["PENDING"] =  	$centreon->optGen["color_pending"];
+$color["UNKNOWN"] =  	$centreon->optGen["color_unknown"];
 
-$color["UP"] =  		$oreon->optGen["color_up"];
-$color["DOWN"] =  		$oreon->optGen["color_down"];
-$color["UNREACHABLE"] = $oreon->optGen["color_unreachable"];
+$color["UP"] =  		$centreon->optGen["color_up"];
+$color["DOWN"] =  		$centreon->optGen["color_down"];
+$color["UNREACHABLE"] = $centreon->optGen["color_unreachable"];
 
 $tpl->assign("urlLogo", 'img/centreon.png');
 
@@ -136,7 +136,7 @@ $tpl->assign("date_time_format_status", _("d/m/Y H:i:s"));
 /*
  * Display Login
  */
-$tpl->assign("user_login", $oreon->user->get_alias());
+$tpl->assign("user_login", $centreon->user->get_alias());
 $tpl->assign("loggedlabel", _("Welcome"));
 
 /*
@@ -144,7 +144,7 @@ $tpl->assign("loggedlabel", _("Welcome"));
  */
 $lcaSTR = "";
 if (!$is_admin) {
- 	$lcaSTR = "AND topology_page IN (".$oreon->user->access->getTopologyString().")";
+ 	$lcaSTR = "AND topology_page IN (".$centreon->user->access->getTopologyString().")";
 }
 
 /*
@@ -153,7 +153,7 @@ if (!$is_admin) {
 $rq = "SELECT * FROM topology WHERE topology_parent IS NULL $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 $DBRESULT = $pearDB->query($rq);
 for ($i = 0; $DBRESULT->numRows() && ($elem = $DBRESULT->fetchRow()); $i++) {
-    $pageAccess = $oreon->user->access->page($elem["topology_page"]);
+    $pageAccess = $centreon->user->access->page($elem["topology_page"]);
     if (($pageAccess == "1") || ($pageAccess == "2"))
     {
         $elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
@@ -169,16 +169,16 @@ $DBRESULT->free();
 
 $userUrl = "main.php?p=50104&o=c";
 
-$logDate = $oreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $oreon->user->getMyGMT());
+$logDate = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $centreon->user->getMyGMT());
 $logOut = _("Logout");
 $logOutUrl = "index.php?disconnect=1";
 
 /*
  * Define autologin URL
  */
-if (isset($oreon->optGen["display_autologin_shortcut"])) {
-	$userAlias = $oreon->user->get_alias();
-    if ($oreon->optGen["enable_autologin"] && $oreon->optGen["display_autologin_shortcut"]) {
+if (isset($centreon->optGen["display_autologin_shortcut"])) {
+	$userAlias = $centreon->user->get_alias();
+    if ($centreon->optGen["enable_autologin"] && $centreon->optGen["display_autologin_shortcut"]) {
         $tpl->assign("autoLoginEnable", 1);
     } else {
         $tpl->assign("autoLoginEnable", 0);
@@ -217,7 +217,7 @@ $sep = "&nbsp;";
 for ($i = 0; $DBRESULT->numRows() && ($elem = $DBRESULT->fetchRow()); $i++)	{
 	$firstP ? null : $firstP = $elem["topology_page"];
     
-    $pageAccess = $oreon->user->access->page($elem["topology_page"]);
+    $pageAccess = $centreon->user->access->page($elem["topology_page"]);
     if (($pageAccess == "1") || ($pageAccess == "2")) {
         $elemArr[2][$i] = array("Menu2Sep" => $sep,
 							"Menu2Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
@@ -245,7 +245,7 @@ for ($i = 0; $elem = $DBRESULT->fetchRow();$i++) {
 		$title = _("Main Menu");
 	}
 
-    $pageAccess = $oreon->user->access->page($elem["topology_page"]);
+    $pageAccess = $centreon->user->access->page($elem["topology_page"]);
     if (($pageAccess == "1") || ($pageAccess == "2")) {
         $Menu3Url = "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
         $elemArr[3][$elem["topology_group"]]["title"] = $title;
@@ -269,7 +269,7 @@ if ($level1 && $level2 && $level3){
 	$request = "SELECT topology_icone, topology_page, topology_url_opt, topology_url, topology_OnClick, topology_name, topology_popup, topology_modules FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 	$DBRESULT = $pearDB->query($request);
 	for ($i = 0; $elem = $DBRESULT->fetchRow(); $i++) {
-        $pageAccess = $oreon->user->access->page($elem["topology_page"]);
+        $pageAccess = $centreon->user->access->page($elem["topology_page"]);
         if (($pageAccess == "1") || ($pageAccess == "2")) {
             $elemArr[4][$level1.$level2.$level3][$i] = array(	"Menu4Icone" => $elem["topology_icone"],
 															"Menu4Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
@@ -288,7 +288,7 @@ if ($level1 && $level2 && $level3){
  */
 $tpl->assign("PageID", $p);
 $tpl->assign("UserInfoUrl", $userUrl);
-$tpl->assign("UserName", $oreon->user->get_alias());
+$tpl->assign("UserName", $centreon->user->get_alias());
 $tpl->assign("Date", $logDate);
 $tpl->assign("LogOut", $logOut);
 $tpl->assign("LogOutUrl", $logOutUrl);
@@ -306,7 +306,7 @@ $tpl->assign("main_menu", _("Main Menu"));
 /*
  * Send ACL Topology in template
  */
-$tpl->assign("topology", $oreon->user->access->topology);
+$tpl->assign("topology", $centreon->user->access->topology);
 
 /*
  * Assign for Smarty Template
@@ -326,8 +326,8 @@ $tpl->assign("legend2", _("Legend"));
 /*
  *  User's preference
  */
-$tpl->assign("user_update_pref_header", $user_update_pref . "?uid=".$oreon->user->user_id."&div=header");
-$tpl->assign("user_update_pref_menu_3", $user_update_pref . "?uid=".$oreon->user->user_id."&div=menu_3");
+$tpl->assign("user_update_pref_header", $user_update_pref . "?uid=".$centreon->user->user_id."&div=header");
+$tpl->assign("user_update_pref_menu_3", $user_update_pref . "?uid=".$centreon->user->user_id."&div=menu_3");
 
 /*
  * User Online
@@ -352,7 +352,7 @@ if ($is_admin){
 	$DBRESULT->free();
 	$tpl->assign("tab_user", $tab_user);
 }
-$tpl->assign('amIadmin', $oreon->user->admin);
+$tpl->assign('amIadmin', $centreon->user->admin);
 
 /*
  * Display
