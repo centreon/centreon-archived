@@ -389,6 +389,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         return $datas;
     }
 
+    var $_memOptions = array();
     /**
       * 
      */
@@ -411,8 +412,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 }
                 $currentOption .= '>'
                     . $dataSet['text'] . "</option>";
-                
-                if (strpos($this->_defaultSelectedOptions, $currentOption) === false) {
+
+                if (!in_array($dataSet['id'], $this->_memOptions)) {
+                    $this->_memOptions[] = $dataSet['id'];
                     $this->_defaultSelectedOptions .= $currentOption;
                 }
             }
@@ -422,7 +424,8 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     . $elementValue . '">'
                     . $elementName . "</option>";
                 
-                if (strpos($this->_defaultSelectedOptions, $currentOption) === false) {
+                if (!in_array($elementValue, $this->_memOptions)) {
+                    $this->_memOptions[] = $elementValue;
                     $this->_defaultSelectedOptions .= $currentOption;
                 }
             }
