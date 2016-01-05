@@ -1,6 +1,15 @@
 ## Centreon 2.7.1
 
-Fix: Remove group of line in graph component configuration
+* Improved ergonomics of the select2 component
+* Improved performances of monitoring pages
+* Improved performances of the event logs page
+* Improved performances of downtimes configuration on host page
+* Improved documentation
+* Fixed problem when sharing views in Custom views page
+* Fixed a right problem in CLAPI generation of the configuratio
+* Fixed problem in services per hostgroups pagen
+* Fixed problems in configuration generation when mysql is not using 3306 port
+* Fixed Remove group of line in graph component configuration
 
 ## Centreon 2.7.0
 

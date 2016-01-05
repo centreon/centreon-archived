@@ -8,6 +8,4 @@ Vous trouverez ici la liste des notes de versions pour les versions 2.7.x
     :maxdepth: 1
 
     centreon-2.7.0
-
-.. note::
-  Des versions plus récentes sont disponibles au téléchargement  `download portal <https://download.centreon.com>`_. Il est vivement recommandé de mettre à jour votre plate-frome afin d'éviter les bugs et les problémes de sécurité.
+    centreon-2.7.1
