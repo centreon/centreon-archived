@@ -163,7 +163,7 @@ Known issues
 
 * Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 2.11.0 and Centreon Engine 1.5.0) are prerequisites for Centreon web 2.7.0
 * Update databases global schema issue
-* Change database engine from MyISAM to InnoDB for all tables (expected logs and data_bin tables)
+* Change database engine from MyISAM to InnoDB for all tables (except logs and data_bin tables)
 * Update hostgroup and servicegroup tables schemas
 * The Centreon Broker temporaries and failovers are now manage by Centreon web by default. It may have a conflict with existing configuration of Centreon Broker. Please check the configuration and logs of all Centreon Broker to be sure that all broker are running and no data are lost.
 * Browser cache issue: you have to clean browser cache after Centreon web migration and just after first connection.
