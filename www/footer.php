@@ -43,7 +43,8 @@ if (!$min) {
 ?>    
 <div class="fullscreen-icon" title="Fullscreen" onclick="myToggleAll(0,true);" >
     <img class="ico-16" id="fullscreenIcon" alt="FullScreen" src="./img/icons/fullscreen.png">
-</div>    
+</div> 
+<div id="clearfooter" style="height: 1px;"></div>
 <div id="footer">
 	<table cellpadding='0' cellspacing='0' width='100%' border='0' id="tfooter">
 			<tr>
