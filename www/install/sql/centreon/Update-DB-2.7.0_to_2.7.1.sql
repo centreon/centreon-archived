@@ -9,3 +9,6 @@ UPDATE topology SET topology_url_opt = '&o=svcOVHG_pb' WHERE topology_page = 202
 
 -- Update topology of service by service group
 UPDATE topology SET topology_url_opt = '&o=svcOVSG_pb' WHERE topology_page = 20212;
+
+-- Change version of Centreon
+UPDATE `informations` SET `value` = '2.7.1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.0' LIMIT 1;

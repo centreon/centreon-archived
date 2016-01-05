@@ -71,7 +71,7 @@
 		        <img src="./img/icons/all_services.png" class="ico-16" title='{$HelpServices}'>
 		    </a>
 		</td>
-		<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
+		<td class="ListColLeft resizeTitle"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_address}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_poller}</td>
 		<td class="ListColCenter resizeTitle">{$elemArr[elem].RowMenu_parent}</td>
