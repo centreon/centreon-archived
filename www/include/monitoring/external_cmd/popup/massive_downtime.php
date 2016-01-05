@@ -115,7 +115,7 @@
 	$form->setDefaults(array('duration' => $defaultDuration));
     
     $scaleChoices = array("s" => _("Seconds"),
-                          "m" => _("Mminutes"),
+                          "m" => _("Minutes"),
                           "h" => _("Hours"),
                           "d" => _("Days")
               );
