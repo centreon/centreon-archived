@@ -356,6 +356,14 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 . ' }); ';
         }
         
+        
+        $additionnalJs .= ' jQuery(".select2-selection").each(function(){'
+            . ' if(typeof this.isResiable == "undefined" || this.isResiable){'
+            . ' jQuery(this).resizable({ minWidth : jQuery(this).width(), minHeight : jQuery(this).height()});'
+            . ' this.isResiable = true; '
+            . ' }'
+            . ' }); ';
+        
         $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $scroll . $additionnalJs . $this->_jsCallback . $jsPost;
         
         return $finalJs;
