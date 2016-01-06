@@ -1295,7 +1295,7 @@ __EOT__
 ## <p>
 ## Call:<p>
 ##	- <@function locate_sudo><p>
-##	- <@function check_nagios_init_script>
+##	- <@function check_monitoringengine_init_script>
 ## @param	directory to generate a centreon.sudo file
 ## @return 0	create file ok
 ## @return 1	create file fail
@@ -1706,36 +1706,6 @@ function locate_monitoringengine_init_script()
 	done
 	eval $val_ref=$res
 	return 0
-}
-
-#----
-## Define where is a nagios init script
-## Find in list of chose and request if not found
-## @Globals	NAGIOS_INIT_SCRIPT, DEFAULT_NAGIOS_INIT_SCRIPT, INIT_D
-## @TODO Change pour monitoring
-#----
-function check_nagios_init_script()
-{
-	# Try to find nagios init script.
-	# It's possible to force that variable.
-	if [ -n "$NAGIOS_INIT_SCRIPT" -a -x "$NAGIOS_INIT_SCRIPT" ] ; then
-		log "INFO" "$(gettext "Use default variable") : $NAGIOS_INIT_SCRIPT"
-	elif [ -x "$INIT_D/nagios" ]; then
-		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
-	elif [ -x "$INIT_D/nagios2" ] ; then
-		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
-	elif [ -x "$INIT_D/nagios3" ] ; then
-		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios3"
-	elif [ -x "/usr/local/etc/rc.d/nagios" ] ; then
-		NAGIOS_INIT_SCRIPT="/usr/local/etc/rc.d/nagios"
-	elif [ -x "$DEFAULT_NAGIOS_INIT_SCRIPT" ] ; then
-		NAGIOS_INIT_SCRIPT=$DEFAULT_NAGIOS_INIT_SCRIPT
-	else
-    		echo_passed "$(gettext "Not possible to find Nagios init script")" "$critical"
-		answer_with_testfile "$(gettext "Where is Nagios init script")" "NO_DEFAULT" "NAGIOS_INIT_SCRIPT"
-	fi
-	NAGIOS_INIT_SCRIPT=${NAGIOS_INIT_SCRIPT%/}
-	echo_success "Nagios init script " "$ok"
 }
 
 #----
