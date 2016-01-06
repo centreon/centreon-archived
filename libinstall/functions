@@ -498,7 +498,7 @@ function answer_with_testuser()
 		echo -en "> "
 		read res
 		if [ -z "$res" ]; then
-			res="not_def"
+			[ "$default" != "NO_DEFAULT" ] && res="$default"
 		fi
 		first=1
 	done
@@ -660,42 +660,20 @@ function locate_init_d() {
 	log "INFO" "INIT_D: $INIT_D"
 }
 
-#----
-## Ask where is the monitoring engine binary
-## @param	message
-## @param	default value (use "NO_DEFAULT" if not default value)
-## @param	global variable to set a result
-## @return 0	end
-#----
 function locate_monitoringengine_binary()
 {
-	local message=$1
-	local default=$2
-	local val_ref=$3
-	local res="not_define"
-	local first=0
-	if [ -n "$MONITORINGENGINE_BINARY" -a -x "$MONITORINGENGINE_BINARY" ]; then
-		log "INFO" "$(gettext "Use default variable") : $MONITORINGENGINE_BINARY"
-		return 0
+	if [ -z "$MONITORINGENGINE_BINARY" ] ; then
+		answer_with_testfile "$(gettext "Where is your Centreon Engine binary ?")" "$DEFAULT_MONITORINGENGINE_BINARY" "MONITORINGENGINE_BINARY"
 	fi
-	while [ ! -x "$res" ]; do
-		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not executable.")" "$critical"
-		echo -e "\n$message"
-		echo -en "> "
-		read res
-		if [ -z "$res" ]; then
-			res="not_define"
-		fi
-		first=1
-	done
-	eval $val_ref=$res
-	return 0
+	MONITORINGENGINE_BINARY=`trim "${MONITORINGENGINE_BINARY}"`
+	export MONITORINGENGINE_BINARY
+	log "INFO" "MONITORINGENGINE_BINARY: $MONITORINGENGINE_BINARY"
 }
 
 function locate_monitoringengine_init_script()
 {
 	if [ -z "$MONITORINGENGINE_INIT_SCRIPT" ] ; then
-		answer_with_confirm "$(gettext "What is the Monitoring engine init.d script ?")" "service centengine" "MONITORINGENGINE_INIT_SCRIPT"
+		answer_with_confirm "$(gettext "What is your Centreon Engine startup command (init.d, service, ...) ?")" "$DEFAULT_MONITORINGENGINE_INIT_SCRIPT" "MONITORINGENGINE_INIT_SCRIPT"
 	fi
 	MONITORINGENGINE_INIT_SCRIPT=`trim "${MONITORINGENGINE_INIT_SCRIPT}"`
 	export MONITORINGENGINE_INIT_SCRIPT
@@ -705,7 +683,7 @@ function locate_monitoringengine_init_script()
 function locate_monitoringengine_etc()
 {
 	if [ -z "$MONITORINGENGINE_ETC" ]; then
-		answer_with_testdir "$(gettext "What is the Monitoring engine configuration directory ?")" "NO_DEFAULT" "MONITORINGENGINE_ETC"
+		answer_with_testdir "$(gettext "Where is your Centreon Engine configuration directory ?")" "$DEFAULT_MONITORINGENGINE_ETC" "MONITORINGENGINE_ETC"
 	fi
 	MONITORINGENGINE_ETC=`trim ${MONITORINGENGINE_ETC%/}`
 	export MONITORINGENGINE_ETC
@@ -715,7 +693,7 @@ function locate_monitoringengine_etc()
 function locate_monitoringengine_log()
 {
 	if [ -z "$MONITORINGENGINE_LOG" ]; then
-		answer_with_testdir "$(gettext "What is the Monitoring engine log directory ?")" "NO_DEFAULT" "MONITORINGENGINE_LOG"
+		answer_with_testdir "$(gettext "Where is your Centreon Engine log directory ?")" "$DEFAULT_MONITORINGENGINE_LOG" "MONITORINGENGINE_LOG"
 	fi
 	MONITORINGENGINE_LOG=`trim ${MONITORINGENGINE_LOG%/}`
 	export MONITORINGENGINE_LOG
@@ -725,7 +703,7 @@ function locate_monitoringengine_log()
 function locate_broker_etc()
 {
 	if [ -z "$BROKER_ETC" ]; then
-		answer_with_testdir "$(gettext "Where is the configuration directory for broker module ?")" "NO_DEFAULT" "BROKER_ETC"
+		answer_with_testdir "$(gettext "Where is your Centreon Broker configuration directory ?")" "$DEFAULT_BROKER_ETC" "BROKER_ETC"
 	fi
 	BROKER_ETC=`trim ${BROKER_ETC%/}`
 	export BROKER_ETC
@@ -735,7 +713,7 @@ function locate_broker_etc()
 function locate_broker_init_script()
 {
 	if [ -z "$BROKER_INIT_SCRIPT" ]; then
-		answer_with_confirm "$(gettext "Where is the init script for broker module daemon ?")" "service cbd" "BROKER_INIT_SCRIPT"
+		answer_with_confirm "$(gettext "What is your Centreon Broker startup command (init.d, service, ...) ?")" "$DEFAULT_BROKER_INIT_SCRIPT" "BROKER_INIT_SCRIPT"
 	fi
 	BROKER_INIT_SCRIPT=`trim "${BROKER_INIT_SCRIPT}"`
 	export BROKER_INIT_SCRIPT
@@ -748,7 +726,7 @@ function locate_broker_init_script()
 #----
 function locate_centreon_logdir() {
 	if [ -z "$CENTREON_LOG" ] ; then
-		answer_with_createdir "$(gettext "Where is your Centreon log directory")" "$DEFAULT_CENTREON_LOG" "CENTREON_LOG"
+		answer_with_createdir "$(gettext "Where is your Centreon log directory ?")" "$DEFAULT_CENTREON_LOG" "CENTREON_LOG"
 		echo_success "$(gettext "Path" ) $CENTREON_LOG" "$ok"
 	elif [ ! -d "$CENTREON_LOG" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTREON_LOG"
@@ -765,7 +743,7 @@ function locate_centreon_logdir() {
 #----
 function locate_centreon_etcdir() {
 	if [ -z "$CENTREON_ETC" ] ; then
-		answer_with_createdir "$(gettext "Where is your Centreon etc directory")" "$DEFAULT_CENTREON_ETC" "CENTREON_ETC"
+		answer_with_createdir "$(gettext "Where is your Centreon configuration directory ?")" "$DEFAULT_CENTREON_ETC" "CENTREON_ETC"
 		echo_success "$(gettext "Path" ) $CENTREON_ETC" "$ok"
 	elif [ ! -d "$CENTREON_ETC" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTREON_ETC"
@@ -782,7 +760,7 @@ function locate_centreon_etcdir() {
 #----
 function locate_centreon_bindir() {
 	if [ -z "$CENTREON_BINDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your Centreon binaries directory")" "$DEFAULT_CENTREON_BINDIR" "CENTREON_BINDIR"
+		answer_with_createdir "$(gettext "Where is your Centreon binaries directory ?")" "$DEFAULT_CENTREON_BINDIR" "CENTREON_BINDIR"
 		echo_success "$(gettext "Path" ) $CENTREON_BINDIR" "$ok"
 	elif [ ! -d "$CENTREON_BINDIR" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTREON_BINDIR"
@@ -799,7 +777,7 @@ function locate_centreon_bindir() {
 #----
 function locate_centreon_datadir() {
 	if [ -z "$CENTREON_DATADIR" ]; then
-		answer_with_createdir "$(gettext "Where is your Centreon data informations directory")" "$DEFAULT_CENTREON_DATADIR" "CENTREON_DATADIR"
+		answer_with_createdir "$(gettext "Where is your Centreon data informations directory ?")" "$DEFAULT_CENTREON_DATADIR" "CENTREON_DATADIR"
 		echo_success "$(gettext "Path" ) $CENTREON_DATADIR" "$ok"
 	elif [ ! -d "$CENTREON_DATADIR" -a "$silent_install" -eq 1 ]; then
 		mkdir -p "$CENTREON_DATADIR"
@@ -816,7 +794,7 @@ function locate_centreon_datadir() {
 #----
 function locate_centreon_installdir() {
 	if [ -z "$INSTALL_DIR_CENTREON" ] ; then
-		answer_with_createdir "$(gettext "Where is your Centreon directory?")" "$DEFAULT_INSTALL_DIR_CENTREON" "INSTALL_DIR_CENTREON"
+		answer_with_createdir "$(gettext "Where is your Centreon directory ?")" "$DEFAULT_INSTALL_DIR_CENTREON" "INSTALL_DIR_CENTREON"
 		echo_success "$(gettext "Path" ) $INSTALL_DIR_CENTREON" "$ok"
 	elif [ ! -d "$INSTALL_DIR_CENTREON" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$INSTALL_DIR_CENTREON"
@@ -845,7 +823,7 @@ function locate_centreon_generationdir() {
 #----
 function locate_centreon_rundir() {
 	if [ -z "$CENTREON_RUNDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your Centreon Run Dir directory?")" "$DEFAULT_CENTREON_RUNDIR" "CENTREON_RUNDIR"
+		answer_with_createdir "$(gettext "Where is your Centreon Run Dir directory ?")" "$DEFAULT_CENTREON_RUNDIR" "CENTREON_RUNDIR"
 		echo_success "$(gettext "Path" ) $CENTREON_RUNDIR" "$ok"
 	elif [ ! -d "$CENTREON_RUNDIR" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTREON_RUNDIR"
@@ -862,7 +840,7 @@ function locate_centreon_rundir() {
 #----
 function locate_centreon_varlib() {
 	if [ -z "$CENTREON_VARLIB" ] ; then
-		answer_with_createdir "$(gettext "Where is your Centreon variable library directory?")" "$DEFAULT_CENTREON_VARLIB" "CENTREON_VARLIB"
+		answer_with_createdir "$(gettext "Where is your Centreon variable state information directory ?")" "$DEFAULT_CENTREON_VARLIB" "CENTREON_VARLIB"
 		echo_success "$(gettext "Path" ) $CENTREON_VARLIB" "$ok"
 	elif [ ! -d "$CENTREON_VARLIB" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTREON_VARLIB"
@@ -879,7 +857,7 @@ function locate_centreon_varlib() {
 #----
 function locate_centstorage_rrddir() {
 	if [ -z "$CENTSTORAGE_RRD" ] ; then
-		answer_with_createdir "$(gettext "Where is your CentStorage RRD directory")" "$DEFAULT_CENTSTORAGE_RRD" "CENTSTORAGE_RRD"
+		answer_with_createdir "$(gettext "Where is your CentStorage RRD directory ?")" "$DEFAULT_CENTSTORAGE_RRD" "CENTSTORAGE_RRD"
 		echo_success "$(gettext "Path" ) $CENTSTORAGE_RRD" "$ok"
 	elif [ ! -d "$CENTSTORAGE_RRD" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTSTORAGE_RRD"
@@ -896,7 +874,7 @@ function locate_centstorage_rrddir() {
 #----
 function locate_centstorage_bindir() {
 	if [ -z "$CENTSTORAGE_BINDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your CentStorage binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
+		answer_with_createdir "$(gettext "Where is your CentStorage binary directory ?")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
 		echo_success "$(gettext "Path" ) $CENTSTORAGE_BINDIR" "$ok"
 	elif [ ! -d "$CENTSTORAGE_BINDIR" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTSTORAGE_BINDIR"
@@ -913,7 +891,7 @@ function locate_centstorage_bindir() {
 #----
 function locate_centstorage_libdir() {
 	if [ -z "$CENTSTORAGE_LIBDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your CentStorage library directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_LIBDIR" "CENTSTORAGE_LIBDIR"
+		answer_with_createdir "$(gettext "Where is your CentStorage library directory ?")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_LIBDIR" "CENTSTORAGE_LIBDIR"
 		echo_success "$(gettext "Path" ) $CENTSTORAGE_LIBDIR" "$ok"
 	elif [ ! -d "$CENTSTORAGE_LIBDIR" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTSTORAGE_LIBDIR"
@@ -930,7 +908,7 @@ function locate_centstorage_libdir() {
 #----
 function locate_centcore_bindir() {
 	if [ -z "$CENTCORE_BINDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your CentCore binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTCORE_BINDIR" "CENTCORE_BINDIR"
+		answer_with_createdir "$(gettext "Where is your CentCore binary directory ?")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTCORE_BINDIR" "CENTCORE_BINDIR"
 		echo_success "$(gettext "Path" ) $CENTCORE_BINDIR" "$ok"
 	elif [ ! -d "$CENTCORE_BINDIR" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p $CENTCORE_BINDIR
@@ -947,7 +925,7 @@ function locate_centcore_bindir() {
 #----
 function locate_centplugins_tmpdir() {
 	if [ -z "$CENTPLUGINS_TMP" ] ; then
-		answer_with_createdir "$(gettext "Where is your CentPlugins lib directory")" "$DEFAULT_CENTPLUGINS_TMP" "CENTPLUGINS_TMP"
+		answer_with_createdir "$(gettext "Where is your CentPlugins lib directory ?")" "$DEFAULT_CENTPLUGINS_TMP" "CENTPLUGINS_TMP"
 		echo_success "$(gettext "Path" ) $CENTPLUGINS_TMP" "$ok"
 	elif [ ! -d "$CENTPLUGINS_TMP" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTPLUGINS_TMP"
@@ -966,7 +944,7 @@ function locate_centplugins_tmpdir() {
 function locate_snmp_etcdir() {
 	testdir_clean "$SNMP_ETC" "SNMP_ETC"
 	if [ -z "$SNMP_ETC" ] ; then
-		answer_with_testdir "$(gettext "Where is your SNMP configuration directory")" "$DEFAULT_SNMP_ETC" "SNMP_ETC"
+		answer_with_testdir "$(gettext "Where is your SNMP configuration directory ?")" "$DEFAULT_SNMP_ETC" "SNMP_ETC"
 		echo_success "$SNMP_ETC" "$ok"
 	fi
 	SNMP_ETC=${SNMP_ETC%/}
@@ -980,7 +958,7 @@ function locate_snmp_etcdir() {
 #----
 function locate_centreontrapd_bindir() {
 	if [ -z "$CENTREONTRAPD_BINDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your CentreonTrapd binaries directory")" "$DEFAULT_CENTREON_BINDIR" "CENTREONTRAPD_BINDIR"
+		answer_with_createdir "$(gettext "Where is your CentreonTrapd binaries directory ?")" "$DEFAULT_CENTREON_BINDIR" "CENTREONTRAPD_BINDIR"
 		echo_success "$CENTREONTRAPD_BINDIR" "$ok"
 	fi
 	CENTREONTRAPD_BINDIR=`trim ${CENTREONTRAPD_BINDIR%/}`
@@ -995,7 +973,7 @@ function locate_centreontrapd_bindir() {
 function locate_sudo() {
 	testfile_clean "$SUDO_FILE" "SUDO_FILE"
 	if [ -z "$SUDO_FILE" ] ; then
-		answer_with_testfile "$(gettext "Where is sudo configuration file")" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
+		answer_with_testfile "$(gettext "Where is your sudo configuration file ?")" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
 		echo_success "$SUDO_FILE" "$ok"
 	fi
 	SUDO_FILE=`trim ${SUDO_FILE%/}`
@@ -1013,7 +991,7 @@ function locate_rrdtool() {
 	if [ -z "$BIN_RRDTOOL" ] ; then 
 		pathfind_ret "rrdtool" "BIN_RRDTOOL"
 		if [ "$?" -ne 0 ] ; then 
-			answer_with_testfile "$(gettext "Where is rrdtool")" "$DEFAULT_BIN_RRDTOOL" "BIN_RRDTOOL"
+			answer_with_testfile "$(gettext "Where is rrdtool ?")" "$DEFAULT_BIN_RRDTOOL" "BIN_RRDTOOL"
 		else 
 			BIN_RRDTOOL="$BIN_RRDTOOL/rrdtool"
 		fi
@@ -1034,7 +1012,7 @@ function locate_perl() {
 	if [ -z "$BIN_PERL" ] ; then 
 		pathfind_ret "perl" "BIN_PERL"
 		if [ "$?" -ne 0 ] ; then 
-			answer_with_testfile "$(gettext "Where is perl")" "$DEFAULT_BIN_PERL" "BIN_PERL"
+			answer_with_testfile "$(gettext "Where is perl ?")" "$DEFAULT_BIN_PERL" "BIN_PERL"
 		else 
 			BIN_PERL="$BIN_PERL/perl"
 		fi
@@ -1055,7 +1033,7 @@ function locate_mail() {
 	if [ -z "$BIN_MAIL" ] ; then 
 		pathfind_ret "mail" "BIN_MAIL"
 		if [ "$?" -ne 0 ] ; then 
-			answer_with_testfile "$(gettext "Where is mail binary")" "$DEFAULT_BIN_MAIL" "BIN_MAIL"
+			answer_with_testfile "$(gettext "Where is your mail binary ?")" "$DEFAULT_BIN_MAIL" "BIN_MAIL"
 		else 
 			BIN_MAIL="$BIN_MAIL/mail"
 		fi
@@ -1083,7 +1061,7 @@ function locate_php_bin() {
 			fi
 		done
 		if [ -z "$PHP_BIN" ] ; then 
-			answer_with_testfile "$(gettext "Where is your php binary ? ")" "$DEFAULT_PHP_BIN" "PHP_BIN"
+			answer_with_testfile "$(gettext "Where is your php binary ?")" "$DEFAULT_PHP_BIN" "PHP_BIN"
 		fi
 		echo_success "$PHP_BIN" "$ok"
 	fi
@@ -1099,7 +1077,7 @@ function locate_php_bin() {
 function locate_pear() {
 	testdir_clean "$PEAR_PATH" "PEAR_PATH"
 	if [ -z "$PEAR_PATH" ] ; then
-		answer_with_testfile "$(gettext "Where is PEAR [PEAR.php] ")" "$DEFAULT_PEAR_PATH/PEAR.php" "PEAR_PATH"
+		answer_with_testfile "$(gettext "Where is PEAR [PEAR.php] ?")" "$DEFAULT_PEAR_PATH/PEAR.php" "PEAR_PATH"
 		PEAR_PATH=$(dirname $PEAR_PATH)
 		echo_success "$(gettext "Path" ) $PEAR_PATH" "$ok"
 	fi
@@ -1119,7 +1097,7 @@ function locate_cron_d() {
 			CRON_D="/etc/cron.d"
 		# Add most of init.d 
 		else 
-			answer_with_testdir "$(gettext "Where is your cron.d directory ?")" "$DEFAULT_CRON_D" "CRON_D"
+			answer_with_testdir "$(gettext "Where is your cron configuration directory ?")" "$DEFAULT_CRON_D" "CRON_D"
 			echo_success "Path $CRON_D" "$ok"
 		fi
 	fi
@@ -1139,7 +1117,7 @@ function locate_logrotate_d() {
 			LOGROTATE_D="/etc/logrotate.d"
 		# Add most of init.d 
 		else 
-			answer_with_testdir "$(gettext "Where is your logrotate.d directory ?")" "$DEFAULT_LOGROTATE_D" "LOGROTATE_D"
+			answer_with_testdir "$(gettext "Where is your logrotate configuration directory ?")" "$DEFAULT_LOGROTATE_D" "LOGROTATE_D"
 			echo_success "Path $LOGROTATE_D" "$ok"
 		fi
 	fi
@@ -1318,7 +1296,7 @@ function prepare_sudo_config() {
 	# Find Monitoring Engine Init Script
 	locate_monitoringengine_init_script
 	# find nagios binary if not define
-	[ -z "$MONITORINGENGINE_BINARY" ] && locate_monitoringengine_binary "$(gettext "What is the Monitoring engine binary ?")" "NO_DEFAULT" "MONITORINGENGINE_BINARY"
+	[ -z "$MONITORINGENGINE_BINARY" ] && locate_monitoringengine_binary
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
 	[ -z "$BROKER_ETC" ] && locate_broker_etc
 	[ -z "$BROKER_INIT_SCRIPT" ] && locate_broker_init_script
@@ -1899,7 +1877,7 @@ function check_centreon_group()
 function check_engine_user()
 {
 	if [ -z "${MONITORINGENGINE_USER}" ]; then
-		answer_with_testuser "$(gettext "What is the Monitoring engine user ?")" "NO_DEFAULT" "MONITORINGENGINE_USER"
+		answer_with_testuser "$(gettext "What is your Centreon Engine user ?")" "$DEFAULT_MONITORINGENGINE_USER" "MONITORINGENGINE_USER"
 	fi
 	log "INFO" "$(gettext "Monitoring engine user") : $MONITORINGENGINE_USER"
 	return 0
@@ -1912,7 +1890,7 @@ function check_engine_user()
 function check_broker_user()
 {
 	if [ -z "${BROKER_USER}" ]; then
-		answer_with_testuser_optional "$(gettext "What is the Broker user ?")" "NO_DEFAULT" "BROKER_USER"
+		answer_with_testuser_optional "$(gettext "What is your Centreon Broker user ?")" "$DEFAULT_BROKER_USER" "BROKER_USER"
 	fi
 	log "INFO" "$(gettext "Broker user") : $BROKER_USER"
 	return 0
@@ -2090,7 +2068,7 @@ function find_OS() {
 function clean_and_exit() {
   local trap_sig=${1:-0}
   if [ $trap_sig -eq 0 ] ; then
-    echo -e "$(gettext "\nTrap interrupt, Centreon'll exit now and clean install")"
+    echo -e "$(gettext "\nTrap interrupt, Centreon will exit now and clean install")"
     yes_no_default "$(gettext "Do you really want to quit Centreon install process ? ")" "$no"
     if [ $? -eq 1 ] ; then 
       echo "$(gettext "Continue...")"

@@ -1,6 +1,6 @@
 # -*-Shell-script-*-
 # install_vars
-# This file contain reconfigured variables used in install scripts
+# This file contain preconfigured variables used in install scripts
 
 LOG_DIR="$BASE_DIR/log"
 LOG_FILE="$LOG_DIR/install_centreon.log"
@@ -45,3 +45,11 @@ DEFAULT_CENTREON_GROUP="centreon"
 DEFAULT_PLUGIN_DIR="/usr/lib/nagios/plugins"
 DEFAULT_CENTREON_BINDIR="/usr/local/centreon/bin"
 DEFAULT_CENTREON_DATADIR="/usr/local/centreon/data"
+DEFAULT_MONITORINGENGINE_BINARY="/usr/sbin/centengine"
+DEFAULT_MONITORINGENGINE_INIT_SCRIPT="service centengine"
+DEFAULT_MONITORINGENGINE_ETC="/etc/centreon-engine"
+DEFAULT_MONITORINGENGINE_LOG="/var/log/centreon-engine"
+DEFAULT_MONITORINGENGINE_USER="centreon-engine"
+DEFAULT_BROKER_ETC="/etc/centreon-broker"
+DEFAULT_BROKER_INIT_SCRIPT="service cbd"
+DEFAULT_BROKER_USER="centreon-broker"
