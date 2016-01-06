@@ -44,10 +44,10 @@ abstract class AbstractObjectXML {
         $content = $this->writer->outputMemory(true);
         if ($handle = fopen($full_file, 'w')) {
             if (strcmp($content, "") && !fwrite($handle, $content)) {
-                throw new RuntimeException('Cannot write to file "' . $filename . '"');
+                throw new RuntimeException('Cannot write to file "' . $full_file . '"');
             }
         } else {
-            throw new Exception("Can't open file: $filename");
+            throw new Exception("Cannot open file " . $full_file);
         }
     }
     
