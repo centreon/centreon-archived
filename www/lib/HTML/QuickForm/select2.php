@@ -267,15 +267,16 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $strHtml = '';
         $readonly = '';
         
-        $strHtml = '<select id="' . $this->getName()
+        if(!$this->_allowClear && !$this->_flagFrozen){
+            $strHtml .= '<span style="cursor:pointer;" class="clearAllSelect2" title="Clear field" ><img src="./img/icons/circle-cross.png" class="ico-14" /></span>';
+        }
+        $strHtml .= '<select id="' . $this->getName()
             . '" name="' . $this->getElementHtmlName()
             . '" ' . $this->_multipleHtml . ' '
             . ' style="width: 300px;" ' . $readonly . '><option></option>'
             . '%%DEFAULT_SELECTED_VALUES%%'
             . '</select>';
-        if(!$this->_allowClear && !$this->_flagFrozen){
-            $strHtml .= '<span style="cursor:pointer;" class="clearAllSelect2" title="Clear field" ><img src="./img/icons/circle-cross.png" class="ico-14" /></span>';
-        }
+        
         
         $strHtml .= $this->getJsInit();
         $strHtml = str_replace('%%DEFAULT_SELECTED_VALUES%%', $this->_defaultSelectedOptions, $strHtml);
@@ -348,7 +349,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $strJsInitEnding = '});';
         
         if (!$this->_allowClear) {
-            $strJsInitEnding .= 'jQuery("#' . $this->getName() . '").nextAll(".clearAllSelect2").on("click",function(){ '
+            $strJsInitEnding .= 'jQuery("#' . $this->getName() . '").prevAll(".clearAllSelect2").on("click",function(){ '
                 . '$currentValues = jQuery("#' . $this->getName() . '").val(); '
                 . 'jQuery("#' . $this->getName() . '").val("");'
                 . 'jQuery("#' . $this->getName() . '").empty().append(jQuery("<option>"));'
@@ -359,7 +360,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         
         $additionnalJs .= ' jQuery(".select2-selection").each(function(){'
             . ' if(typeof this.isResiable == "undefined" || this.isResiable){'
-            . ' jQuery(this).resizable({ minWidth : jQuery(this).width(), minHeight : jQuery(this).height()});'
+            . ' jQuery(this).resizable({ maxWidth: 500, '
+            . ' minWidth : jQuery(this).width() != 0 ? jQuery(this).width() : 200, '
+            . ' minHeight : jQuery(this).height() != 0 ? jQuery(this).height() : 45 });'
             . ' this.isResiable = true; '
             . ' }'
             . ' }); ';
