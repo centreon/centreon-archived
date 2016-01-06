@@ -692,6 +692,16 @@ function locate_monitoringengine_binary()
 	return 0
 }
 
+function locate_monitoringengine_init_script()
+{
+	if [ -z "$MONITORINGENGINE_INIT_SCRIPT" ] ; then
+		answer_with_confirm "$(gettext "What is the Monitoring engine init.d script ?")" "service centengine" "MONITORINGENGINE_INIT_SCRIPT"
+	fi
+	MONITORINGENGINE_INIT_SCRIPT=`trim "${MONITORINGENGINE_INIT_SCRIPT}"`
+	export MONITORINGENGINE_INIT_SCRIPT
+	log "INFO" "MONITORINGENGINE_INIT_SCRIPT: $MONITORINGENGINE_INIT_SCRIPT"
+}
+
 function locate_monitoringengine_etc()
 {
 	if [ -z "$MONITORINGENGINE_ETC" ]; then
@@ -1306,7 +1316,7 @@ function prepare_sudo_config() {
 
     	locate_sudo
 	# Find Monitoring Engine Init Script
-	locate_monitoringengine_init_script "$(gettext "What is the Monitoring engine init.d script ?")" "NO_DEFAULT" "MONITORINGENGINE_INIT_SCRIPT"
+	locate_monitoringengine_init_script
 	# find nagios binary if not define
 	[ -z "$MONITORINGENGINE_BINARY" ] && locate_monitoringengine_binary "$(gettext "What is the Monitoring engine binary ?")" "NO_DEFAULT" "MONITORINGENGINE_BINARY"
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
@@ -1673,38 +1683,6 @@ function createCentPluginsForTrapdInstallConf() {
 	__EOT__
 
 	echo_success "Create $CENTREON_ETC/instCentPlugins.conf " "OK"
-	return 0
-}
-
-#----
-## Locate the init.d script for monitoring engine
-## @param	message
-## @param	default value (use "NO_DEFAULT" if not default value)
-## @param	global variable to set a result
-## @return 0	end
-#----
-function locate_monitoringengine_init_script()
-{
-	local message=$1
-	local default=$2
-	local val_ref=$3
-	local res="not_define"
-	local first=0
-	if [ -n "$MONITORINGENGINE_INIT_SCRIPT" -a -x "$MONITORINGENGINE_INIT_SCRIPT" ]; then
-		log "INFO" "$(gettext "Use default variable") : $MONITORINGENGINE_INIT_SCRIPT"
-		return 0
-	fi
-	while [ ! -x "$res" ]; do
-		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not executable.")" "$critical"
-		echo -e "\n$message"
-		echo -en "> "	
-		read res
-		if [ -z "$res" ]; then
-			$res="not_define"
-		fi
-		first=1
-	done
-	eval $val_ref=$res
 	return 0
 }
 
