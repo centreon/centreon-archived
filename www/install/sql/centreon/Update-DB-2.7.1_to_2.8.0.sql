@@ -30,3 +30,8 @@ INSERT INTO cb_type_field_relation (cb_type_id, is_required, cb_field_id, order_
         'queries_per_transaction', 'failover', 'metric_naming', 'status_naming')
     );
 
+UPDATE cb_type_field_relation SET is_required = 1
+WHERE
+    cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'graphite' LIMIT 1)
+    AND cb_field_id IN (SELECT cb_field_id FROM cb_field where fieldname IN ('db_host', 'metric_naming', 'status_naming'));
+
