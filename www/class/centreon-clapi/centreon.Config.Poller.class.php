@@ -418,15 +418,21 @@ class CentreonConfigPoller {
             $config_generate->configPollerFromId($variables);
         }    
 
+	$poller_id = $variables;
+
         /* Change files owner */
-        $apacheUser = $this->getApacheUser();
+        $apacheUser = $this->getApacheUser($poller_id);
+        $apacheGroup = $this->getApacheGroup($poller_id);
+
         $setFilesOwner = 1;
         if ($apacheUser != "") {
-            foreach (glob($this->centreon_path."/filesGeneration/nagiosCFG/".$tab['id']."/*.cfg") as $file) {
+            foreach (glob($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id/*.cfg") as $file) {
                 chown($file, $apacheUser);
+		chgrp($file, $apacheGroup);
             }
-            foreach (glob($this->centreon_path."/filesGeneration/broker/".$tab['id']."/*.cfg") as $file) {
+            foreach (glob($this->centreon_path."/filesGeneration/broker/$poller_id/*.cfg") as $file) {
                 chown($file, $apacheUser);
+		chgrp($file, $apacheGroup);
             }
         } else {
             $setFilesOwner = 0;
@@ -434,8 +440,8 @@ class CentreonConfigPoller {
 
         if ($setFilesOwner == 0) {
             print "We can set configuration file owner after the generation. \n";
-            print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/nagiosCFG/".$tab['id']."/\n";
-            print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/broker/".$tab['id']."/\n";
+            print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/nagiosCFG/$poller_id/\n";
+            print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/broker/$poller_id/\n";
         }
 
         print "Configuration files generated for poller '".$variables."'\n";
@@ -453,9 +459,6 @@ class CentreonConfigPoller {
         $pearDB = $this->_DB;
         $pearDBO = $this->_DBC;
 
-        /* Get Apache user name */
-        $apacheUser = $this->getApacheUser();
-
         require_once _CENTREON_PATH_."www/include/configuration/configGenerate/DB-Func.php";
         if (!isset($variables)) {
             print "Cannot get poller";
@@ -472,6 +475,10 @@ class CentreonConfigPoller {
         if (!is_numeric($variables)) {
             $variables = $this->getPollerId($variables);
         }
+
+        /* Get Apache user name */
+        $apacheUser = $this->getApacheUser($variables);
+        $apacheGroup = $this->getApacheGroup($variables);
 
         /**
          * Move files.
@@ -498,6 +505,7 @@ class CentreonConfigPoller {
             if ($apacheUser != "") {
                 foreach (glob($Nagioscfg["cfg_dir"]."/*.cfg") as $file) {
                     chown($file, $apacheUser);
+		    chgrp($file, $apacheGroup);
                 }
             } else {
                 print "Please check that files in the followings directory are writable by apache user : ".$Nagioscfg["cfg_dir"]."\n";
@@ -528,12 +536,12 @@ class CentreonConfigPoller {
                 if ($apacheUser != "") {
                     foreach (glob(rtrim($centreonBrokerDirCfg, "/") . "/" . "/*") as $file) {
                         chown($file, $apacheUser);
+		    	chgrp($file, $apacheGroup);
                     }
                 } else {
                     print "Please check that files in the followings directory are writable by apache user : ".rtrim($centreonBrokerDirCfg, "/")."/\n";
                 }
             }
-
 
             if (strlen($msg_copy) == 0) {
                 $msg_copy .= _("OK: All configuration files copied with success.");
@@ -554,25 +562,43 @@ class CentreonConfigPoller {
      *
      * @return string
      */
-    function getApacheUser() {
+    function getApacheUser($poller_id) {
         /* Change files owner */
-        $setFilesOwner = 1;
-        $installFile = "@CENTREON_ETC@/instCentWeb.conf";
-        if (file_exists($installFile)) {
-            $stream = file_get_contents($installFile);
-            $lines = preg_split("/\n/", $stream);
-            foreach ($lines as $line) {
-                if (preg_match('/WEB\_USER\=([a-zA-Z\_\-]*)/', $line, $tabUser)) {
-                    if (isset($tabUser[1])) {
-                        return $tabUser[1];
-                    } else {
-                        return "";
-                    }
-                }
-            }    
-        } else {
-            return "";
-        }
+
+	if (!is_numeric($poller_id)) {
+	   return "";
+	}
+	
+	$DBRESULT = $this->_DB->query("SELECT nagios_user FROM cfg_nagios WHERE nagios_server_id = '$poller_id'");
+	$data = $DBRESULT->fetchRow();
+
+	if (isset($data["nagios_user"])) {
+	   return $data["nagios_user"];
+	} else {
+	  return "";
+	}
+    }
+
+    /**
+     * Get apache group to set file access
+     *
+     * @return string
+     */
+    function getApacheGroup($poller_id) {
+        /* Change files owner */
+
+	if (!is_numeric($poller_id)) {
+	   return "";
+	}
+	
+	$DBRESULT = $this->_DB->query("SELECT nagios_group FROM cfg_nagios WHERE nagios_server_id = '$poller_id'");
+	$data = $DBRESULT->fetchRow();
+
+	if (isset($data["nagios_group"])) {
+	   return $data["nagios_group"];
+	} else {
+	  return "";
+	}
     }
 
     /**
