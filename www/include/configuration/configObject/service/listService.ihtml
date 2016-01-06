@@ -62,7 +62,7 @@
                 {/if}
 			<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
 			</td>
-			<td class="ListColLeft">
+			<td class="ListColLeft resizeTitle">
 				<a href="{$elemArr[elem].RowMenu_link2}">{if $elemArr[elem].RowMenu_sicon != ""}
 			<img src="{$elemArr[elem].RowMenu_sicon}" class="ico-14 margin_right"/>{/if}{$elemArr[elem].RowMenu_desc}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_retry}</td>
