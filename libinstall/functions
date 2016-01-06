@@ -365,6 +365,36 @@ function answer_with_testfile() {
 }
 
 #----
+## print a message, expect user input and confirm that entry is valid
+## Loop if not confirmed.
+## @param	message
+## @param	default value (use "NO_DEFAULT" if not default value)
+## @param	global variable to set a result
+## @return 0	end
+#----
+function answer_with_confirm() {
+	local message=$1
+	local default=$2
+	local var_ref=$3
+	local res="not_define"
+	local unconfirmed=1
+	while [ "$unconfirmed" = 1 ] ; do
+		echo -e "\n$message"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
+		echo -en "> "
+		read res
+		if [ -z "$res" ] ; then
+			[ "$default" != "NO_DEFAULT" ] && res="$default"
+		fi
+		yes_no_default "$(gettext "Are you sure ?") [$res]"
+		unconfirmed=$?
+	done
+	# Double-escaping is required to avoid arguments of $res to be run as commands.
+	eval $var_ref="'$res'"
+	return 0
+}
+
+#----
 ## print a message for get informations with create a group system
 ## @param	message
 ## @param	default value (use "NO_DEFAULT" if not default value)
@@ -695,9 +725,9 @@ function locate_broker_etc()
 function locate_broker_init_script()
 {
 	if [ -z "$BROKER_INIT_SCRIPT" ]; then
-		answer_with_testfile "$(gettext "Where is the init script for broker module daemon ?")" "NO_DEFAULT" "BROKER_INIT_SCRIPT"
+		answer_with_confirm "$(gettext "Where is the init script for broker module daemon ?")" "service cbd" "BROKER_INIT_SCRIPT"
 	fi
-	BROKER_INIT_SCRIPT=`trim ${BROKER_INIT_SCRIPT}`
+	BROKER_INIT_SCRIPT=`trim "${BROKER_INIT_SCRIPT}"`
 	export BROKER_INIT_SCRIPT
 	log "INFO" "BROKER_INIT_SCRIPT: $BROKER_INIT_SCRIPT"
 }
