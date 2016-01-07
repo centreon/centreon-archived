@@ -815,23 +815,6 @@ function locate_centstorage_rrddir() {
 }
 
 #----
-## Define where is centCore binary directory
-## @Globals	CENTCORE_BINDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTCORE_BINDIR
-#----
-function locate_centcore_bindir() {
-	if [ -z "$CENTCORE_BINDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your CentCore binary directory ?")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTCORE_BINDIR" "CENTCORE_BINDIR"
-		echo_success "$(gettext "Path" ) $CENTCORE_BINDIR" "$ok"
-	elif [ ! -d "$CENTCORE_BINDIR" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p $CENTCORE_BINDIR
-		log "INFO" "$(gettext "Create") $CENTCORE_BINDIR"
-	fi
-	CENTCORE_BINDIR=`trim ${CENTCORE_BINDIR%/}`
-	export CENTCORE_BINDIR
-	log "INFO" "CENTCORE_BINDIR: $CENTCORE_BINDIR"
-}
-
-#----
 ## Define where is centPlugins temporary directory
 ## @Globals	CENTPLUGINS_TMP, DEFAULT_CENTPLUGINS_TMP
 #----
@@ -1486,7 +1469,7 @@ function createCentCoreInstallConf() {
 	CENTREON_LOG=$CENTREON_LOG
 	CENTREON_VARLIB=$CENTREON_VARLIB
 	CENTREON_GENDIR=$CENTREON_GENDIR
-	CENTCORE_BINDIR=$CENTCORE_BINDIR
+	CENTCORE_BINDIR=$CENTREON_BINDIR
 	BIN_SSH=$BIN_SSH
 	BIN_SCP=$BIN_SCP
 	CENTREON_GROUP=$CENTREON_GROUP
