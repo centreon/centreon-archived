@@ -582,43 +582,6 @@ function test_answer() {
 }
 
 #----
-## use to select a data on array 
-## set to a variable a result of chose
-## @param	variable to set a resutl
-## @param	List of possiblity to chose
-## @return 0	end
-#----
-function select_in_array() {
-	local variable=$1
-	shift
-	local array=($@)
-	local res=1
-	local count=0
-	local first=0
-	while [ $res -gt $count ] ; do
-		[ $first -eq 1 ] && echo_failure "$(gettext "\$res is not a valid response.")" "$critical" 
-		count=0
-		local limit=${#array[@]}
-		for (( datas=0; datas < limit; datas++ )) ; do
-			echo -e "\t$datas:\t${array[$datas]}"
-			let "count += 1" 
-		done
-		echo -en "> "
-		read res
-		first=1
-		if [ $res -eq $res 2>/dev/null ] ; then
-			echo " " 
-		else 
-			echo_failure "$(gettext "$res is not an integer")" "$fail"
-			res=255
-			first=0
-		fi
-	done
-	eval $variable=${array[$res]}
-	return 0
-}
-
-#----
 ## Define where is  plugins directory
 ## in last version of this script, you have been a possibility to create if not exist. now is not possible. You will create manualy.
 ## @Globals     PLUGIN_DIR, DEFAULT_PLUGIN_DIR
@@ -1107,27 +1070,6 @@ function locate_logrotate_d() {
 	LOGROTATE_D=`trim ${LOGROTATE_D%/}`
 	export LOGROTATE_D
 	log "INFO" "LOGROTATE_D: $LOGROTATE_D"
-}
-
-#----
-## Check if variable do not have most possibility
-## @param	variable to check
-## @return 0	True
-## @return 1	False
-#----
-function is_single() {
-	local var="$1"
-
-	local count=0
-	for value in $var ; do
-		let "count += 1"
-	done
-
-	if [ "$count" -eq 1 ] ; then
-		return 0
-	else 
-		return 1
-	fi
 }
 
 #----
