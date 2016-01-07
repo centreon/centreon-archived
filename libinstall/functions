@@ -815,23 +815,6 @@ function locate_centstorage_rrddir() {
 }
 
 #----
-## Define where is centStorage binary directory
-## @Globals	CENTSTORAGE_BINDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTSTORAGE_BINDIR
-#----
-function locate_centstorage_bindir() {
-	if [ -z "$CENTSTORAGE_BINDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your CentStorage binary directory ?")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
-		echo_success "$(gettext "Path" ) $CENTSTORAGE_BINDIR" "$ok"
-	elif [ ! -d "$CENTSTORAGE_BINDIR" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p "$CENTSTORAGE_BINDIR"
-		log "INFO" "$(gettext "Create") $CENTSTORAGE_BINDIR"
-	fi
-	CENTSTORAGE_BINDIR=`trim ${CENTSTORAGE_BINDIR%/}`
-	export CENTSTORAGE_BINDIR
-	log "INFO" "CENTSTORAGE_BINDIR: $CENTSTORAGE_BINDIR"
-}
-
-#----
 ## Define where is centCore binary directory
 ## @Globals	CENTCORE_BINDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTCORE_BINDIR
 #----
@@ -1463,7 +1446,7 @@ function createCentreonInstallConf() {
 ## Create a config file for CentStorage
 ## This file will use for upgrade process
 ## @Globals	CENTREON_ETC, INSTALL_DIR_CENTREON, CENTREON_LOG, CENTREON_ETC
-## @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD, CENTSTORAGE_BINDIR
+## @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD
 ## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
 #----
 function createCentStorageInstallConf() {
@@ -1478,7 +1461,7 @@ function createCentStorageInstallConf() {
 	NAGIOS_VAR=$NAGIOS_VAR
 	INIT_D=$INIT_D
 	CRON_D=$CRON_D
-	CENTSTORAGE_BINDIR=$CENTSTORAGE_BINDIR
+	CENTSTORAGE_BINDIR=$CENTREON_BINDIR
 	CENTSTORAGE_RRD=$CENTSTORAGE_RRD
 	CENTREON_USER=$CENTREON_USER
 	CENTREON_GROUP=$CENTREON_GROUP
@@ -1492,7 +1475,7 @@ function createCentStorageInstallConf() {
 ## Create a config file for CentCore
 ## This file will use for upgrade process
 ## @Globals	CENTREON_ETC, INSTALL_DIR_CENTREON, CENTREON_LOG, CENTREON_ETC
-## @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD, CENTSTORAGE_BINDIR
+## @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD
 ## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
 #----
 function createCentCoreInstallConf() {
