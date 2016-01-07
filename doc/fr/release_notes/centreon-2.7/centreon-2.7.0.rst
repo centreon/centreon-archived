@@ -2,6 +2,8 @@
 Centreon 2.7.0
 ##############
 
+Released December 17, 2015
+
 La version 2.7.0 de Centreon Web est maintenant téléchargeable sur notre `portail <https://download.centreon.com>`_. La liste complète des changements opérés dans la version 2.7.0 sont ci-dessous : 
 
 Améliorations et corrections
