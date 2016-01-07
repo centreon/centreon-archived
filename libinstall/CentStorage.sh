@@ -34,7 +34,6 @@ locate_init_d
 locate_cron_d
 
 locate_centstorage_bindir
-#locate_centstorage_libdir
 locate_centstorage_rrddir
 ## Config Nagios
 check_centreon_group

@@ -886,23 +886,6 @@ function locate_centstorage_bindir() {
 }
 
 #----
-## Define where is centStorage library directory
-## @Globals	CENTSTORAGE_LIBDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTSTORAGE_LIBDIR
-#----
-function locate_centstorage_libdir() {
-	if [ -z "$CENTSTORAGE_LIBDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your CentStorage library directory ?")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_LIBDIR" "CENTSTORAGE_LIBDIR"
-		echo_success "$(gettext "Path" ) $CENTSTORAGE_LIBDIR" "$ok"
-	elif [ ! -d "$CENTSTORAGE_LIBDIR" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p "$CENTSTORAGE_LIBDIR"
-		log "INFO" "$(gettext "Create") $CENTSTORAGE_LIBDIR"
-	fi
-	CENTSTORAGE_LIBDIR=`trim ${CENTSTORAGE_LIBDIR%/}`
-	export CENTSTORAGE_LIBDIR
-	log "INFO" "CENTSTORAGE_LIBDIR: $CENTSTORAGE_LIBDIR"
-}
-
-#----
 ## Define where is centCore binary directory
 ## @Globals	CENTCORE_BINDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTCORE_BINDIR
 #----
