@@ -139,7 +139,7 @@ if [ "$_tmp_install_opts" -eq 0 ] ; then
 fi
 
 # Export variable for all programs.
-export silent_install user_install_vars CENTREON_CONF cinstall_opts inst_upgrade_dir
+export silent_install user_install_vars cinstall_opts inst_upgrade_dir
 
 # Backup old log file and create a new one.
 [ ! -d "$LOG_DIR" ] && mkdir -p "$LOG_DIR"
