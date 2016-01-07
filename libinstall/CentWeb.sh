@@ -175,7 +175,7 @@ ${CAT} "$file_sql_temp" | while read file ; do
 		mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
-		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 		-e 's|@CENTREON_ENGINE_CONNECTORS@|'"$CENTREON_ENGINE_CONNECTORS"'|g' \
@@ -201,7 +201,7 @@ ${CAT} "$file_php_temp" | while read file ; do
 		mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
-		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 		-e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
@@ -224,7 +224,7 @@ ${CAT} "$file_php_config_temp" | while read file ; do
                 mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
         ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
                 -e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
-                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
                 -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
@@ -250,7 +250,7 @@ ${CAT} "$file_perl_temp" | while read file ; do
                 mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
         ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
                 -e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
-                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
                 -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \

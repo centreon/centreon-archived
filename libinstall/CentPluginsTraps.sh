@@ -26,7 +26,6 @@ locate_centreon_rundir
 locate_centreon_logdir
 locate_snmp_etcdir
 locate_init_d
-locate_centreontrapd_bindir
 
 check_centreon_user
 check_centreon_group
@@ -79,7 +78,7 @@ fi
 
 log "INFO" "$(gettext "Installing snmptt")"
 # Change macros on snmptrapd.conf
-${SED} -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREONTRAPD_BINDIR"'|g' \
+${SED} -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 	-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
 	$TMP_DIR/src/snmptrapd/snmptrapd.conf > \
 	$TMP_DIR/work/snmptrapd/snmptrapd.conf 2>>$LOG_FILE
@@ -92,7 +91,7 @@ check_result $? "$(gettext "Change macros for snmptrapd.conf")"
 ${SED} -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
-	-e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREONTRAPD_BINDIR"'|g' \
+	-e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 	-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
 	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
 	$TMP_DIR/src/centreontrapd.init.d > $TMP_DIR/work/centreontrapd.init.d
@@ -222,12 +221,12 @@ fi
 ## Copy Binaries
 log "INFO" "$(gettext "Install : centreontrapdforward")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-m 755 $TMP_DIR/src/bin/centreontrapdforward $CENTREONTRAPD_BINDIR/centreontrapdforward >> $LOG_FILE 2>&1
+	-m 755 $TMP_DIR/src/bin/centreontrapdforward $CENTREON_BINDIR/centreontrapdforward >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install") : centreontrapdforward"
 
 log "INFO" "$(gettext "Install : centreontrapd")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-m 755 $TMP_DIR/src/bin/centreontrapd $CENTREONTRAPD_BINDIR/centreontrapd >> $LOG_FILE 2>&1
+	-m 755 $TMP_DIR/src/bin/centreontrapd $CENTREON_BINDIR/centreontrapd >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install") : centreontrapd"
 
 log "INFO" "$(gettext "Install") : spool directory"
