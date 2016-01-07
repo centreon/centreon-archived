@@ -39,11 +39,10 @@ if (isset($pearDB)) {
     $querySelect = "select contact_id, contact_name, contact_alias from contact ";
     $res = $pearDB->query($querySelect);
     while ($row = $res->fetchRow()) {
-        $pearDB2 = new CentreonDB('centreon');
         $queryUpdate = " Update contact set contact_name = '".html_entity_decode($row['contact_name'])."',"
             . " contact_alias = '".html_entity_decode($row['contact_alias'])."'"
             . " where contact_id = ".$row['contact_id'].";";
-        $pearDB2->query($queryUpdate);
+        $pearDB->query($queryUpdate);
     } 
 }
 
