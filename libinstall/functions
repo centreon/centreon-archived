@@ -507,35 +507,6 @@ function answer_with_testuser()
 }
 
 #----
-## print a message for get informations with test if user exists, the user is optional
-## @param	message
-## @param	default value (use "NO_DEFAULT" if not default value)
-## @param	global variable to set a result
-## @return 0	end
-#----
-function answer_with_testuser_optional()
-{
-	local message=$1
-	local default=$2
-	local var_ref=$3
-	local res="not_def"
-	local first=0
-	while ! $(grep "^$res:" /etc/passwd &>/dev/null); do
-		[ $first -eq 1 ] && echo_passed "$(gettext "The user $res does not exists.")" "$critical"
-		echo -e "\n$message (optional)"
-		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
-		echo -en "> "
-		read res
-		if [ -z "$res" ]; then
-			break
-		fi
-		first=1
-	done
-	eval $var_ref=$res
-	return 0
-}
-
-#----
 ## Test if file exist
 ## @param	file
 ## @param	variable to reset
@@ -1749,7 +1720,7 @@ function check_engine_user()
 function check_broker_user()
 {
 	if [ -z "${BROKER_USER}" ]; then
-		answer_with_testuser_optional "$(gettext "What is your Centreon Broker user ?")" "$DEFAULT_BROKER_USER" "BROKER_USER"
+		answer_with_testuser "$(gettext "What is your Centreon Broker user ?")" "$DEFAULT_BROKER_USER" "BROKER_USER"
 	fi
 	log "INFO" "$(gettext "Broker user") : $BROKER_USER"
 	return 0
