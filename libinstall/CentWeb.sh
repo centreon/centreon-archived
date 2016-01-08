@@ -529,6 +529,12 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTREON_BINDIR/centreonSyncArchives >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install centreonSyncArchives")"
 
+## Install generateSqlLite
+log "INFO" "$(gettext "Prepare generateSqlLite")"
+cp $TMP_DIR/src/bin/generateSqlLite \
+	$TMP_DIR/final/bin/generateSqlLite >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare generateSqlLite")"
+
 log "INFO" "$(gettext "Install generateSqlLite")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-m 755 \
@@ -536,6 +542,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTREON_BINDIR/generateSqlLite >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install generateSqlLite")"
 
+## Install changeRrdDsName
 log "INFO" "$(gettext "Install changeRrdDsName.pl")"
 $INSTALL_DIR/cinstall $cinstall_opts \
         -m 755 \
