@@ -10,7 +10,7 @@
 # SVN: $Id$
 
 echo -e "\n$line"
-echo -e "\t$(gettext "Start CentPlugins Installation")"
+echo -e "\t$(gettext "Starting Centreon Plugins Installation")"
 echo -e "$line"
 
 ###### Check disk space

@@ -10,7 +10,7 @@
 # SVN: $Id$
 
 echo -e "\n$line"
-echo -e "\t$(gettext "Start CentPlugins Traps Installation")"
+echo -e "\t$(gettext "Starting CentreonTrapD Installation")"
 echo -e "$line"
 
 ###### Check disk space

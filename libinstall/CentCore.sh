@@ -10,7 +10,7 @@
 # SVN: $Id$
 
 echo -e "\n$line"
-echo -e "\t$(gettext "Start CentCore Installation")"
+echo -e "\t$(gettext "Starting CentCore Installation")"
 echo -e "$line"
 
 ###### Check disk space

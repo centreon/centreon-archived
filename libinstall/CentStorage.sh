@@ -10,7 +10,7 @@
 # SVN: $Id$
 
 echo -e "\n$line"
-echo -e "\t$(gettext "Start CentStorage Installation")"
+echo -e "\t$(gettext "Starting CentStorage Installation")"
 echo -e "$line"
 
 ###### Check disk space

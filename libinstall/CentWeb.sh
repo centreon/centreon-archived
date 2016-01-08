@@ -13,7 +13,7 @@
 #set -x 
 
 echo -e "\n$line"
-echo -e "\t$(gettext "Start Centreon Web Installation")"
+echo -e "\t$(gettext "Starting Centreon Web Installation")"
 echo -e "$line"
 
 ###### check space ton tmp dir
