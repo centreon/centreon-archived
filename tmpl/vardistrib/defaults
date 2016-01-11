@@ -25,6 +25,7 @@ BROKER_INIT_SCRIPT="service cbd"
 BROKER_USER="centreon-broker"
 
 # Install script behavior.
+PROCESS_CENTREON_PLUGINS=1
 FORCE_SUDO_CONF=1
 APACHE_RELOAD=1
 PEAR_AUTOINST=1
