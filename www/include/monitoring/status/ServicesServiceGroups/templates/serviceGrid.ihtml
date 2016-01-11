@@ -13,18 +13,21 @@
             <td><h4>{$sgStr}</h4></td>
             {if $poller_listing}
             <td><h4>{$pollerStr}</h4></td>
-            {/if}		
+            {/if}
+            <td><h4>{$typeDisplay}</h4></td>
+            <td><h4>{$typeDisplay2}</h4></td>
 	</tr>
     <tr>
-      <td><input size="15" id="host_search" class="search_input" style="padding-top:1px;padding-bottom:1px;" name="host_search" type="text" /></td>
+      <td><input size="15" id="host_search" class="search_input" name="host_search" type="text" /></td>
       <td>{$sgSearchSelect}</td>
       {if $poller_listing}
       <td><span id="instance_selected"></span></td>
       {/if}
+      <td>{$form.typeDisplay.html}</td>
+      <td>{$form.typeDisplay2.html}</td>
     </tr>
   </tbody>
 </table>
-<br/>
 <table class="ToolbarTable table">
 	<tr class="ToolbarTR">
 		<td>

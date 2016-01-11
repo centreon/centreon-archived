@@ -31,81 +31,77 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/configuration/configObject/connector/connector.php $
- *
  */
 
-    if (!isset ($oreon))
-        exit ();
+if (!isset($centreon)) {
+    exit ();        
+}
 
-    require_once $centreon_path . 'www/class/centreonConnector.class.php';
-    $path = $centreon_path . 'www/include/configuration/configObject/connector/';
-    require_once $path . "DB-Func.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonConnector.class.php';
+$path = _CENTREON_PATH_ . 'www/include/configuration/configObject/connector/';
+require_once $path . "DB-Func.php";
 
-    /*
-	 * Pear library
-	 */
-	require_once "HTML/QuickForm.php";
-    require_once 'HTML/QuickForm/select2.php';
-    require_once 'HTML/QuickForm/advmultiselect.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/select2.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-    $connectorObj = new CentreonConnector($pearDB);
+$connectorObj = new CentreonConnector($pearDB);
 
-    if (isset($_REQUEST['select']))
-        $select = $_REQUEST['select'];
+if (isset($_REQUEST['select']))
+    $select = $_REQUEST['select'];
 
-    if (isset($_REQUEST['id']))
-        $connector_id = $_REQUEST['id'];
+if (isset($_REQUEST['id']))
+    $connector_id = $_REQUEST['id'];
 
-    if (isset($_REQUEST['options']))
-        $options = $_REQUEST['options'];
+if (isset($_REQUEST['options']))
+    $options = $_REQUEST['options'];
 
-    switch ($o)
-    {
-        case "a":
-            require_once($path.'formConnector.php');
-        break;
+switch ($o)
+{
+    case "a":
+        require_once($path.'formConnector.php');
+    break;
 
-        case "w":
-            require_once($path.'formConnector.php');
-        break;
+    case "w":
+        require_once($path.'formConnector.php');
+    break;
 
-        case "c":
-            require_once($path.'formConnector.php');
-        break;
+    case "c":
+        require_once($path.'formConnector.php');
+    break;
 
-        case "s":
-            $myConnector = $connectorObj->read($connector_id);
-            $myConnector['enabled'] = '1';
-            $connectorObj->update($connector_id, $myConnector);
-            require_once($path.'listConnector.php');
-        break;
+    case "s":
+        $myConnector = $connectorObj->read($connector_id);
+        $myConnector['enabled'] = '1';
+        $connectorObj->update($connector_id, $myConnector);
+        require_once($path.'listConnector.php');
+    break;
 
-        case "u":
-            $myConnector = $connectorObj->read($connector_id);
-            $myConnector['enabled'] = '0';
-            $connectorObj->update($connector_id, $myConnector);
-            require_once($path.'listConnector.php');
-        break;
+    case "u":
+        $myConnector = $connectorObj->read($connector_id);
+        $myConnector['enabled'] = '0';
+        $connectorObj->update($connector_id, $myConnector);
+        require_once($path.'listConnector.php');
+    break;
 
-        case "m":
-            $selectedConnectors = array_keys($select);
-            foreach($selectedConnectors as $connectorId)
-                $connectorObj->copy($connectorId, (int)$options[$connectorId]);
-            require_once($path.'listConnector.php');
-        break;
+    case "m":
+        $selectedConnectors = array_keys($select);
+        foreach($selectedConnectors as $connectorId)
+            $connectorObj->copy($connectorId, (int)$options[$connectorId]);
+        require_once($path.'listConnector.php');
+    break;
 
-        case "d":
-            $selectedConnectors = array_keys($select);
-            foreach($selectedConnectors as $connectorId)
-                $connectorObj->delete($connectorId);
-            require_once($path.'listConnector.php');
-        break;
+    case "d":
+        $selectedConnectors = array_keys($select);
+        foreach($selectedConnectors as $connectorId)
+            $connectorObj->delete($connectorId);
+        require_once($path.'listConnector.php');
+    break;
 
-        default:
-            require_once($path.'listConnector.php');
-        break;
-    }
-
-?>
+    default:
+        require_once($path.'listConnector.php');
+    break;
+}

@@ -1,46 +1,65 @@
 {$form.javascript}
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
 <form {$form.attributes}>
-	<div>
+	<div class="headerTabContainer">
 	<ul id="mainnav">
 		<li class="a" id='c1'><a href="#" onclick="javascript:montre('1'); changeTab('1');">{$sort1}</a></li>
 		{foreach from=$tabs item=tab name=tabForeach}
 		<li class="b" id='c{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}'><a href="#" onclick="javascript:montre('{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');changeTab('tab{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');">{$tab.id|capitalize}</a></li>
 		{/foreach}
 	</ul>
-	</div>
-	<div id="validFormTop">
+    <div id="validFormTop">
 	{if $o == "a" || $o == "c"}
 		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
 		<p class="oreonbutton">{$form.change.html}</p>
 	{/if}
 	</div>
-	
-	<div id='tab1' class='tab'>
-		<table class="ListTable">
-			<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$centreonbroker_configuration}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
+	</div>
+    <div id='tab1' class='tab'>
+        <table class="formTable table">
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2">
+                    <h4>{$centreonbroker_main_options}</h4>
+                </td>
+            </tr>
+            <tr class="list_one"><td class="FormRowField">{$form.ns_nagios_server.label}</td><td class="FormRowValue">{$form.ns_nagios_server.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField">{$form.retention_path.label}</td><td class="FormRowValue">{$form.retention_path.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2">
+                    <h4>{$centreonbroker_log_options}</h4>
+                </td>
+            </tr>
             <tr class="list_one"><td class="FormRowField">{$form.write_timestamp.label}</td><td class="FormRowValue">{$form.write_timestamp.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.write_thread_id.label}</td><td class="FormRowValue">{$form.write_thread_id.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.ns_nagios_server.label}</td><td class="FormRowValue">{$form.ns_nagios_server.html}</td></tr>
-                        <tr class="list_one"><td class="FormRowField">{$form.event_queue_max_size.label}</td><td class="FormRowValue">{$form.event_queue_max_size.html}</td></tr>
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2">
+                    <h4>{$centreonbroker_advanced_options}</h4>
+                </td>
+            </tr>
+            <tr class="list_one"><td class="FormRowField">{$form.stats_activate.label}</td><td class="FormRowValue">{$form.stats_activate.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField">{$form.correlation_activate.label}</td><td class="FormRowValue">{$form.correlation_activate.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField">{$form.event_queue_max_size.label}</td><td class="FormRowValue">{$form.event_queue_max_size.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.command_file.label}</td><td class="FormRowValue">{$form.command_file.html}</td></tr>
-			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
-		</table>
-	</div>
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+        </table>
+    </div>
 	{foreach from=$tabs item=tab name=tabForeach2}
 	<div id='tab{math equation="x + y" x=$smarty.foreach.tabForeach2.index y=2}' class='tab'>
-		<table class="ListTable" id="{$tab.id}">
+		<table class="formTable table" id="{$tab.id}">
 			<tbody id="{$tab.id}_0">
-				<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$tab.name}</td></tr>
-				<tr class="list_one"><td class="FormRowField" colspan="2"><select id="block_{$tab.id}" onchange="checkTypeValidity(this)">{foreach from=$tab.blocks item=block}
+                </tr>
+				<tr class="list_lvl_1">
+                  <td class="ListColLvl1_name" colspan="2">
+                    <h4>{$tab.name}</h4>
+                  </td>
+                </tr>
+				<tr class="list_one"><td class="FormRowValue" colspan="2"><select id="block_{$tab.id}" onchange="checkTypeValidity(this)">{foreach from=$tab.blocks item=block}
 				<option value="{$block.id}">{$block.name}</option>
-				{/foreach}</select>&nbsp;<a id="add_{$tab.id}" href="javascript:addInfo('{$tab.id}')"><img src="./img/icones/16x16/navigate_plus.gif" />&nbsp;{$tab.link}</a></td></tr>
+				{/foreach}</select>&nbsp;<a id="add_{$tab.id}" href="javascript:addInfo('{$tab.id}')" class='btc bt_success'>{$tab.link}</a></td></tr>
 			</tbody>
 			{foreach from=$tab.forms item=formBlock name=formForeach}
 				{assign var="posAbs" value=$smarty.foreach.formForeach.index}
@@ -54,7 +73,6 @@
 	{/foreach}
 	<div id="validForm">
 	{if $o == "a" || $o == "c"}
-		<p>{$form.action.html}</p>
 		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
 		<p class="oreonbutton">{$form.change.html}</p>
@@ -71,6 +89,7 @@ span.v_required_star {
 }
 </style>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.js"></script>
+<script type="text/javascript" src="./lib/HTML/QuickForm/qfamsHandler-min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/centreon/jquery.centreonValidate.js"></script>
 <script type="text/javascript">
 function mk_paginationFF(){};

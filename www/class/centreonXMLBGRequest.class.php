@@ -32,16 +32,13 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /*
  * Need Centreon Configuration file
  */
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path . '/www/autoloader.php';
+require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . '/www/autoloader.php';
 
 /** * ****************************
  * Class for XML/Ajax request
@@ -54,7 +51,6 @@ class CentreonXMLBGRequest {
 
     var $DB;
     var $DBC;
-    var $DBNdo;
     var $XML;
     var $GMT;
     var $hostObj;
@@ -67,7 +63,6 @@ class CentreonXMLBGRequest {
     /*
      * Variables
      */
-    var $ndoPrefix;
     var $buffer;
     var $debug;
     var $compress;
@@ -86,6 +81,9 @@ class CentreonXMLBGRequest {
     var $colorService;
     var $en;
     var $stateTypeFull;
+
+    var $backgroundHost;
+    var $backgroundService;
 
     /*
      * Filters
@@ -134,14 +132,6 @@ class CentreonXMLBGRequest {
          */
         $this->hostObj = new CentreonHost($this->DB);
         $this->serviceObj = new CentreonService($this->DB);
-        $this->broker = new CentreonBroker($this->DB);
-
-        /*
-         * Connect NDO
-         */
-        if ($dbNeeds && $this->broker->getBroker() == "ndo") {
-            $this->DBNdo = new CentreonDB("ndo");
-        }
 
         /*
          * Init Object Monitoring
@@ -158,11 +148,6 @@ class CentreonXMLBGRequest {
          * XML class
          */
         $this->XML = new CentreonXML();
-
-        /*
-         * Get Centreon Status DB prefix
-         */
-        $this->ndoPrefix = $this->getNDOPrefix();
 
         /*
          * ACL init
@@ -191,8 +176,12 @@ class CentreonXMLBGRequest {
         $this->stateTypeFull = array("1" => "HARD", "0" => "SOFT");
         $this->statusHost = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE", "4" => "PENDING");
         $this->statusService = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
-        $this->colorHost = array(0 => $this->general_opt["color_up"], 1 => $this->general_opt["color_down"], 2 => $this->general_opt["color_unreachable"], 4 => $this->general_opt["color_pending"]);
-        $this->colorService = array(0 => $this->general_opt["color_ok"], 1 => $this->general_opt["color_warning"], 2 => $this->general_opt["color_critical"], 3 => $this->general_opt["color_unknown"], 4 => $this->general_opt["color_pending"]);
+        $this->colorHost = array(0 => 'host_up', 1 => 'host_down', 2 => 'host_unreachable', 4 => 'pending');
+        $this->colorService = array(0 => 'service_ok', 1 => 'service_warning', 2 => 'service_critical', 3 => 'service_unknown', 4 => 'pending');
+        
+        $this->backgroundHost = array(0 => '#88b917', 1 => '#e00b3d', 2 => '#818185', 4 => '#2ad1d4');
+        $this->backgroundService = array(0 => '#88b917', 1 => '#ff9a13', 2 => '#e00b3d', 3 => '#bcbdc0', 4 => '#2ad1d4');
+        
         $this->colorHostInService = array(0 => "normal", 1 => "#FD8B46", 2 => "normal", 4 => "normal");
     }
 
@@ -251,18 +240,6 @@ class CentreonXMLBGRequest {
         }
         $DBRESULT->free();
         unset($c);
-    }
-
-    /*
-     * Init NDO prefix
-     */
-
-    protected function getNDOPrefix() {
-        $DBRESULT = $this->DB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
-        $conf_ndo = $DBRESULT->fetchRow();
-        $DBRESULT->free();
-        unset($DBRESULT);
-        return $conf_ndo["db_prefix"];
     }
 
     /*
@@ -337,5 +314,3 @@ class CentreonXMLBGRequest {
     }
 
 }
-
-?>

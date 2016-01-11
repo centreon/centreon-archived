@@ -15,13 +15,13 @@
 			<td class="ListColLeft">{$elem.author}</td>
 			<td class="ListColRight" id="widget_{$elem.directory}">
 				{if $elem.is_installed}
-				<img class='uninstallBtn' src='./img/icones/16x16/garbage_empty.gif' style="cursor: pointer;">&nbsp;
+				<img class='uninstallBtn ico-16 margin_right' src='./img/icons/delete.png' style="cursor: pointer;">
 				{/if}
 				{if $elem.install}
-				<img class='installBtn' src='./img/icones/16x16/gear_run.gif' style="cursor: pointer;">&nbsp;
+				<img class='installBtn ico-16 margin_right' src="./img/icons/generate_conf.png" style="cursor: pointer;">
 				{/if}
 				{if $elem.upgrade}
-				<img class='upgradeBtn' src='./img/icones/16x16/gear_replace.gif' style="cursor: pointer;">&nbsp;
+				<img class='upgradeBtn ico-16 margin_right' src='./img/icons/upgrade.png' style="cursor: pointer;">
 				{/if}
 			</td>
 		</tr>

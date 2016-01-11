@@ -33,12 +33,15 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
+include_once("./class/centreonUtils.class.php");
+
 include_once "./class/centreonDB.class.php";
 include_once "./class/centreonHost.class.php";
+
 
 /*
  * Create Object env
@@ -49,12 +52,35 @@ $hostObj = new CentreonHost($pearDB);
  * ACL Actions
  */
 $GroupListofUser = array();
-$GroupListofUser = $oreon->user->access->getAccessGroups();
+$GroupListofUser = $centreon->user->access->getAccessGroups();
+
+/*
+ * Init Table status
+ */
+$tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
+$tab_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
+$tab_host_statusid = array("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2);
+
+$tab_color_host		= array('up' => 'host_up', 'down' => 'host_down', 'unreachable' => 'host_unreachable');
+$tab_color_service = array("OK" => 'service_ok', "WARNING" => 'service_warning', "CRITICAL" => 'service_critical', "UNKNOWN" => 'service_unknown', "PENDING" => 'pending');
+
+
+
+$en_acknowledge_text    = array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Host Problem"));
+$en_acknowledge         = array("1" => "0", "0" => "1");
+$en_inv                 = array("1" => "1", "0" => "0");
+$en_inv_text            = array("1" => _("Disable"), "0" => _("Enable"));
+$color_onoff            = array("1" => "host_up", "0" => "host_down");
+$color_onoff_inv        = array("0" => "host_up", "1" => "host_up");
+$en_disable             = array("1" => _("Enabled"), "0" => _("Disabled"));
+$img_en                 = array("0" => "'./img/icons/enabled.png'", "1" => "'./img/icons/disabled.png'");
+
+$tab_status_type        = array("1" => "HARD", "0" => "SOFT");
 
 $allActions = false;
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = array();
-    $authorized_actions = $oreon->user->access->getActions();
+    $authorized_actions = $centreon->user->access->getActions();
 }
 
 if (isset($_GET["host_name"]) && $_GET["host_name"]) {
@@ -72,7 +98,7 @@ if (isset($_GET["host_name"]) && $_GET["host_name"]) {
  * ACL
  */
 if (!$is_admin) {
-    $lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName($pearDBO);
+    $lcaHost["LcaHost"] = $centreon->user->access->getHostsServicesName($pearDBO);
 }
 
 $tab_status = array();
@@ -81,46 +107,48 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
     include_once("alt_error.php");
 } else {
 
+    $path = "./include/monitoring/objectDetails/";
+
+    $en = array("0" => _("No"), "1" => _("Yes"));
+
+    /*
+     * Smarty template Init
+     */
+    $tpl = new Smarty();
+    $tpl = initSmartyTpl($path, $tpl, "./template/");
+
+    // Get GMT
+    $centreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
+
     /*
      * Host Group List
      */
     $host_id = getMyHostID($host_name);
     if (!is_null($host_id)) {
+        
+        /* Get HG relations */
         $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
         for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
             $hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
         }
         $DBRESULT->free();
-        
-        
-        $DBRESULT = $pearDB->query("SELECT DISTINCT hc.* FROM hostcategories hc"
-            . " INNER JOIN hostcategories_relation hcr on hc.hc_id = hcr.hostcategories_hc_id AND hcr.host_host_id = '".$host_id."' ");
+         
+        /* Get service categories */
+        $DBRESULT = $pearDB->query("SELECT DISTINCT hc.* FROM hostcategories hc INNER JOIN hostcategories_relation hcr on hc.hc_id = hcr.hostcategories_hc_id AND hcr.host_host_id = '".$host_id."' ");
         while ($hc = $DBRESULT->fetchRow()) {
             $hostCategorie[] = $hc['hc_name'];
         }
         $DBRESULT->free();
         
-        // Get notifications contacts
+        /* Get notifications contacts */
         $retrievedNotificationsInfos = get_notified_infos_for_host($host_id);
         $contacts = $retrievedNotificationsInfos['contacts'];
         $contactGroups = $retrievedNotificationsInfos['contactGroups'];
-        
-        if (isset($host_id)) {
-            $proc_warning = getMyHostMacro($host_id, "PROC_WARNING");
-            $proc_critical = getMyHostMacro($host_id, "PROC_CRITICAL");
-        }
 
         /*
-         * Init Table status
-         */
-        $tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
-        $tab_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
-        $tab_host_statusid = array("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2);
-
-        /*
-         * start ndo svc info
+         * Get services informations on the current Host
          */    
-        $rq = "SELECT s.state AS current_state," .
+        $rq = "SELECT DISTINCT s.state AS current_state," .
             " s.output as plugin_output," .
             " s.check_attempt as current_attempt," .
             " s.last_update as status_update_time," .
@@ -136,25 +164,72 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             " s.latency as check_latency," .
             " s.execution_time as check_execution_time," .
             " s.last_notification as last_notification," .
+            " s.process_perfdata, " .
             " h.name AS host_name," .
+            " h.host_id AS host_id," .
+            " s.service_id as service_id," .
             " s.description as service_description" .
-            " FROM services s, hosts h" .
-            " WHERE s.host_id = h.host_id AND h.name LIKE '".$host_name."' " .
+            " FROM services s, hosts h" . ((!$is_admin) ? ', centreon_acl acl' : '') .
+            " WHERE s.host_id = h.host_id AND h.host_id = ".$host_id." " .
             " AND h.enabled = 1 " .
-            " AND s.enabled = 1 ";
+            " AND s.enabled = 1 " . 
+            ((!$is_admin) ? ' AND acl.host_id = s.host_id AND acl.service_id = s.service_id AND group_id IN ('.$centreon->user->access->getAccessGroupsString().')' : '') .
+	    " ORDER BY current_state DESC, service_description ASC";
         $DBRESULT = $pearDBO->query($rq);
-        while ($ndo = $DBRESULT->fetchRow()){
-            if (!isset($tab_status[$ndo["current_state"]])) {
-                $tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
+        $services = array();
+        $class = 'list_one';
+        $graphs = array();
+        while ($ndo = $DBRESULT->fetchRow()) {
+            if (isset($lcaHost["LcaHost"][$host_name][$ndo['service_description']]) || $is_admin) {
+                $ndo["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $ndo["last_check"]);
+                $ndo["current_state"] = $tab_status_service[$ndo['current_state']];
+                $ndo["status_class"] = $tab_color_service[$ndo['current_state']];
+                $ndo['line_class'] = $class;
+                /* Split the plugin_output */
+                $outputLines = explode("\n", $ndo['plugin_output']);
+                $ndo['short_output'] = $outputLines[0]; 
+                $ndo["hnl"] = CentreonUtils::escapeSecure(urlencode($ndo["host_name"]));
+                $ndo["sdl"] = CentreonUtils::escapeSecure(urlencode($ndo["service_description"]));
+                $ndo["svc_id"] = $ndo["service_id"];
+                /**
+                * Get Service Graph index
+                */
+               if (!isset($graphs[$ndo["host_id"]]) || !isset($graphs[$ndo["host_id"]][$ndo["service_id"]])) {
+                   $request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '" . $ndo["host_id"] . "' AND service_id = '" . $ndo["service_id"] . "' AND index_data.hidden = '0'";
+                   $DBRESULT2 = $pearDBO->query($request2);
+                   while ($dataG = $DBRESULT2->fetchRow()) {
+                       if (!isset($graphs[$ndo["host_id"]])) {
+                           $graphs[$ndo["host_id"]] = array();
+                       }
+                       $graphs[$ndo["host_id"]][$dataG["service_id"]] = $dataG["id"];
+                   }
+                   if (!isset($graphs[$ndo["host_id"]])) {
+                       $graphs[$ndo["host_id"]] = array();
+                   }
+               }
+               $ndo["svc_index"] = (isset($graphs[$ndo["host_id"]][$ndo["service_id"]]) ? $graphs[$ndo["host_id"]][$ndo["service_id"]] : 0);
+               $ndo["ppd"] = $ndo["process_perfdata"];
+               
+               $duration = "";
+               if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
+                   $duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
+               } else if ($ndo["last_state_change"] > 0) {
+                   $duration = " - ";
+               }
+               $ndo["duration"] = $duration;
+               
+               ($class == 'list_one') ? $class = 'list_two' : $class = 'list_one';
+
+               // Set Data 
+               $services[] = $ndo;
             }
-            $tab_status[$tab_status_service[$ndo["current_state"]]]++;
         }
         $DBRESULT->free();
-
+        
         /*
-         * start ndo host detail
+         * Get host informations
          */
-    $rq2 = "SELECT state AS current_state," .
+        $rq2 = "SELECT state AS current_state, h.name, alias, h.address, " .
             " acknowledged AS problem_has_been_acknowledged, " .
             " passive_checks AS passive_checks_enabled," .
             " active_checks AS active_checks_enabled," .
@@ -163,6 +238,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             " latency as check_latency," .
             " perfdata as performance_data," .
             " check_attempt as current_attempt," .
+            " max_check_attempts, ".
             " state_type," .
             " check_type," .
             " last_notification," .
@@ -187,12 +263,13 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             " action_url, " .
             " i.name as instance_name " .
             " FROM hosts h, instances i " .
-            " WHERE h.name LIKE '".$host_name."' AND h.instance_id = i.instance_id " .
+            " WHERE h.host_id = $host_id AND h.instance_id = i.instance_id " .
             " AND h.enabled = 1 ";
         $DBRESULT = $pearDBO->query($rq2);
         $data = $DBRESULT->fetchRow();
 
         $host_status[$host_name] = $data;
+        $host_status[$host_name]["plugin_output"] = htmlentities($host_status[$host_name]["plugin_output"]);
         $host_status[$host_name]["current_state"] = $tab_host_status[$data["current_state"]];
         if (isset($host_status[$host_name]["notes_url"]) && $host_status[$host_name]["notes_url"]) {
             $host_status[$host_name]["notes_url"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes_url"]);
@@ -210,24 +287,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             $host_status[$host_name]["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);
         }
 
-        /*
-         * Get Centreon Data
-         */
-        $res = $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
-        $hostDB = $res->fetchRow();
-        $current_attempts = getMyHostField($hostDB["host_id"], "host_max_check_attempts");
-
         $url_id = NULL;
-
-        $path = "./include/monitoring/objectDetails/";
-
-        $en = array("0" => _("No"), "1" => _("Yes"));
-
-        /*
-         * Smarty template Init
-         */
-        $tpl = new Smarty();
-        $tpl = initSmartyTpl($path, $tpl, "./template/");
 
         /*
          * Get comments for hosts
@@ -235,12 +295,12 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tabCommentHosts = array();
         $rq2 =	" SELECT FROM_UNIXTIME(cmt.entry_time) as comment_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name " .
                 " FROM comments cmt, hosts h " .
-                " WHERE h.name = '".$pearDBO->escape($host_name)."' 
-                                      AND h.host_id = cmt.host_id 
-                                      AND cmt.service_id IS NULL 
-                                      AND cmt.expires = 0 
-                                      AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
-                                      ORDER BY cmt.entry_time DESC";
+                " WHERE cmt.host_id = '".$host_id."' 
+                  AND h.host_id = cmt.host_id 
+                  AND cmt.service_id IS NULL 
+                  AND cmt.expires = 0 
+                  AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
+                  ORDER BY cmt.entry_time DESC";
         $DBRESULT = $pearDBO->query($rq2);
         for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
             $tabCommentHosts[$i] = $data;
@@ -248,18 +308,21 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
         $DBRESULT->free();
         unset($data);
-        
-        $en_acknowledge_text 	= array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Host Problem"));
-        $en_acknowledge 		= array("1" => "0", "0" => "1");
-        $en_inv 				= array("1" => "1", "0" => "0");
-        $en_inv_text 			= array("1" => _("Disable"), "0" => _("Enable"));
-        $color_onoff 			= array("1" => "#00ff00", "0" => "#ff0000");
-        $color_onoff_inv 		= array("0" => "#00ff00", "1" => "#ff0000");
-        $en_disable 			= array("1" => _("Enabled"), "0" => _("Disabled"));
-        $img_en 				= array("0" => "'./img/icones/16x16/element_next.gif'", "1" => "'./img/icones/16x16/element_previous.gif'");
+    
+        /* Get Graphs Listing */
+        $graphLists = array();
+        $query =    "SELECT DISTINCT id, host_name, service_description " .
+                    " FROM index_data, metrics " . ((!$is_admin) ? ', centreon_acl acl' : '') .
+                    " WHERE metrics.index_id = index_data.id " .
+                        " AND index_data.host_id = '$host_id' ".
+                        ((!$is_admin) ? ' AND acl.host_id = index_data.host_id AND acl.service_id = index_data.service_id AND group_id IN ('.$centreon->user->access->getAccessGroupsString().')' : '') .
+                    " ORDER BY service_description ASC";
+        $DBRESULT = $pearDBO->query($query);
+        while ($g = $DBRESULT->fetchRow()) {
+            $graphLists[$g["id"]] = $g['host_name'].";".$g['service_description'];
+        }
 
-        $oreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
-        $host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])];
+        $host_status[$host_name]["status_class"] = $tab_color_host[strtolower($host_status[$host_name]["current_state"])];
         $host_status[$host_name]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"]);
         $host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"]) : "";
         !$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_notification"]);
@@ -268,10 +331,10 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         !$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$host_status[$host_name]["last_state_change"]);
         $host_status[$host_name]["last_update"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
 
-        if ($host_status[$host_name]["problem_has_been_acknowledged"])
+        if ($host_status[$host_name]["problem_has_been_acknowledged"]) {
             $host_status[$host_name]["current_state"] .= "&nbsp;&nbsp;<b>("._("ACKNOWLEDGED").")</b>";
+        }
 
-        $tab_status_type = array("1" => "HARD", "0" => "SOFT");
         $host_status[$host_name]["state_type"] = $tab_status_type[$host_status[$host_name]["state_type"]];
 
         $host_status[$host_name]["is_flapping"] = $en[$host_status[$host_name]["is_flapping"]];
@@ -285,8 +348,9 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 
         if (isset($tab_host_service[$host_name]) && count($tab_host_service[$host_name])) {
             foreach ($tab_host_service[$host_name] as $key_name => $s){
-                if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
+                if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]])) {
                     $tab_status[$service_status[$host_name."_".$key_name]["current_state"]] = 0;
+                }
                 $tab_status[$service_status[$host_name."_".$key_name]["current_state"]]++;
             }
         }
@@ -300,6 +364,13 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 
         $tpl->assign("m_mon_host", _("Host"));
         $tpl->assign("m_mon_host_info", _("Status Details"));
+        $tpl->assign("m_mon_host_poller", _("Poller"));
+        $tpl->assign("m_mon_host_poller_name", _("Name"));
+        $tpl->assign("m_mon_host_services", _("Services"));
+        $tpl->assign("header_service_description", _("Services"));
+        $tpl->assign("header_service_status", _("Status"));
+        $tpl->assign("header_service_duration", _("Duration"));
+        $tpl->assign("header_service_output", _("Ouput"));
         $tpl->assign("m_mon_host_status", _("Host Status"));
         $tpl->assign("m_mon_host_status_info", _("Status information"));
         $tpl->assign("m_mon_performance_data", _("Performance Data"));
@@ -319,7 +390,6 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("m_mon_percent_state_change", _("Percent State Change"));
         $tpl->assign("m_mon_downtime_sc", _("In Scheduled Downtime?"));
         $tpl->assign("m_mon_last_update", _("Last Update"));
-        $tpl->assign("m_mon_tools", _("Tools"));
         $tpl->assign("cmt_host_name", _("Host Name"));
         $tpl->assign("cmt_entry_time", _("Entry Time"));
         $tpl->assign("cmt_author", _("Author"));
@@ -358,7 +428,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("m_mon_flap_detection", _("Flap Detection"));
         $tpl->assign("m_mon_services_en_acknowledge", _("Acknowledged"));
         $tpl->assign("m_mon_submit_passive", _("Submit result for this host"));
-
+ 
         /*
          * Strings are used by javascript command handler
          */
@@ -378,12 +448,11 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         /*
          * Add Tips
          */
-        $tpl->assign("shortcut", _("Host Shortcuts"));
-        $tpl->assign("lnk_all_services", addslashes(sprintf(_("View status of all services on host %s"), $host_name)));
-        $tpl->assign("lnk_host_graphs", addslashes(sprintf(_("View graphs for host %s"), $host_name)));
-        $tpl->assign("lnk_host_config", addslashes(sprintf(_("Configure host %s"), $host_name)));
-        $tpl->assign("lnk_host_reports", addslashes(sprintf(_("View report for host %s"), $host_name)));
-        $tpl->assign("lnk_host_logs", addslashes(sprintf(_("View logs for host %s"), $host_name)));
+        $tpl->assign("lnk_all_services", sprintf(_("View status of all services on host %s"), $host_name));
+        $tpl->assign("lnk_host_graphs", sprintf(_("View graphs for host %s"), $host_name));
+        $tpl->assign("lnk_host_config", sprintf(_("Configure host %s"), $host_name));
+        $tpl->assign("lnk_host_reports", sprintf(_("View report for host %s"), $host_name));
+        $tpl->assign("lnk_host_logs", sprintf(_("View logs for host %s"), $host_name));
 
         /*
          * if user is admin, allActions is true,
@@ -396,7 +465,6 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("p", $p);
         $tpl->assign("en", $en);
         $tpl->assign("en_inv", $en_inv);
-        $tpl->assign("current_attempts", $current_attempts);
         $tpl->assign("en_inv_text", $en_inv_text);
         $tpl->assign("img_en", $img_en);
         $tpl->assign("color_onoff", $color_onoff);
@@ -407,16 +475,20 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("en_acknowledge", $en_acknowledge);
         $tpl->assign("admin", $is_admin);
         $tpl->assign("lcaTopo", $oreon->user->access->topology);
-        $tpl->assign("h", $hostDB);
+        $tpl->assign("h", CentreonUtils::escapeSecure($hostDB));
         $tpl->assign("url_id", $url_id);
+        $tpl->assign("host_id", $host_id);
+        $tpl->assign("graphs", $graphLists);
         $tpl->assign("m_mon_ticket", "Open Ticket");
+        $tpl->assign('start', time()-3600*12);
+        $tpl->assign('end', time());
 
         /*
          * Hostgroups Display
          */
         $tpl->assign("hostgroups_label", _("Member of Host Groups"));
         if (isset($hostGroups)) {
-            $tpl->assign("hostgroups", $hostGroups);
+            $tpl->assign("hostgroups", CentreonUtils::escapeSecure($hostGroups));
         }
 
         $tpl->assign("hostcategorie_label", _("Host Categories"));
@@ -424,12 +496,14 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             $tpl->assign("hostcategorie", $hostCategorie);
         }
         
+        $tpl->assign("hosts_services", $services);
+
         /*
          * Contactgroups Display
          */
         $tpl->assign("contactgroups_label", _("Contact groups notified for this host"));
         if (isset($contactGroups)) {
-            $tpl->assign("contactgroups", $contactGroups);
+            $tpl->assign("contactgroups", CentreonUtils::escapeSecure($contactGroups));
         }
 
         /*
@@ -437,21 +511,12 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
          */
         $tpl->assign("contacts_label", _("Contacts notified for this host"));
         if (isset($contacts)) {
-            $tpl->assign("contacts", $contacts);
+            $tpl->assign("contacts", CentreonUtils::escapeSecure($contacts));
         }
 
-        /*
-         * Macros
-         */
-        if (isset($proc_warning) && $proc_warning) {
-            $tpl->assign("proc_warning", $proc_warning);
-        }
-        if (isset($proc_critical) && $proc_critical) {
-            $tpl->assign("proc_critical", $proc_critical);
-        }
-
+        
         if (isset($tabCommentHosts)) {
-            $tpl->assign("tab_comments_host", $tabCommentHosts);
+            $tpl->assign("tab_comments_host", array_map(array("CentreonUtils","escapeSecure"),$tabCommentHosts));
         }
         $tpl->assign("host_data", $host_status[$host_name]);
 
@@ -466,8 +531,8 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $notesurl = str_replace("\$HOSTSTATE\$", $host_status[$host_name]["current_state"], $notesurl);
         $notesurl = str_replace("\$HOSTSTATEID\$", $tab_host_statusid[$host_status[$host_name]["current_state"]], $notesurl);
 
-        $tpl->assign("h_ext_notes_url", $notesurl);
-        $tpl->assign("h_ext_notes", getMyHostExtendedInfoField($host_id, "ehi_notes"));
+        $tpl->assign("h_ext_notes_url", CentreonUtils::escapeSecure($notesurl));
+        $tpl->assign("h_ext_notes", CentreonUtils::escapeSecure(getMyHostExtendedInfoField($host_id, "ehi_notes")));
         $tpl->assign("h_ext_notes_url_lang", _("URL Notes"));
         $tpl->assign("h_ext_action_url_lang", _("Action URL"));
 
@@ -478,7 +543,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
         $actionurl = str_replace("\$HOSTSTATE\$", $host_status[$host_name]["current_state"], $actionurl);
         $actionurl = str_replace("\$HOSTSTATEID\$", $tab_host_statusid[$host_status[$host_name]["current_state"]], $actionurl);
-        $tpl->assign("h_ext_action_url", $actionurl);
+        $tpl->assign("h_ext_action_url", CentreonUtils::escapeSecure($actionurl));
         $tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
         $tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
 
@@ -509,12 +574,11 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
     } else {
         echo "<div class='msg' align='center'>"._("This host no longer exists in Centreon configuration. Please reload the configuration.")."</div>";
     }
-}
-    
+} 
 ?>
 <?php if (!is_null($host_id)) { ?>
 <script type="text/javascript">
-	var _sid = '<?php echo session_id();?>';
+    
 	var glb_confirm = '<?php  echo _("Submit command?"); ?>';
 	var command_sent = '<?php echo _("Command sent"); ?>';
 	var command_failure = "<?php echo _("Failed to execute command");?>";
@@ -568,7 +632,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 		    xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 		}
 	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, cmd); };
-	    xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/hostSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&sid=" + _sid + "&actiontype=" + actiontype, true);
+	    xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/hostSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&actiontype=" + actiontype, true);
     	    xhr_cmd.send(null);
 	}
 

@@ -3,28 +3,44 @@
   
   function CentreonPopin(settings, $elem) {
     var self = this;
-    var closeBtn = $('<a class="close" href="#"><img src="./img/icons/circle-cross.png"></a>');
+    var closeBtn = $('<a class="close" href="#"><img src="./img/icons/circle-cross.png" class="ico-18"></a>');
     var $newElem = $('<div></div>');
-    this.settings = settings;
+    self.settings = settings;
 
     /* Add class */
+    $elem.addClass('popin-wrapper');
     $newElem.addClass('centreon-popin');
     $newElem.hide();
     $elem.wrap($newElem);
   
-    this.$elem = $elem.parents('.centreon-popin').detach();
-    this.$elem.appendTo('body');
+    self.$elem = $elem.parents('.centreon-popin').detach();
+    self.$elem.appendTo('body');
     
     /* Append close button */
-    closeBtn.appendTo(this.$elem);
+    closeBtn.appendTo($elem);
     closeBtn.on('click', function () {
       self.close();
     });
     
-    this.initOverlay();
+    self.initOverlay();
     
-    if (this.settings.open) {
-      this.open();
+    if(self.settings.url !== null){
+        $.ajax({
+           url : self.settings.url,
+           type: (self.settings.ajaxType !== null) ? self.settings.ajaxType : "POST" ,
+           dataType : "html",
+           data: (self.settings.postDatas !== null) ? self.settings.postDatas : "",
+           success : function(html){
+               $elem.append(html);
+                if (self.settings.open) {
+                    self.open();
+                }
+           }
+        });
+    }else{
+        if (self.settings.open) {
+           self.open();
+        }
     }
   }
   
@@ -45,6 +61,9 @@
           }
         }
       });
+    },
+    setUrl : function(url){
+        this.settings.url = url;
     },
     setCenter: function () {
       var windowH = $(window).height();
@@ -89,6 +108,9 @@
   
   $.fn.centreonPopin.defaults = {
     closeOnDocument: true,
-    open: false
+    open: false,
+    url : null,
+    ajaxType : null,
+    postDatas : null
   };
 })(jQuery, window);

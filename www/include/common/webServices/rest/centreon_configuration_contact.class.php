@@ -31,14 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationContact extends CentreonConfigurationObjects
@@ -57,25 +52,47 @@ class CentreonConfigurationContact extends CentreonConfigurationObjects
      */
     public function getList()
     {
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
+        global $centreon;
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $offset = $this->arguments['page_limit'];
+            $range = $limit . ',' . $offset;
         } else {
-            $q = $this->arguments['q'];
+            $range = '';
         }
+
+        $filterContact = array('contact_register' => '1');
+        if (isset($this->arguments['q'])) {
+            $filterContact['contact_name'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+            $filterContact['contact_alias'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+        } 
+
+        $acl = new CentreonACL($centreon->user->user_id);
         
-        $queryContact = "SELECT contact_id, contact_name "
-            . "FROM contact "
-            . "WHERE contact_name LIKE '%$q%' "
-            . "ORDER BY contact_name";
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
-        
+        $contacts = $acl->getContactAclConf(
+            array(
+                'fields' => array('contact_id', 'contact_name'),
+                'get_row' => 'contact_name',
+                'keys' => array('contact_id'),
+                'conditions' => $filterContact,
+                'order' => array('contact_name'),
+                'pages' => $range,
+                'total' => true
+            )
+        );
+
         $contactList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $contactList[] = array('id' => $data['contact_id'], 'text' => $data['contact_name']);
+        foreach ($contacts['items'] as $id => $contactName) {
+            $contactList[] = array(
+                'id' => $id,
+                'text' => $contactName
+            );
         }
         
-        return $contactList;
+        return array(
+            'items' => $contactList,
+            'total' => $contacts['total']
+        );
     }
 }

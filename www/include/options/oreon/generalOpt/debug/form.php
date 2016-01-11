@@ -33,8 +33,9 @@
  *
  */
 
-if (!isset($oreon))
+if (!isset($centreon)) {
 	exit();
+}
 
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 
@@ -59,7 +60,6 @@ $form->addElement('checkbox', 'debug_nagios_import', _("Monitoring Engine Import
 $form->addElement('checkbox', 'debug_rrdtool', _("RRDTool debug"));
 $form->addElement('checkbox', 'debug_ldap_import', _("LDAP User Import debug"));
 $form->addElement('checkbox', 'debug_centcore', _("Centcore Engine debug"));
-$form->addElement('checkbox', 'debug_centstorage', _("Centstorage debug"));
 $form->addElement('checkbox', 'debug_centreontrapd', _("Centreontrapd debug"));
 
 function slash($elem = NULL)	{
@@ -92,8 +92,8 @@ $tpl = initSmartyTpl($path.'debug/', $tpl);
 
 $form->setDefaults($gopt);
 
-$subC = $form->addElement('submit', 'submitC', _("Save"));
-$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
+$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+$DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 $valid = false;
 if ($form->validate())	{
@@ -132,9 +132,9 @@ if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=debug'"));
+$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=debug'", 'class' => 'btc bt_info'));
 
-    // prepare help texts
+// prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {

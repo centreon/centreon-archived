@@ -31,14 +31,10 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
@@ -63,19 +59,32 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryContact = "SELECT sc_id, sc_name "
+        $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name "
             . "FROM service_categories "
             . "WHERE sc_name LIKE '%$q%' "
-            . "ORDER BY sc_name";
+            . "ORDER BY sc_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryContact);
+
+        $total = $this->pearDB->numberRows();
         
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $serviceList[] = array('id' => $data['sc_id'], 'text' => $data['sc_name']);
         }
         
-        return $serviceList;
+        return array(
+            'items' => $serviceList,
+            'total' => $total
+        );
     }
 }

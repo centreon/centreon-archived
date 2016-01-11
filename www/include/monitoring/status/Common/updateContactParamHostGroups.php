@@ -31,22 +31,18 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
  
-	if (!isset($_GET['uid']) || !isset($_GET['hostgroups'])) {
-		exit(0);
-	}
-		
-	require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once $centreon_path . "/www/class/centreonDB.class.php";
-	require_once $centreon_path . "/www/class/centreonSession.class.php";
+if (!isset($_GET['uid']) || !isset($_GET['hostgroups'])) {
+	exit(0);
+}
 	
-	$pearDB = new CentreonDB();
-	
-	CentreonSession::start();
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
 
-	$_SESSION['monitoring_default_hostgroups'] = $_GET['hostgroups'];
- ?>
+$pearDB = new CentreonDB();
+
+CentreonSession::start();
+
+$_SESSION['monitoring_default_hostgroups'] = $_GET['hostgroups'];

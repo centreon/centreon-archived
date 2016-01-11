@@ -4,62 +4,6 @@
 Using CES
 =========
 
-Why choose Centreon Engine and Broker ?
-=======================================
-
-Performances
-------------
-The tests carried out by the Centreon teams and some independent users show clearly that the Centreon Engine and Centreon Broker pair performs 8 to 9 times better than the Nagios/NDOUtils pair. Therefore this version of CES no longer supports the installation of the Nagios/NDOUtils pair.
-
-
-Better integration into Centreon
----------------------------------
-The Centreon web interface is more and more oriented towards the use of Centreon Broker. Here are a few examples:
-
-* There is a configuration assistant for Centreon Broker
-* Display performance is greatly improved
-* Some selection filters are only available with the Centreon Broker
-
-New features
-------------
-Several new features make their appearance with Centreon Broker:
-
-* Possibility of encrypting supervision data transmitted to the central server
-* Possibility of compressing supervision data to avoid overloading the bandwidth
-* Use of a new data encrypting protocol (the BBDO protocol) which is more efficient than the NDO protocol
-* Possibility of filtering the type of stream between the components of Centreon Broker to reduce the load and the bandwidth
-* Possibility unidirectional flow between the  Centreon server and its collectors (e.g.: only LAN flows to  DMZ )
- 
-*************
-Prerequisites
-*************
-
-The table below gives the prerequisites for the installation of CES 3.2:
-
-+------------------------+--------------------------+----------------+---------------+
-|  Number of Services    |  Number of pollers       | Central        | Poller        |
-+========================+==========================+================+===============+
-|        < 500           |        1 central         |  1 vCPU / 1 Go |               |
-+------------------------+--------------------------+----------------+---------------+
-|       500 - 2000       |        1 central         |  2 vCPU / 2 Go |               |
-+------------------------+--------------------------+----------------+---------------+
-|      2000 - 10000      | 1 central + 1 poller     |  4 vCPU / 4 Go | 1 vCPU / 2 Go |
-+------------------------+--------------------------+----------------+---------------+
-|      10000 - 20000     |  1 central + 1 poller    |  4 vCPU / 8 Go | 2 vCPU / 2 Go |
-+------------------------+--------------------------+----------------+---------------+
-|      20000 - 50000     | 1 central + 2 pollers    |  4 vCPU / 8 Go | 4 vCPU / 2 Go |
-+------------------------+--------------------------+----------------+---------------+
-|     50000 - 100000     | 1 central + 3 pollers    |  4 vCPU / 8 Go | 4 vCPU / 2 Go |
-+------------------------+--------------------------+----------------+---------------+
-
-.. note::
-
- This information is based on the assumption that all optimisations have been performed for Centreon Engine, that the transactions have been enabled in Centreon Broker and that the optimisations have been performed for MariaDB.
-
- If not virtualized architecture, a minimum CPU frequency of 2.5 GHz is recommended.
-
- Central server load depends on the number of simultaneous users, the content of pages visited and the refresh rate of the pages. Our studies were performed with 15 simultaneous users on the monitoring page and with 60 s of cooling. 
-
 ************
 Installation
 ************
@@ -303,8 +247,7 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 |
 
 *       The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
-*       The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs.
-*       The **Views** menu serves to view and configure the performance graphics for each element in the  information system.
+*       The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
 *       The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
 *	The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
 *       The **Administration** menu serves to configure the Centreon web interface and to view the general status of the servers.
@@ -312,7 +255,7 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 Before going further
 ====================
 
-it is necessary update the CES 3.2 server. To do this:
+it is necessary update the CES 3.3 server. To do this:
 
  #.	Log in as a ‘root’ on the central server
  #.	Enter this command

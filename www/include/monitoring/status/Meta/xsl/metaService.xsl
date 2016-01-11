@@ -39,20 +39,23 @@
 		<td class="ListColRight">
 			<xsl:if test="pa = 1">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/technician.png</xsl:attribute>
 					  	<xsl:attribute name="title">Problem has been acknowledged</xsl:attribute>
+						<xsl:attribute name="class">ico-20</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ac = 0 and pc = 1">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/passive_check.png</xsl:attribute>
 					  	<xsl:attribute name="title">This service is checked passive only</xsl:attribute>
+						<xsl:attribute name="class">ico-16</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ac = 0 and pc = 0">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/never_checked.png</xsl:attribute>
 					  	<xsl:attribute name="title">This service is neither active nor passive</xsl:attribute>
+						<xsl:attribute name="class">ico-16</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="is = 1">
@@ -63,8 +66,9 @@
 			</xsl:if>
 			<xsl:if test="ne = 0">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/notifications_off.png</xsl:attribute>
 					  	<xsl:attribute name="title">Notification is disabled</xsl:attribute>
+						<xsl:attribute name="class">ico-18</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 		</td>
@@ -72,21 +76,24 @@
 			<xsl:if test="ppd &gt; 0">
 				<xsl:if test="svc_index &gt; 0">
 					<xsl:element name="a">
-				  		<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;meta=1&amp;svc_id=<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>					
+				  		<xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;meta=1&amp;svc_id=<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>					
 							<xsl:element name="img">
-					  			<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
+					  			<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
                                 <xsl:attribute name="id"><xsl:value-of select="svc_index"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
-                                <xsl:attribute name="class">graph-volant</xsl:attribute>			
+                                <xsl:attribute name="class">graph-volant ico-18</xsl:attribute>
 							</xsl:element>					
 					</xsl:element>
 				</xsl:if>
 			</xsl:if>
 		</td>
 		<td class="ListColCenter">
-			<xsl:attribute name="style">
-				background-color:<xsl:value-of select="sc"/>;
-			</xsl:attribute>
-			<xsl:value-of select="cs"/>
+
+			<xsl:element name="span">
+				<xsl:attribute name="class">badge <xsl:value-of select="sc"/></xsl:attribute>
+
+				<xsl:value-of select="cs"/>
+			</xsl:element>
+
 		</td>
 		<td class="ListColRight" style="white-space:nowrap;">
 			<xsl:value-of select="d"/>

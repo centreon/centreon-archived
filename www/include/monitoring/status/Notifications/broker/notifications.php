@@ -33,19 +33,23 @@
  *
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path."www/class/centreonXMLBGRequest.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_."www/class/centreonXMLBGRequest.class.php";
 
-if (!isset($_GET['sid']) || !isset($_GET['refresh_rate'])) {
+
+
+CentreonSession::start();
+$sid = session_id();
+if (!isset($sid) || !isset($_GET['refresh_rate'])) {
     exit;
 }
 
 $refresh_rate = (int)$_GET['refresh_rate'] / 1000;
 $refresh_rate += ($refresh_rate / 2);
 
-$obj = new CentreonXMLBGRequest($_GET['sid'], 1, 1, 0, 1);
+$obj = new CentreonXMLBGRequest($sid, 1, 1, 0, 1);
 
-CentreonSession::start();
+
 if (!isset($_SESSION['centreon'])) {
     exit;
 }

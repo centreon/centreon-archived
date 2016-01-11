@@ -33,17 +33,17 @@
  *
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path . 'www/class/centreon.class.php';
-require_once $centreon_path . 'www/class/centreonSession.class.php';
-require_once $centreon_path . 'www/class/centreonCustomView.class.php';
-require_once $centreon_path . 'www/class/centreonWidget.class.php';
-require_once $centreon_path . 'www/class/centreonDB.class.php';
+require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonWidget.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 
 session_start();
 
 try {
-    require_once $centreon_path ."GPL_LIB/Smarty/libs/Smarty.class.php";
+    require_once _CENTREON_PATH_ ."GPL_LIB/Smarty/libs/Smarty.class.php";
 
     if (!isset($_SESSION['centreon'])) {
         throw new Exception('No session found');
@@ -53,7 +53,7 @@ try {
     $locale = $centreon->user->get_lang();
 	putenv("LANG=$locale");
 	setlocale(LC_ALL, $locale);
-	bindtextdomain("messages",  $centreon_path . "www/locale/");;
+	bindtextdomain("messages",  _CENTREON_PATH_ . "www/locale/");;
 	bind_textdomain_codeset("messages", "UTF-8");
 	textdomain("messages");
     
@@ -66,9 +66,9 @@ try {
     /**
 	 * Smarty
 	 */
-    $path = $centreon_path . "www/include/home/customViews/layouts/";
+    $path = _CENTREON_PATH_ . "www/include/home/customViews/layouts/";
     $template = new Smarty();
-    $template = initSmartyTplForPopup($path, $template, "./", $centreon_path);
+    $template = initSmartyTplForPopup($path, $template, "./", _CENTREON_PATH_);
 
     $columnClass = "";
     $viewId = $viewObj->getCurrentView();
@@ -87,6 +87,9 @@ try {
             } else {
                 $widgets[$widgetId]['column'] = 0;
             }
+            if(!$permission && $widgets[$widgetId]['title'] === ""){
+                $widgets[$widgetId]['title'] = "&nbsp;";
+            }
             $widgetNumber++;
         }
         $template->assign("columnClass", $columnClass);
@@ -95,7 +98,6 @@ try {
     $template->assign("widgetNumber", $widgetNumber);
     $template->assign("view_id", $viewId);
     $template->assign("error_msg", _("No widget configured in this view. Please add a new widget with the \"Add widget\" button."));
-    
     $template->display($columnClass.".ihtml");
 } catch (CentreonWidgetException $e) {
     echo $e->getMessage() . "<br/>";
@@ -115,6 +117,7 @@ var permission = <?php echo ($permission === true) ? 1 : 0; ?>;
 var ownership = <?php echo ($ownership === true) ? 1 : 0; ?>;
 var wrenchSpan = '<span class="ui-icon ui-icon-wrench"></span>';
 var trashSpan = '<span class="ui-icon ui-icon-trash"></span>';
+var idUser = "<?php echo $centreon->user->user_id;?>";
 
 jQuery(function() {
 	if (columnClass) {
@@ -154,11 +157,10 @@ jQuery(function() {
 
     	if (!ownership) {
     		jQuery('.shareView').button('disable');
-    		jQuery('.deleteView').button('disable');
 		} else {
 			jQuery('.shareView').button('enable');
-        	jQuery('.deleteView').button('enable');
 		}
+        jQuery('.deleteView').button('enable');
 
     	jQuery(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
     		.find(".portlet-header")
@@ -251,7 +253,8 @@ function deleteWidget(element, viewId, widgetId)
 								var error = response.getElementsByTagName('error');
 								if (typeof(view) != 'undefined') {
 									var viewId = view.item(0).firstChild.data;
-									window.top.location = './main.php?p=103&currentView='+viewId;
+                                    jQuery('#tabs').tabs('load', getTabPos(viewId));
+									//window.top.location = './main.php?p=103&currentView='+viewId;
 								} else if (typeof(error) != 'undefined') {
 									var errorMsg = error.item(0).firstChild.data;
 								}

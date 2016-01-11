@@ -47,60 +47,83 @@
      *
      * @var type 
      */
- 	private $DB;
+    private $DB;
     
     /**
      *
      * @var type 
      */
- 	private $relationCache;
+    private $relationCache;
     
     /**
      *
      * @var type 
      */
- 	private $dataTree;
+    private $dataTree;
 
- 	/**
- 	 *
- 	 * Constructor
- 	 * @param $pearDB
- 	 */
- 	function __construct($pearDB)
+    /**
+     *
+     * Constructor
+     * @param $pearDB
+     */
+    function __construct($pearDB)
     {
- 		$this->DB = $pearDB;
- 	}
+        $this->DB = $pearDB;
+    }
 
- 	/**
- 	 *
- 	 * Enter description here ...
- 	 * @param unknown_type $sg_id
- 	 */
- 	public function getServiceGroupServices($sg_id = NULL)
+    /**
+     *
+     * Enter description here ...
+     * @param unknown_type $sg_id
+     */
+    public function getServiceGroupServices($sg_id = NULL)
     {
-		if (!$sg_id) {
-			return;
-		}
+        if (!$sg_id) {
+	    return;
+        }
 
-		$services = array();
-		$query = "SELECT host_host_id, service_service_id
-				  FROM servicegroup_relation
-				  WHERE servicegroup_sg_id = " . $sg_id . "
-				  AND host_host_id IS NOT NULL
-				  UNION
-				  SELECT hgr.host_host_id, hsr.service_service_id
-				  FROM servicegroup_relation sgr, host_service_relation hsr, hostgroup_relation hgr
-				  WHERE sgr.servicegroup_sg_id = " . $sg_id . "
-				  AND sgr.hostgroup_hg_id = hsr.hostgroup_hg_id
-				  AND hsr.service_service_id = sgr.service_service_id
-				  AND sgr.hostgroup_hg_id = hgr.hostgroup_hg_id";
-		$res = $this->DB->query($query);
-		while ($row = $res->fetchRow()) {
-			$services[] = array($row['host_host_id'], $row['service_service_id']);
-		}
-		$res->free();
-		return $services;
-	}
+        $services = array();
+        $query = "SELECT host_host_id, service_service_id "
+            . "FROM servicegroup_relation "
+            . "WHERE servicegroup_sg_id = " . $sg_id . " "
+            . "AND host_host_id IS NOT NULL "
+            . "UNION "
+            . "SELECT hgr.host_host_id, hsr.service_service_id "
+            . "FROM servicegroup_relation sgr, host_service_relation hsr, hostgroup_relation hgr "
+            . "WHERE sgr.servicegroup_sg_id = " . $sg_id . " "
+            . "AND sgr.hostgroup_hg_id = hsr.hostgroup_hg_id "
+            . "AND hsr.service_service_id = sgr.service_service_id "
+            . "AND sgr.hostgroup_hg_id = hgr.hostgroup_hg_id ";
+
+        $res = $this->DB->query($query);
+        while ($row = $res->fetchRow()) {
+            $services[] = array($row['host_host_id'], $row['service_service_id']);
+        }
+        $res->free();
+
+	return $services;
+    }
+    
+    public function getServicesGroups($sg_id = array())
+    {
+        $arrayReturn = array();
+
+        if (!empty($sg_id)) {
+            $query = "SELECT sg_id, sg_name "
+                . "FROM servicegroup "
+                . "WHERE sg_id IN (" . $this->DB->escape(implode(",",$sg_id))." ) ";
+            $res = $this->DB->query($query);
+            while($row = $res->fetchRow()){
+                $arrayReturn[] = array(
+                    "id" => $row['sg_id'],
+                    "name" => $row['sg_name']
+                );
+            }
+        }
+
+        return $arrayReturn;
+    }
+    
     
     /**
      * 
@@ -126,6 +149,7 @@
             case 'sg_tServices':
                 $parameters['type'] = 'relation';
                 $parameters['externalObject']['object'] = 'centreonServicetemplates';
+                $parameters['externalObject']['objectOptions'] = array('withHosttemplate' => true);
                 $parameters['relationObject']['table'] = 'servicegroup_relation';
                 $parameters['relationObject']['field'] = 'service_service_id';
                 $parameters['relationObject']['comparator'] = 'servicegroup_sg_id';
@@ -143,6 +167,66 @@
         }
         
         return $parameters;
+    }
+
+    /**
+     *
+     * @param array $values
+     * @return array
+     */
+    public function getObjectForSelect2($values = array(), $options = array())
+    {
+        global $centreon;
+        $items = array();
+
+        # get list of authorized servicegroups
+        if (!$centreon->user->access->admin) {
+            $sgAcl = $centreon->user->access->getServiceGroupAclConf(
+                null,
+                'broker',
+                array(
+                    'distinct' => true,
+                    'fields'  => array('servicegroup.sg_id'),
+                    'get_row' => 'sg_id',
+                    'keys' => array('sg_id'),
+                    'conditions' => array(
+                        'servicegroup.sg_id' => array(
+                            'IN',
+                            $values
+                        )
+                    )
+                ),
+                true
+            );
+        }
+
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected servicegroups
+        $query = "SELECT sg_id, sg_name "
+            . "FROM servicegroup "
+            . "WHERE sg_id IN (" . $explodedValues . ") "
+            . "ORDER BY sg_name ";
+
+        $resRetrieval = $this->DB->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            # hide unauthorized servicegroups
+            $hide = false;
+            if (!$centreon->user->access->admin && !in_array($row['sg_id'], $sgAcl)) {
+                $hide = true;
+            }
+
+            $items[] = array(
+                'id' => $row['sg_id'],
+                'text' => $row['sg_name'],
+                'hide' => $hide
+            );
+        }
+
+        return $items;
     }
 }
 

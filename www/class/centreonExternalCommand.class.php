@@ -36,9 +36,9 @@
  * SVN : $Id$
  *
  */
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once $centreon_path . "/www/include/common/common-Func.php";
+require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/include/common/common-Func.php";
 
 /*
  *  This class allows the user to send external commands to Nagios
@@ -86,11 +86,12 @@ class CentreonExternalCommand {
      * Write command in Nagios or Centcore Pipe.
      */
     public function write() {
-        global $oreon;
+        global $centreon;
 
-        $varlib = "@CENTREON_VARLIB@";
-        if ($varlib == "") {
+        if (!defined('_CENTREON_VARLIB_')) {
             $varlib = "/var/lib/centreon";
+        } else {
+            $varlib = _CENTREON_VARLIB_;
         }
 
         $str_local = "";
@@ -111,7 +112,7 @@ class CentreonExternalCommand {
         }
 
         if ($str_local != "") {
-            $str_local = "echo " . $str_local . " >> " . $oreon->Nagioscfg["command_file"];
+            $str_local = "echo " . $str_local . " >> " . $centreon->Nagioscfg["command_file"];
             if ($this->debug) {
                 print "COMMAND BEFORE SEND: $str_local";
             }
@@ -330,7 +331,7 @@ class CentreonExternalCommand {
      * @param string $end
      * @param int $persistant
      */
-    public function AddHostDowntime($host, $comment, $start, $end, $persistant, $duration = null, $with_services = false) {
+    public function AddHostDowntime($host, $comment, $start, $end, $persistant, $duration = null, $with_services = false, $host_or_centreon_time = "0") {
         global $centreon;
 
         if (is_null($centreon)) {
@@ -338,18 +339,23 @@ class CentreonExternalCommand {
             $centreon = $oreon;
         }
 
-        if (!isset($persistant) || !in_array($persistant, array(0, 1))) {
-            $persistant = 0;
+        if (!isset($persistant) || !in_array($persistant, array('0', '1'))) {
+            $persistant = '0';
         }
 
-        $start_time = $this->GMT->getUTCDate($this->getDate($start));
-        $end_time = $this->GMT->getUTCDate($this->getDate($end));
+        if($host_or_centreon_time == "0"){
+            $start_time = $this->GMT->getUTCDateFromString($start);
+            $end_time = $this->GMT->getUTCDateFromString($end);
+        }else{
+            $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
+            $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getUTCLocationHost($host));
+        }    
 
         /*
          * Get poller for this host
          */
         $poller_id = $this->getPollerID($host);
-
+        
         /*
          * Send command
          */
@@ -373,7 +379,7 @@ class CentreonExternalCommand {
      * @param string $end
      * @param int $persistant
      */
-    public function AddSvcDowntime($host, $service, $comment, $start, $end, $persistant, $duration = null) {
+    public function AddSvcDowntime($host, $service, $comment, $start, $end, $persistant, $duration = null, $host_or_centreon_time = "0") {
         global $centreon;
 
         if (is_null($centreon)) {
@@ -382,12 +388,17 @@ class CentreonExternalCommand {
         }
 
 
-        if (!isset($persistant) || !in_array($persistant, array(0, 1))) {
-            $persistant = 0;
+        if (!isset($persistant) || !in_array($persistant, array('0', '1'))) {
+            $persistant = '0';
         }
 
-        $start_time = $this->GMT->getUTCDate($this->getDate($start));
-        $end_time = $this->GMT->getUTCDate($this->getDate($end));
+        if($host_or_centreon_time == "0"){
+            $start_time = $this->GMT->getUTCDateFromString($start);
+            $end_time = $this->GMT->getUTCDateFromString($end);
+        }else{
+            $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
+            $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getUTCLocationHost($host));
+        }   
 
         /*
          * Get poller for this host

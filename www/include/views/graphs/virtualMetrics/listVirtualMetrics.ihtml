@@ -1,5 +1,19 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form' method='POST'>
+    <table class="ajaxOption table">
+      <tbody>
+        <tr>
+          <th><h5>{t}Filters{/t}</h5></th>
+        </tr>
+        <tr>
+          <td><h4>{t}Virtual metrics{/t}</h4></td>
+        </tr>
+        <tr>
+          <td><input type="text" name="searchVM" value="{$searchVM}"></td>
+          <td><input type="submit" class="btc bt_success" value="{t}Search{/t}"></td>
+        </tr>
+      </tbody>
+    </table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
 			<td>
@@ -42,12 +56,12 @@
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 			<td align="center" width="16" height="16" style="padding: 0px">
 				{if $elemArr[elem].RowMenu_ckstate == 1}
-                    <img style="margin: 0px; padding-left: 4px; padding-right: 4px; padding-top: 2px;" src="./img/icones/16x16/rrdgraph_rpn_valid.png">
+                    <img style="margin: 0px; padding-left: 4px; padding-right: 4px; padding-top: 2px;" src="./img/icons/checked.png" class="ico-14">
 				{else}
 					{if $elemArr[elem].RowMenu_ckstate == 2}
-						<img style="margin: 0px; padding-left: 4px; padding-right: 4px; padding-top: 2px;" src="./img/icones/16x16/rrdgraph_rpn_error.png">
+						<img style="margin: 0px; padding-left: 4px; padding-right: 4px; padding-top: 2px;" src="./img/icons/checked.png" class='ico-16' />
 					{else}
-						<img style="margin: 0px; padding-left: 4px; padding-right: 4px; padding-top: 2px;" src="./img/icones/16x16/rrdgraph_rpn_warning.png">
+						<img style="margin: 0px; padding-left: 4px; padding-right: 4px; padding-top: 2px;" src="./img/icons/deleted.png" class='ico-16' />
 					{/if}
 				{/if}
             </td>
@@ -63,7 +77,7 @@
 		{/section}
 	</table>
 	<table class="ToolbarTable table">
-		<tr>
+		<tr class="ToolbarTR">
 			<td>
 				{$msg.options} {$form.o2.html}
 				&nbsp;&nbsp;&nbsp;

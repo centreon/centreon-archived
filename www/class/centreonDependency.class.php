@@ -232,6 +232,7 @@ class CentreonDependency
         switch ($field) {
             case 'dep_hostParents':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonHost';
                 $parameters['externalObject']['table'] = 'host';
                 $parameters['externalObject']['id'] = 'host_id';
                 $parameters['externalObject']['name'] = 'host_name';
@@ -243,6 +244,7 @@ class CentreonDependency
             case 'dep_hostChilds':
             case 'dep_hHostChi':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonHost';
                 $parameters['externalObject']['table'] = 'host';
                 $parameters['externalObject']['id'] = 'host_id';
                 $parameters['externalObject']['name'] = 'host_name';
@@ -267,6 +269,7 @@ class CentreonDependency
                 break;
             case 'dep_hgParents':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonHostgroups';
                 $parameters['externalObject']['table'] = 'hostgroup';
                 $parameters['externalObject']['id'] = 'hg_id';
                 $parameters['externalObject']['name'] = 'hg_name';
@@ -277,6 +280,7 @@ class CentreonDependency
                 break;
             case 'dep_hgChilds':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonHostgroups';
                 $parameters['externalObject']['table'] = 'hostgroup';
                 $parameters['externalObject']['id'] = 'hg_id';
                 $parameters['externalObject']['name'] = 'hg_name';
@@ -287,6 +291,7 @@ class CentreonDependency
                 break;
             case 'dep_sgParents':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonServicegroups';
                 $parameters['externalObject']['table'] = 'servicegroup';
                 $parameters['externalObject']['id'] = 'sg_id';
                 $parameters['externalObject']['name'] = 'sg_name';
@@ -297,6 +302,7 @@ class CentreonDependency
                 break;
             case 'dep_sgChilds':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonServicegroups';
                 $parameters['externalObject']['table'] = 'servicegroup';
                 $parameters['externalObject']['id'] = 'sg_id';
                 $parameters['externalObject']['name'] = 'sg_name';
@@ -307,16 +313,18 @@ class CentreonDependency
                 break;
             case 'dep_msParents':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonMeta';
                 $parameters['externalObject']['table'] = 'meta_service';
                 $parameters['externalObject']['id'] = 'meta_id';
                 $parameters['externalObject']['name'] = 'meta_name';
                 $parameters['externalObject']['comparator'] = 'meta_id';
-                $parameters['relationObject']['table'] = 'dependency_servicegroupParent_relation';
+                $parameters['relationObject']['table'] = 'dependency_metaserviceParent_relation';
                 $parameters['relationObject']['field'] = 'meta_service_meta_id';
                 $parameters['relationObject']['comparator'] = 'dependency_dep_id';
                 break;
             case 'dep_msChilds':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonMeta';
                 $parameters['externalObject']['table'] = 'meta_service';
                 $parameters['externalObject']['id'] = 'meta_id';
                 $parameters['externalObject']['name'] = 'meta_name';

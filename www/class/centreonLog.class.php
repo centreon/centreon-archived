@@ -38,146 +38,143 @@
 
 class CentreonUserLog {
 
-	private static $instance;
+    private static $instance;
+    private $errorType;
+    private $uid;
+    private $path;
 
-	private $errorType;
-	private $uid;
-	private $path;
+    /*
+     * Constructor
+     */
 
-	/*
-	 * Constructor
-	 */
-	public function __construct ($uid, $pearDB)
-	{
+    public function __construct($uid, $pearDB) {
 
-		$this->uid = $uid;
-		$this->errorType = array();
+        $this->uid = $uid;
+        $this->errorType = array();
 
-		/*
-		 * Get Log directory path
-		 */
-		$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'debug_path'");
-		while ($res = $DBRESULT->fetchRow()) {
-			$this->ldapInfos[$res["key"]] = $res["value"];
-		}
-		$DBRESULT->free();
+        /*
+         * Get Log directory path
+         */
+        $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'debug_path'");
+        while ($res = $DBRESULT->fetchRow()) {
+            $this->ldapInfos[$res["key"]] = $res["value"];
+        }
+        $DBRESULT->free();
 
-		/*
-		 * Init log Directory
-		 */
-		if (isset($optGen["debug_path"]) && $optGen["debug_path"] != "") {
-			$this->path = $optGen["debug_path"];
-		} else {
-			$this->path = "@CENTREON_LOG@/";
-		}
+        /*
+         * Init log Directory
+         */
+        if (isset($optGen["debug_path"]) && $optGen["debug_path"] != "") {
+            $this->path = $optGen["debug_path"];
+        } else {
+            $this->path = _CENTREON_LOG_;
+        }
 
-		$this->errorType[1] = $this->path."/login.log";
-		$this->errorType[2] = $this->path."/sql-error.log";
-		$this->errorType[3] = $this->path."/ldap.log";
-	}
+        $this->errorType[1] = $this->path . "/login.log";
+        $this->errorType[2] = $this->path . "/sql-error.log";
+        $this->errorType[3] = $this->path . "/ldap.log";
+    }
 
-	/*
-	 * Function for writing logs
-	 */
-	public function insertLog($id, $str, $print = 0, $page = 0, $option = 0)
-	{
-		/*
-		 * Construct alerte message
-		 */
-		$string = date("Y-m-d H:i")."|".$this->uid."|$page|$option|$str";
+    /*
+     * Function for writing logs
+     */
 
-		/*
-		 * Display error on Standard exit
-		 */
-		if ($print) {
-			print $str;
-		}
+    public function insertLog($id, $str, $print = 0, $page = 0, $option = 0) {
+        /*
+         * Construct alerte message
+         */
+        $string = date("Y-m-d H:i") . "|" . $this->uid . "|$page|$option|$str";
 
-		/*
-		 * Replace special char
-		 */
-		$string = str_replace("`", "", $string);
-		$string = str_replace("*", "\*", $string);
+        /*
+         * Display error on Standard exit
+         */
+        if ($print) {
+            print $str;
+        }
 
-		/*
-		 * Write Error in log file.
-		 */
+        /*
+         * Replace special char
+         */
+        $string = str_replace("`", "", $string);
+        $string = str_replace("*", "\*", $string);
+
+        /*
+         * Write Error in log file.
+         */
         file_put_contents($this->errorType[$id], $string . "\n", FILE_APPEND);
-	}
+    }
 
-	public function setUID($uid)
-	{
-		$this->uid = $uid;
-	}
+    public function setUID($uid) {
+        $this->uid = $uid;
+    }
 
-	/**
-	 * Singleton
-	 *
-	 * @param int $uid The user id
-	 * @return CentreonUserLog
-	 */
-	public static function singleton($uid = 0)
-	{
-		if (is_null(self::$instance)) {
-			self::$instance = new CentreonUserLog($uid, CentreonDB::factory('centreon'));
-		}
-		return self::$intance;
-	}
+    /**
+     * Singleton
+     *
+     * @param int $uid The user id
+     * @return CentreonUserLog
+     */
+    public static function singleton($uid = 0) {
+        if (is_null(self::$instance)) {
+            self::$instance = new CentreonUserLog($uid, CentreonDB::factory('centreon'));
+        }
+        return self::$intance;
+    }
 
 }
 
 class CentreonLog {
 
-	private $errorType;
-	private $path;
+    private $errorType;
+    private $path;
 
-	/*
-	 * Constructor
-	 */
-	public function __construct()
-	{
-		$this->errorType = array();
+    /*
+     * Constructor
+     */
 
-		/*
-		 * Init log Directory
-		 */
-		$this->path = "@CENTREON_LOG@/";
+    public function __construct() {
+        $this->errorType = array();
 
-		$this->errorType[1] = $this->path."/login.log";
-		$this->errorType[2] = $this->path."/sql-error.log";
-		$this->errorType[3] = $this->path."/ldap.log";
-	}
+        /*
+         * Init log Directory
+         */
+        $this->path = _CENTREON_LOG_;
 
-	/*
-	 * Function for writing logs
-	 */
-	public function insertLog($id, $str, $print = 0, $page = 0, $option = 0)
-	{
-		/*
-		 * Construct alerte message
-		 */
-		$string = date("Y-m-d H:i")."|$page|$option|$str";
+        $this->errorType[1] = $this->path . "/login.log";
+        $this->errorType[2] = $this->path . "/sql-error.log";
+        $this->errorType[3] = $this->path . "/ldap.log";
+    }
 
-		/*
-		 * Display error on Standard exit
-		 */
-		if ($print) {
-			print $str;
-		}
+    /*
+     * Function for writing logs
+     */
 
+    public function insertLog($id, $str, $print = 0, $page = 0, $option = 0) {
+        /*
+         * Construct alerte message
+         */
+        $string = date("Y-m-d H:i") . "|$page|$option|$str";
 
-		/*
-		 * Replace special char
-		 */
-		$string = str_replace("`", "", $string);
-		$string = str_replace("*", "\*", $string);
+        /*
+         * Display error on Standard exit
+         */
+        if ($print) {
+            print $str;
+        }
 
 
-		/*
-		 * Write Error in log file.
-		 */
+        /*
+         * Replace special char
+         */
+        $string = str_replace("`", "", $string);
+        $string = str_replace("*", "\*", $string);
+
+
+        /*
+         * Write Error in log file.
+         */
         file_put_contents($this->errorType[$id], $string . "\n", FILE_APPEND);
-	}
+    }
 
 }
 

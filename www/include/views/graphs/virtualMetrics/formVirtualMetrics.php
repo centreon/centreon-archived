@@ -39,17 +39,6 @@
 if (!isset($oreon))
     exit;
 
-function checkServiceSet(){
-    global $form;
-    $gsvs = NULL;
-    if (isset($form))
-        $gsvs = $form->getSubmitValues();
-    if ( $gsvs["index_id"] == NULL )
-        return false;
-    else
-        return true;
-}
-
 /*
  * Database retrieve information
  */
@@ -63,10 +52,6 @@ if (($o == "c" || $o == "w") && $vmetric_id)    {
     // Set base value
     $vmetric = array_map("myDecode", $p_qy->fetchRow());
     $p_qy->free();
-    $hs_data = array();
-    $p_qy = $pearDBO->query("SELECT host_id, service_id FROM index_data WHERE id='".$vmetric["index_id"]."' LIMIT 1;");
-    $hs_data = $p_qy->fetchRow();
-    $vmetric["host_id"] = $hs_data["host_id"];
 }
 /*
  * Database retrieve information for differents elements list we need on the page
@@ -100,6 +85,13 @@ $attrsText  = array("size"=>"30");
 $attrsText2     = array("size"=>"10");
 $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 $attrsTextarea  = array("rows"=>"4", "cols"=>"60");
+$attrServices = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_graphvirtualmetric&action=defaultValues&target=graphVirtualMetric&field=host_id&id=' . $vmetric_id,
+    'linkedObject' => 'centreonService',
+    'multiple' => false
+);
 
 /*
  * Form begin
@@ -122,8 +114,8 @@ $form->addElement('header', 'options', _("Options"));
 // General Information
 $form->addElement('text', 'vmetric_name', _("Metric Name"), $attrsText);
 #$form->addElement('text', 'hs_relation', _("Host / Service Data Source"), $attrsText);
-$form->addElement('static', 'hsr_text',_("Choose a host, then its associated service."));
-$form->addElement('select', 'host_id', _("Host / Service Data Source"), $indds, "onChange=update_select_list(0,this.value);update_select_list(1,0);");
+$form->addElement('static', 'hsr_text',_("Choose a service if you want a specific virtual metric for it."));
+$form->addElement('select2', 'host_id', _("Linked Host Services"), array(), $attrServices);
 
 $form->addElement('select', 'def_type', _("DEF Type"), array(0=>"CDEF&nbsp;&nbsp;&nbsp;",1=>"VDEF&nbsp;&nbsp;&nbsp;"), "onChange=manageVDEF();");
 // RPN Function
@@ -137,13 +129,6 @@ $form->addElement('text', 'crit', _("Critical Threshold"), $attrsText2);
 $form->addElement('checkbox', 'vhidden', _("Hidden Graph And Legend"), "", "onChange=manageVDEF();");
 $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action'=>'1'));
-
-
 $form->addElement('hidden', 'vmetric_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -154,16 +139,13 @@ $redirect->setValue($o);
  */
 $form->applyFilter('__ALL__', 'myTrim');
 $form->addRule('vmetric_name', _("Compulsory Name"), 'required');
-#$form->addRule('hs_relation', _("Required Field"), 'required');
 $form->addRule('rpn_function', _("Required Field"), 'required');
-$form->addRule('host_id', _("Required Fields 'Host' and 'Service' list"), 'required');
+$form->addRule('host_id', _("Required service"), 'required');
 
 
 $form->registerRule('existName', 'callback', 'NameTestExistence');
 $form->registerRule('RPNInfinityLoop', 'callback', '_TestRPNInfinityLoop');
-$form->registerRule('checkService', 'callback', 'checkServiceSet');
 $form->addRule('vmetric_name', _("Name already in use for this Host/Service"), 'existName');
-$form->addRule('host_id', _("Required Field 'Service' list"), 'checkService');
 $form->addRule('rpn_function', _("Can't Use This Virtual Metric '".(isset($_POST["vmetric_name"]) ? htmlentities($_POST["vmetric_name"], ENT_QUOTES, "UTF-8") : '')."' In This RPN Function"), 'RPNInfinityLoop');
 
 $form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
@@ -183,13 +165,13 @@ if ($o == "w") {
     $form->freeze();
 } else if ($o == "c") {
     // Modify
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$vmetric["host_id"].",".$vmetric["index_id"].");"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$vmetric["host_id"].",".$vmetric["index_id"].");", "class" => "btc bt_default"));
     $form->setDefaults($vmetric);
 } else if ($o == "a") {
     // Add
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(0,0)"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(0,0)", "class" => "btc bt_default"));
 }
 
 if ($o == "c" || $o == "a") {
@@ -272,7 +254,7 @@ if ($form->validate())  {
     }
 }
 $action = $form->getSubmitValue("action");
-if ($valid && $action["action"]["action"])
+if ($valid)
     require_once("listVirtualMetrics.php");
 else {
     if (isset($error)) {
@@ -289,17 +271,17 @@ else {
 }
 $vdef=1; /* Display VDEF too */
 include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
-?><script type="text/javascript">
-<?php
-$test_valid = true;
 if ($o == "c" || $o == "w") {
-    isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $ph_id=$_POST["host_id"]: $ph_id=$vmetric["host_id"];
-    isset($_POST["index_id"]) && $_POST["index_id"] != NULL ? $ix_id=$_POST["index_id"]: $ix_id=$vmetric["index_id"];
+    isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $host_service_id=$_POST["host_id"]: $host_service_id=$vmetric["host_id"];
 } else if ($o == "a") {
-    isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $ph_id=$_POST["host_id"]: $ph_id=0;
-    isset($_POST["index_id"]) && $_POST["index_id"] != NULL ? $ix_id=$_POST["index_id"]: $ix_id=0;
+    isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $host_service_id=$_POST["host_id"]: $host_service_id=0;
 }
 ?>
-update_select_list(0,'<?php echo $ph_id;?>','<?php echo $ix_id;?>');
-update_select_list(1,'<?php echo $ix_id;?>');
+
+<script type="text/javascript">
+    update_select_list('<?php echo $host_service_id;?>');
+
+    jQuery("#host_id").on('change', function() {
+        update_select_list(this.value);
+    });
 </script>

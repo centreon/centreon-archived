@@ -34,8 +34,8 @@
  */
 
 
-require_once $centreon_path . 'www/class/centreonDB.class.php';
-require_once $centreon_path . 'www/class/centreonGMT.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonGMT.class.php';
 
 class CentreonUtils
 {
@@ -115,6 +115,7 @@ class CentreonUtils
         if (!isset($centreonGmt)) {
             $centreonGmt = new CentreonGMT($db);
         }
+        $centreonGmt->getMyGMTFromSession(session_id(), $db);
         $datetime = trim($datetime);
         $res = explode(" ", $datetime);
         if (count($res) != 2) {
@@ -128,8 +129,7 @@ class CentreonUtils
         if (count($res2) != 2) {
             throw new Exception($invalidString);
         }
-        $timestamp = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0]);
-        $timestamp = $centreonGmt->getUTCDate($timestamp);
+        $timestamp = $centreonGmt->getUTCDateFromString($datetime);
         return $timestamp;
     }
 

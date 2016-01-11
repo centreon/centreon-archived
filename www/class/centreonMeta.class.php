@@ -157,4 +157,35 @@ class CentreonMeta
         
         return $parameters;
     }
+    
+    /**
+     * 
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array(), $options = array())
+    {
+        $items = array();
+        
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected meta
+        $query = "SELECT meta_id, meta_name "
+            . "FROM meta_service "
+            . "WHERE meta_id IN (" . $explodedValues . ") "
+            . "ORDER BY meta_name ";
+        
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            $items[] = array(
+                'id' => $row['meta_id'],
+                'text' => $row['meta_name']
+            );
+        }
+
+        return $items;
+    }
 }

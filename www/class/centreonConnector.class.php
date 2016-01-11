@@ -42,9 +42,9 @@
  * Usage example:
  * 
  * <?php
- * require_once "@CENTREON_ETC@/centreon.conf.php";
- * require_once $centreon_path . 'www/class/centreonConnector.class.php';
- * require_once $centreon_path . 'www/class/centreonDB.class.php';
+ * require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+ * require_once _CENTREON_PATH_ . 'www/class/centreonConnector.class.php';
+ * require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
  * 
  * $connector = new CentreonConnector(new CentreonDB);
  * 
@@ -510,5 +510,36 @@ class CentreonConnector
         }
         
         return $parameters;
+    }
+    
+    /**
+     * 
+     * @param array $values
+     * @return array
+     */
+    public function getObjectForSelect2($values = array(), $options = array())
+    {
+        $items = array();
+        
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected connectors
+        $query = "SELECT id, name "
+            . "FROM connector "
+            . "WHERE id IN (" . $explodedValues . ") "
+            . "ORDER BY name ";
+        
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            $items[] = array(
+                'id' => $row['id'],
+                'text' => $row['name']
+            );
+        }
+
+        return $items;
     }
 }

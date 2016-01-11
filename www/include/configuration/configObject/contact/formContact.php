@@ -31,12 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -50,7 +47,7 @@ if (!$oreon->user->admin && $contact_id) {
     $contacts = $acl->getContactAclConf($aclOptions);
     if (!count($contacts)) {
         $msg = new CentreonMsg();
-        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
         $msg->setText(_('You are not allowed to access this contact'));
         return null;
@@ -66,8 +63,8 @@ $cgs = $acl->getContactGroupAclConf(
     )
 );
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 $initialValues = array();
 
@@ -249,16 +246,25 @@ $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonTimeperiod'
 );
 $attrCommands = array(
     'datasourceOrigin' => 'ajax',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonCommand'
 );
 $attrContactgroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonContactgroup'
+);
+$attrAclgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list',
+    'multiple' => true,
+    'linkedObject' => 'centreonAclGroup'
 );
 
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
@@ -356,26 +362,31 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_cg, 'mc_mod_acl', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_acl' => '0'));
 }
-$ams3 = $form->addElement('advmultiselect', 'contact_acl_groups', array(_("Access list groups"), _("Available"), _("Selected")), $aclGroups, $attrsAdvSelect, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' => _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+
+$attrAclgroup1 = array_merge(
+    $attrAclgroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=defaultValues&target=contact&field=contact_acl_groups&id=' . $contact_id)
+);
+$form->addElement('select2', 'contact_acl_groups', _("Access list groups"), array(), $attrAclgroup1);
 
 /**
  * Include GMT Class
  */
-require_once $centreon_path . "www/class/centreonGMT.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 $CentreonGMT = new CentreonGMT($pearDB);
 
-$GMTList = $CentreonGMT->getGMTList();
-$form->addElement('select', 'contact_location', _("Timezone / Location"), $GMTList);
-$form->setDefaults(array('contact_location' => '0'));
-if (!isset($cct["contact_location"])) {
-    $cct["contact_location"] = 0;
-}
-unset($GMTList);
+$attrTimezones = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=defaultValues&target=contact&field=contact_location&id=' . $contact_id,
+    'multiple' => false,
+    'linkedObject' => 'centreonGMT'
+);
+
+
+$form->addElement('select2', 'contact_location', _("Timezone / Location"), array(), $attrTimezones);
+
 
 if ($o != "mc") {
     $auth_type = array();
@@ -498,12 +509,6 @@ $form->setDefaults(array('contact_register' => '1'));
 
 $form->addElement('textarea', 'contact_comment', _("Comments"), $attrsTextarea);
 
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
-
 $form->addElement('hidden', 'contact_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -592,17 +597,17 @@ if ($o == "w") {
     $form->freeze();
 } else if ($o == "c") {
 # Modify a contact information
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cct);
 } else if ($o == "a") {
 # Add a contact information
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 } else if ($o == "mc") {
 # Massive Change
-    $subMC = $form->addElement('submit', 'submitMC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {
@@ -626,12 +631,10 @@ if ($form->validate() && $from_list_menu == false) {
                 updateContactInDB($value, true);
     }
     $o = NULL;
-    $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&contact_id=" . $cctObj->getValue() . "'"));
-    $form->freeze();
     $valid = true;
 }
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+
+if ($valid) {
     require_once($path . "listContact.php");
 } else {
 # Apply a template definition
@@ -642,47 +645,48 @@ if ($valid && $action["action"]) {
     $tpl->assign('form', $renderer->toArray());
     $tpl->assign('o', $o);
     $tpl->assign("tzUsed", $CentreonGMT->used());
-    if ($oreon->optGen['ldap_auth_enable'])
+    if ($oreon->optGen['ldap_auth_enable']) {
         $tpl->assign('ldap', $oreon->optGen['ldap_auth_enable']);
+    }
     $tpl->display("formContact.ihtml");
 }
 ?>
-
 <script type="text/javascript" src="./include/common/javascript/keygen.js"></script>
 <script type="text/javascript">
 
-    function uncheckAllH(object)
-    {
-        if (object.id == "hNone" && object.checked) {
-            document.getElementById('hDown').checked = false;
-            document.getElementById('hUnreachable').checked = false;
-            document.getElementById('hRecovery').checked = false;
-            if (document.getElementById('hFlapping')) {
-                document.getElementById('hFlapping').checked = false;
-            }
-            if (document.getElementById('hScheduled')) {
-                document.getElementById('hScheduled').checked = false;
-            }
-        } else {
-            document.getElementById('hNone').checked = false;
+function uncheckAllH(object)
+{
+    if (object.id == "hNone" && object.checked) {
+        document.getElementById('hDown').checked = false;
+        document.getElementById('hUnreachable').checked = false;
+        document.getElementById('hRecovery').checked = false;
+        if (document.getElementById('hFlapping')) {
+            document.getElementById('hFlapping').checked = false;
         }
+        if (document.getElementById('hScheduled')) {
+            document.getElementById('hScheduled').checked = false;
+        }
+    } else {
+        document.getElementById('hNone').checked = false;
     }
+}
 
-    function uncheckAllS(object)
-    {
-        if (object.id == "sNone" && object.checked) {
-            document.getElementById('sWarning').checked = false;
-            document.getElementById('sUnknown').checked = false;
-            document.getElementById('sCritical').checked = false;
-            document.getElementById('sRecovery').checked = false;
-            if (document.getElementById('sFlapping')) {
-                document.getElementById('sFlapping').checked = false;
-            }
-            if (document.getElementById('sScheduled')) {
-                document.getElementById('sScheduled').checked = false;
-            }
-        } else {
-            document.getElementById('sNone').checked = false;
+function uncheckAllS(object)
+{
+    if (object.id == "sNone" && object.checked) {
+        document.getElementById('sWarning').checked = false;
+        document.getElementById('sUnknown').checked = false;
+        document.getElementById('sCritical').checked = false;
+        document.getElementById('sRecovery').checked = false;
+        if (document.getElementById('sFlapping')) {
+            document.getElementById('sFlapping').checked = false;
         }
+        if (document.getElementById('sScheduled')) {
+            document.getElementById('sScheduled').checked = false;
+        }
+    } else {
+        document.getElementById('sNone').checked = false;
     }
+}
+
 </script>

@@ -31,25 +31,32 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon))
-		exit();
+if (!isset($centreon)) {
+	exit();		
+}
 
-	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
-	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-	$sid = session_id();
-	$time = time();
+$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
+$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
+if (!isset($oreon->optGen["AjaxFirstTimeReloadStatistic"]) || $oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
+    $tFS = 10;
+} else {
+    $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+}
+if (!isset($oreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
+    $tFM = 10;
+} else {
+    $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+}
+$sid = session_id();
+$time = time();
 
-	if($num < 0)
-		$num =0;
+if ($num < 0) {
+ 	$num =0;
+}
+
 ?>
-<script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
 	var _debug = 0;
 	var _addrXSL = "./include/monitoring/status/Meta/xsl/metaService.xsl";
@@ -129,7 +136,7 @@ function goM(_time_reload,_sid,_o){
 		_counter++;
 	}
 
-	var _addrXML = "./include/monitoring/status/Meta/xml/<?php print $centreon->broker->getBroker(); ?>/metaServiceXML.php?"+'&sid='+_sid+'&search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&instance='+_instance+'&nc='+_nc;
+	var _addrXML = "./include/monitoring/status/Meta/xml/<?php print $centreon->broker->getBroker(); ?>/metaServiceXML.php?"+'search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&instance='+_instance+'&nc='+_nc;
 	proc.setCallback(monitoringCallBack);
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);

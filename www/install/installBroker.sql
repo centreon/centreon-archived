@@ -186,17 +186,8 @@ UNLOCK TABLES;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `hostgroups` (
   `hostgroup_id` int(11) NOT NULL AUTO_INCREMENT,
-  `instance_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `action_url` varchar(160) DEFAULT NULL,
-  `alias` varchar(255) DEFAULT NULL,
-  `notes` varchar(160) DEFAULT NULL,
-  `notes_url` varchar(160) DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`hostgroup_id`),
-  UNIQUE KEY `name` (`name`,`instance_id`),
-  KEY `instance_id` (`instance_id`),
-  CONSTRAINT `hostgroups_ibfk_1` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE CASCADE
+  PRIMARY KEY (`hostgroup_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -559,16 +550,8 @@ UNLOCK TABLES;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `servicegroups` (
   `servicegroup_id` int(11) NOT NULL AUTO_INCREMENT,
-  `instance_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `action_url` varchar(160) DEFAULT NULL,
-  `alias` varchar(255) DEFAULT NULL,
-  `notes` varchar(160) DEFAULT NULL,
-  `notes_url` varchar(160) DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`servicegroup_id`),
-  KEY `instance_id` (`instance_id`),
-  CONSTRAINT `servicegroups_ibfk_1` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE CASCADE
+  PRIMARY KEY (`servicegroup_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

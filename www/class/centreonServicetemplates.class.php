@@ -36,8 +36,8 @@
  * SVN : $Id$
  *
  */
-require_once $centreon_path . 'www/class/centreonService.class.php';
-require_once $centreon_path . 'www/class/centreonInstance.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
 
 /**
  *  Class that contains various methods for managing services
@@ -53,37 +53,71 @@ class CentreonServicetemplates extends CentreonService
     {
         parent::__construct($db);
     }
+
+    /**
+     *
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'service';
+        $parameters['currentObject']['id'] = 'service_id';
+        $parameters['currentObject']['name'] = 'service_description';
+        $parameters['currentObject']['comparator'] = 'service_id';
+
+        switch ($field) {
+            case 'service_hPars':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonHosttemplates';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'host_service_relation';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'service_service_id';
+                break;
+            default:
+                $parameters = parent::getDefaultValuesParameters($field);
+                break;
+        }
+
+        return $parameters;
+    }
+
     /**
      * 
      * @param type $values
      * @return type
      */
-    public function getObjectForSelect2($values = array())
+    public function getObjectForSelect2($values = array(), $options = array())
     {
-        $selectedServices = '';
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
-        } else {
-            $selectedServices .= "AND hsr.service_service_id IN ($explodedValues) ";
-        }
-        
-        $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
-            . "FROM host h, service s, host_service_relation hsr "
-            . "WHERE hsr.host_host_id = h.host_id "
-            . "AND hsr.service_service_id = s.service_id "
-            . "AND h.host_register = '0' AND s.service_register = '0' "
-            . $selectedServices
-            . "ORDER BY h.host_name";
-        
-        $DBRESULT = $this->db->query($queryService);
-        
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
-            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
-            
-            $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => htmlentities($serviceCompleteName));
+        if (isset($options['withHosttemplate']) && $options['withHosttemplate'] === true) {
+            $serviceList = parent::getObjectForSelect2($values, $options, '0');
+        } else {
+            $selectedServices = '';
+            $explodedValues = implode(',', $values);
+            if (empty($explodedValues)) {
+                $explodedValues = "''";
+            } else {
+                $selectedServices .= "AND s.service_id IN ($explodedValues) ";
+            }
+
+            $queryService = "SELECT DISTINCT s.service_id, s.service_description "
+                . "FROM service s "
+                . "WHERE s.service_register = '0' "
+                . $selectedServices
+                . "ORDER BY s.service_description ";
+
+            $DBRESULT = $this->db->query($queryService);
+
+
+            while ($data = $DBRESULT->fetchRow()) {
+                $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
+            }
         }
         
         return $serviceList;

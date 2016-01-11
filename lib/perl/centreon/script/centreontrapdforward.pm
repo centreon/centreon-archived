@@ -97,7 +97,7 @@ sub run {
     my $spoolfile = $self->{centreontrapd_config}->{spool_directory} . '/' . '#centreon-trap-'.$s_pad.$usec_pad;
 
     unless (open SPOOL, ">$spoolfile") {
-        $self->{logger}->writeLogError("Could not write to file file $spoolfile!  Trap will be lost!");
+        $self->{logger}->writeLogError("Could not write to file: $spoolfile!  Trap will be lost!");
         exit(1);
     }
 

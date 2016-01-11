@@ -45,12 +45,8 @@ if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"
         $listMetricsId = array_keys($selected);
         if (count($listMetricsId) > 0) {
             $brk = new CentreonBroker($pearDB);
-            if ($brk->getBroker() == 'broker') {
-                $pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
-                $brk->reload();
-            } else {
-                $pearDBO->query("DELETE FROM metrics WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
-            }
+            $pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
+            $brk->reload();
             $pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
         }
     } else if ($_POST["o1"] == "hg" || $_POST["o2"] == "hg") {
@@ -222,5 +218,3 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("viewMetrics.ihtml");
-
-?>

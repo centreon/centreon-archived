@@ -124,7 +124,9 @@
 			else
 				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";				
 		}
-			
+        
+        $rq .=	"contact_location = ";
+		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".htmlentities($ret["contact_location"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .=	"contact_lang = ";
 		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "contact_email = ";

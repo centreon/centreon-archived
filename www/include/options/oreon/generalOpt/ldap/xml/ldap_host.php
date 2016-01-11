@@ -39,14 +39,13 @@
 
 ini_set('display_errors', 'Off');
 
-include_once("@CENTREON_ETC@/centreon.conf.php");
-//include_once("@CENTREON_ETC@/centreon.conf.php");
+require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
-require_once $centreon_path . "/www/class/centreon.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once $centreon_path . "/www/class/centreonXML.class.php";
-require_once $centreon_path . "/www/class/centreonLang.class.php";
-require_once $centreon_path . "/www/include/common/common-Func.php";
+require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonLang.class.php";
+require_once _CENTREON_PATH_ . "/www/include/common/common-Func.php";
 
 /*
  * Validate the session
@@ -57,11 +56,11 @@ $centreon = $_SESSION['centreon'];
 $db = new CentreonDB();
 $pearDB = $db;
 
-$centreonlang = new CentreonLang($centreon_path, $centreon);
+$centreonlang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonlang->bindLang();
-
-if (isset($_GET["sid"])) {
-    $sid = $_GET["sid"];
+$sid = session_id();
+if (isset($sid)) {
+    //$sid = $_GET["sid"];
     $res = $db->query("SELECT * FROM session WHERE session_id = '" . CentreonDB::escape($sid) . "'");
     if (!$session = $res->fetchRow()) {
         get_error('bad session id');

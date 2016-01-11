@@ -33,8 +33,8 @@
  *
  */
 
-require_once $centreon_path .'www/class/centreonLDAP.class.php';
-require_once $centreon_path .'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ .'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ .'www/class/centreonContactgroup.class.php';
 
 /**
  * Centreon Custom View Exception
@@ -204,9 +204,10 @@ class CentreonCustomView
     public function getCustomViews()
     {
         if (!isset($this->customViews)) {
-            $query = "SELECT cv.custom_view_id, name, layout, is_owner, locked, user_id, usergroup_id
+            $query = "SELECT cv.custom_view_id, name, layout, is_owner, locked, user_id, usergroup_id, public
             		  FROM custom_views cv, custom_view_user_relation cvur
             		  WHERE cv.custom_view_id = cvur.custom_view_id
+                      AND cvur.is_consumed = 1 
             		  AND (cvur.user_id = " . $this->db->escape($this->userId);
             if (count($this->userGroups)) {
                 $cglist = implode(",", $this->userGroups);
@@ -219,6 +220,7 @@ class CentreonCustomView
             while ($row = $res->fetchRow()) {
                 $cvid = $row['custom_view_id'];
                 $tmp[$cvid]['name'] = $row['name'];
+                $tmp[$cvid]['public'] = $row['public'];
                 if (!isset($tmp[$cvid]['is_owner']) || !$tmp[$cvid]['is_owner'] || $row['user_id']) {
                     $tmp[$cvid]['is_owner'] = $row['is_owner'];
                 }
@@ -247,10 +249,15 @@ class CentreonCustomView
      */
     public function addCustomView($params)
     {
+        if (!isset($params['public']) || is_null($params['public'])) {
+            $public = 0;
+        } else {
+            $public = 1;
+        }
         $query = "INSERT INTO custom_views (name, layout, public)
         		  VALUES ('".$this->db->escape($params['name'])."', "
                 . "'".$this->db->escape($params['layout']['layout'])."', "
-                . "'".$this->db->escape($params['public'])."')";
+                . "'".$public."')";
         $this->db->query($query);
         $lastId = $this->getLastViewId();
 
@@ -286,9 +293,14 @@ class CentreonCustomView
     public function updateCustomView($params)
     {
         if ($this->checkPermission($params['custom_view_id']) === true) {
+            $public = 0;
+            if (isset($params['public'])) {
+                $public = $params['public'];
+            }
             $query = "UPDATE custom_views SET
             		  	name   = '".$this->db->escape($params['name'])."',
-            		  	layout = '".$this->db->escape($params['layout']['layout'])."'
+            		  	layout = '".$this->db->escape($params['layout']['layout'])."',
+                        public = '".intval($public)."'    
             		  WHERE custom_view_id = ".$this->db->escape($params['custom_view_id']);
             $this->db->query($query);
         }
@@ -371,14 +383,19 @@ class CentreonCustomView
 
     public function loadCustomView($params)
     {
-        if(isset($params['wiewLoad']) && is_numeric($params['wiewLoad']) && $params['wiewLoad'] != -1 ){
+        if(isset($params['viewLoad']) && is_numeric($params['viewLoad']) && $params['viewLoad'] != -1 ){
             $is_owner = 0;
-            $res = $this->db->query("select * from custom_view_user_relation where custom_view_id = ".$this->db->escape($params['wiewLoad'])." and user_id = ".$this->db->escape($this->userId));
+            $is_consumed = 1;
+            $res = $this->db->query("select custom_view_id, user_id, locked, is_owner, is_consumed from custom_view_user_relation where custom_view_id = ".$this->db->escape($params['viewLoad'])." and user_id = ".$this->db->escape($this->userId));
             if ($row = $res->fetchRow()) {
                 $is_owner = $row['is_owner'];
             }
-            $this->db->query("delete from custom_view_user_relation where custom_view_id = ".$this->db->escape($params['wiewLoad'])." and user_id = ".$this->db->escape($this->userId));
-            $this->db->query("insert into custom_view_user_relation (custom_view_id,user_id,is_owner) VALUES (".$this->db->escape($params['wiewLoad']).", ".$this->db->escape($this->userId).", ".$is_owner.")");
+            $this->db->query("delete from custom_view_user_relation where custom_view_id = ".$this->db->escape($params['viewLoad'])." and user_id = ".$this->db->escape($this->userId));
+            $this->db->query("insert into custom_view_user_relation (custom_view_id,user_id,is_owner,locked) VALUES (".$this->db->escape($params['viewLoad']).", ".$this->db->escape($this->userId).", ".$is_owner.", 1)");
+            return $params['viewLoad'];
+        }else if(isset($params['viewLoadShare']) && is_numeric($params['viewLoadShare']) && $params['viewLoadShare'] != -1 ){
+            $this->db->query("update custom_view_user_relation set is_consumed = 1 where custom_view_id = ".$this->db->escape($params['viewLoadShare'])." and user_id = ".$this->db->escape($this->userId));
+            return $params['viewLoadShare'];
         }
     }
     
@@ -399,12 +416,12 @@ class CentreonCustomView
                     if ($str != "") {
                         $str .= ", ";
                     }
-                    $str .= "(" . $params['custom_view_id'] . ", " . $userId . ", " . $params['locked']['locked'] . ")";
+                    $str .= "(" . $params['custom_view_id'] . ", " . $userId . ", " . $params['locked']['locked'] . ", 0)";
                     $this->copyPreferences($params['custom_view_id'], $userId);
                 }
             }
             if ($str != "") {
-                $this->db->query("REPLACE INTO custom_view_user_relation (custom_view_id, user_id, locked) VALUES $str");
+                $this->db->query("REPLACE INTO custom_view_user_relation (custom_view_id, user_id, locked, is_consumed) VALUES $str");
             }
 
             // share with user groups
@@ -415,11 +432,11 @@ class CentreonCustomView
                         $str .= ", ";
 		    }
                     $usergroupId = $this->copyPreferences($params['custom_view_id'], null, $usergroupId);
-                    $str .= "(" . $params['custom_view_id'] . ", " . $usergroupId . ", " . $params['locked']['locked'] . ")";
+                    $str .= "(" . $params['custom_view_id'] . ", " . $usergroupId . ", " . $params['locked']['locked'] . ", 0)";
                 }
             }
             if ($str != "") {
-                $this->db->query("REPLACE INTO custom_view_user_relation (custom_view_id, usergroup_id, locked) VALUES $str");
+                $this->db->query("REPLACE INTO custom_view_user_relation (custom_view_id, usergroup_id, locked, is_consumed) VALUES $str");
             }
         }
     }
@@ -522,6 +539,20 @@ class CentreonCustomView
         		  AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
         $this->db->query($query);
     }
+    
+    /**
+     * Remove User From View
+     *
+     * @param array $params
+     * @return void
+     */
+    public function removeViewForAllUser($params)
+    {
+        $query = "DELETE FROM custom_view_user_relation
+        		  WHERE user_id <> " . $this->db->escape($params['user_id']) . "
+        		  AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
+        $this->db->query($query);
+    }
 
     /**
      * This is called when a contact is added into a contact group
@@ -550,4 +581,7 @@ class CentreonCustomView
             unset($customView);
         }
     }
+    
+    
+    
 }

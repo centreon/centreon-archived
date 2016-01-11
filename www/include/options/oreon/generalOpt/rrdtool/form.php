@@ -177,7 +177,7 @@ $form->registerRule('rrdcached_has_option', 'callback', 'rrdcached_has_option');
 $form->registerRule('rrdcached_valid', 'callback', 'rrdcached_valid');
 $form->addRule(array('rrdcached_enable', 'rrdcached_port', 'rrdcached_unix_path'), _('The rrdcached configuration must have a option.'), 'rrdcached_has_option');
 $form->addRule(array('rrdcached_port', 'rrdcached_unix_path'), _('Only one option must be set.'), 'rrdcached_valid');
-$form->addRule('rrdcached_port', _('The port must be a numeric'), 'numeric');
+$form->addRule('rrdcached_port', _('The port must be numeric'), 'numeric');
 
 $form->addRule('rrdtool_path_bin', _("Can't execute binary"), 'is_executable_binary');
 $form->addRule('oreon_rrdbase_path', _("Can't write in directory"), 'is_writable_path');
@@ -210,8 +210,8 @@ if (version_compare('1.4.0', $version, '>')) {
 
 $form->setDefaults($gopt);
 
-$subC = $form->addElement('submit', 'submitC', _("Save"));
-$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
+$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+$DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 $valid = false;
 if ($form->validate())	{
@@ -232,7 +232,7 @@ if ($form->validate())	{
 if (!$form->validate() && isset($_POST["gopt_id"]))
     print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 
-$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=rrdtool'"));
+$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=rrdtool'", 'class' => 'btc bt_info'));
 
     // prepare help texts
 $helptext = "";

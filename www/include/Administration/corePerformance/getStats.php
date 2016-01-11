@@ -79,9 +79,9 @@
 		return preg_replace("/[\\\$|`]/", "", $command);
 	}
 
-	require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once "$centreon_path/www/class/centreonGMT.class.php";
-	require_once "$centreon_path/www/class/centreonDB.class.php";
+	require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+	require_once _CENTREON_PATH_."/www/class/centreonGMT.class.php";
+	require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
 
 	/*
 	 * Connect DB
@@ -215,6 +215,8 @@
               $command_line .= " --font LEGEND:".$optGen["rrdtool_legend_fontsize"].":".$optGen["rrdtool_legend_title"]." ";
         }
 
+			  $command_line .= " --color BACK#FFFFFF --color FRAME#FFFFFF --color SHADEA#e7e7e8 --color SHADEB#e7e7e8 ";
+
 		/*
 		 * get all template infos
 		 */
@@ -224,12 +226,12 @@
 		 * Init DS template For each curv
 		 */
 
-		$colors = array("Min"=>"#19EE11", "Max"=>"#F91E05", "Average"=>"#2AD1D4",
-						"Last_Min"=>"#2AD1D4", "Last_5_Min"=>"#13EB3A", "Last_15_Min"=>"#F8C706",
-						"Last_Hour"=>"#F91D05", "Up"=>"#19EE11", "Down"=>"#F91E05",
-						"Unreach"=>"#2AD1D4", "Ok"=>"#13EB3A", "Warn"=>"#F8C706",
-						"Crit"=>"#F91D05", "Unk"=>"#2AD1D4", "In_Use"=>"#13EB3A",
-						"Max_Used"=>"#F91D05", "Total_Available"=>"#2AD1D4");
+		$colors = array("Min"=>"#88b917", "Max"=>"#e00b3d", "Average"=>"#00bfb3",
+						"Last_Min"=>"#00bfb3", "Last_5_Min"=>"#88b917", "Last_15_Min"=>"#ff9a13",
+						"Last_Hour"=>"#F91D05", "Up"=>"#88b917", "Down"=>"#e00b3d",
+						"Unreach"=>"#818285", "Ok"=>"#88b917", "Warn"=>"#ff9a13",
+						"Crit"=>"#F91D05", "Unk"=>"#bcbdc0", "In_Use"=>"#88b917",
+						"Max_Used"=>"#F91D05", "Total_Available"=>"#00bfb3");
 		$metrics = $differentStats[$options[$_GET["key"]]];
 		$DBRESULT = $pearDBO->query("SELECT RRDdatabase_nagios_stats_path FROM config");
 		$nagios_stats = $DBRESULT->fetchRow();
@@ -267,8 +269,13 @@
 		 * Add Timezone for current user.
 		 */
 
-        if ($CentreonGMT->used())
-            $command_line = "export TZ='GMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
+        $timezone = $CentreonGMT->getMyTimezone();
+        $timezone = trim($timezone);
+        if (empty($timezone)){
+            $timezone = date_default_timezone_get();
+        }
+      
+        $command_line = "export TZ='".$timezone."' ; ".$command_line;
 
 		$command_line = escape_command("$command_line");
 

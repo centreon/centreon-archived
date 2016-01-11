@@ -274,8 +274,7 @@ $tpl->assign('rows', $rows);
 
 $tpl->assign('p', $p);
 
-if (isset($_POST['searchO']) || isset($_POST['searchU']) 
-    || isset($_POST['otype']) || !isset($_GET['object_id'])) {
+if (isset($_POST['searchO']) || isset($_POST['searchU']) || isset($_POST['otype']) || !isset($_GET['object_id'])) {
     $tpl->display("viewLogs.ihtml");
 } else {
     $listAction = array();
@@ -292,5 +291,3 @@ if (isset($_POST['searchO']) || isset($_POST['searchU'])
   
     $tpl->display("viewLogsDetails.ihtml");
 }
-
-?>

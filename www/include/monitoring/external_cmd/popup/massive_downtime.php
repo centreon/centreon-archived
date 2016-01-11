@@ -52,7 +52,7 @@
 		}
 	}
 
-	$path = "$centreon_path/www/include/monitoring/external_cmd/popup/";
+	$path = _CENTREON_PATH_."/www/include/monitoring/external_cmd/popup/";
 	
 	/*
 	 * Init GMT
@@ -64,7 +64,7 @@
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
-	$tpl = initSmartyTplForPopup($path, $tpl, './templates/', $centreon_path);
+	$tpl = initSmartyTplForPopup($path, $tpl, './templates/', _CENTREON_PATH_);
 
 	/*
 	 * Pear library
@@ -88,6 +88,7 @@
         $form->addElement('text', 'start_time', '', array('id'=>'start_time', 'size' => 5, 'class' => 'timepicker'));
         $form->addElement('text', 'end_time', '', array('id'=>'end_time', 'size' => 5, 'class' => 'timepicker'));
         
+        
 	$form->setDefaults(
                 array(
                     "start" => $centreonGMT->getDate("m/d/Y" , time() + 120), 
@@ -96,6 +97,16 @@
                     "end_time" => $centreonGMT->getDate("G:i" , time() + 7320)
 		)
         );
+    
+    
+    // uncomment this section : the user can choose to set a downtime based on the host time or the centreon user time.
+    /*
+    $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
+    $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
+    $form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');        
+    $form->setDefaults(array('host_or_centreon_time' => '0'));   
+    */
+    
 	$form->addElement('text', 'duration', _('Duration'), array('id'=>'duration', 'width'=>'30', 'disabled'=>'true'));
 	$defaultDuration = 3600;
 	if (isset($oreon->optGen['monitoring_dwt_duration']) && $oreon->optGen['monitoring_dwt_duration']) {
@@ -104,7 +115,7 @@
 	$form->setDefaults(array('duration' => $defaultDuration));
     
     $scaleChoices = array("s" => _("Seconds"),
-                          "m" => _("Mminutes"),
+                          "m" => _("Minutes"),
                           "h" => _("Hours"),
                           "d" => _("Days")
               );
@@ -126,8 +137,8 @@
 	$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
 	$form->setJsWarnings(_("Invalid information entered"), _("Please correct these fields"));
 
-	$form->addElement('button', 'submit', _("Set downtime"), array("onClick" => "send_the_command();"));
-	$form->addElement('reset', 'reset', _("Reset"));
+	$form->addElement('button', 'submit', _("Set downtime"), array("onClick" => "send_the_command();", "class" => "btc bt_info"));
+	$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');

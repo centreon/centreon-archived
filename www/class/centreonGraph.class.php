@@ -36,14 +36,14 @@
 /*
  * this class need also others classes
  */
-require_once $centreon_path."www/class/centreonDuration.class.php";
-require_once $centreon_path."www/class/centreonGMT.class.php";
-require_once $centreon_path."www/class/centreonACL.class.php";
-require_once $centreon_path."www/class/centreonDB.class.php";
-require_once $centreon_path."www/class/centreonHost.class.php";
-require_once $centreon_path."www/class/centreonService.class.php";
-require_once $centreon_path."www/class/centreonSession.class.php";
-require_once $centreon_path."www/include/common/common-Func.php";
+require_once _CENTREON_PATH_."www/class/centreonDuration.class.php";
+require_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
+require_once _CENTREON_PATH_."www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_."www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_."www/class/centreonHost.class.php";
+require_once _CENTREON_PATH_."www/class/centreonService.class.php";
+require_once _CENTREON_PATH_."www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_."www/include/common/common-Func.php";
 
 /*
  * Class for XML/Ajax request
@@ -67,8 +67,6 @@ class CentreonGraph {
 
     var $hostObj;
     var $serviceObj;
-
-    var $session_id;
 
     /*
      * private vars
@@ -117,25 +115,23 @@ class CentreonGraph {
      * $obj = new CentreonBGRequest($_GET["session_id"], 1, 1, 0, 1);
      * </code>
      *
-     * $session_id  char    session id
+     * $user_id     char    The user id
      * $dbneeds     bool    flag for enable ndo connexion
      * $headType    bool    send XML header
      * $debug       bool    debug flag.
      */
-    public function __construct($session_id, $index = null, $debug, $compress = null)
+    public function __construct($user_id, $index = null, $debug, $compress = null)
     {
         if (!isset($debug)) {
             $this->debug = 0;
         }
 
         (!isset($compress)) ? $this->compress = 1 : $this->compress = $compress;
-
-        if (!isset($session_id)) {
-            print "Your might check your session id";
-            exit(1);
-        } else {
-            $this->session_id = htmlentities($session_id, ENT_QUOTES, "UTF-8");
-        }
+        
+        /*
+         * User ID / Contact ID
+         */
+        $this->user_id = $user_id;
 
         $this->index = htmlentities($index, ENT_QUOTES, "UTF-8");
 
@@ -149,18 +145,13 @@ class CentreonGraph {
          * Init Objects
          */
         $this->hostObj      = new CentreonHost($this->DB);
-        $this->serviceObj   = new CentreonService($this->DB);
-
-        /*
-         * User ID / Contact ID
-         */
-        $this->user_id = check_session($this->session_id, $this->DB);
+        $this->serviceObj   = new CentreonService($this->DB);       
 
         /*
          * Timezone management
          */
         $this->GMT = new CentreonGMT($this->DB);
-        $this->GMT->getMyGMTFromSession($this->session_id, $this->DB);
+        $this->GMT->getMyGTMFromUser($this->user_id, $this->DB);
 
         $this->_RRDoptions = array();
         $this->_arguments = array();
@@ -192,8 +183,7 @@ class CentreonGraph {
         $this->onecurve = false;
         $this->checkcurve = false;
 
-        $DBRESULT = $this->DBC->query("SELECT RRDdatabase_path, RRDdatabase_status_path 
-                                        FROM config LIMIT 1");
+        $DBRESULT = $this->DBC->query("SELECT RRDdatabase_path, RRDdatabase_status_path FROM config LIMIT 1");
         $config = $DBRESULT->fetchRow();
         $this->dbPath = $config["RRDdatabase_path"];
         $this->dbStatusPath = $config['RRDdatabase_status_path'];
@@ -343,24 +333,6 @@ class CentreonGraph {
             $this->setRRDOption("slope-mode");
         }
 
-        if ($this->general_opt["rrdtool_version"] == "1.3") {
-            if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"])) {
-                $this->setFont("TITLE:", $this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]);
-            }
-            if (isset($this->general_opt["rrdtool_unit_font"]) && isset($this->general_opt["rrdtool_unit_fontsize"])) {
-                $this->setFont("UNIT:", $this->general_opt["rrdtool_unit_fontsize"].":".$this->general_opt["rrdtool_unit_font"]);
-            }
-            if (isset($this->general_opt["rrdtool_axis_font"]) && isset($this->general_opt["rrdtool_axis_fontsize"])) {
-                $this->setFont("AXIS:", $this->general_opt["rrdtool_axis_fontsize"].":".$this->general_opt["rrdtool_axis_font"]);
-            }
-            if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"])) {
-                $this->setFont("WATERMARK:", $this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]);
-            }
-            if (isset($this->general_opt["rrdtool_legend_title"]) && isset($this->general_opt["rrdtool_legend_fontsize"])) {
-                $this->setFont("LEGEND:", $this->general_opt["rrdtool_legend_fontsize"].":".$this->general_opt["rrdtool_legend_title"]);
-            }
-        }
-
         if (isset($this->templateInformations["base"]) && $this->templateInformations["base"]) {
             $this->setRRDOption("base", $this->templateInformations["base"]);
         }
@@ -374,31 +346,6 @@ class CentreonGraph {
         /*
          * Init Graph Template Value
          */
-        if (isset($this->templateInformations["bg_grid_color"]) && $this->templateInformations["bg_grid_color"]) {
-            $this->setColor("CANVAS", $this->templateInformations["bg_grid_color"]);
-        }
-
-        if (isset($this->templateInformations["bg_color"]) && $this->templateInformations["bg_color"]) {
-            $this->setColor("BACK", $this->templateInformations["bg_color"]);
-        } else {
-            $this->setColor("BACK", "#F0F0F0");
-        }
-
-        if (isset($this->templateInformations["police_color"]) && $this->templateInformations["police_color"])
-            $this->setColor("FONT", $this->templateInformations["police_color"]);
-        if (isset($this->templateInformations["grid_main_color"]) && $this->templateInformations["grid_main_color"])
-            $this->setColor("MGRID", $this->templateInformations["grid_main_color"]);
-        if (isset($this->templateInformations["grid_sec_color"]) && $this->templateInformations["grid_sec_color"])
-            $this->setColor("GRID", $this->templateInformations["grid_sec_color"]);
-        if (isset($this->templateInformations["contour_cub_color"]) && $this->templateInformations["contour_cub_color"])
-            $this->setColor("FRAME", $this->templateInformations["contour_cub_color"]);
-        if (isset($this->templateInformations["col_arrow"]) && $this->templateInformations["col_arrow"])
-            $this->setColor("ARROW", $this->templateInformations["col_arrow"]);
-        if (isset($this->templateInformations["col_top"]) && $this->templateInformations["col_top"])
-            $this->setColor("SHADEA", $this->templateInformations["col_top"]);
-        if (isset($this->templateInformations["col_bot"]) && $this->templateInformations["col_bot"])
-            $this->setColor("SHADEB", $this->templateInformations["col_bot"]);
-
         if (isset($this->templateInformations["lower_limit"]) && $this->templateInformations["lower_limit"] != NULL)
             $this->setRRDOption("lower-limit", $this->templateInformations["lower_limit"]);
         if (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != "") {
@@ -556,7 +503,7 @@ class CentreonGraph {
                     $ds_data_regular = null;
                     foreach ($components_ds_cache as $ds_val) {
                         /* Prepare pattern for metrics */
-                        $metricPattern = '/' . str_replace('*', '.*', $ds_val['ds_name']) . '/';
+                        $metricPattern = '/^' . str_replace('*', '.*', $ds_val['ds_name']) . '$/i';
                         # Check associated
                         if (($ds_val['host_id'] == $metric['host_id'] || $ds_val['host_id'] == '') &&
                             ($ds_val['service_id'] == $metric['service_id'] || $ds_val['service_id'] == '') &&
@@ -565,9 +512,9 @@ class CentreonGraph {
                             break;
                         }
 
-                        # Check regular
+                        /* Check regular */
                         if (is_null($ds_data_regular) && preg_match('/^' . preg_quote($ds_val['ds_name'], '/') . '$/i', $metric["metric_name"])) {
-                                $ds_data_regular = $ds_val;
+                            $ds_data_regular = $ds_val;
                         }
                     }
 
@@ -719,14 +666,16 @@ class CentreonGraph {
                         $l_CMP = "," . $this->get_cmp_operator($tm) . ",";
                         $this->addArgument("CDEF:ok".$cpt."=v".$cpt.",".$tm["warn"].$l_CMP.$tm["warn"].",v".$cpt.",IF");
                         $this->addArgument("CDEF:oc".$cpt."=v".$cpt.",".$tm["crit"].$l_CMP."v".$cpt.",".$tm["crit"].",-,0,IF");
-			$this->addArgument("CDEF:ow".$cpt."=v".$cpt.",".$tm["warn"].$l_CMP."v".$cpt.",".$tm["warn"].",-,oc".$cpt.",-,0,IF");
-			$this->areaNb = $cpt;
+			            $this->addArgument("CDEF:ow".$cpt."=v".$cpt.",".$tm["warn"].$l_CMP."v".$cpt.",".$tm["warn"].",-,oc".$cpt.",-,0,IF");
+			            $this->areaNb = $cpt;
                     }
                     $this->vname[$tm["metric"]] = "v".$cpt;
                     $cpt++;
                 }
-                if ($tm["legend_len"] > $this->longer)
-                    $this->longer = $tm["legend_len"];
+                if (!isset($tm["virtual"])){
+                    if ($tm["legend_len"] > $this->longer)
+                        $this->longer = $tm["legend_len"];
+                }
             }
         }
         $deftype = array(0 => "CDEF", 1 => "VDEF");
@@ -761,10 +710,22 @@ class CentreonGraph {
      */
     public function createLegend()
     {
+        $currentColors = array("Min"=>"#19EE11", "Max"=>"#F91E05", "Average"=>"#2AD1D4",
+                    "Last_Min"=>"#2AD1D4", "Last_5_Min"=>"#13EB3A", "Last_15_Min"=>"#F8C706",
+                    "Last_Hour"=>"#F91D05", "Up"=>"#19EE11", "Down"=>"#F91E05",
+                    "Unreach"=>"#2AD1D4", "Ok"=>"#13EB3A", "Warn"=>"#F8C706",
+                    "Crit"=>"#F91D05", "Unk"=>"#2AD1D4", "In_Use"=>"#13EB3A",
+                    "Max_Used"=>"#F91D05", "Total_Available"=>"#2AD1D4"
+                );
+        
         $cpt = 0;
         $rpn_values = "";
         $rpn_expr = "";
         foreach ($this->metrics as $key => $tm) {
+            if (in_array($tm['metric'], $currentColors)) {
+                $tm["ds_color_line"] = $currentColors[$tm['metric']];
+            }
+            
             if ( isset($tm["need"]) && $tm["need"] == 1 )
                 continue;
             if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
@@ -798,6 +759,7 @@ class CentreonGraph {
                     }
                 }
 
+                
                 if (!isset($tm["ds_stack"]) || !$tm["ds_stack"] || $cpt == 0) {
                     $arg = "LINE".$tm["ds_tickness"].":".$this->vname[$tm["metric"]];
                 } else {
@@ -820,6 +782,8 @@ class CentreonGraph {
 
                 $vdefs = "";
                 $prints = "";
+                
+                
                 foreach (array("last" => "LAST", "min" => "MINIMUM", "max" => "MAXIMUM",
                                "average" => "AVERAGE", "total" => "TOTAL") as $name => $cf) {
                     if (!$tm["ds_" . $name]) {
@@ -981,7 +945,7 @@ class CentreonGraph {
 
         $tab = array();
         while (1) {
-            $DBRESULT = $this->DB->query("SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
+            $DBRESULT = $this->DB->query("SELECT esi.graph_id, service_template_model_stm_id FROM service LEFT JOIN extended_service_information esi ON esi.service_service_id = service_id WHERE service_id = '".$service_id."' LIMIT 1");
             $row = $DBRESULT->fetchRow();
             if ($row["graph_id"]) {
                 $this->graphID = $row["graph_id"];
@@ -1063,7 +1027,7 @@ class CentreonGraph {
     /**
      * Geneate image...
      */
-    public function displayError()
+    public static function displayError()
     {
         $image  = imagecreate(250,100);
         $fond   = imagecolorallocate($image,0xEF,0xF2,0xFB);
@@ -1238,17 +1202,12 @@ class CentreonGraph {
         foreach ($this->_arguments as $arg) {
             $commandLine .= " ".$arg." ";
         }
-
-	$commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
-	$gmt_export = "";
-        if ($this->GMT->used()){
-            $offset = -1 * ($this->GMT->getMyGMT() + date('Z') / 60 / 60);
-            if($offset > 0){
-                $offset = '+' . $offset;
-            }
-            $gmt_export = "export TZ='GMT" . $offset . "' ; ";
+        $gmt_export = "";
+        $commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
+        $timezone = $this->GMT->getMyTimezone();
+        if (!empty($timezone)){  
+            $gmt_export = "export TZ='".$timezone."'; " ;
         }
-
         $this->_log($commandLine);
         /*
          * Send Binary Data
@@ -1653,6 +1612,5 @@ class CentreonGraph {
         }
         return false;
     }
+    
 }
-
-?>

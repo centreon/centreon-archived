@@ -31,14 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/install/step_upgrade/step3.php $
- * SVN : $Id: step3.php 12518 2011-09-20 08:46:14Z shotamchay $
- *
  */
 
 session_start();
-require_once '@CENTREON_ETC@/centreon.conf.php';
-require_once $centreon_path.'/www/class/centreonDB.class.php';
+require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_.'/www/class/centreonDB.class.php';
 require_once '../../steps/functions.php';
 
 $current = $_POST['current'];
@@ -50,15 +47,6 @@ $status = 0;
  */
 try {
     $pearDB = new CentreonDB('centreon', 3, true);
-    $res = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'broker'");
-    $row = $res->fetchRow();
-    $isBroker = false;
-    if (isset($row['value']) && $row['value'] == 'broker') {
-        $isBroker = true;
-        $pearDBNdo = new CentreonDB('centstorage', 3, true);
-    } else {
-        $pearDBNdo = new CentreonDB('ndo', 3, true);
-    }
     $pearDBO = new CentreonDB('centstorage', 3, true);
 } catch (Exception $e) {
     exitUpgradeProcess(1, $current, $next, $e->getMessage());
@@ -70,17 +58,6 @@ try {
 $storageSql = '../../sql/centstorage/Update-CSTG-'.$current.'_to_'.$next.'.sql';
 if (is_file($storageSql)) {
     $result = splitQueries($storageSql, ';', $pearDBO, '../../tmp/Update-CSTG-'.$current.'_to_'.$next);
-    if ("0" != $result) {
-        exitUpgradeProcess(1, $current, $next, $result);
-    }
-}
-
-/**
- * Upgrade utils sql
- */
-$utilsSql = '../../sql/brocker/Update-NDO-'.$current.'_to_'.$next.'.sql';
-if (is_file($utilsSql) && $isBroker == false) {
-    $result = splitQueries($utilsSql, ';', $pearDBNdo, '../../tmp/Update-NDO-'.$current.'_to_'.$next);
     if ("0" != $result) {
         exitUpgradeProcess(1, $current, $next, $result);
     }

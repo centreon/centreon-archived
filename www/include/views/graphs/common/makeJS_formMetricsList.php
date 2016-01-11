@@ -42,7 +42,7 @@
 	$locale = $oreon->user->get_lang();
 	putenv("LANG=$locale");
 	setlocale(LC_ALL, $locale);
-	bindtextdomain("messages",  $centreon_path . "www/locale/");;
+	bindtextdomain("messages",  _CENTREON_PATH_ . "www/locale/");;
 	bind_textdomain_codeset("messages", "UTF-8"); 
 	textdomain("messages");
 ?><script type="text/javascript">
@@ -50,44 +50,39 @@
 var _o = '<?php echo $o;?>';
 var _vdef = '<?php echo $vdef;?>';
 
-function resetLists(db_id, def_id){
-	update_select_list(0, db_id, def_id);
-	update_select_list(1,def_id);
+function resetLists(host_id, service_id, def_id){
+    update_select_list(host_service_id, def_id);
 }
 
 /* Function for displaying selected template */
-function display_select_list(xhr, xml_id, def_id){
+function display_select_list(xhr, def_id){
 
     var id;
     var alias;
 
-	/* get select data from xml */
+    /* get select data from xml */
     var docXML = xhr.responseXML;
-	var s_id = docXML.getElementsByTagName("select_id").item(0).firstChild.data;
-	var td_id = docXML.getElementsByTagName("td_id").item(0).firstChild.data;
+    var s_id = docXML.getElementsByTagName("select_id").item(0).firstChild.data;
+    var td_id = docXML.getElementsByTagName("td_id").item(0).firstChild.data;
     var options = docXML.getElementsByTagName("option");
     var o_id = docXML.getElementsByTagName("o_id");
     var o_alias = docXML.getElementsByTagName("o_alias");
 
-	if ( _o == "a" || _o == "c") {
-		/* init new select element */
-		var c_elem = document.createElement('select');
-		c_elem.id = s_id;
-		if ( xml_id == 0 ){
-			c_elem.name = "index_id";
-			c_elem.onchange= function(){ update_select_list(1,this.value);};
-		}
-	}
+    if ( _o == "a" || _o == "c") {
+        /* init new select element */
+        var c_elem = document.createElement('select');
+        c_elem.id = s_id;
+    }
 
-	for(i=0; i<options.length; i++) {
-		id = o_id.item(i).firstChild.data;  	
-		alias = o_alias.item(i).firstChild.data;
+    for(i=0; i<options.length; i++) {
+        id = o_id.item(i).firstChild.data;  	
+        alias = o_alias.item(i).firstChild.data;
 
-		if ( _o == "a" || _o == "c") {
-			var o_elem = document.createElement('option');    	
-			o_elem.value = id;
-			o_elem.text = alias;
-		}
+        if ( _o == "a" || _o == "c") {
+            var o_elem = document.createElement('option');    	
+            o_elem.value = id;
+            o_elem.text = alias;
+        }
 		if ( def_id != null && def_id == id ) {
 			if ( _o == "w" ) {
 				service_val = o_alias.item(i).firstChild.data;
@@ -137,38 +132,41 @@ function display_select_list(xhr, xml_id, def_id){
 /*
  * Create the select after the reception of XML data
  */
-function get_select_options(xhr, xml_id, def_id) {
-	if (xhr.readyState != 4 && xhr.readyState != "complete")		
-    	return(0);
-    if (xhr.status == 200) {    	    	
-   		display_select_list(xhr, xml_id, def_id);
-    }	
+function get_select_options(xhr, def_id) {
+    if (xhr.readyState != 4 && xhr.readyState != "complete") {
+        return(0);
+    }
+    if (xhr.status == 200) {
+        display_select_list(xhr, def_id);
+    }
 }
 
 /*
  * This function is called when user clicks on the 'add' button
  */
-function update_select_list(xml_id, db_id, def_id){	
-	var xhr = null;
-	if (window.XMLHttpRequest) {     
+function update_select_list(host_service_id, def_id){
+    var host_id = 0;
+    var service_id = 0;
+
+    var reg = new RegExp('\\d+-\\d+');
+    if (reg.test(host_service_id)) {
+        var res = host_service_id.split("-");
+        host_id = res[0];
+        service_id = res[1];
+    }
+
+    var xhr = null;
+    if (window.XMLHttpRequest) {     
         xhr = new XMLHttpRequest();
     } else if (window.ActiveXObject) {        
         xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    } else {
+        alert("AJAX is not supported");
     }
-        
-    if (xhr == null)
-     	alert("AJAX is not supported");
-    xhr.onreadystatechange = function() { get_select_options(xhr, xml_id, def_id); };
-    xhr.open("GET", "./include/views/graphs/common/" + xmlFile[xml_id]+ "=" + db_id + "&vdef=" +_vdef, true);
+
+    xhr.onreadystatechange = function() { get_select_options(xhr, def_id); };
+    xhr.open("GET", "./include/views/graphs/common/makeXML_ListMetrics.php?host_id=" + host_id + "&service_id=" + service_id + "&vdef=" +_vdef, true);
     xhr.send(null);
 }
-
-/*
- * Global variables
- */
-
-var xmlFile = new Array();
-xmlFile[0] = "makeXML_ListServices.php?host_id";
-xmlFile[1] = "makeXML_ListMetrics.php?index_id";
 
 </script>

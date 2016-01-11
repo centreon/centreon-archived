@@ -36,7 +36,7 @@
 		$cmd = str_replace("\n", "<br>", $cmd);
         
 		setlocale(LC_CTYPE, 'en_US.UTF-8');
-        $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . "@CENTREON_VARLIB@/centcore.cmd";
+        $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . _CENTREON_VARLIB_."/centcore.cmd";
 		return passthru($str);
 	}
 
@@ -187,6 +187,7 @@
 			isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
 			isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
             isset($_GET['duration_scale']) && $_GET['duration_scale'] ? $duration_scale = $_GET['duration_scale'] : $duration_scale = "s";
+            isset($_GET['host_or_centreon_time']) && $_GET['host_or_centreon_time'] == "true" 		? $host_or_centreon_time = "1" : $host_or_centreon_time = "0";
             
             if ($duration > 0) {
                 switch ($duration_scale) {
@@ -215,7 +216,7 @@
 			}
             
             $extCmdObj = new CentreonExternalCommand($oreon);
-            $extCmdObj->AddHostDowntime($host, $comment, $start, $end, $fixed, $duration, $with_services);
+            $extCmdObj->AddHostDowntime($host, $comment, $start, $end, $fixed, $duration, $with_services,$host_or_centreon_time);
         }
         
         return null;
@@ -251,6 +252,7 @@
 			isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
 			isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
             isset($_GET['duration_scale']) && $_GET['duration_scale'] ? $duration_scale = $_GET['duration_scale'] : $duration_scale = "s";
+            isset($_GET['host_or_centreon_time']) && $_GET['host_or_centreon_time'] == "true" 		? $host_or_centreon_time = "1" : $host_or_centreon_time = "0";
             
             if ($duration > 0)
             {
@@ -279,7 +281,7 @@
             $service = getMyServiceID($svc_description, $host);
             
             $extCmdObj = new CentreonExternalCommand($oreon);
-            $extCmdObj->AddSvcDowntime($host, $service, $comment, $start, $end, $fixed, $duration);
+            $extCmdObj->AddSvcDowntime($host, $service, $comment, $start, $end, $fixed, $duration, $host_or_centreon_time);
             
             
             

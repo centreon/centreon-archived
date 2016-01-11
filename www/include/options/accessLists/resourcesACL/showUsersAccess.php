@@ -125,7 +125,13 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	$DBRESULT = $pearDBNdo->query("SELECT DISTINCT host_name, service_description, host_id, service_id FROM centreon_acl WHERE group_id IN ($groups) ORDER BY host_name, service_description");
+	$query = "SELECT DISTINCT h.name, s.description, acl.host_id, acl.service_id "
+            . "FROM centreon_acl acl "
+            . "LEFT JOIN hosts h on acl.host_id = h.host_id "
+            . "LEFT JOIN services s on s.service_id = acl.service_id "
+            . "WHERE acl.group_id IN ($groups) ORDER BY h.name, s.description";
+         $DBRESULT = $pearDBNdo->query($query);
+
 	for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {
 
 		if ((isset($ehiCache[$resources["host_id"]]) && $ehiCache[$resources["host_id"]])) {
@@ -133,13 +139,13 @@
 		} elseif ($icone = $host_method->replaceMacroInString($resources["host_id"], getMyHostExtendedInfoImage($resources["host_id"], "ehi_icon_image", 1))) {
 			$host_icone = "./img/media/" . $icone;
 		} else {
-			$host_icone = "./img/icones/16x16/server_network.gif";
+			$host_icone = "./img/icons/host.png";
 		}
 		$moptions = "";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_hico" => $host_icone,
-						"RowMenu_host" => myDecode($resources["host_name"]),
-						"RowMenu_service" => myDecode($resources["service_description"]),
+						"RowMenu_host" => myDecode($resources["name"]),
+						"RowMenu_service" => myDecode($resources["description"]),
 						);
 		$style != "two" ? $style = "two" : $style = "one";
 	}

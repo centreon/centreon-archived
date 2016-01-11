@@ -31,27 +31,34 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($centreon)) {
+	exit();		
+}
 
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-	$sid = session_id();
-	$time = time();
+if (!isset($oreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
+    $tFM = 10;
+} else {
+    $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+}
 
-	$obis = $o;
-	if (isset($_GET["problem"])) {
-		$obis .= '_pb';
-	}
-	if (isset($_GET["acknowledge"])) {
-		$obis .= '_ack_' . $_GET["acknowledge"];
-	}
+if (!isset($oreon->optGen["AjaxFirstTimeReloadStatistic"]) || $oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
+    $tFS = 10;
+} else {
+    $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+}
+
+$sid = session_id();
+$time = time();
+
+$obis = $o;
+if (isset($_GET["problem"])) {
+	$obis .= '_pb';
+}
+if (isset($_GET["acknowledge"])) {
+	$obis .= '_ack_' . $_GET["acknowledge"];
+}
 
 ?>
 <script type="text/javascript">
@@ -66,7 +73,7 @@ var _criticality_id = 0;
 
 var _selectedElem = new Array();
 
-function set_header_title(){
+function set_header_title() {
 
 	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
 	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
@@ -116,14 +123,14 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
-                var h = document.getElementById('criticality_id');
-                if (h) {
-                    h.innerHTML = '<?php echo addslashes("S"); ?>';
-                    h.indice = 'criticality_id';
-                    h.title = "<?php echo _("Sort by severity"); ?>";
-                    h.onclick=function(){change_type_order(this.indice)};
-                    h.style.cursor = "pointer";
-                }
+        var h = document.getElementById('criticality_id');
+        if (h) {
+            h.innerHTML = '<?php echo addslashes("S"); ?>';
+            h.indice = 'criticality_id';
+            h.title = "<?php echo _("Sort by severity"); ?>";
+            h.onclick=function(){change_type_order(this.indice)};
+            h.style.cursor = "pointer";
+        }
 
 		var h = document.getElementById('plugin_output');
 		h.innerHTML = '<?php echo addslashes(_("Status information"))?>';
@@ -132,18 +139,18 @@ function set_header_title(){
 		h.style.cursor = "pointer";
 
 		if (_sort_type) {
-                    var h = document.getElementById(_sort_type);
-                    var _linkaction_asc = document.createElement("a");
-                    if (_order == 'ASC') {
-                        _linkaction_asc.appendChild(_img_asc);
-                    } else {
-                        _linkaction_asc.appendChild(_img_desc);
-                    }
-                    _linkaction_asc.href = '#' ;
-                    _linkaction_asc.onclick=function(){change_order()};
-                    if (h) {
-                        h.appendChild(_linkaction_asc);
-                    }
+            var h = document.getElementById(_sort_type);
+            var _linkaction_asc = document.createElement("a");
+            if (_order == 'ASC') {
+                _linkaction_asc.appendChild(_img_asc);
+            } else {
+                _linkaction_asc.appendChild(_img_desc);
+            }
+            _linkaction_asc.href = '#' ;
+            _linkaction_asc.onclick=function(){change_order()};
+            if (h) {
+                h.appendChild(_linkaction_asc);
+            }
 		}
 	}
 }
@@ -182,22 +189,10 @@ function initM(_time_reload, _sid, _o ){
 	construct_selecteList_ndo_instance('instance_selected');
 	construct_HostGroupSelectList('hostgroups_selected');
 
-	if (!document.getElementById('debug')){
-		var _divdebug = document.createElement("div");
-		_divdebug.id = 'debug';
-		var _debugtable = document.createElement("table");
-		_debugtable.id = 'debugtable';
-		var _debugtr = document.createElement("tr");
-		_debugtable.appendChild(_debugtr);
-		_divdebug.appendChild(_debugtable);
-		_header = document.getElementById('header');
-		_header.appendChild(_divdebug);
-	}
-
 	if (document.getElementById("host_search") && document.getElementById("host_search").value) {
 		_host_search = document.getElementById("host_search").value;
 		viewDebugInfo('service search: '+document.getElementById("host_search").value);
-	} else if (document.getElementById("host_search").lenght == 0) {
+	} else if (document.getElementById("host_search").length == 0) {
 		_host_search = "";
 	}
 
@@ -228,8 +223,11 @@ function goM(_time_reload, _sid, _o) {
 		_counter += 1;
 	}
 
+    var statusHost = jQuery.trim(jQuery('#statusHost').val());
+    var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
+        
 	proc.setCallback(monitoringCallBack);
-	proc.setXml(_addrXML+"?"+'sid='+_sid+'&search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id);
+	proc.setXml(_addrXML+"?"+'search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id+'&statusHost='+statusHost+'&statusFilter='+statusFilter+"&sSetOrderInMemory="+sSetOrderInMemory);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
 
@@ -241,14 +239,13 @@ function goM(_time_reload, _sid, _o) {
 	set_header_title();
 }
 
-function unsetCheckboxes()
-{
+function unsetCheckboxes() {
 	for (keyz in _selectedElem) {
 		if (keyz == _selectedElem[keyz]) {
 			removeFromSelectedElem(decodeURIComponent(keyz));
-                        if (document.getElementById(decodeURIComponent(keyz))) {
-                            document.getElementById(decodeURIComponent(keyz)).checked = false;
-                        }
+                if (document.getElementById(decodeURIComponent(keyz))) {
+                    document.getElementById(decodeURIComponent(keyz)).checked = false;
+                }
 		}
 	}
 }
@@ -260,7 +257,7 @@ function cmdCallback(cmd) {
     _getVar = "";
     if (cmd != '72' && cmd != '75') {
 		return 1;
-    }else {
+    } else {
     	for (keyz in _selectedElem) {
             if ((keyz == _selectedElem[keyz]) && typeof(document.getElementById(decodeURIComponent(keyz)) != 'undefined') &&
                 document.getElementById(decodeURIComponent(keyz))) {
@@ -269,7 +266,12 @@ function cmdCallback(cmd) {
                 }
             }
         }
-        Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title: '<?php echo _("External commands") ?>', width: 600});
+        
+        var url = './include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar;
+        
+        var popin = jQuery('<div>');
+        popin.centreonPopin({open:true,url:url});
+        window.currentPopin = popin;
         return 0;
     }
 }
@@ -319,7 +321,7 @@ function send_the_command() {
 
 	    var author = document.getElementById('author').value;
 
-	    xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+	    xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author  + _getVar, true);
 	}
 	else if (_cmd == '74' || _cmd == '75') {
 		var downtimehostservice = 0;
@@ -337,10 +339,16 @@ function send_the_command() {
 		var author = document.getElementById('author').value;
 		var duration = document.getElementById('duration').value;
         var duration_scale = document.getElementById('duration_scale').value;
-		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&start=" + start + "&end=" + end +  "&comment=" + comment + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+        var tmp = document.querySelector('input[name="host_or_centreon_time[host_or_centreon_time]"]:checked');
+        var host_or_centreon_time = "0";
+        if(tmp !== null && typeof tmp !== "undefined" ){
+            host_or_centreon_time = tmp.value;
+        }
+		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&start=" + start + "&end=" + end +  "&comment=" + comment + "&fixed=" + fixed + "&host_or_centreon_time=" + host_or_centreon_time + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
 	}
     xhr_cmd.send(null);
-	Modalbox.hide();
+    window.currentPopin.centreonPopin("close");
+	//Modalbox.hide();
 	unsetCheckboxes();
 }
 
@@ -355,5 +363,4 @@ function toggleFields(fixed)
 		dur.disabled = false;
 	}
 }
-
-</SCRIPT>
+</script>

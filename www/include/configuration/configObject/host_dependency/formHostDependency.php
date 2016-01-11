@@ -31,278 +31,193 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	#
-	## Database retrieve information for Dependency
-	#
+$dep = array();
+$childServices = array();
+$initialValues = array();
+if (($o == "c" || $o == "w") && $dep_id) {
+    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 
-        /* hosts */
-        $hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields'  => array('host.host_id', 'host.host_name'),
-                                                                               'keys'    => array('host_id'),
-                                                                               'get_row' => 'host_name',
-                                                                               'order'   => array('host.host_name')));
-        
-        /* services */
-        if (!$oreon->user->admin) {
-            $hServices = array();
-            $sql = "SELECT DISTINCT CONCAT(host_id, '_', service_id) as k, 
-                                    CONCAT(host_name, ' / ', service_description) as v
-                    FROM $dbmon.centreon_acl 
-                    WHERE group_id IN (".$acl->getAccessGroupsString().")";
-            $res = $pearDB->query($sql);
-            while ($row = $res->fetchRow()) {
-                $hServices[$row['k']] = $row['v'];
-            }
-        }
+    # Set base value
+    $dep = array_map("myDecode", $DBRESULT->fetchRow());
 
-	$dep = array();
-	$childServices = array();
-        $initialValues = array();
-	if (($o == "c" || $o == "w") && $dep_id) {
-		$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+    # Set Notification Failure Criteria
+    $dep["notification_failure_criteria"] = explode(',', $dep["notification_failure_criteria"]);
+    foreach ($dep["notification_failure_criteria"] as $key => $value) {
+        $dep["notification_failure_criteria"][trim($value)] = 1;
+    }
 
-		// Set base value
-		$dep = array_map("myDecode", $DBRESULT->fetchRow());
+    # Set Execution Failure Criteria
+    $dep["execution_failure_criteria"] = explode(',', $dep["execution_failure_criteria"]);
+    foreach ($dep["execution_failure_criteria"] as $key => $value) {
+        $dep["execution_failure_criteria"][trim($value)] = 1;
+    }
 
-		// Set Notification Failure Criteria
-		$dep["notification_failure_criteria"] = explode(',', $dep["notification_failure_criteria"]);
-		foreach ($dep["notification_failure_criteria"] as $key => $value) {
-			$dep["notification_failure_criteria"][trim($value)] = 1;
-		}
+}
 
-		// Set Execution Failure Criteria
-		$dep["execution_failure_criteria"] = explode(',', $dep["execution_failure_criteria"]);
-		foreach ($dep["execution_failure_criteria"] as $key => $value) {
-			$dep["execution_failure_criteria"][trim($value)] = 1;
-		}
+# Var information to format the element
+$attrsText 		= array("size"=>"30");
+$attrsText2 	= array("size"=>"10");
+$attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
+$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
+$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrHosts = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'multiple' => true,
+    'linkedObject' => 'centreonHost'
+);
+$attrServices = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+    'multiple' => true,
+    'linkedObject' => 'centreonService'
+);
 
-		// Set Host Parents
-		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-		for($i = 0; $hostP = $DBRESULT->fetchRow(); $i++) {
-                    if (!$oreon->user->admin && !isset($hosts[$hostP['host_host_id']])) {
-                        $initialValues['dep_hostParents'][] = $hostP["host_host_id"];
-                    } else {
-                        $dep["dep_hostParents"][$i] = $hostP["host_host_id"];
-                    }
-		}
-		$DBRESULT->free();
+/*
+ * Form begin
+ */
+$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+if ($o == "a")
+	$form->addElement('header', 'title', _("Add a Dependency"));
+else if ($o == "c")
+	$form->addElement('header', 'title', _("Modify a Dependency"));
+else if ($o == "w")
+	$form->addElement('header', 'title', _("View a Dependency"));
 
-		// Set Host Children
-		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-		for($i = 0; $hostC = $DBRESULT->fetchRow(); $i++) {
-                    if (!$oreon->user->admin && !isset($hosts[$hostC['host_host_id']])) {
-                        $initialValues['dep_hostParents'][] = $hostC["host_host_id"];
-                    } else {
-                        $dep["dep_hostChilds"][$i] = $hostC["host_host_id"];
-                    }
-		}
-		$DBRESULT->free();
+/*
+ * Dependency basic information
+ */
+$form->addElement('header', 'information', _("Information"));
+$form->addElement('text', 'dep_name', _("Name"), $attrsText);
+$form->addElement('text', 'dep_description', _("Description"), $attrsText);
 
-                // Set Service Children
-                $query = "SELECT host_id, host_name, service_id, service_description
-    		  	  FROM service s, dependency_serviceChild_relation cr, host h
-    		  	  WHERE s.service_id = cr.service_service_id
-    		  	  AND cr.host_host_id = h.host_id
-    		  	  AND cr.dependency_dep_id = "  . $pearDB->escape($dep_id);
-                $res = $pearDB->query($query);
-                $i = 0;
-                while ($row = $res->fetchRow()) {
-                    $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-                    $key = $row["host_id"]."_".$row['service_id'];
-                    if (!$oreon->user->admin && !isset($hServices[$key])) {
-                        $initialValues['dep_hSvChi'][] = $key;
-                    } else {
-                        $childServices[$key] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
-                        $dep['dep_hSvChi'][$i] = $key;
-                        $i++;
-                    }
-                }
-         }
+$tab = array();
+$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
+$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
+$form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
+$form->setDefaults(array('inherits_parent'=>'1'));
 
-	/*
-	 *  Database retrieve information for differents elements list we need on the page
-	 */
+$tab = array();
+$tab[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"), array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);'));
+$tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
+$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
+$tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"), array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);'));
+$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);'));
+$form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
 
-	/*
-	 * Host comes from DB -> Store in $hosts Array
-	 */
-	$hostFilter = array(null => null,
-	                    0    => sprintf('__%s__', _('ALL'))) + $hosts;
+$tab = array();
+$tab[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Up"));
+$tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
+$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
+$tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"));
+$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
+$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
-	/*
-	 * Var information to format the element
-	 */
-	$attrsText 		= array("size"=>"30");
-	$attrsText2 	= array("size"=>"10");
-	$attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
-	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
-    $attrHosts = array(
-        'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
-        'multiple' => true
-    );
-    $attrServices = array(
-        'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
-        'multiple' => true
-    );
+$attrHost1 = array_merge(
+    $attrHosts,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=dependency&field=dep_hostParents&id=' . $dep_id)
+);
+$form->addElement('select2', 'dep_hostParents', _("Host Names"), array(), $attrHost1);
+
+$attrHost2 = array_merge(
+    $attrHosts,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=dependency&field=dep_hostChilds&id=' . $dep_id)
+);
+$form->addElement('select2', 'dep_hostChilds', _("Dependent Host Names"), array(), $attrHost2);
+
+$attrService1 = array_merge(
+    $attrServices,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=dependency&field=dep_hSvChi&id=' . $dep_id)
+);
+$form->addElement('select2', 'dep_hSvChi', _("Dependent Services"), array(), $attrService1);
+
+$form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
+
+$form->addElement('hidden', 'dep_id');
+$redirect = $form->addElement('hidden', 'o');
+$redirect->setValue($o);
+
+    $init = $form->addElement('hidden', 'initialValues');
+    $init->setValue(serialize($initialValues));
     
+/*
+ * Form Rules
+ */
+$form->applyFilter('__ALL__', 'myTrim');
+$form->addRule('dep_name', _("Compulsory Name"), 'required');
+$form->addRule('dep_description', _("Required Field"), 'required');
+$form->addRule('dep_hostParents', _("Required Field"), 'required');
+
+$form->registerRule('cycle', 'callback', 'testHostDependencyCycle');
+$form->addRule('dep_hostChilds', _("Circular Definition"), 'cycle');
+$form->registerRule('exist', 'callback', 'testHostDependencyExistence');
+$form->addRule('dep_name', _("Name is already in use"), 'exist');
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+
+/*
+ * Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
+
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+# prepare help texts
+$helptext = "";
+include_once("help.php");
+foreach ($help as $key => $text) {
+	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+}
+$tpl->assign("helptext", $helptext);
+
+# Just watch a Dependency information
+if ($o == "w") {
+	if ($centreon->user->access->page($p) != 2)
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$dep_id."'"));
+    $form->setDefaults($dep);
+	$form->freeze();
+}
+# Modify a Dependency information
+else if ($o == "c") {
+	$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $form->setDefaults($dep);
+}
+# Add a Dependency information
+else if ($o == "a") {
+	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+	$form->setDefaults(array('inherits_parent', '0'));
+}
+$tpl->assign("nagios", $oreon->user->get_version());
+
+$valid = false;
+if ($form->validate()) {
+	$depObj = $form->getElement('dep_id');
+	if ($form->getSubmitValue("submitA"))
+		$depObj->setValue(insertHostDependencyInDB());
+	else if ($form->getSubmitValue("submitC"))
+		updateHostDependencyInDB($depObj->getValue("dep_id"));
+	$o = NULL;
+	$valid = true;
+}
+
+if ($valid) {
+	require_once("listHostDependency.php");
+} else {
 	/*
-	 * Form begin
+	 * Apply a template definition
 	 */
-	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	if ($o == "a")
-		$form->addElement('header', 'title', _("Add a Dependency"));
-	else if ($o == "c")
-		$form->addElement('header', 'title', _("Modify a Dependency"));
-	else if ($o == "w")
-		$form->addElement('header', 'title', _("View a Dependency"));
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+	$form->accept($renderer);
+	$tpl->assign('form', $renderer->toArray());
+	$tpl->assign('o', $o);
+	$tpl->display("formHostDependency.ihtml");
+}
 
-	/*
-	 * Dependency basic information
-	 */
-	$form->addElement('header', 'information', _("Information"));
-	$form->addElement('text', 'dep_name', _("Name"), $attrsText);
-	$form->addElement('text', 'dep_description', _("Description"), $attrsText);
-	
-	$tab = array();
-	$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
-	$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
-	$form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
-	$form->setDefaults(array('inherits_parent'=>'1'));
-
-	$tab = array();
-	$tab[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"), array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);'));
-	$tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
-	$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
-	$tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"), array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);'));
-	$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);'));
-	$form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
-
-	$tab = array();
-	$tab[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Up"));
-	$tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
-	$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
-	$tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"));
-	$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
-	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
-    
-    $attrHost1 = array_merge(
-        $attrHosts,
-        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=dependency&field=dep_hostParents&id=' . $dep_id)
-    );
-    $form->addElement('select2', 'dep_hostParents', _("Host Names"), array(), $attrHost1);
-
-    $attrHost2 = array_merge(
-        $attrHosts,
-        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=dependency&field=dep_hostChilds&id=' . $dep_id)
-    );
-    $form->addElement('select2', 'dep_hostChilds', _("Dependent Host Names"), array(), $attrHost2);
-    
-    $attrService1 = array_merge(
-        $attrServices,
-        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=dependency&field=dep_hSvChi&id=' . $dep_id)
-    );
-    $form->addElement('select2', 'dep_hSvChi', _("Dependent Services"), array(), $attrService1);
-
-	$form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
-
-	$tab = array();
-	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-	$form->setDefaults(array('action'=>'1'));
-
-	$form->addElement('hidden', 'dep_id');
-	$redirect = $form->addElement('hidden', 'o');
-	$redirect->setValue($o);
-
-        $init = $form->addElement('hidden', 'initialValues');
-        $init->setValue(serialize($initialValues));
-        
-	/*
-	 * Form Rules
-	 */
-	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('dep_name', _("Compulsory Name"), 'required');
-	$form->addRule('dep_description', _("Required Field"), 'required');
-	$form->addRule('dep_hostParents', _("Required Field"), 'required');
-
-	$form->registerRule('cycle', 'callback', 'testHostDependencyCycle');
-	$form->addRule('dep_hostChilds', _("Circular Definition"), 'cycle');
-	$form->registerRule('exist', 'callback', 'testHostDependencyExistence');
-	$form->addRule('dep_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
-
-
-	/*
-	 * Smarty template Init
-	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
-
-	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
-	# prepare help texts
-	$helptext = "";
-	include_once("help.php");
-	foreach ($help as $key => $text) {
-		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
-	}
-	$tpl->assign("helptext", $helptext);
-
-	# Just watch a Dependency information
-	if ($o == "w")	{
-		if ($centreon->user->access->page($p) != 2)
-			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$dep_id."'"));
-	    $form->setDefaults($dep);
-		$form->freeze();
-	}
-	# Modify a Dependency information
-	else if ($o == "c")	{
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
-	    $form->setDefaults($dep);
-	}
-	# Add a Dependency information
-	else if ($o == "a")	{
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
-		$form->setDefaults(array('inherits_parent', '0'));
-	}
-	$tpl->assign("nagios", $oreon->user->get_version());
-
-	$valid = false;
-	if ($form->validate())	{
-		$depObj = $form->getElement('dep_id');
-		if ($form->getSubmitValue("submitA"))
-			$depObj->setValue(insertHostDependencyInDB());
-		else if ($form->getSubmitValue("submitC"))
-			updateHostDependencyInDB($depObj->getValue("dep_id"));
-		$o = NULL;
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$depObj->getValue()."'"));
-		$form->freeze();
-		$valid = true;
-	}
-	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"])
-		require_once("listHostDependency.php");
-	else	{
-		/*
-		 * Apply a template definition
-		 */
-		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);
-		$tpl->assign('form', $renderer->toArray());
-		$tpl->assign('o', $o);
-		$tpl->display("formHostDependency.ihtml");
-	}
 ?>
 <script type="text/javascript">
 function uncheckAllH(object)

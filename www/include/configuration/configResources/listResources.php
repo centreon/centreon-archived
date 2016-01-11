@@ -39,19 +39,19 @@
 	if (!isset($centreon))
 		exit();
 
-	include("./include/common/autoNumLimit.php");
+        include_once("./class/centreonUtils.class.php");
 
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
+	include("./include/common/autoNumLimit.php");
 
 	/*
 	 * Search engine
 	 */
 	$SearchTool = NULL;
-	if (isset($search) && $search)
+    $search = '';
+	if (isset($_POST['searchR']) && $_POST['searchR']) {
+        $search = $_POST['searchR'];
 		$SearchTool = " WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
+    }
 
     $aclCond = "";
     if (!$oreon->user->admin && count($allowedResourceConf)) {
@@ -118,17 +118,17 @@
 		$selectedElements = $form->addElement('checkbox', "select[".$resource['resource_id']."]");
 		$moptions  = "";
 		if ($resource["resource_activate"])
-			$moptions .= "<a href='main.php?p=".$p."&resource_id=".$resource['resource_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_inactive.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+			$moptions .= "<a href='main.php?p=".$p."&resource_id=".$resource['resource_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>";
 		else
-			$moptions .= "<a href='main.php?p=".$p."&resource_id=".$resource['resource_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_active.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+			$moptions .= "<a href='main.php?p=".$p."&resource_id=".$resource['resource_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$resource['resource_id']."]'></input>";
 		$elemArr[$i] = array(	"order" => $tabResources[1],
 								"MenuClass"=>"list_".$style,
 								"RowMenu_select"=>$selectedElements->toHtml(),
-								"RowMenu_name"=>$resource["resource_name"],
+								"RowMenu_name"=>CentreonUtils::escapeSecure($resource["resource_name"]),
 								"RowMenu_link"=>"?p=".$p."&o=c&resource_id=".$resource['resource_id'],
 								"RowMenu_values"=>substr($resource["resource_line"], 0, 40),
-								"RowMenu_comment"=>substr(html_entity_decode($resource["resource_comment"], ENT_QUOTES, "UTF-8"), 0, 40),
+								"RowMenu_comment"=>CentreonUtils::escapeSecure(substr(html_entity_decode($resource["resource_comment"], ENT_QUOTES, "UTF-8"), 0, 40)),
                                 "RowMenu_associated_poller" => getLinkedPollerList($resource['resource_id']),
 								"RowMenu_status"=>$resource["resource_activate"] ? _("Enabled") :  _("Disabled"),
 								"RowMenu_options"=>$moptions);
@@ -205,6 +205,7 @@
 	$o2->setSelected(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchR', $search);
 
 	/*
 	 * Apply a template definition

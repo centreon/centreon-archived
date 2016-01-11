@@ -11,24 +11,13 @@ Prerequisites
 CentOS
 ======
 
-.. warning::
-	This process has not been tested on versions 6.x of CentOS and RHEL environments. Nevertheless it should be compatible by changing the names of the packages to adapt them to version 6.
-
-
 CentOS and RHEL environments do not possess as standard on archives all the dependences necessary for the installation of Centreon. You should add the *RPM Forge* archive
-
-32-bit system:
-
- ::
-
-  $ wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.i386.rpm
-  $ wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
 
 64-bit system:
 
  ::
 
-  $ wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.x86_64.rpm
+  $ wget http://apt.sw.be/redhat/el6/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
   $ wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
 
 Use your favorite text editor and delete the first line of the RPM-GPG-KEY.dag.txt file. The first line should contain:
@@ -42,7 +31,7 @@ Then perform the following commands:
  ::
 
   $ rpm --import RPM-GPG-KEY.dag.txt
-  $ rpm -Uvh rpmforge-release-0.5.1-1.el5.rf.i386.rpm
+  $ rpm -Uvh rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
 
 You can now install the necessary prerequisites::
 
@@ -55,7 +44,7 @@ You can now install the necessary prerequisites::
       dmidecode lm_sensors perl-Net-SNMP net-snmp-perl fping cpp gcc gcc-c++ libstdc++ glib2-devel \
       php-pear
 
-Additionnal commands are necessary to configure the environment correctly:
+Additional commands are necessary to configure the environment correctly:
 
  ::
 
@@ -77,10 +66,10 @@ Debian / Ubuntu
 
 Install the following prerequisites::
 
-  $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient15-dev libdatetime-perl \
-      apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-ldap php5-snmp php5-gd php5-sqlite \
+  $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient18 libdatetime-perl \
+      apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-intl php5-ldap php5-snmp php5-gd php5-sqlite \
       rrdtool librrds-perl libconfig-inifiles-perl libcrypt-des-perl libdigest-hmac-perl \
-      libdigest-sha1-perl libgd-gd2-perl snmp snmpd libnet-snmp-perl libsnmp-perl
+      libdigest-sha-perl libgd-perl snmp snmpd libnet-snmp-perl libsnmp-perl
 
 To finish, you should install SNMP MIBs. Because of a license problem the MIB files are not available by default in Debian. To add them, change the /etc/apt/sources.list file and add the *non-free* category.
 
@@ -98,7 +87,7 @@ Packages
 Install the following prerequisites::
 
   $ yast -i gcc gcc-c++ make automake apache2 php5 php5-mysql apache2-mod_php5 php5-pear \
-      php5-ldap php5-snmp php5-gd php5-soap php5-posix php5-gettext php5-mbstring mysql \
+      php5-ldap php5-snmp php5-gd php5-soap php5-intl php5-posix php5-gettext php5-mbstring mysql \
       libmysqlclient-devel perl-DBD-mysql mysql-community-server rrdtool perl-Config-IniFiles \
       net-snmp perl-Net-SNMP perl-SNMP gd libjpeg-devel libpng-devel fontconfig-devel \
       freetype2-devel sudo mailx fping iputils dos2unix cron dejavu
@@ -127,9 +116,8 @@ Save the file and restart Apache:
 Monitoring engine
 ******************
 
-Centreon is compatible with:
 
-* :ref:`Centreon Engine <centreon-engine:user_installation_using_sources>`
+Centreon is tested and approved only for the monitoring engine :ref:`Centreon Engine <centreon-engine:user_installation_using_sources>`.
 
 You can install it following the procedure in documentation. Don’t forget to install the `Nagios plugins <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
 
@@ -137,11 +125,12 @@ You can install it following the procedure in documentation. Don’t forget to i
 Stream Multiplexer
 ******************
 
-Centreon is compatible with:
-
-* :ref:`Centreon Broker <centreon-broker:user_installation_using_sources>`
+Centreon is tested and approved only for the stream multiplexer :ref:`Centreon Broker <centreon-broker:user_installation_using_sources>`.
 
 Install this Stream Multiplexers before continuing with the installation.
+
+.. warning::
+   Centreon Web is not compatible with Nagios monitoring engine.
 
 ********
 Centreon
@@ -181,7 +170,7 @@ If the Prerequisites installation step has been run successfully you should have
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.6.1                                   #
+  #                                    v2.7.0                                   #
   #                                                                             #
   #                              infos@centreon.com                             #
   #                                                                             #
@@ -387,7 +376,7 @@ If you use Centreon Broker:
 
 
 Monitoring logs directory
-------------------------
+-------------------------
 
 If you use Centreon Engine:
 
@@ -538,13 +527,7 @@ Pear module installation
   Archive_Tar                     1.1         1.3.1          OK
   Auth_SASL                       1.0.1       1.0.6          OK
   Console_Getopt                  1.2         1.2            OK
-  Net_SMTP                        1.2.8       1.6.1          OK
-  Net_Socket                      1.0.1       1.0.10         OK
-  Net_Traceroute                  0.21        0.21.3         OK
-  Net_Ping                        2.4.1       2.4.5          OK
   Validate                        0.6.2       0.8.5          OK
-  XML_RPC                         1.4.5       1.5.5          OK
-  SOAP                            0.10.1      0.13.0         OK
   Log                             1.9.11      1.12.7         OK
   Archive_Zip                     0.1.2       0.1.2          OK
   All PEAR modules                                           OK
@@ -729,7 +712,7 @@ End
   #                 Go to the URL : http://localhost.localdomain/centreon/      #
   #                   	     to finish the setup                                #
   #                                                                             #
-  #                  Report bugs at http://forge.centreon.com                   #
+  #          Report bugs at https://github.com/centreon/centreon/issues         #
   #                                                                             #
   #                         Thanks for using Centreon.                          #
   #                          -----------------------                            #

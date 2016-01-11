@@ -45,26 +45,12 @@ $tab_nagios_server = $acl->getPollerAclConf(array('get_row'    => 'name',
                                                   'order'      => array('name'),
                                                   'keys'       => array('id'),
                                                   'conditions' => array('ns_activate' => 1)));
-$n = count($tab_nagios_server);
-$newTabNagiosServer = array();
-
-/*
- * Display null option
- */
-if ($n > 1) {
-    $newTabNagiosServer[-1] = "";
-}
-
-/*
- * Display all server options
- */
-if ($n > 1) {
-    $newTabNagiosServer[0] = _("All Pollers");
-}
-
 /* Sort the list of poller server */
+$pollerId = null;
 foreach ($tab_nagios_server as $key => $name) {
-    $newTabNagiosServer[$key] = $name;
+    if ($name == $_GET['poller']) {
+        $pollerId = $key;
+    }
 }
 
 /*
@@ -78,8 +64,6 @@ $form->addElement('header', 'infos', _("Implied Server"));
 $form->addElement('header', 'opt', _("Export Options"));
 $form->addElement('header', 'result', _("Actions"));
 
-$form->addElement('select', 'host', _("Poller"), $newTabNagiosServer, array("id" => "nhost", "style" => "width: 220px;"));
-
 $form->addElement('checkbox', 'comment', _("Include Comments"), null, array('id' => 'ncomment'));
 
 $form->addElement('checkbox', 'debug', _("Run monitoring engine debug (-v)"), null, array('id' => 'ndebug'));
@@ -91,7 +75,7 @@ $form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' =
 $form->addElement('checkbox', 'restart', _("Restart Monitoring Engine"), null, array('id' => 'nrestart'));
 $form->addElement('checkbox', 'postcmd', _('Post generation command'), null, array('id' => 'npostcmd'));
 
-$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 4 => _("Force Reload"), 3 => _("External Command"));
+$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"));
 $form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
 $form->setDefaults(array('restart_mode' => '1'));
 
@@ -104,7 +88,7 @@ $redirect->setValue($o);
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$sub = $form->addElement('button', 'submit', _("Export"), array('id' => 'exportBtn', 'onClick' => 'generationProcess();'));
+$sub = $form->addElement('button', 'submit', _("Export"), array('id' => 'exportBtn', 'onClick' => 'generationProcess();', 'class' => 'btc bt_success'));
 $msg = NULL;
 $stdout = NULL;
 
@@ -130,6 +114,9 @@ $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
+$tpl->assign('pollerName', $_GET['poller']);
+$tpl->assign('pollerId', $pollerId);
+$tpl->assign('pollerListMsg', _('The list of pollers is <a href="./main.php?p=60901">here</a>.'));
 $tpl->display("formGenerateFiles.ihtml");
 ?>
 <script type='text/javascript'>

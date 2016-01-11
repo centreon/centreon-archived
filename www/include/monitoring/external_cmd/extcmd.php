@@ -48,10 +48,11 @@
 		/*
 		 * Destination is centcore pipe path
 		 */
-		$destination = "@CENTREON_VARLIB@/centcore.cmd";
-		if ($destination == "/centcore.cmd")
-			$destination = "/var/lib/centreon/centcore.cmd";
-
+                if (defined("_CENTREON_VARLIB_")) {
+                    $destination = _CENTREON_VARLIB_."/centcore.cmd";
+                } else {
+                    $destination = "/var/lib/centreon/centcore.cmd";
+                }
 		$cmd = str_replace("`", "&#96;", $cmd);
 		//$cmd = str_replace("'", "&#39;", $cmd);
 

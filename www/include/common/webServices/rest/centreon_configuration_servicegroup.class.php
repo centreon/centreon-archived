@@ -31,23 +31,25 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
 {
     /**
+     *
+     * @var type 
+     */
+    protected $pearDBMonitoring;
+    /**
      * Constructor
      */
     public function __construct()
     {
+        $this->pearDBMonitoring = new CentreonDB('centstorage');
         parent::__construct();
     }
     
@@ -57,25 +59,110 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
      */
     public function getList()
     {
+        global $centreon;
+        $isAdmin = $centreon->user->admin;
+        $userId = $centreon->user->user_id;
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryContact = "SELECT sg_id, sg_name "
-            . "FROM servicegroup "
-            . "WHERE sg_name LIKE '%$q%' "
-            . "ORDER BY sg_name";
+        $aclServicegroups = "";
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclServicegroups .= ' AND sg_id IN (' . $acl->getServiceGroupsString('ID') . ') ';
+        }
+        
+        $queryContact = " SELECT SQL_CALC_FOUND_ROWS DISTINCT sg_id, sg_name "
+            . " FROM servicegroup "
+            . " WHERE sg_name LIKE '%$q%' ".$aclServicegroups 
+            . " ORDER BY sg_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryContact);
+
+        $total = $this->pearDB->numberRows();
         
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $serviceList[] = array('id' => $data['sg_id'], 'text' => $data['sg_name']);
         }
+
+        return array(
+            'items' => $serviceList,
+            'total' => $total
+        );
+    }
+    
+    public function getServiceList()
+    {
+        global $centreon;
+        // Check for select2 'q' argument
+        if (false === isset($this->arguments['sgid'])) {
+            $sgid = '';
+        } else {
+            $sgid = $this->arguments['sgid'];
+        }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
+
+        $isAdmin = $centreon->user->admin;
+        $userId = $centreon->user->user_id;
         
-        return $serviceList;
+        $aclServicegroups = "";
+        $aclServices = "";
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclServicegroups .= ' AND sg.sg_id IN (' . $acl->getServiceGroupsString('ID') . ') ';
+            $aclServices .= ' AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
+        }
+        
+        /* Get ACL if user is not admin */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            
+        }
+        
+        $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_id, s.service_description, h.host_name, h.host_id "
+            . "FROM servicegroup sg "
+            . "INNER JOIN servicegroup_relation sgr ON sgr.servicegroup_sg_id = sg.sg_id "
+            . "INNER JOIN service s ON s.service_id = sgr.service_service_id "
+            . "INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id "
+            . "INNER JOIN host h ON h.host_id = hsr.host_host_id "
+            . "WHERE sg.sg_id IN (".$sgid.") "
+            . $aclServicegroups
+            . $aclServices
+            . $range;
+        
+        $DBRESULT = $this->pearDB->query($queryContact);
+
+        $total = $this->pearDB->numberRows();
+
+        $serviceList = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            $serviceList[] = array(
+                'id' => $data['host_id'] . '_' . $data['service_id'],
+                'text' => $data['host_name'] . ' - ' . $data['service_description']
+            );
+        }
+
+        return array(
+            'items' => $serviceList,
+            'total' => $total
+        );        
     }
 }

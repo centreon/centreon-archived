@@ -38,11 +38,11 @@ if (!isset($centreon)) {
     exit();
 }
 
-global $centreon_path;
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
-require_once $centreon_path . 'www/class/centreonACL.class.php';
+
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonACL.class.php';
 
 /**
  * Quickform rule that checks whether or not monitoring server can be set
@@ -1121,8 +1121,7 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
     if (!isset($server_id) || $server_id == "" || $server_id == 0) {
         $server_id = null;
     }
-    
-    
+        
     if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL) {
         $ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
         $ret["command_command_id_arg1"] = str_replace("\t", "#T#", $ret["command_command_id_arg1"]);
@@ -1274,7 +1273,7 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
                     }
                 }
             }
-        $hostObj->insertMacro($host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, false);
+        $hostObj->insertMacro($host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, false, $ret["command_command_id"]);
     } else {
         $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '" . CentreonDB::escape($host_id) . "'");
     }
@@ -1521,13 +1520,15 @@ function updateHost_MC($host_id = null) {
         $rq .= "host_notifications_enabled = '" . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', ";
         $fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
     }
-    if (isset($ret["contact_additive_inheritance"])) {
-        $rq .= "contact_additive_inheritance = '" . $ret["contact_additive_inheritance"] . "', ";
-        $fields["contact_additive_inheritance"] = $ret["contact_additive_inheritance"];
+    
+    if (isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"]) && in_array($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"], array('0', '1'))) {
+        $rq .= "contact_additive_inheritance = '" . $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"] . "', ";
+        $fields["contact_additive_inheritance"] = $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"];
     }
-    if (isset($ret["cg_additive_inheritance"])) {
-        $rq .= "cg_additive_inheritance = '" . $ret["cg_additive_inheritance"] . "', ";
-        $fields["cg_additive_inheritance"] = $ret["cg_additive_inheritance"];
+
+    if (isset($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"]) && in_array($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"], array('0', '1'))) {
+        $rq .= "cg_additive_inheritance = '" . $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"] . "', ";
+        $fields["cg_additive_inheritance"] = $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"];
     }
     if (isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != NULL) {
         $rq .= "host_stalking_options = '" . implode(",", array_keys($ret["host_stalOpts"])) . "', ";
@@ -2502,4 +2503,22 @@ function setHostCriticality($hostId, $criticalityId) {
 function testCg($list)
 {
     return CentreonContactgroup::verifiedExists($list);
+}
+
+
+/**
+* Apply template in order to deploy services
+*
+* @param array $hosts
+* @return void
+*/
+function applytpl($hosts)
+{
+    global $pearDB;
+    
+    $hostObj = new CentreonHost($pearDB);
+    
+    foreach ($hosts as $key => $value) {
+        $hostObj->deployServices($key);
+    }
 }

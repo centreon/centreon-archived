@@ -31,13 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
 class CentreonWebService
 {
@@ -201,11 +197,12 @@ class CentreonWebService
      */
     protected static function updateTokenTtl()
     {
+        global $pearDB;
         if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
             $query = "UPDATE ws_token SET generate_date = NOW() WHERE token = '" .
-                $this->pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) ."'";
+                $pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) ."'";
             try {
-                $this->pearDB->query($query);
+                $pearDB->query($query);
             } catch (Exception $e) {
                 self::sendJson("Internal error", 500);
             }
@@ -214,12 +211,12 @@ class CentreonWebService
 
     /**
      * Route the webservice to the good method
-     * @global string $centreon_path
+     * @global string _CENTREON_PATH_
      * @global type $pearDB3
      */
     public static function router()
     {
-        global $centreon_path;
+        
         global $pearDB;
         
         /* Test if route is defined */
@@ -232,10 +229,10 @@ class CentreonWebService
         $action = $methodPrefix . ucfirst($_GET['action']);
         
         /* Generate path for WebService */
-        self::$webServicePaths = glob($centreon_path . '/www/include/common/webServices/rest/*.class.php');
+        self::$webServicePaths = glob(_CENTREON_PATH_ . '/www/include/common/webServices/rest/*.class.php');
         $res = $pearDB->query("SELECT name FROM modules_informations");
         while ($row = $res->fetchRow()) {
-            self::$webServicePaths = array_merge(self::$webServicePaths, glob($centreon_path . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php'));
+            self::$webServicePaths = array_merge(self::$webServicePaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php'));
         }
         
         $webService = self::webservicePath($object);
@@ -261,4 +258,3 @@ class CentreonWebService
         }
     }
 }
-?>

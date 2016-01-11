@@ -33,8 +33,6 @@
  *
  */
 
-ini_set("display_errors", "Off");
-
 /*
  * XML tag
  */
@@ -44,26 +42,26 @@ header('Content-Disposition: attachment; filename="eventLogs-' . time() . '.xml"
 /** ****************************
  * Include configurations files
  */
-include_once "@CENTREON_ETC@/centreon.conf.php";
+include_once "../../../config/centreon.config.php";
 
 /*
  * Require Classes
  */
-require_once $centreon_path . "www/include/eventLogs/common-Func.php";
-require_once $centreon_path . "www/class/centreonDB.class.php";
-require_once $centreon_path . "www/class/centreonSession.class.php";
-require_once $centreon_path . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/include/eventLogs/common-Func.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 
-centreonSession::start();
-$oreon = $_SESSION["centreon"];
+CentreonSession::start();
+$centreon = $_SESSION["centreon"];
 
 /**
  * Language informations init
  */
-$locale = $oreon->user->get_lang();
+$locale = $centreon->user->get_lang();
 putenv("LANG=$locale");
 setlocale(LC_ALL, $locale);
-bindtextdomain("messages", $centreon_path . "/www/locale/");
+bindtextdomain("messages", _CENTREON_PATH_ . "/www/locale/");
 bind_textdomain_codeset("messages", "UTF-8");
 textdomain("messages");
 
@@ -73,42 +71,24 @@ textdomain("messages");
 $pearDB 	= new CentreonDB();
 $pearDBO 	= new CentreonDB("centstorage");
 
-
-/** 
- * Get Broker
- */
-if ($oreon->broker->getBroker() == "ndo") {
-    $pearDBndo 	= new CentreonDB("ndo");
-    define("STATUS_OK", "OK");
-    define("STATUS_WARNING", "WARNING");
-    define("STATUS_CRITICAL", "CRITICAL");
-    define("STATUS_UNKNOWN", "UNKNOWN");
-    define("STATUS_PENDING", "PENDING");
-    define("STATUS_UP", "UP");
-    define("STATUS_DOWN", "DOWN");
-    define("STATUS_UNREACHABLE", "UNREACHABLE");
-    define("TYPE_SOFT", "SOFT");
-    define("TYPE_HARD", "HARD");
-} elseif ($oreon->broker->getBroker() == "broker") {
-    define("STATUS_OK", 0);
-    define("STATUS_WARNING", 1);
-    define("STATUS_CRITICAL", 2);
-    define("STATUS_UNKNOWN", 3);
-    define("STATUS_PENDING", 4);
-    define("STATUS_UP", 0);
-    define("STATUS_DOWN", 1);
-    define("STATUS_UNREACHABLE", 2);
-    define("TYPE_SOFT", 0);
-    define("TYPE_HARD", 1);
-}
+define("STATUS_OK", 0);
+define("STATUS_WARNING", 1);
+define("STATUS_CRITICAL", 2);
+define("STATUS_UNKNOWN", 3);
+define("STATUS_PENDING", 4);
+define("STATUS_UP", 0);
+define("STATUS_DOWN", 1);
+define("STATUS_UNREACHABLE", 2);
+define("TYPE_SOFT", 0);
+define("TYPE_HARD", 1);
 
 /**
  * Include Access Class
  */
-include_once $centreon_path . "www/class/centreonACL.class.php";
-include_once $centreon_path . "www/class/centreonXML.class.php";
-include_once $centreon_path . "www/class/centreonGMT.class.php";
-include_once $centreon_path . "www/include/common/common-Func.php";
+include_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 /*
  * Start XML document root
@@ -121,7 +101,8 @@ $buffer->startElement("root");
  */
 (isset($_GET["lang"])) ? $lang_ = htmlentities($_GET["lang"], ENT_QUOTES, "UTF-8") : $lang_ = "-1";
 (isset($_GET["id"])) ? $openid = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8") : $openid = "-1";
-(isset($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8") : $sid = "-1";
+$sid = session_id();
+(isset($sid)) ? $sid = $sid : $sid = "-1";
 
 /*
  * Init GMT class
@@ -137,7 +118,7 @@ $contact_id = check_session($sid, $pearDB);
 $is_admin = isUserAdmin($sid);
 if (isset($sid) && $sid){
     $access = new CentreonAcl($contact_id, $is_admin);
-    $lca = array("LcaHost" => $access->getHostServices(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO), null, 1), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
+    $lca = array("LcaHost" => $access->getHostsServices($pearDBO, 1), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 }
 
 (isset($_GET["num"])) ? $num = htmlentities($_GET["num"]) : $num = "0";
@@ -148,25 +129,32 @@ if (isset($sid) && $sid){
 (isset($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"]) : $EndTime = "";
 (isset($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
 (isset($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
+(isset($_GET["engine"])) ? $engine = htmlentities($_GET["engine"]) : $engine = "false";
 
-(isset($_GET["up"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_up", htmlentities($_GET["up"])) : $up = "true";
-(isset($_GET["down"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_down", htmlentities($_GET["down"])) : $down = "true";
-(isset($_GET["unreachable"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_unreachable", htmlentities($_GET["unreachable"])) : $unreachable = "true";
-(isset($_GET["ok"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_ok", htmlentities($_GET["ok"])) : $ok = "true";
-(isset($_GET["warning"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_warning", htmlentities($_GET["warning"])) : $warning = "true";
-(isset($_GET["critical"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_critical", htmlentities($_GET["critical"])) : $critical = "true";
-(isset($_GET["unknown"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_unknown", htmlentities($_GET["unknown"])) : $unknown = "true";
+if ($engine == "false"){
+    (isset($_GET["up"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_up", htmlentities($_GET["up"])) : $up = "true";
+    (isset($_GET["down"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_down", htmlentities($_GET["down"])) : $down = "true";
+    (isset($_GET["unreachable"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_unreachable", htmlentities($_GET["unreachable"])) : $unreachable = "true";
+    (isset($_GET["ok"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_ok", htmlentities($_GET["ok"])) : $ok = "true";
+    (isset($_GET["warning"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_warning", htmlentities($_GET["warning"])) : $warning = "true";
+    (isset($_GET["critical"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_critical", htmlentities($_GET["critical"])) : $critical = "true";
+    (isset($_GET["unknown"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_unknown", htmlentities($_GET["unknown"])) : $unknown = "true";
+    (isset($_GET["notification"])) ? set_user_param($contact_id, $pearDB, "log_filter_notif", htmlentities($_GET["notification"])) : $notification = "false";
+    (isset($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
+    (isset($_GET["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($_GET["oh"])) : $oh = "false";
+} else {
+    (isset($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
+}
 
-(isset($_GET["notification"])) ? set_user_param($contact_id, $pearDB, "log_filter_notif", htmlentities($_GET["notification"])) : $notification = "false";
-(isset($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
-(isset($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
-(isset($_GET["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($_GET["oh"])) : $oh = "false";
+(isset($_GET["output"])) ? $output = urldecode($_GET["output"]) : $output = "";
 
 (isset($_GET["search_H"])) ? set_user_param($contact_id, $pearDB, "search_H", htmlentities($_GET["search_H"])) : $search_H = "VIDE";
 (isset($_GET["search_S"])) ? set_user_param($contact_id, $pearDB, "search_S", htmlentities($_GET["search_S"])) : $search_S = "VIDE";
 (isset($_GET["search_host"])) ? $search_host = htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : $search_host = "";
 (isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
 (isset($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES, "UTF-8") : $export = 0;
+
+
 
 $start = 0;
 $end = 0;
@@ -202,10 +190,13 @@ if ($contact_id){
         $user_params["search_H"] = "";
     if (!isset($user_params["search_S"]))
         $user_params["search_S"] = "";
+    if (!isset($user_params["output"]))
+        $user_params["output"] = "";
     
     $alert = $user_params["log_filter_alert"];
     $notification = $user_params["log_filter_notif"];
     $error = $user_params["log_filter_error"];
+
     $unknown = $user_params["log_filter_svc_unknown"];
     $unreachable = $user_params["log_filter_host_unreachable"];
     $up = $user_params["log_filter_host_up"];
@@ -214,7 +205,18 @@ if ($contact_id){
     $warning = $user_params["log_filter_svc_warning"];
     $critical = $user_params["log_filter_svc_critical"];
     $oh = $user_params["log_filter_oh"];
-    
+    if($engine == "true"){
+        $ok = "false";
+        $up = "false";
+        $unknown = "false";
+        $unreachable = "false";
+        $down = "false";
+        $warning = "false";
+        $critical = "false";
+        $oh = "false";
+        $notification = "false";
+        $alert = "false";
+    }
     $search_H = $user_params["search_H"];
     $search_S = $user_params["search_S"];
 }
@@ -247,8 +249,8 @@ if ($auto_period > 0) {
 
 $general_opt = getStatusColor($pearDB);
 
-$tab_color_service 	= array(STATUS_OK => $general_opt["color_ok"], STATUS_WARNING => $general_opt["color_warning"], STATUS_CRITICAL => $general_opt["color_critical"], STATUS_UNKNOWN => $general_opt["color_unknown"], STATUS_PENDING => $general_opt["color_pending"]);
-$tab_color_host		= array(STATUS_UP => $general_opt["color_up"], STATUS_DOWN => $general_opt["color_down"], STATUS_UNREACHABLE => $general_opt["color_unreachable"]);
+$tab_color_service 	= array(STATUS_OK => 'service_ok', STATUS_WARNING => 'service_warning', STATUS_CRITICAL => 'service_critical', STATUS_UNKNOWN => 'service_unknown', STATUS_PENDING => 'pending');
+$tab_color_host		= array(STATUS_UP => 'host_up', STATUS_DOWN => 'host_down', STATUS_UNREACHABLE => 'host_unreachable');
 
 $tab_type 			= array("1" => "HARD", "0" => "SOFT");
 $tab_class 			= array("0" => "list_one", "1" => "list_two");
@@ -328,6 +330,17 @@ if ($unknown == 'true')
     array_push($svc_msg_status_set, "'".STATUS_UNKNOWN."'");
 
 $flag_begin = 0;
+
+$whereOutput = "";
+if(isset($output) && $output != "" ){
+    $whereOutput = " AND logs.output like '%".$pearDBO->escape($output)."%' ";
+}
+
+$innerJoinEngineLog = "";
+if($engine == "true" && isset($openid) && $openid != ""){
+    $innerJoinEngineLog = " inner join instances i on i.name = logs.instance_name AND i.instance_id IN (" . $pearDBO->escape($openid) . ") ";
+}
+
 if ($notification == 'true') {
     if (count($host_msg_status_set)) {
         $msg_req .= "(";
@@ -387,72 +400,91 @@ if ($alert == 'true') {
         $msg_req .= " `type` = '".TYPE_HARD."' ";
     }
 }
+// Error filter is only used in the engine log page.
 if ($error == 'true') {
     if ($flag_begin == 0) {
         $msg_req .= "AND ";
-    } else
+    } else{
         $msg_req .= " OR ";
-    $msg_req .= " (`msg_type` IN ('4') AND `status` IS NULL) ";
+    }
+    $msg_req .= " `msg_type` IN ('4','5') ";
 }
 if ($flag_begin) {
     $msg_req = " AND (".$msg_req.") ";
 }
 
-
 $tab_id = preg_split("/\,/", $openid);
-$tab_host_name = array();
+$tab_host_ids = array();
 $tab_svc = array();
-
+$filters = false;
 foreach ($tab_id as $openid) {
     $tab_tmp = preg_split("/\_/", $openid);
     $id = "";
     $hostId = "";
-    if (isset($tab_tmp[1]))
-        $id = $tab_tmp[1];
+
     if (isset($tab_tmp[2])) {
-        $hostId = $tab_tmp[2];
+        $hostId = $tab_tmp[1];
+        $id = $tab_tmp[2];
+    }else if(isset($tab_tmp[1])){
+        $id = $tab_tmp[1];
     }
     if ($id == "") {
         continue;
     }
     
     $type = $tab_tmp[0];
+    
+    
     if ($type == "HG" && (isset($lca["LcaHostGroup"][$id]) || $is_admin)){
+        $filters = true;
         // Get hosts from hostgroups
         $hosts = getMyHostGroupHosts($id);
-        foreach ($hosts as $h_id) {
-            if (isset($lca["LcaHost"][$h_id])) {
-                $host_name = getMyHostName($h_id);
-                $tab_host_name[] = $host_name;
-                $tab_svc[$host_name] = $lca["LcaHost"][$h_id];
+        if (count($hosts) == 0) {
+            $tab_host_ids[] = "-1";
+        } else {
+            foreach ($hosts as $h_id) {
+                if (isset($lca["LcaHost"][$h_id])) {
+                    $tab_host_ids[] = $h_id;
+                    $tab_svc[$h_id] = $lca["LcaHost"][$h_id];
+                }
             }
         }
     } else if ($type == 'ST' && (isset($lca["LcaSG"][$id]) || $is_admin)){
+        $filters = true;
         $services = getMyServiceGroupServices($id);
-        foreach ($services as $svc_id => $svc_name) {
-            $tab_tmp = preg_split("/\_/", $svc_id);
-            $tmp_host_id = $tab_tmp[0];
-            $tmp_service_id = $tab_tmp[1];
-            $tab = preg_split("/\:/", $svc_name);
-            $host_name = $tab[3];
-            if (isset($lca["LcaHost"][$tmp_host_id][$tmp_service_id])) {
-                $tab_svc[$host_name][$tmp_service_id] = $lca["LcaHost"][$tmp_host_id][$tmp_service_id];
+        if (count($services) == 0) {
+            $tab_svc[] = "-1";
+        } else {
+            foreach ($services as $svc_id => $svc_name) {
+                $tab_tmp = preg_split("/\_/", $svc_id);
+                $tmp_host_id = $tab_tmp[0];
+                $tmp_service_id = $tab_tmp[1];
+                $tab = preg_split("/\:/", $svc_name);
+                $host_name = $tab[3];
+                if (isset($lca["LcaHost"][$tmp_host_id][$tmp_service_id])) {
+                    $tab_svc[$hostId][$tmp_service_id] = $lca["LcaHost"][$tmp_host_id][$tmp_service_id];
+                }
             }
         }
     } else if ($type == "HH" && isset($lca["LcaHost"][$id])) {
-        $host_name = getMyHostName($id);
-        $tab_host_name[] = $host_name;
-        $tab_svc[$host_name] = $lca["LcaHost"][$id];
+        $filters = true;
+        $tab_host_ids[] = $id;
+        $tab_svc[$id] = $lca["LcaHost"][$id];
     } else if ($type == "HS" && isset($lca["LcaHost"][$hostId][$id])) {
-        $host_name = getMyHostName($hostId);
-        $tab_svc[$host_name][$id] = $lca["LcaHost"][$hostId][$id];
+        $filters = true;
+        $tab_svc[$hostId][$id] = $lca["LcaHost"][$hostId][$id];
     } else if ($type == "MS") {
+        $filters = true;
         $tab_svc["_Module_Meta"][$id] = "meta_".$id;
     }
 }
 
 // Build final request
-$req = "SELECT SQL_CALC_FOUND_ROWS * FROM ".($oreon->broker->getBroker() == "ndo" ? "log " : "logs ")." WHERE ctime > '$start' AND ctime <= '$end' $msg_req";
+$req = "SELECT SQL_CALC_FOUND_ROWS DISTINCT logs.* FROM logs ".$innerJoinEngineLog.
+    ((!$is_admin) ? 
+     " inner join centreon_acl acl on ((logs.host_id = acl.host_id AND logs.service_id IS NULL) OR "
+    . " (logs.host_id = acl.host_id AND acl.service_id = logs.service_id))" : "") 
+    . " WHERE logs.ctime > '$start' AND logs.ctime <= '$end' $whereOutput $msg_req";
 
 /*
  * Add Host
@@ -460,23 +492,23 @@ $req = "SELECT SQL_CALC_FOUND_ROWS * FROM ".($oreon->broker->getBroker() == "ndo
 $str_unitH = "";
 $str_unitH_append = "";
 $host_search_sql = "";
-
-if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
-    $req .= " AND 1 = 0 ";
+if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
+    if($engine == "false") {
+        $req .= " AND `msg_type` NOT IN ('4','5') ";
+    }
 } else {
+    foreach ($tab_host_ids as $host_id ) {
+        if($host_id != ""){
+            $str_unitH .= $str_unitH_append . "'$host_id'";
+            $str_unitH_append = ", ";
+        }
 
-    foreach ($tab_host_name as $host_name ) {
-        $str_unitH .= $str_unitH_append . "'$host_name'";
-        $str_unitH_append = ", ";
     }
     if ($str_unitH != "") {
-        if ($oreon->broker->getBroker() == "ndo") {
-            $str_unitH = "(host_name IN ($str_unitH) AND service_description = '')";
-        } else {
-            $str_unitH = "(host_name IN ($str_unitH) AND service_id IS NULL)";
-        }
+
+        $str_unitH = "(logs.host_id IN ($str_unitH) AND logs.service_id IS NULL)";
         if (isset($search_host) && $search_host != "") {
-            $host_search_sql = " AND host_name LIKE '%".$pearDBO->escape($search_host)."%' ";
+            $host_search_sql = " AND logs.host_name LIKE '%".$pearDBO->escape($search_host)."%' ";
         }
     }
     
@@ -486,67 +518,79 @@ if (count($tab_host_name) == 0 && count($tab_svc) == 0) {
     $flag = 0;
     $str_unitSVC = "";
     $service_search_sql = "";
-    if (count($tab_svc) > 0 && ($ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
+    if (count($tab_svc) > 0 && ($up == 'true' || $down == 'true' || $unreachable == 'true' || $ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
         $req_append = "";
-        foreach ($tab_svc as $host_name => $services) {
+        foreach ($tab_svc as $host_id => $services) {
             $str = "";
             $str_append = "";
             foreach ($services as $svc_id => $svc_name) {
-                $str .= $str_append . "'$svc_name'";
-                $str_append = ", ";
+                if($svc_id != ""){
+                    $str .= $str_append . $svc_id;
+                    $str_append = ", ";
+                }
             }
             if ($str != "") {
-                $str_unitSVC .= $req_append . " (host_name = '".$host_name."' AND service_description IN ($str)) ";
+                $str_unitSVC .= $req_append . " (logs.host_id = '".$host_id."' AND logs.service_id IN ($str)) ";
                 $req_append = " OR";
             }
         }
         if (isset($search_service) && $search_service != "") {
-            $service_search_sql = " AND service_description LIKE '%".$pearDBO->escape($search_service)."%' ";
+            $service_search_sql = " AND logs.service_description LIKE '%".$pearDBO->escape($search_service)."%' ";
         }
         if ($str_unitH != "" && $str_unitSVC != "") {
             $str_unitSVC = " OR " . $str_unitSVC;
         }
-    } 
-    if ($str_unitH != "" || $str_unitSVC != "") {
-        $req .= " AND (".$str_unitH.$str_unitSVC.")";
-    }
-    
+        if ($str_unitH != "" || $str_unitSVC != "") {
+            $req .= " AND (".$str_unitH.$str_unitSVC.")";
+        }
+    } else {
+        $req .= "AND 0 ";
+    }    
     $req .= $host_search_sql . $service_search_sql;
     
 }
-//if ($str_unitH  == "" && $str_unitSVC == "") {
-//    $req = "";
-//}
-
 
 /*
  * calculate size before limit for pagination
  */
+
+
 if (isset($req) && $req) {
     
     /*
      * Add Suffix for order
      */
     $req .= $suffix_order;
-    
-    if ($num < 0)
+    if ($num < 0) {
         $num = 0;
-    
-    //        print $req;
-    
-    if (isset($csv_flag) && ($csv_flag == 1)) {
-        $DBRESULT = $pearDBO->query($req . " LIMIT 0,64000"); //limit a little less than 2^16 which is excel maximum number of lines
-    } else {
-        $DBRESULT = $pearDBO->query($req . " LIMIT " . $num * $limit . ", " . $limit);
     }
+
+    $limitReq = "";
+    $limitReq2 = "";
+    if($export !== "1"){
+        $limitReq = " LIMIT " . $num * $limit . ", " . $limit;
+    }
+    $DBRESULT = $pearDBO->query($req .$limitReq);
     $rows = $pearDBO->numberRows();
     
     if (!($DBRESULT->numRows()) && ($num != 0)) {
-        $DBRESULT = $pearDBO->query($req . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit);
+        if($export !== "1"){
+            $limitReq2 =" LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
+        }
+        $DBRESULT = $pearDBO->query($req . $limitReq2);
     }
+
+    $buffer->startElement("selectLimit");
+    for ($i = 10; $i <= 100; $i = $i +10)
+    {
+        $buffer->writeElement("limitValue", $i);
+    }
+    $buffer->writeElement("limit", $limit);
+    $buffer->endElement();
     
-    require_once $centreon_path . "www/include/common/checkPagination.php";
     
+    
+    require_once _CENTREON_PATH_ . "www/include/common/checkPagination.php";
     /*
      * pagination
      */
@@ -571,6 +615,7 @@ if (isset($req) && $req) {
             else
                 $buffer->writeElement("selected", "0");
             $buffer->writeElement("num", $tab["num"]);
+
             $buffer->writeElement("url_page", $tab["url_page"]);
             $buffer->writeElement("label_page", $tab["label_page"]);
             $buffer->endElement();
@@ -672,7 +717,8 @@ if (isset($req) && $req) {
         }
         $buffer->text($displayStatus);
         $buffer->endElement();
-        if ($log["host_name"] == "_Module_Meta") {
+        
+        if (!strncmp($log["host_name"], "_Module_Meta", strlen("_Module_Meta"))) {
             preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
             $DBRESULT2 = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$matches[1]."'");
             $meta = $DBRESULT2->fetchRow();
@@ -682,11 +728,13 @@ if (isset($req) && $req) {
             unset($meta);
         } else {
             $buffer->writeElement("host_name", $log["host_name"], false);
-            if ($export)
-                $buffer->writeElement("address", $HostCache[$log["host_name"]], false);
+            if ($export) {
+                $buffer->writeElement("address", $HostCache[$log["host_name"]], false);                
+            }
             $buffer->writeElement("service_description", $log["service_description"], false);
         }
         $buffer->writeElement("class", $tab_class[$cpts % 2]);
+        $buffer->writeElement("poller", $log["instance_name"]);
         $buffer->writeElement("date", $centreonGMT->getDate(_("Y/m/d"), $log["ctime"]));
         $buffer->writeElement("time", $centreonGMT->getDate(_("H:i:s"), $log["ctime"]));
         $buffer->writeElement("output", $log["output"]);
@@ -697,6 +745,7 @@ if (isset($req) && $req) {
     }
 } else {
     $buffer->startElement("page");
+    $buffer->writeElement("limit", $limit);
     $buffer->writeElement("selected", "1");
     $buffer->writeElement("num", 0);
     $buffer->writeElement("url_page", "");
@@ -734,6 +783,7 @@ $buffer->writeElement("R", _("Retry"), 0);
 $buffer->writeElement("o", _("Output"), 0);
 $buffer->writeElement("c", _("Contact"), 0);
 $buffer->writeElement("C", _("Command"), 0);
+$buffer->writeElement("P", _("Poller"), 0);
 
 $buffer->endElement();
 $buffer->endElement();
@@ -747,4 +797,3 @@ if ($period != "-1") {
 } else {
     set_user_param($contact_id, $pearDB, "log_filter_period", "0");
 }
-

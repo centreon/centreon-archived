@@ -31,17 +31,13 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
-
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 $cct = array();
 if (($o == "c" || $o == "w") && $contact_id) {
@@ -151,11 +147,13 @@ $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonTimeperiod'
 );
 $attrCommands = array(
     'datasourceOrigin' => 'ajax',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonCommand'
 );
 
 
@@ -302,12 +300,6 @@ $form->setDefaults(array('contact_register' => '0'));
 
 $form->addElement('textarea', 'contact_comment', _("Comments"), $attrsTextarea);
 
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
-
 $form->addElement('hidden', 'contact_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -370,7 +362,7 @@ $tpl->assign("helpattr", 'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this
 
 // prepare help texts
 $helptext = "";
-include_once("{$centreon_path}/www/include/configuration/configObject/contact/help.php");
+include_once(_CENTREON_PATH_."/www/include/configuration/configObject/contact/help.php");
 foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
@@ -384,17 +376,17 @@ if ($o == "w") {
     $form->freeze();
 } else if ($o == "c") {
 // Modify a contact information
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cct);
 } else if ($o == "a") {
 // Add a contact information
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 } else if ($o == "mc") {
 // Massive Change
-    $subMC = $form->addElement('submit', 'submitMC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $valid = false;
@@ -413,12 +405,10 @@ if ($form->validate() && $from_list_menu == false) {
         }
     }
     $o = NULL;
-    $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&contact_id=" . $cctObj->getValue() . "'"));
-    $form->freeze();
     $valid = true;
 }
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+
+if ($valid) {
     require_once($path . "listContactTemplateModel.php");
 } else {
     // Apply a template definition

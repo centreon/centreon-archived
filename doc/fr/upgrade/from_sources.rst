@@ -4,9 +4,6 @@
 A partir des sources
 ====================
 
-.. warning::
-    Avant de mettre à jour Centreon, veuillez sauvegarder vos bases de données.
-
 Pour mettre à jour Centreon depuis les sources, :ref:`télécharger <downloads>` la dernière version de Centreon.
 
 ******************
@@ -187,7 +184,7 @@ Par exemple :
 
 Le chemin vers les journaux. Par exmeple :
 
-* Centeron Engine : */var/log/centreon-engine*
+* Centreon Engine : */var/log/centreon-engine*
 
 Le chemin vers les sondes de supervision :
 
@@ -435,9 +432,9 @@ Fin de la mise à jour :
     ###############################################################################
     #                                                                             #
     #                 Go to the URL : http://localhost/centreon/                  #
-    #                   	     to finish the setup                              #
+    #                   	     to finish the setup                          #
     #                                                                             #
-    #                  Report bugs at http://forge.centreon.com                   #
+    #           Report bugs at https://github.com/centreon/centreon/issues        #
     #                                                                             #
     #                         Thanks for using Centreon.                          #
     #                          -----------------------                            #
@@ -463,7 +460,7 @@ Présentation
 Contrôle des dépendances
 ------------------------
 
-This step checks the dependencies on php modules.
+Cette étape contrôle la liste des dépendances PHP.
 
 .. image:: /_static/images/upgrade/step02.png
    :align: center
@@ -475,8 +472,8 @@ Notes de version
    :align: center
 
 
-Mise à jour des bases
----------------------
+Mise à jour des bases de données
+--------------------------------
 
 Cette étape met à jour le modèle des bases de données ainsi que les données, version par version.
 

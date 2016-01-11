@@ -60,6 +60,17 @@ if (isset($_SESSION['BROKER_MODULE']) && is_file('../../var/baseconf/'.$_SESSION
 }
 splitQueries('../../insertTopology.sql', ';', null, '../../tmp/insertTopology');
 splitQueries('../../insertBaseConf.sql', ';', null, '../../tmp/insertBaseConf');
+
+# Manage timezone
+$timezone = date_default_timezone_get();
+$resTimezone = mysql_query("select timezone_id from timezone where timezone_name= '" . $timezone . "'", $link);
+if ($row = mysql_fetch_assoc($resTimezone)) {
+    $timezoneId = $row['timezone_id'];
+} else {
+    $timezoneId = '334'; # Europe/London timezone
+}
+mysql_query("INSERT INTO `options` (`key`, `value`) VALUES ('gmt','" . $timezoneId . "')", $link);
+
 splitQueries('../../insertACL.sql', ';', null, '../../tmp/insertACL');
 
 /* Get Centreon version */

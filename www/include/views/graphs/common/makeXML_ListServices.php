@@ -31,14 +31,14 @@
 	header('Content-Type: text/xml');
 	header('Cache-Control: no-cache');
 
-	require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once $centreon_path."/www/class/centreonDB.class.php";
-	require_once $centreon_path."/www/class/centreonXML.class.php";
+	require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+	require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
+	require_once _CENTREON_PATH_."/www/class/centreonXML.class.php";
 	/*
  	 * Get session
      */
-    require_once ($centreon_path . "www/class/centreonSession.class.php");
-    require_once ($centreon_path . "www/class/centreon.class.php");
+    require_once (_CENTREON_PATH_ . "www/class/centreonSession.class.php");
+    require_once (_CENTREON_PATH_ . "www/class/centreon.class.php");
     if(!isset($_SESSION['centreon'])) {
             CentreonSession::start();
     }
@@ -56,7 +56,7 @@
 	$locale = $oreon->user->get_lang();
 	putenv("LANG=$locale");
 	setlocale(LC_ALL, $locale);
-	bindtextdomain("messages",  $centreon_path . "www/locale/");;
+	bindtextdomain("messages",  _CENTREON_PATH_ . "www/locale/");;
 	bind_textdomain_codeset("messages", "UTF-8");
 	textdomain("messages");
 
@@ -82,24 +82,5 @@
 	}
     for ($i = strlen($s_datas[""]); $i != $mx_l; $i++)
 		$s_datas[""] .= "&nbsp;";
-
-	/*
-	 *  The first element of the select is empty
-	 */
-	$buffer = new CentreonXML();
-	$buffer->startElement("options_data");
-	$buffer->writeElement("td_id", "td_list_hsr");
-	$buffer->writeElement("select_id", "sl_list_services");
-
-	/*
-	 *  Now we fill out the select with templates id and names
-	 */
-	foreach ($s_datas as $o_id => $o_alias){
-		$buffer->startElement("option");
-		$buffer->writeElement("o_id", $o_id);
-		$buffer->writeElement("o_alias", $o_alias);
-		$buffer->endElement();
-	}
-	$buffer->endElement();
 	$buffer->output();
 ?>

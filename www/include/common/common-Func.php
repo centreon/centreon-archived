@@ -32,10 +32,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
+
 /*
  * function table_not_exists()
  * - This function test if a table exist in database.
@@ -127,7 +125,7 @@ function tidySearchKey($search, $advanced_search) {
 
 #
 
-	function initSmartyTpl($path = NULL, $tpl = NULL, $subDir = NULL) {
+function initSmartyTpl($path = NULL, $tpl = NULL, $subDir = NULL) {
     if (!$tpl)
         return;
     $tpl->template_dir = $path . $subDir;
@@ -145,9 +143,9 @@ function initSmartyTplForPopup($path = NULL, $tpl = NULL, $subDir = NULL, $centr
     if (!$tpl)
         return;
     $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = "$centreon_path/GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = "$centreon_path/GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = "$centreon_path/GPL_LIB/SmartyCache/cache";
+    $tpl->compile_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/compile";
+    $tpl->config_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/config";
+    $tpl->cache_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/cache";
 
     $tpl->caching = 0;
     $tpl->compile_check = true;
@@ -389,14 +387,6 @@ function getMyHostExtendedInfoFieldFromMultiTemplates($host_id, $field) {
     return NULL;
 }
 
-function getVersion() {
-    global $pearDB;
-    $DBRESULT = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'nagios_version' LIMIT 1");
-    $row = $DBRESULT->fetchRow();
-    $DBRESULT->free();
-    return $row["value"];
-}
-
 function getMyHostMacroFromMultiTemplates($host_id, $field) {
     if (!$host_id)
         return NULL;
@@ -433,33 +423,18 @@ function getMyHostMacro($host_id = NULL, $field) {
         return;
     global $pearDB, $oreon;
 
-    $version = getVersion();
-
-    if ($version < 3) {
-        while (1) {
-            $DBRESULT = $pearDB->query("SELECT macro.host_macro_value, h.host_template_model_htm_id FROM host h, on_demand_macro_host macro WHERE macro.host_host_id = '" . CentreonDB::escape($host_id) . "' AND h.host_id = '" . CentreonDB::escape($host_id) . "' AND macro.host_macro_name = '\$_HOST" . $field . "\$' LIMIT 1");
-            $row = $DBRESULT->fetchRow();
-            if (isset($row["host_macro_value"]) && $row["host_macro_value"])
-                return $row["host_macro_value"];
-            else if ($row["host_template_model_htm_id"])
-                $host_id = $row["host_template_model_htm_id"];
-            else
-                return NULL;
-        }
-    } else if ($version >= 3) {
-        $rq = "SELECT macro.host_macro_value " .
-                "FROM on_demand_macro_host macro " .
-                "WHERE macro.host_host_id = '" . CentreonDB::escape($host_id) . "' AND macro.host_macro_name = '\$_HOST" . $field . "\$' LIMIT 1";
-        $DBRESULT = $pearDB->query($rq);
-        $row = $DBRESULT->fetchRow();
-        if (isset($row["host_macro_value"]) && $row["host_macro_value"]) {
-            $macroValue = str_replace("#S#", "/", $row["host_macro_value"]);
-            $macroValue = str_replace("#BS#", "\\", $macroValue);
-            return $macroValue;
-        } else {
-            return getMyHostMacroFromMultiTemplates($host_id, $field);
-        }
-    }
+    $rq = "SELECT macro.host_macro_value " .
+            "FROM on_demand_macro_host macro " .
+            "WHERE macro.host_host_id = '" . CentreonDB::escape($host_id) . "' AND macro.host_macro_name = '\$_HOST" . $field . "\$' LIMIT 1";
+    $DBRESULT = $pearDB->query($rq);
+    $row = $DBRESULT->fetchRow();
+    if (isset($row["host_macro_value"]) && $row["host_macro_value"]) {
+        $macroValue = str_replace("#S#", "/", $row["host_macro_value"]);
+        $macroValue = str_replace("#BS#", "\\", $macroValue);
+        return $macroValue;
+    } else {
+        return getMyHostMacroFromMultiTemplates($host_id, $field);
+    }    
 }
 
 function getMyServiceCategories($service_id = NULL) {
@@ -507,33 +482,18 @@ function getMyServiceMacro($service_id = NULL, $field) {
         return;
     global $pearDB, $oreon;
 
-    $version = getVersion();
-
-    if ($version < 3) {
-        while (1) {
-            $DBRESULT = $pearDB->query("SELECT macro.svc_macro_value, s.service_template_model_stm_id FROM service s, on_demand_macro_service macro WHERE macro.service_service_id = '" . CentreonDB::escape($service_id) . "' AND s.service_id = '" . CentreonDB::escape($service_id) . "' AND macro.svc_macro_name = 'macro.svc_macro_name = '\$_SERVICE" . $field . "\$' LIMIT 1");
-            $row = $DBRESULT->fetchRow();
-            if (isset($row["svc_macro_value"]) && $row["svc_macro_value"])
-                return $row["svc_macro_value"];
-            else if ($row["service_template_model_stm_id"])
-                $service_id = $row["service_template_model_stm_id"];
-            else
-                return NULL;
-        }
-    } else if ($version >= 3) {
-        $rq = "SELECT macro.svc_macro_value " .
-                "FROM on_demand_macro_service macro " .
-                "WHERE macro.svc_svc_id = '" . CentreonDB::escape($service_id) . "' AND macro.svc_macro_name = '\$_SERVICE" . $field . "\$' LIMIT 1";
-        $DBRESULT = $pearDB->query($rq);
-        $row = $DBRESULT->fetchRow();
-        if (isset($row["svc_macro_value"]) && $row["svc_macro_value"]) {
-            $macroValue = str_replace("#S#", "/", $row['svc_macro_value']);
-            $macroValue = str_replace("#BS#", "\\", $macroValue);
-            return $macroValue;
-        } else {
-            $service_id = getMyServiceField($service_id, "service_template_model_stm_id");
-            return getMyServiceMacro($service_id, $field);
-        }
+    $rq = "SELECT macro.svc_macro_value " .
+            "FROM on_demand_macro_service macro " .
+            "WHERE macro.svc_svc_id = '" . CentreonDB::escape($service_id) . "' AND macro.svc_macro_name = '\$_SERVICE" . $field . "\$' LIMIT 1";
+    $DBRESULT = $pearDB->query($rq);
+    $row = $DBRESULT->fetchRow();
+    if (isset($row["svc_macro_value"]) && $row["svc_macro_value"]) {
+        $macroValue = str_replace("#S#", "/", $row['svc_macro_value']);
+        $macroValue = str_replace("#BS#", "\\", $macroValue);
+        return $macroValue;
+    } else {
+        $service_id = getMyServiceField($service_id, "service_template_model_stm_id");
+        return getMyServiceMacro($service_id, $field);
     }
 }
 
@@ -542,30 +502,15 @@ function getMyHostExtendedInfoField($host_id = NULL, $field) {
         return;
     global $pearDB, $oreon;
 
-    $version = getVersion();
-
-    if ($version < 3) {
-        while (1) {
-            $DBRESULT = $pearDB->query("SELECT ehi.`" . $field . "`, h.host_template_model_htm_id FROM host h, extended_host_information ehi WHERE ehi.host_host_id = '" . CentreonDB::escape($host_id) . "' AND h.host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
-            $row = $DBRESULT->fetchRow();
-            if (isset($row[$field]) && $row[$field])
-                return $row[$field];
-            else if ($row["host_template_model_htm_id"])
-                $host_id = $row["host_template_model_htm_id"];
-            else
-                return NULL;
-        }
-    } else if ($version >= 3) {
-        $rq = "SELECT ehi.`" . $field . "` " .
-                "FROM extended_host_information ehi " .
-                "WHERE ehi.host_host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
-        $DBRESULT = $pearDB->query($rq);
-        $row = $DBRESULT->fetchRow();
-        if (isset($row[$field]) && $row[$field])
-            return $row[$field];
-        else {
-            return getMyHostExtendedInfoFieldFromMultiTemplates($host_id, $field);
-        }
+    $rq = "SELECT ehi.`" . $field . "` " .
+            "FROM extended_host_information ehi " .
+            "WHERE ehi.host_host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($rq);
+    $row = $DBRESULT->fetchRow();
+    if (isset($row[$field]) && $row[$field])
+        return $row[$field];
+    else {
+        return getMyHostExtendedInfoFieldFromMultiTemplates($host_id, $field);
     }
 }
 
@@ -1585,16 +1530,18 @@ function return_image_list($mode = 0, $rep = NULL, $full = true, $origin_path = 
 }
 
 function getLangs() {
-    $langs = array();
+    $langs = array('browser' => _("Detection by browser"));
     $chemintotal = "./locale/";
     $default = "en_US";
 
     $langs["en_US"] = "en_US";
-    if ($handle = opendir($chemintotal)) {
-        while ($file = readdir($handle))
-            if (is_dir("$chemintotal/$file") && strcmp($file, ".") && strcmp($file, ".."))
-                $langs[$file] = $file;
-        closedir($handle);
+    if (is_dir($chemintotal)) {
+        if ($handle = opendir($chemintotal)) {
+            while ($file = readdir($handle))
+                if (is_dir("$chemintotal/$file") && strcmp($file, ".") && strcmp($file, ".."))
+                    $langs[$file] = $file;
+            closedir($handle);
+        }
     }
     return $langs;
 }
@@ -1621,16 +1568,18 @@ function getAllHostgroups() {
     return $hgs;
 }
 
-function service_has_graph($host, $service) {
+function service_has_graph($host, $service, $dbo = null) {
     global $pearDBO;
-
+    if(is_null($dbo)){
+        $dbo = $pearDBO;
+    }
     if (is_numeric($host) && is_numeric($service)) {
-        $DBRESULT = $pearDBO->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_id = '" . CentreonDB::escape($host) . "' AND i.service_id = '" . CentreonDB::escape($service) . "'");
+        $DBRESULT = $dbo->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_id = '" . CentreonDB::escape($host) . "' AND i.service_id = '" . CentreonDB::escape($service) . "'");
         if ($DBRESULT->numRows() > 0)
             return true;
     }
     if (!is_numeric($host) && !is_numeric($service)) {
-        $DBRESULT = $pearDBO->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_name = '" . CentreonDB::escape($host) . "' AND i.service_description = '" . CentreonDB::escape($service) . "'");
+        $DBRESULT = $dbo->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_name = '" . CentreonDB::escape($host) . "' AND i.service_description = '" . CentreonDB::escape($service) . "'");
 
         if ($DBRESULT->numRows() > 0)
             return true;
@@ -1930,39 +1879,28 @@ function str2db($string) {
             return $svcTmpl;
         }
     }
-    
-    /**
-     * This method remove duplicate macro by her name
-     * 
-     * @param array $aTempMacro
-     * @return array
-     */
-    function macro_unique($aTempMacro)
-    {
-        $aFinalMacro = array();
-        $x = 0;
-        for ($i = 0; $i < count($aTempMacro); $i++) {
-            $sInput = $aTempMacro[$i]['macroInput_#index#'];
 
-            if (count($aFinalMacro) > 0) {
-                for ($j = 0; $j < count($aFinalMacro); $j++ ) {
-                    if ($aFinalMacro[$j]['macroInput_#index#'] == $sInput) {
-                        $existe = $j;
-                        break;
-                    } else {
-                        $existe = null;
-                    }
-                }
-                if (is_null($existe)) {
-                    $aFinalMacro[$x++] = $aTempMacro[$i];
-                } else {
-                    //$aFinalMacro[$existe] = $aTempMacro[$i];
-                }
-            } else {
-                $aFinalMacro[$x++] = $aTempMacro[$i];
+    if(!function_exists("array_column"))
+        {
+            function array_column($array,$column_name)
+            {
+                return array_map(function($element) use($column_name){return $element[$column_name];}, $array);
+
             }
-        }
-        return $aFinalMacro;
-    }
 
+        }
+
+/**
+ * Get current Centreon version
+ */
+function getCentreonVersion($pearDB)
+{
+    $query = 'SELECT `value` FROM `informations` WHERE `key` = "version"';
+    $res = $pearDB->query($query);
+    if (PEAR::isError($res)) {
+        return null;
+    }
+    $row = $res->fetchRow();
+    return $row['value'];
+}
 ?>

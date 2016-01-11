@@ -31,14 +31,10 @@
  *
  * For more information : command@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationCommand extends CentreonConfigurationObjects
@@ -69,8 +65,15 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
         } else {
             $t = $this->arguments['t'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryCommand = "SELECT command_id, command_name "
+        $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name "
             . "FROM command "
             . "WHERE command_name LIKE '%$q%' ";
         
@@ -78,15 +81,21 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
             $queryCommand .= "AND command_type = '$t' ";
         }
             
-        $queryCommand .= "ORDER BY command_name";
+        $queryCommand .= "ORDER BY command_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryCommand);
+
+        $total = $this->pearDB->numberRows();
         
         $commandList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $commandList[] = array('id' => $data['command_id'], 'text' => $data['command_name']);
         }
         
-        return $commandList;
+        return array(
+            'items' => $commandList,
+            'total' => $total
+        );
     }
 }

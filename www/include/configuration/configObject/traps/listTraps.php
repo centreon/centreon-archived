@@ -38,20 +38,19 @@
  
 	if (!isset($oreon))
 		exit();
+
+        include_once("./class/centreonUtils.class.php");
 		
 	include("./include/common/autoNumLimit.php");
 	$mnftr_id = NULL;
 	
 	$tabStatus = array(0 => _("OK"), 1 => _("Warning"), 2 => _("Critical"), 3 => _("Unknown"), 4 => _("Pending"));
 	
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
-	
 	$SearchTool = NULL;
-	if (isset($search) && $search)
+	if (isset($_POST['searchT']) && $_POST['searchT']) {
+        $search = $_POST['searchT'];
 		$SearchTool = "WHERE traps_oid LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR traps_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
+    }
 	
 	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM traps $SearchTool");
 	$tmp = $DBRESULT->fetchRow();
@@ -97,6 +96,7 @@
 	 */
 	$elemArr = array();
 	for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++) {
+                $trap = array_map(array("CentreonUtils","escapeSecure"),$trap);
 		$moptions = "";
 		$selectedElements = $form->addElement('checkbox', "select[".$trap['traps_id']."]");
 		$moptions .= "&nbsp;&nbsp;&nbsp;";
@@ -131,6 +131,9 @@
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
+                                " var bChecked = isChecked(); ".
+                                " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
+                                " alert('"._("Please select one or more items")."'); return false;} " .
 				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
@@ -143,6 +146,9 @@
 		
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
+                                " var bChecked = isChecked(); ".
+                                " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
+                                " alert('"._("Please select one or more items")."'); return false;} " .
 				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
@@ -162,6 +168,7 @@
 	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchT', $search);
 	
 	#
 	##Apply a template definition

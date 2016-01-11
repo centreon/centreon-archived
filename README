@@ -1,3 +1,45 @@
+# Centreon - IT and Application monitoring software #
+
+## Introduction ##
+
+Centreon is one of the most flexible and powerful monitoring softwares on the market; it is absolutely
+free and Open Souce.
+
+This software requires an engine and a broker to be operational, refer to the documentation for more 
+information.
+
+## Docs ##
+
+Find installation and user documentations at 
+[http://documentation.centreon.com](http://documentation.centreon.com).
+
+## About ##
+
+### Authors ###
+
+#### Project leaders ####
+* Julien Mathis
+* Romain Le Merlus
+
+#### Dev team ####
+* Lionel Assepo
+* Maximilien Bersoult
+* Remi Werquin
+* Sylvestre Ho
+* Kevin Duret
+* Benoit Sauveton
+* Toufik Mechouet
+* Rabaa Ridene
+
+### License ###
+
+Centreon is distributed under GNU GPL v2 license, see LICENSE.
+
+### Contacts ###
+
+You can report bugs or suggest features by using the 
+[issue tracker](https://forge.centreon.com/projects/centreon/issues).
+=======
 ===============================================================================
                                    License
 ===============================================================================
@@ -19,7 +61,7 @@ packages. Either way, make sure to read our installation documentation:
 ===============================================================================
 Below is a list of official links that may be useful to you:
 * Official website: http://www.centreon.com
-* Bug tracker: http://forge.centreon.com/projects/centreon
+* Bug tracker: https://github.com/centreon/centreon/issues
 * Forum: http://forum.centreon.com
 * Documentation: http://documentation.centreon.com
 

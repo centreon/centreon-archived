@@ -192,9 +192,9 @@ class CentreonDowntime
 	public function getList($num, $limit, $type = NULL)
 	{
 		if ($type == "h") {
-			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime WHERE downtime.dt_id IN(SELECT dt_id FROM downtime_host_relation) OR downtime.dt_id IN (SELECT dt_id FROM downtime_hostgroup_relation) " . ($this->search == '' ? "" : " AND ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
+			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime WHERE (downtime.dt_id IN(SELECT dt_id FROM downtime_host_relation) OR downtime.dt_id IN (SELECT dt_id FROM downtime_hostgroup_relation)) " . ($this->search == '' ? "" : " AND ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
 		} else if ($type == "s") {
-			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime WHERE downtime.dt_id IN (SELECT dt_id FROM downtime_service_relation) OR downtime.dt_id IN (SELECT dt_id FROM downtime_servicegroup_relation) " . ($this->search == '' ? "" : " AND ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
+			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime WHERE (downtime.dt_id IN (SELECT dt_id FROM downtime_service_relation) OR downtime.dt_id IN (SELECT dt_id FROM downtime_servicegroup_relation)) " . ($this->search == '' ? "" : " AND ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
 		} else {
 			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime " . ($this->search == '' ? "" : " WHERE ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
 		}
@@ -818,7 +818,7 @@ class CentreonDowntime
 			 * If start time is 00:00 check with tomorrow
 			 */
 			$timeTest = $time;
-			if ($period['start_time'] == '00:00' && ($time + $delay) > (strtotime('00:00') + 3600 + 24)) {
+			if ($period['start_time'] == '00:00' && ($time + $delay) > (strtotime('00:00'." UTC") + 3600 + 24)) {
 			    $timeTest = $time + $delay;
 			}
 			if ($period['month_cycle'] == 'none') {
@@ -843,7 +843,7 @@ class CentreonDowntime
 					$monthName = date('F', $timeTest);
 					$year = date('Y', $timeTest);
 					$dayShortName = date('D', $timeTest);
-					$dayInMonth = date('d', strtotime($period['month_cycle'] . ' ' . $dayShortName . ' ' . $monthName . ' ' . $year));
+					$dayInMonth = date('d', strtotime($period['month_cycle'] . ' ' . $dayShortName . ' ' . $monthName . ' ' . $year." UTC"));
 					if ($dayInMonth == date('d', $timeTest)) {
 						$add = true;
 					}
@@ -855,16 +855,16 @@ class CentreonDowntime
 			     */
 			    $tomorrow = false;
 			    if ($period['start_time'] == '00:00') {
-				    $timestamp_start = strtotime($period['start_time']) + 3600 * 24;
+				    $timestamp_start = strtotime($period['start_time']." UTC") + 3600 * 24;
 				    $tomorrow = true;
 			    } else {
-				    $timestamp_start = strtotime($period['start_time']);
+				    $timestamp_start = strtotime($period['start_time']." UTC");
 			    }
 				if ($time < $timestamp_start && ($time + $delay) > $timestamp_start) {
 				    if ($period['end_time'] == '24:00') {
-				        $timestamp_stop = strtotime('00:00') + 3600 * 24;
+				        $timestamp_stop = strtotime('00:00'." UTC") + 3600 * 24;
 				    } else {
-					    $timestamp_stop = strtotime($period['end_time']);
+					    $timestamp_stop = strtotime($period['end_time']." UTC");
 				    }
 				    if ($tomorrow) {
 				        $timestamp_stop = $timestamp_stop + 3600 * 24;
@@ -908,5 +908,68 @@ class CentreonDowntime
 		}
 		return $list;
 	}
+    
+    /**
+     * 
+     * @param integer $field
+     * @return array
+     */
+    public static function getDefaultValuesParameters($field)
+    {
+        $parameters = array();
+        $parameters['currentObject']['table'] = 'downtime';
+        $parameters['currentObject']['id'] = 'dt_id';
+        $parameters['currentObject']['name'] = 'dt_name';
+        $parameters['currentObject']['comparator'] = 'dt_id';
+
+        switch ($field) {
+            case 'host_relation':
+                $parameters['type'] = 'relation';
+                $parameters['object'] = 'centreonHost';
+                $parameters['externalObject']['table'] = 'host';
+                $parameters['externalObject']['id'] = 'host_id';
+                $parameters['externalObject']['name'] = 'host_name';
+                $parameters['externalObject']['comparator'] = 'host_id';
+                $parameters['relationObject']['table'] = 'downtime_host_relation';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['comparator'] = 'dt_id';
+                break;
+            case 'hostgroup_relation':
+                $parameters['type'] = 'relation';
+                $parameters['object'] = 'centreonHostgroups';
+                $parameters['externalObject']['table'] = 'hostgroup';
+                $parameters['externalObject']['id'] = 'hg_id';
+                $parameters['externalObject']['name'] = 'hg_name';
+                $parameters['externalObject']['comparator'] = 'hg_id';
+                $parameters['relationObject']['table'] = 'downtime_hostgroup_relation';
+                $parameters['relationObject']['field'] = 'hg_hg_id';
+                $parameters['relationObject']['comparator'] = 'dt_id';
+                break;
+            case 'svc_relation':
+                $parameters['type'] = 'relation';
+                $parameters['object'] = 'centreonService';
+                $parameters['externalObject']['table'] = 'service';
+                $parameters['externalObject']['id'] = 'service_id';
+                $parameters['externalObject']['name'] = 'service_description';
+                $parameters['externalObject']['comparator'] = 'service_id';
+                $parameters['relationObject']['table'] = 'downtime_service_relation';
+                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['comparator'] = 'dt_id';
+                break;
+            case 'svcgroup_relation':
+                $parameters['type'] = 'relation';
+                $parameters['object'] = 'centreonServicegroups';
+                $parameters['externalObject']['table'] = 'servicegroup';
+                $parameters['externalObject']['id'] = 'sg_id';
+                $parameters['externalObject']['name'] = 'sg_name';
+                $parameters['externalObject']['comparator'] = 'sg_id';
+                $parameters['relationObject']['table'] = 'downtime_servicegroup_relation';
+                $parameters['relationObject']['field'] = 'sg_sg_id';
+                $parameters['relationObject']['comparator'] = 'dt_id';
+                break;
+        }
+        
+        return $parameters;
+    }
 }
 ?>

@@ -46,15 +46,16 @@
 	require_once "./class/centreonMsg.class.php";
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
+    session_start();
+    $sid = session_id();
 	if (isset($_GET["o"]) && $_GET["o"] == "r"){
-		$pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '".$pearDB->escape($_GET["session_id"])."'");
+		$pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '".$pearDB->escape($sid)."'");
 		$pearDB->query("UPDATE acl_resources SET changed = '1'");
 		$msg = new CentreonMsg();
 		$msg->setTextStyle("bold");
 		$msg->setText(_("ACL reloaded"));
 		$msg->setTimeOut("3");
-		passthru("php " . $centreon_path . "/cron/centAcl.php");
+		passthru("php " . _CENTREON_PATH_ . "/cron/centAcl.php");
 	} elseif (isset($_POST["o"]) && $_POST["o"] == "u") {
 		isset($_GET["select"]) ? $sel = $_GET["select"] : $sel = NULL;
 		isset($_POST["select"]) ? $sel = $_POST["select"] : $sel;
@@ -79,7 +80,7 @@
 		$msg->setTextStyle("bold");
 		$msg->setText(_("ACL reloaded"));
 		$msg->setTimeOut("3");
-		passthru("php " . $centreon_path . "/cron/centAcl.php");
+		passthru("php " . _CENTREON_PATH_ . "/cron/centAcl.php");
 	}
 
 	# Smarty template Init
@@ -109,7 +110,7 @@
 			$session_data[$cpt]["ip_address"] = $r["ip_address"];
 			$session_data[$cpt]["current_page"] = $r["current_page"].$rCP["topology_url_opt"];
 			$session_data[$cpt]["topology_name"] = _($rCP["topology_name"]);
-			$session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=r&session_id=".$r["session_id"]."'><img src='./img/icones/16x16/refresh.gif' border='0' alt='"._("Reload ACL")."' title='"._("Reload ACL")."'></a>";
+			$session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=r'><img src='./img/icones/16x16/refresh.gif' border='0' alt='"._("Reload ACL")."' title='"._("Reload ACL")."'></a>";
 			$selectedElements = $form->addElement('checkbox', "select[".$r['user_id']."]");
 			$session_data[$cpt]["checkbox"] = $selectedElements->toHtml();
 			$cpt++;

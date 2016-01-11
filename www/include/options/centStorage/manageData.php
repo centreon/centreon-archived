@@ -31,36 +31,42 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($centreon)) {
+	exit();
+}
 
-	include("./include/common/autoNumLimit.php");
+include("./include/common/autoNumLimit.php");
 
-	require_once './class/centreonDuration.class.php';
-	include_once("./include/monitoring/common-Func.php");
+require_once './class/centreonDuration.class.php';
+include_once("./include/monitoring/common-Func.php");
 
-	#Pear library
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#Path to the option dir
-	$path = "./include/options/centStorage/";
+/* 
+ * Path to the option dir
+ */
+$path = "./include/options/centStorage/";
 
-	#PHP functions
-	require_once("./include/options/oreon/generalOpt/DB-Func.php");
-	require_once("./include/common/common-Func.php");
-	require_once("./class/centreonDB.class.php");
+/*
+ * PHP functions
+ */
+require_once("./include/options/oreon/generalOpt/DB-Func.php");
+require_once("./include/common/common-Func.php");
+require_once("./class/centreonDB.class.php");
 
-	$pearDBO = new CentreonDB("centstorage");
+$pearDBO = new CentreonDB("centstorage");
 
-	switch ($o)	{
-		case "msvc" : require_once($path."viewMetrics.php"); break;
-		default : require_once($path."viewData.php"); break;
-	}
-?>
+switch ($o)	{
+	case "msvc" : 
+		require_once($path."viewMetrics.php"); 
+		break;
+	default : 
+		require_once($path."viewData.php"); 
+		break;
+}

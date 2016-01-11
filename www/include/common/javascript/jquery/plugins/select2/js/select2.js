@@ -1556,11 +1556,11 @@ S2.define('select2/selection/multiple',[
     this.$selection.find('.select2-selection__rendered').empty();
   };
 
-  MultipleSelection.prototype.display = function (data) {
+  MultipleSelection.prototype.display = function (data, container) {
     var template = this.options.get('templateSelection');
     var escapeMarkup = this.options.get('escapeMarkup');
 
-    return escapeMarkup(template(data));
+    return escapeMarkup(template(data, container));
   };
 
   MultipleSelection.prototype.selectionContainer = function () {
@@ -1587,8 +1587,8 @@ S2.define('select2/selection/multiple',[
     for (var d = 0; d < data.length; d++) {
       var selection = data[d];
 
-      var formatted = this.display(selection);
       var $selection = this.selectionContainer();
+      var formatted = this.display(selection, $selection);
 
       $selection.append(formatted);
       $selection.prop('title', selection.title || selection.text);

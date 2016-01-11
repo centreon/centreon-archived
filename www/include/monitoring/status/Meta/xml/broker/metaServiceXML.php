@@ -44,15 +44,17 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
-	include_once($centreon_path."www/class/centreonDuration.class.php");
-	include_once($centreon_path."www/class/centreonACL.class.php");
-	include_once($centreon_path."www/class/centreonXML.class.php");
-	include_once($centreon_path."www/class/centreonDB.class.php");
-	include_once($centreon_path."www/class/centreonGMT.class.php");
-	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";
-	include_once($centreon_path."www/include/common/common-Func.php");
+        include_once(_CENTREON_PATH_."www/class/centreonUtils.class.php");
+
+	include_once(_CENTREON_PATH_."www/class/centreonDuration.class.php");
+	include_once(_CENTREON_PATH_."www/class/centreonACL.class.php");
+	include_once(_CENTREON_PATH_."www/class/centreonXML.class.php");
+	include_once(_CENTREON_PATH_."www/class/centreonDB.class.php");
+	include_once(_CENTREON_PATH_."www/class/centreonGMT.class.php");
+	include_once _CENTREON_PATH_."www/include/monitoring/status/Common/common-Func.php";
+	include_once(_CENTREON_PATH_."www/include/common/common-Func.php");
 
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
@@ -63,10 +65,11 @@
 	/*
 	 * security check 2/2
 	 */
-
-	if (isset($_GET["sid"])) {
-		$sid = $_GET["sid"];
-		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
+    session_start();
+	$sid = session_id();
+	if (isset($sid)) {
+		/*$sid = $_GET["sid"];
+		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");*/
 		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
 		if (!$session = $res->fetchRow())
 			get_error('bad session id');
@@ -112,7 +115,7 @@
 	$metaService_status = array();
 	$tab_host_service = array();
 
-	$tab_color_service = array(0 => $general_opt["color_ok"], 1 => $general_opt["color_warning"], 2 => $general_opt["color_critical"], 3 => $general_opt["color_unknown"], 4 => $general_opt["color_pending"]);
+	$tab_color_service = array(0 => 'service_ok', 1 => 'service_warning', 2 => 'service_critical', 3 => 'service_unknown', 4 => 'pending');
 	$tab_color_host = array(0 => "normal", 1 => "#FD8B46", /* $general_opt["color_down"];*/ 2 => "normal");
 
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
@@ -246,15 +249,15 @@
 		$buffer->writeElement("o", $ct++);
 		$buffer->writeElement("f", $flag);
 		$buffer->writeElement("ppd", $ndo["process_perfdata"]);
-		$buffer->writeElement("sd", $ndo['display_name']);
-		$buffer->writeElement("hn", $ndo['host_name']);
-		$buffer->writeElement("rsd", $ndo['service_description']);
+		$buffer->writeElement("sd", CentreonUtils::escapeSecure($ndo['display_name']));
+		$buffer->writeElement("hn", CentreonUtils::escapeSecure($ndo['host_name']));
+		$buffer->writeElement("rsd", CentreonUtils::escapeSecure($ndo['service_description']));
 		$buffer->writeElement("svc_id", $ndo["service_id"]);
         $buffer->writeElement("hid", $ndo["host_id"]);
 		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $ndo["service_description"], $pearDBO));
 		$buffer->writeElement("sc", $color_service);
 		$buffer->writeElement("cs", _($tab_status_svc[$ndo["state"]]));
-		$buffer->writeElement("po", $ndo["plugin_output"]);
+		$buffer->writeElement("po", CentreonUtils::escapeSecure($ndo["plugin_output"]));
 		$buffer->writeElement("ca", $ndo["check_attempt"]);
 		$buffer->writeElement("ne", $ndo["notify"]);
 		$buffer->writeElement("pa", $ndo["acknowledged"]);

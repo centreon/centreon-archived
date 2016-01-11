@@ -36,7 +36,7 @@
 
 function return_plugin($rep)
 {
-    global $oreon;
+    global $centreon;
 
     $availableConnectors = array();
     $is_not_a_plugin = array("." => 1, ".." => 1, "oreon.conf" => 1, "oreon.pm" => 1, "utils.pm" => 1, "negate" => 1, "centreon.conf" => 1, "centreon.pm" => 1);
@@ -127,7 +127,8 @@ try {
         'datasourceOrigin' => 'ajax',
         'multiple' => true,
         'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=connector&field=command_id&id=' . $connector_id,
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list'
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list',
+        'linkedObject' => 'centreonCommand'
     );
 
     $form->addElement('text', 'connector_name', _("Connector Name"), $attrsText);
@@ -158,12 +159,12 @@ try {
     	$form->setDefaults($cnt);
 	    $form->freeze();
     } elseif ($o == "c") {
-        $subC = $form->addElement('submit', 'submitC', _("Save"));
-        $res = $form->addElement('reset', 'reset', _("Reset"));
+        $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+        $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
         $form->setDefaults($cnt);
     } elseif ($o == "a") {
-        $subA = $form->addElement('submit', 'submitA', _("Save"));
-        $res = $form->addElement('reset', 'reset', _("Reset"));
+        $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+        $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     }
     
     

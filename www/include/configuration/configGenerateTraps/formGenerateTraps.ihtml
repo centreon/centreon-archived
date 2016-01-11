@@ -1,9 +1,17 @@
 {$form.javascript}
 <form {$form.attributes}>
 	 <input type="hidden" name="level" value="1">
-	 <table class="ListTable" style="margin:0 auto;">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.infos}</td></tr>
+	 <table class="formTable table" style="margin:0 auto;">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.infos}</h4>
+          </td>
+        </tr>
 		<tr class="list_one">
                     <td class="FormRowField">
                         <img class="helpTooltip" name="host">&nbsp;{$form.host.label}
@@ -12,12 +20,16 @@
                         {$form.host.html}
                     </td>
                 </tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/breakpoint_run.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.result}</h4>
+          </td>
+        </tr>
 	 	<tr class="list_one">
                     <td class="FormRowField">
                         <img class="helpTooltip" name="generate">&nbsp;{$form.generate.label}
                     </td>
-                    <td class"FormRowValue">
+                    <td class="FormRowValue">
                         {$form.generate.html}
                     </td>
                 </tr>

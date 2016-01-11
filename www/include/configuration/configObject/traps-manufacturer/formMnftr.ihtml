@@ -9,8 +9,12 @@
 	{/if}
 	</div>
 	<div id='tab1' class='tab'>
-	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/factory.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
 
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name"> {$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.alias.label}</td><td class="FormRowValue">{$form.alias.html}</td></tr>
@@ -20,7 +24,6 @@
 	</div>
 	<div id="validForm">
 	{if $o == "a" || $o == "c"}
-		<p>{$form.action.html}</p>
 		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
 		<p class="oreonbutton">{$form.change.html}</p>

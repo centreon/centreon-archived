@@ -31,12 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
+
 require_once dirname(__FILE__) . "/webService.class.php";
 
 class CentreonWs extends CentreonWebService {

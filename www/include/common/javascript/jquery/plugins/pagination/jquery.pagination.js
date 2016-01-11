@@ -1,169 +1,247 @@
 /**
  * This jQuery plugin displays pagination links inside the selected elements.
+ * 
+ * This plugin needs at least jQuery 1.4.2
  *
  * @author Gabriel Birke (birke *at* d-scribe *dot* de)
- * @version 1.2
+ * @version 2.2
  * @param {int} maxentries Number of entries to paginate
  * @param {Object} opts Several options (see README for documentation)
  * @return {Object} jQuery Object
  */
-jQuery.fn.pagination = function(maxentries, opts){
-	opts = jQuery.extend({
-		items_per_page:10,
-		num_display_entries:10,
-		current_page:0,
-		num_edge_entries:0,
-		link_to:"#",
-		prev_text:"Prev",
-		next_text:"Next",
-		ellipse_text:"...",
-		prev_show_always:true,
-		next_show_always:true,
-		callback:function(){return false;}
-	},opts||{});
-	
-	return this.each(function() {
-		/**
-		 * Calculate the maximum number of pages
-		 */
-		function numPages() {
-			return Math.ceil(maxentries/opts.items_per_page);
-		}
-		
-		/**
-		 * Calculate start and end point of pagination links depending on 
-		 * current_page and num_display_entries.
-		 * @return {Array}
-		 */
-		function getInterval()  {
-			var ne_half = Math.ceil(opts.num_display_entries/2);
-			var np = numPages();
-			var upper_limit = np-opts.num_display_entries;
-			var start = current_page>ne_half?Math.max(Math.min(current_page-ne_half, upper_limit), 0):0;
-			var end = current_page>ne_half?Math.min(current_page+ne_half, np):Math.min(opts.num_display_entries, np);
-			return [start,end];
-		}
-		
-		/**
-		 * This is the event handling function for the pagination links. 
-		 * @param {int} page_id The new page number
-		 */
-		function pageSelected(page_id, evt){
-			current_page = page_id;
-			drawLinks();
-			var continuePropagation = opts.callback(page_id, panel);
-			if (!continuePropagation) {
-				if (evt.stopPropagation) {
-					evt.stopPropagation();
-				}
-				else {
-					evt.cancelBubble = true;
-				}
-			}
-			return continuePropagation;
-		}
-		
-		/**
-		 * This function inserts the pagination links into the container element
-		 */
-		function drawLinks() {
-			panel.empty();
-			var interval = getInterval();
-			var np = numPages();
-			// This helper function returns a handler function that calls pageSelected with the right page_id
-			var getClickHandler = function(page_id) {
-				return function(evt){ return pageSelected(page_id,evt); }
-			}
-			// Helper function for generating a single link (or a span tag if it's the current page)
-			var appendItem = function(page_id, appendopts){
-				page_id = page_id<0?0:(page_id<np?page_id:np-1); // Normalize page id to sane value
-				appendopts = jQuery.extend({text:page_id+1, classes:""}, appendopts||{});
-				if(page_id == current_page){
-					var lnk = jQuery("<span class='current'>"+(appendopts.text)+"</span>");
-				}
-				else
-				{
-					var lnk = jQuery("<a>"+(appendopts.text)+"</a>")
-						.bind("click", getClickHandler(page_id))
-						.attr('style', "cursor: pointer;");
-						//.attr('href', opts.link_to.replace(/__id__/,page_id));
-						
-						
-				}
-				if(appendopts.classes){lnk.addClass(appendopts.classes);}
-				panel.append(lnk);
-			}
-			// Generate "Previous"-Link
-			if(opts.prev_text && (current_page > 0 || opts.prev_show_always)){
-				appendItem(current_page-1,{text:opts.prev_text, classes:"prev"});
-			}
-			// Generate starting points
-			if (interval[0] > 0 && opts.num_edge_entries > 0)
-			{
-				var end = Math.min(opts.num_edge_entries, interval[0]);
-				for(var i=0; i<end; i++) {
-					appendItem(i);
-				}
-				if(opts.num_edge_entries < interval[0] && opts.ellipse_text)
-				{
-					jQuery("<span>"+opts.ellipse_text+"</span>").appendTo(panel);
-				}
-			}
-			// Generate interval links
-			for(var i=interval[0]; i<interval[1]; i++) {
-				appendItem(i);
-			}
-			// Generate ending points
-			if (interval[1] < np && opts.num_edge_entries > 0)
-			{
-				if(np-opts.num_edge_entries > interval[1]&& opts.ellipse_text)
-				{
-					jQuery("<span>"+opts.ellipse_text+"</span>").appendTo(panel);
-				}
-				var begin = Math.max(np-opts.num_edge_entries, interval[1]);
-				for(var i=begin; i<np; i++) {
-					appendItem(i);
-				}
-				
-			}
-			// Generate "Next"-Link
-			if(opts.next_text && (current_page < np-1 || opts.next_show_always)){
-				appendItem(current_page+1,{text:opts.next_text, classes:"next"});
-			}
-		}
-		
-		// Extract current_page from options
-		var current_page = opts.current_page;
-		// Create a sane value for maxentries and items_per_page
-		maxentries = (!maxentries || maxentries < 0)?1:maxentries;
-		opts.items_per_page = (!opts.items_per_page || opts.items_per_page < 0)?1:opts.items_per_page;
-		// Store DOM element for easy access from all inner functions
-		var panel = jQuery(this);
-		// Attach control functions to the DOM element 
-		this.selectPage = function(page_id){ pageSelected(page_id);}
-		this.prevPage = function(){ 
-			if (current_page > 0) {
-				pageSelected(current_page - 1);
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		this.nextPage = function(){ 
-			if(current_page < numPages()-1) {
-				pageSelected(current_page+1);
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		// When all initialisation is done, draw the links
-		drawLinks();
+(function (jQuery) {
+    /**
+     * @class Class for calculating pagination values
+     */
+    jQuery.PaginationCalculator = function (maxentries, opts) {
+        this.maxentries = maxentries;
+        this.opts = opts;
+    };
+
+    jQuery.extend(jQuery.PaginationCalculator.prototype, {
+        /**
+         * Calculate the maximum number of pages
+         * @method
+         * @returns {Number}
+         */
+        numPages: function () {
+            return Math.ceil(this.maxentries / this.opts.items_per_page);
+        },
+        /**
+         * Calculate start and end point of pagination links depending on 
+         * current_page and num_display_entries.
+         * @returns {Array}
+         */
+        getInterval: function (current_page) {
+            var ne_half = Math.floor(this.opts.num_display_entries / 2);
+            var np = this.numPages();
+            var upper_limit = np - this.opts.num_display_entries;
+            var start = current_page > ne_half ? Math.max(Math.min(current_page - ne_half, upper_limit), 0) : 0;
+            var end = current_page > ne_half ? Math.min(current_page + ne_half + (this.opts.num_display_entries % 2), np) : Math.min(this.opts.num_display_entries, np);
+            return {start: start, end: end};
+        }
+    });
+
+    // Initialize jQuery object container for pagination renderers
+    jQuery.PaginationRenderers = {};
+
+    /**
+     * @class Default renderer for rendering pagination links
+     */
+    jQuery.PaginationRenderers.defaultRenderer = function (maxentries, opts) {
+        this.maxentries = maxentries;
+        this.opts = opts;
+        this.pc = new jQuery.PaginationCalculator(maxentries, opts);
+    };
+    jQuery.extend(jQuery.PaginationRenderers.defaultRenderer.prototype, {
+        /**
+         * Helper function for generating a single link (or a span tag if it's the current page)
+         * @param {Number} page_id The page id for the new item
+         * @param {Number} current_page 
+         * @param {Object} appendopts Options for the new item: text and classes
+         * @returns {jQuery} jQuery object containing the link
+         */
+        createLink: function (page_id, current_page, appendopts) {
+            var lnk, np = this.pc.numPages();
+            page_id = page_id < 0 ? 0 : (page_id < np ? page_id : np - 1); // Normalize page id to sane value
+            appendopts = jQuery.extend({text: page_id + 1, classes: ""}, appendopts || {});
+            if (page_id == current_page) {
+                lnk = jQuery("<span class='current'>" + appendopts.text + "</span>");
+            }
+            else
+            {
+                lnk = jQuery("<a>" + appendopts.text + "</a>")
+                        .attr('href', this.opts.link_to.replace(/__id__/, page_id));
+            }
+            if (appendopts.classes) {
+                lnk.addClass(appendopts.classes);
+            }
+            if (appendopts.rel) {
+                lnk.attr('rel', appendopts.rel);
+            }
+            lnk.data('page_id', page_id);
+            return lnk;
+        },
+        // Generate a range of numeric links 
+        appendRange: function (container, current_page, start, end, opts) {
+            var i;
+            for (i = start; i < end; i++) {
+                this.createLink(i, current_page, opts).appendTo(container);
+            }
+        },
+        getLinks: function (current_page, eventHandler) {
+            var begin, end,
+                    interval = this.pc.getInterval(current_page),
+                    np = this.pc.numPages(),
+                    fragment = jQuery("<div class='pagination'></div>");
+
+            // Generate "Previous"-Link
+            if (this.opts.prev_text && (current_page > 0 || this.opts.prev_show_always)) {
+                fragment.append(this.createLink(current_page - 1, current_page, {text: this.opts.prev_text, classes: "prev", rel: "prev"}));
+            }
+            // Generate starting points
+            if (interval.start > 0 && this.opts.num_edge_entries > 0)
+            {
+                end = Math.min(this.opts.num_edge_entries, interval.start);
+                this.appendRange(fragment, current_page, 0, end, {classes: 'sp'});
+                if (this.opts.num_edge_entries < interval.start && this.opts.ellipse_text)
+                {
+                    jQuery("<span>" + this.opts.ellipse_text + "</span>").appendTo(fragment);
+                }
+            }
+            // Generate interval links
+            this.appendRange(fragment, current_page, interval.start, interval.end);
+            // Generate ending points
+            if (interval.end < np && this.opts.num_edge_entries > 0)
+            {
+                if (np - this.opts.num_edge_entries > interval.end && this.opts.ellipse_text)
+                {
+                    jQuery("<span>" + this.opts.ellipse_text + "</span>").appendTo(fragment);
+                }
+                begin = Math.max(np - this.opts.num_edge_entries, interval.end);
+                this.appendRange(fragment, current_page, begin, np, {classes: 'ep'});
+
+            }
+            // Generate "Next"-Link
+            if (this.opts.next_text && (current_page < np - 1 || this.opts.next_show_always)) {
+                fragment.append(this.createLink(current_page + 1, current_page, {text: this.opts.next_text, classes: "next", rel: "next"}));
+            }
+            jQuery('a', fragment).click(eventHandler);
+            return fragment;
+        }
+    });
+
+    // Extend jQuery
+    jQuery.fn.pagination = function (maxentries, opts) {
+
+        // Initialize options with default values
+        opts = jQuery.extend({
+            items_per_page: 10,
+            num_display_entries: 11,
+            current_page: 0,
+            num_edge_entries: 0,
+            link_to: "#",
+            prev_text: "Prev",
+            next_text: "Next",
+            ellipse_text: "...",
+            prev_show_always: true,
+            next_show_always: true,
+            renderer: "defaultRenderer",
+            show_if_single_page: false,
+            load_first_page: true,
+            callback: function () {
+                return false;
+            }
+        }, opts || {});
+
+        var containers = this,
+                renderer, links, current_page;
+
+        /**
+         * This is the event handling function for the pagination links. 
+         * @param {int} page_id The new page number
+         */
+        function paginationClickHandler(evt) {
+            var links,
+                    new_current_page = jQuery(evt.target).data('page_id'),
+                    continuePropagation = selectPage(new_current_page);
+            if (!continuePropagation) {
+                evt.stopPropagation();
+            }
+            return continuePropagation;
+        }
+
+        /**
+         * This is a utility function for the internal event handlers. 
+         * It sets the new current page on the pagination container objects, 
+         * generates a new HTMl fragment for the pagination links and calls
+         * the callback function.
+         */
+        function selectPage(new_current_page) {
+            // update the link display of a all containers
+            containers.data('current_page', new_current_page);
+            links = renderer.getLinks(new_current_page, paginationClickHandler);
+            containers.empty();
+            links.appendTo(containers);
+            // call the callback and propagate the event if it does not return false
+            var continuePropagation = opts.callback(new_current_page, containers);
+            return continuePropagation;
+        }
+
+        // -----------------------------------
+        // Initialize containers
+        // -----------------------------------
+        current_page = parseInt(opts.current_page, 10);
+        containers.data('current_page', current_page);
+        // Create a sane value for maxentries and items_per_page
+        maxentries = (!maxentries || maxentries < 0) ? 1 : maxentries;
+        opts.items_per_page = (!opts.items_per_page || opts.items_per_page < 0) ? 1 : opts.items_per_page;
+
+        if (!jQuery.PaginationRenderers[opts.renderer])
+        {
+            throw new ReferenceError("Pagination renderer '" + opts.renderer + "' was not found in jQuery.PaginationRenderers object.");
+        }
+        renderer = new jQuery.PaginationRenderers[opts.renderer](maxentries, opts);
+
+        // Attach control events to the DOM elements
+        var pc = new jQuery.PaginationCalculator(maxentries, opts);
+        var np = pc.numPages();
+        containers.off('setPage').on('setPage', {numPages: np}, function (evt, page_id) {
+            if (page_id >= 0 && page_id < evt.data.numPages) {
+                selectPage(page_id);
+                return false;
+            }
+        });
+        containers.off('prevPage').on('prevPage', function (evt) {
+            var current_page = jQuery(this).data('current_page');
+            if (current_page > 0) {
+                selectPage(current_page - 1);
+            }
+            return false;
+        });
+        containers.off('nextPage').on('nextPage', {numPages: np}, function (evt) {
+            var current_page = jQuery(this).data('current_page');
+            if (current_page < evt.data.numPages - 1) {
+                selectPage(current_page + 1);
+            }
+            return false;
+        });
+        containers.off('currentPage').on('currentPage', function () {
+            var current_page = jQuery(this).data('current_page');
+            selectPage(current_page);
+            return false;
+        });
+
+        // When all initialisation is done, draw the links
+        links = renderer.getLinks(current_page, paginationClickHandler);
+        containers.empty();
+        if (np > 1 || opts.show_if_single_page) {
+            links.appendTo(containers);
+        }
         // call callback function
-        opts.callback(current_page, this);
-	});
-}
+        if (opts.load_first_page) {
+            opts.callback(current_page, containers);
+        }
+    }; // End of jQuery.fn.pagination block
 
-
+})(jQuery);

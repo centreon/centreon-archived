@@ -34,6 +34,8 @@
  *
  */
 
+include_once("./class/centreonUtils.class.php");
+
 include_once "./include/common/autoNumLimit.php";
 
 // So what we get drunk; So what we don't sleep; We're just having Fun and we d'ont car who sees
@@ -57,6 +59,9 @@ try
 	 */
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
+                                " var bChecked = isChecked(); ".
+                                " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
+                                " alert('"._("Please select one or more items")."'); return false;} " .
 				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
@@ -70,6 +75,9 @@ try
 
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
+                                " var bChecked = isChecked(); ".
+                                " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
+                                " alert('"._("Please select one or more items")."'); return false;} " .
 				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
@@ -104,12 +112,12 @@ try
         {
             if ($result['enabled'])
             {
-                $moptions = "<a href='main.php?p=".$p."&id=".$result['id']."&o=u&limit=".$limit."&num=".$num."'><img src='img/icons/eye_inactive.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+                $moptions = "<a href='main.php?p=".$p."&id=".$result['id']."&o=u&limit=".$limit."&num=".$num."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
                 $result['enabled'] = "enabled";
             }
             else
             {
-                $moptions = "<a href='main.php?p=".$p."&id=".$result['id']."&o=s&limit=".$limit."&num=".$num."'><img src='img/icons/eye_active.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+                $moptions = "<a href='main.php?p=".$p."&id=".$result['id']."&o=s&limit=".$limit."&num=".$num."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
                 $result['enabled'] = "disabled";
             }
 
@@ -121,9 +129,9 @@ try
 
             $elemArr[$j] = array("RowMenu_select"         => $selectedElements->toHtml(),
                                  "RowMenu_link"           => "?p=".$p."&o=c&id=".$result['id'],
-                                 "RowMenu_name"           => $result["name"],
-                                 "RowMenu_description"    => $result['description'],
-                                 "RowMenu_command_line"   => $result['command_line'],
+                                 "RowMenu_name"           => CentreonUtils::escapeSecure($result["name"]),
+                                 "RowMenu_description"    => CentreonUtils::escapeSecure($result['description']),
+                                 "RowMenu_command_line"   => CentreonUtils::escapeSecure($result['command_line']),
                                  "RowMenu_enabled"        => $result['enabled'],
                                  "RowMenu_options"        => $moptions
                                 );

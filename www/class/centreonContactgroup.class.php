@@ -36,6 +36,9 @@
  *
  */
 
+require_once realpath(dirname(__FILE__) . "/centreonLDAP.class.php");
+require_once realpath(dirname(__FILE__) . "/centreonACL.class.php");
+
 /**
  * Manage contactgroups
  */
@@ -64,50 +67,70 @@ class CentreonContactgroup
     {
         /* Contactgroup from database */
         $contactgroups = array();
+
         $query = "SELECT a.cg_id, a.cg_name, a.cg_ldap_dn, b.ar_name FROM contactgroup a ";
         $query .= " LEFT JOIN auth_ressource b ON a.ar_id = b.ar_id";
         if (false === $withLdap) {
             $query .= " WHERE a.cg_type != 'ldap'";
         }
         $query .= " ORDER BY a.cg_name";
-	    $res = $this->db->query($query);
+
+	$res = $this->db->query($query);
     	while ($contactgroup = $res->fetchRow()) {
-    		$contactgroups[$contactgroup["cg_id"]] = $contactgroup["cg_name"];
+            $contactgroups[$contactgroup["cg_id"]] = $contactgroup["cg_name"];
             if ($withLdap && isset($contactgroup['cg_ldap_dn']) && $contactgroup['cg_ldap_dn'] != "") {
-                $contactgroups[$contactgroup["cg_id"]] .= " (LDAP : " . $contactgroup['ar_name'] . ")";
+                $contactgroups[$contactgroup["cg_id"]] = $this->formatLdapContactgroupName($contactgroup["cg_name"], $contactgroup['ar_name']);
             }
     	}
     	$res->free();
 
-    	$query = "SELECT `value` FROM `options` WHERE `key` = 'ldap_auth_enable'";
-    	$res = $this->db->query($query);
-    	$row = $res->fetchRow();
-    	if ($row['value'] == 1) {
-    	    $ldapEnable = true;
-    	} else {
-    	    $ldapEnable = false;
+        # Get ldap contactgroups
+    	if ($withLdap && $dbOnly === false) {
+            $contactgroups = $contactgroups + $this->getLdapContactgroups();
     	}
 
-    	if ($withLdap && $ldapEnable && $dbOnly === false) {
+    	return $contactgroups;
+    }
+
+    /**
+     * Get the list of ldap contactgroups
+     *
+     * @return array
+     */
+    public function getLdapContactgroups($filter = '')
+    {
+        $cgs = array();
+
+        $query = "SELECT `value` FROM `options` WHERE `key` = 'ldap_auth_enable'";
+        $res = $this->db->query($query);
+        $row = $res->fetchRow();
+        if ($row['value'] == 1) {
             $query = "SELECT ar_id, ar_name FROM auth_ressource WHERE ar_enable = '1'";
             $ldapres = $this->db->query($query);
-
-            /* ContactGroup from LDAP */
             while ($ldaprow = $ldapres->fetchRow()) {
                 $ldap = new CentreonLDAP($this->db, null, $ldaprow['ar_id']);
                 $ldap->connect(null, $ldaprow['ar_id']);
-            	$cg_ldap = $ldap->listOfGroups();
+                $cg_ldap = $ldap->listOfGroups();
 
-                /* Merge contactgroup from ldap and from db */
-            	foreach ($cg_ldap as $cg_name) {
-            	    if (false === array_search($cg_name . " (LDAP : " . $ldaprow['ar_name'] . ")", $contactgroups)) {
-            	        $contactgroups["[" . $ldaprow['ar_id'] . "]" . $cg_name] = $cg_name . " (LDAP : " . $ldaprow['ar_name'] . ")";
-            	    }
-            	}
+                foreach ($cg_ldap as $cg_name) {
+                    if (false === array_search($cg_name . " (LDAP : " . $ldaprow['ar_name'] . ")", $cgs) && preg_match('/' . $filter . '/i', $cg_name)) {
+                        $cgs["[" . $ldaprow['ar_id'] . "]" . $cg_name] = $this->formatLdapContactgroupName($cg_name, $ldaprow['ar_name']);
+                    }
+                }
             }
-    	}
-    	asort($contactgroups);
-    	return $contactgroups;
+        }
+
+        return $cgs;
+    }
+
+    /**
+     * format ldap contactgroup name
+     *
+     * @return string
+     */
+    public function formatLdapContactgroupName($cg_name, $ldap_name)
+    {
+        return $cg_name . " (LDAP : " . $ldap_name . ")";
     }
 
     /**
@@ -273,20 +296,20 @@ class CentreonContactgroup
         foreach ($listCgs as $cg) {
             if (false === is_numeric($cg)) {
                 /* Parse the name */
-                if (false === preg_match('/\[(\d+)\](.*)/', $cg_name, $matches)) {
+                if (false === preg_match('/\[(\d+)\](.*)/', $cg, $matches)) {
                     return false;
                 }
                 $ar_id = $matches[1];
                 $cg_name = $matches[2];
-                
+
                 /* Query test if exists */
-                $query = "SELECT COUNT(*) as nb FROM contactgroup WHERE cg_name = '" . $pearDB->escape($cg_name) ."'";
+                $query = "SELECT COUNT(*) as nb FROM contactgroup WHERE cg_name = '" . $pearDB->escape($cg_name) ."' AND cg_type != 'ldap' ";
                 $res = $pearDB->query($query);
                 if (PEAR::isError($res)) {
                     return false;
                 }
                 $row = $res->fetchRow();
-                if ($row['nb'] !== 0) {
+                if ($row['nb'] != 0) {
                     return false;
                 }
             }
@@ -318,8 +341,100 @@ class CentreonContactgroup
                 $parameters['relationObject']['field'] = 'contact_contact_id';
                 $parameters['relationObject']['comparator'] = 'contactgroup_cg_id';
                 break;
+            case 'cg_acl_groups':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'acl_groups';
+                $parameters['externalObject']['id'] = 'acl_group_id';
+                $parameters['externalObject']['name'] = 'acl_group_name';
+                $parameters['externalObject']['comparator'] = 'acl_group_id';
+                $parameters['relationObject']['table'] = 'acl_group_contactgroups_relations';
+                $parameters['relationObject']['field'] = 'acl_group_id';
+                $parameters['relationObject']['comparator'] = 'cg_cg_id';
+                break;
         }
         
         return $parameters;
+    }
+
+    /**
+     *
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array(), $options = array())
+    {
+        global $centreon;
+        $items = array();
+
+        # get list of authorized contactgroups
+        if (!$centreon->user->access->admin) {
+            $cgAcl = $centreon->user->access->getContactGroupAclConf(
+                array(
+                    'fields'  => array('cg_id'),
+                    'get_row' => 'cg_id',
+                    'keys' => array('cg_id'),
+                    'conditions' => array(
+                        'cg_id' => array(
+                            'IN',
+                            $values
+                        )
+                    )
+                ),
+                false
+            );
+        }
+
+        $aElement = array();
+        if (is_array($values)) {
+            foreach ($values as $value) {
+                if (preg_match_all('/\[(\w+)\]/', $value, $matches, PREG_SET_ORDER)) {
+                    foreach ($matches as $match) {
+                        if (!in_array($match[1], $aElement)) {
+                            $aElement[] = $match[1];
+                        }
+                    }
+                } else {
+                    if (!in_array($value, $aElement)) {
+                        $aElement[] = $value;
+                    }
+                }
+            }
+        }
+
+        $explodedValues = implode(',', $aElement);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected contactgroups
+        $query = "SELECT cg.cg_id, cg.cg_name, cg.cg_ldap_dn, ar.ar_id, ar.ar_name FROM contactgroup cg "
+            . "LEFT JOIN auth_ressource ar ON cg.ar_id = ar.ar_id "
+            . "WHERE cg.cg_id IN (" . $explodedValues . ") "
+            . "ORDER BY cg.cg_name ";
+
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            if (isset($row['cg_ldap_dn']) && $row['cg_ldap_dn'] != "") {
+                $cgId = '[' . $row['ar_id'] . ']' . $row['cg_name'];
+                $cgName = $this->formatLdapContactgroupName($row['cg_name'], $row['ar_name']);
+            } else {
+                $cgId = $row['cg_id'];
+                $cgName = $row['cg_name'];
+            }
+
+            # hide unauthorized contactgroups
+            $hide = false;
+            if (!$centreon->user->access->admin && !in_array($cgId, $cgAcl)) {
+                $hide = true;
+            }
+
+            $items[] = array(
+                'id' => $cgId,
+                'text' => $cgName,
+                'hide' => $hide
+            );
+        }
+
+        return $items;
     }
 }

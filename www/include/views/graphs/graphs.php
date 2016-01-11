@@ -54,7 +54,14 @@
 	if ($gmtObj->checkGMTStatus($pearDB)) {
         $useGmt = 1;
 	    $userGmt = $oreon->user->getMyGMT();
-	    $currentServerMicroTime += $userGmt * 60 * 60 * 1000;
+        $gmtObj->setMyGMT($userGmt);
+        $sMyTimezone = $gmtObj->getMyTimezone();
+        $sDate = new DateTime();
+        if (empty($sMyTimezone)) {
+            $sMyTimezone = date_default_timezone_get();
+        }
+        $sDate->setTimezone(new DateTimeZone($sMyTimezone));
+        $currentServerMicroTime = $sDate->getTimestamp();
 	}
 
 	/*
@@ -70,12 +77,6 @@
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 	/*
-	 * Add Quick Search
-	 */
-	$FlagSearchService = 1;
-	require_once "./include/common/quickSearch.php";
-
-	/*
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
@@ -83,6 +84,10 @@
 
 	$openid = '0';
 	$open_id_sub = '0';
+    
+    $defaultServicesForGraph = array();
+    $defaultHostsForGraph = array();
+    $defaultMetasForGraph = array();
 
 	if (isset($_GET["openid"])){
 		$openid = $_GET["openid"];
@@ -110,47 +115,51 @@
 	$id 	= getGetPostValue("id");
 	$id_svc = getGetPostValue("svc_id");
 	$meta 	= getGetPostValue("meta");
+    $search = getGetPostValue("search");
+    $search_service = getGetPostValue("search_service");
+    
+    $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'maxGraphPerformances' LIMIT 1");
+    $data = $DBRESULT->fetchRow();
+    $graphsPerPage = $data['value'];
+    if (empty($graphsPerPage)) {
+        $graphsPerPage = '5';
+    }
 
-	if (isset($id_svc) && $id_svc){
-		$id = "";
-		$tab_svcs = explode(",", $id_svc);
-		foreach($tab_svcs as $svc){
-			$tmp = explode(";", $svc);
-			if (!isset($tmp[1])) {
-				$id .= "HH_" . getMyHostID($tmp[0]).",";
-			}
-			if ((isset($tmp[0]) && $tmp[0] == "") || $meta == 1) {
-				$DBRESULT = $pearDB->query("SELECT `meta_id` FROM meta_service WHERE meta_name = '".$tmp[1]."'");
-				$res = $DBRESULT->fetchRow();
-				$DBRESULT->free();
-				$id .= "MS_".$res["meta_id"].",";
-				$meta = 1;
-			} else {
-				if (isset($tmp[1]))
-					$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
-			}
-		}
-	}
-
-	$id_log = "'RR_0'";
-	$multi = 0;
-	$lockTree = 0;
-	$focusUrl = "";
-	if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
-		$mode = 0;
-		$lockTree = 1;
-		$id_log = "'".$id."'";
-		$multi = 1;
-		$focusUrl = "?p=$p&id=$id&id_svc=$id_svc&meta=$meta&mode=0&lock_tree=0";
-	} else {
-		$mode = 1;
-		$id = 1;
-	}
-
-	if (isset($_GET['lock_tree'])) {
-	    $lockTree = $_GET['lock_tree'];
-	}
-
+    if (isset($id_svc) && $id_svc){
+        $id = "";
+        $grId = '';
+        $tab_svcs = explode(",", $id_svc);
+        foreach($tab_svcs as $svc){
+            $tmp = explode(";", $svc);
+            if (!isset($tmp[1])) {
+                $id .= "HH_" . getMyHostID($tmp[0]).",";
+                $grId .= getMyHostID($tmp[0]);
+            }
+            if ((isset($tmp[0]) && $tmp[0] == "") || $meta == 1) {
+                $DBRESULT = $pearDB->query("SELECT `meta_id` FROM meta_service WHERE meta_name = '".$tmp[1]."'");
+                $res = $DBRESULT->fetchRow();
+                $DBRESULT->free();
+                $id .= "MS_".$res["meta_id"].",";
+                $meta = 1;
+                $svc = $tmp[1];
+                $grId .= $res["meta_id"];
+            } else {
+                if (isset($tmp[1])) {
+                    $id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
+                    $grId .= getMyHostID($tmp[0]) . '-' .  getMyServiceID($tmp[1], getMyHostID($tmp[0]));
+                }
+            }
+            
+            if (strpos($grId, '-')) {
+                $defaultServicesForGraph[$svc] = $grId;
+            } elseif ($meta == 1) {
+                $defaultMetasForGraph[$svc] = $grId;
+            } else {
+                $defaultHostsForGraph[$svc] = $grId;
+            }
+        }
+    }
+    
 	/* Get Period if is in url */
 	$period_start = 'undefined';
 	$period_end = 'undefined';
@@ -160,7 +169,7 @@
 	if (isset($_REQUEST['end']) && is_numeric($_REQUEST['end'])) {
 	    $period_end = $_REQUEST['end'];
 	}
-
+ 
 	/*
 	 * Form begin
 	 */
@@ -190,7 +199,38 @@
 	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "class"=>"timepicker", "size"=>5));
 	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>10));
 	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepicker", "size"=>5));
-	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));
+	$form->addElement('button', 'graph', _("Apply Period"), array("onclick"=>"apply_period()", "class"=>"btc bt_success"));
+    $form->addElement('text', 'search', _('Host'));
+    $form->addElement('text', 'search_service', _('Service'));
+    
+    // Service Selector
+    $attrServices = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list&g=1',
+        'defaultDataset' => $defaultServicesForGraph,
+        'multiple' => true,
+    );
+    $serviceSelector = $form->addElement('select2', 'service_selector', _("Services"), array(), $attrServices);
+    $serviceSelector->setDefaultFixedDatas();
+    
+    $attrHosts = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+        'defaultDataset' => $defaultHostsForGraph,
+        'multiple' => true,
+    );
+    $hostSelector = $form->addElement('select2', 'host_selector', _("Hosts"), array(), $attrHosts);
+    $hostSelector->setDefaultFixedDatas();
+
+    $attrMetas = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_meta&action=list',
+        'defaultDataset' => $defaultMetasForGraph,
+        'multiple' => true,
+    );
+    $metaSelector = $form->addElement('select2', 'metaservice_selector', _("Metaservices"), array(), $attrMetas);
+    $metaSelector->setDefaultFixedDatas();
+    
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
@@ -201,198 +241,132 @@
 	$tpl->assign('to', _("to"));
 	$tpl->assign('Apply', _("Apply"));
 	$tpl->display("graphs.ihtml");
+    
+    $multi = 1;
 ?>
+<script type="text/javascript" src="./include/common/javascript/moment-with-locales.js"></script>
+<script type="text/javascript" src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
 <script type="text/javascript">
     var gmt = <?php echo $userGmt ? $userGmt : 0;?>;
     var useGmt = <?php echo $useGmt;?>;
-    var currentMicroTime = <?php echo number_format($currentServerMicroTime, 15, '.', '');?>;
-    var css_file 	= './include/common/javascript/codebase/dhtmlxtree.css';
-    var headID 		= document.getElementsByTagName("head")[0];
-    var cssNode 	= document.createElement('link');
-    cssNode.type 	= 'text/css';
-    cssNode.rel 	= 'stylesheet';
-    cssNode.href 	= css_file;
-    cssNode.media 	= 'screen';
+    var sMyTimezone  = '<?php echo $sMyTimezone;?>';
+    var currentMicroTime = <?php echo $currentServerMicroTime;?>;
+    var $hostsServicesForGraph = [];
 
     /* Period if in URL */
     var period_start = <?php echo $period_start; ?>;
     var period_end = <?php echo $period_end; ?>;
 
-    headID.appendChild(cssNode);
-
 	var multi 	= <?php echo $multi; ?>;
-  	var _menu_div = document.getElementById("menu_40201");
-
-	tree = new dhtmlXTreeObject("menu_40201","100%","100%","1");
-    tree.setImagePath("./img/icones/csh_vista/");
-
-    //link tree to xml
-    tree.setXMLAutoLoading("./include/views/graphs/GetXmlTree.php");
-
-    //load first level of tree
-    tree.loadXML("./include/views/graphs/GetXmlTree.php?<?php if (isset($meta) && $meta) print "meta=$meta"."&"; ?><?php if (isset($search) && $search) print "search=$search"."&"; ?><?php if (isset($search_service) && $search_service) print "search_service=$search_service"."&"; ?>id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>&lock_tree=<?php echo $lockTree;?>");
-
-	// system to reload page after link with new url
-	//set function object to call on node select
-	tree.attachEvent("onClick", onNodeSelect)
-
-	//set function object to call on node select
-	tree.attachEvent("onDblClick", onDblClick)
-
-	//set function object to call on node select
-	tree.attachEvent("onCheck",onCheck)
-
-	//see other available event handlers in API documentation
-	tree.enableDragAndDrop(0);
-	tree.enableTreeLines(false);
-	tree.enableCheckBoxes(true);
-	tree.enableThreeStateCheckboxes(true);
-
-	// linkBar to log/reporting/graph/ID_card
-	function getCheckedList(tree){
-		return tree.getAllChecked();
-	}
-
-	function onDblClick(nodeId){
-		tree.openAllItems(nodeId);
-		return(false);
-	}
-
-	function onCheck(nodeId){
-		multi = 1;
-		if (document.getElementById('openid'))
-			document.getElementById('openid').innerHTML = tree.getAllChecked();
-		graph_4_host(tree.getAllChecked(), 1);
-	}
-
-	function onNodeSelect(nodeId){
-		multi = 0;
-
-		tree.openItem(nodeId);
-		if (nodeId.substring(0,2) == 'HS' || nodeId.substring(0,2) == 'MS'){
-			var graphView4xml = document.getElementById('graphView4xml');
-			graphView4xml.innerHTML="";
-			graph_4_host(nodeId, null);
-		}
-	}
-
-	// it's fake methode for using ajax system by default
+  	
+	// it's a fake method for using ajax system by default
 	function mk_pagination(){;}
 	function mk_paginationFF(){;}
 	function set_header_title(){;}
-	function apply_period()	{
-		var openid = document.getElementById('openid').innerHTML;
-		if (openid.indexOf(',') != -1) {
-			multi = 1;
-		}
-		if (multi == 0) {
-			openid = openid.replace('HS_', 'SS_');
-		}
-		graph_4_host(openid, multi);
+	function apply_period()
+    {
+        launchGraph();
 	}
 
-function form2ctime(dpart, tpart) {
+    function form2ctime(dpart, tpart)
+    {
         // dpart : MM/DD/YYYY
         // tpart : HH:mm
         var dparts = dpart.split("/");
-        var tparts = tpart.split(":");
-        return new Date(dparts[2], dparts[0]-1, dparts[1], tparts[0], tparts[1], 0).getTime() - (new Date().getTimezoneOffset() * 60 * 1000);
-}
+        return moment.tz(dparts[2]+"-"+dparts[0]+"-"+dparts[1]+" "+tpart, sMyTimezone).unix();
 
-function ctime2date(ctime) {
-        var date = new Date(ctime + (new Date().getTimezoneOffset() * 60 * 1000));
-        return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear();
-}
+    }
 
-function ctime2time(ctime) {
-	var _zero_hour = '';
-	var _zero_min = '';
-    var date = new Date(ctime + (new Date().getTimezoneOffset() * 60 * 1000));
-	if (date.getHours() <= 9) { _zero_hour = '0'; }
-	if (date.getMinutes() <= 9) { _zero_min = '0'; }
-        return _zero_hour + date.getHours() + ":" + _zero_min + date.getMinutes();
-}
+    function ctime2date(ctime)
+    {
+        return moment.tz(moment.unix(ctime), sMyTimezone).format("MM/DD/YYYY");
+    }
 
-function prevPeriod() {
-	if (!document.FormPeriod) {
-	    return;
-	}
+    function ctime2time(ctime) 
+    {
+        return moment.tz(moment.unix(ctime), sMyTimezone).format("HH:mm");
+    }
+
+    function prevPeriod() 
+    {
+        if (!document.FormPeriod) {
+            return;
+        }
         var start;
         var end;
         var period;
         if (document.FormPeriod.period.value) {
-                var now = currentMicroTime;
-                period = document.FormPeriod.period.value * 1000;
-                start = now - period;
+            var now = currentMicroTime;
+            period = document.FormPeriod.period.value;
+            start = now - period;
         } else {
-                end   = form2ctime(document.FormPeriod.EndDate.value, document.FormPeriod.EndTime.value);
-                start = form2ctime(document.FormPeriod.StartDate.value, document.FormPeriod.StartTime.value);
-                period = end - start;
+            end   = form2ctime(document.FormPeriod.EndDate.value, document.FormPeriod.EndTime.value);
+            start = form2ctime(document.FormPeriod.StartDate.value, document.FormPeriod.StartTime.value);
+            period = end - start;
         }
 
         end = start;
         start = start - period;
 
-		document.FormPeriod.period.value = "";
+        document.FormPeriod.period.value = "";
         document.FormPeriod.StartDate.value = ctime2date(start);
         document.FormPeriod.StartTime.value = ctime2time(start);
         document.FormPeriod.EndDate.value = ctime2date(end);
         document.FormPeriod.EndTime.value = ctime2time(end);
         apply_period();
-}
+    }
 
-function nextPeriod() {
-	if (!document.FormPeriod) {
-	    return;
-	}
+    function nextPeriod()
+    {
+        if (!document.FormPeriod) {
+            return;
+        }
         var start;
         var end;
         var period;
         if (document.FormPeriod.period.value) {
-                var now = currentMicroTime;
-                period = document.FormPeriod.period.value * 1000;
-                end = now;
+            var now = currentMicroTime;
+            period = document.FormPeriod.period.value;
+            end = now;
         } else {
-                end   = form2ctime(document.FormPeriod.EndDate.value, document.FormPeriod.EndTime.value);
-                start = form2ctime(document.FormPeriod.StartDate.value, document.FormPeriod.StartTime.value);
-                period = end - start;
+            end   = form2ctime(document.FormPeriod.EndDate.value, document.FormPeriod.EndTime.value);
+            start = form2ctime(document.FormPeriod.StartDate.value, document.FormPeriod.StartTime.value);
+            period = end - start;
         }
 
         start = end;
         end = end + period;
 
-	document.FormPeriod.period.value = "";
+        document.FormPeriod.period.value = "";
         document.FormPeriod.StartDate.value = ctime2date(start);
         document.FormPeriod.StartTime.value = ctime2time(start);
         document.FormPeriod.EndDate.value = ctime2date(end);
         document.FormPeriod.EndTime.value = ctime2time(end);
         apply_period();
-}
+    }
 
 	// Period
 	var currentTime = currentMicroTime;
 	var period ='';
 
-	var _zero_hour = '';
-	var _zero_min = '';
 	var StartDate = '';
 	var EndDate = '';
 	var StartTime = '';
 	var EndTime = '';
-	var ms_per_hour = 60 * 60 * 1000;
 
-	if (document.FormPeriod.period.value != "")	{
+	if (document.FormPeriod.period.value !== "") {
 		period = document.FormPeriod.period.value;
-	} else if (period_start != undefined && period_end != undefined) {
-		StartDate = ctime2date(period_start * 1000);
-		StartTime = ctime2time(period_start * 1000);
-		EndDate = ctime2date(period_end * 1000);
-		EndTime = ctime2time(period_end * 1000);
+	} else if (period_start !== undefined && period_end !== undefined) {
+        StartDate = ctime2date(period_start);
+		StartTime = ctime2time(period_start);
+		EndDate = ctime2date(period_end);
+		EndTime = ctime2time(period_end);
 	} else {
 		EndDate   = ctime2date(currentTime);
 		EndTime   = ctime2time(currentTime);
-		StartDate = ctime2date(currentTime-12*ms_per_hour);
-		StartTime = ctime2time(currentTime-12*ms_per_hour);
+
+        StartDate = ctime2date(moment(moment.unix(currentTime)).subtract(12, 'hours').unix());
+        StartTime = ctime2time(moment(moment.unix(currentTime)).subtract(12, 'hours').unix());
 	}
 
 	if (document.FormPeriod) {
@@ -402,7 +376,8 @@ function nextPeriod() {
 		document.FormPeriod.EndTime.value = EndTime;
 	}
 
-	function graph_4_host(id, multi, l_mselect, pStart, pEnd, metrics)	{
+	function graph_4_host(id, multi, target, l_mselect, pStart, pEnd, metrics)
+    {
 		if (!multi)
 			multi = 0;
 		// no metric selection : default
@@ -410,10 +385,9 @@ function nextPeriod() {
 			l_select = 0;
 		}
 
-
 		if (pStart && pEnd){
 			period = pEnd - pStart;
-		} else if (document.FormPeriod.period.value != "") {
+		} else if (document.FormPeriod.period.value !== "") {
 			period = document.FormPeriod.period.value;
 		} else if (document.FormPeriod) {
 			period = '';
@@ -423,12 +397,16 @@ function nextPeriod() {
 			EndTime = document.FormPeriod.EndTime.value;
 		}
 
-		if (StartTime == "") {
+		if (StartTime === "") {
        		StartTime = "00:00";
         }
-        if (EndTime == "") {
+        if (EndTime === "") {
         	EndTime = "23:59";
         }
+        
+        // Get search information
+        /*var search = encodeURI(document.FormPeriod.search.value);
+        var search_service = encodeURI(document.FormPeriod.search_service.value);*/
 
 		// Metrics
 		var _metrics ="";
@@ -453,7 +431,7 @@ function nextPeriod() {
 
 		// Templates
 		var _tpl_id = 1;
-		if (document.formu2 && document.formu2.template_select && document.formu2.template_select.value != ""){
+		if (document.formu2 && document.formu2.template_select && document.formu2.template_select.value !== ""){
 			_tpl_id = document.formu2.template_select.value;
 		}
 
@@ -464,7 +442,9 @@ function nextPeriod() {
 		}
 
 		var _status = 0;
-		if (document.formu2 && document.formu2.status && document.formu2.status.checked)	{
+
+		var $elem = jQuery('#displayStatus');
+		if($elem.prop('checked')) {
 			_status = 1;
 		}
 
@@ -478,27 +458,17 @@ function nextPeriod() {
 			_critical = 1;
 		}
 
-		tree.selectItem(id);
 		var proc = new Transformation();
 		var _addrXSL = "./include/views/graphs/graph.xsl";
-		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; if ($focusUrl) print "&focusUrl=".urlencode($focusUrl);?>';
-
+		var _addrXML = './include/views/graphs/GetXmlGraph.php?target='+target+'&multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'<?php if ($focusUrl) print "&focusUrl=".urlencode($focusUrl);?>';
 		proc.setXml(_addrXML);
 		proc.setXslt(_addrXSL);
-		proc.transform("graphView4xml");
+		proc.transform(target);
 		list_img = new Hash();
 	}
 
 	jQuery(function () {
-	    // Here is your precious function
-	    // You can call as many functions as you want here;
 	    myOnloadFunction1();
-
-	    if (period_start != undefined && period_end != undefined) {
-	    	graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>, undefined, period_start, period_end);
-	    } else {
-			graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
-	    }
 	});
 
     // Your precious function
@@ -516,7 +486,7 @@ function nextPeriod() {
      *
      * @var img_name The tag name
      */
-    function addGraphZoom(img_name) {
+    function addGraphZoom(img_name, target) {
         if ($(img_name).ancestors()[0].match('a')) {
         	$(img_name).ancestors()[0].setAttribute('onClick', 'return false;');
         }
@@ -528,18 +498,18 @@ function nextPeriod() {
     			var basename = self.gsub(/(.*)__M:.*/, function(matches){
         			return(matches[1] + "__M:");
     			});
-    			$$("img[id^=" + basename + "]").each(function(el) {
-        			if (el.id != self) {
+
+    			$$("img[id^='" + basename + "']").each(function(el) {
+        			if (el.id !== self) {
             			var elHeight = el.height;
-            			list_img.get(el.id).setArea(coords.x1, 0, coords.x2, elHeight);
+                        if (list_img.get(el.id) !== undefined)
+                            list_img.get(el.id).setArea(coords.x1, 0, coords.x2, elHeight);
         			}
     			});
         	}
     	}));
     	var parent = $(img_name).ancestors()[0];
     	parent.style.setProperty("margin", "0 auto", "");
-    	//parent.style.setProperty("margin-right", "auto", "");
-    	//parent.style.setProperty("margin-left", "auto", "");
     }
 
 
@@ -548,20 +518,22 @@ function nextPeriod() {
 	 *
      * @var img_name The tag name
      */
-    function toGraphZoom(img_name) {
+    function toGraphZoom(img_name, target)
+    {
         mutli = 0;
     	var s_multi = true;
-        if ($$("img[id=" + img_name + "]").size() == 0) {
+        if ($$("img[id=" + img_name + "]").size() === 0) {
             var s_multi = false;
             var tmplist = $$("img[id^=" + img_name + "]");
-            if (tmplist.size() == 0) {
+            if (tmplist.size() === 0) {
                 return(false);
             }
             img_name = tmplist[0].id;
         }
         var coords = list_img.get(img_name).areaCoords;
         var img_url = $(img_name).src.parseQuery();
-        var period = (img_url.end * 1000) - (img_url.start * 1000);
+
+        var period = (img_url.end) - (img_url.start);
         var zoneGraph = $(img_name).width - margeLeftGraph - margeRightGraph;
         if (coords.x1 < margeLeftGraph || coords.x1 > ($(img_name).width - margeRightGraph)) {
             return(false);
@@ -569,18 +541,13 @@ function nextPeriod() {
         if (coords.x2 < margeLeftGraph || coords.x2 > ($(img_name).width - margeRightGraph)) {
             return(false);
         }
-        var start = parseInt((img_url.start * 1000) + ((coords.x1 - margeLeftGraph) * period / ($(img_name).width - margeLeftGraph - margeRightGraph)));
-        var end = parseInt((img_url.start * 1000) + ((coords.x2 - margeLeftGraph) * period / ($(img_name).width - margeLeftGraph - margeRightGraph)));
 
-        if (useGmt) {
-            start += gmt * 60 * 60 * 1000;
-            end += gmt * 60 * 60 * 1000;
-        }
-        //@todo: this is a quick & dirty fix for countering ctime2date()
-        gmtSec = new Date().getTimezoneOffset() * 60 * 1000 * -1;
-        start += gmtSec;
-        end += gmtSec;
+        var start = parseInt(parseInt(img_url.start) + ((parseInt(coords.x1) - margeLeftGraph) * period / (parseInt($(img_name).width) - margeLeftGraph - margeRightGraph)));
+        var end = parseInt(parseInt(img_url.start) + (parseInt(coords.x2) - margeLeftGraph) * period / (parseInt($(img_name).width) - margeLeftGraph - margeRightGraph));
 
+        start = moment.tz(moment.unix(start), sMyTimezone).unix();
+        end = moment.tz(moment.unix(end), sMyTimezone).unix();
+           
         var id = img_name.split('__')[0];
         id = id.replace('HS_', 'SS_');
 
@@ -589,24 +556,153 @@ function nextPeriod() {
 		document.FormPeriod.EndDate.value = ctime2date(end);
 		document.FormPeriod.StartTime.value = ctime2time(start);
 		document.FormPeriod.EndTime.value = ctime2time(end);
-		if (img_name.indexOf('__M:') != -1 && s_multi) {
+		if (img_name.indexOf('__M:') !== -1 && s_multi) {
             metrics = img_name.substring(img_name.indexOf('__M:') + 4);
-            graph_4_host(id, 0, null, "", "", metrics);
+            graph_4_host(id, 0, target, null, "", "", metrics);
             return false;
         }
-        graph_4_host(id, 0);
+
+        graph_4_host(id, 0, target);
         return false;
     }
 
-    function switchZoomGraph(tag_name) {
-        $("zoom_" + tag_name).setAttribute("onClick", "toGraphZoom('" + tag_name + "'); return false;");
-        if ($(tag_name) != null) {
-            if (list_img.get(tag_name) == undefined) {
-        		addGraphZoom(tag_name);
+    function switchZoomGraph(tag_name, target)
+    {
+        $("zoom_" + tag_name).setAttribute("onClick", "toGraphZoom('" + tag_name + "', '"+target+"'); return false;");
+        if ($(tag_name) !== null) {
+            if (list_img.get(tag_name) === undefined) {
+        		addGraphZoom(tag_name, target);
             }
         	return false;
         }
-        $$("img[id^=" + tag_name + "]").each(function(el) { if (list_img.get(el.id) == undefined) { addGraphZoom(el.id); } });
+        $$("img[id^=" + tag_name + "]").each(function(el) { if (list_img.get(el.id) === undefined) { addGraphZoom(el.id, target); } });
         return false;
+    }
+
+    function launchGraph() {
+        $hostsServicesForGraph = [];
+        $hostsServices = '';
+
+        getListOfServices();
+        getListOfHosts();
+        getListOfMetaservices();
+
+       $nbGraphs = <?php echo $graphsPerPage ?>;
+       $nbPages = Math.ceil($hostsServicesForGraph.length / $nbGraphs);
+
+       insertGraph($nbGraphs,0);
+
+       jQuery("#graph_pagination").jPaginator({
+           nbPages:$nbPages,
+           selectedPage: 1,
+           overBtnLeft:'#test1_o_left',
+           nbVisible: 10,
+           length:1,
+           withSlider: true,
+           minSlidesForSlider: 2,
+           overBtnRight:'#test1_o_right',
+           maxBtnLeft:'#test1_m_left',
+           maxBtnRight:'#test1_m_right',
+           onPageClicked: function(a,num) {
+               $startGraph = ($nbGraphs * (num-1));
+               insertGraph($nbGraphs,$startGraph);
+           }
+       });
+    }
+
+    function insertGraph(nbGraphs, startGraph) {
+       $parent = jQuery('.graphZone');
+       $parent.empty();
+       $cpt = 0;
+       $endGraph = startGraph + nbGraphs;
+       jQuery.each($hostsServicesForGraph, function(index, value) {
+           if(index >= startGraph && index < $endGraph) {
+               if ($cpt < nbGraphs) {
+                   $cpt++;
+                   $hostsServices = value;
+                   $targetDiv = "graph_wrapper" + $cpt;
+                   $a = jQuery('<div>').attr('id', $targetDiv);
+                   $parent.append($a);
+                   graph_4_host($hostsServices, 1, $targetDiv);
+               }
+           }
+        });
+    }
+
+    /* Display Status Checkbox */
+	$displayStatus = jQuery('#displayStatus');
+    $displayStatus.on('click',function(){
+    	launchGraph();
+    });
+
+    function getListOfServices() {
+        $selectedOptions = jQuery("#service_selector").val();
+        
+        if ($selectedOptions !== null) {
+            jQuery.each($selectedOptions, function(index, value) {
+                $splittedValue = value.split('-');
+                finalValue = 'HS_' + $splittedValue[1] + '_' + $splittedValue[0];
+                if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
+                    $hostsServicesForGraph.push(finalValue);
+                }
+            });
+        }
+    }
+    
+    function getListOfHosts() {
+        $selectedOptions = jQuery("#host_selector").val();
+        
+        // Get all connected services
+        if ($selectedOptions !== null) {
+            jQuery.each($selectedOptions, function(index, value) {
+                jQuery.ajax({
+                    url: './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=services&id=' + value + '&g=1',
+                    async: false,
+                    success: function(data) {
+                        jQuery.each(data, function(id, description) {
+                            finalValue = 'HS_' + id + '_' + value;
+                            if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
+                                $hostsServicesForGraph.push(finalValue);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+    }
+
+    function getListOfMetaservices() {
+        $selectedOptions = jQuery("#metaservice_selector").val();
+
+        if ($selectedOptions !== null) {
+            jQuery.each($selectedOptions, function(index, value) {
+                finalValue = 'MS_' + value;
+                if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
+                    $hostsServicesForGraph.push(finalValue);
+                }
+            });
+        }
+    }
+    
+    jQuery("#service_selector").on("change", function() {
+        launchGraph();
+    });
+    jQuery("#service_selector").trigger("change");
+    
+    jQuery("#host_selector").on("change", function() {
+        launchGraph();
+    });
+    jQuery("#host_selector").trigger("change");
+
+    jQuery("#metaservice_selector").on("change", function() {
+        launchGraph();
+    });
+    jQuery("#metaservice_selector").trigger("change");
+    
+    function resetFields(fields)
+    {
+        for(i=0;i<fields.length;i++ ) {
+            fields[i].value="";
+        }
     }
 </script>

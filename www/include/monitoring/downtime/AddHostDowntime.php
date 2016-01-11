@@ -33,12 +33,12 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
 	exit();
 }
 
-include_once $centreon_path."www/class/centreonGMT.class.php";
-include_once $centreon_path."www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_."www/class/centreonDB.class.php";
 
 /*
  * Init GMT class
@@ -88,22 +88,22 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		 */
 		$acldb = $oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO;
 		$hg = array();
-                    if ($oreon->user->access->admin) {
-                        $query = "SELECT hg_id, hg_name
-                                  FROM hostgroup
-                                  WHERE hg_activate = '1' 
-                                  ORDER BY hg_name";
-                    } else {
-                        $query = "SELECT DISTINCT hg.hg_id, hg.hg_name " .
-                                 "FROM hostgroup hg, acl_resources_hg_relations arhr " .
-                                 "WHERE hg.hg_id = arhr.hg_hg_id " .
-                                 "AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
-                                 "AND hg.hg_activate = '1' ".
-                                 "AND hg.hg_id in (SELECT hostgroup_hg_id
-                                                   FROM hostgroup_relation
-                                                   WHERE host_host_id IN (".$oreon->user->access->getHostsString("ID", $acldb).")) " .
-                                 "ORDER BY hg.hg_name";
-                    }
+        if ($oreon->user->access->admin) {
+            $query = "SELECT hg_id, hg_name
+                      FROM hostgroup
+                      WHERE hg_activate = '1' 
+                      ORDER BY hg_name";
+        } else {
+            $query = "SELECT DISTINCT hg.hg_id, hg.hg_name " .
+                     "FROM hostgroup hg, acl_resources_hg_relations arhr " .
+                     "WHERE hg.hg_id = arhr.hg_hg_id " .
+                     "AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
+                     "AND hg.hg_activate = '1' ".
+                     "AND hg.hg_id in (SELECT hostgroup_hg_id
+	                   FROM hostgroup_relation
+                       WHERE host_host_id IN (".$oreon->user->access->getHostsString("ID", $acldb).")) " .
+	                 "ORDER BY hg.hg_name";
+        }
 		$res = $pearDB->query($query);
 		while ($row = $res->fetchRow()) {
 		    $hg[$row['hg_id']] = $row['hg_name'];
@@ -133,6 +133,17 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
         $host_or_hg[] = HTML_QuickForm::createElement('radio', 'host_or_hg', null, _("Hostgroup"), '0', array('id' => 'host_or_hg_hg', 'onclick' => "toggleParams('hostgroup');"));
         $form->addGroup($host_or_hg, 'host_or_hg', _("Select a downtime type"), '&nbsp;');
 
+        
+        // uncomment this section : the user can choose to set a downtime based on the host time or the centreon user time.
+        /*
+        $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
+        $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
+        $form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');        
+        $form->setDefaults(array('host_or_centreon_time' => '0'));   
+        */
+        
+        
+        
 	    $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts);
 	    $selHg = $form->addElement('select', 'hostgroup_id', _("Hostgroup"), $hg);
 	    $chbx = $form->addElement('checkbox', 'persistant', _("Fixed"), null, array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()'));
@@ -183,8 +194,9 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 
 	  	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
 	  	    $values = $form->getSubmitValues();
-			if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array(0, 1)))
-				$_POST["persistant"] = 0;
+			if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array('0', '1'))) {
+                            $_POST["persistant"] = '0';
+                        }
 			if (!isset($_POST["comment"]))
 				$_POST["comment"] = 0;
 			$_POST["comment"] = str_replace("'", " ", $_POST['comment']);
@@ -217,6 +229,7 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
                         break;
                 }
 		    }
+            isset($_POST['host_or_centreon_time']['host_or_centreon_time']) && $_POST['host_or_centreon_time']['host_or_centreon_time'] ? $host_or_centreon_time = $_POST['host_or_centreon_time']['host_or_centreon_time'] : $host_or_centreon_time = "0";
             
 		    $dt_w_services = false;
 		    if ($values['with_services']['with_services'] == 1) {
@@ -233,7 +246,8 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
                         $_POST["end"].' '.$_POST['end_time'], 
                         $_POST["persistant"], 
                         $duration, 
-                        $dt_w_services
+                        $dt_w_services,
+                        $host_or_centreon_time
                 );
 		    } else {
 		        /*
@@ -251,12 +265,13 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 							$_POST["end"] . ' ' . $_POST["end_time"], 
 							$_POST["persistant"], 
 							$duration, 
-							$dt_w_services
+							$dt_w_services,
+                            $host_or_centreon_time
 						);
 		            }
 		        }
 		    }
-			require_once("viewHostDowntime.php");
+			require_once("listDowntime.php");
 	    } else {
 			/*
 			 * Smarty template Init

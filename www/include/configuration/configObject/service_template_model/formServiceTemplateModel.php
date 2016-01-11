@@ -37,8 +37,8 @@ if (!isset($centreon)) {
     exit();
  }
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 function myDecodeSvTP($arg) {
     $arg = str_replace('#BR#', "\\n", $arg);
@@ -57,7 +57,7 @@ if (($o == "c" || $o == "w") && $service_id) {
     if (isset($lockedElements[$service_id])) {
         $o = "w";
     }            
-    $DBRESULT = $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM service LEFT JOIN extended_service_information esi ON esi.service_service_id = service_id WHERE service_id = '".$service_id."'  LIMIT 1");
     // Set base value
     $service_list = $DBRESULT->fetchRow();
     $service = array_map("myDecodeSvTP", $service_list);
@@ -162,27 +162,6 @@ if (($o == "c" || $o == "w") && $service_id) {
     }
     $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId);
 
-    foreach($aMacros as $key=>$macro){
-        switch($macro['source']){
-            case 'direct' : 
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'red');
-                break;
-            case 'fromTpl' :
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'blue');
-                break;
-            case 'fromCommand' :
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'green');
-                break;
-            case 'fromService' :
-                $aMacros[$key]['style'][] = array('prop' => 'background-color', 'value' => 'orange');
-                break;
-            default :
-                break;
-        }
-    }
-    
-    
-    
  }
 
 /*
@@ -334,51 +313,67 @@ $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonTimeperiod'
 );
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonContact'
 );
 $attrContactgroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonContactgroup'
 );
 $attrCommands = array(
     'datasourceOrigin' => 'ajax',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonCommand'
 );
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonHost'
 );
 $attrServicetemplates = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonServicetemplates'
 );
 $attrServicegroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonServicegroups'
 );
 $attrServicecategories = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonServicecategories'
 );
 $attrTraps = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_trap&action=list',
-    'multiple' => true
+    'multiple' => true,
+    'linkedObject' => 'centreonTraps'
 );
 $attrGraphtemplates= array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_graphtemplate&action=list',
-    'multiple' => false
+    'multiple' => false,
+    'linkedObject' => 'centreonGraphTemplate'
+);
+$attrHosttemplates = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=list',
+    'multiple' => true,
+    'linkedObject' => 'centreonHosttemplates'
 );
 
 #
@@ -409,15 +404,17 @@ $attrServicetemplate1 = array_merge(
     $attrServicetemplates,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=service&field=service_template_model_stm_id&id=' . $service_id)
 );
-$form->addElement('select2', 'service_template_model_stm_id', _("Service Template"), array(), $attrServicetemplate1);
+
+$serviceTplSelect = $form->addElement('select2', 'service_template_model_stm_id', _("Service Template"), array(), $attrServicetemplate1);
+$serviceTplSelect->addJsCallback('change', 'changeServiceTemplate(this.value)');
 
 $form->addElement('static', 'tplText', _("Using a Template Model allows you to have multi-level Template connections"));
 
-$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
+$attrHosttemplate1 = array_merge(
+    $attrHosttemplates,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=defaultValues&target=servicetemplates&field=service_hPars&id=' . $service_id)
+);
+$form->addElement('select2', 'service_hPars', _("Linked to host templates"), array(), $attrHosttemplate1);
 
 #
 ## Check information
@@ -495,7 +492,7 @@ $cloneSetMacro = array();
 $cloneSetMacro[] = $form->addElement(
     'text', 
     'macroInput[#index#]',
-    _('Macro name'),
+    _('Name'),
     array(
         'id' => 'macroInput_#index#',
         'size' => 25
@@ -504,7 +501,7 @@ $cloneSetMacro[] = $form->addElement(
 $cloneSetMacro[] = $form->addElement(
     'text', 
     'macroValue[#index#]',
-    _('Macro value'),
+    _('Value'),
     array(
         'id' => 'macroValue_#index#',
         'size' => 25
@@ -519,6 +516,10 @@ $cloneSetMacro[] = $form->addElement(
         'id' => 'macroPassword_#index#',
         'onClick' => 'javascript:change_macro_input_type(this, false)'
     )
+);
+
+$cloneSetMacro[] = $form->addElement(
+    'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
 );
 
 ##
@@ -555,8 +556,21 @@ if ($o != "mc") {
 /*
  * Additive
  */
-$form->addElement('checkbox', 'contact_additive_inheritance', _('Contact additive inheritance'));
-$form->addElement('checkbox', 'cg_additive_inheritance', _('Contact group additive inheritance'));
+ if ($o == "mc")	{
+    $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
+    $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
+    $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
+    $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"), '&nbsp;');
+    
+    $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Yes"), '1');
+    $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("No"), '0');
+    $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Default"), '2');
+    $form->addGroup($contactGroupAdditive, 'mc_cg_additive_inheritance', _("Contact group additive inheritance"), '&nbsp;');
+} else {
+    $form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
+    $form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
+ }
+
 
 /*
  *  Contacts
@@ -675,7 +689,6 @@ $attrTrap1 = array_merge(
 $form->addElement('select2', 'service_traps', _("Service Trap Relation"), array(), $attrTrap1);
 
 
-
 if ($o == "mc")	{
     $mc_mod_Pars = array();
     $mc_mod_Pars[] = HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, _("Incremental"), '0');
@@ -683,12 +696,7 @@ if ($o == "mc")	{
     $form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_Pars'=>'0'));
  }
-$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
-$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-$ams3->setElementTemplate($eTemplate);
-echo $ams3->getElementJs(false);
-
+ 
 ##
 ## Sort 3 - Data treatment
 ##
@@ -834,22 +842,9 @@ if ($o == "a") {
 $form->addElement('header', 'macro', _("Macros"));
 
 $form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
-$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
-$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
+$form->addElement('text', 'macroName', _("Name"), $attrsText2);
+$form->addElement('text', 'macroValue', _("Value"), $attrsText2);
 $form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
-
-$form->addElement('header', 'macro', _("Macros"));
-
-$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
-$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
-$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
-$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
-
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
 
 $form->addElement('hidden', 'service_id');
 $reg = $form->addElement('hidden', 'service_register');
@@ -907,13 +902,14 @@ $form->addRule("argChecker", _("You must either fill all the arguments or leave 
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 #
-##End of form definition
+## End of form definition
 #
 
 # Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path2, $tpl);
 
+unset($service['service_template_model_stm_id']);
 # Just watch a host information
 if ($o == "w")	{
     if (!$min && $centreon->user->access->page($p) != 2 && !isset($lockedElements[$service_id])) {
@@ -922,18 +918,18 @@ if ($o == "w")	{
     $form->setDefaults($service);
     $form->freeze();
  } elseif ($o == "c")	{ // Modify a service information
-     $subC = $form->addElement('submit', 'submitC', _("Save"));
-     $res = $form->addElement('reset', 'reset', _("Reset"));
+     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
      $form->setDefaults($service);
  } elseif ($o == "a")	{ // Add a service information
-     $subA = $form->addElement('submit', 'submitA', _("Save"));
-     $res = $form->addElement('reset', 'reset', _("Reset"));
+     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
  } elseif ($o == "mc")	{ // Massive Change
-     $subMC = $form->addElement('submit', 'submitMC', _("Save"));
-     $res = $form->addElement('reset', 'reset', _("Reset"));
+     $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
+     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
  }
 
-require_once $centreon_path.'www/include/configuration/configObject/service/javascript/argumentJs.php';
+require_once _CENTREON_PATH_.'www/include/configuration/configObject/service/javascript/argumentJs.php';
 
 $tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>1));
 $tpl->assign("sort1", _("Service Configuration"));
@@ -978,21 +974,16 @@ if ($form->validate() && $from_list_menu == false)	{
     } else {
         $o = null;
     }
-    if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
-    }
-    $form->freeze();
     $valid = true;
- } elseif ($form->isSubmitted()) {
+} elseif ($form->isSubmitted()) {
      $tpl->assign("argChecker", "<font color='red'>". $form->getElementError("argChecker") . "</font>");
- }
+}
 
-$action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+if ($valid) {
     require_once($path."listServiceTemplateModel.php");
  } else {
     # Apply a template definition
-    require_once $centreon_path . 'www/include/configuration/configObject/service/javascript/argumentJs.php';
+    require_once _CENTREON_PATH_ . 'www/include/configuration/configObject/service/javascript/argumentJs.php';
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -1010,6 +1001,8 @@ if ($valid && $action["action"]) {
     $tpl->assign("topdoc", _("Documentation"));
     $tpl->assign("seconds", _("seconds"));
     $tpl->assign('custom_macro_label', _('Custom macros'));
+    $tpl->assign('template_inheritance', _('Template inheritance'));
+    $tpl->assign('command_inheritance', _('Command inheritance'));
     $tpl->assign('cloneSetMacro', $cloneSetMacro);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
     $tpl->assign('isServiceTemplate', 1);

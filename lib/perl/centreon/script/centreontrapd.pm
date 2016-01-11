@@ -392,13 +392,25 @@ sub create_logdb_child {
         $self->{cdb}->set_inactive_destroy();
 
         close $self->{logdb_pipes}{writer};
-        my $centreon_db_centstorage = centreon::common::db->new(db => $self->{centreon_config}->{centstorage_db},
+	my $centreon_db_centstorage;
+	if ($self->{centreontrapd_config}->{mode} == 0) { 
+            $centreon_db_centstorage = centreon::common::db->new(db => $self->{centreon_config}->{centstorage_db},
                                                         host => $self->{centreon_config}->{db_host},
                                                         port => $self->{centreon_config}->{db_port},
                                                         user => $self->{centreon_config}->{db_user},
                                                         password => $self->{centreon_config}->{db_passwd},
                                                         force => 1,
                                                         logger => $self->{logger});
+        } elsif ($self->{centreontrapd_config}->{mode} == 1) {
+            $centreon_db_centstorage = centreon::common::db->new(db => $self->{centreontrapd_config}->{centreon_db},
+                                                        host => $self->{centreontrapd_config}->{db_host},
+                                                        port => $self->{centreontrapd_config}->{db_port},
+                                                        user => $self->{centreontrapd_config}->{db_user},
+                                                        password => $self->{centreontrapd_config}->{db_passwd},
+                                                        type => $self->{centreontrapd_config}->{db_type},
+                                                        force => 1,
+                                                        logger => $self->{logger});
+        }
         $centreon_db_centstorage->connect();
         
         my $centreontrapd_log = centreon::trapd::Log->new($self->{logger});
@@ -1109,7 +1121,9 @@ sub run {
     $self->{logger}->writeLogDebug("centreontrapd launched....");
     $self->{logger}->writeLogDebug("PID: $$");
 
-    $self->{cdb} = centreon::common::db->new(db => $self->{centreon_config}->{centreon_db},
+    if ($self->{centreontrapd_config}->{mode} == 0) {
+        $self->{logger}->writeLogError("Mode: central server");
+        $self->{cdb} = centreon::common::db->new(db => $self->{centreon_config}->{centreon_db},
                                              type => $self->{centreon_config}->{db_type},
                                              host => $self->{centreon_config}->{db_host},
                                              port => $self->{centreon_config}->{db_port},
@@ -1118,16 +1132,32 @@ sub run {
                                              force => 0,
                                              logger => $self->{logger});
 
-    if ($self->{centreontrapd_config}->{mode} == 0) {
         $self->{cmdFile} = $self->{centreon_config}->{VarLib} . "/centcore.cmd";
         $self->{csdb} = centreon::common::db->new(db => $self->{centreon_config}->{centstorage_db},
-                                                 host => $self->{centreon_config}->{db_host},
-                                                 port => $self->{centreon_config}->{db_port},
-                                                 user => $self->{centreon_config}->{db_user},
-                                                 password => $self->{centreon_config}->{db_passwd},
-                                                 force => 0,
-                                                 logger => $self->{logger});
-    } else {
+                                              host => $self->{centreon_config}->{db_host},
+                                              port => $self->{centreon_config}->{db_port},
+                                              user => $self->{centreon_config}->{db_user},
+                                              password => $self->{centreon_config}->{db_passwd},
+                                              force => 0,
+                                              logger => $self->{logger});
+    } elsif ($self->{centreontrapd_config}->{mode} == 1) {
+	$self->{logger}->writeLogError("Mode: poller");
+        $self->{cdb} = centreon::common::db->new(db => $self->{centreontrapd_config}->{centreon_db},
+                                             type => $self->{centreontrapd_config}->{db_type},
+                                             host => $self->{centreontrapd_config}->{db_host},
+                                             port => $self->{centreontrapd_config}->{db_port},
+                                             user => $self->{centreontrapd_config}->{db_user},
+                                             password => $self->{centreontrapd_config}->{db_passwd},
+                                             force => 0,
+                                             logger => $self->{logger});
+        $self->{csdb} = centreon::common::db->new(db => $self->{centreontrapd_config}->{centstorage_db},
+                                              type => $self->{centreontrapd_config}->{db_type},
+                                              host => $self->{centreontrapd_config}->{db_host},
+                                              port => $self->{centreontrapd_config}->{db_port},
+                                              user => $self->{centreontrapd_config}->{db_user},
+                                              password => $self->{centreontrapd_config}->{db_passwd},
+                                              force => 0,
+                                              logger => $self->{logger});
         # Dirty!!! Need to know the poller (not Dirty if you use SQLite database)
         my ($status, $sth) = $self->{cdb}->query("SELECT `command_file` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
         my @conf = $sth->fetchrow_array();

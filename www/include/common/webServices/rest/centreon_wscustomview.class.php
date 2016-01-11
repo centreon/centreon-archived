@@ -31,13 +31,10 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . 'www/class/centreonCustomView.class.php';
+
+require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
 require_once dirname(__FILE__) . "/webService.class.php";
 
 class CentreonWscustomview extends CentreonWebService {
@@ -66,7 +63,7 @@ class CentreonWscustomview extends CentreonWebService {
                 'default' => false,
                 'name' => $tab['name'],
                 'custom_view_id' => $tab['custom_view_id'],
-                'public' => false,
+                'public' => $tab['public'],
                 'nbCols' => $tab['layout']
             );
         }

@@ -9,9 +9,17 @@
 	</div>
     
     <div id='tab1' class='tab'>
-        <table class="ListTable">
-            <tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/exchange.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-            <tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+        <table class="formTable table">
+            <tr class="ListHeader">
+              <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title}</h3>
+              </td>
+            </tr>
+            <tr class="list_lvl_1">
+              <td class="ListColLvl1_name"  colspan="2">
+                <h4>{$form.header.information}</h4>
+              </td>
+            </tr>
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="connector_name"> {$form.connector_name.label}</td><td class="FormRowValue">{$form.connector_name.html}</td></tr>
             <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="connector_description"> {$form.connector_description.label}</td><td class="FormRowValue">{$form.connector_description.html}</td></tr>
             <tr class="list_one">
@@ -42,7 +50,7 @@
                     </table>
                 </td>
             </tr>
-            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_id"> {$form.command_id.label.0}</td><td class="FormRowValue">{$form.command_id.html}</td></tr>            
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_id"> {$form.command_id.label}</td><td class="FormRowValue">{$form.command_id.html}</td></tr>            
             <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="connector_status"> {$form.connector_status.label}</td><td class="FormRowValue">{$form.connector_status.html}</td></tr>
         </table>
     </div>              

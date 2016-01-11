@@ -31,20 +31,15 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($centreon)) {
+	exit();
+}
 
-	if (!isset($default_poller)) {
-		include_once "./include/monitoring/status/Common/default_poller.php";
-	}
-
-	$broker = $centreon->broker->getBroker();
+if (!isset($default_poller)) {
+	include_once "./include/monitoring/status/Common/default_poller.php";
+}
 
 ?>
 // Dynamique
@@ -92,11 +87,11 @@ var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
 var _popup_no_comment_msg = '<?php echo addslashes(_("Please enter a comment")); ?>';
 
 // Hosts WS For Poppin
-var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/<?php print $centreon->broker->getBroker(); ?>/makeXMLForOneHost.php";
+var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/makeXMLForOneHost.php";
 var _addrXSLSpanhost = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
 
 // Services WS For Poppin
-var _addrXMLSpanSvc = "./include/monitoring/status/Services/xml/<?php print $centreon->broker->getBroker(); ?>/makeXMLForOneService.php";
+var _addrXMLSpanSvc = "./include/monitoring/status/Services/xml/makeXMLForOneService.php";
 var _addrXSLSpanSvc = "./include/monitoring/status/Services/xsl/popupForService.xsl";
 
 // Position
@@ -248,53 +243,27 @@ function construct_selecteList_ndo_instance(id){
     /** *************************************
      * Get instance listing
      */
-    if ($broker == "broker") {
-    	if ($oreon->user->admin || !count($pollerArray)) {
-	        $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = '1' ORDER BY name";
-		} else {
-		    $instanceQuery = "SELECT instance_id, name  ".
-		    				 "FROM `instances` WHERE running = '1' AND name IN (". $oreon->user->access->getPollerString('NAME') .") ORDER BY name";
-		}
-		$DBRESULT = $pearDBO->query($instanceQuery);
-   		 while ($nagios_server = $DBRESULT->fetchRow())	{   ?>
-			var m = document.createElement('option');
-			m.value= "<?php echo $nagios_server["instance_id"]; ?>";
-			_select.appendChild(m);
-			var n = document.createTextNode("<?php echo $nagios_server["name"] . "  "; ?>   ");
-			m.appendChild(n);
-			_select.appendChild(m);
-			select_index["<?php echo $nagios_server["instance_id"]; ?>"] = i;
-			i++;
-	<?php }	?>
-			_select.selectedIndex = select_index[_default_instance];
-			_select_instance.appendChild(_select);
-		}
-		<?php
-    } else {
-		if ($oreon->user->admin || !count($pollerArray)) {
-	        $instanceQuery = "SELECT instance_id, instance_name FROM `".getNDOPrefix()."instances` ORDER BY instance_name";
-		} else {
-		    $instanceQuery = "SELECT instance_id, instance_name  ".
-		    				 "FROM `".getNDOPrefix()."instances` WHERE instance_name IN (". $oreon->user->access->getPollerString('NAME') .") ORDER BY instance_name";
-		}
-		$DBRESULT = $pearDBndo->query($instanceQuery);
-		while ($nagios_server = $DBRESULT->fetchRow())	{
-?>
-			var m = document.createElement('option');
-			m.value= "<?php echo $nagios_server["instance_id"]; ?>";
-			_select.appendChild(m);
-			var n = document.createTextNode("<?php echo $nagios_server["instance_name"] . "  "; ?>   ");
-			m.appendChild(n);
-			_select.appendChild(m);
-			select_index["<?php echo $nagios_server["instance_id"]; ?>"] = i;
-			i++;
-	<?php }	?>
-			_select.selectedIndex = select_index[_default_instance];
-			_select_instance.appendChild(_select);
-		}
-	<?php
-    }
-    ?>
+    
+	if ($oreon->user->admin || !count($pollerArray)) {
+        $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = '1' ORDER BY name";
+	} else {
+	    $instanceQuery = "SELECT instance_id, name  ".
+	    				 "FROM `instances` WHERE running = '1' AND name IN (". $oreon->user->access->getPollerString('NAME') .") ORDER BY name";
+	}
+	$DBRESULT = $pearDBO->query($instanceQuery);
+		 while ($nagios_server = $DBRESULT->fetchRow())	{   ?>
+		var m = document.createElement('option');
+		m.value= "<?php echo $nagios_server["instance_id"]; ?>";
+		_select.appendChild(m);
+		var n = document.createTextNode("<?php echo $nagios_server["name"] . "  "; ?>   ");
+		m.appendChild(n);
+		_select.appendChild(m);
+		select_index["<?php echo $nagios_server["instance_id"]; ?>"] = i;
+		i++;
+<?php }	?>
+		_select.selectedIndex = select_index[_default_instance];
+		_select_instance.appendChild(_select);
+	}
 }
 
 function construct_HostGroupSelectList(id) {
@@ -323,11 +292,7 @@ function construct_HostGroupSelectList(id) {
 <?php
 		$hgNdo = array();
 		$hgBrk = array();
-		if ($broker == 'broker') {
-		    $acldb = $pearDBO;
-		} else {
-            $acldb = new CentreonDB("ndo");
-		}
+        $acldb = $pearDBO;
 		if (!$oreon->user->access->admin) {
 			$query = "SELECT DISTINCT hg.hg_alias, hg.hg_name AS name
 				  FROM hostgroup hg, acl_resources_hg_relations arhr
@@ -346,53 +311,35 @@ function construct_HostGroupSelectList(id) {
 			unset($data);
 		}
 
-		if ($broker == 'broker') {
-			$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroups.hostgroup_id FROM `hostgroups`, `hosts_hostgroups` WHERE hostgroups.enabled = 1 AND hostgroups.hostgroup_id = hosts_hostgroups.hostgroup_id AND name NOT LIKE 'meta\_%' AND enabled = 1 ORDER BY `name`");
-		} else {
-			$DBRESULT = $pearDB->query("SELECT DISTINCT `hg_name` as name, `hg_alias` as alias , `hg_id` as hostgroup_id FROM `hostgroup` ORDER BY `name`");
-		}
+		$DBRESULT = $pearDBO->query("SELECT DISTINCT hg.name, hg.hostgroup_id FROM hostgroups hg, hosts_hostgroups hhg WHERE hg.hostgroup_id = hhg.hostgroup_id AND hg.name NOT LIKE 'meta\_%' ORDER BY hg.name");
 		while ($hostgroups = $DBRESULT->fetchRow()) {
-			if ($broker == 'broker') {
-				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
-				    if (!isset($tabHG)) {
-				        $tabHG = array();
-				    }
-				    if (!isset($tabHG[$hostgroups["name"]])) {
-				        $tabHG[$hostgroups["name"]] = "";
-				    } else {
-				        $tabHG[$hostgroups["name"]] .= ",";
-				    }
-                    $tabHG[$hostgroups["name"]] .= $hostgroups["hostgroup_id"];
-	 		    }
-			} else {
-				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgNdo[$hostgroups["name"]]))) { ?>
-					var m = document.createElement('option');
-					m.value= "<?php echo addslashes($hostgroups['name']); ?>";
-					_select.appendChild(m);
-					var n = document.createTextNode("<?php echo $hostgroups["name"]; ?>   ");
-					m.appendChild(n);
-					_select.appendChild(m);
-					select_index["<?php echo addslashes($hostgroups['name']); ?>"] = i;
-					i++;
-	<?php 		}
-			}
+			if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
+			    if (!isset($tabHG)) {
+			        $tabHG = array();
+			    }
+			    if (!isset($tabHG[$hostgroups["name"]])) {
+			        $tabHG[$hostgroups["name"]] = "";
+			    } else {
+			        $tabHG[$hostgroups["name"]] .= ",";
+			    }
+                $tabHG[$hostgroups["name"]] .= $hostgroups["hostgroup_id"];
+ 		    }
+		
 		}
 
-		if ($broker == 'broker') {
-			if (isset($tabHG)) {
-				foreach ($tabHG as $name => $id) {
-	                ?>
-	                var m = document.createElement('option');
-						m.value= "<?php echo $id; ?>";
-						_select.appendChild(m);
-						var n = document.createTextNode("<?php echo $name; ?>   ");
-						m.appendChild(n);
-						_select.appendChild(m);
-						select_index["<?php echo $id; ?>"] = i;
-						i++;
-					<?php
-	            }
-			}
+		if (isset($tabHG)) {
+			foreach ($tabHG as $name => $id) {
+                ?>
+                var m = document.createElement('option');
+					m.value= "<?php echo $id; ?>";
+					_select.appendChild(m);
+					var n = document.createTextNode("<?php echo $name; ?>   ");
+					m.appendChild(n);
+					_select.appendChild(m);
+					select_index["<?php echo $id; ?>"] = i;
+					i++;
+				<?php
+            }
 		}
 ?>
 		if (typeof(_default_hg) != "undefined") {
@@ -470,6 +417,7 @@ function mk_img(_src, _alt)	{
   	_img.src = _src;
   	_img.alt = _alt;
   	_img.title = _alt;
+    //_img.className = 'ico-10';
   	if (_img.complete){
   		_img.alt = _alt;
   	} else {
@@ -575,10 +523,10 @@ function pagination_changed(){
 
 <?php
 	for ($i = 1; $i <= 2; $i++) { ?>
-	var _img_previous<?php echo $i; ?> 	= mk_img("./img/icones/16x16/arrow_left_blue.gif", "previous");
-	var _img_next<?php echo $i; ?> 		= mk_img("./img/icones/16x16/arrow_right_blue.gif", "next");
-	var _img_first<?php echo $i; ?> 	= mk_img("./img/icones/16x16/arrow_left_blue_double.gif", "first");
-	var _img_last<?php echo $i; ?> 		= mk_img("./img/icones/16x16/arrow_right_blue_double.gif", "last");
+	var _img_previous<?php echo $i; ?> 	= mk_img("./img/icons/rewind.png", "previous");
+	var _img_next<?php echo $i; ?> 		= mk_img("./img/icons/fast_forward.png", "next");
+	var _img_first<?php echo $i; ?> 	= mk_img("./img/icons/first_rewind.png", "first");
+	var _img_last<?php echo $i; ?> 		= mk_img("./img/icons/end_forward.png", "last");
 
 	var _linkaction_right<?php echo $i; ?> = document.createElement("a");
 	_linkaction_right<?php echo $i; ?>.href = '#' ;
@@ -821,131 +769,131 @@ function set_page(page)	{
 // Popin images
 
 var func_displayIMG = function(event) {
-        var NewImage = new Image(),
-            self = event.currentTarget;
+    var NewImage = new Image(),
+        self = event.currentTarget;
 
-        jQuery('.img_volante').html('<img class="mimgload" src="img/misc/ajax-loader.gif" />');
-        jQuery('.img_volante').css('left', event.pageX + 20);
-        jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
-        jQuery('.img_volante').show();
+    jQuery('.img_volante').html('<img class="mimgload" src="img/misc/ajax-loader.gif" />');
+    jQuery('.img_volante').css('left', event.pageX + 20);
+    jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+    jQuery('.img_volante').show();
 
-        var elements = $(self).id.split('-');
-        var NewImageAlt = 'graph popup' + '&index=' + elements[0] + '&time=<?php print time(); ?>';
-        jQuery('.img_volante').append('<img style="display: none" src="' + 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ _sid +'&index='+ elements[0] + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
-        NewImage.onload = function(){
-                jQuery('.img_volante .mimgload').remove();
-                <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-                jQuery('.img_volante').stop(true, true).animate({width: self.width, height: self.height, top: (jQuery(window).height() / 2) - (self.height / 2)}, 25);
-                jQuery('.img_volante img').stop(true, true).fadeIn(1000);
-                <?php } else { ?>
-                jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
-                jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (self.height / 2));
-                jQuery('.img_volante img').show();
-                <?php } ?>
-        };
-        NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ _sid +'&index='+ elements[0];
-        if (NewImage.complete) {
-                jQuery('.img_volante .mimgload').remove();
-                <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-                jQuery('.img_volante').stop(true, true).animate({width: NewImage.width, height: NewImage.height, top: (jQuery(window).height() / 2) - (NewImage.height / 2)}, 25);
-                jQuery('.img_volante img').stop(true, true).fadeIn(1000);
-                <?php } else { ?>
-                jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
-                jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (NewImage.height / 2));
-                jQuery('.img_volante img').show();
-                <?php } ?>
-        }
+    var elements = $(self).id.split('-');
+    var NewImageAlt = 'graph popup' + '&index=' + elements[0] + '&time=<?php print time(); ?>';
+    jQuery('.img_volante').append('<img style="display: none" src="' + 'include/views/graphs/generateGraphs/generateImage.php?index='+ elements[0] + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
+    NewImage.onload = function(){
+            jQuery('.img_volante .mimgload').remove();
+            <?php   if ($centreon->user->get_js_effects() > 0) { ?>
+            jQuery('.img_volante').stop(true, true).animate({width: self.width, height: self.height, top: (jQuery(window).height() / 2) - (self.height / 2)}, 25);
+            jQuery('.img_volante img').stop(true, true).fadeIn(1000);
+            <?php } else { ?>
+            jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
+            jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (self.height / 2));
+            jQuery('.img_volante img').show();
+            <?php } ?>
+    };
+    NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?index='+ elements[0];
+    if (NewImage.complete) {
+            jQuery('.img_volante .mimgload').remove();
+            <?php   if ($centreon->user->get_js_effects() > 0) { ?>
+            jQuery('.img_volante').stop(true, true).animate({width: NewImage.width, height: NewImage.height, top: (jQuery(window).height() / 2) - (NewImage.height / 2)}, 25);
+            jQuery('.img_volante img').stop(true, true).fadeIn(1000);
+            <?php } else { ?>
+            jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
+            jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (NewImage.height / 2));
+            jQuery('.img_volante img').show();
+            <?php } ?>
+    }
 };
 
 var func_hideIMG = function(event) {
-        jQuery('.img_volante').hide();
-        jQuery('.img_volante').empty();
-        jQuery('.img_volante').css('width', 'auto');
-        jQuery('.img_volante').css('height', 'auto');
+    jQuery('.img_volante').hide();
+    jQuery('.img_volante').empty();
+    jQuery('.img_volante').css('width', 'auto');
+    jQuery('.img_volante').css('height', 'auto');
 };
 
 // Poppin Function
 var popup_counter = {};
 
 var func_popupXsltCallback = function(trans_obj) {
-        var target_element = trans_obj.getTargetElement();
-        if (popup_counter[target_element] == 0) {
-                return ;
-        }
+    var target_element = trans_obj.getTargetElement();
+    if (popup_counter[target_element] == 0) {
+            return ;
+    }
 
-        jQuery('.popup_volante .container-load').empty();
+    jQuery('.popup_volante .container-load').empty();
 <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-        jQuery('.popup_volante').stop(true, true).animate({width: jQuery('#' + target_element).width(), height: jQuery('#' + target_element).height(),
-                             top: (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2)}, 25);
-        jQuery('#' + target_element).stop(true, true).fadeIn(1000);
+    jQuery('.popup_volante').stop(true, true).animate({width: jQuery('#' + target_element).width(), height: jQuery('#' + target_element).height(),
+                         top: (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2)}, 25);
+    jQuery('#' + target_element).stop(true, true).fadeIn(1000);
 <?php } else { ?>
-        jQuery('.popup_volante').css('left', jQuery('#' + target_element).attr('left'));
-        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2));
-        jQuery('#' + target_element).show();
+    jQuery('.popup_volante').css('left', jQuery('#' + target_element).attr('left'));
+    jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2));
+    jQuery('#' + target_element).show();
 <?php } ?>
 };
 
 var func_displayPOPUP = function(event) {
-        var self = event.currentTarget,
-            position = jQuery('#' + $(self).id).offset();
+    var self = event.currentTarget,
+        position = jQuery('#' + $(self).id).offset();
 
-        if (jQuery('#popup-container-display-' + $(self).id).length == 0) {
-                popup_counter['popup-container-display-' + $(self).id] = 1;
-                jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).id + '" style="display: none"></div>');
-        } else {
-                popup_counter['popup-container-display-' + $(self).id] += 1;
-        }
-        jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).id).width() + 10);
-        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
-        jQuery('.popup_volante').show();
+    if (jQuery('#popup-container-display-' + $(self).id).length == 0) {
+            popup_counter['popup-container-display-' + $(self).id] = 1;
+            jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).id + '" style="display: none"></div>');
+    } else {
+            popup_counter['popup-container-display-' + $(self).id] += 1;
+    }
+    jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
+    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).id).width() + 10);
+    jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+    jQuery('.popup_volante').show();
 
-        var elements = $(self).id.split('-');
-        var proc_popup = new Transformation();
-        proc_popup.setCallback(func_popupXsltCallback);
-        if (elements[0] == "host") {
-                proc_popup.setXml(_addrXMLSpanHost+"?"+'&sid='+_sid+'&host_id=' + elements[1]);
-                proc_popup.setXslt(_addrXSLSpanhost);
-        } else {
-                proc_popup.setXml(_addrXMLSpanSvc+"?"+'&sid='+_sid+'&svc_id=' + elements[1] + '_' + elements[2]);
-                proc_popup.setXslt(_addrXSLSpanSvc);
-        }
-        proc_popup.transform('popup-container-display-' + $(self).id);
+    var elements = $(self).id.split('-');
+    var proc_popup = new Transformation();
+    proc_popup.setCallback(func_popupXsltCallback);
+    if (elements[0] == "host") {
+            proc_popup.setXml(_addrXMLSpanHost+"?"+'&host_id=' + elements[1]);
+            proc_popup.setXslt(_addrXSLSpanhost);
+    } else {
+            proc_popup.setXml(_addrXMLSpanSvc+"?"+'&svc_id=' + elements[1] + '_' + elements[2]);
+            proc_popup.setXslt(_addrXSLSpanSvc);
+    }
+    proc_popup.transform('popup-container-display-' + $(self).id);
 };
 
 var func_hidePOPUP = function(event) {
-        var self = event.currentTarget;
-        popup_counter['popup-container-display-' + $(self).id] -= 1;
-        jQuery('.popup_volante .container-load').empty();
-        jQuery('#popup-container-display-' + $(self).id).hide();
-        jQuery('.popup_volante').hide();
-        jQuery('.popup_volante').css('width', 'auto');
-        jQuery('.popup_volante').css('height', 'auto');
+    var self = event.currentTarget;
+    popup_counter['popup-container-display-' + $(self).id] -= 1;
+    jQuery('.popup_volante .container-load').empty();
+    jQuery('#popup-container-display-' + $(self).id).hide();
+    jQuery('.popup_volante').hide();
+    jQuery('.popup_volante').css('width', 'auto');
+    jQuery('.popup_volante').css('height', 'auto');
 };
 
 /* Use 'id' attribute to get element */
 /* Use 'name' attribute to get xml/xsl infos */
 var func_displayGenericInfo = function(event) {
-        var self = event.currentTarget,
-            position = jQuery('#' + $(self).id).offset();
+    var self = event.currentTarget,
+        position = jQuery('#' + $(self).id).offset();
 
-        if (jQuery('#popup-container-display-' + $(self).id).length == 0) {
-                popup_counter['popup-container-display-' + $(self).id] = 1;
-                jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).id + '" style="display: none"></div>');
-        } else {
-                popup_counter['popup-container-display-' + $(self).id] += 1;
-        }
-        jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).id).width() + 10);
-        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
-        jQuery('.popup_volante').show();
+    if (jQuery('#popup-container-display-' + $(self).id).length == 0) {
+            popup_counter['popup-container-display-' + $(self).id] = 1;
+            jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).id + '" style="display: none"></div>');
+    } else {
+            popup_counter['popup-container-display-' + $(self).id] += 1;
+    }
+    jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
+    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).id).width() + 10);
+    jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+    jQuery('.popup_volante').show();
 
-        var elements = $(self).name.split('|');
-        var proc_popup = new Transformation();
-        proc_popup.setCallback(func_popupXsltCallback);
-        proc_popup.setXml(elements[0]);
-        proc_popup.setXslt(elements[1]);
-        proc_popup.transform('popup-container-display-' + $(self).id);
+    var elements = $(self).name.split('|');
+    var proc_popup = new Transformation();
+    proc_popup.setCallback(func_popupXsltCallback);
+    proc_popup.setXml(elements[0]);
+    proc_popup.setXslt(elements[1]);
+    proc_popup.transform('popup-container-display-' + $(self).id);
 };
 
 // Monitoring Refresh management Options

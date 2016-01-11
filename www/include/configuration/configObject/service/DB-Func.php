@@ -1236,7 +1236,7 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     }
  
     if (isset($_REQUEST['macroInput']) && isset($_REQUEST['macroValue'])) {
-        $service->insertMacro($service_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], (!isset($_REQUEST['macroPassword']) ? 0 : $_REQUEST['macroPassword']), $macroDescription, false);
+        $service->insertMacro($service_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], (!isset($_REQUEST['macroPassword']) ? 0 : $_REQUEST['macroPassword']), $macroDescription,false, $ret["command_command_id"]);
     } else {
         $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".CentreonDB::escape($service_id)."'");
     }
@@ -1437,13 +1437,14 @@ function updateService_MC($service_id = null, $params = array())
         $rq .= "service_notifications_enabled = '".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', ";
         $fields["service_notifications_enabled"] = $ret["service_notifications_enabled"]["service_notifications_enabled"];
     }
-    if (isset($ret["contact_additive_inheritance"])) {
-        $rq .= "contact_additive_inheritance = '".$ret["contact_additive_inheritance"]."', ";
-        $fields["contact_additive_inheritance"] = $ret["contact_additive_inheritance"];
+    if (isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"]) && in_array($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"], array('0', '1'))) {
+        $rq .= "contact_additive_inheritance = '" . $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"] . "', ";
+        $fields["contact_additive_inheritance"] = $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"];
     }
-    if (isset($ret["cg_additive_inheritance"])) {
-        $rq .= "cg_additive_inheritance = '".$ret["cg_additive_inheritance"]."', ";
-        $fields["cg_additive_inheritance"] = $ret["cg_additive_inheritance"];
+
+    if (isset($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"]) && in_array($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"], array('0', '1'))) {
+        $rq .= "cg_additive_inheritance = '" . $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"] . "', ";
+        $fields["cg_additive_inheritance"] = $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"];
     }
     if (isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"])) {
         $rq .= "service_inherit_contacts_from_host = '".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', ";

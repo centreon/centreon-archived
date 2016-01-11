@@ -31,30 +31,26 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-    require_once "@CENTREON_ETC@/centreon.conf.php";
- 	require_once $centreon_path . "www/class/centreonDB.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 
-	$pearDB = new CentreonDB();
+$pearDB = new CentreonDB();
 
- 	/*
- 	 * Get Options colors
- 	 */
- 	$options = array();
- 	$DBRESULT = $pearDB->query("SELECT * FROM options");
- 	while ($res = $DBRESULT->fetchRow())
- 		$options[$res["key"]] = $res["value"];
- 	unset($res);
+/*
+ * Get Options colors
+ */
+$options = array();
+$DBRESULT = $pearDB->query("SELECT * FROM options");
+while ($res = $DBRESULT->fetchRow())
+        $options[$res["key"]] = $res["value"];
+unset($res);
 
 ?>
 
 .ListTable a:link, #ListTable a:link			{color:<?php print $color2; ?>;}
 .ListTable a:visited, #ListTable a:visited		{color:<?php print $color2; ?>;}
-.ListTable a:hover, #ListTable a:hover			{color:<?php print $color3; ?>;}
 
 .list_lvl_1{	background-color:<?php print $color4; ?>;}
 .list_lvl_2{	background-color:<?php print $color5; ?>;}
@@ -113,10 +109,10 @@
 .list_two_fixe 		{	background-color:<?php print $color_list_2; ?>;}
 
 .list_one			{	background-color:<?php print $color_list_1; ?>;}
-.list_one:hover 	{	background-color:<?php print $color_list_1_hover; ?>;}
+.list_one:hover 	{	background-color:#CFEDF9;;}
 
 .list_two 			{	background-color:<?php print $color_list_2; ?>; }
-.list_two:hover 	{	background-color:<?php print $color_list_2_hover; ?>;}
+.list_two:hover 	{	background-color: #CFEDF9;}
 
 .list_three 		{	background-color:<?php print $color_list_3; ?>;}
 .list_three:hover 	{	background-color:<?php print $color_list_3_hover; ?>;}
@@ -124,26 +120,22 @@
 .list_four 			{	background-color:<?php print $color_list_4; ?>;}
 .list_four:hover 	{	background-color:<?php print $color_list_4_hover; ?>;}
 
-.list_up			{	background-color:<?php print $color_list_up; ?>;}
+.list_up			{	background-color: #88b917;}
 .list_up:hover		{	background-color:<?php print $color_list_up_hover; ?>;}
 
-.list_down 			{	background-color:<?php print $options["color_line_critical"]; ?>;}
-.list_down:hover 	{	background-color:<?php print $options["color_line_critical"]; ?>;}
+.list_down 			{	background-color: #ffaec1;}
+.list_down:hover 	{	background-color: #e17790;}
 
-.list_unreachable 			{	background-color:<?php print $options["color_host_unreachable"]; ?>;}
-.list_unreachable:hover 	{	background-color:<?php print $options["color_host_unreachable"]; ?>;}
+.list_unreachable 			{	background-color:#818285;}
+.list_unreachable:hover 	{	background-color:#818285;}
 
-.line_downtime		{	background-color:<?php print $options["color_downtime"]; ?>;}
-.line_downtime:hover{	background-color:<?php print $options["color_downtime"]; ?>;}
+.line_downtime		{	background-color: #f1dfff;}
+.line_downtime:hover{	background-color: #e7c9ff;}
 
-.line_ack			{	background-color:<?php print $options["color_ack"]; ?>;}
-.line_ack:hover		{	background-color:<?php print $options["color_ack"]; ?>;}
+.line_ack			{	background-color: #fefc8e;}
+.line_ack:hover		{	background-color: #fcf17f;}
 
 /* Monitoring Side */
-.host_down 			{-moz-border-radius:8px;background-color:<?php print $options["color_host_down"]; ?>;border:2px <?php print $options["color_host_down"]; ?> solid;}
-.host_unreachable 	{-moz-border-radius:8px;background-color:<?php print $options["color_host_unreachable"]; ?>;border:2px <?php print $options["color_host_unreachable"]; ?> solid;}
-.host_downtime 		{-moz-border-radius:8px;background-color:<?php print $options["color_downtime"]; ?>;border:2px <?php print $options["color_downtime"]; ?> solid;}
-
 
 /* Menu */
 #menu1_bgimg	{
@@ -178,7 +170,6 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 	}
 
 .limitPage{
-	background-image:url(<?php print $bg_image_header; ?>);
 	color:<?php print $color9; ?>;
 	background-position:top left;
 	background-repeat:repeat-x;
@@ -186,7 +177,6 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 	}
 
 .pageNumber{
-	background-image:url(<?php print $bg_image_header; ?>);
 	color:<?php print $color9; ?>;
 	background-position:top left;
 	background-repeat:repeat-x;
@@ -196,6 +186,7 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 .a, .b{
 	border-color:<?php print $color10; ?>;
 	}
+
 
 .msg_loading{
 	position:absolute;
@@ -226,6 +217,9 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 
 .Toolbar_TableBottom {border-color:<?php print $menu1_bgcolor; ?>;}
 
-#mainnav li{	background-color: <?php print $bg_image_header ?>;border: 1px solid <?php print $bg_image_header ?>;}
-#mainnav li.a a{	color: <?php print $bg_image_header ?>; }
+.headerTabContainer {border-bottom: 1px solid <?php print $menu2_bgcolor ?>;}
+#mainnav li{	background-color: <?php print $menu2_bgcolor ?>;border: 1px solid <?php print $menu2_bgcolor ?>;}
+#mainnav li.a a{	color: <?php print $menu2_bgcolor ?>; }
 #mainnav li.b a{	color: <?php print $menu2_color ?>;}
+#mainnav li.b a{	color: <?php print $menu2_color ?>;}
+

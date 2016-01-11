@@ -35,17 +35,20 @@
 			<xsl:if test="hn/@none = 0">
 				<xsl:if test="ha = 1">
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/technician.png</xsl:attribute>
+							<xsl:attribute name="class">ico-20</xsl:attribute>
 						</xsl:element>
 				</xsl:if>
 				<xsl:if test="hae = 0 and hpe = 1">
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/passive_check.png</xsl:attribute>
+							<xsl:attribute name="class">ico-16</xsl:attribute>
 						</xsl:element>
 				</xsl:if>
 				<xsl:if test="hae = 0 and hpe = 0">
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/never_checked.png</xsl:attribute>
+							<xsl:attribute name="class">ico-16</xsl:attribute>
 						</xsl:element>
 				</xsl:if>
 			</xsl:if>
@@ -57,17 +60,20 @@
 			</xsl:element>
 			<xsl:if test="pa = 1">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/technician.png</xsl:attribute>
+						<xsl:attribute name="class">ico-20</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ac = 0 and pc = 1">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/passive_check.png</xsl:attribute>
+						<xsl:attribute name="class">ico-16</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ac = 0 and pc = 0">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/never_checked.png</xsl:attribute>
+						<xsl:attribute name="class">ico-16</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 		</td>
@@ -79,16 +85,18 @@
 			</xsl:if>
 			<xsl:if test="ne = 0">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
+					  	<xsl:attribute name="src">./img/icons/notifications_off.png</xsl:attribute>
+						<xsl:attribute name="class">ico-18</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 		</td>
 		<td class="ListColRight">
 			<xsl:if test="svc_index &gt; 0">
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
 						<xsl:element name="img">
-						  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
+						  	<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
+							<xsl:attribute name="class">ico-18</xsl:attribute>
 						</xsl:element>
 				</xsl:element>
 			</xsl:if>

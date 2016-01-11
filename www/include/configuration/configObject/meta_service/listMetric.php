@@ -41,6 +41,8 @@
 	if (!isset($oreon))
 		exit();
 
+        include_once("./class/centreonUtils.class.php");
+
 	include("./include/common/autoNumLimit.php");
 
 	/*
@@ -119,9 +121,9 @@
                     $moptions = "";
                     $selectedElements = $form->addElement('checkbox', "select[".$relation['msr_id']."]");
                     if ($relation["activate"])
-                        $moptions .= "<a href='main.php?p=".$p."&msr_id=".$relation['msr_id']."&o=us&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+                        $moptions .= "<a href='main.php?p=".$p."&msr_id=".$relation['msr_id']."&o=us&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
                     else
-                        $moptions .= "<a href='main.php?p=".$p."&msr_id=".$relation['msr_id']."&o=ss&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+                        $moptions .= "<a href='main.php?p=".$p."&msr_id=".$relation['msr_id']."&o=ss&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
                     $metric["service_description"] = str_replace("#S#", "/", $metric["service_description"]);
                     $metric["service_description"] = str_replace("#BS#", "\\", $metric["service_description"]);
                     $elemArr1[$i] = array(  "MenuClass"=>"list_".$style,
@@ -129,7 +131,7 @@
                                                             "RowMenu_host"=>htmlentities($metric["host_name"], ENT_QUOTES, "UTF-8"),
                                                             "RowMenu_link"=>"?p=".$p."&o=ws&msr_id=".$relation['msr_id'],
                                                             "RowMenu_service"=>htmlentities($metric["service_description"], ENT_QUOTES, "UTF-8"),
-                                                            "RowMenu_metric"=>$metric["metric_name"]." (".$metric["unit_name"].")",
+                                                            "RowMenu_metric"=>CentreonUtils::escapeSecure($metric["metric_name"]." (".$metric["unit_name"].")"),
                                                             "RowMenu_status"=>$relation["activate"] ? _("Enabled") : _("Disabled"),
                                                             "RowMenu_options"=>$moptions);
                     $style != "two" ? $style = "two" : $style = "one";

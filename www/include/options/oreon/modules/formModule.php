@@ -53,26 +53,27 @@
 	$tpl->assign("headerMenu_release_from", _("Base release"));
 	$tpl->assign("headerMenu_release_to", _("Final release"));
 	$tpl->assign("headerMenu_author", _("Author"));
-	$tpl->assign("headerMenu_infos", _("Additionnal Information"));
+	$tpl->assign("headerMenu_infos", _("Additional Information"));
 	$tpl->assign("headerMenu_isinstalled", _("Installed"));
 	$tpl->assign("headerMenu_isvalid", _("Valid for an upgrade"));
-
+    
 	/*
 	 * "Name" case, it's not a module which is installed
 	 */
-	if ($name) {
+	if ($operationType === 'install') {
 		$flag = false;
-		include_once($centreon_path . "www/modules/".$name."/conf.php");
+		include_once(_CENTREON_PATH_ . "www/modules/".$name."/conf.php");
 		$tpl->assign("module_rname", $module_conf[$name]["rname"]);
 		$tpl->assign("module_release", $module_conf[$name]["mod_release"]);
 		$tpl->assign("module_author", $module_conf[$name]["author"]);
 		$tpl->assign("module_infos", $module_conf[$name]["infos"]);
-		if (is_dir($centreon_path . "www/modules/".$name."/infos") && is_file("./modules/".$name."/infos/infos.txt"))	{
-			$infos_streams = file($centreon_path . "www/modules/".$name."/infos/infos.txt");
+		if (is_dir(_CENTREON_PATH_ . "www/modules/".$name."/infos") && is_file("./modules/".$name."/infos/infos.txt"))	{
+			$infos_streams = file(_CENTREON_PATH_ . "www/modules/".$name."/infos/infos.txt");
 			$infos_streams = implode("<br />", $infos_streams);
 			$tpl->assign("module_infosTxt", $infos_streams);
-		} else
+		} else {
 			$tpl->assign("module_infosTxt", false);
+        }
 
 		$form1 = new HTML_QuickForm('Form', 'post', "?p=".$p);
 
@@ -96,7 +97,7 @@
 				 * PHP execution if need
 				 */
 				$php_file = "install.php";
-				$php_file_path = $centreon_path . "www/modules/".$name."/php/".$php_file;
+				$php_file_path = _CENTREON_PATH_ . "www/modules/".$name."/php/".$php_file;
 				if ($module_conf[$name]["php_files"] && file_exists($php_file_path))	{
 					$tpl->assign("output3", _("PHP file included"));
 					include_once($php_file_path);
@@ -111,17 +112,17 @@
 				$tpl->assign("output4", _("Unable to install module"));
 			}
 		} else {
-			$form1->addElement('submit', 'install', _("Install Module"));
+			$form1->addElement('submit', 'install', _("Install Module"), array("class" => "btc bt_success"));
 			$redirect = $form1->addElement('hidden', 'o');
 			$redirect->setValue("i");
 		}
-		$form1->addElement('submit', 'list', _("Back"));
+		$form1->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
 		$hid_name = $form1->addElement('hidden', 'name');
 		$hid_name->setValue($name);
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$form1->accept($renderer);
 		$tpl->assign('form1', $renderer->toArray());
-	} else if ($id)	{
+	} elseif ($operationType === 'upgrade')	{
 
 		/*
 		 * "ID" case, it's an installed module
@@ -129,15 +130,17 @@
 
 		$moduleinfo = getModuleInfoInDB(NULL, $id);
 		$elemArr = array();
-		if (is_dir($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE"))	{
-			$handle = opendir($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE");
+        $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+        $form->addElement('submit', 'list', _("Back"));
+		if (is_dir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE"))	{
+			$handle = opendir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE");
 			$i = 0;
 			$elemArr = array();
 			while (false !== ($filename = readdir($handle)))	{
 				if (substr($filename, 0, 1) != "." && strstr($filename, $moduleinfo["name"]."-"))	{
-					include_once($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/conf.php");
+					include_once(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/conf.php");
 					if ($moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])	{
-						$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+						
 						$upgrade_ok = false;
 						# Upgrade
 						if ($form->validate())	{
@@ -147,14 +150,14 @@
 								$tpl->assign("output1", _("Module installed and registered"));
 								# SQL update if need
 								$sql_file = "upgrade.sql";
-								$sql_file_path = $centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/sql/";
+								$sql_file_path = _CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/sql/";
 								if ($upgrade_conf[$moduleinfo["name"]]["sql_files"] && file_exists($sql_file_path.$sql_file))	{
 									$tpl->assign("output2", _("SQL file included"));
 									execute_sql_file($sql_file, $sql_file_path);
 								}
 								# PHP update if need
 								$php_file = "upgrade.php";
-								$php_file_path = $centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/php/".$php_file;
+								$php_file_path = _CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/php/".$php_file;
 								if ($upgrade_conf[$moduleinfo["name"]]["php_files"] && file_exists($php_file_path))	{
 									$tpl->assign("output3", _("PHP file included"));
 									include_once($php_file_path);
@@ -166,13 +169,13 @@
 							}
 						}
 						if (!$upgrade_ok)	{
-							$form->addElement('submit', 'upgrade', _("Upgrade"));
+							$form->addElement('submit', 'upgrade', _("Upgrade"), array("class" => "btc bt_success"));
 							$redirect = $form->addElement('hidden', 'o');
 							$redirect->setValue("u");
 						}
 
-						if (is_dir($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos") && is_file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt"))	{
-							$infos_streams = file($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt");
+						if (is_dir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos") && is_file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt"))	{
+							$infos_streams = file(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt");
 							$infos_streams = implode("<br />", $infos_streams);
 							$upgrade_infosTxt = $infos_streams;
 						} else {
@@ -195,28 +198,23 @@
 						$hid_id->setValue($id);
 						$up_name = $form->addElement('hidden', 'filename');
 						$up_name->setValue($filename);
-						$form->addElement('submit', 'list', _("Back"));
-						$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-						$form->accept($renderer);
-						$tpl->assign('form', $renderer->toArray());
+						
 					}
 				}
 			}
 			closedir($handle);
 		}
-		$moduleinfo = array();
-		$moduleinfo = getModuleInfoInDB(NULL, $id);
-		$tpl->assign("module_rname", $moduleinfo["rname"]);
-		$tpl->assign("module_release", $moduleinfo["mod_release"]);
-		$tpl->assign("module_author", $moduleinfo["author"]);
-		$tpl->assign("module_infos", $moduleinfo["infos"]);
-		$tpl->assign("module_isinstalled", _("Yes"));
-		$tpl->assign("elemArr", $elemArr);
-		$form2 = new HTML_QuickForm('Form', 'post', "?p=".$p);
-		$form2->addElement('submit', 'list', _("Back"));
-		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-		$form2->accept($renderer);
-		$tpl->assign('form2', $renderer->toArray());
+        $moduleinfo = array();
+        $moduleinfo = getModuleInfoInDB(NULL, $id);
+        $tpl->assign("module_rname", $moduleinfo["rname"]);
+        $tpl->assign("module_release", $moduleinfo["mod_release"]);
+        $tpl->assign("module_author", $moduleinfo["author"]);
+        $tpl->assign("module_infos", $moduleinfo["infos"]);
+        $tpl->assign("module_isinstalled", _("Yes"));
+        $tpl->assign("elemArr", $elemArr);
+        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+        $form->accept($renderer);
+        $tpl->assign('form', $renderer->toArray());
 	}
 
 	/**

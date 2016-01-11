@@ -2,20 +2,67 @@
 <script src="./include/common/javascript/scriptaculous/scriptaculous.js?load=dragdrop" type="text/javascript"></script>
 <script language='javascript' src='./include/views/graphs/javascript/cropper/cropper.uncompressed.js'></script>
 <div id="div1">
-	<form {$form.attributes}>
-		<table class="ajaxOption">
-	        <tr>
-	        	<td style='white-space:nowrap;'>
-		        	<b>{$form.period.label} : </b>&nbsp;{$form.period.html}
-	        	</td>
-			<td style='white-space:nowrap;'> {$periodORlabel} </td>
-			<td style='white-space:nowrap;'>
-				&nbsp;{$from}&nbsp;{$form.StartDate.html}&nbsp;{$form.StartTime.html}
-				{$to}&nbsp;{$form.EndDate.html}&nbsp;{$form.EndTime.html}&nbsp;
-			</td>
-			<td style='white-space:nowrap;'>{$form.graph.html}</td>			
-		</tr>
-		</table>
-	</form>
+    <form {$form.attributes}>
+        <table class="ajaxOption table">
+            <tr>
+                 <td> <h4>{$form.host_selector.label}</h4></td>
+                 <td></td>
+                 <td><h4>{$from}</h4></td>
+                 <td> <h4>{$form.period.label}</h4></td>
+
+            </tr>
+            <tr>
+                <td>{$form.host_selector.html}</td>
+                <td></td>
+                <td>{$form.StartDate.html} {$form.StartTime.html}</td>
+                <td>{$form.period.html}</td>
+            </tr>
+            <tr>
+                <td><h4>{$form.service_selector.label}</h4></td>
+                <td><h4>{$form.metaservice_selector.label}</h4></td>
+                <td><h4>{$to}</h4></td>
+            </tr>
+            <tr>
+                <td>{$form.service_selector.html}</td>
+                <td>{$form.metaservice_selector.html}</td>
+                <td>{$form.EndDate.html} {$form.EndTime.html}</td>
+                <td>{$form.graph.html}</td>
+            </tr>
+        </table>
+    </form>
+    <div id="graphs" class="graph_content">
+
+
+        <div id="StatusAction">
+
+             <div id="graph_pagination">
+
+                <div class="displayStatus">
+					<input type="checkbox" name="displayStatus" id="displayStatus" />
+                    <label for="displayStatus">{t}Display Status{/t}</label>
+                </div>
+
+                <!-- optional left control buttons -->
+                <div id="test1_m_left"></div><div id="test1_o_left"></div>
+
+                <div class='paginator_p_wrap'>
+                    <div class='paginator_p_bloc'></div>
+                </div>
+
+                <!-- optional right control buttons -->
+                <div id="test1_o_right"></div><div id="test1_m_right"></div>
+
+
+                <!-- slider -->
+                <div class='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all slider'>
+                    <a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>
+                </div>
+
+              </div>
+
+         </div>
+
+        <div class="graphZone"></div>
+
+    </div>
 </div>
-<div id="graphView4xml"></div>

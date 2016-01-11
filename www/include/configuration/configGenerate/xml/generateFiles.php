@@ -37,28 +37,168 @@
  */
 
 ini_set("display_errors", "Off");
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
 if (!isset($_POST['poller']) || !isset($_POST['comment']) || !isset($_POST['debug']) || !isset($_POST['sid'])) {
     exit;
 }
 
+/**
+ * List of error from php
+ */
+global $generatePhpErrors;
+$generatePhpErrors = array();
+
+$path = _CENTREON_PATH_ . "www/include/configuration/configGenerate/";
+$nagiosCFGPath = _CENTREON_PATH_ . "filesGeneration/nagiosCFG/";
+$centreonBrokerPath = _CENTREON_PATH_ . "filesGeneration/broker/";
+$DebugPath = "filesGeneration/nagiosCFG/";
+
+chdir(_CENTREON_PATH_ . "www");
+require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+
+session_start();
+if ($_POST['sid'] != session_id()) {
+    exit;
+}
+$oreon = $_SESSION['centreon'];
+$centreon = $oreon;
+$xml = new CentreonXML();
+$pearDB = new CentreonDB();
+
+$config_generate = new Generate();
+
+$poller = $_POST['poller'];
+$comment = ($_POST['comment'] == "true") ? 1 : 0;
+$debug = ($_POST['debug'] == "true") ? 1 : 0;
+$generate = ($_POST['generate'] == "true") ? 1 : 0;
+
+$ret = array();
+$ret['host'] = $poller;
+$ret['comment'] = $comment;
+$ret['debug'] = $debug;
+
+/*  Set new error handler */
+set_error_handler('log_error');
+
+$okMsg = "<b><font color='green'>OK</font></b>";
+$nokMsg = "<b><font color='red'>NOK</font></b>";
+
+$xml->startElement("response");
+try {
+    $tabs = array();
+    if ($generate) {
+        $pearDBO = new CentreonDB('centstorage');
+        $tabs = $oreon->user->access->getPollerAclConf(array('fields'     => array('id', 'name', 'localhost', 'monitoring_engine'),
+                                                             'order'      => array('name'),
+                                                             'keys'       => array('id'),
+                                                             'conditions' => array('ns_activate' => '1')));
+    }
+
+    # Sync contactgroups to ldap
+    $cgObj = new CentreonContactgroup($pearDB);
+    $cgObj->syncWithLdap();
+
+    # Generate configuration
+    if ($poller == '0') {
+        $config_generate->configPollers();
+    } else {
+        $config_generate->configPollerFromId($poller);
+    }
+
+    # Debug configuration
+    $statusMsg = $okMsg;
+    $statusCode = 0;
+    if ($debug) {
+        $statusCode = printDebug($xml, $tabs);
+    }
+    if ($statusCode == 1) {
+        $statusMsg = $nokMsg;
+    }
+
+    $xml->writeElement("status", $statusMsg);
+    $xml->writeElement("statuscode", $statusCode);
+}  catch (Exception $e) {
+    $xml->writeElement("status", $nokMsg);
+    $xml->writeElement("statuscode", 1);
+    $xml->writeElement("error", $e->getMessage());
+}
+
+/* Restore default error handler */
+restore_error_handler();
+
+/*
+ * Add error form php
+ */
+$xml->startElement('errorsPhp');
+foreach ($generatePhpErrors as $error) {
+    if ($error[0] == 'error') {
+        $errmsg = '<p><span style="color: red;">Error</span><span style="margin-left: 5px;">' . $error[1] . '</span></p>';
+        $xml->writeElement('errorPhp', $errmsg);
+    }
+}
+$xml->endElement();
+
+$xml->endElement();
+header('Content-Type: application/xml');
+header('Cache-Control: no-cache');
+header('Expires: 0');
+header('Cache-Control: no-cache, must-revalidate');
+
+$xml->output();
+
+
+/**
+ * The error handler for get error from PHP
+ *
+ * @see set_error_handler
+ */
+function log_error($errno, $errstr, $errfile, $errline)
+{
+    global $generatePhpErrors;
+    if (!(error_reporting() & $errno)) {
+        return;
+    }
+
+    switch ($errno) {
+        case E_ERROR:
+        case E_USER_ERROR:
+        case E_CORE_ERROR:
+            $generatePhpErrors[] = array('error', $errstr);
+            break;
+        case E_WARNING:
+        case E_USER_WARNING:
+        case E_CORE_WARNING:
+            $generatePhpErrors[] = array('warning', $errstr);
+            break;
+    }
+    return true;
+}
+
 function printDebug($xml, $tabs)
 {
-    global $pearDB, $ret, $nagiosCFGPath, $oreon;
+    global $pearDB, $ret, $oreon, $nagiosCFGPath;
 
     $DBRESULT_Servers = $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1");
     $nagios_bin = $DBRESULT_Servers->fetchRow();
     $DBRESULT_Servers->free();
     $msg_debug = array();
+
     $tab_server = array();
     foreach ($tabs as $tab) {
         if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
             $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
         }
     }
+
     foreach ($tab_server as $host) {
-        $stdout = shell_exec($nagios_bin["nagios_bin"] . " -v ".$nagiosCFGPath.$host["id"]."/nagiosCFG.DEBUG 2>&1");
+        $stdout = shell_exec($nagios_bin["nagios_bin"] . " -v " . $nagiosCFGPath . $host["id"]."/nagiosCFG.DEBUG 2>&1");
         $stdout = htmlspecialchars($stdout, ENT_QUOTES, "UTF-8");
         $msg_debug[$host['id']] = str_replace ("\n", "<br />", $stdout);
         $msg_debug[$host['id']] = str_replace ("Warning:", "<font color='orange'>Warning</font>", $msg_debug[$host['id']]);
@@ -81,7 +221,6 @@ function printDebug($xml, $tabs)
             $msg_debug[$host['id']] .= $line . "<br>";
             $i++;
         }
-
     }
 
     $xml->startElement("debug");
@@ -119,226 +258,3 @@ function printDebug($xml, $tabs)
     $xml->endElement();
     return $returnCode;
 }
-
-/**
- * List of error from php
- */
-global $generatePhpErrors;
-$generatePhpErrors = array();
-
-/**
- * The error handler for get error from PHP
- *
- * @see set_error_handler
- */
-function log_error($errno, $errstr, $errfile, $errline)
-{
-    global $generatePhpErrors;
-    if (!(error_reporting() & $errno)) {
-        return;
-    }
-
-    switch ($errno) {
-        case E_ERROR:
-        case E_USER_ERROR:
-        case E_CORE_ERROR:
-            $generatePhpErrors[] = array('error', $errstr);
-            break;
-        case E_WARNING:
-        case E_USER_WARNING:
-        case E_CORE_WARNING:
-            $generatePhpErrors[] = array('warning', $errstr);
-            break;
-    }
-    return true;
-}
-
-$path = $centreon_path . "www/include/configuration/configGenerate/";
-require_once $path."DB-Func.php";
-$nagiosCFGPath = $centreon_path . "filesGeneration/nagiosCFG/";
-$centreonBrokerPath = $centreon_path . "filesGeneration/broker/";
-$DebugPath = "filesGeneration/nagiosCFG/";
-
-$poller = $_POST['poller'];
-$comment = ($_POST['comment'] == "true") ? 1 : 0;
-$debug = ($_POST['debug'] == "true") ? 1 : 0;
-$generate = ($_POST['generate'] == "true") ? 1 : 0;
-
-$ret = array();
-$ret['host'] = $poller;
-$ret['comment'] = $comment;
-$ret['debug'] = $debug;
-
-chdir($centreon_path . "www");
-require_once $centreon_path . "www/include/configuration/configGenerate/DB-Func.php";
-require_once $centreon_path . "www/class/centreonDB.class.php";
-require_once $centreon_path . "www/class/centreonSession.class.php";
-require_once $centreon_path . "www/class/centreonUtils.class.php";
-require_once $centreon_path . "www/class/centreon.class.php";
-require_once $centreon_path . "www/class/centreonXML.class.php";
-require_once $centreon_path . "www/class/centreonConfigCentreonBroker.php";
-require_once $centreon_path . "www/class/centreonUser.class.php";
-require_once $centreon_path . "www/class/centreonACL.class.php";
-require_once $centreon_path . "www/class/centreonLDAP.class.php";
-require_once $centreon_path . "www/class/centreonContactgroup.class.php";
-require_once $centreon_path . 'www/include/configuration/configGenerate/genCentreonBrokerCorrelation.php';
-
-session_start();
-if ($_POST['sid'] != session_id()) {
-    exit;
-}
-$oreon = $_SESSION['centreon'];
-$centreon = $oreon;
-$xml = new CentreonXML();
-$pearDB = new CentreonDB();
-
-/*  Set new error handler */
-set_error_handler('log_error');
-
-$okMsg = "<b><font color='green'>OK</font></b>";
-$nokMsg = "<b><font color='red'>NOK</font></b>";
-
-$xml->startElement("response");
-try {
-    /*
-     * Check dependancies
-     */
-    $gbArr = manageDependencies();
-
-    /**
-     * Declare Poller ID
-     */
-    global $pollerID;
-
-    /*
-     * Request id and host type.
-     */
-    if ($generate) {
-        $pearDBO = new CentreonDB('centstorage');
-        $tabs = $oreon->user->access->getPollerAclConf(array('fields'     => array('id', 'name', 'localhost', 'monitoring_engine'),
-                                                             'order'      => array('name'),
-                                                             'keys'       => array('id'),
-                                                             'conditions' => array('ns_activate' => '1')));
-        $cgObj = new CentreonContactgroup($pearDB);
-        $cgObj->syncWithLdap();
-        foreach ($tabs as $tab){
-            if (isset($poller) && ($tab['id'] == $poller || $poller == 0)) {
-                $pollerID = $tab['id'];
-                unset($DBRESULT2);
-                require $path."genCGICFG.php";
-                require $path."genNagiosCFG.php";
-                require $path."genNdomod.php";
-                require $path."genNdo2db.php";
-                require $path."genCentreonBroker.php";
-                require $path."genNagiosCFG-DEBUG.php";
-                require $path."genResourceCFG.php";
-                require $path."genTimeperiods.php";
-                require $path."genCommands.php";
-                require $path."genConnectors.php";
-                require $path."genContacts.php";
-                require $path."genContactTemplates.php";
-                require $path."genContactGroups.php";
-                require $path."genHostTemplates.php";
-                require $path."genHosts.php";
-                require $path."genHostGroups.php";
-                require $path."genServiceTemplates.php";
-                require $path."genServices.php";
-                require $path."genServiceGroups.php";
-                require $path."genEscalations.php";
-                require $path."genDependencies.php";
-                require $path."centreon_pm.php";
-
-                if ($tab['localhost']) {
-                    $flag_localhost = $tab['localhost'];
-
-                    /*
-                     * Meta Services Generation
-                     */
-                    if ($files = glob($path . "metaService/*.php")) {
-                        foreach ($files as $filename) {
-                            include $filename;
-                        }
-                    }
-                }
-
-                /*
-                 * Module Generation
-                 */
-                foreach ($centreon->modules as $key => $value) {
-                    $addModule = true;
-                    if (function_exists('zend_loader_enabled') && (zend_loader_file_encoded() == true)) {
-                        $module_license_validity = zend_loader_install_license ($centreon_path . "www/modules/".$key."license/merethis_lic.zl", true);
-                        if ($module_license_validity == false)
-                            $addModule = false;
-                    }
-
-                    if ($addModule) {
-                        if ($value["gen"] && $files = glob($centreon_path . "www/modules/".$key."/generate_files/*.php")) {
-                            foreach ($files as $filename)
-                                include $filename;
-                        }
-                    }
-                }
-                unset($generatedHG);
-                unset($generatedSG);
-                unset($generatedS);
-            }
-        }
-        require_once $path."genIndexData.php";
-
-        /*
-        * Generate correlation file
-        */
-        $brokerObj = new CentreonConfigCentreonBroker($pearDB);
-        $correlationPath = $brokerObj->getCorrelationFile();
-        $localId = getLocalhostId();
-        if (false !== $correlationPath && false !== $localId) {
-            $tmpFilename = $centreonBrokerPath . '/' . $localId . '/';
-    	    $query = "SELECT id FROM nagios_server";
-    	    $res = $pearDB->query($query);
-            $pollers = array();
-    	    while ($row = $res->fetchRow()) {
-                generateCentreonBrokerCorrelation($brokerObj, $tmpFilename, $row['id'], $pearDB);
-                $pollers[] = $row['id'];
-    	    }
-            generateCentreonBrokerCorrelationMain($tmpFilename, $correlationPath, $pollers);
-        }
-    }
-
-    $statusMsg = $okMsg;
-    $statusCode = 0;
-    if ($debug) {
-        $statusCode = printDebug($xml, $tabs);
-    }
-    if ($statusCode == 1) {
-        $statusMsg = $nokMsg;
-    }
-    $xml->writeElement("status", $statusMsg);
-    $xml->writeElement("statuscode", $statusCode);
-} catch (Exception $e) {
-    $xml->writeElement("status", $nokMsg);
-    $xml->writeElement("statuscode", 1);
-    $xml->writeElement("error", $e->getMessage());
-}
-/* Restore default error handler */
-restore_error_handler();
-
-/*
- * Add error form php
- */
-$xml->startElement('errorsPhp');
-foreach ($generatePhpErrors as $error) {
-    if ($error[0] == 'error') {
-        $errmsg = '<p><span style="color: red;">Error</span><span style="margin-left: 5px;">' . $error[1] . '</span></p>';
-        $xml->writeElement('errorPhp', $errmsg);
-    }
-}
-$xml->endElement();
-
-$xml->endElement();
-header('Content-Type: application/xml');
-header('Cache-Control: no-cache');
-header('Expires: 0');
-header('Cache-Control: no-cache, must-revalidate');
-
-$xml->output();

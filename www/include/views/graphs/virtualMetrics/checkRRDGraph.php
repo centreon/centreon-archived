@@ -49,7 +49,8 @@ function checkRRDGraphData($v_id = null, $force = 0) {
         /**
          * Create XML Request Objects
          */
-        $obj = new CentreonGraph(session_id(), NULL, 0, 1);
+        $centreon = & $_SESSION["centreon"];
+        $obj = new CentreonGraph($centreon->user->get_id(), NULL, 0, 1);
 
         /**
          * We check only one curve

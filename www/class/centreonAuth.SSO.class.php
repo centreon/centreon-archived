@@ -1,6 +1,6 @@
 <?php
 
-include_once ($centreon_path."/www/class/centreonAuth.class.php");
+include_once (_CENTREON_PATH_."/www/class/centreonAuth.class.php");
 
 class CentreonAuthSSO extends CentreonAuth {
 

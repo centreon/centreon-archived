@@ -41,14 +41,14 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	# start quickSearch form
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
-
-	if (isset($search))
+        include_once("./class/centreonUtils.class.php");
+    $search = '';
+    if (isset($_POST['searchM']) && $_POST['searchM']) {
+        $search = $_POST['searchM'];
 		$res = $pearDB->query("SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation WHERE (img_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dir_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') AND img_img_id = img_id AND dir_dir_parent_id = dir_id");
-	else
+    } else {
 		$res = $pearDB->query("SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation WHERE img_img_id = img_id AND dir_dir_parent_id = dir_id");
+    }
 	$tmp = $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -75,7 +75,7 @@
 		$rq = "SELECT * FROM view_img_dir LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id LEFT JOIN view_img ON img_img_id = img_id ORDER BY dir_alias, img_name LIMIT ".$num * $limit.", ".$limit;
 	$res = $pearDB->query($rq);
 
-	$form = new HTML_QuickForm('form', 'GET', "?p=".$p);
+	$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
 
 	/*
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
@@ -104,9 +104,9 @@
 					"RowMenu_ImgLink"=>"?p=".$p."&o=ci&img_id=".$elem['img_id'],
 					"RowMenu_DirLink"=>"?p=".$p."&o=cd&dir_id=".$elem['dir_id'],
 					"RowMenu_dir"=>$elem["dir_name"],
-					"RowMenu_img"=>html_entity_decode($elem["dir_alias"]."/".$elem["img_path"], ENT_QUOTES, "UTF-8"),
-					"RowMenu_name"=>html_entity_decode($elem["img_name"], ENT_QUOTES, "UTF-8"),
-					"RowMenu_comment"=>html_entity_decode($elem["img_comment"], ENT_QUOTES, "UTF-8") );
+					"RowMenu_img"=>CentreonUtils::escapeSecure(html_entity_decode($elem["dir_alias"]."/".$elem["img_path"], ENT_QUOTES, "UTF-8")),
+					"RowMenu_name"=>CentreonUtils::escapeSecure(html_entity_decode($elem["img_name"], ENT_QUOTES, "UTF-8")),
+					"RowMenu_comment"=>CentreonUtils::escapeSecure(html_entity_decode($elem["img_comment"], ENT_QUOTES, "UTF-8")));
 			$elemArr[$elem['dir_id']]["elem"][$i] = $rowOpt;
 			$elemArr[$elem['dir_id']]["head"]["counter"]++;
 		}
@@ -174,6 +174,7 @@
 	$tpl->assign('p', $p);
 	$tpl->assign('session_id', session_id());
 	$tpl->assign('syncDir', _("Synchronize Media Directory"));
+    $tpl->assign('searchM', $search);
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);

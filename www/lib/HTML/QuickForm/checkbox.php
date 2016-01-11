@@ -123,7 +123,7 @@ class HTML_QuickForm_checkbox extends HTML_QuickForm_input
      */
     function toHtml()
     {
-        if (0 == strlen($this->_text)) {
+        if (0 == strlen((string)$this->_text)) {
             $label = '';
         } elseif ($this->_flagFrozen) {
             $label = $this->_text;

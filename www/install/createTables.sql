@@ -443,6 +443,9 @@ CREATE TABLE `cfg_centreonbroker` (
   `ns_nagios_server` int(11) NOT NULL,
   `event_queue_max_size` int(11) DEFAULT '50000',
   `command_file` varchar(255),
+  `retention_path` varchar(255),
+  `stats_activate` enum('0','1') DEFAULT '1',
+  `correlation_activate` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1055,6 +1058,7 @@ CREATE TABLE `custom_view_user_relation` (
   `usergroup_id` int(11) DEFAULT NULL,
   `locked` tinyint(6) DEFAULT '0',
   `is_owner` tinyint(6) DEFAULT '0',
+  `is_consumed` int(1) NOT NULL DEFAULT 1,
   UNIQUE KEY `view_user_unique_index` (`custom_view_id`,`user_id`,`usergroup_id`),
   KEY `fk_custom_views_user_id` (`user_id`),
   KEY `fk_custom_views_usergroup_id` (`usergroup_id`),
@@ -1488,15 +1492,6 @@ CREATE TABLE `giv_graphs_template` (
   `lower_limit` float DEFAULT NULL,
   `upper_limit` float DEFAULT NULL,
   `size_to_max` tinyint(6) NOT NULL DEFAULT '0',
-  `bg_grid_color` varchar(200) DEFAULT NULL,
-  `bg_color` varchar(200) DEFAULT NULL,
-  `police_color` varchar(200) DEFAULT NULL,
-  `grid_main_color` varchar(200) DEFAULT NULL,
-  `grid_sec_color` varchar(200) DEFAULT NULL,
-  `contour_cub_color` varchar(200) DEFAULT NULL,
-  `col_arrow` varchar(200) DEFAULT NULL,
-  `col_top` varchar(200) DEFAULT NULL,
-  `col_bot` varchar(200) DEFAULT NULL,
   `default_tpl1` enum('0','1') DEFAULT NULL,
   `stacked` enum('0','1') DEFAULT NULL,
   `split_component` enum('0','1') DEFAULT '0',
@@ -1843,7 +1838,7 @@ CREATE TABLE `on_demand_macro_host` (
   `host_macro_name` varchar(255) NOT NULL,
   `host_macro_value` varchar(4096) NOT NULL,
   `is_password` tinyint(2) DEFAULT NULL,
-  `desciption` text DEFAULT NULL,
+  `description` text DEFAULT NULL,
   `host_host_id` int(11) NOT NULL,
   `macro_order` int(11) NULL DEFAULT 0,
   PRIMARY KEY (`host_macro_id`),
@@ -1858,7 +1853,7 @@ CREATE TABLE `on_demand_macro_service` (
   `svc_macro_name` varchar(255) NOT NULL,
   `svc_macro_value` varchar(4096) NOT NULL,
   `is_password` tinyint(2) DEFAULT NULL,
-  `desciption` text DEFAULT NULL,
+  `description` text DEFAULT NULL,
   `svc_svc_id` int(11) NOT NULL,
   `macro_order` int(11) NULL DEFAULT 0,
   PRIMARY KEY (`svc_macro_id`),
@@ -2028,14 +2023,14 @@ CREATE TABLE `session` (
 CREATE TABLE `timeperiod` (
   `tp_id` int(11) NOT NULL AUTO_INCREMENT,
   `tp_name` varchar(200) DEFAULT NULL,
-  `tp_alias` varchar(200) DEFAULT NULL,
-  `tp_sunday` varchar(200) DEFAULT NULL,
-  `tp_monday` varchar(200) DEFAULT NULL,
-  `tp_tuesday` varchar(200) DEFAULT NULL,
-  `tp_wednesday` varchar(200) DEFAULT NULL,
-  `tp_thursday` varchar(200) DEFAULT NULL,
-  `tp_friday` varchar(200) DEFAULT NULL,
-  `tp_saturday` varchar(200) DEFAULT NULL,
+  `tp_alias` varchar(20) DEFAULT NULL,
+  `tp_sunday` varchar(2048) DEFAULT NULL,
+  `tp_monday` varchar(2048) DEFAULT NULL,
+  `tp_tuesday` varchar(2048) DEFAULT NULL,
+  `tp_wednesday` varchar(2048) DEFAULT NULL,
+  `tp_thursday` varchar(2048) DEFAULT NULL,
+  `tp_friday` varchar(2048) DEFAULT NULL,
+  `tp_saturday` varchar(2048) DEFAULT NULL,
   PRIMARY KEY (`tp_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2110,7 +2105,7 @@ CREATE TABLE `topology_JS` (
   PRIMARY KEY (`id_t_js`),
   KEY `id_page` (`id_page`),
   KEY `id_page_2` (`id_page`,`o`),
-  CONSTRAINT `topology_JS_ibfk_1` FOREIGN KEY (`id_page`) REFERENCES `topology` (`topology_page`) ON DELETE CASCADE
+  CONSTRAINT `topology_JS_ibfk_1` FOREIGN KEY (`id_page`) REFERENCES `topology` (`topology_page`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -2192,10 +2187,19 @@ CREATE TABLE `traps_service_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `traps_group` (
   `traps_group_id` int(11) DEFAULT NULL,
-  `traps_id` int(11) DEFAULT NULL,
+  `traps_group_name` varchar(255) NOT NULL,
+  KEY `traps_group_id` (`traps_group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `traps_group_relation` (
+  `traps_group_id` int(11) NOT NULL,
+  `traps_id` int(11) NOT NULL,
   KEY `traps_group_id` (`traps_group_id`),
   KEY `traps_id` (`traps_id`),
-  CONSTRAINT `traps_group_ibfk_1` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE
+  CONSTRAINT `traps_group_relation_ibfk_1` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE,
+  CONSTRAINT `traps_group_relation_ibfk_2` FOREIGN KEY (`traps_group_id`) REFERENCES `traps_group` (`traps_group_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -2394,6 +2398,18 @@ CREATE TABLE `on_demand_macro_command` (
   KEY `command_command_id` (`command_command_id`),
   CONSTRAINT `on_demand_macro_command_ibfk_1` FOREIGN KEY (`command_command_id`) REFERENCES `command` (`command_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `timezone` (
+  `timezone_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `timezone_name` varchar(200) NOT NULL,
+  `timezone_offset` varchar(200) NOT NULL,
+  `timezone_dst_offset` varchar(200) NOT NULL,
+  `timezone_description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`timezone_id`),
+  UNIQUE KEY `name` (`timezone_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

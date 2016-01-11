@@ -31,27 +31,25 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
  * Include config file
  */
-include "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-require_once $centreon_path . '/www/class/centreon.class.php';
-require_once $centreon_path . '/www/class/centreonACL.class.php';
-require_once $centreon_path . '/www/class/centreonGraph.class.php';
-require_once $centreon_path . '/www/class/centreonDB.class.php';
-require_once $centreon_path . '/www/class/centreonBroker.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreon.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonACL.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonGraph.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonBroker.class.php';
 
 
 $pearDB = new CentreonDB();
 
-$mySessionId = isset($_GET['session_id']) ? $_GET['session_id'] : '' ;
-
+//$mySessionId = isset($_GET['session_id']) ? $_GET['session_id'] : '' ;
+session_start();
+$mySessionId = session_id();
 /**
  * Checks for token
  */
@@ -63,8 +61,6 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
     				AND `contact_autologin_key` = '".$token."' LIMIT 1");
     if ($DBRESULT->numRows()) {
         $row = $DBRESULT->fetchRow();
-        session_start();
-        $mySessionId = session_id();
         $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
         if (!$res->numRows()) {
             $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".$mySessionId."', '".$row["contact_id"]."', '', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
@@ -76,9 +72,9 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
 }
 
 $index = isset($_GET['index']) ? $_GET['index'] : 0;
-
+$pearDBO = new CentreonDB("centstorage");
 if (isset($_GET["hostname"]) && isset($_GET["service"])) {
-    $pearDBO = new CentreonDB("centstorage");
+
     $DBRESULT = $pearDBO->query("SELECT `id`
                                  FROM index_data
     				 WHERE host_name = '".$pearDB->escape($_GET["hostname"])."'
@@ -108,13 +104,8 @@ $contactId = $row['contact_id'];
 
 if (!$isAdmin) {
     $acl = new CentreonACL($contactId, $isAdmin);
-    $brokerObj = new CentreonBroker($pearDB);
-    if ($brokerObj->getBroker() == 'broker') {
-        $dbmon = new CentreonDB('centstorage');
-    } else {
-        $dbmon = new CentreonDB('ndo');
-    }
     $dbstorage = new CentreonDB('centstorage');
+
     $aclGroups = $acl->getAccessGroupsString();
     $sql = "SELECT host_id, service_id FROM index_data WHERE id = " .$pearDB->escape($index);
     $res = $dbstorage->query($sql);
@@ -125,37 +116,30 @@ if (!$isAdmin) {
     unset($res);
     $hostId = $row['host_id'];
     $serviceId = $row['service_id'];
-    $sql = "SELECT service_id 
-            FROM centreon_acl 
-            WHERE host_id = $hostId
-            AND service_id = $serviceId
-            AND group_id IN ($aclGroups)";
-    $res = $dbmon->query($sql);
+    $sql = "SELECT service_id FROM centreon_acl WHERE host_id = $hostId AND service_id = $serviceId AND group_id IN ($aclGroups)";
+    $res = $pearDBO->query($sql);
     if (!$res->numRows()) {
         die('Access denied');
     }
 }
 
+/* Check security session */
+if (!CentreonSession::checkSession($mySessionId, $pearDB)) {
+    CentreonGraph::displayError();
+}
+
+require_once _CENTREON_PATH_."www/include/common/common-Func.php";
+
 /**
  * Create XML Request Objects
  */
-$obj = new CentreonGraph($mySessionId, $index, 0, 1);
-
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
-    $obj->displayError();
-}
-
-require_once $centreon_path."www/include/common/common-Func.php";
+$obj = new CentreonGraph($contactId, $index, 0, 1);
 
 /**
  * Set arguments from GET
  */
 $obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );
 $obj->setRRDOption("end",   $obj->checkArgument("end", $_GET, time()) );
-
-$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
 
 /**
  * Template Management
@@ -189,11 +173,16 @@ $obj->setOption("comment_time");
  */
 $obj->createLegend();
 
+$obj->setColor('BACK', '#FFFFFF');
+$obj->setColor('FRAME', '#FFFFFF');
+$obj->setColor('SHADEA', '#EFEFEF');
+$obj->setColor('SHADEB', '#EFEFEF');
+$obj->setColor('ARROW', '#FF0000');
+
 /**
  * Display Images Binary Data
  */
 $obj->displayImageFlow();
-
 
 /**
  * Closing session

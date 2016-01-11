@@ -147,9 +147,9 @@
 	$form->addElement('checkbox', 'poller_stats', _("Display Top Counter pollers statistics"));
 	$form->addElement('checkbox', 'poller_listing', _("Display Poller Listing"));
 
-    $form->addElement('checkbox', 'all_service', _(""));
-    $form->addElement('checkbox', 'all_host', _(""));
-    $form->addElement('checkbox', 'all_engine', _(""));
+    $form->addElement('checkbox', 'all_service', "");
+    $form->addElement('checkbox', 'all_host', "");
+    $form->addElement('checkbox', 'all_engine', "");
     
     
 	$form->setDefaults(array("hostComment" => 1 ));
@@ -162,8 +162,8 @@
 	$form->addElement('header', 'global_access', _("Global Functionalities Access"));
 
     $ams1 = $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
@@ -214,11 +214,11 @@
 	}
 	// Add an Action Group
 	if ($o == "a") {
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	} else {
-	    $subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+	    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	}
 
 	$valid = false;

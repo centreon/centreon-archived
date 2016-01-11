@@ -31,15 +31,10 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once $centreon_path . "/www/class/centreonGraphService.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonGraphService.class.php";
 require_once dirname(__FILE__) . "/webService.class.php";
 
 class CentreonMetric extends CentreonWebService {
@@ -54,12 +49,7 @@ class CentreonMetric extends CentreonWebService {
     public function __construct()
     {
         parent::__construct();
-        $brk = new CentreonBroker($this->pearDB);
-        if ($brk->getBroker() == 'broker') {
-            $this->pearDBMonitoring = new CentreonDB('centstorage');
-        } else {
-            $this->pearDBMonitoring = new CentreonDB('ndo');
-        }
+        $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
 
     /**
@@ -162,21 +152,8 @@ class CentreonMetric extends CentreonWebService {
             try {
                 /* Get index data */
                 $indexData = CentreonGraphService::getIndexId($hostId, $serviceId, $this->pearDBMonitoring);
-                /* Create a virtual session for graph */
-                if (false === is_null($this->token)) {
-                    $sessionId = $this->token;
-                    $this->pearDB->query("INSERT INTO session (session_id, user_id) VALUES ('" . $this->token . "', " . $centreon->user->user_id . ")");
-                } else {
-                    $sessionId = session_id();
-                }
-                $graph = new CentreonGraphService($indexData, $sessionId);
-                if (false === is_null($this->token)) {
-                    $this->pearDB->query("DELETE FROM session WHERE session_id = '" . $this->token . "'");
-                }
+                $graph = new CentreonGraphService($indexData, $userId);
             } catch (Exception $e) {
-                if (false === is_null($this->token)) {
-                    $this->pearDB->query("DELETE FROM session WHERE session_id = '" . $this->token . "'");
-                }
                 throw new RestNotFoundException("Graph not found");
             }
             $graph->setRRDOption("start", $start);

@@ -36,7 +36,7 @@
  * 
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
 header("Content-type: text/css");
 
@@ -81,5 +81,7 @@ $color_list_down_hover = "#dfbbbb";
 $bg_image_header = "../Images/bg_header_bluegray.gif";
 $menu1_bgimg = "#df9403";
 
-require_once $centreon_path . "www/Themes/Centreon-2/color_css.php";
+$menu2_color = "#ffffff";
+
+require_once _CENTREON_PATH_ . "www/Themes/Centreon-2/color_css.php";
 ?>

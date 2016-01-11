@@ -18,8 +18,9 @@
                             {$args.name}
                         </td>
                         <td class="FormRowValue">
-                            <input type="text" id="desc_{$key}" size="90" value="{$args.desciption}">
+                            <input type="text" id="desc_{$key}" size="90" value="{$args.description}">
                             <input type="hidden" id="macro_{$key}" value="{$args.name}"> 
+                            <input type="hidden" id="type_{$key}" value="{$args.type}"> 
                         </td>
                     </tr>
                 {/foreach}

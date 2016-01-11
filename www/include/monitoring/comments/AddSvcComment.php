@@ -37,8 +37,8 @@ if (!isset($centreon)) {
 	exit();
 }
 	
-include_once $centreon_path."www/class/centreonGMT.class.php";
-include_once $centreon_path."www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_."www/class/centreonDB.class.php";
 
 /*
  * Init GMT class
@@ -46,7 +46,7 @@ include_once $centreon_path."www/class/centreonDB.class.php";
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-$hostStr = $oreon->user->access->getHostsString("ID", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
+$hostStr = $oreon->user->access->getHostsString("ID", $pearDBO);
 
 
 if ($oreon->user->access->checkAction("service_comment")) {
@@ -75,20 +75,18 @@ if ($oreon->user->access->checkAction("service_comment")) {
 	 * elements list we need on the page
 	 */
 
-	$query = "SELECT host_id, host_name " .
-			"FROM `host` " .
-			"WHERE host_register = '1' " .
-			$oreon->user->access->queryBuilder("AND", "host_id", $hostStr) .
-			"ORDER BY host_name";
+	$query = "SELECT host_id, host_name FROM `host` WHERE host_register = '1' ".$centreon->user->access->queryBuilder("AND", "host_id", $hostStr)."ORDER BY host_name";
 	$DBRESULT = $pearDB->query($query);
 	$hosts = array(NULL => NULL);
-	while ($row = $DBRESULT->fetchRow())
+	while ($row = $DBRESULT->fetchRow()) {
 		$hosts[$row['host_id']] = $row['host_name'];
+	}
 	$DBRESULT->free();
 
 	$services = array();
-	if (isset($host_id))
-		$services = $oreon->user->access->getHostServices(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO), $host_id);
+	if (isset($host_id)) {
+		$services = $centreon->user->access->getHostServices(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO), $host_id);
+	}
 
 	$debug = 0;
 	$attrsTextI		= array("size"=>"3");
@@ -120,26 +118,32 @@ if ($oreon->user->access->checkAction("service_comment")) {
 	$form->addRule('service_id', _("Required Field"), 'required');
 	$form->addRule('comment', _("Required Field"), 'required');
 
-	$subA = $form->addElement('submit', 'submitA', _("Save"));
-	$res = $form->addElement('reset', 'reset', _("Reset"));
+	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
   	$form->setDefaults($data);
 
   	$valid = false;
 	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
-		if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array(0, 1)))
-			$_POST["persistant"] = 0;
-		if (!isset($_POST["comment"]))
-			$_POST["comment"] = 0;
+		if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array('0', '1'))) {
+	        $_POST["persistant"] = '0';
+	    }
+		if (!isset($_POST["comment"])) {
+		    $_POST["comment"] = 0;
+        }
 		AddSvcComment($_POST["host_id"], $_POST["service_id"], $_POST["comment"], $_POST["persistant"]);
 		$valid = true;
-		require_once($path."viewServiceComment.php");
+		require_once($path."listComment.php");
 	} else {
-		# Smarty template Init
+		/*
+		 * Smarty template Init
+		 */
 		$tpl = new Smarty();
 		$tpl = initSmartyTpl($path, $tpl, "template/");
 
-		#Apply a template definition
+		/* 
+		 * Apply a template definition
+		 */
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -150,3 +154,4 @@ if ($oreon->user->access->checkAction("service_comment")) {
 		$tpl->display("AddSvcComment.ihtml");
     }
 }
+?>

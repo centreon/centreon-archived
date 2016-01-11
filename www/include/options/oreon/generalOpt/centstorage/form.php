@@ -102,31 +102,20 @@ $form->addElement('header', 'enable', _("Engine Status"));
 $form->addElement('header', 'insert', _("Resources storage"));
 $form->addElement('header', 'folder', _("Storage folders"));
 $form->addElement('header', 'retention', _("Retention durations"));
-$form->addElement('header', 'Purge', _("Purge options"));
 $form->addElement('header', 'Input', _("Input treatment options"));
-$form->addElement('header', 'coreOptions', _("Censtorage Core Options"));
-$form->addElement('header', 'Drop', _("Drop possibility after parsing performance data"));
-$form->addElement('header', 'logs', _("Logs Integration Properties"));
 $form->addElement('header', 'reporting', _("Dashboard Integration Properties"));
 $form->addElement('header', 'audit', _("Audit log activation"));
 
 /*
  * inputs declaration
  */
-$form->addElement('checkbox', 'enable_centstorage', _("Enable Centstorage Engine (require restart of centstorage)"));
 $form->addElement('text', 'RRDdatabase_path', _("Path to RRDTool Database For Metrics"), $attrsText);
 $form->addElement('text', 'RRDdatabase_status_path', _("Path to RRDTool Database For Status"), $attrsText);
 $form->addElement('text', 'RRDdatabase_nagios_stats_path', _("Path to RRDTool Database For Monitoring Engine Statistics"), $attrsText);
 $form->addElement('text', 'len_storage_rrd', _("RRDTool database size"), $attrsText2);
 $form->addElement('text', 'len_storage_mysql', _("Retention Duration for Data in MySQL"), $attrsText2);
-$form->addElement('checkbox', 'autodelete_rrd_db', _("RRDTool auto delete"));
-$form->addElement('text', 'purge_interval', _("Purge check interval"), $attrsText2);
-$form->addElement('checkbox', 'centstorage_auto_drop', _("Drop Data in another file"));
-$form->addElement('text', 'centstorage_drop_file', _("Drop file"), $attrsText);
-    
-$storage_type = array(0 => "RRDTool", 2 => _("RRDTool & MySQL"));
-$form->addElement('select', 'storage_type', _("Storage Type"), $storage_type);
-$form->addElement('checkbox', 'archive_log', _("Archive logs of monitoring engine"));
+$form->addElement('text', 'len_storage_downtimes', _("Retention Duration for Downtimes"), $attrsText2);
+$form->addElement('text', 'len_storage_comments', _("Retention Duration for Comments"), $attrsText2);
 $form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
 $form->addElement('text', 'reporting_retention', _("Reporting retention duration (dashboard)"), $attrsText2);
 $form->addElement('checkbox', 'audit_log_option', _("Enable/Disable audit logs"));
@@ -153,10 +142,10 @@ $form->applyFilter('RRDdatabase_nagios_stats_path', 'slash');
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path.'centstorage/', $tpl);
 $form->setDefaults($gopt);
-		$centreon->initOptGen($pearDB);
+$centreon->initOptGen($pearDB);
 
-$subC = $form->addElement('submit', 'submitC', _("Save"));
-$form->addElement('reset', 'reset', _("Reset"));
+$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 $valid = false;
 
 if ($form->validate())	{
@@ -176,7 +165,7 @@ if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ods'"));
+$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ods'", 'class' => 'btc bt_info'));
 
 /*
  * Apply a template definition
@@ -186,10 +175,7 @@ $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 
-$tpl->assign("genOpt_ODS_config", _("Centstorage Configuration"));
 $tpl->assign("ods_log_retention_unit", _("days"));
-$tpl->assign("ods_sleep_time_expl", _("in seconds - Must be higher than 10"));
-$tpl->assign("ods_purge_interval_expl", _("in seconds - Must be higher than 2"));
 
     // prepare help texts
 $helptext = "";

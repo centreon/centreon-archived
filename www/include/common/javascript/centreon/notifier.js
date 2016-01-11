@@ -41,7 +41,7 @@
                 action: "stop"
             }
         }).done(function() {
-            jQuery("#sound_status").attr("src", "./img/icones/24x24/speaker_off.png");
+            jQuery("#sound_status").attr("src", "./img/icons/speaker_off.png");
             jQuery("#sound_status").attr("onClick", "jQuery().centreon_notify_start();");
         });
     }
@@ -53,7 +53,7 @@
                 action: "start"
             }
         }).done(function() {
-            jQuery("#sound_status").attr("src", "./img/icones/24x24/speaker_on.png");
+            jQuery("#sound_status").attr("src", "./img/icons/speaker_on.png");
             jQuery("#sound_status").attr("onClick", "jQuery().centreon_notify_stop();");
         });
     }

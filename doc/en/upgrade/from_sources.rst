@@ -4,10 +4,6 @@
 From sources
 ============
 
-.. warning::
-
-  Before upgrading Centreon, please make a database backup.
-
 In order to upgrade Centreon from sources, :ref:`download <downloads>` the
 latest Centreon package.
 
@@ -40,7 +36,7 @@ go back to [Step 01] and install the prerequisites::
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.6.0                                   #
+  #                                    v2.6.6                                   #
   #                                                                             #
   #                               infos@centreon.com                            #
   #                                                                             #
@@ -172,7 +168,7 @@ The path to monitoring engine log directory.
 
 For example:
 
-* Centeron Engine : */var/log/centreon-engine*
+* Centreon Engine : */var/log/centreon-engine*
 * Nagios : */var/log/nagios*
 
 ::
@@ -449,7 +445,7 @@ The end of upgrade::
   #                 Go to the URL : http://localhost/centreon/                  #
   #                   	     to finish the setup                                #
   #                                                                             #
-  #                  Report bugs at http://forge.centreon.com                   #
+  #           Report bugs at https://github.com/centreon/centreon/issues        #
   #                                                                             #
   #                         Thanks for using Centreon.                          #
   #                          -----------------------                            #

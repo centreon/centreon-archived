@@ -31,26 +31,30 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon))
-		exit();
+if (!isset($centreon)) {
+	exit();		
+}
 
-	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
-	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
+$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
+if (!isset($oreon->optGen["AjaxFirstTimeReloadStatistic"]) || $oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
+    $tFS = 10;
+} else {
+    $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+}
+if (!isset($oreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
+    $tFM = 10;
+} else {
+    $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+}
 
-	$sid = session_id();
-	$time = time();
+$sid = session_id();
+$time = time();
 
-?>
-<script type="text/javascript">
+?><script type="text/javascript">
 var _debug = 0;
-
 
 var _addrXML = "./include/monitoring/status/HostGroups/xml/<?php print $centreon->broker->getBroker(); ?>/hostGroupXML.php?";
 var _addrXSL = "./include/monitoring/status/HostGroups/xsl/hostGroup.xsl";
@@ -61,7 +65,7 @@ function set_header_title(){
 	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
 	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
 
-	if(document.getElementById('hostGroup_name')){
+	if (document.getElementById('hostGroup_name')) {
 		var h = document.getElementById('hostGroup_name');
 		h.innerHTML = "<?php echo _("Host Group")?>";
 	  	h.indice = 'hostGroup_name';
@@ -92,8 +96,8 @@ function set_header_title(){
 function goM(_time_reload, _sid ,_o) {
 	_lock = 1;
 	var proc = new Transformation();
-
-	proc.setXml(_addrXML+"?"+'&sid='+_sid+'&search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&instance='+_instance+'&time=<?php print time(); ?>')
+    var _search = jQuery('input[name="searchHG"]').val();
+    proc.setXml(_addrXML+'search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&instance='+_instance+'&time=<?php print time(); ?>')
 	proc.setXslt(_addrXSL);
 	proc.setCallback(monitoringCallBack);
 	proc.transform("forAjax");

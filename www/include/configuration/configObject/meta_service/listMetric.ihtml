@@ -1,7 +1,7 @@
-<table class="ListTable">
-	<tr class="ListHeader">
-	<td class="ListColLeft">
-		<img src='./img/icones/16x16/workstation2.gif'>&nbsp;{$meta.meta} -	{$meta.name}&nbsp;({$meta.calc_type})
+<table class="ListTable table">
+	<tr class="list_lvl_1">
+	<td class="ListColLvl1_name">
+		<h4>{$meta.meta} -	{$meta.name}&nbsp;({$meta.calc_type})</h4>
 	</td>
 	</tr>
 </table>
@@ -46,7 +46,7 @@
 		{/section}
 	</table>
 	<table class="ToolbarTable table">
-		<tr>
+		<tr class="ToolbarTR">
 			{ if $mode_access == 'w' }
 			<td>
 				{$msg.options} {$form.o2.html}

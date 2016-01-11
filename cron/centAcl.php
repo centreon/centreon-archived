@@ -40,12 +40,12 @@ define('LDAP_UPDATE_PERIOD', 3600);
 
 include_once "DB.php";
 
-include_once "@CENTREON_ETC@/centreon.conf.php";
-include_once $centreon_path . "/cron/centAcl-Func.php";
-include_once $centreon_path . "/www/class/centreonDB.class.php";
-include_once $centreon_path . "/www/class/centreonLDAP.class.php";
-include_once $centreon_path . "/www/class/centreonMeta.class.php";
-include_once $centreon_path . "/www/class/centreonContactgroup.class.php";
+require_once realpath(dirname(__FILE__) . "/../config/centreon.config.php");
+include_once _CENTREON_PATH_ . "/cron/centAcl-Func.php";
+include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_ . "/www/class/centreonLDAP.class.php";
+include_once _CENTREON_PATH_ . "/www/class/centreonMeta.class.php";
+include_once _CENTREON_PATH_ . "/www/class/centreonContactgroup.class.php";
 
 $centreonDbName = $conf_centreon['db'];
 
@@ -232,6 +232,7 @@ try {
         "AND acl_groups.acl_group_activate = '1' " .
         "AND (acl_groups.acl_group_changed = '1' " .
         "OR acl_resources.changed = '1')";
+
     $DBRESULT1 = $pearDB->query($query);
     while ($result = $DBRESULT1->fetchRow()) {
         $tabGroups[$result["acl_group_id"]] = 1;
@@ -431,7 +432,7 @@ try {
         /** ***********************************************
          * Begin to build ACL
          */
-        $strBegin = "INSERT INTO `centreon_acl` ( `host_name` , `service_description` , `host_id` , `service_id`,`group_id` ) VALUES ";
+        $strBegin = "INSERT INTO `centreon_acl` (`host_id` , `service_id`,`group_id` ) VALUES ";
         $cpt = 0;
         foreach ($tabGroups as $acl_group_id => $acl_res_id) {
             $tabElem = array();
@@ -554,15 +555,6 @@ try {
                     }
                     unset($tab);
                 }
-
-                // Purge all elements not visible
-                foreach ($tabElem as $key => $value) {
-                    if (isset($Host[$hostNameCache[$key]])) {
-                        ;
-                    } else {
-                        unset($tabElem[$key]);
-                    }
-                }
                 unset($Host);
                     
                 /*
@@ -582,14 +574,14 @@ try {
                             if ($str != "") {
                                 $str .= ", ";
                             }
-                            $str .= " ('".$pearDBO->escape($host)."', NULL, {$singleId}, NULL, {$acl_group_id}) ";
+                            $str .= " ({$singleId}, NULL, {$acl_group_id}) ";
                         }
                         foreach ($svc_list as $desc => $t) {
                             if ($str != "") {
                                 $str .= ', ';
                             }
                             $id_tmp = preg_split("/\,/", $t);
-                            $str .= "('" . $host . "', '" . addslashes($desc) . "', '" . $id_tmp[0] . "' , '" . $id_tmp[1] . "' , " . $acl_group_id . ") ";
+                            $str .= "('" . $id_tmp[0] . "' , '" . $id_tmp[1] . "' , " . $acl_group_id . ") ";
                             $i++;
                             if ($i >= 1000) {
                                 $pearDBO->query($strBegin . $str);

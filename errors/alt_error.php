@@ -31,13 +31,10 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */ 
  
-	if (!isset($oreon))
-		exit();
-		
-	echo "<div class='msg' align='center'>"._("You are not allowed to reach this page")."</div>";
-?>
+if (!isset($centreon)) {
+	exit();
+}
+	
+echo "<div class='msg' align='center'>"._("You are not allowed to reach this page")."</div>";

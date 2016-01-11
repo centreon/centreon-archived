@@ -33,18 +33,20 @@
  *
  */
 
-include_once "@CENTREON_ETC@/centreon.conf.php";
-include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-include_once $centreon_path . "www/class/centreonInstance.class.php";
-include_once $centreon_path . "www/class/centreonCriticality.class.php";
-include_once $centreon_path . "www/class/centreonMedia.class.php";
-include_once $centreon_path . "www/include/common/common-Func.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
+include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonCriticality.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonMedia.class.php";
+include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 
 /*
  * Create XML Request Objects
  */
-$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 CentreonSession::start();
+$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
+
 if (isset($_SESSION['centreon'])) {
     $centreon = $_SESSION['centreon'];
 } else { 
@@ -78,6 +80,10 @@ $hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $search 	= $obj->checkArgument("search", $_GET, "");
 $order 		= $obj->checkArgument("order", $_GET, "ASC");
 $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+
+$statusHost = $obj->checkArgument("statusHost", $_GET, "");
+$statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
+
 if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
     $sort_type = "name";
 } else {
@@ -88,6 +94,13 @@ if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
     }
 }
 $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
+
+/* Store in session the last type of call */
+if (isset($_GET['sSetOrderInMemory']) && $_GET['sSetOrderInMemory'] == "1") {
+    $_SESSION['monitoring_host_status'] = $statusHost;
+    $_SESSION['monitoring_host_status_filter'] = $statusFilter;
+}
+
         
 /*
  * Backup poller selection
@@ -158,37 +171,28 @@ if (!$obj->is_admin) {
 if ($search != "") {
     $rq1 .= " AND (h.name LIKE '%" . CentreonDB::escape($search) . "%' OR h.alias LIKE '%" . CentreonDB::escape($search) . "%' OR h.address LIKE '%" . CentreonDB::escape($search) . "%') ";
 }
-if ($o == "hpb") {
-    $rq1 .= " AND (h.state != 0 AND h.state != 4) ";
-} elseif ($o == "h_up") {
-    $rq1 .= " AND h.state = 0 ";
-} elseif ($o == "h_down") {
-    $rq1 .= " AND h.state = 1 ";
-} elseif ($o == "h_unreachable") {
-    $rq1 .= " AND h.state = 2 ";
-} elseif ($o == "h_pending") {
-    $rq1 .= " AND h.state = 4 ";
-}        
 
-if (preg_match("/^h_unhandled/", $o)) {
-    if (preg_match("/^h_unhandled_(down|unreachable)\$/", $o, $matches)) {
-        if (isset($matches[1]) && $matches[1] == 'down') {
-            $rq1 .= " AND h.state = 1 ";
-        } elseif (isset($matches[1]) && $matches[1] == 'unreachable') {
-            $rq1 .= " AND h.state = 2 ";
-        } elseif (isset($matches[1]) && $matches[1] == 'pending') {
-            $rq1 .= " AND h.state = 4 ";
-        }
-    } else {
-        $rq1 .= " AND (h.state != 0 AND h.state != 4) ";
-    }
+if ($statusHost == "h_unhandled") {
+    $rq1 .= " AND h.state = 1 ";
     $rq1 .= " AND h.state_type = '1'";
     $rq1 .= " AND h.acknowledged = 0";
     $rq1 .= " AND h.scheduled_downtime_depth = 0";
+} elseif ($statusHost == "hpb") {
+     $rq1 .= " AND (h.state != 0 AND h.state != 4) ";
 }
 
+if ($statusFilter == "up") {
+    $rq1 .= " AND h.state = 0 ";
+} elseif ($statusFilter == "down") {
+    $rq1 .= " AND h.state = 1 ";
+} elseif ($statusFilter == "unreachable") {
+    $rq1 .= " AND h.state = 2 ";
+} elseif ($statusFilter == "pending") {
+    $rq1 .= " AND h.state = 4 ";
+} 
+
 if ($hostgroups) {
-    $rq1 .= " AND h.host_id = hhg.host_id AND hg.hostgroup_id IN ($hostgroups) AND hhg.hostgroup_id = hg.hostgroup_id AND hg.enabled = 1";
+    $rq1 .= " AND h.host_id = hhg.host_id AND hg.hostgroup_id IN ($hostgroups) AND hhg.hostgroup_id = hg.hostgroup_id";
 }
 
 if ($instance != -1) {
@@ -308,11 +312,11 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("hc", 	$obj->colorHost[$ndo["state"]]);
     $obj->XML->writeElement("f", 	$flag);
     $obj->XML->writeElement("hid",	$ndo["host_id"]);
-    $obj->XML->writeElement("hn",	$ndo["name"], false);
-    $obj->XML->writeElement("hnl",	urlencode($ndo["name"]));
-    $obj->XML->writeElement("a", 	($ndo["address"] ? $ndo["address"] : "N/A"));
-    $obj->XML->writeElement("ou", 	($ndo["output"] ? $ndo["output"] : "N/A"));
-    $obj->XML->writeElement("lc", 	($ndo["last_check"] != 0 ? $obj->GMT->getDate($dateFormat, $ndo["last_check"]) : "N/A"));
+    $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($ndo["name"]), false);
+    $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($ndo["name"])));
+    $obj->XML->writeElement("a", 	($ndo["address"] ? CentreonUtils::escapeSecure($ndo["address"]) : "N/A"));
+    $obj->XML->writeElement("ou", 	($ndo["output"] ? CentreonUtils::escapeSecure($ndo["output"]) : "N/A"));
+    $obj->XML->writeElement("lc", 	($ndo["last_check"] != 0 ? CentreonUtils::escapeSecure($obj->GMT->getDate($dateFormat, $ndo["last_check"])) : "N/A"));
     $obj->XML->writeElement("cs", 	_($obj->statusHost[$ndo["state"]]), false);
     $obj->XML->writeElement("pha", 	$ndo["acknowledged"]);
     $obj->XML->writeElement("pce", 	$ndo["passive_checks"]);
@@ -321,9 +325,9 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("lhs", 	($hard_duration ? $hard_duration : "N/A"));
     $obj->XML->writeElement("ha", 	$ndo["acknowledged"]);
     $obj->XML->writeElement("hdtm", $ndo["scheduled_downtime_depth"]);
-    $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?sid=".$obj->session_id."&hid=".$ndo['host_id']);
+    $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=".$ndo['host_id']);
     $obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
-    $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?sid=".$obj->session_id."&hid=".$ndo['host_id']);
+    $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=".$ndo['host_id']);
     $obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
     $obj->XML->writeElement("hae", 	$ndo["active_checks"]);
     $obj->XML->writeElement("hpe", 	$ndo["passive_checks"]);
@@ -334,7 +338,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
         $obj->XML->writeElement("hci", 1); // has criticality
         $critData = $criticality->getData($critCache[$ndo['host_id']]);                    
         $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
-        $obj->XML->writeElement("cih", $critData['name']);
+        $obj->XML->writeElement("cih", CentreonUtils::escapeSecure($critData['name']));
     } else {
         $obj->XML->writeElement("hci", 0); // has no criticality
     }
@@ -356,7 +360,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
 
     $hostObj = new CentreonHost($obj->DB);
     if ($ndo["notes"] != "") {
-        $obj->XML->writeElement("hnn", $hostObj->replaceMacroInString($ndo["name"], str_replace("\$HOSTNAME\$", $ndo["name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes"]))));
+        $obj->XML->writeElement("hnn", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($ndo["name"], str_replace("\$HOSTNAME\$", $ndo["name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes"])))));
     } else {
         $obj->XML->writeElement("hnn", "none");
     }
@@ -372,7 +376,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
         $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$ndo['state']], $str);
 
         $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'), $str);
-        $obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["name"], $str));
+        $obj->XML->writeElement("hnu", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($ndo["name"], $str)));
     } else {
         $obj->XML->writeElement("hnu", "none");
     }
@@ -388,7 +392,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
         $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$ndo['state']], $str);
 
         $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'), $str);
-        $obj->XML->writeElement("hau", $hostObj->replaceMacroInString($ndo["name"], $str));
+        $obj->XML->writeElement("hau", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($ndo["name"], $str)));
     } else {
         $obj->XML->writeElement("hau", "none");
     }

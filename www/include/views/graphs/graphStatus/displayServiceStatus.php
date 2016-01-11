@@ -39,13 +39,13 @@
 		return preg_replace("/(\\\$|;`)/", "", $command);
 	}
 
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-	require_once $centreon_path."/www/class/centreonDB.class.php";
-	require_once $centreon_path."/www/class/centreonSession.class.php";
-	require_once $centreon_path."/www/class/centreonGMT.class.php";
-	require_once $centreon_path."/www/class/centreon.class.php";
-	require_once $centreon_path."/www/include/common/common-Func.php";
+	require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
+	require_once _CENTREON_PATH_."/www/class/centreonSession.class.php";
+	require_once _CENTREON_PATH_."/www/class/centreonGMT.class.php";
+	require_once _CENTREON_PATH_."/www/class/centreon.class.php";
+	require_once _CENTREON_PATH_."/www/include/common/common-Func.php";
 
 	$pearDB = new CentreonDB();
 
@@ -80,7 +80,8 @@
 	 * Verify if session is active
 	 */
 
-    $sid = $pearDB->escape($_GET['session_id']);
+    $sid = session_id();
+    //$sid = $pearDB->escape($_GET['session_id']);
 
     $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$sid."'");
 	if (!$session->numRows()){
@@ -125,7 +126,7 @@
 			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE `id` = '".$pearDB->escape($_GET["index"])."' LIMIT 1");
 		} else {
 			$pearDBO->query("SET NAMES 'utf8'");
-			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".$pearDB->escape(utf8_encode($_GET["host_name"]))."' AND `service_description` = '".$pearDB->escape(utf8_encode($_GET["service_description"]))."' LIMIT 1");
+			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".$pearDB->escape($_GET["host_name"])."' AND `service_description` = '".$pearDB->escape($_GET["service_description"])."' LIMIT 1");
 		}
 
 		$index_data_ODS = $DBRESULT->fetchRow();
@@ -271,8 +272,13 @@
 		/*
 		 * Add Timezone for current user.
 		 */
-		if ($CentreonGMT->used())
-			$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
+		$timezone = $CentreonGMT->getMyTimezone();
+        $timezone = trim($timezone);
+        if (empty($timezone)){
+            $timezone = date_default_timezone_get();
+        }
+        
+		$command_line = "export TZ='".$timezone."' ; ".$command_line;
 
 		/*
 		 * Escale special char

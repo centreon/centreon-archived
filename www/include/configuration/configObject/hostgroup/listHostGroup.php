@@ -37,6 +37,8 @@ if (!isset($oreon)) {
     exit();
 }
 
+include_once("./class/centreonUtils.class.php");
+
 include("./include/common/autoNumLimit.php");
 
 /*
@@ -45,16 +47,12 @@ include("./include/common/autoNumLimit.php");
 $mediaObj = new CentreonMedia($pearDB);
 
 /*
- * start quickSearch form
- */
-$advanced_search = 0;
-include_once("./include/common/quickSearch.php");
-
-/*
  * Search
  */
 $SearchTool = NULL;
-if (isset($search) && $search) {
+$search = "";
+if (isset($_POST['searchHg']) && $_POST['searchHg']) {
+    $search = $_POST['searchHg'];
     $SearchTool = " (hg_name LIKE '%".$pearDB->escape($search)."%' OR hg_alias LIKE '%".$pearDB->escape($search)."%') AND ";
 }
 
@@ -116,11 +114,10 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[".$hg['hg_id']."]");
     $moptions = "";
     if ($hg["hg_activate"]) {
-        $moptions .= "<a href='main.php?p=".$p."&hg_id=".$hg['hg_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_inactive.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+        $moptions .= "<a href='main.php?p=".$p."&hg_id=".$hg['hg_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>";
     } else {
-        $moptions .= "<a href='main.php?p=".$p."&hg_id=".$hg['hg_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_active.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+        $moptions .= "<a href='main.php?p=".$p."&hg_id=".$hg['hg_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>";
     }
-    $moptions .= "&nbsp;";
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$hg['hg_id']."]'></input>";
 
     /*
@@ -171,9 +168,9 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
     }
     $elemArr[$i] = array("MenuClass"=>"list_".$style,
                          "RowMenu_select"=>$selectedElements->toHtml(),
-                         "RowMenu_name"=>$hg["hg_name"],
+                         "RowMenu_name"=>CentreonUtils::escapeSecure($hg["hg_name"]),
                          "RowMenu_link"=>"?p=".$p."&o=c&hg_id=".$hg['hg_id'],
-                         "RowMenu_desc"=>html_entity_decode($hg["hg_alias"]),
+                         "RowMenu_desc"=>CentreonUtils::escapeSecure(html_entity_decode($hg["hg_alias"])),
                          "RowMenu_status"=>$hg["hg_activate"] ? _("Enabled") : _("Disabled"),
                          "RowMenu_hostAct"=>$nbrhostAct,
                          "RowMenu_icone" => $hgIcone,
@@ -202,6 +199,9 @@ function setO(_i) {
 <?php
 $attrs1 = array(
                 'onchange'=>"javascript: " .
+                                " var bChecked = isChecked(); ".
+                                " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
+                                " alert('"._("Please select one or more items")."'); return false;} " .
 				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
@@ -216,6 +216,9 @@ $form->setDefaults(array('o1' => NULL));
 
 $attrs2 = array(
                 'onchange'=>"javascript: " .
+                                " var bChecked = isChecked(); ".
+                                " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
+                                " alert('"._("Please select one or more items")."'); return false;} " .
 				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
@@ -235,6 +238,8 @@ $o1->setSelected(NULL);
 $o2 = $form->getElement('o2');
 $o2->setValue(NULL);
 $o2->setSelected(NULL);
+
+$tpl->assign('searchHg', $search);
 
 $tpl->assign('limit', $limit);
 

@@ -35,7 +35,7 @@
  * SVN : $Id$
  * 
  */
-	require_once ("@CENTREON_ETC@/centreon.conf.php");
+	require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 	require_once ("../../$classdir/centreonSession.class.php");
 	require_once ("../../$classdir/centreon.class.php");
 	require_once ("../../$classdir/centreonDB.class.php");
@@ -55,7 +55,7 @@
 	    while ($img = $result->fetchRow() ) {
 			$imgpath = $logos_path . $img["dir_name"] ."/". $img["img_path"];
 	        if (!is_file($imgpath)) {
-		        $imgpath = $centreon_path . 'www/img/media/' . $img["dir_name"] ."/". $img["img_path"];
+		        $imgpath = _CENTREON_PATH_ . 'www/img/media/' . $img["dir_name"] ."/". $img["img_path"];
 		    }
 			if (is_file($imgpath)) {
 			    $fd = fopen($imgpath, "r");

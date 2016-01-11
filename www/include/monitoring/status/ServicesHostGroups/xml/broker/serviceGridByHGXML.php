@@ -37,26 +37,34 @@
  */
 
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
-	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
-	include_once $centreon_path . "www/include/common/common-Func.php";
-	include_once $centreon_path . "www/class/centreonService.class.php";
+    include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
+
+	include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
+	include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
+	include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+	include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 
 	/*
 	 * Create XML Request Objects
 	 */
-	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
+    CentreonSession::start();
+	$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 	$svcObj = new CentreonService($obj->DB);
-	CentreonSession::start();
+	
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
 	} else {
-		print "Bad Session ID";
-		exit();
+            print "Bad Session ID";
+            exit();
 	}
+    
+    /* Store in session the last type of call */
+    $_SESSION['monitoring_serviceByHg_status'] = $statusService;
+    $_SESSION['monitoring_serviceByHg_status_filter'] = $statusFilter;
+
 
 	/*
 	 * Set Default Poller
@@ -66,8 +74,8 @@
 	/* **************************************************
 	 * Check Arguments From GET tab
 	 */
-	$o 			= $obj->checkArgument("o", $_GET, "h");
-	$p 			= $obj->checkArgument("p", $_GET, "2");
+	$o 		= $obj->checkArgument("o", $_GET, "h");
+	$p 		= $obj->checkArgument("p", $_GET, "2");
 	$hg 		= $obj->checkArgument("hg", $_GET, "");
 	$num 		= $obj->checkArgument("num", $_GET, 0);
 	$limit 		= $obj->checkArgument("limit", $_GET, 20);
@@ -76,24 +84,24 @@
 	$search 	= $obj->checkArgument("search", $_GET, "");
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
-	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-	$grouplistStr = $obj->access->getAccessGroupsString();
+	$dateFormat     = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+	$grouplistStr   = $obj->access->getAccessGroupsString();
 
 	/** **************************************
 	 * Get Host status
 	 *
 	 */
-	$rq1 =	" SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, hg.action_url, hg.notes_url, h.host_id id, h.name as host_name, hgm.hostgroup_id, h.state hs, h.icon_image ".
+	$rq1 =	" SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, h.host_id id, h.name as host_name, hgm.hostgroup_id, h.state hs, h.icon_image ".
 			" FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
 	}
 	$rq1 .= " WHERE h.host_id = hgm.host_id".
 			" AND hgm.hostgroup_id = hg.hostgroup_id".
-			" AND h.enabled = '1' AND hg.enabled = 1 ".
+			" AND h.enabled = '1' ".
 			" AND h.name not like '_Module_%'";
 	if (!$obj->is_admin) {
-		$rq1 .= $obj->access->queryBuilder("AND", "h.name", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
+		$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
 	}
 	if ($instance != -1) {
 		$rq1 .= 	" AND h.instance_id = ".$instance;
@@ -120,12 +128,11 @@
 		$rq1 .= " AND hg.hostgroup_id IN (" . $hostgroups . ")";
 	}
 	$rq1 .= " AND h.enabled = 1 ";
-	$rq1 .= " ORDER BY $sort_type, host_name $order ";
+	$rq1 .= " ORDER BY $sort_type, hg.name $order ";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 	$tabH = array();
 	$tabHG = array();
-    $tabHGUrl = array();
 	$tab_finalH = array();
 
 	$DBRESULT = $obj->DBC->query($rq1);
@@ -139,10 +146,6 @@
 		$tab_finalH[$ndo["alias"]][$ndo["host_name"]]["tab_svc"] = array();
 		$tabH[$ndo["host_name"]] = $ndo["id"];
 		$tabHG[$ndo["alias"]] = $ndo["hostgroup_id"];
-        $tabHGUrl[$ndo["alias"]] = array(
-            'action_url' => $ndo['action_url'],
-            'notes_url' => $ndo['notes_url']
-        );
 	}
 	$DBRESULT->free();
 
@@ -151,7 +154,8 @@
 	 * Get Services status
 	 *
 	 */
-	$rq1 = 	" SELECT DISTINCT s.service_id, h.name as host_name, s.description, s.state svcs " .
+	$rq1 = 	" SELECT DISTINCT s.service_id, h.name as host_name, s.description, s.state svcs,"
+                . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri " .
 		 	" FROM services s, hosts h ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
@@ -160,7 +164,7 @@
 			 " AND h.name NOT LIKE '_Module_%' ".
 			 " AND h.enabled = '1' " .
 			 " AND s.enabled = '1' ";
-	$rq1 .= $obj->access->queryBuilder("AND", "h.name", "centreon_acl.host_name") . $obj->access->queryBuilder("AND","s.description", "centreon_acl.service_description") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
+	$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") . $obj->access->queryBuilder("AND","s.service_id", "centreon_acl.service_id") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
 	if ($o == "svcgrid_pb" || $o == "svcOVHG_pb" || $o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
 		$rq1 .= " AND s.state != 0 AND s.state != 4 ";
 	}
@@ -176,7 +180,8 @@
 	if ($instance != -1) {
 		$rq1 .= " AND h.instance_id = ".$instance;
 	}
-	$rq1 .= " ORDER BY s.description";
+	//$rq1 .= " ORDER BY s.description";
+        $rq1 .= " order by tri asc";
 
 	$tabService = array();
 	$tabHost = array();
@@ -205,7 +210,7 @@
 	$obj->XML->writeElement("host_name", _("Hosts"), 0);
 	$obj->XML->writeElement("services", _("Services"), 0);
 	$obj->XML->writeElement("p", $p);
-	$o == "svcOVHG" ? $obj->XML->writeElement("s", "1") : $obj->XML->writeElement("s", "0");
+        $obj->XML->writeElement("s", "1");
 	$obj->XML->endElement();
 
 	$ct = 0;
@@ -221,32 +226,30 @@
 						}
 						$hg = $hg_name;
 						$obj->XML->startElement("hg");
-						$obj->XML->writeElement("hgn", $hg_name);
-						$obj->XML->writeElement("hgid", $tabHG[$hg_name]);
-                        $obj->XML->writeElement("action_url", $tabHGUrl[$hg_name]['action_url']);
-                        $obj->XML->writeElement("notes_url", $tabHGUrl[$hg_name]['notes_url']);
+                        $obj->XML->writeElement("hgn", CentreonUtils::escapeSecure($hg_name));
+                        $obj->XML->writeElement("hgid", CentreonUtils::escapeSecure($tabHG[$hg_name]));
 					}
 					$obj->XML->startElement("l");
 					$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 					if (isset($tabService[$host_name]["tab_svc"])) {
 						foreach ($tabService[$host_name]["tab_svc"] as $svc => $state) {
 							$obj->XML->startElement("svc");
-							$obj->XML->writeElement("sn", $svc);
-							$obj->XML->writeElement("snl", urlencode($svc));
+							$obj->XML->writeElement("sn", CentreonUtils::escapeSecure($svc));
+							$obj->XML->writeElement("snl", CentreonUtils::escapeSecure(urlencode($svc)));
 							$obj->XML->writeElement("sc", $obj->colorService[$state]);
 							$obj->XML->writeElement("svc_id", $svcObj->getServiceId($svc, $host_name));
 							$obj->XML->endElement();
 						}
 					}
 					$obj->XML->writeElement("o", $ct);
-					$obj->XML->writeElement("hn", $host_name, false);
+					$obj->XML->writeElement("hn", CentreonUtils::escapeSecure($host_name), false);
 					if (isset($tab["icon"]) && $tab["icon"]) {
 						$obj->XML->writeElement("hico", $tab["icon"]);
 					} else {
 						$obj->XML->writeElement("hico", "none");
 					}
-					$obj->XML->writeElement("hnl", urlencode($host_name));
-					$obj->XML->writeElement("hid", $tabH[$host_name]);
+					$obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
+					$obj->XML->writeElement("hid", CentreonUtils::escapeSecure($tabH[$host_name]));
 					$obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
 					$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
 					$obj->XML->writeElement("hcount", $count);

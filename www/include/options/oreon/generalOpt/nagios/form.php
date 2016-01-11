@@ -50,6 +50,11 @@ if (!isset($gopt["interval_length"])) {
 	$gopt["interval_length"] = 60;
 }
 
+if (!isset($gopt["nagios_path_img"])) {
+	$gopt["nagios_path_img"] = _CENTREON_PATH_ . 'www/img/media/';
+}
+
+
 $attrsText 		= array("size"=>"40");
 $attrsText2		= array("size"=>"5");
 $attrsAdvSelect = null;
@@ -68,7 +73,6 @@ $form->addElement('text', 'nagios_path_img', _("Images Directory"), $attrsText);
 $form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
 $form->addElement('text', 'interval_length', _("Interval Length"), $attrsText2);
 $form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
-$form->addElement('select', 'monitoring_engine', _("Default Engine"), array("CENGINE" => "Centreon Engine", "NAGIOS" => "Nagios"));
 
 /*
  * Correlation engine
@@ -113,6 +117,7 @@ $scaleChoices = array("s" => _("seconds"),
                     );
 $form->addElement('select', 'monitoring_dwt_duration_scale', _("Scale of time"), $scaleChoices);
 
+$form->addElement('hidden', 'monitoring_engine', "CENGINE");
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -161,8 +166,8 @@ if (!isset($gopt["monitoring_engine"])) {
 
 $form->setDefaults($gopt);
 
-$subC = $form->addElement('submit', 'submitC', _("Save"));
-$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
+$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+$DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
     // prepare help texts
 $helptext = "";
@@ -192,7 +197,7 @@ if (!$form->validate() && isset($_POST["gopt_id"]))	{
     print("<div class='msg' align='center'>"._("impossible to validate, one or more field is incorrect")."</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=nagios'"));
+$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=nagios'", 'class' => 'btc bt_info'));
 
 /*
  * Apply a template definition

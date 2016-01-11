@@ -31,16 +31,13 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
-	if (!isset($oreon)) {
+	if (!isset($centreon)) {
 		exit;
 	}
 
 	/*
-	 * Load 2 generals options
+	 * Load 2 general options
 	 */
 	$l_general_opt = array();
 	$DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` RLIKE '^color_(warn|crit)'");
@@ -57,6 +54,8 @@
 		 */
 		$tab = $res->fetchRow();
 		$compo = array_map("myDecode", $tab);
+                unset($compo['host_id']);
+                unset($compo['service_id']);
 		$res->free();
 
 		$hs_data = array();
@@ -95,38 +94,18 @@
 	unset($row);
 	$DBRESULT->free();
 
-	/*
-	 * Host list with perf data come from DBO -> Store in $indds Array
-	 */
-	$indds = array(""=> sprintf("%s%s", _("Hosts list"), "&nbsp;&nbsp;&nbsp;"));
-	$mx_l = strlen($indds[""]);
-
-	$dbindd = $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data ORDER BY host_name, service_description");
-	while ($indd = $dbindd->fetchRow()) {
-		$indds[$indd["host_id"]] = $indd["host_name"]."&nbsp;&nbsp;&nbsp;";
-		$hn_l = strlen($indd["host_name"]);
-		if ( $hn_l > $mx_l) {
-			$mx_l = $hn_l;
-		}
-	}
-	/* cosmetics */
-	$dbindd->free();
-	/*
-	for ($i = strlen($indds[""]); $i != $mx_l; $i++)
-		$indds[""] .= "&nbsp;";
-	*/
-
-	/*
-	 * Define Styles
-	 */
-	$attrsText 	= array("size"=>"40");
-	$attrsText2 	= array("size"=>"10");
-	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-	$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
-	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+    /*
+     * Define Styles
+     */
+    $attrsText = array("size"=>"40");
+    $attrsText2 = array("size"=>"10");
+    $attrsTextarea = array("rows"=>"4", "cols"=>"60");
+    $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
     $attrServices = array(
         'datasourceOrigin' => 'ajax',
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_objects&action=defaultValues&target=graphCurve&field=host_id&id=' . $compo_id,
+        'linkedObject' => 'centreonService',
         'multiple' => false
     );
     
@@ -151,19 +130,13 @@
 	$form->addElement('text', 'name', _("Template Name"), $attrsText);
 	$form->addElement('checkbox', 'ds_stack', _("Stack"));
 
-	for ($cpt = 1; $cpt <= 100; $cpt++) {
-		$orders[$cpt] = $cpt;
-	}
-
-	$form->addElement('select', 'ds_order', _("Order"), $orders);
-	//$form->addElement('select', 'host_id', _("Host / Service Data Source"), $indds, "onChange=update_select_list(0,this.value);update_select_list(1,0);");
-	$form->addElement('static', 'hsr_text',_("Choose a host, then its associated service.<BR>If you want a specific curve."));
+    for ($cpt = 1; $cpt <= 100; $cpt++) {
+        $orders[$cpt] = $cpt;
+    }
+    $form->addElement('select', 'ds_order', _("Order"), $orders);
     
-    $attrService1 = array_merge(
-        $attrServices,
-        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=servicegroups&field=host_id&id=')
-    );
-    $form->addElement('select2', 'host_id', _("Linked Host Services"), array(), $attrService1);
+    $form->addElement('static', 'hsr_text',_("Choose a service if you want a specific curve for it."));
+    $form->addElement('select2', 'host_id', _("Linked Host Services"), array(), $attrServices);
 
 	$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
 	$form->addElement('select', 'datasources', null, $datasources);
@@ -212,17 +185,6 @@
 	 * Components linked with
 	 */
 	$form->addElement('header', 'graphs', _("Graph Choice"));
-	$ams1 = $form->addElement('advmultiselect', 'compo_graphs', array(_("Graph List"),_("Available"), _("Selected")), $graphs, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
-
-	$tab = array();
-	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'compo_id');
 	$redirect = $form->addElement('hidden', 'o');
@@ -286,16 +248,25 @@
 		/*
 		 * Modify
 		 */
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$compo["host_id"].",".$compo["index_id"].")"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$compo["host_id"].",".$compo["index_id"].")", "class" => "btc bt_default"));
 		$form->setDefaults($compo);
 	} else if ($o == "a")	{
 		/*
 		 * Add
 		 */
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"),array("onClick"=>"javascript:resetLists(0,0)"));
-		$form->setDefaults(array("ds_color_area" => "#FFFFFF", "ds_color_area_warn" => "#F8C706", "ds_color_area_crit" => "#F91E05", "ds_color_line" => "#0000FF", "ds_color_line_mode" => '0', "ds_transparency" => "80", "ds_average" => true, "ds_last" => true));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"),array("onClick"=>"javascript:resetLists(0,0)", "class" => "btc bt_default"));
+		$form->setDefaults(array(
+                    "ds_color_area" => "#FFFFFF",
+                    "ds_color_area_warn" => "#F8C706",
+                    "ds_color_area_crit" => "#F91E05",
+                    "ds_color_line" => "#0000FF",
+                    "ds_color_line_mode" => '0',
+                    "ds_transparency" => "80",
+                    "ds_average" => true,
+                    "ds_last" => true)
+                );
 	}
 	if ($o == "c" || $o == "a") {
 ?>
@@ -357,7 +328,7 @@
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"])
+	if ($valid)
 		require_once("listComponentTemplates.php");
 	else	{
 		/*
@@ -372,17 +343,19 @@
 		$tpl->display("formComponentTemplate.ihtml");
 	}
 	$vdef = 0; /* don't list VDEF in metrics list */
-	include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
-?><script type="text/javascript">
-<?php
-	if ($o == "c" || $o == "w") {
-		isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $ph_id=$_POST["host_id"]: $ph_id=$compo["host_id"];
-		isset($_POST["index_id"]) && $_POST["index_id"] != NULL ? $ix_id=$_POST["index_id"]: $ix_id=$compo["index_id"];
-	} else if ($o == "a") {
-		isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $ph_id=$_POST["host_id"]: $ph_id=0;
-		isset($_POST["index_id"]) && $_POST["index_id"] != NULL ? $ix_id=$_POST["index_id"]: $ix_id=0;
-	}
+
+    include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
+    if ($o == "c" || $o == "w") {
+        isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $host_service_id=$_POST["host_id"]: $host_service_id=$compo["host_id"];
+    } else if ($o == "a") {
+        isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $host_service_id=$_POST["host_id"]: $host_service_id=0;
+    }
 ?>
-	update_select_list(0,'<?php echo $ph_id;?>','<?php echo $ix_id;?>');
-	update_select_list(1,'<?php echo $ix_id;?>');
+
+<script type="text/javascript">
+    update_select_list('<?php echo $host_service_id;?>');
+
+    jQuery("#host_id").on('change', function() {
+        update_select_list(this.value);
+    });
 </script>

@@ -31,19 +31,13 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationHosttemplate extends CentreonConfigurationObjects
 {
-    
     /**
      *
      * @var type 
@@ -56,12 +50,7 @@ class CentreonConfigurationHosttemplate extends CentreonConfigurationObjects
     public function __construct()
     {
         parent::__construct();
-        $brk = new CentreonBroker($this->pearDB);
-        if ($brk->getBroker() == 'broker') {
-            $this->pearDBMonitoring = new CentreonDB('centstorage');
-        } else {
-            $this->pearDBMonitoring = new CentreonDB('ndo');
-        }
+        $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
     
     /**
@@ -73,37 +62,42 @@ class CentreonConfigurationHosttemplate extends CentreonConfigurationObjects
     {
         global $centreon;
         
-        $userId = $centreon->user->user_id;
-        $isAdmin = $centreon->user->admin;
-        $aclHosts = '';
-        
-        /* Get ACL if user is not admin */
-        if (!$isAdmin) {
-            $acl = new CentreonACL($userId, $isAdmin);
-            $aclHosts .= 'AND h.host_id IN (' . $acl->getHostsString('ID', $this->pearDBMonitoring) . ') ';
-        }
-        
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryHost = "SELECT DISTINCT h.host_name, h.host_id "
+        $queryHost = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name, h.host_id "
             . "FROM host h "
             . "WHERE h.host_register = '0' "
             . "AND h.host_name LIKE '%$q%' "
-            . $aclHosts
-            . "ORDER BY h.host_name";
+            . "ORDER BY h.host_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryHost);
+
+        $total = $this->pearDB->numberRows();
         
         $hostList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $hostList[] = array('id' => htmlentities($data['host_id']), 'text' => htmlentities($data['host_name']));
+            $hostList[] = array(
+                'id' => htmlentities($data['host_id']),
+                'text' => $data['host_name']
+            );
         }
         
-        return $hostList;
+        return array(
+            'items' => $hostList,
+            'total' => $total
+        );
     }
 }

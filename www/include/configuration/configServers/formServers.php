@@ -31,19 +31,16 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
-if (!$oreon->user->admin && $server_id  && count($serverResult)) {
+if (!$centreon->user->admin && $server_id  && count($serverResult)) {
     if (!isset($serverResult[$server_id])) {
         $msg = new CentreonMsg();
-        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
         $msg->setText(_('You are not allowed to access this monitoring instance'));
         return null;
@@ -55,23 +52,9 @@ $monitoring_engines =
                              "nagios_bin" => "/usr/sbin/centengine",
                              "nagiostats_bin" => "/usr/sbin/centenginestats",
                              "init_script" => "/etc/init.d/centengine",
-                             "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata"),
-          "ICINGA" => array("name" => "Icinga",
-                            "nagios_bin" => "",
-                            "nagiostats_bin" => "",
-                            "init_script" => "",
-                            "nagios_perfdata" => ""),
-          "NAGIOS" => array("name" => "Nagios",
-                            "nagios_bin" => "/usr/sbin/nagios",
-                            "nagiostats_bin" => "/usr/sbin/nagiostats",
-                            "init_script" => "/etc/init.d/nagios",
-                            "nagios_perfdata" => "/var/log/nagios/service-perfdata"),
-          "SHINKEN" => array("name" => "Shinken",
-                             "nagios_bin" => "",
-                             "nagiostats_bin" => "",
-                             "init_script" => "",
-                             "nagios_perfdata" => ""),
-          );
+                             "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata")
+        );
+          
 
 function monitoring_engine_names($me) {
     return $me["name"];
@@ -133,7 +116,6 @@ $form->addElement('header', 'SSH_Informations', _("SSH Information"));
 $form->addElement('header', 'Nagios_Informations', _("Monitoring Engine Information"));
 $form->addElement('header', 'Misc', _("Miscelleneous"));
 $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
-$form->addElement('select', 'monitoring_engine', _("Engine"), array_map("monitoring_engine_names", $monitoring_engines));
 
 /*
  * Nagios Configuration basic information
@@ -259,15 +241,15 @@ if ($o == "w")  {
     /*
      * Modify a nagios information
      */
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($nagios);
 } else if ($o == "a")   {
     /*
      * Add a nagios information
      */
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $valid = false;
@@ -280,6 +262,7 @@ if ($form->validate())  {
     $o = NULL;
     $valid = true;
 }
+
 if ($valid) {
     require_once($path."listServers.php");
 } else {
@@ -304,4 +287,3 @@ if ($valid) {
     $tpl->assign("helptext", $helptext);
     $tpl->display("formServers.ihtml");
 }
-?>

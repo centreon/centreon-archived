@@ -2,6 +2,10 @@
 <form name='form' method='POST'>
 	<input name="o" type="hidden">
 	<table class="ajaxOption table">
+      <tbody>
+        <tr>
+          <th><h5>{t}Filters{/t}</h5></th>
+        </tr>
 		<tr>
             <td><h4>{$Hosts}</h4></td>
 			<td><h4>{$Services}</h4></td>
@@ -20,7 +24,8 @@
           </td>
           <td><input type='submit' name='Search' value='{$Search}' class="btc bt_success" /></td>
         </tr>
-	</table><br />
+      </tbody>
+	</table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
 			<td>
@@ -44,12 +49,11 @@
 			<td class="ListColCenter">{$Delete}</td>
 	 		<td class="ListColCenter">{$Hidden}</td>
 	 		<td class="ListColCenter">{$Locked}</td>
-	 		<td class="ListColCenter">{$StorageType}</td>
 	 	</tr>
 	 	{assign var='host_name' value=''}
 		{foreach item=d from=$data}
 		<tr class="{$d.class}">
-		 	<td class="ListColLeft"><input name="select[{$d.id}]" value="1" type="checkbox"></td>
+		 	<td class="ListColCenter"><input name="select[{$d.id}]" value="1" type="checkbox"></td>
 			<td class="ListColLeft">{if !$host_name || $host_name != $d.host_name}{$d.host_name}{/if}</td>
 	 		<td class="ListColLeft">{$d.service_description}</td>
 	 		<td class="ListColCenter">{$d.metrics_name}</td>
@@ -57,13 +61,12 @@
 			<td class="ListColCenter">{$d.to_delete}</td>
 	 		<td class="ListColCenter">{$d.hidden}</td>
 	 		<td class="ListColCenter">{$d.locked}</td>
-	 		<td class="ListColCenter">{$d.storage_type}</td>
 		</tr> 	
 	 	{assign var='host_name' value=$d.host_name}	
 		{/foreach}
 	</table>
 	<table class="ToolbarTable table">
-		<tr>
+		<tr class="ToolbarTR">
 			<td>
 				{$msg.options} {$form.o2.html}
 				&nbsp;&nbsp;&nbsp;

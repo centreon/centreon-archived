@@ -1,25 +1,51 @@
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/scriptaculous/themes/test/theme.css" />
+{if isset($pollerId)}
 {$form.javascript}
 <form {$form.attributes}>
 	 <input type="hidden" name="level" value="1"> 
-	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.infos}</td></tr>	 	
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host">&nbsp;{$form.host.label}</td><td class="FormRowValue">{$form.host.html}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/breakpoint_run.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>	 	
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="gen">&nbsp;{$form.gen.html}&nbsp;{$form.gen.label}</td><td>{$form.comment.html}&nbsp;{$form.comment.label}</td></tr>
-		<tr class="list_one"><td class="FormRowField" colspan="2"><img class="helpTooltip" name="debug">&nbsp;{$form.debug.html}&nbsp;{$form.debug.label}</td></tr>
-		<tr class="list_two"><td class="FormRowField" colspan="2"><img class="helpTooltip" name="move">&nbsp;{$form.move.html}&nbsp;{$form.move.label}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="restart">&nbsp;{$form.restart.html}&nbsp;{$form.restart.label}</td><td class="FormRowValue">{$form.restart_mode.label}&nbsp;{$form.restart_mode.html}</td></tr>
-                <tr class="list_two"><td class="FormRowField" colspan="2"><img class="helpTooltip" name="postcmd">&nbsp;{$form.postcmd.html}&nbsp;{$form.postcmd.label}</td></tr>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.infos}</h4>
+          </td>
+        </tr>	 	
+		<tr class="list_one">
+          <td class="FormRowField"><img class="helpTooltip" name="host">&nbsp;{t}Poller{/t}</td>
+          <td class="FormRowValue">
+            {$pollerName}
+            <input type="hidden" id="nhost" name="nhost" value="{$pollerId}">
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.result}</h4>
+          </td>
+        </tr>	 	
+		<tr class="list_two">
+			<td class="FormRowField">
+				<img class="helpTooltip" name="gen">&nbsp;{$form.gen.html}&nbsp;{$form.gen.label}</td>
+			<td class="FormRowValue">{$form.comment.html}&nbsp;{$form.comment.label}</td>
+		</tr>
+		<tr class="list_one">
+			<td class="FormRowField" colspan="2"><img class="helpTooltip" name="debug">&nbsp;{$form.debug.html}&nbsp;{$form.debug.label}</td></tr>
+		<tr class="list_two"><td class="FormRowValue" colspan="2"><img class="helpTooltip" name="move">&nbsp;{$form.move.html}&nbsp;{$form.move.label}</td></tr>
+		<tr class="list_one"><td class="FormRowValue"><img class="helpTooltip" name="restart">&nbsp;{$form.restart.html}&nbsp;{$form.restart.label}</td>
+		<td class="FormRowValue">{$form.restart_mode.label}&nbsp;{$form.restart_mode.html}</td></tr>
+        <tr class="list_two"><td class="FormRowValue" colspan="2"><img class="helpTooltip" name="postcmd">&nbsp;{$form.postcmd.html}&nbsp;{$form.postcmd.label}</td></tr>
 	</table>
 	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
-	<br/><br/><br/><br/>	
-	<br/>
+
 	<div id='console' style='visibility: hidden;'>
-		<table class="ListTable">
+		<table class="formTable table">
 			<tr class="ListHeader">
-				<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/info.gif'>&nbsp;&nbsp;{$consoleLabel}</td>
+				<td class="FormHeader" colspan="2">
+                  <h3>| {$consoleLabel}</h3>
+                </td>
 			</tr>
 			<tr class="list_one">
 				<td class="FormRowField">					
@@ -84,3 +110,12 @@
 	{$form.hidden}
 </form>
 {$helptext}
+{else}
+<span id="progress_bar" style="display: none;">0%</span>
+<div class="info_box">
+  <h4>
+    <p>{t}You must set a poller for generate configuration.{/t}</p>
+    <p>{$pollerListMsg}</p>
+  </h4>
+</div>
+{/if}

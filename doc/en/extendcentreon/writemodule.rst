@@ -12,36 +12,36 @@ inside Cetreon's ``modules/`` directory. Example::
 
   /usr/local/centreon/www/modules/module-Dummy
 
-An empty module template can be found inside `Centreon's repository
-<http://svn.centreon.com/trunk/module-Dummy>`_.
+  An empty module template can be found inside `Centreon's repository
+  <http://svn.centreon.com/trunk/module-Dummy>`_.
 
-*****
-Basis
-*****
+  *****
+  Basis
+  *****
 
-The essential elements your module's directory must contain are presented below (\* = required):
+  The essential elements your module's directory must contain are presented below (\* = required):
 
-**[conf.php]\***::
-  
-  // Short module's name. Must be equal to your module's directory name
-  $module_conf['dummy']['name'] = "dummy"; 
-  // Full module's name
-  $module_conf['dummy']['rname'] = "Dummy Module";
-  // Module's version
-  $module_conf['dummy']['mod_release'] = "2.0"; 
-  // Additional information
-  $module_conf['dummy']['infos'] = "First of all"; 
-  // Allow your module to be uninstalled
-  $module_conf['dummy']['is_removeable'] = "1"; 
-  // Module author's name
-  $module_conf['dummy']['author'] = "Centreon Team"; 
-  // 1: the module executes an SQL file for installation and/or uninstallation
-  // 0: the module doesn't execute any SQL file
-  $module_conf['dummy']['sql_files'] = "1"; 
-  // 1: the module executes a PHP file for installation and/or uninstallation
-  // 0: the module doesn't execute any SQL file
-  $module_conf['dummy']['php_files'] = "1"; 
-
+  **[conf.php]\***::
+    
+    // Short module's name. Must be equal to your module's directory name
+    $module_conf['dummy']['name'] = "dummy"; 
+    // Full module's name
+    $module_conf['dummy']['rname'] = "Dummy Module";
+    // Module's version
+    $module_conf['dummy']['mod_release'] = "2.0"; 
+    // Additional information
+    $module_conf['dummy']['infos'] = "First of all"; 
+    // Allow your module to be uninstalled
+    $module_conf['dummy']['is_removeable'] = "1"; 
+    // Module author's name
+    $module_conf['dummy']['author'] = "Centreon Team"; 
+    // 1: the module executes an SQL file for installation and/or uninstallation
+    // 0: the module doesn't execute any SQL file
+    $module_conf['dummy']['sql_files'] = "1"; 
+    // 1: the module executes a PHP file for installation and/or uninstallation
+    // 0: the module doesn't execute any SQL file
+    $module_conf['dummy']['php_files'] = "1"; 
+    
 **[infos > infos.txt]**
 
 This file can contain various information about your module.
@@ -73,7 +73,7 @@ from Centreon menus.
 **[generate_files > \*.php]**
 
 The PHP files contained inside the ``generate_files`` directory will
-be executed during the monitoring engine configuration files generation (inside
+be executed during the configuration files generation (inside
 *Configuration > Monitoring Engines*). Those files must generate
 configuration files.
 
@@ -116,10 +116,10 @@ For example, execute requests like this:
 
 .. sourcecode:: php
 
-   <?
-   $pearDB = new CentreonDB();
-   $pearDB->query("SELECT * FROM host");
-   ?>
+    <?
+    $pearDB = new CentreonDB();
+    $pearDB->query("SELECT * FROM host");
+    ?>
 
 Existing functions
 ==================
@@ -130,4 +130,3 @@ using ``include()`` statements. They're generally stored in
 
 Before developing your own function, check the existing code, it could
 spare your time!
-

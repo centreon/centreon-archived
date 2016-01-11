@@ -31,36 +31,20 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationMeta extends CentreonConfigurationObjects
 {
-    /**
-     *
-     * @var type 
-     */
-    protected $pearDBMonitoring;
-
     /**
      * 
      */
     public function __construct()
     {
         parent::__construct();
-        $brk = new CentreonBroker($this->pearDB);
-        if ($brk->getBroker() == 'broker') {
-            $this->pearDBMonitoring = new CentreonDB('centstorage');
-        } else {
-            $this->pearDBMonitoring = new CentreonDB('ndo');
-        }
     }
     
     /**
@@ -75,19 +59,35 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
-        
-        $queryMeta = "SELECT meta_id, meta_name "
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
+
+        $queryMeta = "SELECT SQL_CALC_FOUND_ROWS DISTINCT meta_id, meta_name "
             . "FROM meta_service "
             . "WHERE meta_name LIKE '%$q%' "
-            . "ORDER BY meta_name";
+            . "ORDER BY meta_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryMeta);
+
+        $total = $this->pearDB->numberRows();
         
         $metaList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $metaList[] = array('id' => $data['meta_id'], 'text' => $data['meta_name']);
+            $metaList[] = array(
+                'id' => $data['meta_id'],
+                'text' => $data['meta_name']
+            );
         }
         
-        return $metaList;
+        return array(
+            'items' => $metaList,
+            'total' => $total
+        );
     }
 }

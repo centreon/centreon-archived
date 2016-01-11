@@ -13,7 +13,7 @@
 #set -x 
 
 echo -e "\n$line"
-echo -e "\t$(gettext "Start CentWeb Installation")"
+echo -e "\t$(gettext "Start Centreon Web Installation")"
 echo -e "$line"
 
 ###### check space ton tmp dir
@@ -32,7 +32,6 @@ locate_centreon_installdir
 locate_centreon_logdir
 locate_centreon_etcdir
 locate_centreon_bindir
-locate_centreon_datadir
 locate_centreon_generationdir
 locate_centreon_varlib
 
@@ -121,6 +120,7 @@ check_result $? "$(gettext "Change right on") $CENTREON_ETC"
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
 cp -Rf $TMP_DIR/src/www $TMP_DIR/final
 cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
+cp -Rf $TMP_DIR/src/config $TMP_DIR/final
 
 ## Create temporary directory
 mkdir -p $TMP_DIR/work/bin >> $LOG_FILE 2>&1
@@ -175,7 +175,7 @@ ${CAT} "$file_sql_temp" | while read file ; do
 		mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
-		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 		-e 's|@CENTREON_ENGINE_CONNECTORS@|'"$CENTREON_ENGINE_CONNECTORS"'|g' \
@@ -201,7 +201,7 @@ ${CAT} "$file_php_temp" | while read file ; do
 		mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
-		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 		-e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
@@ -211,6 +211,29 @@ ${CAT} "$file_php_temp" | while read file ; do
 	cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1 
 done
 check_result $flg_error "$(gettext "Change macros for php files")"
+
+macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
+find_macros_in_dir "$macros" "$TMP_DIR/src" "config" "*.php" "file_php_config_temp"
+
+log "INFO" "$(gettext "Apply macros")"
+
+flg_error=0
+${CAT} "$file_php_config_temp" | while read file ; do
+        log "MACRO" "$(gettext "Change macro for") : $file"
+        [ ! -d $(dirname $TMP_DIR/work/$file) ] && \
+                mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
+        ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+                -e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
+                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTREON_BINDIR"'|g' \
+                -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
+                -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+                -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+                $TMP_DIR/src/$file > $TMP_DIR/work/$file
+                [ $? -ne 0 ] && flg_error=1
+        log "MACRO" "$(gettext "Copy in final dir") : $file"
+        cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1
+done
+check_result $flg_error "$(gettext "Change macros for php config file")"
 
 ### Step 2.1 : replace macro for perl binary
 
@@ -227,7 +250,7 @@ ${CAT} "$file_perl_temp" | while read file ; do
                 mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
         ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
                 -e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
-                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
                 -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
@@ -311,6 +334,13 @@ check_result $? "$(gettext "Change right for install directory")"
 	$INSTALL_DIR/cinstall $cinstall_opts \
 		-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
 		$INSTALL_DIR_CENTREON/www/img/media >> "$LOG_FILE" 2>&1
+
+$INSTALL_DIR/cinstall $cinstall \
+        -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
+        $INSTALL_DIR_CENTREON/config >> "$LOG_FILE" 2>&1
+cp -f $TMP_DIR/final/config/* $INSTALL_DIR_CENTREON/config/ >> "$LOG_FILE" 2>&1
+
+$CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/config
 
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
@@ -407,12 +437,6 @@ check_result $? "$(gettext "Change macros for downtimeManager.php")"
 cp -f $TMP_DIR/work/cron/downtimeManager.php \
 	$TMP_DIR/final/cron/downtimeManager.php >> "$LOG_FILE" 2>&1
 
-#cp -f $TMP_DIR/work/cron/eventReportBuilder \
-#	$TMP_DIR/final/cron/eventReportBuilder >> "$LOG_FILE" 2>&1
-
-#cp -f $TMP_DIR/work/cron/dashboardBuilder \
-#	$TMP_DIR/final/cron/dashboardBuilder >> "$LOG_FILE" 2>&1
-
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
@@ -505,12 +529,6 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTREON_BINDIR/centreonSyncArchives >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install centreonSyncArchives")"
 
-## Install generateSqlLite
-#log "INFO" "$(gettext "Prepare generateSqlLite")"
-#cp $TMP_DIR/src/bin/generateSqlLite \
-#	$TMP_DIR/final/bin/generateSqlLite >> "$LOG_FILE" 2>&1
-#check_result $? "$(gettext "Prepare generateSqlLite")"
-
 log "INFO" "$(gettext "Install generateSqlLite")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-m 755 \
@@ -550,18 +568,18 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTREON_BINDIR/import-mysql-indexes >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install import-mysql-indexes")"
 
-## Install indexes schema
-#log "INFO" "$(gettext "Prepare indexes schema")"
-#cp $TMP_DIR/src/data/* \
-#	$TMP_DIR/final/data/ >> "$LOG_FILE" 2>&1
-#check_result $? "$(gettext "Prepare indexes schema")"
+# Install Centreon CLAPI command line
+log "INFO" "$(gettext "Prepare clapi binary")"
+cp $TMP_DIR/src/bin/centreon \
+	$TMP_DIR/final/bin/centreon >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare clapi binary")"
 
-#log "INFO" "$(gettext "Install indexes schema")"
-#$INSTALL_DIR/cinstall $cinstall_opts \
-#	-m 644 \
-#	$TMP_DIR/final/data/* \
-#	$CENTREON_DATADIR/ >> $LOG_FILE 2>&1
-#check_result $? "$(gettext "Install indexes schema")"
+log "INFO" "$(gettext "Install clapi binary")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 755 \
+	$TMP_DIR/final/bin/centreon \
+	$CENTREON_BINDIR/centreon >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install clapi binary")"
 
 # Install centreon perl lib
     $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
@@ -591,6 +609,14 @@ check_result $? "$(gettext "Install import-mysql-indexes")"
     echo_success "$(gettext "Centreon Web Perl lib installed")" "$ok"
     log "INFO" "$(gettext "Centreon Web Perl lib installed")"
 # End
+
+# Install libraries for Centreon CLAPI
+$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+    $TMP_DIR/src/lib/Zend/ \
+    $INSTALL_DIR_CENTREON/lib/Zend/ >> $LOG_FILE 2>&1
+$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+    $TMP_DIR/src/lib/Centreon/ \
+    $INSTALL_DIR_CENTREON/lib/Centreon/ >> $LOG_FILE 2>&1
 
 ## Prepare to install all pear modules needed.
 # use check_pear.php script

@@ -33,12 +33,12 @@
  *
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path . "www/class/centreon.class.php";
-require_once $centreon_path . "www/class/centreonXML.class.php";
-require_once $centreon_path . "www/class/centreonSession.class.php";
-require_once $centreon_path . "www/class/centreonDB.class.php";
-require_once $centreon_path . "www/class/centreonWidget.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
 
 session_start();
 
@@ -57,13 +57,13 @@ try {
     $widgetObj = new CentreonWidget($centreon, $db);
     switch ($action) {
         case 'install' :
-            $widgetObj->install($centreon_path."www/widgets/", $directory);
+            $widgetObj->install(_CENTREON_PATH_."www/widgets/", $directory);
             break;
         case 'uninstall' :
             $widgetObj->uninstall($directory);
             break;
         case 'upgrade' :
-            $widgetObj->upgrade($centreon_path."www/widgets/", $directory);
+            $widgetObj->upgrade(_CENTREON_PATH_."www/widgets/", $directory);
             break;
         default : throw new Exception('Unknown action');
     }

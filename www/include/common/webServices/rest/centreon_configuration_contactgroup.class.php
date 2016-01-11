@@ -31,14 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonContactgroup.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonLDAP.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
@@ -57,25 +54,92 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
      */
     public function getList()
     {
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
+        global $centreon;
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $offset = $this->arguments['page_limit'];
+            $range = $limit . ',' . $offset;
         } else {
-            $q = $this->arguments['q'];
+            $range = '';
         }
-        
-        $queryContactgroup = "SELECT cg_id, cg_name "
-            . "FROM contactgroup "
-            . "WHERE cg_name LIKE '%$q%' "
-            . "ORDER BY cg_name";
-        
-        $DBRESULT = $this->pearDB->query($queryContactgroup);
-        
+
+        $filterContactgroup = array();
+        $ldapFilter = '';
+        if (isset($this->arguments['q'])) {
+            $filterContactgroup['cg_name'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+            $filterContactgroup['cg_alias'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+            $ldapFilter = $this->arguments['q'];
+        }
+
+        $cg = new CentreonContactgroup($this->pearDB);
+        $acl = new CentreonACL($centreon->user->user_id);
+
+        $aclCgs = $acl->getContactGroupAclConf(
+            array(
+                'fields'  => array('cg_id', 'cg_name', 'cg_type', 'ar_name'),
+                'get_row' => null,
+                'keys' => array('cg_id'),
+                'conditions' => $filterContactgroup,
+                'order' => array('cg_name'),
+                'pages' => $range,
+                'total' => true
+            ),
+            false
+        );
+       
+
         $contactgroupList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $contactgroupList[] = array('id' => $data['cg_id'], 'text' => $data['cg_name']);
+        foreach ($aclCgs['items'] as $id => $contactgroup) {
+            $sText = $contactgroup['cg_name'];
+            if ($contactgroup['cg_type'] == 'ldap') {
+                $sText .= " (LDAP : ".$contactgroup['ar_name'].")";
+                $id = "[1]".$contactgroup['cg_name'];
+            } else {
+                $id = $contactgroup['cg_id'];
+            }
+            $contactgroupList[] = array(
+                'id' => $id,
+                'text' => $sText
+            );
+        }
+
+        # get Ldap contactgroups
+        $ldapCgs = array();
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $maxItem = $this->arguments['page_limit'] * $this->arguments['page'];
+            if ($aclCgs['total'] <= $maxItem) {
+                $ldapCgs = $cg->getLdapContactgroups($ldapFilter);
+            }
+        } else {
+            $ldapCgs = $cg->getLdapContactgroups($ldapFilter);
+        }
+ 
+        foreach ($ldapCgs as $key => $value) {
+            $sTemp = $value;
+            if (!$this->unique_key($sTemp, $contactgroupList)) {
+                $contactgroupList[] = array(
+                    'id' => $key,
+                    'text' => $value
+                );
+            }
         }
         
-        return $contactgroupList;
+        return array(
+            'items' => $contactgroupList,
+            'total' => $aclCgs['total']
+        );
+    }
+    
+    protected function unique_key($val, &$array)
+    {
+        if (!empty($val) && count($array) > 0) {
+            foreach ($array as $key => $value) {
+                if ($value['text'] == $val) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

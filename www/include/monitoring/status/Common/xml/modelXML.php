@@ -31,99 +31,98 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
-	
-	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-	include_once $centreon_path . "www/include/common/common-Func.php";
-	
-	/*
-	 * Create XML Request Objects
-	 */
-	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
-	
-	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-		;
-	} else {
-		print "Bad Session ID";
-		exit();
-	}
-	
-	/*
-	 * Set Default Poller
-	 */
-	$obj->getDefaultFilters();
-	
-	/*
-	 *  Check Arguments from GET
-	 */
-	$o 			= $obj->checkArgument("o", $_GET, "h");
-	$p			= $obj->checkArgument("p", $_GET, "2");
-	$num 		= $obj->checkArgument("num", $_GET, 0);
-	$limit 		= $obj->checkArgument("limit", $_GET, 20);
-	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-	$search 	= $obj->checkArgument("search", $_GET, "");
-	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
-	$order 		= $obj->checkArgument("order", $_GET, "ASC");
-	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-	
-	/*
-	 * Backup poller selection
-	 */
-	$obj->setInstanceHistory($instance);
-	$obj->setHostGroupsHistory($hostgroups);
-	
-	/* 
-	 * Get Host status 
-	 */
-	$rq1 = "";
-	
-	/*
-	 * Set pagination
-	 */
-	$rq_pagination = $rq1;
-	
-	/* 
-	 * Get Pagination Rows 
-	 */
-	$DBRESULT = $obj->DBNdo->query($rq_pagination);
-	$numRows = $DBRESULT->numRows();
-	$DBRESULT->free();
-	
-	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
-	$obj->XML->startElement("reponse");
-	$obj->XML->startElement("i");
-	$obj->XML->writeElement("numrows", $numRows);
-	$obj->XML->writeElement("num", $num);
-	$obj->XML->writeElement("limit", $limit);
-	$obj->XML->writeElement("p", $p);
-	$obj->XML->writeElement("o", $o);
-	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
-	$obj->XML->endElement();	
-	
-	$ct = 0;
-	$flag = 0;
-	$DBRESULT = $obj->DBNdo->query($rq1);
-	while ($ndo = $DBRESULT->fetchRow()) {
-		$obj->XML->startElement("l");
-		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
-		/*
-		 * All XML data here
-		 */
-		$obj->XML->endElement();		
-	}
-	$DBRESULT->free();
+include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
+include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
-	if (!$ct)
-		$obj->XML->writeElement("infos", "none");
-	$obj->XML->endElement();
-	
-	$obj->header();
-	$obj->XML->output();
-?>
+/*
+ * Create XML Request Objects
+ */
+    session_start();
+	$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
+
+if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
+	;
+} else {
+	print "Bad Session ID";
+	exit();
+}
+
+/*
+ * Set Default Poller
+ */
+$obj->getDefaultFilters();
+
+/*
+ *  Check Arguments from GET
+ */
+$o 			= $obj->checkArgument("o", $_GET, "h");
+$p			= $obj->checkArgument("p", $_GET, "2");
+$num 		= $obj->checkArgument("num", $_GET, 0);
+$limit 		= $obj->checkArgument("limit", $_GET, 20);
+$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
+$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
+$search 	= $obj->checkArgument("search", $_GET, "");
+$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+$order 		= $obj->checkArgument("order", $_GET, "ASC");
+$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+
+/*
+ * Backup poller selection
+ */
+$obj->setInstanceHistory($instance);
+$obj->setHostGroupsHistory($hostgroups);
+
+/* 
+ * Get Host status 
+ */
+$rq1 = "";
+
+/*
+ * Set pagination
+ */
+$rq_pagination = $rq1;
+
+/* 
+ * Get Pagination Rows 
+ */
+$DBRESULT = $obj->DBNdo->query($rq_pagination);
+$numRows = $DBRESULT->numRows();
+$DBRESULT->free();
+
+$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+
+$obj->XML->startElement("reponse");
+$obj->XML->startElement("i");
+$obj->XML->writeElement("numrows", $numRows);
+$obj->XML->writeElement("num", $num);
+$obj->XML->writeElement("limit", $limit);
+$obj->XML->writeElement("p", $p);
+$obj->XML->writeElement("o", $o);
+$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
+$obj->XML->endElement();	
+
+$ct = 0;
+$flag = 0;
+$DBRESULT = $obj->DBNdo->query($rq1);
+while ($ndo = $DBRESULT->fetchRow()) {
+	$obj->XML->startElement("l");
+	$obj->XML->writeAttribute("class", $obj->getNextLineClass());
+	/*
+	 * All XML data here
+	 */
+	$obj->XML->endElement();		
+}
+$DBRESULT->free();
+
+if (!$ct) {
+	$obj->XML->writeElement("infos", "none");	
+}
+$obj->XML->endElement();
+
+$obj->header();
+
+$obj->XML->output();

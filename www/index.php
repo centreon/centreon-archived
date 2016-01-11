@@ -31,12 +31,16 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
+require_once realpath(dirname(__FILE__).'/../config/centreon.config.php');
+
+$etc = _CENTREON_ETC_;
+
+define('SMARTY_DIR', realpath('../GPL_LIB/Smarty/libs/') . '/');
 
 ini_set('display_errors', 'Off');
-
-$etc = "/etc/centreon";
 
 clearstatcache(true, "$etc/centreon.conf.php");
 if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
@@ -50,9 +54,9 @@ if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
         require_once ("$etc/centreon.conf.php");
         $freeze = 0;
     } else {
-        $freeze = 1;
-        require_once ("../centreon.conf.php");
-        $msg = _("You have to move centreon configuration file from temporary directory to final directory");
+        $freeze = 0;
+        //require_once ("../centreon.conf.php");
+       // $msg = _("You have to move centreon configuration file from temporary directory to final directory");
     }
 }
 
@@ -61,6 +65,7 @@ require_once "$classdir/centreonSession.class.php";
 require_once "$classdir/centreonAuth.SSO.class.php";
 require_once "$classdir/centreonLog.class.php";
 require_once "$classdir/centreonDB.class.php";
+require_once SMARTY_DIR."Smarty.class.php";
 
 /*
  * Get auth type
@@ -119,63 +124,6 @@ if (isset($_SESSION["centreon"])) {
     $centreon = & $_SESSION["centreon"];
 
     header('Location: main.php');
-}
-
-if (isset($_POST["submit"])
-    || (isset($_GET["autologin"]) && $_GET["autologin"] && isset($_GET["p"]) && $_GET["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
-    || (isset($_POST["autologin"]) && $_POST["autologin"] && isset($_POST["p"]) && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
-    || (!isset($generalOptions['sso_enable']) || $generalOptions['sso_enable'] == 1)) {
-    
-    /*
-     * Init log class
-     */
-    $CentreonLog = new CentreonUserLog(-1, $pearDB);
-
-    if (isset($_POST['p'])) {
-        $_GET["p"] = $_POST["p"];			
-    }
-    
-    /*
-     * Get Connexion parameters
-     */
-    isset($_GET["autologin"]) ? $autologin = $_GET["autologin"] : $autologin = 0;
-    isset($_GET["useralias"]) ? $useraliasG = $_GET["useralias"] : $useraliasG = NULL;
-    isset($_POST["useralias"]) ? $useraliasP = $_POST["useralias"] : $useraliasP = NULL;
-    $useraliasG ? $useralias = $useraliasG : $useralias = $useraliasP;
-    
-    isset($_GET["password"]) ? $passwordG = $_GET["password"] : $passwordG = NULL;
-    isset($_POST["password"]) ? $passwordP = $_POST["password"] : $passwordP = NULL;
-    $passwordG ? $password = $passwordG : $password = $passwordP;
-
-    $token = "";
-    if (isset($_REQUEST['token']) && $_REQUEST['token']) {
-        $token = $_REQUEST['token'];
-    }
-
-    if (!isset($encryptType)) {
-        $encryptType = 1;
-    }
-
-    $centreonAuth = new CentreonAuthSSO($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $token, $generalOptions);
-
-    if ($centreonAuth->passwdOk == 1) {
-
-        $centreon = new Centreon($centreonAuth->userInfos, $generalOptions["nagios_version"]);
-        $_SESSION["centreon"] = $centreon;
-        $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$centreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
-        if (!isset($_POST["submit"]))	{
-            $args = NULL;
-            foreach ($_GET as $key => $value) {
-                $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;					
-            }
-            header("Location: ./main.php?".$args."");
-        } else {
-            header("Location: ./main.php");
-        }
-        $connect = true;
-    } else {
-        $connect = false;	    	
-    }
 }
 
 /*

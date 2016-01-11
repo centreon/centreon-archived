@@ -37,8 +37,8 @@ if (!isset($centreon)) {
     exit();
  }
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 /*
  * Retreive information
@@ -165,32 +165,32 @@ $form->addElement('header', 'resource', _("Resources access list link"));
 $form->addElement('header', 'actions', _("Action access list link"));
 
 $ams1 = $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
 $ams1 = $form->addElement('advmultiselect', 'cg_contactGroups', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $contactGroups, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
 $ams1 = $form->addElement('advmultiselect', 'menuAccess', array(_("Menu access"), _("Available"), _("Selected")), $menus, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
 $ams1 = $form->addElement('advmultiselect', 'actionAccess', array(_("Actions access"), _("Available"), _("Selected")), $action, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
 $ams1 = $form->addElement('advmultiselect', 'resourceAccess', array(_("Resources access"), _("Available"), _("Selected")), $resources, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
@@ -264,17 +264,16 @@ if ($o == "w") {
     /*
      * Modify a Contact Group information
      */
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($group);
  } else if ($o == "a") {
     /*
      * Add a Contact Group information
      */
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
  }
-
 $valid = false;
 if ($form->validate())	{
     $groupObj = $form->getElement('acl_group_id');
@@ -284,25 +283,21 @@ if ($form->validate())	{
         updateGroupInDB($groupObj->getValue());
     }
     $o = NULL;
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$groupObj->getValue()."'"));
-    $form->freeze();
     $valid = true;
  }
 
 $action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+if ($valid) {
     require_once($path."listGroupConfig.php");
 } else {
      /*
       * Apply a template definition
       */
-     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-     $form->accept($renderer);
-     $tpl->assign('form', $renderer->toArray());
-     $tpl->assign('o', $o);
-     $tpl->display("formGroupConfig.ihtml");
- }
-
-?>
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->assign('o', $o);
+    $tpl->display("formGroupConfig.ihtml");
+}

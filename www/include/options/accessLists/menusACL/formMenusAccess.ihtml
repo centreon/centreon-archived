@@ -9,14 +9,26 @@
 {/if}
 </div>
 <div id='tab1' class="tab">
-	 <table class="ListTable" border=1>
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/application_lock.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>	 	
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>	 	
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_acl_definition">{$form.acl_topo_name.label}</td><td class="FormRowValue">{$form.acl_topo_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_alias">{$form.acl_topo_alias.label}</td><td class="FormRowValue">{$form.acl_topo_alias.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_status">{$form.acl_topo_activate.label}</td><td class="FormRowValue">{$form.acl_topo_activate.html}</td></tr>
 	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_linked_groups">{$form.acl_groups.label}</td><td class="FormRowValue">{$form.acl_groups.html}</td></tr>
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/window_application_delete.gif'>&nbsp;&nbsp;{$form.header.pages}</td></tr>
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.pages}</h4>
+          </td>
+        </tr>
 		<tr class="list_one">
 			<td colspan="2">
 			<table border=0 width="100%"><tr><td>
@@ -111,14 +123,17 @@
 				</td></tr></table>
 			</td>
 		</tr>
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.furtherInfos}</h4>
+          </td>
+        </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_comments">{$form.acl_comments.label}</td><td class="FormRowValue">{$form.acl_comments.html}</td></tr>
-		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
 	</table>
 </div>
 <div id="validForm">
 {if $o == "a" || $o == "c"}
-	<p>{$form.action.html}</p>
 	<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 {else if $o == "w"}
 	<p>{$form.change.html}</p>

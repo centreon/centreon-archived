@@ -1,8 +1,16 @@
 {$form.javascript}
 <form {$form.attributes}>
- <table class="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/layout_horizontal.gif'>&nbsp;&nbsp;{$form.header.ftitle}</td></tr>
- 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+ <table class="formTable table">
+ 	<tr class="ListHeader">
+      <td class="FormHeader" colspan="2">
+        <h3>| {$form.header.ftitle}</h3>
+      </td>
+    </tr>
+ 	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.information}</h4>
+      </td>
+    </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_template_name">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
 	<tr class="list_two">
 		<td class="FormRowField">
@@ -17,7 +25,6 @@
 		</td>
 		<td id="td_list_hsr" class="FormRowValue">
 			{$form.host_id.html}
-			&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
 		</td>
 	</tr>
 	<tr class="list_one">
@@ -26,16 +33,24 @@
 			<td id="td_ds_html" class="FormRowValue" style="padding: 0px; border-width: 0px;">{$form.ds_name.html}</td>
 			{if $o == "a" || $o == "c"}
 				<td id="td_list_metrics" style="padding: 0px; border-width: 0px;">
-					&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" onclick="insertValueQuery()" />&nbsp;
+					&nbsp;<img src="./img/icons/arrow-left.png" class="ico-14" onclick="insertValueQuery()" />&nbsp;
 				</td>
 			{/if}
 		</tr></table></td>
 	</tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.options}</td></tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.options}</h4>
+      </td>
+    </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_stack">{$form.ds_stack.label}</td><td class="FormRowValue">{$form.ds_stack.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_order">{$form.ds_order.label}</td><td class="FormRowValue">{$form.ds_order.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_invert">{$form.ds_invert.label}</td><td class="FormRowValue">{$form.ds_invert.html}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.color}</td></tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.color}</h4>
+      </td>
+    </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_thickness">{$form.ds_tickness.label}</td><td class="FormRowValue">{$form.ds_tickness.html}px</td></tr>
 	<tr class="list_two">
 		<td class="FormRowField"><img class="helpTooltip" name="tip_line_color">{$form.ds_color_line.label}</td>
@@ -75,7 +90,11 @@
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_transparency">{$form.ds_transparency.label}</td><td class="FormRowValue">{$form.ds_transparency.html}%</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_filling">{$form.ds_filled.label}</td><td class="FormRowValue">{$form.ds_filled.html}</td></tr>
 	
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.legend}</td></tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.legend}</h4>
+      </td>
+    </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_legend_name">{$form.ds_legend.label}</td><td class="FormRowValue">{$form.ds_legend.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_only_the_legend">{$form.ds_hidecurve.label}</td><td class="FormRowValue">{$form.ds_hidecurve.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_empty_line_after_this_legend">{$form.ds_jumpline.label}</td><td class="FormRowValue">{$form.ds_jumpline.html}</td></tr>
@@ -88,12 +107,11 @@
 	<!--<tr class="list_two"><td class="FormRowField">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>-->
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_comments">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
 	{if $o == "a" || $o == "c"}
-		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required.note}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required.note}</td></tr>
 	{/if}
 </table>
 <div id="validForm">
 {if $o == "a" || $o == "c"}
-	<p>{$form.action.html}</p>
 	<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 {else if $o == "w"}
 	<p>{$form.change.html}</p>

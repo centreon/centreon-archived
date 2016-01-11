@@ -99,7 +99,7 @@ $tpl = initSmartyTpl($path, $tpl);
 $tpl->assign("headerMenu_name", 		 _("Name"));
 $tpl->assign("headerMenu_rname", 		 _("Real name"));
 $tpl->assign("headerMenu_release", 		 _("Release"));
-$tpl->assign("headerMenu_infos", 		 _("Informations"));
+$tpl->assign("headerMenu_infos", 		 _("Information"));
 $tpl->assign("headerMenu_moduleStatus",  _("Status"));
 $tpl->assign("headerMenu_author", 		 _("Author"));
 $tpl->assign("headerMenu_licenseExpire", _("Expiration date"));
@@ -123,18 +123,18 @@ $handle = opendir("./modules/");
 $elemArr = array();
 $i = 0;
 while (false !== ($filename = readdir($handle))) {
-    if (is_dir($centreon_path . "www/modules/" . $filename) && $filename != "." && $filename != "..") {
+    if (is_dir(_CENTREON_PATH_ . "www/modules/" . $filename) && $filename != "." && $filename != "..") {
         $moduleinfo = getModuleInfoInDB($filename, NULL);
 
         /*
          * Package already installed
          */
         if (isset($moduleinfo["rname"]))	{
-            if (function_exists('zend_loader_enabled') && file_exists($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
-                if (zend_loader_file_encoded($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
-                    $zend_info = zend_loader_file_licensed($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+            if (function_exists('zend_loader_enabled') && file_exists(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
+                if (zend_loader_file_encoded(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
+                    $zend_info = zend_loader_file_licensed(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl");
                 } else {
-                    $zend_info = parse_zend_license_file($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+                    $zend_info = parse_zend_license_file(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl");
                 }
                 $license_expires = date("d/m/Y", strtotime($zend_info['Expires']));
             } else {
@@ -149,7 +149,6 @@ while (false !== ($filename = readdir($handle))) {
                                     "RowMenu_author" => $moduleinfo["author"],
                                     "RowMenu_licenseExpire" => $license_expires,
                                     "RowMenu_upgrade" => 0,
-                                    "RowMenu_picture" => (file_exists("./modules/$filename/icone.gif") ? "./modules/$filename/icone.gif" : "./img/icones/16x16/component_green.gif"),
                                     "RowMenu_isinstalled" => _("Yes"),
                                     "RowMenu_link" => "?p=".$p."&o=w&id=".$moduleinfo["id"],
                                     "RowMenu_link_install" => NULL,
@@ -160,10 +159,10 @@ while (false !== ($filename = readdir($handle))) {
              * Check Update
              */
             $upgradeAvailable = false;
-            if (!file_exists($centreon_path . "www/modules/" . $filename . "/license")) 
+            if (!file_exists(_CENTREON_PATH_ . "www/modules/" . $filename . "/license")) 
                 $upgradeAvailable = true;
             else {
-                if (function_exists('zend_loader_enabled') && file_exists($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl"))
+                if (function_exists('zend_loader_enabled') && file_exists(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl"))
                     $upgradeAvailable = true;
             }
             
@@ -187,26 +186,26 @@ while (false !== ($filename = readdir($handle))) {
             /*
              * Valid package to install
              */
-            if (is_file($centreon_path . "www/modules/".$filename."/conf.php")) {
-                include_once($centreon_path . "www/modules/".$filename."/conf.php");
-            } else if (is_file($centreon_path . "www/modules/".$filename."/.api/conf.php")) {
-                include_once($centreon_path . "www/modules/".$filename."/.api/conf.php");
+            if (is_file(_CENTREON_PATH_ . "www/modules/".$filename."/conf.php")) {
+                include_once(_CENTREON_PATH_ . "www/modules/".$filename."/conf.php");
+            } else if (is_file(_CENTREON_PATH_ . "www/modules/".$filename."/.api/conf.php")) {
+                include_once(_CENTREON_PATH_ . "www/modules/".$filename."/.api/conf.php");
             }
 
             if (isset($module_conf[$filename]["name"]))	{
 
                 $picturePath = "./img/icones/16x16/component_green.gif";
-                if (file_exists($centreon_path . "www/modules/".$filename."/icone.gif")) {
+                if (file_exists(_CENTREON_PATH_ . "www/modules/".$filename."/icone.gif")) {
                     $picturePath =  "./modules/".$filename."/icone.gif";
                 }
-                if (file_exists($centreon_path . "www/modules/".$filename."/.api/icone.gif")) {
+                if (file_exists(_CENTREON_PATH_ . "www/modules/".$filename."/.api/icone.gif")) {
                     $picturePath =  "./modules/".$filename."/.api/icone.gif";
                 }
-                if (function_exists('zend_loader_enabled') && file_exists($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
-                    if (zend_loader_file_encoded($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
-                        $zend_info = zend_loader_file_licensed($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+                if (function_exists('zend_loader_enabled') && file_exists(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
+                    if (zend_loader_file_encoded(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
+                        $zend_info = zend_loader_file_licensed(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl");
                     } else {
-                        $zend_info = parse_zend_license_file($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+                        $zend_info = parse_zend_license_file(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl");
                     }
                     $license_expires = date("d/m/Y", strtotime($zend_info['Expires']));
                 } else {
@@ -259,5 +258,3 @@ $tpl->assign("action_upgrade", _("Upgrade"));
  */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $tpl->display("listModules.ihtml");
-    
-?>

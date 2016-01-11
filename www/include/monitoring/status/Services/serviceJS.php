@@ -31,33 +31,38 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($centreon)) {
+	exit();		
+}
 
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-	$sid = session_id();
-	$time = time();
+if (!isset($oreon->optGen["AjaxFirstTimeReloadStatistic"]) || $oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
+    $tFS = 10;
+} else {
+    $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+}
+if (!isset($oreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
+    $tFM = 10;
+} else {
+    $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+}
+$sid = session_id();
+$time = time();
 
-	$obis = $o;
-	if(isset($_GET["problem"])) {
-		$obis .= '_pb';
-	}
-	if(isset($_GET["acknowledge"])) {
-		$obis .= '_ack_' . $_GET["acknowledge"];
-	}
+$obis = $o;
+if (isset($_GET["problem"])) {
+	$obis .= '_pb';
+}
+if (isset($_GET["acknowledge"])) {
+	$obis .= '_ack_' . $_GET["acknowledge"];
+}
 
 ?>
 <script type="text/javascript">
 var _debug = 0;
 
-var _addrXML = "./include/monitoring/status/Services/xml/<?php print $centreon->broker->getBroker(); ?>/serviceXML.php";
+var _addrXML = "./include/monitoring/status/Services/xml/serviceXML.php";
 var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 var _criticality_id = 0;
 
@@ -138,14 +143,14 @@ var _criticality_id = 0;
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 
-                        var h = document.getElementById('criticality_id');
-                        if (h) {
-                            h.innerHTML = '<?php echo addslashes("S"); ?>';
-                            h.indice = 'criticality_id';
-                            h.title = "<?php echo _("Sort by severity"); ?>";
-                            h.onclick=function(){change_type_order(this.indice)};
-                            h.style.cursor = "pointer";
-                        }
+            var h = document.getElementById('criticality_id');
+            if (h) {
+                h.innerHTML = '<?php echo addslashes("S"); ?>';
+                h.indice = 'criticality_id';
+                h.title = "<?php echo _("Sort by severity"); ?>";
+                h.onclick=function(){change_type_order(this.indice)};
+                h.style.cursor = "pointer";
+            }
 
 			var h = document.getElementById('plugin_output');
 			h.innerHTML = '<?php echo addslashes(_("Status information")); ?>';
@@ -177,36 +182,24 @@ var _criticality_id = 0;
 		construct_selecteList_ndo_instance('instance_selected');
 		construct_HostGroupSelectList('hostgroups_selected');
 
-		if (!document.getElementById('debug')){
-			var _divdebug = document.createElement("div");
-			_divdebug.id = 'debug';
-			var _debugtable = document.createElement("table");
-			_debugtable.id = 'debugtable';
-			var _debugtr = document.createElement("tr");
-			_debugtable.appendChild(_debugtr);
-			_divdebug.appendChild(_debugtable);
-			_header = document.getElementById('header');
-			_header.appendChild(_divdebug);
-		}
-
 		if (document.getElementById("host_search") && document.getElementById("host_search").value) {
 			_host_search = document.getElementById("host_search").value;
 			viewDebugInfo('host search: '+document.getElementById("host_search").value);
-		} else if (document.getElementById("host_search").lenght == 0) {
+		} else if (document.getElementById("host_search").length == 0) {
 			_host_search = "";
 		}
 
 		if (document.getElementById("output_search") && document.getElementById("output_search").value) {
 			_output_search = document.getElementById("output_search").value;
 			viewDebugInfo('Output search: '+document.getElementById("output_search").value);
-		} else if (document.getElementById("output_search").lenght == 0) {
+		} else if (document.getElementById("output_search").length == 0) {
 			_output_search = "";
 		}
 
 		if (document.getElementById("input_search") && document.getElementById("input_search").value) {
 			_search = document.getElementById("input_search").value;
 			viewDebugInfo('service search: '+document.getElementById("input_search").value);
-		} else if (document.getElementById("input_search").lenght == 0) {
+		} else if (document.getElementById("input_search").length == 0) {
 			_search = "";
 		}
         
@@ -226,7 +219,6 @@ var _criticality_id = 0;
 	}
 
 	function goM(_time_reload,_sid,_o){
-
 		_lock = 1;
 		var proc = new Transformation();
 
@@ -237,9 +229,12 @@ var _criticality_id = 0;
 			document.getElementById("output_search").value = _output_search;
 			_counter += 1;
 		}
-
+        
+        var statusService = jQuery.trim(jQuery('#statusService').val());
+        var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
+               
 		proc.setCallback(monitoringCallBack);
-		proc.setXml(_addrXML+"?"+'&sid='+_sid+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc+'&criticality='+_criticality_id);
+		proc.setXml(_addrXML+"?"+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc+'&criticality='+_criticality_id+'&statusService='+statusService+'&statusFilter='+statusFilter+"&sSetOrderInMemory="+sSetOrderInMemory);
 		proc.setXslt(_addrXSL);
 		proc.transform("forAjax");
 
@@ -256,9 +251,9 @@ var _criticality_id = 0;
 		for (keyz in _selectedElem) {
 			if (keyz == _selectedElem[keyz]) {
 				removeFromSelectedElem(decodeURIComponent(keyz));
-                                if (document.getElementById(decodeURIComponent(keyz))) { 
-                                    document.getElementById(decodeURIComponent(keyz)).checked = false;
-                                }
+                if (document.getElementById(decodeURIComponent(keyz))) { 
+                    document.getElementById(decodeURIComponent(keyz)).checked = false;
+                }
 			}
 		}
 	}
@@ -273,15 +268,21 @@ var _criticality_id = 0;
 			return 1;
 		} else {
 			for (keyz in _selectedElem) {
-                            if ((keyz == _selectedElem[keyz]) && typeof(document.getElementById(decodeURIComponent(keyz)) != 'undefined') &&
-                                document.getElementById(decodeURIComponent(keyz))) {
-                                if (document.getElementById(decodeURIComponent(keyz)).checked) {
-                                    _getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
-                                }
-                            }
+                if ((keyz == _selectedElem[keyz]) && typeof(document.getElementById(decodeURIComponent(keyz)) != 'undefined') &&
+                    document.getElementById(decodeURIComponent(keyz))) {
+                    if (document.getElementById(decodeURIComponent(keyz)).checked) {
+                        _getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
+                    }
+                }
 			}
-			Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title:'<?php echo _("External commands") ?>',width:600});
-			return 0;
+            
+            
+        var url = './include/monitoring/external_cmd/popup/popup.php?o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar;
+        
+        var popin = jQuery('<div>');
+        popin.centreonPopin({open:true,url:url});
+        window.currentPopin = popin;
+        return 0;
 		}
 	}
 
@@ -325,7 +326,7 @@ var _criticality_id = 0;
 
 			var author = document.getElementById('author').value;
 
-			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author  + _getVar, true);
 		} else if (_cmd == '74' || _cmd == '75') {
 			var downtimehostservice = 0;
 			if (document.getElementById('downtimehostservice')) {
@@ -341,10 +342,15 @@ var _criticality_id = 0;
 			var author = document.getElementById('author').value;
 			var duration = document.getElementById('duration').value;
             var duration_scale = document.getElementById('duration_scale').value;
-			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&comment=" + comment + "&start="+ start + "&end=" + end + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+            var tmp = document.querySelector('input[name="host_or_centreon_time[host_or_centreon_time]"]:checked');
+            var host_or_centreon_time = "0";
+            if(tmp !== null && typeof tmp !== "undefined" ){
+                host_or_centreon_time = tmp.value;
+            }
+			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&comment=" + comment + "&start="+ start + "&end=" + end + "&host_or_centreon_time=" + host_or_centreon_time +  "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
 		}
 		xhr_cmd.send(null);
-		Modalbox.hide();
+        window.currentPopin.centreonPopin("close");
 		unsetCheckboxes();
 	}
 
@@ -359,4 +365,4 @@ var _criticality_id = 0;
 			dur.disabled = false;
 		}
 	}
-</SCRIPT>
+</script>

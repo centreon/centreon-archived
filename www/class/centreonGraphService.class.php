@@ -49,9 +49,9 @@ class CentreonGraphService extends CentreonGraph
      * @param int $index The index data id
      * @param string $sid The session id
      */
-    public function __construct($index, $sid)
+    public function __construct($index, $userId)
     {
-        parent::__construct($sid, $index, 0, 1);
+        parent::__construct($userId, $index, 0, 1);
     }
 
     /**

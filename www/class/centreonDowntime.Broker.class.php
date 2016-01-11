@@ -143,30 +143,33 @@ class CentreonDowntimeBroker extends CentreonDowntime
 	 * @param int $serviceId The second object id (service_id), is null if search a host
 	 * @return array
 	 */
-	public function isScheduled($dt_id, $hostId, $serviceId = null)
+	public function isScheduled($dt_id, $hostId, $serviceId = null, $currentHostDate = null)
 	{
 		static $downtimeHosts = array();
 		static $downtimeServices = array();
 
+        if(is_null($currentHostDate)){
+          $currentHostDate = "UNIX_TIMESTAMP()";
+        }
 		if (!isset($downtimeHosts[$dt_id])) {
 			$downtimeHosts[$dt_id] = array();
 			$downtimeServices[$dt_id] = array();
 
+            
 			$query = "SELECT internal_id as internal_downtime_id, type as downtime_type, host_id, service_id
 				FROM downtimes
-				WHERE start_time > UNIX_TIMESTAMP()
+				WHERE start_time > ".$currentHostDate."
 				AND comment_data = '[Downtime cycle #" . $dt_id . "]'";
 			$res = $this->dbb->query($query);
 			while ($row = $res->fetchRow()) {
-				if (!isset($downtimes[$dt_id][$row['host_id']]) && is_null($row['service_id'])) {
+				if (!isset($downtimeHosts[$dt_id][$row['host_id']]) && ($row['service_id'] === "" || is_null($row['service_id']))) {
 					$downtimeHosts[$dt_id][$row['host_id']] = $row;
 				}
-				if (!is_null($row['service_id'])) {
+				if (($row['service_id'] !== "" || is_null($row['service_id']))) {
 					$downtimeServices[$dt_id][$row['host_id']][$row['service_id']] = $row;
 				}
 			}
 		}
-		
 		$arr = array();
 		if (!is_null($serviceId)) {
 			if (isset($downtimeServices[$dt_id]) 
@@ -176,7 +179,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
 		} elseif (isset($downtimeHosts[$dt_id]) && isset($downtimeHosts[$dt_id][$hostId])) {
 			$arr = $downtimeHosts[$dt_id][$hostId];
 		}
-
 		$listObj = array();
 		foreach ($arr as $row) {
 			$listObj[] = $row;

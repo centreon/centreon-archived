@@ -31,14 +31,10 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
  
-	if (isset($_SESSION['monitoring_default_hostgroups'])) {
-		$default_hg = $_SESSION['monitoring_default_hostgroups'];
-	} else {
-		$default_hg = "0";
-	} 
-?>
+if (isset($_SESSION['monitoring_default_hostgroups'])) {
+	$default_hg = $_SESSION['monitoring_default_hostgroups'];
+} else {
+	$default_hg = "0";
+} 

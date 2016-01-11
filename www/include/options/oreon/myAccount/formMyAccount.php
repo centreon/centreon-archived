@@ -92,9 +92,9 @@
 	$form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
 	$form->addElement('password', 'contact_passwd', _("Password"), array("size"=>"30", "autocomplete"=>"off", "id"=>"passwd1", "onFocus" => "resetPwdType(this);"));
 	$form->addElement('password', 'contact_passwd2', _("Confirm Password"), array("size"=>"30", "autocomplete"=>"off", "id"=>"passwd2", "onFocus" => "resetPwdType(this);"));
-        $form->addElement('button','contact_gen_passwd',_("Generate"), array('onclick'=>'generatePassword("passwd");'));
+        $form->addElement('button','contact_gen_passwd',_("Generate"), array('onclick'=>'generatePassword("passwd");', 'class' => 'btc bt_info'));
         $form->addElement('text', 'contact_autologin_key', _("Autologin Key"), array("size" => "30", "id" => "aKey"));
-        $form->addElement('button','contact_gen_akey',_("Generate"), array( 'onclick' => 'generatePassword("aKey");'));
+        $form->addElement('button','contact_gen_akey',_("Generate"), array( 'onclick' => 'generatePassword("aKey");', 'class' => 'btc bt_info'));
         $form->addElement('select', 'contact_lang', _("Language"), $langs);
         $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
 
@@ -107,7 +107,7 @@
         $form->addElement('checkbox', 'monitoring_svc_notification_2', _('Show Critical status'));
         $form->addElement('checkbox', 'monitoring_svc_notification_3', _('Show Unknown status'));
 
-        $sound_files = scandir($centreon_path."www/sounds/");
+        $sound_files = scandir(_CENTREON_PATH_."www/sounds/");
         $sounds = array(null => null);
         foreach ($sound_files as $f) {
             if($f == "." || $f == "..") {
@@ -124,6 +124,15 @@
         $form->addElement('select', 'monitoring_sound_svc_notification_1', _("Sound for Warning status"), $sounds);
         $form->addElement('select', 'monitoring_sound_svc_notification_2', _("Sound for Critical status"), $sounds);
         $form->addElement('select', 'monitoring_sound_svc_notification_3', _("Sound for Unknown status"), $sounds);
+        
+        $attrTimezones = array(
+            'datasourceOrigin' => 'ajax',
+            'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
+            'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=defaultValues&target=contact&field=contact_location&id=' . $oreon->user->get_id(),
+            'multiple' => false,
+            'linkedObject' => 'centreonGMT'
+        );
+        $form->addElement('select2', 'contact_location', _("Timezone / Location"), array(), $attrTimezones);
 
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -151,8 +160,8 @@
 
 	// Modify a contact information
 	if ($o == "c")	{
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 	    $form->setDefaults($cct);
 	}
 	
@@ -161,7 +170,7 @@
 		if ($form->getSubmitValue("contact_passwd"))
 			$oreon->user->passwd = md5($form->getSubmitValue("contact_passwd"));
 		$o = NULL;
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c'", 'class' => 'btc bt_info'));
 		$form->freeze();
 	}
 	//Apply a template definition	

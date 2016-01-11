@@ -42,14 +42,10 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
-
 	$SearchStr = "";
-	if (isset($search)) {
+    $search = "";
+	if (isset($_POST['searchACLR']) && $_POST['searchACLR']) {
+        $search = $_POST['searchACLR'];
 		$SearchStr = " WHERE (acl_res_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_res_alias LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
 	}
 	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_resources" . $SearchStr);
@@ -101,9 +97,9 @@
 		$selectedElements = $form->addElement('checkbox', "select[".$resources['acl_res_id']."]");
 
 		if ($resources["acl_res_activate"]) {
-			$moptions = "<a href='main.php?p=".$p."&acl_res_id=".$resources['acl_res_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_inactive.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+			$moptions = "<a href='main.php?p=".$p."&acl_res_id=".$resources['acl_res_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		} else {
-			$moptions = "<a href='main.php?p=".$p."&acl_res_id=".$resources['acl_res_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_active.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+			$moptions = "<a href='main.php?p=".$p."&acl_res_id=".$resources['acl_res_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		}
 		$moptions .= "&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$resources['acl_res_id']."]'></input>";
@@ -173,6 +169,7 @@
 	$o2->setSelected(NULL);
 
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchACLR', $search);
 
 	/*
 	 * Apply a template definition

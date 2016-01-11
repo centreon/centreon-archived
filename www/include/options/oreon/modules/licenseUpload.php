@@ -50,22 +50,22 @@ function parse_zend_license_file($file)
 }
     
 // Load conf
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path . '/www/autoloader.php';
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . '/www/autoloader.php';
 
 $LicenseFileInfos = $_FILES['licensefile'];
 $filename = str_replace('/', '', $_GET['module']);
 
 if ($LicenseFileInfos['name'] == 'merethis_lic.zl')
 {
-    if (is_writable($centreon_path . "www/modules/" . $filename . "/license/"))
+    if (is_writable(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/"))
     {
-        if (move_uploaded_file($_FILES["licensefile"]["tmp_name"], $centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl"))
+        if (move_uploaded_file($_FILES["licensefile"]["tmp_name"], _CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl"))
         {
-            if (zend_loader_file_encoded($centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl")) {
-                $zend_info = zend_loader_file_licensed($centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl");
+            if (zend_loader_file_encoded(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl")) {
+                $zend_info = zend_loader_file_licensed(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl");
             } else {
-                $zend_info = parse_zend_license_file($centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl");
+                $zend_info = parse_zend_license_file(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl");
             }
             
             $licenseMatchedProduct = false;
@@ -103,16 +103,16 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl')
 
             if ($licenseMatchedProduct && $licenseMatchedZendID && $licenseHasAdmin && ($licenseExpired == FALSE))
             {
-                if(file_exists($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
-                    unlink($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+                if(file_exists(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
+                    unlink(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl");
                 }
 
-                rename($centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl", $centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
-                clearstatcache(true, $centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
-                if (zend_loader_install_license($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl", true)) {
-                    echo _("The license has been sucessfully installed");
+                rename(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl", _CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl");
+                clearstatcache(true, _CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl");
+                if (zend_loader_install_license(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl", true)) {
+                    echo _("The license has been successfully installed");
                 } else {
-                    echo _("An error occured");
+                    echo _("An error occurred");
                 }
             }
             else

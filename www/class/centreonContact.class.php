@@ -155,8 +155,82 @@ class CentreonContact
                 $parameters['relationObject']['field'] = 'contactgroup_cg_id';
                 $parameters['relationObject']['comparator'] = 'contact_contact_id';
                 break;
+             case 'contact_location':
+                $parameters['type'] = 'simple';
+                $parameters['externalObject']['table'] = 'timezone';
+                $parameters['externalObject']['id'] = 'timezone_id';
+                $parameters['externalObject']['name'] = 'timezone_name';
+                $parameters['externalObject']['comparator'] = 'timezone_id';
+                break;
+            case 'contact_acl_groups':
+                $parameters['type'] = 'relation';
+                $parameters['externalObject']['table'] = 'acl_groups';
+                $parameters['externalObject']['id'] = 'acl_group_id';
+                $parameters['externalObject']['name'] = 'acl_group_name';
+                $parameters['externalObject']['comparator'] = 'acl_group_id';
+                $parameters['relationObject']['table'] = 'acl_group_contacts_relations';
+                $parameters['relationObject']['field'] = 'acl_group_id';
+                $parameters['relationObject']['comparator'] = 'contact_contact_id';
+                break;
         }
         
         return $parameters;
+    }
+
+    /**
+     *
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array(), $options = array())
+    {
+        global $centreon;
+        $items = array();
+
+        # get list of authorized contacts
+        if (!$centreon->user->access->admin) {
+            $cAcl = $centreon->user->access->getContactAclConf(
+                array(
+                    'fields'  => array('contact_id'),
+                    'get_row' => 'contact_id',
+                    'keys' => array('contact_id'),
+                    'conditions' => array(
+                        'contact_id' => array(
+                            'IN',
+                            $values
+                        )
+                    )
+                ),
+                false
+            );
+        }
+
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected contacts
+        $query = "SELECT contact_id, contact_name "
+            . "FROM contact "
+            . "WHERE contact_id IN (" . $explodedValues. ") "
+            . "ORDER BY contact_name ";
+
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            # hide unauthorized contacts
+            $hide = false;
+            if (!$centreon->user->access->admin && !in_array($row['contact_id'], $cAcl)) {
+                $hide = true;
+            }
+
+            $items[] = array(
+                'id' => $row['contact_id'],
+                'text' => $row['contact_name'],
+                'hide' => $hide
+            );
+        }
+
+        return $items;
     }
 }

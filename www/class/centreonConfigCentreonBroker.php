@@ -38,6 +38,9 @@
  *
  * @author Maximilien Bersoult <mbersoult@centreon.com>
  */
+
+require_once _CENTREON_PATH_."www/include/configuration/common-Func.php";
+
 class CentreonConfigCentreonBroker
 {
     public $nbSubGroup = 1;
@@ -320,8 +323,8 @@ class CentreonConfigCentreonBroker
             if (!is_null($elementType)) {
                 if ($elementType == 'advmultiselect') {
                     $el = $qf->addElement($elementType, $elementName, $displayName, $elementAttr, $this->attrsAdvSelect, SORT_ASC);
-                    $el->setButtonAttributes('add', array('value' =>  _("Add")));
-                    $el->setButtonAttributes('remove', array('value' =>  _("Remove")));
+                    $el->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+                    $el->setButtonAttributes('remove', array('value' =>  _("Remove"), "class" => "btc bt_danger"));
                     $el->setElementTemplate($this->advMultiTemplate);
                 } else {
                     $el = $qf->addElement($elementType, $elementName, $displayName, $elementAttr);
@@ -410,18 +413,29 @@ class CentreonConfigCentreonBroker
     	/*
 	     * Insert the Centreon Broker configuration
 	     */
-	    $query = "INSERT INTO cfg_centreonbroker (config_name, config_filename, config_write_timestamp, config_write_thread_id, config_activate, ns_nagios_server, event_queue_max_size) VALUES (
-                            '" . $this->db->escape($values['name']) . "', 
-                            '" . $this->db->escape($values['filename']) . "', 
-                            '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "',
-                            '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
-                            '" . $this->db->escape($values['activate']['activate']) . "',
-                            " . $this->db->escape($values['ns_nagios_server']) . ", 
-                            ".$this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])).")";
+	    $query = "INSERT INTO cfg_centreonbroker "
+                . "(config_name, config_filename, ns_nagios_server, config_activate, config_write_timestamp, config_write_thread_id, stats_activate, correlation_activate, retention_path, event_queue_max_size) "
+                . "VALUES (
+                '" . $this->db->escape($values['name']) . "', 
+                '" . $this->db->escape($values['filename']) . "', 
+                " . $this->db->escape($values['ns_nagios_server']) . ", 
+                '" . $this->db->escape($values['activate']['activate']) . "',
+                '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "',
+                '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
+                '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
+                '" . $this->db->escape($values['correlation_activate']['correlation_activate']) . "',
+                '" . $this->db->escape($values['retention_path']) . "',
+                ".$this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']))
+                . ")";
 	    if (PEAR::isError($this->db->query($query))) {
 	        return false;
 	    }
-
+        
+        $iIdServer = $values['ns_nagios_server'];
+        $iId = insertServerInCfgNagios($iIdServer, $values['name']);
+        if (!empty($iId)) {
+            insertBrokerDefaultDirectives($iId, 'wizard');
+        }
 	    /*
 	     * Get the ID
 	     */
@@ -451,10 +465,13 @@ class CentreonConfigCentreonBroker
 	    $query = "UPDATE cfg_centreonbroker SET 
                 config_name = '" . $this->db->escape($values['name']) . "', 
                 config_filename = '"  . $this->db->escape($values['filename']) . "', 
+                ns_nagios_server = "  . $this->db->escape($values['ns_nagios_server']) . ",
+                config_activate = '"  . $this->db->escape($values['activate']['activate']) . "', 
                 config_write_timestamp = '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "', 
                 config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "', 
-                config_activate = '"  . $this->db->escape($values['activate']['activate']) . "', 
-                ns_nagios_server = "  . $this->db->escape($values['ns_nagios_server']) . ",
+                stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
+                correlation_activate = '" . $this->db->escape($values['correlation_activate']['correlation_activate']) . "',
+                retention_path = '" . $this->db->escape($values['retention_path']) . "',
                 event_queue_max_size = ".(int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size']))."
 	    	WHERE config_id = " . $id;
 	    if (PEAR::isError($this->db->query($query))) {
@@ -563,9 +580,10 @@ class CentreonConfigCentreonBroker
             $fieldname = $tag . '[' . $row['config_group_id'] . '][' . $this->getConfigFieldName($config_id, $tag, $row) . ']';
 	    /* Multi value for a multiselect */
 	    if (isset($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
-                $tmpValue = array($formsInfos[$row['config_group_id']]['defaults'][$fieldname]);
-		$tmpValue[] = $row['config_value'];
-		$formsInfos[$row['config_group_id']]['defaults'][$fieldname] = $tmpValue;
+                if (!is_array($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
+                    $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = array($formsInfos[$row['config_group_id']]['defaults'][$fieldname]);
+                }
+                $formsInfos[$row['config_group_id']]['defaults'][$fieldname][] = $row['config_value'];
 	    } else {
                 $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = $row['config_value'];
                 $formsInfos[$row['config_group_id']]['defaults'][$fieldname . '[' . $row['config_key'] . ']'] = $row['config_value']; // Radio button
@@ -998,5 +1016,27 @@ class CentreonConfigCentreonBroker
         }
         $sth = $this->db->query($query);
     }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function isExist($sName)
+    {
+        $bExist = 0;
+        if (empty($sName)) {
+            return $bExist;
+        }
+        
+        $query = "SELECT COUNT(config_id) as nb FROm cfg_centreonbroker WHERE config_name = '".$this->db->escape($sName)."'";
+        $res = $this->db->query($query);
+        $row = $res->fetchRow();
+        if ($row['nb'] > 0) {
+            $bExist = 1;
+        }
+
+        return $bExist;
+    }
+    
 }
 ?>

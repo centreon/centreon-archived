@@ -38,19 +38,22 @@
 
     ini_set("display_errors", "Off");
 
-    include_once "@CENTREON_ETC@/centreon.conf.php";
+    require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
-    include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-    include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
-    include_once $centreon_path . "www/include/common/common-Func.php";
-    include_once $centreon_path . "www/class/centreonService.class.php";
+    include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
+
+    include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
+    include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
+    include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+    include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 
     /*
      * Create XML Request Objects
      */
-    $obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
-    $svcObj = new CentreonService($obj->DB);
     CentreonSession::start();
+    $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
+    $svcObj = new CentreonService($obj->DB);
+    
 
     if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
         print "Bad Session ID";
@@ -89,42 +92,44 @@
 
     $s_search = "";
     /* Display service problems */
-    if ($o == "svcSumSG_pb" || $o == "svcOVSG_pb") {
+    if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb") {
         $s_search .= " AND s.state != 0 AND s.state != 4 " ;
     }
 
     /* Display acknowledged services */
-    if ($o == "svcSumSG_ack_1" || $o == "svcOVSG_ack_1") {
+    if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
         $s_search .= " AND s.acknowledged = '1' ";
     }
 
     /* Display not acknowledged services */
-    if ($o == "svcSumSG_ack_0" || $o == "svcOVSG_ack_0") {
+    if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
         $s_search .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0 " ;
     }
 
     $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
-        . "FROM servicegroups sg, services_servicegroups sgm, hosts h, services s "
-        . "WHERE sg.servicegroup_id = sgm.servicegroup_id AND sgm.host_id = h.host_id AND h.host_id = s.host_id ";
+        . "FROM servicegroups sg "
+        . "INNER JOIN services_servicegroups sgm ON sg.servicegroup_id = sgm.servicegroup_id "
+        . "INNER JOIN services s ON s.service_id = sgm.service_id "
+        . "INNER JOIN  hosts h ON sgm.host_id = h.host_id AND h.host_id = s.host_id "
+        . $obj->access->getACLHostsTableJoin($obj->DBC,"h.host_id") 
+        . $obj->access->getACLServicesTableJoin($obj->DBC,"s.service_id") 
+        . "WHERE 1 = 1  ";
 
-    /* Host ACL */
-    $query .= $obj->access->queryBuilder("", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
+    # Servicegroup ACL
+    $query .= $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"));
 
-    /* Service ACL */
-    $query .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
-
-    /* Servicegroup search */
+    /* Servicegroup search */    
     if ($sgSearch != ""){
         $query .= "AND sg.name = '" . $sgSearch . "' ";
     }
-
+    
     /* Host search */
     $h_search = '';
     if ($hSearch != ""){
         $h_search .= "AND h.name like '%" . $hSearch . "%' ";
     }
     $query .= $h_search;
-    
+
     /* Service search */
     $query .= $s_search;
 
@@ -132,7 +137,7 @@
     if ($instance != -1) {
         $query .= " AND h.instance_id = " . $instance . " ";
     }
-    
+
     $query .= "ORDER BY sg.name " . $order . " "
         . "LIMIT " . ($num * $limit) . "," . $limit;
     
@@ -158,13 +163,9 @@
     $obj->XML->writeElement("sc", $obj->colorService[2]);
     $obj->XML->writeElement("su", $obj->colorService[3]);
     $obj->XML->writeElement("sp", $obj->colorService[4]);
-    ($o == "svcOVSG") ? $obj->XML->writeElement("s", "1")  : $obj->XML->writeElement("s", "0");
+    $obj->XML->writeElement("s", "1");
     $obj->XML->endElement();
     
-    
-    
-    
-
     /* Construct query for servigroups search */
     $sg_search = "";
     if ($numRows > 0) {
@@ -187,14 +188,17 @@
             $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
         }
 
-        $query2 = "SELECT SQL_CALC_FOUND_ROWS count(s.state) as count_state, sg.name AS sg_name, h.name as host_name, h.state as host_state, h.icon_image, h.host_id, s.state "
+        $query2 = "SELECT SQL_CALC_FOUND_ROWS count(s.state) as count_state, sg.name AS sg_name, h.name as host_name, "
+                . "h.state as host_state, h.icon_image, h.host_id, s.state, (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri  "
             . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
             . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id "
             . $s_search
             . $sg_search
             . $h_search
+            . $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"))
             . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
-            . "GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state ";
+            . "GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state order by tri asc ";
+        
         $DBRESULT = $obj->DBC->query($query2);
 
         $states = array(
@@ -218,20 +222,20 @@
             $count = 0;
             $ct++;
             $obj->XML->startElement("sg");
-            $obj->XML->writeElement("sgn", $sg);
+            $obj->XML->writeElement("sgn", CentreonUtils::escapeSecure($sg));
             $obj->XML->writeElement("o", $ct);
 
             foreach ($h as $hostName => $hostInfos) {
                 $count++;
                 $obj->XML->startElement("h");
                 $obj->XML->writeAttribute("class", $obj->getNextLineClass());
-                $obj->XML->writeElement("hn", $hostName, false);
+                $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($hostName), false);
                 if ($hostInfos['icon_image']) {
                     $obj->XML->writeElement("hico", $hostInfos['icon_image']);
                 } else {
                     $obj->XML->writeElement("hico", "none");
                 }
-                $obj->XML->writeElement("hnl", urlencode($hostName));
+                $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($hostName)));
                 $obj->XML->writeElement("hcount", $count);
                 $obj->XML->writeElement("hid", $hostInfos['host_id']);
                 $obj->XML->writeElement("hs", _($obj->statusHost[$hostInfos['host_state']]));

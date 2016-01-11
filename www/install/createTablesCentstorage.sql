@@ -16,7 +16,7 @@ CREATE TABLE `centreon_acl` (
   `service_id` int(11) DEFAULT NULL,
   `group_id` int(11) DEFAULT NULL,
   KEY `group_id_by_id` (`host_id`,`service_id`,`group_id`),
-  KEY `group_id_for_host` (`host_name`,`group_id`)
+  KEY `group_id_for_host` (`host_id`,`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -44,13 +44,15 @@ CREATE TABLE `config` (
   `nagios_log_file` varchar(255) DEFAULT NULL,
   `last_line_read` int(11) DEFAULT '31',
   `audit_log_option` enum('0','1') NOT NULL DEFAULT '1',
+  `len_storage_downtimes` int(11) DEFAULT NULL,
+  `len_storage_comments` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES (1,'@CENTSTORAGE_RRD@/metrics/','@CENTSTORAGE_RRD@/status/','@CENTSTORAGE_RRD@/nagios-perf/',180,180,'1',10,360,2,NULL,'1',31,365,'@MONITORING_VAR_LOG@/nagios.log',0,'1');
+INSERT INTO `config` VALUES (1,'@CENTSTORAGE_RRD@/metrics/','@CENTSTORAGE_RRD@/status/','@CENTSTORAGE_RRD@/nagios-perf/',180,180,'1',10,360,2,NULL,'1',31,365,'@MONITORING_VAR_LOG@/nagios.log',0,'1', '0', '0');
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -327,22 +329,6 @@ LOCK TABLES `log_archive_service` WRITE;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `log_snmptt` (
-  `trap_id` int(11) NOT NULL AUTO_INCREMENT,
-  `trap_oid` text,
-  `trap_ip` varchar(50) DEFAULT NULL,
-  `trap_community` varchar(50) DEFAULT NULL,
-  `trap_infos` text,
-  PRIMARY KEY (`trap_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-LOCK TABLES `log_snmptt` WRITE;
-/*!40000 ALTER TABLE `log_snmptt` DISABLE KEYS */;
-/*!40000 ALTER TABLE `log_snmptt` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `metrics` (
   `metric_id` int(11) NOT NULL AUTO_INCREMENT,
   `index_id` int(11) DEFAULT NULL,
@@ -352,10 +338,10 @@ CREATE TABLE `metrics` (
   `current_value` float DEFAULT NULL,
   `warn` float DEFAULT NULL,
   `warn_low` float DEFAULT NULL,
-  `warn_threshold_mode` enum('0','1') DEFAULT NULL,
+  `warn_threshold_mode` boolean NULL,
   `crit` float DEFAULT NULL,
   `crit_low` float DEFAULT NULL,
-  `crit_threshold_mode` enum('0','1') DEFAULT NULL,
+  `crit_threshold_mode` boolean NULL,
   `hidden` enum('0','1') DEFAULT '0',
   `min` float DEFAULT NULL,
   `max` float DEFAULT NULL,

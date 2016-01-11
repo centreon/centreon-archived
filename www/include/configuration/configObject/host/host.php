@@ -53,7 +53,6 @@ $cG ? $dupNbr = $cG : $dupNbr = $cP;
  * Pear library
  */
 require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
 require_once 'HTML/QuickForm/select2.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
@@ -85,7 +84,7 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
  }
 
 $acl = $oreon->user->access;
-$dbmon = $oreon->broker->getBroker() == 'broker' ? new CentreonDB('centstorage') : new CentreonDB('ndo');
+$dbmon = new CentreonDB('centstorage');
 $aclDbName = $acl->getNameDBAcl($oreon->broker->getBroker());
 $hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker());
 $aclHostString = $acl->getHostsString('ID', $dbmon);
@@ -102,6 +101,7 @@ switch ($o)	{
  case "mu" 	: disableHostInDB(NULL, isset($select) ? $select : array()); require_once($path."listHost.php"); break;
  case "m" 	: multipleHostInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listHost.php"); break; #Duplicate n hosts
  case "d" 	: deleteHostInDB(isset($select) ? $select : array()); require_once($path."listHost.php"); break; #Delete n hosts
+ case "dp" 	: applytpl(isset($select) ? $select : array()); require_once($path."listHost.php"); break; #Deploy service n hosts
  default 	: require_once($path."listHost.php"); break;
 }
 

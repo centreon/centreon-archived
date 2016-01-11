@@ -1,9 +1,17 @@
 {$form.javascript}
 {$colorJS}
 <form {$form.attributes}>
-<table class="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'/>&nbsp;&nbsp;{$optGen_ldap_properties}</td></tr>
- 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/users_family.gif'/>&nbsp;&nbsp;{$form.header.ldap}</td></tr>
+<table class="formTable table">
+ 	<tr class="ListHeader">
+      <td class="FormHeader" colspan="2">
+        <h3>| {$optGen_ldap_properties}</h3>
+      </td>
+    </tr>
+ 	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.ldap}</h4>
+      </td>
+    </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ar_name" /><span>{$form.ar_name.label}</span></td><td class="FormRowValue">{$form.ar_name.html}</td></tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ar_description" /><span>{$form.ar_description.label}</span></td><td class="FormRowValue">{$form.ar_description.html}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ldap_auth_enable" /><span>{$form.ldap_auth_enable.label}</span></td><td class="FormRowValue">{$form.ldap_auth_enable.html}</td></tr>
@@ -13,7 +21,7 @@
 			<img class="helpTooltip" name="ldap_auto_import" /><span>{$form.ldap_auto_import.label}</span>
 		</td>
 		<td class="FormRowValue">
-			{$form.ldap_auto_import.html}&nbsp;&nbsp;<input type="button" onClick="javascript:location.href='./main.php?p=60301&o=li'" value='{$manualImport}'></input>
+			{$form.ldap_auto_import.html}&nbsp;&nbsp;<input type="button" onClick="javascript:location.href='./main.php?p=60301&o=li'" class="btc bt_info" value='{$manualImport}'>
 		</td>
 	</tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_search_limit" /><span>{$form.ldap_search_limit.label}</span></td><td class="FormRowValue">{$form.ldap_search_limit.html}</td></tr>
@@ -29,7 +37,9 @@
 	{/if} 
 	<tr class="list_two" id="ldap_dns_use_domain"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_domain" /><span>{$form.ldap_dns_use_domain.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_domain.html}</td></tr>
         <tr class="list_lvl_1" id='ldap_header_tr'>
-            <td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'/>&nbsp;&nbsp;{$form.header.ldapserver}</td>
+            <td class="ListColLvl1_name" colspan="2">
+              <h4>{$form.header.ldapserver}</h4>
+            </td>
         </tr>
 	{if $o != 'w'}        
 	<tr class='list_two' id='ldap_tr'>
@@ -41,7 +51,11 @@
                 </td>
 	</tr>
 	{/if}
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/user1_view.gif'/>&nbsp;&nbsp;{$form.header.ldapinfo}</td></tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.ldapinfo}</h4>
+      </td>
+    </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="bind_dn" /><span>{$form.bind_dn.label}</span></td><td class="FormRowValue">{$form.bind_dn.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="bind_pass" /><span>{$form.bind_pass.label}</span></td><td class="FormRowValue">{$form.bind_pass.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="protocol_version" /><span>{$form.protocol_version.label}</span></td><td class="FormRowValue">{$form.protocol_version.html}</td></tr>
@@ -58,9 +72,8 @@
 	<tr class="list_two" id="user_pager"><td class="FormRowField"><img class="helpTooltip" name="user_pager" /><span>{$form.user_pager.label}</span></td><td class="FormRowValue">{$form.user_pager.html}</td></tr>
 	<tr class="list_one" id="group_filter"><td class="FormRowField"><img class="helpTooltip" name="group_filter" /><span>{$form.group_filter.label}</span></td><td class="FormRowValue">{$form.group_filter.html}</td></tr>
 	<tr class="list_two" id="group_name"><td class="FormRowField"><img class="helpTooltip" name="group_name" /><span>{$form.group_name.label}</span></td><td class="FormRowValue">{$form.group_name.html}</td></tr>
-	<tr class="list_one" id="group_member"><td class="FormRowField"><img class="helpTooltip" name="group_member" />{$form.group_member.label}</span></td><td class="FormRowValue">{$form.group_member.html}</td></tr>
-	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
-	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+	<tr class="list_one" id="group_member"><td class="FormRowField"><img class="helpTooltip" name="group_member" />{$form.group_member.label}</td><td class="FormRowValue">{$form.group_member.html}</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
 </table>
 {if !$valid}
 	<div id="validForm" class="oreonbutton">

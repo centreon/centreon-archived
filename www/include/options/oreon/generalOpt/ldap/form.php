@@ -41,7 +41,7 @@ if (!isset($oreon)) {
     exit();
 }
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 
 $attrsText = array("size" => "40");
 $attrsText2 = array("size" => "5");
@@ -70,7 +70,7 @@ $form->addElement('textarea', 'ar_description', _('Description'), $attrsTextarea
 
 $ldapEnable[] = HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, _("Yes"), '1');
 $ldapEnable[] = HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, _("No"), '0');
-$form->addGroup($ldapEnable, 'ldap_auth_enable', _("Enable LDAP authentification"), '&nbsp;');
+$form->addGroup($ldapEnable, 'ldap_auth_enable', _("Enable LDAP authentication"), '&nbsp;');
 
 $ldapStorePassword[] = HTML_QuickForm::createElement('radio', 'ldap_store_password', null, _("Yes"), '1');
 $ldapStorePassword[] = HTML_QuickForm::createElement('radio', 'ldap_store_password', null, _("No"), '0');
@@ -234,8 +234,8 @@ $form->setDefaults($gopt);
 $ar = $form->addElement('hidden', 'ar_id');
 $ar->setValue($arId);
 
-$subC = $form->addElement('submit', 'submitC', _("Save"));
-$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
+$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+$DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 $nbOfInitialRows = 0;
 if ($arId) {
@@ -299,7 +299,7 @@ if ($form->validate()) {
 if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>" . _("Impossible to validate, one or more field is incorrect") . "</div>");
 } elseif (false === $filterValid) {
-    print("<div class='msg' align='center'>" . _("Bad ldap filter : missing %s pattern. Check user or group filter") . "</div>");
+    print("<div class='msg' align='center'>" . _("Bad ldap filter: missing %s pattern. Check user or group filter") . "</div>");
 } elseif (false === $allHostsOk) {
     print("<div class='msg' align='center'>" . _("Invalid LDAP Host parameters") . "</div>");
 }
@@ -316,20 +316,23 @@ foreach ($help as $key => $text) {
 }
 $tpl->assign("helptext", $helptext);
 
-/*
- * Apply a template definition
- */
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-$form->accept($renderer);
-$tpl->assign('form', $renderer->toArray());
-$tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
-$tpl->assign('cloneSet', $cloneSet);
-$tpl->assign('o', $o);
-$tpl->assign("optGen_ldap_properties", _("LDAP Properties"));
-$tpl->assign('addNewHostLabel', _('LDAP servers'));
-$tpl->assign('manualImport', _('Import users manually'));
-$tpl->assign('valid', $valid);
-$tpl->display("form.ihtml");
-?>
+if ($valid) {
+    require_once $path . 'ldap/list.php';
+} else {
+    /*
+     * Apply a template definition
+     */
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+    $tpl->assign('cloneSet', $cloneSet);
+    $tpl->assign('o', $o);
+    $tpl->assign("optGen_ldap_properties", _("LDAP Properties"));
+    $tpl->assign('addNewHostLabel', _('LDAP servers'));
+    $tpl->assign('manualImport', _('Import users manually'));
+    $tpl->assign('valid', $valid);
+    $tpl->display("form.ihtml");
+}

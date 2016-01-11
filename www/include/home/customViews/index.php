@@ -33,15 +33,15 @@
  *
  */
 
-require_once $centreon_path . 'www/class/centreonCustomView.class.php';
-require_once $centreon_path . "www/class/centreonWidget.class.php";
-require_once $centreon_path . "www/class/centreonContactgroup.class.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
+require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
 
 /**
  * Quickform
  */
 require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/advmultiselect.php';
+require_once 'HTML/QuickForm/select2.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 try {
@@ -88,20 +88,35 @@ try {
     $template->assign('empty', $i);
     $template->assign('msg', _("No view available. To create a new view, please click \"Add view\" button."));
 
-    $formAddView = new HTML_QuickForm('formAddView', 'post', "?p=103");
+    $formAddView = new HTML_QuickForm('formAddView', 'post', "?p=103", '_selft', array('onSubmit' => 'submitAddView(); return false;'));
     $formAddView->addElement('header', 'title', _("Create a view"));
     $formAddView->addElement('header', 'information', _("General Information"));
 
 
-    $query = "select * from custom_views where public = 1";
+    $query =  "SELECT cv.*, '1' as from_public FROM custom_views cv where public = 1 "
+            . " UNION "
+            . " SELECT cv.*, '0' as from_public FROM custom_views cv "
+            . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
+            . " WHERE cvur.user_id = " . $db->escape($centreon->user->user_id). " AND cvur.is_consumed = 0 ";
+    
+
     $DBRES = $db->query($query);
     $arrayView = array();
     $arrayView[-1] = "";
+    $arrayViewShared = array();
+    $arrayViewShared[-1] = "";
+    
     while($row = $DBRES->fetchRow()) {
-        $arrayView[$row['custom_view_id']] = $row['name'];
+        if($row['from_public'] == '1'){
+            $arrayView[$row['custom_view_id']] = $row['name'];
+        }else{
+            $arrayViewShared[$row['custom_view_id']] = $row['name'];
+        }
     }
 
-    $formAddView->addElement('select', 'viewLoad', _("Public views list"),$arrayView );
+    $attrsText      = array("size"=>"30");
+    $formAddView->addElement('select', 'viewLoad', _("Public views list"), $arrayView);
+    $formAddView->addElement('select', 'viewLoadShare', _("Shared views list"),$arrayViewShared );
     /**
      * Name
      */
@@ -120,16 +135,14 @@ try {
     $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("2 Columns"), 'column_2');
     $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("3 Columns"), 'column_3');
     $formAddView->addGroup($layouts, 'layout', _("Layout"), '&nbsp;');
-    if ($action == "add") {
-        $formAddView->setDefaults(array('layout[layout]' => 'column_1'));
-    }
+    $formAddView->setDefaults(array('layout[layout]' => 'column_1'));
 
-    $formAddView->addElement('checkbox', 'public', _("Public"), $attrsText);
+    $formAddView->addElement('checkbox', 'public', '', _("Public"));
 
     /**
      * Submit button
      */
-    $formAddView->addElement('button', 'submit', _("Submit"), array("onClick" => "submitAddView();","class" => "btc bt_success"));
+    $formAddView->addElement('submit', 'submit', _("Submit"), array("class" => "btc bt_success"));
     $formAddView->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $formAddView->addElement('hidden', 'action');
     $formAddView->setDefaults(array('action' => 'add'));
@@ -146,9 +159,11 @@ try {
     /**
      * Form for edit view
      */
-    $formEditView = new HTML_QuickForm('formEditView', 'post', "?p=103");
+    $formEditView = new HTML_QuickForm('formEditView', 'post', "?p=103", '', array('onSubmit' => 'submitEditView(); return false;'));
     $formEditView->addElement('header', 'title', _('Edit a view'));
     $formEditView->addElement('header', 'information', _("General Information"));
+
+    $template->assign('editMode', _("Show/Hide edit mode"));
 
     /**
      * Name
@@ -165,12 +180,11 @@ try {
     $formEditView->addGroup($layouts, 'layout', _("Layout"), '&nbsp;');
     $formEditView->setDefaults(array('layout[layout]' => 'column_1'));
 
-    $formEditView->addElement('checkbox', 'public', _("Public"), $attrsText);
-
+    $formEditView->addElement('checkbox', 'public', '', _("Public"));
     /**
      * Submit button
      */
-    $formEditView->addElement('button', 'submit', _("Submit"), array("onClick" => "submitEditView();","class" => "btc bt_success"));
+    $formEditView->addElement('submit', 'submit', _("Submit"), array("class" => "btc bt_success"));
     $formEditView->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $formEditView->addElement('hidden', 'action');
     $formEditView->addElement('hidden', 'custom_view_id');
@@ -189,9 +203,8 @@ try {
      * Form share view
      */
     $cgObj = new CentreonContactgroup($db);
-    $formShareView = new HTML_QuickForm('formShareView', 'post', "?p=103");
-    $formShareView->addElement('header', 'title', $title);
-    $formShareView->addElement('header', 'information', _("General Information"));
+    $formShareView = new HTML_QuickForm('formShareView', 'post', "?p=103", '', array('onSubmit' => 'submitShareView(); return false;'));
+    $formShareView->addElement('header', 'title', _("Share view"));
 
     /**
      * Locked
@@ -202,37 +215,30 @@ try {
     $formShareView->setDefaults(array('locked' => '1'));
 
     /**
-     * Get viewers
-     */
-    /*$viewers = $viewObj->getUsersFromViewId($viewId);
-    $viewerGroups = $viewObj->getUsergroupsFromViewId($viewId); */
-
-    /**
      * Users
      */
-    //$userList = array_diff_key($centreon->user->getUserList($db), $viewers);
-    $ams1 = $formShareView->addElement('advmultiselect', 'user_id', array(_("User List"), _("Available"), _("Selected")), $centreon->user->getUserList($db), $attrsAdvSelect);
-    $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-    $ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-    $ams1->setElementTemplate($eTemplate);
-    echo $ams1->getElementJs(false);
+    $attrContacts = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+        'multiple' => true
+    );
+    $formShareView->addElement('select2', 'user_id', _("User List"), array(), $attrContacts);
 
     /**
      * User groups
      */
-    //$userGroupList = array_diff_key($cgObj->getListContactgroup(true), $viewerGroups);
-    $ams1 = $formShareView->addElement('advmultiselect', 'usergroup_id', array(_("User Group List"), _("Available"), _("Selected")), $cgObj->getListContactgroup(true), $attrsAdvSelect);
-    $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-    $ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-    $ams1->setElementTemplate($eTemplate);
-    echo $ams1->getElementJs(false);
-
-
+    $attrContactgroups = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+        'multiple' => true
+    );
+    $formShareView->addElement('select2', 'usergroup_id', _("User Group List"), array(), $attrContactgroups);
+    
     /**
      * Submit button
      */
-    $formShareView->addElement('button', 'submit', _("Share"), array("onClick" => "submitData();"));
-    $formShareView->addElement('reset', 'reset', _("Reset"));
+    $formShareView->addElement('submit', 'submit', _("Share"), array("class" => "btc bt_info"));
+    $formShareView->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $formShareView->addElement('hidden', 'action');
     $formShareView->setDefaults(array('action' => 'share'));
     $formShareView->addElement('hidden', 'custom_view_id');
@@ -246,7 +252,7 @@ try {
      * Form add widget
      */
     $widgetObj = new CentreonWidget($centreon, $db);
-    $formAddWidget = new HTML_QuickForm('formAddWidget', 'post', "?p=103");
+    $formAddWidget = new HTML_QuickForm('formAddWidget', 'post', "?p=103", '', array('onSubmit' => 'submitAddWidget(); return false;'));
     $formAddWidget->addElement('header', 'w_title', _('Add a widget'));
     $formAddWidget->addElement('header', 'title', _('Add a widget'));
     $formAddWidget->addElement('header', 'information', _("Widget Information"));
@@ -268,7 +274,7 @@ try {
     /**
      * Submit button
      */
-    $formAddWidget->addElement('button', 'submit', _("Submit"), array("onClick" => "submitAddWidget();","class" => "btc bt_success"));
+    $formAddWidget->addElement('submit', 'submit', _("Submit"), array("class" => "btc bt_success"));
     $formAddWidget->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $formAddWidget->addElement('hidden', 'action');
     $formAddWidget->addElement('hidden', 'custom_view_id');
@@ -290,7 +296,7 @@ try {
 }
 $modeEdit = 'undefined';
 if (isset($_SESSION['customview_edit_mode'])) {
-    $modeEdit = $_SESSION['customview_edit_mode'] ? 'true' : 'false';
+    $modeEdit = $_SESSION['customview_edit_mode'] == "true" ? 'true' : 'false';
 }
 ?>
 <script type="text/javascript">

@@ -37,7 +37,7 @@
  *
  */
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 
 /**
  * Class for Ldap authentication

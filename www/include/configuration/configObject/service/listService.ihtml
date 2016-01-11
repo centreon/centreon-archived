@@ -1,6 +1,11 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type="text/javascript" src="./include/common/javascript/resize_td.js"></script>
 <form name='form' method='POST'>
 	<table class="ajaxOption table">
+      <tbody>
+        <tr>
+          <th><h5>{t}Filters{/t}</h5></th>
+        </tr>
 		<tr>
 		    <td><h4>{$Hosts}</h4></td>
             {if (isset($hostgroupsFilter))}
@@ -20,6 +25,7 @@
 			<td><select name='status' >{$statusFilter}</select></td>
 			<td><input type='submit' name='Search' value='{$Search}' class="btc bt_success" /></td>
         </tr>
+      </tbody>
 	</table>
 
 	<table class="ToolbarTable table">
@@ -56,11 +62,13 @@
                 {/if}
 			<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
 			</td>
-			<td class="ListColLeft">{if $elemArr[elem].RowMenu_sicon != ""}<img src="{$elemArr[elem].RowMenu_sicon}" class="ico-14"/>{/if}<a href="{$elemArr[elem].RowMenu_link2}">{$elemArr[elem].RowMenu_desc}</a></td>
+			<td class="ListColLeft resizeTitle">
+				<a href="{$elemArr[elem].RowMenu_link2}">{if $elemArr[elem].RowMenu_sicon != ""}
+			<img src="{$elemArr[elem].RowMenu_sicon}" class="ico-14 margin_right"/>{/if}{$elemArr[elem].RowMenu_desc}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_retry}</td>
-			<td class="ListColLeft">{$elemArr[elem].RowMenu_parent}</td>
+			<td class="ListColLeft resizeTitle">{$elemArr[elem].RowMenu_parent}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
-			<td class="ListColRight" align="right">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
+			<td class="ListColRight" align="right" style="min-width: 80px;">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
 		{/section}
 	</table>
@@ -86,6 +94,7 @@
 </form>
 {literal}
 <script type='text/javascript'>
-	setDisabledRowStyle();
+    setDisabledRowStyle();
+    setOverflowDivToTitle(('.resizeTitle'));
 </script>
 {/literal}

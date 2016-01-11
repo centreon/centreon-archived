@@ -31,15 +31,10 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
  
- 
-	if (isset($_SESSION['monitoring_default_poller'])) {
-		$default_poller = $_SESSION['monitoring_default_poller'];
-	} else {
-		$default_poller = -1;
-	}
-?>
+if (isset($_SESSION['monitoring_default_poller'])) {
+	$default_poller = $_SESSION['monitoring_default_poller'];
+} else {
+	$default_poller = -1;
+}

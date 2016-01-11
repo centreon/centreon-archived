@@ -39,14 +39,10 @@ if (!isset($oreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-/**
- *  start quickSearch form
- */
-$advanced_search = 0;
-include_once("./include/common/quickSearch.php");
-
 $SearchStr = "";
-if (isset($search)) {
+$search = '';
+if (isset($_POST['searchACLG']) && $_POST['searchACLG']) {
+    $search = $_POST['searchACLG'];
     $SearchStr = "WHERE (acl_group_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_group_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
  }
 $rq = "SELECT COUNT(*) FROM acl_groups $SearchStr ORDER BY acl_group_name";
@@ -63,7 +59,6 @@ include("./include/common/checkPagination.php");
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Description"));
 $tpl->assign("headerMenu_contacts", _("Contacts"));
@@ -95,9 +90,9 @@ for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[".$group['acl_group_id']."]");
     
     if ($group["acl_group_activate"]) {
-        $moptions = "<a href='main.php?p=".$p."&acl_group_id=".$group['acl_group_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_inactive.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+        $moptions = "<a href='main.php?p=".$p."&acl_group_id=".$group['acl_group_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
     } else {
-        $moptions = "<a href='main.php?p=".$p."&acl_group_id=".$group['acl_group_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/eye_active.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+        $moptions = "<a href='main.php?p=".$p."&acl_group_id=".$group['acl_group_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
     }
     
     $moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -178,6 +173,7 @@ $o2->setValue(NULL);
 $o2->setSelected(NULL);
 
 $tpl->assign('limit', $limit);
+$tpl->assign('searchACLG', $search);
 
 /*
  * Apply a template definition

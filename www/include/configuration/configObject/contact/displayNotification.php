@@ -40,7 +40,7 @@
 		exit();
 	}
 
-    require_once $centreon_path . 'www/class/centreonNotification.class.php';
+    require_once _CENTREON_PATH_ . 'www/class/centreonNotification.class.php';
 
 	/*
 	 * Connect to Database
@@ -130,7 +130,7 @@
 			} elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
 				$host_icone = "./img/media/" . $icone;
 			} else {
-				$host_icone = "./img/icones/16x16/server_network.gif";
+				$host_icone = "./img/icons/host.png";
 			}
 			$moptions = "";
 			$elemArrHostEsc[] = array("MenuClass"    => "list_".$style,
@@ -157,7 +157,7 @@
 	    		} elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
 	    			$host_icone = "./img/media/" . $icone;
 	    		} else {
-	    			$host_icone = "./img/icones/16x16/server_network.gif";
+	    			$host_icone = "./img/icons/host.png";
 	    		}
 	    		$moptions = "";
 	    		$elemArrSvcEsc[] = array("MenuClass"       => "list_".$style,
@@ -184,7 +184,7 @@
 			} elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
 				$host_icone = "./img/media/" . $icone;
 			} else {
-				$host_icone = "./img/icones/16x16/server_network.gif";
+				$host_icone = "./img/icons/host.png";
 			}
 			$moptions = "";
 			$elemArrHost[] = array("MenuClass"    => "list_".$style,
@@ -210,7 +210,7 @@
 	    		} elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
 	    			$host_icone = "./img/media/" . $icone;
 	    		} else {
-	    			$host_icone = "./img/icones/16x16/server_network.gif";
+	    			$host_icone = "./img/icons/host.png";
 	    		}
 	    		$moptions = "";
 	    		$elemArrSvc[] = array("MenuClass"       => "list_".$style,

@@ -55,7 +55,7 @@ sub new {
 sub read_config {
     my $self = shift;
     my ($status, $sth) = $self->{csdb}->query(<<"EOQ");
-SELECT len_storage_mysql,archive_retention,reporting_retention
+SELECT len_storage_mysql,archive_retention,reporting_retention, len_storage_downtimes, len_storage_comments
 FROM config
 EOQ
     die "Failed to retrieve configuration from database" if $status == -1;
@@ -113,6 +113,32 @@ sub run {
         $self->{csdb}->do("DELETE FROM `log_archive_service` WHERE `date_end` < '$last_log'");
         $self->{logger}->writeLogInfo("Done");
     }
+
+    if (defined $self->{config}->{len_storage_downtimes} && 
+        $self->{config}->{len_storage_downtimes} != 0) {
+        my $delete_limit = time() - 60 * 60 * 24 * $self->{config}->{len_storage_downtimes};
+
+        $self->{logger}->writeLogInfo("Purging centstorage.downtimes table...");
+        $self->{csdb}->do("DELETE FROM downtimes WHERE (actual_end_time is not null and actual_end_time < '$delete_limit') or (deletion_time is not null and deletion_time < '$delete_limit')");
+        $self->{logger}->writeLogInfo("Done");
+    }
+    
+    if (defined $self->{config}->{len_storage_comments} && 
+        $self->{config}->{len_storage_comments} != 0) {
+        my $delete_limit = time() - 60 * 60 * 24 * $self->{config}->{len_storage_comments};
+
+        $self->{logger}->writeLogInfo("Purging centstorage.comments table...");
+        $self->{csdb}->do("DELETE FROM comments WHERE (deletion_time is not null and deletion_time < '$delete_limit') or (expire_time  is not null and expire_time < '$delete_limit')");
+        $self->{logger}->writeLogInfo("Done");
+    }
+    
+   # Put to_delete in index_data
+   $self->{logger}->writeLogInfo("Purging centstorage.index_data table...");
+   $self->{csdb}->do("UPDATE index_data SET to_delete = '1' WHERE 
+    ISNULL((SELECT 1 FROM centreon.hostgroup_relation hr, centreon.host_service_relation hsr WHERE hr.host_host_id = index_data.host_id AND hr.hostgroup_hg_id = hsr.hostgroup_hg_id AND hsr.service_service_id = index_data.service_id LIMIT 1)) AND 
+    ISNULL((SELECT 1 FROM centreon.host_service_relation hsr WHERE hsr.host_host_id = index_data.host_id AND hsr.service_service_id = index_data.service_id LIMIT 1))
+   ");
+   $self->{logger}->writeLogInfo("Done");
 }
 
 1;

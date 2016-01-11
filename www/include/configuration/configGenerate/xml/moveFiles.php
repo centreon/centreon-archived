@@ -37,7 +37,7 @@
  */
 
 ini_set("display_errors", "Off");
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 define('STATUS_OK', 0);
 define('STATUS_NOK', 1);
 
@@ -84,17 +84,17 @@ try {
     $ret = array();
     $ret['host'] = $poller;
 
-    chdir($centreon_path . "www");
-    $nagiosCFGPath = "$centreon_path/filesGeneration/nagiosCFG/";
-    $centreonBrokerPath = "$centreon_path/filesGeneration/broker/";
-    require_once $centreon_path . "www/include/configuration/configGenerate/DB-Func.php";
-    require_once $centreon_path . "www/class/centreonDB.class.php";
-    require_once $centreon_path . "www/class/centreonSession.class.php";
-    require_once $centreon_path . "www/class/centreon.class.php";
-    require_once $centreon_path . "www/class/centreonXML.class.php";
-    require_once $centreon_path . "www/class/centreonACL.class.php";
-    require_once $centreon_path . "www/class/centreonUser.class.php";
-    require_once $centreon_path . "www/class/centreonConfigCentreonBroker.php";
+    chdir(_CENTREON_PATH_ . "www");
+    $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/nagiosCFG/";
+    $centreonBrokerPath = _CENTREON_PATH_."/filesGeneration/broker/";
+    require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
+    require_once _CENTREON_PATH_ . "www/class/centreonConfigCentreonBroker.php";
 
     session_start();
     if ($_POST['sid'] != session_id()) {
@@ -106,7 +106,7 @@ try {
     /*  Set new error handler */
     set_error_handler('log_error');
 
-    $centcore_pipe = "@CENTREON_VARLIB@/centcore.cmd";
+    $centcore_pipe = "/var/lib/centreon/centcore.cmd";
 	if ($centcore_pipe == "/centcore.cmd") {
 		$centcore_pipe = "/var/lib/centreon/centcore.cmd";
 	}
@@ -123,39 +123,24 @@ try {
             if (!is_dir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"])) {
                 $mkdirResult = @mkdir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]);
             }
-            if (file_exists($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"]))  {
-                $copyResult = @copy($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
+            if (file_exists(_CENTREON_PATH_."www/img/media/".$images["dir_alias"]."/".$images["img_path"]))  {
+                $copyResult = @copy(_CENTREON_PATH_."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
             }
         }
     }
-
-    /*
-     * Copy correlation file
-     */
-    $brokerObj = new CentreonConfigCentreonBroker($pearDB);
-    $correlationPath = $brokerObj->getCorrelationFile();
-    $localId = getLocalhostId();
-    if (false !== $correlationPath && false !== $localId) {
-        $tmpFilename = $centreonBrokerPath . '/' . $localId . '/correlation_*.xml';
-	/* Purge file */
-	$listRemovesFiles = glob(dirname($correlationPath) . '/correlation_*.xml');
-	foreach ($listRemovesFiles as $file) {
-	    @unlink($file);
-	}
-	/* Copy file */
-	$listFiles = glob($tmpFilename);
-    $listFiles[] = $correlationPath;
-	foreach ($listFiles as $file) {
-            @copy($file, dirname($correlationPath));
-	}
-    }
-
 
     $tab_server = array();
     $tabs = $oreon->user->access->getPollerAclConf(array('fields'     => array('name', 'id', 'localhost'),
                                                          'order'      => array('name'),
                                                          'conditions' => array('ns_activate' => '1'),
                                                          'keys'       => array('id')));
+
+
+    # Get correlation infos
+    $brokerObj = new CentreonConfigCentreonBroker($pearDB);
+    $correlationPath = $brokerObj->getCorrelationFile();
+    $localId = getLocalhostId();
+
     foreach ($tabs as $tab) {
         if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
             $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
@@ -163,6 +148,19 @@ try {
     }
 
     foreach ($tab_server as $host) {
+        # Manage correlation files
+        if (false !== $correlationPath && false !== $localId) {
+            $tmpFilename = $centreonBrokerPath . '/' . $host['id'] . '/correlation_' . $host['id'] . '.xml';
+            $filenameToGenerate = dirname($correlationPath) . '/correlation_' . $host['id'] . '.xml';
+            # Purge file
+            if (file_exists($filenameToGenerate)) {
+                @unlink($filenameToGenerate);
+            }
+            # Copy file
+            if (file_exists($tmpFilename)) {
+                @copy($tmpFilename, $filenameToGenerate);
+            }
+        }
         if (isset($poller) && ($poller == 0 || $poller == $host['id'])) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
                 /*

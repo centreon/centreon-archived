@@ -37,8 +37,8 @@ if (!isset($centreon)) {
 	exit();		
 }
 
-include_once $centreon_path."www/class/centreonGMT.class.php";
-include_once $centreon_path."www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_."www/class/centreonDB.class.php";
 
 if ($oreon->broker->getBroker() == "ndo") {
 	$pearDBndo = new CentreonDB("ndo");
@@ -47,10 +47,12 @@ if ($oreon->broker->getBroker() == "ndo") {
 /*
  * Init GMT class
  */
-$hostStr = $oreon->user->access->getHostsString("ID", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
+$hostStr = $oreon->user->access->getHostsString("ID", $pearDBO);
+
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
-if ($oreon->user->access->checkAction("host_comment")) {
+
+if ($centreon->user->access->checkAction("host_comment")) {
 	/*
 	 * ACL
 	 */
@@ -106,21 +108,23 @@ if ($oreon->user->access->checkAction("host_comment")) {
 	$form->addRule('host_id', _("Required Field"), 'required');
 	$form->addRule('comment', _("Required Field"), 'required');
 
-	$subA = $form->addElement('submit', 'submitA', _("Save"));
-	$res = $form->addElement('reset', 'reset', _("Reset"));
+	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 	$form->setDefaults($data);
 
   	$valid = false;
 	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
-		if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array(0, 1)))
-			$_POST["persistant"] = 0;
+		if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array('0', '1'))) {
+            $_POST["persistant"] = '0';
+        }
 		if (!isset($_POST["comment"]))
 			$_POST["comment"] = 0;
 		AddHostComment($_POST["host_id"], $_POST["comment"], $_POST["persistant"]);
 		$valid = true;
-    	require_once($path."viewHostComment.php");
+    	require_once($path."listComment.php");
     } else {
+		
 		/*
 		 * Smarty template Init
 		 */
@@ -136,6 +140,7 @@ if ($oreon->user->access->checkAction("host_comment")) {
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
+		
 		$tpl->display("AddHostComment.ihtml");
     }
 }

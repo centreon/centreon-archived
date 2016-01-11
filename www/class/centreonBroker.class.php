@@ -55,15 +55,7 @@ class CentreonBroker
 	 */
 	private function setBrokerName()
 	{
-		$res = $this->db->query("SELECT `value` FROM options WHERE `key` LIKE 'broker'");
-		$data = $res->fetchRow();
-		if (isset($data["value"]) && $data["value"] != "") {
-			$this->name = strtolower($data["value"]);
-		} else {
-			$this->name = "ndo";
-		}
-		unset($res);
-		unset($data);
+            $this->name = 'broker';
 	}
 
 	/*

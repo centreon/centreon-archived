@@ -31,47 +31,44 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
- 
-	if (!isset ($oreon))
-		exit ();
 
-	isset($_GET["id"]) ? $mnftrG = $_GET["id"] : $mnftrG = NULL;
-	isset($_POST["id"]) ? $mnftrP = $_POST["id"] : $mnftrP = NULL;
-	$mnftrG ? $id = $mnftrG : $id = $mnftrP;
+if (!isset($centreon))
+	exit ();
 
-	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
-	$cG ? $select = $cG : $select = $cP;
+isset($_GET["id"]) ? $mnftrG = $_GET["id"] : $mnftrG = NULL;
+isset($_POST["id"]) ? $mnftrP = $_POST["id"] : $mnftrP = NULL;
+$mnftrG ? $id = $mnftrG : $id = $mnftrP;
 
-	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
-	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+$cG ? $select = $cG : $select = $cP;
 
-	#Pear library
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-	#Path to the configuration dir
-	$path = "./include/configuration/configObject/traps-manufacturer/";
+#Pear library
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#PHP functions
-	require_once $path."DB-Func.php";
-	require_once "./include/common/common-Func.php";
-	
-	/* Set the real page */
-	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-		$p = $ret['topology_page'];
+#Path to the configuration dir
+$path = "./include/configuration/configObject/traps-manufacturer/";
 
-	switch ($o)	{
-		case "a" : require_once($path."formMnftr.php"); break; #Add a Trap
-		case "w" : require_once($path."formMnftr.php"); break; #Watch a Trap
-		case "c" : require_once($path."formMnftr.php"); break; #Modify a Trap
-		case "m" : multipleMnftrInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listMnftr.php"); break; #Duplicate n Traps
-		case "d" : deleteMnftrInDB(isset($select) ? $select : array()); require_once($path."listMnftr.php"); break; #Delete n Traps
-		default : require_once($path."listMnftr.php"); break;
-	}
+#PHP functions
+require_once $path."DB-Func.php";
+require_once "./include/common/common-Func.php";
+
+/* Set the real page */
+if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+	$p = $ret['topology_page'];
+
+switch ($o)	{
+	case "a" : require_once($path."formMnftr.php"); break; #Add a Trap
+	case "w" : require_once($path."formMnftr.php"); break; #Watch a Trap
+	case "c" : require_once($path."formMnftr.php"); break; #Modify a Trap
+	case "m" : multipleMnftrInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listMnftr.php"); break; #Duplicate n Traps
+	case "d" : deleteMnftrInDB(isset($select) ? $select : array()); require_once($path."listMnftr.php"); break; #Delete n Traps
+	default : require_once($path."listMnftr.php"); break;
+}
 ?>

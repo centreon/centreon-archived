@@ -1,6 +1,13 @@
 <form {$form.attributes}>
-<table class="ajaxOption">
-	<tr><td>&nbsp;&nbsp;<b>{$form.pollers.label}</b>&nbsp;&nbsp;{$form.pollers.html}</td><td>&nbsp;&nbsp;<b>{$form.start.label}</b>&nbsp;&nbsp;{$form.start.html}</td></tr>
+<table class="ajaxOption table">
+  <tr>
+    <td><h4>{$form.pollers.label}</h4></td>
+    <td><h4>{$form.start.label}</h4></td>
+  </tr>
+  <tr>
+    <td>{$form.pollers.html}</td>
+    <td>{$form.start.html}</td>
+  </tr>
 </table>
 <br>
 <a name="generate">
@@ -10,16 +17,16 @@
 {assign var='cpt' value=$cpt+1}
 	<table class="ListTable">
 	 	<tr class="ListHeader">
-	 		<td class="FormHeader"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$pollerName}&nbsp;</td>
+	 		<td class="FormHeader">&nbsp;&nbsp;{$pollerName}</td>
 	 	</tr>
 		{assign var='counter' value=0}
 		<tr>
 			<td align="center">
 	 		{foreach from=$options key=keyOptions item=itemOptions} 		
 		 		{if $startPeriod}
-		 		<img src="./include/Administration/corePerformance/getStats.php?ns_id={$key}&key={$keyOptions}&start={$startPeriod}">
+		 		<img src="./include/Administration/corePerformance/getStats.php?ns_id={$key}&key={$keyOptions}&start={$startPeriod}" style="margin: 5px;">
 		 		{else}
-		 		<img src="./include/Administration/corePerformance/getStats.php?ns_id={$key}&key={$keyOptions}">
+		 		<img src="./include/Administration/corePerformance/getStats.php?ns_id={$key}&key={$keyOptions}  style="margin: 5px;"">
 		 		{/if}	 	
 	 		{assign var='counter' value=$counter+1}
 		 	{/foreach}

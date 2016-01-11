@@ -209,12 +209,12 @@ $nagios_comment["max_concurrent_checks"]="This option allows you to specify the 
 
 $nagios_comment["max_service_check_spread"]="This option determines the maximum number of minutes from when Nagios starts that all services (that are scheduled to be regularly checked) are checked.<br />"
   . "This option will automatically adjust the service inter-check delay (if necessary) to ensure that the initial checks of all services occur within the timeframe you specify.<br />"
-  . "In general, this option will not have an affect on service check scheduling if scheduling information is being retained using the use_retained_scheduling_info option.<br />"
+  . "In general, this option will not have an effect on service check scheduling if scheduling information is being retained using the use_retained_scheduling_info option.<br />"
   . "Default value is 30 (minutes). ";
 
 $nagios_comment["max_host_check_spread"]="This option determines the maximum number of minutes from when Nagios starts that all hosts (that are scheduled to be regularly checked) are checked.<br />"
   . "This option will automatically adjust the host inter-check delay (if necessary) to ensure that the initial checks of all hosts occur within the timeframe you specify.<br />"
-  . "In general, this option will not have an affect on host check scheduling if scheduling information is being retained using the use_retained_scheduling_info option.<br />"
+  . "In general, this option will not have an effect on host check scheduling if scheduling information is being retained using the use_retained_scheduling_info option.<br />"
   . "Default value is 30 (minutes). ";
 
 $nagios_comment["check_result_reaper_frequency"]="This is the frequency (in seconds!) that Nagios will process "

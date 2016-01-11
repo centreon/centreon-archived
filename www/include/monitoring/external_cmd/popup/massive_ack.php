@@ -52,20 +52,20 @@
 		}
 	}
 
-	$path = "$centreon_path/www/include/monitoring/external_cmd/popup/";
+	$path = _CENTREON_PATH_."/www/include/monitoring/external_cmd/popup/";
 
 	/*
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
-	$tpl = initSmartyTplForPopup($path, $tpl, './templates/', $centreon_path);
+	$tpl = initSmartyTplForPopup($path, $tpl, './templates/', _CENTREON_PATH_);
 
 	/*
 	 * Pear library
 	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-	require_once $centreon_path . "www/include/monitoring/common-Func.php";
+	require_once _CENTREON_PATH_ . "www/include/monitoring/common-Func.php";
 
 	/*
 	 * Fetch default values for form
@@ -133,8 +133,8 @@
 	$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
 	$form->setJsWarnings(_("Invalid information entered"), _("Please correct these fields"));
 
-	$form->addElement('button', 'submit', _("Acknowledge selected problems"), array("onClick" => "send_the_command();"));
-	$form->addElement('reset', 'reset', _("Reset"));
+	$form->addElement('button', 'submit', _("Acknowledge selected problems"), array("onClick" => "send_the_command();", "class" => "btc bt_info"));
+	$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');

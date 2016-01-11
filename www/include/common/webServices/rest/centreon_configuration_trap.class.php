@@ -31,14 +31,10 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationTrap extends CentreonConfigurationObjects
@@ -55,12 +51,7 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
     public function __construct()
     {
         parent::__construct();
-        $brk = new CentreonBroker($this->pearDB);
-        if ($brk->getBroker() == 'broker') {
-            $this->pearDBMonitoring = new CentreonDB('centstorage');
-        } else {
-            $this->pearDBMonitoring = new CentreonDB('ndo');
-        }
+        $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
     
     /**
@@ -81,23 +72,36 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryTraps = "SELECT DISTINCT t.traps_name, t.traps_id, m.name "
+        $queryTraps = "SELECT SQL_CALC_FOUND_ROWS DISTINCT t.traps_name, t.traps_id, m.name "
             . "FROM traps t, traps_vendor m "
             . 'WHERE t.manufacturer_id = m.id '
             . "AND (t.traps_name LIKE '%$q%' OR m.name LIKE '%$q%') "
-            . "ORDER BY m.name, t.traps_name ";
+            . "ORDER BY m.name, t.traps_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryTraps);
+
+        $total = $this->pearDB->numberRows();
         
         $trapList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $trapCompleteName = $data['name'] . ' - ' . $data['traps_name'];
             $trapCompleteId = $data['traps_id'];
             
-            $trapList[] = array('id' => htmlentities($trapCompleteId), 'text' => htmlentities($trapCompleteName));
+            $trapList[] = array('id' => htmlentities($trapCompleteId), 'text' => $trapCompleteName);
         }
-        
-        return $trapList;
+
+        return array(
+            'items' => $trapList,
+            'total' => $total
+        );
     }
 }

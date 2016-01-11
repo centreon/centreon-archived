@@ -111,7 +111,7 @@ if (isset($pearDB)) {
                       $conf_centreon['password'],
                       $conf_centreon['db'],
                       $conf_centreon['dbcstg'],
-                      $centreon_path,
+                      _CENTREON_PATH_,
                       isset($conf_centreon['port']) ? $conf_centreon['port'] : 3306, 
                       "central", 
                       "@CENTREON_VARLIB@");

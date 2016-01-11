@@ -32,6 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
+require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 if (!isset($centreon)) {
     exit();
@@ -78,11 +79,17 @@ $form->addElement('text', 'session_expire', _("Sessions Expiration Time"), $attr
 
 $limit = array(10 => 10, 20 => 20, 30 => 30, 40 => 40, 50 => 50, 60 => 60, 70 => 70, 80 => 80, 90 => 90, 100 => 100, 200 => 200, 300 => 300, 400 => 400, 500 => 500);
 $form->addElement('select', 'maxViewMonitoring', _("Limit per page for Monitoring"), $limit);
+$form->addElement('text', 'maxGraphPerformances', _("Graph per page for Performances"), $attrsText2);
 
 $form->addElement('text', 'maxViewConfiguration', _("Limit per page (default)"), $attrsText2);
 $form->addElement('text', 'AjaxTimeReloadStatistic', _("Refresh Interval for statistics"), $attrsText2);
 $form->addElement('text', 'AjaxTimeReloadMonitoring', _("Refresh Interval for monitoring"), $attrsText2);
-$form->addElement('text', 'gmt', _("Default host timezone"), $attrsText2);
+
+
+$CentreonGMT = new CentreonGMT($pearDB);
+$GMTList = $CentreonGMT->getGMTList();
+
+$form->addElement('select', 'gmt', _("Timezone"), $GMTList);
 
 $templates = array();
 if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{
@@ -149,9 +156,6 @@ $form->setDefaults(array('sso_header_username'=>'HTTP_AUTH_USER'));
 $options3[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp;&nbsp;');
 
-$options4[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
-$form->addGroup($options4, 'strict_hostParent_poller_management', _("Enable strict mode for host parentship management"), '&nbsp;&nbsp;');
-
 /*
  * Support Email
  */
@@ -192,8 +196,8 @@ $tpl = initSmartyTpl($path.'general/', $tpl);
 
 $form->setDefaults($gopt);
 
-$subC = $form->addElement('submit', 'submitC', _("Save"));
-$form->addElement('reset', 'reset', _("Reset"));
+$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 $valid = false;
 if ($form->validate()) {
@@ -216,7 +220,7 @@ if (!$form->validate() && isset($_POST["gopt_id"]))	{
     print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
+$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."'", 'class' => 'btc bt_info'));
 
 /*
  * Send variable to template
@@ -228,12 +232,10 @@ $tpl->assign("genOpt_expiration_properties", _("Sessions Properties"));
 $tpl->assign("time_min", _("minutes"));
 $tpl->assign("genOpt_refresh_properties", _("Refresh Properties"));
 $tpl->assign("time_sec", _("seconds"));
-$tpl->assign("genOpt_display_options", _("Display Options"));
 $tpl->assign("genOpt_global_display", _("Display properties"));
 $tpl->assign("genOpt_problem_display", _("Problem display properties"));
 $tpl->assign("genOpt_time_zone", _("Time Zone"));
-$tpl->assign("genOpt_auth", _("Authentification properties"));
-$tpl->assign("configBehavior", _("Configuration UI behavior"));
+$tpl->assign("genOpt_auth", _("Authentication properties"));
 $tpl->assign("support", _("Support Information"));
 $tpl->assign('valid', $valid);
 

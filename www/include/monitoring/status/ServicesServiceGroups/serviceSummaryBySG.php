@@ -56,8 +56,20 @@
 	if (isset($_GET["host_search"])) {
 		$centreon->historySearch[$url] = $_GET["host_search"];
 	}
+        
+        $aTypeAffichageLevel1 = array(
+            "svcOVSG" => _("Details"),
+            "svcSumSG" => _("Summary")
+        );
+        
+        $aTypeAffichageLevel2 = array(
+            "" => _("All"),
+            "pb" => _("Problems"),
+            "ack_1" => _("Acknowledge"),
+            "ack_0" => _("Not Acknowledged"),
+        );
     
-    /*
+        /*
 	 * Check search value in Service Group search field
 	 */
 	if (isset($_GET["sg_search"])) {
@@ -80,6 +92,8 @@
 	$tpl->assign("limit", $limit);
 	$tpl->assign("mon_host", _("Hosts"));
 	$tpl->assign("mon_status", _("Status"));
+        $tpl->assign("typeDisplay", _("Display"));
+        $tpl->assign("typeDisplay2", _("Display details"));
 	$tpl->assign("mon_ip", _("IP"));
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
@@ -90,16 +104,22 @@
 	$tpl->assign("mon_status_information", _("Status information"));
     
     
-    /*
-    * Get servicegroups list
-    */
-    $query = "SELECT DISTINCT sg.sg_name FROM servicegroup sg";
-    $DBRESULT = $pearDB->query($query);
+    # Get servicegroups list
     $sgSearchSelect = '<select id="sg_search" name="sg_search"><option value=""></option>';
-    while ($row = $DBRESULT->fetchRow()) {
-        $sgSearchSelect .= '<option value="' . $row['sg_name'] . '">' . $row['sg_name'] .'</option>';
+    $servicegroups = array();
+    if (!$oreon->user->access->admin) {
+        $servicegroups = $oreon->user->access->getServiceGroups();
+    } else {
+        $query = "SELECT DISTINCT sg.sg_name FROM servicegroup sg";
+        $DBRESULT = $pearDB->query($query);
+        while ($row = $DBRESULT->fetchRow()) {
+            $servicegroups[] = $row['sg_name'];
+        }
+        $DBRESULT->free();
     }
-    $DBRESULT->free();
+    foreach ($servicegroups as $servicegroup_name) {
+        $sgSearchSelect .= '<option value="' . $servicegroup_name . '">' . $servicegroup_name .'</option>';
+    }
     $sgSearchSelect .= '</select>';
     $tpl->assign("sgSearchSelect", $sgSearchSelect);
 
@@ -114,15 +134,45 @@
 	##Toolbar select $lang["lgd_more_actions"]
 	?>
 	<script type="text/javascript">
-	function setO(_i) {
-		document.forms['form'].elements['cmd'].value = _i;
-		document.forms['form'].elements['o1'].selectedIndex = 0;
-		document.forms['form'].elements['o2'].selectedIndex = 0;
-	}
-	</SCRIPT>
+            function setO(_i) {
+                document.forms['form'].elements['cmd'].value = _i;
+                document.forms['form'].elements['o1'].selectedIndex = 0;
+                document.forms['form'].elements['o2'].selectedIndex = 0;
+            }
+            function displayingLevel1(val)
+            {
+                _o = val;
+                var sel2 = document.getElementById("typeDisplay2").value;
+                if (sel2 != '') {
+                    _o = _o + "_" + sel2;
+                }
+                if (val == 'svcOVSG') {
+                    _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/broker/serviceGridBySGXML.php";
+                    _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceGridBySG.xsl";
+                } else {
+                   _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/broker/serviceSummaryBySGXML.php";
+                    _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceSummaryBySG.xsl";
+                }
+                monitoring_refresh();
+            }
+            function displayingLevel2(val)
+            {
+                var sel1 = document.getElementById("typeDisplay").value;
+                _o = sel1;
+                if (val != '') {
+                    _o = _o + "_" + val;
+                }
+                
+                monitoring_refresh();
+            }
+	</script>
 	<?php
 
 	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
+        
+        $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);"));
+        $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
+        
     $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."),
 													"3"		=>	_("Verification Check"),
 													"4"		=>	_("Verification Check (Forced)"),

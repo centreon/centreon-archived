@@ -4,6 +4,7 @@
  */
 class CentreonInstance {
     protected $db;
+    protected $dbo;
     protected $params;
     protected $instances;
 
@@ -13,9 +14,12 @@ class CentreonInstance {
      * @param CentreonDB $db
      * @return void
      */
-    public function __construct($db)
+    public function __construct($db,$dbo = null)
     {
         $this->db = $db;
+        if(!empty($dbo)){
+            $this->dbo = $dbo;
+        }
         $this->instances = array();
         $this->initParams();
     }
@@ -44,6 +48,22 @@ class CentreonInstance {
             }
         }
     }
+    
+    public function getInstancesMonitoring($poller_id = array()){
+        $pollers = array();
+        if(!empty($poller_id)){
+            $query = "SELECT instance_id, instance_name
+                FROM instance
+                WHERE instance_id IN (".$this->dbo->escape(implode(",",$poller_id)).") ";
+            $res = $this->dbo->query($query);
+            while ($row = $res->fetchRow()) {
+                $pollers[] = array('id' => $row['instance_id'], 'name' => $row['instance_name']);
+            }  
+        }
+        
+        return $pollers;
+    }
+    
 
     /**
      * Get Parameter
@@ -146,5 +166,40 @@ class CentreonInstance {
                     $i++;
             }
         }
+    }
+    
+    /**
+     * 
+     * @param array $values
+     * @return array
+     */
+    public function getObjectForSelect2($values = array(), $options = array())
+    {
+        $selectedInstances = '';
+        $aInstanceList = array();
+        
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        } else {
+            $selectedInstances .= "AND r.resource_id IN ($explodedValues) ";
+        }
+        
+        $queryInstance = "SELECT DISTINCT p.name as name, p.id  as id"
+            . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
+            . " WHERE r.resource_id = rel.resource_id "
+            . " AND p.id = rel.instance_id "
+            . $selectedInstances
+            . " ORDER BY p.name";
+        
+        $DBRESULT = $this->db->query($queryInstance);
+        while ($data = $DBRESULT->fetchRow()) {
+            $aInstanceList[] = array(
+                'id' => $data['id'],
+                'text' => $data['name']
+            );
+        }
+        
+        return $aInstanceList;
     }
 }

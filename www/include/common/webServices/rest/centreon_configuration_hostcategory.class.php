@@ -31,14 +31,10 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
@@ -56,12 +52,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
     public function __construct()
     {
         parent::__construct();
-        $brk = new CentreonBroker($this->pearDB);
-        if ($brk->getBroker() == 'broker') {
-            $this->pearDBMonitoring = new CentreonDB('centstorage');
-        } else {
-            $this->pearDBMonitoring = new CentreonDB('ndo');
-        }
+        $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
     
     /**
@@ -80,7 +71,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
-            $aclHostcategories .= 'AND hg.hg_id IN (' . $acl->getHostCategoriesString('ID') . ') ';
+            $aclHostcategories .= 'AND hc.hc_id IN (' . $acl->getHostCategoriesString('ID') . ') ';
         }
         
         // Check for select2 'q' argument
@@ -89,20 +80,36 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryHostcategory = "SELECT DISTINCT hc.hc_name, hc.hc_id "
+        $queryHostcategory = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hc.hc_name, hc.hc_id "
             . "FROM hostcategories hc "
             . "WHERE hc.hc_name LIKE '%$q%' "
             . $aclHostcategories
-            . "ORDER BY hc.hc_name";
+            . "ORDER BY hc.hc_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryHostcategory);
+
+        $total = $this->pearDB->numberRows();
         
         $hostcategoryList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $hostcategoryList[] = array('id' => htmlentities($data['hc_id']), 'text' => htmlentities($data['hc_name']));
+            $hostcategoryList[] = array(
+                'id' => htmlentities($data['hc_id']),
+                'text' => $data['hc_name']
+            );
         }
         
-        return $hostcategoryList;
+        return array(
+            'items' => $hostcategoryList,
+            'total' => $total
+        );
     }
 }

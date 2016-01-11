@@ -42,9 +42,10 @@
 	/*
 	 * Init Centcore Pipe
 	 */
-	$centcore_pipe = "@CENTREON_VARLIB@/centcore.cmd";
-	if ($centcore_pipe == "/centcore.cmd") {
-		$centcore_pipe = "/var/lib/centreon/centcore.cmd";
+        if (defined('_CENTREON_VARLIB_')) {
+            $centcore_pipe = _CENTREON_VARLIB_."/centcore.cmd";
+        } else  {
+            $centcore_pipe = "/var/lib/centreon/centcore.cmd";
 	}
 
 	/*
@@ -119,7 +120,7 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub = $form->addElement('submit', 'submit', _("Generate"));
+	$sub = $form->addElement('submit', 'submit', _("Generate"), array("class" => "btc bt_success"));
 	$msg = NULL;
 	$stdout = NULL;
         $msg_generate = "";
@@ -146,7 +147,7 @@
                                 $trapdPath = $tab['snmp_trapd_path_conf'];
                             }
 			}
-			if (isset($ret["generate"]["generate"]) && $ret["generate"]["generate"]) {
+			if (isset($ret["generate"]) && $ret["generate"]) {
                             $msg_generate .= sprintf("<strong>%s</strong><br/>", _('Database generation'));
                             $stdout = "";
                             foreach ($tab_server as $host) {
@@ -156,7 +157,7 @@
                                 $filename = "{$trapdPath}/{$host['id']}/centreontrapd.sdb";
                                 $output = array();
                                 $returnVal = 0;
-                                exec("$centreon_path/bin/generateSqlLite '{$host['id']}' '{$filename}' 2>&1", $output, $returnVal);
+                                exec(_CENTREON_PATH_."/bin/generateSqlLite '{$host['id']}' '{$filename}' 2>&1", $output, $returnVal);
                                 $stdout .= implode("<br/>", $output)."<br/>";
                                 if ($returnVal != 0) {
                                     break;

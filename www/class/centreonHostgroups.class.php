@@ -138,6 +138,28 @@
         }
         return "";
 	}
+    
+    
+    /**
+	 * Get Hostgroup Id/Name
+	 *
+	 * @param int $hg_id
+	 * @return string
+	 */
+	public function getHostsgroups($hg_id = array())
+	{
+        $arrayReturn = array();
+        if (!empty($hg_id)) {
+            $query = "SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (" . $this->DB->escape(implode(",",$hg_id)).")";
+            $res = $this->DB->query($query);
+            $arrayReturn = array();
+            while ($row = $res->fetchRow()) {
+                $arrayReturn[] = array("id" => $row['hg_id'], "name" => $row['hg_name']);
+            }
+        }
+        return $arrayReturn;
+	}
+    
 
 	/**
 	 * Get Hostgroup Id
@@ -223,10 +245,10 @@
     /**
      * 
      */
-	private function unsetCache()
-	{
-		$this->dataTree = array();
-	}
+    private function unsetCache()
+    {
+        $this->dataTree = array();
+    }
     
     /**
      * 
@@ -244,6 +266,7 @@
         switch ($field) {
             case 'hg_hosts':
                 $parameters['type'] = 'relation';
+                $parameters['externalObject']['object'] = 'centreonHost';
                 $parameters['externalObject']['table'] = 'host';
                 $parameters['externalObject']['id'] = 'host_id';
                 $parameters['externalObject']['name'] = 'host_name';
@@ -255,6 +278,66 @@
         }
         
         return $parameters;
+    }
+
+    /**
+     *
+     * @param array $values
+     * @return array
+     */
+    public function getObjectForSelect2($values = array(), $options = array())
+    {
+        global $centreon;
+        $items = array();
+
+        # get list of authorized hostgroups
+        if (!$centreon->user->access->admin) {
+            $hgAcl = $centreon->user->access->getHostGroupAclConf(
+                null,
+                'broker',
+                array(
+                    'distinct' => true,
+                    'fields'  => array('hostgroup.hg_id'),
+                    'get_row' => 'hg_id',
+                    'keys' => array('hg_id'),
+                    'conditions' => array(
+                        'hostgroup.hg_id' => array(
+                            'IN',
+                            $values
+                        )
+                    )
+                ),
+                true
+            );
+        }
+
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected hostgroups
+        $query = "SELECT hg_id, hg_name "
+            . "FROM hostgroup "
+            . "WHERE hg_id IN (" . $explodedValues . ") "
+            . "ORDER BY hg_name ";
+
+        $resRetrieval = $this->DB->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            # hide unauthorized hostgroups
+            $hide = false;
+            if (!$centreon->user->access->admin && !in_array($row['hg_id'], $hgAcl)) {
+                $hide = true;
+            }
+
+            $items[] = array(
+                'id' => $row['hg_id'],
+                'text' => $row['hg_name'],
+                'hide' => $hide
+            );
+        }
+
+        return $items;
     }
 }
 

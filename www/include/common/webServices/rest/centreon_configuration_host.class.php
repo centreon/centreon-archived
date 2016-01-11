@@ -31,14 +31,10 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-global $centreon_path;
-require_once $centreon_path . "/www/class/centreonBroker.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonHost.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationHost extends CentreonConfigurationObjects
@@ -55,13 +51,10 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
      */
     public function __construct()
     {
+        global $pearDBO;
         parent::__construct();
-        $brk = new CentreonBroker($this->pearDB);
-        if ($brk->getBroker() == 'broker') {
-            $this->pearDBMonitoring = new CentreonDB('centstorage');
-        } else {
-            $this->pearDBMonitoring = new CentreonDB('ndo');
-        }
+        $this->pearDBMonitoring = new CentreonDB('centstorage');
+        $pearDBO = $this->pearDBMonitoring;
     }
     
     /**
@@ -89,21 +82,63 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
         
-        $queryHost = "SELECT DISTINCT h.host_name, h.host_id "
+        $queryHost = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name, h.host_id "
             . "FROM host h "
             . "WHERE h.host_register = '1' "
             . "AND h.host_name LIKE '%$q%' "
             . $aclHosts
-            . "ORDER BY h.host_name";
+            . "ORDER BY h.host_name "
+            . $range;
         
         $DBRESULT = $this->pearDB->query($queryHost);
+
+        $total = $this->pearDB->numberRows();
         
         $hostList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $hostList[] = array('id' => htmlentities($data['host_id']), 'text' => htmlentities($data['host_name']));
+            $hostList[] = array(
+                'id' => htmlentities($data['host_id']),
+                'text' => $data['host_name']
+            );
         }
         
-        return $hostList;
+        return array(
+            'items' => $hostList,
+            'total' => $total
+        );
+    }
+    
+    /**
+     * 
+     * @return type
+     * @throws RestBadRequestException
+     */
+    public function getServices()
+    {
+        // Check for id
+        if (false === isset($this->arguments['id'])) {
+            throw new RestBadRequestException("Missing host id");
+        }
+        $id = $this->arguments['id'];
+        
+        $hostObj = new CentreonHost($this->pearDB);
+        $serviceList = array();
+        $serviceListRaw = $hostObj->getServices($id);
+        
+        foreach ($serviceListRaw as $service_id => $service_description) {
+            if (service_has_graph($id, $service_id)) {
+                $serviceList[$service_id] = $service_description;
+            }
+        }
+        
+        return $serviceList;
     }
 }

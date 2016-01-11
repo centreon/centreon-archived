@@ -1,0 +1,47 @@
+	/* must set border width with px */
+	.paginator_p {
+		text-align:center;
+		float:left;
+		color:white;
+		background-color:#B7B7B7;
+		cursor:pointer;
+		padding:2px 0 0 0;
+	}
+	.paginator_p_bloc {
+		position:relative;
+		width:3000px;
+	}
+	.paginator_p.over {
+		background-color:#8B8B8B;
+	}
+	.paginator_p.selected {
+		background-color:#CAFF3A;
+		color:white;
+		background-color:black;
+	}
+	.paginator_p_wrap {
+		position:relative;
+		overflow:hidden;
+		float:left;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+	}
+	.paginator_slider {
+		clear:left;
+		height: 4px;
+		top: 4px;
+		background: white;
+		border: solid 1px black;
+		position:relative;
+	}
+
+	.paginator_slider .ui-slider-handle {
+		width: 8px;
+		height: 12px;
+		position: absolute;
+		top: -4px;
+		background-color:black;
+	}

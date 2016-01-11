@@ -38,18 +38,18 @@
  
 	if (!isset($oreon))
 		exit();
-		
+
+        include_once("./class/centreonUtils.class.php");
+
 	include("./include/common/autoNumLimit.php");
 	$mnftr_id = NULL;
-
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
 		
 	$SearchTool = NULL;
-	if (isset($search) && $search)
+    $search = '';
+	if (isset($_POST['searchTM']) && $_POST['searchTM']) {
+        $search = $_POST['searchTM'];
 		$SearchTool = " WHERE (alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') OR (name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
+    }
 
 	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM traps_vendor $SearchTool");
 	$tmp = $DBRESULT->fetchRow();
@@ -97,9 +97,9 @@
 		$moptions = "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$mnftr['id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>myDecode($mnftr["name"]),
+						"RowMenu_name"=>CentreonUtils::escapeSecure(myDecode($mnftr["name"])),
 						"RowMenu_link"=>"?p=".$p."&o=c&id=".$mnftr['id'],
-						"RowMenu_alias"=>myDecode($mnftr["alias"]),
+						"RowMenu_alias"=>CentreonUtils::escapeSecure(myDecode($mnftr["alias"])),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
@@ -122,6 +122,9 @@
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
+                                " var bChecked = isChecked(); ".
+                                " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
+                                " alert('"._("Please select one or more items")."'); return false;} " .
 				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
@@ -134,6 +137,9 @@
 		
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
+                                " var bChecked = isChecked(); ".
+                                " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
+                                " alert('"._("Please select one or more items")."'); return false;} " .
 				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
@@ -153,6 +159,7 @@
 	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
+    $tpl->assign('searchTM', $search);
 	
 	/*
 	 * Apply a template definition

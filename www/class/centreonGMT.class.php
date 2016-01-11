@@ -42,63 +42,55 @@ class CentreonGMT {
     var $listGTM;
     var $myGMT;
     var $use;
+    /**
+     *
+     * @var array
+     */
+    var $aListTimezone;
+        
+    /**
+     *
+     * @var type 
+     */
+    protected $db;
+    
+    /**
+     * 
+     * @param string $myTimezone
+     */
+    var $myTimezone;
+    
+    /**
+     * 
+     * @param string $myOffset
+     */
+    var $myOffset;
 
-    public function __construct($DB) {
+    public function __construct($DB)
+    {
+        $this->db = $DB;
+        
         /*
          * Define Table of GMT line
          */
-        $this->listGTM = array(null => null);
-
-        $this->listGTM['-12'] = -12;
-        $this->listGTM['-11'] = -11;
-        $this->listGTM['-10'] = -10;
-        $this->listGTM['-9'] = -9;
-        $this->listGTM['-8'] = -8;
-        $this->listGTM['-7'] = -7;
-        $this->listGTM['-6'] = -6;
-        $this->listGTM['-5'] = -5;
-        $this->listGTM['-4'] = -4;
-        $this->listGTM['-3'] = -3;
-        $this->listGTM['-2'] = -2;
-        $this->listGTM['-1'] = -1;
-        $this->listGTM['0'] = 0;
-        $this->listGTM['1'] = 1;
-        $this->listGTM['2'] = 2;
-        $this->listGTM['3'] = 3;
-        $this->listGTM['4'] = 4;
-        $this->listGTM['5'] = 5;
-        $this->listGTM['6'] = 6;
-        $this->listGTM['7'] = 7;
-        $this->listGTM['8'] = 8;
-        $this->listGTM['9'] = 9;
-        $this->listGTM['10'] = 10;
-        $this->listGTM['11'] = 11;
-        $this->listGTM['12'] = 12;
-
+        $this->listGTM = $this->getList();
         /*
          * Flag activ / inactiv
          */
         $this->use = $this->checkGMTStatus($DB);
     }
-
+    
     function checkGMTStatus($DB) {
-        global $pearDB;
-
-        if (!isset($pearDB) && isset($DB))
-            $pearDB = $DB;
-
-        $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'enable_gmt'");
-        $result = $DBRESULT->fetchRow();
-        return ($result["value"]);
+        return 1;
     }
 
     function used() {
         return $this->use;
     }
 
-    function setMyGMT($value) {
-        if (!isset($value))
-            $this->myGMT = $value;
+    function setMyGMT($value)
+    {
+        $this->myGMT = $value;
     }
 
     function getGMTList() {
@@ -109,14 +101,43 @@ class CentreonGMT {
         return $this->myGMT;
     }
 
-    function getMyGMTForRRD() {
-        $gmt = (-1 * $this->myGMT);
-        if ($gmt > 0)
-            $gmt = "+$gmt";
-        return $gmt;
+    function getMyTimezone()
+    {
+        if (is_null($this->myTimezone)) {
+            if (isset($this->listGTM[$this->myGMT])) {
+                $this->myTimezone = $this->listGTM[$this->myGMT];
+            } else {
+                $this->myTimezone = date_default_timezone_get();
+            }
+        }
+        return $this->myTimezone;
+    }
+    function getMyOffset()
+    {
+        if (is_null($this->myOffset)) {
+            if (count($this->aListTimezone) == 0) {
+                $this->getList();
+            }
+            $this->myOffset = $this->aListTimezone[$this->myGMT]['timezone_offset'];
+        }
+        return $this->myOffset;
+    }
+    function getMyGMTForRRD()
+    {
+        $sOffset = '';
+        if (count($this->listGTM) == 0) {
+            $this->getList();
+        }
+
+        if (isset($this->aListTimezone[$this->myGMT]['timezone_offset'])) {
+           $sOffset = $this->aListTimezone[$this->myGMT]['timezone_offset'];
+        }
+        return $sOffset;
     }
 
-    function getDate($format, $date, $gmt = NULL) {
+    function getDate($format, $date, $gmt = NULL)
+    {
+        $return = "";
         if (!$date) {
             $date = "N/A";
         }
@@ -132,8 +153,21 @@ class CentreonGMT {
 
         if ($this->use) {
             if (isset($date) && isset($gmt)) {
-                $date += $gmt * 60 * 60;
-                return date($format, $date);
+                if (count($this->listGTM) == 0) {
+                    $this->getList();
+                }
+                
+                if (isset($this->listGTM[$gmt]) && !empty($this->listGTM[$gmt])) {
+                    $sDate = new DateTime();
+                            
+                    $sDate->setTimestamp($date);
+                    $sDate->setTimezone(new DateTimeZone($this->listGTM[$gmt]));
+                    $return = $sDate->format($format);
+                } else {
+                    $return = date($format, $date);
+                }
+
+                return $return;
             } else {
                 return "";
             }
@@ -142,24 +176,80 @@ class CentreonGMT {
         }
     }
 
-    function getUTCDate($date, $gmt = NULL) {
+    function getUTCDate($date, $gmt = NULL, $reverseOffset = 1) {
         /*
          * Specify special GMT
          */
+        $return = "";
         if (!isset($gmt))
             $gmt = $this->myGMT;
 
         if ($this->use) {
             if (isset($date) && isset($gmt)) {
-                $date += -1 * ($gmt * 60 * 60);
-                return $date;
+                if (count($this->listGTM) == 0) {
+                    $this->getList();
+                }
+                
+                if (isset($this->listGTM[$gmt]) && !empty($this->listGTM[$gmt])) {
+                    
+                    $sDate = new DateTime();
+                    $sDate->setTimestamp($date);
+                    
+                    $sDate->setTimezone(new DateTimeZone($this->listGTM[$gmt]));
+                    $iTimestamp = $sDate->getTimestamp();
+
+                    $sOffset = $sDate->getOffset();
+                    
+                    $return = $iTimestamp + ($sOffset * $reverseOffset);
+                    
+                } else {
+                    $return = $date;
+                }
+                
             } else {
-                return "";
+                $return = "";
             }
         } else {
-            return $date;
+            $return = $date;
         }
+        return $return;
     }
+    
+    function getUTCDateFromString($date, $gmt = NULL){
+        /*
+         * Specify special GMT
+         */
+
+        
+        $return = "";
+        if (!isset($gmt))
+            $gmt = $this->myGMT;
+        if ($this->use) {
+            if (isset($date) && isset($gmt)) {
+                if (count($this->listGTM) == 0) {
+                    $this->getList();
+                }
+                
+                if (isset($this->listGTM[$gmt]) && !empty($this->listGTM[$gmt])) {
+                    
+                    $sDate = new DateTime($date,new DateTimeZone($this->listGTM[$gmt]));
+                    $iTimestamp = $sDate->getTimestamp();
+                    $return = $iTimestamp;
+                } else {
+                    $sDate = new DateTime($date);
+                    $iTimestamp = $sDate->getTimestamp();
+                    $return = $iTimestamp;
+                }
+                
+            } else {
+                $return = "";
+            }
+        } else {
+            $return = $date;
+        }
+        return $return;
+    }
+    
 
     function getDelaySecondsForRRD($gmt) {
         $str = "";
@@ -190,12 +280,33 @@ class CentreonGMT {
         $DBRESULT->free();
         $this->myGMT = $info["contact_location"];
     }
+    
+    function getMyGTMFromUser($userId, $DB = null)
+    {
+        global $pearDB;
+        
+        if (!isset($pearDB) && isset($DB)) {
+            $pearDB = $DB;
+        }
+        
+        $DBRESULT = $pearDB->query("SELECT `contact_location` FROM `contact` " .
+                "WHERE `contact`.`contact_id` = " . $userId .
+                " LIMIT 1");
+        if (PEAR::isError($DBRESULT)) {
+            $this->myGMT = 0;
+        }
+        $info = $DBRESULT->fetchRow();
+        $DBRESULT->free();
+        $this->myGMT = $info["contact_location"];
+    }
 
     function getHostCurrentDatetime($host_id, $date_format = 'c') {
         global $pearDB;
         static $locations = null;
 
         $date = time();
+        $sReturn = date($date_format, $date);
+        
         if ($this->use) {
             if (is_null($locations)) {
                 $locations = array();
@@ -206,14 +317,40 @@ class CentreonGMT {
                     $locations[$row['host_id']] = $row['host_location'];
                 }
             }
-            if (isset($locations[$host_id])) {
-                $date = $date + $locations[$host_id] * 3600;
+            if (isset($locations[$host_id]) && isset($this->listGTM[$locations[$host_id]]) && !empty($this->listGTM[$locations[$host_id]])) {          
+                $sDate = new DateTime();
+                $sDate->setTimezone(new DateTimeZone($this->listGTM[$locations[$host_id]]));
+                $sReturn = $sDate->format($date_format);
             }
         }
-        return date($date_format, $date);
+        
+        return $sReturn;
     }
 
-    function getUTCDateBasedOnHostGMT($date, $hostId, $dateFormat = 'c') {
+    function getUTCDateBasedOnHostGMT($date, $hostId, $dateFormat = 'c', $reverseOffset = 1)
+    {
+        global $pearDB;
+        static $locations = null;
+
+        if ($this->use) {
+            /* Load host location */
+            if (is_null($locations)) {
+                $locations = array();
+                $query = "SELECT host_id, host_location FROM host WHERE host_id";
+                $res = $pearDB->query($query);
+                while ($row = $res->fetchRow()) {
+                    $locations[$row['host_id']] = $row['host_location'];
+                }
+            }
+            if (isset($locations[$hostId])) {
+                $date = $this->getUTCDate($date, $locations[$hostId],$reverseOffset);
+            }
+        }
+        return date($dateFormat, $date);
+    }
+
+    function getUTCTimestampBasedOnHostGMT($date, $hostId, $dateFormat = 'c')
+    {
         global $pearDB;
         static $locations = null;
 
@@ -231,7 +368,82 @@ class CentreonGMT {
                 $date = $this->getUTCDate($date, $locations[$hostId]);
             }
         }
-        return date($dateFormat, $date);
+        return $date;
     }
+    
+    function getUTCLocationHost($hostId){
+        global $pearDB;
+        static $locations = null;
 
+        if ($this->use) {
+            /* Load host location */
+            if (is_null($locations)) {
+                $locations = array();
+                $query = "SELECT host_id, host_location FROM host WHERE host_id";
+                $res = $pearDB->query($query);
+                while ($row = $res->fetchRow()) {
+                    $locations[$row['host_id']] = $row['host_location'];
+                }
+            }
+            if (isset($locations[$hostId])) {
+                return $locations[$hostId];
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Get the list of timezone
+     *
+     * @return array
+     */
+    public function getList()
+    {
+        $aDatas = array();
+        
+        $queryList = "SELECT timezone_id, timezone_name, timezone_offset FROM timezone ORDER BY timezone_name asc";
+        $res = $this->db->query($queryList);
+        if (PEAR::isError($res)) {
+            return array();
+        }
+ 
+        $aDatas[null] = null;
+        while ($row = $res->fetchRow()) {
+            $aDatas[$row['timezone_id']] =  $row['timezone_name'];
+            $this->aListTimezone[$row['timezone_id']] = $row;
+        }
+         
+        return $aDatas;
+    }
+    
+    /**
+     * 
+     * @param type $values
+     * @return type
+     */
+    public function getObjectForSelect2($values = array(), $options = array())
+    {
+        $items = array();
+        
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected timezones
+        $query = "SELECT timezone_id, timezone_name "
+            . "FROM timezone "
+            . "WHERE timezone_id IN (" . $explodedValues . ") "
+            . "ORDER BY timezone_name ";
+        
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            $items[] = array(
+                'id' => $row['timezone_id'],
+                'text' => $row['timezone_name']
+            );
+        }
+
+        return $items;
+    }
 }

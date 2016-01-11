@@ -2,284 +2,106 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:template match="root">
 <div>
-	<div id="div2"   valign="top" align='left' >	
-		<form name="formu2">
-		    <table class="ajaxOption">
-	            <tr>
-	            	<td style="vertical-align:top;"><b><xsl:value-of select="//lang/ty"/></b>
-	            	</td>
-					<td>
-						<table>
-			               	<tr>
-			               		<td>
-	               					<xsl:element name='input'>
-										<xsl:attribute name="onClick">
-											if (!this.checked) {
-												document.getElementById('ohId').checked = false;
-											}
-                                                                                        checkAlertNotifCheckbox();
-											log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;
-										</xsl:attribute>
-										<xsl:attribute name="name">alert</xsl:attribute>
-										<xsl:attribute name="id">alertId</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/alert = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-	               					<xsl:value-of select="//lang/a"/>
-			               		</td>
-			               		<td>
-									<xsl:element name='input'>
-										<xsl:attribute name="onClick">
-											if (this.checked) {
-												document.getElementById('alertId').checked = true;
-											}
-											log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;
-										</xsl:attribute>
-										<xsl:attribute name="name">oh</xsl:attribute>
-										<xsl:attribute name="id">ohId</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/oh = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-	               					<xsl:value-of select="//lang/oh"/>
-			               		</td>
-			               	</tr>
-			               	<tr>
-			               		<td>
-									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
-										<xsl:attribute name="name">error</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/error = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-	               					<xsl:value-of select="//lang/e"/>
-			               		</td>
-								<td>
-									<xsl:element name='input'>
-										<xsl:attribute name="onClick">
-                                                                                    checkAlertNotifCheckbox();
-                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
-                                                                                    return false;
-                                                                                </xsl:attribute>
-										<xsl:attribute name="name">notification</xsl:attribute>
-                                                                                <xsl:attribute name="id">notifId</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/notification = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-	               					<xsl:value-of select="//lang/n"/>
-								</td>
-			               	</tr>
-						</table>
-					</td>
-			        <td>
-						<table style="">
-			               	<tr>
-			               		<td><b><xsl:value-of select="//lang/h"/></b></td>
-			               		<td>
-									<xsl:element name='input'>
-										<xsl:attribute name="onClick">
-                                                                                    checkStatusCheckbox(this.checked);
-                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
-                                                                                    return false;
-                                                                                </xsl:attribute>
-										<xsl:attribute name="name">up</xsl:attribute>
-                                                                                <xsl:attribute name="id">cb_up</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/up = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-	               					<xsl:value-of select="//lang/up"/>
-			               		</td>
-			               		<td>
-									<xsl:element name='input'>
-										<xsl:attribute name="onClick">
-                                                                                    checkStatusCheckbox(this.checked);
-                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
-                                                                                    return false;
-                                                                                </xsl:attribute>
-										<xsl:attribute name="name">down</xsl:attribute>
-                                                                                <xsl:attribute name="id">cb_down</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/down = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-	               					<xsl:value-of select="//lang/do"/>
-			               		</td>
-			               		<td colspan="2">
-									<xsl:element name='input'>
-										<xsl:attribute name="onClick">
-                                                                                    checkStatusCheckbox(this.checked);
-                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
-                                                                                    return false;
-                                                                                </xsl:attribute>
-										<xsl:attribute name="name">unreachable</xsl:attribute>
-                                                                                <xsl:attribute name="id">cb_unreachable</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/unreachable = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-	               					<xsl:value-of select="//lang/un"/>
-			               		</td>
-			               	</tr>
-			               	<tr>	
-			               		<td><b><xsl:value-of select="//lang/sc"/></b></td>		               	
-			               		<td>
-									<xsl:element name='input'>
-										<xsl:attribute name="onClick">
-                                                                                    checkStatusCheckbox(this.checked);
-                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
-                                                                                    return false;
-                                                                                </xsl:attribute>
-										<xsl:attribute name="name">ok</xsl:attribute>
-                                                                                <xsl:attribute name="id">cb_ok</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/ok = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-	               					<xsl:value-of select="//lang/ok"/>
-			               		</td>
-			               		<td>
-									<xsl:element name='input'>
-										<xsl:attribute name="onClick">
-                                                                                    checkStatusCheckbox(this.checked);
-                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
-                                                                                    return false;
-                                                                                </xsl:attribute>
-										<xsl:attribute name="name">warning</xsl:attribute>
-                                                                                <xsl:attribute name="id">cb_warning</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/warning = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-	               					<xsl:value-of select="//lang/w"/>
-			               		</td>
-			               		<td>
-									<xsl:element name='input'>
-										<xsl:attribute name="onClick">
-                                                                                    checkStatusCheckbox(this.checked);
-                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
-                                                                                    return false;
-                                                                                </xsl:attribute>
-										<xsl:attribute name="name">critical</xsl:attribute>
-                                                                                <xsl:attribute name="id">cb_critical</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/critical = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-	               					<xsl:value-of select="//lang/cr"/>
-			               		</td>
-			               		<td>
-									<xsl:element name='input'>
-										<xsl:attribute name="onClick">
-                                                                                    checkStatusCheckbox(this.checked);
-                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
-                                                                                    return false;
-                                                                                </xsl:attribute>
-										<xsl:attribute name="name">unknown</xsl:attribute>
-                                                                                <xsl:attribute name="id">cb_unknown</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/unknown = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-	               					<xsl:value-of select="//lang/uk"/>
-			               		</td>
-			               	</tr>
-						</table>
-					</td>
-					<td valign="top">
-						
-					</td>
-				</tr>
-	       	</table>
-		</form>
-	 </div>
+	<div id="div2"   valign="top" align='left'></div>
 </div>
 <div>
-	<div class="pagination">
-		<table>
-			<tr>
-				<xsl:if test="first/@show = 'true'">
-				<td style='padding-left:5px;'>
-					<xsl:element name='a'>
-						<xsl:attribute name="href">#</xsl:attribute>
-						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
-						<xsl:element name='img'>
-							<xsl:attribute name="title">first</xsl:attribute>						
-							<xsl:attribute name="alt">first</xsl:attribute>						
-							<xsl:attribute name="src">./img/icones/16x16/arrow_left_blue_double.gif</xsl:attribute>						
-						</xsl:element>
-					</xsl:element>
-				</td>
-				</xsl:if>
-				<xsl:if test="prev/@show = 'true'">
-				<td style='padding-left:5px;'>
-					<xsl:element name='a'>
-						<xsl:attribute name="href">#</xsl:attribute>
-						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
-						<xsl:element name='img'>
-							<xsl:attribute name="title">previous</xsl:attribute>						
-							<xsl:attribute name="alt">previous</xsl:attribute>						
-							<xsl:attribute name="src">./img/icones/16x16/arrow_left_blue.gif</xsl:attribute>						
-						</xsl:element>
-					</xsl:element>
-				</td>
-				</xsl:if>
-				<xsl:for-each select="//page">
-				<td style='padding-left:5px;'>
-					<xsl:element name='a'>
-						<xsl:attribute name="href">#</xsl:attribute>
-						<xsl:if test="selected = 0">
-							<xsl:attribute name="class">otherPageNumber</xsl:attribute>
-						</xsl:if>
-						<xsl:if test="selected = 1">
-							<xsl:attribute name="class">currentPageNumber</xsl:attribute>
-						</xsl:if>
-						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="num"/>'); return false;</xsl:attribute>
-						<xsl:value-of select="label_page"/>
-					</xsl:element>
-				</td>
-				</xsl:for-each>
-				<xsl:if test="next/@show = 'true'">
-				<td style='padding-left:5px;'>
-					<xsl:element name='a'>
-						<xsl:attribute name="href">#</xsl:attribute>
-						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
-						<xsl:element name='img'>
-							<xsl:attribute name="title">next</xsl:attribute>						
-							<xsl:attribute name="alt">next</xsl:attribute>						
-							<xsl:attribute name="src">./img/icones/16x16/arrow_right_blue.gif</xsl:attribute>						
-						</xsl:element>
-					</xsl:element>
-				</td>
-				</xsl:if>
-				<xsl:if test="last/@show = 'true'">
-				<td style='padding-left:5px;'>
-					<xsl:element name='a'>
-						<xsl:attribute name="href">#</xsl:attribute>
-						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
-						<xsl:element name='img'>
-							<xsl:attribute name="title">last</xsl:attribute>						
-							<xsl:attribute name="alt">last</xsl:attribute>						
-							<xsl:attribute name="src">./img/icones/16x16/arrow_right_blue_double.gif</xsl:attribute>						
-						</xsl:element>
-					</xsl:element>
-				</td>
-				</xsl:if>
-			</tr>
+	<div>
+		<table class="ToolbarTable table">
+			<tr class="ToolbarTR">
+                <td></td>
+                <td class="ToolbarPagination">
+                    <table>
+                        <tr>
+							<xsl:if test="first/@show = 'true'">
+							<td style='width:auto;padding-left:5px;'>
+								<xsl:element name='a'>
+									<xsl:attribute name="href">#</xsl:attribute>
+									<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
+									<xsl:element name='img'>
+										<xsl:attribute name="title">first</xsl:attribute>						
+										<xsl:attribute name="alt">first</xsl:attribute>
+			                            <xsl:attribute name="class">ico-14</xsl:attribute>
+										<xsl:attribute name="src">./img/icons/first_rewind.png</xsl:attribute>						
+									</xsl:element>
+								</xsl:element>
+							</td>
+							</xsl:if>
+							<xsl:if test="prev/@show = 'true'">
+							<td style='width:auto;padding-left:5px;'>
+								<xsl:element name='a'>
+									<xsl:attribute name="href">#</xsl:attribute>
+									<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
+									<xsl:element name='img'>
+										<xsl:attribute name="title">previous</xsl:attribute>						
+										<xsl:attribute name="alt">previous</xsl:attribute>	
+			                            <xsl:attribute name="class">ico-14</xsl:attribute>
+										<xsl:attribute name="src">./img/icons/rewind.png</xsl:attribute>						
+									</xsl:element>
+								</xsl:element>
+							</td>
+							</xsl:if>
+							<xsl:for-each select="//page">
+							<td style='width:auto;padding-left:5px;'>
+								<xsl:element name='a'>
+									<xsl:attribute name="href">#</xsl:attribute>
+									<xsl:if test="selected = 0">
+										<xsl:attribute name="class">otherPageNumber</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="selected = 1">
+										<xsl:attribute name="class">currentPageNumber</xsl:attribute>
+									</xsl:if>
+									<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="num"/>'); return false;</xsl:attribute>
+									<xsl:value-of select="label_page"/>
+								</xsl:element>
+							</td>
+							</xsl:for-each>
+							<xsl:if test="next/@show = 'true'">
+							<td style='width:auto;padding-left:5px;'>
+								<xsl:element name='a'>
+									<xsl:attribute name="href">#</xsl:attribute>
+									<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
+									<xsl:element name='img'>
+										<xsl:attribute name="title">next</xsl:attribute>						
+										<xsl:attribute name="alt">next</xsl:attribute>	
+			                            <xsl:attribute name="class">ico-14</xsl:attribute>
+										<xsl:attribute name="src">./img/icons/fast_forward.png</xsl:attribute>						
+									</xsl:element>
+								</xsl:element>
+							</td>
+							</xsl:if>
+							<xsl:if test="last/@show = 'true'">
+							<td style='width:auto;padding-left:5px;'>
+								<xsl:element name='a'>
+									<xsl:attribute name="href">#</xsl:attribute>
+									<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
+									<xsl:element name='img'>
+										<xsl:attribute name="title">last</xsl:attribute>						
+										<xsl:attribute name="alt">last</xsl:attribute>	
+			                            <xsl:attribute name="class">ico-14</xsl:attribute>
+										<xsl:attribute name="src">./img/icons/end_forward.png</xsl:attribute>						
+									</xsl:element>
+								</xsl:element>
+							</td>
+							</xsl:if>
+                            </tr>
+                            </table> 
+                         </td>  
+                         <td class="Toolbar_pagelimit">   
+                            <xsl:element name='select'>
+                                <xsl:attribute name="onChange">setL(this.value); log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+                                <xsl:attribute name="name">l</xsl:attribute>
+                                    <xsl:for-each select="//limitValue">
+                                        <xsl:element name='option'>
+                                            <xsl:attribute name="value"><xsl:value-of select="current()"/></xsl:attribute>
+                                            <xsl:if test="current() = //limit">
+                                                <xsl:attribute name="selected">selected</xsl:attribute>
+                                            </xsl:if>
+                                            <xsl:value-of select="current()"/>
+                                        </xsl:element>
+                                    </xsl:for-each>
+                            </xsl:element>
+                        </td>
+                    </tr>
 		</table>
 	</div>
 	<div style="">
@@ -300,9 +122,28 @@
 			<xsl:attribute name="class"><xsl:value-of select="class"/></xsl:attribute>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="date"/></td>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="time"/></td>
-	   		<td style="padding-left:5px;"><xsl:value-of select="host_name"/></td>
-	   		<td style="padding-left:5px;"><xsl:value-of select="service_description"/></td>
-	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:attribute name="style">background-color:<xsl:value-of select="status/@color"/>;</xsl:attribute><xsl:value-of select="status"/></td>
+	   		<td style="padding-left:5px;">
+                            <xsl:element name="a">
+                                <xsl:attribute name="href">main.php?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="host_name" /></xsl:attribute>
+				<xsl:attribute name="target">_blank</xsl:attribute>
+                                <xsl:value-of select="host_name"/>
+                            </xsl:element>
+                            
+
+                        </td>
+	   		<td style="padding-left:5px;">
+                            <xsl:element name="a">
+                                <xsl:attribute name="href">main.php?p=20201&amp;o=svcd&amp;host_name=<xsl:value-of select="host_name" />&amp;service_description=<xsl:value-of select="service_description"/></xsl:attribute>
+				<xsl:attribute name="target">_blank</xsl:attribute>
+                                <xsl:value-of select="service_description"/>
+                            </xsl:element>
+                        </td>
+	   		<td style="padding-left:5px;" class="ListColCenter">
+              <xsl:element name="span">
+                <xsl:attribute name="class">badge <xsl:value-of select="status/@color"/></xsl:attribute>
+                <xsl:value-of select="status"/>
+              </xsl:element>
+            </td>
 	   		<td style="padding-left:5px;padding-right:5px;" class="ListColCenter"><xsl:value-of select="type"/></td>
 	   		<td style="padding-left:5px;padding-right:5px;" class="ListColCenter"><xsl:value-of select="retry"/></td>
 	   		<td style="padding-left:5px;"><xsl:value-of select="output"/></td>
@@ -312,86 +153,105 @@
 		</xsl:for-each>
 	</table>
 	</div>
-	<div class="pagination">
-		<table>
-			<tr>
-				<xsl:if test="first/@show = 'true'">
-					<td style='padding-left:5px;'>
-						<xsl:element name='a'>
-							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name="title">first</xsl:attribute>						
-								<xsl:attribute name="alt">first</xsl:attribute>						
-								<xsl:attribute name="src">./img/icones/16x16/arrow_left_blue_double.gif</xsl:attribute>						
-							</xsl:element>
-						</xsl:element>
-					</td>
-				</xsl:if>
-				<xsl:if test="prev/@show = 'true'">
-					<td style='padding-left:5px;'>
-						<xsl:element name='a'>
-							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name="title">previous</xsl:attribute>						
-								<xsl:attribute name="alt">previous</xsl:attribute>						
-								<xsl:attribute name="src">./img/icones/16x16/arrow_left_blue.gif</xsl:attribute>						
-							</xsl:element>
-						</xsl:element>
-					</td>
-				</xsl:if>
-				<xsl:for-each select="//page">
-				<td style='padding-left:5px;'>
-					<xsl:element name='a'>
-						<xsl:attribute name="href">#</xsl:attribute>
-						<xsl:if test="selected = 0">
-							<xsl:attribute name="class">otherPageNumber</xsl:attribute>
-						</xsl:if>
-						<xsl:if test="selected = 1">
-							<xsl:attribute name="class">currentPageNumber</xsl:attribute>
-						</xsl:if>
-						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="num"/>'); return false;</xsl:attribute>
-						<xsl:value-of select="label_page"/>
-					</xsl:element>
-				</td>
-				</xsl:for-each>
-				<xsl:if test="next/@show = 'true'">
-					<td style='padding-left:5px;'>
-						<xsl:element name='a'>
-							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name="title">next</xsl:attribute>						
-								<xsl:attribute name="alt">next</xsl:attribute>						
-								<xsl:attribute name="src">./img/icones/16x16/arrow_right_blue.gif</xsl:attribute>						
-							</xsl:element>
-						</xsl:element>
-					</td>
-				</xsl:if>
-				<xsl:if test="last/@show = 'true'">
-					<td style='padding-left:5px;'>
-						<xsl:element name='a'>
-							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name="title">last</xsl:attribute>						
-								<xsl:attribute name="alt">last</xsl:attribute>						
-								<xsl:attribute name="src">./img/icones/16x16/arrow_right_blue_double.gif</xsl:attribute>						
-							</xsl:element>
-						</xsl:element>
-					</td>
-				</xsl:if>
-			</tr>
+	<div>
+		<table class="ToolbarTable table">
+			<tr class="ToolbarTR">
+                <td></td>
+                <td class="ToolbarPagination">
+                    <table>
+                        <tr>
+							<xsl:if test="first/@show = 'true'">
+							<td style='width:auto;padding-left:5px;'>
+								<xsl:element name='a'>
+									<xsl:attribute name="href">#</xsl:attribute>
+									<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
+									<xsl:element name='img'>
+										<xsl:attribute name="title">first</xsl:attribute>						
+										<xsl:attribute name="alt">first</xsl:attribute>
+			                            <xsl:attribute name="class">ico-14</xsl:attribute>
+										<xsl:attribute name="src">./img/icons/first_rewind.png</xsl:attribute>						
+									</xsl:element>
+								</xsl:element>
+							</td>
+							</xsl:if>
+							<xsl:if test="prev/@show = 'true'">
+							<td style='width:auto;padding-left:5px;'>
+								<xsl:element name='a'>
+									<xsl:attribute name="href">#</xsl:attribute>
+									<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
+									<xsl:element name='img'>
+										<xsl:attribute name="title">previous</xsl:attribute>						
+										<xsl:attribute name="alt">previous</xsl:attribute>	
+			                            <xsl:attribute name="class">ico-14</xsl:attribute>
+										<xsl:attribute name="src">./img/icons/rewind.png</xsl:attribute>						
+									</xsl:element>
+								</xsl:element>
+							</td>
+							</xsl:if>
+							<xsl:for-each select="//page">
+							<td style='width:auto;padding-left:5px;'>
+								<xsl:element name='a'>
+									<xsl:attribute name="href">#</xsl:attribute>
+									<xsl:if test="selected = 0">
+										<xsl:attribute name="class">otherPageNumber</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="selected = 1">
+										<xsl:attribute name="class">currentPageNumber</xsl:attribute>
+									</xsl:if>
+									<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="num"/>'); return false;</xsl:attribute>
+									<xsl:value-of select="label_page"/>
+								</xsl:element>
+							</td>
+							</xsl:for-each>
+							<xsl:if test="next/@show = 'true'">
+							<td style='width:auto;padding-left:5px;'>
+								<xsl:element name='a'>
+									<xsl:attribute name="href">#</xsl:attribute>
+									<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
+									<xsl:element name='img'>
+										<xsl:attribute name="title">next</xsl:attribute>						
+										<xsl:attribute name="alt">next</xsl:attribute>	
+			                            <xsl:attribute name="class">ico-14</xsl:attribute>
+										<xsl:attribute name="src">./img/icons/fast_forward.png</xsl:attribute>						
+									</xsl:element>
+								</xsl:element>
+							</td>
+							</xsl:if>
+							<xsl:if test="last/@show = 'true'">
+							<td style='width:auto;padding-left:5px;'>
+								<xsl:element name='a'>
+									<xsl:attribute name="href">#</xsl:attribute>
+									<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
+									<xsl:element name='img'>
+										<xsl:attribute name="title">last</xsl:attribute>						
+										<xsl:attribute name="alt">last</xsl:attribute>	
+			                            <xsl:attribute name="class">ico-14</xsl:attribute>
+										<xsl:attribute name="src">./img/icons/end_forward.png</xsl:attribute>						
+									</xsl:element>
+								</xsl:element>
+							</td>
+							</xsl:if>
+                        </tr>
+                    </table> 
+                 </td>  
+                 <td class="Toolbar_pagelimit">   
+                    <xsl:element name='select'>
+                        <xsl:attribute name="onChange">setL(this.value); log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+                        <xsl:attribute name="name">l</xsl:attribute>
+                            <xsl:for-each select="//limitValue">
+                                <xsl:element name='option'>
+                                    <xsl:attribute name="value"><xsl:value-of select="current()"/></xsl:attribute>
+                                    <xsl:if test="current() = //limit">
+                                        <xsl:attribute name="selected">selected</xsl:attribute>
+                                    </xsl:if>
+                                    <xsl:value-of select="current()"/>
+                                </xsl:element>
+                            </xsl:for-each>
+                    </xsl:element>
+                </td>
+            </tr>
 		</table>
 	</div>
-</div>
-<div style="display:none; ">
-	<xsl:element name="div">
-		<xsl:attribute name="id">openid</xsl:attribute>
-		<xsl:value-of select="//opid"/>
-	</xsl:element>
-	<xsl:text> </xsl:text>
 </div>
 </xsl:template>
 </xsl:stylesheet>

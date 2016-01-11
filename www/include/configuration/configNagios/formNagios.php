@@ -39,7 +39,7 @@
     if (!$oreon->user->admin && isset($nagios_id)
         && count($allowedMainConf) && !isset($allowedMainConf[$nagios_id])) {
         $msg = new CentreonMsg();
-        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
         $msg->setText(_('You are not allowed to access this object configuration'));
         return null;
@@ -69,6 +69,9 @@
          $mainCfg = new CentreonConfigEngine($pearDB);
          $cdata = CentreonData::getInstance();
          $dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
+         if (is_null($nagios_id)) {
+             $dirArray[0]['in_broker_#index#'] = "/usr/lib64/centreon-engine/externalcmd.so";
+         }
          $cdata->addJsData('clone-values-broker', htmlspecialchars(
             json_encode($dirArray), 
             ENT_QUOTES
@@ -524,7 +527,7 @@
 	 * Event Broker Option
 	 */
 	$form->addElement('text', 'multiple_broker_module', _("Multiple Broker Module"), $attrsText2);
-	$form->addElement('static', 'bkTextMultiple', _("This directive can be used multiple times, see nagios documentation.<BR>NDO use the broker module directive."));
+	$form->addElement('static', 'bkTextMultiple', _("This directive can be used multiple times, see nagios documentation."));
         $cloneSet = array();
         $cloneSet[] = $form->addElement(
                 'text', 
@@ -651,108 +654,8 @@
 	}
 	$form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');
 	$form->setDefaults($nagios_d);
-
-	$form->setDefaults(array(
-	'log_file' => '/var/log/centreon-engine/centengine.log',
-	'cfg_dir' => '/etc/centreon-engine/', 
-	'object_cache_file' => '/var/log/centreon-engine/objects.cache', 
-	'temp_file' => '/var/log/centreon-engine/centengine.tmp', 
-	'temp_path' => '/tmp/', 
-	'status_file' => '/var/log/centreon-engine/status.dat', 
-	'p1_file' => '/usr/sbin/p1.pl', 
-	'status_update_interval' => '30', 
-	'nagios_user' => 'centreon-engine', 
-	'nagios_group' => 'centreon-engine', 
-	'enable_notifications' => '1', 
-	'execute_service_checks' => '1', 
-	'accept_passive_service_checks' => '1', 
-	'execute_host_checks' => '1', 
-	'accept_passive_host_checks' => '1', 
-	'enable_event_handlers' => '1', 
-	'log_rotation_method' => 'd', 
-	'log_archive_path' => '/var/log/centreon-engine/archives/', 
-	'check_external_commands' => '1', 
-	'external_command_buffer_slots' => '4096', 
-	'command_check_interval' => '1s', 
-	'command_file' => '/var/lib/centreon-engine/rw/centengine.cmd', 
-	'lock_file' => '/var/lock/subsys/centengine.lock', 
-	'retain_state_information' => '1', 
-	'state_retention_file' => '/var/log/centreon-engine/retention.dat', 
-	'retention_update_interval' => '60', 
-	'use_retained_program_state' => '1', 
-	'use_retained_scheduling_info' => '1', 
-	'use_syslog' => '0', 
-	'log_notifications' => '1', 
-	'log_service_retries' => '1', 
-	'log_host_retries' => '1', 
-	'log_event_handlers' => '1', 
-	'log_initial_states' => '1', 
-	'log_external_commands' => '1', 
-	'log_passive_checks' => '0', 
-	'sleep_time' => '1', 
-	'service_inter_check_delay_method' => 's', 
-	'host_inter_check_delay_method' => 's', 
-	'service_interleave_factor' => 's', 
-	'max_concurrent_checks' => '200', 
-	'max_service_check_spread' => '5', 
-	'max_host_check_spread' => '5', 
-	'check_result_reaper_frequency' => '5', 
-	'max_check_result_reaper_time' => '10', 
-	'interval_length' => '60', 
-	'auto_reschedule_checks' => '0', 
-	'use_aggressive_host_checking' => '0', 
-	'enable_flap_detection' => '0', 
-	'low_service_flap_threshold' => '25.0', 
-	'high_service_flap_threshold' => '50.0',
-	'low_host_flap_threshold' => '25.0',
-	'high_host_flap_threshold' => '50.0',
-	'soft_state_dependencies' => '0',
-	'service_check_timeout' => '60',
-	'host_check_timeout' => '10',
-	'event_handler_timeout' => '30',
-	'notification_timeout' => '30',
-	'ocsp_timeout' => '5',
-	'ochp_timeout' => '5',
-	'perfdata_timeout' => '5',
-	'obsess_over_services' => '0',
-	'obsess_over_hosts' => '0',
-	'process_performance_data' => '1',
-	'host_perfdata_file_mode' => '2',
-	'service_perfdata_file_mode' => '2',
-	'check_for_orphaned_services' => '0',
-	'check_for_orphaned_hosts' => '0',
-	'check_service_freshness' => '2',
-	'check_host_freshness' => '2',
-	'date_format' => 'euro',
-	'illegal_object_name_chars' => "~!$%^&*\"|'<>?,()=",
-	'illegal_macro_output_chars' => "`~$^&\"|'<>",
-	'use_regexp_matching' => '2',
-	'use_true_regexp_matching' => '2',
-	'admin_email' => 'admin@localhost',
-	'admin_pager' => 'admin',
-	'nagios_comment' => 'Centreon Engine configuration file',
-	'nagios_activate' => '1',
-	'event_broker_options' => '-1',
-	'translate_passive_host_checks' => '2',
-	'nagios_server_id' => '1',
-	'enable_predictive_host_dependency_checks' => '0',
-	'enable_predictive_service_dependency_checks' => '0',
-	'passive_host_checks_are_soft' => '2',
-	'use_large_installation_tweaks' => '1',
-	'free_child_process_memory' => '2',
-	'child_processes_fork_twice' => '2',
-	'enable_environment_macros' => '2',
-        'use_setpgid' => '2',
-	'enable_embedded_perl' => '2',
-	'use_embedded_perl_implicitly' => '2',
-	'debug_file' => '/var/log/centreon-engine/centengine.debug',
-	'debug_level' => '0',
-	'debug_level_opt' => '0',
-	'debug_verbosity' => '0',
-	'max_debug_file_size' => '1000000000',
-	'daemon_dumps_core' => '0',
-	'cfg_file' => 'centengine.cfg'
-	));
+        
+	$form->setDefaults($aInstanceDefaultValues);
 
 	$form->setDefaults(array('action' => '1'));
 
@@ -813,14 +716,14 @@
 		$form->freeze();
 	} else if ($o == "c")	{
 		# Modify a nagios information
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')", "class" => "btc bt_default"));
 
 		$form->setDefaults($nagios);
 	} else if ($o == "a")	{
 		# Add a nagios information
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')", "class" => "btc bt_default"));
 
 	}
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version()));
@@ -846,13 +749,11 @@
 		$o = "w";
 		if ($centreon->user->access->page($p) != 2)
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&nagios_id=".$nagiosObj->getValue()."'"));
-		$form->freeze();
 		$valid = true;
 	}
-
-	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]) {
-		require_once($path."listNagios.php");
+        
+	if ($valid) {
+            require_once($path."listNagios.php");
 	} else {
 		/*
 		 * Apply a template definition
