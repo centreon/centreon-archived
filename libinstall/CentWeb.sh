@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #----
 ## @Synopsis	Install script for Centreon Web Front (CentWeb)
 ## @Copyright	Copyright 2008, Guillaume Watteeux

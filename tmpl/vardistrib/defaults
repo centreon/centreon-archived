@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Preconfigured variables, most of them compatible with Unix-like systems.
 

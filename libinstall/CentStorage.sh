@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #----
 ## @Synopsis	Install script for CentStorage
 ## @Copyright	Copyright 2008, Guillaume Watteeux

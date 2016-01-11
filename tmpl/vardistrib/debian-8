@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Use default variables.
 . "$BASE_DIR/tmpl/vardistrib/defaults"
