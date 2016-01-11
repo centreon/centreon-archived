@@ -102,6 +102,25 @@ class CentreonContact
     /**
      * Get contact groups
      *
+     * @param int $contactGroupId
+     * @return array
+     */
+    public function getContactGroupsById($contactGroupId)
+    {
+        $sql = "SELECT cg_id, cg_name
+        		FROM contactgroup cg
+        		WHERE cg.cg_id = " . $this->db->escape($contactGroupId);
+        $res = $this->db->query($sql);
+        $tab = array();
+        while ($row = $res->fetchRow()) {
+            $tab[$row['cg_id']] = $row['cg_name'];
+        }
+        return $tab;
+    }
+
+    /**
+     * Get contact groups
+     *
      * @param int $contactId
      * @return array
      */
@@ -141,6 +160,32 @@ class CentreonContact
         }
         return $resources;
     }
+    
+    /**
+     * Get notifications
+     *
+     * @param int $notifType 0 for Hosts, 1 for Services, 2 for Host Escalations, 3 for Service Escalations
+     * @param int $contactgroupId
+     * @return array
+     */
+    public function getNotificationsContactGroup($notifType, $contactgroupId)
+    {
+        /*if (false === $this->isNotificationEnabled($contactId)) {
+            return array();
+        }*/
+        $contactgroups = $this->getContactGroupsById($contactgroupId);
+        if ($notifType == self::HOST) {
+            $resources = $this->getHostNotifications(-1, $contactgroups);
+        } elseif ($notifType == self::SVC) {
+            $resources = $this->getServiceNotifications(-1, $contactgroups);
+        } elseif ($notifType == self::HOST_ESC || $notifType == self::SVC_ESC) {
+            $resources = $this->getEscalationNotifications($notifType, $contactgroups);
+        }
+        return $resources;
+    }
+    
+    
+    
 
     /**
      * Get host escalatiosn
