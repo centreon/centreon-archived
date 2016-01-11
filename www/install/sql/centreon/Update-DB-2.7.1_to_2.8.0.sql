@@ -35,3 +35,8 @@ WHERE
     cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'graphite' LIMIT 1)
     AND cb_field_id IN (SELECT cb_field_id FROM cb_field where fieldname IN ('db_host', 'metric_naming', 'status_naming'));
 
+
+-- adding new params field types
+insert into widget_parameters_field_type (ft_typename,is_connector) VALUES ('hostCategories',1);
+insert into widget_parameters_field_type (ft_typename,is_connector) VALUES ('serviceCategories',1);
+insert into widget_parameters_field_type (ft_typename,is_connector) VALUES ('metric',1);
