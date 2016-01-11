@@ -41,8 +41,8 @@ if (isset($_POST["limit"]) && $_POST["limit"]) {
 	$limit = $_POST["limit"];
 } else if (isset($_GET["limit"])) {
 	$limit = $_GET["limit"];
-} else if (!isset($_POST["limit"]) && !isset($_GET["limit"]) && isset($oreon->historyLimit[$url])) {
-	$limit = $oreon->historyLimit[$url];
+} else if (!isset($_POST["limit"]) && !isset($_GET["limit"]) && isset($centreon->historyLimit[$url])) {
+	$limit = $centreon->historyLimit[$url];
 } else {
 	if (($p >= 200 && $p < 300) || ($p >= 20000 && $p < 30000)){
 		$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
@@ -54,14 +54,14 @@ if (isset($_POST["limit"]) && $_POST["limit"]) {
 		$limit = myDecode($gopt["value"]);
 	}
 }
-if ($limit != $oreon->historyLimit[$url]) {
+if (!empty($centreon->historyLimit) && $limit != $centreon->historyLimit[$url]) {
     $num = 0;
 } else if (isset($_POST["num"]) && $_POST["num"]) {
 	$num = $_POST["num"];
 } else if (isset($_GET["num"]) && $_GET["num"]) {
 	$num = $_GET["num"];
-} else if (!isset($_POST["num"]) && !isset($_GET["num"]) && isset($oreon->historyPage[$url])) {
-    $num = $oreon->historyPage[$url];
+} else if (!isset($_POST["num"]) && !isset($_GET["num"]) && isset($centreon->historyPage[$url])) {
+    $num = $centreon->historyPage[$url];
 } else {
 	$num = 0;
 } 
