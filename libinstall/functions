@@ -823,9 +823,8 @@ function locate_snmp_etcdir() {
 ## @Globals	SUDO_FILE, DEFAULT_SUDO_FILE
 #----
 function locate_sudo() {
-	testfile_clean "$SUDO_FILE" "SUDO_FILE"
 	if [ -z "$SUDO_FILE" ] ; then
-		answer_with_testfile "$(gettext "Where is your sudo configuration file ?")" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
+		answer_with_confirm "$(gettext "Where is your sudo configuration file ?")" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
 		echo_success "$SUDO_FILE" "$ok"
 	fi
 	SUDO_FILE=`trim ${SUDO_FILE%/}`
