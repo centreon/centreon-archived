@@ -407,8 +407,9 @@ function answer_with_creategroup() {
 	local var_ref=$3
 	local res="not_def"
 	local first=0
-	while ! $(grep "^$res:" /etc/group &>/dev/null) ; do
-		[ $first -eq 1 ] && echo_passed "$(gettext "The group $res does not exists.")" "$critical"
+	local group_tested=1
+	while [ "$group_tested" -ne 0 ] ; do
+		[ $first -eq 1 ] && echo_passed "$(gettext "The group $res does not exist.")" "$critical"
 		echo -e "\n$message"
 		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
 		echo -en "> "
@@ -418,20 +419,20 @@ function answer_with_creategroup() {
 		fi
 		first=1
 		if [ -n "$res" ]; then
-			grep "^$res:" /etc/group &>/dev/null && break;
-			yes_no_default "$(gettext "Do you want me to create this group ?") [$res]"
-			if [ $? -eq 0 ]; then
-				groupadd -r $res
-				if [ $? -ne 0 ]; then
-					echo_passed "$(gettext "Could not create group.")" "$critical"
+			group_test "$res"
+			if [ $? -ne 0 ] ; then
+				yes_no_default "$(gettext "Do you want me to create this group ?") [$res]"
+				if [ $? -eq 0 ]; then
+					group_create "$res"
 				fi
-				log "INFO" "$(gettext "Creating group") : $res"
 			fi
 		else
 			res="not_def"
 		fi
+		group_test "$res"
+		group_tested=$?
 	done
-	eval $var_ref=$res
+	eval "$var_ref"="$res"
 	return 0
 }
 
@@ -446,10 +447,14 @@ function answer_with_createuser() {
 	local message=$1
 	local default=$2
 	local var_ref=$3
+	local groups="$4"
+	local description="$5"
+	local home="$6"
 	local res="not_def"
 	local first=0
-	while ! $(grep "^$res:" /etc/passwd &>/dev/null); do
-		[ $first -eq 1 ] && echo_passed "$(gettext "The user $res does not exists.")" "$critical"
+	local user_tested=1
+	while [ "$user_tested" -ne 0 ] ; do
+		[ $first -eq 1 ] && echo_passed "$(gettext "The user $res does not exist.")" "$critical"
 		echo -e "\n$message"
 		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
 		echo -en "> "
@@ -457,23 +462,22 @@ function answer_with_createuser() {
 		if [ -z "$res" ]; then
 			[ "$default" != "NO_DEFAULT" ] && res=$default
 		fi
+		first=1
 		if [ -n "$res" ]; then
-			first=1
-			grep "^$res:" /etc/passwd &>/dev/null && break;
-			yes_no_default "$(gettext "Do you want me to create this user ?") [$res]"
-			if [ $? -eq 0 ]; then
-				group_id=$(grep "^$CENTREON_GROUP:" /etc/group | awk -F: '{ print $3 }')
-				useradd -r -c "Centreon User" -s "$(which bash)" -d "$CENTREON_VARLIB" -g $group_id $res
-				if [ $? -ne 0 ]; then
-					echo_passed "$(gettext "Could not create user")" "$critical"
+			user_test "$res"
+			if [ $? -ne 0 ] ; then
+				yes_no_default "$(gettext "Do you want me to create this user ?") [$res]"
+				if [ $? -eq 0 ] ; then
+					user_create "$res" "$groups" "$description" "$home"
 				fi
-				log "INFO" "$(gettext "Creating user") : $res"
 			fi
 		else
 			res="not_def"
 		fi
+		user_test "$res"
+		user_tested=$?
 	done
-	eval $var_ref=$res
+	eval "$var_ref"="$res"
 	return 0
 }
 
@@ -491,7 +495,8 @@ function answer_with_testuser()
 	local var_ref=$3
 	local res="not_def"
 	local first=0
-	while ! $(grep "^$res:" /etc/passwd &>/dev/null); do
+	local user_tested=1
+	while [ "$user_tested" -ne 0 ] ; do
 		[ $first -eq 1 ] && echo_passed "$(gettext "The user $res does not exists.")" "$critical"
 		echo -e "\n$message"
 		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
@@ -501,6 +506,8 @@ function answer_with_testuser()
 			[ "$default" != "NO_DEFAULT" ] && res="$default"
 		fi
 		first=1
+		user_test "$res"
+		user_tested=$?
 	done
 	eval $var_ref=$res
 	return 0
@@ -550,6 +557,57 @@ function test_answer() {
 			eval $1=$2
 		fi
 	fi
+}
+
+function dir_test_create() {
+	local dirname="$1"
+	if [ ! -d "$1" ] ; then
+		mkdir -p "$dirname"
+		if [ $? -ne 0 ] ; then
+			echo_passed "$(gettext "Could not create directory") $dirname" "$fail"
+			return 1
+		fi
+		echo_passed "$(gettext "Creating directory") $dirname" "$ok"
+		log "INFO" "$(gettext "Creating directory") $dirname"
+	fi
+	return 0
+}
+
+function user_test() {
+	grep "^$1:" /etc/passwd &>/dev/null
+	return $?
+}
+
+function user_create() {
+	local username="$1"
+	local groupname="$2"
+	local description="$3"
+	local home="$4"
+	useradd -r -c "$description" -s "$(which bash)" -d "$home" -g "$groupname" "$username"
+	if [ $? -ne 0 ]; then
+		echo_passed "$(gettext "Could not create user") $username" "$fail"
+		return 1
+	fi
+	echo_passed "$(gettext "Creating user") $username ($description)" "$ok"
+	log "INFO" "$(gettext "Creating user") $username"
+	return 0
+}
+
+function group_test() {
+	grep "^$1:" /etc/group &>/dev/null
+	return $?
+}
+
+function group_create() {
+	local groupname="$1"
+	groupadd -r "$groupname"
+	if [ $? -ne 0 ] ; then
+		echo_passed "$(gettext "Could not create group") $groupname" "$fail"
+		return 1
+	fi
+	echo_passed "$(gettext "Creating group") $groupname" "$ok"
+	log "INFO" "$(gettext "Creating group") $groupname"
+	return 0
 }
 
 #----
@@ -659,12 +717,15 @@ function locate_broker_init_script()
 ## @Globals	CENTREON_LOG, DEFAULT_CENTREON_LOG
 #----
 function locate_centreon_logdir() {
+	if [ -n "$CENTREON_LOG" ] ; then
+		dir_test_create "$CENTREON_LOG"
+		if [ $? -ne 0 ] ; then
+			CENTREON_LOG=""
+		fi
+	fi
 	if [ -z "$CENTREON_LOG" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon log directory ?")" "$DEFAULT_CENTREON_LOG" "CENTREON_LOG"
 		echo_success "$(gettext "Path" ) $CENTREON_LOG" "$ok"
-	elif [ ! -d "$CENTREON_LOG" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p "$CENTREON_LOG"
-		log "INFO" "$(gettext "Create") $CENTREON_LOG"
 	fi
 	CENTREON_LOG=`trim ${CENTREON_LOG%/}`
 	export CENTREON_LOG
@@ -676,12 +737,15 @@ function locate_centreon_logdir() {
 ## @Globals	CENTREON_ETC, DEFAULT_CENTREON_ETC
 #----
 function locate_centreon_etcdir() {
+	if [ -n "$CENTREON_ETC" ] ; then
+		dir_test_create "$CENTREON_ETC"
+		if [ $? -ne 0 ] ; then
+			CENTREON_ETC=""
+		fi
+	fi
 	if [ -z "$CENTREON_ETC" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon configuration directory ?")" "$DEFAULT_CENTREON_ETC" "CENTREON_ETC"
 		echo_success "$(gettext "Path" ) $CENTREON_ETC" "$ok"
-	elif [ ! -d "$CENTREON_ETC" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p "$CENTREON_ETC"
-		log "INFO" "$(gettext "Create") $CENTREON_ETC"
 	fi
 	CENTREON_ETC=`trim ${CENTREON_ETC%/}`
 	export CENTREON_ETC
@@ -693,12 +757,15 @@ function locate_centreon_etcdir() {
 ## @Globals	CENTREON_BINDIR, DEFAULT_CENTREON_BINDIR
 #----
 function locate_centreon_bindir() {
+	if [ -n "$CENTREON_BINDIR" ] ; then
+		dir_test_create "$CENTREON_BINDIR"
+		if [ $? -ne 0 ] ; then
+			CENTREON_BINDIR=""
+		fi
+	fi
 	if [ -z "$CENTREON_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon binaries directory ?")" "$DEFAULT_CENTREON_BINDIR" "CENTREON_BINDIR"
 		echo_success "$(gettext "Path" ) $CENTREON_BINDIR" "$ok"
-	elif [ ! -d "$CENTREON_BINDIR" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p "$CENTREON_BINDIR"
-		log "INFO" "$(gettext "Create") $CENTREON_BINDIR"
 	fi
 	CENTREON_BINDIR=`trim ${CENTREON_BINDIR%/}`
 	export CENTREON_BINDIR
@@ -710,13 +777,16 @@ function locate_centreon_bindir() {
 ## @Globals	INSTALL_DIR_CENTREON, DEFAULT_INSTALL_DIR_CENTREON
 #----
 function locate_centreon_installdir() {
+	if [ -n "$INSTALL_DIR_CENTREON" ] ; then
+		dir_test_create "$INSTALL_DIR_CENTREON"
+		if [ $? -ne 0 ] ; then
+			INSTALL_DIR_CENTREON=""
+		fi
+	fi
 	if [ -z "$INSTALL_DIR_CENTREON" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon directory ?")" "$DEFAULT_INSTALL_DIR_CENTREON" "INSTALL_DIR_CENTREON"
 		echo_success "$(gettext "Path" ) $INSTALL_DIR_CENTREON" "$ok"
-	elif [ ! -d "$INSTALL_DIR_CENTREON" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p "$INSTALL_DIR_CENTREON"
-		log "INFO" "$(gettext "Create") $INSTALL_DIR_CENTREON"
-	fi	
+	fi
 	INSTALL_DIR_CENTREON=`trim ${INSTALL_DIR_CENTREON%/}`
 	export INSTALL_DIR_CENTREON
 	log "INFO" "INSTALL_DIR_CENTREON: $INSTALL_DIR_CENTREON"
@@ -739,12 +809,15 @@ function locate_centreon_generationdir() {
 ## @Globals	CENTREON_RUNDIR, DEFAULT_CENTREON_RUNDIR
 #----
 function locate_centreon_rundir() {
+	if [ -n "$CENTREON_RUNDIR" ] ; then
+		dir_test_create "$CENTREON_RUNDIR"
+		if [ $? -ne 0 ] ; then
+			CENTREON_RUNDIR=""
+		fi
+	fi
 	if [ -z "$CENTREON_RUNDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon Run Dir directory ?")" "$DEFAULT_CENTREON_RUNDIR" "CENTREON_RUNDIR"
 		echo_success "$(gettext "Path" ) $CENTREON_RUNDIR" "$ok"
-	elif [ ! -d "$CENTREON_RUNDIR" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p "$CENTREON_RUNDIR"
-		log "INFO" "$(gettext "Create") $CENTREON_RUNDIR"
 	fi
 	CENTREON_RUNDIR=`trim ${CENTREON_RUNDIR%/}`
 	export CENTREON_RUNDIR
@@ -756,12 +829,15 @@ function locate_centreon_rundir() {
 ## @Globals	CENTREON_VARLIB, DEFAULT_CENTREON_VARLIB
 #----
 function locate_centreon_varlib() {
+	if [ -n "$CENTREON_VARLIB" ] ; then
+		dir_test_create "$CENTREON_VARLIB"
+		if [ $? -ne 0 ] ; then
+			CENTREON_VARLIB=""
+		fi
+	fi
 	if [ -z "$CENTREON_VARLIB" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon variable state information directory ?")" "$DEFAULT_CENTREON_VARLIB" "CENTREON_VARLIB"
 		echo_success "$(gettext "Path" ) $CENTREON_VARLIB" "$ok"
-	elif [ ! -d "$CENTREON_VARLIB" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p "$CENTREON_VARLIB"
-		log "INFO" "$(gettext "Create") $CENTREON_VARLIB"
 	fi
 	CENTREON_VARLIB=`trim ${CENTREON_VARLIB%/}`
 	export CENTREON_VARLIB
@@ -773,12 +849,15 @@ function locate_centreon_varlib() {
 ## @Globals	CENTSTORAGE_RRD, DEFAULT_CENTSTORAGE_RRD
 #----
 function locate_centstorage_rrddir() {
+	if [ -n "$CENTSTORAGE_RRD" ] ; then
+		dir_test_create "$CENTSTORAGE_RRD"
+		if [ $? -ne 0 ] ; then
+			CENTSTORAGE_RRD=""
+		fi
+	fi
 	if [ -z "$CENTSTORAGE_RRD" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentStorage RRD directory ?")" "$DEFAULT_CENTSTORAGE_RRD" "CENTSTORAGE_RRD"
 		echo_success "$(gettext "Path" ) $CENTSTORAGE_RRD" "$ok"
-	elif [ ! -d "$CENTSTORAGE_RRD" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p "$CENTSTORAGE_RRD"
-		log "INFO" "$(gettext "Create") $CENTSTORAGE_RRD"
 	fi
 	CENTSTORAGE_RRD=`trim ${CENTSTORAGE_RRD%/}`
 	export CENTSTORAGE_RRD
@@ -790,13 +869,17 @@ function locate_centstorage_rrddir() {
 ## @Globals	CENTPLUGINS_TMP, DEFAULT_CENTPLUGINS_TMP
 #----
 function locate_centplugins_tmpdir() {
+	if [ -n "$CENTPLUGINS_TMP" ] ; then
+		dir_test_create "$CENTPLUGINS_TMP"
+		if [ $? -ne 0 ] ; then
+			CENTPLUGINS_TMP=""
+		else
+			$CHMOD g+w "$CENTPLUGINS_TMP"
+		fi
+	fi
 	if [ -z "$CENTPLUGINS_TMP" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentPlugins lib directory ?")" "$DEFAULT_CENTPLUGINS_TMP" "CENTPLUGINS_TMP"
 		echo_success "$(gettext "Path" ) $CENTPLUGINS_TMP" "$ok"
-	elif [ ! -d "$CENTPLUGINS_TMP" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p "$CENTPLUGINS_TMP"
-		$CHMOD g+w "$CENTPLUGINS_TMP"
-		log "INFO" "$(gettext "Create") $CENTPLUGINS_TMP"
 	fi
 	CENTPLUGINS_TMP=`trim ${CENTPLUGINS_TMP%/}`
 	export CENTPLUGINS_TMP
@@ -1679,7 +1762,19 @@ function check_group_apache()
 #----
 function check_centreon_user()
 {
-	if [ -z "${CENTREON_USER}" ]; then
+	local groups="$CENTREON_GROUP"
+	local description="Centreon Web user"
+	local home="$CENTREON_VARLIB"
+	if [ -n "$CENTREON_USER" ] ; then
+		user_test "$CENTREON_USER"
+		if [ $? -ne 0 ] ; then
+			user_create "$CENTREON_USER" "$groups" "$description" "$home"
+			if [ $? -ne 0 ] ; then
+				CENTREON_USER=""
+			fi
+		fi
+	fi
+	if [ -z "$CENTREON_USER" ] ; then
 		answer_with_createuser "$(gettext "What is the Centreon user ?") [$DEFAULT_CENTREON_USER]" "$DEFAULT_CENTREON_USER" "CENTREON_USER"
 	fi
 	log "INFO" "$(gettext "Centreon user") : $CENTREON_USER"
@@ -1692,7 +1787,16 @@ function check_centreon_user()
 #----
 function check_centreon_group()
 {
-	if [ -z "${CENTREON_GROUP}" ]; then
+	if [ -n "$CENTREON_GROUP" ] ; then
+		group_test "$CENTREON_GROUP"
+		if [ $? -ne 0 ] ; then
+			group_create "$CENTREON_GROUP"
+			if [ $? -ne 0 ] ; then
+				CENTREON_GROUP=""
+			fi
+		fi
+	fi
+	if [ -z "$CENTREON_GROUP" ] ; then
 		answer_with_creategroup "$(gettext "What is the Centreon group ?") [$DEFAULT_CENTREON_GROUP]" "$DEFAULT_CENTREON_GROUP" "CENTREON_GROUP"
 	fi
 	log "INFO" "$(gettext "Centreon group") : $CENTREON_GROUP"
@@ -1700,12 +1804,16 @@ function check_centreon_group()
 }
 
 #----
-## Ask for centreon user, and create it if not exists
+## Ask for Centreon Engine user.
 ## @Globals	MONITORINGENGINE_USER
 #----
 function check_engine_user()
 {
-	if [ -z "${MONITORINGENGINE_USER}" ]; then
+	user_test "$MONITORINGENGINE_USER"
+	if [ $? -ne 0 ] ; then
+		MONITORINGENGINE_USER=""
+	fi
+	if [ -z "$MONITORINGENGINE_USER" ] ; then
 		answer_with_testuser "$(gettext "What is your Centreon Engine user ?")" "$DEFAULT_MONITORINGENGINE_USER" "MONITORINGENGINE_USER"
 	fi
 	log "INFO" "$(gettext "Monitoring engine user") : $MONITORINGENGINE_USER"
@@ -1713,12 +1821,16 @@ function check_engine_user()
 }
 
 #----
-## Ask for centreon user, and create it if not exists
+## Ask for Centreon Broker user.
 ## @Globals	BROKER_USER
 #----
 function check_broker_user()
 {
-	if [ -z "${BROKER_USER}" ]; then
+	user_test "$BROKER_USER"
+	if [ $? -ne 0 ] ; then
+		BROKER_USER=""
+	fi
+	if [ -z "$BROKER_USER" ] ; then
 		answer_with_testuser "$(gettext "What is your Centreon Broker user ?")" "$DEFAULT_BROKER_USER" "BROKER_USER"
 	fi
 	log "INFO" "$(gettext "Broker user") : $BROKER_USER"

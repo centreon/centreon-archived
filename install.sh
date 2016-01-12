@@ -238,9 +238,10 @@ if [ "$silent_install" -ne 1 ] ; then
 fi
 
 # Install process starts.
-if [ ! -d "$PERL_LIB_DIR/centreon/" ] ; then
-    mkdir "$PERL_LIB_DIR/centreon/"
-    log "INFO" "$(gettext "Created perl library directory")"
+dir_test_create "$PERL_LIB_DIR/centreon"
+if [ $? -ne 0 ] ; then
+	echo "Aborting installation."
+	exit 1
 fi
 
 # Install Centreon Plugins ?
