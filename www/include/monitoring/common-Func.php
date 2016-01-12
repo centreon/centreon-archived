@@ -107,7 +107,7 @@ function get_notified_infos_for_host($host_id)
             if (!$firstTime || ($hostParam['cg_additive_inheritance'] == 1)) {
                 $additive = true;
             }
-            get_contactgroups_for_hosts($currentHost, $contactGroups);
+            get_contactgroups_for_hosts($currentHost, $contactGroups, true);
         }
 
         // Look for contacts
@@ -115,7 +115,7 @@ function get_notified_infos_for_host($host_id)
             if (!$firstTime || ($hostParam['contact_additive_inheritance'] == 1)) {
                 $additive = true;
             }
-            get_contacts_for_hosts($currentHost, $contacts);
+            get_contacts_for_hosts($currentHost, $contacts, true);
         }
 
         $firstTime = false;
@@ -139,13 +139,24 @@ function get_notified_infos_for_host($host_id)
         'contactGroups' => $contactGroups);
 }
 
-function get_contactgroups_for_hosts($host_list, &$contactGroups)
+function get_contactgroups_for_hosts($host_list, &$contactGroups, $withTpl = false)
 {
     global $pearDB;
 
     if (!is_array($host_list))
         $host_list = array($host_list);
 
+    if($withTpl){
+        $host = new CentreonHost($pearDB);
+        $host_list2 = $host_list;
+        foreach($host_list2 as $host_id){
+            $templates = $host->getTemplateChain($host_id, array(), -1, true,"host_name,host_id");
+            foreach($templates as $template){
+                $host_list[] = $template['host_id'];
+            }
+        }
+    }
+    
     $DBRESULT = $pearDB->query("SELECT cg_name FROM contactgroup cg, contactgroup_host_relation cghr
             WHERE cghr.contactgroup_cg_id = cg.cg_id AND cghr.host_host_id IN (" . implode(',', $host_list) . ")
             GROUP BY cg_name");
@@ -156,12 +167,26 @@ function get_contactgroups_for_hosts($host_list, &$contactGroups)
     $DBRESULT->free();
 }
 
-function get_contacts_for_hosts($host_list, &$contacts) {
+function get_contacts_for_hosts($host_list, &$contacts, $withTpl = false) {
     global $pearDB;
 
     if (!is_array($host_list))
         $host_list = array($host_list);
-
+    
+    
+    if($withTpl){
+        $host = new CentreonHost($pearDB);
+        $host_list2 = $host_list;
+        foreach($host_list2 as $host_id){
+            $templates = $host->getTemplateChain($host_id, array(), -1, true,"host_name,host_id");
+            foreach($templates as $template){
+                $host_list[] = $template['host_id'];
+            }
+        }
+    }
+    
+    
+    
     $DBRESULT = $pearDB->query("SELECT contact_name FROM contact c, contact_host_relation chr
             WHERE chr.contact_id = c.contact_id AND chr.host_host_id IN (" . implode(',', $host_list) . ")
             GROUP BY contact_name");
@@ -170,6 +195,9 @@ function get_contacts_for_hosts($host_list, &$contacts) {
             $contacts[] = $c["contact_name"];
     }
     $DBRESULT->free();
+    
+
+
 }
 
 function get_notified_infos_for_service($service_id, $host_id) {
@@ -209,7 +237,7 @@ function get_notified_infos_for_service($service_id, $host_id) {
             if (!$firstTime || ($serviceParam['contact_additive_inheritance'] == 1)) {
                 $additive = true;
             }
-            get_contacts_for_services($currentservice, $contacts);
+            get_contacts_for_services($currentservice, $contacts, true);
         }
 
         // Look for contactgroups
@@ -217,7 +245,7 @@ function get_notified_infos_for_service($service_id, $host_id) {
             if (!$firstTime || ($serviceParam['cg_additive_inheritance'] == 1)) {
                 $additive = true;
             }
-            get_contactgroups_for_services($currentservice, $contactGroups);
+            get_contactgroups_for_services($currentservice, $contactGroups, true);
         }
 
         $firstTime = false;
@@ -245,7 +273,7 @@ function get_notified_infos_for_service($service_id, $host_id) {
     }
 }
 
-function get_contactgroups_for_services($service_list, &$contactGroups) {
+function get_contactgroups_for_services($service_list, &$contactGroups, $withTpl = false) {
     global $pearDB;
 
     if (!is_array($service_list)) {
@@ -253,6 +281,16 @@ function get_contactgroups_for_services($service_list, &$contactGroups) {
             return;
         }
         $service_list = array($service_list);
+    }
+    
+    if($withTpl){
+        $service_list2 = $service_list;
+        foreach($service_list2 as $service_id){
+            $templates = getListTemplates($pearDB, $service_id);
+            foreach($templates as $template){
+                $service_list[] = $template['service_id'];
+            }
+        }
     }
 
     $DBRESULT = $pearDB->query("SELECT cg_name FROM contactgroup cg, contactgroup_service_relation cgsr
@@ -265,7 +303,7 @@ function get_contactgroups_for_services($service_list, &$contactGroups) {
     $DBRESULT->free();
 }
 
-function get_contacts_for_services($service_list, &$contacts) {
+function get_contacts_for_services($service_list, &$contacts, $withTpl = false) {
     global $pearDB;
 
     if (!is_array($service_list)) {
@@ -273,6 +311,16 @@ function get_contacts_for_services($service_list, &$contacts) {
             return;
         }
         $service_list = array($service_list);
+    }
+
+    if($withTpl){
+        $service_list2 = $service_list;
+        foreach($service_list2 as $service_id){
+            $templates = getListTemplates($pearDB, $service_id);
+            foreach($templates as $template){
+                $service_list[] = $template['service_id'];
+            }
+        }
     }
 
     $DBRESULT = $pearDB->query("SELECT contact_name FROM contact c, contact_service_relation csr
