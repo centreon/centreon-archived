@@ -21,6 +21,7 @@
                 <td><h4>{$form.service_selector.label}</h4></td>
                 <td><h4>{$form.metaservice_selector.label}</h4></td>
                 <td><h4>{$to}</h4></td>
+                <td></td>
             </tr>
             <tr>
                 <td>{$form.service_selector.html}</td>
@@ -63,6 +64,29 @@
          </div>
 
         <div class="graphZone"></div>
+        
+        <div id="StatusAction2">
+
+            <div id="graph_pagination2">
+                
+                <!-- optional left control buttons -->
+                <div id="test1_m_left2"></div><div id="test1_o_left2"></div>
+
+                <div class='paginator_p_wrap'>
+                    <div class='paginator_p_bloc'></div>
+                </div>
+
+                <!-- optional right control buttons -->
+                <div id="test1_o_right2"></div><div id="test1_m_right2"></div>
+
+
+                <!-- slider -->
+                <div class='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all slider'>
+                    <a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>
+                </div>
+
+            </div>
+        </div>
 
     </div>
 </div>
