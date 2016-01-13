@@ -564,10 +564,10 @@ function dir_test_create() {
 	if [ ! -d "$1" ] ; then
 		mkdir -p "$dirname"
 		if [ $? -ne 0 ] ; then
-			echo_passed "$(gettext "Could not create directory") $dirname" "$fail"
+			echo_failure "$(gettext "Could not create directory") $dirname" "$fail"
 			return 1
 		fi
-		echo_passed "$(gettext "Creating directory") $dirname" "$ok"
+		echo_success "$(gettext "Creating directory") $dirname" "$ok"
 		log "INFO" "$(gettext "Creating directory") $dirname"
 	fi
 	return 0
@@ -585,10 +585,10 @@ function user_create() {
 	local home="$4"
 	useradd -r -c "$description" -s "$(which bash)" -d "$home" -g "$groupname" "$username"
 	if [ $? -ne 0 ]; then
-		echo_passed "$(gettext "Could not create user") $username" "$fail"
+		echo_failure "$(gettext "Could not create user") $username" "$fail"
 		return 1
 	fi
-	echo_passed "$(gettext "Creating user") $username ($description)" "$ok"
+	echo_success "$(gettext "Creating user") $username ($description)" "$ok"
 	log "INFO" "$(gettext "Creating user") $username"
 	return 0
 }
@@ -602,10 +602,10 @@ function group_create() {
 	local groupname="$1"
 	groupadd -r "$groupname"
 	if [ $? -ne 0 ] ; then
-		echo_passed "$(gettext "Could not create group") $groupname" "$fail"
+		echo_failure "$(gettext "Could not create group") $groupname" "$fail"
 		return 1
 	fi
-	echo_passed "$(gettext "Creating group") $groupname" "$ok"
+	echo_success "$(gettext "Creating group") $groupname" "$ok"
 	log "INFO" "$(gettext "Creating group") $groupname"
 	return 0
 }
