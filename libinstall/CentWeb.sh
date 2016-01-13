@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #----
 ## @Synopsis	Install script for Centreon Web Front (CentWeb)
 ## @Copyright	Copyright 2008, Guillaume Watteeux
@@ -13,7 +13,7 @@
 #set -x 
 
 echo -e "\n$line"
-echo -e "\t$(gettext "Start CentWeb Installation")"
+echo -e "\t$(gettext "Starting Centreon Web Installation")"
 echo -e "$line"
 
 ###### check space ton tmp dir
@@ -32,7 +32,6 @@ locate_centreon_installdir
 locate_centreon_logdir
 locate_centreon_etcdir
 locate_centreon_bindir
-locate_centreon_datadir
 locate_centreon_generationdir
 locate_centreon_varlib
 
@@ -176,7 +175,7 @@ ${CAT} "$file_sql_temp" | while read file ; do
 		mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
-		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 		-e 's|@CENTREON_ENGINE_CONNECTORS@|'"$CENTREON_ENGINE_CONNECTORS"'|g' \
@@ -202,7 +201,7 @@ ${CAT} "$file_php_temp" | while read file ; do
 		mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
-		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 		-e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
@@ -225,7 +224,7 @@ ${CAT} "$file_php_config_temp" | while read file ; do
                 mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
         ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
                 -e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
-                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
                 -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
@@ -251,7 +250,7 @@ ${CAT} "$file_perl_temp" | while read file ; do
                 mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
         ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
                 -e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
-                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
                 -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
@@ -530,6 +529,12 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTREON_BINDIR/centreonSyncArchives >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install centreonSyncArchives")"
 
+## Install generateSqlLite
+log "INFO" "$(gettext "Prepare generateSqlLite")"
+cp $TMP_DIR/src/bin/generateSqlLite \
+	$TMP_DIR/final/bin/generateSqlLite >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare generateSqlLite")"
+
 log "INFO" "$(gettext "Install generateSqlLite")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-m 755 \
@@ -537,6 +542,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTREON_BINDIR/generateSqlLite >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install generateSqlLite")"
 
+## Install changeRrdDsName
 log "INFO" "$(gettext "Install changeRrdDsName.pl")"
 $INSTALL_DIR/cinstall $cinstall_opts \
         -m 755 \
@@ -581,20 +587,6 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$TMP_DIR/final/bin/centreon \
 	$CENTREON_BINDIR/centreon >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install clapi binary")"
-
-
-## Install indexes schema
-#log "INFO" "$(gettext "Prepare indexes schema")"
-#cp $TMP_DIR/src/data/* \
-#	$TMP_DIR/final/data/ >> "$LOG_FILE" 2>&1
-#check_result $? "$(gettext "Prepare indexes schema")"
-
-#log "INFO" "$(gettext "Install indexes schema")"
-#$INSTALL_DIR/cinstall $cinstall_opts \
-#	-m 644 \
-#	$TMP_DIR/final/data/* \
-#	$CENTREON_DATADIR/ >> $LOG_FILE 2>&1
-#check_result $? "$(gettext "Install indexes schema")"
 
 # Install centreon perl lib
     $INSTALL_DIR/cinstall $cinstall_opts -m 755 \

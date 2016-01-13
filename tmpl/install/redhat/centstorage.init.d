@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 #
 # crond          Start/Stop the centstorage daemon.
 #
