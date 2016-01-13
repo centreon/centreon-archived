@@ -11,7 +11,10 @@ Prerequisites
 CentOS
 ======
 
-CentOS and RHEL environments do not possess as standard on archives all the dependences necessary for the installation of Centreon. You should add the *RPM Forge* archive
+Most CentOS users will find easier to install Centreon Web by using
+:ref:`packages provided by Centreon <install_from_packages>`.
+
+CentOS and RHEL environments do not possess as standard on archives all the dependencies necessary for the installation of Centreon. You should add the *RPM Forge* archive
 
 64-bit system:
 
@@ -42,7 +45,7 @@ You can now install the necessary prerequisites::
       perl-Config-IniFiles perl-DBI perl-DBD-MySQL rrdtool perl-rrdtool perl-Crypt-DES perl-Digest-SHA1 \
       perl-Digest-HMAC net-snmp-utils perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs php-snmp \
       dmidecode lm_sensors perl-Net-SNMP net-snmp-perl fping cpp gcc gcc-c++ libstdc++ glib2-devel \
-      php-pear
+      php-pear nagios-plugins
 
 Additional commands are necessary to configure the environment correctly:
 
@@ -69,7 +72,7 @@ Install the following prerequisites::
   $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient18 libdatetime-perl \
       apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-intl php5-ldap php5-snmp php5-gd php5-sqlite \
       rrdtool librrds-perl libconfig-inifiles-perl libcrypt-des-perl libdigest-hmac-perl \
-      libdigest-sha-perl libgd-perl snmp snmpd libnet-snmp-perl libsnmp-perl
+      libdigest-sha-perl libgd-perl snmp snmpd libnet-snmp-perl libsnmp-perl nagios-plugins
 
 To finish, you should install SNMP MIBs. Because of a license problem the MIB files are not available by default in Debian. To add them, change the /etc/apt/sources.list file and add the *non-free* category.
 
@@ -90,7 +93,7 @@ Install the following prerequisites::
       php5-ldap php5-snmp php5-gd php5-soap php5-intl php5-posix php5-gettext php5-mbstring mysql \
       libmysqlclient-devel perl-DBD-mysql mysql-community-server rrdtool perl-Config-IniFiles \
       net-snmp perl-Net-SNMP perl-SNMP gd libjpeg-devel libpng-devel fontconfig-devel \
-      freetype2-devel sudo mailx fping iputils dos2unix cron dejavu
+      freetype2-devel sudo mailx fping iputils dos2unix cron dejavu nagios-plugins
 
 On some OpenSuse distributions, the default settings of the **mine** type are not valid to function with the Centreon web interface. Edit the */etc/mime.types* file and find the lines:
 
@@ -119,7 +122,8 @@ Monitoring engine
 
 Centreon is tested and approved only for the monitoring engine :ref:`Centreon Engine <centreon-engine:user_installation_using_sources>`.
 
-You can install it following the procedure in documentation. Don’t forget to install the `Nagios plugins <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
+You can install it following the procedure in documentation. Don’t forget to install the
+`Nagios plugins <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_ if you have not already done so.
 
 ******************
 Stream Multiplexer

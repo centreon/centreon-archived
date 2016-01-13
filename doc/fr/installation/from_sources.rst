@@ -11,6 +11,9 @@ Prérequis
 CentOS
 ======
 
+La plupart des utilisateurs de CentOS préfèreront installer Centreon Web
+en utilisant :ref:`les paquets fournis par Centreon <install_from_packages>`.
+
 Les environnements CentOS et RHEL ne possèdent pas en standard sur
 dépôts l'intégralité des dépendances nécessaires à l'installation
 de Centreon. Vous devez ajouter le dépôt *RPM Forge*
@@ -48,7 +51,7 @@ Vous pouvez maintenant installer les dépendances nécessaires :
         perl-Config-IniFiles perl-DBI perl-DBD-MySQL rrdtool perl-rrdtool perl-Crypt-DES perl-Digest-SHA1 \
         perl-Digest-HMAC net-snmp-utils perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs php-snmp \
         dmidecode lm_sensors perl-Net-SNMP net-snmp-perl fping cpp gcc gcc-c++ libstdc++ glib2-devel \
-        php-pear
+        php-pear nagios-plugins
 
 Des commandes additionnelles sont nécessaires pour configurer correctement l'environnement :
 
@@ -74,12 +77,12 @@ Debian / Ubuntu
 
 Installez les dépendances nécessaires :
 
-  ::
+::
 
   $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient18 libdatetime-perl \
       apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-intl php5-ldap php5-snmp php5-gd php5-sqlite \
       rrdtool librrds-perl libconfig-inifiles-perl libcrypt-des-perl libdigest-hmac-perl \
-      libdigest-sha-perl libgd-perl snmp snmpd libnet-snmp-perl libsnmp-perl
+      libdigest-sha-perl libgd-perl snmp snmpd libnet-snmp-perl libsnmp-perl nagios-plugins
 
 Pour finir, vous devez installer des MIBs SNMP. En raison d'un problème de licence,
 les fichiers MIBs ne sont pas disponibles par défaut sous Debian. Pour les ajouter,
@@ -103,7 +106,7 @@ Installez les dépendances nécessaires :
         php5-ldap php5-snmp php5-gd php5-soap php5-posix php5-intl php5-gettext php5-mbstring mysql \
         libmysqlclient-devel perl-DBD-mysql mysql-community-server rrdtool perl-Config-IniFiles \
         net-snmp perl-Net-SNMP perl-SNMP gd libjpeg-devel libpng-devel fontconfig-devel \
-        freetype2-devel sudo mailx fping iputils dos2unix cron dejavu
+        freetype2-devel sudo mailx fping iputils dos2unix cron dejavu nagios-plugins
 
 Sur certaines distributions OpenSuse, le paramétrage par défaut des
 type **mine** n'est pas valide pour fonctionner avec l'interface web
@@ -133,7 +136,8 @@ Moteur de supervision
 
 Centreon est testé et validé uniquement pour le moteur de supervision :ref:`Centreon Engine <centreon-engine:user_installation_using_sources>`.
 
-Installez ce moteur avant de poursuivre l'installation. N'oubliez pas d'installer les `Plugins Nagios <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
+Installez ce moteur avant de poursuivre l'installation. N'oubliez pas d'installer les
+`Plugins Nagios <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_ si vous ne l'avez pas déjà fait.
 
 .. warning::
    Centreon Web n'est pas compatible avec le moteur de supervision Nagios.
