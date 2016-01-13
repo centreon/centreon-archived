@@ -654,9 +654,14 @@ function locate_init_d() {
 
 function locate_monitoringengine_binary()
 {
-	if [ -z "$MONITORINGENGINE_BINARY" ] ; then
+	local first=1
+	local first_char=$(echo "$MONITORINGENGINE_BINARY" | head -c 1)
+	while [ "$first_char" "!=" "/" ] ; do
+		[ "$first" -eq 0 ] && echo_failure "$(gettext "The path to your Centreon Engine binary is not absolute.")"
 		answer_with_testfile "$(gettext "Where is your Centreon Engine binary ?")" "$DEFAULT_MONITORINGENGINE_BINARY" "MONITORINGENGINE_BINARY"
-	fi
+		first=0
+		first_char=$(echo "$MONITORINGENGINE_BINARY" | head -c 1)
+	done
 	MONITORINGENGINE_BINARY=`trim "${MONITORINGENGINE_BINARY}"`
 	export MONITORINGENGINE_BINARY
 	log "INFO" "MONITORINGENGINE_BINARY: $MONITORINGENGINE_BINARY"
@@ -664,9 +669,14 @@ function locate_monitoringengine_binary()
 
 function locate_monitoringengine_init_script()
 {
-	if [ -z "$MONITORINGENGINE_INIT_SCRIPT" ] ; then
-		answer_with_confirm "$(gettext "What is your Centreon Engine startup command (init.d, service, ...) ?")" "$DEFAULT_MONITORINGENGINE_INIT_SCRIPT" "MONITORINGENGINE_INIT_SCRIPT"
-	fi
+	local first=1
+	local first_char=$(echo "$MONITORINGENGINE_INIT_SCRIPT" | head -c 1)
+	while [ "$first_char" "!=" "/" ] ; do
+		[ "$first" -eq 0 ] && echo_failure "$(gettext "Your Centreon Engine startup command is not absolute.")"
+		answer_with_confirm "$(gettext "What is your Centreon Engine absolute startup command (/etc/init.d/centengine, /usr/sbin/service centengine, ...) ?")" "$DEFAULT_MONITORINGENGINE_INIT_SCRIPT" "MONITORINGENGINE_INIT_SCRIPT"
+		first=0
+		first_char=$(echo "$MONITORINGENGINE_INIT_SCRIPT" | head -c 1)
+	done
 	MONITORINGENGINE_INIT_SCRIPT=`trim "${MONITORINGENGINE_INIT_SCRIPT}"`
 	export MONITORINGENGINE_INIT_SCRIPT
 	log "INFO" "MONITORINGENGINE_INIT_SCRIPT: $MONITORINGENGINE_INIT_SCRIPT"
@@ -704,9 +714,14 @@ function locate_broker_etc()
 
 function locate_broker_init_script()
 {
-	if [ -z "$BROKER_INIT_SCRIPT" ]; then
-		answer_with_confirm "$(gettext "What is your Centreon Broker startup command (init.d, service, ...) ?")" "$DEFAULT_BROKER_INIT_SCRIPT" "BROKER_INIT_SCRIPT"
-	fi
+	local first=1
+	local first_char=$(echo "$BROKER_INIT_SCRIPT" | head -c 1)
+	while [ "$first_char" "!=" "/" ] ; do
+		[ "$first" -eq 0 ] && echo_failure "$(gettext "Your Centreon Broker startup command is not absolute.")"
+		answer_with_confirm "$(gettext "What is your Centreon Broker absolute startup command (/etc/init.d/cbd, /usr/sbin/service cbd, ...) ?")" "$DEFAULT_BROKER_INIT_SCRIPT" "BROKER_INIT_SCRIPT"
+		first=0
+		first_char=$(echo "$BROKER_INIT_SCRIPT" | head -c 1)
+	done
 	BROKER_INIT_SCRIPT=`trim "${BROKER_INIT_SCRIPT}"`
 	export BROKER_INIT_SCRIPT
 	log "INFO" "BROKER_INIT_SCRIPT: $BROKER_INIT_SCRIPT"
