@@ -358,25 +358,56 @@ sub sendExternalCommand($$){
             if ($result == 0) {
                 $self->{logger}->writeLogInfo("External command on Central Server: ($id) : \"".$cmd."\"");
                 
-                $cmd2 = "$self->{echo} \"".$cmd."\" >> ".$command_file;
-                ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2,
-                                                                      logger => $self->{logger},
-                                                                      timeout => $self->{cmd_timeout}
-                    );
+                # split $cmd in order to send it in multiple line
+                my $count = 0;
+                foreach my $cmd_line (split(/\n/, $cmd)) {
+                    if ($count >= 200) {
+                        $cmd2 = "$self->{echo} \"".$cmd_line."\" >> ".$command_file;
+                        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
+                        $cmd_line = "";
+                        $count = 0;
+                    } else {
+                        $cmd_line .= $cmd."\n";
+                    }
+                    $count++;
+                }
+                if ($count gt 0) {
+                    $cmd2 = "$self->{echo} \"".$cmd_line."\" >> ".$command_file;
+                    ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
+                    $cmd_line = "";
+                    $count = 0;
+                } 
                 if ($lerror == -1) {
                     $self->{logger}->writeLogError("Could not write into pipe file ".$command_file." on poller ".$id);
                 }
             } else {
-                $self->{logger}->writeLogError("Cannot write external command on central server : \"".$cmd."\"");
+                $self->{logger}->writeLogError("Cannot write external command on central server : \"".$cmd_line."\"");
             }
         } else {
-	        $cmd =~ s/\'/\'\\\'\'/g;
+            $cmd =~ s/\'/\'\\\'\'/g;
             $self->{logger}->writeLogInfo("External command : ".$server_info->{ns_ip_address}." ($id) : \"".$cmd."\"");
-	        $cmd2 = "$self->{ssh} -q ". $server_info->{ns_ip_address} ." -p $port \"$self->{echo} '".$cmd."' >> ".$command_file."\"";
-            ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2,
-                                                                  logger => $self->{logger},
-                                                                  timeout => $self->{cmd_timeout}
-                                                                  );
+            
+            # split $cmd in order to send it in multiple line
+            my $count = 0;
+            foreach my $cmd_line (split(/\n/, $cmd)) {
+                if ($count >= 200) {
+                    $cmd2 = "$self->{ssh} -q ". $server_info->{ns_ip_address} ." -p $port \"$self->{echo} '".$cmd_line."' >> ".$command_file."\"";
+                    ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
+                    $cmd_line = "";
+                    $count = 0;
+                } else {
+                    $cmd_line .= $cmd."\n";
+                }
+                $count++;
+            }
+            if ($count gt 0) {
+                $cmd2 = "$self->{ssh} -q ". $server_info->{ns_ip_address} ." -p $port \"$self->{echo} '".$cmd_line."' >> ".$command_file."\"";
+                ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
+                $cmd_line = "";
+                $count = 0;
+            } 
+
+            ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
             if ($lerror == -1) {
                 $self->{logger}->writeLogError("Could not write into pipe file ".$command_file." on poller ".$id);
             }
@@ -387,7 +418,7 @@ sub sendExternalCommand($$){
         }
     } else {
         $self->{logger}->writeLogError("Ip address not defined for poller $id");
-    }
+    }        
 }
 
 #######################################
