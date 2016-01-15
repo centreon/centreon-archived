@@ -341,7 +341,7 @@ sub sendExternalCommand($$){
     my $self = shift;
     # Init Parameters
     my ($id, $cmd) = @_;
-    my ($lerror, $stdout, $cmd2);
+    my ($lerror, $stdout, $cmd2, $cmd_line);
 
     # Get server informations
     my $server_info = $self->getServerConfig($id);
