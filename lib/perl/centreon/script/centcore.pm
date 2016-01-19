@@ -356,18 +356,17 @@ sub sendExternalCommand($$){
         if ($server_info->{localhost} == 1) {
             my $result = waitPipe($command_file);
             if ($result == 0) {
-                $self->{logger}->writeLogInfo("External command on Central Server: ($id) : \"".$cmd."\"");
                 
                 # split $cmd in order to send it in multiple line
                 my $count = 0;
-                foreach my $cmd_line (split(/\n/, $cmd)) {
+                foreach my $cmd1 (split(/\n/, $cmd)) {
                     if ($count >= 200) {
                         $cmd2 = "$self->{echo} \"".$cmd_line."\" >> ".$command_file;
                         ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
                         $cmd_line = "";
                         $count = 0;
                     } else {
-                        $cmd_line .= $cmd."\n";
+                        $cmd_line .= $cmd1."\n";
                     }
                     $count++;
                 }
@@ -385,18 +384,17 @@ sub sendExternalCommand($$){
             }
         } else {
             $cmd =~ s/\'/\'\\\'\'/g;
-            $self->{logger}->writeLogInfo("External command : ".$server_info->{ns_ip_address}." ($id) : \"".$cmd."\"");
             
             # split $cmd in order to send it in multiple line
             my $count = 0;
-            foreach my $cmd_line (split(/\n/, $cmd)) {
+            foreach my $cmd1 (split(/\n/, $cmd)) {
                 if ($count >= 200) {
                     $cmd2 = "$self->{ssh} -q ". $server_info->{ns_ip_address} ." -p $port \"$self->{echo} '".$cmd_line."' >> ".$command_file."\"";
                     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
                     $cmd_line = "";
                     $count = 0;
                 } else {
-                    $cmd_line .= $cmd."\n";
+                    $cmd_line .= $cmd1."\n";
                 }
                 $count++;
             }
