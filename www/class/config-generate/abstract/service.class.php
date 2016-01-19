@@ -78,7 +78,7 @@ abstract class AbstractService extends AbstractObject {
         'icon_image_alt'
     );
     protected $attributes_default = array(
-        'service_is_volatile',
+        'is_volatile',
         'active_checks_enabled',
         'passive_checks_enabled',
         'event_handler_enabled',
