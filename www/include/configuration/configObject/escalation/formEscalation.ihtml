@@ -47,9 +47,25 @@
             <h4>{t}Resources{/t}</h4>
           </td>
         </tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_name">{$form.esc_hosts.label}</td><td class="FormRowValue">{$form.esc_hosts.html}</td></tr>
+		<tr class="list_one">
+                    <td class="FormRowField"><img class="helpTooltip" name="host_name">{$form.esc_hosts.label}</td>
+                    <td class="FormRowValue">
+                        <p style='margin-bottom : 6px;'>
+                            {$form.host_inheritance_to_services.html} {$form.host_inheritance_to_services.label}
+                        </p>
+                        {$form.esc_hosts.html}
+                    </td>
+                </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_description">{$form.esc_hServices.label}</td><td class="FormRowValue">{$form.esc_hServices.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_name">{$form.esc_hgs.label}</td><td class="FormRowValue">{$form.esc_hgs.html}</td></tr>
+		<tr class="list_one">
+                    <td class="FormRowField"><img class="helpTooltip" name="hostgroup_name">{$form.esc_hgs.label}</td>
+                    <td class="FormRowValue">
+                        <p style='margin-bottom : 6px;'>
+                            {$form.hostgroup_inheritance_to_services.html} {$form.hostgroup_inheritance_to_services.label}
+                        </p>
+                        {$form.esc_hgs.html}
+                    </td>
+                </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="servicegroup_name">{$form.esc_sgs.label}</td><td class="FormRowValue">{$form.esc_sgs.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="metaservice_name">{$form.esc_metas.label}</td><td class="FormRowValue">{$form.esc_metas.html}</td></tr>
 	</table>

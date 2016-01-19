@@ -56,7 +56,9 @@ class Escalation extends AbstractObject {
         notification_interval,
         escalation_period as escalation_period_id,
         escalation_options1 as escalation_options_host,
-        escalation_options2 as escalation_options_service
+        escalation_options2 as escalation_options_service,
+        host_inheritance_to_services,
+        hostgroup_inheritance_to_services
     ";
     protected $attributes_write = array(
         ';escalation_name',
@@ -73,8 +75,6 @@ class Escalation extends AbstractObject {
         'service_description',
         'contact_groups',
     );
-    private $escalade_services_from_host_option = 'applied_services_from_host';
-    private $escalade_services_from_hg_option = 'applied_services_from_hg';
     protected $host_instance = null;
     protected $service_instance = null;
     protected $hg_instance = null;
@@ -238,8 +238,8 @@ class Escalation extends AbstractObject {
             }
             $this->hosts_build[$escalation_id][] = $this->host_instance->getString($host_id, 'host_name');
             
-            if (isset($this->escalation_cache[$escalation_id][$this->escalade_services_from_host_option]) && 
-                $this->escalation_cache[$escalation_id][$this->escalade_services_from_host_option] == 1) {
+            if (isset($this->escalation_cache[$escalation_id]['host_inheritance_to_services']) && 
+                $this->escalation_cache[$escalation_id]['host_inheritance_to_services'] == 1) {
                 $services = &$this->service_instance->getGeneratedServices();
                 // host without services
                 if (!isset($services[$host_id])) {
@@ -274,8 +274,8 @@ class Escalation extends AbstractObject {
         }
         
         foreach ($this->escalation_linked_hg_cache[$hg_id] as $escalation_id) {
-            if (isset($this->escalation_cache[$escalation_id][$this->escalade_services_from_hg_option]) && 
-                $this->escalation_cache[$escalation_id][$this->escalade_services_from_hg_option] == 1) {
+            if (isset($this->escalation_cache[$escalation_id]['hostgroup_inheritance_to_services']) && 
+                $this->escalation_cache[$escalation_id]['hostgroup_inheritance_to_services'] == 1) {
                 $services = &$this->service_instance->getGeneratedServices();
                 
                 foreach ($hostgroup['members'] as $host_name) {
