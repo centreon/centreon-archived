@@ -348,7 +348,7 @@ foreach ($tab_real_id as $key => $openid) {
 		}
 		if ($type == "MS"){
 			$other_services = array();
-			$DBRESULT2 = $pearDBO->query("SELECT id, service_description FROM index_data i, metrics m WHERE i.id = m.index_id AND i.trashed = '0' AND i.service_description = 'meta_".$id."' ORDER BY i.service_description");
+			$DBRESULT2 = $pearDBO->query("SELECT i.id, i.service_description FROM index_data i, metrics m, services s WHERE i.id = m.index_id AND i.trashed = '0' AND i.service_id = s.service_id AND s.description = 'meta_".$id."' AND s.enabled = '1' ORDER BY i.service_description");
 			if ($svc_id = $DBRESULT2->fetchRow()){
 				if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 					$DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
@@ -460,7 +460,6 @@ foreach ($tab_real_id as $key => $openid) {
             }
 		}
 
-
 		if ($svc_id["host_name"] == "_Module_Meta") {
 			$svc_id["host_name"] = "Meta Services";
 		}
@@ -557,7 +556,7 @@ foreach ($tab_real_id as $key => $openid) {
 		}
 		if ($type == "SM"){
 			$other_services = array();
-			$DBRESULT2 = $pearDBO->query("SELECT id, service_description FROM index_data i, metrics m WHERE i.id = m.index_id AND i.trashed = '0' AND service_description = 'meta_".$id."' ORDER BY service_description");
+                        $DBRESULT2 = $pearDBO->query("SELECT i.id, i.service_description FROM index_data i, metrics m, services s WHERE i.id = m.index_id AND i.trashed = '0' AND i.service_id = s.service_id AND s.description = 'meta_".$id."' AND s.enabled = '1' ORDER BY i.service_description");
 			if ($svc_id = $DBRESULT2->fetchRow()){
 				if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 					$DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
