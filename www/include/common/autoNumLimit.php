@@ -54,7 +54,7 @@ if (isset($_POST["limit"]) && $_POST["limit"]) {
 		$limit = myDecode($gopt["value"]);
 	}
 }
-if (!empty($centreon->historyLimit) && !empty($centreon->historyLimit[$url]) && $limit != $centreon->historyLimit[$url]) {
+if (!empty($centreon->historyLimit) && $limit != $centreon->historyLimit[$url]) {
     $num = 0;
 } else if (isset($_POST["num"]) && $_POST["num"]) {
 	$num = $_POST["num"];
