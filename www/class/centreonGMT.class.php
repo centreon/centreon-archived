@@ -56,9 +56,21 @@ class CentreonGMT {
     
     /**
      * 
-     * @param string $myTimezone
+     * @param array $myTimezone
      */
     var $myTimezone;
+    
+    /**
+     * 
+     * @param array $hostLocations
+     */
+     var $hostLocations = array();
+     
+     /**
+      * Default timezone setted in adminstration/options
+      * @var string $sDefaultTimezone
+      */
+     var $sDefaultTimezone;
     
     /**
      * 
@@ -176,7 +188,8 @@ class CentreonGMT {
         }
     }
 
-    function getUTCDate($date, $gmt = NULL, $reverseOffset = 1) {
+    function getUTCDate($date, $gmt = NULL, $reverseOffset = 1)
+    {
         /*
          * Specify special GMT
          */
@@ -215,12 +228,12 @@ class CentreonGMT {
         return $return;
     }
     
-    function getUTCDateFromString($date, $gmt = NULL){
+    function getUTCDateFromString($date, $gmt = NULL)
+    {
         /*
          * Specify special GMT
          */
 
-        
         $return = "";
         if (!isset($gmt))
             $gmt = $this->myGMT;
@@ -251,7 +264,8 @@ class CentreonGMT {
     }
     
 
-    function getDelaySecondsForRRD($gmt) {
+    function getDelaySecondsForRRD($gmt)
+    {
         $str = "";
         if ($gmt) {
             if ($gmt > 0)
@@ -281,6 +295,12 @@ class CentreonGMT {
         $this->myGMT = $info["contact_location"];
     }
     
+    /**
+     * 
+     * @global type $pearDB
+     * @param int $userId
+     * @param type $DB
+     */
     function getMyGTMFromUser($userId, $DB = null)
     {
         global $pearDB;
@@ -290,8 +310,7 @@ class CentreonGMT {
         }
         
         $DBRESULT = $pearDB->query("SELECT `contact_location` FROM `contact` " .
-                "WHERE `contact`.`contact_id` = " . $userId .
-                " LIMIT 1");
+                "WHERE `contact`.`contact_id` = " . $userId ." LIMIT 1");
         if (PEAR::isError($DBRESULT)) {
             $this->myGMT = 0;
         }
@@ -300,95 +319,82 @@ class CentreonGMT {
         $this->myGMT = $info["contact_location"];
     }
 
-    function getHostCurrentDatetime($host_id, $date_format = 'c') {
-        global $pearDB;
-        static $locations = null;
+    /**
+     * 
+     * @param type $host_id
+     * @param type $date_format
+     * @return \DateTime
+     */
+    function getHostCurrentDatetime($host_id, $date_format = 'c')
+    {
+        $sDate = new DateTime();
+        $locations = $this->getHostLocations();
+  
+        if (isset($locations[$host_id]) && !empty($this->listGTM[$locations[$host_id]])) {
+            $sDate->setTimezone(new DateTimeZone($this->listGTM[$locations[$host_id]]));
 
-        $date = time();
-        $sReturn = date($date_format, $date);
-        
-        if ($this->use) {
-            if (is_null($locations)) {
-                $locations = array();
-
-                $query = "SELECT host_id, host_location FROM host WHERE host_id";
-                $res = $pearDB->query($query);
-                while ($row = $res->fetchRow()) {
-                    $locations[$row['host_id']] = $row['host_location'];
-                }
-            }
-            if (isset($locations[$host_id]) && isset($this->listGTM[$locations[$host_id]]) && !empty($this->listGTM[$locations[$host_id]])) {          
-                $sDate = new DateTime();
-                $sDate->setTimezone(new DateTimeZone($this->listGTM[$locations[$host_id]]));
-                $sReturn = $sDate->format($date_format);
+        } else {
+            //If the host does not have a timezone is used which is set by default in administration
+            $this->getDefaultTimeZone();
+            if (!empty($this->sDefaultTimezone) && !empty($this->listGTM[$this->sDefaultTimezone])) {
+                $sDate->setTimezone(new DateTimeZone($this->listGTM[$this->sDefaultTimezone]));
+            } else { //if we take the empty PHP
+                 $sDate->setTimezone(new DateTimeZone(date_default_timezone_get()));
             }
         }
-        
-        return $sReturn;
-    }
 
+        return $sDate;
+    }
+    
+    /**
+     * 
+     * @param type $date
+     * @param type $hostId
+     * @param type $dateFormat
+     * @param type $reverseOffset
+     * @return type
+     */
     function getUTCDateBasedOnHostGMT($date, $hostId, $dateFormat = 'c', $reverseOffset = 1)
     {
-        global $pearDB;
-        static $locations = null;
+        $locations = $this->getHostLocations();
 
-        if ($this->use) {
-            /* Load host location */
-            if (is_null($locations)) {
-                $locations = array();
-                $query = "SELECT host_id, host_location FROM host WHERE host_id";
-                $res = $pearDB->query($query);
-                while ($row = $res->fetchRow()) {
-                    $locations[$row['host_id']] = $row['host_location'];
-                }
-            }
-            if (isset($locations[$hostId])) {
-                $date = $this->getUTCDate($date, $locations[$hostId],$reverseOffset);
-            }
+        if (isset($locations[$hostId])) {
+            $date = $this->getUTCDate($date, $locations[$hostId],$reverseOffset);
         }
         return date($dateFormat, $date);
     }
 
+    /**
+     * 
+     * @param type $date
+     * @param type $hostId
+     * @param type $dateFormat
+     * @return type
+     */
     function getUTCTimestampBasedOnHostGMT($date, $hostId, $dateFormat = 'c')
     {
-        global $pearDB;
-        static $locations = null;
+        $locations = $this->getHostLocations();
 
-        if ($this->use) {
-            /* Load host location */
-            if (is_null($locations)) {
-                $locations = array();
-                $query = "SELECT host_id, host_location FROM host WHERE host_id";
-                $res = $pearDB->query($query);
-                while ($row = $res->fetchRow()) {
-                    $locations[$row['host_id']] = $row['host_location'];
-                }
-            }
-            if (isset($locations[$hostId])) {
-                $date = $this->getUTCDate($date, $locations[$hostId]);
-            }
+        if (isset($locations[$hostId])) {
+            $date = $this->getUTCDate($date, $locations[$hostId]);
         }
+ 
         return $date;
     }
     
-    function getUTCLocationHost($hostId){
-        global $pearDB;
-        static $locations = null;
+    /**
+     * 
+     * @param type $hostId
+     * @return type
+     */
+    function getUTCLocationHost($hostId)
+    {
+        $locations = $this->getHostLocations();
 
-        if ($this->use) {
-            /* Load host location */
-            if (is_null($locations)) {
-                $locations = array();
-                $query = "SELECT host_id, host_location FROM host WHERE host_id";
-                $res = $pearDB->query($query);
-                while ($row = $res->fetchRow()) {
-                    $locations[$row['host_id']] = $row['host_location'];
-                }
-            }
-            if (isset($locations[$hostId])) {
-                return $locations[$hostId];
-            }
+        if (isset($locations[$hostId])) {
+            return $locations[$hostId];
         }
+
         return null;
     }
     
@@ -445,5 +451,49 @@ class CentreonGMT {
         }
 
         return $items;
+    }
+    
+    /**
+     * Get list of timezone of host
+     * @return array
+     */
+    public function getHostLocations()
+    {
+        if (count($this->hostLocations) == 0 ) {
+            $locations = array();
+
+            $query = "SELECT host_id, host_location FROM host";
+            $res  = $this->db->query($query);
+            if (!PEAR::isError($res)) {
+                while ($row = $res->fetchRow()) {
+                    $locations[$row['host_id']] = $row['host_location'];
+                }
+            }
+            $this->hostLocations = $locations;
+        }
+        
+        return $this->hostLocations;
+    }
+    
+    /**
+     * Get default timezone setted in admintration/options
+     * 
+     * @return string
+     */
+    public function getDefaultTimeZone()
+    {       
+        if (is_null($this->sDefaultTimezone) ) {
+            $sTimezone = '';
+
+            $query = "SELECT `value` FROM `options` WHERE `key` = 'gmt' LIMIT 1";
+            $res  = $this->db->query($query);
+            if (!PEAR::isError($res)) {
+                $row = $res->fetchRow();
+                $sTimezone = $row["value"];
+            }
+            $this->sDefaultTimezone = $sTimezone;
+        }
+        
+        return $this->sDefaultTimezone;
     }
 }
