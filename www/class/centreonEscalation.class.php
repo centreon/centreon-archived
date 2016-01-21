@@ -76,7 +76,8 @@ class CentreonEscalation
                 $parameters['type'] = 'relation';
                 $parameters['externalObject']['object'] = 'centreonService';
                 $parameters['relationObject']['table'] = 'escalation_service_relation';
-                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['additionalField'] = 'service_service_id';
                 $parameters['relationObject']['comparator'] = 'escalation_esc_id';
                 break;
             case 'esc_hosts':
