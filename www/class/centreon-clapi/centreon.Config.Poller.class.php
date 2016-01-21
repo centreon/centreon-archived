@@ -54,6 +54,7 @@ class CentreonConfigPoller {
     private $centreon_path;
     private $centcore_pipe;
     const MISSING_POLLER_ID = "Missing poller ID";
+    const UNKNOWN_POLLER_ID = "Unknown poller ID";
 
     /**
      * Constructor
@@ -195,11 +196,9 @@ class CentreonConfigPoller {
             exit(1);
         }
 
-        $this->testPollerId($variables);
-        
-        if (!is_numeric($variables)) {
-            $variables = $this->getPollerId($variables);
-        }
+        $poller_id = $this->getPollerId($variables);
+
+        $this->testPollerId($poller_id);
 
         /*
          * Restart broker
@@ -215,7 +214,7 @@ class CentreonConfigPoller {
         (isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "/etc/init.d/nagios";
         unset($serveurs);
 
-        $DBRESULT = $this->_DB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$this->_DB->escape($variables)."'  LIMIT 1");
+        $DBRESULT = $this->_DB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$this->_DB->escape($poller_id)."'  LIMIT 1");
         $host = $DBRESULT->fetchRow();
         $DBRESULT->free();
 
@@ -227,7 +226,7 @@ class CentreonConfigPoller {
             $msg_restart .= _("OK: A reload signal has been sent to '".$host["name"]."'");
         }
         print $msg_restart."\n";
-        $this->_DB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$this->_DB->escape($variables)."' LIMIT 1");
+        $this->_DB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$this->_DB->escape($poller_id)."' LIMIT 1");
         return $return_code;
     }
 
@@ -247,9 +246,7 @@ class CentreonConfigPoller {
         }
         require_once $instanceClassFile;
         
-        if (!is_numeric($pollerId)) {
-            $pollerId = $this->getPollerId($pollerId);
-        }
+        $pollerId = $this->getPollerId($pollerId);
 
         $instanceObj = new CentreonInstance($this->_DB);
         $cmds = $instanceObj->getCommandData($pollerId);
@@ -283,9 +280,7 @@ class CentreonConfigPoller {
 
         $this->testPollerId($variables);
         
-        if (!is_numeric($variables)) {
-            $variables = $this->getPollerId($variables);
-        }
+        $poller_id = $this->getPollerId($variables);
 
         /*
          * Restart broker
@@ -298,10 +293,10 @@ class CentreonConfigPoller {
         $DBRESULT = $this->_DB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
         $serveurs = $DBRESULT->fetchrow();
         $DBRESULT->free();
-        (isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "/etc/init.d/nagios";
+        (isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "/etc/init.d/centengine";
         unset($serveurs);
 
-        $DBRESULT = $this->_DB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$this->_DB->escape($variables)."'  LIMIT 1");
+        $DBRESULT = $this->_DB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$this->_DB->escape($poller_id)."'  LIMIT 1");
         $host = $DBRESULT->fetchRow();
         $DBRESULT->free();
 
@@ -313,7 +308,7 @@ class CentreonConfigPoller {
             $msg_restart = _("OK: A restart signal has been sent to '".$host["name"]."'");
         }
         print $msg_restart."\n";
-        $DBRESULT = $this->_DB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$this->_DB->escape($variables)."' LIMIT 1");
+        $DBRESULT = $this->_DB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '" . $this->_DB->escape($poller_id) . "' LIMIT 1");
         return $return_code;
     }
 
@@ -332,11 +327,7 @@ class CentreonConfigPoller {
 
         $this->testPollerId($variables);
         
-        if (is_numeric($variables)) {
-            $idPoller = $variables;
-        } else {
-            $idPoller = $this->getPollerId($variables);
-        }
+        $idPoller = $this->getPollerId($variables);
 
         /**
          * Get Nagios Bin
@@ -412,21 +403,17 @@ class CentreonConfigPoller {
         
         $this->testPollerId($variables);
         
-        if (!is_numeric($variables)) {
-            $config_generate->configPollerFromName($variables);
-        } else {
-            $config_generate->configPollerFromId($variables);
-        }    
+        $poller_id = $this->getPollerId($variables);
 
-	    $poller_id = $variables;
+        $config_generate->configPollerFromId($poller_id);
 
         /* Change files owner */
         $apacheUser = $this->getApacheUser();
 
         $setFilesOwner = 1;
         if ($apacheUser != "") {
-
-    	    /* Change engine Path mod */
+    	    
+            /* Change engine Path mod */
     	    chown($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id", $apacheUser);
             chgrp($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id", $apacheUser);
     
@@ -486,9 +473,7 @@ class CentreonConfigPoller {
          */
         $this->testPollerId($variables);
         
-        if (!is_numeric($variables)) {
-            $variables = $this->getPollerId($variables);
-        }
+        $poller_id = $this->getPollerId($variables);
 
         /* Get Apache user name */
         $apacheUser = $this->getApacheUser();
@@ -496,16 +481,16 @@ class CentreonConfigPoller {
         /**
          * Move files.
          */
-        $DBRESULT_Servers = $this->_DB->query("SELECT `cfg_dir` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$this->_DB->escape($variables)."' LIMIT 1");
+        $DBRESULT_Servers = $this->_DB->query("SELECT `cfg_dir` FROM `cfg_nagios` WHERE `nagios_server_id` = '" . $this->_DB->escape($poller_id) . "' LIMIT 1");
         $Nagioscfg = $DBRESULT_Servers->fetchRow();
         $DBRESULT_Servers->free();
 
-        $DBRESULT_Servers = $this->_DB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$this->_DB->escape($variables)."'  LIMIT 1");
+        $DBRESULT_Servers = $this->_DB->query("SELECT * FROM `nagios_server` WHERE `id` = '" . $this->_DB->escape($poller_id) . "'  LIMIT 1");
         $host = $DBRESULT_Servers->fetchRow();
         $DBRESULT_Servers->free();
         if (isset($host['localhost']) && $host['localhost'] == 1) {
             $msg_copy = "";
-            foreach (glob($this->nagiosCFGPath.$variables."/*.cfg") as $filename) {
+            foreach (glob($this->nagiosCFGPath . '/' . $poller_id . "/*.cfg") as $filename) {
                 $bool = @copy($filename , $Nagioscfg["cfg_dir"]."/".basename($filename));
                 $filename = array_pop(explode("/", $filename));
                 if (!$bool) {
@@ -582,7 +567,7 @@ class CentreonConfigPoller {
     function getApacheUser() {
         /* Change files owner */
         $setFilesOwner = 1;
-        $installFile = "@CENTREON_ETC@/instCentWeb.conf";
+        $installFile = "/etc/centreon/instCentWeb.conf";
 
         if (file_exists($installFile)) {
 	        $stream = file_get_contents($installFile);
@@ -616,7 +601,7 @@ class CentreonConfigPoller {
         $this->testPollerId($pollerId);
         $centreonDir = CentreonUtils::getCentreonDir();
         passthru("$centreonDir/bin/centGenSnmpttConfFile 2>&1");
-        exec("echo 'SYNCTRAP:".$pollerId."' >> ".$this->centcore_pipe, $stdout, $return);
+        exec("echo 'SYNCTRAP:" . $pollerId . "' >> " . $this->centcore_pipe, $stdout, $return);
         return $return;
     }
 
@@ -641,17 +626,19 @@ class CentreonConfigPoller {
      */
     private function getPollerId($poller)
     {
-        if (is_string($poller)) {
-            $sQuery = "SELECT id FROM nagios_server WHERE `name` = '".$this->_DB->escape($poller)."'";
+        if (is_numeric($poller)) {
+            return $poller;
         }
-        
+
+        $sQuery = "SELECT id FROM nagios_server WHERE `name` = '" . $this->_DB->escape($poller) . "'";
         $DBRESULT = $this->_DB->query($sQuery);
-        if ($DBRESULT->numRows() != 1) {
-            return;
-        } else {
+        if ($DBRESULT->numRows() > 0) {
             $row = $DBRESULT->fetchRow();
             return $row['id'];
+        } else {
+            throw new CentreonClapiException(self::UNKNOWN_POLLER_ID);
         }
+
     }
 }
 ?>
