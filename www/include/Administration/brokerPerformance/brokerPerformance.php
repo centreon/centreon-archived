@@ -46,6 +46,7 @@ require_once 'HTML/QuickForm.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 require_once "./class/centreonDB.class.php";
 require_once "./class/centreonGMT.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
 function getCentreonBrokerModulesList()
 {
@@ -262,7 +263,7 @@ if ($oreon->broker->getBroker() == 'broker') {
         while ($row = $res->fetchRow()) {
             $statsfile = $row['retention_path'] . '/' . $row['config_name'] . '.stats';
             if ($defaultPoller != $selectedPoller) {
-                $statsfile = '/var/lib/centreon/broker-stats/broker-stats-' . $selectedPoller . '.dat';
+                $statsfile = CENTREON_VARLIB . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
             }
             if (!file_exists($statsfile) || !is_readable($statsfile)) {
                 $perf_err[$row['config_name']] = _('Cannot open statistics file');
