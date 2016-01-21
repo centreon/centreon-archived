@@ -68,13 +68,13 @@ function get_Host_Status($host_name, $pearDBndo, $general_opt){
 	return $status["current_state"];
 }
 
-function getMyIndexGraph4Service($host_name = NULL, $service_description = NULL, $pearDBO)	{
-	if ((!isset($service_description) || !$service_description ) || (!isset($host_name) || !$host_name))
+function getMyIndexGraph4Service($host_id = NULL, $service_id = NULL, $pearDBO)	{
+	if ((!isset($service_id) || !$service_id ) || (!isset($host_id) || !$host_id))
 		return NULL;
 
-	$DBRESULT = $pearDBO->query("SELECT id FROM index_data i, metrics m WHERE i.host_name = '".$host_name."' " .
+	$DBRESULT = $pearDBO->query("SELECT id FROM index_data i, metrics m WHERE i.host_id = '".$host_id."' " .
 								"AND m.hidden = '0' " .
-								"AND i.service_description = '".$service_description."' " .
+								"AND i.service_id = '".$service_id."' " .
 								"AND i.id = m.index_id");
 	if ($DBRESULT->numRows())	{
 		$row = $DBRESULT->fetchRow();

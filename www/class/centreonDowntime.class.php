@@ -796,38 +796,43 @@ class CentreonDowntime
 	 * </code>
 	 *
 	 * @param int $id The downtime id
-	 * @param int $time The timestamp for scheduling
-	 * @param int $delay The delay between the timestamp and the start period
+	 * @param int $currentHostDate The timestamp for scheduling
 	 * @param string $start The start time for this period
 	 * @param string $end The end time for this period
 	 * @return array
 	 * @see CentreonDowntime::getPeriods
 	 */
-	public function doSchedule($id, $time, $delay, $start, $end)
+	public function doSchedule($id, $currentHostDate, $start, $end)
 	{
-		$periods = $this->getPeriods($id);
+        if (!defined("_DELAY_")) {
+            define('_DELAY_', '600'); /* Default 10 minutes */
+        }
+        $periods = $this->getPeriods($id);
 		$listSchedule = array();
 		$start = substr($start, 0, strrpos($start, ':'));
 		$end = substr($end, 0, strrpos($end, ':'));
+        
 		foreach ($periods as $period) {
 		    if ($period['start_time'] != $start || $period['end_time'] != $end) {
 		        continue;
 		    }
 			$add = false;
+           
 			/*
 			 * If start time is 00:00 check with tomorrow
 			 */
-			$timeTest = $time;
-			if ($period['start_time'] == '00:00' && ($time + $delay) > (strtotime('00:00'." UTC") + 3600 + 24)) {
-			    $timeTest = $time + $delay;
+			if ($period['start_time'] == '00:00' && ($currentHostDate->getTimestamp() + _DELAY_) > (strtotime('00:00') + 3600 + 24)) {
+			    $currentHostDate->setTimestamp($currentHostDate->getTimestamp() + _DELAY_);
 			}
+            
 			if ($period['month_cycle'] == 'none') {
-				$dateOfMonth = date('j', $timeTest);
+				$dateOfMonth = $currentHostDate->format('j');
 				if (in_array($dateOfMonth, $period['day_of_month'])) {
 					$add = true;
 				}
 			} elseif ($period['month_cycle'] == 'all') {
-				$dateOfMonth = date('w', $timeTest);
+				$dateOfMonth = $currentHostDate->format('w');
+                 
 				if ($dateOfMonth == 0) {
 				    $dateOfMonth = 7;
 				}
@@ -835,16 +840,16 @@ class CentreonDowntime
 					$add = true;
 				}
 			} else {
-				$dateOfMonth = date('w', $timeTest);
+				$dateOfMonth = $currentHostDate->format('w');
 			    if ($dateOfMonth == 0) {
 				    $dateOfMonth = 7;
 				}
 				if ($dateOfMonth == $period['day_of_week']) {
-					$monthName = date('F', $timeTest);
-					$year = date('Y', $timeTest);
-					$dayShortName = date('D', $timeTest);
-					$dayInMonth = date('d', strtotime($period['month_cycle'] . ' ' . $dayShortName . ' ' . $monthName . ' ' . $year." UTC"));
-					if ($dayInMonth == date('d', $timeTest)) {
+					$monthName = $currentHostDate->format('F');
+					$year = $currentHostDate->format('Y');
+					$dayShortName = $currentHostDate->format('D');
+					$dayInMonth = date('d', strtotime($period['month_cycle'] . ' ' . $dayShortName . ' ' . $monthName . ' ' . $year));
+					if ($dayInMonth == $currentHostDate->format('d')) {
 						$add = true;
 					}
 				}
@@ -854,22 +859,35 @@ class CentreonDowntime
 			     * If start time is 00:00 the time is for tomorrow
 			     */
 			    $tomorrow = false;
-			    if ($period['start_time'] == '00:00') {
-				    $timestamp_start = strtotime($period['start_time']." UTC") + 3600 * 24;
+                $timestamp_start = new DateTime();
+                $sStartTime = explode(":", $period['start_time']);
+                if (count($sStartTime) != 2) {
+                    throw new Exception("Format invalide of ".$period['start_time']);
+                }
+                $timestamp_start->setTime($sStartTime[0], $sStartTime[1], '00');
+			    if ($period['start_time'] == '00:00') { //Add one day if time is midnight
+                    $timestamp_start->add(new DateInterval('P1D'));
 				    $tomorrow = true;
-			    } else {
-				    $timestamp_start = strtotime($period['start_time']." UTC");
 			    }
-				if ($time < $timestamp_start && ($time + $delay) > $timestamp_start) {
-				    if ($period['end_time'] == '24:00') {
-				        $timestamp_stop = strtotime('00:00'." UTC") + 3600 * 24;
-				    } else {
-					    $timestamp_stop = strtotime($period['end_time']." UTC");
+                
+                $oInterval = $currentHostDate->diff($timestamp_start);
+                $interval = $oInterval->format('%s');
+  
+                if ($interval > 0 && $interval < _DELAY_ ) {
+                    $timestamp_stop = new DateTime();
+                    $sEndTime = explode(":", $period['end_time']);
+                    if (count($sEndTime) != 2) {
+                        throw new Exception("Format invalide of ".$period['end_time']);
+                    }
+                    $timestamp_stop->setTime($sEndTime[0], $sEndTime[1], '00');
+                    
+				    if ($period['end_time'] == '24:00') { //Add one day if time is midnight
+                        $timestamp_stop->add(new DateInterval('P1D'));
 				    }
 				    if ($tomorrow) {
-				        $timestamp_stop = $timestamp_stop + 3600 * 24;
+                        $timestamp_stop->add(new DateInterval('P1D'));
 				    }
-					$listSchedule[] = array($timestamp_start, $timestamp_stop);
+					$listSchedule[] = array($timestamp_start->format('c'), $timestamp_stop->format('c'));
 				}
 			}
 		}

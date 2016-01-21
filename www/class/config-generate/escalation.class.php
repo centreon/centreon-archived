@@ -291,7 +291,6 @@ class Escalation extends AbstractObject {
                         $this->services_build[$escalation_id][$host_id][$service_id] = 1;
                     }
                 }
-                continue;
             }
             
             

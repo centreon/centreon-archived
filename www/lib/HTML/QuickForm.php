@@ -52,6 +52,7 @@ $GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES'] =
             'submit'        =>array('HTML/QuickForm/submit.php','HTML_QuickForm_submit'),
             'select'        =>array('HTML/QuickForm/select.php','HTML_QuickForm_select'),
             'select2'       =>array('HTML/QuickForm/select2.php','HTML_QuickForm_select2'),
+            'tags'          =>array('HTML/QuickForm/tags.php','HTML_QuickForm_tags'),
             'hiddenselect'  =>array('HTML/QuickForm/hiddenselect.php','HTML_QuickForm_hiddenselect'),
             'text'          =>array('HTML/QuickForm/text.php','HTML_QuickForm_text'),
             'textarea'      =>array('HTML/QuickForm/textarea.php','HTML_QuickForm_textarea'),

@@ -654,7 +654,8 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (10, 'Centreon Storage', NULL, NULL, 1, 1),
 (11, 'Compression', 'compression.so', 60, 0, 1),
 (12, 'Failover', NULL, NULL, 0, 1),
-(17, 'Dumper', 'dumper.so', 20, 0, 1);
+(17, 'Dumper', 'dumper.so', 20, 0, 1),
+(18, 'Graphite', 'graphite.so', 21, 0, 1);
 
 
 --
@@ -675,7 +676,8 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (21, 'Failover', 'failover', 12),
 (24, 'Monitoring', 'monitoring', 9),
 (28, 'Database configuration reader', 'db_cfg_reader', 17),
-(29, 'Database configuration writer', 'db_cfg_writer', 17);
+(29, 'Database configuration writer', 'db_cfg_writer', 17),
+(30, 'Storage - Graphite', 'graphite', 18);
 
 --
 -- Contenu de la table `cb_field`
@@ -730,7 +732,9 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (46, 'negotiation', 'Enable negotiation', 'Enable negotiation option (use only for version of Centren Broker >= 2.5)', 'radio', NULL),
 (48, "one_peer_retention_mode", "One peer retention", "This allows the retention to work even if the socket is listening", "radio", NULL),
 (49, 'cleanup_check_interval', "Cleanup check interval", "Interval in seconds before delete data from deleted pollers.", 'int', NULL),
-(50, 'instance_timeout', "Instance timeout", "Interval in seconds before change status of resources from a disconnected poller", "int", NULL);
+(50, 'instance_timeout', "Instance timeout", "Interval in seconds before change status of resources from a disconnected poller", "int", NULL),
+(51, 'metric_naming', "Metric naming", "How to name entries for metrics. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", 'text', NULL),
+(52, 'status_naming', "Status naming", "How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", "text", NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `group_parent_id`) VALUES (1, 'filters', NULL);
 
@@ -824,7 +828,8 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (3, 19, 0),
 (3, 24, 0),
 (1, 28, 1),
-(1, 29, 1);
+(1, 29, 1),
+(1, 30, 0);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -932,7 +937,15 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (29, 18, 1, 3),
 (29, 8, 1, 4),
 (29, 9, 0, 5),
-(29, 10, 1, 6);
+(29, 10, 1, 6),
+(30, 7, 1, 1),
+(30, 18, 0, 2),
+(30, 8, 0, 3),
+(30, 9, 0, 4),
+(30, 34, 0, 5),
+(30, 28, 0, 6),
+(30, 51, 1, 7),
+(30, 52, 1, 8);
 
 --
 -- Contenu de la table `widget_parameters_field_type`
