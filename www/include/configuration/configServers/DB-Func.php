@@ -149,9 +149,7 @@ function multipleServerInDB ($server = array(), $nbrDup = array())
 				        $pearDB->query($queryCmd);
 
                         $iId = insertServerInCfgNagios($row['id'], $server_name);
-                        if (!empty($iId)) {
-                            insertBrokerDefaultDirectives($iId, 'ui');
-                        }
+
                         $DBRESULT = $pearDB->query("SELECT MAX(nagios_id) as nagios_id FROM cfg_nagios");
                         $nagios_id = $DBRESULT->fetchRow();
                         foreach ($rowBks as $keyBk=>$valBk){
