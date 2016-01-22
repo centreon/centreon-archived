@@ -226,8 +226,13 @@ class CentreonGMT {
         }
 
         if (isset($date) && isset($gmt)) {
-            $sDate = new DateTime();
-            $sDate->setTimestamp($date);
+            if (!is_numeric($date)) {
+                $sDate = new DateTime($date);
+            } else {
+                $sDate = new DateTime();
+                $sDate->setTimestamp($date);
+            }
+            
             $sDate->setTimezone(new DateTimeZone($this->getActiveTimezone($gmt)));
             
             $iTimestamp = $sDate->getTimestamp();
@@ -251,7 +256,15 @@ class CentreonGMT {
             $gmt = $this->myGMT;
         }
         if (isset($date) && isset($gmt)) {
-            $sDate = new DateTime($date, $this->getActiveTimezone($gmt));
+            if (!is_numeric($date)) {
+                $sDate = new DateTime($date);
+            } else {
+                $sDate = new DateTime();
+                $sDate->setTimestamp($date);
+            }
+            
+            $sDate->setTimezone(new DateTimeZone($this->getActiveTimezone($gmt)));
+            
             $return = $sDate->getTimestamp();
         }
         
@@ -338,7 +351,7 @@ class CentreonGMT {
     function getHostCurrentDatetime($host_id, $date_format = 'c')
     {
         $locations = $this->getHostLocations();
-        return new DateTime($date, $this->getActiveTimezone($locations[$host_id]));
+        return new DateTime(time(), new DateTimeZone($this->getActiveTimezone($locations[$host_id])));
     }
     
     /**
