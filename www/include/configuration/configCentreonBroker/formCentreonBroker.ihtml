@@ -89,7 +89,7 @@ span.v_required_star {
 }
 </style>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.js"></script>
-<script type="text/javascript" src="./lib/HTML/QuickForm/qfamsHandler-min.js"></script>
+<script type="text/javascript" src="./lib/HTML/QuickForm/qfamsHandler.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/centreon/jquery.centreonValidate.js"></script>
 <script type="text/javascript">
 function mk_paginationFF(){};
@@ -134,6 +134,7 @@ uniqueType["{$block.id}"] = false;
 
 function addInfo(type) {
 	var prev_id = infos.getPos(type);
+        infos.incrementPos(type);
 	var id = prev_id + 1;
 	var id_name = type + '_' + id;
 	var blockId = $('block_' + type).getValue();
@@ -150,7 +151,6 @@ function addInfo(type) {
     			evalScripts: true,
     			onComplete: function(response) {
     				if (response.status == 200) {
-	    				infos.incrementPos(type);
 	    				checkTypeValidity('block_' + type);
                                         jQuery("#"+id_name).centreonValidate();
     				}
