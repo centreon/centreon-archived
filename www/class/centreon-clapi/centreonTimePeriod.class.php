@@ -35,6 +35,7 @@
  * SVN : $Id: centreonHost.class.php 25 2010-03-30 05:52:19Z jmathis $
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "Centreon/Object/Timeperiod/Timeperiod.php";
@@ -68,7 +69,7 @@ class CentreonTimePeriod extends CentreonObject
     public function __construct()
     {
         parent::__construct();
-        $this->object = new Centreon_Object_Timeperiod();
+        $this->object = new \Centreon_Object_Timeperiod();
         $this->params = array('tp_sunday'           => '',
                               'tp_monday'           => '',
                               'tp_tuesday'          => '',
@@ -169,7 +170,7 @@ class CentreonTimePeriod extends CentreonObject
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $excObj = new Centreon_Object_Timeperiod_Exception();
+        $excObj = new \Centreon_Object_Timeperiod_Exception();
         $escList = $excObj->getList($excObj->getPrimaryKey(), -1, 0, null, null, array("timeperiod_id"    => $tpId,
                                                                                 	   "days"             => $params[1]),
                                                                                 		"AND");
@@ -198,7 +199,7 @@ class CentreonTimePeriod extends CentreonObject
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $excObj = new Centreon_Object_Timeperiod_Exception();
+        $excObj = new \Centreon_Object_Timeperiod_Exception();
         $escList = $excObj->getList($excObj->getPrimaryKey(), -1, 0, null, null, array("timeperiod_id"    => $tpId,
                                                                                 	   "days"             => $params[1]),
                                                                                 		"AND");
@@ -219,7 +220,7 @@ class CentreonTimePeriod extends CentreonObject
         if (($tpId = $this->getObjectId($parameters)) == 0) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$parameters);
         }
-        $excObj = new Centreon_Object_Timeperiod_Exception();
+        $excObj = new \Centreon_Object_Timeperiod_Exception();
         $escList = $excObj->getList(array("days", "timerange"), -1, 0, null, null, array("timeperiod_id"    => $tpId));
         echo "days;timerange\n";
         foreach ($escList as $exc) {
@@ -276,9 +277,9 @@ class CentreonTimePeriod extends CentreonObject
             $relationIds[] = $this->getTimePeriodId($name);
         }
         if ($relationType == self::TP_INCLUDE) {
-            $relObj = new Centreon_Object_Relation_Timeperiod_Include();
+            $relObj = new \Centreon_Object_Relation_Timeperiod_Include();
         } else {
-            $relObj = new Centreon_Object_Relation_Timeperiod_Exclude();
+            $relObj = new \Centreon_Object_Relation_Timeperiod_Exclude();
         }
         $relObj->delete($sourceId);
         foreach ($relationIds as $relId) {

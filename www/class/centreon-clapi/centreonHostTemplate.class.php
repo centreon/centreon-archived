@@ -35,6 +35,7 @@
  * SVN : $Id: centreonHost.class.php 241 2012-01-16 21:48:49Z jmathis $
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonHost.class.php";
 

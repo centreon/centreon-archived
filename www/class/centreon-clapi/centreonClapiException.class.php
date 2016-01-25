@@ -35,11 +35,12 @@
  * SVN : $Id$
  *
  */
+namespace CentreonClapi;
 
 /**
  * Exception class
  */
-class CentreonClapiException extends Exception
+class CentreonClapiException extends \Exception
 {
 
 }

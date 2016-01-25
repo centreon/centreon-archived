@@ -36,6 +36,8 @@
  * SVN : $Id$
  *
  */
+namespace CentreonClapi;
+
 require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
 require_once "centreonTimePeriod.class.php";
@@ -106,7 +108,7 @@ class CentreonService extends CentreonObject {
      */
     public function __construct() {
         parent::__construct();
-        $this->object = new Centreon_Object_Service();
+        $this->object = new \Centreon_Object_Service();
         $this->params = array('service_is_volatile' => '2',
             'service_active_checks_enabled' => '2',
             'service_passive_checks_enabled' => '2',
@@ -197,7 +199,7 @@ class CentreonService extends CentreonObject {
      * @return bool
      */
     protected function serviceExists($hostName, $serviceDescription) {
-        $relObj = new Centreon_Object_Relation_Host_Service();
+        $relObj = new \Centreon_Object_Relation_Host_Service();
         $elements = $relObj->getMergedParameters(array('host_id'), array('service_id'), -1, 0, null, null, array('host_name' => $hostName,
             'service_description' => $serviceDescription), "AND");
         if (count($elements)) {
@@ -217,12 +219,12 @@ class CentreonService extends CentreonObject {
         if (isset($parameters)) {
             $filters["service_description"] = "%" . $parameters . "%";
         }
-        $commandObject = new Centreon_Object_Command();
+        $commandObject = new \Centreon_Object_Command();
         $paramsHost = array('host_id', 'host_name');
         $paramsSvc = array('service_id', 'service_description', 'command_command_id', 'command_command_id_arg',
             'service_normal_check_interval', 'service_retry_check_interval', 'service_max_check_attempts',
             'service_active_checks_enabled', 'service_passive_checks_enabled', 'service_activate');
-        $relObject = new Centreon_Object_Relation_Host_Service();
+        $relObject = new \Centreon_Object_Relation_Host_Service();
         $elements = $relObject->getMergedParameters($paramsHost, $paramsSvc, -1, 0, "host_name,service_description", "ASC", $filters, "AND");
         $paramHostString = str_replace("_", " ", implode($this->delim, $paramsHost));
         echo $paramHostString . $this->delim;
@@ -256,7 +258,7 @@ class CentreonService extends CentreonObject {
         }
         $hostName = $params[0];
         $serviceDesc = $params[1];
-        $relObject = new Centreon_Object_Relation_Host_Service();
+        $relObject = new \Centreon_Object_Relation_Host_Service();
         $elements = $relObject->getMergedParameters(array("host_id"), array("service_id"), -1, 0, null, null, array("host_name" => $hostName,
             "service_description" => $serviceDesc), "AND");
         if (!count($elements)) {
@@ -307,7 +309,7 @@ class CentreonService extends CentreonObject {
         if ($this->serviceExists($params[self::ORDER_HOSTNAME], $params[self::ORDER_SVCDESC]) == true) {
             throw new CentreonClapiException(self::OBJECTALREADYEXISTS);
         }
-        $hostObject = new Centreon_Object_Host();
+        $hostObject = new \Centreon_Object_Host();
         $tmp = $hostObject->getIdByParameter($hostObject->getUniqueLabelField(), $params[self::ORDER_HOSTNAME]);
         if (!count($tmp)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_HOSTNAME]);
@@ -324,10 +326,10 @@ class CentreonService extends CentreonObject {
         $this->params = array_merge($this->params, $addParams);
         $serviceId = parent::add();
 
-        $relObject = new Centreon_Object_Relation_Host_Service();
+        $relObject = new \Centreon_Object_Relation_Host_Service();
         $relObject->insert($hostId, $serviceId);
 
-        $extended = new Centreon_Object_Service_Extended();
+        $extended = new \Centreon_Object_Service_Extended();
         $extended->insert(array($extended->getUniqueLabelField() => $serviceId));
     }
 
@@ -345,7 +347,7 @@ class CentreonService extends CentreonObject {
         }
         $hostName = $params[0];
         $serviceDesc = $params[1];
-        $relObject = new Centreon_Object_Relation_Host_Service();
+        $relObject = new \Centreon_Object_Relation_Host_Service();
         $elements = $relObject->getMergedParameters(array("host_id"), array("service_id"), -1, 0, null, null, array("host_name" => $hostName,
             "service_description" => $serviceDesc), "AND");
         if (!count($elements)) {
@@ -391,7 +393,7 @@ class CentreonService extends CentreonObject {
                 break;
             case "graphtemplate":
                 $extended = true;
-                $graphObj = new Centreon_Object_Graph_Template();
+                $graphObj = new \Centreon_Object_Graph_Template();
                 $tmp = $graphObj->getIdByParameter($graphObj->getUniqueLabelField(), $params[3]);
                 if (!count($tmp)) {
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[3]);
@@ -454,7 +456,7 @@ class CentreonService extends CentreonObject {
                     }
                 }
             }
-            $extended = new Centreon_Object_Service_Extended();
+            $extended = new \Centreon_Object_Service_Extended();
             $extended->update($objectId, array($params[2] => $params[3]));
             $this->addAuditLog('c', $objectId, $hostName . ' - ' . $serviceDesc, array($params[2] => $params[3]));
         }
@@ -499,13 +501,13 @@ class CentreonService extends CentreonObject {
         }
         $hostName = $tmp[0];
         $serviceDescription = $tmp[1];
-        $relObject = new Centreon_Object_Relation_Host_Service();
+        $relObject = new \Centreon_Object_Relation_Host_Service();
         $elements = $relObject->getMergedParameters(array('host_id'), array('service_id'), -1, 0, null, null, array("host_name" => $hostName,
             "service_description" => $serviceDescription), "AND");
         if (!count($elements)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostName . "/" . $serviceDescription);
         }
-        $macroObj = new Centreon_Object_Service_Macro_Custom();
+        $macroObj = new \Centreon_Object_Service_Macro_Custom();
         $macroList = $macroObj->getList(array("svc_macro_name", "svc_macro_value", "is_password", "description"), -1, 0, null, null, array("svc_svc_id" => $elements[0]['service_id']));
         $aListTemplate = $this->getListTemplates($this->db, $elements[0]['service_id']);
         
@@ -540,13 +542,13 @@ class CentreonService extends CentreonObject {
         }
         $hostName = $params[0];
         $serviceDescription = $params[1];
-        $relObject = new Centreon_Object_Relation_Host_Service();
+        $relObject = new \Centreon_Object_Relation_Host_Service();
         $elements = $relObject->getMergedParameters(array('host_id'), array('service_id'), -1, 0, null, null, array("host_name" => $hostName,
             "service_description" => $serviceDescription), "AND");
         if (!count($elements)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostName . "/" . $serviceDescription);
         }
-        $macroObj = new Centreon_Object_Service_Macro_Custom();
+        $macroObj = new \Centreon_Object_Service_Macro_Custom();
         $macroList = $macroObj->getList($macroObj->getPrimaryKey(), -1, 0, null, null, array("svc_svc_id" => $elements[0]['service_id'],
             "svc_macro_name" => $this->wrapMacro($params[2])), "AND");
         
@@ -592,13 +594,13 @@ class CentreonService extends CentreonObject {
         }
         $hostName = $params[0];
         $serviceDescription = $params[1];
-        $relObject = new Centreon_Object_Relation_Host_Service();
+        $relObject = new \Centreon_Object_Relation_Host_Service();
         $elements = $relObject->getMergedParameters(array('host_id'), array('service_id'), -1, 0, null, null, array("host_name" => $hostName,
             "service_description" => $serviceDescription), "AND");
         if (!count($elements)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostName . "/" . $serviceDescription);
         }
-        $macroObj = new Centreon_Object_Service_Macro_Custom();
+        $macroObj = new \Centreon_Object_Service_Macro_Custom();
         $macroList = $macroObj->getList($macroObj->getPrimaryKey(), -1, 0, null, null, array("svc_svc_id" => $elements[0]['service_id'],
             "svc_macro_name" => $this->wrapMacro($params[2])), "AND");
         if (count($macroList)) {
@@ -619,8 +621,8 @@ class CentreonService extends CentreonObject {
         if (count($params) < 3) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $rel = new Centreon_Object_Relation_Service_Category_Service();
-        $hostServiceRel = new Centreon_Object_Relation_Host_Service();
+        $rel = new \Centreon_Object_Relation_Service_Category_Service();
+        $hostServiceRel = new \Centreon_Object_Relation_Host_Service();
         $elements = $hostServiceRel->getMergedParameters(
                 array('host_id'), array('service_id'), -1, 0, null, null, array(
             "host_name" => $params[0],
@@ -631,7 +633,7 @@ class CentreonService extends CentreonObject {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0] . "/" . $params[1]);
         }
         $serviceId = $elements[0]['service_id'];
-        $severityObj = new Centreon_Object_Service_Category();
+        $severityObj = new \Centreon_Object_Service_Category();
         $severity = $severityObj->getIdByParameter(
                 $severityObj->getUniqueLabelField(), $params[2]
         );
@@ -666,8 +668,8 @@ class CentreonService extends CentreonObject {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
 
-        $rel = new Centreon_Object_Relation_Service_Category_Service();
-        $hostServiceRel = new Centreon_Object_Relation_Host_Service();
+        $rel = new \Centreon_Object_Relation_Service_Category_Service();
+        $hostServiceRel = new \Centreon_Object_Relation_Host_Service();
         $elements = $hostServiceRel->getMergedParameters(
                 array('host_id'), array('service_id'), -1, 0, null, null, array(
             "host_name" => $params[0],
@@ -715,7 +717,7 @@ class CentreonService extends CentreonObject {
         if (count($tmp) != 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $relObject = new Centreon_Object_Relation_Host_Service();
+        $relObject = new \Centreon_Object_Relation_Host_Service();
         $elements = $relObject->getMergedParameters(array('host_id'), array('service_id'), -1, 0, null, null, array("host_name" => $tmp[0],
             "service_description" => $tmp[1]), "AND");
         if (!count($elements)) {
@@ -740,7 +742,7 @@ class CentreonService extends CentreonObject {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $args = explode($this->delim, $arg[0]);
-        $relObject = new Centreon_Object_Relation_Host_Service();
+        $relObject = new \Centreon_Object_Relation_Host_Service();
         $elements = $relObject->getMergedParameters(array('host_id'), array('service_id'), -1, 0, null, null, array("host_name" => $args[0],
             "service_description" => $args[1]), "AND");
         if (!count($elements)) {
@@ -830,12 +832,12 @@ class CentreonService extends CentreonObject {
      * @return void
      */
     public function export() {
-        $hostRel = new Centreon_Object_Relation_Host_Service();
+        $hostRel = new \Centreon_Object_Relation_Host_Service();
         $elements = $hostRel->getMergedParameters(array("host_name"), array('*'), -1, 0, null, null, array("service_register" => $this->register), "AND");
-        $extendedObj = new Centreon_Object_Service_Extended();
-        $commandObj = new Centreon_Object_Command();
-        $tpObj = new Centreon_Object_Timeperiod();
-        $macroObj = new Centreon_Object_Service_Macro_Custom();
+        $extendedObj = new \Centreon_Object_Service_Extended();
+        $commandObj = new \Centreon_Object_Command();
+        $tpObj = new \Centreon_Object_Timeperiod();
+        $macroObj = new \Centreon_Object_Service_Macro_Custom();
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
@@ -884,17 +886,17 @@ class CentreonService extends CentreonObject {
             foreach ($macros as $macro) {
                 echo $this->action . $this->delim . "setmacro" . $this->delim . $element['host_name'] . $this->delim . $element['service_description'] . $this->delim . $this->stripMacro($macro['svc_macro_name']) . $this->delim . $macro['svc_macro_value'] . $this->delim . $macro['is_password'] . $this->delim . "'" .$macro['description'] ."'" . "\n";
             }
-            $cgRel = new Centreon_Object_Relation_Contact_Group_Service();
+            $cgRel = new \Centreon_Object_Relation_Contact_Group_Service();
             $cgelements = $cgRel->getMergedParameters(array("cg_name"), array('service_description'), -1, 0, null, null, array("service_register" => $this->register, "service_id" => $element['service_id']), "AND");
             foreach ($cgelements as $cgelement) {
                 echo $this->action . $this->delim . "addcontactgroup" . $this->delim . $element['host_name'] . $this->delim . $cgelement['service_description'] . $this->delim . $cgelement['cg_name'] . "\n";
             }
-            $contactRel = new Centreon_Object_Relation_Contact_Service();
+            $contactRel = new \Centreon_Object_Relation_Contact_Service();
             $celements = $contactRel->getMergedParameters(array("contact_alias"), array('service_description'), -1, 0, null, null, array("service_register" => $this->register, "service_id" => $element['service_id']), "AND");
             foreach ($celements as $celement) {
                 echo $this->action . $this->delim . "addcontact" . $this->delim . $element['host_name'] . $this->delim . $celement['service_description'] . $this->delim . $celement['contact_alias'] . "\n";
             }
-            $trapRel = new Centreon_Object_Relation_Trap_Service();
+            $trapRel = new \Centreon_Object_Relation_Trap_Service();
             $telements = $trapRel->getMergedParameters(array("traps_name"), array('service_description'), -1, 0, null, null, array("service_register" => $this->register, "service.service_id" => $element['service_id']), "AND");
             foreach ($telements as $telement) {
                 echo $this->action . $this->delim . "addtrap" . $this->delim . $element['host_name'] . $this->delim . $telement['service_description'] . $this->delim . $telement['traps_name'] . "\n";

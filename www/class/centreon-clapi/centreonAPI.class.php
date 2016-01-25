@@ -36,7 +36,7 @@
 /**
  * Include Centreon Class
  */
-
+namespace CentreonClapi;
 
 require_once realpath(dirname(__FILE__)."/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__)."/../centreonXML.class.php");

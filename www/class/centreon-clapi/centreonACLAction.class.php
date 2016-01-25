@@ -34,6 +34,8 @@
  * SVN : $URL$
  * SVN : $Id$
  */
+namespace CentreonClapi;
+
 require_once "centreonObject.class.php";
 require_once "Centreon/Object/Acl/Group.php";
 require_once "Centreon/Object/Acl/Action.php";
@@ -61,9 +63,9 @@ class CentreonACLAction extends CentreonObject
     public function __construct()
     {
         parent::__construct();
-        $this->object = new Centreon_Object_Acl_Action();
-        $this->aclGroupObj = new Centreon_Object_Acl_Group();
-        $this->relObject = new Centreon_Object_Relation_Acl_Group_Action();
+        $this->object = new \Centreon_Object_Acl_Action();
+        $this->aclGroupObj = new \Centreon_Object_Acl_Group();
+        $this->relObject = new \Centreon_Object_Relation_Acl_Group_Action();
         $this->params = array('acl_action_activate' => '1');
         $this->nbOfCompulsoryParams = 2;
         $this->availableActions = array('global_event_handler',

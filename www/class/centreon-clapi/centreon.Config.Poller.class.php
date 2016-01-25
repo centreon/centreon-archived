@@ -35,6 +35,7 @@
  * SVN : $Id$
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonUtils.class.php";
 require_once "centreonClapiException.class.php";
@@ -175,7 +176,7 @@ class CentreonConfigPoller {
     protected function restartCentreonBroker() {
         if (file_exists($this->centreon_path."/www/class/centreonBroker.class.php")) {
             require_once $this->centreon_path."/www/class/centreonBroker.class.php";
-            $brk = new CentreonBroker($this->_DB);
+            $brk = new \CentreonBroker($this->_DB);
             if ($brk->getBroker() == 'broker') {
                 $brk->reload();
             }
@@ -408,7 +409,7 @@ class CentreonConfigPoller {
      */
     public function pollerGenerate($variables, $login, $password) {
         
-        $config_generate = new Generate();
+        $config_generate = new \Generate();
         
         $this->testPollerId($variables);
         
@@ -422,10 +423,10 @@ class CentreonConfigPoller {
         $apacheUser = $this->getApacheUser();
         $setFilesOwner = 1;
         if ($apacheUser != "") {
-            foreach (glob($this->centreon_path."/filesGeneration/nagiosCFG/".$tab['id']."/*.cfg") as $file) {
+            foreach (glob($this->centreon_path."/filesGeneration/nagiosCFG/" . $variables . "/*.cfg") as $file) {
                 chown($file, $apacheUser);
             }
-            foreach (glob($this->centreon_path."/filesGeneration/broker/".$tab['id']."/*.cfg") as $file) {
+            foreach (glob($this->centreon_path."/filesGeneration/broker/" . $variables . "/*.cfg") as $file) {
                 chown($file, $apacheUser);
             }
         } else {
@@ -434,8 +435,8 @@ class CentreonConfigPoller {
 
         if ($setFilesOwner == 0) {
             print "We can set configuration file owner after the generation. \n";
-            print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/nagiosCFG/".$tab['id']."/\n";
-            print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/broker/".$tab['id']."/\n";
+            print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/nagiosCFG/" . $variables . "/\n";
+            print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/broker/" . $variables . "/\n";
         }
 
         print "Configuration files generated for poller '".$variables."'\n";

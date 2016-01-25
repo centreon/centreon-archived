@@ -34,6 +34,8 @@
  * SVN : $URL$
  * SVN : $Id$
  */
+namespace CentreonClapi;
+
 require_once "centreonObject.class.php";
 require_once "centreonInstance.class.php";
 require_once "Centreon/Object/Cgi/Cgi.php";
@@ -58,7 +60,7 @@ class CentreonCgiCfg extends CentreonObject
     {
         parent::__construct();
         $this->instanceObj = new CentreonInstance();
-        $this->object = new Centreon_Object_Cgi();
+        $this->object = new \Centreon_Object_Cgi();
         $this->params = array(  'main_config_file'                          => '',
                                 'physical_html_path'	                    => '',
                                 'url_html_path'                             => '',
