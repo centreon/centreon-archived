@@ -7,3 +7,4 @@ ALTER TABLE escalation ADD COLUMN hostgroup_inheritance_to_services tinyint(1) D
 UPDATE options SET options.value = '1' WHERE options.key = 'index_data';
 UPDATE cfg_centreonbroker_info SET config_value = '1' WHERE config_key = 'insert_in_index_data';
 
+UPDATE nagios_server SET monitoring_engine = 'CENGINE' WHERE monitoring_engine = 'Centreon Engine';

@@ -205,7 +205,7 @@ function insertServer($ret = array())	{
 	isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != NULL ? $rq .= "'".htmlentities($ret["localhost"]["localhost"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
    	isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "'".htmlentities(trim($ret["ns_ip_address"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["ssh_port"]) && $ret["ssh_port"] != NULL ? $rq .= "'".htmlentities(trim($ret["ssh_port"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "'22', ";
-    $rq .= "'Centreon Engine',  ";
+    $rq .= "'CENGINE',  ";
     isset($ret["nagios_bin"]) && $ret["nagios_bin"] != NULL ? $rq .= "'".htmlentities(trim($ret["nagios_bin"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["nagiostats_bin"]) && $ret["nagiostats_bin"] != NULL ? $rq .= "'".htmlentities(trim($ret["nagiostats_bin"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["init_script"]) && $ret["init_script"] != NULL ? $rq .= "'".htmlentities(trim($ret["init_script"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
