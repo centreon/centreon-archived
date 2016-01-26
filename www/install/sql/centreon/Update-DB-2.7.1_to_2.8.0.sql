@@ -40,3 +40,4 @@ WHERE
 insert into widget_parameters_field_type (ft_typename,is_connector) VALUES ('hostCategories',1);
 insert into widget_parameters_field_type (ft_typename,is_connector) VALUES ('serviceCategories',1);
 insert into widget_parameters_field_type (ft_typename,is_connector) VALUES ('metric',1);
+alter table cfg_centreonbroker_info add column fieldIndex int(11) null default null;
