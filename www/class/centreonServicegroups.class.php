@@ -143,7 +143,8 @@
                 $parameters['type'] = 'relation';
                 $parameters['externalObject']['object'] = 'centreonService';
                 $parameters['relationObject']['table'] = 'servicegroup_relation';
-                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['additionalField'] = 'service_service_id';
                 $parameters['relationObject']['comparator'] = 'servicegroup_sg_id';
                 break;
             case 'sg_tServices':
