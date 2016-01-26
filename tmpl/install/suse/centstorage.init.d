@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 ### BEGIN INIT INFO
 # Provides:            centstorage
 # Required-Start:   $syslog $remote_fs

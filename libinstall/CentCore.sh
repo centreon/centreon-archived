@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #----
 ## @Synopsis	Install script for CentCore
 ## @Copyright	Copyright 2008, Guillaume Watteeux
@@ -10,7 +10,7 @@
 # SVN: $Id$
 
 echo -e "\n$line"
-echo -e "\t$(gettext "Start CentCore Installation")"
+echo -e "\t$(gettext "Starting CentCore Installation")"
 echo -e "$line"
 
 ###### Check disk space
@@ -26,7 +26,6 @@ locate_centreon_rundir
 locate_centreon_logdir
 locate_centreon_varlib
 locate_centreon_generationdir
-locate_centcore_bindir
 
 ## Config Nagios
 check_centreon_group
@@ -63,7 +62,7 @@ fi
 log "INFO" "$(gettext "Copying CentCore in binary directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/src/bin/centcore $CENTCORE_BINDIR/centcore >> $LOG_FILE 2>&1
+	$TMP_DIR/src/bin/centcore $CENTREON_BINDIR/centcore >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Copy CentCore in binary directory")"
 
 ## Change right on CENTREON_RUNDIR
@@ -98,7 +97,7 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
-	-e 's|@CENTCORE_BINDIR@|'"$CENTCORE_BINDIR"'|g' \
+	-e 's|@CENTCORE_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 	-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
 	$TMP_DIR/src/centcore.init.d > $TMP_DIR/work/centcore.init.d
 check_result $? "$(gettext "Replace CentCore init script Macro")"

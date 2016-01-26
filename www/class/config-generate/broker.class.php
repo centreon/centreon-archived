@@ -112,8 +112,10 @@ class Broker extends AbstractObjectXML {
             $correlation_activate = $row['correlation_activate'];
 
             # Base parameters
-            $object['instance'] = $this->engine['id'];
-            $object['instance_name'] = $this->engine['name'];
+            $object['broker_id'] = $row['config_id'];
+            $object['broker_name'] = $row['config_name'];
+            $object['poller_id'] = $this->engine['id'];
+            $object['poller_name'] = $this->engine['name'];
             $object['module_directory'] = $this->engine['broker_modules_path'];
             $object['log_timestamp'] = $row['config_write_timestamp'];
             $object['log_thread_id'] = $row['config_write_thread_id'];

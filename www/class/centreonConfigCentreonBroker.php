@@ -1127,23 +1127,14 @@ class CentreonConfigCentreonBroker
     public function updateCommand($configId)
     {
         global $oreon;
-        /* Test if need to add command file */
-        $query = "SELECT COUNT(config_id) as nb FROM cfg_centreonbroker_info WHERE config_key = 'type' AND config_value = 'db_cfg_reader' AND config_id = " . $configId;
-        $res = $this->db->query($query);
-        $row = $res->fetchRow();
-        if ($row['nb'] > 0) {
-            if (is_null($this->globalCommandFile)) {
-                if (isset($oreon->optGen['broker_socket_path'])) {
-                    $this->globalCommandFile = $oreon->optGen['broker_socket_path'];
-                } else {
-                    $this->globalCommandFile = '';
-                }
-            }
-            $query = "UPDATE cfg_centreonbroker SET command_file = '" . $this->globalCommandFile . "' WHERE config_id = " . $configId;
+        
+        if (isset($oreon->optGen['broker_socket_path'])) {
+            $this->globalCommandFile = "'" . $oreon->optGen['broker_socket_path'] . "'";
         } else {
-            $query = "UPDATE cfg_centreonbroker SET command_file = NULL WHERE config_id = " . $configId;
+            $this->globalCommandFile = "NULL";
         }
-        $sth = $this->db->query($query);
+        $query = "UPDATE cfg_centreonbroker SET command_file = " . $this->globalCommandFile . " WHERE config_id = " . $configId;
+        $this->db->query($query);
     }
     
     /**
