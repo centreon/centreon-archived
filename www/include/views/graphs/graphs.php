@@ -50,19 +50,18 @@
      */
 	$currentServerMicroTime = time() * 1000 + date('Z') * 1000;
 	$userGmt = 0;
-	$useGmt = 0;
-	if ($gmtObj->checkGMTStatus($pearDB)) {
-        $useGmt = 1;
-	    $userGmt = $oreon->user->getMyGMT();
-        $gmtObj->setMyGMT($userGmt);
-        $sMyTimezone = $gmtObj->getMyTimezone();
-        $sDate = new DateTime();
-        if (empty($sMyTimezone)) {
-            $sMyTimezone = date_default_timezone_get();
-        }
-        $sDate->setTimezone(new DateTimeZone($sMyTimezone));
-        $currentServerMicroTime = $sDate->getTimestamp();
-	}
+
+    $useGmt = 1;
+    $userGmt = $oreon->user->getMyGMT();
+    $gmtObj->setMyGMT($userGmt);
+    $sMyTimezone = $gmtObj->getMyTimezone();
+    $sDate = new DateTime();
+    if (empty($sMyTimezone)) {
+        $sMyTimezone = date_default_timezone_get();
+    }
+    $sDate->setTimezone(new DateTimeZone($sMyTimezone));
+    $currentServerMicroTime = $sDate->getTimestamp();
+
 
 	/*
 	 * Path to the configuration dir

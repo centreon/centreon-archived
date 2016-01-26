@@ -79,9 +79,11 @@ if (isset($_POST["o1"]) && isset($_POST["o2"])){
  }
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if ($ret2 && $ret2['topology_page'] != "" && $p != $ret2['topology_page']) {
+    $p = $ret2['topology_page'];
+} else if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
- }
+}
 
 $acl = $oreon->user->access;
 $dbmon = new CentreonDB('centstorage');

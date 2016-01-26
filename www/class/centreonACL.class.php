@@ -2135,8 +2135,10 @@ class CentreonACL {
             # Cant manage empty hostgroup with ACLs. We'll have a problem with acl for conf...
             $groupIds = array_keys($this->accessGroups);
             $query = $request['select'] . $request['fields'] . " "
-                . "FROM hostgroup, acl_res_group_relations, acl_resources_hg_relations "
+                . "FROM hostgroup, acl_res_group_relations, acl_resources_hg_relations, hostgroup_relation hgr, host h "
                 . "WHERE hg_id = '" . CentreonDB::escape($hg_id) . "' "
+                . "AND hgr.host_host_id = h.host_id " 
+                . "AND hgr.hostgroup_hg_id = hg_id "
                 . "AND acl_res_group_relations.acl_group_id  IN (" . implode(',', $groupIds) . ") "
                 . "AND acl_res_group_relations.acl_res_id = acl_resources_hg_relations.acl_res_id "
                 . "AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id ";

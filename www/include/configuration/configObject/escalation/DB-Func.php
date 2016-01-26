@@ -171,7 +171,7 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO escalation ";
-		$rq .= "(esc_name, esc_alias, first_notification, last_notification, notification_interval, escalation_period, escalation_options1, escalation_options2, esc_comment) ";
+		$rq .= "(esc_name, esc_alias, first_notification, last_notification, notification_interval, escalation_period, host_inheritance_to_services, hostgroup_inheritance_to_services, escalation_options1, escalation_options2, esc_comment) ";
 		$rq .= "VALUES (";
 		isset($ret["esc_name"]) && $ret["esc_name"] != NULL ? $rq .= "'".htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		isset($ret["esc_alias"]) && $ret["esc_alias"] != NULL ? $rq .= "'".htmlentities($ret["esc_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
@@ -179,6 +179,8 @@
 		isset($ret["last_notification"]) && $ret["last_notification"] != NULL ? $rq .= "'".htmlentities($ret["last_notification"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		isset($ret["notification_interval"]) && $ret["notification_interval"] != NULL ? $rq .= "'".htmlentities($ret["notification_interval"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		isset($ret["escalation_period"]) && $ret["escalation_period"] != NULL ? $rq .= "'".htmlentities($ret["escalation_period"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+                $rq .= (isset($ret["host_inheritance_to_services"]) ? 1 : 0) . ', ';
+                $rq .= (isset($ret["hostgroup_inheritance_to_services"]) ? 1 : 0) . ', ';
 		isset($ret["escalation_options1"]) && $ret["escalation_options1"] != NULL ? $rq .= "'".implode(",", array_keys($ret["escalation_options1"]))."', " : $rq .= "NULL, ";
 		isset($ret["escalation_options2"]) && $ret["escalation_options2"] != NULL ? $rq .= "'".implode(",", array_keys($ret["escalation_options2"]))."', " : $rq .= "NULL, ";
 		isset($ret["esc_comment"]) && $ret["esc_comment"] != NULL ? $rq .= "'".htmlentities($ret["esc_comment"], ENT_QUOTES, "UTF-8")."' " : $rq .= "NULL ";
@@ -205,6 +207,10 @@
 		if (isset($ret["esc_cgs"]))
 			$fields["esc_cgs"] = implode(",", $ret["esc_cgs"]);
 		$fields["esc_hosts"] = "";
+                if (isset($ret["host_inheritance_to_services"]))
+                    $fields["host_inheritance_to_services"] = $ret["host_inheritance_to_services"];
+                if (isset($ret["hostgroup_inheritance_to_services"]))
+                    $fields["hostgroup_inheritance_to_services"] = $ret["hostgroup_inheritance_to_services"];
 		if (isset($ret["esc_hosts"]))
 			$fields["esc_hosts"] = implode(",", $ret["esc_hosts"]);
 		$fields["esc_hgs"] = "";
@@ -242,6 +248,10 @@
 		isset($ret["notification_interval"]) && $ret["notification_interval"] != NULL ? $rq .= "'".htmlentities($ret["notification_interval"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "escalation_period = ";
 		isset($ret["escalation_period"]) && $ret["escalation_period"] != NULL ? $rq .= "'".htmlentities($ret["escalation_period"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+                $rq .= "host_inheritance_to_services = ";
+                $rq .= (isset($ret['host_inheritance_to_services']) ? 1 : 0) . ', ';
+                $rq .= "hostgroup_inheritance_to_services = ";
+                $rq .= (isset($ret['hostgroup_inheritance_to_services']) ? 1 : 0) . ', ';
 		$rq .= "escalation_options1 = ";
 		isset($ret["escalation_options1"]) && $ret["escalation_options1"] != NULL ? $rq .= "'".implode(",", array_keys($ret["escalation_options1"]))."', " : $rq .= "NULL, ";
 		$rq .= "escalation_options2 = ";
@@ -256,8 +266,10 @@
 		$fields["last_notification"] = htmlentities($ret["last_notification"], ENT_QUOTES, "UTF-8");
 		$fields["notification_interval"] = htmlentities($ret["notification_interval"], ENT_QUOTES, "UTF-8");
 		$fields["escalation_period"] = htmlentities($ret["escalation_period"], ENT_QUOTES, "UTF-8");
-		/*$fields["escalation_options1"] = implode(",", array_keys($ret["escalation_options1"]));
-		$fields["escalation_options2"] = implode(",", array_keys($ret["escalation_options2"]));*/
+                if (isset($ret["host_inheritance_to_services"]))
+                    $fields["host_inheritance_to_services"] = $ret["host_inheritance_to_services"];
+                if (isset($ret["hostgroup_inheritance_to_services"]))
+                    $fields["hostgroup_inheritance_to_services"] = $ret["hostgroup_inheritance_to_services"];
 		$fields["esc_comment"] = htmlentities($ret["esc_comment"], ENT_QUOTES, "UTF-8");
 		$fields["esc_cgs"] = "";
 		if (isset($ret["esc_cgs"]))

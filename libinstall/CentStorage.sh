@@ -33,6 +33,8 @@ locate_centreon_varlib
 locate_init_d
 locate_cron_d
 
+locate_centstorage_bindir
+#locate_centstorage_libdir
 locate_centstorage_rrddir
 ## Config Nagios
 check_centreon_group
@@ -133,7 +135,7 @@ log "INFO" "$(gettext "Install logAnalyserBroker")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
 	$TMP_DIR/src/bin/logAnalyserBroker \
-	$CENTREON_BINDIR/logAnalyserBroker >> $LOG_FILE 2>&1
+	$CENTSTORAGE_BINDIR/logAnalyserBroker >> $LOG_FILE 2>&1
 check_result $?  "$(gettext "Install logAnalyserBroker")"
 
 ## nagiosPerfTrace
@@ -163,7 +165,7 @@ fi
 ## cron file
 log "INFO" "$(gettext "Change macros for centstorage.cron")"
 ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
-	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTREON_BINDIR"'|g' \
+	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \

@@ -2235,7 +2235,7 @@ function updateHostHostCategory($host_id, $ret = array()) {
                             AND hc.level IS NOT NULL) ";
     $DBRESULT = $pearDB->query($rq);
 
-    $ret = isset($ret["host_hcs"]) ? $ret["host_hcs"] : CentreonUtils::mergeWithInitialValues($form, 'host_hcs');
+    $ret = isset($ret["host_hcs"]) ? $ret["host_hcs"] : array();
     $hcsNEW = array();
     for ($i = 0; $i < count($ret); $i++) {
         $rq = "INSERT INTO hostcategories_relation ";
