@@ -205,6 +205,9 @@ $attrContactgroups = array(
 );
 $form->addElement('select2', 'esc_cgs', _("Linked Contact Groups"), array(), $attrContactgroups);
 
+$form->addElement('checkbox', 'host_inheritance_to_services', '', _('Host inheritance to services'));
+$form->addElement('checkbox', 'hostgroup_inheritance_to_services', '', _('Hostgroup inheritance to services'));
+
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
     'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=escalation&field=esc_hosts&id=' . $esc_id,

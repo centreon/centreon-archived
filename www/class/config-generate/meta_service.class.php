@@ -91,41 +91,48 @@ class MetaService extends AbstractObject {
         }
     }
 
-    private function getMetaServiceId($meta_name) {
+    private function getServiceIdFromMetaId($meta_id, $meta_name) {
+        $composed_name = 'meta_' . $meta_id;
         $stmt = $this->backend_instance->db->prepare("SELECT
                 service_id
             FROM service
             WHERE service_register = '2'
-            AND service_description = :meta_name");
+            AND service_description = :meta_composed_name
+            AND display_name = :meta_name"
+        );
+        $stmt->bindParam(':meta_composed_name', $composed_name);
         $stmt->bindParam(':meta_name', $meta_name);
         $stmt->execute();
 
         if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $meta_id = $row['service_id'];
+            $service_id = $row['service_id'];
         } else {
             $stmt = $this->backend_instance->db->prepare("INSERT INTO service
-                    (service_description, service_register)
+                    (service_description, display_name, service_register)
                 VALUES
-                    (:meta_name, '2')");
+                    (:meta_composed_name, :meta_name, '2')");
+            $stmt->bindParam(':meta_composed_name', $composed_name);
             $stmt->bindParam(':meta_name', $meta_name);
             $stmt->execute();
             $stmt = $this->backend_instance->db->prepare("SELECT
                     MAX(service_id) as sid
                 FROM service
-                WHERE service_description = :meta_name
+                WHERE service_description = :meta_composed_name
+                AND display_name = :meta_name
                 AND service_register = '2'");
+            $stmt->bindParam(':meta_composed_name', $composed_name);
             $stmt->bindParam(':meta_name', $meta_name);
             $stmt->execute();
             if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $meta_id = $row['sid'];
+                $service_id = $row['sid'];
             }
         }
 
-        if (!isset($meta_id)) {
+        if (!isset($service_id)) {
             throw new Exception('Service id of Meta Module could not be found');
         }
 
-        return $meta_id;
+        return $service_id;
         
     }
     
@@ -138,7 +145,7 @@ class MetaService extends AbstractObject {
         $stmt->execute();
         $this->meta_services = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
         foreach ($this->meta_services as $meta_id => $meta_infos) {
-            $this->meta_services[$meta_id]['service_id'] = $this->getMetaServiceId($meta_infos['display_name']);
+            $this->meta_services[$meta_id]['service_id'] = $this->getServiceIdFromMetaId($meta_id, $meta_infos['display_name']);
         }
     }
     

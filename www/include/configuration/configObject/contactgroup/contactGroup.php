@@ -140,6 +140,8 @@ switch ($o)	{
 		deleteContactGroupInDB(isset($select) ? $select : array()); 
 		require_once($path."listContactGroup.php"); 
 		break;
+    case "dn" : require_once $path . 'displayNotification.php';
+        break;
 	default : 
 		/*
 		 * Delete n contact group
