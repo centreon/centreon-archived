@@ -165,7 +165,7 @@ class CentreonWebService
      * @param mixed $data The values
      * @param integer $code The HTTP code
      */
-    public static function sendJson($data, $code = 200, $success = true, $error = '')
+    public static function sendJson($data, $code = 200)
     {
         switch ($code) {
             case 500:
@@ -249,11 +249,11 @@ class CentreonWebService
         try {
             static::updateTokenTtl();
             $data = $wsObj->$action();
-            static::sendJson($data);
+            $wsObj::sendJson($data);
         } catch (RestException $e) {
-            static::sendJson($e->getMessage(), $e->getCode());
+            $wsObj::sendJson($e->getMessage(), $e->getCode());
         } catch (Exception $e) {
-            static::sendJson($e->getMessage(), 500);
+            $wsObj::sendJson($e->getMessage(), 500);
         }
     }
 }

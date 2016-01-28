@@ -76,5 +76,29 @@ class CentreonResources
         
         return $parameters;
     }
+    
+    /**
+     * 
+     * @param type $db
+     * @param string $name
+     * @return array
+     * @throws Exception
+     */
+    public static function getResourceByName($db, $name)
+    {
+        $queryResources = "SELECT * FROM cfg_resource WHERE resource_name = '$name'";
+        $resultQueryResources = $db->query($queryResources);
+        
+        $finalResource = array();
+        while ($resultResources = $resultQueryResources->fetchRow()) {
+            $finalResource = $resultResources;
+        }
+        
+        if (count($finalResource) === 0) {
+            throw new Exception("No central broker found", 500);
+        }
+        
+        return $finalResource;
+    }
 }
 ?>
