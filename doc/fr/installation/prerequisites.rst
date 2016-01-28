@@ -5,7 +5,7 @@ Prérequis
 L'interface Centreon web est compatible avec les navigateurs web suivants :
 
 * Internet Explorer IE 11+
-* Firefox 5+
+* Firefox 41+
 * Chrome 39+
 * Safari 6+
 * Opera 31+
