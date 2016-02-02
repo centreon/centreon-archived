@@ -1695,12 +1695,16 @@ OR EXISTS (SELECT *
             }
 # Cant manage empty hostgroup with ACLs. We'll have a problem with acl for conf...
             $groupIds = array_keys($this->accessGroups);
-            $query = " SELECT " . $request['fields'] . " FROM hostgroup, "
-                    . " acl_res_group_relations, acl_resources_hg_relations " .
-                    " WHERE $searchSTR acl_res_group_relations.acl_group_id  IN (" . implode(',', $groupIds) . ") " .
-                    " AND acl_res_group_relations.acl_res_id = acl_resources_hg_relations.acl_res_id " .
-                    " AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id " .
-                    $request['order'];
+            $query = " SELECT " . $request['fields'] . " "
+                . "FROM hostgroup, hostgroup_relation, host, acl_res_group_relations, acl_resources_hg_relations "
+                . "WHERE $searchSTR acl_res_group_relations.acl_group_id  IN (" . implode(',', $groupIds) . ") "
+                . "AND hg_activate = '1' "
+                . "AND host_activate = '1' "
+                . "AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id "
+                . "AND hostgroup_relation.host_host_id = host.host_id "
+                . "AND acl_res_group_relations.acl_res_id = acl_resources_hg_relations.acl_res_id "
+                . "AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id "
+                . $request['order'];
         }
         $res = $pearDB->query($query);
         if (PEAR::isError($res)) {
