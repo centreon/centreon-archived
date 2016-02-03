@@ -69,7 +69,10 @@ function getTopologyParentPage($p)	{
 $tab = getTopologyParent($p);
 $tabPath = array();
 
-$NameTopology = _($tab["topology_name"]);
+$NameTopology = "";
+if ( !empty ( $tab["topology_name"] ) ) {
+	$NameTopology = _($tab["topology_name"]);
+}
 
 $tabPath[$tab["topology_page"]] = array();
 $tabPath[$tab["topology_page"]]["name"] = $NameTopology;
