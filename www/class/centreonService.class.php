@@ -1026,7 +1026,6 @@ class CentreonService
      */
     public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
-        
         $hostIdList = array();
         $serviceIdList = array();
         foreach ($values as $value) {
@@ -1062,7 +1061,7 @@ class CentreonService
         }
         
         $serviceList = array();
-        if(!empty($selectedHosts) && !empty($selectedServices)){
+        if(!empty($selectedServices)){
             $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
                 . "FROM host h, service s, host_service_relation hsr "
                 . 'WHERE hsr.host_host_id = h.host_id '
@@ -1080,6 +1079,7 @@ class CentreonService
                 $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
             }
         }
+
         return $serviceList;
     }
     

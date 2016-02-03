@@ -53,9 +53,15 @@ if (isset($_POST['searchST']) && $_POST['searchST']) {
     $search = $_POST['searchST'];
 	$search = str_replace('/', "#S#", $search);
 	$search = str_replace('\\', "#BS#", $search);
-	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM service sv WHERE (sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') AND sv.service_register = '0'");
-} else {
-	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM service sv WHERE service_register = '0'");
+    $_SESSION['searchST'] = $search;
+}else if(isset($_SESSION['searchST']) && $_SESSION['searchST']){
+    $search = $_SESSION['searchST'];
+}
+
+if($search != ''){
+    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM service sv WHERE (sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') AND sv.service_register = '0'");
+}else{
+    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM service sv WHERE service_register = '0'");
 }
 
 $tmp = $DBRESULT->fetchRow();

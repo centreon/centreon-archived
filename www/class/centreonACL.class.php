@@ -251,8 +251,19 @@ class CentreonACL {
             . "AND arpr.acl_res_id IN (" . $this->getResourceGroupsString() . ") "
             . "ORDER BY ns.name ASC ";
         $DBRESULT = $pearDB->query($query);
-        while ($row = $DBRESULT->fetchRow()) {
-            $this->pollers[$row['id']] = $row['name'];
+        if ($DBRESULT->numRows()) {
+            while ($row = $DBRESULT->fetchRow()) {
+                $this->pollers[$row['id']] = $row['name'];
+            }
+        } else {
+            $query = "SELECT ns.id, ns.name "
+                . "FROM nagios_server ns "
+                . "WHERE ns.ns_activate = '1' "
+                . "ORDER BY ns.name ASC ";
+            $DBRESULT = $pearDB->query($query);
+            while ($row = $DBRESULT->fetchRow()) {
+                $this->pollers[$row['id']] = $row['name'];
+            }
         }
         $DBRESULT->free();
     }
@@ -2135,10 +2146,12 @@ class CentreonACL {
             # Cant manage empty hostgroup with ACLs. We'll have a problem with acl for conf...
             $groupIds = array_keys($this->accessGroups);
             $query = $request['select'] . $request['fields'] . " "
-                . "FROM hostgroup, acl_res_group_relations, acl_resources_hg_relations, hostgroup_relation hgr, host h "
+                . "FROM hostgroup, hostgroup_relation, host, acl_res_group_relations, acl_resources_hg_relations "
                 . "WHERE hg_id = '" . CentreonDB::escape($hg_id) . "' "
-                . "AND hgr.host_host_id = h.host_id " 
-                . "AND hgr.hostgroup_hg_id = hg_id "
+                . "AND hg_activate = '1' "
+                . "AND host_activate='1' "
+                . "AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id "
+                . "AND hostgroup_relation.host_host_id = host.host_id "
                 . "AND acl_res_group_relations.acl_group_id  IN (" . implode(',', $groupIds) . ") "
                 . "AND acl_res_group_relations.acl_res_id = acl_resources_hg_relations.acl_res_id "
                 . "AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id ";
