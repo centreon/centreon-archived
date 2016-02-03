@@ -519,14 +519,21 @@ function submitShareView()
   var viewId = jQuery(
     jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
   ).data('cvId');
-  var postData = {};
-  jQuery("#formShareView").serializeArray().each(function (value, idx) {
-    if (value.name === 'custom_view_id') {
-      postData.custom_view_id = viewId;
-    } else {
-      postData[value.name] = value.value;
-    }
-  });
+  var users = jQuery("#formShareView").find('select[name="user_id[]"]').val();
+  var usergroups = jQuery("#formShareView").find('select[name="usergroup_id[]"]').val();
+  var postData = {
+    custom_view_id: viewId,
+    'locked[locked]': jQuery("#formShareView").find('input[name="locked[locked]"]:checked').val(),
+    action: 'share',
+    centeon_token: jQuery("#formShareView").find('input[name="centreon_token"]').val(),
+  };
+  
+  if (users) {
+    postData['user_id[]'] = users;
+  }
+  if (usergroups) {
+    postData['usergroup_id[]'] = usergroups;
+  }
   
   jQuery.ajax({
     type: "POST",
@@ -655,7 +662,7 @@ function removeUsergroupFromView(usergroup_id) {
     url: "./include/home/customViews/action.php",
     data: {
       action: "removegroup",
-      custom_view_id: jQuery('[name=custom_view_id]').val(),
+      custom_view_id: viewId,
       usergroup_id:	usergroup_id
     },
     success: function(response) {
