@@ -84,13 +84,11 @@ $DBRESULT->free();
 /*
  * Get Nagios / Icinga / Shinken / Scheduler version
  */
-$pollerNumber = count($nagios_servers);
-if ($pollerNumber == 0) {
-	$pollerNumber = 1;
-}
-$DBRESULT = $pearDBO->query("SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances WHERE deleted = 0 LIMIT $pollerNumber");
+$DBRESULT = $pearDBO->query("SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances WHERE deleted = 0 ");
 while ($info = $DBRESULT->fetchRow()) {
-    $nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
+    if (isset($nagiosInfo[$info["instance_name"]])) {
+        $nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
+    }
 }
 $DBRESULT->free();
 
