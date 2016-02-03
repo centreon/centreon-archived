@@ -722,7 +722,7 @@ function updateServiceInDB ($service_id = null, $from_MC = false, $params = arra
     // 2 - MC with addition of new host/hg parent
     // 3 - Normal update
     if (isset($ret["mc_mod_Pars"]["mc_mod_Pars"]) && $ret["mc_mod_Pars"]["mc_mod_Pars"]) {
-        updateServiceHost($service_id, $params);
+        updateServiceHost($service_id, $params, true);
     } elseif (isset($ret["mc_mod_Pars"]["mc_mod_Pars"]) && !$ret["mc_mod_Pars"]["mc_mod_Pars"]) {
         updateServiceHost_MC($service_id);
     } else {
@@ -1953,7 +1953,7 @@ function updateServiceHostContactsInheritance($service_id = null, $ret = array()
     $DBRESULT =& $pearDB->query($rq);
 }
     
-function updateServiceHost($service_id = null, $ret = array())
+function updateServiceHost($service_id = null, $ret = array(), $from_MC = false)
 {
     global $form, $pearDB;
     if (!$service_id) {
@@ -2009,9 +2009,26 @@ function updateServiceHost($service_id = null, $ret = array())
         }
     }
 
-    $rq = "DELETE FROM host_service_relation ";
-    $rq .= "WHERE service_service_id = '".$service_id."'";
-    $DBRESULT = $pearDB->query($rq);
+    if (!$from_MC) {
+        $rq = "DELETE FROM host_service_relation "
+            . "WHERE service_service_id = '" . $service_id . "' ";
+        $DBRESULT = $pearDB->query($rq);
+    } else {
+        # Purge service to host relations
+        if (count($ret1)) {
+            $rq = "DELETE FROM host_service_relation "
+                . "WHERE service_service_id = '" . $service_id . "' "
+                . "AND host_host_id IS NOT NULL ";
+            $DBRESULT = $pearDB->query($rq);
+        }
+        # Purge service to hostgroup relations
+        if (count($ret2)) {
+            $rq = "DELETE FROM host_service_relation "
+                . "WHERE service_service_id = '" . $service_id . "' "
+                . "AND hostgroup_hg_id IS NOT NULL ";
+            $DBRESULT = $pearDB->query($rq);
+        }
+    }
 
     if (count($ret2)) {
         for ($i = 0; $i < count($ret2); $i++)	{
