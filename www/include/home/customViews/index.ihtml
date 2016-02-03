@@ -529,10 +529,14 @@ function submitShareView()
   };
   
   if (users) {
-    postData['user_id[]'] = users;
+    postData['user_id[]'] = users.filter(function (elem) {
+      return elem !== '';
+    });
   }
   if (usergroups) {
-    postData['usergroup_id[]'] = usergroups;
+    postData['usergroup_id[]'] = usergroups.filter(function (elem) {
+      return elem !== '';
+    });
   }
   
   jQuery.ajax({
@@ -703,10 +707,10 @@ jQuery(function () {
       jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
     ).data('cvId');
     if (jQuery('#user_id').val() !== null) {
-      jQuery('#user_id').val(null).trigger('change');
+      jQuery('#user_id').val('').empty().append(jQuery("<option>")).trigger('change');
     }
     if (jQuery('#usergroup_id').val() !== null) {
-      jQuery('#usergroup_id').val(null).trigger('change');
+      jQuery('#usergroup_id').val('').empty().append(jQuery("<option>")).trigger('change');
     }
     jQuery.ajax({
       url: './include/home/customViews/action.php',
@@ -837,7 +841,8 @@ jQuery(function () {
   
   /* Add event for close all form */
   jQuery(document).on('click', function (e) {
-    if (jQuery(e.target).parents('.cntn').length === 0) {
+    if (jQuery(e.target).parents('.cntn').length === 0
+       && jQuery(e.target).hasClass('select2-selection__choice__remove') === false) {
       jQuery('.toggle_wrapper').hide();
     }
   });
