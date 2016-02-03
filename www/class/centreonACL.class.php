@@ -251,8 +251,19 @@ class CentreonACL {
             . "AND arpr.acl_res_id IN (" . $this->getResourceGroupsString() . ") "
             . "ORDER BY ns.name ASC ";
         $DBRESULT = $pearDB->query($query);
-        while ($row = $DBRESULT->fetchRow()) {
-            $this->pollers[$row['id']] = $row['name'];
+        if ($DBRESULT->numRows()) {
+            while ($row = $DBRESULT->fetchRow()) {
+                $this->pollers[$row['id']] = $row['name'];
+            }
+        } else {
+            $query = "SELECT ns.id, ns.name "
+                . "FROM nagios_server ns "
+                . "WHERE ns.ns_activate = '1' "
+                . "ORDER BY ns.name ASC ";
+            $DBRESULT = $pearDB->query($query);
+            while ($row = $DBRESULT->fetchRow()) {
+                $this->pollers[$row['id']] = $row['name'];
+            }
         }
         $DBRESULT->free();
     }
