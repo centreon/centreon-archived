@@ -200,7 +200,7 @@ $tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $order . ", h.name
 $tabOrder["output"] = " ORDER BY s.output " . $order . ", h.name, s.description";
 $tabOrder["default"] = $tabOrder['criticality_id'];
 
-$request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
+$request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
 				s.icon_image, s.display_name, s.process_perfdata, s.state, s.output as plugin_output,
 				s.state_type, s.check_attempt as current_attempt, s.last_update as status_update_time, s.last_state_change,
 				s.last_hard_state_change, s.last_check, s.next_check,
