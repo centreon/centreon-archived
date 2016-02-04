@@ -1026,6 +1026,11 @@ class CentreonService
      */
     public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
+        $hostgroup = false;
+        if (isset($options['hostgroup']) && $options['hostgroup'] == true) {
+            $hostgroup = true;
+        }
+
         $hostIdList = array();
         $serviceIdList = array();
         foreach ($values as $value) {
@@ -1041,7 +1046,11 @@ class CentreonService
         # Construct host filter for query
         $selectedHosts = '';
         if (count($hostIdList) > 0) {
-            $selectedHosts .= "AND hsr.host_host_id IN (";
+            if ($hostgroup) {
+                $selectedHosts .= "AND hsr.hostgroup_hg_id IN (";
+            } else {
+                $selectedHosts .= "AND hsr.host_host_id IN (";
+            }
             $implodedValues = implode(',', $hostIdList);
             if (trim($implodedValues) != "") {
                 $selectedHosts .= $implodedValues;
@@ -1061,22 +1070,41 @@ class CentreonService
         }
         
         $serviceList = array();
-        if(!empty($selectedServices)){
-            $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
-                . "FROM host h, service s, host_service_relation hsr "
-                . 'WHERE hsr.host_host_id = h.host_id '
-                . "AND hsr.service_service_id = s.service_id "
-                . "AND h.host_register = '$register' AND s.service_register = '$register' "
-                . $selectedHosts
-                . $selectedServices
-                . "ORDER BY h.host_name ";
+        if (!empty($selectedServices)) {
+            if ($hostgroup) {
+                $queryService = "SELECT DISTINCT s.service_description, s.service_id, hg.hg_name, hg.hg_id "
+                    . "FROM hostgroup hg, service s, host_service_relation hsr "
+                    . 'WHERE hsr.hostgroup_hg_id = hg.hg_id '
+                    . "AND hsr.service_service_id = s.service_id "
+                    . "AND s.service_register = '$register' "
+                    . $selectedHosts
+                    . $selectedServices
+                    . "ORDER BY hg.hg_name ";
 
-            $DBRESULT = $this->db->query($queryService);
-            while ($data = $DBRESULT->fetchRow()) {
-                $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
-                $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+                $DBRESULT = $this->db->query($queryService);
+                while ($data = $DBRESULT->fetchRow()) {
+                    $serviceCompleteName = $data['hg_name'] . ' - ' . $data['service_description'];
+                    $serviceCompleteId = $data['hg_id'] . '-' . $data['service_id'];
 
-                $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
+                    $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
+                }
+            } else {
+                $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
+                    . "FROM host h, service s, host_service_relation hsr "
+                    . 'WHERE hsr.host_host_id = h.host_id '
+                    . "AND hsr.service_service_id = s.service_id "
+                    . "AND h.host_register = '$register' AND s.service_register = '$register' "
+                    . $selectedHosts
+                    . $selectedServices
+                    . "ORDER BY h.host_name ";
+
+                $DBRESULT = $this->db->query($queryService);
+                while ($data = $DBRESULT->fetchRow()) {
+                    $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
+                    $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
+
+                    $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
+                }
             }
         }
 
