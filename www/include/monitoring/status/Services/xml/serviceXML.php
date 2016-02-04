@@ -416,6 +416,7 @@ if (!PEAR::isError($DBRESULT)) {
             $hostNotesUrl = "none";
             if ($data["h_notes_url"]) {
                 $hostNotesUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_notes_url"]);
+                $hostNotesUrl = str_replace("\$HOSTALIAS\$", $data["alias"], $hostNotesUrl);
                 $hostNotesUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostNotesUrl);
                 $hostNotesUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostNotesUrl);
                 $hostNotesUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostNotesUrl);
@@ -427,6 +428,7 @@ if (!PEAR::isError($DBRESULT)) {
             $hostActionUrl = "none";
             if ($data["h_action_url"]) {
                 $hostActionUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_action_url"]);
+                $hostActionUrl = str_replace("\$HOSTALIAS\$", $data["alias"], $hostNotesUrl);
                 $hostActionUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostActionUrl);
                 $hostActionUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostActionUrl);
                 $hostActionUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostActionUrl);
