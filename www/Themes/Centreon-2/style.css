@@ -1780,9 +1780,8 @@ td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
 
 .elemBloc {
     border: 1px solid #D1D2D4;
-    display: list-item;
-    margin: 12px;
-    list-style-type: none;
+    height: 122px;
+    overflow: hidden;
 }
 
 .elemBloc label {
@@ -1813,11 +1812,20 @@ td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
     border: 1px solid #bcbdc0;
 }
 
-.elemBloc input[type=checkbox]:checked + label:before {
-    content: "\2713";
+.elemBloc input.included[type=checkbox]:checked + label:before {
+    content: "\2714";
     color: #fff;
     text-align: center;
     line-height: 10px;
     background-color: #88b917;
     border: 1px solid #88b917;
+}
+
+.elemBloc input.excluded[type=checkbox]:checked + label:before {
+    content: "\2716";
+    color: #fff;
+    text-align: center;
+    line-height: 10px;
+    background-color: #e00b3d;
+    border: 1px solid #e00b3d;
 }
