@@ -356,39 +356,6 @@ class CentreonService
         return $list;
     }
 
-    /* public function getServiceTemplateTree($serviceId,$macros = null){
-      $res = $this->db->query("SELECT s.service_id, s.service_template_model_stm_id
-      FROM service s
-      WHERE s.service_id = ".$this->db->escape($serviceId)."
-      ");
-      $service = array();
-      while ($row = $res->fetchRow()) {
-      $service['service_id'] = $row['service_id'];
-      $service['macros'] = $this->getCustomMacro($row['service_id']);
-      if(!is_null($row['service_template_model_stm_id'])){
-      $service['parentTpl'] = $this->getServiceTemplateTree($row['service_template_model_stm_id']);
-      }
-      }
-      return $service;
-      }
-
-      public function getMacrosFromService($serviceId){
-      $res = $this->db->query("SELECT svc_macro_name, svc_macro_value, is_password
-      FROM on_demand_macro_service
-      WHERE svc_svc_id = " .
-      $this->db->escape($serviceId));
-      $macroArray = array();
-      while ($row = $res->fetchRow()) {
-      $arr = array();
-      if (preg_match('/\$_SERVICE(.*)\$$/', $row['svc_macro_name'], $matches)) {
-      $arr['name'] = $matches[1];
-      $arr['value'] = $row['svc_macro_value'];
-      $arr['password'] = $row['is_password'] ? 1 : NULL;
-      $macroArray[] = $arr;
-      }
-      }
-      } */
-
     /**
      * Insert macro
      * 
@@ -407,13 +374,10 @@ class CentreonService
         $macroPassword = array(),
         $macroDescription = array(),
         $isMassiveChange = false,
-        $cmdId = false
+        $cmdId = false,
+        $macroFrom = false
     ) {
-        if (false === $isMassiveChange) {
-            $this->db->query("DELETE FROM on_demand_macro_service
-                    WHERE svc_svc_id = " . $this->db->escape($serviceId)
-            );
-        } else {
+        if (!$isMassiveChange) {
             $macroList = "";
             foreach ($macroInput as $v) {
                 $macroList .= "'\$_SERVICE" . strtoupper($this->db->escape($v)) . "\$',";
@@ -430,7 +394,7 @@ class CentreonService
         $macros = $macroInput;
         $macrovalues = $macroValue;
         
-        $this->hasMacroFromServiceChanged($this->db,$serviceId,$macros,$macrovalues,$cmdId);
+        $this->hasMacroFromServiceChanged($this->db,$serviceId,$macros,$macrovalues,$cmdId, $isMassiveChange, $macroFrom);
         
         $stored = array();
         $cnt = 0;
@@ -646,17 +610,20 @@ class CentreonService
      * @param string $macroValue
      * @param boolean $cmdId
      */
-    public function hasMacroFromServiceChanged($pearDB, $service_id, &$macroInput, &$macroValue, $cmdId = false)
+    public function hasMacroFromServiceChanged($pearDB, $service_id, &$macroInput, &$macroValue, $cmdId = false, $isMassiveChange = false, $macroFrom = false)
     {
         $aListTemplate = getListTemplates($pearDB, $service_id);
         
         if (!isset($cmdId)) {
             $cmdId = "";
         }
+
         $aMacros = $this->getMacros($service_id, $aListTemplate, $cmdId);
-        foreach($aMacros as $macro){
-            foreach($macroInput as $ind=>$input){
-                if($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"]){
+        foreach ($aMacros as $macro) {
+            foreach($macroInput as $ind => $input){
+                # Don't override macros on massive change if there is not direct inheritance
+                if (($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"])
+                    || ($isMassiveChange && $input == $macro['macroInput_#index#'] && isset($macroFrom[$ind]) && $macroFrom[$ind] != 'direct')) {
                     unset($macroInput[$ind]);
                     unset($macroValue[$ind]);
                 }
