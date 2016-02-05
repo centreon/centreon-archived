@@ -59,7 +59,8 @@ class Broker extends AbstractObjectXML {
         config_value,
         grp_level,
         subgrp_id,
-        parent_grp_id
+        parent_grp_id,
+        fieldIndex
     ';
     protected $attributes_engine_parameters = '
         id,
@@ -120,7 +121,8 @@ class Broker extends AbstractObjectXML {
             $object['log_thread_id'] = $row['config_write_thread_id'];
             $object['event_queue_max_size'] = $row['event_queue_max_size'];
             $object['command_file'] = $row['command_file'];
-
+            
+            
             $this->stmt_broker_parameters->bindParam(':config_id', $row['config_id'], PDO::PARAM_INT);
             $this->stmt_broker_parameters->execute();
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
@@ -128,19 +130,24 @@ class Broker extends AbstractObjectXML {
             # Flow parameters
             foreach ($resultParameters as $key => $value) {
                 foreach ($value as $subvalue) {
-                    if (in_array($subvalue['config_key'], $this->exclude_parameters)) {
-                        continue;
-                    } else if(trim($subvalue['config_value']) == '' && !in_array($subvalue['config_key'], $this->authorized_empty_field)) {
-                        continue;
-                    } else if ($subvalue['config_key'] == 'category') {
-                        $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] = $subvalue['config_value'];
-                    } else {
-                        $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] = $subvalue['config_value'];
+                    
+                    if(!isset($subvalue['fieldIndex']) || $subvalue['fieldIndex'] == "" || is_null($subvalue['fieldIndex'])){
+                        if (in_array($subvalue['config_key'], $this->exclude_parameters)) {
+                            continue;
+                        } else if(trim($subvalue['config_value']) == '' && !in_array($subvalue['config_key'], $this->authorized_empty_field)) {
+                            continue;
+                        } else if ($subvalue['config_key'] == 'category') {
+                            $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] = $subvalue['config_value'];
+                        } else {
+                            $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] = $subvalue['config_value'];
+                        }
+                    }else{
+                        $res = explode('__', $subvalue['config_key'], 3);
+                        $object[$subvalue['config_group_id']][$key][$subvalue['fieldIndex']][$res[0]][$res[1]] = $subvalue['config_value'];
                     }
                     $flow_count++;
                 }
             }
-
             # Failover parameters
             foreach ($object as &$subvalue) {
                 if (is_array($subvalue)) {
@@ -181,7 +188,7 @@ class Broker extends AbstractObjectXML {
                 );
                 $flow_count++;
             }
-
+        
             # Generate file
             $this->generateFile($object, true, 'centreonBroker');
             $this->writeFile($this->backend_instance->getPath());

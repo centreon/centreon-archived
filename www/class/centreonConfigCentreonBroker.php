@@ -219,6 +219,7 @@ class CentreonConfigCentreonBroker
         return $this->blockCache[$tagId];
     }
 
+    public $arrayMultiple;
     /**
      * Create the HTML_QuickForm object with element for a block
      *
@@ -227,7 +228,7 @@ class CentreonConfigCentreonBroker
      * @param int $formId The form post
      * @return HTML_QuickForm
      */
-    public function quickFormById($blockId, $page, $formId = 1)
+    public function quickFormById($blockId, $page, $formId = 1, $config_id = 0)
     {
         list($tagId, $typeId) = explode('_', $blockId);
         $fields = $this->getBlockInfos($typeId);
@@ -253,7 +254,16 @@ class CentreonConfigCentreonBroker
         $qf->setDefaults(array($tag . '[' . $formId . '][blockId]' => $blockId));
 
         foreach ($fields as $field) {
-            $elementName = $this->getElementName($tag, $formId, $field);
+            $parentGroup = "";
+            $isMultiple = false;
+            
+            $elementName = $this->getElementName($tag, $formId, $field, $isMultiple);
+            if($isMultiple && $field['group'] !== ''){
+                $displayNameGroup = "";
+                $parentGroup = $this->getParentGroups($field['group'],$isMultiple,$displayNameGroup);
+                $parentGroup = $parentGroup."_".$formId;
+            }
+            
             $elementType = null;
             $elementAttr = array();
             $default = null;
@@ -270,8 +280,16 @@ class CentreonConfigCentreonBroker
                 break;
             case 'radio':
                 $tmpRadio = array();
+                
+                if($isMultiple && $parentGroup != ""){
+                    $elementAttr = array_merge($elementAttr, array(
+                                               'parentGroup' => $parentGroup,
+                                               'displayNameGroup' => $displayNameGroup
+                                               ));
+                }
+
                 foreach ($this->getListValues($field['id']) as $key => $value) {
-                    $tmpRadio[] = HTML_QuickForm::createElement('radio', $field['fieldname'], null, _($value), $key);
+                    $tmpRadio[] = HTML_QuickForm::createElement('radio', $field['fieldname'], null, _($value), $key, $elementAttr);
                 }
                 $qf->addGroup($tmpRadio, $elementName, _($field['displayname']), '&nbsp;');
                 $default = $this->getDefaults($field['id']);
@@ -316,6 +334,18 @@ class CentreonConfigCentreonBroker
                                                                'class' => 'v_required'
                                                                ));
             }
+            
+            $elementAttrSelect = array();
+            if($isMultiple && $parentGroup != ""){
+                if($elementType != 'select'){
+                    $elementAttr = array_merge($elementAttr, array(
+                                               'parentGroup' => $parentGroup,
+                                               'displayNameGroup' => $displayNameGroup
+                                               ));
+                }else{
+                    $elementAttrSelect = array('parentGroup' => $parentGroup , 'displayNameGroup' => $displayNameGroup);
+                }
+            }
 
             /*
              * Add elements
@@ -327,9 +357,10 @@ class CentreonConfigCentreonBroker
                     $el->setButtonAttributes('remove', array('value' =>  _("Remove"), "class" => "btc bt_danger"));
                     $el->setElementTemplate($this->advMultiTemplate);
                 } else {
-                    $el = $qf->addElement($elementType, $elementName, $displayName, $elementAttr);
+                    $el = $qf->addElement($elementType, $elementName, $displayName, $elementAttr,$elementAttrSelect);
                 }
             }
+
 
             /*
              * Defaults values
@@ -349,6 +380,17 @@ class CentreonConfigCentreonBroker
             }
         }
         return $qf;
+    }
+    
+    public function generateCdata(){
+        $cdata = CentreonData::getInstance();
+        foreach($this->arrayMultiple as $key=>$multipleGroup){
+            $cdata->addJsData('clone-values-'.$key, htmlspecialchars(
+                        json_encode($multipleGroup), ENT_QUOTES
+                )
+            );
+            $cdata->addJsData('clone-count-'.$key, count($multipleGroup));
+        }
     }
 
     /**
@@ -491,12 +533,13 @@ class CentreonConfigCentreonBroker
     public function updateCentreonBrokerInfos($id, $values)
     {
         /*
-	 * Clean the informations for this id
-	 */
-	$query = "DELETE FROM cfg_centreonbroker_info WHERE config_id = " . $id;
-	$this->db->query($query);
+        * Clean the informations for this id
+        */
+        $query = "DELETE FROM cfg_centreonbroker_info WHERE config_id = " . $id;
+        $this->db->query($query);
 
-	$groups_infos = array();
+        $groups_infos = array();
+        $groups_infos_multiple = array();
         foreach ($this->getTags() as $group) {
         /*
          * Resort array
@@ -506,11 +549,26 @@ class CentreonConfigCentreonBroker
         	        if (!isset($groups_infos[$group])) {
         	            $groups_infos[$group] = array();
         	        }
+                    $newArray = array();
+                    foreach($infos as $key=>$info){
+                        $is_multiple = preg_match('/(.+?)_(\d+)$/', $key, $result);
+                        if($is_multiple){
+                            if(!isset($groups_infos_multiple[$group])){
+                                $groups_infos_multiple[$group] = array();
+                            }
+                            $newArray[$result[1]][$result[2]] = $infos[$key];
+                            
+                            unset($infos[$key]);
+                        }
+                    }
+                    if(!empty($newArray)){
+                        $newArray['blockId'] = $infos['blockId'];
+                        $groups_infos_multiple[$group][] = $newArray;
+                    }
         	        $groups_infos[$group][] = $infos;
         	    }
 	        }
 	    }
-
 	    foreach ($groups_infos as $group => $groups) {
 	        foreach ($groups as $gid => $infos) {
 	            $gid = $gid + 1;
@@ -518,39 +576,71 @@ class CentreonConfigCentreonBroker
 	                list($tagId, $typeId) = explode('_', $infos['blockId']);
 	                $fieldtype = $this->getFieldtypes($typeId);
     	            foreach ($infos as $fieldname => $fieldvalue) {
-			$lvl = 0;
-			$grp_id = 'NULL';
-			$parent_id = 'NULL';
-    	                if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
-    	                    $fieldvalue = $fieldvalue[$fieldname];
-    	                }
-			if (false === is_array($fieldvalue)) {
-		            $fieldvalue = array($fieldvalue);
-			}
-			/*
-		         * Construct xml tree
-			 */
-			while (preg_match('/.+__\d+__.+/', $fieldname)) {
-			    $info = explode('__', $fieldname, 3);
-			    $grp_name = $info[0];
-			    $grp_id = $info[1];
-    	                    $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id, grp_level, subgrp_id, parent_grp_id)
-    	            	    	VALUES (" . $id . ", '" . $grp_name . "', '', '" . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " . $parent_id . ")";
-    	                    $this->db->query($query);
-			    $lvl++;
-			    $parent_id = $grp_id;
-			    $fieldname = $info[2];
-			}
-			$grp_id = 'NULL';
-			foreach ($fieldvalue as $value) {
-    	                   $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id, grp_level, subgrp_id, parent_grp_id)
-    	            	   	VALUES (" . $id . ", '" . $fieldname . "', '" . $value . "', '" . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " . $parent_id . ")";
-    	                   $this->db->query($query);
-			}
+                        $lvl = 0;
+                        $grp_id = 'NULL';
+                        $parent_id = 'NULL';
+                                    if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
+                                        $fieldvalue = $fieldvalue[$fieldname];
+                                    }
+                        if (false === is_array($fieldvalue)) {
+                                $fieldvalue = array($fieldvalue);
+                        }
+                        /*
+                             * Construct xml tree
+                         */
+                        while (preg_match('/.+__\d+__.+/', $fieldname)) {
+                            $info = explode('__', $fieldname, 3);
+                            $grp_name = $info[0];
+                            $grp_id = $info[1];
+                                        $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id, grp_level, subgrp_id, parent_grp_id)
+                                            VALUES (" . $id . ", '" . $grp_name . "', '', '" . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " . $parent_id . ")";
+                                        $this->db->query($query);
+                            $lvl++;
+                            $parent_id = $grp_id;
+                            $fieldname = $info[2];
+                        }
+                        $grp_id = 'NULL';
+                        foreach ($fieldvalue as $value) {
+                                       $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id, grp_level, subgrp_id, parent_grp_id)
+                                        VALUES (" . $id . ", '" . $fieldname . "', '" . $value . "', '" . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " . $parent_id . ")";
+                                       $this->db->query($query);
+                        }
     	            }
 	            }
 	        }
 	    }
+        
+        
+        foreach ($groups_infos_multiple as $group => $groups) {
+	        foreach ($groups as $gid => $infos) {
+	            $gid = $gid + 1;
+	            if (isset($infos['blockId'])) {
+	                list($tagId, $typeId) = explode('_', $infos['blockId']);
+	                $fieldtype = $this->getFieldtypes($typeId);
+    	            foreach ($infos as $fieldname => $fieldvalueArray) {
+                        if(is_array($fieldvalueArray)){
+                            foreach($fieldvalueArray as $index=>$fieldvalue){
+                                $lvl = 0;
+                                $grp_id = 'NULL';
+                                $parent_id = 'NULL';
+                                if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
+                                    $fieldvalue = $fieldvalue[$fieldname];
+                                }
+                                if (false === is_array($fieldvalue)) {
+                                    $fieldvalue = array($fieldvalue);
+                                }
+                                foreach ($fieldvalue as $value) {
+                                    $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id, grp_level, subgrp_id, parent_grp_id, fieldIndex)
+                                     VALUES (" . $id . ", '" . $fieldname . "', '" . $value . "', '" . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " . $parent_id . ", " . $index . ") ";
+                                    $this->db->query($query);
+                                }
+                            }
+                        }
+                    }
+	            }
+	        }
+	    }
+
 	    return true;
     }
 
@@ -565,7 +655,7 @@ class CentreonConfigCentreonBroker
      */
     public function getForms($config_id, $tag, $page, $tpl)
     {
-        $query = "SELECT config_key, config_value, config_group_id, grp_level, parent_grp_id
+        $query = "SELECT config_key, config_value, config_group_id, grp_level, parent_grp_id, fieldIndex
         	FROM cfg_centreonbroker_info
 		WHERE config_id = %d 
 		    AND config_group = '%s'
@@ -576,25 +666,32 @@ class CentreonConfigCentreonBroker
             return array();
         }
         $formsInfos = array();
+        $arrayMultipleValues = array();
         while ($row = $res->fetchRow()) {
             $fieldname = $tag . '[' . $row['config_group_id'] . '][' . $this->getConfigFieldName($config_id, $tag, $row) . ']';
 	    /* Multi value for a multiselect */
-	    if (isset($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
-                if (!is_array($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
-                    $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = array($formsInfos[$row['config_group_id']]['defaults'][$fieldname]);
+            if(isset($row['fieldIndex']) && !is_null($row['fieldIndex']) && $row['fieldIndex'] != ""){
+                $fieldname = $tag . '[' . $row['config_group_id'] . '][' . $this->getConfigFieldName($config_id, $tag, $row) . '_#index#]';
+                $arrayMultipleValues[$fieldname][] = $row['config_value'];    
+            }else{
+                if (isset($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
+                        if (!is_array($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
+                            $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = array($formsInfos[$row['config_group_id']]['defaults'][$fieldname]);
+                        }
+                        $formsInfos[$row['config_group_id']]['defaults'][$fieldname][] = $row['config_value'];
+                } else {
+                        $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = $row['config_value'];
+                        $formsInfos[$row['config_group_id']]['defaults'][$fieldname . '[' . $row['config_key'] . ']'] = $row['config_value']; // Radio button
                 }
-                $formsInfos[$row['config_group_id']]['defaults'][$fieldname][] = $row['config_value'];
-	    } else {
-                $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = $row['config_value'];
-                $formsInfos[$row['config_group_id']]['defaults'][$fieldname . '[' . $row['config_key'] . ']'] = $row['config_value']; // Radio button
-	    }
-            if ($row['config_key'] == 'blockId') {
-                $formsInfos[$row['config_group_id']]['blockId'] = $row['config_value'];
+                if ($row['config_key'] == 'blockId') {
+                    $formsInfos[$row['config_group_id']]['blockId'] = $row['config_value'];
+                }
             }
         }
         $forms = array();
+        $isMultiple = false;
         foreach (array_keys($formsInfos) as $key) {
-            $qf = $this->quickFormById($formsInfos[$key]['blockId'], $page, $key);
+            $qf = $this->quickFormById($formsInfos[$key]['blockId'], $page, $key, $config_id);
             /*
              * Replace loaded configuration with defaults external values
              */
@@ -602,12 +699,18 @@ class CentreonConfigCentreonBroker
             $tag = $this->getTagName($tagId);
             $fields = $this->getBlockInfos($typeId);
             foreach ($fields as $field) {
+                $elementName = $this->getElementName($tag, $key, $field, $isMultiple);
                 if (!is_null($field['value']) && $field['value'] != false) {
-                    $elementName = $this->getElementName($tag, $key, $field);
                     unset($formsInfos[$key]['defaults'][$elementName]); // = $this->getInfoDb($field['value']);
                 }
+                if(isset($arrayMultipleValues[$elementName])){
+                    if($isMultiple && $field['group'] !== ''){
+                        $parentGroup = $this->getParentGroups($field['group'],$isMultiple);
+                        $parentGroup = $parentGroup."_".$key;
+                        $arrayMultiple[$parentGroup][$elementName] = $arrayMultipleValues[$elementName];
+                    }
+                }
             }
-
             $qf->setDefaults($formsInfos[$key]['defaults']);
             $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
             $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -615,6 +718,17 @@ class CentreonConfigCentreonBroker
         	$qf->accept($renderer);
             $forms[] = $renderer->toArray();
         }
+        foreach($arrayMultiple as $key=>$arrayMultipleS){
+            foreach($arrayMultipleS as $key2=>$oneElemArray){
+                $cnt = 0;
+                foreach($oneElemArray as $oneElem){
+                    $this->arrayMultiple[$key][$cnt][$key2] = $oneElem;
+                    $cnt++;
+                }
+            }
+        }
+        $this->generateCdata();
+
         return $forms;
     }
 
@@ -934,12 +1048,12 @@ class CentreonConfigCentreonBroker
      * @param array $field The field information
      * @return string
      */
-    private function getElementName($tag, $formId, $field) { 
+    private function getElementName($tag, $formId, $field, &$isMultiple = false) { 
         $elementName = $tag . '[' . $formId . '][';
         if ($field['group'] !== '') {
-            $elementName .= $this->getParentGroups($field['group']);
+            $elementName .= $this->getParentGroups($field['group'],$isMultiple);
         }
-        $elementName .= $field['fieldname']. ']';
+        $elementName .= $field['fieldname']. (($isMultiple) ? "_#index#" : "") . ']';
 	    return $elementName;
     }
 
@@ -949,17 +1063,32 @@ class CentreonConfigCentreonBroker
      * @param int $groupId The group id
      * @return string
      */
-    public function getParentGroups($groupId) {
+    public function getParentGroups($groupId, &$isMultiple = false, &$displayName = "") {
 	    $elemStr = '';
-	    $res = $this->db->query(sprintf("SELECT groupname, group_parent_id FROM cb_fieldgroup WHERE cb_fieldgroup_id = %d", $groupId));
-            if (PEAR::isError($res)) {
-                return '';
-            }
+	    $res = $this->db->query(sprintf("SELECT groupname, group_parent_id, multiple, displayname FROM cb_fieldgroup WHERE cb_fieldgroup_id = %d", $groupId));
+        if (PEAR::isError($res)) {
+            return '';
+        }
 	    $row = $res->fetchRow();
 	    if ($row['group_parent_id'] !== '') {
-	        $elemStr .= $this->getParentGroups($row['group_parent_id']);
+	        $elemStr .= $this->getParentGroups($row['group_parent_id'],$isMultiple,$displayName);
 	    }
-	    $elemStr .=  $row['groupname'] . '__' . $this->nbSubGroup++ . '__';
+        if($row['multiple'] !== '' && $row['multiple'] == 1){
+            $isMultiple = true;
+        }
+        if(!$isMultiple){
+            $elemStr .=  $row['groupname'] . '__' . $this->nbSubGroup++ . '__';
+        }else{
+            if($elemStr != ""){
+                $elemStr .=   '__'.$row['groupname']. '__' ;
+            }else{
+                $elemStr .=   $row['groupname']. '__' ;
+            }
+            
+        }
+        if(!empty($row['displayname'])){
+            $displayName = $row['displayname'];
+        }
 	    return $elemStr;
     }
 

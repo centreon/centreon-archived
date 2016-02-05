@@ -54,7 +54,7 @@ try {
 
 $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
-$form = $cbObj->quickFormById($id, $_GET['p'], $pos);
+$form = $cbObj->quickFormById($id, $_GET['p'], $pos, "new_".rand(100,1000));
 
 $helps = array();
 list($tagId, $typeId) = explode('_', $id);
