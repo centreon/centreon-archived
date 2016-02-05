@@ -328,18 +328,23 @@ class CentreonGMT {
     {
         global $pearDB;
         
-        if (!isset($pearDB) && isset($DB)) {
-            $pearDB = $DB;
-        }
+        if (!empty($userId)) {
         
-        $DBRESULT = $pearDB->query("SELECT `contact_location` FROM `contact` " .
-                "WHERE `contact`.`contact_id` = " . $userId ." LIMIT 1");
-        if (PEAR::isError($DBRESULT)) {
+            if (!isset($pearDB) && isset($DB)) {
+                $pearDB = $DB;
+            }
+
+            $DBRESULT = $pearDB->query("SELECT `contact_location` FROM `contact` " .
+                    "WHERE `contact`.`contact_id` = " . $userId ." LIMIT 1");
+            if (PEAR::isError($DBRESULT)) {
+                $this->myGMT = 0;
+            }
+            $info = $DBRESULT->fetchRow();
+            $DBRESULT->free();
+            $this->myGMT = $info["contact_location"];
+        } else {
             $this->myGMT = 0;
         }
-        $info = $DBRESULT->fetchRow();
-        $DBRESULT->free();
-        $this->myGMT = $info["contact_location"];
     }
 
     /**
