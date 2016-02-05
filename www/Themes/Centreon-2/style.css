@@ -1775,3 +1775,49 @@ td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
     border: 0;
     background: #4ccaff !important;
 }
+
+/* --------- Bloc Elements -------------- */
+
+.elemBloc {
+    border: 1px solid #D1D2D4;
+    display: list-item;
+    margin: 12px;
+    list-style-type: none;
+}
+
+.elemBloc label {
+    cursor: pointer;
+    position: relative;
+    padding-left: 16px;
+    margin-right: 10px;
+}
+
+.elemBloc input[type=checkbox] {
+    display: none;
+    height: 118px;
+    overflow: hidden;
+}
+
+.elemBloc label:before {
+    content: "";
+    display: inline-block;
+
+    width: 10px;
+    height: 10px;
+
+    margin-right: 10px;
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    background-color: #fff;
+    border: 1px solid #bcbdc0;
+}
+
+.elemBloc input[type=checkbox]:checked + label:before {
+    content: "\2713";
+    color: #fff;
+    text-align: center;
+    line-height: 10px;
+    background-color: #88b917;
+    border: 1px solid #88b917;
+}
