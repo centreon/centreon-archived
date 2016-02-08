@@ -141,7 +141,14 @@ class HTML_Common
         if (is_array($attributes)) {
             $charset = HTML_Common::charset();
             foreach ($attributes as $key => $value) {
-                $strAttr .= ' ' . $key . '="' . htmlspecialchars($value, ENT_COMPAT, $charset) . '"';
+                if(is_array($value)){
+                    foreach ($value as $val){
+                        $strAttr .= ' ' . $key . '="' . htmlspecialchars($val, ENT_COMPAT, $charset) . '"';
+                    }
+                }else{
+                    $strAttr .= ' ' . $key . '="' . htmlspecialchars($value, ENT_COMPAT, $charset) . '"';
+                }
+
             }
         }
         return $strAttr;

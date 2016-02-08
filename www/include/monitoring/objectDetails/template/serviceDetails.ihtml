@@ -205,12 +205,12 @@
 								<tr>
 									<td class="ColPopup">
 										{if $lcaTopo.20301 || $admin == 1}
-											<a href='./main.php?p=20301&mode=0&h={$h.host_id}'>{$lnk_host_logs}</a>
+											<a href='./main.php?p=20301&h={$h.host_id}'>{$lnk_host_logs}</a>
 										{/if}
 									</td>
 									<td class="ColPopup">
 										{if $lcaTopo.20301 || $admin == 1}
-											<a href='./main.php?p=20301&mode=0&id=HS_{$service_id}_{$h.host_id}'>{$lnk_serv_logs}</a>
+											<a href='./main.php?p=20301&svc={$h.host_id}_{$service_id}'>{$lnk_serv_logs}</a>
 										{/if}
 									</td>
 								</tr>

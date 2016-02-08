@@ -34,6 +34,7 @@
  * SVN : $URL$
  * SVN : $Id$
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonManufacturer.class.php";
@@ -66,7 +67,7 @@ class CentreonTrap extends CentreonObject
     public function __construct()
     {
         parent::__construct();
-        $this->object = new Centreon_Object_Trap();
+        $this->object = new \Centreon_Object_Trap();
         $this->manufacturerObj = new CentreonManufacturer();
         $this->params = array();
         $this->insertParams = array('traps_name', 'traps_oid');
@@ -204,7 +205,7 @@ class CentreonTrap extends CentreonObject
         if (!$trapId) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$parameters);
         }
-        $matchObj = new Centreon_Object_Trap_Matching();
+        $matchObj = new \Centreon_Object_Trap_Matching();
         $params = array('tmo_id', 'tmo_string', 'tmo_regexp', 'tmo_status', 'tmo_order');
         $elements = $matchObj->getList($params, -1, 0, 'tmo_order', 'ASC', array('trap_id' => $trapId));
         $status = array(0 => 'OK', 1 => 'WARNING', 2 => 'CRITICAL', 3 => 'UNKNOWN');
@@ -240,7 +241,7 @@ class CentreonTrap extends CentreonObject
         $string= $params[1];
         $regexp = $params[2];
         $status = $this->getStatusInt($params[3]);
-        $matchObj = new Centreon_Object_Trap_Matching();
+        $matchObj = new \Centreon_Object_Trap_Matching();
         $elements = $matchObj->getList("*", -1, 0, null, null, array('trap_id' => $trapId, 'tmo_regexp' => $regexp, 'tmo_string' => $string, 'tmo_status' => $status), 'AND');
         if (!count($elements)) {
             $elements = $matchObj->getList("*", -1, 0, null, null, array('trap_id' => $trapId));
@@ -264,7 +265,7 @@ class CentreonTrap extends CentreonObject
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $matchObj = new Centreon_Object_Trap_Matching();
+        $matchObj = new \Centreon_Object_Trap_Matching();
         $matchObj->delete($parameters);
     }
 
@@ -295,7 +296,7 @@ class CentreonTrap extends CentreonObject
         if ($key == 'tmo_status') {
             $value = $this->getStatusInt($value);
         }
-        $matchObj = new Centreon_Object_Trap_Matching();
+        $matchObj = new \Centreon_Object_Trap_Matching();
         $matchObj->update($matchingId, array($key => $value));
     }
 
@@ -306,7 +307,7 @@ class CentreonTrap extends CentreonObject
      */
     public function export()
     {
-        $matchingObj = new Centreon_Object_Trap_Matching();
+        $matchingObj = new \Centreon_Object_Trap_Matching();
         $elements = $this->object->getList("*", -1, 0);
         foreach ($elements as $element) {
             $addStr = $this->action.$this->delim."ADD";

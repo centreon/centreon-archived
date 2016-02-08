@@ -1315,6 +1315,8 @@ CREATE TABLE `escalation` (
   `escalation_options1` varchar(255) DEFAULT NULL,
   `escalation_options2` varchar(255) DEFAULT NULL,
   `esc_comment` text,
+  `host_inheritance_to_services` tinyint(1) DEFAULT 0 NOT NULL,
+  `hostgroup_inheritance_to_services` tinyint(1) DEFAULT 0 NOT NULL,
   PRIMARY KEY (`esc_id`),
   KEY `period_index` (`escalation_period`),
   CONSTRAINT `escalation_ibfk_1` FOREIGN KEY (`escalation_period`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL

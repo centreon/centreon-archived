@@ -33,6 +33,8 @@
  * For more information : command@centreon.com
  *
  */
+namespace CentreonClapi;
+
 require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
 require_once "Centreon/Object/Command/Command.php";
@@ -71,7 +73,7 @@ class CentreonCommand extends CentreonObject {
      */
     public function __construct() {
         parent::__construct();
-        $this->object = new Centreon_Object_Command();
+        $this->object = new \Centreon_Object_Command();
         $this->params = array();
         $this->insertParams = array("command_name", "command_type", "command_line");
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey(), "graph_id", "cmd_cat_id"));
@@ -151,7 +153,7 @@ class CentreonCommand extends CentreonObject {
                     $params[2] = $this->typeConversion[$params[2]];
                 }
             } elseif ($params[1] == "graph_id") {
-                $graphObject = new Centreon_Object_Graph_Template();
+                $graphObject = new \Centreon_Object_Graph_Template();
                 $tmp = $graphObject->getIdByParameter($graphObject->getUniqueLabelField(), $params[2]);
                 if (!count($tmp)) {
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[2]);
@@ -173,7 +175,7 @@ class CentreonCommand extends CentreonObject {
      * @throws CentreonClapiException
      */
     public function getId($commandName) {
-        $obj = new Centreon_Object_Command();
+        $obj = new \Centreon_Object_Command();
         $tmp = $obj->getIdByParameter($obj->getUniqueLabelField(), $commandName);
         if (count($tmp)) {
             $id = $tmp[0];
@@ -209,7 +211,7 @@ class CentreonCommand extends CentreonObject {
                     }
                 }
                 if ($parameter == "graph_id" && !empty($value)) {
-                    $graphObject = new Centreon_Object_Graph_Template();
+                    $graphObject = new \Centreon_Object_Graph_Template();
                     $tmp = $graphObject->getParameters($value, array($graphObject->getUniqueLabelField()));
                     
                     if (!count($tmp)) {

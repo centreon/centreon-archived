@@ -254,7 +254,7 @@
 		$buffer->writeElement("rsd", CentreonUtils::escapeSecure($ndo['service_description']));
 		$buffer->writeElement("svc_id", $ndo["service_id"]);
         $buffer->writeElement("hid", $ndo["host_id"]);
-		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $ndo["service_description"], $pearDBO));
+		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_id"], $ndo["service_id"], $pearDBO));
 		$buffer->writeElement("sc", $color_service);
 		$buffer->writeElement("cs", _($tab_status_svc[$ndo["state"]]));
 		$buffer->writeElement("po", CentreonUtils::escapeSecure($ndo["plugin_output"]));

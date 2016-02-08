@@ -202,12 +202,24 @@ class CentreonConfigurationObjects extends CentreonWebService
     protected function retrieveRelatedValues($relationObject, $id)
     {
         $tmpValues = array();
-        
-        $queryValuesRetrieval = "SELECT $relationObject[field] FROM $relationObject[table] WHERE $relationObject[comparator] = $id";
+
+        $fields = array();
+        $fields[] = $relationObject['field'];
+        if (isset($relationObject['additionalField'])) {
+            $fields[] = $relationObject['additionalField'];
+        }
+
+        $queryValuesRetrieval = "SELECT " . implode(', ', $fields) . " "
+            . "FROM " . $relationObject['table'] . " "
+            . "WHERE " . $relationObject['comparator'] . " = " . $id;
         $resRetrieval = $this->pearDB->query($queryValuesRetrieval);
         while ($row = $resRetrieval->fetchRow()) {
             if (!empty($row[$relationObject['field']])) {
-                $tmpValues[] = $row[$relationObject['field']];
+                $tmpValue = $row[$relationObject['field']];
+                if (isset($relationObject['additionalField'])) {
+                    $tmpValue .= '-' . $row[$relationObject['additionalField']];
+                }
+                $tmpValues[] = $tmpValue;
             }
         }
         

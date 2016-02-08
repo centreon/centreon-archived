@@ -66,7 +66,7 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
         $this->_defaultSelectedOptions = '';
         $this->_multipleHtml = '';
         $this->_allowClear = true; 
-        $this->HTML_QuickForm_select2($elementName, $elementLabel, $options, $attributes);
+        $this->HTML_QuickForm_select($elementName, $elementLabel, $options, $attributes);
         $this->_elementHtmlName = $this->getName();
         $this->_defaultDataset = array();
         $this->_defaultDatasetOptions = array();
@@ -87,7 +87,7 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
         $jsPost = '</script>';
         $strJsInitBegining = '$currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").select2({';
         
-        $mainJsInit .= 'tags: true,';
+        $mainJsInit = 'tags: true,';
         $mainJsInit .= 'allowClear: true,';
         
         $label = $this->getLabel();

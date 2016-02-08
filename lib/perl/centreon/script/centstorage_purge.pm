@@ -134,9 +134,9 @@ sub run {
     
    # Put to_delete in index_data
    $self->{logger}->writeLogInfo("Purging centstorage.index_data table...");
-   $self->{csdb}->do("UPDATE index_data SET to_delete = '1' WHERE 
-    ISNULL((SELECT 1 FROM centreon.hostgroup_relation hr, centreon.host_service_relation hsr WHERE hr.host_host_id = index_data.host_id AND hr.hostgroup_hg_id = hsr.hostgroup_hg_id AND hsr.service_service_id = index_data.service_id LIMIT 1)) AND 
-    ISNULL((SELECT 1 FROM centreon.host_service_relation hsr WHERE hsr.host_host_id = index_data.host_id AND hsr.service_service_id = index_data.service_id LIMIT 1))
+   $self->{csdb}->do("UPDATE index_data SET to_delete = '1' WHERE
+    ISNULL((SELECT 1 FROM " . $self->{centreon_config}->{centreon_db} . ".hostgroup_relation hr, " . $self->{centreon_config}->{centreon_db} . ".host_service_relation hsr WHERE hr.host_host_id = index_data.host_id AND hr.hostgroup_hg_id = hsr.hostgroup_hg_id AND hsr.service_service_id = index_data.service_id LIMIT 1)) AND
+    ISNULL((SELECT 1 FROM " . $self->{centreon_config}->{centreon_db} . ".host_service_relation hsr WHERE hsr.host_host_id = index_data.host_id AND hsr.service_service_id = index_data.service_id LIMIT 1))
    ");
    $self->{logger}->writeLogInfo("Done");
 }

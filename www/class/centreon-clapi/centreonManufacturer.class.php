@@ -34,6 +34,7 @@
  * SVN : $URL$
  * SVN : $Id$
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
@@ -57,7 +58,7 @@ class CentreonManufacturer extends CentreonObject
     public function __construct()
     {
         parent::__construct();
-        $this->object = new Centreon_Object_Manufacturer();
+        $this->object = new \Centreon_Object_Manufacturer();
         $this->params = array();
         $this->insertParams = array('name', 'alias');
         $this->action = "VENDOR";

@@ -116,6 +116,11 @@ class CentreonAuthLDAP {
         if (!isset($this->contactInfos['contact_ldap_dn']) || $this->contactInfos['contact_ldap_dn'] == '') {
             $this->contactInfos['contact_ldap_dn'] = $this->ldap->findUserDn($this->contactInfos['contact_alias']);
             $newUser = true;
+        /* Validate if user exists in this resource */
+        } else if (isset($this->contactInfos['contact_ldap_dn'])
+            && $this->contactInfos['contact_ldap_dn'] != ''
+            && $this->ldap->findUserDn($this->contactInfos['contact_alias']) !== $this->contactInfos['contact_ldap_dn']) {
+            return 2;
         }
 
         /*
@@ -172,10 +177,10 @@ class CentreonAuthLDAP {
                 default:
                     if ($this->debug)
                         $this->CentreonLog->insertLog(3, "LDAP AUTH : LDAP don't like you, sorry");
-                    if ($this->firstCheck && $this->updateUserDn()) {
+                    /*if ($this->firstCheck && $this->updateUserDn()) {
                         $this->firstCheck = false;
                         return $this->checkPassword();
-                    }
+                    }*/
                     return 0;
                     break;
             }

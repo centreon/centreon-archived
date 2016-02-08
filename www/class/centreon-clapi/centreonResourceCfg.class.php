@@ -35,6 +35,8 @@
  * SVN : $URL$
  * SVN : $Id$
  */
+namespace CentreonClapi;
+
 require_once "centreonObject.class.php";
 require_once "centreonInstance.class.php";
 require_once "Centreon/Object/Resource/Resource.php";
@@ -66,8 +68,8 @@ class CentreonResourceCfg extends CentreonObject {
     public function __construct() {
         parent::__construct();
         $this->instanceObj = new CentreonInstance();
-        $this->relObj = new Centreon_Object_Relation_Instance_Resource();
-        $this->object = new Centreon_Object_Resource();
+        $this->relObj = new \Centreon_Object_Relation_Instance_Resource();
+        $this->object = new \Centreon_Object_Resource();
         $this->params = array('resource_line' => '',
             'resource_comment' => '',
             'resource_activate' => '1'

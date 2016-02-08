@@ -35,6 +35,7 @@
  * SVN : $Id: centreonHost.class.php 25 2010-03-30 05:52:19Z jmathis $
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonSeverityAbstract.class.php";
@@ -63,7 +64,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
     public function __construct()
     {
         parent::__construct();
-        $this->object = new Centreon_Object_Service_Category();
+        $this->object = new \Centreon_Object_Service_Category();
         $this->params = array('sc_activate' => '1');
         $this->insertParams = array('sc_name', 'sc_description');
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey(), 'level', 'icon_id'));
@@ -156,9 +157,9 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
         }
         $categoryId = $hcIds[0];
         if (preg_match("/^(get|add|del)(service|servicetemplate)\$/", $name, $matches)) {
-            $obj = new Centreon_Object_Service();
-            $relobj = new Centreon_Object_Relation_Service_Category_Service();
-            $hostServiceRel = new Centreon_Object_Relation_Host_Service();
+            $obj = new \Centreon_Object_Service();
+            $relobj = new \Centreon_Object_Relation_Service_Category_Service();
+            $hostServiceRel = new \Centreon_Object_Relation_Host_Service();
             if ($matches[1] == "get") {
                 $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $hcIds);
                 if ($matches[2] == "servicetemplate") {
@@ -242,9 +243,9 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
 	{
 	    parent::export();
 	    $scs = $this->object->getList(array($this->object->getPrimaryKey(), $this->object->getUniqueLabelField()));
-	    $relobj = new Centreon_Object_Relation_Service_Category_Service();
-	    $hostServiceRel = new Centreon_Object_Relation_Host_Service();
-	    $svcObj = new Centreon_Object_Service();
+	    $relobj = new \Centreon_Object_Relation_Service_Category_Service();
+	    $hostServiceRel = new \Centreon_Object_Relation_Host_Service();
+	    $svcObj = new \Centreon_Object_Service();
 	    foreach ($scs as $sc) {
 	        $scId = $sc[$this->object->getPrimaryKey()];
 	        $scName = $sc[$this->object->getUniqueLabelField()];

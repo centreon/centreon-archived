@@ -293,9 +293,14 @@ class CentreonCustomView
     public function updateCustomView($params)
     {
         if ($this->checkPermission($params['custom_view_id']) === true) {
+            $public = 0;
+            if (isset($params['public'])) {
+                $public = $params['public'];
+            }
             $query = "UPDATE custom_views SET
             		  	name   = '".$this->db->escape($params['name'])."',
-            		  	layout = '".$this->db->escape($params['layout']['layout'])."'
+            		  	layout = '".$this->db->escape($params['layout']['layout'])."',
+                        public = '".intval($public)."'    
             		  WHERE custom_view_id = ".$this->db->escape($params['custom_view_id']);
             $this->db->query($query);
         }
@@ -531,6 +536,20 @@ class CentreonCustomView
     {
         $query = "DELETE FROM custom_view_user_relation
         		  WHERE usergroup_id = " . $this->db->escape($params['usergroup_id']) . "
+        		  AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
+        $this->db->query($query);
+    }
+    
+    /**
+     * Remove User From View
+     *
+     * @param array $params
+     * @return void
+     */
+    public function removeViewForAllUser($params)
+    {
+        $query = "DELETE FROM custom_view_user_relation
+        		  WHERE user_id <> " . $this->db->escape($params['user_id']) . "
         		  AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
         $this->db->query($query);
     }

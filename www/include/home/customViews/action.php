@@ -81,6 +81,18 @@ try {
         if (isset($_POST['widget_id'])) {
             $widgetObj->udpateViewWidgetRelations($customViewId, $_POST['widget_id']);
         }
+        //update share
+        $public = 0;
+        if (isset($_POST['public'])) {
+            $public = $_POST['public'];
+        }
+        
+        if ($public == 0) {
+            if (!isset($_POST['user_id'])) {
+                $_POST['user_id'] = $centreon->user->user_id;
+            }
+            $viewObj->removeViewForAllUser($_POST);
+        }
     } elseif ($action == "share") {
         $viewObj->shareCustomView($_POST);
     } elseif ($action == "remove") {

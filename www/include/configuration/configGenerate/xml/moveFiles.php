@@ -106,10 +106,8 @@ try {
     /*  Set new error handler */
     set_error_handler('log_error');
 
-    $centcore_pipe = "/var/lib/centreon/centcore.cmd";
-	if ($centcore_pipe == "/centcore.cmd") {
-		$centcore_pipe = "/var/lib/centreon/centcore.cmd";
-	}
+    # Centcore pipe path
+    $centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
 
     $xml = new CentreonXML();
     $pearDB = new CentreonDB();

@@ -35,6 +35,7 @@
  * SVN : $Id: centreonHost.class.php 25 2010-03-30 05:52:19Z jmathis $
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonACL.class.php";
@@ -67,7 +68,7 @@ class CentreonServiceGroup extends CentreonObject
     public function __construct()
 	{
         parent::__construct();
-        $this->object = new Centreon_Object_Service_Group();
+        $this->object = new \Centreon_Object_Service_Group();
         $this->params = array('sg_activate' => '1');
         $this->insertParams = array('sg_name', 'sg_alias');
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey()));
@@ -162,13 +163,13 @@ class CentreonServiceGroup extends CentreonObject
         $sgId = $sgIds[0];
         if (preg_match("/^(get|add|del|set)(service|hostgroupservice)\$/", $name, $matches)) {
             if ($matches[2] == "service") {
-                $relobj = new Centreon_Object_Relation_Service_Group_Service();
-                $obj = new Centreon_Object_Relation_Host_Service();
+                $relobj = new \Centreon_Object_Relation_Service_Group_Service();
+                $obj = new \Centreon_Object_Relation_Host_Service();
                 $existingRelationIds = $relobj->getHostIdServiceIdFromServicegroupId($sgId);
                 $hstring = "host_id";
             } else {
-                $relobj = new Centreon_Object_Relation_Service_Group_Host_Group_Service();
-                $obj = new Centreon_Object_Relation_Host_Group_Service();
+                $relobj = new \Centreon_Object_Relation_Service_Group_Host_Group_Service();
+                $obj = new \Centreon_Object_Relation_Host_Group_Service();
                 $existingRelationIds = $relobj->getHostGroupIdServiceIdFromServicegroupId($sgId);
                 $hstring = "hostgroup_id";
             }
@@ -289,10 +290,10 @@ class CentreonServiceGroup extends CentreonObject
 	{
 	    parent::export();
 	    $sgs = $this->object->getList(array($this->object->getPrimaryKey(), $this->object->getUniqueLabelField()));
-	    $relobjSvc = new Centreon_Object_Relation_Service_Group_Service();
-        $objSvc = new Centreon_Object_Relation_Host_Service();
-        $relobjHgSvc = new Centreon_Object_Relation_Service_Group_Host_Group_Service();
-        $objHgSvc = new Centreon_Object_Relation_Host_Group_Service();
+	    $relobjSvc = new \Centreon_Object_Relation_Service_Group_Service();
+        $objSvc = new \Centreon_Object_Relation_Host_Service();
+        $relobjHgSvc = new \Centreon_Object_Relation_Service_Group_Host_Group_Service();
+        $objHgSvc = new \Centreon_Object_Relation_Host_Group_Service();
 
 	    foreach ($sgs as $sg) {
     	    $sgId = $sg[$this->object->getPrimaryKey()];

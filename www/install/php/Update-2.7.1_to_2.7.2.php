@@ -1,6 +1,6 @@
 <?php
-/**
- * Copyright 2005-2015 CENTREON
+/*
+ * Copyright 2005-2013 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give CENTREON
+ * As a special exception, the copyright holders of this program give Centreon
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of CENTREON choice, provided that
- * CENTREON also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -31,43 +31,21 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.modules.centreon.com/centreon-clapi/trunk/www/modules/centreon-clapi/core/class/centreonHost.class.php $
- * SVN : $Id: centreonHost.class.php 241 2012-01-16 21:48:49Z jmathis $
  *
  */
-namespace CentreonClapi;
 
-require_once "centreonHost.class.php";
-
-class CentreonHostTemplate extends CentreonHost
-{
-    public static $aDepends = array(
-        'CMD',
-        'TP',
-        'TRAP',
-        'INSTANCE'
-    );
-
-    /**
-     * Constructor
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->params['host_register'] = '0';
-        $this->register = 0;
-        $this->action = "HTPL";
-    }
-
-    /**
-     * Will throw an exception if set instance is called
-     *
-     * @throws CentreonClapiException
-     */
-    public function setinstance()
-    {
-        throw new CentreonClapiException(self::UNKNOWN_METHOD);
-    }
+#4107
+if (isset($pearDB)) {
+    $querySelect = "SELECT meta_id, meta_name FROM meta_service ";
+    $res = $pearDB->query($querySelect);
+    while ($row = $res->fetchRow()) {
+        $queryUpdate = "UPDATE IGNORE service s, host h, host_service_relation hsr SET s.service_description = 'meta_" . $row['meta_id'] . "' "
+            . "WHERE h.host_name = '_Module_Meta' "
+            . "AND s.service_description = '" . $row['meta_name'] . "' "
+            . "AND h.host_id = hsr.host_host_id "
+            . "AND s.service_id = hsr.service_service_id;";
+        $pearDB->query($queryUpdate);
+    } 
 }
+
+?>

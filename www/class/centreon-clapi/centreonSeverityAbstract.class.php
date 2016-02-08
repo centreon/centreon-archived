@@ -1,4 +1,5 @@
 <?php
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 

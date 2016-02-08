@@ -34,6 +34,8 @@
  * SVN : $URL$
  * SVN : $Id$
  */
+namespace CentreonClapi;
+
 require_once "centreonObject.class.php";
 require_once "centreonInstance.class.php";
 require_once "Centreon/Object/Ndo2db/Ndo2db.php";
@@ -57,7 +59,7 @@ class CentreonNdo2dbCfg extends CentreonObject
     {
         parent::__construct();
         $this->instanceObj = new CentreonInstance();
-        $this->object = new Centreon_Object_Ndo2db();
+        $this->object = new \Centreon_Object_Ndo2db();
         $this->params = array(  'ndo2db_user'               => 'nagios',
                                 'ndo2db_group'	            => 'nagios',
                                 'local'                     => '0',

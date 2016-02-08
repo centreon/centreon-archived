@@ -35,6 +35,7 @@
  * SVN : $Id$
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonContact.class.php";
 

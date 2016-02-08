@@ -34,6 +34,8 @@
  * SVN : $URL$
  * SVN : $Id$
  */
+namespace CentreonClapi;
+
 require_once "centreonObject.class.php";
 require_once "Centreon/Object/Acl/Group.php";
 require_once "Centreon/Object/Acl/Resource.php";
@@ -101,9 +103,9 @@ class CentreonACLResource extends CentreonObject
     public function __construct()
     {
         parent::__construct();
-        $this->object = new Centreon_Object_Acl_Resource();
-        $this->aclGroupObj = new Centreon_Object_Acl_Group();
-        $this->relObject = new Centreon_Object_Relation_Acl_Group_Resource();
+        $this->object = new \Centreon_Object_Acl_Resource();
+        $this->aclGroupObj = new \Centreon_Object_Acl_Group();
+        $this->relObject = new \Centreon_Object_Relation_Acl_Group_Resource();
 
         $this->params = array(  'all_hosts'           => '0',
                                 'all_hostgroups'  	  => '0',
@@ -232,36 +234,36 @@ class CentreonACLResource extends CentreonObject
 
         switch ($type) {
             case "host":
-                $this->resourceTypeObject = new Centreon_Object_Host();
-                $this->resourceTypeObjectRelation = new Centreon_Object_Relation_Acl_Resource_Host();
+                $this->resourceTypeObject = new \Centreon_Object_Host();
+                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Host();
                 break;
             case "hostgroup":
-                $this->resourceTypeObject = new Centreon_Object_Host_Group();
-                $this->resourceTypeObjectRelation = new Centreon_Object_Relation_Acl_Resource_Host_Group();
+                $this->resourceTypeObject = new \Centreon_Object_Host_Group();
+                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Host_Group();
                 break;
             case "hostcategory":
-                $this->resourceTypeObject = new Centreon_Object_Host_Category();
-                $this->resourceTypeObjectRelation = new Centreon_Object_Relation_Acl_Resource_Host_Category();
+                $this->resourceTypeObject = new \Centreon_Object_Host_Category();
+                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Host_Category();
                 break;
             case "servicegroup":
-                $this->resourceTypeObject = new Centreon_Object_Service_Group();
-                $this->resourceTypeObjectRelation = new Centreon_Object_Relation_Acl_Resource_Service_Group();
+                $this->resourceTypeObject = new \Centreon_Object_Service_Group();
+                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Service_Group();
                 break;
             case "servicecategory":
-                $this->resourceTypeObject = new Centreon_Object_Service_Category();
-                $this->resourceTypeObjectRelation = new Centreon_Object_Relation_Acl_Resource_Service_Category();
+                $this->resourceTypeObject = new \Centreon_Object_Service_Category();
+                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Service_Category();
                 break;
             case "metaservice":
-                $this->resourceTypeObject = new Centreon_Object_Meta_Service();
-                $this->resourceTypeObjectRelation = new Centreon_Object_Relation_Acl_Resource_Meta_Service();
+                $this->resourceTypeObject = new \Centreon_Object_Meta_Service();
+                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Meta_Service();
                 break;
             case "instance":
-                $this->resourceTypeObject = new Centreon_Object_Instance();
-                $this->resourceTypeObjectRelation = new Centreon_Object_Relation_Acl_Resource_Instance();
+                $this->resourceTypeObject = new \Centreon_Object_Instance();
+                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Instance();
                 break;
             case "excludehost":
-                $this->resourceTypeObject = new Centreon_Object_Host();
-                $this->resourceTypeObjectRelation = new Centreon_Object_Relation_Acl_Resource_Host_Exclude();
+                $this->resourceTypeObject = new \Centreon_Object_Host();
+                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Host_Exclude();
                 break;
             default:
                 throw new CentreonClapiException(self::UNKNOWN_METHOD);
