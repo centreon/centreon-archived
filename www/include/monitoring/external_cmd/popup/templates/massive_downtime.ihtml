@@ -1,6 +1,6 @@
 {$form.javascript}
 <form {$form.attributes}>
-	<div align=center>
+	<div id="popupDowntime" align=center>
 		 <table class="table">
                      <tr><td colspan='2' class="FormHeader"><h3 style="color: #00bfb3;">{$form.header.title}</h3></td></tr>
 			<tr>

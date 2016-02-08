@@ -292,67 +292,79 @@ var _criticality_id = 0;
 	    } else if (window.ActiveXObject) {
 	    	xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 	    }
-		var comment = encodeURIComponent(document.getElementById('popupComment').value.trim());
+
+            var searchElement = jQuery(document);
+            if (_cmd == '70' || _cmd == '72') {
+                searchElement = jQuery('#popupAcknowledgement');
+            } else if (_cmd == '74' || _cmd == '75') {
+                searchElement = jQuery('#popupDowntime');
+            }
+
+		var comment = encodeURIComponent(searchElement.find('#popupComment').val().trim());
 		if (comment == "") {
 			alert(_popup_no_comment_msg);
 			return 0;
 		}
 		if (_cmd == '70' || _cmd == '72') {
-			if (document.getElementById('sticky')) {
-				var sticky = document.getElementById('sticky').checked;
-			} else {
-				var sticky = 1;
+                        var sticky = 0;
+			if (searchElement.find('#sticky').length && searchElement.find('#sticky').is(':checked')) {
+			    sticky = true;
 			}
-			if (document.getElementById('persistent')) {
-				var persistent = document.getElementById('persistent').checked;
-			} else {
-				var persistent = 1;
+
+                        var persistent = 0;
+			if (searchElement.find('#persistent').length && searchElement.find('#persistent').is(':checked')) {
+			    persistent = true;
 			}
-			if (document.getElementById('notify')) {
-				var notify = document.getElementById('notify').checked;
-			} else {
-				var notify = 1;
+
+                        var notify = 0;
+			if (searchElement.find('#notify').length && searchElement.find('#notify').is(':checked')) {
+                            notify = true;
 			}
-			if (document.getElementById('force_check')) {
-	             var force_check = document.getElementById('force_check').checked;
-	     	} else {
-	             var force_check = 1;
-	        }
+
+                        var force_check = 0;
+			if (searchElement.find('#force_check').length && searchElement.find('#force_check').is(':checked')) {
+	                    force_check = true;
+	                }
 
 			var ackhostservice = 0;
-			if (document.getElementById('ackhostservice')) {
-				ackhostservice = document.getElementById('ackhostservice').checked;
+			if (searchElement.find('#ackhostservice').length && searchElement.find('#ackhostservice').is(':checked')) {
+			    ackhostservice = true;
 			}
 
-			var author = document.getElementById('author').value;
+			var author = jQuery('#author').val();
 
 			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author  + _getVar, true);
 		} else if (_cmd == '74' || _cmd == '75') {
+
 			var downtimehostservice = 0;
-			if (document.getElementById('downtimehostservice')) {
-				downtimehostservice = document.getElementById('downtimehostservice').checked;
+			if (searchElement.find('#downtimehostservice').length && searchElement.find('#downtimehostservice').is(':checked')) {
+			    downtimehostservice = true;
 			}
-			if (document.getElementById('fixed')) {
-				var fixed = document.getElementById('fixed').checked;
-			} else {
-				var fixed = 0;
+
+                        var fixed = 0;
+			if (searchElement.find('#fixed').length && searchElement.find('#fixed').is(':checked')) {
+			    fixed = true;
 			}
-			var start = document.getElementById('start').value+' '+document.getElementById('start_time').value;
-			var end = document.getElementById('end').value+' '+document.getElementById('end_time').value;
-			var author = document.getElementById('author').value;
-			var duration = document.getElementById('duration').value;
-            var duration_scale = document.getElementById('duration_scale').value;
-            var tmp = document.querySelector('input[name="host_or_centreon_time[host_or_centreon_time]"]:checked');
-            var host_or_centreon_time = "0";
-            if(tmp !== null && typeof tmp !== "undefined" ){
-                host_or_centreon_time = tmp.value;
-            }
-			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&comment=" + comment + "&start="+ start + "&end=" + end + "&host_or_centreon_time=" + host_or_centreon_time +  "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
-		}
-		xhr_cmd.send(null);
-        window.currentPopin.centreonPopin("close");
-		unsetCheckboxes();
-	}
+
+			var start = searchElement.find('#start').val() + ' ' + searchElement.find('#start_time').val();
+			var end = searchElement.find('#end').val() + ' ' + searchElement.find('#end_time').val();
+			var author = jQuery('#author').val();
+			var duration = searchElement.find('#duration').val();
+                        var duration_scale = searchElement.find('#duration_scale').val();
+
+                        var host_or_centreon_time = "0";
+                        if (searchElement.find('[name="host_or_centreon_time"]').length && searchElement.find('[name="host_or_centreon_time"]').is(':checked')) {
+                            host_or_centreon_time = "1";
+                        }
+
+                        xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&comment=" + comment + "&start="+ start + "&end=" + end + "&host_or_centreon_time=" + host_or_centreon_time +  "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
+                    }
+
+       xhr_cmd.send(null);
+
+       window.currentPopin.centreonPopin("close");
+            unsetCheckboxes();
+       }
 
 	function toggleFields(fixed)
 	{
