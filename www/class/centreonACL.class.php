@@ -1363,11 +1363,13 @@ class CentreonACL {
                 $query = "SELECT acl.host_id, acl.service_id, s.description "
                     . "FROM centreon_acl acl "
                     . "LEFT JOIN services s on acl.service_id = s.service_id "
-                    . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") ";
+                    . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") "
+                    . "GROUP BY acl.host_id, acl.service_id ";
             } else {
                 $query = "SELECT host_id, service_id "
                     . "FROM centreon_acl "
-                    . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") ";
+                    . "WHERE group_id IN (" . $this->getAccessGroupsString() . ") "
+                    . "GROUP BY host_id, service_id ";
             }
 
             $DBRESULT = $pearDBMonitoring->query($query);
