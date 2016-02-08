@@ -259,6 +259,7 @@ var _criticality_id = 0;
 	}
 
 	function cmdCallback(cmd) {
+            jQuery('.centreon-popin').remove();
 		var keyz;
 
 		_cmd = cmd;
