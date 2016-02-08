@@ -1784,7 +1784,7 @@ td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
     overflow: hidden;
 }
 
-.elemBloc label {
+.elemBloc:not(.advancedForm) label {
     cursor: pointer;
     position: relative;
     padding-left: 16px;
@@ -1797,13 +1797,11 @@ td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
     overflow: hidden;
 }
 
-.elemBloc label:before {
+.elemBloc:not(.advancedForm) label:before {
     content: "";
     display: inline-block;
-
     width: 10px;
     height: 10px;
-
     margin-right: 10px;
     position: absolute;
     left: 0;
@@ -1812,7 +1810,7 @@ td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
     border: 1px solid #bcbdc0;
 }
 
-.elemBloc input.included[type=checkbox]:checked + label:before {
+input.included[type=checkbox]:checked + label:before {
     content: "\2714";
     color: #fff;
     text-align: center;
@@ -1821,7 +1819,7 @@ td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
     border: 1px solid #88b917;
 }
 
-.elemBloc input.excluded[type=checkbox]:checked + label:before {
+input.excluded[type=checkbox]:checked + label:before {
     content: "\2716";
     color: #fff;
     text-align: center;
@@ -1829,3 +1827,5 @@ td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
     background-color: #e00b3d;
     border: 1px solid #e00b3d;
 }
+
+
