@@ -295,9 +295,9 @@ var _criticality_id = 0;
 
             var searchElement = jQuery(document);
             if (_cmd == '70' || _cmd == '72') {
-                searchElement = jQuery('#popupAcknowledgement');
+                searchElement = jQuery(':visible #popupAcknowledgement');
             } else if (_cmd == '74' || _cmd == '75') {
-                searchElement = jQuery('#popupDowntime');
+                searchElement = jQuery(':visible #popupDowntime');
             }
 
 		var comment = encodeURIComponent(searchElement.find('#popupComment').val().trim());
