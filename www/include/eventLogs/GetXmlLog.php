@@ -480,7 +480,6 @@ foreach ($tab_id as $openid) {
     }
 }
 
-/*
 if (!$filters) {
     # Access to all hosts (with acl)
     $tab_host_ids = array_keys($lca["LcaHost"]);
@@ -492,7 +491,6 @@ if (!$filters) {
         }
     }
 }
-*/
 
 // Build final request
 $req = "SELECT SQL_CALC_FOUND_ROWS DISTINCT logs.* FROM logs ".$innerJoinEngineLog.
