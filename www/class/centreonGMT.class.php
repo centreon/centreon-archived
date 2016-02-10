@@ -373,9 +373,10 @@ class CentreonGMT {
     {
         $locations = $this->getHostLocations();
 
-        if (isset($locations[$hostId])) {
+        if (isset($locations[$hostId]) && $locations[$hostId] != '0') {
             $date = $this->getUTCDate($date, $locations[$hostId], $reverseOffset);
         }
+
         return date($dateFormat, $date);
     }
 
@@ -390,7 +391,7 @@ class CentreonGMT {
     {
         $locations = $this->getHostLocations();
 
-        if (isset($locations[$hostId])) {
+        if (isset($locations[$hostId]) && $locations[$hostId] != '0') {
             $date = $this->getUTCDate($date, $locations[$hostId]);
         }
  
