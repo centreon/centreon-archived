@@ -960,6 +960,9 @@ sub checkMatchingRules {
     if ($matching_boolean == 0 && $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment_default} == 1) {
         return 1;
     }
+    if ($matching_boolean == 1 && $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment_default} == 2) {
+        return 1;
+    }
     return 0;
 }
 
