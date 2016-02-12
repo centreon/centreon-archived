@@ -805,7 +805,7 @@ class CentreonDowntime
     public function doSchedule($id, $currentHostDate, $start, $end)
     {
         if (!defined("_DELAY_")) {
-            define('_DELAY_', '600'); /* Default 10 minutes */
+            define('_DELAY_', '600');
         }
 
         $periods = $this->getPeriods($id);
@@ -819,14 +819,17 @@ class CentreonDowntime
             }
 
             $add = false;
-           
-            /*
-             * If start time is 00:00 check with tomorrow
-             */
-            if ($period['start_time'] == '00:00' && ($currentHostDate->getTimestamp() + _DELAY_) > (strtotime('00:00') + 3600 * 24)) {
-                $currentHostDate->setTimestamp($currentHostDate->getTimestamp() + _DELAY_);
+
+            $start_tomorrow = false;
+            if ($period['start_time'] == '00:00') {
+                $start_tomorrow = true;
             }
-            
+
+            $finish_tomorrow = false;
+            if ($period['end_time'] == '24:00') {
+                $finish_tomorrow = true;
+            }
+           
             if ($period['month_cycle'] == 'none') {
                 $dateOfMonth = $currentHostDate->format('j');
 
@@ -863,13 +866,7 @@ class CentreonDowntime
             }
 
             if ($add) {
-                /*
-                 * If start time is 00:00 the time is for tomorrow
-                 */
-                $tomorrow = false;
                 $timestamp_start = new DateTime();
-                $timestamp_start_timezone = $timestamp_start->getTimezone();
-                $timestamp_start_offset = $timestamp_start->getOffset() - $currentHostDate->getOffset();
                 $timestamp_start->setTimezone($currentHostDate->getTimezone());
                 $sStartTime = explode(":", $period['start_time']);
                 if (count($sStartTime) != 2) {
@@ -877,12 +874,10 @@ class CentreonDowntime
                 }
 
                 $timestamp_start->setTime($sStartTime[0], $sStartTime[1], '00');
-
-                # Add one day if time is midnight
-                if ($period['start_time'] == '00:00') {
+                if ($start_tomorrow) {
                     $timestamp_start->add(new DateInterval('P1D'));
-                    $tomorrow = true;
                 }
+
 
                 $oInterval = $currentHostDate->diff($timestamp_start);
                 $interval =  $oInterval->days * 86400 + $oInterval->h * 3600 + $oInterval->i * 60 + $oInterval->s;
@@ -900,13 +895,7 @@ class CentreonDowntime
                     }
 
                     $timestamp_stop->setTime($sEndTime[0], $sEndTime[1], '00');
-
-                    # Add one day if time is midnight
-                    if ($period['end_time'] == '24:00') {
-                        $timestamp_stop->add(new DateInterval('P1D'));
-                    }
-
-                    if ($tomorrow) {
+                    if ($finish_tomorrow) {
                         $timestamp_stop->add(new DateInterval('P1D'));
                     }
 
