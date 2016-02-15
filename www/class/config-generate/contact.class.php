@@ -229,6 +229,8 @@ class Contact extends AbstractObject {
         $period = Timeperiod::getInstance();
         $this->contacts[$contact_id]['host_notification_period'] = $period->generateFromTimeperiodId($this->contacts[$contact_id]['host_notification_period_id']);
         $this->contacts[$contact_id]['service_notification_period'] = $period->generateFromTimeperiodId($this->contacts[$contact_id]['service_notification_period_id']);
+        $this->contacts[$contact_id]['host_notifications_enabled'] = $this->contacts[$contact_id]['enable_notifications'];
+        $this->contacts[$contact_id]['service_notifications_enabled'] = $this->contacts[$contact_id]['enable_notifications'];
         $oTimezone = Timezone::getInstance();
         $sTimezone = $oTimezone->getTimezoneFromId($this->contacts[$contact_id]['contact_location']);
         if (!is_null($sTimezone)) {
