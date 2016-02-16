@@ -1780,7 +1780,7 @@ td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
 
 .elemBloc {
     border: 1px solid #D1D2D4;
-    height: 122px;
+    height: 174px;
     overflow: hidden;
 }
 
@@ -1826,6 +1826,37 @@ input.excluded[type=checkbox]:checked + label:before {
     line-height: 10px;
     background-color: #e00b3d;
     border: 1px solid #e00b3d;
+}
+
+.advancedForm {
+   display: none;
+}
+
+.checkbox-tpl {
+    padding-bottom: 3px ;
+}
+.checkbox-tpl:hover {
+    background-color: #e7e7e8;
+}
+
+.editBt {
+    background: url("../../img/icons/edit_white.png") no-repeat center scroll #009fdf;
+    background-size: 10px 10px;
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: bottom;
+    border-radius: 2px;
+    float: left;
+    margin-top: 3px;
+    margin-left: 3px;
+    cursor: pointer;
+}
+
+.editBt.disabled {
+    background: url("../../img/icons/edit_white.png") no-repeat center scroll #d1d2d4;
+    background-size: 10px 10px;
+    cursor: no-drop;
 }
 
 
