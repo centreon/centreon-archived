@@ -186,6 +186,9 @@ class CentreonWebService
             case 405:
                 header("HTTP/1.1 405 Method not allowed");
                 break;
+            case 409:
+                header("HTTP/1.1 409 Conflict");
+                break;
         }
         header('Content-type: application/json');
         print json_encode($data);

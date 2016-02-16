@@ -57,3 +57,9 @@ class RestNotFoundException extends RestException {
 class RestMethodNotAllowedException extends RestException {
     protected $code = 405;
 }
+class RestConflictException extends RestException {
+    protected $code = 409;
+}
+class RestInternalServerErrorException extends RestException {
+    protected $code = 500;
+}
