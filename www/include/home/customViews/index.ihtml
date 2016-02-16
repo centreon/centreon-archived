@@ -1,11 +1,11 @@
 <div id='globalView'>
-  {if $aclParameters}
+  {if $aclParameters == 1}
   <div class="toggleEdit">
     <a href="#" title="{$editMode}"><img src="./img/icons/edit_mode.png" class="ico-14"></a>
   </div>
   {/if}
   <!-- Action bar -->
-  {if $aclAddView}
+  {if $aclAddView == 1}
   <div id='actionBar' style="display: none;">
     <!-- Button for add a view -->
     <div class="cntn">
@@ -60,7 +60,7 @@
     {/if}
     
     <!-- Button for edit a view -->
-    {if $aclEdit} 
+    {if $aclEdit == 1} 
     <div class="cntn">
       <button class='editView btnAction btnExtraAction btc bt_info'>{t}Edit view{/t}</button>
       <div class="toggle_wrapper inactive" id="editView">
@@ -100,16 +100,16 @@
     </div>
     {/if}
     <!-- Button for delete a view -->
-    {if $aclDeleteView}
+    {if $aclDeleteView == 1}
     <button class='deleteView btnExtraAction btc bt_danger'>{t}Delete view{/t}</button>
     {/if}
     <!-- Button for set default a view -->
-    {if $aclSetDefault}
+    {if $aclSetDefault == 1}
     <button class='setDefault btnExtraAction btc bt_default'>{t}Set default{/t}</button>
     {/if}
     
     <!-- Button for share a view -->
-    {if $aclShare} 
+    {if $aclShare == 1} 
     <div class="cntn">
       <button class='shareView btnAction btnExtraAction btc bt_info'>{t}Share view{/t}</button>
       <div class="toggle_wrapper inactive" id="shareView">
@@ -166,7 +166,7 @@
     </div>
     {/if}
     <!-- Button for add a widget -->
-    {if $aclAddWidget}
+    {if $aclAddWidget == 1}
     <div class="cntn">
       <button class='addWidget btnAction btnExtraAction btc bt_success'>{t}Add widget{/t}</button>
       <div class="toggle_wrapper inactive" id="addwdgt">
@@ -222,7 +222,7 @@
     </div>
     {/if}
     <!-- Button for activate rotation -->
-    {if $aclRotation} 
+    {if $aclRotation == 1} 
     <div class="cntn">
       <button class='setRotate btnAction btnExtraAction btc bt_info'>{t}Rotation{/t}</button>
       <div class="toggle_wrapper inactive" id="rotationTabs">
