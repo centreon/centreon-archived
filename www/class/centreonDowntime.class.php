@@ -895,7 +895,7 @@ class CentreonDowntime
                     }
 
                     $timestamp_stop->setTime($sEndTime[0], $sEndTime[1], '00');
-                    if ($finish_tomorrow) {
+                    if ($start_tomorrow) {
                         $timestamp_stop->add(new DateInterval('P1D'));
                     }
 
