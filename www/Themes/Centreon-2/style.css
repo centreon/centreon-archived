@@ -1847,7 +1847,6 @@ input.excluded[type=checkbox]:checked + label:before {
     display: inline-block;
     vertical-align: bottom;
     border-radius: 2px;
-    float: left;
     margin-top: 3px;
     margin-left: 3px;
     cursor: pointer;
