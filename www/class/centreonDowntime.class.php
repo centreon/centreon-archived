@@ -825,11 +825,6 @@ class CentreonDowntime
                 $start_tomorrow = true;
             }
 
-            $finish_tomorrow = false;
-            if ($period['end_time'] == '24:00') {
-                $finish_tomorrow = true;
-            }
-           
             if ($period['month_cycle'] == 'none') {
                 $dateOfMonth = $currentHostDate->format('j');
 
@@ -895,9 +890,6 @@ class CentreonDowntime
                     }
 
                     $timestamp_stop->setTime($sEndTime[0], $sEndTime[1], '00');
-                    if ($finish_tomorrow) {
-                        $timestamp_stop->add(new DateInterval('P1D'));
-                    }
 
                     $listSchedule[] = array($timestamp_start->format('c'), $timestamp_stop->format('c'));
                 }
