@@ -171,8 +171,11 @@ class ServiceTemplate extends AbstractService {
             return null;
         }
         if ($this->checkGenerate($service_id)) {
-            return $this->service_cache[$service_id]['name'];
-        }
+           // Need to go in only to check servicegroup <-> stpl link
+           $this->getServiceTemplates($this->service_cache[$service_id]);
+           $this->getServiceGroups($service_id);
+           return $this->service_cache[$service_id]['name'];
+       }
         
         $this->getImages($this->service_cache[$service_id]);
         $this->getMacros($this->service_cache[$service_id]);
