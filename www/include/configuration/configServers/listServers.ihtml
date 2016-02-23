@@ -1,4 +1,16 @@
+{literal}
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type='text/javascript'>
+
+    function applyConfiguration() {
+        jQuery('form tr').not('.row_disabled').find('input[id^="poller_"]:checked').each(function(){
+            console.log(this.id);
+        });
+    }
+
+</script>
+{/literal}
+
 <form name='form' method='POST'>
     <table class="ajaxOption table">
     <tbody>
@@ -16,15 +28,18 @@
     </table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			{ if $mode_access == 'w' }
-			<td>
+                        <td>
+			    { if $mode_access == 'w' }
 				{$msg.options} {$form.o1.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+			    { else }
+			    &nbsp;
+			    { /if }
+                            {if $mode_generate > 0}
+                            {$form.apply_configuration.html}
+                            { /if }
 			</td>
-			{ else }
-			<td>&nbsp;</td>
-			{ /if }
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
@@ -112,6 +127,8 @@
 </form>
 {literal}
 <script type='text/javascript'>
-	setDisabledRowStyle();
+
+    setDisabledRowStyle();
+
 </script>
 {/literal}
