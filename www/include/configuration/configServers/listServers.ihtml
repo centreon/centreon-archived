@@ -3,9 +3,11 @@
 <script type='text/javascript'>
 
     function applyConfiguration() {
+        var pollers = [];
         jQuery('form tr').not('.row_disabled').find('input[id^="poller_"]:checked').each(function(){
-            console.log(this.id);
+            pollers.push(this.id.substr(7));
         });
+        window.location.href = "?p=60902&poller=" + pollers.join(',');
     }
 
 </script>
