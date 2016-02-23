@@ -76,10 +76,10 @@ function log_error($errno, $errstr, $errfile, $errline)
 }
 
 try {
-    $poller = $_POST['poller'];
+    $pollers = explode(',', $_POST['poller']);
 
     $ret = array();
-    $ret['host'] = $poller;
+    $ret['host'] = $pollers;
     $ret['restart_mode'] = $_POST['mode'];
 
     chdir(_CENTREON_PATH_ . "www");
@@ -134,7 +134,7 @@ try {
                                                          'conditions' => array('ns_activate' => '1'),
                                                          'keys'       => array('id')));
     foreach ($tabs as $tab) {
-        if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
+        if (isset($ret["host"]) && ($ret["host"] == 0 || in_array($tab['id'], $ret["host"]))) {
             $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
         }
     }
