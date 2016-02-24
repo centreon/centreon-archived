@@ -2,7 +2,7 @@
 Centreon 2.7.2
 ##############
 
-Released February 23, 2016
+Released February 24, 2016
 
 The 2.7.2 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.2 follow:
 
@@ -31,3 +31,10 @@ Features and Bug Fixes
 - Fix various ACL problems
 - Fix some SQL requests
 - Fix export of Meta Services 
+
+Known Bugs
+==========
+
+- Recurrent downtimes during for more than a day are not working
+- It's impossible to remove relations between usergroup
+- With the update some widgets have to be deleted and recreated
