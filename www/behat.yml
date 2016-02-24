@@ -11,3 +11,8 @@ default:
       contexts:
         - Behat\MinkExtension\Context\MinkContext
         - GeneratePollerContext
+    pagination_select2:
+      paths: [ %paths.base%/features/PaginationSelect2.feature ]
+      contexts:
+        - Behat\MinkExtension\Context\MinkContext
+        - PaginationSelect2Context
