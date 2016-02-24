@@ -102,7 +102,6 @@ $tpl = initSmartyTpl($path, $tpl);
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 $generatePageId = 60902;
-$tpl->assign('generate_page_id', $generatePageId);
 $tpl->assign('mode_generate', $centreon->user->access->page($generatePageId));
 
 
