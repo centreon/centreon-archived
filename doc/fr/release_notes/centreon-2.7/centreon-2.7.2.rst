@@ -36,5 +36,5 @@ Known Bugs
 ==========
 
 - Recurrent downtimes during for more than a day are not working
-- It's impossible to remove relations between usergroup
+- It's impossible to remove relations between usergroupi and custom views
 - With the update some widgets have to be deleted and recreated
