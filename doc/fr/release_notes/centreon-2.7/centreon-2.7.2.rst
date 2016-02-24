@@ -20,7 +20,6 @@ Features and Bug Fixes
 ======================
 
 - Fix eventlogs pages for performances and right for non admin users
-- Add New possibilities for ACL and Custom Views
 - Fix Recurent Downtimes behaviour with timezones
 - Fix some broken relations in web interface
 - Fix Reporting pages for non admin users
@@ -29,8 +28,9 @@ Features and Bug Fixes
 - Fix filters in configuration pages
 - Fix Poller duplication
 - Fix various ACL problems
-- Fix some SQL requests
-- Fix export of Meta Services 
+- Fix some SQL queries
+- Fix export of Meta Services
+- Improve ACL on Custom Views 
 
 Known Bugs
 ==========
