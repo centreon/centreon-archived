@@ -131,6 +131,11 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     var $_defaultDatasetOptions;
     
     /**
+     * @var int The number of element in the pagination
+     */
+    var $_pagination;
+    
+    /**
      * 
      * @param string $elementName
      * @param string $elementLabel
@@ -145,6 +150,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $attributes = null,
         $sort = null
     ) {
+        global $centreon;
         $this->_ajaxSource = false;
         $this->_defaultSelectedOptions = '';
         $this->_multipleHtml = '';
@@ -156,6 +162,8 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_jsCallback = '';
         $this->_allowClear = false;
         $this->parseCustomAttributes($attributes);
+        
+        $this->_pagination = $centreon->optGen['selectPaginationSize'];
     }
     
     /**
@@ -455,7 +463,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             . 'data: function (params) {
                     return {
                         q: params.term,
-                        page_limit: 30,
+                        page_limit: ' . $this->_pagination . ',
                         page: params.page || 1
                     };
                 },
@@ -464,7 +472,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     return {
                         results: data.items,
                         pagination: {
-                            more: (params.page * 30) < data.total
+                            more: (params.page * ' . $this->_pagination . ') < data.total
                         }
                     };
                 }';

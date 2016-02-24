@@ -24,6 +24,10 @@
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_limit_per_page">{$form.maxViewConfiguration.label}</td><td class="FormRowValue">{$form.maxViewConfiguration.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_limit_per_page_for_monitoring">{$form.maxViewMonitoring.label}</td><td class="FormRowValue">{$form.maxViewMonitoring.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_graph_per_page_for_performances">{$form.maxGraphPerformances.label}</td><td class="FormRowValue">{$form.maxGraphPerformances.html}</td></tr>
+    <tr class="list_two">
+      <td class="FormRowField"><img class="helpTooltip" name="tip_select_paginagion_size">{$form.selectPaginationSize.label}</td>
+      <td class="FormRowValue">{$form.selectPaginationSize.html}</td>
+    </tr>
 	
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">

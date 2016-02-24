@@ -85,6 +85,7 @@ $form->addElement('text', 'maxViewConfiguration', _("Limit per page (default)"),
 $form->addElement('text', 'AjaxTimeReloadStatistic', _("Refresh Interval for statistics"), $attrsText2);
 $form->addElement('text', 'AjaxTimeReloadMonitoring', _("Refresh Interval for monitoring"), $attrsText2);
 
+$form->addElement('text', 'selectPaginationSize', _('Number of elements loaded in select'), $attrsText2);
 
 $CentreonGMT = new CentreonGMT($pearDB);
 $GMTList = $CentreonGMT->getGMTList();
