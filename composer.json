@@ -9,9 +9,6 @@
             "email": "kduret@centreon.com"
         }
     ],
-    "config": {
-        "bin-dir": "bin/"
-    },
     "require-dev": {
         "behat/behat": "^3.0",
         "behat/mink": "^1.7",
