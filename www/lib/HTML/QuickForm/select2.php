@@ -353,6 +353,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $mainJsInit .= 'false,';
         }
+        
+        $mainJsInit .= 'templateSelection: function (element) {
+            return jQuery(\'<span class="select2-content" title="\' + element.text + \'">\' + element.text + \'</span>\');
+        }';
 
         $strJsInitEnding = '});';
         
