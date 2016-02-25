@@ -333,7 +333,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             	cursorcolor:"#818285",
             	cursoropacitymax: 0.6,
             	cursorwidth:3,
-            	horizrailenabled:false
+            	horizrailenabled:true
             	});';
 
                 $mainJsInit .= 'templateSelection: function (data, container) {
@@ -345,7 +345,6 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $mainJsInit .= 'false,';
         }
-        //$mainJsInit .= 'minimumInputLength: 1,';
         
         $mainJsInit .= 'allowClear: ';
         if ($this->_allowClear) {
@@ -353,6 +352,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $mainJsInit .= 'false,';
         }
+        
+        $mainJsInit .= 'templateSelection: function (element) {
+            return jQuery(\'<span class="select2-content" title="\' + element.text + \'">\' + element.text + \'</span>\');
+        }';
 
         $strJsInitEnding = '});';
         
@@ -365,15 +368,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 . ' }); ';
         }
         
-        
-        $additionnalJs .= ' jQuery(".select2-selection").each(function(){'
-            . ' if(typeof this.isResiable == "undefined" || this.isResiable){'
-            . ' jQuery(this).resizable({ maxWidth: 500, '
-            . ' minWidth : jQuery(this).width() != 0 ? jQuery(this).width() : 200, '
-            . ' minHeight : jQuery(this).height() != 0 ? jQuery(this).height() : 45 });'
-            . ' this.isResiable = true; '
-            . ' }'
-            . ' }); ';
+        $additionnalJs .= $this->saveSearchJs();
         
         $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $scroll . $additionnalJs . $this->_jsCallback . $jsPost;
         
@@ -571,6 +566,36 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             return parent::onQuickFormEvent($event, $arg, $caller);
         }
+    }
+    
+    /**
+     * Prepare JS code for save the search
+     *
+     * @return string The javscript code
+     */
+    protected function saveSearchJs()
+    {
+        $string = 'jQuery("#' . $this->getName() . '").on("select2:closing", function (event) {
+                var $select = jQuery(event.currentTarget);
+                var data = $select.data();
+                var $search = data.select2.$container.find(".select2-search__field");
+                data.select2.saveSearch = $search.val();
+            });';
+            
+        $string .= 'jQuery("#' . $this->getName() . '").on("select2:open", function (event) {
+                var $select = jQuery(event.currentTarget);
+                var data = $select.data();
+                var $search = data.select2.$container.find(".select2-search__field");
+                if (data.select2.saveSearch) {
+                  $search.val(data.select2.saveSearch);
+                  /* Wait for select2 finish to open */
+                  setTimeout(function () {
+                    data.select2.trigger("query", {term: data.select2.saveSearch});
+                  }, 10);
+                }
+            });';
+            
+        return $string;
     }
 }
 

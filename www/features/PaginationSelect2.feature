@@ -1,7 +1,7 @@
 Feature:
     As a Centreon admin
     I change the number of elements loaded in select
-    To optimizr the data presentation
+    To optimize the data presentation
 
     Background:
         Given I am logged in
