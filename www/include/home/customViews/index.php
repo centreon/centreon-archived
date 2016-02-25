@@ -123,7 +123,13 @@ try {
             . " UNION "
             . " SELECT cv.*, '0' as from_public FROM custom_views cv "
             . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
-            . " WHERE cvur.user_id = " . $db->escape($centreon->user->user_id). " AND cvur.is_consumed = 0 ";
+            . " WHERE (cvur.user_id = " . $db->escape($centreon->user->user_id). " AND cvur.is_consumed = 0 "
+			. "        OR cvur.usergroup_id IN ( "
+			. "           SELECT contactgroup_cg_id "
+			. "           FROM contactgroup_contact_relation "
+			. "           WHERE contact_contact_id = " . $db->escape($centreon->user->user_id) 
+			. "           ) "
+			. " ) AND cvur.is_consumed = 0 ";
     
 
     $DBRES = $db->query($query);
