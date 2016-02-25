@@ -89,30 +89,21 @@ class Select2ShiftSelectorContext implements Context
      */
     public function iHoldShiftKey()
     {
-        //$this->minkContext->getSession()->executeScript("
+        if (is_null($this->select2Object)) {
+            throw new \Exception('Element not found');
+        }
         
-        //$script = "jQuery(':focus').trigger(jQuery.Event('keypress', {which: 16, keyCode: 16}));";
+        $script = "jQuery(':focus').trigger(jQuery.Event('keypress', {which: 16, keyCode: 16}));";
         
-        $script = "jQuery(':focus').keydown(function(e){"
+        /*$script = "jQuery(':focus').keydown(function(e){"
                 . "keydown[e.keyCode] = true;"
                 . "if(e.keycode == 16) return 'true';"
                 . "jQuery(this).keyup(function() {"
                 . "if(keysdown[e.keyCode] === true){"
-                . "keydown[e.keyCode] = false; return 'false';}});});";
+                . "keydown[e.keyCode] = false; return 'false';}});});";*/
         
-        /*jQuery(document).keydown(function(e){
-            keydown[e.keyCode] = true;
-            if(e.keycode == 16) return 'true';
-            jQuery(this).keyup(function() {
-                if(keysdown[e.keyCode] === true){
-                    keydown[e.keyCode] = false; 
-                return 'false';}});});*/
+        $this->minkContext->getSession()->evaluateScript($script);
         
-        echo $this->minkContext->getSession()->evaluateScript($script);
-        
-        /*echo $this->minkContext->getSession()->evaluateScript(
-            "return 'something from browser';"
-        );*/
     }
     
     /**
@@ -120,6 +111,51 @@ class Select2ShiftSelectorContext implements Context
      */
     public function clickOnAFirstItem()
     {
-        //$this->select2Object
+        if (is_null($this->select2Object)) {
+            throw new \Exception('Element not found');
+        }
+        
+        $this->featureContext->spin(
+            function ($context) {
+            return $context->getMinkContext()->getSession()->getPage()->has(
+                    'css', 'li.select2-results__option:first-child'
+            );
+        }, 30
+        );
+    }
+    
+    /**
+     * @When click on an another item
+     */
+    public function clickOnAnAnotherItem()
+    {
+        if (is_null($this->select2Object)) {
+            throw new \Exception('Element not found');
+        }
+        
+        $this->featureContext->spin(
+            function ($context) {
+            return $context->getMinkContext()->getSession()->getPage()->has(
+                    'css', 'li.select2-results__option:nth-child(4)'
+            );
+        }, 30
+        );
+    }
+    
+    /**
+     * @Then the items between the two items are selected
+     */
+    public function theItemsBetweenTheTwoItemsAreSelected()
+    {
+        if (is_null($this->select2Object)) {
+            throw new \Exception('Element not found');
+        }
+        
+        $this->featureContext->spin(
+            function ($context) {
+                return count($context->session->getPage()->findAll('css', '.select2-container--open li.select2-results__option[aria-selected="true"]')) == 4;
+            },
+            30
+        );
     }
 }
