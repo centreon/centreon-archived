@@ -77,7 +77,7 @@ $form->addElement('text', 'oreon_web_path', _("Centreon Web Directory"), $attrsT
 
 $form->addElement('text', 'session_expire', _("Sessions Expiration Time"), $attrsText2);
 
-$limit = array(10 => 10, 20 => 20, 30 => 30, 40 => 40, 50 => 50, 60 => 60, 70 => 70, 80 => 80, 90 => 90, 100 => 100, 200 => 200, 300 => 300, 400 => 400, 500 => 500);
+$limit = array(10 => 10, 20 => 20, 30 => 30, 40 => 40, 50 => 50, 60 => 60, 70 => 70, 80 => 80, 90 => 90, 100 => 100);
 $form->addElement('select', 'maxViewMonitoring', _("Limit per page for Monitoring"), $limit);
 $form->addElement('text', 'maxGraphPerformances', _("Graph per page for Performances"), $attrsText2);
 
