@@ -207,7 +207,6 @@ class CentreonCustomView
             $query = "SELECT cv.custom_view_id, name, layout, is_owner, locked, user_id, usergroup_id, public
             		  FROM custom_views cv, custom_view_user_relation cvur
             		  WHERE cv.custom_view_id = cvur.custom_view_id
-                      AND cvur.is_consumed = 1 
             		  AND (cvur.user_id = " . $this->db->escape($this->userId);
             if (count($this->userGroups)) {
                 $cglist = implode(",", $this->userGroups);
