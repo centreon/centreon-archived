@@ -89,9 +89,30 @@ class Select2ShiftSelectorContext implements Context
      */
     public function iHoldShiftKey()
     {
-        $this->minkContext->getSession()->executeScript("
-            jQuery(':focus').trigger(jQuery.Event('keypress', {which: 16, keyCode: 16}));
-        ");
+        //$this->minkContext->getSession()->executeScript("
+        
+        //$script = "jQuery(':focus').trigger(jQuery.Event('keypress', {which: 16, keyCode: 16}));";
+        
+        $script = "jQuery(':focus').keydown(function(e){"
+                . "keydown[e.keyCode] = true;"
+                . "if(e.keycode == 16) return 'true';"
+                . "jQuery(this).keyup(function() {"
+                . "if(keysdown[e.keyCode] === true){"
+                . "keydown[e.keyCode] = false; return 'false';}});});";
+        
+        /*jQuery(document).keydown(function(e){
+            keydown[e.keyCode] = true;
+            if(e.keycode == 16) return 'true';
+            jQuery(this).keyup(function() {
+                if(keysdown[e.keyCode] === true){
+                    keydown[e.keyCode] = false; 
+                return 'false';}});});*/
+        
+        echo $this->minkContext->getSession()->evaluateScript($script);
+        
+        /*echo $this->minkContext->getSession()->evaluateScript(
+            "return 'something from browser';"
+        );*/
     }
     
     /**

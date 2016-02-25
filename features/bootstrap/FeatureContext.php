@@ -71,10 +71,19 @@ class FeatureContext implements Context
         /* Login */
         $page = $this->minkContext->getSession()->getPage();
         $useraliasInput = $page->find('css', 'input[name="useralias"]');
+        if (is_null($useraliasInput)) {
+            throw new \Exception('Element not found');
+        }
         $useraliasInput->setValue('admin');
         $passwordInput = $page->find('css', 'input[name="password"]');
+        if (is_null($passwordInput)) {
+            throw new \Exception('Element not found');
+        }
         $passwordInput->setValue('centreon');
         $form = $page->find('css', 'form[name="login"]');
+        if (is_null($form)) {
+            throw new \Exception('Element not found');
+        }
         $form->submit();
         $this->spin(
             function ($context) {
