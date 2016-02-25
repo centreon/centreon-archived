@@ -16,3 +16,8 @@ default:
       contexts:
         - Behat\MinkExtension\Context\MinkContext
         - PaginationSelect2Context
+    save_search_select2:
+      paths: [ %paths.base%/features/SaveSearchSelect2.feature ]
+      contexts:
+        - Behat\MinkExtension\Context\MinkContext
+        - SaveSearchSelect2Context
