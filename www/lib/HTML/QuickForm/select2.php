@@ -333,7 +333,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             	cursorcolor:"#818285",
             	cursoropacitymax: 0.6,
             	cursorwidth:3,
-            	horizrailenabled:false
+            	horizrailenabled:true
             	});';
 
                 $mainJsInit .= 'templateSelection: function (data, container) {
@@ -345,7 +345,6 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $mainJsInit .= 'false,';
         }
-        //$mainJsInit .= 'minimumInputLength: 1,';
         
         $mainJsInit .= 'allowClear: ';
         if ($this->_allowClear) {
@@ -364,16 +363,6 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 . 'jQuery("#' . $this->getName() . '").trigger("change", $currentValues);'
                 . ' }); ';
         }
-        
-        
-        $additionnalJs .= ' jQuery(".select2-selection").each(function(){'
-            . ' if(typeof this.isResiable == "undefined" || this.isResiable){'
-            . ' jQuery(this).resizable({ maxWidth: 500, '
-            . ' minWidth : jQuery(this).width() != 0 ? jQuery(this).width() : 200, '
-            . ' minHeight : jQuery(this).height() != 0 ? jQuery(this).height() : 45 });'
-            . ' this.isResiable = true; '
-            . ' }'
-            . ' }); ';
         
         $additionnalJs .= $this->saveSearchJs();
         
