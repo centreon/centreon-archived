@@ -52,7 +52,6 @@ class Engine extends AbstractObject {
         check_result_path,
         use_check_result_path,
         max_check_result_file_age,
-        p1_file,
         status_update_interval,
         external_command_buffer_slots,
         command_check_interval,
@@ -175,7 +174,6 @@ class Engine extends AbstractObject {
         'check_result_path',
         'use_check_result_path', //cengine
         'max_check_result_file_age',
-        'p1_file', //cengine
         'status_update_interval',
         'external_command_buffer_slots',
         'command_check_interval',
