@@ -102,7 +102,6 @@ $tpl = initSmartyTpl($path, $tpl);
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 $generatePageId = 60902;
-$tpl->assign('generate_page_id', $generatePageId);
 $tpl->assign('mode_generate', $centreon->user->access->page($generatePageId));
 
 
@@ -150,7 +149,7 @@ $style = "one";
 $elemArr = array();
 for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 	$moptions = "";
-	$selectedElements = $form->addElement('checkbox', "select[".$config['id']."]");
+	$selectedElements = $form->addElement('checkbox', "select[".$config['id']."]", null, '', array('id' => 'poller_' . $config['id']));
 	if ($config["ns_activate"]) {
 		$moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>";
 	} else {
@@ -221,6 +220,17 @@ $tpl->assign("notice", _("Only services and hosts are taken in account in order 
 $tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 
 /*
+$tpl->assign(
+    'applyConfiguration',
+    array(
+        "link" => "?p=60902",
+        "label" => _("Apply configuration"),
+        "js" => "console.log('toto');"
+    )
+);
+*/
+
+/*
  * Toolbar select
  */
 ?>
@@ -246,6 +256,9 @@ $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_
 $form->setDefaults(array('o1' => NULL));
 $o1 = $form->getElement('o1');
 $o1->setValue(NULL);
+
+# Apply configuration button
+$form->addElement('button', 'apply_configuration', _("Apply configuration"), array('onClick' => 'applyConfiguration();', 'class' => 'btc bt_info'));
 
 $attrs = array(
 	'onchange'=>"javascript: " .

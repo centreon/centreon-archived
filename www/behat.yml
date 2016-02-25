@@ -1,0 +1,23 @@
+default: 
+  extensions:
+    Behat\MinkExtension:
+      base_url: http://10.30.2.107/
+      sessions:
+        default:
+          selenium2: ~
+  suites:
+    generate_poller_features:
+      paths: [ %paths.base%/features/GeneratePoller.feature ]
+      contexts:
+        - Behat\MinkExtension\Context\MinkContext
+        - GeneratePollerContext
+    pagination_select2:
+      paths: [ %paths.base%/features/PaginationSelect2.feature ]
+      contexts:
+        - Behat\MinkExtension\Context\MinkContext
+        - PaginationSelect2Context
+    save_search_select2:
+      paths: [ %paths.base%/features/SaveSearchSelect2.feature ]
+      contexts:
+        - Behat\MinkExtension\Context\MinkContext
+        - SaveSearchSelect2Context

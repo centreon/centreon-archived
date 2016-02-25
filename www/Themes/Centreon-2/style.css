@@ -111,7 +111,6 @@ label {
 
 .table{
     width: 100%;
-    //white-space: nowrap;
     text-overflow: ellipsis;
     white-space: initial;
 }
@@ -183,21 +182,39 @@ p.description a, p.description a:visited {
     border-radius: 0 !important;
 }
 
+/* Selected element on select2 */
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
     margin-top: 3px !important;
-    background-color: #bfecff !important;
-    border: 1px solid #4dcaff !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    border-radius: 0;
     margin-right: 2px !important;
-    padding: 0 2px !important;
-    color: #0072ce;
+    padding: 0 !important;
 }
+
+/* Remove button on element in multiple select select2 */
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-    color: #58585a !important;
+    color: #fff !important;
     margin-left: 2px;
-    float: right;
+    padding: 2px 5px;
+    background-color: #0072ce;
+    border: 1px solid #4dcaff;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    margin-right: 0 !important;
 }
 
-
+/* Content for display text in selected element on select 2 fields */
+.select2-container--default .select2-selection--multiple .select2-selection__choice .select2-content {
+    padding: 2px 5px;
+    border-top: 1px solid #4dcaff;
+    border-bottom: 1px solid #4dcaff;
+    border-right: 1px solid #4dcaff;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    color: #0072ce;
+    background-color: #bfecff;
+}
 .select2-container--default .select2-selection--multiple {
     border-radius: 0 !important;
 }
@@ -207,17 +224,17 @@ p.description a, p.description a:visited {
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__rendered {
-
+    max-height: 80px;
 }
 
 .clearAllSelect2 {
      margin-right: 4px;
-    //vertical-align: middle;
  }
 
 .clearAllSelect2 img {
     vertical-align: middle;
 }
+
 /* -------- Tooltip ------- */
 #WzTtDiV {
     overflow: visible !important;
@@ -775,7 +792,6 @@ div.menuLeft {
     border: 1px solid #d1d2d4 !important;
     background: #f6f6f6 !important;
     border-radius: 4px !important;
-    //padding: 8em 0 !important;;
     text-align: center !important;;
 }
 
@@ -800,7 +816,6 @@ div.menuLeft {
     background-color: #fff;
     top: 5.4em;
     z-index: 1;
-    //width: 40%;
     border: 1px solid #d1d2d4;
     border-radius: 4px;
 }
@@ -1021,7 +1036,6 @@ a.infobulle:hover 	{z-index:25;}
 #QuickSearch {
     position: absolute;
     right: 30px;
-    //top: 139px;
 }
 
 /* Widget css */ 
@@ -1355,7 +1369,6 @@ table.ListTableSmallArg td {
     width: 40%;
 }
 .ToolbarTR select {
-    //height: 25px;
     line-height: 25px;
     float: left;
 }
@@ -1400,7 +1413,6 @@ td,a.infobulle:hover td {padding:0px;}
     display: none;
     position:fixed;
     z-index:500;
-    //padding: 1em;
     border-radius: 4px;
     border: 1px solid #a7a8ac;
     font-weight:normal;
@@ -1605,11 +1617,10 @@ span.state_badge {
     background: none !important;
 }
 
-/* Fullscreen icon */
+/* Fullscreen icon */ 
 
 .fullscreen-icon {
   position: fixed;
-//  top: -10px;
   right: 10px;
   border-radius: 4px;
   background-color: #58585a;

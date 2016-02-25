@@ -8,7 +8,7 @@ require_once _CENTREON_PATH_.'/www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_.'/www/class/centreonXML.class.php';
 require_once _CENTREON_PATH_.'/www/class/centreonInstance.class.php';
 
-$poller = $_POST['poller'];
+$pollers = explode(',', $_POST['poller']);
 $db = new CentreonDB();
 $xml = new CentreonXML();
 
@@ -21,7 +21,7 @@ $str = sprintf("<br/><b>%s</b><br/>", _("Post execution command results"));
 $ok = true;
 $instanceObj = new CentreonInstance($db);
 while ($row = $res->fetchRow()) {
-    if ($poller == 0 || $poller == $row['id']) {
+    if ($pollers == 0 || in_array($row['id'], $pollers)) {
         $commands = $instanceObj->getCommandData($row['id']);
         if (!count($commands)) {
             continue;

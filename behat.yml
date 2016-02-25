@@ -1,0 +1,14 @@
+default:
+  extensions:
+    Behat\MinkExtension:
+      base_url: http://127.0.0.1
+      sessions:
+        default:
+          selenium2: ~
+  suites:
+    select2_shift_selector_features:
+      paths: [ %paths.base%/features/Select2ShiftSelector.feature ]
+      contexts:
+          - Behat\MinkExtension\Context\MinkContext
+          - FeatureContext
+          - Select2ShiftSelectorContext

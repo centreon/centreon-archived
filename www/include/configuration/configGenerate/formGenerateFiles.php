@@ -46,10 +46,14 @@ $tab_nagios_server = $acl->getPollerAclConf(array('get_row'    => 'name',
                                                   'keys'       => array('id'),
                                                   'conditions' => array('ns_activate' => 1)));
 /* Sort the list of poller server */
-$pollerId = null;
+$pollersId = explode(',', $_GET['poller']);
+$selectedPollers = array();
 foreach ($tab_nagios_server as $key => $name) {
-    if ($name == $_GET['poller']) {
-        $pollerId = $key;
+    if (in_array($key, $pollersId)) {
+        $selectedPollers[] = array(
+            'id' => $key,
+            'text' => $name
+        );
     }
 }
 
@@ -78,6 +82,15 @@ $form->addElement('checkbox', 'postcmd', _('Post generation command'), null, arr
 $tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"));
 $form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
 $form->setDefaults(array('restart_mode' => '1'));
+
+/* Add multiselect for pollers */
+$attrPoller = array(
+    'datasourceOrigin' => 'ajax',
+    'allowClear' => false,
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list',
+    'multiple' => true
+);
+$form->addElement('select2', 'nhost', _("Pollers"), array(), $attrPoller);
 
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -114,12 +127,10 @@ $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
-$tpl->assign('pollerName', $_GET['poller']);
-$tpl->assign('pollerId', $pollerId);
-$tpl->assign('pollerListMsg', _('The list of pollers is <a href="./main.php?p=60901">here</a>.'));
 $tpl->display("formGenerateFiles.ihtml");
 ?>
 <script type='text/javascript'>
+    var initPollers = '<?php echo json_encode($selectedPollers); ?>';
     var selectedPoller;
     var debugOption;
     var commentOption;
@@ -149,6 +160,13 @@ $tpl->display("formGenerateFiles.ihtml");
 
     jQuery(function() {
         initProgressBar();
+        var pollers = JSON.parse(initPollers);
+        for (var i = 0; i < pollers.length; i++) {
+            jQuery('#nhost').append(
+                '<option value="' + pollers[i].id + '" selected>' + pollers[i].text + '</option>'
+            );
+        }
+        jQuery('#nhost').trigger('change');
     });
 
     /**
@@ -215,7 +233,7 @@ $tpl->display("formGenerateFiles.ihtml");
      */
     function initEnvironment()
     {
-        selectedPoller = document.getElementById('nhost').value;
+        selectedPoller = jQuery('#nhost').val().join(',');
         commentOption  = document.getElementById('ncomment').checked;
         debugOption = document.getElementById('ndebug').checked;
         generateOption = document.getElementById('ngen').checked;
