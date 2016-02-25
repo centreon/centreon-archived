@@ -227,7 +227,7 @@ p.description a, p.description a:visited {
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__rendered {
-
+    max-height: 80px;
 }
 
 .clearAllSelect2 {
