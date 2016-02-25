@@ -382,8 +382,8 @@ class Engine extends AbstractObject {
         $object['global_service_event_handler'] = $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
         $object['ocsp_command'] = $command_instance->generateFromCommandId($object['ocsp_command_id']);
         $object['ochp_command'] = $command_instance->generateFromCommandId($object['ochp_command_id']);
-        $object['host_perfdata_command'] = $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
-        $object['service_perfdata_command'] = $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
+        $object['host_perfdata_command'] = $command_instance->generateFromCommandId($object['host_perfdata_command_id']);
+        $object['service_perfdata_command'] = $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
         $object['host_perfdata_file_processing_command'] = $command_instance->generateFromCommandId($object['host_perfdata_file_processing_command_id']);
         $object['service_perfdata_file_processing_command'] = $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
         
