@@ -1384,4 +1384,6 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
                         ('Pacific/Tarawa', '+12:00', '+12:00'),
                         ('Pacific/Tongatapu', '+13:00', '+13:00'),
                         ('Pacific/Wake', '+12:00', '+12:00'),
-                        ('Pacific/Wallis', '+12:00', '+12:00');
+                        ('Pacific/Wallis', '+12:00', '+12:00'), 
+                        ('GMT', '-00:00', '-00:00'),
+                        ('UTC', '-00:00', '-00:00');
