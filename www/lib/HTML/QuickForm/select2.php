@@ -386,7 +386,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                                 "' . _('Filtered elements : ') . '<span class=\'select2-results-header__nb-elements-value\'></span>" +
                             "</div>" +
                             "<div class=\'select2-results-header__select-all\'>" +
-                                "<button onclick=\'confirmSelectAll();\'>' . _('Select all') . '</button>" +
+                                "<button class=\'btc bt_info\' onclick=\'confirmSelectAll();\'>' . _('Select all') . '</button>" +
                             "</div>" +
                         "</div>"
                     );
