@@ -272,7 +272,7 @@ function insertArgDesc($cmd_id, $ret = null) {
         $tab1 = preg_split("/\\n/", $ret['listOfArg']);
         foreach ($tab1 as $key => $value) {
             $tab2 = preg_split("/\ \:\ /", $value, 2);
-            $query .= "('" . $pearDB->escape($cmd_id) . "', '" . $pearDB->escape(str_replace('-', '', $tab2[0])) . "', '" . $pearDB->escape($tab2[1]) . "'),";
+            $query .= "('" . $pearDB->escape($cmd_id) . "', '" . $pearDB->escape($tab2[0]) . "', '" . $pearDB->escape($tab2[1]) . "'),";
         }
         $query = trim($query, ",");
         $pearDB->query($query);
@@ -396,10 +396,10 @@ function insertMacrosDesc($cmd, $ret)
             }
             
             if (!empty($sName)) {
-                $query = "DELETE FROM `on_demand_macro_command` WHERE command_macro_name = '".$pearDB->escape(str_replace('-', '', $sName))."' AND `command_command_id` = ".intval($cmd);
+                $query = "DELETE FROM `on_demand_macro_command` WHERE command_macro_name = '".$pearDB->escape($sName)."' AND `command_command_id` = ".intval($cmd);
                 $pearDB->query($query);
 
-                $sQueryInsert = "INSERT INTO `on_demand_macro_command` (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) VALUES (".  intval($cmd).", '".$pearDB->escape(str_replace('-', '', $sName))."', '".$pearDB->escape($sDesc)."', '".$arr[$sType]."')";
+                $sQueryInsert = "INSERT INTO `on_demand_macro_command` (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) VALUES (".  intval($cmd).", '".$pearDB->escape($sName)."', '".$pearDB->escape($sDesc)."', '".$arr[$sType]."')";
                 $pearDB->query($sQueryInsert);
             }
         }

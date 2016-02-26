@@ -443,7 +443,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array()) {
                             $hst['is_password'] = '0';
                         }
                         $mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`, `is_password`) VALUES" .
-                                "('" . $maxId["MAX(host_id)"] . "', '\$" . $pearDB->escape($macName) . "\$', '" . $pearDB->escape($macVal) . "', '" . $pearDB->escape($hst["is_password"]) . "')";
+                                "('" . $maxId["MAX(host_id)"] . "', '\$" . $pearDB->escape(str_replace('-', '', $macName) . "\$', '" . $pearDB->escape($macVal) . "', '" . $pearDB->escape($hst["is_password"]) . "')";
                         $DBRESULT4 = $pearDB->query($mTpRq2);
                         $fields["_" . strtoupper($macName) . "_"] = $macVal;
                     }
@@ -784,7 +784,7 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
                     $my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
                     $macName = $my_tab[$macInput];
                     $macVal = $my_tab[$macValue];
-                    $rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `description`, `host_host_id`, `macro_order`) VALUES ('\$_HOST" . strtoupper($macName) . "\$', '" . CentreonDB::escape($macVal) . "', " . $host_id['MAX(host_id)'] . ", " . $i . ")";
+                    $rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `description`, `host_host_id`, `macro_order`) VALUES ('\$_HOST" . strtoupper(str_replace('-', '', $macName)) . "\$', '" . CentreonDB::escape($macVal) . "', " . $host_id['MAX(host_id)'] . ", " . $i . ")";
                     $DBRESULT = $pearDB->query($rq);
                     $fields["_" . strtoupper($my_tab[$macInput]) . "_"] = $my_tab[$macValue];
                     $already_stored[strtolower($my_tab[$macInput])] = 1;
@@ -802,7 +802,7 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
                 }
             }
         $hostObj->insertMacro(
-                $host_id['MAX(host_id)'], $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, false, $ret["command_command_id"]
+                $host_id['MAX(host_id)'], str_replace('-', '', $_REQUEST['macroInput']), $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, false, $ret["command_command_id"]
         );
     }
 
@@ -1273,7 +1273,7 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
                     }
                 }
             }
-        $hostObj->insertMacro($host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, false, $ret["command_command_id"]);
+        $hostObj->insertMacro($host_id, str_replace('-', '', $_REQUEST['macroInput']), $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, false, $ret["command_command_id"]);
     } else {
         $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '" . CentreonDB::escape($host_id) . "'");
     }
@@ -1593,7 +1593,7 @@ function updateHost_MC($host_id = null) {
     if (isset($_REQUEST['macroInput']) &&
             isset($_REQUEST['macroValue'])) {
         $hostObj->insertMacro(
-                $host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, true
+                $host_id, str_replace('-', '', $_REQUEST['macroInput']), $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, true
         );
     }
 
