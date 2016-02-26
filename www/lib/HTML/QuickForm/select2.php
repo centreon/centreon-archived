@@ -386,21 +386,58 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                                 "' . _('Filtered elements : ') . '<span class=\'select2-results-header__nb-elements-value\'></span>" +
                             "</div>" +
                             "<div class=\'select2-results-header__select-all\'>" +
-                                "<button class=\'btc bt_info\' onclick=\'confirmSelectAll();\'>' . _('Select all') . '</button>" +
+                                "<button class=\'btc bt_info\' onclick=\' $currentSelect2Object' . $this->getName() . '.confirmSelectAll();\'>' . _('Select all') . '</button>" +
                             "</div>" +
                         "</div>"
                     );
                 }
             });
 
-            var confirmSelectAll = function() {
+            $currentSelect2Object' . $this->getName() . '.confirmSelectAll = function() {
                 var validation = confirm("' . _('Add ') . '" + jQuery(".select2-results-header__nb-elements-value").text() + "' . _(' elements to selection ?') . '");
                 if (validation == true) {
-                    console.log("select all");
-                }
-            };
+                    // Get search value
+                    var search = $currentSelect2Object' . $this->getName() . '.data().select2.$container.find(".select2-search__field").val();
 
-            ';
+                    // Get data filtered by search
+                    jQuery.ajax({
+                        url: "'. $this->_availableDatasetRoute .'",
+                        data: {
+                            q: search
+                        },
+                    }).success(function(data) {
+                        // Get value already selected to avoid to select it twice
+                        var selectedIds = [];
+                        $currentSelect2Object'.$this->getName().'.find("option").each(function() {
+                            var value = jQuery(this).val();
+                            if (value.trim() !== "") {
+                                selectedIds.push(jQuery(this).val());
+                            }
+                        });
+                        for (var d = 0; d < data.items.length; d++) {
+                            var item = data.items[d];
+
+                            // Create the DOM option that is pre-selected by default
+                            var option = "<option selected=\"selected\" value=\"" + item.id + "\" ";
+                            if (item.hide === true) {
+                                option += "hidden";
+                            }
+                            option += ">" + item.text + "</option>";
+
+                            // Append it to the select
+                            if (selectedIds.indexOf(item.id) < 0) {
+                                $currentSelect2Object'.$this->getName().'.append(option);
+                            }
+                        }
+
+                        // Update the selected options that are displayed
+                        $currentSelect2Object'.$this->getName().'.trigger("change");
+
+                        // Close select2
+                        $currentSelect2Object'.$this->getName().'.select2("close");
+                    });
+                }
+            };';
 
             $mainJsInit .= 'templateSelection: function (data, container) {
                 if (data.element.hidden === true) {
