@@ -230,9 +230,25 @@ p.description a, p.description a:visited {
     max-height: 80px;
 }
 
+.select2-results-header {
+    position: absolute;
+    width: 100%;
+    padding-top: 5px;
+    z-index: 5000;
+}
+
+.select2-results-header__nb-elements {
+    float: left;
+    padding-left: 5px;
+}
+
+.select2-results-header__select-all {
+    float: right;
+    padding-right: 5px;
+}
+
 .clearAllSelect2 {
      margin-right: 4px;
-    //vertical-align: middle;
  }
 
 .clearAllSelect2 img {

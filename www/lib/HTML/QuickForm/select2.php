@@ -378,6 +378,30 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 });
             });';
 
+            $scroll .= '$currentSelect2Object'. $this->getName() . '.on("select2:open", function (event) {
+                if (!jQuery(".select2-results-header").length) {
+                    jQuery("span.select2-results").parents(".select2-dropdown").prepend(
+                        "<div class=\'select2-results-header\'>" +
+                            "<div class=\'select2-results-header__nb-elements\'>" +
+                                "' . _('Filtered elements : ') . '<span class=\'select2-results-header__nb-elements-value\'></span>" +
+                            "</div>" +
+                            "<div class=\'select2-results-header__select-all\'>" +
+                                "<button onclick=\'confirmSelectAll();\'>' . _('Select all') . '</button>" +
+                            "</div>" +
+                        "</div>"
+                    );
+                }
+            });
+
+            var confirmSelectAll = function() {
+                var validation = confirm("' . _('Add ') . '" + jQuery(".select2-results-header__nb-elements-value").text() + "' . _(' elements to selection ?') . '");
+                if (validation == true) {
+                    console.log("select all");
+                }
+            };
+
+            ';
+
             $mainJsInit .= 'templateSelection: function (data, container) {
                 if (data.element.hidden === true) {
                     $(container).hide();
@@ -506,6 +530,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 },
                 processResults: function (data, params) {
                     params.page = params.page || 1;
+                    jQuery(".select2-results-header__nb-elements-value").text(data.total);
                     return {
                         results: data.items,
                         pagination: {
