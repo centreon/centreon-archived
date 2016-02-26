@@ -329,19 +329,48 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $scroll = "";
         if ($this->_multiple) {
             $mainJsInit .= 'true,';
-            $scroll = '$currentSelect2Object'. $this->getName() . '.next(".select2-container").find("ul.select2-selection__rendered").niceScroll({
-            	cursorcolor:"#818285",
-            	cursoropacitymax: 0.6,
-            	cursorwidth:3,
-            	horizrailenabled:true
-            	});';
 
-                $mainJsInit .= 'templateSelection: function (data, container) {
-                    if (data.element.hidden === true) {
-                        $(container).hide();
-                    }
-                    return data.text;
-                },';
+            # Init nice scroll
+            $scroll .= 'var initNiceScroll = function(element) {
+                element.next(".select2-container").find("ul.select2-selection__rendered").niceScroll({
+                    cursorcolor:"#818285",
+                    cursoropacitymax: 0.6,
+                    cursorwidth:3,
+                    horizrailenabled: true,
+                    autohidemode: true
+                });
+            };';
+
+            # Init nice scroll on tabs form
+            $scroll .= 'jQuery("body").on("inittab:centreon", function(event, id) {
+                var tabElement = $currentSelect2Object'. $this->getName() . '.parents(".tab");
+                if (jQuery(tabElement).attr("id") == id) {
+                    initNiceScroll($currentSelect2Object' . $this->getName() .');
+                }
+            });';
+
+            # Update nice scroll when changing tab
+            $scroll .= 'jQuery("body").on("changetab:centreon", function(event, id) {
+                var tabElement = $currentSelect2Object'. $this->getName() . '.parents(".tab");
+                if (jQuery(tabElement).attr("id") == id) {
+                    initNiceScroll($currentSelect2Object' . $this->getName() .');
+                } else {
+                    $currentSelect2Object'. $this->getName() . '.next(".select2-container").find("ul.select2-selection__rendered").getNiceScroll().remove();
+                }
+            });';
+
+            # Update nice scroll when modify select2
+            $scroll .= '$currentSelect2Object'. $this->getName() . '.on("change.select2", function (event) {
+                $currentSelect2Object'. $this->getName() . '.next(".select2-container").find("ul.select2-selection__rendered").getNiceScroll().remove();
+                initNiceScroll($currentSelect2Object' . $this->getName() .');
+            });';
+
+            $mainJsInit .= 'templateSelection: function (data, container) {
+                if (data.element.hidden === true) {
+                    $(container).hide();
+                }
+                return data.text;
+            },';
         } else {
             $mainJsInit .= 'false,';
         }
@@ -517,7 +546,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             // Update the selected options that are displayed
             $currentSelect2Object'.$this->getName().'.trigger("change",[{origin:\'select2defaultinit\'}]);
         });
-        
+
         $request' . $this->getName() . '.error(function(data) {
             
         });
