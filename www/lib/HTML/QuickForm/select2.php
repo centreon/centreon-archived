@@ -383,7 +383,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     jQuery("span.select2-results").parents(".select2-dropdown").prepend(
                         "<div class=\'select2-results-header\'>" +
                             "<div class=\'select2-results-header__nb-elements\'>" +
-                                "' . _('Filtered elements : ') . '<span class=\'select2-results-header__nb-elements-value\'></span>" +
+                                "<span class=\'select2-results-header__nb-elements-value\'></span> ' . _(' element(s) found') . '" +
                             "</div>" +
                             "<div class=\'select2-results-header__select-all\'>" +
                                 "<button class=\'btc bt_info\' onclick=\' $currentSelect2Object' . $this->getName() . '.confirmSelectAll();\'>' . _('Select all') . '</button>" +
