@@ -443,7 +443,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array()) {
                             $hst['is_password'] = '0';
                         }
                         $mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`, `is_password`) VALUES" .
-                                "('" . $maxId["MAX(host_id)"] . "', '\$" . $pearDB->escape(str_replace('-', '', $macName) . "\$', '" . $pearDB->escape($macVal) . "', '" . $pearDB->escape($hst["is_password"]) . "')";
+                                "('" . $maxId["MAX(host_id)"] . "', '\$" . $pearDB->escape(str_replace('-', '', $macName)) . "\$', '" . $pearDB->escape($macVal) . "', '" . $pearDB->escape($hst["is_password"]) . "')";
                         $DBRESULT4 = $pearDB->query($mTpRq2);
                         $fields["_" . strtoupper($macName) . "_"] = $macVal;
                     }
