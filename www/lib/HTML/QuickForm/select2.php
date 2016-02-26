@@ -300,15 +300,20 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     {
         $myJs = '
 
-            jQuery("#' . $this->getName() . '").on("select2:open", function () {
+            jQuery("#' . $this->getName() . '").on("select2:open", function (e) {
+                e.preventDefault();
                 var data = jQuery(this).data();
                 data.select2.shiftFirstEl = null;
+                
             });
+            
             var endSelection = 0;
             jQuery("#' . $this->getName() . '").on("select2:selecting", function (event) {
                 var data = jQuery(event.currentTarget).data();
                 if (event.params.args.originalEvent.shiftKey) {
-                    event.preventDefault(); // To keep select2 opened
+                    // To keep select2 opened
+                    event.preventDefault(); 
+                    
                     if (!data.select2.hasOwnProperty("shiftFirstEl") || data.select2.shiftFirstEl === null) {
                         data.select2.shiftFirstEl = event.params.args.data.id;
                         endSelection = 0;
@@ -357,11 +362,11 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                         }
 
                         // Update the selected options that are displayed
-                        $currentSelect2Object'.$this->getName().'.trigger("change");
                         $currentSelect2Object'.$this->getName().'.select2("close");
-                        data.select2.shiftFirstEl = null;
-                    }
-                }
+                            $currentSelect2Object'.$this->getName().'.trigger("change");
+                            data.select2.shiftFirstEl = null;
+                    } 
+                } 
             });
         ';
         return $myJs;
