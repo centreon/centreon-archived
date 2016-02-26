@@ -306,12 +306,13 @@ jQuery("#' . $this->getName() . '").on("select2:open", function () {
 var endSelection = 0;
 jQuery("#' . $this->getName() . '").on("select2:selecting", function (event) {
     var data = jQuery(event.currentTarget).data();
+    
     if (event.params.args.originalEvent.shiftKey) {
         event.preventDefault(); // To keep select2 opened
         if (!data.select2.hasOwnProperty("shiftFirstEl") || data.select2.shiftFirstEl === null) {
             data.select2.shiftFirstEl = event.params.args.data.id;
             endSelection = 0;
-        } else {
+        } else { 
             endSelection = event.params.args.data.id;
             startSelection = data.select2.shiftFirstEl;
             if (event.params.args.data.id < data.select2.shiftFirstEl) {
@@ -329,13 +330,13 @@ jQuery("#' . $this->getName() . '").on("select2:selecting", function (event) {
                 }
             });
             
-            
-            jQuery(event.currentTarget).val(selectedValues.join(", "));
+            jQuery(event.currentTarget).val(selectedValues.join(", ")); console.log(selectedValues); 
             jQuery(event.currentTarget).trigger("change");
             data.select2.shiftFirstEl = null;
             jQuery(event.currentTarget).select2("close");
         }
-    }
+    } else return true;
+    
 });
         ';
         return $myJs;
