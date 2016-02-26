@@ -299,44 +299,69 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     function addShift()
     {
         $myJs = '
-jQuery("#' . $this->getName() . '").on("select2:open", function () {
-	var data = jQuery(this).data();
-	data.select2.shiftFirstEl = null;
-});
-var endSelection = 0;
-jQuery("#' . $this->getName() . '").on("select2:selecting", function (event) {
-    var data = jQuery(event.currentTarget).data();
-    if (event.params.args.originalEvent.shiftKey) {
-        event.preventDefault(); // To keep select2 opened
-        if (!data.select2.hasOwnProperty("shiftFirstEl") || data.select2.shiftFirstEl === null) {
-            data.select2.shiftFirstEl = event.params.args.data.id;
-            endSelection = 0;
-        } else {
-            endSelection = event.params.args.data.id;
-            startSelection = data.select2.shiftFirstEl;
-            if (event.params.args.data.id < data.select2.shiftFirstEl) {
-                startSelection = event.params.args.data.id;
-                endSelection = data.select2.shiftFirstEl;
-            }
-            
-            var selectedValues = [];
-            
-            jQuery(".select2-results li>span").each(function (e){
-                var $this = jQuery(this);
-                
-                if ($this.data("did") >= startSelection && $this.data("did") <= endSelection) {
-                    selectedValues.push($this.data("did"));
+            jQuery("#' . $this->getName() . '").on("select2:open", function () {
+                var data = jQuery(this).data();
+                data.select2.shiftFirstEl = null;
+            });
+            var endSelection = 0;
+            jQuery("#' . $this->getName() . '").on("select2:selecting", function (event) {
+                var data = jQuery(event.currentTarget).data();
+                if (event.params.args.originalEvent.shiftKey) {
+                    event.preventDefault(); // To keep select2 opened
+                    if (!data.select2.hasOwnProperty("shiftFirstEl") || data.select2.shiftFirstEl === null) {
+                        data.select2.shiftFirstEl = event.params.args.data.id;
+                        endSelection = 0;
+                    } else {
+                        endSelection = event.params.args.data.id;
+                        startSelection = data.select2.shiftFirstEl;
+
+                        var selectedValues = [];
+                        startIndex = 0;
+                        endIndex = 0;
+                        jQuery(".select2-results li>span").each(function (index){
+                            var $this = jQuery(this);
+                            if ($this.data("did") == startSelection) {
+                                startIndex = index;
+                            }
+                            if ($this.data("did") == endSelection) {
+                                endIndex = index;
+                            }
+                        });
+
+                        if (endIndex < startIndex) {
+                            tempIndex = startIndex;
+                            startIndex = endIndex;
+                            endIndex = tempIndex;
+                        }
+
+                        jQuery(".select2-results li>span").each(function (index){
+                            var $this = jQuery(this);
+                            if (index >= startIndex && index <= endIndex) {
+                                selectedValues.push({id: $this.data("did").toString(), text: $this.text()});
+                            }
+                        });
+
+                        for (var i = 0; i < selectedValues.length; i++) {
+                            var item = selectedValues[i];
+
+                            // Create the DOM option that is pre-selected by default
+                            var option = "<option selected=\"selected\" value=\"" + item.id + "\" ";
+                            if (item.hide === true) {
+                                option += "hidden";
+                            }
+                            option += ">" + item.text + "</option>";
+
+                            // Append it to the select
+                            $currentSelect2Object'.$this->getName().'.append(option);
+                        }
+
+                        // Update the selected options that are displayed
+                        $currentSelect2Object'.$this->getName().'.trigger("change");
+                        $currentSelect2Object'.$this->getName().'.select2("close");
+                        data.select2.shiftFirstEl = null;
+                    }
                 }
             });
-            
-            
-            jQuery(event.currentTarget).val(selectedValues.join(", "));
-            jQuery(event.currentTarget).trigger("change");
-            data.select2.shiftFirstEl = null;
-            jQuery(event.currentTarget).select2("close");
-        }
-    }
-});
         ';
         return $myJs;
     }
