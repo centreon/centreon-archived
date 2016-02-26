@@ -365,6 +365,19 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 initNiceScroll($currentSelect2Object' . $this->getName() .');
             });';
 
+            # Nicescroll for listed elements
+            $scroll .= '$currentSelect2Object'. $this->getName() . '.on("select2:open", function (event) {
+                jQuery("ul.select2-results__options").off("mousewheel");
+                jQuery("ul.select2-results__options").niceScroll({
+                    cursorcolor:"#818285",
+                    cursoropacitymax: 0.6,
+                    cursorwidth:3,
+                    horizrailenabled: true,
+                    zindex: 5000,
+                    autohidemode: false
+                });
+            });';
+
             $mainJsInit .= 'templateSelection: function (data, container) {
                 if (data.element.hidden === true) {
                     $(container).hide();
