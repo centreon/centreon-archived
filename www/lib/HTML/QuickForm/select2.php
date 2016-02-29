@@ -296,6 +296,99 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      * 
      * @return string
      */
+    function addShift()
+    {
+        $myJs = '
+
+            jQuery("#' . $this->getName() . '").on("select2:open", function (e) {
+                e.preventDefault();
+                var data = jQuery(this).data();
+                data.select2.shiftFirstEl = null;
+                
+            });
+            
+            var endSelection = 0;
+            jQuery("#' . $this->getName() . '").on("select2:selecting", function (event) {
+                var data = jQuery(event.currentTarget).data();
+                if (event.params.args.originalEvent.shiftKey) {
+                    // To keep select2 opened
+                    event.preventDefault(); 
+                    
+                    if (!data.select2.hasOwnProperty("shiftFirstEl") || data.select2.shiftFirstEl === null) {
+                        data.select2.shiftFirstEl = event.params.args.data.id;
+                        endSelection = 0;
+                    } else {
+                        endSelection = event.params.args.data.id;
+                        startSelection = data.select2.shiftFirstEl;
+
+                        var selectedValues = [];
+                        startIndex = 0;
+                        endIndex = 0;
+                        jQuery(".select2-results li>span").each(function (index){
+                            var $this = jQuery(this);
+                            if ($this.data("did") == startSelection) {
+                                startIndex = index;
+                            }
+                            if ($this.data("did") == endSelection) {
+                                endIndex = index;
+                            }
+                        });
+
+                        if (endIndex < startIndex) {
+                            tempIndex = startIndex;
+                            startIndex = endIndex;
+                            endIndex = tempIndex;
+                        }
+
+                        jQuery(".select2-results li>span").each(function (index){
+                            var $this = jQuery(this);
+                            if (index >= startIndex && index <= endIndex) {
+                                selectedValues.push({id: $this.data("did").toString(), text: $this.text()});
+                            }
+                        });
+
+                        for (var i = 0; i < selectedValues.length; i++) {
+                            var item = selectedValues[i];
+
+                            // Create the DOM option that is pre-selected by default
+                            var option = "<option selected=\"selected\" value=\"" + item.id + "\" ";
+                            if (item.hide === true) {
+                                option += "hidden";
+                            }
+                            option += ">" + item.text + "</option>";
+
+                            // Append it to the select
+                            $currentSelect2Object'.$this->getName().'.append(option);
+                        }
+
+                        // Update the selected options that are displayed
+                        $currentSelect2Object'.$this->getName().'.select2("close");
+                            $currentSelect2Object'.$this->getName().'.trigger("change");
+                            data.select2.shiftFirstEl = null;
+                    } 
+                } 
+            });
+        ';
+        return $myJs;
+    }
+    
+    function templatingSelect2()
+    {
+        $js = "
+            function select2_formatResult(item) {
+                if(item.id) {
+                    return jQuery('<span data-did=\"' + item.id + '\">' + item.text + '</span>'); 
+                } else {
+                    return item.text;
+                }
+            }";
+        return $js;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
     function getJsInit()
     {
         $jsPre = '<script type="text/javascript">';
@@ -303,7 +396,8 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $jsPost = '</script>';
         $strJsInitBegining = '$currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").select2({';
         
-        $mainJsInit = 'allowClear: true,';
+        $mainJsInit = 'allowClear: true,'
+            . 'templateResult: ' . $this->templatingSelect2() . ',';
         
         $label = $this->getLabel();
         if (!empty($label)) {
@@ -499,6 +593,8 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         }
         
         $additionnalJs .= $this->saveSearchJs();
+        
+        $additionnalJs .= $this->addShift();
         
         $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $scroll . $additionnalJs . $this->_jsCallback . $jsPost;
         
