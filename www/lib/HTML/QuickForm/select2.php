@@ -377,6 +377,13 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     autohidemode: false
                 });
             });';
+            
+            /* Add catch event for block close dropdown when selectall */
+            $scroll .= '$currentSelect2Object'. $this->getName() . '.on("select2:closing", function (event) {
+                if (jQuery("#confirm'  . $this->getName() . '").length > 0) {
+                    event.preventDefault();
+                }
+            });';
 
             $scroll .= '$currentSelect2Object'. $this->getName() . '.on("select2:open", function (event) {
                 if (!jQuery(".select2-results-header").length) {
@@ -392,6 +399,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     );
                 }
             });
+            
 
             $currentSelect2Object' . $this->getName() . '.confirmSelectAll = function() {
                 /* Create div for popin */
@@ -452,7 +460,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     $confirmBox.remove();
                 });
                 
-                jQuery("body").on("click", "#confirm'  . $this->getName() . ' .btc.bt_default", function (e) {
+                jQuery(document).on("click", "#confirm'  . $this->getName() . ' .btc.bt_default", function (e) {
                     $confirmBox.centreonPopin("close");
                     $confirmBox.remove();
                 });
