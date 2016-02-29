@@ -52,7 +52,6 @@ class Engine extends AbstractObject {
         check_result_path,
         use_check_result_path,
         max_check_result_file_age,
-        p1_file,
         status_update_interval,
         external_command_buffer_slots,
         command_check_interval,
@@ -175,7 +174,6 @@ class Engine extends AbstractObject {
         'check_result_path',
         'use_check_result_path', //cengine
         'max_check_result_file_age',
-        'p1_file', //cengine
         'status_update_interval',
         'external_command_buffer_slots',
         'command_check_interval',
@@ -382,8 +380,8 @@ class Engine extends AbstractObject {
         $object['global_service_event_handler'] = $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
         $object['ocsp_command'] = $command_instance->generateFromCommandId($object['ocsp_command_id']);
         $object['ochp_command'] = $command_instance->generateFromCommandId($object['ochp_command_id']);
-        $object['host_perfdata_command'] = $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
-        $object['service_perfdata_command'] = $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
+        $object['host_perfdata_command'] = $command_instance->generateFromCommandId($object['host_perfdata_command_id']);
+        $object['service_perfdata_command'] = $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
         $object['host_perfdata_file_processing_command'] = $command_instance->generateFromCommandId($object['host_perfdata_file_processing_command_id']);
         $object['service_perfdata_file_processing_command'] = $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
         

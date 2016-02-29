@@ -1325,7 +1325,7 @@ class CentreonGraph {
             '#ff66ff', '#ff9900', '#ff9933', '#ff9966', '#ff9999', '#ff99cc',
             '#ff99ff', '#ffcc00', '#ffcc33', '#ffcc66', '#ffcc99', '#ffcccc',
             '#ffccff', '#ffff00', '#ffff33', '#ffff66', '#ffff99', '#ffffcc');
-            return $web_safe_colors[rand(0,sizeof($web_safe_colors))];
+            return $web_safe_colors[rand(0,sizeof($web_safe_colors)-1)];
     }
 
     /**

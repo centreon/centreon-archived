@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.2');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.3');
 
 --
 -- Contenu de la table `contact`
@@ -1384,4 +1384,6 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
                         ('Pacific/Tarawa', '+12:00', '+12:00'),
                         ('Pacific/Tongatapu', '+13:00', '+13:00'),
                         ('Pacific/Wake', '+12:00', '+12:00'),
-                        ('Pacific/Wallis', '+12:00', '+12:00');
+                        ('Pacific/Wallis', '+12:00', '+12:00'), 
+                        ('GMT', '-00:00', '-00:00'),
+                        ('UTC', '-00:00', '-00:00');
