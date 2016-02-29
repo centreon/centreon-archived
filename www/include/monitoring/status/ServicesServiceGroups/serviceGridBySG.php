@@ -48,6 +48,7 @@
 	!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
 	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
 	!isset($_GET["host_search"]) ? $host_search = 0 : $host_search = $_GET["host_search"];
+	!isset($_GET["sg_search"]) ? $sg_search = 0 : $sg_search = $_GET["sg_search"];
 
 	/*
 	 * Check search value in Host search field
@@ -110,7 +111,11 @@
         $DBRESULT->free();
     }
     foreach ($servicegroups as $servicegroup_name) {
-        $sgSearchSelect .= '<option value="' . $servicegroup_name . '">' . $servicegroup_name .'</option>';
+		if (isset($sg_search) && strcmp($sg_search, $servicegroup_name) == 0) {
+			$sgSearchSelect .= '<option value="' . $servicegroup_name . '" selected>' . $servicegroup_name .'</option>';
+		} else {
+			$sgSearchSelect .= '<option value="' . $servicegroup_name . '">' . $servicegroup_name .'</option>';
+		}
     }
     $sgSearchSelect .= '</select>';
     $tpl->assign("sgSearchSelect", $sgSearchSelect);
