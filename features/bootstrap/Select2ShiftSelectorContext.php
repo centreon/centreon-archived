@@ -82,6 +82,7 @@ class Select2ShiftSelectorContext implements Context
             }, 
             30
         );
+            $this->featureContext->saveImage('/tmp/aSelectedSelect2.png');
     }
 
     /**
@@ -93,17 +94,25 @@ class Select2ShiftSelectorContext implements Context
             throw new \Exception('Element not found');
         }
         
-        $script = "jQuery(':focus').trigger(jQuery.Event('keypress', {which: 16, keyCode: 16}));";
+        $this->select2Object->keyDown(16);
         
-        /*$script = "jQuery(':focus').keydown(function(e){"
-                . "keydown[e.keyCode] = true;"
-                . "if(e.keycode == 16) return 'true';"
-                . "jQuery(this).keyup(function() {"
-                . "if(keysdown[e.keyCode] === true){"
-                . "keydown[e.keyCode] = false; return 'false';}});});";*/
+        /*$script = "jQuery.Event( 'keydown', { keyCode: 16, which: 16 } )";
         
-        $this->minkContext->getSession()->evaluateScript($script);
+        $this->minkContext->getSession()->executeScript($script);*/
         
+        $script = "return jQuery(document).keydown(function(e){"
+                . "if(e.keyCode == 16) jQuery('body').css('background-color:red');"
+                . "else  jQuery('body').css('background-color:yellow');})"
+                ;
+        
+        $shift = $this->minkContext->getSession()->evaluateScript($script);
+        /*$this->featureContext->saveImage('/tmp/iHoldShiftKey.png');
+        var_dump($shift);
+        if ($shift != 'false') {
+            throw new \Exception('Shift not hold');
+        }*/
+        
+        $this->featureContext->saveImage('/tmp/iHoldShiftKey.png');
     }
     
     /**
@@ -114,14 +123,26 @@ class Select2ShiftSelectorContext implements Context
         if (is_null($this->select2Object)) {
             throw new \Exception('Element not found');
         }
+       
+        $element = $this->minkContext->getSession()->getPage()->find(
+                    'css', 'li.select2-results__option:nth-child(1)');
+        /*
+        if (is_null($element)) {
+            throw new \Exception('Element not found');
+        }
+        */
+        $element->press();
         
-        $this->featureContext->spin(
+        $this->featureContext->saveImage('/tmp/clickOnAFirstItem.png');
+        
+        /*$this->featureContext->spin(
             function ($context) {
-            return $context->getMinkContext()->getSession()->getPage()->has(
+            return $context->getMinkContext()->getSession()->getPage()->find(
                     'css', 'li.select2-results__option:first-child'
             );
+            
         }, 30
-        );
+        );*/
     }
     
     /**
@@ -130,16 +151,30 @@ class Select2ShiftSelectorContext implements Context
     public function clickOnAnAnotherItem()
     {
         if (is_null($this->select2Object)) {
-            throw new \Exception('Element not found');
+            throw new \Exception('Element select 2 not found');
         }
         
-        $this->featureContext->spin(
+        $this->featureContext->saveImage('/tmp/clickOnAnAnotherItem.png');
+        
+        $element = $this->minkContext->getSession()->getPage()->find(
+                    'css', 'li.select2-results__option:nth-child(3)');
+        
+        $element->press();
+        
+        /*
+        if (is_null($element)) {
+            throw new \Exception('Element not found');
+        }
+        */
+        
+        
+        /*$this->featureContext->spin(
             function ($context) {
-            return $context->getMinkContext()->getSession()->getPage()->has(
+            return $context->getMinkContext()->getSession()->getPage()->find(
                     'css', 'li.select2-results__option:nth-child(4)'
             );
         }, 30
-        );
+        );*/
     }
     
     /**
@@ -151,11 +186,18 @@ class Select2ShiftSelectorContext implements Context
             throw new \Exception('Element not found');
         }
         
-        $this->featureContext->spin(
-            function ($context) {
-                return count($context->session->getPage()->findAll('css', '.select2-container--open li.select2-results__option[aria-selected="true"]')) == 4;
-            },
-            30
-        );
+        $elem = $this->minkContext->getSession()->getPage()->find(
+                    'named', array(
+                    'id_or_name',
+                    'command_id'
+                    ));
+       
+        $count = count($elem->getValue());
+        var_dump($count);
+        
+        if ($count == 0) {
+            throw new \Exception('Nb element');
+        }
+        
     }
 }
