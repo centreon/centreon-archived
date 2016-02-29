@@ -394,8 +394,20 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             });
 
             $currentSelect2Object' . $this->getName() . '.confirmSelectAll = function() {
-                var validation = confirm("' . _('Add ') . '" + jQuery(".select2-results-header__nb-elements-value").text() + "' . _(' elements to selection ?') . '");
-                if (validation == true) {
+                /* Create div for popin */
+                var $confirmBox = jQuery(
+                    "<div id=\'confirm'  . $this->getName() . '\'>" +
+                    " <p>' . _('Add ') . '" + jQuery(".select2-results-header__nb-elements-value").text() + "' . _(' elements to selection ?') . '</p>" +
+                    " <div class=\'button_group_center\'>" +
+                    "   <button type=\'button\' class=\'btc bt_success\'>' . _('Ok') . '</button>" +
+                    "   <button type=\'button\' class=\'btc bt_default\'>' . _('Cancel') . '</button>" +
+                    " </div>" +
+                    "</div>"
+                ).appendTo("body");
+                
+                $confirmBox.centreonPopin({open: true});
+                
+                jQuery("#confirm'  . $this->getName() . ' .btc.bt_success").on("click", function () {
                     // Get search value
                     var search = $currentSelect2Object' . $this->getName() . '.data().select2.$container.find(".select2-search__field").val();
 
@@ -436,7 +448,14 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                         // Close select2
                         $currentSelect2Object'.$this->getName().'.select2("close");
                     });
-                }
+                    $confirmBox.centreonPopin("close");
+                    $confirmBox.remove();
+                });
+                
+                jQuery("body").on("click", "#confirm'  . $this->getName() . ' .btc.bt_default", function (e) {
+                    $confirmBox.centreonPopin("close");
+                    $confirmBox.remove();
+                });
             };';
 
             $mainJsInit .= 'templateSelection: function (data, container) {
