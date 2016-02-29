@@ -21,3 +21,8 @@ default:
       contexts:
         - Behat\MinkExtension\Context\MinkContext
         - SaveSearchSelect2Context
+    select_all_select2:
+      paths: [ %paths.base%/features/SelectAllSelect2.feature ]
+      contexts:
+        - Behat\MinkExtension\Context\MinkContext
+        - SelectAllSelect2Context
