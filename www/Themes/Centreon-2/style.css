@@ -1858,4 +1858,7 @@ input.excluded[type=checkbox]:checked + label:before {
     cursor: no-drop;
 }
 
-
+.docExport_Textarea {
+    width: 54em;
+    height: 20em;
+}
