@@ -1784,7 +1784,7 @@ td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
     overflow: hidden;
 }
 
-.elemBloc:not(.advancedForm) label {
+.elemBloc:not(.advancedForm) label, .elemBloc:not(.advancedFormService) label {
     cursor: pointer;
     position: relative;
     padding-left: 16px;
@@ -1797,7 +1797,7 @@ td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
     overflow: hidden;
 }
 
-.elemBloc:not(.advancedForm) label:before {
+.elemBloc:not(.advancedForm) label:before, .elemBloc:not(.advancedFormService) label:before {
     content: "";
     display: inline-block;
     width: 10px;
@@ -1828,7 +1828,7 @@ input.excluded[type=checkbox]:checked + label:before {
     border: 1px solid #e00b3d;
 }
 
-.advancedForm {
+.advancedForm, .advancedFormService {
    display: none;
 }
 
@@ -1856,6 +1856,10 @@ input.excluded[type=checkbox]:checked + label:before {
     background: url("../../img/icons/edit_white.png") no-repeat center scroll #d1d2d4;
     background-size: 10px 10px;
     cursor: no-drop;
+}
+
+#htTplExcluded .editBt, #stTplExcluded .editBt{
+   display: none;
 }
 
 
