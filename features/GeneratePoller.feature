@@ -4,7 +4,8 @@ Feature:
     To save my time
 
     Background:
-        Given I am logged in
+        Given a Centreon server
+        And I am logged in
 
     Scenario: Generate multiple poller configuration
         Given a Centreon platform with multiple pollers

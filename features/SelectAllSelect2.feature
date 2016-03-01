@@ -4,13 +4,14 @@ Feature:
     To select multiple element at once time
 
     Background:
-        Given I am logged in
-        
+        Given a Centreon server
+        And I am logged in
+
     Scenario: Select all element without filter
         Given a select2
         When I click on Select all button
         Then all elements are selected
-        
+
     Scenario: Select all element with filter
         Given a select2
         And enter a research

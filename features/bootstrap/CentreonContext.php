@@ -23,6 +23,8 @@ class CentreonContext implements Context
      */
     public $session;
 
+    private $container;
+
     /**
      * Initializes context.
      *
@@ -59,6 +61,15 @@ class CentreonContext implements Context
             sleep(1);
         }
         throw new \Exception('Load timeout');
+    }
+
+    /**
+     *  @Given a Centreon server
+     */
+    public function aCentreonServer()
+    {
+        $this->container = new CentreonContainer;
+        $this->minkContext->setMinkParameter('base_url', 'http://localhost:' . $this->container->getPort());
     }
 
     /**
