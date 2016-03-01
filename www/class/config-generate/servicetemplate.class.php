@@ -44,6 +44,7 @@ class ServiceTemplate extends AbstractService {
     public $current_host_name = null;
     public $current_service_description = null;
     public $current_service_id = null;
+    protected $loop_tpl = array();
     protected $attributes_select = '
         service_id,
         service_template_model_stm_id,
@@ -171,11 +172,20 @@ class ServiceTemplate extends AbstractService {
             return null;
         }
         if ($this->checkGenerate($service_id)) {
-           // Need to go in only to check servicegroup <-> stpl link
-           $this->getServiceTemplates($this->service_cache[$service_id]);
-           $this->getServiceGroups($service_id);
-           return $this->service_cache[$service_id]['name'];
-       }
+            if (!isset($this->loop_tpl[$service_id])) {
+                $this->loop_tpl[$service_id] = 1;
+                // Need to go in only to check servicegroup <-> stpl link
+                $this->getServiceTemplates($this->service_cache[$service_id]);
+                $this->getServiceGroups($service_id);
+            }
+            return $this->service_cache[$service_id]['name'];
+        }
+        
+        # avoid loop. we return nothing
+        if (isset($this->loop_tpl[$service_id])) {
+            return null;
+        }
+        $this->loop_tpl[$service_id] = 1;
         
         $this->getImages($this->service_cache[$service_id]);
         $this->getMacros($this->service_cache[$service_id]);
@@ -189,6 +199,10 @@ class ServiceTemplate extends AbstractService {
         
         $this->generateObjectInFile($this->service_cache[$service_id], $service_id);
         return $this->service_cache[$service_id]['name'];
+    }
+    
+    public function resetLoop() {
+        $this->loop_tpl = array();
     }
     
     public function reset() {
