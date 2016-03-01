@@ -7,11 +7,8 @@ class CentreonContainer
 {
     private $container_id;
 
-    public function __construct()
+    public function __construct($image)
     {
-        $image = getenv('CENTREON_WEB_IMAGE');
-        if (empty($image))
-            throw new \Exception('Centreon Web image is not set (CENTREON_WEB_IMAGE environment variable).');
         $this->container_id = shell_exec('docker run -t -d -p 80 "' . $image . '" | tr -d "\n"');
         if (empty($this->container_id))
             throw new \Exception('Could not run Centreon Web container');

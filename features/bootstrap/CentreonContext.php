@@ -68,8 +68,12 @@ class CentreonContext implements Context
      */
     public function aCentreonServer()
     {
-        $this->container = new CentreonContainer;
-        $this->minkContext->setMinkParameter('base_url', 'http://localhost:' . $this->container->getPort());
+        $image = getenv('CENTREON_WEB_IMAGE');
+        if (!empty($image))
+        {
+            $this->container = new CentreonContainer($image);
+            $this->minkContext->setMinkParameter('base_url', 'http://localhost:' . $this->container->getPort());
+        }
     }
 
     /**
