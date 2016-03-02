@@ -17,7 +17,7 @@ class SelectAllSelect2Context extends CentreonContext
     {
         /* Go to the page to connector configuration page */
         $this->minkContext->visit('/centreon/main.php?p=60806&o=c&id=1');
-        
+
         /* Wait page loaded */
         $this->spin(
             function ($context) {
@@ -28,15 +28,10 @@ class SelectAllSelect2Context extends CentreonContext
             },
             30
         );
-        
-        $page = $this->session->getPage();
-        
+
         /* Add search to select2 */
-        $inputField = $page->find('css', 'select#command_id');
-        if (!$inputField) {
-            throw new \Exception('No field found');
-        }
-        
+        $inputField = $this->assertFind('css', 'select#command_id');
+
         /* Open the select2 */
         $choice = $inputField->getParent()->find('css', '.select2-selection');
         if (!$choice) {
@@ -50,7 +45,7 @@ class SelectAllSelect2Context extends CentreonContext
             30
         );
     }
-    
+
     /**
      * @Given enter a research
      */
@@ -61,32 +56,22 @@ class SelectAllSelect2Context extends CentreonContext
         );
         $this->session->wait(1000);
     }
-    
+
     /**
      * @When I click on Select all button
      */
     public function iClickOnSelectAllButton()
     {
-        $page = $this->session->getPage();
         /* Add search to select2 */
-        $inputField = $page->find('css', 'select#command_id');
-        if (!$inputField) {
-            throw new \Exception('No field found');
-        }
-        
+        $inputField = $this->assertFind('css', 'select#command_id');
+
         /* Click on Select all button */
-        $selectAll = $page->find('css', '.select2-results-header__select-all > button');
-        if (!$selectAll) {
-            throw new \Exception('No field found');
-        }
+        $selectAll = $this->assertFind('css', '.select2-results-header__select-all > button');
         $selectAll->press();
 
         $this->session->wait(1000);
-        
-        $confirmButton = $page->find('css', '#confirmcommand_id .btc.bt_success');
-        if (!$confirmButton) {
-            throw new \Exception('No button found');
-        }
+
+        $confirmButton = $this->assertFind('css', '#confirmcommand_id .btc.bt_success');
         $confirmButton->click();
 
         $this->spin(
@@ -96,37 +81,29 @@ class SelectAllSelect2Context extends CentreonContext
             30
         );
     }
-    
+
     /**
      * @Then all elements are selected
      */
     public function allElementsAreSelected()
     {
-        $page = $this->session->getPage();
         /* Add search to select2 */
-        $inputField = $page->find('css', 'select#command_id');
-        if (!$inputField) {
-            throw new \Exception('No field found');
-        }
-        
+        $inputField = $this->assertFind('css', 'select#command_id');
+
         $values = $inputField->getValue();
         if (count($values) != 52) {
             throw new \Exception('All elements are not selected.');
         }
     }
-    
+
     /**
      * @Then all filtered elements are selected
      */
     public function allFilteredElementsAreSelected()
     {
-        $page = $this->session->getPage();
         /* Add search to select2 */
-        $inputField = $page->find('css', 'select#command_id');
-        if (!$inputField) {
-            throw new \Exception('No field found');
-        }
-        
+        $inputField = $this->assertFind('css', 'select#command_id');
+
         $values = $inputField->getValue();
         if (count($values) != 4) {
             throw new \Exception('All filtered elements are not selected.');

@@ -11,20 +11,13 @@ use Behat\Behat\Tester\Exception\PendingException;
 class PaginationSelect2Context extends CentreonContext
 {
     /**
-     * @Given a Centreon platform
-     */
-    public function aCentreonPlatform()
-    {
-    }
-    
-    /**
      * @When I change the configuration value of number of elements loaded in select
      */
     public function iChangeTheConfigurationValueOfNumberOfElementsLoadedInSelect()
     {
         /* Go to the page to options page */
         $this->minkContext->visit('/centreon/main.php?p=50110&o=general');
-        
+
         /* Wait page loaded */
         $this->spin(
             function ($context) {
@@ -35,12 +28,11 @@ class PaginationSelect2Context extends CentreonContext
             },
             30
         );
-        
-        $page = $this->session->getPage();
-        $fieldValue = $page->find('css', 'input[name="selectPaginationSize"]');
+
+        $fieldValue = $this->assertFind('css', 'input[name="selectPaginationSize"]');
         $fieldValue->setValue(200);
-        $submitButton = $page->find('css', 'input[name="submitC"]')->click();
-        
+        $submitButton = $this->assertFind('css', 'input[name="submitC"]')->click();
+
         /* Wait page loaded */
         $this->spin(
             function ($context) {
@@ -52,7 +44,7 @@ class PaginationSelect2Context extends CentreonContext
             30
         );
     }
-    
+
     /**
      * @Then the value is saved
      */
@@ -60,7 +52,7 @@ class PaginationSelect2Context extends CentreonContext
     {
         /* Go to the page to options page */
         $this->minkContext->visit('/centreon/main.php?p=50110&o=general');
-        
+
         /* Wait page loaded */
         $this->spin(
             function ($context) {
@@ -71,9 +63,8 @@ class PaginationSelect2Context extends CentreonContext
             },
             30
         );
-        
-        $page = $this->session->getPage();
-        $fieldValue = $page->find('css', 'input[name="selectPaginationSize"]');
+
+        $fieldValue = $this->assertFind('css', 'input[name="selectPaginationSize"]');
         if ($fieldValue->getValue() != 200) {
             throw new \Exception('The value is not saved.');
         }

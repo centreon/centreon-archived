@@ -63,6 +63,14 @@ class CentreonContext implements Context
         throw new \Exception('Load timeout');
     }
 
+    public function assertFind($selector, $locator)
+    {
+        $retval = $this->session->getPage()->find($selector, $locator);
+        if (is_null($retval))
+            throw new \Exception("Element ('$selector', '$locator') could not be found.");
+        return ($retval);
+    }
+
     /**
      *  @Given a Centreon server
      */

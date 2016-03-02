@@ -17,7 +17,7 @@ class SaveSearchSelect2Context extends CentreonContext
     {
         /* Go to the page to connector configuration page */
         $this->minkContext->visit('/centreon/main.php?p=60806&o=c&id=1');
-        
+
         /* Wait page loaded */
         $this->spin(
             function ($context) {
@@ -28,15 +28,10 @@ class SaveSearchSelect2Context extends CentreonContext
             },
             30
         );
-        
-        $page = $this->session->getPage();
-        
+
         /* Add search to select2 */
-        $inputField = $page->find('css', 'select#command_id');
-        if (!$inputField) {
-            throw new \Exception('No field found');
-        }
-        
+        $inputField = $this->assertFind('css', 'select#command_id');
+
         /* Open the select2 */
         $choice = $inputField->getParent()->find('css', '.select2-selection');
         if (!$choice) {
@@ -49,51 +44,41 @@ class SaveSearchSelect2Context extends CentreonContext
             },
             30
         );
-        
+
         $this->session->executeScript(
             'jQuery("select#command_id").parent().find(".select2-search__field").val("load");'
         );
         $this->session->wait(1000);
-        
-        
+
+
     }
-    
+
     /**
      * @Given I close this select2
      */
     public function iCloseThisSelect2()
     {
-        $page = $this->session->getPage();
-        
         /* Add search to select2 */
-        $inputField = $page->find('css', 'select#command_id');
-        if (!$inputField) {
-            throw new \Exception('No field found');
-        }
-        
+        $inputField = $this->assertFind('css', 'select#command_id');
+
         /* Open the select2 */
         $choice = $inputField->getParent()->find('css', '.select2-selection');
         if (!$choice) {
             throw new \Exception('No select2 choice found');
         }
-        
+
         $choice->press();
         $this->session->wait(1000);
     }
-    
+
     /**
      * @When I reopen this select2
      */
     public function iReopenThisSelect2()
     {
-        $page = $this->session->getPage();
-        
         /* Add search to select2 */
-        $inputField = $page->find('css', 'select#command_id');
-        if (!$inputField) {
-            throw new \Exception('No field found');
-        }
-        
+        $inputField = $this->assertFind('css', 'select#command_id');
+
         /* Open the select2 */
         $choice = $inputField->getParent()->find('css', '.select2-selection');
         if (!$choice) {
@@ -107,20 +92,15 @@ class SaveSearchSelect2Context extends CentreonContext
             30
         );
     }
-    
+
     /**
      * @Then the search is fill by the previous search
      */
     public function theSearchIsFillByThePreviousSearch()
     {
-        $page = $this->session->getPage();
-        
         /* Add search to select2 */
-        $inputField = $page->find('css', 'select#command_id');
-        if (!$inputField) {
-            throw new \Exception('No field found');
-        }
-        
+        $inputField = $this->assertFind('css', 'select#command_id');
+
         /* Open the select2 */
         $choice = $inputField->getParent()->find('css', '.select2-selection');
         if (!$choice) {
@@ -130,20 +110,15 @@ class SaveSearchSelect2Context extends CentreonContext
             throw new \Exception('The field search is not filled');
         }
     }
-    
+
     /**
      * @Then the elements are filtered
      */
     public function theElementsAreFiltered()
     {
-        $page = $this->session->getPage();
-        
         /* Add search to select2 */
-        $inputField = $page->find('css', 'select#command_id');
-        if (!$inputField) {
-            throw new \Exception('No field found');
-        }
-        
+        $inputField = $this->assertFind('css', 'select#command_id');
+
         /* Open the select2 */
         $choice = $inputField->getParent()->find('css', '.select2-selection');
         if (!$choice) {

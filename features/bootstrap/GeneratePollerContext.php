@@ -35,11 +35,7 @@ class GeneratePollerContext extends CentreonContext
      */
     public function onePollerIsSelected()
     {
-        $page = $this->session->getPage();
-        $inputPoller1 = $page->find('css', 'input#poller_1');
-        if (is_null($inputPoller1)) {
-            throw new \Exception('Element not found');
-        }
+        $inputPoller1 = $this->assertFind('css', 'input#poller_1');
         $inputPoller1->check();
     }
 
@@ -48,16 +44,9 @@ class GeneratePollerContext extends CentreonContext
      */
     public function multiplePollersAreSelected()
     {
-        $page = $this->session->getPage();
-        $inputPoller1 = $page->find('css', 'input#poller_1');
-        if (is_null($inputPoller1)) {
-            throw new \Exception('Element not found');
-        }
+        $inputPoller1 = $this->assertFind('css', 'input#poller_1');
         $inputPoller1->check();
-        $inputPoller3 = $page->find('css', 'input#poller_3');
-        if (is_null($inputPoller3)) {
-            throw new \Exception('Element not found');
-        }
+        $inputPoller3 = $this->assertFind('css', 'input#poller_3');
         $inputPoller3->check();
     }
 
@@ -66,16 +55,12 @@ class GeneratePollerContext extends CentreonContext
      */
     public function iClickOnTheButton($arg1)
     {
-        $page = $this->session->getPage();
-        $applyConfigurationButton = $page->find('css', 'input[name="' . $arg1 . '"]');
-        if (is_null($applyConfigurationButton)) {
-            throw new \Exception('Element not found');
-        }
+        $applyConfigurationButton = $this->assertFind('css', 'input[name="' . $arg1 . '"]');
         $applyConfigurationButton->click();
     }
 
     /**
-     * @When I am redirected to generate page 
+     * @When I am redirected to generate page
      */
     public function iAmRedirectedToGeneratePage()
     {
@@ -96,13 +81,7 @@ class GeneratePollerContext extends CentreonContext
      */
     public function iSelectAnOtherPoller()
     {
-        $page = $this->session->getPage();
-
-        $inputField = $page->find('css', 'select#nhost');
-        if (!$inputField) {
-            throw new \Exception('No field found');
-        }
-
+        $inputField = $this->assertFind('css', 'select#nhost');
         $choice = $inputField->getParent()->find('css', '.select2-selection');
         if (!$choice) {
             throw new \Exception('No select2 choice found');
@@ -116,7 +95,7 @@ class GeneratePollerContext extends CentreonContext
             30
         );
 
-        $chosenResults = $page->findAll('css', '.select2-results li:not(.select2-results__option--highlighted)');
+        $chosenResults = $this->session->getPage()->findAll('css', '.select2-results li:not(.select2-results__option--highlighted)');
         foreach ($chosenResults as $result) {
             if ($result->getText() == "Central_1") {
                 $result->click();
@@ -130,8 +109,7 @@ class GeneratePollerContext extends CentreonContext
      */
     public function thePollersAreAlreadySelected()
     {
-        $page = $this->session->getPage();
-        $applyConfigurationButton = $page->find('css', 'select#nhost');
+        $applyConfigurationButton = $this->assertFind('css', 'select#nhost');
         $selectedPollers = $applyConfigurationButton->getValue();
         sort($selectedPollers);
         if ($selectedPollers != array("1", "3")) {
