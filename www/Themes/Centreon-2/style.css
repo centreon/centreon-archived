@@ -1863,6 +1863,20 @@ input.excluded[type=checkbox]:checked + label:before {
     height: 20em;
 }
 
+.preview_icon {
+    float: left;
+    padding: 4px;
+    border: 2px solid #00ccbf;
+    border-radius: 8px;
+    vertical-align: middle;
+}
+
+.preview_icon img {
+    vertical-align: middle;
+    width: 32px;
+    height: 32px;
+}
+
 #htTplExcluded .editBt, #stTplExcluded .editBt{
    display: none;
 }
