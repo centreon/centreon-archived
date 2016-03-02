@@ -1832,10 +1832,10 @@ input.excluded[type=checkbox]:checked + label:before {
    display: none;
 }
 
-.checkbox-tpl {
+.checkbox-tpl, .checkbox-servicetpl {
     padding-bottom: 3px ;
 }
-.checkbox-tpl:hover {
+.checkbox-tpl:hover, checkbox-servicetpl:hover {
     background-color: #e7e7e8;
 }
 
