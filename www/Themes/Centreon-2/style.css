@@ -1835,7 +1835,7 @@ input.excluded[type=checkbox]:checked + label:before {
 .checkbox-tpl, .checkbox-servicetpl {
     padding-bottom: 3px ;
 }
-.checkbox-tpl:hover, checkbox-servicetpl:hover {
+.checkbox-tpl:hover, .checkbox-servicetpl:hover {
     background-color: #e7e7e8;
 }
 
@@ -1863,6 +1863,10 @@ input.excluded[type=checkbox]:checked + label:before {
     height: 20em;
 }
 
+#htTplExcluded .editBt, #stTplExcluded .editBt{
+   display: none;
+}
+
 .preview_icon {
     float: left;
     padding: 4px;
@@ -1873,10 +1877,12 @@ input.excluded[type=checkbox]:checked + label:before {
 
 .preview_icon img {
     vertical-align: middle;
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
 }
 
-#htTplExcluded .editBt, #stTplExcluded .editBt{
-   display: none;
+.field-group {
+    float: left;
+    margin-left: 4px;
+    margin-top: 4px;
 }
