@@ -10,10 +10,10 @@ This software requires [Centreon Engine](https://github.com/centreon/centreon-en
 and [Centreon Broker](https://github.com/centreon/centreon-broker) to be
 operational.
 
-*Quick links*
+**Quick links**
 * the official [Centreon (company) website](https://www.centreon.com)
 * the official [online documentation](https://documentation.centreon.com)
-* our [bugtracker](https://github.com/centreon/centreon/issues
+* our [bugtracker](https://github.com/centreon/centreon/issues)
 * the [forum](http://forum.centreon.com)
 * the [download center](https://download.centreon.com)
 

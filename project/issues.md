@@ -9,7 +9,7 @@ keep things simple for you and for us, some basic rules must be set.
 Here is the basic issue workflow for most Centreon software. Steps and
 transitions are explained below.
 
-![Centreon issue workflow](project/issue-workflow.png)
+![Centreon issue workflow](issue-workflow.png)
 
 Step | Description
 -----|------------
