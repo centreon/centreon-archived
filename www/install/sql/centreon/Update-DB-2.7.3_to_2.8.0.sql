@@ -1,5 +1,5 @@
 -- Change version of Centreon
-UPDATE `informations` SET `value` = '2.8.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.1' LIMIT 1;
+UPDATE `informations` SET `value` = '2.8.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.3' LIMIT 1;
 
 -- Add graphite output for centreon-broker
 INSERT INTO cb_module (name, libname, loading_pos, is_activated) 
@@ -113,4 +113,16 @@ UPDATE cb_type_field_relation SET is_required = 1
 WHERE
     cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
     AND cb_field_id IN (SELECT cb_field_id FROM cb_field where fieldname IN ('db_host', 'metrics_timeseries', 'status_timeseries'));
+
+CREATE TABLE IF NOT EXISTS `locale` (
+  `locale_id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`locale_id`),
+  `locale_short_name` varchar(3) NOT NULL,
+  `locale_long_name` varchar(255) NOT NULL,
+  `locale_img` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `locale` ( `locale_short_name`, `locale_long_name`, `locale_img`) VALUES
+('en', 'English', 'en.png'),
+('fr', 'French', 'fr.png');
 

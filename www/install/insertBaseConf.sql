@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.1');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.0');
 
 --
 -- Contenu de la table `contact`
@@ -1385,3 +1385,8 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
                         ('Pacific/Tongatapu', '+13:00', '+13:00'),
                         ('Pacific/Wake', '+12:00', '+12:00'),
                         ('Pacific/Wallis', '+12:00', '+12:00');
+
+INSERT INTO `locale` ( `locale_short_name`, `locale_long_name`, `locale_img`) VALUES
+('en', 'English', 'en.png'),
+('fr', 'French', 'fr.png');
+
