@@ -113,7 +113,7 @@ try {
 } catch (Exception $e) {
     echo sprintf("Could not connect to database. Check your configuration file %s\n", _CENTREON_ETC_.'/centreon.conf.php');
     if (isset($options['h'])) {
-        CentreonAPI::printHelp(false, 1);
+        CentreonClapi\CentreonAPI::printHelp(false, 1);
     }
     exit(1);
   }
@@ -121,8 +121,8 @@ try {
 /**
  * Create Centreon API object
  */
-CentreonUtils::setUserName($options['u']);
-$api = new CentreonAPI((isset($options["u"]) ? $options["u"] : "") , (isset($options["p"]) ? $options["p"] : ""), (isset($options["a"]) ? $options["a"] : ""), $centreon_path, $options);
+CentreonClapi\CentreonUtils::setUserName($options['u']);
+$api = new CentreonClapi\CentreonAPI((isset($options["u"]) ? $options["u"] : "") , (isset($options["p"]) ? $options["p"] : ""), (isset($options["a"]) ? $options["a"] : ""), $centreon_path, $options);
 
 if (isset($options["h"])) {
     $api->printHelp();
