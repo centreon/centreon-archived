@@ -707,11 +707,7 @@ jQuery(function () {
   });
   jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}});
   jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
-    if (ownership) {
-        jQuery("#deleteViewConfirm").centreonPopin("open");
-    } else {
-        jQuery("#dissociateViewConfirm").centreonPopin("open");
-    }
+    jQuery("#deleteViewConfirm").centreonPopin("open");
   });
   jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}}).on('click', function () {
     /* Get default information for a share view */
