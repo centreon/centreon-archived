@@ -1886,3 +1886,42 @@ input.excluded[type=checkbox]:checked + label:before {
     margin-left: 4px;
     margin-top: 4px;
 }
+
+/* PPE 2 */
+
+.pp-changelog textarea {
+    width: 250px;
+    max-width: 300px;
+    height: 150px;
+}
+
+.pp-changelog .md-preview {
+    width: 300px;
+    min-height: 150px;
+    max-height: 250px;
+    overflow: scroll;
+    float: right;
+    margin: 2px;
+    padding: 2px;
+    border: 1px solid rgb(187, 187, 187);
+    background-color: #fff;
+}
+
+.pp-status-message {
+    width: 250px;
+}
+
+.pp-version {
+    width: 50px;
+}
+
+.pp-name {
+    font-weight: bold;
+}
+
+.pp-field-error {
+    width: 100%;
+    color: red;
+    font-style: italic;
+    display: block;
+}
