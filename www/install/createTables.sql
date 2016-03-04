@@ -2411,7 +2411,13 @@ CREATE TABLE `timezone` (
   UNIQUE KEY `name` (`timezone_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+CREATE TABLE IF NOT EXISTS `locale` (
+  `locale_id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`locale_id`),
+  `locale_short_name` varchar(3) NOT NULL,
+  `locale_long_name` varchar(255) NOT NULL,
+  `locale_img` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
