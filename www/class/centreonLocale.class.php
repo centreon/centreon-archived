@@ -51,7 +51,7 @@ class CentreonLocale
      *
      * @return array
      */
-    public function getLocaleList($aParams)
+    public function getLocaleList()
     {
         $res = $this->_db->query("SELECT locale_id, locale_short_name, locale_long_name, locale_img
                             FROM locale ORDER BY locale_short_name <> 'en', locale_short_name");
