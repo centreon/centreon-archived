@@ -314,6 +314,8 @@ CREATE TABLE `cb_fieldset` (
 CREATE TABLE `cb_fieldgroup` (
   `cb_fieldgroup_id` INT NOT NULL AUTO_INCREMENT,
   `groupname` VARCHAR(100) NOT NULL,
+  `displayname` VARCHAR(255) NOT NULL DEFAULT '',
+  `multiple` TINYINT NOT NULL DEFAULT 0,
   `group_parent_id` INT DEFAULT NULL,
   PRIMARY KEY(`cb_fieldgroup_id`),
   FOREIGN KEY(`group_parent_id`) REFERENCES `cb_fieldgroup` (`cb_fieldgroup_id`) ON DELETE CASCADE
@@ -460,6 +462,7 @@ CREATE TABLE `cfg_centreonbroker_info` (
   `grp_level` INT NOT NULL DEFAULT 0,
   `subgrp_id` INT DEFAULT NULL,
   `parent_grp_id` INT DEFAULT NULL,
+  `fieldIndex` INT DEFAULT NULL,
   KEY `cfg_centreonbroker_info_idx01` (`config_id`),
   KEY `cfg_centreonbroker_info_idx02` (`config_id`,`config_group`),
   CONSTRAINT `cfg_centreonbroker_info_ibfk_01` FOREIGN KEY (`config_id`) REFERENCES `cfg_centreonbroker` (`config_id`) ON DELETE CASCADE

@@ -655,7 +655,8 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (11, 'Compression', 'compression.so', 60, 0, 1),
 (12, 'Failover', NULL, NULL, 0, 1),
 (17, 'Dumper', 'dumper.so', 20, 0, 1),
-(18, 'Graphite', 'graphite.so', 21, 0, 1);
+(18, 'Graphite', 'graphite.so', 21, 0, 1),
+(19, 'InfluxDB', 'influxdb.so', 22, 0, 1);
 
 
 --
@@ -677,7 +678,8 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (24, 'Monitoring', 'monitoring', 9),
 (28, 'Database configuration reader', 'db_cfg_reader', 17),
 (29, 'Database configuration writer', 'db_cfg_writer', 17),
-(30, 'Storage - Graphite', 'graphite', 18);
+(30, 'Storage - Graphite', 'graphite', 18),
+(31, 'Storage - InfluxDB', 'influxdb', 19);
 
 --
 -- Contenu de la table `cb_field`
@@ -736,10 +738,23 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (51, 'metric_naming', "Metric naming", "How to name entries for metrics. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", 'text', NULL),
 (52, 'status_naming', "Status naming", "How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", "text", NULL);
 
-INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `group_parent_id`) VALUES (1, 'filters', NULL);
+INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
+(1, 'filters', '', 0, NULL),
+(2, 'metrics_column', 'Metrics column', 1, NULL),
+(3, 'status_column', 'Status column', 1, NULL);
 
 INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`) VALUES
-(47,  "category", "Filter category", "Category filter for flux in output", "multiselect", NULL, 1);
+(47,  "category", "Filter category", "Category filter for flux in output", "multiselect", NULL, 1),
+(53, 'metrics_timeseries', 'Metrics timeseries', 'How to name entries for metrics timeseries. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL, NULL),
+(54, 'status_timeseries', 'Status timeseries', 'How to name entries for statuses timeseries. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL, NULL),
+(55, 'name', 'Name', 'Name of the column (macros accepted)', 'text', NULL, 2),
+(56, 'value', 'Value', 'Value of the column (macros accepted)', 'text', NULL, 2),
+(57, 'type', 'Type', 'Type of the column', 'select', NULL, 2),
+(58, 'is_tag', 'Tag', 'Whether or not this column is a tag', 'radio', NULL, 2),
+(59, 'name', 'Name', 'Name of the column (macros accepted)', 'text', NULL, 3),
+(60, 'value', 'Value', 'Value of the column (macros accepted)', 'text', NULL, 3),
+(61, 'type', 'Type', 'Type of the column', 'select', NULL, 3),
+(62, 'is_tag', 'Tag', 'Whether or not this column is a tag', 'radio', NULL, 3);
 
 --
 -- Contenu de la table `cb_list`
@@ -761,7 +776,11 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (1, 45, 'yes'),
 (1, 46, 'yes'),
 (6, 47, NULL),
-(1, 48, 'no');
+(1, 48, 'no'),
+(7, 57, 'string'),
+(8, 58, 'false'),
+(9, 61, 'string'),
+(10, 62, 'false');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -789,7 +808,15 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (6, 'Neb', 'neb'),
 (6, 'Storage', 'storage'),
 (6, 'Correlation', 'correlation'),
-(6, 'Dumper', 'dumper');
+(6, 'Dumper', 'dumper'),
+(7, 'String', 'string'),
+(7, 'Number', 'number'),
+(8, 'True', 'true'),
+(8, 'False', 'false'),
+(9, 'String', 'string'),
+(9, 'Number', 'number'),
+(10, 'True', 'true'),
+(10, 'False', 'false');
 
 --
 -- Contenu de la table `cb_module_relation`
@@ -829,7 +856,8 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (3, 24, 0),
 (1, 28, 1),
 (1, 29, 1),
-(1, 30, 0);
+(1, 30, 0),
+(1, 31, 0);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -945,7 +973,15 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (30, 34, 0, 5),
 (30, 28, 0, 6),
 (30, 51, 1, 7),
-(30, 52, 1, 8);
+(30, 52, 1, 8),
+(31, 7, 1, 1),
+(31, 18, 0, 2),
+(31, 8, 0, 3),
+(31, 9, 0, 4),
+(31, 34, 0, 5),
+(31, 28,0, 6),
+(31, 51, 1, 7),
+(31, 52, 1, 8);
 
 --
 -- Contenu de la table `widget_parameters_field_type`
@@ -965,7 +1001,10 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('serviceTemplate', 1),
                                            ('hostgroup', 1),
                                            ('servicegroup', 1),
-                                           ('service', 1);
+                                           ('service', 1),
+                                           ('hostCategories', 1),
+                                           ('serviceCategories', 1),
+                                           ('metric', 1);
 
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES 
