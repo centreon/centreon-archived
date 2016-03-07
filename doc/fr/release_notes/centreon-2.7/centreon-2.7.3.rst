@@ -19,9 +19,12 @@ CHANGELOG
 Features and Bug Fixes
 ======================
 
-- 
-
-Known Bugs
-==========
-
+- Fix Recurent downtimes starting at 00:00
+- Fix search in Poller configuration page
+- Fix problems when sharing custom views
+- Fix description problem with custom macros containing dash
+- Fix time Interval change isn't being reflected in the polling Engine config 
+- Fix Missing GMT and UTC timezone
+- Fix No performance graph for host group service
+- Enh Usuability of select2
 -
