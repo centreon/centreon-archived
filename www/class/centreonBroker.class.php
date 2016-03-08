@@ -80,7 +80,12 @@ class CentreonBroker
                 shell_exec("sudo systemctl $action $script");    
             }
         } else {
-            shell_exec("sudo $script $action");
+            exec("ps -edf | grep cbd | grep -v grep", $output, $return_vars);
+            if (count($output) == 0) {
+                shell_exec("sudo $script restart");
+            } else {
+                shell_exec("sudo $script $action");
+            }
         }
     }
         
