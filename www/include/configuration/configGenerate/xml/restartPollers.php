@@ -98,8 +98,7 @@ try {
     if ($_POST['sid'] != session_id()) {
         exit;
     }
-    $oreon = $_SESSION['centreon'];
-    $centreon = $oreon;
+    $centreon = $_SESSION['centreon'];
 
     /*  Set new error handler */
     set_error_handler('log_error');
@@ -120,7 +119,7 @@ try {
 
     $tab_server = array();
     $DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` ASC");
-    $tabs = $oreon->user->access->getPollerAclConf(array('fields'     => array('name', 'id', 'localhost'),
+    $tabs = $centreon->user->access->getPollerAclConf(array('fields'     => array('name', 'id', 'localhost'),
                                                          'order'      => array('name'),
                                                          'conditions' => array('ns_activate' => '1'),
                                                          'keys'       => array('id')));
