@@ -966,7 +966,10 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('hostgroup', 1),
                                            ('servicegroup', 1),
                                            ('service', 1),
-                                           ('poller', 1);
+                                           ('poller', 1), 
+                                           ('hostCategories',1), 
+                                           ('serviceCategories',1),
+                                           ('metric',1); 	  
 
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES 
