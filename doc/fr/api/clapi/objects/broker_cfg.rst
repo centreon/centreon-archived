@@ -91,6 +91,12 @@ instance                 Instance that is linked to Centreon Broker CFG
 
 event_queue_max_size     Event queue max size (when number is reached,
                          temporary output will be used).
+
+retention_path           Path for retention and temporary files
+
+stats_activate           Enable statistics (0 or 1)
+
+correlation_activate     Enable correlation (0 or 1)
 ======================== ==================================================
 
 
