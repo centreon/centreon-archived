@@ -1735,7 +1735,8 @@ span.state_badge {
 }
 
 .paginator_p_wrap {
-    margin: 6px 0;
+    margin: 6px auto;
+    float: none;
 }
 
 .paginator_p.selected {
@@ -1743,6 +1744,10 @@ span.state_badge {
 }
 .slider {
     margin-bottom: 1em;
+}
+
+.paginator_slider {
+    margin: 6px auto;
 }
 
 .macro_legend {
