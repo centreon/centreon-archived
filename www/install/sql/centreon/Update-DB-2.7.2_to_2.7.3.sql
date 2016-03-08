@@ -7,3 +7,6 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
 
 -- Set possibility for non admin user with view rights access to change tab in poller view configuration
 INSERT INTO topology_JS(id_t_js, id_page, o, PathName_js, Init) VALUES(NULL, 60903, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+
+-- Add capability to list pollers in widgets #4165 
+INSERT INTO widget_parameters_field_type VALUES (NULL, "poller", '1');
