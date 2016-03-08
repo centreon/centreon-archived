@@ -1996,7 +1996,7 @@ input.excluded[type=checkbox]:checked + label:before {
 }
 .vertical-tabs.ui-tabs-vertical .ui-tabs-panel textarea {
     width: 100%;
-    padding: .5em 2em .5em 3em !important;
+    padding: .5em 2em .5em 3.5em !important; 
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
