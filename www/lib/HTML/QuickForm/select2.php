@@ -342,6 +342,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
 
                         jQuery(".select2-results li>span").each(function (index){
                             var $this = jQuery(this);
+                            
                             if (index >= startIndex && index <= endIndex) {
                                 selectedValues.push({id: $this.data("did").toString(), text: $this.text()});
                             }
@@ -377,7 +378,8 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $js = "
             function select2_formatResult(item) {
                 if(item.id) {
-                    return jQuery('<span data-did=\"' + item.id + '\">' + item.text + '</span>'); 
+                    span = jQuery('<span data-did=\"' + item.id + '\" title=\"' + item.text + '\" >' + item.text + '</span>');
+                    return span;
                 } else {
                     return item.text;
                 }

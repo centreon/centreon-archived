@@ -215,12 +215,16 @@ p.description a, p.description a:visited {
     color: #0072ce;
     background-color: #bfecff;
 }
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #0072ce;
+    color: black !important;
+}
 .select2-container--default .select2-selection--multiple {
     border-radius: 0 !important;
 }
 
 .select2-container--default .select2-results__option[aria-selected=true] {
-    background-color: #f1f1f1 !important;
+    background-color: #bfecff !important;
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__rendered {
