@@ -113,7 +113,13 @@ class CentreonCentbrokerCfg extends CentreonObject
                 $params[1] = "ns_nagios_server";
                 $params[2] = $this->instanceObj->getInstanceId($params[2]);
             } elseif (!preg_match('/^config_/', $params[1])) {
-                if ($params[1] != "event_queue_max_size") {
+                $parametersWithoutPrefix = array(
+                    "event_queue_max_size",
+                    "retention_path",
+                    "stats_activate",
+                    "correlation_activate"
+                );
+                if (!in_array($params[1], $parametersWithoutPrefix)) {
                     $params[1] = 'config_'.$params[1];
                 }
             }
