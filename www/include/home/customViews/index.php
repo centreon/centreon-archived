@@ -47,7 +47,7 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 try {
     $db = new CentreonDB();
     $viewObj = new CentreonCustomView($centreon, $db);
-
+    
     /*
 	 * Smarty
 	 */
@@ -58,6 +58,32 @@ try {
      */
     $template = new Smarty();
     $template = initSmartyTpl($path, $template, "./");
+    
+    $aclEdit = $centreon->user->access->page('10301', true);
+    $template->assign('aclEdit', $aclEdit);
+    
+    $aclShare = $centreon->user->access->page('10302', true);
+    $template->assign('aclShare', $aclShare);
+    
+    $aclParameters = $centreon->user->access->page('10303', true);
+    $template->assign('aclParameters', $aclParameters);
+    
+    $aclAddWidget = $centreon->user->access->page('10304', true);
+    $template->assign('aclAddWidget', $aclAddWidget);
+    
+    $aclRotation = $centreon->user->access->page('10305', true);
+    $template->assign('aclRotation', $aclRotation);
+    
+    $aclDeleteView = $centreon->user->access->page('10306', true);
+    $template->assign('aclDeleteView', $aclDeleteView);
+    
+    $aclAddView = $centreon->user->access->page('10307', true);
+    $template->assign('aclAddView', $aclAddView);
+    
+    $aclSetDefault = $centreon->user->access->page('10308', true);
+    $template->assign('aclSetDefault', $aclSetDefault);
+   
+    $template->assign('editMode', _("Show/Hide edit mode"));
 
     $viewId = $viewObj->getCurrentView();
     $views = $viewObj->getCustomViews();
@@ -97,7 +123,13 @@ try {
             . " UNION "
             . " SELECT cv.*, '0' as from_public FROM custom_views cv "
             . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
-            . " WHERE cvur.user_id = " . $db->escape($centreon->user->user_id). " AND cvur.is_consumed = 0 ";
+            . " WHERE (cvur.user_id = " . $db->escape($centreon->user->user_id)
+			. "        OR cvur.usergroup_id IN ( "
+			. "           SELECT contactgroup_cg_id "
+			. "           FROM contactgroup_contact_relation "
+			. "           WHERE contact_contact_id = " . $db->escape($centreon->user->user_id) 
+			. "           ) "
+			. " ) AND cvur.is_consumed = 0 ";
     
 
     $DBRES = $db->query($query);
@@ -162,9 +194,7 @@ try {
     $formEditView = new HTML_QuickForm('formEditView', 'post', "?p=103", '', array('onSubmit' => 'submitEditView(); return false;'));
     $formEditView->addElement('header', 'title', _('Edit a view'));
     $formEditView->addElement('header', 'information', _("General Information"));
-
-    $template->assign('editMode', _("Show/Hide edit mode"));
-
+    
     /**
      * Name
      */

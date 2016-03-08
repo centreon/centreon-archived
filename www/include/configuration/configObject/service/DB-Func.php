@@ -598,7 +598,7 @@ function multipleServiceInDB($services = array(), $nbrDup = array(), $host = nul
                                 $sv["is_password"] = '0'; 
                             }
                             $mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`, `is_password`) VALUES " .
-                                "('".$maxId["MAX(service_id)"]."', '\$".$pearDB->escape($macName)."\$', '". $pearDB->escape($macVal) ."', '".$pearDB->escape($sv["is_password"])."')";
+                                "('".$maxId["MAX(service_id)"]."', '\$".$pearDB->escape(str_replace('-', '', $macName))."\$', '". $pearDB->escape($macVal) ."', '".$pearDB->escape($sv["is_password"])."')";
                             $DBRESULT4 = $pearDB->query($mTpRq2);
                             $fields["_".strtoupper($macName)."_"] = $sv['svc_macro_value'];
                         }
@@ -722,7 +722,7 @@ function updateServiceInDB ($service_id = null, $from_MC = false, $params = arra
     // 2 - MC with addition of new host/hg parent
     // 3 - Normal update
     if (isset($ret["mc_mod_Pars"]["mc_mod_Pars"]) && $ret["mc_mod_Pars"]["mc_mod_Pars"]) {
-        updateServiceHost($service_id, $params);
+        updateServiceHost($service_id, $params, true);
     } elseif (isset($ret["mc_mod_Pars"]["mc_mod_Pars"]) && !$ret["mc_mod_Pars"]["mc_mod_Pars"]) {
         updateServiceHost_MC($service_id);
     } else {
@@ -882,7 +882,7 @@ function insertService($ret = array(), $macro_on_demand = null)
 		 			$my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
 		 			$macName = $my_tab[$macInput];
 		 			$macVal = $my_tab[$macValue];
-		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`, `macro_order` ) VALUES ('\$_SERVICE". CentreonDB::escape(strtoupper($macName)) ."\$', '". CentreonDB::escape($macVal) ."', ". $service_id["MAX(service_id)"] .", " . $i . ")";
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`, `macro_order` ) VALUES ('\$_SERVICE". CentreonDB::escape(strtoupper(str_replace('-', '', $macName))) ."\$', '". CentreonDB::escape($macVal) ."', ". $service_id["MAX(service_id)"] .", " . $i . ")";
 			 		$DBRESULT = $pearDB->query($rq);
 					$fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];
 					$already_stored[strtolower($my_tab[$macInput])] = 1;
@@ -901,7 +901,7 @@ function insertService($ret = array(), $macro_on_demand = null)
         }
         $service->insertMacro(
                               $service_id["MAX(service_id)"],
-                              $_REQUEST['macroInput'],
+                              str_replace('-', '', $_REQUEST['macroInput']),
                               $_REQUEST['macroValue'],
                               $_REQUEST['macroPassword'],
                               $macroDescription,
@@ -1234,9 +1234,9 @@ function updateService($service_id = null, $from_MC = false, $params = array())
             }
         }
     }
- 
+
     if (isset($_REQUEST['macroInput']) && isset($_REQUEST['macroValue'])) {
-        $service->insertMacro($service_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], (!isset($_REQUEST['macroPassword']) ? 0 : $_REQUEST['macroPassword']), $macroDescription,false, $ret["command_command_id"]);
+        $service->insertMacro($service_id, str_replace('-', '', $_REQUEST['macroInput']), $_REQUEST['macroValue'], (!isset($_REQUEST['macroPassword']) ? 0 : $_REQUEST['macroPassword']), $macroDescription,$from_MC, $ret["command_command_id"]);
     } else {
         $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".CentreonDB::escape($service_id)."'");
     }
@@ -1524,11 +1524,13 @@ function updateService_MC($service_id = null, $params = array())
     if (isset($_REQUEST['macroInput']) && isset($_REQUEST['macroValue'])) {
         $service->insertMacro(
                               $service_id,
-                              $_REQUEST['macroInput'],
+                              str_replace('-', '', $_REQUEST['macroInput']),
                               $_REQUEST['macroValue'],
                               $_REQUEST['macroPassword'],
                               $macroDescription,
-                              true
+                              true,
+                              false,
+                              $_REQUEST['macroFrom']
                               );
     }
     if (isset($ret['criticality_id']) && $ret['criticality_id']) {
@@ -1953,7 +1955,7 @@ function updateServiceHostContactsInheritance($service_id = null, $ret = array()
     $DBRESULT =& $pearDB->query($rq);
 }
     
-function updateServiceHost($service_id = null, $ret = array())
+function updateServiceHost($service_id = null, $ret = array(), $from_MC = false)
 {
     global $form, $pearDB;
     if (!$service_id) {
@@ -2009,9 +2011,26 @@ function updateServiceHost($service_id = null, $ret = array())
         }
     }
 
-    $rq = "DELETE FROM host_service_relation ";
-    $rq .= "WHERE service_service_id = '".$service_id."'";
-    $DBRESULT = $pearDB->query($rq);
+    if (!$from_MC) {
+        $rq = "DELETE FROM host_service_relation "
+            . "WHERE service_service_id = '" . $service_id . "' ";
+        $DBRESULT = $pearDB->query($rq);
+    } else {
+        # Purge service to host relations
+        if (count($ret1)) {
+            $rq = "DELETE FROM host_service_relation "
+                . "WHERE service_service_id = '" . $service_id . "' "
+                . "AND host_host_id IS NOT NULL ";
+            $DBRESULT = $pearDB->query($rq);
+        }
+        # Purge service to hostgroup relations
+        if (count($ret2)) {
+            $rq = "DELETE FROM host_service_relation "
+                . "WHERE service_service_id = '" . $service_id . "' "
+                . "AND hostgroup_hg_id IS NOT NULL ";
+            $DBRESULT = $pearDB->query($rq);
+        }
+    }
 
     if (count($ret2)) {
         for ($i = 0; $i < count($ret2); $i++)	{

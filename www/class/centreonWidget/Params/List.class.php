@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -48,8 +48,8 @@ class CentreonWidgetParamsList extends CentreonWidgetParams
         if (isset($this->quickform)) {
             $tab = $this->getListValues($params['parameter_id']);
             $this->element = $this->quickform->addElement('select',
-            											  'param_'.$params['parameter_id'],
-                                                          $params['parameter_name'],
+	                									  'param_'.$params['parameter_id'],
+            											  $params['parameter_name'],
                                                           $tab);
         }
     }

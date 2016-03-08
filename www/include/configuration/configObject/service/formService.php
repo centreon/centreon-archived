@@ -1028,6 +1028,8 @@ if (isset($service['service_template_model_stm_id']) && ($service['service_templ
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
+$tpl->assign('alert_check_interval', _("Warning, unconventional use of interval check. You should prefer to use an interval lower than 24h, if needed, pair this configuration with the use of timeperiods"));
+
 // Just watch a host information
 if ($o == "w") {
     if (!$min && $centreon->user->access->page($p) != 2) {

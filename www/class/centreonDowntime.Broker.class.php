@@ -145,20 +145,27 @@ class CentreonDowntimeBroker extends CentreonDowntime
 	 */
 	public function isScheduled($dt_id, $hostId, $serviceId = null, $currentHostDate = null)
 	{
-		static $downtimeHosts = array();
-		static $downtimeServices = array();
+            if (!defined("_DELAY_")) {
+                define('_DELAY_', '600'); /* Default 10 minutes */
+            }
 
-        if(is_null($currentHostDate)){
-          $currentHostDate = "UNIX_TIMESTAMP()";
-        }
+            static $downtimeHosts = array();
+            static $downtimeServices = array();
+
+            if(is_null($currentHostDate)){
+                $currentHostDate = "UNIX_TIMESTAMP()";
+            }
+            $currentHostDate += _DELAY_;
+
 		if (!isset($downtimeHosts[$dt_id])) {
 			$downtimeHosts[$dt_id] = array();
 			$downtimeServices[$dt_id] = array();
 
-            
+
 			$query = "SELECT internal_id as internal_downtime_id, type as downtime_type, host_id, service_id
 				FROM downtimes
-				WHERE start_time > ".$currentHostDate."
+				WHERE start_time < ".$currentHostDate."
+                                AND end_time > ".$currentHostDate."
 				AND comment_data = '[Downtime cycle #" . $dt_id . "]'";
 			$res = $this->dbb->query($query);
 			while ($row = $res->fetchRow()) {

@@ -423,10 +423,13 @@
 </form>
 {$helptext}
 <script>
+
+var alert_check_interval = "{$alert_check_interval}";
+
 {literal}
 jQuery('input[name=host_check_interval]').change(function(){
     if (parseInt(jQuery(this).val()) >= 1440){
-        alert("Warning, unconventional use of interval check. You should prefer to use an interval lower than 24h, if needed, pair this configuration with the use of timeperiods");
+        alert(alert_check_interval);
     }
 });
 

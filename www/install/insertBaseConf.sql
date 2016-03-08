@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.1');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.3');
 
 --
 -- Contenu de la table `contact`
@@ -965,7 +965,11 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('serviceTemplate', 1),
                                            ('hostgroup', 1),
                                            ('servicegroup', 1),
-                                           ('service', 1);
+                                           ('service', 1),
+                                           ('poller', 1), 
+                                           ('hostCategories',1), 
+                                           ('serviceCategories',1),
+                                           ('metric',1); 	  
 
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES 
@@ -1384,4 +1388,6 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
                         ('Pacific/Tarawa', '+12:00', '+12:00'),
                         ('Pacific/Tongatapu', '+13:00', '+13:00'),
                         ('Pacific/Wake', '+12:00', '+12:00'),
-                        ('Pacific/Wallis', '+12:00', '+12:00');
+                        ('Pacific/Wallis', '+12:00', '+12:00'), 
+                        ('GMT', '-00:00', '-00:00'),
+                        ('UTC', '-00:00', '-00:00');
