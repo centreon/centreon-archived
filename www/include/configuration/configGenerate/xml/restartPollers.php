@@ -107,7 +107,7 @@ try {
     if (defined('_CENTREON_VARLIB_')) {
         $centcore_pipe = _CENTREON_VARLIB_."/centcore.cmd";
     } else {
-	$centcore_pipe = "/var/lib/centreon/centcore.cmd";
+	    $centcore_pipe = "/var/lib/centreon/centcore.cmd";
     }
 
     $xml = new CentreonXML();
@@ -117,15 +117,6 @@ try {
     if (!isset($msg_restart)) {
         $msg_restart = array();
     }
-
-    /*
-     * Get Init Script
-     */
-    $DBRESULT = $pearDB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
-    $serveurs = $DBRESULT->fetchrow();
-    unset($DBRESULT);
-    (isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "/etc/init.d/nagios";
-    unset($serveurs);
 
     $tab_server = array();
     $DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` ASC");
@@ -143,10 +134,8 @@ try {
      * Restart broker
      */
     $brk = new CentreonBroker($pearDB);
-    if ($brk->getBroker() == 'broker') {
-        $brk->reload();
-    }
-
+    $brk->reload();
+    
     foreach ($tab_server as $host) {
     	if ($ret["restart_mode"] == 1) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
@@ -236,9 +225,11 @@ $xml->endElement();
 
 $xml->endElement();
 
+// Headers
 header('Content-Type: application/xml');
 header('Cache-Control: no-cache');
 header('Expires: 0');
 header('Cache-Control: no-cache, must-revalidate');
+
+// Send Data
 $xml->output();
-?>
