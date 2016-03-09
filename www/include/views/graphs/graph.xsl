@@ -53,7 +53,7 @@
 						</xsl:element>
 						<xsl:element name="a">
 							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
-							<img src="./img/icones/16x16/text_binary_csv.gif" style="margin-right:5px;" />
+							<img src="./img/icons/csv.png" class="ico-16 margin_right"/>
 						</xsl:element>
 					</td>
 				</tr>
