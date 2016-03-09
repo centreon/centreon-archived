@@ -7,31 +7,23 @@
 </div>
 
 <xsl:if test="svc">
-	<div id="div2">
-		<form name="formu2">
-    	    <table class="ajaxOption">
-				<tr>
-					<td>
-						<xsl:element name='input'>
-							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>',multi, '<xsl:value-of select="//target"/>' ); return false;</xsl:attribute>
-							<xsl:attribute name="name">split</xsl:attribute>
-							<xsl:attribute name="type">checkbox</xsl:attribute>
-							<xsl:if test="//split = 1">
-								<xsl:attribute name="checked">checked</xsl:attribute>
-							</xsl:if>
-						</xsl:element>
-						<xsl:value-of select="//lang/giv_split_component"/>
-					</td>
-				</tr>
-        	</table>
-		</form>
-   	</div>
-        <table class="ListTable">
-        <tr class="ListHeader">
-            <td class="ListColHeaderPicker" valign="top" align="center">
-                <xsl:value-of select="//name"/>
-            </td>
+	<table class="ListTable">
+		<tr class="ListHeader">
+            <td class="ListColHeaderPicker" valign="top" align="center"><xsl:value-of select="//name"/></td>
             <td class="ListColRight">
+				<div id="div2">
+				<form name="formu2">
+				<xsl:element name='input'>
+					<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi,'<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
+					<xsl:attribute name="name">split</xsl:attribute>
+					<xsl:attribute name="type">checkbox</xsl:attribute>
+					<xsl:if test="//split = 1">
+						<xsl:attribute name="checked">checked</xsl:attribute>
+					</xsl:if>
+				</xsl:element>
+				Split Components
+				</form>
+				</div>
             </td>
         </tr>
         <tr >
