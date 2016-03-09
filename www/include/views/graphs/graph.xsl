@@ -101,38 +101,6 @@
             </table>
 </xsl:if>
 <xsl:if test="svc_zoom">
-
-	<div id="div3" valign="top" align='left'>
-		<table class="ajaxOption table">
-			<tr>
-				<form name="formu2">
-					<td>
-						<xsl:element name='input'>
-							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>','','<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
-							<xsl:attribute name="name">split</xsl:attribute>
-							<xsl:attribute name="type">checkbox</xsl:attribute>
-							<xsl:if test="//split = 1">
-								<xsl:attribute name="checked">checked</xsl:attribute>
-							</xsl:if>
-						</xsl:element>
-						<xsl:value-of select="//lang/giv_split_component"/>
-					</td>
-				</form>
-					<td class='ListColRight'>
-						<form name="formu3">
-							<table>
-								<tr>
-								<xsl:for-each select="//metrics[position() mod $cellsPerRow = 1]">
-									<xsl:apply-templates select=".|following-sibling::metrics[position() &lt; $cellsPerRow]"/>
-								</xsl:for-each>
-								</tr>
-							</table>
-						</form>
-					</td>
-			</tr>
-		</table>
-
-	</div>
 	<div>
 		<table class="ListTable">
 			<tr class="ListHeader">
@@ -220,6 +188,23 @@
 				</td>
 			</tr>
 	    </table>
+	</div>
+	<div id="div3" valign="top" align='left'>
+		<table class="ListTable">
+			<tr>
+				<td class='ListColCenter'>
+					<form name="formu3">
+					<table>
+						<tr>
+							<xsl:for-each select="//metrics[position() mod $cellsPerRow = 1]">
+								<xsl:apply-templates select=".|following-sibling::metrics[position() &lt; $cellsPerRow]"/>
+							</xsl:for-each>
+						 </tr>
+					</table>
+					</form>
+				</td>
+			</tr>
+		</table>
 	</div>
 </xsl:if>
 <xsl:if test="//multi_svc">
