@@ -75,6 +75,7 @@ $form->setDefaults(array('debug' => '1'));
 
 $form->addElement('checkbox', 'gen', _("Generate Configuration Files"), null, array('id' => 'ngen'));
 $form->setDefaults(array('gen' => '1'));
+
 $form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' => 'nmove'));
 $form->addElement('checkbox', 'restart', _("Restart Monitoring Engine"), null, array('id' => 'nrestart'));
 $form->addElement('checkbox', 'postcmd', _('Post generation command'), null, array('id' => 'npostcmd'));

@@ -138,6 +138,7 @@ try {
     foreach ($tab_server as $host) {
     	if ($ret["restart_mode"] == 1) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
+                put_file_content();
                 $msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " reload");
             } else {
                 system("echo 'RELOAD:".$host["id"]."' >> $centcore_pipe", $return);
@@ -180,7 +181,7 @@ try {
     }
     
     /* Find restart / reload action from modules */
-    foreach ($oreon->modules as $key => $value) {
+    foreach ($centreon->modules as $key => $value) {
         $addModule = true;
         if (function_exists('zend_loader_enabled') && (zend_loader_file_encoded() == true)) {
             $module_license_validity = zend_loader_install_license (_CENTREON_PATH_ . "www/modules/".$key."license/merethis_lic.zl", true);
@@ -205,6 +206,7 @@ try {
     $xml->writeElement("statuscode", STATUS_NOK);
     $xml->writeElement("error", $e->getMessage());
 }
+
 /* Restore default error handler */
 restore_error_handler();
 
