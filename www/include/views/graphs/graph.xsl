@@ -5,77 +5,25 @@
 <div id="openid" style="display:none">
 	<xsl:value-of select="//opid"/>
 </div>
-<xsl:if test="host">
-		<table class="ListTable">
-			<xsl:for-each select="//svc">
-		        <tr class="list_one">
-					<td class='ListColLeft' valign="top" align='center'> <b>Service : <xsl:value-of select="name"/></b></td>
-					<td style="text-align:right;width:42px;">
-						<xsl:element name="a">
-							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-							<img src="./img/icones/16x16/text_binary_csv.gif"/>
-						</xsl:element>
-					</td>
-				</tr>
-				<tr>
-	    			<td class='ListColCenter' valign="top" align='center'>
-				    	<div id="imggraph">
-							<xsl:if test="splitvalue = 0">
-								<xsl:element name="a">
-									<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="service_id"/>','', '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
-									<xsl:attribute name="href">#</xsl:attribute>
-									<xsl:element name="img">
-									  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImage.php?index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-									</xsl:element>
-								</xsl:element>
-							</xsl:if>
-							<xsl:if test="splitvalue = 1">
-								<xsl:for-each select="//metric">
-									<xsl:element name="a">
-										<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="//service_id"/>','', '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
-										<xsl:attribute name="href">#</xsl:attribute>
-											<xsl:element name="img">
-										  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?cpt=1&amp;index=<xsl:value-of select="index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-											</xsl:element>
-										</xsl:element>
-									<br/>
-								</xsl:for-each>
-							</xsl:if>
-						 <br/>
-						 </div> 
-					</td>
-				</tr>			
-			</xsl:for-each>
-	    </table>
-</xsl:if>
 
 <xsl:if test="svc">
-
-	<div id="div2">
-		<form name="formu2">
-    	    <table class="ajaxOption">
-				<tr>
-					<td>
-						<xsl:element name='input'>
-							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>',multi, '<xsl:value-of select="//target"/>' ); return false;</xsl:attribute>
-							<xsl:attribute name="name">split</xsl:attribute>
-							<xsl:attribute name="type">checkbox</xsl:attribute>
-							<xsl:if test="//split = 1">
-								<xsl:attribute name="checked">checked</xsl:attribute>
-							</xsl:if>
-						</xsl:element>
-						<xsl:value-of select="//lang/giv_split_component"/>
-					</td>
-				</tr>
-        	</table>
-		</form>
-   	</div>
-        <table class="ListTable">
-        <tr class="ListHeader">
-            <td class="ListColHeaderPicker" valign="top" align="center">
-                <xsl:value-of select="//name"/>
-            </td>
+	<table class="ListTable">
+		<tr class="ListHeader">
+            <td class="ListColHeaderPicker" valign="top" align="center"><xsl:value-of select="//name"/></td>
             <td class="ListColRight">
+				<div id="div2">
+				<form name="formu2">
+				<xsl:element name='input'>
+					<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi,'<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
+					<xsl:attribute name="name">split</xsl:attribute>
+					<xsl:attribute name="type">checkbox</xsl:attribute>
+					<xsl:if test="//split = 1">
+						<xsl:attribute name="checked">checked</xsl:attribute>
+					</xsl:if>
+				</xsl:element>
+				Split Components
+				</form>
+				</div>
             </td>
         </tr>
         <tr >
@@ -97,7 +45,7 @@
 						</xsl:element>
 						<xsl:element name="a">
 							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
-							<img src="./img/icones/16x16/text_binary_csv.gif" style="margin-right:5px;" />
+							<img src="./img/icons/csv.png" class="ico-16 margin_right"/>
 						</xsl:element>
 					</td>
 				</tr>
@@ -153,38 +101,6 @@
             </table>
 </xsl:if>
 <xsl:if test="svc_zoom">
-
-	<div id="div3" valign="top" align='left'>
-		<table class="ajaxOption table">
-			<tr>
-				<form name="formu2">
-					<td>
-						<xsl:element name='input'>
-							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>','','<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
-							<xsl:attribute name="name">split</xsl:attribute>
-							<xsl:attribute name="type">checkbox</xsl:attribute>
-							<xsl:if test="//split = 1">
-								<xsl:attribute name="checked">checked</xsl:attribute>
-							</xsl:if>
-						</xsl:element>
-						<xsl:value-of select="//lang/giv_split_component"/>
-					</td>
-				</form>
-					<td class='ListColRight'>
-						<form name="formu3">
-							<table>
-								<tr>
-								<xsl:for-each select="//metrics[position() mod $cellsPerRow = 1]">
-									<xsl:apply-templates select=".|following-sibling::metrics[position() &lt; $cellsPerRow]"/>
-								</xsl:for-each>
-								</tr>
-							</table>
-						</form>
-					</td>
-			</tr>
-		</table>
-
-	</div>
 	<div>
 		<table class="ListTable">
 			<tr class="ListHeader">
@@ -273,13 +189,33 @@
 			</tr>
 	    </table>
 	</div>
+	<div id="div3" valign="top" align='left'>
+		<table class="ListTable">
+			<tr>
+				<td class='ListColCenter'>
+					<form name="formu3">
+					<table>
+						<tr>
+							<xsl:for-each select="//metrics[position() mod $cellsPerRow = 1]">
+								<xsl:apply-templates select=".|following-sibling::metrics[position() &lt; $cellsPerRow]"/>
+							</xsl:for-each>
+						 </tr>
+					</table>
+					</form>
+				</td>
+			</tr>
+		</table>
+	</div>
 </xsl:if>
 <xsl:if test="//multi_svc">
-    	<div id="div2"   valign="top" align='left'>
-		<form name="formu2">
-    	    <table class="ajaxOption">
-				<tr>
-	           		<td>
+	<div>
+		<table class="ListTable">
+			<xsl:for-each select="//multi_svc">
+		        <tr class="ListHeader">
+					<td class='ListColHeaderLeft' valign="top" align='center'><xsl:value-of select="name"/></td>
+					<td  class='ListColRight'>
+						<div id="div2">
+						<form name="formu2">
 						<xsl:element name='input'>
 							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi,'<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 							<xsl:attribute name="name">split</xsl:attribute>
@@ -288,20 +224,7 @@
 								<xsl:attribute name="checked">checked</xsl:attribute>
 							</xsl:if>
 						</xsl:element>
-						<xsl:value-of select="//lang/giv_split_component"/>
-	           		</td>
-				</tr>
-        	</table>
-		</form>
-    	</div>
-    
-    
-		<div>
-			<table class="ListTable">
-			<xsl:for-each select="//multi_svc">
-		        <tr class="ListHeader">
-					<td class='ListColHeaderLeft' valign="top" align='center'><xsl:value-of select="name"/></td>
-					<td  class='ListColRight'>
+						Split Components
 						<xsl:element name="a">
 							<xsl:attribute name="title">Select interval</xsl:attribute>
 							<xsl:attribute name="id">zoom_<xsl:value-of select="opid"/></xsl:attribute>
