@@ -138,7 +138,6 @@ try {
     foreach ($tab_server as $host) {
     	if ($ret["restart_mode"] == 1) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
-                put_file_content();
                 $msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " reload");
             } else {
                 system("echo 'RELOAD:".$host["id"]."' >> $centcore_pipe", $return);
