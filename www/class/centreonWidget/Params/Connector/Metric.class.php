@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,7 +35,7 @@
 
 require_once "class/centreonWidget/Params/List.class.php";
 
-class CentreonWidgetParamsConnectorHostgroup extends CentreonWidgetParamsList
+class CentreonWidgetParamsConnectorMetric extends CentreonWidgetParamsList
 {
     public function __construct($db, $quickform, $userId)
     {
@@ -47,15 +47,14 @@ class CentreonWidgetParamsConnectorHostgroup extends CentreonWidgetParamsList
         static $tab;
 
         if (!isset($tab)) {
-            $query = "SELECT hg_id, hg_name
-            		  FROM hostgroup
-            		  WHERE hg_activate = '1' ";
-            $query .= $this->acl->queryBuilder('AND', 'hg_id', $this->acl->getHostGroupsString());
-            $query .= " ORDER BY hg_name ";
-            $res = $this->db->query($query);
+            $query = "SELECT metric_id, metric_name
+            		  FROM metrics
+            		  WHERE to_delete = 0 ";
+            $query .= " ORDER BY metric_name ";
+            $res = $this->monitoringDb->query($query);
             $tab = array(null => null);
             while ($row = $res->fetchRow()) {
-                $tab[$row['hg_id']] = $row['hg_name'];
+                $tab[$row['metric_id']] = $row['metric_name'];
             }
         }
         return $tab;
