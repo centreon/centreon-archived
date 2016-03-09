@@ -433,6 +433,15 @@ function graph_4_host(id, multi, target, l_mselect, pStart, pEnd, metrics)
 	var _split = 0;
 	if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
 		_split = 1;
+	} else if (document.formu2 && document.formu2[0]) {
+		var nbr = document.formu2.length;
+		for (i = 0; nbr > i; i++) {
+			if (document.formu2[i].split && document.formu2[i].split.checked) {
+				_split = 1;
+			} else {
+				_split = 0;
+			}
+		}
 	}
 
 	var _status = 0;
