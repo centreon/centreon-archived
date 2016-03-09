@@ -5,52 +5,8 @@
 <div id="openid" style="display:none">
 	<xsl:value-of select="//opid"/>
 </div>
-<xsl:if test="host">
-		<table class="ListTable">
-			<xsl:for-each select="//svc">
-		        <tr class="list_one">
-					<td class='ListColLeft' valign="top" align='center'> <b>Service : <xsl:value-of select="name"/></b></td>
-					<td style="text-align:right;width:42px;">
-						<xsl:element name="a">
-							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-							<img src="./img/icones/16x16/text_binary_csv.gif"/>
-						</xsl:element>
-					</td>
-				</tr>
-				<tr>
-	    			<td class='ListColCenter' valign="top" align='center'>
-				    	<div id="imggraph">
-							<xsl:if test="splitvalue = 0">
-								<xsl:element name="a">
-									<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="service_id"/>','', '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
-									<xsl:attribute name="href">#</xsl:attribute>
-									<xsl:element name="img">
-									  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImage.php?index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-									</xsl:element>
-								</xsl:element>
-							</xsl:if>
-							<xsl:if test="splitvalue = 1">
-								<xsl:for-each select="//metric">
-									<xsl:element name="a">
-										<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="//service_id"/>','', '<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
-										<xsl:attribute name="href">#</xsl:attribute>
-											<xsl:element name="img">
-										  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?cpt=1&amp;index=<xsl:value-of select="index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-											</xsl:element>
-										</xsl:element>
-									<br/>
-								</xsl:for-each>
-							</xsl:if>
-						 <br/>
-						 </div> 
-					</td>
-				</tr>			
-			</xsl:for-each>
-	    </table>
-</xsl:if>
 
 <xsl:if test="svc">
-
 	<div id="div2">
 		<form name="formu2">
     	    <table class="ajaxOption">
