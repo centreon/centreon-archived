@@ -21,7 +21,7 @@
 						<xsl:attribute name="checked">checked</xsl:attribute>
 					</xsl:if>
 				</xsl:element>
-				Split Components
+				<xsl:value-of select="//lang/giv_split_component"/>
 				</form>
 				</div>
             </td>
@@ -224,7 +224,7 @@
 								<xsl:attribute name="checked">checked</xsl:attribute>
 							</xsl:if>
 						</xsl:element>
-						Split Components
+						<xsl:value-of select="//lang/giv_split_component"/>
 						<xsl:element name="a">
 							<xsl:attribute name="title">Select interval</xsl:attribute>
 							<xsl:attribute name="id">zoom_<xsl:value-of select="opid"/></xsl:attribute>
