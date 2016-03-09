@@ -231,11 +231,14 @@
 	</div>
 </xsl:if>
 <xsl:if test="//multi_svc">
-    	<div id="div2"   valign="top" align='left'>
-		<form name="formu2">
-    	    <table class="ajaxOption">
-				<tr>
-	           		<td>
+	<div>
+		<table class="ListTable">
+			<xsl:for-each select="//multi_svc">
+		        <tr class="ListHeader">
+					<td class='ListColHeaderLeft' valign="top" align='center'><xsl:value-of select="name"/></td>
+					<td  class='ListColRight'>
+						<div id="div2">
+						<form name="formu2">
 						<xsl:element name='input'>
 							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi,'<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 							<xsl:attribute name="name">split</xsl:attribute>
@@ -244,20 +247,7 @@
 								<xsl:attribute name="checked">checked</xsl:attribute>
 							</xsl:if>
 						</xsl:element>
-						<xsl:value-of select="//lang/giv_split_component"/>
-	           		</td>
-				</tr>
-        	</table>
-		</form>
-    	</div>
-    
-    
-		<div>
-			<table class="ListTable">
-			<xsl:for-each select="//multi_svc">
-		        <tr class="ListHeader">
-					<td class='ListColHeaderLeft' valign="top" align='center'><xsl:value-of select="name"/></td>
-					<td  class='ListColRight'>
+						Split Components
 						<xsl:element name="a">
 							<xsl:attribute name="title">Select interval</xsl:attribute>
 							<xsl:attribute name="id">zoom_<xsl:value-of select="opid"/></xsl:attribute>
