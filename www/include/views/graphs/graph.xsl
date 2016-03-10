@@ -241,7 +241,9 @@
 							<xsl:attribute name="title">Export CSV</xsl:attribute>
 							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 							<img src="./img/icons/csv.png" class="ico-16"/>
-						</xsl:element>		
+						</xsl:element>
+						</form>
+						</div>
 					</td>
 				</tr>
 				<tr>
