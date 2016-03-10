@@ -267,4 +267,16 @@ class Generate {
             }
         }
     }
+    
+    /**
+     * Reset the cache and the instance
+     */
+    public function reset()
+    {
+        $this->generate_index_data = 1;
+        $this->poller_cache = array();
+        $this->current_poller = null;
+        $this->installed_modules = null;
+        $this->module_objects = null;
+    }
 }

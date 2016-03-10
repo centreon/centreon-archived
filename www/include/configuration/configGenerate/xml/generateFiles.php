@@ -110,6 +110,7 @@ try {
         $config_generate->configPollers();
     } else {
         foreach ($pollers as $poller) {
+            $config_generate->reset();
             $config_generate->configPollerFromId($poller);
         }
     }

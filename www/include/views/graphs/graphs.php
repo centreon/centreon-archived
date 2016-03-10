@@ -436,10 +436,12 @@ function graph_4_host(id, multi, target, l_mselect, pStart, pEnd, metrics)
 	} else if (document.formu2 && document.formu2[0]) {
 		var nbr = document.formu2.length;
 		for (i = 0; nbr > i; i++) {
-			if (document.formu2[i].split && document.formu2[i].split.checked) {
+			if (document.formu2[i].split && document.formu2[i].split.checked && document.formu2[i].split.id == id) {
 				_split = 1;
 			} else {
-				_split = 0;
+				if (document.formu2[i].split.id == id) {
+					_split = 0;
+				}
 			}
 		}
 	}
@@ -660,15 +662,15 @@ function getListOfHosts() {
         jQuery.each($selectedOptions, function(index, value) {
             jQuery.ajax({
                 url: './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=services&id=' + value + '&g=1',
-                async: false,
-                success: function(data) {
-                    jQuery.each(data, function(id, description) {
-                        finalValue = 'HS_' + id + '_' + value;
-                        if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
-                            $hostsServicesForGraph.push(finalValue);
-                        }
-                    });
-                }
+				async: false,
+				success: function(data) {
+					jQuery.each(data, function(id, description) {
+						finalValue = 'HS_' + id + '_' + value;
+						if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
+							$hostsServicesForGraph.push(finalValue);
+						}
+					});
+				}
             });
         });
     }

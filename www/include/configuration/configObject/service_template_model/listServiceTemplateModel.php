@@ -54,7 +54,10 @@ if (isset($_POST['searchST']) && $_POST['searchST']) {
 	$search = str_replace('/', "#S#", $search);
 	$search = str_replace('\\', "#BS#", $search);
     $_SESSION['searchST'] = $search;
-}else if(isset($_SESSION['searchST']) && $_SESSION['searchST']){
+} else if (isset($_POST['searchST']) && $_POST['searchST'] === '') {
+	$_SESSION['searchST'] = '';
+	$search = '';
+} else if (isset($_SESSION['searchST']) && $_SESSION['searchST']) {
     $search = $_SESSION['searchST'];
 }
 
