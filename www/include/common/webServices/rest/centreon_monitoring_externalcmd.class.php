@@ -60,6 +60,7 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
     public function postSend()
     {
         if (isset($this->arguments['commands']) && is_array($this->arguments['commands'])) {
+            /* Get poller Listing */
             $query = "SELECT id FROM nagios_server WHERE ns_activate = '1'";
             $DBRESULT = $this->pearDB->query($query);
             $pollers = array();
@@ -67,21 +68,22 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
                 $pollers[$row['id']] = 1;
             }
 
-            $poller_commands = array();
-            foreach ($this->arguments['commands'] as $command) {
-                if (isset($pollers[$command['poller_id']])) {
-                    if ($fh = @fopen($this->centcore_file, 'a+')) {
-                        fwrite($fh, "EXTERNALCMD:".$command["poller_id"].":[".$command['timestamp']."] ".$command['command']."");
-                        fclose($fh);
-                    } else {
-                        $this->sendJson(array('error' => 'Cannot open Centcore file', 500);
-                        exit():
+            if (count($this->arguments['commands'])) {
+                if ($fh = @fopen($this->centcore_file, 'a+')) {
+                    foreach ($this->arguments['commands'] as $command) {
+                        if (isset($pollers[$command['poller_id']])) {
+                                fwrite($fh, "EXTERNALCMD:".$command["poller_id"].":[".$command['timestamp']."] ".$command['command']."\n");
+                            } else {
+                                throw new RestException('Cannot open Centcore file');
+                            }
+                        }
                     }
+                    fclose($fh);
                 }
             }
+            return (array('sucess' => true));
         } else {
-            $this->sendJson(array('error' => 'Bad arguments - Cannot find command list', 400);
-            exit();
+            throw new RestBadRequestException('Bad arguments - Cannot find command list');
         }
     }
 }

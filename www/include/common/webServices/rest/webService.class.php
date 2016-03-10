@@ -109,7 +109,7 @@ class CentreonWebService
     protected function parseBody()
     {
         try {
-            $httpParams = json_decode(file_get_contents('php://input'));
+            $httpParams = json_decode(file_get_contents('php://input'), true);
         } catch (Exception $e) {
             self::sendJson("Bad parameters", 400);
         }
