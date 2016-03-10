@@ -1889,17 +1889,17 @@ input.excluded[type=checkbox]:checked + label:before {
 
 /* PPE 2 */
 
-.pp-changelog textarea {
+textarea.pp-changelog {
     width: 250px;
     max-width: 300px;
     height: 150px;
 }
 
-.pp-changelog .md-preview {
+.md-preview {
     width: 300px;
     min-height: 150px;
     max-height: 250px;
-    overflow: scroll;
+    overflow: auto;
     float: right;
     margin: 2px;
     padding: 2px;
@@ -1996,7 +1996,7 @@ input.excluded[type=checkbox]:checked + label:before {
 }
 .vertical-tabs.ui-tabs-vertical .ui-tabs-panel textarea {
     width: 100%;
-    padding: .5em 2em .5em 3.5em !important; 
+    padding: .5em 2em .5em 3.5em !important;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
