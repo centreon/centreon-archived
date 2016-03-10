@@ -21,7 +21,12 @@
 						<xsl:attribute name="checked">checked</xsl:attribute>
 					</xsl:if>
 				</xsl:element>
-				<xsl:value-of select="//lang/giv_split_component"/>
+				<xsl:element name='text'>
+					<xsl:attribute name="style">margin-left: 4px</xsl:attribute>
+					<xsl:attribute name="style">margin-right: 4px</xsl:attribute>
+					<xsl:attribute name="type">text</xsl:attribute>
+					<xsl:value-of select="//lang/giv_split_component"/>
+				</xsl:element>
 				</form>
 				</div>
             </td>
@@ -224,7 +229,12 @@
 								<xsl:attribute name="checked">checked</xsl:attribute>
 							</xsl:if>
 						</xsl:element>
-						<xsl:value-of select="//lang/giv_split_component"/>
+						<xsl:element name='text'>
+							<xsl:attribute name="style">margin-left: 4px</xsl:attribute>
+							<xsl:attribute name="style">margin-right: 4px</xsl:attribute>
+							<xsl:attribute name="type">text</xsl:attribute>
+							<xsl:value-of select="//lang/giv_split_component"/>
+						</xsl:element>
 						<xsl:element name="a">
 							<xsl:attribute name="title">Select interval</xsl:attribute>
 							<xsl:attribute name="id">zoom_<xsl:value-of select="opid"/></xsl:attribute>
@@ -241,7 +251,9 @@
 							<xsl:attribute name="title">Export CSV</xsl:attribute>
 							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 							<img src="./img/icons/csv.png" class="ico-16"/>
-						</xsl:element>		
+						</xsl:element>
+						</form>
+						</div>
 					</td>
 				</tr>
 				<tr>
