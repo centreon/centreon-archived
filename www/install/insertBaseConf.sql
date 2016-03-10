@@ -147,7 +147,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('tactical_refresh_interval', '20'), 
 ('index_data', '1'), 
 ('interval_length', '60'),
-('nagios_path_img','@INSTALL_DIR_CENTREON@/www/img/media/');
+('nagios_path_img','@INSTALL_DIR_CENTREON@/www/img/media/'),
+('selectPaginationSize', 60);
 
 --
 -- Contenu de la table `giv_components_template`
