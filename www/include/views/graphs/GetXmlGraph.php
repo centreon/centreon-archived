@@ -750,7 +750,7 @@ foreach ($tab_real_id as $key => $openid) {
 $buffer->startElement("lang");
 $buffer->writeElement("giv_gg_tpl", _("Template"), 0);
 $buffer->writeElement("advanced", _("Options"), 0);
-$buffer->writeElement("giv_split_component", _("Split Components"), 0);
+$buffer->writeElement("giv_split_component", _("Split"), 0);
 $buffer->writeElement("status", _("Display Status"), 0);
 $buffer->writeElement("warning", _("Warning"), 0);
 $buffer->writeElement("critical", _("Critical"), 0);
