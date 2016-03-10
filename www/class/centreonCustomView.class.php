@@ -123,6 +123,21 @@ class CentreonCustomView
         return true;
     }
 
+	/**
+	 * Check if user is not owner but view shared with him
+	 *
+	 * @param int $viewId
+	 * @return bool
+	 */
+	public function checkSharedPermission($viewId)
+	{
+		$views = $this->getCustomViews();
+		if (!isset($views[$viewId]) || $views[$viewId]['is_owner'] == 1) {
+			return false;
+		}
+		return true;
+	}
+
     /**
      * Check Ownership
      * Checks if user is allowed to delete view
@@ -212,7 +227,7 @@ class CentreonCustomView
                 $cglist = implode(",", $this->userGroups);
                 $query .= " OR cvur.usergroup_id IN ($cglist) ";
             }
-			$query .= ") ORDER BY user_id, name";
+			$query .= ") AND is_consumed = 1 ORDER BY user_id, name";
             $this->customViews = array();
             $res = $this->db->query($query);
             $tmp = array();
@@ -280,7 +295,10 @@ class CentreonCustomView
         if ($this->checkPermission($viewId) === true) {
             $query = "DELETE FROM custom_views WHERE custom_view_id = " . $this->db->escape($viewId);
             $this->db->query($query);
-        }
+        } else if ($this->checkSharedPermission($viewId) === true) {
+			$query = "UPDATE custom_view_user_relation SET is_consumed = 0 WHERE custom_view_id = " . $this->db->escape($viewId) . " AND user_id = " . $this->userId;
+			$this->db->query($query);
+		}
     }
 
     /**
