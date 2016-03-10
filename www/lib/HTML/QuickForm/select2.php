@@ -541,7 +541,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                             option += ">" + item.text + "</option>";
 
                             // Append it to the select
-                            if (selectedIds.indexOf(item.id) < 0) {
+                            if (selectedIds.indexOf("" + item.id) < 0) {
                                 $currentSelect2Object'.$this->getName().'.append(option);
                             }
                         }
