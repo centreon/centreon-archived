@@ -50,7 +50,7 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
     public function __construct()
     {
         parent::__construct();
-        $this->centcore_file = '/var/lib/centreon/centcore.cmd';
+        $this->centcore_file = _CENTREON_VARLIB_.'/centcore.cmd';
     }
     
     /**
