@@ -598,7 +598,7 @@ function multipleServiceInDB($services = array(), $nbrDup = array(), $host = nul
                                 $sv["is_password"] = '0'; 
                             }
                             $mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`, `is_password`) VALUES " .
-                                "('".$maxId["MAX(service_id)"]."', '\$".$pearDB->escape(str_replace('-', '', $macName))."\$', '". $pearDB->escape($macVal) ."', '".$pearDB->escape($sv["is_password"])."')";
+                                "('".$maxId["MAX(service_id)"]."', '\$".$pearDB->escape($macName)."\$', '". $pearDB->escape($macVal) ."', '".$pearDB->escape($sv["is_password"])."')";
                             $DBRESULT4 = $pearDB->query($mTpRq2);
                             $fields["_".strtoupper($macName)."_"] = $sv['svc_macro_value'];
                         }
@@ -882,7 +882,7 @@ function insertService($ret = array(), $macro_on_demand = null)
 		 			$my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
 		 			$macName = $my_tab[$macInput];
 		 			$macVal = $my_tab[$macValue];
-		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`, `macro_order` ) VALUES ('\$_SERVICE". CentreonDB::escape(strtoupper(str_replace('-', '', $macName))) ."\$', '". CentreonDB::escape($macVal) ."', ". $service_id["MAX(service_id)"] .", " . $i . ")";
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`, `macro_order` ) VALUES ('\$_SERVICE". CentreonDB::escape(strtoupper($macName)) ."\$', '". CentreonDB::escape($macVal) ."', ". $service_id["MAX(service_id)"] .", " . $i . ")";
 			 		$DBRESULT = $pearDB->query($rq);
 					$fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];
 					$already_stored[strtolower($my_tab[$macInput])] = 1;
@@ -901,7 +901,7 @@ function insertService($ret = array(), $macro_on_demand = null)
         }
         $service->insertMacro(
                               $service_id["MAX(service_id)"],
-                              str_replace('-', '', $_REQUEST['macroInput']),
+                              $_REQUEST['macroInput'],
                               $_REQUEST['macroValue'],
                               $_REQUEST['macroPassword'],
                               $macroDescription,
@@ -1524,7 +1524,7 @@ function updateService_MC($service_id = null, $params = array())
     if (isset($_REQUEST['macroInput']) && isset($_REQUEST['macroValue'])) {
         $service->insertMacro(
                               $service_id,
-                              str_replace('-', '', $_REQUEST['macroInput']),
+                              $_REQUEST['macroInput'],
                               $_REQUEST['macroValue'],
                               $_REQUEST['macroPassword'],
                               $macroDescription,
