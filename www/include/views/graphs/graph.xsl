@@ -17,6 +17,7 @@
 					<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi,'<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 					<xsl:attribute name="name">split</xsl:attribute>
 					<xsl:attribute name="type">checkbox</xsl:attribute>
+					<xsl:attribute name="id"><xsl:value-of select="//opid"/></xsl:attribute>
 					<xsl:if test="//split = 1">
 						<xsl:attribute name="checked">checked</xsl:attribute>
 					</xsl:if>
@@ -225,6 +226,7 @@
 							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi,'<xsl:value-of select="//target"/>'); return false;</xsl:attribute>
 							<xsl:attribute name="name">split</xsl:attribute>
 							<xsl:attribute name="type">checkbox</xsl:attribute>
+							<xsl:attribute name="id"><xsl:value-of select="//opid"/></xsl:attribute>
 							<xsl:if test="//splitvalue = 1">
 								<xsl:attribute name="checked">checked</xsl:attribute>
 							</xsl:if>
