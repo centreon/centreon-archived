@@ -73,6 +73,12 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $acl = new CentreonACL($userId, $isAdmin);
         }
         
+        if (false === isset($this->arguments['q'])) {
+            $q = '';
+        } else {
+            $q = $this->arguments['q'];
+        }
+
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
