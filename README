@@ -2,61 +2,47 @@
 
 ## Introduction ##
 
-Centreon is one of the most flexible and powerful monitoring softwares on the market; it is absolutely
-free and Open Souce.
+Centreon is one of the most flexible and powerful monitoring softwares
+on the market; it is absolutely free and Open Souce (released under GNU
+General Public License version 2, see LICENSE file).
 
-This software requires an engine and a broker to be operational, refer to the documentation for more 
-information.
+This software requires [Centreon Engine](https://github.com/centreon/centreon-engine)
+and [Centreon Broker](https://github.com/centreon/centreon-broker) to be
+operational.
 
-### Authors ###
+**Quick links**
+* the official [Centreon (company) website](https://www.centreon.com)
+* the official [online documentation](https://documentation.centreon.com)
+* our [bugtracker](https://github.com/centreon/centreon/issues)
+* the [forum](http://forum.centreon.com)
+* the [download center](https://download.centreon.com)
 
-#### Project leaders ####
+## Download / Install ##
+
+The fastest way to install up-to-date software from Centreon is to use
+our [Centreon Enterprise Server](https://www.centreon.com/en/products/centreon-enterprise-server/)
+Linux distribution, which comes with our software already packaged.
+
+Latest source releases can be retrieved from [Centreon download center](https://download.centreon.com).
+They can be installed by following the [online installation guide](https://documentation.centreon.com/docs/centreon/en/latest/installation/from_sources.html).
+
+## Bug report / Feature request ##
+
+Bug reports and feature requests are more than welcome. However if you
+wish to open a new issue, please read [this page](project/issues.md)
+first.
+
+## Authors ##
+
+### Project leaders ###
 * Julien Mathis
 * Romain Le Merlus
 
-#### Dev team ####
+### Dev team ###
 * Lionel Assepo
 * Maximilien Bersoult
-* Remi Werquin
-* Sylvestre Ho
 * Kevin Duret
-* Benoit Sauveton
 * Toufik Mechouet
 * Rabaa Ridene
-
-===============================================================================
-                                   License
-===============================================================================
-Centreon is brought to you under GPLv2. For more infomation regarding this 
-license, read the LICENSE file or visit the following URL:
-* http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
-
-
-===============================================================================
-                                 Installation
-===============================================================================
-Please note that Centreon can be installed from the sources or from our RPM 
-packages. Either way, make sure to read our installation documentation:
-* http://documentation.centreon.com/docs/centreon/en/latest/
-
-
-===============================================================================
-                                Official links
-===============================================================================
-Below is a list of official links that may be useful to you:
-* Official website: http://www.centreon.com
-* Bug tracker: https://github.com/centreon/centreon/issues
-* Forum: http://forum.centreon.com
-* Documentation: http://documentation.centreon.com
-
-
-===============================================================================
-                                   Contact
-===============================================================================
-You can contact us at the following e-mail address:
-* contact@centreon.com
-
-You can also follow us on Twitter:
-* https://twitter.com/Centreon
-
-Thank you for choosing Centreon.
+* Remi Werquin
+* 

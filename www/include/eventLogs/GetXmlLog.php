@@ -480,24 +480,13 @@ foreach ($tab_id as $openid) {
     }
 }
 
-if (!$filters) {
-    # Access to all hosts (with acl)
-    $tab_host_ids = array_keys($lca["LcaHost"]);
-
-    # Access to all services (with acl)
-    foreach ($lca["LcaHost"] as $aclHostId => $aclHost) {
-        foreach ($aclHost as $aclServiceId => $aclService) {
-            $tab_svc[$aclHostId][$aclServiceId] = $aclServiceId;
-        }
-    }
-}
-
 // Build final request
 $req = "SELECT SQL_CALC_FOUND_ROWS DISTINCT logs.* FROM logs ".$innerJoinEngineLog.
     ((!$is_admin) ? 
-     " inner join centreon_acl acl on ((logs.host_id = acl.host_id AND logs.service_id IS NULL) OR "
-    . " (logs.host_id = acl.host_id AND acl.service_id = logs.service_id))" : "") 
-    . " WHERE logs.ctime > '$start' AND logs.ctime <= '$end' $whereOutput $msg_req";
+    " inner join centreon_acl acl on ((logs.host_id = acl.host_id AND logs.service_id IS NULL) OR "
+    . " (logs.host_id = acl.host_id AND acl.service_id = logs.service_id)) " 
+    . " WHERE acl.group_id IN (".$access->getAccessGroupsString().") AND " : "WHERE ")
+    . " logs.ctime > '$start' AND logs.ctime <= '$end' $whereOutput $msg_req";
 
 /*
  * Add Host

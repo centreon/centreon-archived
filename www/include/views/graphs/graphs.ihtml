@@ -36,11 +36,6 @@
     <div id="graphs" class="graph_content">
         <div id="StatusAction">
              <div id="graph_pagination">
-                <div class="displayStatus">
-					<input type="checkbox" name="displayStatus" id="displayStatus" />
-                    <label for="displayStatus">{t}Display Status{/t}</label>
-                </div>
-
                 <!-- optional left control buttons -->
                 <div id="test1_m_left"></div><div id="test1_o_left"></div>
 

@@ -206,7 +206,7 @@ class CentreonContactgroup
             $ldapConn = new CentreonLDAP($this->db, null, $ldaprow['ar_id']);
             $connectionResult = $ldapConn->connect();
             if (false != $connectionResult) {
-                $res = $this->db->query("SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup WHERE cg_type = 'ldap'");
+                $res = $this->db->query("SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup WHERE cg_type = 'ldap' AND ar_id = " . $ldaprow['ar_id']);
                 while ($row = $res->fetchRow()) {
                     /*
                      * Test is the group a not move or delete in ldap
