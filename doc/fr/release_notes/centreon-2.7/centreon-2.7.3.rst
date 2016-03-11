@@ -26,5 +26,16 @@ Features and Bug Fixes
 - Fix time Interval change isn't being reflected in the polling Engine config 
 - Fix Missing GMT and UTC timezone
 - Fix No performance graph for host group service
+- Fix ACL were showing too much objects
+- Fix Impossibility to delete custom macros on service
+- Fix Split on multi graph
+- Fix Design on Monitoring Performances page
+- Fix CLAPI handled all broker parameters
+- Fix Custom macros can contain dash
+- Fix Time Interval change isn't being reflected in the polling Engine config
+- Fix UI doesn't display the good limit of pagination
+- Fix Some French translations were missing
+- Enh Improve listing possibilities in Widget configuration (Pollers and categories)
 - Enh Usuability of select2
--
+- Enh Possibility to reload several pollers in one time
+- Enh Add an API to send External Commands
