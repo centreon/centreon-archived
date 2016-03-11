@@ -37,13 +37,6 @@ if (!isset($centreon)) {
 	exit();
 }
 
-/*
- * Connect to NDO database.
- */
-if ($centreon->broker->getBroker() == "ndo") {
-	$pearDBNdo = new CentreonDB("ndo");
-}
-
 include("./include/common/autoNumLimit.php");
 
 /*
@@ -56,7 +49,7 @@ $LCASearch = "";
 $search = '';
 if (isset($_POST['searchP']) && $_POST['searchP']) {
   $search = $_POST['searchP'];
-  $LCASearch = " AND name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
+  $LCASearch = " name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
 }
 
 /*
@@ -82,7 +75,7 @@ while ($info = $DBRESULT->fetchRow()) {
 $DBRESULT->free();
 
 /*
- * Get Nagios / Icinga / Shinken / Scheduler version
+ * Get Scheduler version
  */
 $DBRESULT = $pearDBO->query("SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances WHERE deleted = 0 ");
 while ($info = $DBRESULT->fetchRow()) {
@@ -123,11 +116,11 @@ $tpl->assign("headerMenu_default", _("Default"));
 $tpl->assign("headerMenu_options", _("Options"));
 
 /*
- * Nagios list
+ * Poller list
  */
+$ACLString = $centreon->user->access->queryBuilder('WHERE', 'id', $pollerstring);
 $rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default
-       FROM `nagios_server` ". $centreon->user->access->queryBuilder('WHERE', 'id', $pollerstring)." $LCASearch ".
-       " ORDER BY name
+       FROM `nagios_server` ".$ACLString." ".($LCASearch != '' ? ($ACLString != "" ? "AND " : "WHERE " ).$LCASearch : "")." ORDER BY name
        LIMIT ".$num * $limit.", ".$limit;
 $DBRESULT = $pearDB->query($rq);
 
