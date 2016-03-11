@@ -72,16 +72,15 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
                 if ($fh = @fopen($this->centcore_file, 'a+')) {
                     foreach ($this->arguments['commands'] as $command) {
                         if (isset($pollers[$command['poller_id']])) {
-                                fwrite($fh, "EXTERNALCMD:".$command["poller_id"].":[".$command['timestamp']."] ".$command['command']."\n");
-                            } else {
-                                throw new RestException('Cannot open Centcore file');
-                            }
+                            fwrite($fh, "EXTERNALCMD:".$command["poller_id"].":[".$command['timestamp']."] ".$command['command']."\n");
+                        } else {
+                            throw new RestException('Cannot open Centcore file');
                         }
                     }
                     fclose($fh);
                 }
             }
-            return (array('sucess' => true));
+            return (array('success' => true));
         } else {
             throw new RestBadRequestException('Bad arguments - Cannot find command list');
         }
