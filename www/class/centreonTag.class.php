@@ -60,10 +60,9 @@ class CentreonTag
         global $centreon;
         $items = array();
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
-        }
+        $explodedValues = '"';
+        $explodedValues .= implode('", "', $values);
+        $explodedValues .= '"';
 
         # get list of selected service categories
         $query = "SELECT tags_id, tags_name "
