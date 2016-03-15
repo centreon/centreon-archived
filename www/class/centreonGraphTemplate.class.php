@@ -46,6 +46,7 @@ class centreonGraphTemplate
      */
     public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
+        $items = array();
         
         $explodedValues = implode(',', $values);
         if (empty($explodedValues)) {
