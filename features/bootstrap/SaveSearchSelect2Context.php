@@ -22,7 +22,7 @@ class SaveSearchSelect2Context extends CentreonContext
         /* Wait page loaded */
         $this->spin(
             function ($context) {
-                return $context->session->getPage()->has(
+                return $context->getSession()->getPage()->has(
                     'css',
                     'input[name="submitC"]'
                 );
@@ -41,15 +41,15 @@ class SaveSearchSelect2Context extends CentreonContext
         $choice->press();
         $this->spin(
             function ($context) {
-                return count($context->session->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
+                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
             },
             30
         );
 
-        $this->session->executeScript(
+        $this->getSession()->executeScript(
             'jQuery("select#command_id").parent().find(".select2-search__field").val("load");'
         );
-        $this->session->wait(1000);
+        $this->getSession()->wait(1000);
 
 
     }
@@ -69,7 +69,7 @@ class SaveSearchSelect2Context extends CentreonContext
         }
 
         $choice->press();
-        $this->session->wait(1000);
+        $this->getSession()->wait(1000);
     }
 
     /**
@@ -88,7 +88,7 @@ class SaveSearchSelect2Context extends CentreonContext
         $choice->press();
         $this->spin(
             function ($context) {
-                return count($context->session->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 4;
+                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 4;
             },
             30
         );
