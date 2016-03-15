@@ -74,11 +74,9 @@ class CentreonBroker
      * @return void 
      */
     protected function execLocalScript($script, $action) {
-        if (file_exists("/etc/systemd/system/")) {
-            $script = str_replace("/etc/init.d/", '', $script); 
-            if (file_exists("/etc/systemd/system/$script.service")) {
-                shell_exec("sudo systemctl $action $script");    
-            }
+        $scriptD = str_replace("/etc/init.d/", '', $script);
+        if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$script.service")) {
+            shell_exec("sudo systemctl $action $script");    
         } else {
             exec("ps -edf | grep cbd | grep -v grep", $output, $return_vars);
             if (count($output) == 0) {

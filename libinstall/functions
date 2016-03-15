@@ -1305,6 +1305,14 @@ function prepare_sudo_config() {
 	# Systemd compatibility
 	if [ -e "/etc/systemd/system/cbd.service" ] ; then 
 		${CAT} <<- __EOT__ > $directory/centreon.sudo
+		## BEGIN: CENTREON SUDO
+		# Add by CENTREON installation script
+		User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
+		Defaults:CENTREON !requiretty
+		# Monitoring engine Restart
+		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
+		# Monitoring engine reload
+		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
 		# Broker engine Start
 		CENTREON   ALL = NOPASSWD: systemctl start cbd
 		# Broker engine Stop
@@ -1313,9 +1321,23 @@ function prepare_sudo_config() {
 		CENTREON   ALL = NOPASSWD: systemctl restart cbd
 		# Broker engine reload
 		CENTREON   ALL = NOPASSWD: systemctl reload
+		# Snmptrapd Restart
+		CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
+		# Centreontrapd restart
+		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd restart
+		# Centreontrapd reload
+		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd reload
 		__EOT__
 	else 
 		${CAT} <<- __EOT__ > $directory/centreon.sudo
+		## BEGIN: CENTREON SUDO
+		# Add by CENTREON installation script
+		User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
+		Defaults:CENTREON !requiretty
+		# Monitoring engine Restart
+		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
+		# Monitoring engine reload
+		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
 		# Broker engine Start
 		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT start
 		# Broker engine Stop
@@ -1324,6 +1346,12 @@ function prepare_sudo_config() {
 		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT restart
 		# Broker engine reload
 		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT reload
+		# Snmptrapd Restart
+		CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
+		# Centreontrapd restart
+		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd restart
+		# Centreontrapd reload
+		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd reload
 		__EOT__
 	fi
 
