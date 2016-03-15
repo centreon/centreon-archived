@@ -63,7 +63,7 @@ class GeneratePollerContext extends CentreonContext
         /* Wait page loaded */
         $this->spin(
             function ($context) {
-                return $context->getSession->getPage()->has(
+                return $context->getSession()->getPage()->has(
                     'css',
                     'select#nhost'
                 );
@@ -105,10 +105,13 @@ class GeneratePollerContext extends CentreonContext
      */
     public function thePollersAreAlreadySelected()
     {
-        $applyConfigurationButton = $this->assertFind('css', 'select#nhost');
-        $selectedPollers = $applyConfigurationButton->getValue();
+        $selectedPollers = array();
+        $printedPollers = $this->getSession()->getPage()->findAll('css', '.select2-content');
+        foreach ($printedPollers as $printedPoller) {
+            array_push($selectedPollers, $printedPoller->getText());
+        }
         sort($selectedPollers);
-        if ($selectedPollers != array("1", "3")) {
+        if ($selectedPollers != array('Central', 'Central_1')) {
             throw new \Exception('Wrong selected pollers');
         }
     }
