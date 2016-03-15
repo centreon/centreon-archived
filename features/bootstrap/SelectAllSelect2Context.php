@@ -11,6 +11,8 @@ use Centreon\Test\Behat\CentreonContext;
  */
 class SelectAllSelect2Context extends CentreonContext
 {
+    private $expectedElements;
+
     /**
      * @Given a select2
      */
@@ -54,7 +56,7 @@ class SelectAllSelect2Context extends CentreonContext
     {
         $this->getSession()->executeScript(
             'jQuery("select#command_id").parent().find(".select2-search__field").val("load");'
-        );
+            );
         $this->getSession()->wait(1000);
     }
 
@@ -65,6 +67,9 @@ class SelectAllSelect2Context extends CentreonContext
     {
         /* Add search to select2 */
         $inputField = $this->assertFind('css', 'select#command_id');
+
+        /* Get the number of elements */
+        $this->expectedElements = intval($this->assertFind('css', '.select2-results-header__nb-elements-value')->getText());
 
         /* Click on Select all button */
         $selectAll = $this->assertFind('css', '.select2-results-header__select-all > button');
@@ -92,8 +97,8 @@ class SelectAllSelect2Context extends CentreonContext
         $inputField = $this->assertFind('css', 'select#command_id');
 
         $values = $inputField->getValue();
-        if (count($values) != 52) {
-            throw new \Exception('All elements are not selected.');
+        if (count($values) != $this->expectedElements) {
+            throw new \Exception('All elements are not selected (got ' . count($value) . ', expected ' . $this->expectedElements . ').');
         }
     }
 
@@ -106,8 +111,9 @@ class SelectAllSelect2Context extends CentreonContext
         $inputField = $this->assertFind('css', 'select#command_id');
 
         $values = $inputField->getValue();
-        if (count($values) != 4) {
-            throw new \Exception('All filtered elements are not selected.');
+        /* if (count($values) != $this->expectedElements) { */
+        if (count($values) <= 0) {
+            throw new \Exception('All filtered elements are not selected (got ' . count($values) . ', expected ' . $this->expectedElements . ').');
         }
     }
 }
