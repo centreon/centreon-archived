@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -31,45 +31,55 @@
  *
  * For more information : contact@centreon.com
  *
+ * SVN : $URL$
+ * SVN : $Id$
+ *
  */
 
-class CentreonLocale
+class CentreonTag
 {
-    /**
-     *
-     * @var type 
-     */
     protected $_db;
-    
-    /**
-     * Constructor
-     * 
-     * @param CentreonDB $db
+
+    /*
+     * constructor
      */
-    public function __construct($db)
+    public function __construct($pearDB)
     {
-        $this->_db = $db;
+        $this->_db = $pearDB;
     }
+    
+    
 
     /**
-     * GetLocaleList
      *
+     * @param array $values
      * @return array
      */
-    public function getLocaleList()
+    public function getObjectForSelect2($values = array(), $options = array())
     {
-        $res = $this->_db->query(
-            "SELECT locale_id, locale_short_name, locale_long_name, locale_img "
-            . "FROM locale ORDER BY locale_short_name <> 'en', locale_short_name"
-        );
-        $list = array();
-        while ($row = $res->fetchRow()) {
-            $list[$row['locale_id']] = array(
-                'locale_short_name' => _($row['locale_short_name']),
-                'locale_long_name' => _($row['locale_long_name']),
-                'locale_img' => _($row['locale_img'])
+        global $centreon;
+        $items = array();
+
+        $explodedValues = '"';
+        $explodedValues .= implode('", "', $values);
+        $explodedValues .= '"';
+
+        # get list of selected service categories
+        $query = "SELECT tags_id, tags_name "
+            . "FROM mod_export_tags "
+            . "WHERE tags_id IN (" . $explodedValues . ") "
+            . "ORDER BY tags_name ";
+
+        $resRetrieval = $this->_db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+
+            $items[] = array(
+                'id' => $row['tags_id'],
+                'text' => $row['tags_name']
             );
         }
-        return $list;
+
+        return $items;
     }
 }
+?>
