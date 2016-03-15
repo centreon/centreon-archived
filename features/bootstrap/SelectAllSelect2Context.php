@@ -22,7 +22,7 @@ class SelectAllSelect2Context extends CentreonContext
         /* Wait page loaded */
         $this->spin(
             function ($context) {
-                return $context->session->getPage()->has(
+                return $context->getSession()->getPage()->has(
                     'css',
                     'input[name="submitC"]'
                 );
@@ -41,7 +41,7 @@ class SelectAllSelect2Context extends CentreonContext
         $choice->press();
         $this->spin(
             function ($context) {
-                return count($context->session->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
+                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
             },
             30
         );
@@ -52,10 +52,10 @@ class SelectAllSelect2Context extends CentreonContext
      */
     public function enterAResearch()
     {
-        $this->session->executeScript(
+        $this->getSession()->executeScript(
             'jQuery("select#command_id").parent().find(".select2-search__field").val("load");'
         );
-        $this->session->wait(1000);
+        $this->getSession()->wait(1000);
     }
 
     /**
@@ -70,14 +70,14 @@ class SelectAllSelect2Context extends CentreonContext
         $selectAll = $this->assertFind('css', '.select2-results-header__select-all > button');
         $selectAll->press();
 
-        $this->session->wait(1000);
+        $this->getSession()->wait(1000);
 
         $confirmButton = $this->assertFind('css', '#confirmcommand_id .btc.bt_success');
         $confirmButton->click();
 
         $this->spin(
             function ($context) {
-                return count($context->session->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 0;
+                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 0;
             },
             30
         );
