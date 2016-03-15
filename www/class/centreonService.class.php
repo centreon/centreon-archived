@@ -1341,6 +1341,62 @@ class CentreonService
        }
        return $str;
    }
+   
+   
+   /**
+     * Returns service details
+     * 
+     * @param int $id
+     * @return array
+     */
+    public function getParameters($id, $parameters = array())
+    {
+        $sElement = "*";
+        $arr = array();
+        if (empty($id)) {
+            return array();
+        }
+        if (count($parameters) > 0) {
+            $sElement = implode(",", $parameters);
+        }
+
+        
+        $res = $this->db->query("SELECT ".$sElement." FROM service 
+                WHERE service_id = ".$this->db->escape($id));
+        
+        if ($res->numRows()) {
+            $arr = $res->fetchRow();
+        }
+
+        return $arr;
+    }
+    
+    /**
+     * Return the list of template
+     *
+     * @param int $svcId The service ID
+     * @return array
+     */
+    public function getTemplatesChain($svcId, $alreadyProcessed = array())
+    {
+        $svcTmpl = array();
+        if (in_array($svcId, $alreadyProcessed)) {
+            return $svcTmpl;
+        } else {
+            $alreadyProcessed[] = $svcId;
+
+            $res = $this->db->query("SELECT service_template_model_stm_id FROM service WHERE service_id = ".$this->db->escape($svcId));
+
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                if (!empty($row['service_template_model_stm_id']) && $row['service_template_model_stm_id'] !== NULL) {
+                    $svcTmpl = array_merge($svcTmpl, $this->getTemplatesChain($row['service_template_model_stm_id'], $alreadyProcessed));
+                    $svcTmpl[] = $row['service_template_model_stm_id'];
+                }
+            }
+            return $svcTmpl;
+        }
+    }
 }
 
 ?>
