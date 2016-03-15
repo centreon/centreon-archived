@@ -11,33 +11,29 @@ use Centreon\Test\Behat\CentreonContext;
  */
 class PaginationSelect2Context extends CentreonContext
 {
+    private $expectedValue;
+
     /**
-     * @When I change the configuration value of number of elements loaded in select
+     * @When I change the number of elements loaded in select in the configuration
      */
-    public function iChangeTheConfigurationValueOfNumberOfElementsLoadedInSelect()
+    public function iChangeTheNumberOfElementsLoadedInSelectInTheConfiguration()
     {
         /* Go to the page to options page */
         $this->visit('/main.php?p=50110&o=general');
-
-        /* Wait page loaded */
-        $this->spin(
-            function ($context) {
-                return $context->session->getPage()->has(
-                    'css',
-                    'input[name="submitC"]'
-                );
-            },
-            30
-        );
+        $this->waitForGeneralOptionsPage();
 
         $fieldValue = $this->assertFind('css', 'input[name="selectPaginationSize"]');
-        $fieldValue->setValue(200);
+        $originalValue = $fieldValue->getValue();
+        $this->expectedValue = $originalValue + 25;
+        if ($this->expectedValue > 200)
+            $this->expectedValue = 50;
+        $fieldValue->setValue($this->expectedValue);
         $submitButton = $this->assertFind('css', 'input[name="submitC"]')->click();
 
         /* Wait page loaded */
         $this->spin(
             function ($context) {
-                return $context->session->getPage()->has(
+                return $context->getSession()->getPage()->has(
                     'css',
                     'input[name="change"]'
                 );
@@ -53,21 +49,24 @@ class PaginationSelect2Context extends CentreonContext
     {
         /* Go to the page to options page */
         $this->visit('/main.php?p=50110&o=general');
+        $this->waitForGeneralOptionsPage();
 
-        /* Wait page loaded */
+        $fieldValue = $this->assertFind('css', 'input[name="selectPaginationSize"]');
+        if ($fieldValue->getValue() != $this->expectedValue) {
+            throw new \Exception('The value is not saved.');
+        }
+    }
+
+    public function waitForGeneralOptionsPage()
+    {
         $this->spin(
             function ($context) {
-                return $context->session->getPage()->has(
+                return $context->getSession()->getPage()->has(
                     'css',
                     'input[name="submitC"]'
                 );
             },
             30
         );
-
-        $fieldValue = $this->assertFind('css', 'input[name="selectPaginationSize"]');
-        if ($fieldValue->getValue() != 200) {
-            throw new \Exception('The value is not saved.');
-        }
     }
 }
