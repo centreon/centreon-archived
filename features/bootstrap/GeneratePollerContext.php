@@ -86,12 +86,12 @@ class GeneratePollerContext extends CentreonContext
 
         $this->spin(
             function ($context) {
-                return count($context->session->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 2;
+                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) != 0;
             },
             30
         );
 
-        $chosenResults = $this->session->getPage()->findAll('css', '.select2-results li:not(.select2-results__option--highlighted)');
+        $chosenResults = $this->getSession()->getPage()->findAll('css', '.select2-results li:not(.select2-results__option--highlighted)');
         foreach ($chosenResults as $result) {
             if ($result->getText() == "Central_1") {
                 $result->click();
@@ -124,7 +124,7 @@ class GeneratePollerContext extends CentreonContext
         /* Wait configuration is generated */
         $this->spin(
             function ($context) {
-                return count($context->session->getPage()->findAll('css', 'div#consoleDetails font[color="green"]')) == 2;
+                return count($context->getSession()->getPage()->findAll('css', 'div#consoleDetails font[color="green"]')) == 2;
             },
             30
         );
