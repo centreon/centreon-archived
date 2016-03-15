@@ -4,6 +4,7 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Behat\Tester\Exception\PendingException;
+use Centreon\Test\Behat\CentreonContext;
 
 /**
  * Defines application features from the specific context.
@@ -16,7 +17,7 @@ class SaveSearchSelect2Context extends CentreonContext
     public function aSearchOnASelect2()
     {
         /* Go to the page to connector configuration page */
-        $this->minkContext->visit('/centreon/main.php?p=60806&o=c&id=1');
+        $this->visit('/main.php?p=60806&o=c&id=1');
 
         /* Wait page loaded */
         $this->spin(

@@ -4,6 +4,7 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Behat\Tester\Exception\PendingException;
+use Centreon\Test\Behat\CentreonContext;
 
 /**
  * Defines application features from the specific context.
@@ -16,7 +17,7 @@ class PaginationSelect2Context extends CentreonContext
     public function iChangeTheConfigurationValueOfNumberOfElementsLoadedInSelect()
     {
         /* Go to the page to options page */
-        $this->minkContext->visit('/centreon/main.php?p=50110&o=general');
+        $this->visit('/main.php?p=50110&o=general');
 
         /* Wait page loaded */
         $this->spin(
@@ -51,7 +52,7 @@ class PaginationSelect2Context extends CentreonContext
     public function theValueIsSaved()
     {
         /* Go to the page to options page */
-        $this->minkContext->visit('/centreon/main.php?p=50110&o=general');
+        $this->visit('/main.php?p=50110&o=general');
 
         /* Wait page loaded */
         $this->spin(
