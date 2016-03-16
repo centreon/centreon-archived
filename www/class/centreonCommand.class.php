@@ -45,11 +45,11 @@ class CentreonCommand
     public $aTypeCommand = array(
             'host'    => array(
                 'key' => '$_HOST', 
-                'preg' => '/\$_HOST(\w+)\$/'
+                'preg' => '/\$_HOST([\w_-]+)\$/'
             ),
             'service' => array(
                 'key' => '$_SERVICE', 
-                'preg' => '/\$_SERVICE(\w+)\$/'
+                'preg' => '/\$_SERVICE([\w_-]+)\$/'
             ),
         );
     

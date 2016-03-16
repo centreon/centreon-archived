@@ -1340,46 +1340,76 @@ function prepare_sudo_config() {
 	
 	${CAT} <<- __EOT__ > $directory/centreon.sudo
 	## BEGIN: CENTREON SUDO
-	#Add by CENTREON installation script
+	# Add by CENTREON installation script
 	User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
 	Defaults:CENTREON !requiretty
 	# Monitoring engine Restart
-	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT* restart
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
 	# Monitoring engine reload
-	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT* reload
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
-	# Monitoring engine force-reload
-	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT* force-reload
-	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT force-reload
 	# Snmptrapd Restart
 	CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
 	# Centreontrapd restart
 	CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd restart
 	# Centreontrapd reload
 	CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd reload
-	# CentStorage Restart
-	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage restart
-	# CentStorage stop
-	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage stop
-	# CentStorage start
-	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage start
 	__EOT__
-	
-	if [ -n "$BROKER_INIT_SCRIPT" ]; then
-		${CAT} <<- __EOT__ >> $directory/centreon.sudo
+
+	# Systemd compatibility
+	if [ -e "/etc/systemd/system/cbd.service" ] ; then 
+		${CAT} <<- __EOT__ > $directory/centreon.sudo
+		## BEGIN: CENTREON SUDO
+		# Add by CENTREON installation script
+		User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
+		Defaults:CENTREON !requiretty
+		# Monitoring engine Restart
+		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
+		# Monitoring engine reload
+		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
+		# Broker engine Start
+		CENTREON   ALL = NOPASSWD: systemctl start cbd
+		# Broker engine Stop
+		CENTREON   ALL = NOPASSWD: systemctl stop cbd
 		# Broker engine Restart
-		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT* restart
+		CENTREON   ALL = NOPASSWD: systemctl restart cbd
+		# Broker engine reload
+		CENTREON   ALL = NOPASSWD: systemctl reload
+		# Snmptrapd Restart
+		CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
+		# Centreontrapd restart
+		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd restart
+		# Centreontrapd reload
+		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd reload
+		__EOT__
+	else 
+		${CAT} <<- __EOT__ > $directory/centreon.sudo
+		## BEGIN: CENTREON SUDO
+		# Add by CENTREON installation script
+		User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
+		Defaults:CENTREON !requiretty
+		# Monitoring engine Restart
+		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
+		# Monitoring engine reload
+		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
+		# Broker engine Start
+		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT start
+		# Broker engine Stop
+		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT stop
+		# Broker engine Restart
 		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT restart
 		# Broker engine reload
-		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT* reload
 		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT reload
+		# Snmptrapd Restart
+		CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
+		# Centreontrapd restart
+		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd restart
+		# Centreontrapd reload
+		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd reload
 		__EOT__
 	fi
 
 	echo "## END: CENTREON SUDO" >> $directory/centreon.sudo
-	echo "" >> $directory/centreon.sudo
-	
+	echo "" >> $directory/centreon.sudo	
 
 	if [ -e $directory/centreon.sudo ] ; then 
 		return 0

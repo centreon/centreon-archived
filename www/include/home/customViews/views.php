@@ -178,7 +178,7 @@ jQuery(function() {
     	});
 
     	<?php foreach ($widgets as $widgetId => $widget) { ?>
-			jQuery("[name=widget_" + viewId +  "_<?php echo $widgetId;?>]").attr('src', '<?php echo $widget['url']; ?>?widgetId='+<?php echo $widgetId;?>);
+			jQuery("[name=widget_" + viewId +  "_<?php echo $widgetId;?>]").attr('src', '<?php echo $widget['url']; ?>?widgetId='+<?php echo $widgetId;?> + '&customViewId=' + viewId);
     	<?php } ?>
 	}
 

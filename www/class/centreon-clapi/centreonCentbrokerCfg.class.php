@@ -114,7 +114,13 @@ class CentreonCentbrokerCfg extends CentreonObject
                 $params[1] = "ns_nagios_server";
                 $params[2] = $this->instanceObj->getInstanceId($params[2]);
             } elseif (!preg_match('/^config_/', $params[1])) {
-                if ($params[1] != "event_queue_max_size") {
+                $parametersWithoutPrefix = array(
+                    "event_queue_max_size",
+                    "retention_path",
+                    "stats_activate",
+                    "correlation_activate"
+                );
+                if (!in_array($params[1], $parametersWithoutPrefix)) {
                     $params[1] = 'config_'.$params[1];
                 }
             }
@@ -533,6 +539,9 @@ class CentreonCentbrokerCfg extends CentreonObject
                       $this->delim.$this->instanceObj->getInstanceName($element['ns_nagios_server']);
             echo $addStr."\n";
             echo $this->action.$this->delim."SETPARAM".$this->delim.$element['config_name'].$this->delim."filename".$this->delim.$element['config_filename']."\n";
+            echo $this->action.$this->delim."SETPARAM".$this->delim.$element['config_name'].$this->delim."retention_path".$this->delim.$element['retention_path']."\n";
+            echo $this->action.$this->delim."SETPARAM".$this->delim.$element['config_name'].$this->delim."stats_activate".$this->delim.$element['stats_activate']."\n";
+            echo $this->action.$this->delim."SETPARAM".$this->delim.$element['config_name'].$this->delim."correlation_activate".$this->delim.$element['correlation_activate']."\n";
             $sql = "SELECT config_key, config_value, config_group, config_group_id
             		FROM cfg_centreonbroker_info
             		WHERE config_id = ?

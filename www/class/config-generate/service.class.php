@@ -293,6 +293,7 @@ class Service extends AbstractService {
         $this->service_cache[$service_id]['macros']['_SERVICE_ID'] = $service_id;        
         # useful for servicegroup on servicetemplate
         $service_template = ServiceTemplate::getInstance();
+        $service_template->resetLoop();
         $service_template->current_host_id = $host_id;
         $service_template->current_host_name = $host_name;
         $service_template->current_service_id = $service_id;

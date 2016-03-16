@@ -263,7 +263,7 @@ if ($oreon->broker->getBroker() == 'broker') {
         while ($row = $res->fetchRow()) {
             $statsfile = $row['retention_path'] . '/' . $row['config_name'] . '.stats';
             if ($defaultPoller != $selectedPoller) {
-                $statsfile = CENTREON_VARLIB . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
+                $statsfile = _CENTREON_VARLIB_ . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
             }
             if (!file_exists($statsfile) || !is_readable($statsfile)) {
                 $perf_err[$row['config_name']] = _('Cannot open statistics file');

@@ -1,8 +1,11 @@
 <div id='globalView'>
+  {if $aclParameters == 1}
   <div class="toggleEdit">
     <a href="#" title="{$editMode}"><img src="./img/icons/edit_mode.png" class="ico-14"></a>
   </div>
+  {/if}
   <!-- Action bar -->
+  {if $aclAddView == 1}
   <div id='actionBar' style="display: none;">
     <!-- Button for add a view -->
     <div class="cntn">
@@ -54,8 +57,10 @@
         </div>
       </div>
     </div>
+    {/if}
     
     <!-- Button for edit a view -->
+    {if $aclEdit == 1} 
     <div class="cntn">
       <button class='editView btnAction btnExtraAction btc bt_info'>{t}Edit view{/t}</button>
       <div class="toggle_wrapper inactive" id="editView">
@@ -93,14 +98,18 @@
         </div>
       </div>
     </div>
-    
+    {/if}
     <!-- Button for delete a view -->
+    {if $aclDeleteView == 1}
     <button class='deleteView btnExtraAction btc bt_danger'>{t}Delete view{/t}</button>
-    
+    {/if}
     <!-- Button for set default a view -->
+    {if $aclSetDefault == 1}
     <button class='setDefault btnExtraAction btc bt_default'>{t}Set default{/t}</button>
+    {/if}
     
     <!-- Button for share a view -->
+    {if $aclShare == 1} 
     <div class="cntn">
       <button class='shareView btnAction btnExtraAction btc bt_info'>{t}Share view{/t}</button>
       <div class="toggle_wrapper inactive" id="shareView">
@@ -155,8 +164,9 @@
         </form>
       </div>
     </div>
-    
+    {/if}
     <!-- Button for add a widget -->
+    {if $aclAddWidget == 1}
     <div class="cntn">
       <button class='addWidget btnAction btnExtraAction btc bt_success'>{t}Add widget{/t}</button>
       <div class="toggle_wrapper inactive" id="addwdgt">
@@ -210,8 +220,9 @@
         </form>
       </div>
     </div>
-    
+    {/if}
     <!-- Button for activate rotation -->
+    {if $aclRotation == 1} 
     <div class="cntn">
       <button class='setRotate btnAction btnExtraAction btc bt_info'>{t}Rotation{/t}</button>
       <div class="toggle_wrapper inactive" id="rotationTabs">
@@ -223,6 +234,7 @@
           </div>
       </div>
     </div>
+    {/if}
   </div>
   
   <!-- Tab for list of views -->
@@ -519,14 +531,25 @@ function submitShareView()
   var viewId = jQuery(
     jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
   ).data('cvId');
-  var postData = {};
-  jQuery("#formShareView").serializeArray().each(function (value, idx) {
-    if (value.name === 'custom_view_id') {
-      postData.custom_view_id = viewId;
-    } else {
-      postData[value.name] = value.value;
-    }
-  });
+  var users = jQuery("#formShareView").find('select[name="user_id[]"]').val();
+  var usergroups = jQuery("#formShareView").find('select[name="usergroup_id[]"]').val();
+  var postData = {
+    custom_view_id: viewId,
+    'locked[locked]': jQuery("#formShareView").find('input[name="locked[locked]"]:checked').val(),
+    action: 'share',
+    centeon_token: jQuery("#formShareView").find('input[name="centreon_token"]').val(),
+  };
+  
+  if (users) {
+    postData['user_id[]'] = users.filter(function (elem) {
+      return elem !== '';
+    });
+  }
+  if (usergroups) {
+    postData['usergroup_id[]'] = usergroups.filter(function (elem) {
+      return elem !== '';
+    });
+  }
   
   jQuery.ajax({
     type: "POST",
@@ -655,7 +678,7 @@ function removeUsergroupFromView(usergroup_id) {
     url: "./include/home/customViews/action.php",
     data: {
       action: "removegroup",
-      custom_view_id: jQuery('[name=custom_view_id]').val(),
+      custom_view_id: viewId,
       usergroup_id:	usergroup_id
     },
     success: function(response) {
@@ -684,11 +707,7 @@ jQuery(function () {
   });
   jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}});
   jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
-    if (ownership) {
-        jQuery("#deleteViewConfirm").centreonPopin("open");
-    } else {
-        jQuery("#dissociateViewConfirm").centreonPopin("open");
-    }
+    jQuery("#deleteViewConfirm").centreonPopin("open");
   });
   jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}}).on('click', function () {
     /* Get default information for a share view */
@@ -696,10 +715,10 @@ jQuery(function () {
       jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
     ).data('cvId');
     if (jQuery('#user_id').val() !== null) {
-      jQuery('#user_id').val(null).trigger('change');
+      jQuery('#user_id').val('').empty().append(jQuery("<option>")).trigger('change');
     }
     if (jQuery('#usergroup_id').val() !== null) {
-      jQuery('#usergroup_id').val(null).trigger('change');
+      jQuery('#usergroup_id').val('').empty().append(jQuery("<option>")).trigger('change');
     }
     jQuery.ajax({
       url: './include/home/customViews/action.php',
@@ -830,7 +849,8 @@ jQuery(function () {
   
   /* Add event for close all form */
   jQuery(document).on('click', function (e) {
-    if (jQuery(e.target).parents('.cntn').length === 0) {
+    if (jQuery(e.target).parents('.cntn').length === 0
+       && jQuery(e.target).hasClass('select2-selection__choice__remove') === false) {
       jQuery('.toggle_wrapper').hide();
     }
   });
