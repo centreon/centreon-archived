@@ -156,7 +156,6 @@
 	$form->addElement('text', 'object_cache_file', _("Object Cache File"), $attrsText2);
 	$form->addElement('text', 'precached_object_file', _("Precached Object File"), $attrsText2);
 	$form->addElement('text', 'temp_file', _("Temp File"), $attrsText2);
-	$form->addElement('text', 'temp_path', _("Temp directory"), $attrsText2);
 	$form->addElement('text', 'check_result_path', _("Check result directory"), $attrsText2);
 	$form->addElement('text', 'max_check_result_file_age', _("Max Check Result File Age"), $attrsText3);
 

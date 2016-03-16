@@ -47,7 +47,6 @@ class Engine extends AbstractObject {
         log_file,
         object_cache_file,
         precached_object_file,
-        temp_path,
         status_file,
         check_result_path,
         use_check_result_path,
@@ -170,7 +169,6 @@ class Engine extends AbstractObject {
         'log_file',
         'object_cache_file',
         'precached_object_file',
-        'temp_path',
         'status_file',
         'check_result_path',
         'use_check_result_path', //cengine

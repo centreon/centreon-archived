@@ -126,3 +126,5 @@ INSERT INTO `locale` ( `locale_short_name`, `locale_long_name`, `locale_img`) VA
 ('en', 'English', 'en.png'),
 ('fr', 'French', 'fr.png');
 
+ALTER TABLE `cfg_nagios` DROP COLUMN `temp_path`;
+

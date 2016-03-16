@@ -162,7 +162,7 @@
 
 		$rq = "INSERT INTO cfg_nagios (" .
 				"`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , `precached_object_file`, `object_cache_file` , `temp_file` , " .
-				"`temp_path` , `check_result_path`, `max_check_result_file_age`, " .
+				"`check_result_path`, `max_check_result_file_age`, " .
 				"`status_file` , `p1_file`, `status_update_interval` , `nagios_user` , `nagios_group` , " .
 				"`enable_notifications` , `execute_service_checks` , `accept_passive_service_checks` , `execute_host_checks` , " .
 				"`accept_passive_host_checks` , `enable_event_handlers` , `log_rotation_method` , `log_archive_path` , " .
@@ -201,7 +201,6 @@
         isset($ret["precached_object_file"]) && $ret["precached_object_file"] != NULL ? $rq .= "'".htmlentities($ret["precached_object_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
        	isset($ret["object_cache_file"]) && $ret["object_cache_file"] != NULL ? $rq .= "'".htmlentities($ret["object_cache_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
        	isset($ret["temp_file"]) && $ret["temp_file"] != NULL ? $rq .= "'".htmlentities($ret["temp_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
-        isset($ret["temp_path"]) && $ret["temp_path"] != NULL ? $rq .= "'".htmlentities($ret["temp_path"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
        	isset($ret["check_result_path"]) && $ret["check_result_path"] != NULL ? $rq .= "'".htmlentities($ret["check_result_path"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
        	isset($ret["max_check_result_file_age"]) && $ret["max_check_result_file_age"] != NULL ? $rq .= "'".htmlentities($ret["max_check_result_file_age"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["status_file"]) && $ret["status_file"] != NULL ? $rq .= "'".htmlentities($ret["status_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
@@ -373,7 +372,6 @@
         isset($ret["object_cache_file"]) && $ret["object_cache_file"] != NULL ? $rq .= "object_cache_file = '".htmlentities($ret["object_cache_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "object_cache_file = NULL, ";
        	isset($ret["precached_object_file"]) && $ret["precached_object_file"] != NULL ? $rq .= "precached_object_file = '".htmlentities($ret["precached_object_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "precached_object_file = NULL, ";
        	isset($ret["temp_file"]) && $ret["temp_file"] != NULL ? $rq .= "temp_file = '".htmlentities($ret["temp_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "temp_file = NULL, ";
-        isset($ret["temp_path"]) && $ret["temp_path"] != NULL ? $rq .= "temp_path = '".htmlentities($ret["temp_path"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "temp_path = NULL, ";
         isset($ret["check_result_path"]) && $ret["check_result_path"] != NULL ? $rq .= "check_result_path = '".htmlentities($ret["check_result_path"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "check_result_path = NULL, ";
         isset($ret["max_check_result_file_age"]) && $ret["max_check_result_file_age"] != NULL ? $rq .= "max_check_result_file_age = '".htmlentities($ret["max_check_result_file_age"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "max_check_result_file_age = NULL, ";
         isset($ret["status_file"]) && $ret["status_file"] != NULL ? $rq .= "status_file = '".htmlentities($ret["status_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "status_file = NULL, ";
