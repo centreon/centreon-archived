@@ -4,7 +4,6 @@ Feature:
     To optimize the data presentation
 
     Scenario: Change the value of number of elements loaded in select
-        Given a Centreon server
-        And I am logged in
-        When I change the configuration value of number of elements loaded in select
+        Given I am logged in a Centreon server
+        When I change the number of elements loaded in select in the configuration
         Then the value is saved

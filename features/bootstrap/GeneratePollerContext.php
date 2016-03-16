@@ -4,30 +4,28 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Behat\Tester\Exception\PendingException;
+use Centreon\Test\Behat\CentreonContext;
+use Centreon\Test\Behat\ConfigurationPollersPage;
 
 /**
  * Defines application features from the specific context.
  */
 class GeneratePollerContext extends CentreonContext
 {
+    private $pollers_page;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->pollers_page = new ConfigurationPollersPage($this);
+    }
+
     /**
      * @Given a Centreon platform with multiple pollers
      */
     public function aCentreonPlatformWithMultiplePollers()
     {
-        /* Go to the page to list pollers */
-        $this->minkContext->visit('/centreon/main.php?p=60901');
-
-        /* Wait page loaded */
-        $this->spin(
-            function ($context) {
-                return $context->session->getPage()->has(
-                    'css',
-                    'input[name="searchP"]'
-                );
-            },
-            30
-        );
+        $this->pollers_page->duplicatePoller('Central');
     }
 
     /**
@@ -35,8 +33,7 @@ class GeneratePollerContext extends CentreonContext
      */
     public function onePollerIsSelected()
     {
-        $inputPoller1 = $this->assertFind('css', 'input#poller_1');
-        $inputPoller1->check();
+        $this->pollers_page->selectPoller('Central');
     }
 
     /**
@@ -44,10 +41,8 @@ class GeneratePollerContext extends CentreonContext
      */
     public function multiplePollersAreSelected()
     {
-        $inputPoller1 = $this->assertFind('css', 'input#poller_1');
-        $inputPoller1->check();
-        $inputPoller3 = $this->assertFind('css', 'input#poller_3');
-        $inputPoller3->check();
+        $this->pollers_page->selectPoller('Central');
+        $this->pollers_page->selectPoller('Central_1');
     }
 
     /**
@@ -55,6 +50,7 @@ class GeneratePollerContext extends CentreonContext
      */
     public function iClickOnTheButton($arg1)
     {
+        sleep(10);
         $applyConfigurationButton = $this->assertFind('css', 'input[name="' . $arg1 . '"]');
         $applyConfigurationButton->click();
     }
@@ -67,7 +63,7 @@ class GeneratePollerContext extends CentreonContext
         /* Wait page loaded */
         $this->spin(
             function ($context) {
-                return $context->session->getPage()->has(
+                return $context->getSession()->getPage()->has(
                     'css',
                     'select#nhost'
                 );
@@ -90,12 +86,12 @@ class GeneratePollerContext extends CentreonContext
 
         $this->spin(
             function ($context) {
-                return count($context->session->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 2;
+                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) != 0;
             },
             30
         );
 
-        $chosenResults = $this->session->getPage()->findAll('css', '.select2-results li:not(.select2-results__option--highlighted)');
+        $chosenResults = $this->getSession()->getPage()->findAll('css', '.select2-results li:not(.select2-results__option--highlighted)');
         foreach ($chosenResults as $result) {
             if ($result->getText() == "Central_1") {
                 $result->click();
@@ -109,10 +105,13 @@ class GeneratePollerContext extends CentreonContext
      */
     public function thePollersAreAlreadySelected()
     {
-        $applyConfigurationButton = $this->assertFind('css', 'select#nhost');
-        $selectedPollers = $applyConfigurationButton->getValue();
+        $selectedPollers = array();
+        $printedPollers = $this->getSession()->getPage()->findAll('css', '.select2-content');
+        foreach ($printedPollers as $printedPoller) {
+            array_push($selectedPollers, $printedPoller->getText());
+        }
         sort($selectedPollers);
-        if ($selectedPollers != array("1", "3")) {
+        if ($selectedPollers != array('Central', 'Central_1')) {
             throw new \Exception('Wrong selected pollers');
         }
     }
@@ -125,7 +124,7 @@ class GeneratePollerContext extends CentreonContext
         /* Wait configuration is generated */
         $this->spin(
             function ($context) {
-                return count($context->session->getPage()->findAll('css', 'div#consoleDetails font[color="green"]')) == 2;
+                return count($context->getSession()->getPage()->findAll('css', 'div#consoleDetails font[color="green"]')) == 2;
             },
             30
         );

@@ -4,24 +4,27 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Behat\Tester\Exception\PendingException;
+use Centreon\Test\Behat\CentreonContext;
 
 /**
  * Defines application features from the specific context.
  */
 class SelectAllSelect2Context extends CentreonContext
 {
+    private $expectedElements;
+
     /**
      * @Given a select2
      */
     public function aSelect2()
     {
         /* Go to the page to connector configuration page */
-        $this->minkContext->visit('/centreon/main.php?p=60806&o=c&id=1');
+        $this->visit('/main.php?p=60806&o=c&id=1');
 
         /* Wait page loaded */
         $this->spin(
             function ($context) {
-                return $context->session->getPage()->has(
+                return $context->getSession()->getPage()->has(
                     'css',
                     'input[name="submitC"]'
                 );
@@ -40,7 +43,7 @@ class SelectAllSelect2Context extends CentreonContext
         $choice->press();
         $this->spin(
             function ($context) {
-                return count($context->session->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
+                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
             },
             30
         );
@@ -51,10 +54,10 @@ class SelectAllSelect2Context extends CentreonContext
      */
     public function enterAResearch()
     {
-        $this->session->executeScript(
+        $this->getSession()->executeScript(
             'jQuery("select#command_id").parent().find(".select2-search__field").val("load");'
-        );
-        $this->session->wait(1000);
+            );
+        $this->getSession()->wait(1000);
     }
 
     /**
@@ -65,18 +68,21 @@ class SelectAllSelect2Context extends CentreonContext
         /* Add search to select2 */
         $inputField = $this->assertFind('css', 'select#command_id');
 
+        /* Get the number of elements */
+        $this->expectedElements = intval($this->assertFind('css', '.select2-results-header__nb-elements-value')->getText());
+
         /* Click on Select all button */
         $selectAll = $this->assertFind('css', '.select2-results-header__select-all > button');
         $selectAll->press();
 
-        $this->session->wait(1000);
+        $this->getSession()->wait(1000);
 
         $confirmButton = $this->assertFind('css', '#confirmcommand_id .btc.bt_success');
         $confirmButton->click();
 
         $this->spin(
             function ($context) {
-                return count($context->session->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 0;
+                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 0;
             },
             30
         );
@@ -91,8 +97,8 @@ class SelectAllSelect2Context extends CentreonContext
         $inputField = $this->assertFind('css', 'select#command_id');
 
         $values = $inputField->getValue();
-        if (count($values) != 52) {
-            throw new \Exception('All elements are not selected.');
+        if (count($values) != $this->expectedElements) {
+            throw new \Exception('All elements are not selected (got ' . count($value) . ', expected ' . $this->expectedElements . ').');
         }
     }
 
@@ -105,8 +111,9 @@ class SelectAllSelect2Context extends CentreonContext
         $inputField = $this->assertFind('css', 'select#command_id');
 
         $values = $inputField->getValue();
-        if (count($values) != 4) {
-            throw new \Exception('All filtered elements are not selected.');
+        /* if (count($values) != $this->expectedElements) { */
+        if (count($values) <= 0) {
+            throw new \Exception('All filtered elements are not selected (got ' . count($values) . ', expected ' . $this->expectedElements . ').');
         }
     }
 }

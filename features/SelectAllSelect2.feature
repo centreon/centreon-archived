@@ -4,8 +4,7 @@ Feature:
     To select multiple element at once time
 
     Background:
-        Given a Centreon server
-        And I am logged in
+        Given I am logged in a Centreon server
 
     Scenario: Select all element without filter
         Given a select2
