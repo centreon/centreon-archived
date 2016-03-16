@@ -51,7 +51,6 @@ class Engine extends AbstractObject {
         check_result_path,
         use_check_result_path,
         max_check_result_file_age,
-        p1_file,
         status_update_interval,
         external_command_buffer_slots,
         command_check_interval,
@@ -160,8 +159,6 @@ class Engine extends AbstractObject {
         free_child_process_memory,
         child_processes_fork_twice,
         enable_environment_macros,
-        enable_embedded_perl,
-        use_embedded_perl_implicitly,
         use_setpgid
     ';
     protected $attributes_write = array(
@@ -173,7 +170,6 @@ class Engine extends AbstractObject {
         'check_result_path',
         'use_check_result_path', //cengine
         'max_check_result_file_age',
-        'p1_file', //cengine
         'status_update_interval',
         'external_command_buffer_slots',
         'command_check_interval',
@@ -283,8 +279,6 @@ class Engine extends AbstractObject {
         'free_child_process_memory',
         'child_processes_fork_twice',
         'enable_environment_macros',
-        'enable_embedded_perl',
-        'use_embedded_perl_implicitly',
         'use_setpgid', # cengine
     );
     protected $attributes_array = array(

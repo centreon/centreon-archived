@@ -126,5 +126,9 @@ INSERT INTO `locale` ( `locale_short_name`, `locale_long_name`, `locale_img`) VA
 ('en', 'English', 'en.png'),
 ('fr', 'French', 'fr.png');
 
-ALTER TABLE `cfg_nagios` DROP COLUMN `temp_path`;
+ALTER TABLE `cfg_nagios`
+    DROP COLUMN `temp_path`,
+    DROP COLUMN `p1_file`,
+    DROP COLUMN `enable_embedded_perl`,
+    DROP COLUMN `use_embedded_perl_implicitly`;
 

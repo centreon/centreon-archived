@@ -374,14 +374,6 @@
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4></h4></td></tr>		
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="admin_email">&nbsp;{$form.admin_email.label}</td><td class="FormRowValue">{$form.admin_email.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="admin_pager">&nbsp;{$form.admin_pager.label}</td><td class="FormRowValue">{$form.admin_pager.html}</td></tr>
-			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$Perl}</h4>
-              </td>
-            </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="enable_embedded_perl">&nbsp;{$form.enable_embedded_perl.label}</td><td class="FormRowValue">{$form.enable_embedded_perl.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="use_embedded_perl_implicitly">&nbsp;{$form.use_embedded_perl_implicitly.label}</td><td class="FormRowValue">{$form.use_embedded_perl_implicitly.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="p1_file">&nbsp;{$form.p1_file.label}</td><td class="FormRowValue">{$form.p1_file.html}</td></tr>
 			{if $o == "a" || $o == "c"}
 				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
 			{/if}

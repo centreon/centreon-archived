@@ -46,7 +46,6 @@ $aDefaultBrokerDirective = array(
 	'object_cache_file' => '/var/log/centreon-engine/objects.cache', 
 	'temp_file' => '/var/log/centreon-engine/centengine.tmp', 
 	'status_file' => '/var/log/centreon-engine/status.dat',
-	'p1_file' => '/usr/sbin/p1.pl', 
 	'status_update_interval' => '30', 
 	'nagios_user' => 'centreon-engine', 
 	'nagios_group' => 'centreon-engine', 
@@ -130,8 +129,6 @@ $aDefaultBrokerDirective = array(
 	'child_processes_fork_twice' => '2',
 	'enable_environment_macros' => '2',
      'use_setpgid' => '2',
-	'enable_embedded_perl' => '2',
-	'use_embedded_perl_implicitly' => '2',
 	'debug_file' => '/var/log/centreon-engine/centengine.debug',
 	'debug_level' => '0',
 	'debug_level_opt' => '0',
@@ -188,7 +185,7 @@ function insertServerInCfgNagios($iId, $sName)
     if ($DBRESULT->numRows() == 0) { 
     
         $rq = "INSERT INTO `cfg_nagios` (`nagios_name`, `nagios_server_id`, `log_file`, `cfg_dir`, `object_cache_file`, `temp_file`, `status_file`, 
-        `p1_file`, `status_update_interval`, `nagios_user`, `nagios_group`, `enable_notifications`, `execute_service_checks`, `accept_passive_service_checks`, `execute_host_checks`, 
+        `status_update_interval`, `nagios_user`, `nagios_group`, `enable_notifications`, `execute_service_checks`, `accept_passive_service_checks`, `execute_host_checks`, 
         `accept_passive_host_checks`, `enable_event_handlers`, `log_rotation_method`, `log_archive_path`, `check_external_commands`, `external_command_buffer_slots`, 
         `command_check_interval`, `command_file`, `lock_file`, `retain_state_information`, `state_retention_file`,`retention_update_interval`, `use_retained_program_state`, 
         `use_retained_scheduling_info`, `use_syslog`, `log_notifications`, `log_service_retries`, `log_host_retries`, `log_event_handlers`, `log_initial_states`, 
@@ -200,8 +197,8 @@ function insertServerInCfgNagios($iId, $sName)
         `check_for_orphaned_services`, `check_for_orphaned_hosts`, `check_service_freshness`, `check_host_freshness`, `date_format`, `illegal_object_name_chars`, 
         `illegal_macro_output_chars`, `use_regexp_matching`, `use_true_regexp_matching`, `admin_email`, `admin_pager`, `nagios_comment`, `nagios_activate`, 
         `event_broker_options`, `translate_passive_host_checks`, `enable_predictive_host_dependency_checks`, `enable_predictive_service_dependency_checks`, `passive_host_checks_are_soft`, 
-        `use_large_installation_tweaks`, `free_child_process_memory`, `child_processes_fork_twice`, `enable_environment_macros`, `use_setpgid`, `enable_embedded_perl`, 
-        `use_embedded_perl_implicitly`, `debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, `daemon_dumps_core`, `cfg_file`, `use_check_result_path`) ";
+        `use_large_installation_tweaks`, `free_child_process_memory`, `child_processes_fork_twice`, `enable_environment_macros`, `use_setpgid`, 
+        `debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, `daemon_dumps_core`, `cfg_file`, `use_check_result_path`) ";
         $rq .= "VALUES (";
 
         $rq .= "'".$sName."', '". $iId. "', '".$aInstanceDefaultValues['log_file'] ."', '" .
@@ -209,7 +206,6 @@ function insertServerInCfgNagios($iId, $sName)
         $aInstanceDefaultValues['object_cache_file'] ."', '" .
         $aInstanceDefaultValues['temp_file'] ."', '" .
         $aInstanceDefaultValues['status_file'] ."', '" .
-        $aInstanceDefaultValues['p1_file'] ."', '" .
         $aInstanceDefaultValues['status_update_interval'] ."', '" .
         $aInstanceDefaultValues['nagios_user'] ."', '" .
         $aInstanceDefaultValues['nagios_group'] ."', '" .
@@ -292,8 +288,6 @@ function insertServerInCfgNagios($iId, $sName)
         $aInstanceDefaultValues['child_processes_fork_twice'] ."', '" .
         $aInstanceDefaultValues['enable_environment_macros'] ."', '" .
         $aInstanceDefaultValues['use_setpgid'] ."', '" .
-        $aInstanceDefaultValues['enable_embedded_perl'] ."', '" .
-        $aInstanceDefaultValues['use_embedded_perl_implicitly'] ."', '" .
         $aInstanceDefaultValues['debug_file'] ."', '" .
         $aInstanceDefaultValues['debug_level'] ."', '" .
         $aInstanceDefaultValues['debug_level_opt'] ."', '" .

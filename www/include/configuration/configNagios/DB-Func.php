@@ -163,7 +163,7 @@
 		$rq = "INSERT INTO cfg_nagios (" .
 				"`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , `precached_object_file`, `object_cache_file` , `temp_file` , " .
 				"`check_result_path`, `max_check_result_file_age`, " .
-				"`status_file` , `p1_file`, `status_update_interval` , `nagios_user` , `nagios_group` , " .
+				"`status_file` , `status_update_interval` , `nagios_user` , `nagios_group` , " .
 				"`enable_notifications` , `execute_service_checks` , `accept_passive_service_checks` , `execute_host_checks` , " .
 				"`accept_passive_host_checks` , `enable_event_handlers` , `log_rotation_method` , `log_archive_path` , " .
 				"`check_external_commands` , `command_check_interval` , `command_file` , `downtime_file` , `comment_file` , " .
@@ -190,7 +190,7 @@
 				"`use_large_installation_tweaks` , `free_child_process_memory` , `child_processes_fork_twice` , `debug_file` , `debug_level` , " .
 				"`debug_level_opt`, `debug_verbosity` , `max_debug_file_size` , `daemon_dumps_core`, " .
 				"`enable_environment_macros` , `use_setpgid`, `use_regexp_matching` , `use_true_regexp_matching` , `admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, " .
-				"`event_broker_options` , `enable_embedded_perl` , `use_embedded_perl_implicitly`, `translate_passive_host_checks`, " .
+				"`event_broker_options` , `translate_passive_host_checks`, " .
 				"`passive_host_checks_are_soft`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, `cfg_file`, `log_pid`, `use_check_result_path`) ";
 		$rq .= "VALUES (";
 		$rq .= "NULL, ";
@@ -204,7 +204,6 @@
        	isset($ret["check_result_path"]) && $ret["check_result_path"] != NULL ? $rq .= "'".htmlentities($ret["check_result_path"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
        	isset($ret["max_check_result_file_age"]) && $ret["max_check_result_file_age"] != NULL ? $rq .= "'".htmlentities($ret["max_check_result_file_age"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["status_file"]) && $ret["status_file"] != NULL ? $rq .= "'".htmlentities($ret["status_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
-        isset($ret["p1_file"]) && $ret["p1_file"] != NULL ? $rq .= "'".htmlentities($ret["p1_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["status_update_interval"]) && $ret["status_update_interval"] != NULL ? $rq .= "'".(int)$ret["status_update_interval"]."',  " : $rq .= "NULL, ";
         isset($ret["nagios_user"]) && $ret["nagios_user"] != NULL ? $rq .= "'".htmlentities($ret["nagios_user"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["nagios_group"]) && $ret["nagios_group"] != NULL ? $rq .= "'".htmlentities($ret["nagios_group"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
@@ -322,8 +321,6 @@
         isset($ret["nagios_comment"]) && $ret["nagios_comment"] != NULL ? $rq .= "'".htmlentities($ret["nagios_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"] != NULL ? $rq .= "'".$ret["nagios_activate"]["nagios_activate"]."'," : $rq .= "'0',";
         isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "'".htmlentities($ret["event_broker_options"], ENT_QUOTES, "UTF-8")."', " : $rq .= "'-1', ";
-        isset($ret["enable_embedded_perl"]["enable_embedded_perl"]) && $ret["enable_embedded_perl"]["enable_embedded_perl"] != 2 ? $rq .= "'".$ret["enable_embedded_perl"]["enable_embedded_perl"]."',  " : $rq .= "'2', ";
-        isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "'".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."', " : $rq .= "'2', ";
 		isset($ret["translate_passive_host_checks"]["translate_passive_host_checks"]) && $ret["translate_passive_host_checks"]["translate_passive_host_checks"] != 2 ? $rq .= "'".$ret["translate_passive_host_checks"]["translate_passive_host_checks"]."', " : $rq .= "'2', ";
 		isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"]) && $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] != 2 ? $rq .= "'".$ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"]."', " : $rq .= "'2', ";
 		isset($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]) && $ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"] != 2 ? $rq .= "'".$ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]."', " : $rq .= "'2', ";
@@ -375,7 +372,6 @@
         isset($ret["check_result_path"]) && $ret["check_result_path"] != NULL ? $rq .= "check_result_path = '".htmlentities($ret["check_result_path"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "check_result_path = NULL, ";
         isset($ret["max_check_result_file_age"]) && $ret["max_check_result_file_age"] != NULL ? $rq .= "max_check_result_file_age = '".htmlentities($ret["max_check_result_file_age"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "max_check_result_file_age = NULL, ";
         isset($ret["status_file"]) && $ret["status_file"] != NULL ? $rq .= "status_file = '".htmlentities($ret["status_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "status_file = NULL, ";
-        isset($ret["p1_file"]) && $ret["p1_file"] != NULL ? $rq .= "p1_file = '".htmlentities($ret["p1_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "p1_file = NULL, ";
         isset($ret["status_update_interval"]) && $ret["status_update_interval"] != NULL ? $rq .= "status_update_interval = '".(int)$ret["status_update_interval"]."',  " : $rq .= "status_update_interval = NULL, ";
  	    isset($ret["nagios_user"]) && $ret["nagios_user"] != NULL ? $rq .= "nagios_user = '".htmlentities($ret["nagios_user"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "nagios_user = NULL, ";
         isset($ret["nagios_group"]) && $ret["nagios_group"] != NULL ? $rq .= "nagios_group = '".htmlentities($ret["nagios_group"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "nagios_group = NULL, ";
@@ -481,8 +477,6 @@
         isset($ret["admin_pager"]) && $ret["admin_pager"] != NULL ? $rq .= "admin_pager = '".htmlentities($ret["admin_pager"], ENT_QUOTES, "UTF-8")."', " : $rq .= "admin_pager = NULL, ";
         isset($ret["nagios_comment"]) && $ret["nagios_comment"] != NULL ? $rq .= "nagios_comment = '".htmlentities($ret["nagios_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "nagios_comment = NULL, ";
 		isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "event_broker_options = '".htmlentities($ret["event_broker_options"], ENT_QUOTES, "UTF-8")."', " : $rq .= "event_broker_options = '-1', ";
-		isset($ret["enable_embedded_perl"]["enable_embedded_perl"]) && $ret["enable_embedded_perl"]["enable_embedded_perl"] != 2 ? $rq .= "enable_embedded_perl   = '".$ret["enable_embedded_perl"]["enable_embedded_perl"]."',  " : $rq .= "enable_embedded_perl   = '2', ";
-		isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "use_embedded_perl_implicitly   = '".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."',  " : $rq .= "use_embedded_perl_implicitly   = '2', ";
 		isset($ret["debug_file"]) && $ret["debug_file"] != NULL ? $rq .= "debug_file = '".htmlentities($ret["debug_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "debug_file = NULL, ";
 		$level = 0;
         if (isset($ret["nagios_debug_level"]) && $ret["nagios_debug_level"] != NULL) {
