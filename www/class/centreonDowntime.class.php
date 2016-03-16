@@ -825,6 +825,18 @@ class CentreonDowntime
                 $start_tomorrow = true;
             }
 
+            $dateOfMonth = $currentHostDate->format('w');
+            if ($dateOfMonth == 0) {
+                $dateOfMonth = 7;
+            }
+            if ($start_tomorrow) {
+                if ($dateOfMonth == 7) {
+                    $dateOfMonth = 1;
+                } else {
+                    $dateOfMonth++;
+                }
+            }
+
             if ($period['month_cycle'] == 'none') {
                 $dateOfMonth = $currentHostDate->format('j');
 
@@ -832,22 +844,10 @@ class CentreonDowntime
                     $add = true;
                 }
             } elseif ($period['month_cycle'] == 'all') {
-                $dateOfMonth = $currentHostDate->format('w');
-                 
-                if ($dateOfMonth == 0) {
-                    $dateOfMonth = 7;
-                }
-
                 if (in_array($dateOfMonth, $period['day_of_week'])) {
                     $add = true;
                 }
             } else {
-                $dateOfMonth = $currentHostDate->format('w');
-
-                if ($dateOfMonth == 0) {
-                    $dateOfMonth = 7;
-                }
-
                 if ($dateOfMonth == $period['day_of_week']) {
                     $monthName = $currentHostDate->format('F');
                     $year = $currentHostDate->format('Y');
@@ -884,6 +884,9 @@ class CentreonDowntime
                 if ($interval > 0 && $interval < _DELAY_ ) {
                     $timestamp_stop = new DateTime();
                     $timestamp_stop->setTimezone($currentHostDate->getTimezone());
+                    if ($start_tomorrow) {
+                        $timestamp_stop->add(new DateInterval('P1D'));
+                    }
                     $sEndTime = explode(":", $period['end_time']);
                     if (count($sEndTime) != 2) {
                         throw new Exception("Invalid format ".$period['end_time']);

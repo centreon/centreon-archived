@@ -5147,6 +5147,10 @@ S2.define('select2/core',[
       'unselect': 'unselecting'
     };
 
+    if (args === undefined) {
+      args = {};
+    }
+
     if (name in preTriggerMap) {
       var preTriggerName = preTriggerMap[name];
       var preTriggerArgs = {

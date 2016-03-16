@@ -19,6 +19,15 @@ UPDATE on_demand_macro_service SET svc_macro_value = REPLACE(svc_macro_value, '&
 UPDATE on_demand_macro_service SET svc_macro_value = REPLACE(svc_macro_value, '&le;', '<=');
 UPDATE on_demand_macro_service SET svc_macro_value = REPLACE(svc_macro_value, '&ge;', '>=');
 
+-- Clear BDD with old htmlentities values for &
+UPDATE service SET command_command_id_arg = REPLACE(command_command_id_arg, '&amp;', '&');
+UPDATE command SET command_line = REPLACE(command_line, '&amp;', '&');
+UPDATE on_demand_macro_host SET host_macro_value = REPLACE(host_macro_value, '&amp;', '&');
+UPDATE on_demand_macro_service SET svc_macro_value = REPLACE(svc_macro_value, '&amp;', '&');
+UPDATE extended_host_information SET ehi_notes_url = REPLACE(ehi_notes_url, '&amp;', '&');
+UPDATE extended_host_information SET ehi_action_url = REPLACE(ehi_action_url, '&amp;', '&');
+UPDATE extended_service_information SET esi_notes_url = REPLACE(esi_notes_url, '&amp;', '&');
+UPDATE extended_service_information SET esi_action_url = REPLACE(esi_action_url, '&amp;', '&');
 
 ALTER TABLE escalation ADD COLUMN host_inheritance_to_services tinyint(1) DEFAULT 0 NOT NULL;
 ALTER TABLE escalation ADD COLUMN hostgroup_inheritance_to_services tinyint(1) DEFAULT 0 NOT NULL;

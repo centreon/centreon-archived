@@ -2,7 +2,7 @@
 Centreon 2.7.2
 ##############
 
-Released February 23, 2016
+Released February 24, 2016
 
 The 2.7.2 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.2 follow:
 
@@ -20,7 +20,6 @@ Features and Bug Fixes
 ======================
 
 - Fix eventlogs pages for performances and right for non admin users
-- Add New possibilities for ACL and Custom Views
 - Fix Recurent Downtimes behaviour with timezones
 - Fix some broken relations in web interface
 - Fix Reporting pages for non admin users
@@ -29,5 +28,13 @@ Features and Bug Fixes
 - Fix filters in configuration pages
 - Fix Poller duplication
 - Fix various ACL problems
-- Fix some SQL requests
-- Fix export of Meta Services 
+- Fix some SQL queries
+- Fix export of Meta Services
+- Improve ACL on Custom Views 
+
+Known Bugs
+==========
+
+- Recurrent downtimes during for more than a day are not working
+- It's impossible to remove relations between usergroup and custom views
+- With the update some widgets have to be deleted and recreated

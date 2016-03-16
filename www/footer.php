@@ -60,7 +60,7 @@ if (!$min) {
                 | <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
                  <?php } ?>
             </td>
-            <td>Copyright &copy; 2005 - 2015</td>
+            <td>Copyright &copy; 2005 - <?php echo date("Y"); ?></td>
          </tr>
 	</table>
 </div>

@@ -377,7 +377,10 @@ class CentreonService
         $cmdId = false,
         $macroFrom = false
     ) {
-        if (!$isMassiveChange) {
+        if (false === $isMassiveChange) {
+			$this->db->query("DELETE FROM on_demand_macro_service 
+							WHERE svc_svc_id = " . $this->db->escape($serviceId));
+		} else {
             $macroList = "";
             foreach ($macroInput as $v) {
                 $macroList .= "'\$_SERVICE" . strtoupper($this->db->escape($v)) . "\$',";
@@ -391,13 +394,11 @@ class CentreonService
             }
         }
 
+		$stored = array();
+		$cnt = 0;
         $macros = $macroInput;
         $macrovalues = $macroValue;
-        
         $this->hasMacroFromServiceChanged($this->db,$serviceId,$macros,$macrovalues,$cmdId, $isMassiveChange, $macroFrom);
-        
-        $stored = array();
-        $cnt = 0;
         foreach ($macros as $key => $value) {
             if ($value != "" &&
                     !isset($stored[strtolower($value)])) {

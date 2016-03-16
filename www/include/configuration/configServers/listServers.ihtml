@@ -1,4 +1,18 @@
+{literal}
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type='text/javascript'>
+
+    function applyConfiguration() {
+        var pollers = [];
+        jQuery('form tr').not('.row_disabled').find('input[id^="poller_"]:checked').each(function(){
+            pollers.push(this.id.substr(7));
+        });
+        window.location.href = "?p=60902&poller=" + pollers.join(',');
+    }
+
+</script>
+{/literal}
+
 <form name='form' method='POST'>
     <table class="ajaxOption table">
     <tbody>
@@ -16,15 +30,18 @@
     </table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			{ if $mode_access == 'w' }
-			<td>
+                        <td>
+			    { if $mode_access == 'w' }
 				{$msg.options} {$form.o1.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+			    { else }
+			    &nbsp;
+			    { /if }
+                            {if $mode_generate > 0}
+                            {$form.apply_configuration.html}
+                            { /if }
 			</td>
-			{ else }
-			<td>&nbsp;</td>
-			{ /if }
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
@@ -69,12 +86,6 @@
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
             <td class="ListColCenter">
-              {if $mode_generate > 0}
-              <!-- Link for generate poller configuration -->
-              <a href="./main.php?p={$generate_page_id}&poller={$elemArr[elem].RowMenu_name}">
-                <img src="./img/icons/generate_conf.png" class="ico-16" title="Generate configuration">
-              </a>
-              {/if}
               {if $mode_access == 'w' && $elemArr[elem].RowMenu_cfg_id != ""} 
               <!-- Link for edit poller monitoring engine configuration -->
               <a href="./main.php?p=60903&o=c&nagios_id={$elemArr[elem].RowMenu_cfg_id}">
@@ -112,6 +123,8 @@
 </form>
 {literal}
 <script type='text/javascript'>
-	setDisabledRowStyle();
+
+    setDisabledRowStyle();
+
 </script>
 {/literal}

@@ -131,6 +131,11 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     var $_defaultDatasetOptions;
     
     /**
+     * @var int The number of element in the pagination
+     */
+    var $_pagination;
+    
+    /**
      * 
      * @param string $elementName
      * @param string $elementLabel
@@ -145,6 +150,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $attributes = null,
         $sort = null
     ) {
+        global $centreon;
         $this->_ajaxSource = false;
         $this->_defaultSelectedOptions = '';
         $this->_multipleHtml = '';
@@ -156,6 +162,8 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_jsCallback = '';
         $this->_allowClear = false;
         $this->parseCustomAttributes($attributes);
+        
+        $this->_pagination = $centreon->optGen['selectPaginationSize'];
     }
     
     /**
@@ -288,6 +296,101 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      * 
      * @return string
      */
+    function addShift()
+    {
+        $myJs = '
+
+            jQuery("#' . $this->getName() . '").on("select2:open", function (e) {
+                e.preventDefault();
+                var data = jQuery(this).data();
+                data.select2.shiftFirstEl = null;
+                
+            });
+            
+            var endSelection = 0;
+            jQuery("#' . $this->getName() . '").on("select2:selecting", function (event) {
+                var data = jQuery(event.currentTarget).data();
+                if (event.params.args.originalEvent.shiftKey) {
+                    // To keep select2 opened
+                    event.preventDefault(); 
+                    
+                    if (!data.select2.hasOwnProperty("shiftFirstEl") || data.select2.shiftFirstEl === null) {
+                        data.select2.shiftFirstEl = event.params.args.data.id;
+                        endSelection = 0;
+                    } else {
+                        endSelection = event.params.args.data.id;
+                        startSelection = data.select2.shiftFirstEl;
+
+                        var selectedValues = [];
+                        startIndex = 0;
+                        endIndex = 0;
+                        jQuery(".select2-results li>span").each(function (index){
+                            var $this = jQuery(this);
+                            if ($this.data("did") == startSelection) {
+                                startIndex = index;
+                            }
+                            if ($this.data("did") == endSelection) {
+                                endIndex = index;
+                            }
+                        });
+
+                        if (endIndex < startIndex) {
+                            tempIndex = startIndex;
+                            startIndex = endIndex;
+                            endIndex = tempIndex;
+                        }
+
+                        jQuery(".select2-results li>span").each(function (index){
+                            var $this = jQuery(this);
+                            
+                            if (index >= startIndex && index <= endIndex) {
+                                selectedValues.push({id: $this.data("did").toString(), text: $this.text()});
+                            }
+                        });
+
+                        for (var i = 0; i < selectedValues.length; i++) {
+                            var item = selectedValues[i];
+
+                            // Create the DOM option that is pre-selected by default
+                            var option = "<option selected=\"selected\" value=\"" + item.id + "\" ";
+                            if (item.hide === true) {
+                                option += "hidden";
+                            }
+                            option += ">" + item.text + "</option>";
+
+                            // Append it to the select
+                            $currentSelect2Object'.$this->getName().'.append(option);
+                        }
+
+                        // Update the selected options that are displayed
+                        $currentSelect2Object'.$this->getName().'.select2("close");
+                            $currentSelect2Object'.$this->getName().'.trigger("change");
+                            data.select2.shiftFirstEl = null;
+                    } 
+                } 
+            });
+        ';
+        return $myJs;
+    }
+    
+    function templatingSelect2()
+    {
+        $js = "
+            function select2_formatResult(item) {
+                if(item.id) {
+                    span = jQuery('<span data-did=\"' + item.id + '\" title=\"' + item.text + '\" >' + item.text + '</span>');
+                    return span;
+                } else {
+                    return item.text;
+                }
+            }";
+        return $js;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
     function getJsInit()
     {
         $jsPre = '<script type="text/javascript">';
@@ -295,7 +398,8 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $jsPost = '</script>';
         $strJsInitBegining = '$currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").select2({';
         
-        $mainJsInit = 'allowClear: true,';
+        $mainJsInit = 'allowClear: true,'
+            . 'templateResult: ' . $this->templatingSelect2() . ',';
         
         $label = $this->getLabel();
         if (!empty($label)) {
@@ -321,23 +425,152 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $scroll = "";
         if ($this->_multiple) {
             $mainJsInit .= 'true,';
-            $scroll = '$currentSelect2Object'. $this->getName() . '.next(".select2-container").find("ul.select2-selection__rendered").niceScroll({
-            	cursorcolor:"#818285",
-            	cursoropacitymax: 0.6,
-            	cursorwidth:3,
-            	horizrailenabled:false
-            	});';
 
-                $mainJsInit .= 'templateSelection: function (data, container) {
-                    if (data.element.hidden === true) {
-                        $(container).hide();
-                    }
-                    return data.text;
-                },';
+            # Init nice scroll
+            $scroll .= 'var initNiceScroll = function(element) {
+                element.next(".select2-container").find("ul.select2-selection__rendered").niceScroll({
+                    cursorcolor:"#818285",
+                    cursoropacitymax: 0.6,
+                    cursorwidth:3,
+                    horizrailenabled: true,
+                    autohidemode: true
+                });
+            };';
+
+            # Init nice scroll on tabs form
+            $scroll .= 'jQuery("body").on("inittab:centreon", function(event, id) {
+                var tabElement = $currentSelect2Object'. $this->getName() . '.parents(".tab");
+                if (jQuery(tabElement).attr("id") == id) {
+                    initNiceScroll($currentSelect2Object' . $this->getName() .');
+                }
+            });';
+
+            # Update nice scroll when changing tab
+            $scroll .= 'jQuery("body").on("changetab:centreon", function(event, id) {
+                var tabElement = $currentSelect2Object'. $this->getName() . '.parents(".tab");
+                if (jQuery(tabElement).attr("id") == id) {
+                    initNiceScroll($currentSelect2Object' . $this->getName() .');
+                } else {
+                    $currentSelect2Object'. $this->getName() . '.next(".select2-container").find("ul.select2-selection__rendered").getNiceScroll().remove();
+                }
+            });';
+
+            # Update nice scroll when modify select2
+            $scroll .= '$currentSelect2Object'. $this->getName() . '.on("change.select2", function (event) {
+                $currentSelect2Object'. $this->getName() . '.next(".select2-container").find("ul.select2-selection__rendered").getNiceScroll().remove();
+                initNiceScroll($currentSelect2Object' . $this->getName() .');
+            });';
+
+            # Nicescroll for listed elements
+            $scroll .= '$currentSelect2Object'. $this->getName() . '.on("select2:open", function (event) {
+                jQuery("ul.select2-results__options").off("mousewheel");
+                jQuery("ul.select2-results__options").niceScroll({
+                    cursorcolor:"#818285",
+                    cursoropacitymax: 0.6,
+                    cursorwidth:3,
+                    horizrailenabled: true,
+                    zindex: 5000,
+                    autohidemode: false
+                });
+            });';
+            
+            /* Add catch event for block close dropdown when selectall */
+            $scroll .= '$currentSelect2Object'. $this->getName() . '.on("select2:closing", function (event) {
+                if (jQuery("#confirm'  . $this->getName() . '").length > 0) {
+                    event.preventDefault();
+                }
+            });';
+
+            $scroll .= '$currentSelect2Object'. $this->getName() . '.on("select2:open", function (event) {
+                if (!jQuery(".select2-results-header").length) {
+                    jQuery("span.select2-results").parents(".select2-dropdown").prepend(
+                        "<div class=\'select2-results-header\'>" +
+                            "<div class=\'select2-results-header__nb-elements\'>" +
+                                "<span class=\'select2-results-header__nb-elements-value\'></span> ' . _(' element(s) found') . '" +
+                            "</div>" +
+                            "<div class=\'select2-results-header__select-all\'>" +
+                                "<button class=\'btc bt_info\' onclick=\' $currentSelect2Object' . $this->getName() . '.confirmSelectAll();\'>' . _('Select all') . '</button>" +
+                            "</div>" +
+                        "</div>"
+                    );
+                }
+            });
+            
+
+            $currentSelect2Object' . $this->getName() . '.confirmSelectAll = function() {
+                /* Create div for popin */
+                var $confirmBox = jQuery(
+                    "<div id=\'confirm'  . $this->getName() . '\'>" +
+                    " <p>' . _('Add ') . '" + jQuery(".select2-results-header__nb-elements-value").text() + "' . _(' elements to selection ?') . '</p>" +
+                    " <div class=\'button_group_center\'>" +
+                    "   <button type=\'button\' class=\'btc bt_success\'>' . _('Ok') . '</button>" +
+                    "   <button type=\'button\' class=\'btc bt_default\'>' . _('Cancel') . '</button>" +
+                    " </div>" +
+                    "</div>"
+                ).appendTo("body");
+                
+                $confirmBox.centreonPopin({open: true});
+                
+                jQuery("#confirm'  . $this->getName() . ' .btc.bt_success").on("click", function () {
+                    // Get search value
+                    var search = $currentSelect2Object' . $this->getName() . '.data().select2.$container.find(".select2-search__field").val();
+
+                    // Get data filtered by search
+                    jQuery.ajax({
+                        url: "'. $this->_availableDatasetRoute .'",
+                        data: {
+                            q: search
+                        },
+                    }).success(function(data) {
+                        // Get value already selected to avoid to select it twice
+                        var selectedIds = [];
+                        $currentSelect2Object'.$this->getName().'.find("option").each(function() {
+                            var value = jQuery(this).val();
+                            if (value.trim() !== "") {
+                                selectedIds.push(jQuery(this).val());
+                            }
+                        });
+                        for (var d = 0; d < data.items.length; d++) {
+                            var item = data.items[d];
+
+                            // Create the DOM option that is pre-selected by default
+                            var option = "<option selected=\"selected\" value=\"" + item.id + "\" ";
+                            if (item.hide === true) {
+                                option += "hidden";
+                            }
+                            option += ">" + item.text + "</option>";
+
+                            // Append it to the select
+                            if (selectedIds.indexOf("" + item.id) < 0) {
+                                $currentSelect2Object'.$this->getName().'.append(option);
+                            }
+                        }
+
+                        // Update the selected options that are displayed
+                        $currentSelect2Object'.$this->getName().'.trigger("change");
+
+                        // Close select2
+                        $currentSelect2Object'.$this->getName().'.select2("close");
+                    });
+                    $confirmBox.centreonPopin("close");
+                    $confirmBox.remove();
+                });
+                
+                jQuery(document).on("click", "#confirm'  . $this->getName() . ' .btc.bt_default", function (e) {
+                    $confirmBox.centreonPopin("close");
+                    $confirmBox.remove();
+                });
+            };';
+
+            $mainJsInit .= 'templateSelection: function (data, container) {
+                if (data.element.hidden === true) {
+                    $(container).hide();
+                }
+                return data.text;
+            },';
         } else {
             $mainJsInit .= 'false,';
         }
-        //$mainJsInit .= 'minimumInputLength: 1,';
         
         $mainJsInit .= 'allowClear: ';
         if ($this->_allowClear) {
@@ -345,6 +578,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $mainJsInit .= 'false,';
         }
+        
+        $mainJsInit .= 'templateSelection: function (element) {
+            return jQuery(\'<span class="select2-content" title="\' + element.text + \'">\' + element.text + \'</span>\');
+        }';
 
         $strJsInitEnding = '});';
         
@@ -357,15 +594,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 . ' }); ';
         }
         
+        $additionnalJs .= $this->saveSearchJs();
         
-        $additionnalJs .= ' jQuery(".select2-selection").each(function(){'
-            . ' if(typeof this.isResiable == "undefined" || this.isResiable){'
-            . ' jQuery(this).resizable({ maxWidth: 500, '
-            . ' minWidth : jQuery(this).width() != 0 ? jQuery(this).width() : 200, '
-            . ' minHeight : jQuery(this).height() != 0 ? jQuery(this).height() : 45 });'
-            . ' this.isResiable = true; '
-            . ' }'
-            . ' }); ';
+        $additionnalJs .= $this->addShift();
         
         $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $scroll . $additionnalJs . $this->_jsCallback . $jsPost;
         
@@ -455,16 +686,17 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             . 'data: function (params) {
                     return {
                         q: params.term,
-                        page_limit: 30,
+                        page_limit: ' . $this->_pagination . ',
                         page: params.page || 1
                     };
                 },
                 processResults: function (data, params) {
                     params.page = params.page || 1;
+                    jQuery(".select2-results-header__nb-elements-value").text(data.total);
                     return {
                         results: data.items,
                         pagination: {
-                            more: (params.page * 30) < data.total
+                            more: (params.page * ' . $this->_pagination . ') < data.total
                         }
                     };
                 }';
@@ -514,7 +746,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             // Update the selected options that are displayed
             $currentSelect2Object'.$this->getName().'.trigger("change",[{origin:\'select2defaultinit\'}]);
         });
-        
+
         $request' . $this->getName() . '.error(function(data) {
             
         });
@@ -563,6 +795,36 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             return parent::onQuickFormEvent($event, $arg, $caller);
         }
+    }
+    
+    /**
+     * Prepare JS code for save the search
+     *
+     * @return string The javscript code
+     */
+    protected function saveSearchJs()
+    {
+        $string = 'jQuery("#' . $this->getName() . '").on("select2:closing", function (event) {
+                var $select = jQuery(event.currentTarget);
+                var data = $select.data();
+                var $search = data.select2.$container.find(".select2-search__field");
+                data.select2.saveSearch = $search.val();
+            });';
+            
+        $string .= 'jQuery("#' . $this->getName() . '").on("select2:open", function (event) {
+                var $select = jQuery(event.currentTarget);
+                var data = $select.data();
+                var $search = data.select2.$container.find(".select2-search__field");
+                if (data.select2.saveSearch) {
+                  $search.val(data.select2.saveSearch);
+                  /* Wait for select2 finish to open */
+                  setTimeout(function () {
+                    data.select2.trigger("query", {term: data.select2.saveSearch});
+                  }, 10);
+                }
+            });';
+            
+        return $string;
     }
 }
 

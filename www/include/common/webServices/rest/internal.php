@@ -53,7 +53,7 @@ if (false === isset($_SESSION["centreon"])) {
 $pearDB = new CentreonDB();
 
 /*
- * Define Oreon var alias
+ * Define Centreon var alias
  */
 if (isset($_SESSION["centreon"])) {
     $centreon = $_SESSION["centreon"];

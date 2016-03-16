@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.2');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.7.3');
 
 --
 -- Contenu de la table `contact`
@@ -147,7 +147,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('tactical_refresh_interval', '20'), 
 ('index_data', '1'), 
 ('interval_length', '60'),
-('nagios_path_img','@INSTALL_DIR_CENTREON@/www/img/media/');
+('nagios_path_img','@INSTALL_DIR_CENTREON@/www/img/media/'),
+('selectPaginationSize', 60);
 
 --
 -- Contenu de la table `giv_components_template`
@@ -965,7 +966,11 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('serviceTemplate', 1),
                                            ('hostgroup', 1),
                                            ('servicegroup', 1),
-                                           ('service', 1);
+                                           ('service', 1),
+                                           ('poller', 1), 
+                                           ('hostCategories',1), 
+                                           ('serviceCategories',1),
+                                           ('metric',1); 	  
 
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES 
@@ -1384,4 +1389,6 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
                         ('Pacific/Tarawa', '+12:00', '+12:00'),
                         ('Pacific/Tongatapu', '+13:00', '+13:00'),
                         ('Pacific/Wake', '+12:00', '+12:00'),
-                        ('Pacific/Wallis', '+12:00', '+12:00');
+                        ('Pacific/Wallis', '+12:00', '+12:00'), 
+                        ('GMT', '-00:00', '-00:00'),
+                        ('UTC', '-00:00', '-00:00');

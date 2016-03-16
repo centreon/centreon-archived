@@ -50,9 +50,7 @@ class CentreonWidgetParamsConnectorHostgroup extends CentreonWidgetParamsList
             $query = "SELECT hg_id, hg_name
             		  FROM hostgroup
             		  WHERE hg_activate = '1' ";
-            $query .= $this->acl->queryBuilder('AND', 
-                                               'hg_id',
-                                               $this->acl->getHostGroupsString());
+            $query .= $this->acl->queryBuilder('AND', 'hg_id', $this->acl->getHostGroupsString());
             $query .= " ORDER BY hg_name ";
             $res = $this->db->query($query);
             $tab = array(null => null);

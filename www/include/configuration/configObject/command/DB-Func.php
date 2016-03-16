@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -114,6 +113,7 @@ function multipleCommandInDB($commands = array(), $nbrDup = array()) {
             if (isset($command_name) && testCmdExistence($command_name)) {
                 $val ? $rq = "INSERT INTO `command` VALUES (" . $val . ")" : $rq = null;
                 $DBRESULT = $pearDB->query($rq);
+                
                 /*
                  * Get Max ID
                  */
@@ -151,7 +151,6 @@ function updateCommand($cmd_id = null, $params = array()) {
     } else {
         $ret = $form->getSubmitValues();
     }
-    //set_magic_quotes_runtime(1);
 
     $ret["command_name"] = $oreon->checkIllegalChar($ret["command_name"]);
     if (!isset($ret['enable_shell'])) {
@@ -195,7 +194,6 @@ function insertCommand($ret = array()) {
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
-    //set_magic_quotes_runtime(1);
 
     $ret["command_name"] = $oreon->checkIllegalChar($ret["command_name"]);
     if (!isset($ret['enable_shell'])) {
@@ -205,16 +203,12 @@ function insertCommand($ret = array()) {
     /*
      * Insert
      */
-
     $rq = "INSERT INTO `command` (`command_name`, `command_line`, `enable_shell`, `command_example`, `command_type`, `graph_id`, `connector_id`, `command_comment`) ";
     $rq .= "VALUES ('" . $pearDB->escape($ret["command_name"]) . "', '" . $pearDB->escape($ret["command_line"]) . "', '" . $pearDB->escape($ret['enable_shell']) . "', '" . $pearDB->escape($ret["command_example"]) . "', '" . $ret["command_type"]["command_type"] . "', '" . $ret["graph_id"] . "', ";
     $rq .= (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $ret['connectors'] . "'" : "NULL");
     $rq .= ", '" . $pearDB->escape($ret["command_comment"]) . "'";
     $rq .= ")";
-
     $DBRESULT = $pearDB->query($rq);
-
-
 
     $fields["command_name"] = $pearDB->escape($ret["command_name"]);
     $fields["command_line"] = $pearDB->escape($ret["command_line"]);
@@ -399,14 +393,7 @@ function insertMacrosDesc($cmd, $ret)
                 $sType = "1";
                 $sName =  trim($str);
             }
-            /*
-            echo $sType."<br />";
-            echo $sName."<br />";
-            echo "<pre>";
-            print_r($tab2);
-die;
-             * 
-             */
+            
             if (!empty($sName)) {
                 $query = "DELETE FROM `on_demand_macro_command` WHERE command_macro_name = '".$pearDB->escape($sName)."' AND `command_command_id` = ".intval($cmd);
                 $pearDB->query($query);
@@ -416,6 +403,4 @@ die;
             }
         }
     }
-
 }
-?>
