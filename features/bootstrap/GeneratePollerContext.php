@@ -124,7 +124,7 @@ class GeneratePollerContext extends CentreonContext
         /* Wait configuration is generated */
         $this->spin(
             function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', 'div#consoleDetails font[color="green"]')) == 2;
+                return count($context->getSession()->getPage()->findAll('css', 'div#consoleDetails font[color="green"]')) == 6;
             },
             30
         );
