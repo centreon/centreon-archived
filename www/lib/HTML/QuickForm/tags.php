@@ -65,13 +65,14 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
         $this->_ajaxSource = false;
         $this->_defaultSelectedOptions = '';
         $this->_multipleHtml = '';
-        $this->_allowClear = true; 
-        $this->HTML_QuickForm_select($elementName, $elementLabel, $options, $attributes);
+        $this->_allowClear = true;
         $this->_elementHtmlName = $this->getName();
         $this->_defaultDataset = array();
         $this->_defaultDatasetOptions = array();
         $this->_jsCallback = '';
         $this->_allowClear = false;
+        $this->_pagination = $centreon->optGen['selectPaginationSize'];
+        $this->HTML_QuickForm_select2($elementName, $elementLabel, $options, $attributes);
         $this->parseCustomAttributes($attributes);
     }
     
