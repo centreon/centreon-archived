@@ -1406,6 +1406,7 @@ table.ListTableSmallArg td {
 .ToolbarTR select {
     line-height: 25px;
     float: left;
+    height:28px;
 }
 .ToolbarTR a.btc { display: inline-block; height: 28px; line-height: 28px; padding: 0 10px; }
 
