@@ -1887,11 +1887,9 @@ input.excluded[type=checkbox]:checked + label:before {
     margin-top: 4px;
 }
 
-/* PPE 2 */
-
-textarea.pp-changelog {
-    width: 250px;
-    max-width: 300px;
+textarea.default-textarea {
+    width: 100%;
+    min-width: 300px;
     height: 150px;
 }
 
@@ -1905,25 +1903,6 @@ textarea.pp-changelog {
     padding: 2px;
     border: 1px solid rgb(187, 187, 187);
     background-color: #fff;
-}
-
-.pp-status-message {
-    width: 250px;
-}
-
-.pp-version {
-    width: 50px;
-}
-
-.pp-name {
-    font-weight: bold;
-}
-
-.pp-field-error {
-    width: 100%;
-    color: red;
-    font-style: italic;
-    display: block;
 }
 
 /* Vertical Tabs */
@@ -2000,5 +1979,4 @@ textarea.pp-changelog {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-
 }
