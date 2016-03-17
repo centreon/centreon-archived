@@ -79,10 +79,10 @@ function log_error($errno, $errstr, $errfile, $errline)
 }
 
 try {
-    $poller = $_POST['poller'];
+    $pollers = explode(',', $_POST['poller']);
 
     $ret = array();
-    $ret['host'] = $poller;
+    $ret['host'] = $pollers;
 
     chdir(_CENTREON_PATH_ . "www");
     $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/nagiosCFG/";
@@ -140,7 +140,7 @@ try {
     $localId = getLocalhostId();
 
     foreach ($tabs as $tab) {
-        if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
+        if (isset($ret["host"]) && ($ret["host"] == 0 || in_array($tab['id'], $ret["host"]))) {
             $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
         }
     }
@@ -159,7 +159,7 @@ try {
                 @copy($tmpFilename, $filenameToGenerate);
             }
         }
-        if (isset($poller) && ($poller == 0 || $poller == $host['id'])) {
+        if (isset($pollers) && ($pollers == 0 || in_array($host['id'], $pollers))) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
                 /*
                  * Check if monitoring engine's configuration directory existss

@@ -35,6 +35,10 @@
 
 class CentreonLocale
 {
+    /**
+     *
+     * @var type 
+     */
     protected $_db;
     
     /**
@@ -42,7 +46,8 @@ class CentreonLocale
      * 
      * @param CentreonDB $db
      */
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->_db = $db;
     }
 
@@ -51,10 +56,12 @@ class CentreonLocale
      *
      * @return array
      */
-    public function getLocaleList($aParams)
+    public function getLocaleList()
     {
-        $res = $this->_db->query("SELECT locale_id, locale_short_name, locale_long_name, locale_img
-                            FROM locale ORDER BY locale_short_name <> 'en', locale_short_name");
+        $res = $this->_db->query(
+            "SELECT locale_id, locale_short_name, locale_long_name, locale_img "
+            . "FROM locale ORDER BY locale_short_name <> 'en', locale_short_name"
+        );
         $list = array();
         while ($row = $res->fetchRow()) {
             $list[$row['locale_id']] = array(
@@ -63,7 +70,6 @@ class CentreonLocale
                 'locale_img' => _($row['locale_img'])
             );
         }
-
         return $list;
     }
 }

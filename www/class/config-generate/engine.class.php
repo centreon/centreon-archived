@@ -47,12 +47,10 @@ class Engine extends AbstractObject {
         log_file,
         object_cache_file,
         precached_object_file,
-        temp_path,
         status_file,
         check_result_path,
         use_check_result_path,
         max_check_result_file_age,
-        p1_file,
         status_update_interval,
         external_command_buffer_slots,
         command_check_interval,
@@ -76,7 +74,6 @@ class Engine extends AbstractObject {
         max_host_check_spread,
         check_result_reaper_frequency,
         max_check_result_reaper_time,
-        interval_length,
         auto_rescheduling_interval,
         auto_rescheduling_window,
         low_service_flap_threshold,
@@ -161,8 +158,6 @@ class Engine extends AbstractObject {
         free_child_process_memory,
         child_processes_fork_twice,
         enable_environment_macros,
-        enable_embedded_perl,
-        use_embedded_perl_implicitly,
         use_setpgid
     ';
     protected $attributes_write = array(
@@ -170,12 +165,10 @@ class Engine extends AbstractObject {
         'log_file',
         'object_cache_file',
         'precached_object_file',
-        'temp_path',
         'status_file',
         'check_result_path',
         'use_check_result_path', //cengine
         'max_check_result_file_age',
-        'p1_file', //cengine
         'status_update_interval',
         'external_command_buffer_slots',
         'command_check_interval',
@@ -199,7 +192,6 @@ class Engine extends AbstractObject {
         'max_host_check_spread',
         'check_result_reaper_frequency',
         'max_check_result_reaper_time',
-        'interval_length',
         'auto_rescheduling_interval',
         'auto_rescheduling_window',
         'low_service_flap_threshold',
@@ -285,16 +277,16 @@ class Engine extends AbstractObject {
         'free_child_process_memory',
         'child_processes_fork_twice',
         'enable_environment_macros',
-        'enable_embedded_perl',
-        'use_embedded_perl_implicitly',
         'use_setpgid', # cengine
     );
     protected $attributes_array = array(
         'cfg_file',
         'broker_module',
+        'interval_length',
     );
     protected $stmt_engine = null;
     protected $stmt_broker = null;
+    protected $stmt_interval_length = null;
     protected $add_cfg_files = array();
     
     private function buildCfgFile($poller_id) {
@@ -348,6 +340,18 @@ class Engine extends AbstractObject {
         $this->stmt_broker->execute();
         $this->engine['broker_module'] = $this->stmt_broker->fetchAll(PDO::FETCH_COLUMN);
     }
+
+    private function getIntervalLength() {
+        if (is_null($this->stmt_interval_length)) {
+            $this->stmt_interval_length = $this->backend_instance->db->prepare("SELECT
+				`value`
+                FROM options
+                WHERE `key` = 'interval_length'
+            ");
+        }
+        $this->stmt_interval_length->execute();
+        $this->engine['interval_length'] = $this->stmt_interval_length->fetchAll(PDO::FETCH_COLUMN);
+    }
     
     private function generate($poller_id) {
         if (is_null($this->stmt_engine)) {
@@ -367,6 +371,7 @@ class Engine extends AbstractObject {
         
         $this->buildCfgFile($poller_id);
         $this->getBrokerModules();
+        $this->getIntervalLength();
         
         $object = $this->engine;
         
@@ -382,8 +387,8 @@ class Engine extends AbstractObject {
         $object['global_service_event_handler'] = $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
         $object['ocsp_command'] = $command_instance->generateFromCommandId($object['ocsp_command_id']);
         $object['ochp_command'] = $command_instance->generateFromCommandId($object['ochp_command_id']);
-        $object['host_perfdata_command'] = $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
-        $object['service_perfdata_command'] = $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
+        $object['host_perfdata_command'] = $command_instance->generateFromCommandId($object['host_perfdata_command_id']);
+        $object['service_perfdata_command'] = $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
         $object['host_perfdata_file_processing_command'] = $command_instance->generateFromCommandId($object['host_perfdata_file_processing_command_id']);
         $object['service_perfdata_file_processing_command'] = $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
         

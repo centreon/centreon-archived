@@ -37,13 +37,6 @@ if (!isset($centreon)) {
 	exit();
 }
 
-/*
- * Connect to NDO database.
- */
-if ($centreon->broker->getBroker() == "ndo") {
-	$pearDBNdo = new CentreonDB("ndo");
-}
-
 include("./include/common/autoNumLimit.php");
 
 /*
@@ -56,7 +49,7 @@ $LCASearch = "";
 $search = '';
 if (isset($_POST['searchP']) && $_POST['searchP']) {
   $search = $_POST['searchP'];
-  $LCASearch = " AND name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
+  $LCASearch = " name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
 }
 
 /*
@@ -82,15 +75,13 @@ while ($info = $DBRESULT->fetchRow()) {
 $DBRESULT->free();
 
 /*
- * Get Nagios / Icinga / Shinken / Scheduler version
+ * Get Scheduler version
  */
-$pollerNumber = count($nagios_servers);
-if ($pollerNumber == 0) {
-	$pollerNumber = 1;
-}
-$DBRESULT = $pearDBO->query("SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances WHERE deleted = 0 LIMIT $pollerNumber");
+$DBRESULT = $pearDBO->query("SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances WHERE deleted = 0 ");
 while ($info = $DBRESULT->fetchRow()) {
-    $nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
+    if (isset($nagiosInfo[$info["instance_name"]])) {
+        $nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
+    }
 }
 $DBRESULT->free();
 
@@ -103,6 +94,9 @@ $tpl = initSmartyTpl($path, $tpl);
 /* Access level */
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
+$generatePageId = 60902;
+$tpl->assign('mode_generate', $centreon->user->access->page($generatePageId));
+
 
 /*
  * start header menu
@@ -122,11 +116,11 @@ $tpl->assign("headerMenu_default", _("Default"));
 $tpl->assign("headerMenu_options", _("Options"));
 
 /*
- * Nagios list
+ * Poller list
  */
+$ACLString = $centreon->user->access->queryBuilder('WHERE', 'id', $pollerstring);
 $rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default
-       FROM `nagios_server` ". $centreon->user->access->queryBuilder('WHERE', 'id', $pollerstring)." $LCASearch ".
-       " ORDER BY name
+       FROM `nagios_server` ".$ACLString." ".($LCASearch != '' ? ($ACLString != "" ? "AND " : "WHERE " ).$LCASearch : "")." ORDER BY name
        LIMIT ".$num * $limit.", ".$limit;
 $DBRESULT = $pearDB->query($rq);
 
@@ -148,7 +142,7 @@ $style = "one";
 $elemArr = array();
 for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 	$moptions = "";
-	$selectedElements = $form->addElement('checkbox', "select[".$config['id']."]");
+	$selectedElements = $form->addElement('checkbox', "select[".$config['id']."]", null, '', array('id' => 'poller_' . $config['id']));
 	if ($config["ns_activate"]) {
 		$moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>";
 	} else {
@@ -219,6 +213,17 @@ $tpl->assign("notice", _("Only services and hosts are taken in account in order 
 $tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 
 /*
+$tpl->assign(
+    'applyConfiguration',
+    array(
+        "link" => "?p=60902",
+        "label" => _("Apply configuration"),
+        "js" => "console.log('toto');"
+    )
+);
+*/
+
+/*
  * Toolbar select
  */
 ?>
@@ -244,6 +249,9 @@ $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_
 $form->setDefaults(array('o1' => NULL));
 $o1 = $form->getElement('o1');
 $o1->setValue(NULL);
+
+# Apply configuration button
+$form->addElement('button', 'apply_configuration', _("Apply configuration"), array('onClick' => 'applyConfiguration();', 'class' => 'btc bt_info'));
 
 $attrs = array(
 	'onchange'=>"javascript: " .

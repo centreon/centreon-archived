@@ -1,2 +1,0 @@
-# centstorage command line options
-OPTIONS="--logfile=@CENTREON_LOG@/centstorage.log --severity=error --config=@CENTREON_ETC@/conf.pm"

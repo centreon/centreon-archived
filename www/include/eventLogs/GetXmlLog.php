@@ -428,6 +428,7 @@ foreach ($tab_id as $openid) {
     }else if(isset($tab_tmp[1])){
         $id = $tab_tmp[1];
     }
+
     if ($id == "") {
         continue;
     }
@@ -482,9 +483,10 @@ foreach ($tab_id as $openid) {
 // Build final request
 $req = "SELECT SQL_CALC_FOUND_ROWS DISTINCT logs.* FROM logs ".$innerJoinEngineLog.
     ((!$is_admin) ? 
-     " inner join centreon_acl acl on ((logs.host_id = acl.host_id AND logs.service_id IS NULL) OR "
-    . " (logs.host_id = acl.host_id AND acl.service_id = logs.service_id))" : "") 
-    . " WHERE logs.ctime > '$start' AND logs.ctime <= '$end' $whereOutput $msg_req";
+    " inner join centreon_acl acl on ((logs.host_id = acl.host_id AND logs.service_id IS NULL) OR "
+    . " (logs.host_id = acl.host_id AND acl.service_id = logs.service_id)) " 
+    . " WHERE acl.group_id IN (".$access->getAccessGroupsString().") AND " : "WHERE ")
+    . " logs.ctime > '$start' AND logs.ctime <= '$end' $whereOutput $msg_req";
 
 /*
  * Add Host
@@ -502,7 +504,6 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
             $str_unitH .= $str_unitH_append . "'$host_id'";
             $str_unitH_append = ", ";
         }
-
     }
     if ($str_unitH != "") {
 
@@ -518,7 +519,7 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     $flag = 0;
     $str_unitSVC = "";
     $service_search_sql = "";
-    if (count($tab_svc) > 0 && ($up == 'true' || $down == 'true' || $unreachable == 'true' || $ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
+    if ((count($tab_svc) || count($tab_host_ids)) && ($up == 'true' || $down == 'true' || $unreachable == 'true' || $ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
         $req_append = "";
         foreach ($tab_svc as $host_id => $services) {
             $str = "";
@@ -545,9 +546,8 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
         }
     } else {
         $req .= "AND 0 ";
-    }    
+    }
     $req .= $host_search_sql . $service_search_sql;
-    
 }
 
 /*

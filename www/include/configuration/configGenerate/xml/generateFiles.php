@@ -74,13 +74,13 @@ $pearDB = new CentreonDB();
 
 $config_generate = new Generate();
 
-$poller = $_POST['poller'];
+$pollers = explode(',', $_POST['poller']);
 $comment = ($_POST['comment'] == "true") ? 1 : 0;
 $debug = ($_POST['debug'] == "true") ? 1 : 0;
 $generate = ($_POST['generate'] == "true") ? 1 : 0;
 
 $ret = array();
-$ret['host'] = $poller;
+$ret['host'] = $pollers;
 $ret['comment'] = $comment;
 $ret['debug'] = $debug;
 
@@ -106,10 +106,13 @@ try {
     $cgObj->syncWithLdap();
 
     # Generate configuration
-    if ($poller == '0') {
+    if ($pollers == '0') {
         $config_generate->configPollers();
     } else {
-        $config_generate->configPollerFromId($poller);
+        foreach ($pollers as $poller) {
+            $config_generate->reset();
+            $config_generate->configPollerFromId($poller);
+        }
     }
 
     # Debug configuration
@@ -192,7 +195,7 @@ function printDebug($xml, $tabs)
 
     $tab_server = array();
     foreach ($tabs as $tab) {
-        if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
+        if (isset($ret["host"]) && ($ret["host"] == 0 || in_array($tab['id'], $ret["host"]))) {
             $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
         }
     }

@@ -569,10 +569,7 @@ class CentreonTraps
                 break;
             case 'service_templates':
                 $parameters['type'] = 'relation';
-                $parameters['externalObject']['table'] = 'service';
-                $parameters['externalObject']['id'] = 'service_id';
-                $parameters['externalObject']['name'] = 'service_description';
-                $parameters['externalObject']['comparator'] = 'service_id';
+                $parameters['externalObject']['object'] = 'centreonServicetemplates';
                 $parameters['relationObject']['table'] = 'traps_service_relation';
                 $parameters['relationObject']['field'] = 'service_id';
                 $parameters['relationObject']['comparator'] = 'traps_id';

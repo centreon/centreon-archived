@@ -362,6 +362,7 @@ sub sendExternalCommand($$){
                 foreach my $cmd1 (split(/\n/, $cmd)) {
                     if ($count >= 200) {
                         $cmd2 = "$self->{echo} \"".$cmd_line."\" >> ".$command_file;
+                        $self->{logger}->writeLogInfo("External command on Central Server: ($id) : \"".$cmd_line."\"");
                         ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
                         $cmd_line = "";
                         $count = 0;
@@ -372,6 +373,7 @@ sub sendExternalCommand($$){
                 }
                 if ($count gt 0) {
                     $cmd2 = "$self->{echo} \"".$cmd_line."\" >> ".$command_file;
+                    $self->{logger}->writeLogInfo("External command on Central Server: ($id) : \"".$cmd_line."\"");
                     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
                     $cmd_line = "";
                     $count = 0;
@@ -390,6 +392,7 @@ sub sendExternalCommand($$){
             foreach my $cmd1 (split(/\n/, $cmd)) {
                 if ($count >= 200) {
                     $cmd2 = "$self->{ssh} -q ". $server_info->{ns_ip_address} ." -p $port \"$self->{echo} '".$cmd_line."' >> ".$command_file."\"";
+                    $self->{logger}->writeLogInfo("External command : ".$server_info->{ns_ip_address}." ($id) : \"".$cmd_line."\"");
                     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
                     $cmd_line = "";
                     $count = 0;
@@ -400,12 +403,11 @@ sub sendExternalCommand($$){
             }
             if ($count gt 0) {
                 $cmd2 = "$self->{ssh} -q ". $server_info->{ns_ip_address} ." -p $port \"$self->{echo} '".$cmd_line."' >> ".$command_file."\"";
+                $self->{logger}->writeLogInfo("External command : ".$server_info->{ns_ip_address}." ($id) : \"".$cmd_line."\"");
                 ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
                 $cmd_line = "";
                 $count = 0;
             } 
-
-            ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
             if ($lerror == -1) {
                 $self->{logger}->writeLogError("Could not write into pipe file ".$command_file." on poller ".$id);
             }

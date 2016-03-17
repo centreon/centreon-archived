@@ -156,7 +156,6 @@
 	$form->addElement('text', 'object_cache_file', _("Object Cache File"), $attrsText2);
 	$form->addElement('text', 'precached_object_file', _("Precached Object File"), $attrsText2);
 	$form->addElement('text', 'temp_file', _("Temp File"), $attrsText2);
-	$form->addElement('text', 'temp_path', _("Temp directory"), $attrsText2);
 	$form->addElement('text', 'check_result_path', _("Check result directory"), $attrsText2);
 	$form->addElement('text', 'max_check_result_file_age', _("Max Check Result File Age"), $attrsText3);
 
@@ -600,20 +599,6 @@
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_setpgid', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'use_setpgid', _("Use setpgid"), '&nbsp;');
 
-	$nagTab = array();
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("Yes"), '1');
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("No"), '0');
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("Default"), '2');
-	$form->addGroup($nagTab, 'enable_embedded_perl', _("Enable embedded Perl"), '&nbsp;');
-
-	$nagTab = array();
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("Yes"), '1');
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("No"), '0');
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("Default"), '2');
-	$form->addGroup($nagTab, 'use_embedded_perl_implicitly', _("Use embedded Perl implicitly"), '&nbsp;');
-
-	$form->addElement('text', 'p1_file', _("Embedded Perl initialisation file"), $attrsText2);
-
 	/* ****************************************************
 	 * Debug
 	 */
@@ -796,7 +781,6 @@
 		$tpl->assign('ServiceCheckSchedulingOptions', _("Service Check Scheduling Options"));
 		$tpl->assign('AutoRescheduling', _("Auto Rescheduling"));
 		$tpl->assign('Optimization', _("Optimization"));
-		$tpl->assign('Perl', _("Perl"));
 		$tpl->assign('DebugConfiguration', _("Debug Configuration"));
 		$tpl->assign('Debug', _("Debug"));
 		$tpl->assign("Seconds", _("seconds"));

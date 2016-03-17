@@ -49,6 +49,11 @@ function microtime_float2() {
 function getFilteredPollers($host, $acl_group_id, $res_id) {
     global $pearDB, $hostCache;
 
+    $request = "SELECT COUNT(*) AS count FROM acl_resources_poller_relations WHERE acl_res_id = '".$res_id."'";
+	$DBRESULT = $pearDB->query($request);
+	$row = $DBRESULT->fetchRow();
+	$isPollerFilter = $row['count'];
+
     $hostTmp = $host;
     $request = "SELECT host_host_id " .
             "FROM acl_resources_poller_relations, acl_res_group_relations, acl_resources, ns_host_relation " .
@@ -59,14 +64,20 @@ function getFilteredPollers($host, $acl_group_id, $res_id) {
             "AND ns_host_relation.nagios_server_id = acl_resources_poller_relations.poller_id " .
             "AND acl_res_activate = '1'";
     $DBRESULT = $pearDB->query($request);
+
     if ($DBRESULT->numRows()) {
         $host = array();
-    }
-    while ($row = $DBRESULT->fetchRow()) {
-        if (isset($hostTmp[$row['host_host_id']])) {
-            $host[$row['host_host_id']] = $hostCache[$row['host_host_id']];
-        }
-    }
+		while ($row = $DBRESULT->fetchRow()) {
+			if (isset($hostTmp[$row['host_host_id']])) {
+				$host[$row['host_host_id']] = $hostCache[$row['host_host_id']];
+			}
+		}
+    } else {
+		# If result of query is empty and user have poller restriction, clean host table.
+		if ($isPollerFilter) {
+			$host = array();
+		}
+	}
     return $host;
 }
 

@@ -1,0 +1,24 @@
+default:
+  extensions:
+    Behat\MinkExtension:
+      base_url: http://127.0.0.1/centreon
+      sessions:
+        default:
+          selenium2: ~
+  suites:
+    generate_poller_features:
+      paths: [ %paths.base%/features/GeneratePoller.feature ]
+      contexts:
+        - GeneratePollerContext
+    pagination_select2:
+      paths: [ %paths.base%/features/PaginationSelect2.feature ]
+      contexts:
+        - PaginationSelect2Context
+    save_search_select2:
+      paths: [ %paths.base%/features/SaveSearchSelect2.feature ]
+      contexts:
+        - SaveSearchSelect2Context
+    select_all_select2:
+      paths: [ %paths.base%/features/SelectAllSelect2.feature ]
+      contexts:
+        - SelectAllSelect2Context

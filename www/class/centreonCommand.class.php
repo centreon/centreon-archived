@@ -45,11 +45,11 @@ class CentreonCommand
     public $aTypeCommand = array(
             'host'    => array(
                 'key' => '$_HOST', 
-                'preg' => '/\$_HOST(\w+)\$/'
+                'preg' => '/\$_HOST([\w_-]+)\$/'
             ),
             'service' => array(
                 'key' => '$_SERVICE', 
-                'preg' => '/\$_SERVICE(\w+)\$/'
+                'preg' => '/\$_SERVICE([\w_-]+)\$/'
             ),
         );
     
@@ -318,4 +318,32 @@ class CentreonCommand
 
         return $items;
     }
+    
+    /**
+     * Returns command details
+     * 
+     * @param int $id
+     * @return array
+     */
+    public function getParameters($id, $parameters = array())
+    {
+        $sElement = "*";
+        $arr = array();
+        if (empty($id)) {
+            return array();
+        }
+        if (count($parameters) > 0) {
+            $sElement = implode(",", $parameters);
+        }
+
+        $res = $this->_db->query("SELECT ".$sElement." FROM command 
+                WHERE command_id = ".$this->_db->escape($id));
+        
+        if ($res->numRows()) {
+            $arr = $res->fetchRow();
+        }
+
+        return $arr;
+    }
+    
 }

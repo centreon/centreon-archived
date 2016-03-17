@@ -5,44 +5,37 @@
     <form {$form.attributes}>
         <table class="ajaxOption table">
             <tr>
-                 <td> <h4>{$form.host_selector.label}</h4></td>
-                 <td></td>
+              <th><h5>{t}Filters{/t}</h5></th>
+            </tr>
+            <tr>
+                 <td><h4>{$form.host_selector.label}</h4></td>
+                 <td><h4>{$form.metaservice_selector.label}</h4></td>
                  <td><h4>{$from}</h4></td>
-                 <td> <h4>{$form.period.label}</h4></td>
-
+                 <td><h4>{$form.period.label}</h4></td>
             </tr>
             <tr>
                 <td>{$form.host_selector.html}</td>
-                <td></td>
+                <td>{$form.metaservice_selector.html}</td>
                 <td>{$form.StartDate.html} {$form.StartTime.html}</td>
                 <td>{$form.period.html}</td>
             </tr>
             <tr>
                 <td><h4>{$form.service_selector.label}</h4></td>
-                <td><h4>{$form.metaservice_selector.label}</h4></td>
+                <td><h4>{$displayStatus}</h4></td>
                 <td><h4>{$to}</h4></td>
                 <td></td>
             </tr>
             <tr>
                 <td>{$form.service_selector.html}</td>
-                <td>{$form.metaservice_selector.html}</td>
+                <td><input type="checkbox" name="displayStatus" id="displayStatus" /></td>
                 <td>{$form.EndDate.html} {$form.EndTime.html}</td>
                 <td>{$form.graph.html}</td>
             </tr>
         </table>
     </form>
     <div id="graphs" class="graph_content">
-
-
         <div id="StatusAction">
-
              <div id="graph_pagination">
-
-                <div class="displayStatus">
-					<input type="checkbox" name="displayStatus" id="displayStatus" />
-                    <label for="displayStatus">{t}Display Status{/t}</label>
-                </div>
-
                 <!-- optional left control buttons -->
                 <div id="test1_m_left"></div><div id="test1_o_left"></div>
 
@@ -53,18 +46,13 @@
                 <!-- optional right control buttons -->
                 <div id="test1_o_right"></div><div id="test1_m_right"></div>
 
-
                 <!-- slider -->
                 <div class='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all slider'>
                     <a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>
                 </div>
-
-              </div>
-
+            </div>
          </div>
-
         <div class="graphZone"></div>
-        
         <div id="StatusAction2">
 
             <div id="graph_pagination2">
@@ -87,6 +75,5 @@
 
             </div>
         </div>
-
     </div>
 </div>
