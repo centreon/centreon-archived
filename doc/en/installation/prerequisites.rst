@@ -4,11 +4,10 @@ Prerequisites
 
 The Centreon web interface is compatible with the following list of web broswer:
 
-* Internet Explorer IE 11+ 
-* Firefox 41+ 
-* Chrome 39+ 
-* Safari 6+
-* Opera 31+ 
+* Chrome (latest version)
+* Firefox (latest version)
+* Internet Explorer IE 11 (latest version)
+* Safari (latest version)
 
 Your screen resolution must be at least 1280 x 768.
 
@@ -21,17 +20,17 @@ Operating System
 
 If you **use CES v3.x the operating system will be CentOS v6**. If you prefer to use
 **Red Hat OS** you must install it in **v6 version**. Else you can use another GNU/Linux
-operating system but installation will be more complex and realised using software 
+operating system but installation will be more complex and realised using software
 sources.
 
 DBMS
 ====
 
-**Centreon advises you to use MariaDB** instead of MySQL. 
+**Centreon advises you to use MariaDB** instead of MySQL.
 
 +----------+-----------+
 | Software | Version   |
-+==========+===========+ 
++==========+===========+
 | MariaDB  | >= 5.5.35 |
 +----------+-----------+
 | MySQL    | >= 5.1.73 |
@@ -159,4 +158,3 @@ Files system description:
 * /var/log (at least 10 GB)
 * /var/lib/centreon-broker (at least 5 GB)
 * /var/backup (use to backup you server)
-
