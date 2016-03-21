@@ -72,8 +72,9 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
         $this->_jsCallback = '';
         $this->_allowClear = false;
         $this->_pagination = $centreon->optGen['selectPaginationSize'];
-        $this->HTML_QuickForm_select2($elementName, $elementLabel, $options, $attributes);
         $this->parseCustomAttributes($attributes);
+        $this->HTML_QuickForm_select2($elementName, $elementLabel, $options, $attributes);
+        
     }
     
    
