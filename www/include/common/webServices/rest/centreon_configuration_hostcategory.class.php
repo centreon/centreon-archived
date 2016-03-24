@@ -73,6 +73,17 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
             $acl = new CentreonACL($userId, $isAdmin);
             $aclHostcategories .= 'AND hc.hc_id IN (' . $acl->getHostCategoriesString('ID') . ') ';
         }
+		/*
+		 * Check for select2 't' argument
+		 * 'a' or empty = category and severitiy
+		 * 'c' = catagory only
+		 * 's' = severity only
+		 */
+		if (false === isset($this->arguments['t'])) {
+			$t = '';
+		} else {
+			$t = $this->arguments['t'];
+		}
         
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
@@ -91,8 +102,14 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         $queryHostcategory = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hc.hc_name, hc.hc_id "
             . "FROM hostcategories hc "
             . "WHERE hc.hc_name LIKE '%$q%' "
-            . $aclHostcategories
-            . "ORDER BY hc.hc_name "
+            . $aclHostcategories;
+		if (!empty($t) && $t == 'c') {
+			$queryHostcategory .= "AND level IS NULL ";
+		}
+		if (!empty($t) && $t == 's') {
+			$queryHostcategory .= "AND level IS NOT NULL ";
+		}
+		$queryHostcategory .= "ORDER BY hc.hc_name "
             . $range;
         
         $DBRESULT = $this->pearDB->query($queryHostcategory);
