@@ -32,6 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
+    
     require_once $centreon_path . "www/autoloader.php";
     
     // Adding requirements
@@ -116,6 +117,7 @@
     $tpl->assign('loginMessages', $loginMessages);
     $tpl->assign('centreonVersion','v. '.$release['value']);
     $tpl->assign('currentDate', date("d/m/Y"));
+    $tpl->assign('copyrightend', date("Y"));
     
     // Applying and Displaying template
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
