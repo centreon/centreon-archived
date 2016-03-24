@@ -65,7 +65,7 @@ class CentreonConfigurationContact extends CentreonConfigurationObjects
         $filterContact = array('contact_register' => '1');
         if (isset($this->arguments['q'])) {
             $filterContact['contact_name'] = array('LIKE', '%' . $this->arguments['q'] . '%');
-            $filterContact['contact_alias'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+            $filterContact['contact_alias'] = array('OR', 'LIKE', '%' . $this->arguments['q'] . '%');
         } 
 
         $acl = new CentreonACL($centreon->user->user_id);
