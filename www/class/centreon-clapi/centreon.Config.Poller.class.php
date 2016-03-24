@@ -409,31 +409,32 @@ class CentreonConfigPoller {
 
         /* Change files owner */
         $apacheUser = $this->getApacheUser();
+        $centreonGroup = $this->getCentreonGroup();
 
         $setFilesOwner = 1;
-        if ($apacheUser != "") {
+        if ($apacheUser != "" && $centreonGroup != "") {
     	    
             /* Change engine Path mod */
     	    chown($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id", $apacheUser);
-            chgrp($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id", $apacheUser);
+            chgrp($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id", $centreonGroup);
     
 	        foreach (glob($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id/*.cfg") as $file) {
 	           chown($file, $apacheUser);
-	           chgrp($file, $apacheUser);
+	           chgrp($file, $centreonGroup);
             }
 
 	        foreach (glob($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id/*.DEBUG") as $file) {
 	           chown($file, $apacheUser);
-	           chgrp($file, $apacheUser);
+	           chgrp($file, $centreonGroup);
             }
 
 	        /* Change broker Path mod */
 	        chown($this->centreon_path."/filesGeneration/broker/$poller_id", $apacheUser);
-	        chgrp($this->centreon_path."/filesGeneration/broker/$poller_id", $apacheUser);
+	        chgrp($this->centreon_path."/filesGeneration/broker/$poller_id", $centreonGroup);
 	    
             foreach (glob($this->centreon_path."/filesGeneration/broker/$poller_id/*.xml") as $file) {
 	           chown($file, $apacheUser);
-	           chgrp($file, $apacheUser);
+	           chgrp($file, $centreonGroup);
             }
         } else {
             $setFilesOwner = 0;
@@ -500,14 +501,14 @@ class CentreonConfigPoller {
             }
 
             /* Change files owner */
-            if ($apacheUser != "") {
+            if ($apacheUser != "" && $centreonGroup != "") {
                 foreach (glob($Nagioscfg["cfg_dir"]."/*.cfg") as $file) {
                     chown($file, $apacheUser);
-		            chgrp($file, $apacheUser);
+		            chgrp($file, $centreonGroup);
                 }
                 foreach (glob($Nagioscfg["cfg_dir"]."/*.DEBUG") as $file) {
                     chown($file, $apacheUser);
-		            chgrp($file, $apacheUser);
+		            chgrp($file, $centreonGroup);
                 }
             } else {
                 print "Please check that files in the followings directory are writable by apache user : ".$Nagioscfg["cfg_dir"]."\n";
@@ -535,10 +536,10 @@ class CentreonConfigPoller {
                 }
 
                 /* Change files owner */
-                if ($apacheUser != "") {
+                if ($apacheUser != "" && $centreonGroup != "") {
                     foreach (glob(rtrim($centreonBrokerDirCfg, "/") . "/" . "/*.xml") as $file) {
                         chown($file, $apacheUser);
-		    	chgrp($file, $apacheUser);
+		    	chgrp($file, $centreonGroup);
                     }
                 } else {
                     print "Please check that files in the followings directory are writable by apache user : ".rtrim($centreonBrokerDirCfg, "/")."/\n";
@@ -558,6 +559,33 @@ class CentreonConfigPoller {
         print $msg_copy."\n";
         return $return;
     }
+    /**
+     * Get Centreon group to set file access
+     *
+     * @return string
+     */
+     function getCentreonGroup() {
+        /* Change files owner */
+        $setFilesOwner = 1;
+        $installFile = "/etc/centreon/instCentWeb.conf";
+
+        if (file_exists($installFile)) {
+                $stream = file_get_contents($installFile);
+                $lines = preg_split("/\n/", $stream);
+                foreach ($lines as $line) {
+                   if (preg_match('/CENTREON\_GROUP\=([a-zA-Z\_\-]*)/', $line, $tabUser)) {
+                       if (isset($tabUser[1])) {
+                       return $tabUser[1];
+                   } else {
+                       return "";
+                   }
+                   }
+                }
+        } else {
+               return "";
+        }
+    }
+
 
     /**
      * Get apache user to set file access
