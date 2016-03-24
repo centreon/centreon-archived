@@ -42,6 +42,7 @@ abstract class AbstractService extends AbstractObject {
         service_stalking_options as stalking_options,
         service_register as register,
         service_inherit_contacts_from_host,
+        service_use_only_contacts_from_host,
         esi_notes as notes,
         esi_notes_url as notes_url,
         esi_action_url as action_url,

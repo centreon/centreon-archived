@@ -127,8 +127,9 @@
           </td>
         </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notifications_enabled"> {$form.service_notifications_enabled.label}</td><td class="FormRowValue">{$form.service_notifications_enabled.html}</td></tr>
-		{if !$isServiceTemplate}
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="inherit_contacts_from_host"> {$form.service_inherit_contacts_from_host.label}</td><td class="FormRowValue">{$form.service_inherit_contacts_from_host.html}</td></tr>
+                {if !$isServiceTemplate}
+                    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="use_only_contacts_from_host"> {$form.service_use_only_contacts_from_host.label}</td><td class="FormRowValue">{$form.service_use_only_contacts_from_host.html}</td></tr>
+                    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="inherit_contacts_from_host"> {$form.service_inherit_contacts_from_host.label}</td><td class="FormRowValue">{$form.service_inherit_contacts_from_host.html}</td></tr>
 		{/if}
 		{if $o == "mc"}
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cgs.label}</td><td class="FormRowValue">{$form.mc_mod_cgs.html}</td></tr>
@@ -535,8 +536,21 @@ jQuery(function() {
            tolerance: "pointer"
         }
     );
-
-
+    
+    function bindInhertance()
+    {
+        if (jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']:checked").val() == "0") {
+            jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").attr('disabled', 'disabled').removeAttr('checked');
+        } else {
+            jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").removeAttr('disabled');
+        }
+    }
+    
+    bindInhertance();
+    jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']").on('click',function(){
+        bindInhertance();
+    });
+    
 });
 
 {/literal}

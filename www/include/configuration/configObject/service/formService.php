@@ -595,6 +595,17 @@ if ($o == "mc") {
 
 
 ##
+## Use only contacts/contacts group of host and host template
+##
+$form->addElement('header', 'use_only_contacts_from_host', _("Inherit only contacts/contacts group from host"));
+$serviceIOHC[] = HTML_QuickForm::createElement('radio', 'service_use_only_contacts_from_host', null, _("Yes"), '1');
+$serviceIOHC[] = HTML_QuickForm::createElement('radio', 'service_use_only_contacts_from_host', null, _("No"), '0');
+$form->addGroup($serviceIOHC, 'service_use_only_contacts_from_host', _("Inherit only contacts/contacts group from host"), '&nbsp;');
+if ($o != "mc") {
+    $form->setDefaults(array('service_use_only_contacts_from_host' => '0'));
+}
+
+##
 ## Host's contact inheritance
 ##
 $form->addElement('header', 'inherit_contacts_from_host', _("Inherit contacts from host"));
