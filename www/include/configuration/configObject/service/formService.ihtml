@@ -539,7 +539,7 @@ jQuery(function() {
     
     function bindInhertance()
     {
-        if (jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']:checked").val() == "0") {
+        if (jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']:checked").val() == "1") {
             jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").attr('disabled', 'disabled').removeAttr('checked');
         } else {
             jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").removeAttr('disabled');

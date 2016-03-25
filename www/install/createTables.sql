@@ -1917,6 +1917,7 @@ CREATE TABLE `service` (
   `contact_additive_inheritance` boolean DEFAULT 0,
   `cg_additive_inheritance` boolean DEFAULT 0,
   `service_inherit_contacts_from_host` enum('0','1') DEFAULT '1',
+  `service_use_only_contacts_from_host` enum('0','1') DEFAULT '0',
   `service_first_notification_delay` int(11) DEFAULT NULL,
   `service_stalking_options` varchar(200) DEFAULT NULL,
   `service_comment` text,

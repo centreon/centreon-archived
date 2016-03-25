@@ -123,44 +123,53 @@ abstract class AbstractService extends AbstractObject {
         $service['use'] = array(ServiceTemplate::getInstance()->generateFromServiceId($service['service_template_model_stm_id']));
     }
     
-    protected function getContacts(&$service) {        
-        $contact = Contact::getInstance();
-        $service['contacts_cache'] = &$contact->getContactForService($service['service_id']);
-        $contact_result = '';
-        $contact_result_append = '';
-        foreach ($service['contacts_cache'] as $contact_id) {
-            $tmp = $contact->generateFromContactId($contact_id);
-            if (!is_null($tmp)) {
-                $contact_result .= $contact_result_append . $tmp;
-                $contact_result_append = ',';
+    protected function getContacts(&$service) {
+        if (!is_null($service['service_use_only_contacts_from_host']) && $service['service_use_only_contacts_from_host'] == '1' ){
+            $service['contacts'] = "";
+        } else {
+            $contact = Contact::getInstance();
+            $service['contacts_cache'] = &$contact->getContactForService($service['service_id']);
+            $contact_result = '';
+            $contact_result_append = '';
+            foreach ($service['contacts_cache'] as $contact_id) {
+                $tmp = $contact->generateFromContactId($contact_id);
+                if (!is_null($tmp)) {
+                    $contact_result .= $contact_result_append . $tmp;
+                    $contact_result_append = ',';
+                }
             }
-        }
-        
-        if ($contact_result != '') {
-            $service['contacts'] = $contact_result;
-            if (!is_null($service['contact_additive_inheritance']) && $service['contact_additive_inheritance'] == 1) {
-                $service['contacts'] = '+' . $service['contacts'];
+
+            if ($contact_result != '') {
+                $service['contacts'] = $contact_result;
+                if (!is_null($service['contact_additive_inheritance']) && $service['contact_additive_inheritance'] == 1) {
+                    $service['contacts'] = '+' . $service['contacts'];
+                }
             }
         }
     }
     
-    protected function getContactGroups(&$service) {        
-        $cg = Contactgroup::getInstance();
-        $service['contact_groups_cache'] = &$cg->getCgForService($service['service_id']);
-        $cg_result = '';
-        $cg_result_append = '';
-        foreach ($service['contact_groups_cache'] as $cg_id) {
-            $tmp = $cg->generateFromCgId($cg_id);
-            if (!is_null($tmp)) {
-                $cg_result .= $cg_result_append . $tmp;
-                $cg_result_append = ',';
+    protected function getContactGroups(&$service)
+    {
+        if (!is_null($service['service_use_only_contacts_from_host']) && $service['service_use_only_contacts_from_host'] == '1' ){
+            $service['contact_groups'] = "";
+        } else {
+            $cg = Contactgroup::getInstance();
+            $service['contact_groups_cache'] = &$cg->getCgForService($service['service_id']);
+            $cg_result = '';
+            $cg_result_append = '';
+            foreach ($service['contact_groups_cache'] as $cg_id) {
+                $tmp = $cg->generateFromCgId($cg_id);
+                if (!is_null($tmp)) {
+                    $cg_result .= $cg_result_append . $tmp;
+                    $cg_result_append = ',';
+                }
             }
-        }
-        
-        if ($cg_result != '') {
-            $service['contact_groups'] = $cg_result;
-            if (!is_null($service['cg_additive_inheritance']) && $service['cg_additive_inheritance'] == 1) {
-                $service['contact_groups'] = '+' . $service['contact_groups'];
+
+            if ($cg_result != '') {
+                $service['contact_groups'] = $cg_result;
+                if (!is_null($service['cg_additive_inheritance']) && $service['cg_additive_inheritance'] == 1) {
+                    $service['contact_groups'] = '+' . $service['contact_groups'];
+                }
             }
         }
     }
