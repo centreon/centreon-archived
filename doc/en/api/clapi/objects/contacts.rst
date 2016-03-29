@@ -93,7 +93,8 @@ If you want to change a specific parameter for a contact, use the **SETPARAM** a
 
   [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;hostnotifcmd;command name" 
   [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;svcnotifcmd;command name" 
-  root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;hostnotifperiod;period name" 
+  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;hostnotifperiod;period name"
+  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setparam -v "contact alias;timezone;Europe/Berlin"
 
 The required parameters are the following:
 
