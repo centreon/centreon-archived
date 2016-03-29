@@ -80,7 +80,7 @@ class CentreonHost extends CentreonObject {
     const MISSING_INSTANCE = "Instance name is mandatory";
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
     const UNKNOWN_TIMEZONE = "Invalid timezone";
-    const HOST_LOCATION = "location";
+    const HOST_LOCATION = "timezone";
     
     /**
      *
@@ -155,8 +155,7 @@ class CentreonHost extends CentreonObject {
                 "timeperiod_tp_id2" => "notification_period",
                 "command_command_id_arg1" => "check_command_arguments",
                 "command_command_id_arg2" => "event_handler_arguments",
-                'host_location' => self::HOST_LOCATION
-           );
+                "host_location" => self::HOST_LOCATION);
         }
         if (preg_match("/^ehi_/", $columnName)) {
             return substr($columnName, strlen("ehi_"));
