@@ -162,6 +162,8 @@ enable_notifications	   *1* when notification is enable, *0* otherwise
 autologin_key	           Used for auto login
 
 template	           Name of the template to apply to the contact
+
+timezone                   Timezone
 ========================== ============================================================================================
 
 .. note::
