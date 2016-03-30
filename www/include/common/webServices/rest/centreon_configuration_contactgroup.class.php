@@ -68,7 +68,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
         $ldapFilter = '';
         if (isset($this->arguments['q'])) {
             $filterContactgroup['cg_name'] = array('LIKE', '%' . $this->arguments['q'] . '%');
-            $filterContactgroup['cg_alias'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+            $filterContactgroup['cg_alias'] = array('OR', 'LIKE', '%' . $this->arguments['q'] . '%');
             $ldapFilter = $this->arguments['q'];
         }
 

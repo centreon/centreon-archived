@@ -411,7 +411,7 @@ $attrServicegroups = array(
 );
 $attrServicecategories = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory&action=list',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory&action=list&t=c',
     'multiple' => true,
     'linkedObject' => 'centreonServicecategories'
 );
