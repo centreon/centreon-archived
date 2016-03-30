@@ -32,6 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
+
     require_once $centreon_path . "www/autoloader.php";
     
     // Adding requirements
@@ -47,23 +48,23 @@
      * Set login messages (errors)
      */
     $loginMessages = array();
-    if (isset($msg_error)) {
-        $loginMessages[] = $msg_error;
-    } elseif (isset($_POST["centreon_token"])) {
-        $loginMessages[] = _('Your credentials are incorrect.');
-    }
+if (isset($msg_error)) {
+    $loginMessages[] = $msg_error;
+} elseif (isset($_POST["centreon_token"])) {
+    $loginMessages[] = _('Your credentials are incorrect.');
+}
     
-    if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2) {
-        $loginMessages[] = _('Your session is expired.');
-    }
+if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2) {
+    $loginMessages[] = _('Your session is expired.');
+}
     
-    if ($file_install_acces) {
-        $loginMessages[] = $error_msg;
-    }
+if ($file_install_acces) {
+    $loginMessages[] = $error_msg;
+}
     
-    if (isset($msg) && $msg) {
-        $loginMessages[] = $msg;
-    }
+if (isset($msg) && $msg) {
+    $loginMessages[] = $msg;
+}
     
     /**
      * Getting Centreon Version
@@ -84,10 +85,10 @@
     /**
      * Adding hidden value
      */
-    if (isset($_GET['p'])) {
-        $pageElement = $form->addElement('hidden', 'p');
-        $pageElement->setValue($_GET['p']);
-    }
+if (isset($_GET['p'])) {
+    $pageElement = $form->addElement('hidden', 'p');
+    $pageElement->setValue($_GET['p']);
+}
     
     /**
      * Adding validation rule
@@ -98,23 +99,23 @@
     /**
      * Form parameters
      */
-    if (isset($freeze) && $freeze) {
-        $form->freeze();
-    }
-    if ($file_install_acces) {
-        $submitLogin->freeze();
-    }
+if (isset($freeze) && $freeze) {
+    $form->freeze();
+}
+if ($file_install_acces) {
+    $submitLogin->freeze();
+}
     
     /*
 	 * Smarty template Init
 	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
+    $tpl = new Smarty();
+    $tpl = initSmartyTpl($path, $tpl);
     
     // Initializing variables
     $tpl->assign('skin', $skin);
     $tpl->assign('loginMessages', $loginMessages);
-    $tpl->assign('centreonVersion','v. '.$release['value']);
+    $tpl->assign('centreonVersion', 'v. '.$release['value']);
     $tpl->assign('currentDate', date("d/m/Y"));
     
     // Applying and Displaying template
