@@ -587,7 +587,7 @@ class CentreonAPI {
              * Check class declaration
              */
             if (isset($this->relationObject[$this->object]['class'])) {
-                $objName = "centreon" . $this->relationObject[$this->object]['class'];
+                $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
             } else {
                 $objName = "";
             }
@@ -679,7 +679,7 @@ class CentreonAPI {
              * Check class declaration
              */
             if (isset($this->relationObject[$this->object]['class'])) {
-                $objName = "centreon" . $this->relationObject[$this->object]['class'];
+                $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
             } else {
                 $objName = "";
             }
@@ -735,7 +735,7 @@ class CentreonAPI {
      * @param unknown_type $objname
      */
     private function iniObject($objname) {
-        $className = 'centreon' . $this->relationObject[$objname]['class'];
+        $className = '\CentreonClapi\centreon' . $this->relationObject[$objname]['class'];
         $this->requireLibs($objname);
         $this->objectTable[$objname] = new $className($this->DB, $objname);
     }
